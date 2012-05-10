@@ -1,0 +1,53 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package it.freedomotic.restapi.server.resources;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import it.freedomotic.persistence.CommandPersistence;
+import it.freedomotic.persistence.FreedomXStream;
+import it.freedomotic.reactions.Command;
+import it.freedomotic.restapi.server.interfaces.CommandsResource;
+import java.util.ArrayList;
+import java.util.Iterator;
+import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
+
+/**
+ *
+ * @author gpt
+ */
+public class UserCommandsServerResource extends ServerResource implements CommandsResource{
+
+    private static volatile ArrayList<Command> commands;  
+        
+    @Override
+    protected void doInit() throws ResourceException{        
+        commands = new ArrayList<Command>(CommandPersistence.getUserCommands());
+//        for (Iterator it = CommandPersistence.iterator(); it.hasNext();) {
+//            Command command = (Command) it.next();
+//            commands.add(command);
+//        }
+    }
+        
+    @Override
+    public String retrieveXml() {   
+        String ret = "";
+        XStream xstream =FreedomXStream.getXstream();       
+        ret = xstream.toXML(commands);
+        return ret;                
+    }
+    
+        @Override
+    public String retrieveJson() {        
+        String ret = "";
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
+        xstream.setMode(XStream.NO_REFERENCES);                
+        ret = xstream.toXML(commands);        
+        return ret;
+    }
+
+  
+}

@@ -1,0 +1,10 @@
+
+<config>
+    <properties>
+        <property name="description"                       value="Log Viewer"/>
+        <property name="version"                       value="1.0.0"/>
+        <property name="required"                       value="5.2.0"/>
+        <property name="category"                       value="log"/>
+        <property name="short-name"                       value="viewer"/>
+    </properties>
+</config>

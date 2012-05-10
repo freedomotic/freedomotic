@@ -1,0 +1,18 @@
+<config>
+    <properties>
+        <property name="name" value="Souliss"/>
+        <property name="description" value="Communicates with souliss boards"/>
+        <property name="version" value="1.0.0"/>
+        <property name="required" value="5.1.0"/>
+        <property name="category" value="protocol"/>
+        <property name="short-name" value="souliss"/>
+    </properties>
+    <tuples>
+        <tuple>
+            <property name="ip-to-query" value="192.168.0.17"/>
+            <property name="port-to-query" value="80"/>
+        </tuple>
+     </tuples>
+</config>
+
+                

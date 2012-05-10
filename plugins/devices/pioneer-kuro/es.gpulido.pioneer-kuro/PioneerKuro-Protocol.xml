@@ -1,0 +1,13 @@
+<config>
+    <properties>
+        <property name="description"                    value="Pioneer Kuro TV actuator"/>
+        <property name="version"                        value="40"/>
+        <property name="required"                       value="40"/>
+        <property name="category"                       value="PioneerKuro"/>
+        <property name="short-name"                     value="PioneerKuroActuator"/>
+        <property name="port"                           value="/dev/ttyUSB10"/>
+        <property name="baudrate"                       value="9600"/>
+        <property name="tvmodel"                        value="LX5090H"/>
+        <property name="polling-time"                   value="2000"/>
+    </properties>
+</config>

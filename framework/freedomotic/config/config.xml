@@ -1,0 +1,20 @@
+<config>
+  <properties>
+    <property name="KEY_ENABLE_PLUGINS_DOWNLOAD" value="false"/>
+    <property name="KEY_REPOSITORY_URL" value="http://freedomotic.googlecode.com/files/"/>
+    <property name="KEY_COLORED_PEOPLE" value="false"/>
+    <property name="KEY_ROOM_XML_PATH" value="/example-static/example-static.xenv"/>
+    <property name="KEY_DISCARD_INVALID_DESTINATIONS" value="true"/>
+    <property name="KEY_JAVACOM_LIB" value="../ext"/>
+    <property name="KEY_SHOW_WEBSITE_ON_STARTUP" value="false"/>
+    <property name="KEY_BROKER_URL" value="vm://localhost?persistent=false"/>
+    <property name="KEY_SAVE_LOG_TO_FILE" value="false"/>
+    <property name="KEY_LOGGER_POPUP" value="false"/>
+    <property name="KEY_OVERRIDE_OBJECTS_ON_EXIT" value="true"/>
+    <property name="KEY_RESOURCES_PATH" value="/data/resources/"/>
+    <property name="KEY_MESSAGES_TTL" value="5000"/>
+    <property name="KEY_OVERRIDE_REACTIONS_ON_EXIT" value="true"/>
+    <property name="KEY_BACKUP_DATA_BEFORE_START" value="true"/>
+  </properties>
+  <tuples/>
+</config>

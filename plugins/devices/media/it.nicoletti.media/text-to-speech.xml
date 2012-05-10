@@ -1,0 +1,9 @@
+<config>
+    <properties>
+        <property name="description"                       value="USB Relay Simulator"/>
+        <property name="version"                        value="1.0.0"/>
+        <property name="required"                       value="5.0.0"/>
+        <property name="category"                       value="media"/>
+        <property name="short-name"                       value="tts"/>
+    </properties>
+</config>

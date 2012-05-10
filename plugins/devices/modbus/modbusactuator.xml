@@ -1,0 +1,16 @@
+<config>
+    <properties>
+        <property name="description"    value="Actuator for Modbus"/>
+        <property name="version"        value="40"/>
+        <property name="required"       value="40"/>
+        <property name="category"       value="Modbus"/>
+        <property name="short-name"     value="ModbusActuator"/>
+        <property name="port"           value="/dev/ttyUSB10"/>
+        <property name="baudrate"       value="19200"/>
+        <property name="data-bits"      value="8"/>
+        <property name="parity"         value="2"/>
+        <property name="stop-bits"      value="1"/>
+        <property name="timeout"        value="10000"/>
+        <property name="retries"        value="1"/>
+    </properties>
+</config>

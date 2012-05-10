@@ -1,0 +1,82 @@
+package it.cicolella.openwebnet;
+
+import it.freedomotic.app.Freedomotic;
+
+/*****************************************************************
+ * NewThread.java                                               *
+ * Original code:			          -              *
+ * date          : Sep 8, 2004                                   *
+ * copyright     : (C) 2005 by Bticino S.p.A. Erba (CO) - Italy  *
+ *                     Embedded Software Development Laboratory  *
+ * license       : GPL                                           *
+ * email         : 		             		         *
+ * web site      : www.bticino.it; www.myhome-bticino.it         *
+ *                                                               *
+ * Modified and adapted for Freedom project by:                  *
+ * Mauro Cicolella - Enrico Nicoletti                                          *
+ * date          : 24/11/2011                                    *
+ * web site      : www.opensourceautomation.net                  *
+ *****************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+/**
+ * Description:
+ * Gestisce i timeout durante la procedura di connessione al WebServer 
+ * e l'invio dei comandi open
+ * 
+ */
+public class SocketTimeoutThread extends Thread {
+
+    String name;
+    int time = 0; //thread sleep time (15 or 30 sec)
+    int inputState = 0;
+    int socketType; // 0 = command socket, 1 = monitor socket
+
+    /**
+     * Constructor
+     *
+     * @param threadName
+     * @param numSocket Tipo di socket che richiama il costruttore, 0 se è socket comandi, 1 se è monitor
+     */
+    public SocketTimeoutThread(String threadName, int numSocket) {
+        name = threadName;
+        socketType = numSocket;
+        inputState = BTicinoSocketReadManager.getStateMonitor();
+        Freedomotic.logger.info("Timeout thread activated!"); // FOR DEBUG USE
+    }
+
+    /**
+     * Start timeout Thread
+     */
+    public void run() {
+        do {
+            time = 30000;
+            try {
+                Thread.sleep(time);
+            } catch (InterruptedException e) {
+                //Freedomotic.logger.info("Timeout thread stopped!"+e.toString()); FOR DEBUG USE
+                break;
+            }
+
+            Freedomotic.logger.severe("Thread timeout SCADUTO!");
+            //close thread for chars reading
+            if (socketType == 0) {
+                if (BTicinoSocketWriteManager.readTh != null) {
+                    BTicinoSocketWriteManager.readTh.interrupt();
+                }
+            } else {
+                if (BTicinoSocketReadManager.readThMon != null) {
+                    BTicinoSocketReadManager.readThMon.interrupt();
+                }
+            }
+            break;
+        } while (true);
+    }
+}

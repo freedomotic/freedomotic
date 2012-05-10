@@ -1,0 +1,10 @@
+
+<config>
+    <properties>
+        <property name="description"                       value="Performance reports"/>
+        <property name="version"                       value="40"/>
+        <property name="required"                       value="40"/>
+        <property name="category"                       value="profiler"/>
+        <property name="short-name"                       value="frontend"/>
+    </properties>
+</config>

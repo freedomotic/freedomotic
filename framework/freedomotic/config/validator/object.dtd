@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/object.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE it.freedomotic.model.object.EnvObject SYSTEM "object.dtd">
+
+    <it.freedomotic.model.object.EnvObject>
+    ...
+    </it.freedomotic.model.object.EnvObject>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT it.freedomotic.model.object.EnvObject (currentRepresentation|triggers|actions|representation|behaviors|phisicalAddress|protocol|hierarchy|type|actAs|description|name)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT name (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT description (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT actAs (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT type (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT hierarchy (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT protocol (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT phisicalAddress (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT behaviors (it.freedomotic.model.object.RangedIntBehavior|it.freedomotic.model.object.BooleanBehavior)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT it.freedomotic.model.object.BooleanBehavior (value|priority|active|description|name)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT active (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT priority (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT value (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT it.freedomotic.model.object.RangedIntBehavior (step|min|max|value|priority|active|description|name)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT max (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT min (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT step (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT representation (view)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT view (shape|borderColor|textColor|fillColor|rotation|offset|intersecable|tangible)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT tangible (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT intersecable (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT offset EMPTY>
+<!ATTLIST offset
+    y CDATA #IMPLIED
+    x CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT rotation (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT fillColor (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT textColor (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT borderColor (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT shape (point)*>
+<!ATTLIST shape
+    class CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT point EMPTY>
+<!ATTLIST point
+    y CDATA #IMPLIED
+    x CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT actions (property)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT property EMPTY>
+<!ATTLIST property
+    value CDATA #IMPLIED
+    name CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT triggers EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT currentRepresentation (#PCDATA)>

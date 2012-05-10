@@ -1,0 +1,291 @@
+/*Copyright 2009 Enrico Nicoletti
+ eMail: enrico.nicoletti84@gmail.com
+
+ This file is part of Freedomotic.
+
+ Freedomotic is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ any later version.
+
+ Freedomotic is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with EventEngine; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+package it.freedomotic.reactions;
+
+import it.freedomotic.api.EventTemplate;
+import it.freedomotic.app.Freedomotic;
+import it.freedomotic.bus.BusConsumer;
+import it.freedomotic.bus.EventChannel;
+import it.freedomotic.core.Profiler;
+import it.freedomotic.core.TriggerCheck;
+import it.freedomotic.exceptions.TriggerCheckException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.jms.JMSException;
+import javax.jms.ObjectMessage;
+
+/**
+ *
+ * @author enrico
+ */
+public class Trigger implements BusConsumer, Cloneable {
+
+    private String name;
+    private String description;
+    private String uuid;
+    //private EventTemplate action;
+    //TODO: the action is the queue getted from the default queue of the event
+    //we need also the possibility to point to the channel with a string
+    private String channel;
+    private Payload payload = new Payload();
+    private long suspensionTime;
+    //TODO: change name to "mappable" or something like that
+    private boolean hardwareLevel;
+    private boolean persistence;
+    private int delay;
+    private int priority;
+    private long maxExecutions;
+    private long numberOfExecutions;
+    private long suspensionStart;
+    private EventChannel busChannel;
+
+    public Trigger() {
+    }
+
+    public void register() {
+        busChannel = new EventChannel();
+        busChannel.setHandler(this);
+        Freedomotic.logger.info("Registering the trigger named '" + getName() + "'");
+        busChannel.consumeFrom(channel);
+        numberOfExecutions = 0;
+        suspensionStart = System.currentTimeMillis();
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isHardwareLevel() {
+        return hardwareLevel;
+    }
+
+    public void setDescription(String sender) {
+        this.description = sender;
+    }
+
+    public void setChannel(EventTemplate event) {
+        this.channel = event.getDefaultDestination();
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public boolean isConsistentWith(EventTemplate event) {
+        if (getPayload().equals(event.getPayload())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public long getMaxExecutions() {
+        if (maxExecutions <= 0) {
+            maxExecutions = -1; //unlimited
+        }
+        return maxExecutions;
+    }
+
+    public void setMaxExecutions(long maxExecutions) {
+        this.maxExecutions = maxExecutions;
+    }
+
+    public long getNumberOfExecutions() {
+        return numberOfExecutions;
+    }
+
+    public void setNumberOfExecutions(long numberOfExecutions) {
+        this.numberOfExecutions = numberOfExecutions;
+    }
+
+    public long getSuspensionTime() {
+//        if (suspensionTime <= 0) {
+//            suspensionTime = 100; //a minimal default suspension to control flooding
+//        }
+        return suspensionTime;
+    }
+
+    public void setSuspensionTime(long suspensionTime) {
+        this.suspensionTime = suspensionTime;
+    }
+
+    public void setPayload(Payload p) {
+        this.payload = p;
+    }
+
+    //can be moved to a stategy pattern
+    public boolean canFire() {
+        //num of executions < max executions
+        if (getMaxExecutions() > -1) { //not unlimited
+            if (getNumberOfExecutions() >= getMaxExecutions()) {
+                return false;
+            }
+        }
+        if (getNumberOfExecutions() > 0) { //if is not the first time it executes
+            long wakeup = suspensionStart + getSuspensionTime();
+            long now = System.currentTimeMillis();
+            if (now < wakeup) {
+                Freedomotic.logger.severe(getName() + " is suspended");
+                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy kk:mm:ss.SSS");
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(wakeup);
+                Freedomotic.logger.warning("Trigger " + getName() + " is suspended until " + formatter.format(calendar.getTime()));
+                //it is currently suspended
+                return false;
+            }
+        }
+        //can fire
+        return true;
+    }
+
+    public synchronized void setExecuted() {
+        suspensionStart = System.currentTimeMillis();
+        numberOfExecutions++;
+    }
+
+    public void setDelay(int delay) {
+        this.delay = delay;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public Payload getPayload() {
+        return payload;
+    }
+
+    public int getDelay() {
+        return delay;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Trigger other = (Trigger) obj;
+        if ((this.name == null) ? (other.name != null) : !this.name.equalsIgnoreCase(other.name)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + (this.name != null ? this.name.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    /*
+     * Performs the Trigger check comparing the received event with itself (this
+     * trigger)
+     */
+    public void onMessage(ObjectMessage message) {
+        Object payload = null;
+        try {
+            payload = message.getObject();
+        } catch (JMSException ex) {
+            Logger.getLogger(Trigger.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (payload instanceof EventTemplate) {
+            EventTemplate event = (EventTemplate) payload;
+            Freedomotic.logger.info("Trigger '" + this.getName() + "' filters event '" + event.getEventName() + "' on channel " + this.getChannel());
+            try {
+                long start = System.currentTimeMillis();
+                boolean testPassed = TriggerCheck.check(event, this);
+                long end = System.currentTimeMillis();
+                Profiler.appendTriggerCheckingTime(end - start);
+            } catch (TriggerCheckException ex) {
+                Logger.getLogger(Trigger.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    @Override
+    public Trigger clone() {
+        Trigger clone = new Trigger();
+        clone.setName(getName());
+        clone.setDescription(getDescription());
+        Payload clonePayload = new Payload();
+        Iterator it = getPayload().iterator();
+        while (it.hasNext()) {
+            Statement original = (Statement) it.next();
+            clonePayload.addStatement(original.getLogical(), original.getAttribute(), original.getOperand(), original.getValue());
+        }
+        clone.setPayload(clonePayload);
+        clone.setMaxExecutions(getMaxExecutions());
+        clone.setNumberOfExecutions(getNumberOfExecutions());
+        clone.setSuspensionTime(getSuspensionTime());
+        clone.suspensionStart = this.suspensionStart;
+        clone.setPriority(0);
+        return clone;
+    }
+
+    public void unregister() {
+        //TODO: implement unregistration
+    }
+
+    public String getUUID() {
+        return uuid;
+    }
+
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setPersistence(boolean persist) {
+        this.persistence = persist;
+    }
+
+    public boolean isToPersist() {
+        return persistence;
+    }
+}

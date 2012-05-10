@@ -1,0 +1,10 @@
+<config>
+    <properties>
+        <property name="description"                       value="Simulate temperature and luminosity sensors"/>
+        <property name="version"                       value="40"/>
+        <property name="required"                       value="40"/>
+        <property name="category"                       value="luminosity"/>
+        <property name="short-name"                       value="fuzzy"/>
+		        <property name="startup-time"                       value="on load"/>
+    </properties>
+</config>

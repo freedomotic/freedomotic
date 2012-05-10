@@ -1,0 +1,9 @@
+<config>
+    <properties>
+        <property name="description"            value="Plugin for rest"/>
+        <property name="version"                value="50"/>
+        <property name="required"               value="50"/>
+        <property name="category"               value="Api"/>
+        <property name="short-name"             value="RestApi"/>
+    </properties>
+</config>

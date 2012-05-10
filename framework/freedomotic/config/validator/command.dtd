@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/command.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE it.freedomotic.reactions.Command SYSTEM "command.dtd">
+
+    <it.freedomotic.reactions.Command>
+    ...
+    </it.freedomotic.reactions.Command>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT it.freedomotic.reactions.Command (properties|executed|persistence|hardwareLevel|tags|description|timeout|delay|receiver|name)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT name (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT receiver (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT delay (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT timeout (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT description (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT tags (string)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT string (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT hardwareLevel (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT persistence (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT executed (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT properties (tuples|property|properties)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT property EMPTY>
+<!ATTLIST property
+    value CDATA #IMPLIED
+    name CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT tuples EMPTY>
