@@ -1,0 +1,15 @@
+<trigger>
+  <name>Every second</name>
+  <description>schedule actions to be executed at a fixed interval of 1 second</description>
+  <channel>app.event.sensor.calendar.event.schedule</channel>
+  <payload>
+    <payload>
+    </payload>
+  </payload>
+  <hardwareLevel>false</hardwareLevel>
+  <delay>0</delay>
+  <priority>0</priority>
+  <maxExecutions>0</maxExecutions>
+  <numberOfExecutions>0</numberOfExecutions>
+  <suspensionTime>1000</suspensionTime>
+</trigger>

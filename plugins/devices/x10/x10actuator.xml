@@ -1,0 +1,10 @@
+<config>
+    <properties>
+        <property name="description"                    value="Attuatore per i dispositivi X10"/>
+        <property name="version"                        value="40"/>
+        <property name="required"                       value="40"/>
+        <property name="category"                       value="X10"/>
+        <property name="short-name"                     value="X10Actuator"/>
+        <property name="Model"                          value="PMix35"/>
+    </properties>
+</config>

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/reaction.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE it.freedomotic.reactions.Reaction SYSTEM "reaction.dtd">
+
+    <it.freedomotic.reactions.Reaction>
+    ...
+    </it.freedomotic.reactions.Reaction>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT it.freedomotic.reactions.Reaction (sequences|trigger)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT trigger (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT sequences (sequence)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT sequence (command)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT command (#PCDATA)>

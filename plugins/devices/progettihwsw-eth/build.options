@@ -1,0 +1,15 @@
+#Sat, 11 Feb 2012 19:28:41 +0100
+
+package.type=device
+package.name=it.cicolella.phwsw
+package.license=GNU GPL2
+package.vendor.name=Mauro
+package.vendor.surname=Cicolella
+package.vendor.contact=mauro@freedomotic.com
+package.vendor.company=Freedomotic
+package.vendor.nation=it
+build.number=33
+build.create.dist.market=true
+build.create.dist.framework=true
+build.synch.dist=true
+build.synch.dist.path=../../../framework/freedomotic/plugins/

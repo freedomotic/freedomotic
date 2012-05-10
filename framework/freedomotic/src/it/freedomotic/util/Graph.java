@@ -1,0 +1,157 @@
+
+package it.freedomotic.util;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+
+/**
+ * Title:        Graph
+ * Description:  Prova di implementazione di un struttura dati per rappresentare
+ *               un grafo.
+ * Copyright:    Copyright (c) 2000
+ * Company:      Università degli Studi di Verona
+ * @author Roberto Posenato
+ * @version 1.0
+ */
+
+ /**
+  * La classe Grafo rappresenta un grafo mediante liste di adiacenza.
+  * In particolare si è voluto dare un'implementazione che utilizzasse classi
+  * standard di java.util.
+  * Di conseguenza:
+  * 1. la lista dei nodi è rappresentata da una HashMap per poter accedere al
+  * nodo x in tempo costante
+  * 2. la lista dei nodi adiacenti è rappresentata da un HashSet di archi, in
+  * modo tale da poter verificare/accedere al nodo adiacente in tempo costante.
+  * Anziché rappresentare il nodo adiacente e il peso dell'arco si è preferito
+  * rappresentare l'arco completo per questioni di efficineza di altre operazioni.
+  *
+  */
+public class Graph {
+  HashMap nodi;
+  int nArchi;
+
+  public Graph() {
+    nodi = new HashMap();
+    nArchi = 0;
+  }
+
+  public int nodesNumber() {
+    return nodi.size();
+  }
+
+  public int edgesNumber() {
+    return nArchi;
+  }
+
+  /**
+   * add(x) aggiunge un nodo al grafo con valore x se non esiste, nulla altrimenti
+   * L'aggiunta di un nodo significa aggiungere la coppia (x, lista) nella HashMap
+   * dove lista è una HashSet nuovo vuoto.
+   */
+  public void add(Object x) {
+    if (!nodi.containsKey(x)) {
+      HashSet lista = new HashSet();
+      nodi.put(x,lista);
+    }
+  }
+
+  public void remove(Object x) {
+    if (nodi.containsKey(x)) {
+      Iterator arcoIncidenteI = ( (HashSet) nodi.get(x) ).iterator();
+      Edge a;
+      Object y;
+      while (arcoIncidenteI.hasNext()) {
+        a = (Edge) arcoIncidenteI.next();
+        y = ( a.x.equals(x) ) ? a.y : a.x;
+        if ( ((HashSet) nodi.get(y)).remove(a) )
+          nArchi--;
+      }
+      nodi.remove(x);
+    }
+  }
+
+
+  /**
+   * add(x,y,v) aggiunge un arco tra i nodi x e y con peso v
+   */
+  public boolean add(Object x, Object y, Object value) {
+    boolean flag = false, flag1 = false;
+    if (!nodi.containsKey(x))
+      add(x);
+    if (!nodi.containsKey(y))
+      add(y);
+    Edge a = new Edge(x,y,value);
+    flag = ( (HashSet) nodi.get(x) ).add(a);
+    flag1 =( (HashSet) nodi.get(y) ).add(a);
+    flag = flag && flag1;
+    if (flag)
+      nArchi++;
+    return flag;
+  }
+
+  public boolean add(Edge a) {
+    return add(a.x,a.y,a.value);
+  }
+
+  public boolean remove(Object x, Object y, Object value) {
+    Edge a = new Edge(x,y,value);
+    return remove(a);
+  }
+
+
+  public boolean remove(Edge a) {
+    boolean flag = false,  flag1 = false;
+    if (nodi.containsKey(a.x) && nodi.containsKey(a.y)) {
+      flag = ( (HashSet) nodi.get(a.x) ).remove(a);
+      flag1 = ( (HashSet) nodi.get(a.y) ).remove(a);
+    }
+    return flag || flag1;
+  }
+
+
+  public Set getEdgeSet() {
+    Set setArchi = new HashSet();
+    Iterator hashSetI = nodi.values().iterator();
+    while (hashSetI.hasNext())
+      setArchi.addAll((Set) hashSetI.next());
+
+    return setArchi;
+  }
+
+
+  public Set getEdgeSet(Object nodo) {
+    if (nodi.containsKey(nodo)) //se il nodo è presente nel grafo
+      return (HashSet) nodi.get(nodo);
+    else
+      return null;
+  }
+
+
+  public Set getNodeSet() {
+    return nodi.keySet();
+  }
+
+    @Override
+  public String toString() {
+    StringBuilder out = new StringBuilder();
+    Object nodo;
+    Edge a;
+    Iterator arcoI;
+    Iterator nodoI = nodi.keySet().iterator();
+    while (nodoI.hasNext()) {
+      arcoI = ((Set) nodi.get( nodo = nodoI.next() )).iterator();
+            out.append("Nodo ").append(nodo.toString()).append(": ");
+      while (arcoI.hasNext()) {
+        a = (Edge)arcoI.next();
+        //out.append( ((a.x == nodo ) ? a.y.toString() : a.x.toString()) + "("+a.value.toString()+"), ");
+                out.append(a.toString()).append(", ");
+      }
+      out.append("\n");
+    }
+    return out.toString();
+  }
+}

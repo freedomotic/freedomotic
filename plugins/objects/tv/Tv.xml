@@ -1,0 +1,140 @@
+<it.freedom.model.object.EnvObject>
+  <name>TV</name>
+  <description>A Pionner 5090H TV</description>
+  <actAs>button</actAs>
+  <type>EnvObject.ElectricDevice.TV</type>
+  <hierarchy>it.freedom.objects.impl.TV</hierarchy>
+  <protocol>PioneerKuro</protocol>
+  <phisicalAddress></phisicalAddress>
+  <behaviors>
+    <it.freedom.model.object.BooleanBehavior>
+      <name>powered</name>
+      <description></description>
+      <active>false</active>
+      <priority>-1</priority>
+      <value>false</value>
+    </it.freedom.model.object.BooleanBehavior>
+    <it.freedom.model.object.RangedIntBehavior>
+      <name>volume</name>
+      <description>the volume of the TV</description>
+      <active>false</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>60</max>
+      <min>0</min>
+      <step>1</step>
+    </it.freedom.model.object.RangedIntBehavior>
+    <it.freedom.model.object.RangedIntBehavior>
+      <name>channel</name>
+      <description>TV channel</description>
+      <active>false</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>999</max>
+      <min>0</min>
+      <step>1</step>
+    </it.freedom.model.object.RangedIntBehavior>
+    <it.freedom.model.object.ListBehavior>
+      <name>input</name>
+      <description>TV input selected</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <selected>1</selected>
+      <list>
+        <string>Input 1</string>
+        <string>Input 2</string>
+        <string>Input 3</string>
+        <string>Input 4</string>
+        <string>Input 5</string>
+        <string>Input 6(PC)</string>
+      </list>
+    </it.freedom.model.object.ListBehavior>
+    <it.freedom.model.object.BooleanBehavior>
+      <name>muted</name>
+      <description></description>
+      <active>false</active>
+      <priority>-1</priority>
+      <value>false</value>
+    </it.freedom.model.object.BooleanBehavior>
+    <it.freedom.model.object.ListBehavior>
+      <name>avSelection</name>
+      <description>AV Selected</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <selected>1</selected>
+      <list>
+        <string>STANDARD</string>
+        <string>DYNAMIC</string>
+        <string>MOVIE</string>
+        <string>GAME</string>
+        <string>SPORT</string>
+        <string>USER</string>
+        <string>OPTIMUM</string>
+      </list>
+    </it.freedom.model.object.ListBehavior>
+    <it.freedom.model.object.ListBehavior>
+      <name>screenMode</name>
+      <description>Screen Mode Selected</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <selected>1</selected>
+      <list>
+        <string>DOTbyDOT</string>
+        <string>4:3</string>
+        <string>FULL</string>
+        <string>ZOOM</string>
+        <string>CINEMA</string>
+        <string>WIDE</string>
+        <string>FULL 14:9</string>
+        <string>CINEMA 14:9</string>
+      </list>
+    </it.freedom.model.object.ListBehavior>
+  </behaviors>
+  <representation>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>true</intersecable>
+      <offset x="480" y="460"/>
+      <rotation>0.0</rotation>
+      <icon>pioneer-tv-off.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="41" y="0"/>
+        <point x="41" y="41"/>
+        <point x="0" y="41"/>
+      </shape>
+    </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="200" y="390"/>
+      <rotation>0.0</rotation>
+      <icon>pioneer-tv-on.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="41" y="0"/>
+        <point x="41" y="41"/>
+        <point x="0" y="41"/>
+      </shape>
+    </view>
+  </representation>
+  <actions>
+    <property name="set input" value="Set Input KuroTV object"/>
+    <property name="turn off" value="Switch OFF KuroTV object"/>
+    <property name="mute on" value="Mute ON KuroTV object"/>
+    <property name="set channel" value="Set Channel KuroTV object"/>
+    <property name="mute off" value="Mute OFF KuroTV object"/>
+    <property name="set avSelection" value="Set AV Selection KuroTV object"/>
+    <property name="set screenMode" value="Set Screen Mode KuroTV object"/>
+    <property name="turn on" value="Switch ON KuroTV object"/>
+    <property name="set volume" value="Set Volume KuroTV object"/>
+  </actions>
+  <triggers/>
+  <currentRepresentation>0</currentRepresentation>
+</it.freedom.model.object.EnvObject>

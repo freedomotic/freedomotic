@@ -1,0 +1,14 @@
+#Mon, 30 Apr 2012 20:05:13 +0200
+package.type=device
+package.name=es.gpulido.restapi
+package.license=GNU GPL2
+package.vendor.name=Gabriel
+package.vendor.surname=Pulido
+package.vendor.contact=gabriel@freedomotic.com
+package.vendor.company=freedomotic
+package.vendor.nation=es
+build.number=119
+build.create.dist.market=true
+build.create.dist.framework=true
+build.synch.dist=true
+build.synch.dist.path=../../../framework/freedomotic/plugins/

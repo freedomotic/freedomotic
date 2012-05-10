@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/trigger.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE trigger SYSTEM "trigger.dtd">
+
+    <trigger>
+    ...
+    </trigger>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT trigger (suspensionTime|numberOfExecutions|maxExecutions|priority|delay|hardwareLevel|payload|channel|description|name)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT name (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT description (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT channel (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT payload (it.freedomotic.reactions.Statement|payload)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT it.freedomotic.reactions.Statement (value|operand|attribute|logical)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT logical (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT attribute (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT operand (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT value (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT hardwareLevel (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT delay (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT priority (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT maxExecutions (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT numberOfExecutions (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT suspensionTime (#PCDATA)>

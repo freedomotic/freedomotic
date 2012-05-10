@@ -1,0 +1,9 @@
+<config>
+    <properties>
+        <property name="description"                       value="USB Relay Simulator"/>
+        <property name="version"                       value="40"/>
+        <property name="required"                       value="40"/>
+        <property name="category"                       value="usbrelay"/>
+        <property name="short-name"                       value="simulator"/>
+    </properties>
+</config>
