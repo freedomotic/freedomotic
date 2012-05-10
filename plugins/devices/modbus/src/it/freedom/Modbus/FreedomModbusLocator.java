@@ -9,8 +9,8 @@ import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.BatchResults;
 import com.serotonin.modbus4j.ModbusLocator;
 import com.serotonin.modbus4j.code.RegisterRange;
-import it.freedom.events.GenericEvent;
-import it.freedom.model.ds.Config;
+import it.freedomotic.events.GenericEvent;
+import it.freedomotic.model.ds.Config;
 
 /**
  *  This class is used to encapsulate the ModbusLocator used by Modbus4J and to
