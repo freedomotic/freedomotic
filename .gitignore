@@ -68,9 +68,8 @@ market-dist/
 !lib/*.jar
 !lib/*/*.jar
 !lib/*/*/*.jar
-!/plugins/*/*/lib/*.jar
-!/plugins/*/*/*/lib/*.jar
 !/clients/*/lib/*.jar
+!/plugins/*/*/lib/*.jar
 !/tools/*/lib/*.jar
 !/scripts/shared/*.txt
 !/scripts/shared/*.TXT
