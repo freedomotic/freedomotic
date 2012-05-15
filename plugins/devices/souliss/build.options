@@ -1,4 +1,4 @@
-#Tue, 21 Feb 2012 15:29:35 +0100
+#Wed, 25 Apr 2012 15:48:09 +0200
 
 package.type=device
 package.name=it.cicolella.souliss
@@ -8,7 +8,7 @@ package.vendor.surname=Cicolella
 package.vendor.contact=mauro@freedomotic.com
 package.vendor.company=Freedomotic
 package.vendor.nation=it
-build.number=8
+build.number=36
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true

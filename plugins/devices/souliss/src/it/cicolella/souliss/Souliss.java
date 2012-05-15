@@ -2,18 +2,24 @@ package it.cicolella.souliss;
 
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ProtocolRead;
+import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import java.io.*;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.JsonNode;
+import java.net.ConnectException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 /**
  * Plugin for Souliss Library author Mauro Cicolella - www.emmecilab.net For
@@ -111,13 +117,27 @@ public class Souliss extends Protocol {
     protected void onRun() {
         for (Board node : boards) {
             evaluateDiffs(getJsonStatusFile(node), node); //parses the xml and crosscheck the data with the previous read
-            try {
-                Thread.sleep(POLLING_TIME);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null, ex);
-            }
+          /*
+             * try { JSONObject json =
+             * readJsonFromUrl("http://dimaiofamily.no-ip.org/status");
+             * Freedomotic.logger.severe("Souliss JSON " +json.toString()); }
+             * catch (IOException ex) {
+             * Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null,
+             * ex); } catch (JSONException ex) {
+             * Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null,
+             * ex); }
+             */
+        }
+
+
+
+        try {
+            Thread.sleep(POLLING_TIME);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    // }
 
     private JsonNode getJsonStatusFile(Board board) {
         //get the json stream from the socket connection
@@ -127,27 +147,52 @@ public class Souliss extends Protocol {
         statusFileURL = "http://" + board.getIpAddress() + ":"
                 + Integer.toString(board.getPort()) + "/status";
         Freedomotic.logger.info("Souliss Sensor gets nodes status from file " + statusFileURL);
-        try {
-            rootNode = mapper.readValue(statusFileURL, JsonNode.class);
-        } catch (ConnectException connEx) {
-            disconnect();
-            this.stop();
-            this.setDescription("Connection timed out, no reply from the board at " + statusFileURL);
-        } catch (Exception ex) {
-            disconnect();
-            this.stop();
-            setDescription("Unable to connect to " + statusFileURL);
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+        /*
+         * try { rootNode = mapper.readValue(statusFileURL, JsonNode.class); }
+         * catch (ConnectException connEx) { disconnect(); this.stop();
+         * this.setDescription("Connection timed out, no reply from the board at
+         * " + statusFileURL); } catch (Exception ex) { disconnect();
+         * this.stop(); setDescription("Unable to connect to " + statusFileURL);
+         * Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex)); }
+         */ try {
+            rootNode = mapper.readValue(readJsonFromUrl("http://dimaiofamily.no-ip.org/status"), JsonNode.class);
+        } catch (IOException ex) {
+            Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return rootNode;
     }
 
+    public static String readJsonFromUrl(String url) throws IOException, JSONException {
+        InputStream is = new URL(url).openStream();
+        try {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            String jsonText = readAll(rd);
+            jsonText = jsonText.substring(29, jsonText.length() - 1);
+            //jsonText = jsonText.substring(1, jsonText.length() - 1);
+            //Freedomotic.logger.severe("Souliss JSON " + jsonText.length() + " " + jsonText.substring(29, jsonText.length() - 1).toString());
+            JSONObject json = new JSONObject(jsonText);
+            return jsonText;
+        } finally {
+            is.close();
+        }
+    }
+
+    private static String readAll(Reader rd) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int cp;
+        while ((cp = rd.read()) != -1) {
+            sb.append((char) cp);
+        }
+        return sb.toString();
+    }
+
     private void evaluateDiffs(JsonNode rootNode, Board board) {
-        int id=0;
-        int slot=0;
-        String typical=null;
-        String val=null;
+        int id = 0;
+        int slot = 0;
+        String typical = null;
+        String val = null;
         //parses json
         if (rootNode != null && board != null) {
             id = 0;
@@ -158,14 +203,15 @@ public class Souliss extends Protocol {
                 for (JsonNode node2 : node.path("slot")) {
                     typical = node2.path("typ").getTextValue();
                     val = node2.path("val").getTextValue();
-                    //System.out.println("id:" + id + " slot" + slot + " Typ: " + typical + " Val: " + val + "\n");
+                    System.out.println("id:" + id + " slot" + slot + " Typ: " + typical + " Val: " + val + "\n");
+                    Freedomotic.logger.severe("Souliss monitorize id: " + id + " slot: " + slot + " typ: " + typical + " val: " + val);
                     slot++;
                 }
                 id++;
             }
         }
-        Freedomotic.logger.severe("Souliss monitorize id: " + id + " slot: " + slot);
-        sendChanges(board, id, slot, val, typical);
+        //Freedomotic.logger.severe("Souliss monitorize id: " + id + " slot: " + slot + " typ: " + typical + " val: "+val);
+        //sendChanges(board, id, slot, val, typical);
 
 
     }
@@ -178,6 +224,15 @@ public class Souliss extends Protocol {
         ProtocolRead event = new ProtocolRead(this, "Souliss", address);
         event.addProperty("typical", typical);
         event.addProperty("val", val);
+        switch (Integer.parseInt("typical")) {
+            case 11:
+                if (val.equals("0")) {
+                    event.addProperty("isOn", "false");
+                } else {
+                    event.addProperty("isOn", "true");
+                }
+                break;
+        }
         //publish the event on the messaging bus
         this.notifyEvent(event);
     }
@@ -187,7 +242,7 @@ public class Souliss extends Protocol {
      */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
-        //get connection paramentes address:port from received freedomotic command
+        //get connection paramentes address:port from received freedom command
         String delimiter = configuration.getProperty("address-delimiter");
         address = c.getProperty("address").split(delimiter);
         //connect to the ethernet board
@@ -250,10 +305,10 @@ public class Souliss extends Protocol {
         id = address[2];
         slot = address[3];
         val = Integer.parseInt(c.getProperty("val"));
-        
+
         //compose requested url
         url = "force?id=" + id + "&slot=" + slot + "&val=" + val;
-        
+
         // http request sending to the board
         message = "GET /" + url + " HTTP 1.1\r\n\r\n";
         Freedomotic.logger.info("Sending 'GET /" + url + " HTTP 1.1' to Souliss board");
