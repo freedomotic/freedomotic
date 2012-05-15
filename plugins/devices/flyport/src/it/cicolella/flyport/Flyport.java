@@ -189,11 +189,15 @@ public class Flyport extends Protocol {
             Node n = doc.getFirstChild();
             NodeList nl = n.getChildNodes();
             int startingValue = board.getStartingValue();
-            for (int i = startingValue; i < nl.getLength(); i++) {
+            String lineToMonitorize = board.getLineToMonitorize();
+            int linesNumber = 0;
+            if(lineToMonitorize.equalsIgnoreCase("led"))
+                linesNumber = board.getLedNumber();
+            for (int i = startingValue; i <= linesNumber; i++) {
                 try {
                     // converts i into hexadecimal value (string) and sends the parameters
                     String tagName = board.getLineToMonitorize() + HexIntConverter.convert(i);
-                    Freedomotic.logger.severe("Flyport monitorize tags " + tagName);
+                    Freedomotic.logger.severe("Flyport monitorizes tags " + tagName);
                     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent());
                 } catch (DOMException dOMException) {
                     //do nothing
@@ -306,7 +310,8 @@ public class Flyport extends Protocol {
         String relay = null;
 
         if (c.getProperty("command").equals("RELAY")) {
-            relay = HexIntConverter.convert(Integer.parseInt(address[2]) - 1);
+            //relay = HexIntConverter.convert(Integer.parseInt(address[2]) - 1);
+            relay = HexIntConverter.convert(Integer.parseInt(address[2]));
             page = "leds.cgi?led=" + relay;
         }
         // http request sending to the board
