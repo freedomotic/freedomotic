@@ -9,7 +9,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.persistence.CommandPersistence;
-import it.freedomotic.plugins.gui.WindowHandler;
+import it.freedomotic.plugins.gui.LogWindowHandler;
 import it.freedomotic.reactions.Command;
 import java.io.IOException;
 import java.util.logging.Filter;
@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  */
 public class LogViewer extends Actuator {
 
-    private WindowHandler handler = null;
+    private LogWindowHandler handler = null;
     private Logger logger = null;
 
     public LogViewer() {
@@ -33,21 +33,23 @@ public class LogViewer extends Actuator {
 
     @Override
     protected void onShowGui() {
-        handler = WindowHandler.getInstance();
+        handler = LogWindowHandler.getInstance();
         handler.setLevel(Level.INFO);
         handler.setFilter(new Filter() {
 
             public boolean isLoggable(LogRecord record) {
-//                if (record.getSourceClassName().equals(EnvObjectLogic.class.getCanonicalName())) {
-                    return true;
-//                } else {
-//                    return false;
-//                }
+                //logs every message
+                return true;
             }
         });
         logger = Freedomotic.logger;
         logger.addHandler(handler);
         bindGuiToPlugin(handler.window);
+    }
+
+    @Override
+    protected void onStart() {
+        showGui();
     }
 
     @Override

@@ -11,26 +11,26 @@ import java.util.logging.*;
  *
  * @author Enrico
  */
-public class WindowHandler extends Handler {
+public class LogWindowHandler extends Handler {
 
     public LogWindow window = null;
     private Level level = null;
-    private static WindowHandler handler = null;
+    private static LogWindowHandler handler = null;
 
-    private WindowHandler() {
+    private LogWindowHandler() {
         LogManager manager = LogManager.getLogManager();
-        String className = this.getClass().getName();
-        String level = manager.getProperty(className + ".level");
-        String filter = manager.getProperty(className + ".filter");
-        setLevel(level != null ? Level.parse(level) : Level.INFO);
+//        String className = this.getClass().getName();
+//        String level = manager.getProperty(className + ".level");
+//        String filter = manager.getProperty(className + ".filter");
+        setLevel(Level.INFO);
         if (window == null) {
             window = new LogWindow(this);
         }
     }
 
-    public static synchronized WindowHandler getInstance() {
+    public static synchronized LogWindowHandler getInstance() {
         if (handler == null) {
-            handler = new WindowHandler();
+            handler = new LogWindowHandler();
         }
         return handler;
     }
@@ -47,8 +47,8 @@ public class WindowHandler extends Handler {
 //                + record.getMessage();
         window.append(new Object[]{
                     record.getLevel(),
-                    record.getSourceClassName(),
-                    record.getSourceMethodName(),
+                    //record.getSourceClassName(),
+                    //record.getSourceMethodName(),
                     record.getMessage()
                 });
     }

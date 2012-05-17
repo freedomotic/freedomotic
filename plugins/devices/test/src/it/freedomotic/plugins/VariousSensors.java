@@ -66,14 +66,17 @@ public class VariousSensors extends Protocol {
 
     @Override
     protected void onRun() {
-        ProtocolRead event = new ProtocolRead(this, "unknown", "unknown");
+        //sends a fake sensor read event
+        ProtocolRead event = new ProtocolRead(this, "test", "test");
         event.getPayload().addStatement("powered", powered.toString());
+        //invert the value for the next round
+        notifyEvent(event);
         if (powered) {
             powered = false;
         } else {
             powered = true;
         }
-        notifyEvent(event);
+        //wait two seconds before sending another event
         try {
             Thread.sleep(2000);
         } catch (InterruptedException ex) {
