@@ -95,6 +95,7 @@ public final class Freedomotic {
          * *****************************************************************
          */
         loadAppConfig();
+        logger.setLevel(Level.ALL);
         logger.info("OS: " + System.getProperty("os.name") + "\n"
                 + "Architecture: " + System.getProperty("os.arch") + "\n"
                 + "OS Version: " + System.getProperty("os.version") + "\n"

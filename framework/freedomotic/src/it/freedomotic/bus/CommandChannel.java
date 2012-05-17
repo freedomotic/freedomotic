@@ -133,18 +133,18 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
         getBusSharedWriter().send(receiver, msg);
         Profiler.incrementSentCommands();
         //the receive() call is blocking so we execute it in a thread
-        Freedomotic.logger.info("Send and await reply to command '" + command.getName() + "' for " + command.getReplyTimeout() + "ms");
+        Freedomotic.logger.config("Send and await reply to command '" + command.getName() + "' for " + command.getReplyTimeout() + "ms");
         Message jmsResponse = responseConsumer.receive(command.getReplyTimeout());
         if (jmsResponse != null) {
             ObjectMessage objMessage = (ObjectMessage) jmsResponse;
             //a command is sent, we expect a command as reply
             Command reply = (Command) objMessage.getObject();
-            Freedomotic.logger.info("Reply to command '" + command.getName() + "' received. Result is " + reply.getProperty("result"));
+            Freedomotic.logger.config("Reply to command '" + command.getName() + "' received. Result is " + reply.getProperty("result"));
             Profiler.incrementReceivedReplies();
             //here do someting with the reply
             return reply;
         } else {
-            Freedomotic.logger.info("Command '" + command.getName() + "' timed out after " + command.getReplyTimeout() + "ms");
+            Freedomotic.logger.config("Command '" + command.getName() + "' timed out after " + command.getReplyTimeout() + "ms");
             Profiler.incrementTimeoutedReplies();
         }
         command.setExecuted(false); //suppose it is executes even with no reply from destination

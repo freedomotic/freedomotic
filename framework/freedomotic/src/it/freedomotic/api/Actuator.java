@@ -124,14 +124,14 @@ public abstract class Actuator extends Plugin implements BusConsumer {
     @Override
     public void onMessage(final ObjectMessage message) {
         if (!isRunning) {
-            Freedomotic.logger.warning("Actuator '" + getName() + "' receives a Command while is not running. Plugin try to turn on itself...");
+            Freedomotic.logger.config("Actuator '" + getName() + "' receives a Command while is not running. Plugin try to turn on itself...");
             start();
         }
         try {
             Object payload = message.getObject();
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
-                Freedomotic.logger.info(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
+                Freedomotic.logger.config(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
                 Runnable executorThread = new Runnable() {
 
                     @Override

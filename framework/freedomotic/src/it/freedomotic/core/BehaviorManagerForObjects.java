@@ -120,7 +120,7 @@ public final class BehaviorManagerForObjects implements BusConsumer {
         if (obj != null) { //if the object exists
             behavior = obj.getBehavior(behaviorName);
             if (behavior != null) { //if this behavior exists in object obj
-                Freedomotic.logger.info("User level command '" + userLevelCommand.getName() + "' request changing behavior "
+                Freedomotic.logger.config("User level command '" + userLevelCommand.getName() + "' request changing behavior "
                         + behavior.getName() + " of object '" + obj.getPojo().getName()
                         + "' from value '" + behavior.getValueAsString() + "' to value '" + userLevelCommand.getProperties().getProperty("value") + "'");
                 behavior.filterParams(userLevelCommand.getProperties(), true); //true means a command must be fired

@@ -3,7 +3,7 @@
     <property name="KEY_ENABLE_PLUGINS_DOWNLOAD" value="false"/>
     <property name="KEY_REPOSITORY_URL" value="http://freedomotic.googlecode.com/files/"/>
     <property name="KEY_COLORED_PEOPLE" value="false"/>
-    <property name="KEY_ROOM_XML_PATH" value="/example-static/example-static.xenv"/>
+    <property name="KEY_ROOM_XML_PATH" value="/template-square/template-square.xenv"/>
     <property name="KEY_DISCARD_INVALID_DESTINATIONS" value="true"/>
     <property name="KEY_JAVACOM_LIB" value="../ext"/>
     <property name="KEY_SHOW_WEBSITE_ON_STARTUP" value="false"/>

@@ -29,12 +29,12 @@ public class EnvObjectFactory {
             try {
                 logic.init();
             } catch (EnvObjectMappingException envObjectMappingException) {
-                logic.setMessage("This object has a not valid command mapping.\nCheck it out otherwise it may not work.");
+                logic.setMessage("To bound this object to a real device fix its command and trigger mapping.");
             }
             if ((pojo.getPhisicalAddress().equalsIgnoreCase("unknown") 
                     || pojo.getProtocol().equalsIgnoreCase("unknown")) 
                     && !pojo.getActAs().equalsIgnoreCase("virtual")){
-                logic.setMessage(logic.getMessage() + "\nThis object has unknown protocol or address value.\nCheck it out otherwise it may not work.");
+                logic.setMessage(logic.getMessage() + "\nTo bound this object to a real device set its protocol and address values.");
             }
             return logic;
         } catch (InstantiationException ex) {

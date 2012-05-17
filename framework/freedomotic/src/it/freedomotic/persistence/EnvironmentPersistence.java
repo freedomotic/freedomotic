@@ -24,12 +24,12 @@ public class EnvironmentPersistence {
         FileWriter fstream;
         BufferedWriter out = null;
         try {
-            Freedomotic.logger.info("Serializing environment to " + file);
+            Freedomotic.logger.config("Serializing environment to " + file);
             fstream = new FileWriter(file);
             out = new BufferedWriter(fstream);
             out.write(xml);
             //Close the output stream
-            Freedomotic.logger.info("  application environment succesfully serialized");
+            Freedomotic.logger.info("Application environment succesfully serialized");
         } catch (IOException ex) {
             Logger.getLogger(Environment.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -38,7 +38,7 @@ public class EnvironmentPersistence {
     }
 
     public static void saveAs(File folder) throws IOException {
-        Freedomotic.logger.info("Serializing new environment to " + folder);
+        Freedomotic.logger.config("Serializing new environment to " + folder);
         String fileName = folder.getName();
         if (!folder.exists()) {
             folder.mkdir();
