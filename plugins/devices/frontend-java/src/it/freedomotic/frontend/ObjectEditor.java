@@ -395,7 +395,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spnScaleHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(488, Short.MAX_VALUE))
+                .addContainerGap(484, Short.MAX_VALUE))
         );
 
         jTabbedPane3.addTab("Representation", tabRepresentation);
@@ -424,7 +424,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         jLabel2.setText("Address:");
 
         jLabel3.setForeground(new java.awt.Color(121, 121, 121));
-        jLabel3.setText("for more info www.opensourceautomation.net/plugins");
+        jLabel3.setText("for more info www.freedomotic.com/plugins");
 
         btnCreateObjectCopy.setText("Create a copy");
         btnCreateObjectCopy.addActionListener(new java.awt.event.ActionListener() {
@@ -465,7 +465,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addComponent(btnCreateObjectCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(1995, Short.MAX_VALUE))
+                .addContainerGap(2027, Short.MAX_VALUE))
         );
         tabPropertiesLayout.setVerticalGroup(
             tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -541,10 +541,10 @@ public class ObjectEditor extends javax.swing.JFrame {
     private void btnCreateReactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateReactionActionPerformed
         //we send a command with a show event editor plugin request
         Command showReactionEditor = new Command();
-        showReactionEditor.setName("Show reaction editor GUI");
-        showReactionEditor.setDescription("make a the reaction editor plugin show its GUI");
+        showReactionEditor.setName("Show automation editor GUI");
+        showReactionEditor.setDescription("make a the automation editor plugin show its GUI");
         showReactionEditor.setReceiver("app.actuators.plugins.controller.in");
-        showReactionEditor.setProperty("plugin", "Event Editor"); //the target plugin
+        showReactionEditor.setProperty("plugin", "Automation Editor"); //the target plugin
         showReactionEditor.setProperty("action", "SHOW");         //the action to perform
         Freedomotic.getScheduler().schedule(showReactionEditor);
         //TODO: make this return a command

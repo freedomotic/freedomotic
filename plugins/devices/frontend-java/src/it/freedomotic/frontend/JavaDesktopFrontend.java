@@ -70,7 +70,7 @@ public class JavaDesktopFrontend extends Actuator {
         }
         return drawer;
     }
-
+    
     @Override
     protected void onCommand(final Command c) throws IOException, UnableToExecuteException {
         String callout = c.getProperty("callout-message");
