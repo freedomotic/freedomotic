@@ -22,8 +22,9 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 /**
- * Plugin for Souliss Library author Mauro Cicolella - www.emmecilab.net For
- * more details please refer to
+ * Plugin for Souliss Library www.souliss.net author Mauro Cicolella -
+ * www.emmecilab.net For more details please refer to
+ * http://www.freedomotic.com/forum/6/811
  */
 public class Souliss extends Protocol {
 
@@ -117,27 +118,13 @@ public class Souliss extends Protocol {
     protected void onRun() {
         for (Board node : boards) {
             evaluateDiffs(getJsonStatusFile(node), node); //parses the xml and crosscheck the data with the previous read
-          /*
-             * try { JSONObject json =
-             * readJsonFromUrl("http://dimaiofamily.no-ip.org/status");
-             * Freedomotic.logger.severe("Souliss JSON " +json.toString()); }
-             * catch (IOException ex) {
-             * Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null,
-             * ex); } catch (JSONException ex) {
-             * Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null,
-             * ex); }
-             */
         }
-
-
-
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
             Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    // }
 
     private JsonNode getJsonStatusFile(Board board) {
         //get the json stream from the socket connection
@@ -147,14 +134,8 @@ public class Souliss extends Protocol {
         statusFileURL = "http://" + board.getIpAddress() + ":"
                 + Integer.toString(board.getPort()) + "/status";
         Freedomotic.logger.info("Souliss Sensor gets nodes status from file " + statusFileURL);
-        /*
-         * try { rootNode = mapper.readValue(statusFileURL, JsonNode.class); }
-         * catch (ConnectException connEx) { disconnect(); this.stop();
-         * this.setDescription("Connection timed out, no reply from the board at
-         * " + statusFileURL); } catch (Exception ex) { disconnect();
-         * this.stop(); setDescription("Unable to connect to " + statusFileURL);
-         * Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex)); }
-         */ try {
+        try {
+            // add json server http
             rootNode = mapper.readValue(readJsonFromUrl("http://dimaiofamily.no-ip.org/status"), JsonNode.class);
         } catch (IOException ex) {
             Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null, ex);
@@ -205,15 +186,13 @@ public class Souliss extends Protocol {
                     val = node2.path("val").getTextValue();
                     System.out.println("id:" + id + " slot" + slot + " Typ: " + typical + " Val: " + val + "\n");
                     Freedomotic.logger.severe("Souliss monitorize id: " + id + " slot: " + slot + " typ: " + typical + " val: " + val);
+                    // call for notify event
+                    sendChanges(board,id,slot,val,typical);
                     slot++;
                 }
                 id++;
             }
         }
-        //Freedomotic.logger.severe("Souliss monitorize id: " + id + " slot: " + slot + " typ: " + typical + " val: "+val);
-        //sendChanges(board, id, slot, val, typical);
-
-
     }
 
     private void sendChanges(Board board, int id, int slot, String val, String typical) { //
@@ -221,10 +200,10 @@ public class Souliss extends Protocol {
         String address = board.getIpAddress() + ":" + board.getPort() + ":" + id + ":" + slot;
         Freedomotic.logger.info("Sending Souliss protocol read event for object address '" + address + "'");
         //building the event ProtocolRead
-        ProtocolRead event = new ProtocolRead(this, "Souliss", address);
-        event.addProperty("typical", typical);
-        event.addProperty("val", val);
-        switch (Integer.parseInt("typical")) {
+        ProtocolRead event = new ProtocolRead(this, "souliss", address);
+        event.addProperty("souliss.typical", typical);
+        event.addProperty("souliss.val", val);
+        switch (Integer.parseInt(typical)) {
             case 11:
                 if (val.equals("0")) {
                     event.addProperty("isOn", "false");

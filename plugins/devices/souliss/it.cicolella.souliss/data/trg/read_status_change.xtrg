@@ -8,7 +8,7 @@
                 <logical>AND</logical>
                 <attribute>protocol</attribute>
                 <operand>EQUALS</operand>
-                <value>Souliss</value>
+                <value>souliss</value>
             </it.freedomotic.reactions.Statement>
             <it.freedomotic.reactions.Statement>
                 <logical>SET</logical>
