@@ -1,4 +1,4 @@
-#Thu, 10 May 2012 11:36:37 +0200
+#Sun, 13 May 2012 14:27:52 +0200
 
 package.type=object
 package.name=com.freedomotic.baseobj
@@ -8,7 +8,7 @@ package.vendor.surname=Building Automation
 package.vendor.contact=info@freedomotic.com
 package.vendor.company=freedomotic
 package.vendor.nation=com
-build.number=38
+build.number=39
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
