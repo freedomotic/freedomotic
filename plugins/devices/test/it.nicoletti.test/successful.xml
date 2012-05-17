@@ -4,7 +4,7 @@
         <property name="description"                       value="Execute succesfully a command"/>
         <property name="version"                       value="40"/>
         <property name="required"                       value="40"/>
-        <property name="category"                       value="test"/>
-        <property name="short-name"                       value="success"/>
+        <property name="category"                       value="simulator"/>
+        <property name="short-name"                       value="actuator"/>
     </properties>
 </config>
