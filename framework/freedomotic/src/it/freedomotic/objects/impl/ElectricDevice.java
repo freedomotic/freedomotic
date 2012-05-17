@@ -76,7 +76,7 @@ public class ElectricDevice extends EnvObjectLogic {
     }
 
     private void setOn() {
-        Freedomotic.logger.info("Setting behavior 'powered' of object '" + getPojo().getName() + "' to true");
+        Freedomotic.logger.config("Setting behavior 'powered' of object '" + getPojo().getName() + "' to true");
         //if not already on
         if (powered.getValue() != true) {
             //setting the object as powered
@@ -88,7 +88,7 @@ public class ElectricDevice extends EnvObjectLogic {
     }
 
     private void setOff() {
-        Freedomotic.logger.info("Setting behavior 'powered' of object '" + getPojo().getName() + "' to false");
+        Freedomotic.logger.config("Setting behavior 'powered' of object '" + getPojo().getName() + "' to false");
         //if not already off
         if (powered.getValue() != false) {
             powered.setValue(false);

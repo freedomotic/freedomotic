@@ -170,19 +170,20 @@ public class Resolver {
                     //re-read the property each loop because is possible the previous loop has already replaced something
                     propertyValue = (String) aProperty.getValue();
                     //System.out.println("La proprieta '" + key + " = " + propertyValue + "' contiene: '" + occurrence + "'");
-                    String eventVarName = occurrence;
+                    String referenceToResolve = occurrence;
                     if (occurrence.endsWith("#")) {
-                        eventVarName = eventVarName.substring(0, eventVarName.length() - 1);  //cutting out the optional last '#'
+                        referenceToResolve = referenceToResolve.substring(0, referenceToResolve.length() - 1);  //cutting out the optional last '#'
                     }
-                    eventVarName = eventVarName.substring(1, eventVarName.length()); //cutting out the first char '@'
-                    String replacer = command.getProperty(eventVarName);
+                    referenceToResolve = referenceToResolve.substring(1, referenceToResolve.length()); //cutting out the first char '@'
+                    String replacer = command.getProperty(referenceToResolve);
 
                     //Freedomotic.logger.severe("Event variable name '" + eventVarName + "' is substituted with its value '" + replacer + "'");
                     if ((replacer == null ? "" != null : !replacer.isEmpty())) {
                         String propertyValueResolved = propertyValue.replaceFirst(occurrence, replacer);
                         aProperty.setValue(propertyValueResolved);
                     } else {
-                        Freedomotic.logger.warning("Variable '" + eventVarName + "' not found in event properties");
+                        Freedomotic.logger.severe("Variable '" + referenceToResolve
+                                + "' cannot be resolved in command '" + command.getName() + "'.");
                     }
                 }
             }
@@ -233,19 +234,21 @@ public class Resolver {
                 while (matcher.find()) {
                     String occurrence = matcher.group();
                     propertyValue = (String) statement.getValue();
-                    String eventVarName = occurrence;
+                    String referenceToResolve = occurrence;
                     if (occurrence.endsWith("#")) {
-                        eventVarName = eventVarName.substring(0, eventVarName.length() - 1);  //cutting out the optional last '#'
+                        referenceToResolve = referenceToResolve.substring(0, referenceToResolve.length() - 1);  //cutting out the optional last '#'
                     }
-                    eventVarName = eventVarName.substring(1, eventVarName.length()); //cutting out the first char '@'
-                    for (Statement st : trigger.getPayload().getStatements(eventVarName)) {
+                    referenceToResolve = referenceToResolve.substring(1, referenceToResolve.length()); //cutting out the first char '@'
+                    for (Statement st : trigger.getPayload().getStatements(referenceToResolve)) {
                         String replacer = st.getValue();
                         if ((replacer == null ? "" != null : !replacer.isEmpty())) {
                             //first occurrence is replaced with values and then the system try to resolve math operations
                             String propertyValueResolved = propertyValue.replaceFirst(occurrence, replacer);
                             statement.setValue(propertyValueResolved);
                         } else {
-                            Freedomotic.logger.warning("Variable '" + eventVarName + "' not found in event properties");
+                            Freedomotic.logger.severe("Variable '" + referenceToResolve
+                                    + "' cannot be resolved in trigger '" + trigger.getName() + "'. "
+                                    + "Check if '" + referenceToResolve + "'exists in event");
                         }
                     }
                 }
@@ -263,7 +266,7 @@ public class Resolver {
                     //Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to trigger value: '" + script + "' the complete value is '" + possibleScript);
                     //Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
                     if (js.get(key) == null) {
-                        Freedomotic.logger.severe("Script evaluation has returned a null value, maybe the key '" + key + "' is not evaluated properly.");
+                        Freedomotic.logger.severe("Script evaluation in trigger '" + trigger.getName() + "' has returned a null value, maybe the key '" + key + "' is not evaluated properly.");
                     }
                     statement.setValue(js.get(key).toString());
                     success = true;

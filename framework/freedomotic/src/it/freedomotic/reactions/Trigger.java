@@ -146,11 +146,10 @@ public class Trigger implements BusConsumer, Cloneable {
             long wakeup = suspensionStart + getSuspensionTime();
             long now = System.currentTimeMillis();
             if (now < wakeup) {
-                Freedomotic.logger.severe(getName() + " is suspended");
                 DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy kk:mm:ss.SSS");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(wakeup);
-                Freedomotic.logger.warning("Trigger " + getName() + " is suspended until " + formatter.format(calendar.getTime()));
+                Freedomotic.logger.info("Trigger " + getName() + " is suspended until " + formatter.format(calendar.getTime()));
                 //it is currently suspended
                 return false;
             }
@@ -237,7 +236,7 @@ public class Trigger implements BusConsumer, Cloneable {
         }
         if (payload instanceof EventTemplate) {
             EventTemplate event = (EventTemplate) payload;
-            Freedomotic.logger.info("Trigger '" + this.getName() + "' filters event '" + event.getEventName() + "' on channel " + this.getChannel());
+            Freedomotic.logger.config("Trigger '" + this.getName() + "' filters event '" + event.getEventName() + "' on channel " + this.getChannel());
             try {
                 long start = System.currentTimeMillis();
                 boolean testPassed = TriggerCheck.check(event, this);

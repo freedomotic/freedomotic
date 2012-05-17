@@ -183,10 +183,9 @@ public abstract class EnvObjectLogic {
         if (behaviorName == null || behaviorName.isEmpty() || trigger == null) {
             return;
         }
-        Freedomotic.logger.warning("Attempt to add a trigger mapping in object " + this.getPojo().getName()
-                + ". Behavior '" + behaviorName + "' will be associated to trigger named '" + trigger + "'");
         //parameters in input are ok, continue...
         Iterator it = pojo.getTriggers().entrySet().iterator();
+        //remove old references if any
         while (it.hasNext()) {
             Entry e = (Entry) it.next();
             if (e.getValue().equals(behaviorName)) {
@@ -194,7 +193,8 @@ public abstract class EnvObjectLogic {
             }
         }
         pojo.getTriggers().setProperty(trigger.getName(), behaviorName);
-
+        Freedomotic.logger.config("Trigger mapping in object " + this.getPojo().getName()
+                + ": behavior '" + behaviorName + "' is now associated to trigger named '" + trigger.getName() + "'");
     }
 
     public String getAction(String t) {
@@ -206,7 +206,7 @@ public abstract class EnvObjectLogic {
             this.changed = true;
             ObjectHasChangedBehavior objectEvent = new ObjectHasChangedBehavior(this, pojo);
             //send multicast because an event must be received by all triggers registred on the destination channel
-            Freedomotic.logger.info("Object " + this.getPojo().getName() + " changes something in its status (eg: a behavior value)");
+            Freedomotic.logger.config("Object " + this.getPojo().getName() + " changes something in its status (eg: a behavior value)");
             Freedomotic.sendEvent(objectEvent);
         } else {
             changed = false;
@@ -257,19 +257,19 @@ public abstract class EnvObjectLogic {
 
     public boolean executeTrigger(Trigger t) {
         String behavior = getAction(t.getName());
-        if (behavior == null) {
-            return false;
-        }
+//        if (behavior == null) {
+//            return false;
+//        }
 
         Statement valueStatement = t.getPayload().getStatements("behaviorValue").get(0);
         if (valueStatement == null) {
             Freedomotic.logger.warning("No value in hardware trigger '" + t.getName() + "' to apply to object action '" + behavior + "' of object " + getPojo().getName());
             return false;
         }
-        Freedomotic.logger.info("Trigger '" + t.getName() + "' contains this instructions: change '" + getPojo().getName() + "' behavior '" + behavior + "' to " + valueStatement.getValue());
+        Freedomotic.logger.config("Sensors notification '" + t.getName() + "' has changed '" + getPojo().getName() + "' behavior '" + behavior + "' to " + valueStatement.getValue());
         Config params = new Config();
         params.setProperty("value", valueStatement.getValue());
-        getBehavior(behavior).filterParams(params, false); //false means not fire trigger, only change behavior value
+        getBehavior(behavior).filterParams(params, false); //false means not fire commands, only change behavior value
         return true;
     }
 
@@ -285,10 +285,10 @@ public abstract class EnvObjectLogic {
      * false otherways
      */
     public boolean executeCommand(final String action, final Config params) {
-        Freedomotic.logger.info("Executing action '" + action + "' of object '" + getPojo().getName() + "'");
+        Freedomotic.logger.config("Executing action '" + action + "' of object '" + getPojo().getName() + "'");
         if (getPojo().getActAs().equalsIgnoreCase("virtual")) {
             //it's a virtual object like a button, not needed real execution of a command
-            Freedomotic.logger.warning("The object '" + getPojo().getName() + "' act as virtual device, so its hardware commands are not executed.");
+            Freedomotic.logger.info("The object '" + getPojo().getName() + "' act as virtual device, so its hardware commands are not executed.");
             return true;
         }
         Command command = getHardwareCommand(action.trim());
@@ -299,7 +299,7 @@ public abstract class EnvObjectLogic {
         //resolves developer level command parameters like myObjectName = "@event.object.name" -> myObjectName = "Light 1"
         //in this case the parameter in the userLevelCommand are used as basis for the resolution process (the context)
         //along with the parameters getted from the relative behavior (if exists)
-        Freedomotic.logger.info("Environment object '" + pojo.getName() + "' tries to '" + action + "' itself using hardware command '" + command.getName() + "'");
+        Freedomotic.logger.config("Environment object '" + pojo.getName() + "' tries to '" + action + "' itself using hardware command '" + command.getName() + "'");
         Resolver resolver = new Resolver();
         //adding a resolution context for object that owns this hardware level command. 'owner.' is the prefix of this context
         resolver.addContext("owner.", getExposedProperties());

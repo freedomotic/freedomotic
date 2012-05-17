@@ -65,13 +65,13 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
 
     public void notifyEvent(EventTemplate ev) {
         if (isRunning) {
-            Freedomotic.logger.info("Sensor " + this.getName() + " notify event " + ev.getEventName());
             notifyEvent(ev, ev.getDefaultDestination());
         }
     }
 
     public void notifyEvent(EventTemplate ev, String destination) {
         if (isRunning) {
+            Freedomotic.logger.config("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":" + ev.getPayload().toString());
             channel.send(ev, destination);
         }
     }

@@ -165,17 +165,26 @@ public class EnvObjectPersistence {
      * @param address
      * @return
      */
-    public static EnvObjectLogic getObject(String protocol, String address) {
+    public static ArrayList<EnvObjectLogic> getObject(String protocol, String address) {
+        if (protocol.trim().equalsIgnoreCase("unknown")
+                || address.trim().equalsIgnoreCase("unknown")
+                || protocol.isEmpty()
+                || address.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
         for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = (EnvObjectLogic) it.next();
             if ((object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()))
                     && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(address.trim()))) {
                 //Freedomotic.logger.info("Found object " + object.getPojo().getName() + " {protocol = " + object.getPojo().getProtocol() + "; address = " + object.getPojo().getPhisicalAddress() + "}");
-                return object;
+                list.add(object);
             }
         }
-        Freedomotic.logger.warning("Unable to get a reference to an EnvObject using protocol '" + protocol + "' and address '" + address + "'");
-        return null;
+        if (list.isEmpty()) {
+            Freedomotic.logger.warning("Don't exist an object with protocol '" + protocol + "' and address '" + address + "'");
+        }
+        return list;
     }
 
     /**

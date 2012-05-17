@@ -71,6 +71,7 @@ public abstract class Protocol extends Plugin implements BusConsumer{
 
     public void notifyEvent(EventTemplate ev, String destination) {
         if (isRunning) {
+            Freedomotic.logger.config("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":" + ev.getPayload().toString());
             eventsChannel.send(ev, destination);
         }
     }
@@ -122,7 +123,7 @@ public abstract class Protocol extends Plugin implements BusConsumer{
             if (payload instanceof Command) {
 
                 final Command command = (Command) payload;
-                Freedomotic.logger.info(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
+                Freedomotic.logger.config(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
                 ActuatorPerforms task;
 
                 try {
@@ -141,7 +142,7 @@ public abstract class Protocol extends Plugin implements BusConsumer{
             }
         } else {
             //it isn't an error but is better to let it know
-            Freedomotic.logger.warning("Protocol '" + getName() + "' receives a Command or an Event while is not running");
+            Freedomotic.logger.config("Protocol '" + getName() + "' receives a Command or an Event while is not running");
         }
     }
 
