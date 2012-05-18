@@ -74,7 +74,7 @@ public final class TriggerCheck {
                             return false;
                         }
                         buff.append("[CONSISTENT] registred trigger '").append(trigger.getName()).append("' consistent with received event '").append(event.getEventName()).append("'");
-                        executeRelatedReactions(trigger, event, buff);
+                        executeRelatedReactions(trigger, event);
                         return true;
                     }
                 } catch (Exception e) {
@@ -110,22 +110,24 @@ public final class TriggerCheck {
         protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
         address = resolved.getPayload().getStatements("event.address").get(0).getValue();
         objectList = EnvObjectPersistence.getObject(protocol, address);
+        boolean done = false;
         for (EnvObjectLogic object : objectList) {
-            boolean done = object.executeTrigger(resolved); //user trigger->behavior mapping to apply the trigger to this object
-            if (!done) {
-                Freedomotic.logger.warning("Hardware trigger " + trigger.getName() + " not applyed to any object. "
-                        + "Possibile causes is the trigger is not associated to any object "
-                        + "or there is no object with protocol=" + protocol + " and address=" + address);
-            } else {
+            boolean executed = object.executeTrigger(resolved); //user trigger->behavior mapping to apply the trigger to this object
+            if (executed) {
+                done = true;
                 long elapsedTime = System.currentTimeMillis() - event.getCreation();
                 Freedomotic.logger.info("Sensor notification '" + trigger.getName() + "' applied to object '"
                         + object.getPojo().getName() + "' in " + elapsedTime + "ms.");
             }
         }
+        if (!done) {
+            Freedomotic.logger.warning("Hardware trigger " + trigger.getName() + " not applyed to any object. "
+                    + "Possibile causes is the trigger is not associated to any object "
+                    + "or there is no object with protocol=" + protocol + " and address=" + address);
+        }
     }
 
-    public static void executeRelatedReactions(final Trigger trigger, final EventTemplate event, final StringBuilder buff) {
-        final StringBuilder executedReactions = new StringBuilder();
+    public static void executeRelatedReactions(final Trigger trigger, final EventTemplate event) {
         Iterator it = ReactionPersistence.iterator();
         //Searching for reactions using this trigger
         boolean found = false;
@@ -138,7 +140,6 @@ public final class TriggerCheck {
             if (trigger.equals(reactionTrigger)) {
                 trigger.setExecuted();
                 found = true;
-                executedReactions.append(reaction.toString()).append(" ");
                 Freedomotic.logger.config("Try to execute reaction " + reaction.toString());
                 try {
                     //resolves temporary values in command like @event.date replacing freedomotic variables with string or numerical values
@@ -148,8 +149,8 @@ public final class TriggerCheck {
                     resolver.addContext("event.", event.getPayload());
                     resolved = resolver.resolve(reaction);
                 } catch (Exception e) {
-                    buff.append("Exception while merging event parameters into reaction.\n");
-                    buff.append(Freedomotic.getStackTraceInfo(e));
+                    Freedomotic.logger.severe("Exception while merging event parameters into reaction.\n");
+                    Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
                     return;
                 }
 //                SchedulingData data = new SchedulingData(event.getCreation());
@@ -167,16 +168,17 @@ public final class TriggerCheck {
                     Command reply = Freedomotic.sendCommand(command); //blocking wait (in this case in a thread) until executed
                     if (reply != null) {
                         if (reply.isExecuted() == true) {
-                            displayOnFrontend("Executed succesfully " + command.getName());
+                            Freedomotic.logger.config("Executed succesfully " + command.getName());
                         } else {
-                            displayOnFrontend("Unable to execute " + command.getName());
+                            Freedomotic.logger.config("Unable to execute " + command.getName());
                         }
                     } else {
-                        displayOnFrontend("Unreceived reply within given time for command " + command.getName());
+                        Freedomotic.logger.config("Unreceived reply within given time ("
+                                + command.getReplyTimeout() + "ms) for command " + command.getName());
                     }
 //                    }
                 }
-                Freedomotic.logger.info("Executing reaction '" + executedReactions.toString()
+                Freedomotic.logger.info("Executing reaction '" + reaction.toString()
                         + "' takes " + (System.currentTimeMillis() - event.getCreation()) + "ms.");
             }
         }
@@ -184,16 +186,15 @@ public final class TriggerCheck {
             Freedomotic.logger.warning("No reaction bound to trigger '" + trigger.getName() + "'");
         }
     }
-
-    private static void displayOnFrontend(String message) {
-        final Command c = new Command();
-        c.setName("A callout from the scheduler");
-        c.setDelay(0);
-        c.setExecuted(true);
-        c.setEditable(false);
-        c.setReceiver("app.actuators.frontend.javadesktop.in");
-        c.setProperty("callout-message", message);
-        //this method is supposed to be called in threads so it not instantiate others
-        Freedomotic.sendCommand(c);
-    }
+//    private static void displayOnFrontend(String message) {
+//        final Command c = new Command();
+//        c.setName("A callout from the scheduler");
+//        c.setDelay(0);
+//        c.setExecuted(true);
+//        c.setEditable(false);
+//        c.setReceiver("app.actuators.frontend.javadesktop.in");
+//        c.setProperty("callout-message", message);
+//        //this method is supposed to be called in threads so it not instantiate others
+//        Freedomotic.sendCommand(c);
+//    }
 }

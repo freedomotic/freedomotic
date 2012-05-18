@@ -43,7 +43,7 @@ public class RangedIntBehaviorLogic implements BehaviorLogic {
     }
 
     @Override
-    public void filterParams(Config params, boolean fireCommand) {
+    public synchronized final void filterParams(Config params, boolean fireCommand) {
         //from dim to dim
         String input = params.getProperty("value").trim();
         int parsed = getMin();

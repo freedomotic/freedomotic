@@ -149,7 +149,7 @@ public class Trigger implements BusConsumer, Cloneable {
                 DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy kk:mm:ss.SSS");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(wakeup);
-                Freedomotic.logger.info("Trigger " + getName() + " is suspended until " + formatter.format(calendar.getTime()));
+                Freedomotic.logger.config("Trigger " + getName() + " is suspended until " + formatter.format(calendar.getTime()));
                 //it is currently suspended
                 return false;
             }
