@@ -12,7 +12,7 @@ public class MarketPlacePluginFileField {
     String fid;
     String description;
     
-    MarketPlacePluginFileField(String fid, String description)            
+    public MarketPlacePluginFileField(String fid, String description)            
     {
         this.fid = fid;
         this.description = description;
