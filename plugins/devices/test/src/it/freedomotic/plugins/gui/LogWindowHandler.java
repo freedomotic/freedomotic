@@ -22,7 +22,7 @@ public class LogWindowHandler extends Handler {
 //        String className = this.getClass().getName();
 //        String level = manager.getProperty(className + ".level");
 //        String filter = manager.getProperty(className + ".filter");
-        setLevel(Level.INFO);
+        setLevel(Level.ALL);
         if (window == null) {
             window = new LogWindow(this);
         }

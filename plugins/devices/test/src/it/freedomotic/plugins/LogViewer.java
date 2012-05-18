@@ -34,7 +34,6 @@ public class LogViewer extends Actuator {
     @Override
     protected void onShowGui() {
         handler = LogWindowHandler.getInstance();
-        handler.setLevel(Level.INFO);
         handler.setFilter(new Filter() {
 
             public boolean isLoggable(LogRecord record) {
@@ -43,6 +42,8 @@ public class LogViewer extends Actuator {
             }
         });
         logger = Freedomotic.logger;
+        handler.setLevel(Level.ALL);
+        logger.setLevel(Level.ALL);
         logger.addHandler(handler);
         bindGuiToPlugin(handler.window);
     }
