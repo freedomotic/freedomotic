@@ -17,7 +17,7 @@ public class PropertiesBehaviorLogic implements BehaviorLogic {
     }
 
     @Override
-    public void filterParams(Config params, boolean fireCommand) {
+    public synchronized final void  filterParams(Config params, boolean fireCommand) {
         String[] parsed = params.getProperty("value").trim().split("=");
         String key = parsed[0].trim();
         String value = parsed[1].trim();

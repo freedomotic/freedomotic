@@ -257,9 +257,10 @@ public abstract class EnvObjectLogic {
 
     public boolean executeTrigger(Trigger t) {
         String behavior = getAction(t.getName());
-//        if (behavior == null) {
-//            return false;
-//        }
+        if (behavior == null) {
+            //Freedomotic.logger.severe("Hardware trigger '" + t.getName() + "' is not bound to any action of object " + this.getPojo().getName());
+            return false;
+        }
 
         Statement valueStatement = t.getPayload().getStatements("behaviorValue").get(0);
         if (valueStatement == null) {

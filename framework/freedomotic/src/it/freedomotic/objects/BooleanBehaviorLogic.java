@@ -18,7 +18,7 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
     }
 
     @Override
-    public final void filterParams(Config params, boolean fireCommand) {
+    public synchronized final void filterParams(Config params, boolean fireCommand) {
         //filter accepted values
         String parsed = params.getProperty("value").trim();
         if (parsed.equalsIgnoreCase("false") || parsed.equals("0")) {

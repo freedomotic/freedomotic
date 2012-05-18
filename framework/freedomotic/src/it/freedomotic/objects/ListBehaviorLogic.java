@@ -20,7 +20,7 @@ public class ListBehaviorLogic implements BehaviorLogic {
     }
 
     @Override
-    public void filterParams(Config params, boolean fireCommand) {
+    public synchronized final void filterParams(Config params, boolean fireCommand) {
         //value contains the sting used in user level commands like object="tv" behavior="inputs" value="hdmi1"
         //we have to check if value is a suitable choice according to a list of possibilities (check if it exists)
         String parsed = params.getProperty("value").trim();
