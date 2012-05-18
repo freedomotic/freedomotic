@@ -24,9 +24,14 @@ public class TextToSpeech extends Tool {
 
     public TextToSpeech() {
         super("Text to Speech", "/it.nicoletti.media/text-to-speech.xml");
+    }
+
+    protected void onStart() {
         loadVoice();
-        gui = new TextToSpeechGui(this);
-        start();
+    }
+
+    protected void onShowGui() {
+        bindGuiToPlugin(new TextToSpeechGui(this));
     }
 
     public void loadVoice() {

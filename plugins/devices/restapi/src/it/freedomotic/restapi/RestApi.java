@@ -65,9 +65,6 @@ public class RestApi extends Actuator{
                 component.getClients().add(Protocol.FILE);                
                 component.getDefaultHost().attach(new FreedomRestServer(Info.getResourcesPath()));
                 component.start();
-                
-                
-                
             } catch (Exception ex) {
                 Logger.getLogger(RestApi.class.getName()).log(Level.SEVERE, null, ex);
             }

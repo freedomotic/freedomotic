@@ -4,20 +4,18 @@
  */
 package it.freedomotic.plugins.cammotion;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageDecoder;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.plugins.CamMotionDetector;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.PasswordAuthentication;
 import java.net.URL;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageInputStream;
 
 /**
  *
@@ -70,17 +68,30 @@ public class MjpegWebcamConnector extends Thread {
         }
     }
 
-    public void parseMJPGStream() {
-        // preprocess the mjpg stream to remove the mjpg encapsulation
-        readLines(4, stream); // reads and discards the first 4 lines
-        parseJPGImage();
-        readLines(1, stream); // reads and discards the last line
-    }
-
-    public void parseJPGImage() { // read the embedded jpeg image
+//    private void parseMJPGStream() {
+//        // preprocess the mjpg stream to remove the mjpg encapsulation
+//        readLines(4, stream); // reads and discards the first 4 lines
+//        //read untill --myboundary (and skip the line after it)
+//        boolean done = false;
+//        ByteArrayOutputStream line;
+//        while (done) {
+//            line.write(readLine(stream);
+//            if (line.toString().equals("--myboundary")) {
+//                done = true;
+//                
+//            }
+//        }
+//        parseJPGImage();
+//        readLines(1, stream); // reads and discards the last line
+//    }
+//
+    private void parseJPGImage(String input) { // read the embedded jpeg image
         try {
-            JPEGImageDecoder decoder = JPEGCodec.createJPEGDecoder(stream);
-            image = decoder.decodeAsBufferedImage();
+            byte b[] = input.toString().getBytes();
+            ByteArrayInputStream tmp = new ByteArrayInputStream(b);
+            //JPEGImageDecoder decoder = JPEGCodec.createJPEGDecoder(stream);
+            image = ImageIO.read(tmp);
+            //image = decoder.decodeAsBufferedImage();
             int motionLevel = motionDetector.enqueueImage(image);
             plugin.setMotionLevel(motionLevel);
         } catch (Exception e) {
@@ -88,28 +99,35 @@ public class MjpegWebcamConnector extends Thread {
             disconnect();
         }
     }
-
-    public void readLines(int n, DataInputStream dis) {
-        for (int i = 0; i < n; i++) {
-            try {
-                boolean end = false;
-                String lineEnd = "\n"; // assumes that the end of the line is marked with this
-                byte[] lineEndBytes = lineEnd.getBytes();
-                byte[] byteBuf = new byte[lineEndBytes.length];
-
-                while (!end) {
-                    dis.read(byteBuf, 0, lineEndBytes.length);
-                    String t = new String(byteBuf);
-                    // System.out.print(t); //uncomment if you want to see what the lines actually look like
-                    if (t.equals(lineEnd)) {
-                        end = true;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//
+//    private void readLines(int n, DataInputStream dis) {
+//        for (int i = 0; i < n; i++) {
+//            readLine(dis);
+//        }
+//    }
+//
+//    private ByteArrayOutputStream readLine(DataInputStream dis) {
+//        try {
+//            boolean end = false;
+//            final String LINEEND = "\n"; // assumes that the end of the line is marked with this
+//            byte[] lineEndBytes = LINEEND.getBytes();
+//            byte[] byteBuf = new byte[lineEndBytes.length];
+//            ByteArrayOutputStream line = new ByteArrayOutputStream();
+//            while (!end) {
+//                dis.read(byteBuf, 0, lineEndBytes.length);
+//                line.write(byteBuf);
+//                String t = new String(byteBuf);
+//                System.out.print(t); //uncomment if you want to see what the lines actually look like
+//                if (t.equals(LINEEND)) {
+//                    end = true;
+//                }
+//            }
+//            return line;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ByteArrayOutputStream();
+//        }
+//    }
 
     @Override
     public void run() {
@@ -121,9 +139,44 @@ public class MjpegWebcamConnector extends Thread {
             }
         }
         try {
-            while (true) {
-                parseMJPGStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(new URL(url).openStream()));
+            String inputLine;
+            StringBuilder buffer = new StringBuilder();
+            int lineCount = 0;
+            boolean lineCountStart = false;
+            boolean saveImage = false;
+            while ((inputLine = in.readLine()) != null) {
+                // Should be checking just for "--" probably
+                if (inputLine.lastIndexOf("--myboundary") > -1) {
+                    if (buffer.length() > 0) {
+                        parseJPGImage(buffer.toString());
+                    }
+                    // Got an image boundary, stop last image
+                    // Start counting lines to get past:
+                    // Content-Type: image/jpeg
+                    // Content-Length: 22517
+                    saveImage = false;
+                    lineCountStart = true;
+                    System.out.println("Got a new boundary");
+                    System.out.println(inputLine);
+                } else if (lineCountStart) {
+                    lineCount++;
+                    if (lineCount >= 2) {
+                        lineCount = 0;
+                        lineCountStart = false;
+                        saveImage = true;
+                        System.out.println("Starting a new image");
+                        buffer = new StringBuilder();
+                    }
+                } else if (saveImage) {
+                    //System.out.println(inputLine.toString());
+                    buffer.append(inputLine);
+                } else {
+                    System.out.println("What's this:");
+                    System.out.println(inputLine);
+                }
             }
+            in.close();
         } catch (Exception e) {
             plugin.stop();
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
@@ -184,4 +237,52 @@ public class MjpegWebcamConnector extends Thread {
 //    outputStream.flush();
 //  }
 //}
+//
+//            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+//            String inputLine;
+//            int lineCount = 0;
+//            boolean lineCountStart = false;
+//            boolean saveImage = false;
+//            while ((inputLine = in.readLine()) != null) {
+//            	// Should be checking just for "--" probably
+//            	if (inputLine.lastIndexOf("--myboundary") > -1)
+//            	{
+//            		// Got an image boundary, stop last image
+//            		// Start counting lines to get past:
+//            		// Content-Type: image/jpeg
+//            		// Content-Length: 22517
+//
+//            		saveImage = false;
+//            		lineCountStart = true;
+//
+//            		System.out.println("Got a new boundary");
+//            		System.out.println(inputLine);
+//            	}
+//            	else if (lineCountStart)
+//            	{
+//            		lineCount++;
+//            		if (lineCount >= 2)
+//            		{
+//            			lineCount = 0;
+//            			lineCountStart = false;
+//            			imageCount++;
+//            			saveImage = true;
+//                		System.out.println("Starting a new image");
+//
+//            		}
+//            	}
+//            	else if (saveImage)
+//            	{
+//            		System.out.println("Saving an image line");
+//            	}
+//            	else {
+//
+//            		System.out.println("What's this:");
+//            		System.out.println(inputLine);
+//            	}
+//            }
+//            in.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }	
 }
