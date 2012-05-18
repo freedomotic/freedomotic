@@ -1,4 +1,4 @@
-#Tue, 06 Mar 2012 21:41:42 +0100
+#Fri, 18 May 2012 11:32:08 +0200
 
 package.type=device
 package.name=it.nicoletti.media
@@ -8,7 +8,7 @@ package.vendor.surname=Nicoletti
 package.vendor.contact=enrico.nicoletti84@gmail.com
 package.vendor.company=Freedomotic
 package.vendor.nation=it
-build.number=3
+build.number=44
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true

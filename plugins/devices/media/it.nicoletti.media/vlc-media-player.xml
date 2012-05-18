@@ -6,6 +6,6 @@
         <property name="required"                       value="5.0.0"/>
         <property name="category"                       value="media"/>
         <property name="short-name"                     value="player"/>
-        <property name="vlc-bin"                        value="C:/Program Files (x86)/VideoLAN/VLC/vlc.exe"/>
+        <property name="vlc-bin"                        value="/usr/bin/vlc"/>
     </properties>
 </config>

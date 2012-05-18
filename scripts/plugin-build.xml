@@ -101,10 +101,6 @@
         <mkdir dir="${framework-dist}/data/trg"/>
         <mkdir dir="${framework-dist}/data/resources"/>
         <mkdir dir="${framework-dist}/data/rea"/>
-        <mkdir dir="${framework-dist}/plugins/devices"/>
-        <mkdir dir="${framework-dist}/plugins/objects"/>
-        <mkdir dir="${framework-dist}/plugins/providers"/>
-        <mkdir dir="${framework-dist}/plugins/events"/>
 
         <!-- add an example folder only if it is a envobject plugin -->
         <if>
@@ -217,5 +213,30 @@
         </propertyfile>
         
         <echo>Done... Read README.txt files in ${market-dist} and ${framework-dist} folder to get help.</echo>
+    </target>
+    
+    <target name="upload-to-marketplace" description="Uploads a plugin release on freedomotic online marketplace">
+        <!-- WARNING: classpath varible must be in your classpath when ant is started -->
+        <taskdef 
+            name="marketplace" 
+            classname="it.freedomotic.marketplace.AntUploader" 
+            classpath="../../../lib/ant/freedomotic-marketplace.jar"
+            />
+        <!-- read properties from build.options file -->
+        <loadproperties>
+            <file file="build.options"/>
+        </loadproperties>
+        <input message="Insert the username you use to access freedomotic.com" addproperty="username">
+            <handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+        </input>
+        <input message="Insert the password you use to access freedomotic.com" addproperty="password">
+            <handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+        </input>
+        <marketplace 
+            username="${username}" 
+            password="${password}" 
+            nodeid="${package.nodeid}"
+            attachment="${basedir}/${package.name}/market-dist/"
+            />
     </target>
 </project>
