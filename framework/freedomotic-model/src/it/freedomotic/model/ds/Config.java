@@ -112,7 +112,7 @@ public class Config implements Serializable {
             if (result.trim().equalsIgnoreCase("true")) {
                 return true;
             } else {
-                if (result.trim().equalsIgnoreCase("true")) {
+                if (result.trim().equalsIgnoreCase("false")) {
                     return false;
                 }
             }

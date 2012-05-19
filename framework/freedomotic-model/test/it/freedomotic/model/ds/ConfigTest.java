@@ -72,8 +72,8 @@ public class ConfigTest {
 
     @Test
     public void testGetBooleanProperty() {
-        Assert.assertTrue("This is true", config.getBooleanProperty("boolean-property-true", false));
-        Assert.assertFalse("This is false", config.getBooleanProperty("boolean-property-false", true));
+        Assert.assertTrue("This property in Config must be true", config.getBooleanProperty("boolean-property-true", false));
+        Assert.assertFalse("This property in Config must be false", config.getBooleanProperty("boolean-property-false", true));
     }
 
     @Test
