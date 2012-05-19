@@ -27,9 +27,10 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
- * A sensor for the board SNT084Eth8R8I developed by www.progettihwsw.com
- * author Enrico Nicoletti & Mauro Cicolella - www.emmecilab.net
- * For more details please refer to http://code.google.com/p/freedomotic/wiki/ProgettiHwSwEthernetBoard
+ * A sensor for the board SNT084Eth8R8I developed by www.progettihwsw.com author
+ * Enrico Nicoletti & Mauro Cicolella - www.emmecilab.net For more details
+ * please refer to
+ * http://code.google.com/p/freedomotic/wiki/ProgettiHwSwEthernetBoard
  */
 public class ETHProgettiHwSw extends Protocol {
 
@@ -178,7 +179,7 @@ public class ETHProgettiHwSw extends Protocol {
 
     private void evaluateDiffs(Document doc, Board board) {
         //parses xml
-        if (doc != null && board!=null) {
+        if (doc != null && board != null) {
             Node n = doc.getFirstChild();
             NodeList nl = n.getChildNodes();
             int startingRelay = board.getStartingRelay();
@@ -305,7 +306,6 @@ public class ETHProgettiHwSw extends Protocol {
         String relay = null;
 
         if (c.getProperty("command").equals("RELAY")) {
-            //relay = String.valueOf(Integer.parseInt(address[2]) - 1);
             // convert relay number (integer) into hexadecimal value (string) for board compatibility
             relay = HexIntConverter.convert(Integer.parseInt(address[2]) - 1);
             // convert freedom behavior(on/off) to board behavior (1/0)
@@ -320,8 +320,7 @@ public class ETHProgettiHwSw extends Protocol {
 
         if (c.getProperty("command").equals("TOGGLE")) {
             // mapping relay line -> protocol
-            relay = String.valueOf(Integer.parseInt(address[2]));
-            //relay = HexIntConverter.convert(Integer.parseInt(address[2]));
+            relay = HexIntConverter.convert(Integer.parseInt(address[2]) - 1);
             int time = Integer.parseInt(c.getProperty("time-in-ms"));
             int seconds = time / 1000;
             String relayLine = configuration.getProperty("TOGGLE" + seconds + "S" + relay);
