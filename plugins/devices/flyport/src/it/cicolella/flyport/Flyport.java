@@ -215,7 +215,7 @@ public class Flyport extends Protocol {
         String address = board.getIpAddress() + ":" + board.getPort() + ":" + relayLine;
         Freedomotic.logger.info("Sending Flyport protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
-        ProtocolRead event = new ProtocolRead(this, "Flyport", address); //IP:PORT:RELAYLINE
+        ProtocolRead event = new ProtocolRead(this, "flyport", address); //IP:PORT:RELAYLINE
         // relay lines - status=0 -> off; status=1 -> on
         if (board.getLineToMonitorize().equalsIgnoreCase("led")) {
             if (status.equals("0")) {

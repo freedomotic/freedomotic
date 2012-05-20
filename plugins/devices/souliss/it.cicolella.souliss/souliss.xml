@@ -10,7 +10,7 @@
     </properties>
     <tuples>
         <tuple>
-            <property name="ip-to-query" value="http://dimaiofamily.no-ip.org"/>
+            <property name="ip-to-query" value="dimaiofamily.no-ip.org"/>
             <property name="port-to-query" value="80"/>
         </tuple>
      </tuples>

@@ -8,13 +8,13 @@
                 <logical>AND</logical>
                 <attribute>protocol</attribute>
                 <operand>EQUALS</operand>
-                <value>Flyport</value>
+                <value>flyport</value>
             </it.freedomotic.reactions.Statement>
             <it.freedomotic.reactions.Statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>@event.isOn</value>
+                <value>@event.flyport.isOn</value>
             </it.freedomotic.reactions.Statement>
         </payload>
     </payload>
