@@ -10,4 +10,5 @@ SCRIPT=`readlink -f $0`
 SCRIPTPATH=`dirname $SCRIPT`
 cd ${SCRIPTPATH}
 echo Running with: java -jar ${SCRIPTPATH}/freedom.jar
-exec java -jar freedom.jar
+exec java -jar freedomotic.jar &
+read -p "Press any key to continue... " -n1 -s
