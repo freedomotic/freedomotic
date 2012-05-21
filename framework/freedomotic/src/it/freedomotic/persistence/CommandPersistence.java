@@ -23,7 +23,7 @@ public class CommandPersistence {
 
     private static Map<String, Command> userCommands = new TreeMap<String, Command>();
     private static Map<String, Command> hardwareCommands = new TreeMap<String, Command>();
-    
+
     public static void add(Command c) {
         if (c != null) {
             if (!userCommands.containsKey(c.getName().trim().toLowerCase())) {
@@ -121,13 +121,17 @@ public class CommandPersistence {
             } catch (Exception e) {
                 Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
             }
-        }else {
-                Freedomotic.logger.info("No commands to load from this folder");
-            }
+        } else {
+            Freedomotic.logger.info("No commands to load from this folder");
+        }
     }
 
     public static void saveCommands(File folder) {
         try {
+            if (userCommands.isEmpty()) {
+                Freedomotic.logger.warning("There are no commands to persist, " + folder.getAbsolutePath() + " will not be altered.");
+                return;
+            }
             if (!folder.isDirectory()) {
                 Freedomotic.logger.warning(folder.getAbsoluteFile() + " is not a valid command folder. Skipped");
                 return;

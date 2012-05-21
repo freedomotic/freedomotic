@@ -36,6 +36,10 @@ public class EnvObjectPersistence {
     }
 
     public static void saveObjects(File folder) {
+        if (objectList.isEmpty()){
+            Freedomotic.logger.warning("There are no object to persist, " + folder.getAbsolutePath() + " will not be altered.");
+            return;
+        }
         if (!folder.isDirectory()) {
             Freedomotic.logger.warning(folder.getAbsoluteFile() + " is not a valid object folder. Skipped");
             return;

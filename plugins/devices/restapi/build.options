@@ -1,13 +1,19 @@
-#Fri, 18 May 2012 14:38:58 +0200
+#Mon, 21 May 2012 14:56:54 +0200
+
 package.type=device
 package.name=es.gpulido.restapi
 package.license=GNU GPL2
+package.nodeid=702
 package.vendor.name=Gabriel
 package.vendor.surname=Pulido
 package.vendor.contact=gabriel@freedomotic.com
 package.vendor.company=freedomotic
 package.vendor.nation=es
-build.number=123
+framework.required.major=5
+framework.required.minor=2
+framework.required.build=x
+build.major=1
+build.number=127
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
