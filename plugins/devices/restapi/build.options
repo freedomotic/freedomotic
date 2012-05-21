@@ -1,4 +1,4 @@
-#Mon, 21 May 2012 14:56:54 +0200
+#Mon, 21 May 2012 19:33:04 +0200
 
 package.type=device
 package.name=es.gpulido.restapi
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=2
 framework.required.build=x
 build.major=1
-build.number=127
+build.number=139
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true

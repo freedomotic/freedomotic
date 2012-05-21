@@ -13,7 +13,6 @@ import it.freedomotic.service.ClassPathUpdater;
 import it.freedomotic.util.Info;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.restlet.Application;
@@ -28,56 +27,49 @@ import org.restlet.ext.simple.HttpServerHelper;
  *
  * @author gpt
  */
-public class RestApi extends Actuator{
+public class RestApi extends Actuator {
+
     int SERVER_PORT = 8111;
     Component component;
     Restlet rest;
     Application app;
-    public RestApi()
-    {
-        super("RestApi","/es.gpulido.restapi/restapi-manifest.xml");
+
+    public RestApi() {
+        super("RestApi", "/es.gpulido.restapi/restapi-manifest.xml");
+    }
+
+    @Override
+    public void onStart() {
         try {
-            ClassPathUpdater.add(new File(Info.getApplicationPath() + "/plugins/devices/es.gpulido.restapi/"));
-            System.out.println("GPT:"+Info.getApplicationPath() + "/plugins/devices/es.gpulido.restapi/");
+            super.onStart();
+            component = new Component();
+            component.getClients().add(Protocol.FILE);
+            //TODO: To test with the restlet 2.1 Maybe the maxTotalConnections could be avoided
+            // see: http://restlet-discuss.1400322.n2.nabble.com/rejectedExecution-td4513620.html 
+            //component.getServers().add(Protocol.HTTP, SERVER_PORT);
+            Server server = new Server(Protocol.HTTP, SERVER_PORT);
+            component.getServers().add(server);
+            server.getContext().getParameters().add("maxTotalConnections", "50");
+            //end TODO
+            Engine.getInstance().getRegisteredServers().clear();
+            Engine.getInstance().getRegisteredServers().add(new HttpServerHelper(server));
+            component.getClients().add(Protocol.FILE);
+            component.getDefaultHost().attach(new FreedomRestServer(Info.getResourcesPath()));
+            component.start();
         } catch (Exception ex) {
-            System.out.println("GPT: problems");
-            Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RestApi.class.getName()).log(Level.SEVERE, null, ex);
         }
-        start();
+       
     }
-    
+
     @Override
-    public void start() {
-        if (!isRunning) {
-            try {
-                super.start();
-                component = new Component();
-                component.getClients().add(Protocol.FILE);
-                //TODO: To test with the restlet 2.1 Maybe the maxTotalConnections could be avoided
-                // see: http://restlet-discuss.1400322.n2.nabble.com/rejectedExecution-td4513620.html 
-                //component.getServers().add(Protocol.HTTP, SERVER_PORT);
-                Server server = new Server(Protocol.HTTP, SERVER_PORT);
-                component.getServers().add(server);
-                server.getContext().getParameters().add("maxTotalConnections", "50");
-                //end TODO
-                Engine.getInstance().getRegisteredServers().clear();
-                Engine.getInstance().getRegisteredServers().add(new HttpServerHelper(server)); 
-                component.getClients().add(Protocol.FILE);                
-                component.getDefaultHost().attach(new FreedomRestServer(Info.getResourcesPath()));
-                component.start();
-            } catch (Exception ex) {
-                Logger.getLogger(RestApi.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        }
-    }
-    @Override
-    public void stop() {
+    public void onStop() {
         try {
             component.stop();
         } catch (Exception ex) {
             Logger.getLogger(RestApi.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     @Override
@@ -89,5 +81,4 @@ public class RestApi extends Actuator{
     protected boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
- 
 }
