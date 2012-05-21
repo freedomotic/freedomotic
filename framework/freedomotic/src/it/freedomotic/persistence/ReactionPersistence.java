@@ -52,6 +52,10 @@ public class ReactionPersistence {
 //        }
 //    }
     public static void saveReactions(File folder) {
+        if (list.isEmpty()) {
+            Freedomotic.logger.warning("There are no reactions to persist, " + folder.getAbsolutePath() + " will not be altered.");
+            return;
+        }
         if (!folder.isDirectory()) {
             Freedomotic.logger.warning(folder.getAbsoluteFile() + " is not a valid reaction folder. Skipped");
             return;
@@ -97,7 +101,7 @@ public class ReactionPersistence {
             file.delete();
         }
     }
- 
+
     private ReactionPersistence() {
     }
 
@@ -140,7 +144,7 @@ public class ReactionPersistence {
                 indexfile.write(summary.toString());
                 //Close the output stream
                 indexfile.close();
-            }else {
+            } else {
                 Freedomotic.logger.info("No reactions to load from this folder");
             }
         } catch (Exception e) {

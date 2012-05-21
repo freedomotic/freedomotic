@@ -142,7 +142,13 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     }
 
     private void installPackage(PluginPackage pp) {
-
+        if (pp.getFilePath() == null) {
+            JOptionPane.showMessageDialog(this,
+                    "It seems that " + pp.getTitle() + " plugin developer have not "
+                    + "already released any stable version. \nYou can ask more info about this plugin "
+                    + "sending a mail to its author. \nYou can get author mail from " + pp.getUri());
+            return;
+        }
         //Custom button text
         Object[] options = {"Yes, please",
             "No, thanks"};

@@ -190,19 +190,17 @@ public class AddonManager {
             String filename = url.substring(url.lastIndexOf('/') + 1);
 
             //get the zip from the url and copy in plugin/device folder
-            if (filename.startsWith("device_")) {
-                filename = filename.substring(6, filename.length()); //removing device_
-                filename = filename.replace("_", ""); //remove remaining underscores
+            if (filename.endsWith(".device")) {
                 File zipFile = new File(Info.getPluginsPath() + "/devices/" + filename);
                 FetchHttpFiles.download(fromURL, new File(Info.getPluginsPath() + "/devices"), filename);
                 unzipAndDelete(zipFile);
             } else {
-                if (filename.startsWith("object_")) {
-                    filename = filename.substring(6, filename.length()); //removing object_
-                    filename = filename.replace("_", ""); //remove remaining underscores
+                if (filename.endsWith(".object")) {
                     FetchHttpFiles.download(fromURL, new File(Info.getPluginsPath() + "/objects"), filename);
                     File zipFile = new File(Info.getPluginsPath() + "/objects/" + filename);
                     unzipAndDelete(zipFile);
+                } else {
+                    Freedomotic.logger.warning("No installable Freedomotic plugins at URL " + fromURL);
                 }
             }
         } catch (Exception ex) {
@@ -212,6 +210,7 @@ public class AddonManager {
     }
 
     private static boolean unzipAndDelete(File zipFile) {
+        Freedomotic.logger.info("Uncompressing plugin archive " + zipFile);
         try {
             Unzip.unzip(zipFile.toString());
         } catch (Exception e) {
@@ -242,7 +241,9 @@ public class AddonManager {
 //                    }
 //                }
 //            };
-            files = sfile.listFiles(/*objectFileFileter*/);
+            files = sfile.listFiles(/*
+                     * objectFileFileter
+                     */);
             //copy all files in local resources folder to the main resources folder under freedom_root/data/resources
             if (files != null) {
                 for (File file : files) {

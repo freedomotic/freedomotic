@@ -26,6 +26,10 @@ public final class TriggerPersistence {
     private static ArrayList<Trigger> list = new ArrayList<Trigger>();
 
     public static void saveTriggers(File folder) {
+        if (list.isEmpty()) {
+            Freedomotic.logger.warning("There are no triggers to persist, " + folder.getAbsolutePath() + " will not be altered.");
+            return;
+        }
         if (!folder.isDirectory()) {
             Freedomotic.logger.warning(folder.getAbsoluteFile() + " is not a valid trigger folder. Skipped");
             return;
