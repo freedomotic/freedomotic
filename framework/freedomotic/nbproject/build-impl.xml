@@ -710,7 +710,39 @@ is divided into following sections:
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
-    <target depends="init,compile,-pre-jar,-do-jar-with-manifest,-do-jar-without-manifest,-do-jar-with-mainclass,-do-jar-with-libraries,-post-jar" description="Build JAR." name="jar"/>
+<!-- target depends="init,compile,-pre-pre-jar,-pre-jar" if="manifest.available+main.class+mkdist.available" name="-do-jar-with-libraries" -->
+    <target depends="init,compile,-pre-jar,-post-jar" description="Build JAR." name="jar">
+        <property location="${build.classes.dir}" name="build.classes.dir.resolved"/>
+        <echo message="Custom JAR target to fix this continuous integration issue http://www.rekk.de/bloggy/2008/adaptation-of-netbeans-ant-
+build-for-integration-copylibs-issue/"/>
+        <pathconvert property="run.classpath.without.build.classes.dir">
+            <path path="${run.classpath}"/>
+            <map from="${build.classes.dir.resolved}" to=""/>
+        </pathconvert>
+        <pathconvert pathsep=" " property="jar.classpath">
+            <path path="${run.classpath.without.build.classes.dir}"/>
+            <chainedmapper>
+                <flattenmapper/>
+                <globmapper from="*" to="lib/*"/>
+            </chainedmapper>
+        </pathconvert>
+        <copy todir="${dist.dir}/lib" flatten="true">
+            <path>
+                <pathelement path="${run.classpath.without.build.classes.dir}"/>
+            </path>
+        </copy>
+        <j2seproject1:jar manifest="${manifest.file}">
+            <j2seproject1:manifest>
+                <j2seproject1:attribute name="Main-Class" value="${main.class}"/>
+                <j2seproject1:attribute name="Class-Path" value="${jar.classpath}"/>
+                <!-- if you deal with versions -->
+                <!-- j2seproject1:attribute name="Build-Version" value="${version}" / -->
+            </j2seproject1:manifest>
+        </j2seproject1:jar>
+        <echo>To run this application from the command line without Ant, try:</echo>
+        <property location="${dist.jar}" name="dist.jar.resolved"/>
+        <echo>java -jar "${dist.jar.resolved}"</echo>
+    </target>
     <!--
                 =================
                 EXECUTION SECTION
@@ -1065,3 +1097,4 @@ is divided into following sections:
         </ant>
     </target>
 </project>
+
