@@ -1,4 +1,4 @@
-#Mon, 21 May 2012 23:25:40 +0200
+#Mon, 21 May 2012 23:38:34 +0200
 package.type=device
 package.name=es.gpulido.restapi
 package.license=GNU GPL2
@@ -12,7 +12,7 @@ framework.required.major=5
 framework.required.minor=2
 framework.required.build=x
 build.major=1
-build.number=145
+build.number=147
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
