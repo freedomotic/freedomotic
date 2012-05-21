@@ -1,0 +1,13 @@
+<config>
+    <properties>
+        <property name="name"                   value="restapi"/>
+        <property name="description"            value="Plugin for rest"/>
+        <property name="version"                value="1.0.0"/>
+        <property name="required"               value="5.2.0"/>
+        <property name="category"               value="Api"/>
+        <property name="short-name"             value="RestApi"/>
+        <property name="startup-time"           value="on load"/>
+    </properties>
+</config>
+
+                
