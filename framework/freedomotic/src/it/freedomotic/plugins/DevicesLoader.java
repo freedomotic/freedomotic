@@ -63,11 +63,13 @@ public class DevicesLoader implements AddonLoaderInterface {
                                 Plugin plugin = null;
                                 log.info("---- " + clazz.getSimpleName() + " ----");
                                 try {
-                                    plugin = (Plugin) clazz.newInstance();
-                                    if (!plugin.isCompatible(plugin.getRequiredVersion())){
-                                        //THIS CHECK MUST BE DONE BEFORE LOADING THE CLASS
-                                        Freedomotic.logger.warning("Plugin " + plugin.getName() + " is not compatible with this framework version (" 
-                                                + plugin.getRequiredVersion() + " required). This check is experimental, the plugin is loaded anyway");
+                                    if (Plugin.isCompatible(path)) {
+                                        plugin = (Plugin) clazz.newInstance();
+                                    } else {
+                                        Freedomotic.logger.severe("Plugin in " + path.getAbsolutePath()
+                                                + " is not compatible with this framework version.");
+                                        plugin = Freedomotic.clients.createPlaceholder(clazz.getSimpleName(), "Plugin", 
+                                                "Not compatible with this framework version");
                                     }
                                 } catch (NoClassDefFoundError noClassDefFoundError) {
                                     Freedomotic.logger.severe("This plugin miss a library neccessary to work correctly or calls a method that no longer exists.\n\n"
@@ -84,7 +86,7 @@ public class DevicesLoader implements AddonLoaderInterface {
                                     log.warning("This plugin is already loaded or not valid. Skip it.");
                                     Freedomotic.logger.info("\n");
                                     plugin = null; //discard this entry
-                                    Freedomotic.clients.createPlaceholder(clazz.getSimpleName(), "Plugin");
+                                    Freedomotic.clients.createPlaceholder(clazz.getSimpleName(), "Plugin", null);
                                 }
                             } else {
                                 //Is not a valid plugin. Skip it

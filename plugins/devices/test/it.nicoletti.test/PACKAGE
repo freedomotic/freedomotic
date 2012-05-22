@@ -1,19 +1,19 @@
-#Mon, 21 May 2012 17:00:11 +0200
+#Mon, 21 May 2012 14:56:56 +0200
 
-package.type=object
-package.name=com.freedomotic.baseobj
-package.nodeid=902
+package.type=device
+package.name=it.nicoletti.test
+package.nodeid=850
 package.license=GNU GPL2
-package.vendor.name=Freedomotic
-package.vendor.surname=Building Automation
+package.vendor.name=Enrico
+package.vendor.surname=Nicoletti
 package.vendor.contact=info@freedomotic.com
 package.vendor.company=freedomotic
-package.vendor.nation=com
+package.vendor.nation=it
 framework.required.major=5
 framework.required.minor=2
 framework.required.build=x
 build.major=1
-build.number=16
+build.number=223
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true

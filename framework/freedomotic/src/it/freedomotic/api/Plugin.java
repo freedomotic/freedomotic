@@ -19,7 +19,6 @@
  */
 package it.freedomotic.api;
 
-import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
@@ -27,10 +26,8 @@ import it.freedomotic.model.ds.Config;
 import it.freedomotic.persistence.ConfigPersistence;
 import it.freedomotic.util.EqualsUtil;
 import it.freedomotic.util.Info;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -205,7 +202,7 @@ public abstract class Plugin implements Client {
             Freedomotic.logger.severe("Missing manifest " + manifest.toString() + " for plugin " + getName());
             setDescription("Missing manifest file " + manifest.toString());
         }
-        description = configuration.getStringProperty("description", "Set a description in config file");
+        description = configuration.getStringProperty("description", "Missing plugin manifest");
         setDescription(description);
         version = configuration.getStringProperty("version", "1.0.0");
         requiredVersion = configuration.getStringProperty("required", "1.0.0");
@@ -219,35 +216,45 @@ public abstract class Plugin implements Client {
 
     }
 
-    public boolean isCompatible(final String requiredFrameworkVersion) {
+    public static boolean isCompatible(final File pluginFolder) {
+        if (!pluginFolder.isDirectory()) {
+            throw new IllegalArgumentException();
+        }
+        //seach for a file called PACKAGE
+        Properties plugin = new Properties();
         try {
-            StringTokenizer required = new StringTokenizer(requiredFrameworkVersion, ".");
-            if ((required.countTokens() == 3)) {
-                int pluginMajor = 0;
-                int pluginMinor = 0;
-                int pluginRevision = 0;
-                String jolly = "x";
-                try {
-                    pluginMajor = Integer.parseInt(required.nextToken());
-                    pluginMinor = Integer.parseInt(required.nextToken());
-                    pluginRevision = Integer.parseInt(required.nextToken());
-                } catch (NumberFormatException numberFormatException) {
-                    Freedomotic.logger.severe("Cannot be loaded as it has a not valid specification of framework required version (eg: 5.2.x)");
-                    return false;
-                }
-                //checking framework version compatibility
-                if (Info.getMajor() >= pluginMajor) {
-                    if ((Info.getMinor() >= pluginMinor) || (required.nextToken().equalsIgnoreCase(jolly))) {
-                        if ((Info.getRevision() >= pluginRevision) || (required.nextToken().equalsIgnoreCase(jolly))) {
-                            return true;
-                        }
+            plugin.load(new FileInputStream(new File(pluginFolder + "/PACKAGE")));
+
+            int requiredMajor = getIntProperty(plugin, "framework.required.major");
+            int requiredMinor = requiredMajor = getIntProperty(plugin, "framework.required.minor");
+            int requiredBuild = requiredMajor = getIntProperty(plugin, "framework.required.build");
+            //checking framework version compatibility
+            if (Info.getMajor() >= requiredMajor) {
+                if ((Info.getMinor() >= requiredMinor)) {
+                    if ((Info.getRevision() >= requiredBuild)) {
+                        return true;
                     }
                 }
             }
+        } catch (IOException ex) {
+            Freedomotic.logger.severe("Folder " + pluginFolder + " don't contains a PACKAGE file. This plugin is not loaded.");
+        } catch (NumberFormatException numex) {
+            //do nothing
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
         return false;
+    }
+
+    private static int getIntProperty(Properties properties, String property) {
+        //if property is not specified returns 99999
+        //if is a string returns 0 to match any value with "x"
+        try {
+            int value = Integer.parseInt(properties.getProperty(property, "99999"));
+            return value;
+        } catch (NumberFormatException numberFormatException) {
+            return 0;
+        }
     }
 
     protected void onShowGui() {

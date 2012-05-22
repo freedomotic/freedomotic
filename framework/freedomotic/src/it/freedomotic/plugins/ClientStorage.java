@@ -21,6 +21,7 @@ package it.freedomotic.plugins;
 
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Configuration;
+import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
@@ -72,20 +73,16 @@ public class ClientStorage {
         return tmp;
     }
 
-    public void createPlaceholder(final String simpleName, final String type) {
-        final Client placeholder = new Client() {
-
-            @Override
-            public void setName(String name) {
-            }
+    public Plugin createPlaceholder(final String simpleName, final String type, final String description) {
+        final Plugin placeholder = new Plugin(simpleName, null) {
 
             @Override
             public String getDescription() {
-                return "Plugin Unavailable. Error on loading";
-            }
-
-            @Override
-            public void setDescription(String description) {
+                if (description == null) {
+                    return "Plugin Unavailable. Error on loading";
+                } else {
+                    return description;
+                }
             }
 
             @Override
@@ -119,7 +116,9 @@ public class ClientStorage {
             public void hideGui() {
             }
         };
+        placeholder.setDescription(description);
         enqueue(placeholder);
+        return placeholder;
     }
 
     void createObjectPlaceholder(final Class objClazz, final File folder) {
