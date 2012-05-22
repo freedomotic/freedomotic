@@ -30,6 +30,7 @@
                     <entry key="package.type" value="device"/>
                     <entry key="package.name" value="net.${user.name}.myproject"/>
                     <entry key="package.license" value="GNU GPL2"/>
+                    <entry key="package.nodeid" value="999999"/>
                     <entry key="package.vendor.name" value="${user.name}"/>
                     <entry key="package.vendor.surname" value="${user.name}"/>
                     <entry key="package.vendor.contact" value="${user.name}@vendorEmailProvider.com"/>
@@ -159,6 +160,9 @@
         <echo>Delete redundant jar libraries in this package (eg: freedom.jar, freedom-data.jar)).</echo>
         <delete file="${plugin-dist}/lib/freedomotic.jar"/>
         <delete file="${plugin-dist}/lib/freedomotic-model.jar"/>
+        
+        <!-- add build.option file as package properties -->
+        <copy file="build.options" tofile="${plugin-dist}/PACKAGE"/>
 
         <!-- INSTALL PLUGIN INTO FREEDOMOTIC -->
         <if>
