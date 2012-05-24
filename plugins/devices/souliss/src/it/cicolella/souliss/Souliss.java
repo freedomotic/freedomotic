@@ -75,7 +75,7 @@ public class Souliss extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            Freedomotic.logger.severe("Unable to connect to host " + address + " on port " + port);
+            Freedomotic.logger.severe("Unable to connect to host " + address + " on port " + port + " Exception reported: " + e.toString());
             return false;
         }
     }
@@ -122,6 +122,7 @@ public class Souliss extends Protocol {
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
+            Freedomotic.logger.severe("Thread interrupted Exception reported: " + ex.toString());
             Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -136,10 +137,13 @@ public class Souliss extends Protocol {
         Freedomotic.logger.info("Souliss Sensor gets nodes status from file " + statusFileURL);
         try {
             // add json server http
-            rootNode = mapper.readValue(readJsonFromUrl("http://dimaiofamily.no-ip.org/status"), JsonNode.class);
+            //rootNode = mapper.readValue(readJsonFromUrl("http://dimaiofamily.no-ip.org/status"), JsonNode.class);
+            rootNode = mapper.readValue(readJsonFromUrl(statusFileURL), JsonNode.class);
         } catch (IOException ex) {
+            Freedomotic.logger.severe("JSON server IOException reported: " + ex.toString());
             Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
+            Freedomotic.logger.severe("JSONException reported: " + ex.toString());
             Logger.getLogger(Souliss.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rootNode;
@@ -187,7 +191,7 @@ public class Souliss extends Protocol {
                     System.out.println("id:" + id + " slot" + slot + " Typ: " + typical + " Val: " + val + "\n");
                     Freedomotic.logger.severe("Souliss monitorize id: " + id + " slot: " + slot + " typ: " + typical + " val: " + val);
                     // call for notify event
-                    sendChanges(board,id,slot,val,typical);
+                    sendChanges(board, id, slot, val, typical);
                     slot++;
                 }
                 id++;
@@ -238,15 +242,15 @@ public class Souliss extends Protocol {
 
         if (connected) {
             String message = createMessage(c);
-            String expectedReply = c.getProperty("expected-reply");
+            //String expectedReply = c.getProperty("expected-reply");
             try {
                 String reply = sendToBoard(message);
-                if ((reply != null) && (!reply.equals(expectedReply))) {
+                //if ((reply != null) && (!reply.equals(expectedReply))) {
                     //TODO: implement reply check
-                }
+                //}
             } catch (IOException iOException) {
                 setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);
-                Freedomotic.logger.severe("Unable to send the message to host " + address[0] + " on port " + address[1]);
+                Freedomotic.logger.severe("Unable to send the message to host " + address[0] + " on port " + address[1] + " Exception reported: " + iOException.toString());
                 throw new UnableToExecuteException();
             } finally {
                 disconnect();
