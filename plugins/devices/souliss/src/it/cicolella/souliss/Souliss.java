@@ -53,9 +53,11 @@ public class Souliss extends Protocol {
         for (int i = 0; i < BOARD_NUMBER; i++) {
             String ipToQuery;
             int portToQuery;
+            String statusToQuery;
             ipToQuery = configuration.getTuples().getStringProperty(i, "ip-to-query", "192.168.1.201");
             portToQuery = configuration.getTuples().getIntProperty(i, "port-to-query", 80);
-            Board board = new Board(ipToQuery, portToQuery);
+            statusToQuery = configuration.getTuples().getStringProperty(i, "status-to-query", "http://192.168.1.201:80/status");
+            Board board = new Board(ipToQuery, portToQuery, statusToQuery);
             boards.add(board);
             setDescription(getDescription() + " " + ipToQuery + ":" + portToQuery + ";");
         }
@@ -132,12 +134,12 @@ public class Souliss extends Protocol {
         String statusFileURL = null;
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = null;
-        statusFileURL = "http://" + board.getIpAddress() + ":"
-                + Integer.toString(board.getPort()) + "/status";
+        //statusFileURL = "http://" + board.getIpAddress() + ":"
+          //      + Integer.toString(board.getPort()) + "/status";
+        statusFileURL = board.getStatusToQuery(); 
         Freedomotic.logger.info("Souliss Sensor gets nodes status from file " + statusFileURL);
         try {
             // add json server http
-            //rootNode = mapper.readValue(readJsonFromUrl("http://dimaiofamily.no-ip.org/status"), JsonNode.class);
             rootNode = mapper.readValue(readJsonFromUrl(statusFileURL), JsonNode.class);
         } catch (IOException ex) {
             Freedomotic.logger.severe("JSON server IOException reported: " + ex.toString());
@@ -155,8 +157,6 @@ public class Souliss extends Protocol {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
             jsonText = jsonText.substring(29, jsonText.length() - 1);
-            //jsonText = jsonText.substring(1, jsonText.length() - 1);
-            //Freedomotic.logger.severe("Souliss JSON " + jsonText.length() + " " + jsonText.substring(29, jsonText.length() - 1).toString());
             JSONObject json = new JSONObject(jsonText);
             return jsonText;
         } finally {

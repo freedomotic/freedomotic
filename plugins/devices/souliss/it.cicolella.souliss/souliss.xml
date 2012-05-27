@@ -8,12 +8,13 @@
         <property name="short-name" value="souliss"/>
         <property name="address-delimiter" value=":"/>
         <property name="socket-timeout" value="30000"/>
-        <property name="polling-time" value="2000"/>
+        <property name="polling-time" value="1000"/>
     </properties>
     <tuples>
         <tuple>
             <property name="ip-to-query" value="dimaiofamily.no-ip.org"/>
             <property name="port-to-query" value="80"/>
+            <property name="status-to-query" value="http://dimaiofamily.no-ip.org:80/status"/>
         </tuple>
      </tuples>
 </config>
