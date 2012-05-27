@@ -11,15 +11,24 @@ package it.cicolella.souliss;
 public class Board {
 
     private String ipAddress = null;
+    private String statusToQuery = null;
     private int port;
 
-    public Board(String ipAddress, int port) {
+    public Board(String ipAddress, int port, String statusToQuery) {
             setIpAddress(ipAddress);
             setPort(port);
-                      
+            setStatusToQuery(statusToQuery);          
     }
 
    
+    public String getStatusToQuery() {
+        return statusToQuery;
+    }
+
+    public void setStatusToQuery(String statusToQuery) {
+        this.statusToQuery = statusToQuery;
+    }
+    
     public String getIpAddress() {
         return ipAddress;
     }
