@@ -25,20 +25,23 @@ public class OpenWebNetSensor extends Sensor {
     static BTicinoSocketReadManager gestSocketMonitor;
     static String frame;
     static Integer passwordOpen = 0;
+    OWNFrame JFrame = new OWNFrame(this);
 
     public OpenWebNetSensor() {
         super("OpenWebNet Sensor", "/it.cicolella.own/own-sensor.xml");
-        gui = new OWNFrame();
         // get connection parameters for ethernet gateway
         host = configuration.getProperty("host");
         port = Integer.parseInt(configuration.getProperty("port"));
+    }
 
+    protected void onShowGui() {
+        bindGuiToPlugin(JFrame);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        
+
         //connect to own gateway
         gestSocketMonitor = new BTicinoSocketReadManager(this);
         boolean connected = gestSocketMonitor.connect(host, port, passwordOpen);
@@ -66,54 +69,58 @@ public class OpenWebNetSensor extends Sensor {
         String messageDescription = null;
         String[] frameParts = null;
         ProtocolRead event = null;
-        //= new ProtocolRead(this, "OwnProtocol", where);
 
         int length = frame.length();
         if (frame.isEmpty() || !frame.endsWith("##")) {
             Freedomotic.logger.severe("Malformed frame " + frame + " " + frame.substring(length - 2, length));
+            OWNFrame.writeAreaLog(OWNUtilities.getDateTime() + " Mon: Malformed frame " + frame);
+            return null;
         }
 
         if (frame.equals(OpenWebNetActuator.MSG_OPEN_ACK)) {
             messageType = "ack";
-        } else if (frame.equals(OpenWebNetActuator.MSG_OPEN_NACK)) {
+            return null;
+        }
+
+        if (frame.equals(OpenWebNetActuator.MSG_OPEN_NACK)) {
             messageType = "nack";
-        } else if (frame.substring(0, 2).equalsIgnoreCase("*#")) {
-            // remove *# and ##
-            frame = frame.substring(2, length - 2);
-            frameParts = frame.split("\\*"); // * is reserved so it must be escaped
+            return null;
+        }
+
+
+        if (frame.substring(0, 2).equalsIgnoreCase("*#")) { // remove *# and ## frame = frame.substring(2, length - 2); frameParts =
+            frameParts=frame.split("\\*"); // * is reserved so it must be escaped 
             who = frameParts[0];
             where = frameParts[1];
-            event = new ProtocolRead(this, "OwnProtocol", where);
-            // LIGHTING
-            if (who.equalsIgnoreCase("1")) {
-                if (frameParts[2].equalsIgnoreCase("1")) {
-                    String level = frameParts[3];
-                    String speed = frameParts[4];
-                    messageDescription = "Luminous intensity change";
-                    if (level != null) {
-                        event.addProperty("level", level);
-                    }
-                    if (speed != null) {
-                        event.addProperty("speed", speed);
-                    }
+            event = new ProtocolRead(this, "OwnProtocol", where); // LIGHTING if (who.equalsIgnoreCase("1")) {
+            if (frameParts[2].equalsIgnoreCase("1")) {
+                String level = frameParts[3];
+                String speed = frameParts[4];
+                messageDescription = "Luminous intensity change";
+                if (level != null) {
+                    event.addProperty("level", level);
                 }
-                if (frameParts[2].equalsIgnoreCase("2")) {
-                    String hour = frameParts[3];
-                    String min = frameParts[4];
-                    String sec = frameParts[5];
-                    messageDescription = "Luminous intensity change";
-                    if (hour != null) {
-                        event.addProperty("hour", hour);
-                    }
-                    if (min != null) {
-                        event.addProperty("min", min);
-                    }
-                    if (sec != null) {
-                        event.addProperty("sec", sec);
-                    }
+                if (speed != null) {
+                    event.addProperty("speed", speed);
                 }
             }
-            // POWER MANAGEMENT  
+            if (frameParts[2].equalsIgnoreCase("2")) {
+                String hour = frameParts[3];
+                String min = frameParts[4];
+                String sec = frameParts[5];
+                messageDescription = "Luminous intensity change";
+                if (hour != null) {
+                    event.addProperty("hour", hour);
+                }
+                if (min != null) {
+                    event.addProperty("min", min);
+                }
+                if (sec != null) {
+                    event.addProperty("sec", sec);
+                }
+            }
+            //}
+            // POWER MANAGEMENT
             if (who.equalsIgnoreCase("3")) {
                 String voltage = null;
                 String current = null;
@@ -167,7 +174,7 @@ public class OpenWebNetSensor extends Sensor {
                     messageDescription = "Energy status";
                 }
             }
-            // TERMOREGULATION  
+            // TERMOREGULATION 
             if (who.equalsIgnoreCase("4")) {
                 String temperature = null;
                 if (frameParts[3].equalsIgnoreCase("0")) {
@@ -179,7 +186,6 @@ public class OpenWebNetSensor extends Sensor {
                     }
                 }
             }
-
             // GATEWAY CONTROL
             if (who.equalsIgnoreCase("13")) {
                 String hour = null;
@@ -274,7 +280,7 @@ public class OpenWebNetSensor extends Sensor {
                     build = frameParts[5];
                     messageType = "gatewayControl";
                     messageDescription = "Firmware version request";
-                    event.addProperty("firmware-version", version + "." + release + "." + build);
+                    event.addProperty("firmware - version", version + "." + release + "." + build);
                 }
                 if (frameParts[2].equalsIgnoreCase("17")) {
                     String days = frameParts[3];
@@ -305,7 +311,7 @@ public class OpenWebNetSensor extends Sensor {
                     build = frameParts[5];
                     messageType = "gatewayControl";
                     messageDescription = "Kernel version request";
-                    event.addProperty("kernel-version", version + "." + release + "." + build);
+                    event.addProperty("kernel - version", version + "." + release + "." + build);
                 }
                 if (frameParts[2].equalsIgnoreCase("24")) {
                     version = frameParts[3];
@@ -313,10 +319,10 @@ public class OpenWebNetSensor extends Sensor {
                     build = frameParts[5];
                     messageType = "gatewayControl";
                     messageDescription = "Distribution version request";
-                    event.addProperty("distribution-version", version + "." + release + "." + build);
-
+                    event.addProperty("distribution - version", version + "." + release + "." + build);
                 }
             }
+
             event.addProperty("who", who);
             if (where != null) {
                 event.addProperty("where", where);
@@ -329,8 +335,12 @@ public class OpenWebNetSensor extends Sensor {
             }
             // notify event
             notifyEvent(event);
-        } // }
-        else if (!(frame.substring(0, 2).equalsIgnoreCase("*#"))) {
+            OWNFrame.writeAreaLog(OWNUtilities.getDateTime() + " Rx: " + frame + " " + "(" + messageDescription + ")");
+           
+        }
+
+
+        if (!(frame.substring(0, 2).equalsIgnoreCase("*#"))) {
             // remove * and ##
             frame = frame.substring(1, length - 2);
             frameParts = frame.split("\\*"); // * is reserved so it must be escaped
@@ -433,117 +443,118 @@ public class OpenWebNetSensor extends Sensor {
                     messageDescription = "Automatic Generic";
                 }
             }
+            //}
+
+            // BURGLAR ALARM
+            if (who.equalsIgnoreCase("5")) {
+                what = frameParts[1];
+                where = frameParts[2];
+                messageType = "alarm";
+                if (what.equalsIgnoreCase("0")) {
+                    messageDescription = "System on maintenance";
+                }
+                if (what.equalsIgnoreCase("4")) {
+                    messageDescription = "Battery fault";
+                }
+                if (what.equalsIgnoreCase("5")) {
+                    messageDescription = "Battery OK";
+                }
+                if (what.equalsIgnoreCase("6")) {
+                    messageDescription = "No Network";
+                }
+                if (what.equalsIgnoreCase("7")) {
+                    messageDescription = "Network OK";
+                }
+                if (what.equalsIgnoreCase("8")) {
+                    messageDescription = "System engaged";
+                }
+                if (what.equalsIgnoreCase("9")) {
+                    messageDescription = "System disengaged";
+                }
+                if (what.equalsIgnoreCase("10")) {
+                    messageDescription = "Battery KO";
+                }
+                if (what.equalsIgnoreCase("11")) // prelevare la sottostringa di where #N 
+                {
+                    messageDescription = "Zone " + where + " engaged";
+                }
+                if (what.equalsIgnoreCase("12")) // prelevare la sottostringa di where #N 
+                {
+                    messageDescription = "Aux " + where + " in Technical alarm ON";
+                }
+                if (what.equalsIgnoreCase("13")) // prelevare la sottostringa di where #N 
+                {
+                    messageDescription = "Aux " + where + " in Technical alarm RESET";
+                }
+                if (what.equalsIgnoreCase("15")) // prelevare la sottostringa di where #N 
+                {
+                    messageDescription = "Zone " + where + " in Intrusion alarm";
+                }
+                if (what.equalsIgnoreCase("16")) // prelevare la sottostringa di where #N 
+                {
+                    messageDescription = "Zone " + where + " in Tampering alarm";
+                }
+                if (what.equalsIgnoreCase("17")) // prelevare la sottostringa di where #N 
+                {
+                    messageDescription = "Zone " + where + " in Anti-panic alarm";
+                }
+                if (what.equalsIgnoreCase("18")) // prelevare la sottostringa di where #N 
+                {
+                    messageDescription = "Zone " + where + " divided";
+                }
+                if (what.equalsIgnoreCase("31")) // prelevare la sottostringa di where #N 
+                {
+                    messageDescription = "Silent alarm from aux " + where;
+                }
+            }
+
+            // }
+            // SOUND SYSTEM
+            if (who.equalsIgnoreCase("16")) {
+                what = frameParts[1];
+                where = frameParts[2];
+                messageType = "soundSystem";
+                if (what.equalsIgnoreCase("0")) {
+                    messageDescription = "ON Baseband";
+                }
+                if (what.equalsIgnoreCase("3")) {
+                    messageDescription = "ON Stereo channel";
+                }
+                if (what.equalsIgnoreCase("10")) {
+                    messageDescription = "OFF Baseband";
+                }
+                if (what.equalsIgnoreCase("13")) {
+                    messageDescription = "OFF Stereo channel";
+                }
+                if (what.equalsIgnoreCase("30")) {
+                    messageDescription = "Sleep on baseband";
+                }
+                if (what.equalsIgnoreCase("33")) {
+                    messageDescription = "Sleep on stereo channel";
+                }
+            }
+            //}
+            if (who != null) {
+                event.addProperty("who", who);
+            }
+            if (what != null) {
+                event.addProperty("what", what);
+            }
+            if (where != null) {
+                event.addProperty("where", where);
+            }
+            if (messageType != null) {
+                event.addProperty("messageType", messageType);
+            }
+            if (messageDescription != null) {
+                event.addProperty("messageDescription", messageDescription);
+            }
+
+            Freedomotic.logger.info("Frame " + frame + " " + "is " + messageType + " message. Notify it as Freedomotic event " + messageDescription); // for debug
+            OWNFrame.writeAreaLog(OWNUtilities.getDateTime() + " Rx: " + frame + " " + "(" + messageDescription + ")");
+            notifyEvent(event);
         }
 
-        // BURGLAR ALARM
-        if (who.equalsIgnoreCase("5")) {
-            what = frameParts[1];
-            where = frameParts[2];
-            messageType = "alarm";
-            if (what.equalsIgnoreCase("0")) {
-                messageDescription = "System on maintenance";
-            }
-            if (what.equalsIgnoreCase("4")) {
-                messageDescription = "Battery fault";
-            }
-            if (what.equalsIgnoreCase("5")) {
-                messageDescription = "Battery OK";
-            }
-            if (what.equalsIgnoreCase("6")) {
-                messageDescription = "No Network";
-            }
-            if (what.equalsIgnoreCase("7")) {
-                messageDescription = "Network OK";
-            }
-            if (what.equalsIgnoreCase("8")) {
-                messageDescription = "System engaged";
-            }
-            if (what.equalsIgnoreCase("9")) {
-                messageDescription = "System disengaged";
-            }
-            if (what.equalsIgnoreCase("10")) {
-                messageDescription = "Battery KO";
-            }
-            if (what.equalsIgnoreCase("11")) // prelevare la sottostringa di where #N 
-            {
-                messageDescription = "Zone " + where + " engaged";
-            }
-            if (what.equalsIgnoreCase("12")) // prelevare la sottostringa di where #N 
-            {
-                messageDescription = "Aux " + where + " in Technical alarm ON";
-            }
-            if (what.equalsIgnoreCase("13")) // prelevare la sottostringa di where #N 
-            {
-                messageDescription = "Aux " + where + " in Technical alarm RESET";
-            }
-            if (what.equalsIgnoreCase("15")) // prelevare la sottostringa di where #N 
-            {
-                messageDescription = "Zone " + where + " in Intrusion alarm";
-            }
-            if (what.equalsIgnoreCase("16")) // prelevare la sottostringa di where #N 
-            {
-                messageDescription = "Zone " + where + " in Tampering alarm";
-            }
-            if (what.equalsIgnoreCase("17")) // prelevare la sottostringa di where #N 
-            {
-                messageDescription = "Zone " + where + " in Anti-panic alarm";
-            }
-            if (what.equalsIgnoreCase("18")) // prelevare la sottostringa di where #N 
-            {
-                messageDescription = "Zone " + where + " divided";
-            }
-            if (what.equalsIgnoreCase("31")) // prelevare la sottostringa di where #N 
-            {
-                messageDescription = "Silent alarm from aux " + where;
-            }
-        }
-
-        // }
-        // SOUND SYSTEM
-        if (who.equalsIgnoreCase("16")) {
-            what = frameParts[1];
-            where = frameParts[2];
-            messageType = "soundSystem";
-            if (what.equalsIgnoreCase("0")) {
-                messageDescription = "ON Baseband";
-            }
-            if (what.equalsIgnoreCase("3")) {
-                messageDescription = "ON Stereo channel";
-            }
-            if (what.equalsIgnoreCase("10")) {
-                messageDescription = "OFF Baseband";
-            }
-            if (what.equalsIgnoreCase("13")) {
-                messageDescription = "OFF Stereo channel";
-            }
-            if (what.equalsIgnoreCase("30")) {
-                messageDescription = "Sleep on baseband";
-            }
-            if (what.equalsIgnoreCase("33")) {
-                messageDescription = "Sleep on stereo channel";
-            }
-        }
-        //}
-        if (who != null) {
-            event.addProperty("who", who);
-        }
-        if (what != null) {
-            event.addProperty("what", what);
-        }
-        if (where != null) {
-            event.addProperty("where", where);
-        }
-        if (messageType != null) {
-            event.addProperty("messageType", messageType);
-        }
-        if (messageDescription != null) {
-            event.addProperty("messageDescription", messageDescription);
-        }
-
-        Freedomotic.logger.info("Frame " + frame + " " + "is " + messageType + " message. Notify it as Freedomotic event " + messageDescription); // for debug
-        OWNFrame.writeAreaLog(OWNUtilities.getDateTime() + " Rx:" + frame + " " + "(" + messageType + ")");
-        notifyEvent(event);
-        // }
         return null;
     }
 

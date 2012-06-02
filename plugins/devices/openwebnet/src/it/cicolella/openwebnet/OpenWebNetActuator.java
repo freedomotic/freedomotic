@@ -65,29 +65,9 @@ public class OpenWebNetActuator extends Actuator {
     @Override
     public void onCommand(Command c) throws IOException, UnableToExecuteException {
         sendFrame(OWNUtilities.createFrame(c));
-     /*   gestSocketCommands = new BTicinoSocketWriteManager();
-        if (gestSocketCommands.getSocketCommandState() == 0) { // not connected
-            if (gestSocketCommands.connect(host, port, passwordOpen)) {
-                BTicinoWriteThread writer = null;
-                writer = new BTicinoWriteThread(createFrame(c));
-                writer.start();
-                int returnCommandValue = writer.returnValue();
-                if (returnCommandValue != 0) {
-                    throw new UnableToExecuteException(); // command not executed - object status not changed
-                }
-            }
-        } else if (gestSocketCommands.getSocketCommandState() == 3) { // already connected
-            BTicinoWriteThread writer = null;
-            writer = new BTicinoWriteThread(createFrame(c));
-            writer.start();
-            int returnCommandValue = writer.returnValue();
-            if (returnCommandValue != 0) {
-                throw new UnableToExecuteException();
-            }
-        }
-   */     // } //close lenght
-    } // close  on command
+        } // close  on command
 
+      
    public void sendFrame(String frame) throws IOException, UnableToExecuteException {
         gestSocketCommands = new BTicinoSocketWriteManager();
         if (gestSocketCommands.getSocketCommandState() == 0) { // not connected
