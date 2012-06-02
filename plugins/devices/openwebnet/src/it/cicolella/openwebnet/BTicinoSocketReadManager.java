@@ -1,7 +1,7 @@
 package it.cicolella.openwebnet;
 
 /*****************************************************************
- * GestSocketMonitor.java                                               *
+ * GestSocketMonitor.java                                        *
  * Original code:			          -              *
  * date          : Sep 8, 2004                                   *
  * copyright     : (C) 2005 by Bticino S.p.A. Erba (CO) - Italy  *
@@ -10,10 +10,10 @@ package it.cicolella.openwebnet;
  * email         : 		             		         *
  * web site      : www.bticino.it; www.myhome-bticino.it         *
  *                                                               *
- * Modified and adapted for Freedom project by:                  *
- * Mauro Cicolella - Enrico Nicoletti                                           *
+ * Modified and adapted for Freedomotic project by:              *
+ * Mauro Cicolella - Enrico Nicoletti                            *
  * date          : 24/11/2011                                    *
- * web site      : www.opensourceautomation.net                  *
+ * web site      : www.freedomotic.com                           *
  *****************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -79,6 +79,7 @@ public class BTicinoSocketReadManager {
     public boolean connect(String ip, int port, long passwordOpen) {
         try {
             Freedomotic.logger.info("Mon: Trying to connect to gateway at " + ip + "  port: " + port);
+            //OWNFrame.writeAreaLog(OWNUtilities.getDateTime() + "Mon: Trying to connect to gateway at " + ip + "  port: " + port);
             socketMon = new Socket(ip, port);
             setTimeout(1);
             inputMon = new BufferedReader(new InputStreamReader(socketMon.getInputStream()));
@@ -124,10 +125,11 @@ public class BTicinoSocketReadManager {
                             Freedomotic.logger.info("Mon: Ack received, stateMonitor = 3");
                             setStateMonitor(3);
                             Freedomotic.logger.info("Mon: Monitor activated");
+                            //OWNFrame.writeAreaLog(OWNUtilities.getDateTime() + "Mon: Monitor activated");
                             break;
                         } else {
                             Freedomotic.logger.severe("Mon: Impossible connection!!");
-                            //se non mi connetto chiudo la socket
+                            //if no connected close the socket
                             Freedomotic.logger.info("Mon: Closing gateway connection " + ip);
                             this.close();
                             break;
@@ -184,7 +186,7 @@ public class BTicinoSocketReadManager {
                 setStateMonitor(0);
                 Freedomotic.logger.info("MON: Socket monitor closed-----\n");//FOR DEBUG USE
             } catch (IOException e) {
-                System.out.println("MON: Socket closed with errors: " + e.toString());
+                Freedomotic.logger.severe("MON: Socket closed with errors: " + e.toString());
             }
         }
     }

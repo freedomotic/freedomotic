@@ -4,7 +4,13 @@
     <channel>app.event.sensor.protocol.read</channel>
     <payload>
         <payload>
-             <it.freedomotic.reactions.Statement>
+            <it.freedomotic.reactions.Statement>
+                <logical>AND</logical>
+                <attribute>protocol</attribute>
+                <operand>EQUALS</operand>
+                <value>OwnProtocol</value>
+            </it.freedomotic.reactions.Statement> 
+            <it.freedomotic.reactions.Statement>
                <logical>AND</logical>
                <attribute>who</attribute>
                <operand>EQUALS</operand>

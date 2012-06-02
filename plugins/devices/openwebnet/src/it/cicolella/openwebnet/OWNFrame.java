@@ -14,11 +14,12 @@ import java.util.logging.Logger;
  * @author mauro
  */
 public class OWNFrame extends javax.swing.JFrame {
-
+     OpenWebNetSensor sensor;
     /**
      * Creates new form OWNFrame
      */
-    public OWNFrame() {
+    public OWNFrame(OpenWebNetSensor sensor) {
+        this.sensor = sensor;
         initComponents();
     }
 
@@ -62,7 +63,6 @@ public class OWNFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Gateway", jScrollMonitorLog);
 
-        jTextOwnFrame.setText("jTextField2");
         jTextOwnFrame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextOwnFrameActionPerformed(evt);

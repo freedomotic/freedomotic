@@ -3,7 +3,7 @@ package it.cicolella.openwebnet;
 import it.freedomotic.app.Freedomotic;
 
 /*****************************************************************
- * NewThread.java                                               *
+ * SocketTimeoutThread.java                                      *
  * Original code:			          -              *
  * date          : Sep 8, 2004                                   *
  * copyright     : (C) 2005 by Bticino S.p.A. Erba (CO) - Italy  *
@@ -12,10 +12,10 @@ import it.freedomotic.app.Freedomotic;
  * email         : 		             		         *
  * web site      : www.bticino.it; www.myhome-bticino.it         *
  *                                                               *
- * Modified and adapted for Freedom project by:                  *
- * Mauro Cicolella - Enrico Nicoletti                                          *
+ * Modified and adapted for Freedomotic project by:              *
+ * Mauro Cicolella - Enrico Nicoletti                            *
  * date          : 24/11/2011                                    *
- * web site      : www.opensourceautomation.net                  *
+ * web site      : www.freedomotic.com                           *
  *****************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -28,9 +28,8 @@ import it.freedomotic.app.Freedomotic;
 
 /**
  * Description:
- * Gestisce i timeout durante la procedura di connessione al WebServer 
- * e l'invio dei comandi open
- * 
+ * Timeout handling during connection to the gateway for sending open commands
+ *  
  */
 public class SocketTimeoutThread extends Thread {
 
@@ -61,7 +60,8 @@ public class SocketTimeoutThread extends Thread {
             try {
                 Thread.sleep(time);
             } catch (InterruptedException e) {
-                //Freedomotic.logger.info("Timeout thread stopped!"+e.toString()); FOR DEBUG USE
+                Freedomotic.logger.info("Timeout thread stopped!");
+                //+e.toString()); FOR DEBUG USE
                 break;
             }
 

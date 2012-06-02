@@ -1,7 +1,7 @@
 package it.cicolella.openwebnet;
 
 /*****************************************************************
- * Monitorize.java                                               *
+ * BTicinoReadThread.java                                        *
  * Original code:			          -              *
  * date          : Sep 8, 2004                                   *
  * copyright     : (C) 2005 by Bticino S.p.A. Erba (CO) - Italy  *
@@ -10,10 +10,10 @@ package it.cicolella.openwebnet;
  * email         : 		             		         *
  * web site      : www.bticino.it; www.myhome-bticino.it         *
  *                                                               *
- * Modified and adapted for Freedom project by:                  *
- * Mauro Cicolella - Enrico Nicoletti                                              *
+ * Modified and adapted for Freedomotic project by:              *
+ * Mauro Cicolella - Enrico Nicoletti                            *
  * date          : 24/11/2011                                    *
- * web site      : www.opensourceautomation.net                  *
+ * web site      : www.freedomotic.com                           *
  *****************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -98,6 +98,7 @@ public class BTicinoReadThread extends Thread {
                 } while (outcome != true);
             } catch (IOException e) {
                 Freedomotic.logger.severe("Mon exception: " + e.toString());
+                Freedomotic.getStackTraceInfo(e);
             }
 
             if (outcome == true) {
@@ -110,6 +111,8 @@ public class BTicinoReadThread extends Thread {
             }
 
             Freedomotic.logger.info("Mon: " + BTicinoSocketReadManager.responseLineMon);
+            OWNFrame.writeAreaLog(OWNUtilities.getDateTime() + " Mon" + BTicinoSocketReadManager.responseLineMon);
+       
             //builds a freedomotic event starting from the frame
             //if it is a change state frame the corresponding freedomotic event is notified
             freedomSensor.buildEventFromFrame(BTicinoSocketReadManager.responseLineMon);
