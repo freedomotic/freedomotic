@@ -44,9 +44,9 @@ public class BTicinoReadThread extends Thread {
     char c = ' ';
     int ci = 0;
     String responseString = null;
-    private OpenWebNetSensor freedomSensor = null;
+    private OpenWebNet freedomSensor = null;
 
-    BTicinoReadThread(Socket sock, BufferedReader inp, OpenWebNetSensor freedomSensor) {
+    BTicinoReadThread(Socket sock, BufferedReader inp, OpenWebNet freedomSensor) {
         socketMon = sock;
         inputMon = inp;
         this.freedomSensor = freedomSensor;

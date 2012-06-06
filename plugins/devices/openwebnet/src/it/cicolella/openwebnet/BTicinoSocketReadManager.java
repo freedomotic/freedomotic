@@ -46,9 +46,9 @@ public class BTicinoSocketReadManager {
     private BufferedReader inputMon = null;
     private PrintWriter outputMon = null;
     private BTicinoReadThread monThread = null;
-    private OpenWebNetSensor freedomSensor = null;
+    private OpenWebNet freedomSensor = null;
 
-    BTicinoSocketReadManager(OpenWebNetSensor freedomSensor) {
+    BTicinoSocketReadManager(OpenWebNet freedomSensor) {
         this.freedomSensor = freedomSensor;
     }
 
@@ -106,7 +106,7 @@ public class BTicinoSocketReadManager {
                     if (getStateMonitor() == 0) {
                         Freedomotic.logger.info("\nMon: ----- STATE 0 ----- ");
                         Freedomotic.logger.info("Mon: Rx: " + responseLineMon);
-                        if (responseLineMon.equals(OpenWebNetActuator.MSG_OPEN_ACK)) {
+                        if (responseLineMon.equals(OpenWebNet.MSG_OPEN_ACK)) {
                             Freedomotic.logger.info("Mon: Tx: " + socketMonitor);
                             outputMon.write(socketMonitor); //commands
                             outputMon.flush();
@@ -121,7 +121,7 @@ public class BTicinoSocketReadManager {
                     } else if (getStateMonitor() == 1) {
                         Freedomotic.logger.info("\nMon: ----- STATE 1 -----");
                         Freedomotic.logger.info("Mon: Rx: " + responseLineMon);
-                        if (responseLineMon.equals(OpenWebNetActuator.MSG_OPEN_ACK)) {
+                        if (responseLineMon.equals(OpenWebNet.MSG_OPEN_ACK)) {
                             Freedomotic.logger.info("Mon: Ack received, stateMonitor = 3");
                             setStateMonitor(3);
                             Freedomotic.logger.info("Mon: Monitor activated");
@@ -138,7 +138,7 @@ public class BTicinoSocketReadManager {
                     } else if (getStateMonitor() == 2) {
                         Freedomotic.logger.info("\nMon: ----- STATE 2 -----");
                         Freedomotic.logger.info("Mon: Rx: " + responseLineMon);
-                        if (responseLineMon.equals(OpenWebNetActuator.MSG_OPEN_ACK)) {
+                        if (responseLineMon.equals(OpenWebNet.MSG_OPEN_ACK)) {
                             Freedomotic.logger.info("Mon: Monitor activated");
                             setStateMonitor(3);
                             break;

@@ -1,4 +1,4 @@
-#Sat, 02 Jun 2012 15:21:34 +0200
+#Wed, 06 Jun 2012 14:20:05 +0200
 
 package.type=device
 package.name=it.cicolella.own
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=2
 framework.required.build=x
 build.major=1
-build.number=19
+build.number=25
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true

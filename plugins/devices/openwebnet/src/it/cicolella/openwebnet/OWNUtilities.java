@@ -30,13 +30,13 @@ public class OWNUtilities {
         String campo = null;
 
         // frame ACK -->
-        if (frameOpen.equals(OpenWebNetActuator.MSG_OPEN_ACK)) {
+        if (frameOpen.equals(OpenWebNet.MSG_OPEN_ACK)) {
             frameType = "OK_FRAME";
             return (true);
         }
 
         //  frame NACK -->
-        if (frameOpen.equals(OpenWebNetActuator.MSG_OPEN_NACK)) {
+        if (frameOpen.equals(OpenWebNet.MSG_OPEN_NACK)) {
             frameType = "KO_FRAME";
             return (true);
         }
@@ -140,13 +140,15 @@ public class OWNUtilities {
     // create the frame to send to the own gateway
     public static String createFrame(Command c) {
         String frame = null;
+        String address [] = null;
         String who = null;
         String what = null;
         String where = null;
 
         who = c.getProperty("who");
         what = c.getProperty("what");
-        where = c.getProperty("address");
+        address = c.getProperty("address").split("\\*");
+        where = address[1];
         frame = "*" + who + "*" + what + "*" + where + "##";
         return (frame);
     }

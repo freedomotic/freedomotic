@@ -85,8 +85,8 @@ public class BTicinoReadWebserverThread extends Thread {
                         Freedomotic.logger.severe("Socket closed by server");
                         socket = null;
                         if (typeSocket == 0) {
-                            OpenWebNetActuator.gestSocketCommands.setSocketCommandState(0);
-                            OpenWebNetActuator.gestSocketCommands.socket = null;
+                            OpenWebNet.gestSocketCommands.setSocketCommandState(0);
+                            OpenWebNet.gestSocketCommands.socket = null;
                         } else {
                             BTicinoSocketReadManager.setStateMonitor(0);
                             BTicinoSocketReadManager.socketMon = null;
