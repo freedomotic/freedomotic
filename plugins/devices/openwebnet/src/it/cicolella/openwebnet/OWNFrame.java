@@ -14,12 +14,12 @@ import java.util.logging.Logger;
  * @author mauro
  */
 public class OWNFrame extends javax.swing.JFrame {
-     OpenWebNetSensor sensor;
+     OpenWebNet plugin;
     /**
      * Creates new form OWNFrame
      */
-    public OWNFrame(OpenWebNetSensor sensor) {
-        this.sensor = sensor;
+    public OWNFrame(OpenWebNet plugin) {
+        this.plugin = plugin;
         initComponents();
     }
 
@@ -117,7 +117,7 @@ public class OWNFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SendFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendFrameButtonActionPerformed
-        OpenWebNetActuator actuator = new OpenWebNetActuator();
+        OpenWebNet actuator = new OpenWebNet();
         try {
             actuator.sendFrame((String) jTextOwnFrame.getText());
         } catch (IOException ex) {

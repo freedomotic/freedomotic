@@ -50,6 +50,6 @@ public class BTicinoWriteThread extends Thread {
      */
     public void run() {
         Integer sentCommand = 0;
-        sentCommand = OpenWebNetActuator.gestSocketCommands.send(open);
+        sentCommand = OpenWebNet.gestSocketCommands.send(open);
     }
 }

@@ -114,7 +114,7 @@ public class BTicinoSocketWriteManager {
                         OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"----- STATE 0 NOT CONNECTED ----- ");
                         Freedomotic.logger.info("Rx: " + responseLine);
                         OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Rx: " + responseLine);
-                        if (responseLine.equals(OpenWebNetActuator.MSG_OPEN_ACK)) {
+                        if (responseLine.equals(OpenWebNet.MSG_OPEN_ACK)) {
                             Freedomotic.logger.info("Tx: " + SOCKET_COMMAND);
                             OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Tx: " + SOCKET_COMMAND);
                             output.write(SOCKET_COMMAND); //commands
@@ -133,7 +133,7 @@ public class BTicinoSocketWriteManager {
                         OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"----- STATE 1 -----");
                         Freedomotic.logger.info("Rx: " + responseLine);
                         OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Rx: " + responseLine);
-                        if (responseLine.equals(OpenWebNetActuator.MSG_OPEN_ACK)) {
+                        if (responseLine.equals(OpenWebNet.MSG_OPEN_ACK)) {
                             Freedomotic.logger.info("Ack received, state = 3");
                             OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Ack received, state = 3");
                             setSocketCommandState(3);
@@ -153,7 +153,7 @@ public class BTicinoSocketWriteManager {
                         OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"----- STATE 2 -----");
                         Freedomotic.logger.info("Rx: " + responseLine);
                         OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Rx: " + responseLine);
-                        if (responseLine.equals(OpenWebNetActuator.MSG_OPEN_ACK)) {
+                        if (responseLine.equals(OpenWebNet.MSG_OPEN_ACK)) {
                             Freedomotic.logger.info("Connection OK");
                             OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Connection OK");
                             setSocketCommandState(3);
@@ -228,7 +228,7 @@ public class BTicinoSocketWriteManager {
                 OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"----- ERROR readThread.join() in sending command: " + e1.toString());
             }
             if (responseLine != null) {
-                if (responseLine.equals(OpenWebNetActuator.MSG_OPEN_ACK)) {
+                if (responseLine.equals(OpenWebNet.MSG_OPEN_ACK)) {
                     Freedomotic.logger.info("Rx: " + responseLine);
                     OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Rx: " + responseLine);
                     Freedomotic.logger.info("Command sent");// FOR DEBUG USE
@@ -236,7 +236,7 @@ public class BTicinoSocketWriteManager {
                     this.close();
                     return 0;
                     //break;
-                } else if (responseLine.equals(OpenWebNetActuator.MSG_OPEN_NACK)) {
+                } else if (responseLine.equals(OpenWebNet.MSG_OPEN_NACK)) {
                     Freedomotic.logger.info("Rx: " + responseLine);
                     OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Rx: " + responseLine);
                     Freedomotic.logger.severe("Command NOT sent");
@@ -248,13 +248,13 @@ public class BTicinoSocketWriteManager {
                     //STATE REQUEST
                     Freedomotic.logger.info("Rx: " + responseLine);
                     OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Rx: " + responseLine);
-                    if (responseLine == OpenWebNetActuator.MSG_OPEN_ACK) {
+                    if (responseLine == OpenWebNet.MSG_OPEN_ACK) {
                         Freedomotic.logger.info("Command sent");// FOR DEBUG USE
                         OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Command sent");
                         this.close();
                         return 0;
                         //break;
-                    } else if (responseLine == OpenWebNetActuator.MSG_OPEN_NACK) {
+                    } else if (responseLine == OpenWebNet.MSG_OPEN_NACK) {
                         Freedomotic.logger.severe("Command NOT sent");
                         OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Command NOT sent");
                         return 1;

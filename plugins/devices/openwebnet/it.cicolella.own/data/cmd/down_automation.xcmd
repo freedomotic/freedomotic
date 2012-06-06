@@ -1,6 +1,6 @@
 <it.freedomotic.reactions.Command>
   <name>Move DOWN OWN automation</name>
-  <receiver>app.actuators.protocol.OWNActuator.in</receiver>
+  <receiver>app.actuators.protocol.own.in</receiver>
   <description>An OWN automation moves down</description>
   <hardwareLevel>true</hardwareLevel>
   <delay>0</delay>

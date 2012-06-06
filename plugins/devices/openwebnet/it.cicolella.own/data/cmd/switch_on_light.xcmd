@@ -1,6 +1,6 @@
 <it.freedomotic.reactions.Command>
   <name>Switch ON OWN light</name>
-  <receiver>app.actuators.protocol.OWNActuator.in</receiver>
+  <receiver>app.actuators.protocol.own.in</receiver>
   <description>An OWN light will turn on</description>
   <hardwareLevel>true</hardwareLevel>
   <delay>0</delay>
