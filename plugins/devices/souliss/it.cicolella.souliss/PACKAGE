@@ -1,4 +1,4 @@
-#Sun, 27 May 2012 15:50:53 +0200
+#Sun, 17 Jun 2012 16:23:16 +0200
 
 package.type=device
 package.name=it.cicolella.souliss
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=2
 framework.required.build=x
 build.major=1
-build.number=46
+build.number=51
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true

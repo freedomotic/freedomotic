@@ -156,7 +156,11 @@ public class Souliss extends Protocol {
         try {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
-            jsonText = jsonText.substring(29, jsonText.length() - 1);
+            System.out.println("Json string from server " + jsonText);
+            // find the json start point 
+            int startJson = jsonText.indexOf('(');
+            jsonText = jsonText.substring(startJson+1, jsonText.length() - 1);
+            System.out.println("Json string filtered " + jsonText);
             JSONObject json = new JSONObject(jsonText);
             return jsonText;
         } finally {
