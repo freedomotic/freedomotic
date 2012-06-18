@@ -4,6 +4,7 @@
  */
 package it.freedomotic.marketplace;
 
+import it.freedomotic.api.Plugin;
 import it.freedomotic.marketplace.postplugin.JavaUploader;
 import it.freedomotic.marketplace.postplugin.MarketPlacePlugin;
 import it.freedomotic.marketplace.postplugin.MarketPlacePluginFileField;
@@ -64,7 +65,7 @@ public class AntUploader extends Task {
                 File fileToUpload = files[0]; //get first file in folder according to filtering rules
                 if (fileToUpload != null) {
                     String fileid = drupal.postFile(cS, userid, marketDirectory.getAbsolutePath(), fileToUpload.getName());
-                    MarketPlacePluginFileField fileField = new MarketPlacePluginFileField(fileid, extractVersion(fileToUpload.getName()));
+                    MarketPlacePluginFileField fileField = new MarketPlacePluginFileField(fileid, Plugin.extractVersion(fileToUpload.getName()));
                     plugin.setField_file(fileField);
                     //update the nodeid with fields in plugin
                     drupal.putPlugin(cS, nodeid, plugin);
@@ -74,20 +75,6 @@ public class AntUploader extends Task {
             } catch (IOException ex) {
                 throw new BuildException("Cannot find attachment file. " + ex.getMessage());
             }
-        }
-    }
-
-    private String extractVersion(String filename) {
-        //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
-        //only 5.2.x-1.212 is needed
-        //remove extension
-        filename = filename.substring(0, filename.lastIndexOf("."));
-        String[] tokens = filename.split("-");
-        //3 tokens expected
-        if (tokens.length == 3) {
-            return tokens[1] + "-" + tokens[2];
-        } else {
-            return filename;
         }
     }
 
