@@ -19,4 +19,9 @@ public class Decoration extends EnvObjectLogic {
     protected void createCommands() {
         //no commands for this kind of objects
     }
+
+    @Override
+    protected void createTriggers() {
+
+    }
 }
