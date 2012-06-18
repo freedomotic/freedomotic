@@ -28,14 +28,14 @@ public class LogWindowHandler extends Handler {
         }
     }
 
-    public static synchronized LogWindowHandler getInstance() {
+    public static LogWindowHandler getInstance() {
         if (handler == null) {
             handler = new LogWindowHandler();
         }
         return handler;
     }
 
-    public synchronized void publish(LogRecord record) {
+    public void publish(LogRecord record) {
         String message;
         if (!isLoggable(record)) {
             return;
