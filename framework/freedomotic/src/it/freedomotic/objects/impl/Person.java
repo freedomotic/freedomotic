@@ -89,4 +89,9 @@ public class Person extends EnvObjectLogic {
     protected void createCommands() {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    protected void createTriggers() {
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

@@ -4,6 +4,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
+import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.objects.BooleanBehaviorListener;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.geometry.FreedomPolygon;
@@ -15,7 +16,9 @@ import it.freedomotic.objects.BooleanBehaviorLogic;
 import it.freedomotic.objects.RangedIntBehaviorListener;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
 import it.freedomotic.persistence.CommandPersistence;
+import it.freedomotic.persistence.TriggerPersistence;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.Trigger;
 import it.freedomotic.util.AWTConverter;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -330,5 +333,30 @@ public class Gate extends EnvObjectLogic {
         CommandPersistence.add(n);
         CommandPersistence.add(o);
 
+    }
+
+    @Override
+    protected void createTriggers() {
+        Trigger clicked = new Trigger();
+        clicked.setName("When " + this.getPojo().getName() + " is clicked");
+        clicked.setChannel("app.event.sensor.object.behavior.clicked");
+        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
+        clicked.getPayload().addStatement("click", "SINGLE_CLICK");
+
+        Trigger turnsOpen = new Trigger();
+        turnsOpen.setName(this.getPojo().getName() + " becomes open");
+        turnsOpen.setChannel("app.event.sensor.object.behavior.change");
+        turnsOpen.getPayload().addStatement("object.name", this.getPojo().getName());
+        turnsOpen.getPayload().addStatement("open", "true");
+
+        Trigger turnsClosed = new Trigger();
+        turnsClosed.setName(this.getPojo().getName() + " becomes closed");
+        turnsClosed.setChannel("app.event.sensor.object.behavior.change");
+        turnsClosed.getPayload().addStatement("object.name", this.getPojo().getName());
+        turnsClosed.getPayload().addStatement("open", "false");
+
+        TriggerPersistence.add(clicked);
+        TriggerPersistence.add(turnsOpen);
+        TriggerPersistence.add(turnsClosed);
     }
 }
