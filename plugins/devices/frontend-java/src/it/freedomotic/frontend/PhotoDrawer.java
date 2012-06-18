@@ -10,6 +10,7 @@ import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.util.AWTConverter;
+import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 
@@ -53,13 +54,6 @@ public class PhotoDrawer extends ImageDrawer {
                 Polygon pol = (Polygon) AWTConverter.convertToAWT(zone.getPojo().getShape());
                 if (zone instanceof Room) {
                     Room room = (Room) zone;
-                    //writing the string on the screen
-                    Callout callout = new Callout(zone.getPojo().getName(), "zone", room.getPojo().getName().toString() + "\n" + room.getDescription(),
-                            (int) pol.getBounds().getMinX() + 22,
-                            (int) pol.getBounds().getMinY() + 22,
-                            (float) 0.0, -1);
-                    createCallout(callout);
-
                 }
             }
         }

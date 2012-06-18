@@ -22,8 +22,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import javax.swing.JPanel;
@@ -59,6 +61,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
     private ZoneLogic selectedZone;
     private CalloutsUpdater callouts;
     private boolean objectsLocked = true;
+    private Point messageCorner = new Point(50, 50);
 
     protected EnvObjectLogic getSelectedObject() {
         return selectedObject;
@@ -229,7 +232,12 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         Iterator it = callouts.iterator();
         while (it.hasNext()) {
             Callout callout = (Callout) it.next();
-            drawString(callout.getText(), (int) callout.getPosition().getX(), (int) callout.getPosition().getY(), (float) 0.0);
+            drawString(
+                    callout.getText(),
+                    (int) callout.getPosition().getX(),
+                    (int) callout.getPosition().getY(),
+                    (float) 0.0,
+                    callout.getColor());
         }
     }
 
@@ -370,72 +378,49 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         }
     }
 
-    private void drawString(String text, int x, int y, float angle) {
+    private void drawString(String text, int x, int y, float angle, Color color) {
         Graphics2D localGraph = (Graphics2D) getContext();
-        try {
-            Font font = new Font("SansSerif", Font.PLAIN, 20);
-            localGraph.setFont(font);
-        } catch (Exception e) {
-        }
+        final int BORDER = 10;
+        Font font = new Font("SansSerif", Font.PLAIN, 25);
+        localGraph.setFont(font);
 
         //parse lines
-        ArrayList<String> lines = new ArrayList<String>();
-        String[] s = text.split("\n");
-        for (int i = 0; i
-                < s.length; i++) {
-            lines.add(s[i]);
-        } //draw single line
-        int i = 0;
-        for (String l : lines) {
-            drawTextLine(l, x, y + (32 * i), angle);
-            i++;
+        String[] lines = text.trim().split("\n");
+        int longest = 0;
+        int maxChar = 0;
+        for (int k = 0; k < lines.length; k++) {
+            if (lines[k].length() > maxChar) {
+                maxChar = lines[k].length();
+                longest = k;
+            }
         }
-    }
 
-    protected void drawTextLine(String text, int x, int y, float angle) {
-        Graphics2D localGraph = (Graphics2D) getContext();
-        try {
-            Font font = new Font("SansSerif", Font.PLAIN, 24);
-            localGraph.setFont(font);
-
-
-        } catch (Exception e) {
-        }
+        //draw background
         AffineTransform origAt = localGraph.getTransform();
         AffineTransform newAt = (AffineTransform) (origAt.clone());
-        Rectangle2D rect = localGraph.getFontMetrics().getStringBounds(text, localGraph);
+        Rectangle2D rect = localGraph.getFontMetrics().getStringBounds(lines[longest], localGraph);
+        RoundRectangle2D round = new RoundRectangle2D.Double(
+                rect.getX(), rect.getY(),
+                rect.getWidth() + (BORDER * 2),
+                (rect.getHeight() * lines.length) + (BORDER * 2),
+                25, 25);
         newAt.rotate(Math.toRadians(angle), x, y);
         localGraph.setTransform(newAt);
-
-        Shape s = getTranslatedShape(rect, new Point(x, y));
-        Color transparent = new Color(0, 0, 0, 140);
-
+        Shape shape = getTranslatedShape(round, new Point(x, y));
+        Color transparent = new Color(color.getRed(), color.getGreen(), color.getBlue(), 190);
         localGraph.setColor(transparent);
-        localGraph.fill(s);
-        localGraph.setColor(Color.black);
-        localGraph.drawString(text, ShiftWest(x, 1), ShiftNorth(y, 1));
-        localGraph.drawString(text, ShiftWest(x, 1), ShiftSouth(y, 1));
-        localGraph.drawString(text, ShiftEast(x, 1), ShiftNorth(y, 1));
-        localGraph.drawString(text, ShiftEast(x, 1), ShiftSouth(y, 1));
-        localGraph.setColor(Color.white);
-        localGraph.drawString(text, x, y);
+        localGraph.fill(shape);
+
+        //draw single lines
+        y += BORDER -27;
+        for (int j = 0; j < lines.length; j++) {
+            if (!lines[j].trim().isEmpty()) {
+                y += 27;
+                localGraph.setColor(Color.white);
+                localGraph.drawString(lines[j], x + BORDER, y);
+            }
+        }
         localGraph.setTransform(origAt);
-    }
-
-    int ShiftNorth(int p, int distance) {
-        return (p - distance);
-    }
-
-    int ShiftSouth(int p, int distance) {
-        return (p + distance);
-    }
-
-    int ShiftEast(int p, int distance) {
-        return (p + distance);
-    }
-
-    int ShiftWest(int p, int distance) {
-        return (p - distance);
     }
 
     protected Point toRealCoords(Point clickPoint) {
