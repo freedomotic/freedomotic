@@ -662,7 +662,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         z.setName("NewRoom" + Math.random());
         Room room = new Room();
         room.setPojo(z);
-        room.getPojo().setTexture(new File(Info.getResourcesPath() + "/wood.jpg"));
+        room.getPojo().setTexture((new File(Info.getResourcesPath() + "/wood.jpg")).getName());
         room.init();
         Freedomotic.environment.addRoom(room);
         drawer.createHandles(room);
@@ -766,7 +766,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
                 File file = fc.getSelectedFile();
                 //This is where a real application would open the file.
                 Freedomotic.logger.info("Opening " + file.getAbsolutePath());
-                zone.getPojo().setTexture(file);
+                zone.getPojo().setTexture(file.getName());
                 drawer.setNeedRepaint(true);
                 frameMap.validate();
             }
