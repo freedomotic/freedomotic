@@ -11,7 +11,9 @@ import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.BooleanBehaviorListener;
 import it.freedomotic.objects.BooleanBehaviorLogic;
 import it.freedomotic.persistence.CommandPersistence;
+import it.freedomotic.persistence.TriggerPersistence;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.Trigger;
 
 /**
  *
@@ -20,7 +22,7 @@ import it.freedomotic.reactions.Command;
 public class ElectricDevice extends EnvObjectLogic {
 
     protected BooleanBehaviorLogic powered;
-    
+
     @Override
     public void init() {
         powered = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior("powered"));
@@ -52,8 +54,10 @@ public class ElectricDevice extends EnvObjectLogic {
     }
 
     /**
-     * Causes the execution of the related hardware command to turn on this electric device,
-     * updates the object representation and notifies the changes with an event.
+     * Causes the execution of the related hardware command to turn on this
+     * electric device, updates the object representation and notifies the
+     * changes with an event.
+     *
      * @param params
      */
     public void executePowerOn(Config params) {
@@ -64,8 +68,10 @@ public class ElectricDevice extends EnvObjectLogic {
     }
 
     /**
-     * Causes the execution of the related hardware command to turn off this electric device,
-     * updates the object representation and notifies the changes with an event.
+     * Causes the execution of the related hardware command to turn off this
+     * electric device, updates the object representation and notifies the
+     * changes with an event.
+     *
      * @param params
      */
     public void executePowerOff(Config params) {
@@ -150,12 +156,24 @@ public class ElectricDevice extends EnvObjectLogic {
         switchItsPower.setProperty("object", "@event.object.name");
         switchItsPower.setProperty("behavior", "powered");
         switchItsPower.setProperty("value", "opposite");
-        
+
         CommandPersistence.add(setOff);
         CommandPersistence.add(setOn);
         CommandPersistence.add(switchPower);
         CommandPersistence.add(setItOff);
         CommandPersistence.add(setItOn);
         CommandPersistence.add(switchItsPower);
+    }
+
+    @Override
+    protected void createTriggers() {
+        Trigger clicked = new Trigger();
+        clicked.setName("When " + this.getPojo().getName() + " is clicked");
+        clicked.setChannel("app.event.sensor.object.behavior.clicked");
+        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
+        clicked.getPayload().addStatement("click", "SINGLE_CLICK");
+        clicked.setPersistence(false);
+
+        TriggerPersistence.add(clicked);
     }
 }
