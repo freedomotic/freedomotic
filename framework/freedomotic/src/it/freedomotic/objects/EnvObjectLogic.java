@@ -36,6 +36,7 @@ public abstract class EnvObjectLogic {
     private ArrayList<BehaviorLogic> behaviors = new ArrayList<BehaviorLogic>();
 
     protected abstract void createCommands();
+    protected abstract void createTriggers();
 
     /**
      * gets the hardware command mapped to the action in input for example:
@@ -158,7 +159,7 @@ public abstract class EnvObjectLogic {
             String commandName = pojo.getActions().getProperty(action);
             Command command = CommandPersistence.getHardwareCommand(commandName);
             if (command != null) {
-                Freedomotic.logger.info("Caching the command '" + command.getName() + "' as related to action '" + action + "' ");
+                Freedomotic.logger.config("Caching the command '" + command.getName() + "' as related to action '" + action + "' ");
                 setAction(action, command);
             } else {
                 Freedomotic.logger.warning("Don't exist a command called '" + commandName + "' is not possible to related this command to action '" + action + "' ");
@@ -248,6 +249,7 @@ public abstract class EnvObjectLogic {
      */
     public void init() throws EnvObjectMappingException {
         createCommands();
+        createTriggers();
         commandsMapping = new HashMap<String, Command>(); 
         cacheDeveloperLevelCommand();
         for (Entry e : pojo.getTriggers().entrySet()) {

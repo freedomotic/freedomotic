@@ -80,7 +80,7 @@ public final class BehaviorManagerForObjects implements BusConsumer {
         Command userLevelCommand = command;
         //getting all info we need from the command
         String object = userLevelCommand.getProperty("object");
-        String objectClass = userLevelCommand.getProperty("object-class");
+        String objectClass = userLevelCommand.getProperty("object.class");
         String behavior = userLevelCommand.getProperty("behavior");
         String zone = userLevelCommand.getProperty("zone");
         /*
@@ -138,7 +138,7 @@ public final class BehaviorManagerForObjects implements BusConsumer {
         Behavior behavior = null;
         Config param = null;
         //gets a reference to an EnvObject using the key 'object' in the user level command
-        String objectClass = userLevelCommand.getProperty("object-class");
+        String objectClass = userLevelCommand.getProperty("object.class");
         Iterator it = EnvObjectPersistence.iterator();
         String regex = "^" + objectClass.replace(".", "\\.") + ".*";
         while (it.hasNext()) {
@@ -156,7 +156,7 @@ public final class BehaviorManagerForObjects implements BusConsumer {
         Behavior behavior = null;
         Config param = null;
         //gets a reference to an EnvObject using the key 'object' in the user level command
-        String objectClass = userLevelCommand.getProperty("object-class");
+        String objectClass = userLevelCommand.getProperty("object.class");
         Iterator it = EnvObjectPersistence.iterator();
         String regex = "^" + objectClass.replace(".", "\\.") + ".*";
         while (it.hasNext()) {

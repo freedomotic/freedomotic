@@ -25,8 +25,7 @@ import it.freedomotic.bus.AbstractBusConnector;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.bus.EventChannel;
 import it.freedomotic.core.BehaviorManagerForObjects;
-import it.freedomotic.core.FIFOScheduler;
-import it.freedomotic.core.Scheduler;
+import it.freedomotic.core.JoinDevice;
 import it.freedomotic.core.Profiler;
 import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.ZoneLogic;
@@ -81,12 +80,8 @@ public final class Freedomotic {
     public static final Logger logger = Logger.getLogger("app.log");
     private static EventChannel eventChannel;
     private static CommandChannel commandChannel;
-    private static Scheduler scheduler = new FIFOScheduler();
     public static ArrayList<PluginPackage> onlinePlugins;
 
-    public static Scheduler getScheduler() {
-        return scheduler;
-    }
 
     public Freedomotic() {
         /**
@@ -161,7 +156,7 @@ public final class Freedomotic {
          * *****************************************************************
          */
         if (Freedomotic.config.getBooleanProperty("KEY_SHOW_WEBSITE_ON_STARTUP", false)) {
-            new InternetBrowser("http://opensourceautomation.net/content/basic-usage");
+            new InternetBrowser("http://freedomotic.com/");
         }
 
 
@@ -204,19 +199,29 @@ public final class Freedomotic {
          * Cache online plugins
          * *****************************************************************
          */
-        EventQueue.invokeLater(new Runnable() {
+        if (Freedomotic.config.getBooleanProperty("CACHE_MARKETPLACE_ON_STARTUP", false)) {
+            try {
+                EventQueue.invokeLater(new Runnable() {
 
-            @Override
-            public void run() {
-                new Thread(new Runnable() {
-
+                    @Override
                     public void run() {
-                        MarketPlaceService mps = MarketPlaceService.getInstance();
-                        onlinePlugins = mps.getPackageList();
+                        new Thread(new Runnable() {
+
+                            @Override
+                            public void run() {
+
+                                Freedomotic.logger.info("Starting marketplace service");
+                                MarketPlaceService mps = MarketPlaceService.getInstance();
+                                onlinePlugins = mps.getPackageList();
+                            }
+                        }).start();
                     }
-                }).start();
+                });
+            } catch (Exception e) {
+                Freedomotic.logger.warning("Unable to cache plugins package from marketplace");
+                Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
             }
-        });
+        }
 
 
         /**
@@ -273,8 +278,8 @@ public final class Freedomotic {
          * Updating zone object list
          * *****************************************************************
          */
+        Freedomotic.logger.config("---- Checking zones topology ----");
         for (ZoneLogic z : environment.getZones()) {
-            Freedomotic.logger.info("---- Checking topology of zone " + z.getPojo().getName() + " ----");
             z.checkTopology();
         }
 
@@ -306,6 +311,11 @@ public final class Freedomotic {
                 sendEvent(event);
             }
         }
+        
+        /**
+         * A service to add environment objects using XML commands
+         */
+        new JoinDevice();
 
         Freedomotic.logger.info("---- FREEDOM IS READY TO WORK ----");
 
@@ -347,7 +357,6 @@ public final class Freedomotic {
         buffReaction.append("} ");
         Freedomotic.logger.info(buffReaction.toString());
 
-        scheduler.start();
         /**
          * ******************************************************************
          * Init statistic logger

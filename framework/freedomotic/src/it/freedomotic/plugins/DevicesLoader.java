@@ -65,6 +65,7 @@ public class DevicesLoader implements AddonLoaderInterface {
                                 try {
                                     if (Plugin.isCompatible(path)) {
                                         plugin = (Plugin) clazz.newInstance();
+                                        Plugin.mergePackageConfiguration(plugin, path);
                                     } else {
                                         Freedomotic.logger.severe("Plugin in " + path.getAbsolutePath()
                                                 + " is not compatible with this framework version.");

@@ -17,7 +17,7 @@ import javax.jms.ObjectMessage;
  *
  * @author Enrico
  */
-public abstract class Protocol extends Plugin implements BusConsumer{
+public abstract class Protocol extends Plugin implements BusConsumer {
 
     private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
     private int POLLING_WAIT_TIME = -1;
@@ -113,36 +113,28 @@ public abstract class Protocol extends Plugin implements BusConsumer{
 
     @Override
     public final void onMessage(final ObjectMessage message) {
-        if (isRunning) {
-            Object payload = null;
-            try {
-                payload = message.getObject();
-            } catch (JMSException ex) {
-                Logger.getLogger(Actuator.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if (!isRunning) {
+            Freedomotic.logger.config("Protocol '" + getName() + "' receives a command while is not running. Plugin tries to turn on itself...");
+            start();
+        }
+        Object payload = null;
+        try {
+            payload = message.getObject();
             if (payload instanceof Command) {
-
                 final Command command = (Command) payload;
                 Freedomotic.logger.config(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
                 ActuatorPerforms task;
-
-                try {
-                    lastDestination = message.getJMSReplyTo();
-                    task = new ActuatorPerforms(command, message.getJMSReplyTo(), message.getJMSCorrelationID());
-                    task.start();
-                } catch (JMSException ex) {
-                    Logger.getLogger(Actuator.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
+                lastDestination = message.getJMSReplyTo();
+                task = new ActuatorPerforms(command, message.getJMSReplyTo(), message.getJMSCorrelationID());
+                task.start();
             } else {
                 if (payload instanceof EventTemplate) {
                     final EventTemplate event = (EventTemplate) payload;
                     onEvent(event);
                 }
             }
-        } else {
-            //it isn't an error but is better to let it know
-            Freedomotic.logger.config("Protocol '" + getName() + "' receives a Command or an Event while is not running");
+        } catch (JMSException ex) {
+            Logger.getLogger(Actuator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -41,19 +41,22 @@ public class NaturalLanguageProcessor {
                 }
             }
             ranking.add(new Rank(similarity, command));
-            System.out.println(command.getName() + " points " + similarity);
+            //System.out.println(command.getName() + " points " + similarity);
         }
     }
 
-    public Command getMostSimilarCommand(String inputTags) {
+    public List<Rank> getMostSimilarCommand(String inputTags, int resultSize) {
         ranking = new ArrayList<Rank>();
         buildRanking(inputTags);
         Collections.sort(ranking, new DescendingRankComparator());
-        //get the highest ranked
-        return ranking.get(0).getCommand();
+        if (ranking.size() == 0) {
+            return ranking;
+        } else {
+            return ranking.subList(0, Math.min(resultSize - 1, ranking.size()));
+        }
     }
 
-    private class Rank {
+    public class Rank {
 
         int similarity;
         Command cmd;

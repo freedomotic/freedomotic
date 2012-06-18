@@ -63,14 +63,19 @@ public class AbstractBusConnector {
         //create a connection
         if (emptySharedWriter == null) { //not already connected to the bus
             try {
+                //create an embedded messaging broker
                 BrokerService broker = new BrokerService();
-                //create a transport connector
                 broker.setBrokerName("freedomotic");
-                //use always 0.0.0.0 not localhost. localhost allows connection only on the local machine not from LAN IPs
+                //use always 0.0.0.0 not localhost. localhost allows connections 
+                //only on the local machine not from LAN IPs
                 broker.addConnector("stomp://0.0.0.0:61666");
-                broker.setPersistent(false);
+//                //websocket connector for javascript apps
+//                broker.addConnector("ws://0.0.0.0:61614");
+                broker.setPersistent(false); //we don't need to save messages on disk
                 //start the broker
                 broker.start();
+
+                //connect to the embedded broker defined above
                 ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(Freedomotic.config.getStringProperty("vm://freedomotic", DEFAULT_BROKER));
                 //tuned for performances http://activemq.apache.org/performance-tuning.html
                 factory.setUseAsyncSend(true);
@@ -81,7 +86,7 @@ public class AbstractBusConnector {
                 unlistenedSession = connection.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE); //an unlistened session
                 emptySharedWriter = unlistenedSession.createProducer(null); //a shared bus writer for all freedomotic classes
                 emptySharedWriter.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-                new StompDispatcher();
+                new StompDispatcher(); //just for testing, don't mind it
                 connection.start();
             } catch (JMSException jMSException) {
                 Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jMSException));

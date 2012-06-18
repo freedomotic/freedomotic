@@ -24,7 +24,6 @@ import it.freedomotic.model.ds.Config;
 import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Command;
-import it.freedomotic.reactions.CommandSequence;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Trigger;
 import java.util.ArrayList;
@@ -80,7 +79,9 @@ public class Resolver {
     public Reaction resolve(Reaction r) {
         this.reaction = r;
         if ((context != null) && (reaction != null)) {
-            Reaction clone = new Reaction(reaction.getTrigger(), performSubstitutionInCommandSequence(reaction.getCommandSequences()));
+            Reaction clone = new Reaction(
+                    reaction.getTrigger(),
+                    performSubstitutionInCommands(reaction.getCommands()));
             return clone;
         }
         return null;
@@ -111,7 +112,7 @@ public class Resolver {
      * @param trigger
      * @return
      */
-    Trigger resolve(Trigger t) {
+    public Trigger resolve(Trigger t) {
         this.trigger = t;
         if ((context != null) && (trigger != null)) {
             Trigger clone = trigger.clone();
@@ -128,25 +129,20 @@ public class Resolver {
      * is: device = @event.device it becomes: device = P01 translating
      * @event.device to the name of the device which has generated the event
      */
-    private ArrayList<CommandSequence> performSubstitutionInCommandSequence(ArrayList<CommandSequence> sequences) {
+    private ArrayList<Command> performSubstitutionInCommands(ArrayList<Command> commands) {
         //clone reaction to not affect the original commands with temporary values
         //construct a cloned reaction
-        ArrayList<CommandSequence> clonedSequences = null;
+        ArrayList<Command> tmp = new ArrayList<Command>();
         try {
-            clonedSequences = new ArrayList<CommandSequence>();
-            for (CommandSequence sequence : sequences) {
-                CommandSequence last = new CommandSequence();
-                clonedSequences.add(last);
-                for (Command originalCommand : sequence.getCommands()) {
-                    //resolving values using context data
-                    Command clonedCmd = resolve(originalCommand);
-                    last.append(clonedCmd);
-                }
+            for (Command originalCommand : commands) {
+                //resolving values using context data
+                Command clonedCmd = resolve(originalCommand);
+                tmp.add(clonedCmd);
             }
         } catch (Exception e) {
             Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
         }
-        return clonedSequences;
+        return tmp;
     }
 
     /**
@@ -197,8 +193,8 @@ public class Resolver {
                     ScriptEngine js = mgr.getEngineByName("JavaScript");
                     String script = possibleScript.substring(1); //removing equal sign on the head
                     js.eval(script);
-                    //Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to: '" + script + "' the complete value is '" + possibleScript);
-                    //Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
+//                    Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to: '" + script + "' the complete value is '" + possibleScript);
+//                    Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
                     if (js.get(key) == null) {
                         Freedomotic.logger.severe("Script evaluation has returned a null value, maybe the key '" + key + "' is not evaluated properly.");
                     }

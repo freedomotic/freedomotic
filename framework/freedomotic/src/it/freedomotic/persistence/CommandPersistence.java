@@ -28,9 +28,9 @@ public class CommandPersistence {
         if (c != null) {
             if (!userCommands.containsKey(c.getName().trim().toLowerCase())) {
                 userCommands.put(c.getName(), c);
-                Freedomotic.logger.info("Added command '" + c.getName() + "' to the list of user commands");
+                Freedomotic.logger.fine("Added command '" + c.getName() + "' to the list of user commands");
             } else {
-                Freedomotic.logger.info("Command '" + c.getName() + "' already in the list of user commands. Skipped");
+                Freedomotic.logger.config("Command '" + c.getName() + "' already in the list of user commands. Skipped");
             }
         } else {
             Freedomotic.logger.warning("Attempt to add a null user command to the list. Skipped");

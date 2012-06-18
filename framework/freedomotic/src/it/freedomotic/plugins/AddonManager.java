@@ -173,11 +173,11 @@ public class AddonManager {
         return ADDONS;
     }
 
-    public static Plugin getPluginByName(String name) {
+    public static Client getPluginByName(String name) {
         Iterator it = ADDONS.iterator();
         while (it.hasNext()) {
             Plugin plugin = (Plugin) it.next();
-            if (name.equalsIgnoreCase(plugin.getName())) {
+            if (name.trim().equalsIgnoreCase(plugin.getName())) {
                 return plugin;
             }
         }
@@ -229,21 +229,7 @@ public class AddonManager {
     private void copyAllFiles(File sfile, File dfile) {
         try {
             File[] files = sfile.listFiles();
-            // This filter only returns object files
-//            FileFilter objectFileFileter = new FileFilter() {
-//
-//                @Override
-//                public boolean accept(File file) {
-//                    if (file.isFile() && file.getName().endsWith(".png")) {
-//                        return true;
-//                    } else {
-//                        return false;
-//                    }
-//                }
-//            };
-            files = sfile.listFiles(/*
-                     * objectFileFileter
-                     */);
+            files = sfile.listFiles();
             //copy all files in local resources folder to the main resources folder under freedom_root/data/resources
             if (files != null) {
                 for (File file : files) {

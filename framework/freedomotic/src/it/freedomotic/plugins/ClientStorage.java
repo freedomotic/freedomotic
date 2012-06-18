@@ -21,6 +21,7 @@ package it.freedomotic.plugins;
 
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Configuration;
+import it.freedomotic.api.ObjectPlaceholder;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.PluginHasChanged;
@@ -122,68 +123,7 @@ public class ClientStorage {
     }
 
     void createObjectPlaceholder(final Class objClazz, final File folder) {
-        final Client placeholder = new Client() {
-
-            private Class clazz = objClazz;
-
-            @Override
-            public void setName(String name) {
-                //no name change allowed. do nothing
-            }
-
-            @Override
-            public String getDescription() {
-                return "This object is a " + clazz.getSimpleName();
-            }
-
-            @Override
-            public void setDescription(String description) {
-            }
-
-            @Override
-            public String getName() {
-                return clazz.getSimpleName();
-            }
-
-            @Override
-            public String getType() {
-                return "Object";
-            }
-
-            @Override
-            public void start() {
-                //if (!isRunning()){
-                //add this object to the environment
-                //Config configuration = ConfigPersistence.deserialize(new File(folder.getAbsolutePath() + "/manifest.xml"));
-                EnvObjectPersistence.loadObjects(new File(folder.getAbsolutePath() + "/data/examples/" + getName().toLowerCase()), true);
-                //}
-            }
-
-            @Override
-            public void stop() {
-                EnvObjectPersistence.loadObjects(new File(folder.getAbsolutePath() + "/data/examples/" + getName().toLowerCase()), true);
-            }
-
-            @Override
-            public boolean isRunning() {
-                //is running if there is already an object of this kind in the map
-                boolean found = false;
-                for (EnvObjectLogic obj : EnvObjectPersistence.getObjectList()) {
-                    if (obj.getClass().getCanonicalName().equals(clazz.getCanonicalName())) {
-                        found = true;
-                    }
-                }
-                return found;
-            }
-
-            @Override
-            public void showGui() {
-            }
-
-            @Override
-            public void hideGui() {
-            }
-        };
+        ObjectPlaceholder placeholder = new ObjectPlaceholder(objClazz, folder);
         enqueue(placeholder);
     }
 }

@@ -4,8 +4,8 @@
  */
 package it.freedomotic.environment;
 
-import it.freedomotic.objects.impl.Gate;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.objects.impl.Gate;
 import it.freedomotic.util.Edge;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -105,7 +105,7 @@ public class Room extends ZoneLogic {
             buff.append(room.getPojo().getName()).append(" ");
         }
         if (!buff.toString().isEmpty()) {
-            setDescription("From this room you can reach \n" + buff.toString());
+            setDescription("From " + this.getPojo().getName() + " you can reach " + buff.toString());
         } else {
             setDescription("");
         }
