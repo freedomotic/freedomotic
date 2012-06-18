@@ -54,6 +54,9 @@ public class Zone implements Serializable {
     }
 
     public String getDescription() {
+        if (description == null) {
+            description = "";
+        }
         return description;
     }
 
