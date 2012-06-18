@@ -161,4 +161,13 @@ public class EnvironmentLogic {
     public Iterable<ZoneLogic> getZones() {
         return zones;
     }
+
+    public ZoneLogic getZone(String zoneName) {
+        for (ZoneLogic zone : zones) {
+            if (zone.getPojo().getName().equalsIgnoreCase(zoneName)){
+                return zone;
+            } 
+        }
+        return null;
+    }
 }

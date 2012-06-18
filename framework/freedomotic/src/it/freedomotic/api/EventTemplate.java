@@ -1,28 +1,30 @@
 /*Copyright 2009 Enrico Nicoletti
-eMail: enrico.nicoletti84@gmail.com
+ eMail: enrico.nicoletti84@gmail.com
 
-This file is part of Freedomotic.
+ This file is part of Freedomotic.
 
-Freedomotic is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-any later version.
+ Freedomotic is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ any later version.
 
-Freedomotic is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ Freedomotic is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with EventEngine; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ You should have received a copy of the GNU General Public License
+ along with EventEngine; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.freedomotic.api;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.reactions.Payload;
+import it.freedomotic.reactions.Statement;
 import it.freedomotic.util.UidGenerator;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import javax.jms.Destination;
@@ -76,6 +78,15 @@ public abstract class EventTemplate implements Serializable {
 
     public void addProperty(String key, String value) {
         payload.addStatement(key, value);
+    }
+
+    public String getProperty(String key) {
+        ArrayList<Statement> statements = payload.getStatements(key);
+        if (statements.isEmpty()) {
+            return "";
+        } else {
+            return statements.get(0).getValue();
+        }
     }
 
     public int getUid() {

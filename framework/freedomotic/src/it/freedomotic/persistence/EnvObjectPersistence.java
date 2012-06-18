@@ -36,7 +36,7 @@ public class EnvObjectPersistence {
     }
 
     public static void saveObjects(File folder) {
-        if (objectList.isEmpty()){
+        if (objectList.isEmpty()) {
             Freedomotic.logger.warning("There are no object to persist, " + folder.getAbsolutePath() + " will not be altered.");
             return;
         }
@@ -98,7 +98,6 @@ public class EnvObjectPersistence {
     }
 
     public synchronized static void loadObjects(File folder, boolean makeUnique) {
-        XStream xstream = FreedomXStream.getXstream();
         Freedomotic.logger.info("-- Initialization of Objects --");
         Freedomotic.logger.info("Loading environment objects from: " + folder.getAbsolutePath());
         File[] files = folder.listFiles();
@@ -106,6 +105,7 @@ public class EnvObjectPersistence {
         // This filter only returns object files
         FileFilter objectFileFileter = new FileFilter() {
 
+            @Override
             public boolean accept(File file) {
                 if (file.isFile() && file.getName().endsWith(".xobj")) {
                     return true;
@@ -117,29 +117,35 @@ public class EnvObjectPersistence {
         files = folder.listFiles(objectFileFileter);
         try {
             for (File file : files) {
-                Freedomotic.logger.info("---- Loading object file named " + file.getName() + " from folder '" + folder.getAbsolutePath() + "' ----");
-                //validate the object against a predefined DTD
-                String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/object.dtd");
-                EnvObject pojo = (EnvObject) xstream.fromXML(xml);
-                EnvObjectLogic objectLogic = EnvObjectFactory.create(pojo);
-                if (makeUnique) {
-                    objectLogic.getPojo().setName(objectLogic.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
-                    objectLogic.getPojo().setProtocol("unknown");
-                    objectLogic.getPojo().setPhisicalAddress("unknown");
-                }
-                try {
-                    Freedomotic.logger.info("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
-                    add(objectLogic);
-                } catch (NotValidElementException notValidElementException) {
-                    Freedomotic.logger.warning("Null object or uncomplete parameters in its definition.");
-                } catch (AlreadyExistentException alreadyExistentException) {
-                    Freedomotic.logger.warning("Object " + objectLogic.getPojo().getName() + " is already in the list. It is skipped.");
-                }
+                EnvObjectLogic loaded = loadObject(file, makeUnique);
             }
             Freedomotic.logger.info("Loaded " + objectList.size() + " of " + files.length + " environment objects.");
         } catch (Exception e) {
             Freedomotic.logger.severe("Exception while loading this object.\n" + Freedomotic.getStackTraceInfo(e));
         }
+    }
+
+    public static EnvObjectLogic loadObject(File file, boolean makeUnique) throws IOException {
+        XStream xstream = FreedomXStream.getXstream();
+        Freedomotic.logger.info("---- Loading object file named " + file.getName() + " from folder '" + file.getAbsolutePath() + "' ----");
+        //validate the object against a predefined DTD
+        String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/object.dtd");
+        EnvObject pojo = (EnvObject) xstream.fromXML(xml);
+        EnvObjectLogic objectLogic = EnvObjectFactory.create(pojo);
+        if (makeUnique) {
+            objectLogic.getPojo().setName(objectLogic.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
+            objectLogic.getPojo().setProtocol("unknown");
+            objectLogic.getPojo().setPhisicalAddress("unknown");
+        }
+        try {
+            Freedomotic.logger.info("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
+            add(objectLogic);
+        } catch (NotValidElementException notValidElementException) {
+            Freedomotic.logger.warning("Null object or uncomplete parameters in its definition.");
+        } catch (AlreadyExistentException alreadyExistentException) {
+            Freedomotic.logger.warning("Object " + objectLogic.getPojo().getName() + " is already in the list. It is skipped.");
+        }
+        return objectLogic;
     }
 
     public static Iterator iterator() {
@@ -170,7 +176,9 @@ public class EnvObjectPersistence {
      * @return
      */
     public static ArrayList<EnvObjectLogic> getObject(String protocol, String address) {
-        if (protocol.trim().equalsIgnoreCase("unknown")
+        if (protocol == null
+                || address == null
+                || protocol.trim().equalsIgnoreCase("unknown")
                 || address.trim().equalsIgnoreCase("unknown")
                 || protocol.isEmpty()
                 || address.isEmpty()) {

@@ -26,6 +26,7 @@ import it.freedomotic.model.geometry.FreedomShape;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.impl.Person;
 import it.freedomotic.persistence.EnvObjectPersistence;
+import it.freedomotic.reactions.Command;
 import it.freedomotic.util.AWTConverter;
 import java.util.ArrayList;
 
@@ -73,7 +74,7 @@ public class ZoneLogic {
             if (AWTConverter.intersects(translatedObject, getPojo().getShape())) {
                 //is inside the zone
                 getPojo().getObjects().add(obj.getPojo());
-                Freedomotic.logger.info("Added object " + obj.getPojo().getName() + " to zone " + this.getPojo().getName());
+                Freedomotic.logger.config("Added object " + obj.getPojo().getName() + " to zone " + this.getPojo().getName());
             }
         }
     }

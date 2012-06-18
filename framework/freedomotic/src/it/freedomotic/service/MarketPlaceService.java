@@ -25,6 +25,7 @@ public class MarketPlaceService {
      * Creates a new instance of DictionaryService
      */
     private MarketPlaceService() {
+        try {
         marketPlaceLookup = Lookup.getDefault();
         marketPlaceTemplate = new Template(IMarketPlace.class);
         marketPlaceResults = marketPlaceLookup.lookup(marketPlaceTemplate);
@@ -36,7 +37,9 @@ public class MarketPlaceService {
                 Freedomotic.logger.severe("Lookup has changed");
             }
         });
-
+        }catch (Exception e) {
+            Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+        }
     }
 
     public static synchronized MarketPlaceService getInstance() {
@@ -47,9 +50,14 @@ public class MarketPlaceService {
     }
 
     public ArrayList<PluginPackage> getPackageList() {
-        ArrayList<PluginPackage> packageList = new ArrayList<PluginPackage>();
-        for (IMarketPlace market : marketPlaces) {
-            packageList.addAll(market.getAvailablePackages());
+        ArrayList<PluginPackage> packageList = null;
+        try {
+            packageList = new ArrayList<PluginPackage>();
+            for (IMarketPlace market : marketPlaces) {
+                packageList.addAll(market.getAvailablePackages());
+            }
+        } catch (Exception e) {
+            Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
         }
         return packageList;
     }

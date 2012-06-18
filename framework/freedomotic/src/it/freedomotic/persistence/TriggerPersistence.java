@@ -108,7 +108,7 @@ public final class TriggerPersistence {
             summary.append("#Filename \t\t #TriggerName \t\t\t #ListenedChannel").append("\n");
             if (files != null) {
                 for (File file : files) {
-                    Freedomotic.logger.info("---- Loading trigger file named " + file.getName() + " from folder '" + folder.getAbsolutePath() + "' ----");
+                    Freedomotic.logger.fine("Loading trigger file named " + file.getName() + " from folder '" + folder.getAbsolutePath());
                     //validate the object against a predefined DTD
                     String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/trigger.dtd");
                     Trigger trigger = (Trigger) xstream.fromXML(xml);
@@ -155,6 +155,22 @@ public final class TriggerPersistence {
             list.get(old).unregister();
             list.set(old, t);
             t.register();
+        }
+        int postSize = TriggerPersistence.size();
+        if (!(postSize == preSize + 1)) {
+            Freedomotic.logger.severe("Error while while adding and registering trigger '" + t.getName() + "'");
+        }
+    }
+
+    public static synchronized void add(Trigger t) {
+        int preSize = TriggerPersistence.size();
+        if (!list.contains(t)) {
+            list.add(t);
+        } else {
+            //this trigger is already in the list
+            int old = list.indexOf(t);
+            list.get(old).unregister();
+            list.set(old, t);
         }
         int postSize = TriggerPersistence.size();
         if (!(postSize == preSize + 1)) {

@@ -153,13 +153,15 @@ public class ReactionPersistence {
     }
 
     public static void add(Reaction r) {
-        if ((r.getTrigger() == null) || (r.getCommands() == null)) {
-            Freedomotic.logger.warning("This reaction is not valid because it misses the trigger or the commamnds");
+        if ((r.getTrigger() == null) || ( r.getCommands()==null) || r.getCommands().isEmpty()) {
+            Freedomotic.logger.warning("This reaction has no trigger or commands. It is skipped.");
             return;
         }
         if (!exists(r)) { //if not already loaded
             r.getTrigger().register(); //trigger starts to listen on its channel
             list.add(r);
+            r.setChanged();
+            Freedomotic.logger.finer("Added new reaction " + r.getDescription());
             for (Command command : r.getCommands()) {
                 if (command == null) {
                     Freedomotic.logger.warning("The reaction '" + r.getDescription() + "' has broken link to a commands. Maybe this command don't exists or its name is misspelled.");
@@ -173,6 +175,8 @@ public class ReactionPersistence {
     public static void remove(Reaction input) {
         if (input != null) {
             boolean removed = list.remove(input);
+            Freedomotic.logger.finer("Removed reaction " + input.getDescription());
+            input.getTrigger().unregister();
             if ((!removed) && (list.contains(input))) {
                 Freedomotic.logger.info("Error while removing Reaction " + input.getDescription() + " from the list");
             }

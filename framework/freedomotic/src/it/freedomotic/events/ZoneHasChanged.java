@@ -21,22 +21,15 @@ public class ZoneHasChanged extends EventTemplate {
         generateEventPayload();
     }
 
-    public ZoneHasChanged(Object source, Room room) {
-        this.setSender(source);
-        this.room = room;
-        generateEventPayload();
-    }
 
     @Override
     protected void generateEventPayload() {
         payload.addStatement("zone.name", zone.getName());
-        if (zone != null) {
+        payload.addStatement("zone.description", zone.getDescription());
+        if (room != null) {
+            payload.addStatement("zone.type", "room");
+        }else{
             payload.addStatement("zone.type", "zone");
-        } else {
-            if (room != null) {
-                payload.addStatement("zone.type", "room");
-                payload.addStatement("zone.description", room.getDescription());
-            }
         }
     }
 

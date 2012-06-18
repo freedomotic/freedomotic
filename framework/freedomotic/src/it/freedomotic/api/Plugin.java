@@ -229,13 +229,12 @@ public abstract class Plugin implements Client {
             int requiredMinor = requiredMajor = getIntProperty(plugin, "framework.required.minor");
             int requiredBuild = requiredMajor = getIntProperty(plugin, "framework.required.build");
             //checking framework version compatibility
-            if (Info.getMajor() >= requiredMajor) {
-                if ((Info.getMinor() >= requiredMinor)) {
-                    if ((Info.getRevision() >= requiredBuild)) {
-                        return true;
-                    }
-                }
+            if ((getLaterVersion(
+                    Info.getVersion(),
+                    requiredMajor + "." + requiredMinor + "." + requiredBuild) >= 0)) {
+                return true;
             }
+
         } catch (IOException ex) {
             Freedomotic.logger.severe("Folder " + pluginFolder + " don't contains a PACKAGE file. This plugin is not loaded.");
         } catch (NumberFormatException numex) {
@@ -250,18 +249,77 @@ public abstract class Plugin implements Client {
         //if property is not specified returns 99999
         //if is a string returns 0 to match any value with "x"
         try {
-            int value = Integer.parseInt(properties.getProperty(property, "99999"));
+            int value = Integer.parseInt(properties.getProperty(property, "999999"));
             return value;
         } catch (NumberFormatException numberFormatException) {
             return 0;
         }
     }
 
+    /**
+     *
+     *
+     * @param str1
+     * @param str2
+     * @return
+     */
+    public static int getLaterVersion(String str1, String str2) {
+        String[] vals1 = str1.split("\\.");
+        String[] vals2 = str2.split("\\.");
+        int i = 0;
+        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
+            i++;
+        }
+
+        if (i < vals1.length && i < vals2.length) {
+            int diff = new Integer(vals1[i]).compareTo(new Integer(vals2[i]));
+            return diff < 0 ? -1 : diff == 0 ? 0 : 1;
+        }
+
+        return vals1.length < vals2.length ? -1 : vals1.length == vals2.length ? 0 : 1;
+    }
+
+    public static String extractVersion(String filename) {
+        //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
+        //only 5.2.x-1.212 is needed
+        //remove extension
+        filename = filename.substring(0, filename.lastIndexOf("."));
+        String[] tokens = filename.split("-");
+        //3 tokens expected
+        if (tokens.length == 3) {
+            return tokens[1] + "-" + tokens[2];
+        } else {
+            return filename;
+        }
+    }
+
+    public static void mergePackageConfiguration(Plugin plugin, File pluginFolder) {
+        //seach for a file called PACKAGE
+        Properties pack = new Properties();
+        try {
+            pack.load(new FileInputStream(new File(pluginFolder + "/PACKAGE")));
+            //merges data found in file PACKGE to the the configuration of every single plugin in this package
+            plugin.getConfiguration().setProperty("package.name", pack.getProperty("package.name"));
+            plugin.getConfiguration().setProperty("package.nodeid", pack.getProperty("package.nodeid"));
+            plugin.getConfiguration().setProperty("package.version",
+                    pack.getProperty("build.major") + "."
+                    + pack.getProperty("build.number"));
+            plugin.getConfiguration().setProperty("framework.required.version",
+                    pack.getProperty("framework.required.major") + "."
+                    + pack.getProperty("framework.required.minor") + "."
+                    + pack.getProperty("framework.required.build"));
+            //TODO: add also the other properties
+
+        } catch (IOException ex) {
+            Freedomotic.logger.severe("Folder " + pluginFolder + " doesen't contains a PACKAGE file. This plugin is not loaded.");
+        }
+    }
+
     protected void onShowGui() {
-        throw new UnsupportedOperationException("Not yet implemented");
+
     }
 
     protected void onHideGui() {
-        throw new UnsupportedOperationException("Not yet implemented");
+
     }
 }

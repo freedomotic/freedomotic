@@ -55,11 +55,21 @@ public final class TriggerCheck {
                 try {
                     if (trigger.isHardwareLevel()) {
                         if (!trigger.isConsistentWith(event)) {
-                            buff.append("[NOT CONSISTENT] hardware level trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nconsistent with received event '").append(event.getEventName()).append("'");
+                            buff.append("[NOT CONSISTENT] hardware level trigger '")
+                                    .append(trigger.getName())
+                                    .append(trigger.getPayload().toString())
+                                    .append("'\nnot consistent with received event '")
+                                    .append(event.getEventName()).append("' ")
+                                    .append(event.getPayload().toString());
                             Freedomotic.logger.fine(buff.toString());
                             return false;
                         } else {
-                            buff.append("[CONSISTENT] hardware level trigger '").append(trigger.getName()).append("'\nconsistent with received event '").append(event.getEventName()).append("'");
+                            buff.append("[CONSISTENT] hardware level trigger '")
+                                    .append(trigger.getName())
+                                    .append(trigger.getPayload().toString())
+                                    .append("'\nnot consistent with received event '")
+                                    .append(event.getEventName()).append("' ")
+                                    .append(event.getPayload().toString());
                             Freedomotic.logger.fine(buff.toString());
                             changeObjectProperties(trigger, event);
                             return true;
@@ -69,19 +79,31 @@ public final class TriggerCheck {
                             return false;
                         }
                         if (!trigger.isConsistentWith(event)) {
-                            buff.append("[NOT CONSISTENT] registred trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("' consistent with received event '").append(event.getEventName()).append("'");
+                            buff.append("[NOT CONSISTENT] registred trigger '")
+                                    .append(trigger.getName())
+                                    .append(trigger.getPayload().toString())
+                                    .append("'\nnot consistent with received event '")
+                                    .append(event.getEventName()).append("' ")
+                                    .append(event.getPayload().toString());
                             Freedomotic.logger.fine(buff.toString());
                             return false;
                         }
-                        buff.append("[CONSISTENT] registred trigger '").append(trigger.getName()).append("' consistent with received event '").append(event.getEventName()).append("'");
+                        buff.append("[CONSISTENT] registred trigger '")
+                                    .append(trigger.getName())
+                                    .append(trigger.getPayload().toString())
+                                    .append("'\nnot consistent with received event '")
+                                    .append(event.getEventName()).append("' ")
+                                    .append(event.getPayload().toString());
                         executeRelatedReactions(trigger, event);
                         return true;
                     }
                 } catch (Exception e) {
-                    buff.append(Freedomotic.getStackTraceInfo(e));
-                    Freedomotic.logger.severe(buff.toString());
+                    Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
                     return false;
+                } finally {
+                    Freedomotic.logger.config(buff.toString());
                 }
+                    
             }
         };
         Future<Boolean> result = executor.submit(check);
@@ -95,7 +117,7 @@ public final class TriggerCheck {
         return false;
     }
 
-    private static void changeObjectProperties(Trigger trigger, final EventTemplate event) {
+    private synchronized static void changeObjectProperties(Trigger trigger, final EventTemplate event) {
         Resolver resolver = new Resolver();
         resolver.addContext("event.", event.getPayload());
         Trigger resolved = null;
@@ -110,6 +132,10 @@ public final class TriggerCheck {
         protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
         address = resolved.getPayload().getStatements("event.address").get(0).getValue();
         objectList = EnvObjectPersistence.getObject(protocol, address);
+        if (objectList.isEmpty()) {
+            Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + trigger.getName() + ")");
+            return;
+        }
         boolean done = false;
         for (EnvObjectLogic object : objectList) {
             boolean executed = object.executeTrigger(resolved); //user trigger->behavior mapping to apply the trigger to this object
@@ -121,9 +147,7 @@ public final class TriggerCheck {
             }
         }
         if (!done) {
-            Freedomotic.logger.warning("Hardware trigger " + trigger.getName() + " not applyed to any object. "
-                    + "Possibile causes is the trigger is not associated to any object "
-                    + "or there is no object with protocol=" + protocol + " and address=" + address);
+            Freedomotic.logger.warning("Hardware trigger " + trigger.getName() + " is not associated to any object.");
         }
     }
 
@@ -159,7 +183,7 @@ public final class TriggerCheck {
 //                Freedomotic.getScheduler().schedule(resolved);
                 //executes the commands in sequence (only the first sequence is used) 
                 //if more then one sequence is needed it can be done with two reactions with the same trigger
-                for (Command command : resolved.getCommandSequences().get(0).getCommands()) {
+                for (Command command : resolved.getCommands()) {
 //                    if (command.getReceiver().equalsIgnoreCase(BehaviorManagerForObjects.getMessagingChannel())) {
 //                        //doing so we bypass messagin system gaining better performances
 //                        BehaviorManagerForObjects.parseCommand(command);

@@ -14,6 +14,7 @@ import it.freedomotic.app.Freedomotic;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.JComboBox;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
@@ -27,7 +28,7 @@ public class PropertiesPanel_1 extends javax.swing.JPanel {
     private int elements = 0;
     private int rows;
     private int cols;
-    private static final int MAX_ROWS = 10;
+    private static final int MAX_ROWS = 100;
 
     /**
      * Creates new form PropertiesPanel
@@ -35,6 +36,7 @@ public class PropertiesPanel_1 extends javax.swing.JPanel {
     public PropertiesPanel_1(int rows, int cols) {
         initComponents();
         this.setVisible(true);
+        this.setPreferredSize(new Dimension(500, 500));
         this.rows = rows;
         this.cols = cols;
         table = new Component[MAX_ROWS][cols];
@@ -43,13 +45,21 @@ public class PropertiesPanel_1 extends javax.swing.JPanel {
     }
 
     public synchronized void addElement(Component component, final int row, final int col) {
+        if (component == null) {
+            throw new IllegalArgumentException();
+        }
         try {
             table[row][col] = component;
         } catch (ArrayIndexOutOfBoundsException e) {
             Freedomotic.logger.warning("Only " + MAX_ROWS + " statements are tracked in PropertiesPanel");
         }
-        component.setMaximumSize(new Dimension(141, 30));
-        component.setPreferredSize(new Dimension(141, 30));
+        if (col == cols - 1) {//is the last col
+            component.setMaximumSize(new Dimension(2000, 35));
+            component.setPreferredSize(new Dimension(200, 35));
+        } else {
+            component.setMaximumSize(new Dimension(200, 35));
+            component.setPreferredSize(new Dimension(200, 35));
+        }
         add(component);
         elements++;
     }
@@ -58,13 +68,17 @@ public class PropertiesPanel_1 extends javax.swing.JPanel {
         //Lay out the panel.
         SpringUtilities.makeCompactGrid(this,
                 rows, cols, //rows, cols
-                1, 1, //initX, initY
-                1, 1);//xPad, yPad
-        this.repaint();
+                5, 5, //initX, initY
+                5, 5);//xPad, yPad
+        this.validate();
     }
 
     public int addRow() {
         return rows++;
+    }
+
+    public int addColumn() {
+        return cols++;
     }
 
     public int getRows() {

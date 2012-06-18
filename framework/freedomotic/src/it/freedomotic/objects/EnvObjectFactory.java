@@ -14,8 +14,9 @@ import java.util.logging.Logger;
 public class EnvObjectFactory {
 
     /**
-     * Instantiate the right logic manager for an object pojo using the
-     * pojo "type" field
+     * Instantiate the right logic manager for an object pojo using the pojo
+     * "type" field
+     *
      * @param pojo
      * @return
      */
@@ -29,12 +30,17 @@ public class EnvObjectFactory {
             try {
                 logic.init();
             } catch (EnvObjectMappingException envObjectMappingException) {
-                logic.setMessage("To bound this object to a real device fix its command and trigger mapping.");
+                if (!pojo.getActAs().contains("virtual")) {
+                    logic.setMessage("To bound this object to a real device \n"
+                            + "fix its command and trigger mapping.");
+                }
             }
-            if ((pojo.getPhisicalAddress().equalsIgnoreCase("unknown") 
-                    || pojo.getProtocol().equalsIgnoreCase("unknown")) 
-                    && !pojo.getActAs().equalsIgnoreCase("virtual")){
-                logic.setMessage(logic.getMessage() + "\nTo bound this object to a real device set its protocol and address values.");
+            if (!pojo.getActAs().contains("virtual")) {
+                if (pojo.getPhisicalAddress().equalsIgnoreCase("unknown")
+                        || pojo.getProtocol().equalsIgnoreCase("unknown")) {
+                    logic.setMessage(logic.getMessage() + "\nTo bound this object to a real device \n"
+                            + "set its protocol and address values.");
+                }
             }
             return logic;
         } catch (InstantiationException ex) {
