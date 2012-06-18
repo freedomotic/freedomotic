@@ -127,4 +127,9 @@ public class Thermostat extends EnvObjectLogic {
 //        CommandPersistence.add(setItOn);
 //        CommandPersistence.add(switchItsPower);
     }
+
+    @Override
+    protected void createTriggers() {
+
+    }
 }
