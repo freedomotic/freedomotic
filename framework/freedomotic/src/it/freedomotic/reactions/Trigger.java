@@ -287,4 +287,6 @@ public class Trigger implements BusConsumer, Cloneable {
     public boolean isToPersist() {
         return persistence;
     }
+    
+    
 }

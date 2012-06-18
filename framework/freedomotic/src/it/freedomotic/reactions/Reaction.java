@@ -18,12 +18,9 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.freedomotic.reactions;
 
-import it.freedomotic.core.SchedulingData;
-import it.freedomotic.persistence.CommandPersistence;
 import it.freedomotic.persistence.TriggerPersistence;
-import java.util.ArrayList;
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -32,77 +29,65 @@ import java.util.Iterator;
  */
 public class Reaction implements Serializable {
 
-    private Trigger trigger;
+    private Trigger trigger=new Trigger();
     private String uuid;
-    private ArrayList<CommandSequence> sequences = new ArrayList<CommandSequence>();
+    private ArrayList<Command> commands = new ArrayList<Command>();
     private String description;
     private String shortDescription;
-    private SchedulingData scedulingData;
 
-    public Reaction(String trigger, ArrayList<CommandSequence> sequences) {
-        Trigger t = TriggerPersistence.getTrigger(trigger);
-        create(t, sequences);
+    public Reaction() {
     }
 
-    public Reaction(Trigger trigger, ArrayList<CommandSequence> sequences) {
-        create(trigger, sequences);
+    public Reaction(String trigger, ArrayList<Command> commands) {
+        Trigger t = TriggerPersistence.getTrigger(trigger);
+        create(t, commands);
+    }
+
+    public Reaction(Trigger trigger, ArrayList<Command> commands) {
+        create(trigger, commands);
+    }
+
+    public Reaction(Trigger trigger) {
+        this.trigger = trigger;
     }
 
     /**
      * creates a single command reaction
+     *
      * @param trigger
      * @param command
      */
     public Reaction(Trigger trigger, Command command) {
-        ArrayList<CommandSequence> tmpSequences = new ArrayList<CommandSequence>();
-        CommandSequence seq = new CommandSequence();
-        tmpSequences.add(seq);
-        seq.append(command);
-        create(trigger, tmpSequences);
+        ArrayList<Command> tmp = new ArrayList<Command>();
+        tmp.add(command);
+        create(trigger, tmp);
     }
 
-    public Reaction(Trigger trigger, String commandsList) {
-        String[] lines = commandsList.split("\n");
-        ArrayList<CommandSequence> tmpSequences = new ArrayList<CommandSequence>();
-        for (String line : lines) {
-            CommandSequence seq = new CommandSequence();
-            for (String string : Arrays.asList(line.split(","))) {
-                seq.append(CommandPersistence.getCommand(string));
-            }
-            tmpSequences.add(seq);
-        }
-        create(trigger, tmpSequences);
-    }
-
-    private void create(Trigger trigger, ArrayList<CommandSequence> sequences) {
-        if ((trigger != null) && (sequences != null)) {
-            //TODO: addAndRegister other controls. validate reaction
+//    public Reaction(Trigger trigger, String commandsList) {
+//        String[] lines = commandsList.split("\n");
+//        ArrayList<CommandSequence> tmpSequences = new ArrayList<CommandSequence>();
+//        for (String line : lines) {
+//            CommandSequence seq = new CommandSequence();
+//            for (String string : Arrays.asList(line.split(","))) {
+//                seq.append(CommandPersistence.getCommand(string));
+//            }
+//            tmpSequences.add(seq);
+//        }
+//        create(trigger, tmpSequences);
+//    }
+    private void create(Trigger trigger, ArrayList<Command> commands) {
+        if ((trigger != null) && (commands != null)) {
             this.trigger = trigger;
-            this.sequences = sequences;
+            this.commands = commands;
             setChanged();
         }
-    }
-
-    public int getSequences() {
-        return this.sequences.size();
     }
 
     public Trigger getTrigger() {
         return trigger;
     }
 
-    public ArrayList<CommandSequence> getCommandSequences() {
-        return this.sequences;
-    }
-
     public ArrayList<Command> getCommands() {
-        ArrayList<Command> commands = new ArrayList<Command>();
-        for (CommandSequence sequence : getCommandSequences()) {
-            for (Iterator it = sequence.iterator(); it.hasNext();) {
-                Command command = (Command) it.next();
-                commands.add(command);
-            }
-        }
         return commands;
     }
 
@@ -116,22 +101,13 @@ public class Reaction implements Serializable {
         b.append("IF  [");
         b.append(trigger);
         b.append("] THEN ");
-        Iterator sequenceIterator = sequences.iterator();
 
-        while (sequenceIterator.hasNext()) {
-            CommandSequence commandSequence = (CommandSequence) sequenceIterator.next();
-            b.append("[");
-            Iterator commandIterator = commandSequence.iterator();
-            while (commandIterator.hasNext()) {
-                Command c = (Command) commandIterator.next();
-                b.append("(").append(c.getName()).append(")");
-                if (commandIterator.hasNext()) {
-                    b.append(" AFTER THAT ");
-                }
-            }
-            b.append("]");
-            if (sequenceIterator.hasNext()) {
-                b.append(" AND ");
+        Iterator commandIterator = commands.iterator();
+        while (commandIterator.hasNext()) {
+            Command c = (Command) commandIterator.next();
+            b.append("(").append(c.getName()).append(")");
+            if (commandIterator.hasNext()) {
+                b.append(" AFTER THAT ");
             }
         }
         return b.toString();
@@ -188,29 +164,18 @@ public class Reaction implements Serializable {
         shortDescription = buildShortDescription();
     }
 
-    public void clearSequence(int index) {
-        getCommandSequences().get(index).getCommands().clear();
-        setChanged();
-    }
-
-    public void appendCommand(Command command, int index) {
-        getCommandSequences().get(index).append(command);
-        setChanged();
-    }
-
-    public void setScheduling(SchedulingData data) {
-        scedulingData = data;
-    }
-
-    public SchedulingData getScedulingData() {
-        return scedulingData;
-    }
-
     public String getUUID() {
         return uuid;
     }
 
     public void setUUID(String uuid) {
-        this.uuid=uuid;
+        this.uuid = uuid;
+    }
+
+    public boolean hasTrigger() {
+        if (trigger != null) {
+            return true;
+        }
+        return false;
     }
 }

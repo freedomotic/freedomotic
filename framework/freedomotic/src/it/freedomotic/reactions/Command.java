@@ -72,6 +72,9 @@ public final class Command implements Serializable, Cloneable {
     }
 
     public String getDescription() {
+        if (description == null){
+            description = getName();
+        }
         return description;
     }
 
