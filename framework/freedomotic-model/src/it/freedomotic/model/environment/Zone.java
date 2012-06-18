@@ -18,10 +18,10 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.freedomotic.model.environment;
 
-import java.io.File;
-import java.io.Serializable;
+
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.object.EnvObject;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -81,10 +81,11 @@ public class Zone implements Serializable {
         return this.getName();
     }
 
-    public void setTexture(File file) {
-        if (file != null) {
-            this.texture = file.getName();
-        }
+    public void setTexture(String file) {
+        
+            this.texture = file;
+        
+        //file.getName();
     }
 
     public ArrayList<EnvObject> getObjects() {
