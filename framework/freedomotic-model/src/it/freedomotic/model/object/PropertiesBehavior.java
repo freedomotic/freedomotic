@@ -24,9 +24,9 @@ public class PropertiesBehavior extends Behavior {
     @Override
     public String toString() {
         if (properties.size() < 2) {
-            return properties.size() + " value";
+            return properties.size() + " records";
         } else {
-            return properties.size() + " values";
+            return properties.size() + " records";
         }
     }
 }
