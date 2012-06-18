@@ -14,12 +14,10 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.AlreadyExistentException;
 import it.freedomotic.exceptions.NotValidElementException;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.model.geometry.FreedomShape;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
 import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.util.PropertiesPanel;
 import it.freedomotic.objects.BehaviorLogic;
 import it.freedomotic.objects.BooleanBehaviorLogic;
 import it.freedomotic.objects.EnvObjectFactory;
@@ -27,26 +25,25 @@ import it.freedomotic.objects.ListBehaviorLogic;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
 import it.freedomotic.persistence.CommandPersistence;
 import it.freedomotic.persistence.EnvObjectPersistence;
+import it.freedomotic.persistence.ReactionPersistence;
 import it.freedomotic.persistence.TriggerPersistence;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.Reaction;
+import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.util.*;
-import java.awt.Shape;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JSlider;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -56,11 +53,11 @@ import javax.swing.event.ChangeListener;
  */
 public class ObjectEditor extends javax.swing.JFrame {
 
-    private EnvObjectLogic object;
-    private PropertiesPanel commandsControlPanel;
-    private PropertiesPanel triggersControlPanel;
-    private PropertiesPanel controlPanel;
+    private final EnvObjectLogic object;
     private String oldName;
+    private PropertiesPanel_1 commandsControlPanel;
+    private PropertiesPanel_1 pnlTriggers;
+    private PropertiesPanel_1 controlPanel;
 
     /**
      * Creates new form ObjectEditor
@@ -113,8 +110,17 @@ public class ObjectEditor extends javax.swing.JFrame {
         spnScaleHeight.setModel(scaleHeightModel);
         spnRotation.setValue(rotation);
 
-        populateCommandsPanel();
-        populateTriggersPanel();
+        tabObjectEditor.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                if (tabObjectEditor.getSelectedIndex() == 5) {
+                    populateAutomationsTab();
+                }
+            }
+        });
+
+        populateCommandsTab();
+        populateTriggersTab();
 
         //population combo box representation
         DefaultComboBoxModel representationsModel = new DefaultComboBoxModel();
@@ -130,21 +136,24 @@ public class ObjectEditor extends javax.swing.JFrame {
             setTitle(pojo.getName() + " (" + pojo.getSimpleType() + ")");
         }
 
-        controlPanel = new PropertiesPanel();
-        controlPanel.setKeysEditable(false);
+        controlPanel = new PropertiesPanel_1(0, 2);
         tabControls.add(controlPanel);
 
         //create an array of controllers for the object behaviors
+        int row = 0;
         for (BehaviorLogic b : object.getBehaviors()) {
             if (b instanceof BooleanBehaviorLogic) {
                 final BooleanBehaviorLogic bb = (BooleanBehaviorLogic) b;
-                final JButton button;
+                final JToggleButton button;
                 if (bb.getValue()) {
-                    button = new JButton("Set " + bb.getName() + " false");
+                    button = new JToggleButton("Set " + bb.getName() + " false");
                 } else {
-                    button = new JButton("Set " + bb.getName() + " true");
+                    button = new JToggleButton("Set " + bb.getName() + " true");
                 }
-                controlPanel.addRow("Change property " + b.getName() + ":", button);
+                JLabel label = new JLabel(b.getName() + ":");
+                controlPanel.addRow();
+                controlPanel.addElement(label, row, 0);
+                controlPanel.addElement(button, row, 1);
                 button.addActionListener(new ActionListener() {
 
                     @Override
@@ -170,7 +179,10 @@ public class ObjectEditor extends javax.swing.JFrame {
                 slider.setMajorTickSpacing(10);
                 slider.setMinorTickSpacing(10);
                 slider.setSnapToTicks(true);
-                controlPanel.addRow("Change property " + b.getName() + ":", slider);
+                JLabel label = new JLabel(b.getName() + ":");
+                controlPanel.addRow();
+                controlPanel.addElement(label, row, 0);
+                controlPanel.addElement(slider, row, 1);
                 slider.addChangeListener(new ChangeListener() {
 
                     @Override
@@ -191,8 +203,10 @@ public class ObjectEditor extends javax.swing.JFrame {
                 }
                 comboBox.setEditable(false);
                 comboBox.setSelectedItem(lb.getSelected());
-                controlPanel.addRow("Change property " + b.getName() + ":", comboBox);
-
+                JLabel label = new JLabel(b.getName() + ":");
+                controlPanel.addRow();
+                controlPanel.addElement(label, row, 0);
+                controlPanel.addElement(comboBox, row, 1);
                 comboBox.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {
@@ -202,24 +216,13 @@ public class ObjectEditor extends javax.swing.JFrame {
                     }
                 });
             }
-
-
-
+            row++;
         }
+        controlPanel.layoutPanel();
 
-//        // Create bespoke component for rendering the tab.
-//        JLabel lbl = new JLabel("Hello, World");
-//        System.out.println(new File(Info.getResourcesPath() + "/person.png").getAbsolutePath());
-//        Icon icon = new ImageIcon(getClass().getResource(new File(Info.getResourcesPath() + "/tex.jpg").getAbsolutePath()));
-//        lbl.setIcon(icon);
-//
-//// Add some spacing between text and icon, and position text to the RHS.
-//        lbl.setIconTextGap(5);
-//        lbl.setHorizontalTextPosition(SwingConstants.RIGHT);
-//
-//// Assign bespoke tab component for first tab.
-//        jTabbedPane3.setTabComponentAt(0, lbl);
 
+
+        //populateAutomationsTab();
 
         this.pack();
         setVisible(true);
@@ -234,7 +237,21 @@ public class ObjectEditor extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane3 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        tabObjectEditor = new javax.swing.JTabbedPane();
+        tabControls = new javax.swing.JPanel();
+        tabProperties = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
+        txtDescription = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        txtProtocol = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        txtAddress = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        btnCreateObjectCopy = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
         tabRepresentation = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         spnX = new javax.swing.JSpinner();
@@ -249,31 +266,115 @@ public class ObjectEditor extends javax.swing.JFrame {
         spnScaleHeight = new javax.swing.JSpinner();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        tabControls = new javax.swing.JPanel();
-        tabCommandsConfig = new javax.swing.JPanel();
         tabTriggersConfig = new javax.swing.JPanel();
-        tabProperties = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
-        txtName = new javax.swing.JTextField();
-        txtDescription = new javax.swing.JTextField();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        txtProtocol = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        txtAddress = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        btnCreateObjectCopy = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
-        btnCancel = new javax.swing.JButton();
+        tabCommandsConfig = new javax.swing.JPanel();
+        tabAutomations = new javax.swing.JPanel();
+        pnlFrameButtons = new javax.swing.JPanel();
         btnOk = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
 
         setTitle("Object Editor");
         setAlwaysOnTop(true);
+        setMaximumSize(new java.awt.Dimension(2000, 2000));
         setMinimumSize(new java.awt.Dimension(500, 300));
+        setPreferredSize(new java.awt.Dimension(800, 600));
 
-        jTabbedPane3.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
-        jTabbedPane3.setTabPlacement(javax.swing.JTabbedPane.LEFT);
-        jTabbedPane3.setPreferredSize(new java.awt.Dimension(500, 457));
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        tabObjectEditor.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+        tabObjectEditor.setTabPlacement(javax.swing.JTabbedPane.LEFT);
+        tabObjectEditor.setPreferredSize(new java.awt.Dimension(500, 457));
+
+        tabControls.setLayout(new java.awt.BorderLayout());
+        tabObjectEditor.addTab("Control Panel", tabControls);
+
+        jLabel14.setText("Name:");
+
+        txtName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNameActionPerformed(evt);
+            }
+        });
+
+        jLabel15.setText("Description:");
+
+        jLabel1.setText("Protocol:");
+
+        jLabel2.setText("Address:");
+
+        jLabel3.setForeground(new java.awt.Color(121, 121, 121));
+        jLabel3.setText("for more info www.freedomotic.com/plugins");
+
+        btnCreateObjectCopy.setText("Create a copy");
+        btnCreateObjectCopy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateObjectCopyActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("Delete Object");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout tabPropertiesLayout = new javax.swing.GroupLayout(tabProperties);
+        tabProperties.setLayout(tabPropertiesLayout);
+        tabPropertiesLayout.setHorizontalGroup(
+            tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tabPropertiesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(tabPropertiesLayout.createSequentialGroup()
+                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel15)
+                            .addComponent(jLabel14)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addGap(18, 18, 18)
+                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtName)
+                                .addComponent(txtDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                                .addComponent(txtProtocol)
+                                .addComponent(txtAddress))))
+                    .addGroup(tabPropertiesLayout.createSequentialGroup()
+                        .addComponent(btnCreateObjectCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(3521, Short.MAX_VALUE))
+        );
+        tabPropertiesLayout.setVerticalGroup(
+            tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tabPropertiesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(txtDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtProtocol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
+                .addGap(18, 18, 18)
+                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCreateObjectCopy)
+                    .addComponent(btnDelete))
+                .addGap(480, 480, 480))
+        );
+
+        tabObjectEditor.addTab("Properties", tabProperties);
 
         jLabel11.setText("Position X:");
 
@@ -350,12 +451,12 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11)
                             .addComponent(jLabel12)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
                             .addComponent(spnScaleHeight, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(spnScaleWidth, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(spnY)
@@ -363,7 +464,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnCreateReaction, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnCreateReaction, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE))
                         .addGap(2343, 2343, 2343))))
         );
         tabRepresentationLayout.setVerticalGroup(
@@ -395,117 +496,21 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spnScaleHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(484, Short.MAX_VALUE))
+                .addContainerGap(748, Short.MAX_VALUE))
         );
 
-        jTabbedPane3.addTab("Representation", tabRepresentation);
-
-        tabControls.setLayout(new java.awt.BorderLayout());
-        jTabbedPane3.addTab("Control Panel", tabControls);
-
-        tabCommandsConfig.setLayout(new java.awt.BorderLayout());
-        jTabbedPane3.addTab("Commands Configuration", tabCommandsConfig);
+        tabObjectEditor.addTab("Appearance", tabRepresentation);
 
         tabTriggersConfig.setLayout(new java.awt.BorderLayout());
-        jTabbedPane3.addTab("Triggers Configuration", tabTriggersConfig);
+        tabObjectEditor.addTab("Triggers", tabTriggersConfig);
 
-        jLabel14.setText("Name:");
+        tabCommandsConfig.setLayout(new java.awt.BorderLayout());
+        tabObjectEditor.addTab("Commands", tabCommandsConfig);
 
-        txtName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNameActionPerformed(evt);
-            }
-        });
+        tabAutomations.setLayout(new java.awt.BorderLayout());
+        tabObjectEditor.addTab("Automations", tabAutomations);
 
-        jLabel15.setText("Description:");
-
-        jLabel1.setText("Protocol:");
-
-        jLabel2.setText("Address:");
-
-        jLabel3.setForeground(new java.awt.Color(121, 121, 121));
-        jLabel3.setText("for more info www.freedomotic.com/plugins");
-
-        btnCreateObjectCopy.setText("Create a copy");
-        btnCreateObjectCopy.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateObjectCopyActionPerformed(evt);
-            }
-        });
-
-        btnDelete.setText("Delete Object");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout tabPropertiesLayout = new javax.swing.GroupLayout(tabProperties);
-        tabProperties.setLayout(tabPropertiesLayout);
-        tabPropertiesLayout.setHorizontalGroup(
-            tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tabPropertiesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(tabPropertiesLayout.createSequentialGroup()
-                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel15)
-                            .addComponent(jLabel14)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addGap(18, 18, 18)
-                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtName)
-                                .addComponent(txtDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
-                                .addComponent(txtProtocol)
-                                .addComponent(txtAddress))))
-                    .addGroup(tabPropertiesLayout.createSequentialGroup()
-                        .addComponent(btnCreateObjectCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(2027, Short.MAX_VALUE))
-        );
-        tabPropertiesLayout.setVerticalGroup(
-            tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tabPropertiesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel14)
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel15)
-                    .addComponent(txtDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtProtocol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
-                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCreateObjectCopy)
-                    .addComponent(btnDelete))
-                .addGap(480, 480, 480))
-        );
-
-        jTabbedPane3.addTab("Properties", tabProperties);
-
-        getContentPane().add(jTabbedPane3, java.awt.BorderLayout.CENTER);
-
-        btnCancel.setText("Cancel");
-        btnCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnCancel, java.awt.BorderLayout.PAGE_END);
+        jPanel1.add(tabObjectEditor, java.awt.BorderLayout.CENTER);
 
         btnOk.setText("OK");
         btnOk.addActionListener(new java.awt.event.ActionListener() {
@@ -513,7 +518,19 @@ public class ObjectEditor extends javax.swing.JFrame {
                 btnOkActionPerformed(evt);
             }
         });
-        getContentPane().add(btnOk, java.awt.BorderLayout.PAGE_START);
+        pnlFrameButtons.add(btnOk);
+
+        btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+        pnlFrameButtons.add(btnCancel);
+
+        jPanel1.add(pnlFrameButtons, java.awt.BorderLayout.PAGE_END);
+
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -530,6 +547,12 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
             object.setChanged(true);
             saveRepresentationChanges();
+            for (Component component : tabAutomations.getComponents()) {
+                if (component instanceof ReactionEditor) {
+                    ReactionEditor editor = (ReactionEditor)component;
+                    editor.finalizeEditing();
+                }
+            }
             this.dispose();
         }
 }//GEN-LAST:event_btnOkActionPerformed
@@ -542,11 +565,11 @@ public class ObjectEditor extends javax.swing.JFrame {
         //we send a command with a show event editor plugin request
         Command showReactionEditor = new Command();
         showReactionEditor.setName("Show automation editor GUI");
-        showReactionEditor.setDescription("make a the automation editor plugin show its GUI");
+        showReactionEditor.setDescription("makes the automation editor plugin show its GUI");
         showReactionEditor.setReceiver("app.actuators.plugins.controller.in");
         showReactionEditor.setProperty("plugin", "Automation Editor"); //the target plugin
         showReactionEditor.setProperty("action", "SHOW");         //the action to perform
-        Freedomotic.getScheduler().schedule(showReactionEditor);
+        Freedomotic.sendCommand(showReactionEditor);
         //TODO: make this return a command
         this.dispose();
 }//GEN-LAST:event_btnCreateReactionActionPerformed
@@ -562,8 +585,8 @@ public class ObjectEditor extends javax.swing.JFrame {
         pojoCopy = SerialClone.clone(object.getPojo());
 
         pojoCopy.setName(object.getPojo().getName() + UidGenerator.getNextStringUid());
+        pojoCopy.setProtocol(object.getPojo().getProtocol());
         pojoCopy.setPhisicalAddress("unknown");
-        pojoCopy.setProtocol("unknown");
         for (Representation view : pojoCopy.getRepresentations()) {
             view.setOffset(0, 0);
         }
@@ -676,14 +699,17 @@ public class ObjectEditor extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTabbedPane jTabbedPane3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel pnlFrameButtons;
     private javax.swing.JSpinner spnRotation;
     private javax.swing.JSpinner spnScaleHeight;
     private javax.swing.JSpinner spnScaleWidth;
     private javax.swing.JSpinner spnX;
     private javax.swing.JSpinner spnY;
+    private javax.swing.JPanel tabAutomations;
     private javax.swing.JPanel tabCommandsConfig;
     private javax.swing.JPanel tabControls;
+    private javax.swing.JTabbedPane tabObjectEditor;
     private javax.swing.JPanel tabProperties;
     private javax.swing.JPanel tabRepresentation;
     private javax.swing.JPanel tabTriggersConfig;
@@ -693,13 +719,13 @@ public class ObjectEditor extends javax.swing.JFrame {
     private javax.swing.JTextField txtProtocol;
     // End of variables declaration//GEN-END:variables
 
-    private void populateCommandsPanel() {
+    private void populateCommandsTab() {
         //addAndRegister a properties panel
-        commandsControlPanel = new PropertiesPanel();
-        commandsControlPanel.setKeysEditable(false);
+        commandsControlPanel = new PropertiesPanel_1(0, 2);
         tabCommandsConfig.add(commandsControlPanel);
 
         //creates an array of mapping behavior to hardware command
+        int row = 0;
         for (final String action : object.getPojo().getActions().stringPropertyNames()) {
             //addAndRegister a combo box with the list of alla available commands
             DefaultComboBoxModel allHardwareCommands = new DefaultComboBoxModel();
@@ -713,7 +739,7 @@ public class ObjectEditor extends javax.swing.JFrame {
             if (relatedCommand != null) {
                 //related harware command is already defined
                 cmbCommand.setSelectedItem(relatedCommand);
-            }else{
+            } else {
                 cmbCommand.setSelectedIndex(-1); //no mapping
             }
             cmbCommand.addActionListener(new ActionListener() {
@@ -724,17 +750,23 @@ public class ObjectEditor extends javax.swing.JFrame {
                     object.setAction(action, command);
                 }
             });
-            commandsControlPanel.addRow(action, cmbCommand);
+            commandsControlPanel.addRow();
+            JLabel lblAction = new JLabel("To " + action + " this object execute ");
+            commandsControlPanel.addElement(lblAction, row, 0);
+            commandsControlPanel.addElement(cmbCommand, row, 1);
+            lblAction.setPreferredSize(new Dimension(350, 30));
+            row++;
         }
+        commandsControlPanel.layoutPanel();
     }
 
-    private void populateTriggersPanel() {
+    private void populateTriggersTab() {
         //addAndRegister a properties panel
-        triggersControlPanel = new PropertiesPanel();
-        triggersControlPanel.setKeysEditable(false);
-        tabTriggersConfig.add(triggersControlPanel);
+        pnlTriggers = new PropertiesPanel_1(0, 2);
+        tabTriggersConfig.add(pnlTriggers);
 
         //creates an array of mapping behavior to hardware trigger
+        int row = 0;
         for (final Behavior behavior : object.getPojo().getBehaviors()) {
             //addAndRegister a combo box with the list of all available hardware triggers
             DefaultComboBoxModel model = new DefaultComboBoxModel();
@@ -743,8 +775,8 @@ public class ObjectEditor extends javax.swing.JFrame {
                     model.addElement(trigger);
                 }
             }
-            final JComboBox valueComponent = new JComboBox();
-            valueComponent.setModel(model);
+            final JComboBox comboSelectTrigger = new JComboBox();
+            comboSelectTrigger.setModel(model);
             //check if the object has already defined a mapping trigger -> behavior
             //if true select it
             String relatedTriggerName = "";
@@ -757,20 +789,65 @@ public class ObjectEditor extends javax.swing.JFrame {
             Trigger relatedTrigger = TriggerPersistence.getTrigger(relatedTriggerName);
             //if related harware trigger is already defined
             if (relatedTrigger != null) {
-                valueComponent.setSelectedItem(relatedTrigger);
+                comboSelectTrigger.setSelectedItem(relatedTrigger);
             } else {
                 //no selection
-                valueComponent.setSelectedIndex(-1);
+                comboSelectTrigger.setSelectedIndex(-1);
             }
             //addAndRegister a listener on trigger combobox item selection
-            valueComponent.addActionListener(new ActionListener() {
+            comboSelectTrigger.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    object.addTriggerMapping((Trigger) valueComponent.getSelectedItem(), behavior.getName());
+                    object.addTriggerMapping((Trigger) comboSelectTrigger.getSelectedItem(), behavior.getName());
                 }
             });
-            triggersControlPanel.addRow(behavior.getName(), valueComponent);
+
+            JLabel behaviorLabel = new JLabel("Changes " + behavior.getName() + " value");
+            pnlTriggers.addRow();
+            pnlTriggers.addElement(comboSelectTrigger, row, 0);
+            pnlTriggers.addElement(behaviorLabel, row, 1);
+            comboSelectTrigger.setPreferredSize(new Dimension(350, 30));
+            row++;
         }
+        pnlTriggers.layoutPanel();
+    }
+
+    private void populateAutomationsTab() {
+        tabAutomations.setLayout(new BoxLayout(tabAutomations, BoxLayout.PAGE_AXIS));
+        for (Trigger trigger : TriggerPersistence.getTriggers()) {
+            System.out.println("check " + trigger.getName());
+            boolean isRelated = false;
+            if (!trigger.isHardwareLevel()) {
+                Iterator it = trigger.getPayload().iterator();
+                //chack if this trigger is related toi the object and set a flag
+                while (it.hasNext()) {
+                    Statement statement = (Statement) it.next();
+                    if (statement.getValue().contains(object.getPojo().getName())) {
+                        isRelated = true; //is a trigger related with this object
+                        System.out.println(trigger.getName() + "is related");
+                        break; //no need to check the other statements
+                    }
+                }
+                //if this trigger is related to this object
+                if (isRelated) { //current trigger is related to this env object
+                    boolean alreadyStored = false;
+                    //display already stored reactions related to this objects
+                    for (Reaction r : ReactionPersistence.getReactions()) {
+                        if (r.getTrigger().equals(trigger)) {
+                            ReactionEditor editor = new ReactionEditor(r);
+                            tabAutomations.add(editor);
+                            alreadyStored = true;
+                        }
+                    }
+                    if (!alreadyStored) { //add an empty reaction if none
+                        ReactionEditor editor = new ReactionEditor(new Reaction(trigger));
+                        tabAutomations.add(editor);
+                    }
+                    //tabAutomations.add(new JSeparator());
+                }
+            }
+        }
+        tabAutomations.validate();
     }
 }

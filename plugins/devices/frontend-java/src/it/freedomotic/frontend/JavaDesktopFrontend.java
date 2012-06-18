@@ -3,10 +3,12 @@ package it.freedomotic.frontend;
 import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.ZoneHasChanged;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.io.IOException;
 import javax.swing.JOptionPane;
@@ -70,10 +72,11 @@ public class JavaDesktopFrontend extends Actuator {
         }
         return drawer;
     }
-    
+
     @Override
     protected void onCommand(final Command c) throws IOException, UnableToExecuteException {
-        String callout = c.getProperty("callout-message");
+        System.out.println("received callout");
+        String callout = c.getProperty("callout.message");
         if (callout != null) {
             Callout callout1 = new Callout(this.getClass().getCanonicalName(), "info", callout, 0, 0, 0, 10000);
             drawer.createCallout(callout1);
@@ -111,6 +114,13 @@ public class JavaDesktopFrontend extends Actuator {
                 drawer.setNeedRepaint(true);
             } else {
                 if (event instanceof ZoneHasChanged) {
+                    //writing the string on the screen
+                    String description = event.getProperty("zone.description");
+                    Callout callout = new Callout(
+                            description,
+                            2000,
+                            Color.blue);
+                    drawer.createCallout(callout);
                     drawer.setNeedRepaint(true);
                 } else {
                     window.getPluginJList().update();

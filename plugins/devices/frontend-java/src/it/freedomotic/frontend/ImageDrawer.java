@@ -102,13 +102,6 @@ public class ImageDrawer extends PlainDrawer {
                 if (zone instanceof Room) {
                     Room room = (Room) zone;
                     drawRoomObject(pol);
-                    //writing the string on the screen
-                    Callout callout = new Callout(zone.getPojo().getName(), "zone", room.getPojo().getName().toString() + "\n" + room.getDescription(),
-                            (int) pol.getBounds().getMinX() + 22,
-                            (int) pol.getBounds().getMinY() + 22,
-                            (float) 0.0, -1);
-                    createCallout(callout);
-
                 }
             }
         }
@@ -126,7 +119,9 @@ public class ImageDrawer extends PlainDrawer {
 
     private void paintObjectDescription(EnvObjectLogic obj) {
         StringBuilder description = new StringBuilder();
-        description.append(obj.getMessage()).append("\n");
+        if (!obj.getMessage().isEmpty()) {
+            description.append(obj.getMessage()).append("\n");
+        }
         description.append(obj.getPojo().getName()).append("\n");
         description.append(obj.getPojo().getDescription()).append("\n");
         for (BehaviorLogic b : obj.getBehaviors()) {
@@ -139,7 +134,15 @@ public class ImageDrawer extends PlainDrawer {
         Rectangle2D box = getCachedShape(obj).getBounds2D();
         int x = (int) box.getMaxX() + 20;
         int y = (int) box.getY() + 10;
-        createCallout(new Callout(obj.getPojo().getName(), "object.description", description.toString(), x, y, 0.0f, 2000));
+        Callout callout = new Callout(
+                obj.getPojo().getName(),
+                "object.description",
+                description.toString(),
+                x, y, 0.0f, 2000);
+        if (!obj.getMessage().isEmpty()) {
+            callout.setColor(Color.red.darker());
+        }
+        createCallout(callout);
 
     }
 
