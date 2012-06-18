@@ -68,7 +68,7 @@ public class VariousSensors extends Protocol {
     protected void onRun() {
         //sends a fake sensor read event
         ProtocolRead event = new ProtocolRead(this, "test", "test");
-        event.getPayload().addStatement("powered", powered.toString());
+        event.getPayload().addStatement("value", powered.toString());
         //invert the value for the next round
         notifyEvent(event);
         if (powered) {

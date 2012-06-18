@@ -5,10 +5,22 @@
     <payload>
         <payload>
             <it.freedomotic.reactions.Statement>
+                <logical>AND</logical>
+                <attribute>protocol</attribute>
+                <operand>EQUALS</operand>
+                <value>test</value>
+            </it.freedomotic.reactions.Statement>
+            <it.freedomotic.reactions.Statement>
+                <logical>AND</logical>
+                <attribute>address</attribute>
+                <operand>EQUALS</operand>
+                <value>test</value>
+            </it.freedomotic.reactions.Statement>
+            <it.freedomotic.reactions.Statement>
                <logical>SET</logical>
                <attribute>behaviorValue</attribute>
                <operand>EQUALS</operand>
-               <value>@event.powered</value>
+               <value>@event.value</value>
             </it.freedomotic.reactions.Statement>
         </payload>
     </payload>

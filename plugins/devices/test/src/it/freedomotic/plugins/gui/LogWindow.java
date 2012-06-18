@@ -59,7 +59,7 @@ public class LogWindow extends JFrame {
         setColumnWidth(table.getColumnModel().getColumn(0), 70);
         //setColumnWidth(table.getColumnModel().getColumn(1), 200);
 //        setColumnWidth(table.getColumnModel().getColumn(2), 150);
-        cmbLevel.setSelectedItem("INFO");
+        cmbLevel.setSelectedItem("ALL");
         cmbLevel.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {

@@ -33,6 +33,11 @@ public class LogViewer extends Actuator {
 
     @Override
     protected void onShowGui() {
+        //nothig special to do here
+    }
+
+    @Override
+    protected void onStart() {
         handler = LogWindowHandler.getInstance();
         handler.setFilter(new Filter() {
 
@@ -42,15 +47,20 @@ public class LogViewer extends Actuator {
             }
         });
         logger = Freedomotic.logger;
-        handler.setLevel(Level.ALL);
         logger.setLevel(Level.ALL);
         logger.addHandler(handler);
         bindGuiToPlugin(handler.window);
-    }
-
-    @Override
-    protected void onStart() {
         showGui();
+    }
+    
+    @Override
+    protected void onStop(){
+        //free memory
+        hideGui();
+        gui =null;
+        logger.removeHandler(handler);
+        handler =null;
+        logger = null;
     }
 
     @Override

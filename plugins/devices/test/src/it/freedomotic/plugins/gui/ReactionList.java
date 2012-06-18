@@ -10,22 +10,17 @@
  */
 package it.freedomotic.plugins.gui;
 
-import it.freedomotic.app.Freedomotic;
-import it.freedomotic.core.NaturalLanguageProcessor;
-import it.freedomotic.persistence.CommandPersistence;
 import it.freedomotic.persistence.ReactionPersistence;
-import it.freedomotic.persistence.TriggerPersistence;
 import it.freedomotic.plugins.AutomationsEditor;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Trigger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
+import it.freedomotic.util.PropertiesPanel_1;
+import it.freedomotic.util.ReactionEditor;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -33,19 +28,27 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author Enrico
  */
-public class ReactionList extends javax.swing.JFrame {
+public final class ReactionList extends javax.swing.JFrame {
 
-    private static AutomationsEditor plugin;
+    private AutomationsEditor plugin;
+    private PropertiesPanel_1 pnlAutomations;
 
     /**
      * Creates new form ReactionList
      */
     public ReactionList(AutomationsEditor plugin) {
         initComponents();
-        //btnEdit.setEnabled(false);
         btnDelete.setEnabled(false);
-        populateTriggersComboBox();
         this.plugin = plugin;
+    }
+
+    private void populateEditor(Reaction selected) {
+        JFrame frame = new JFrame("this is a test");
+        frame.setLayout(new BorderLayout());
+        ReactionEditor editor = new ReactionEditor(selected);
+        frame.setPreferredSize(new Dimension(400, 30));
+        frame.add(editor);
+        frame.setVisible(true);
     }
 
     /**
@@ -61,19 +64,6 @@ public class ReactionList extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         lstReactions = new javax.swing.JList();
         btnDelete = new javax.swing.JButton();
-        txtDescription = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        lblResult = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtInput = new javax.swing.JTextArea();
-        btnSearch = new javax.swing.JButton();
-        btnAddReaction = new javax.swing.JButton();
-        cmbTrigger = new javax.swing.JComboBox();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
-        jLabel5 = new javax.swing.JLabel();
-        btnCustomizeTrigger = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Current Reactions");
@@ -97,49 +87,6 @@ public class ReactionList extends javax.swing.JFrame {
             }
         });
 
-        txtDescription.setEditable(false);
-        txtDescription.setBorder(null);
-
-        jLabel2.setText("Description:");
-
-        txtInput.setColumns(20);
-        txtInput.setRows(5);
-        txtInput.setText("bedroom light on, tv on\nsay temperature");
-        txtInput.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtInputKeyTyped(evt);
-            }
-        });
-        jScrollPane2.setViewportView(txtInput);
-
-        btnSearch.setText("Propose");
-        btnSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchActionPerformed(evt);
-            }
-        });
-
-        btnAddReaction.setText("Add Reaction");
-        btnAddReaction.setEnabled(false);
-        btnAddReaction.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddReactionActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setText("Then ... (Write what you wanto to do in natural language and press \"Propose\" button):");
-
-        jLabel4.setText("When ...");
-
-        jLabel5.setText("Create a new automation (When TRIGGER then COMMANDS):");
-
-        btnCustomizeTrigger.setText("Customize");
-        btnCustomizeTrigger.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCustomizeTriggerActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -147,41 +94,13 @@ public class ReactionList extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(111, 111, 111))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSeparator1)
-                            .addComponent(txtDescription)
-                            .addComponent(jScrollPane1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(cmbTrigger, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(btnCustomizeTrigger, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnAddReaction, javax.swing.GroupLayout.Alignment.TRAILING))))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(btnDelete))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addComponent(btnDelete)
+                            .addComponent(jLabel1))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -192,30 +111,7 @@ public class ReactionList extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnDelete)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(cmbTrigger, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCustomizeTrigger))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAddReaction, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblResult, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -231,39 +127,9 @@ public class ReactionList extends javax.swing.JFrame {
         updateData();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-
-        String text = txtInput.getText();
-        String[] lines = text.split("\n");
-
-        NaturalLanguageProcessor nlp = new NaturalLanguageProcessor();
-        for (String line : lines) {
-            Command command = nlp.getMostSimilarCommand(line);
-            txtInput.setText(txtInput.getText().replace(line, command.getName()));
-        }
-
-        btnAddReaction.setEnabled(true);
-    }//GEN-LAST:event_btnSearchActionPerformed
-
-    private void btnAddReactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddReactionActionPerformed
-        createReaction();
-        btnAddReaction.setEnabled(false);
-        updateData();
-    }//GEN-LAST:event_btnAddReactionActionPerformed
-
-    private void txtInputKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtInputKeyTyped
-        lblResult.setText("");
-        btnAddReaction.setEnabled(false);
-    }//GEN-LAST:event_txtInputKeyTyped
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         plugin.stop();
     }//GEN-LAST:event_formWindowClosing
-
-    private void btnCustomizeTriggerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomizeTriggerActionPerformed
-        CustomizeTrigger customizeTrigger = new CustomizeTrigger(this, (Trigger) cmbTrigger.getSelectedItem());
-        customizeTrigger.setVisible(true);
-    }//GEN-LAST:event_btnCustomizeTriggerActionPerformed
 
     protected void updateData() {
         DefaultListModel model = new DefaultListModel();
@@ -277,59 +143,24 @@ public class ReactionList extends javax.swing.JFrame {
             public void valueChanged(ListSelectionEvent e) {
                 Reaction selected = (Reaction) lstReactions.getSelectedValue();
                 if (selected != null) {
-                    //btnEdit.setEnabled(true);
+                    populateEditor(selected);
                     btnDelete.setEnabled(true);
-                    txtDescription.setText(selected.getDescription());
                 } else {
-                    //btnEdit.setEnabled(false);
                     btnDelete.setEnabled(false);
                 }
             }
         });
-
-        populateTriggersComboBox();
-    }
-
-    protected void populateTriggersComboBox() {
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
-        for (Trigger trigger : TriggerPersistence.getTriggers()) {
-            if (!trigger.isHardwareLevel()) {
-                model.addElement(trigger);
-            }
-        }
-        cmbTrigger.setModel(model);
-    }
-
-    private void createReaction() {
-        Reaction reaction = new Reaction((Trigger) cmbTrigger.getSelectedItem(), txtInput.getText());
-        if (reaction != null) {
-            ReactionPersistence.add(reaction);
-            lblResult.setText("Created a new reaction: if " + reaction.getDescription());
-        }
     }
 
     protected void setTargetTrigger(Trigger t) {
     }
 
-    void setTargetCommand(Command c) {
+    protected void setTargetCommand(Command c) {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAddReaction;
-    private javax.swing.JButton btnCustomizeTrigger;
     private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnSearch;
-    private javax.swing.JComboBox cmbTrigger;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JLabel lblResult;
     private javax.swing.JList lstReactions;
-    private javax.swing.JTextField txtDescription;
-    private javax.swing.JTextArea txtInput;
     // End of variables declaration//GEN-END:variables
 }
