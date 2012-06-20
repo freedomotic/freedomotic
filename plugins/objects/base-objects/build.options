@@ -1,4 +1,4 @@
-#Sun, 03 Jun 2012 14:43:21 +0200
+#Wed, 20 Jun 2012 14:50:06 +0200
 
 package.type=object
 package.name=com.freedomotic.baseobj
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=2
 framework.required.build=x
 build.major=1
-build.number=23
+build.number=24
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
