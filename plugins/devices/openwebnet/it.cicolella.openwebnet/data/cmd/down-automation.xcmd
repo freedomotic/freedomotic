@@ -1,13 +1,13 @@
 <it.freedomotic.reactions.Command>
   <name>Move DOWN OWN automation</name>
-  <receiver>app.actuators.protocol.own.in</receiver>
+  <receiver>app.actuators.protocol.openwebnet.in</receiver>
   <description>An OWN automation moves down</description>
   <hardwareLevel>true</hardwareLevel>
   <delay>0</delay>
   <timeout>0</timeout>
   <properties>
     <properties>
-      <property name="protocol" value="OwnProtocol"/>
+      <property name="protocol" value="openwebnet"/>
       <property name="address" value="@owner.object.address"/>
       <property name="object" value="@event.object.name"/> 
       <property name="who" value="2"/>

@@ -46,7 +46,7 @@ public class OpenWebNet extends Protocol {
     
     
     public OpenWebNet() {
-        super("OpenWebNet", "/it.cicolella.own/own.xml");
+        super("OpenWebNet", "/it.cicolella.openwebnet/openwebnet.xml");
         
     }
 
@@ -110,7 +110,7 @@ public class OpenWebNet extends Protocol {
             frameParts=frame.split("\\*"); // * is reserved so it must be escaped 
             who = frameParts[0];
             where = frameParts[1];
-            event = new ProtocolRead(this, "OwnProtocol", who+"*"+where); // LIGHTING if (who.equalsIgnoreCase("1")) {
+            event = new ProtocolRead(this, "openwebnet", who+"*"+where); // LIGHTING if (who.equalsIgnoreCase("1")) {
             if (frameParts[2].equalsIgnoreCase("1")) {
                 String level = frameParts[3];
                 String speed = frameParts[4];
@@ -364,7 +364,7 @@ public class OpenWebNet extends Protocol {
             frameParts = frame.split("\\*"); // * is reserved so it must be escaped
             who = frameParts[0];
             where = frameParts[2];
-            event = new ProtocolRead(this, "OwnProtocol", who+"*"+where);
+            event = new ProtocolRead(this, "openwebnet", who+"*"+where);
 
             // LIGHTING
             if (who.equalsIgnoreCase("1")) {
