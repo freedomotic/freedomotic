@@ -1,14 +1,19 @@
-#Thu, 08 Mar 2012 15:11:01 +0100
+#Wed, 27 Jun 2012 00:25:37 +0200
 
 package.type=device
 package.name=es.gpulido.twitter
 package.license=GNU GPL2
+package.nodeid=423
 package.vendor.name=Gabriel
 package.vendor.surname=Pulido
 package.vendor.contact=gabriel@freedomotic.com
 package.vendor.company=Freedomotic
 package.vendor.nation=es
-build.number=9
+framework.required.major=5
+framework.required.minor=2
+framework.required.build=x
+build.major=1
+build.number=5
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
