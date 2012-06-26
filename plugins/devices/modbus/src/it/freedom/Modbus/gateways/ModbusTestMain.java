@@ -10,8 +10,10 @@ import com.serotonin.modbus4j.code.RegisterRange;
 import com.serotonin.modbus4j.exception.ErrorResponseException;
 import com.serotonin.modbus4j.exception.ModbusInitException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
+import com.serotonin.modbus4j.locator.BaseLocator;
+import com.serotonin.modbus4j.locator.NumericLocator;
 import gnu.io.SerialPort;
-import it.freedom.model.ds.Config;
+import it.freedomotic.model.ds.Config;
 
 /**
  *
@@ -38,7 +40,8 @@ public class ModbusTestMain {
         ModbusMaster master = ModbusMasterGateway.getInstance(config);
         try {
             master.init();
-            System.out.println("valor leido: " + master.getValue(1, RegisterRange.HOLDING_REGISTER, 266, DataType.TWO_BYTE_INT_UNSIGNED));
+            NumericLocator bl = new NumericLocator(1, RegisterRange.HOLDING_REGISTER, 266,DataType.TWO_BYTE_INT_UNSIGNED);
+            System.out.println("readed value: " + master.getValue(bl));
 
         } catch (ModbusTransportException ex) {
             System.out.println("error1: " + ex.toString());

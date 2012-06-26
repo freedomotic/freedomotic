@@ -7,8 +7,10 @@ package it.freedom.Modbus;
 
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.BatchResults;
-import com.serotonin.modbus4j.ModbusLocator;
 import com.serotonin.modbus4j.code.RegisterRange;
+import com.serotonin.modbus4j.locator.BaseLocator;
+import com.serotonin.modbus4j.locator.BinaryLocator;
+import com.serotonin.modbus4j.locator.NumericLocator;
 import it.freedomotic.events.GenericEvent;
 import it.freedomotic.model.ds.Config;
 
@@ -21,7 +23,7 @@ import it.freedomotic.model.ds.Config;
  */
 class FreedomModbusLocator {
 
-    private ModbusLocator modbusLocator;
+    private BaseLocator modbusLocator;
     private String name;
     private int slaveId;
     private int registerRange;
@@ -63,12 +65,13 @@ class FreedomModbusLocator {
                 }
                 else
                 {
-                    modbusLocator = new ModbusLocator(slaveId,registerRange,offset,dataType,bit);
+                    modbusLocator = new BinaryLocator(slaveId,registerRange,offset,bit);
+                    //modbusLocator = new ModbusLocator(slaveId,registerRange,offset,dataType,bit);
                 }
             }
             else
             {
-                modbusLocator = new ModbusLocator(slaveId,registerRange,offset,dataType);
+                modbusLocator = new NumericLocator(slaveId,registerRange,offset,dataType);
             }
             //TODO: use the number of registers
             //numberOfRegisters= configuration.getTuples().getIntProperty(i,"NumberOfRegisters",1);
@@ -167,7 +170,7 @@ class FreedomModbusLocator {
     /**
      * @return the modbusLocator
      */
-    protected ModbusLocator getModbusLocator() {
+    protected BaseLocator getModbusLocator() {
         return modbusLocator;
     }
     /**
