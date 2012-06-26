@@ -8,8 +8,9 @@ package it.freedom.Modbus.gateways;
 import com.serotonin.io.serial.SerialParameters;
 import com.serotonin.modbus4j.ModbusFactory;
 import com.serotonin.modbus4j.ModbusMaster;
+import com.serotonin.modbus4j.serial.SerialMaster;
 import gnu.io.SerialPort;
-import it.freedom.model.ds.Config;
+import it.freedomotic.model.ds.Config;
 import java.util.Properties;
 
 /**
@@ -63,7 +64,7 @@ public class ModbusMasterGateway {
             //private static boolean echo = false;
             int receiveTimeout = configuration.getIntProperty("timeout", 5000);//5 seconds
             int retries = configuration.getIntProperty("retries", 1);
-            master = factory.createRtuMaster(params);
+            master = factory.createRtuMaster(params, SerialMaster.SYNC_FUNCTION);
             master.setTimeout(receiveTimeout);
             master.setRetries(retries);
             return master;

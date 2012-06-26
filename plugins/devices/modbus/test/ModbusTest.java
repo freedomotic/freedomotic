@@ -11,6 +11,7 @@ import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.code.RegisterRange;
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.ModbusMaster;
+import com.serotonin.modbus4j.locator.NumericLocator;
 import it.freedom.Modbus.gateways.ModbusMasterGateway;
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +69,8 @@ public class ModbusTest {
         ModbusMaster master = ModbusMasterGateway.getInstance();
         try {
             master.init();
-            System.out.println(master.getValue(1, RegisterRange.HOLDING_REGISTER, 266, DataType.TWO_BYTE_INT_UNSIGNED));
+            NumericLocator bl = new NumericLocator(1, RegisterRange.HOLDING_REGISTER, 266,DataType.TWO_BYTE_INT_UNSIGNED);
+            System.out.println(master.getValue(bl));
 
         } catch (ModbusTransportException ex) {
                 System.out.println(ex.toString());
@@ -96,9 +98,10 @@ public class ModbusTest {
         int value=0;
         try {
             master.init();
-            //master.setValue(1,768,2,true);            
-            master.setValue(1,RegisterRange.HOLDING_REGISTER,771,DataType.TWO_BYTE_INT_UNSIGNED,value1);
-            value =(Integer) master.getValue(1, RegisterRange.HOLDING_REGISTER, 771, DataType.TWO_BYTE_INT_UNSIGNED);
+            //master.setValue(1,768,2,true); 
+            NumericLocator bl = new NumericLocator(1, RegisterRange.HOLDING_REGISTER, 771,DataType.TWO_BYTE_INT_UNSIGNED);
+            master.setValue(bl,value1);
+            value =(Integer) master.getValue(bl);
 
         } catch (ModbusTransportException ex) {
                 System.out.println(ex.toString());
