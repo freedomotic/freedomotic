@@ -397,6 +397,25 @@ public class OpenWebNet extends Protocol {
                     messageDescription = "Automation DOWN";
                 }
             }
+            
+            // POWER MANAGEMENT
+            if (who.equalsIgnoreCase("3")) {
+                what = frameParts[1];
+                where = frameParts[2];
+                messageType = "power management";
+                if (what.equalsIgnoreCase("0")) {
+                    messageDescription = "Load disable";
+                }
+                if (what.equalsIgnoreCase("1")) {
+                    messageDescription = "Load enable";
+                }
+                if (what.equalsIgnoreCase("2")) {
+                    messageDescription = "Load forced";
+                }
+                if (what.equalsIgnoreCase("3")) {
+                    messageDescription = "Stop load forced";
+                }
+            }
 
             // TERMOREGULATION
             if (who.equalsIgnoreCase("4")) {

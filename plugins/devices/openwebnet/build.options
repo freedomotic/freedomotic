@@ -1,7 +1,7 @@
-#Fri, 22 Jun 2012 14:48:51 +0200
+#Tue, 26 Jun 2012 14:53:24 +0200
 
 package.type=device
-package.name=it.cicolella.own
+package.name=it.cicolella.openwebnet
 package.nodeid=734
 package.license=GNU GPL2
 package.vendor.name=Mauro
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=2
 framework.required.build=x
 build.major=1
-build.number=26
+build.number=29
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
