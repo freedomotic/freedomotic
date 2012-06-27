@@ -64,6 +64,7 @@ public class OpenWebNet extends Protocol {
         boolean connected = gestSocketMonitor.connect(host, port, passwordOpen);
         if (connected) {
             this.setDescription("Connected to " + host + ":" + port);
+            initSystem();
         } else {
             stop();
             this.setDescription("Plugin cannot start: Unable to connect to " + host + ":" + port);
@@ -687,15 +688,15 @@ public class OpenWebNet extends Protocol {
             Freedomotic.logger.info("Sending " + LIGHTNING_DIAGNOSTIC_FRAME + " frame to inizialize LIGHTNING");
             OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Sending " + LIGHTNING_DIAGNOSTIC_FRAME + " (inizialize LIGHTNING)");
             sendFrame(LIGHTNING_DIAGNOSTIC_FRAME);
-            Freedomotic.logger.info("Sending " + AUTOMATIONS_DIAGNOSTIC_FRAME + " frame to inizialize AUTOMATIONS");
-            OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Sending " + AUTOMATIONS_DIAGNOSTIC_FRAME + " (inizialize AUTOMATIONS)");
-            sendFrame(AUTOMATIONS_DIAGNOSTIC_FRAME);
-            Freedomotic.logger.info("Sending " + ALARM_DIAGNOSTIC_FRAME + " frame to inizialize ALARM");
-            OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Sending " + ALARM_DIAGNOSTIC_FRAME + " (inizialize ALARM)");
-            sendFrame(ALARM_DIAGNOSTIC_FRAME);
-            Freedomotic.logger.info("Sending " + POWER_MANAGEMENT_DIAGNOSTIC_FRAME + " frame to inizialize POWER MANAGEMENT");
-            OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Sending " + POWER_MANAGEMENT_DIAGNOSTIC_FRAME + " (inizialize POWER MANAGEMENT)");
-            sendFrame(POWER_MANAGEMENT_DIAGNOSTIC_FRAME);
+            //Freedomotic.logger.info("Sending " + AUTOMATIONS_DIAGNOSTIC_FRAME + " frame to inizialize AUTOMATIONS");
+            //OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Sending " + AUTOMATIONS_DIAGNOSTIC_FRAME + " (inizialize AUTOMATIONS)");
+            //sendFrame(AUTOMATIONS_DIAGNOSTIC_FRAME);
+            //Freedomotic.logger.info("Sending " + ALARM_DIAGNOSTIC_FRAME + " frame to inizialize ALARM");
+            //OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Sending " + ALARM_DIAGNOSTIC_FRAME + " (inizialize ALARM)");
+            //sendFrame(ALARM_DIAGNOSTIC_FRAME);
+            //Freedomotic.logger.info("Sending " + POWER_MANAGEMENT_DIAGNOSTIC_FRAME + " frame to inizialize POWER MANAGEMENT");
+            //OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Sending " + POWER_MANAGEMENT_DIAGNOSTIC_FRAME + " (inizialize POWER MANAGEMENT)");
+            //sendFrame(POWER_MANAGEMENT_DIAGNOSTIC_FRAME);
         } catch (UnableToExecuteException e) {
         } catch (IOException e) {  }
         ;
