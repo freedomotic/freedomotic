@@ -112,6 +112,7 @@
         <property name="base" value="${basedir}"/>
         <property name="include" value="${workspace-base}/scripts/shared"/>
         <property name="changeLogFile" value="${include}/CHANGELOG.TXT"/>
+       
         <buildnumber/>
         <mkdir dir="${release-folder}" />
         <mkdir dir="${release-dump}" />
@@ -164,4 +165,34 @@
         <delete dir="${release-folder}" />
         <echo>FINISH... Release created. Now it is ready to be distributed.</echo>
     </target>
+    <target name="upload-release" >
+        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+            <classpath>
+                <pathelement location="../../lib/ant/ant-contrib-1.0b3.jar"/>
+            </classpath>
+        </taskdef>
+         <property environment = "env"/>                
+         <propertyregex property="vm.commit_sha" input="${env.GIT_COMMIT}" 
+                regexp="(\w{7})\w*" 
+                select="\1" 
+                defaultvalue="Error" 
+                override="true"/> 
+            <echo>Property vm.propertyname=${vm.propertyname}</echo> 
+        
+        
+                <property name="workspace-base" value="../../"/>
+               
+                <property file="${workspace-base}/framework/freedomotic/releasetoupload" />
+                <taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="${workspace-base}/lib/ant/ant-googlecode-0.0.3.jar" name="gcupload"/>
+                <gcupload 
+        username="${username}"
+        password="${password}"        
+        projectname="freedomotic"
+        filename="${workspace-base}/${upload.file.name}"
+        targetfilename="freedomotic-dailybuild-5.2-${vm.commit_sha}.zip"
+        summary="Daily build created by a Continuous Integration System. This release is unstable, do not use in production environment."
+        labels="Featured, Type-DailyBuild, Type-Beta, Type-Archive, OpSys-All"
+                verbose="true"/>
+    </target>
+
 </project>
