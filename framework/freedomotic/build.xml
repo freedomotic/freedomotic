@@ -122,6 +122,7 @@
         <mkdir dir="plugins/objects"/>
         <mkdir dir="plugins/providers"/>
         <mkdir dir="plugins/events"/>
+        <mkdir dir="data"/>
         
         <echo>  Add jar file and libraries</echo>
         <copy todir="${release-folder}">
@@ -138,7 +139,7 @@
             <fileset dir="${base}/config" includes="**/*" />
         </copy>
         
-        <echo>  Add data file</echo>
+        <echo>  Add data file</echo>        
         <copy todir="${release-folder}/data">
             <fileset dir="${base}/data" includes="**/*" />
         </copy>
