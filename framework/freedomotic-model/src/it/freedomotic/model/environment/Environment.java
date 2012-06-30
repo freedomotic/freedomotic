@@ -30,7 +30,6 @@ import java.util.ArrayList;
 public class Environment implements Serializable {
 
     private String name;
-    private String objectsFolder;
     private int width;
     private int height;
     private String renderer;
@@ -43,10 +42,6 @@ public class Environment implements Serializable {
 
     public String getRenderer() {
         return renderer;
-    }
-
-    public String getObjectsFolder() {
-        return objectsFolder;
     }
 
     public void setRenderer(String renderer) {
@@ -110,11 +105,6 @@ public class Environment implements Serializable {
     public int getHeight() {
         return height;
     }
-//    public Dimension getDimension() {
-//        Dimension d = new Dimension();
-//        d.setSize(width, height);
-//        return d;
-//    }
 
     public void clear() {
         zones.clear();

@@ -4,12 +4,12 @@
  */
 package it.freedomotic.frontend;
 
-import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.objects.BehaviorLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.persistence.EnvObjectPersistence;
 import it.freedomotic.util.AWTConverter;
 import java.awt.Color;
@@ -43,6 +43,8 @@ public class ImageDrawer extends PlainDrawer {
                 if (obj.getPojo().getCurrentRepresentation().getIcon() != null
                         && !obj.getPojo().getCurrentRepresentation().getIcon().equalsIgnoreCase("")) {
                     try {
+                        //WidgetTest widget = new WidgetTest(obj);
+                        //paintImage(widget.draw());
                         paintImage(obj.getPojo());
                     } catch (RuntimeException e) {
                         drawPlainObject(obj);
@@ -163,6 +165,5 @@ public class ImageDrawer extends PlainDrawer {
         super.mouseRightClickObject(obj);
         ObjectEditor editor = new ObjectEditor(obj);
         editor.setVisible(true);
-
     }
 }

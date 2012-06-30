@@ -201,7 +201,7 @@ public class EnvObject implements Serializable {
         final EnvObject other = (EnvObject) obj;
 
 
-        if ((this.name == null) ? (other.name != null) : !this.name.equalsIgnoreCase(other.name)) {
+        if (!this.name.equalsIgnoreCase(other.name)) {
             //if they have different names they cannot have same address/protocol
             //otherwise are the same object despite of the different name
             if ((this.getPhisicalAddress().equalsIgnoreCase(other.getPhisicalAddress()))

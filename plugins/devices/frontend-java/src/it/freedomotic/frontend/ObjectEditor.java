@@ -10,6 +10,8 @@
  */
 package it.freedomotic.frontend;
 
+import it.freedomotic.api.Client;
+import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.AlreadyExistentException;
 import it.freedomotic.exceptions.NotValidElementException;
@@ -17,12 +19,7 @@ import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.BehaviorLogic;
-import it.freedomotic.objects.BooleanBehaviorLogic;
-import it.freedomotic.objects.EnvObjectFactory;
-import it.freedomotic.objects.ListBehaviorLogic;
-import it.freedomotic.objects.RangedIntBehaviorLogic;
+import it.freedomotic.objects.*;
 import it.freedomotic.persistence.CommandPersistence;
 import it.freedomotic.persistence.EnvObjectPersistence;
 import it.freedomotic.persistence.ReactionPersistence;
@@ -32,10 +29,8 @@ import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.util.*;
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -70,7 +65,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         setSize(600, 400);
         txtName.setText(pojo.getName());
         txtDescription.setText(pojo.getDescription());
-        txtProtocol.setText(pojo.getProtocol());
+        populateProtocol();
         txtAddress.setText(pojo.getPhisicalAddress());
         Integer x = (int) pojo.getCurrentRepresentation().getOffset().getX();
         Integer y = (int) pojo.getCurrentRepresentation().getOffset().getY();
@@ -183,6 +178,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 controlPanel.addRow();
                 controlPanel.addElement(label, row, 0);
                 controlPanel.addElement(slider, row, 1);
+                //slider.setPreferredSize(new Dimension(500, 100));
                 slider.addChangeListener(new ChangeListener() {
 
                     @Override
@@ -219,13 +215,6 @@ public class ObjectEditor extends javax.swing.JFrame {
             row++;
         }
         controlPanel.layoutPanel();
-
-
-
-        //populateAutomationsTab();
-
-        this.pack();
-        setVisible(true);
     }
 
     /**
@@ -246,12 +235,12 @@ public class ObjectEditor extends javax.swing.JFrame {
         txtDescription = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        txtProtocol = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtAddress = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         btnCreateObjectCopy = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
+        txtProtocol = new javax.swing.JComboBox();
         tabRepresentation = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         spnX = new javax.swing.JSpinner();
@@ -273,11 +262,17 @@ public class ObjectEditor extends javax.swing.JFrame {
         btnOk = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Object Editor");
         setAlwaysOnTop(true);
         setMaximumSize(new java.awt.Dimension(2000, 2000));
         setMinimumSize(new java.awt.Dimension(500, 300));
         setPreferredSize(new java.awt.Dimension(800, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
@@ -335,16 +330,16 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
-                            .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtName)
-                                .addComponent(txtDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
-                                .addComponent(txtProtocol)
-                                .addComponent(txtAddress))))
+                            .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtAddress, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtDescription, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtName, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtProtocol, javax.swing.GroupLayout.Alignment.LEADING, 0, 311, Short.MAX_VALUE))))
                     .addGroup(tabPropertiesLayout.createSequentialGroup()
                         .addComponent(btnCreateObjectCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(3521, Short.MAX_VALUE))
+                .addContainerGap(3695, Short.MAX_VALUE))
         );
         tabPropertiesLayout.setVerticalGroup(
             tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -359,8 +354,8 @@ public class ObjectEditor extends javax.swing.JFrame {
                     .addComponent(txtDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtProtocol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(txtProtocol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -536,10 +531,10 @@ public class ObjectEditor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
-        if ((!txtProtocol.getText().equals(""))
+        if ((!txtProtocol.getSelectedItem().toString().equals(""))
                 && (!txtAddress.getText().equals(""))) {
             EnvObject pojo = object.getPojo();
-            pojo.setProtocol(txtProtocol.getText());
+            pojo.setProtocol(txtProtocol.getSelectedItem().toString());
             pojo.setPhisicalAddress(txtAddress.getText());
             pojo.setDescription(txtDescription.getText());
             if (!(oldName.equals(txtName.getText().trim()))) {
@@ -549,7 +544,7 @@ public class ObjectEditor extends javax.swing.JFrame {
             saveRepresentationChanges();
             for (Component component : tabAutomations.getComponents()) {
                 if (component instanceof ReactionEditor) {
-                    ReactionEditor editor = (ReactionEditor)component;
+                    ReactionEditor editor = (ReactionEditor) component;
                     editor.finalizeEditing();
                 }
             }
@@ -647,6 +642,10 @@ public class ObjectEditor extends javax.swing.JFrame {
         saveRepresentationChanges();
     }//GEN-LAST:event_spnScaleHeightStateChanged
 
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowClosed
+
     private void changeCurrentRepresentation() {
         try {
             Representation b = object.getPojo().getCurrentRepresentation();
@@ -716,7 +715,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private javax.swing.JTextField txtAddress;
     private javax.swing.JTextField txtDescription;
     private javax.swing.JTextField txtName;
-    private javax.swing.JTextField txtProtocol;
+    private javax.swing.JComboBox txtProtocol;
     // End of variables declaration//GEN-END:variables
 
     private void populateCommandsTab() {
@@ -800,6 +799,9 @@ public class ObjectEditor extends javax.swing.JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     object.addTriggerMapping((Trigger) comboSelectTrigger.getSelectedItem(), behavior.getName());
+                    tabTriggersConfig.removeAll();
+                    pnlTriggers=null;
+                    populateTriggersTab();
                 }
             });
 
@@ -849,5 +851,20 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         }
         tabAutomations.validate();
+    }
+
+    private void populateProtocol() {
+        txtProtocol.addItem("unknown");
+        for (Client client : Freedomotic.clients.getClients("Plugin")) {
+            Plugin plugin = (Plugin) client;
+            String protocol = plugin.getConfiguration().getStringProperty("protocol.name", "");
+            if (!protocol.isEmpty()) {
+                txtProtocol.addItem(protocol);
+                //set the current protocol value
+                if (object.getPojo().getProtocol().equalsIgnoreCase(protocol)) {
+                    txtProtocol.setSelectedItem(protocol);
+                }
+            }
+        }
     }
 }

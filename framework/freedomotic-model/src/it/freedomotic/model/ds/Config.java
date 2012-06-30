@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 public class Config implements Serializable {
 
     private Properties properties = new Properties();
-    private String xmlFile;
+    private String xmlFile = "";
     private Tuples tuples = new Tuples();
 
     public String getXmlFile() {

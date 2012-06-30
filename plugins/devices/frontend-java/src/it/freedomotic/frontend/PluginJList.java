@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
@@ -24,9 +23,11 @@ import javax.swing.*;
  *
  * @author Enrico
  */
-public class PluginJList extends JList {
+public final class PluginJList extends JList {
 
-    String filter;
+    private String filter;
+    public boolean inDrag=false;
+    public int dragged = 0;
 
     public PluginJList() {
         setFilter("plugin"); //default value for filterning the list
@@ -54,6 +55,10 @@ public class PluginJList extends JList {
             public void mousePressed(MouseEvent e) {
                 if (e.isPopupTrigger()) {
                     doPop(e);
+                }else{
+                    //drag started
+                    inDrag=true;
+                    dragged = 0;
                 }
             }
 
@@ -106,6 +111,7 @@ public class PluginJList extends JList {
 
     public void setFilter(String filter) {
         this.filter = filter;
+        update();
     }
 
     public void update() {
