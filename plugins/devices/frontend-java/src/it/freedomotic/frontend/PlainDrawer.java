@@ -109,7 +109,9 @@ public class PlainDrawer extends Renderer {
         for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic obj = (EnvObjectLogic) it.next();
             if (obj != null) {
+                setTransformContextFor(obj.getPojo());
                 drawPlainObject(obj);
+                invalidateAnyTransform();
             }
         }
     }
