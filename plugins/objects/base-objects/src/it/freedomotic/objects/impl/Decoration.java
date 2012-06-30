@@ -23,5 +23,6 @@ public class Decoration extends EnvObjectLogic {
     @Override
     protected void createTriggers() {
 
+
     }
 }

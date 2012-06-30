@@ -50,9 +50,9 @@ public class Light extends ElectricDevice {
         //executeCommand the body of the super implementation
         super.executePowerOff(params);
         /*
-         * Not called the setBrightness because this method executeCommand a command
-         * here we want only to mantain the system coerent.
-         * If we call setBrightness(0, params) the light recalls the onLowerBoundValue.
+         * Not called the setBrightness because this method executeCommand a
+         * command here we want only to mantain the system coerent. If we call
+         * setBrightness(0, params) the light recalls the onLowerBoundValue.
          * Only ONE command execution per situation
          */
         brightness.setValue(0);
@@ -63,9 +63,9 @@ public class Light extends ElectricDevice {
         //executeCommand the body of the super implementation
         super.executePowerOn(params);
         /*
-         * Not called the setBrightness because this method executeCommand a command
-         * here we want only to mantain the system coerent.
-         * If we call setBrightness(100, params) the light recalls the onUpperBoundValue.
+         * Not called the setBrightness because this method executeCommand a
+         * command here we want only to mantain the system coerent. If we call
+         * setBrightness(100, params) the light recalls the onUpperBoundValue.
          * Only ONE command execution per situation
          */
         brightness.setValue(100);
@@ -153,5 +153,10 @@ public class Light extends ElectricDevice {
         CommandPersistence.add(e);
         CommandPersistence.add(f);
         CommandPersistence.add(g);
+    }
+
+    @Override
+    protected void createTriggers() {
+        super.createTriggers();
     }
 }

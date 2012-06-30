@@ -8,6 +8,6 @@ package it.freedomotic.objects.impl;
  *
  * @author Enrico
  */
-public class ToggleButton extends ElectricDevice{
+public class Switch extends ElectricDevice{
     
 }
