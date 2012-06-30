@@ -56,12 +56,13 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
     private ArrayList<Shape> indicators = new ArrayList<Shape>();
     private HashMap<EnvObjectLogic, Shape> cachedShapes = new HashMap<EnvObjectLogic, Shape>();
     private boolean inDrag;
-    private boolean editMode = false;
+    private boolean roomEditMode = false;
     private ArrayList<Handle> handles = new ArrayList<Handle>();
     private ZoneLogic selectedZone;
     private CalloutsUpdater callouts;
-    private boolean objectsLocked = true;
+    private boolean objectEditMode = false;
     private Point messageCorner = new Point(50, 50);
+    private Dimension dragDiff = null;
 
     protected EnvObjectLogic getSelectedObject() {
         return selectedObject;
@@ -81,7 +82,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         return selectedZone;
     }
 
-    public void setSelectedZone(ZoneLogic selectedZone) {
+    private void setSelectedZone(ZoneLogic selectedZone) {
         this.selectedZone = selectedZone;
     }
 
@@ -164,7 +165,6 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
     }
 
     private void paintEnvironmentLayer(Graphics g) {
-        System.out.println("Recreating environment background");
         setContext(g); //painting on an image, not rendered directly on jpanel
         graph2D = (Graphics2D) getContext();
         //painting uniform background
@@ -184,7 +184,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
             //render the wall image
             renderWalls();
             graph2D.translate(BORDER_X, BORDER_Y);
-            if (!editMode) {
+            if (!roomEditMode) {
                 //selection markers
                 renderIndicators();
                 renderObjects();
@@ -262,7 +262,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         this.graph = g;
     }
 
-    public Graphics2D getRenderingContext() {
+    protected Graphics2D getRenderingContext() {
         return graph2D;
     }
 
@@ -273,7 +273,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         }
     }
 
-    public void findRescaleFactor() {
+    private void findRescaleFactor() {
         widthRescale = (double) ((double) this.getWidth() / (double) CANVAS_WIDTH);
         heightRescale = (double) ((double) this.getHeight() / (double) CANVAS_HEIGHT);
         if (widthRescale < heightRescale) {
@@ -310,7 +310,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         BufferedImage img = null;
         Graphics imgGraphics;
         try {
-            img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+            img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
@@ -378,6 +378,10 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         }
     }
 
+    protected void paintImage(BufferedImage img) {
+        getContext().drawImage(img, 0, 0, this);
+    }
+
     private void drawString(String text, int x, int y, float angle, Color color) {
         Graphics2D localGraph = (Graphics2D) getContext();
         final int BORDER = 10;
@@ -412,7 +416,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         localGraph.fill(shape);
 
         //draw single lines
-        y += BORDER -27;
+        y += BORDER - 27;
         for (int j = 0; j < lines.length; j++) {
             if (!lines[j].trim().isEmpty()) {
                 y += 27;
@@ -478,17 +482,17 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         return shape;
     }
 
-    protected void rebuildShapesCache() {
+    private void rebuildShapesCache() {
         for (EnvObjectLogic obj : EnvObjectPersistence.getObjectList()) {
             rebuildShapeCache(obj);
         }
     }
 
-    protected void rebuildShapeCache(EnvObjectLogic obj) {
+    private void rebuildShapeCache(EnvObjectLogic obj) {
         applyShapeModifiers(obj);
     }
 
-    public Shape getCachedShape(EnvObjectLogic obj) {
+    protected Shape getCachedShape(EnvObjectLogic obj) {
         if (cachedShapes.containsKey(obj)) {
             return cachedShapes.get(obj);
         } else {
@@ -498,7 +502,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (!editMode) {
+        if (!roomEditMode) {
             EnvObjectLogic obj = mouseOnObject(e.getPoint());
             if (obj != null) {
                 //single click on an object
@@ -561,7 +565,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (editMode) {
+        if (roomEditMode) {
             Point mouse = toRealCoords(e.getPoint());
             Iterator it = handles.iterator();
             boolean found = false;
@@ -585,6 +589,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
             }
         }
         inDrag = false;
+        dragDiff=null;
         selectedObject = null;
         removeIndicators();
         rebuildShapesCache();
@@ -612,17 +617,22 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
     public void mouseDragged(MouseEvent e) {
         inDrag = true;
         Point coords = toRealCoords(e.getPoint());
+        if (dragDiff == null && getSelectedObject() != null) {
+            dragDiff = new Dimension(
+                    (int) Math.abs(coords.getX() - getSelectedObject().getPojo().getCurrentRepresentation().getOffset().getX()),
+                    (int) Math.abs(coords.getY() - getSelectedObject().getPojo().getCurrentRepresentation().getOffset().getY()));
+        }
         int xSnapped = (int) coords.getX() - ((int) coords.getX() % 5);
         int ySnapped = (int) coords.getY() - ((int) coords.getY() % 5);
-
-        if (!editMode && !objectsLocked && getSelectedObject() != null) {
+        //in object edit mode
+        if (objectEditMode && getSelectedObject() != null) {
             for (Representation representation : getSelectedObject().getPojo().getRepresentations()) {
                 //move an object
-                representation.setOffset(xSnapped, ySnapped);
+                representation.setOffset(xSnapped - (int)dragDiff.getWidth(), ySnapped - (int)dragDiff.getHeight());
                 setNeedRepaint(true);
             }
         } else {
-            if (editMode) {
+            if (roomEditMode) {
                 removeIndicators();
                 Callout callout = new Callout(this.getClass().getCanonicalName(), "mouse", xSnapped + "cm," + ySnapped + "cm", (int) coords.getX(), (int) coords.getY(), 0, -1);
                 createCallout(callout);
@@ -648,7 +658,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (!editMode) {
+        if (!roomEditMode) {
             EnvObjectLogic obj = mouseOnObject(e.getPoint());
             if ((obj == null) && (selectedObject != null)) {
                 removeIndicators();
@@ -719,9 +729,9 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         }
     }
 
-    public void setEditMode(boolean edit) {
-        editMode = edit;
-        if (editMode) {
+    public void setRoomEditMode(boolean edit) {
+        roomEditMode = edit;
+        if (roomEditMode) {
             Callout callout = new Callout(this.getClass().getCanonicalName(), "info", "Double click on an handle to create a now one in the middle of the segment.\n"
                     + "Right click on an handle to delete it.", 45, -45, 0, -1);
             createCallout(callout);
@@ -735,6 +745,14 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         setNeedRepaint(true);
     }
 
+    public boolean getRoomEditMode() {
+        return roomEditMode;
+    }
+
+    public boolean getObjectEditMode() {
+        return objectEditMode;
+    }
+
     protected void removeSelectedHandles() {
         for (Handle handle : handles) {
             if (handle.isSelected()) {
@@ -743,7 +761,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         }
     }
 
-    void setObjectsLock(boolean state) {
-        objectsLocked = state;
+    void setObjectEditMode(boolean state) {
+        objectEditMode = state;
     }
 }
