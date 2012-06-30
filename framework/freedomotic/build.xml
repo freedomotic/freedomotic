@@ -178,11 +178,8 @@
                 select="\1" 
                 defaultvalue="Error" 
                 override="true"/> 
-            <echo>Property vm.propertyname=${vm.propertyname}</echo> 
-        
-        
-                <property name="workspace-base" value="../../"/>
-               
+            <echo>Property vm.propertyname=${vm.propertyname}</echo>                 
+                <property name="workspace-base" value="../../"/>               
                 <property file="${workspace-base}/framework/freedomotic/releasetoupload" />
                 <taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="${workspace-base}/lib/ant/ant-googlecode-0.0.3.jar" name="gcupload"/>
                 <gcupload 
@@ -190,7 +187,7 @@
         password="${password}"        
         projectname="freedomotic"
         filename="${workspace-base}/${upload.file.name}"
-        targetfilename="freedomotic-dailybuild-5.2-${vm.commit_sha}.zip"
+        targetfilename="freedomotic-dailybuild-${upload.release.major}.${env.BUILD_NUMBER}-${vm.commit_sha}.zip"        
         summary="Daily build created by a Continuous Integration System. This release is unstable, do not use in production environment."
         labels="Featured, Type-DailyBuild, Type-Beta, Type-Archive, OpSys-All"
                 verbose="true"/>
