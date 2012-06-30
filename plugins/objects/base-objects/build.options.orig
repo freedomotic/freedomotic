@@ -1,4 +1,8 @@
-#Sat, 30 Jun 2012 11:07:00 +0200
+<<<<<<< HEAD
+#Wed, 20 Jun 2012 14:50:06 +0200
+=======
+#Thu, 28 Jun 2012 13:09:13 +0200
+>>>>>>> base objects - implemented some basic triggers (must be reviewed)
 
 package.type=object
 package.name=com.freedomotic.baseobj
@@ -13,7 +17,11 @@ framework.required.major=5
 framework.required.minor=2
 framework.required.build=x
 build.major=1
-build.number=49
+<<<<<<< HEAD
+build.number=24
+=======
+build.number=46
+>>>>>>> base objects - implemented some basic triggers (must be reviewed)
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true

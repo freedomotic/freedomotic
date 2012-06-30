@@ -2,8 +2,8 @@
   <name>User</name>
   <description>A user in the environment</description>
   <actAs>virtual</actAs>
-  <type>EnvObject.Person</type>
-  <hierarchy>it.freedomotic.objects.impl.Person</hierarchy>
+  <type>EnvObject.Person.User</type>
+  <hierarchy>it.freedomotic.objects.impl.User</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

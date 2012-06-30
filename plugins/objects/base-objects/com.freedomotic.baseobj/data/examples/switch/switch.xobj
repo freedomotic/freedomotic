@@ -2,8 +2,8 @@
   <name>A Switch</name>
   <description>A Switchn</description>
   <actAs>unimplemented</actAs>
-  <type>EnvObject.ElectricDevice</type>
-  <hierarchy>it.freedomotic.objects.impl.ElectricDevice</hierarchy>
+  <type>EnvObject.ElectricDevice.Switch</type>
+  <hierarchy>it.freedomotic.objects.impl.Switch</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
