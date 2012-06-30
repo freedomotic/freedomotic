@@ -52,9 +52,10 @@
         <Component class="javax.swing.JList" name="lstPlugins">
           <Properties>
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-              <StringArray count="2">
+              <StringArray count="3">
                 <StringItem index="0" value="Download of plugins list in progress..."/>
-                <StringItem index="1" value="it can take some time please wait"/>
+                <StringItem index="1" value="it can take up to one minute"/>
+                <StringItem index="2" value="please wait"/>
               </StringArray>
             </Property>
           </Properties>

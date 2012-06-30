@@ -12,7 +12,7 @@ package it.freedomotic.frontend;
 
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.plugins.AddonManager;
+import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.service.MarketPlaceService;
 import it.freedomotic.service.PluginPackage;
 import it.freedomotic.util.Info;
@@ -186,7 +186,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-                    done = AddonManager.installDevice(new URL(string));
+                    done = AddonLoader.installDevice(new URL(string));
                 } catch (MalformedURLException ex) {
                     done = false;
                     Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -257,7 +257,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         getContentPane().add(jProgressBar1);
 
         lstPlugins.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Download of plugins list in progress...", "it can take some time please wait" };
+            String[] strings = { "Download of plugins list in progress...", "it can take up to one minute", "please wait" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
