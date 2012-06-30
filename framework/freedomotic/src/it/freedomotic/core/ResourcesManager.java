@@ -18,16 +18,16 @@ import javax.imageio.ImageIO;
  *
  * @author Enrico
  */
-public class ResourcesManager {
+public final class ResourcesManager {
 
-    private static HashMap<String, BufferedImage> cache = new HashMap<String, BufferedImage>();
+    private static final HashMap<String, BufferedImage> CACHE = new HashMap<String, BufferedImage>();
 
     public static BufferedImage getResource(String imageName, int width, int height) {
         String resizedImageName = imageName + "_" + width + "x" + height;
         if (!(width > 0) || !(height > 0)) { //not needs resizeing
             return getResource(imageName);
         }
-        BufferedImage img = cache.get(resizedImageName.toLowerCase());
+        BufferedImage img = CACHE.get(resizedImageName.toLowerCase());
         if (img == null) { //img not in cache
             try {
                 //loads image from disk searching it recursively in folder
@@ -38,7 +38,7 @@ public class ResourcesManager {
             if (img != null) {
                 //img loaded from disk. Now it is cached resized
                 img = resizeImage(img, width, height);
-                cache.put(resizedImageName.toLowerCase(), img);
+                CACHE.put(resizedImageName.toLowerCase(), img);
                 return img;
             }
         } else {
@@ -48,7 +48,7 @@ public class ResourcesManager {
     }
 
     public static synchronized BufferedImage getResource(String imageName) {
-        BufferedImage img = cache.get(imageName.toLowerCase());
+        BufferedImage img = CACHE.get(imageName.toLowerCase());
         if (img == null) { //img not in cache
             try {
                 //loads image from disk searching it recursively in folder
@@ -58,7 +58,7 @@ public class ResourcesManager {
             }
             if (img != null) {
                 //img succesfully loaded from disk. Now it is cached
-                cache.put(imageName.toLowerCase(), img);
+                CACHE.put(imageName.toLowerCase(), img);
                 return img;
             }
         } else {
@@ -74,7 +74,7 @@ public class ResourcesManager {
     }
 
     public static synchronized void addResource(String imageName, BufferedImage image) {
-        cache.put(imageName, image);
+        CACHE.put(imageName, image);
     }
 
     private static BufferedImage resizeImage(BufferedImage image, int width, int height) {
@@ -102,7 +102,7 @@ public class ResourcesManager {
     }
 
     public static void clear() {
-        cache.clear();
+        CACHE.clear();
     }
 
     private static class DirectoryReader {

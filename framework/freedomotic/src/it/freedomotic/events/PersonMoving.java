@@ -20,12 +20,6 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
-import it.freedomotic.app.Freedomotic;
-import it.freedomotic.environment.ZoneLogic;
-import it.freedomotic.model.geometry.FreedomPoint;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.persistence.EnvObjectPersistence;
-import it.freedomotic.util.AWTConverter;
 import java.awt.Point;
 
 /**
@@ -40,21 +34,21 @@ public final class PersonMoving extends EventTemplate {
     int x;
     int y;
 
-    public PersonMoving(Object source, String name, Point destination) {
+    public PersonMoving(Object source, String name, Point start, Point destination) {
 
         x = (int) destination.getX();
         y = (int) destination.getY();
         id = name;
         generateEventPayload();
-        EnvObjectLogic object = EnvObjectPersistence.getObject(name);
-        if (object != null) {
-            object.getPojo().getCurrentRepresentation().setOffset(x, y);
-            for (ZoneLogic zone : Freedomotic.environment.getZones()) {
-                if (AWTConverter.contains(zone.getPojo().getShape(), new FreedomPoint(x, y))) {
-                    //ZoneEvent event = new ZoneEvent(this, zone, object);
-                }
-            }
-        }
+//        EnvObjectLogic object = EnvObjectPersistence.getObject(name);
+//        if (object != null) {
+//            object.getPojo().getCurrentRepresentation().setOffset(x, y);
+//            for (ZoneLogic zone : Freedomotic.environment.getZones()) {
+//                if (AWTConverter.contains(zone.getPojo().getShape(), new FreedomPoint(x, y))) {
+//                    ZoneEvent event = new ZoneEvent(this, zone, object);
+//                }
+//            }
+//        }
     }
 
     @Override

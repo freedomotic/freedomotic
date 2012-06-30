@@ -30,6 +30,7 @@ import javax.jms.ObjectMessage;
  *
  * @author Enrico Nicoletti
  */
+@Deprecated
 public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
 
     private static final String DEFAULT_QUEUE_PREFIX = "app.sensor.";

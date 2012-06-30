@@ -42,7 +42,12 @@ public class EnvironmentPersistence {
         String fileName = folder.getName();
         if (!folder.exists()) {
             folder.mkdir();
-            new File(folder + "/objects").mkdir();
+            new File(folder + "/data").mkdir();
+            new File(folder + "/data/obj").mkdir();
+            new File(folder + "/data/rea").mkdir();
+            new File(folder + "/data/trg").mkdir();
+            new File(folder + "/data/cmd").mkdir();
+            new File(folder + "/data/resources").mkdir();
         }
         save(new File(folder + "/" + fileName + ".xenv"));
         //TODO: Freedomotic.environment.getPojo().setObjectsFolder()
@@ -75,6 +80,7 @@ public class EnvironmentPersistence {
             pojo = (Environment) xstream.fromXML(xml.toString());
             envLogic = new EnvironmentLogic();
             envLogic.setPojo(pojo);
+            envLogic.setSource(file);
             envLogic.init();
         } catch (Exception ex) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));

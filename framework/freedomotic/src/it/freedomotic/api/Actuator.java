@@ -19,33 +19,28 @@
  */
 package it.freedomotic.api;
 
-import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.bus.EventChannel;
-import it.freedomotic.core.Profiler;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
-
+import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
-
 import java.io.IOException;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
-import org.apache.activemq.command.ActiveMQDestination;
 
 /**
  *
  * @author Enrico Nicoletti
  */
+@Deprecated
 public abstract class Actuator extends Plugin implements BusConsumer {
 
     private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
@@ -60,7 +55,7 @@ public abstract class Actuator extends Plugin implements BusConsumer {
 //        if (configuration.getBooleanProperty("threaded-commands-execution", true)) {
 //            executor = Executors.newCachedThreadPool();
 //        } else {
-            executor = Executors.newSingleThreadExecutor();
+        executor = Executors.newSingleThreadExecutor();
 //        }
     }
 
@@ -157,12 +152,14 @@ public abstract class Actuator extends Plugin implements BusConsumer {
             }
         } catch (JMSException ex) {
             Logger.getLogger(Actuator.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
     }
 
     /**
-     * Used by childs of this class to send back a reply after a command is executed.
-     * @param command 
+     * Used by childs of this class to send back a reply after a command is
+     * executed.
+     *
+     * @param command
      */
     public void sendBack(Command command) {
         if (command.getReplyTimeout() > 0) { //a sendBack is expected

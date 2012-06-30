@@ -19,24 +19,12 @@
  */
 package it.freedomotic.bus;
 
-import javax.jms.DeliveryMode;
 import it.freedomotic.app.Freedomotic;
-import java.io.File;
-import it.freedomotic.util.Info;
-import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.activemq.util.xstream.XStreamMessageTransformer;
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
+import javax.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
-import org.apache.activemq.broker.TransportConnector;
-import static org.apache.activemq.util.xstream.XStreamMessageTransformer.MessageTransform.*;
 
 /**
  *
@@ -53,6 +41,7 @@ public class AbstractBusConnector {
     private static Session sharedSession;
     private static Session unlistenedSession;
     private static MessageProducer emptySharedWriter;
+    private static final BrokerService BROKER = new BrokerService();
 
     public AbstractBusConnector() {
 
@@ -64,16 +53,15 @@ public class AbstractBusConnector {
         if (emptySharedWriter == null) { //not already connected to the bus
             try {
                 //create an embedded messaging broker
-                BrokerService broker = new BrokerService();
-                broker.setBrokerName("freedomotic");
+                BROKER.setBrokerName("freedomotic");
                 //use always 0.0.0.0 not localhost. localhost allows connections 
                 //only on the local machine not from LAN IPs
-                broker.addConnector("stomp://0.0.0.0:61666");
+                BROKER.addConnector("stomp://0.0.0.0:61666");
 //                //websocket connector for javascript apps
 //                broker.addConnector("ws://0.0.0.0:61614");
-                broker.setPersistent(false); //we don't need to save messages on disk
+                BROKER.setPersistent(false); //we don't need to save messages on disk
                 //start the broker
-                broker.start();
+                BROKER.start();
 
                 //connect to the embedded broker defined above
                 ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(Freedomotic.config.getStringProperty("vm://freedomotic", DEFAULT_BROKER));

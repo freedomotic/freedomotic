@@ -21,8 +21,9 @@ import java.util.Iterator;
 public class EnvironmentLogic {
 
     private static Graph graph;
-    private static Environment pojo;
-    private static ArrayList<ZoneLogic> zones = new ArrayList<ZoneLogic>();
+    private Environment pojo;
+    private ArrayList<ZoneLogic> zones = new ArrayList<ZoneLogic>();
+    private File source;
 
     public EnvironmentLogic() {
     }
@@ -164,10 +165,22 @@ public class EnvironmentLogic {
 
     public ZoneLogic getZone(String zoneName) {
         for (ZoneLogic zone : zones) {
-            if (zone.getPojo().getName().equalsIgnoreCase(zoneName)){
+            if (zone.getPojo().getName().equalsIgnoreCase(zoneName)) {
                 return zone;
-            } 
+            }
         }
         return null;
+    }
+
+    public File getSource() {
+        return source;
+    }
+
+    public File getObjectFolder() {
+        return new File(source.getParent() + "/data/obj/");
+    }
+
+    public void setSource(File source) {
+        this.source = source;
     }
 }

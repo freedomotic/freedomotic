@@ -38,35 +38,12 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
     private OutputStream out;
     private String APP_ID = "";
     private static boolean ALREADY_IN_CLASSPATH = false;
-    /**
-     * Baudrate (19200) della porta seriale a cui è collegato il dispositivo.
-     */
     private int PORT_BAUDRATE = 19200;
-    /**
-     * Data bits (8) della porta seriale a cui è collegato il dispositivo.
-     */
     private int PORT_DATABITS = SerialPort.DATABITS_8;
-    /**
-     * Stop bits (1) della porta seriale a cui è collegato il dispositivo.
-     */
     private int PORT_STOPBITS = SerialPort.STOPBITS_1;
-    /**
-     * Parity (none) della porta seriale a cui è collegato il dispositivo.
-     */
     private int PORT_PARITY = SerialPort.PARITY_NONE;
-    /**
-     * Tempo d'attesa prima di rinunciare ad aprire una porta seriale.
-     */
     private final int PORT_OPENTIME = 2000;
-    /**
-     * Tempo d'attesa per leggere dall'input stream (si combina con
-     * PORT_IN_THRESHOLD).
-     */
     private final int PORT_IN_TIMEOUT = 1000;
-    /**
-     * Byte minimi che deve leggere dall'input stream (si combinato con
-     * PORT_IN_TIMEOUT).
-     */
     private final int PORT_IN_THRESHOLD = 1024;
     private String PORT_NAME;
     private String HELLO_MESSAGE;
@@ -75,10 +52,6 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
     private String HELLO_REPLY;
     private String DEVICE_NAME = "";
     private int POLLING_TIME;
-    /**
-     * Maximun time (in nanoseconds) that the send waits for a response from the
-     * device 0=NO WAIT*
-     */
     private long MAX_WAIT_RESPONSE_TIME;
     private ArrayList<SerialDataConsumer> consumers = new ArrayList<SerialDataConsumer>();
 
@@ -342,15 +315,16 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
             String readed = ""; // = new String(buff);            
             try {
                 this.out.write(message.getBytes());
+                out.flush();
                 long tm = System.nanoTime();
                 while (in.available() == 0 && (System.nanoTime() - tm) < MAX_WAIT_RESPONSE_TIME) {
                     //Wait until we have the response
                 }
-                try {
-                    Thread.sleep(50); //to ensure the message is completed maybe could be avoid if the exact size of the response is know
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
-                }
+//                try {
+//                    Thread.sleep(50); //to ensure the message is completed maybe could be avoid if the exact size of the response is know
+//                } catch (InterruptedException ex) {
+//                    Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
+//                }
                 if (in.available() > 0) {
                     int numBytes = in.available();
                     System.out.println("NumBytes:" + numBytes);
@@ -383,11 +357,12 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
             // Scrivo i dati
             try {
                 this.out.write(message.getBytes());
-                try {
-                    Thread.sleep(50); //to ensure the message is arrived
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                out.flush();
+//                try {
+//                    Thread.sleep(50); //to ensure the message is arrived
+//                } catch (InterruptedException ex) {
+//                    Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
+//                }
             } catch (IOException e) {
                 System.err.println("Device connected to USB port but error on writing. Unable to send '" + message + "'");
                 disconnect();
