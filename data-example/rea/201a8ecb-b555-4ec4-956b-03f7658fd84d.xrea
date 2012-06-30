@@ -1,0 +1,6 @@
+<it.freedomotic.reactions.Reaction>
+  <trigger>When Light 3 is clicked</trigger>
+  <sequence>
+    <command>Switch its power</command>
+  </sequence>
+</it.freedomotic.reactions.Reaction>

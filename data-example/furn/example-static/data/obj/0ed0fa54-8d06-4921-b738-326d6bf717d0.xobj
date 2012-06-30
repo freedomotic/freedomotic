@@ -1,0 +1,88 @@
+<it.freedomotic.model.object.EnvObject>
+  <name>Enrico</name>
+  <description>A user in the environment</description>
+  <actAs>virtual</actAs>
+  <type>EnvObject.Person.User</type>
+  <uuid>0ed0fa54-8d06-4921-b738-326d6bf717d0</uuid>
+  <hierarchy>it.freedomotic.objects.impl.User</hierarchy>
+  <protocol>unknown</protocol>
+  <phisicalAddress>unknown</phisicalAddress>
+  <behaviors>
+    <it.freedomotic.model.object.BooleanBehavior>
+      <name>present</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>true</value>
+    </it.freedomotic.model.object.BooleanBehavior>
+    <it.freedomotic.model.object.ListBehavior>
+      <name>activity</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <selected>2</selected>
+      <list>
+        <string>Sleeping</string>
+        <string>Resting</string>
+        <string>Standing</string>
+        <string>Moving</string>
+      </list>
+    </it.freedomotic.model.object.ListBehavior>
+    <it.freedomotic.model.object.PropertiesBehavior>
+      <name>properties</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <properties>
+        <property name="email" value="info@freedomotic.com"/>
+        <property name="birthdate" value="01/01/1900"/>
+      </properties>
+    </it.freedomotic.model.object.PropertiesBehavior>
+  </behaviors>
+  <representation>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="156" y="784"/>
+      <rotation>0.0</rotation>
+      <icon>person.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <scaleX>0.0</scaleX>
+      <scaleY>0.0</scaleY>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="156" y="784"/>
+      <rotation>0.0</rotation>
+      <icon>person.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <scaleX>0.0</scaleX>
+      <scaleY>0.0</scaleY>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+  </representation>
+  <actions>
+    <property name="turn off" value="Execute it successfully"/>
+    <property name="turn on" value="Execute it successfully"/>
+  </actions>
+  <triggers>
+    <property name="" value="powered"/>
+  </triggers>
+  <currentRepresentation>0</currentRepresentation>
+</it.freedomotic.model.object.EnvObject>

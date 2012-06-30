@@ -1,0 +1,6 @@
+<it.freedomotic.reactions.Reaction>
+  <trigger>When Cut off is clicked</trigger>
+  <sequence>
+    <command>turn off all lights</command>
+  </sequence>
+</it.freedomotic.reactions.Reaction>

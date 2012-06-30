@@ -1,0 +1,6 @@
+<it.freedomotic.reactions.Reaction>
+  <trigger>Every one second</trigger>
+  <sequence>
+    <command>Switch Created with JoinDevice power</command>
+  </sequence>
+</it.freedomotic.reactions.Reaction>
