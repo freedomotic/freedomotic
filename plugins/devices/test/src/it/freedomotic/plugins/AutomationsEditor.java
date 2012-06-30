@@ -46,7 +46,10 @@ public class AutomationsEditor extends Protocol {
     @Override
     public void onStop() {
         //release resources
-        gui.dispose();
+        try {
+            gui.dispose();
+        } catch (Exception e) {
+        }
     }
 
     @Override

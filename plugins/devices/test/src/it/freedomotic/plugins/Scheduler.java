@@ -17,19 +17,19 @@ import java.util.TimerTask;
  *
  * @author enrico
  */
-public class Clock extends Sensor {
+public class Scheduler extends Sensor {
 
     private int TIMER_RESOLUTION = 1000;
     private int lastSentMinute = -1;
-    private Timer clock;
+    private Timer timer;
     private Awake awake;
 
     /*
      * sends a scheduled event with the current time every minute retry to send
      * every TIMER_DELAY seconds
      */
-    public Clock() {
-        super("Clock", "/it.nicoletti.test/clock.xml");
+    public Scheduler() {
+        super("Scheduler", "/it.nicoletti.test/scheduler.xml");
         setDescription("Timer for scheduled events");
         TIMER_RESOLUTION = configuration.getIntProperty("timer-resolution", 1000);
     }
@@ -41,12 +41,13 @@ public class Clock extends Sensor {
     @Override
     protected void onStart() {
         super.onStart();
-        clock = new Timer("FreedomClock", true);
+        timer = new Timer("FreedomClock", true);
         awake = new Awake();
-        clock.scheduleAtFixedRate(awake, TIMER_RESOLUTION, TIMER_RESOLUTION);
+        timer.scheduleAtFixedRate(awake, TIMER_RESOLUTION, TIMER_RESOLUTION);
 
     }
 
+    @Override
     public void onShowGui() {
         ClockForm form = new ClockForm(this);
         bindGuiToPlugin(form);
@@ -56,9 +57,9 @@ public class Clock extends Sensor {
     protected void onStop() {
         super.onStop();
         awake.cancel();
-        clock.cancel();
+        timer.cancel();
         awake = null;
-        clock = null;
+        timer = null;
     }
 
     @Override

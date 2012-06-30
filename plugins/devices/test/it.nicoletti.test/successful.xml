@@ -6,5 +6,6 @@
         <property name="required"                       value="40"/>
         <property name="category"                       value="simulator"/>
         <property name="short-name"                       value="actuator"/>
+        <property name="protocol.name"                       value="test"/>
     </properties>
 </config>
