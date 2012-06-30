@@ -249,10 +249,7 @@
                                       <Component id="spnX" alignment="0" max="32767" attributes="1"/>
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" attributes="0">
-                                      <Component id="btnChangeImage" max="32767" attributes="1"/>
-                                      <Component id="btnCreateReaction" alignment="1" pref="632" max="32767" attributes="1"/>
-                                  </Group>
+                                  <Component id="btnChangeImage" pref="632" max="32767" attributes="1"/>
                                   <EmptySpace min="2343" pref="2343" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -271,14 +268,11 @@
                               <Component id="btnChangeImage" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="btnCreateReaction" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                                  <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="spnY" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="spnY" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <Component id="spnRotation" min="-2" max="-2" attributes="0"/>
@@ -345,14 +339,6 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnChangeImageActionPerformed"/>
-                  </Events>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnCreateReaction">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Create a Reaction"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCreateReactionActionPerformed"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="spnScaleWidth">

@@ -250,7 +250,6 @@ public class ObjectEditor extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         chkAllRepresentations = new javax.swing.JCheckBox();
         btnChangeImage = new javax.swing.JButton();
-        btnCreateReaction = new javax.swing.JButton();
         spnScaleWidth = new javax.swing.JSpinner();
         spnScaleHeight = new javax.swing.JSpinner();
         jLabel4 = new javax.swing.JLabel();
@@ -409,13 +408,6 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         });
 
-        btnCreateReaction.setText("Create a Reaction");
-        btnCreateReaction.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateReactionActionPerformed(evt);
-            }
-        });
-
         spnScaleWidth.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 spnScaleWidthStateChanged(evt);
@@ -457,9 +449,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                             .addComponent(spnY)
                             .addComponent(spnX, javax.swing.GroupLayout.Alignment.LEADING))
                         .addGap(18, 18, 18)
-                        .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnCreateReaction, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE))
+                        .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
                         .addGap(2343, 2343, 2343))))
         );
         tabRepresentationLayout.setVerticalGroup(
@@ -473,12 +463,10 @@ public class ObjectEditor extends javax.swing.JFrame {
                     .addComponent(spnX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnChangeImage))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnCreateReaction)
-                    .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel12)
-                        .addComponent(spnY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(spnY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(tabRepresentationLayout.createSequentialGroup()
                         .addComponent(spnRotation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -555,19 +543,6 @@ public class ObjectEditor extends javax.swing.JFrame {
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         this.dispose();
 }//GEN-LAST:event_btnCancelActionPerformed
-
-    private void btnCreateReactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateReactionActionPerformed
-        //we send a command with a show event editor plugin request
-        Command showReactionEditor = new Command();
-        showReactionEditor.setName("Show automation editor GUI");
-        showReactionEditor.setDescription("makes the automation editor plugin show its GUI");
-        showReactionEditor.setReceiver("app.actuators.plugins.controller.in");
-        showReactionEditor.setProperty("plugin", "Automation Editor"); //the target plugin
-        showReactionEditor.setProperty("action", "SHOW");         //the action to perform
-        Freedomotic.sendCommand(showReactionEditor);
-        //TODO: make this return a command
-        this.dispose();
-}//GEN-LAST:event_btnCreateReactionActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         EnvObjectPersistence.remove(object);
@@ -684,7 +659,6 @@ public class ObjectEditor extends javax.swing.JFrame {
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnChangeImage;
     private javax.swing.JButton btnCreateObjectCopy;
-    private javax.swing.JButton btnCreateReaction;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnOk;
     private javax.swing.JCheckBox chkAllRepresentations;
