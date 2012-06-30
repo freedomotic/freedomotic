@@ -54,11 +54,11 @@ public class PropertiesPanel_1 extends javax.swing.JPanel {
             Freedomotic.logger.warning("Only " + MAX_ROWS + " statements are tracked in PropertiesPanel");
         }
         if (col == cols - 1) {//is the last col
-            component.setMaximumSize(new Dimension(2000, 35));
-            component.setPreferredSize(new Dimension(200, 35));
+            component.setMaximumSize(new Dimension(2000, 50));
+            component.setPreferredSize(new Dimension(200, 50));
         } else {
-            component.setMaximumSize(new Dimension(200, 35));
-            component.setPreferredSize(new Dimension(200, 35));
+            component.setMaximumSize(new Dimension(200, 50));
+            component.setPreferredSize(new Dimension(200, 50));
         }
         add(component);
         elements++;
