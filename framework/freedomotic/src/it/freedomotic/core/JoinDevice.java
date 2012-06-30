@@ -4,16 +4,12 @@
  */
 package it.freedomotic.core;
 
-import it.freedomotic.api.Client;
-import it.freedomotic.api.ObjectPlaceholder;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
-import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.persistence.EnvObjectPersistence;
-import it.freedomotic.plugins.AddonManager;
-import it.freedomotic.plugins.ClientStorage;
+import it.freedomotic.plugins.ObjectPlugin;
 import it.freedomotic.reactions.Command;
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +54,7 @@ public class JoinDevice implements BusConsumer {
                 String protocol = command.getProperty("object.protocol");
                 String address = command.getProperty("object.address");
                 String clazz = command.getProperty("object.class");
-                ObjectPlaceholder client = (ObjectPlaceholder) Freedomotic.clients.get(clazz);
+                ObjectPlugin client = (ObjectPlugin) Freedomotic.clients.get(clazz);
                 if (client == null) {
                     Freedomotic.logger.warning("Don't exist an object class called " + clazz);
                     return;
@@ -67,10 +63,12 @@ public class JoinDevice implements BusConsumer {
                 File exampleObject = client.getExample();
                 EnvObjectLogic loaded = EnvObjectPersistence.loadObject(exampleObject, true);
                 System.out.println(loaded.getPojo().getName());
+                //changing the name and other properties invalidates related trigger and commands
+                //call init() again after this changes
                 loaded.getPojo().setName(name);
                 loaded.getPojo().setProtocol(protocol);
                 loaded.getPojo().setPhisicalAddress(address);
-                loaded.getPojo().setName(address);
+                loaded.init();
             }
         } catch (IOException ex) {
             Logger.getLogger(JoinDevice.class.getName()).log(Level.SEVERE, null, ex);
