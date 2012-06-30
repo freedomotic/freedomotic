@@ -1,6 +1,6 @@
 <it.freedomotic.model.object.EnvObject>
-  <name>A Toggle Button</name>
-  <description>A toggle button</description>
+  <name>A Switch</name>
+  <description>A Switchn</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.ElectricDevice</type>
   <hierarchy>it.freedomotic.objects.impl.ElectricDevice</hierarchy>
