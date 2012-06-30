@@ -19,4 +19,9 @@ public class Door extends Gate {
     protected void createCommands() {
         super.createCommands();
     }
+
+    @Override
+    protected void createTriggers() {
+        super.createTriggers();
+    }
 }
