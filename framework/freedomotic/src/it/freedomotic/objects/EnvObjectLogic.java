@@ -9,12 +9,12 @@ import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
-import it.freedomotic.reactions.Statement;
 import it.freedomotic.persistence.CommandPersistence;
 import it.freedomotic.persistence.ReactionPersistence;
 import it.freedomotic.persistence.TriggerPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
+import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -166,10 +166,6 @@ public abstract class EnvObjectLogic {
                 throw new EnvObjectMappingException();
             }
         }
-    }
-
-    public void setAction(String action, String command) {
-        setAction(action, CommandPersistence.getHardwareCommand(command));
     }
 
     public void setAction(String action, Command command) {

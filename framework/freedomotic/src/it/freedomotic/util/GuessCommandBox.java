@@ -27,6 +27,8 @@ public class GuessCommandBox extends JTextField {
     private final JButton btnAdd = new JButton();
     private final JButton btnCustomize = new JButton("Edit");
     private final GuessCommandBox me = this;
+    private static final String ERROR_MESSAGE = "This command does not exist";
+    private static final String INFO_MESSAGE = "Write here a command";
 
     public GuessCommandBox(ReactionEditor editor) {
         super();
@@ -55,7 +57,7 @@ public class GuessCommandBox extends JTextField {
         if (command != null) {
             setText(command.getName());
         } else {
-            setText("Write what to do...");
+            setText(INFO_MESSAGE);
         }
         this.setPreferredSize(new Dimension(300, 30));
         KeyListener keyListener = new KeyAdapter() {
@@ -113,14 +115,14 @@ public class GuessCommandBox extends JTextField {
                         editor.onCommandConfirmed(me);
                     } else {
                         setForeground(Color.red);
-                        setText("Write what to do...");
+                        setText(ERROR_MESSAGE);
                     }
                 } else {
                     setEnabled(true);
                     btnAdd.setText("Confirm");
                     editor.onCommandCleared(me);
                     command = null;
-                    setText("Write what to do...");
+                    setText(INFO_MESSAGE);
                 }
             }
         });
@@ -132,13 +134,13 @@ public class GuessCommandBox extends JTextField {
             public void actionPerformed(ActionEvent ae) {
                 if (command != null) {
                     Command c = new Command();
-                    c.setName("Ask user test");
+                    c.setName("Edit a command");
                     c.setReceiver("app.actuators.nlautomationseditor.nlautomationseditor.in");
                     c.setProperty("editor", "command");
                     c.setProperty("editable", command.getName()); //the default choice
                     Freedomotic.sendCommand(c);
                     command = null;
-                    setText("Write what to do...");
+                    setText(INFO_MESSAGE);
                 }
             }
         });

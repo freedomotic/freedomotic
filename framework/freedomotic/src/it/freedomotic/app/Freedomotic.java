@@ -19,6 +19,7 @@
  */
 package it.freedomotic.app;
 
+import it.freedomotic.api.Client;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.bus.AbstractBusConnector;
@@ -39,7 +40,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-import it.freedomotic.plugins.AddonManager;
+import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.model.ds.ColorList;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.objects.EnvObjectLogic;
@@ -165,7 +166,7 @@ public final class Freedomotic {
          * Dynamically load events jar files in /plugin/events folder
          * *****************************************************************
          */
-        AddonManager eventsLoader = new AddonManager();
+        AddonLoader eventsLoader = new AddonLoader();
         try {
             eventsLoader.searchIn(new File(Info.getPluginsPath() + "/events/"));
         } catch (Exception ex) {
@@ -177,7 +178,7 @@ public final class Freedomotic {
          * Dynamically load objects jar files in /plugin/objects folder
          * *****************************************************************
          */
-        AddonManager objectsLoader = new AddonManager();
+        AddonLoader objectsLoader = new AddonLoader();
         try {
             objectsLoader.recursiveSearchIn(new File(Info.getPluginsPath() + "/objects/"));
         } catch (Exception ex) {
@@ -261,7 +262,7 @@ public final class Freedomotic {
          * Deserialize objects from XML
          * *****************************************************************
          */
-        EnvObjectPersistence.loadObjects(new File(Info.getApplicationPath() + "/data/furn/" + environment.getPojo().getObjectsFolder()), false);
+        EnvObjectPersistence.loadObjects(environment.getObjectFolder(), false);
 
         /**
          * ******************************************************************
@@ -302,8 +303,7 @@ public final class Freedomotic {
          * Starting plugins
          * *****************************************************************
          */
-        List<Plugin> pluginCollection = AddonManager.getLoadedPlugins();
-        for (Plugin plugin : pluginCollection) {
+        for (Client plugin : clients.getClients()) {
             String startupTime = plugin.getConfiguration().getStringProperty("startup-time", "undefined");
             if (startupTime.equalsIgnoreCase("on load")) {
                 plugin.start();
@@ -403,7 +403,7 @@ public final class Freedomotic {
 
     private void loadPlugins() {
         try {
-            AddonManager loader = new AddonManager();
+            AddonLoader loader = new AddonLoader();
             File pluginFolder = new File(Info.getPluginsPath() + "/devices/");
 
             loader.recursiveSearchIn(pluginFolder);
@@ -458,7 +458,7 @@ public final class Freedomotic {
         //save changes to object in the default test environment
         //on error there is a copy (manually created) of original test environment in the data/furn folder
         if (Freedomotic.config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
-            EnvObjectPersistence.saveObjects(new File(Info.getDatafilePath() + "/furn/" + Freedomotic.environment.getPojo().getObjectsFolder()));
+            EnvObjectPersistence.saveObjects(Freedomotic.environment.getObjectFolder());
         }
 
         String savedDataRoot;
@@ -473,7 +473,7 @@ public final class Freedomotic {
 
         try {
             //save the environment
-            String environmentFilePath = Info.getApplicationPath() + "/data/furn" + Freedomotic.config.getProperty("KEY_ROOM_XML_PATH");
+            String environmentFilePath = Info.getApplicationPath() + "/data/furn/" + Freedomotic.config.getProperty("KEY_ROOM_XML_PATH");
             EnvironmentPersistence.save(new File(environmentFilePath));
         } catch (IOException ex) {
             Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
@@ -481,7 +481,7 @@ public final class Freedomotic {
         Freedomotic.logger.info("Sending the exit signal (TODO: not yet implemented)");
         //...send the signal on a topic channel
         Freedomotic.logger.info("Force stopping the plugins that are not already stopped");
-        for (Plugin plugin : AddonManager.getLoadedPlugins()) {
+        for (Client plugin : clients.getClients()) {
             plugin.stop();
         }
         Freedomotic.logger.info(Profiler.print());
@@ -489,7 +489,7 @@ public final class Freedomotic {
         Freedomotic.logger.info("DONE");
         System.exit(0);
     }
-
+    
     public static void kill() {
         Freedomotic.logger.info("Raw kill is called... terminate immediately.");
         System.exit(0);

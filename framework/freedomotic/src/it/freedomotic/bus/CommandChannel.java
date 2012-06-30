@@ -30,14 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jms.JMSException;
-import javax.jms.Destination;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
-import javax.jms.ObjectMessage;
-import javax.jms.Queue;
-import javax.jms.Session;
+import javax.jms.*;
 import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQQueue;
 
@@ -168,12 +161,20 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
      */
     @Override
     public void onMessage(Message aMessage) {
+        System.out.println("received " + aMessage.getClass().getCanonicalName());
         Profiler.incrementReceivedCommands();
         if (getHandler() != null) {
             if (aMessage instanceof ObjectMessage) {
                 getHandler().onMessage((ObjectMessage) aMessage);
             } else {
-                Freedomotic.logger.severe("A message is received by " + channelName + " but it is not an object message");
+                Freedomotic.logger.severe("A message is received by " + channelName + 
+                        " but it is not an object message is a " + aMessage.getClass().getCanonicalName());
+                TextMessage text = (TextMessage)aMessage;
+                try {
+                    System.out.println(text.getText());
+                } catch (JMSException ex) {
+                    Logger.getLogger(CommandChannel.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         } else {
             Freedomotic.logger.warning("No handler specified for this command channel");

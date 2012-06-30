@@ -20,7 +20,6 @@ package it.freedomotic.reactions;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.util.DamerauLevenshtein;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +61,6 @@ public final class Command implements Serializable, Cloneable {
         if (tags == null) {
             tags = new HashSet<String>();
             tags.addAll(Arrays.asList(getName().toLowerCase().split(" ")));
-            //tags.addAll(Arrays.asList(getDescription().toLowerCase().split(" ")));
         }
         return tags;
     }

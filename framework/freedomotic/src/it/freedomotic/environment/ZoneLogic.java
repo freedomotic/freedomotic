@@ -18,7 +18,11 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.freedomotic.environment;
 
+import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.bus.BusConsumer;
+import it.freedomotic.bus.CommandChannel;
+import it.freedomotic.bus.EventChannel;
 import it.freedomotic.events.ZoneHasChanged;
 import it.freedomotic.model.environment.Zone;
 import it.freedomotic.model.geometry.FreedomPolygon;
@@ -28,17 +32,40 @@ import it.freedomotic.objects.impl.Person;
 import it.freedomotic.persistence.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.util.AWTConverter;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.jms.JMSException;
+import javax.jms.ObjectMessage;
 
 /**
  *
  * @author enrico
  */
-public class ZoneLogic {
+public class ZoneLogic implements BusConsumer {
 
     private Zone pojo;
     private Ownership owner = new LastOutStrategy();
     private ArrayList<Person> occupiers = new ArrayList<Person>();
+    private static EventChannel channel;
+
+    static String getMessagingChannel() {
+        return "app.event.sensor.person.movement.moving";
+    }
+
+    public ZoneLogic() {
+        register();
+    }
+
+    /**
+     * Register one or more channels to listen to
+     */
+    private void register() {
+        channel = new EventChannel();
+        channel.setHandler(this);
+        channel.consumeFrom(getMessagingChannel());
+    }
 
     public Zone getPojo() {
         return pojo;
@@ -148,5 +175,20 @@ public class ZoneLogic {
         int hash = 5;
         hash = 89 * hash + (this.pojo != null ? this.pojo.hashCode() : 0);
         return hash;
+    }
+
+    @Override
+    public void onMessage(ObjectMessage message) {
+        try {
+            Object object = message.getObject();
+            if (object instanceof EventTemplate) {
+                EventTemplate event = (EventTemplate) object;
+                int x = Integer.parseInt(event.getProperty("xCord"));
+                int y = Integer.parseInt(event.getProperty("xCord"));
+                //TODO: do something here (UNIMPLEMENTED)
+            }
+        } catch (JMSException ex) {
+            Logger.getLogger(ZoneLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
