@@ -22,7 +22,7 @@ public class ObjectLoader implements AddonLoaderInterface {
     Logger log = Freedomotic.logger;
 
     @Override
-    public void load(AddonManager manager, File path) {
+    public void load(AddonLoader manager, File path) {
         File pluginFolder = new File(path.getAbsolutePath());
         String SEPARATOR = "\n";
         if (pluginFolder.isFile()) {

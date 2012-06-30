@@ -20,19 +20,14 @@
 package it.freedomotic.plugins;
 
 import it.freedomotic.api.Client;
-import it.freedomotic.api.Configuration;
-import it.freedomotic.api.ObjectPlaceholder;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
-import it.freedomotic.model.ds.Config;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.persistence.ConfigPersistence;
-import it.freedomotic.persistence.EnvObjectPersistence;
-import it.freedomotic.util.Info;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Classe che tiene traccia del nome del client che si è connesso tramite socket
@@ -40,7 +35,7 @@ import java.util.ArrayList;
  */
 public class ClientStorage {
 
-    private static ArrayList<it.freedomotic.api.Client> clients = new ArrayList<it.freedomotic.api.Client>();
+    private static final ArrayList<it.freedomotic.api.Client> clients = new ArrayList<it.freedomotic.api.Client>();
 
     public ClientStorage() {
     }
@@ -55,7 +50,7 @@ public class ClientStorage {
         return clients;
     }
 
-    public Client get(String name) {
+    public static Client get(String name) {
         for (Client client : clients) {
             if (client.getName().equalsIgnoreCase(name)) {
                 return client;
@@ -72,6 +67,20 @@ public class ClientStorage {
             }
         }
         return tmp;
+    }
+    
+    public static boolean alreadyLoaded(Client input) {
+        if (input == null) {
+            throw new IllegalArgumentException();
+        }
+        Iterator it = clients.iterator();
+        while (it.hasNext()) {
+            Client client = (Client) it.next();
+            if (input.getName().equalsIgnoreCase(client.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Plugin createPlaceholder(final String simpleName, final String type, final String description) {
@@ -123,7 +132,7 @@ public class ClientStorage {
     }
 
     void createObjectPlaceholder(final Class objClazz, final File folder) {
-        ObjectPlaceholder placeholder = new ObjectPlaceholder(objClazz, folder);
+        ObjectPlugin placeholder = new ObjectPlugin(objClazz, folder);
         enqueue(placeholder);
     }
 }

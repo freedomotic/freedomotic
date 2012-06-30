@@ -16,7 +16,7 @@ import java.util.List;
 public class EventLoader implements AddonLoaderInterface {
 
     @Override
-    public void load(AddonManager manager, File path) {
+    public void load(AddonLoader manager, File path) {
         File dir = new File(path.getAbsolutePath());
         String SEPARATOR = "\n";
         if (dir.isFile()) {
