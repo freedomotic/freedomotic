@@ -9,7 +9,7 @@ import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.UnableToExecuteException;
-import it.freedomotic.plugins.AddonManager;
+import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.reactions.Command;
 import java.io.IOException;
 
@@ -26,7 +26,7 @@ public class PluginRemoteController extends Actuator {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        Client plugin = AddonManager.getPluginByName(c.getProperty("plugin"));
+        Client plugin = Freedomotic.clients.get(c.getProperty("plugin"));
         String action = c.getProperty("action");
         if (plugin != null) {
             if (action.equalsIgnoreCase("SHOW")) {

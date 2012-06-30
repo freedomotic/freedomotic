@@ -12,10 +12,11 @@
 package it.freedomotic.plugins.gui;
 
 import it.freedomotic.api.Actuator;
+import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.persistence.CommandPersistence;
-import it.freedomotic.plugins.AddonManager;
+import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.util.PropertiesPanel_1;
 import java.util.Map.Entry;
@@ -59,7 +60,7 @@ public class CustomizeCommand extends javax.swing.JFrame {
 
     private void enqueueReceivers() {
         DefaultComboBoxModel model = new DefaultComboBoxModel();
-        for (Plugin p : AddonManager.getLoadedPlugins()) {
+        for (Client p : Freedomotic.clients.getClients()) {
             if (p instanceof Actuator) {
                 model.addElement(p.getName());
             }

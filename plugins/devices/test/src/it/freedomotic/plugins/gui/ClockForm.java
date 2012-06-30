@@ -4,18 +4,18 @@
  */
 package it.freedomotic.plugins.gui;
 
-import it.freedomotic.plugins.Clock;
+import it.freedomotic.plugins.Scheduler;
 
 /**
  *
  * @author Enrico
  */
 public class ClockForm extends javax.swing.JFrame {
-    private static Clock plugin;
+    private static Scheduler plugin;
     /**
      * Creates new form ClockForm
      */
-    public ClockForm(Clock plugin) {
+    public ClockForm(Scheduler plugin) {
         ClockForm.plugin=plugin;
         initComponents();
         spnResolution.setValue(plugin.getResolution());
