@@ -139,9 +139,9 @@
             <fileset dir="${base}/config" includes="**/*" />
         </copy>
         
-        <echo>  Add data file</echo>        
+        <echo>  Add example data file</echo>
         <copy todir="${release-folder}/data">
-            <fileset dir="${base}/data" includes="**/*" />
+            <fileset dir="${workspace-base}/data-example" includes="**/*" />
         </copy>
         
         <!--<echo>Append changes to CHANGELOG file</echo>	
@@ -177,8 +177,7 @@
                 regexp="(\w{7})\w*" 
                 select="\1" 
                 defaultvalue="Error" 
-                override="true"/> 
-            <echo>Property vm.propertyname=${vm.propertyname}</echo>                 
+                override="true"/>                   
                 <property name="workspace-base" value="../../"/>               
                 <property file="${workspace-base}/framework/freedomotic/releasetoupload" />
                 <taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="${workspace-base}/lib/ant/ant-googlecode-0.0.3.jar" name="gcupload"/>
