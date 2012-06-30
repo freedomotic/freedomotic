@@ -15,23 +15,12 @@ import it.freedomotic.persistence.converters.ReactionConverter;
 import it.freedomotic.persistence.converters.TupleConverter;
 import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Trigger;
-import java.io.IOException;
-import java.io.Serializable;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import org.apache.activemq.command.ActiveMQDestination;
-import org.apache.activemq.command.ActiveMQMessage;
-import org.apache.activemq.command.ActiveMQObjectMessage;
-import org.apache.activemq.transport.stomp.FrameTranslator;
-import org.apache.activemq.transport.stomp.ProtocolConverter;
-import org.apache.activemq.transport.stomp.ProtocolException;
-import org.apache.activemq.transport.stomp.StompFrame;
 
 /**
  *
  * @author gpt
  */
-public final class FreedomXStream implements FrameTranslator{
+public final class FreedomXStream /*implements FrameTranslator*/{
 
     private static XStream xstream = null;
     private static XStream environmentXstream = null;
@@ -131,28 +120,28 @@ public final class FreedomXStream implements FrameTranslator{
 
     }
 
-    @Override
-    public ActiveMQMessage convertFrame(ProtocolConverter pc, StompFrame sf) throws JMSException, ProtocolException {
-        System.out.println("in convert frame");
-        ActiveMQObjectMessage output = new ActiveMQObjectMessage();
-        XStream translator = getXstream();
-        Serializable object = (Serializable) translator.fromXML(sf.getBody());
-        output.setObject(object);
-        return output;
-    }
-
-    @Override
-    public StompFrame convertMessage(ProtocolConverter pc, ActiveMQMessage amqm) throws IOException, JMSException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public String convertDestination(ProtocolConverter pc, Destination dstntn) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public ActiveMQDestination convertDestination(ProtocolConverter pc, String string, boolean bln) throws ProtocolException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+//    @Override
+//    public ActiveMQMessage convertFrame(ProtocolConverter pc, StompFrame sf) throws JMSException, ProtocolException {
+//        System.out.println("in convert frame");
+//        ActiveMQObjectMessage output = new ActiveMQObjectMessage();
+//        XStream translator = getXstream();
+//        Serializable object = (Serializable) translator.fromXML(sf.getBody());
+//        output.setObject(object);
+//        return output;
+//    }
+//
+//    @Override
+//    public StompFrame convertMessage(ProtocolConverter pc, ActiveMQMessage amqm) throws IOException, JMSException {
+//        throw new UnsupportedOperationException("Not supported yet.");
+//    }
+//
+//    @Override
+//    public String convertDestination(ProtocolConverter pc, Destination dstntn) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+//    }
+//
+//    @Override
+//    public ActiveMQDestination convertDestination(ProtocolConverter pc, String string, boolean bln) throws ProtocolException {
+//        throw new UnsupportedOperationException("Not supported yet.");
+//    }
 }
