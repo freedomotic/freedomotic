@@ -7,5 +7,5 @@ import java.io.File;
  * @author Enrico
  */
 public interface AddonLoaderInterface {
-       abstract void load(AddonManager manager, File path);
+       abstract void load(AddonLoader manager, File path);
 }

@@ -22,7 +22,7 @@ public class DevicesLoader implements AddonLoaderInterface {
     private boolean dataFolderAlreadyLoaded = false;
 
     @Override
-    public void load(AddonManager manager, File path) {
+    public void load(AddonLoader manager, File path) {
         File pluginRootFolder = new File(path.getAbsolutePath());
         String SEPARATOR = "\n";
         if (pluginRootFolder.isFile()) {
@@ -78,10 +78,9 @@ public class DevicesLoader implements AddonLoaderInterface {
                                 } catch (Exception e) {
                                     Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
                                 }
-                                if (!manager.alreadyLoaded(plugin)) {
+                                if (!ClientStorage.alreadyLoaded(plugin)) {
                                     log.info(plugin.getName() + " added to plugins list.");
                                     Freedomotic.logger.info("\n");
-                                    manager.ADDONS.add(plugin);
                                     Freedomotic.clients.enqueue(plugin);
                                 } else {
                                     log.warning("This plugin is already loaded or not valid. Skip it.");

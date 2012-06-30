@@ -18,10 +18,14 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.freedomotic.plugins;
 
-import it.freedomotic.api.Client;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import it.freedomotic.app.Freedomotic;
+import it.freedomotic.persistence.CommandPersistence;
+import it.freedomotic.persistence.ReactionPersistence;
+import it.freedomotic.persistence.TriggerPersistence;
+import it.freedomotic.util.FetchHttpFiles;
+import it.freedomotic.util.Info;
+import it.freedomotic.util.Unzip;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -29,17 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
-import it.freedomotic.api.Plugin;
-import it.freedomotic.app.Freedomotic;
-import it.freedomotic.persistence.CommandPersistence;
-import it.freedomotic.persistence.ReactionPersistence;
-import it.freedomotic.persistence.TriggerPersistence;
-import it.freedomotic.util.CopyFile;
-import it.freedomotic.util.FetchHttpFiles;
-import it.freedomotic.util.Info;
-import it.freedomotic.util.Unzip;
-import java.io.FileFilter;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,13 +40,12 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class AddonManager {
+public class AddonLoader {
 
     // Parameters
     private static final Class[] PARAMETERS = new Class[]{URL.class};
-    public static final List<Plugin> ADDONS = new ArrayList<Plugin>();
 
-    public AddonManager() {
+    public AddonLoader() {
     }
 
     public void searchIn(File directory) throws Exception {
@@ -89,7 +81,7 @@ public class AddonManager {
             //create ad-hoc subfolders of temp
             File destination = new File(Info.getResourcesPath() + "/temp/" + directory.getName());
             destination.mkdir();
-            copyAllFiles(new File(directory + "/data/resources"), destination);
+            recursiveCopy(new File(directory + "/data/resources"), destination);
         }
     }
 
@@ -101,7 +93,7 @@ public class AddonManager {
                     try {
                         searchIn(subfolder);
                     } catch (Exception ex) {
-                        Logger.getLogger(AddonManager.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(AddonLoader.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -124,7 +116,7 @@ public class AddonManager {
         return classes;
     }
 
-    public Class getClass(File file, String name) throws Exception {
+    protected Class getClass(File file, String name) throws Exception {
         addURL(file.toURL());
         URLClassLoader clazzLoader;
         Class clazz;
@@ -136,7 +128,7 @@ public class AddonManager {
         return clazz;
     }
 
-    public void addURL(URL u) throws IOException {
+    private void addURL(URL u) throws IOException {
         URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
         URL urls[] = sysLoader.getURLs();
         for (int i = 0; i < urls.length; i++) {
@@ -153,35 +145,6 @@ public class AddonManager {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(t));
             throw new IOException("Error, could not add URL to system classloader");
         }
-    }
-
-    protected boolean alreadyLoaded(Plugin p) {
-        if (p == null) {
-            return true; //an error occured, with true this plugin is skipped
-        }
-        Iterator it = ADDONS.iterator();
-        while (it.hasNext()) {
-            Plugin plugin = (Plugin) it.next();
-            if (p.getName().equalsIgnoreCase(plugin.getName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static List<Plugin> getLoadedPlugins() {
-        return ADDONS;
-    }
-
-    public static Client getPluginByName(String name) {
-        Iterator it = ADDONS.iterator();
-        while (it.hasNext()) {
-            Plugin plugin = (Plugin) it.next();
-            if (name.trim().equalsIgnoreCase(plugin.getName())) {
-                return plugin;
-            }
-        }
-        return null;
     }
 
     public static boolean installDevice(URL fromURL) {
@@ -226,21 +189,32 @@ public class AddonManager {
         return true; //done
     }
 
-    private void copyAllFiles(File sfile, File dfile) {
-        try {
-            File[] files = sfile.listFiles();
-            files = sfile.listFiles();
-            //copy all files in local resources folder to the main resources folder under freedom_root/data/resources
-            if (files != null) {
-                for (File file : files) {
-                    Freedomotic.logger.info("Copying file " + file.getAbsolutePath() + " to " + dfile.getAbsolutePath());
-                    CopyFile.copy(file, new File(dfile + "/" + file.getName()));
-                }
-            } else {
-                Freedomotic.logger.info("No file to copy in this folder");
+    private void recursiveCopy(File source, File target) throws IOException {
+
+        if (source.isDirectory()) {
+            if (!target.exists()) {
+                target.mkdir();
             }
-        } catch (Exception ex) {
-            Freedomotic.logger.warning("Unable to copy this file " + ex.getMessage());
+
+            String[] children = source.list();
+            for (int i = 0; i < children.length; i++) {
+                recursiveCopy(new File(source, children[i]),
+                        new File(target, children[i]));
+            }
+        } else {
+
+            InputStream in = new FileInputStream(source);
+            OutputStream out = new FileOutputStream(target);
+
+            // Copy the bits from instream to outstream
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
         }
+
     }
 }
