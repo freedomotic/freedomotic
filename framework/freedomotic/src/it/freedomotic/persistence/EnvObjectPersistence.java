@@ -98,6 +98,7 @@ public class EnvObjectPersistence {
     }
 
     public synchronized static void loadObjects(File folder, boolean makeUnique) {
+        objectList.clear();
         Freedomotic.logger.info("-- Initialization of Objects --");
         Freedomotic.logger.info("Loading environment objects from: " + folder.getAbsolutePath());
         File[] files = folder.listFiles();
