@@ -71,9 +71,9 @@
     nbproject/build-impl.xml file. 
 
     -->
-
     <target name="-post-jar">
-   <!-- calls an external build file located in SVN_ROOT/buildscript-files folder -->
-        <ant antfile = "../../../scripts/plugin-build.xml" inheritAll="true"/>
+    <!-- calls an external build file located in SVN_ROOT/scripts folder -->    
+        <ant antfile = "${basedir}../../../../scripts/plugin-build.xml" inheritAll="true"/>
     </target>
+ 
 </project>
