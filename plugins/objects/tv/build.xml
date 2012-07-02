@@ -72,12 +72,13 @@
 
     -->
     <target name="-post-jar">
-    <!-- calls an external build file located in SVN_ROOT/scripts folder -->
-        <ant antfile = "../../../scripts/plugin-build.xml" inheritAll="true"/>
+    <!-- calls an external build file located in SVN_ROOT/scripts folder -->    
+        <ant antfile = "${basedir}../../../../scripts/plugin-build.xml" inheritAll="true"/>
     </target>
     
+        
     <target name="upload">
-        <!-- calls an external build file located in scripts folder -->
-        <ant antfile="../../../scripts/plugin-build.xml" target="upload-to-marketplace" inheritAll="true"/>
+    <!-- calls an external build file located in scripts folder -->
+        <ant antfile="${basedir}../../../../scripts/plugin-build.xml" target="upload-to-marketplace" inheritAll="true"/>
     </target>
 </project>
