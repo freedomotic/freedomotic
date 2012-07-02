@@ -6,16 +6,16 @@
         <!-- init the lib for contrib conditional if then else ant task
         remember the path is considerd from the plugin folder in which this script
         is called not from freedomotic/scripts/plugin-build.xml-->
-        
-        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+	<property name="workspace-base" value="../../../"/>
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
             <classpath>
-                <pathelement location="../../../lib/ant/ant-contrib-1.0b3.jar"/>
+                <pathelement location="${workspace-base}/lib/ant/ant-contrib-1.0b3.jar"/>
             </classpath>
         </taskdef>
         
         <taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask">
             <classpath>
-                <pathelement location="../../../lib/ant/xmltask.jar"/>
+                <pathelement location="${workspace-base}/lib/ant/xmltask.jar"/>
             </classpath>
         </taskdef>
         
@@ -44,7 +44,7 @@
                     <entry key="build.create.dist.market" value="true"/>
                     <entry key="build.create.dist.framework" value="true"/>
                     <entry key="build.synch.dist" value="true"/>
-                    <entry key="build.synch.dist.path" value="../../../framework/freedomotic/plugins/"/>
+                    <entry key="build.synch.dist.path" value="${workspace-base}/framework/freedomotic/plugins/"/>
                 </propertyfile>
             </then>
         </if>
@@ -225,7 +225,7 @@
         <taskdef 
             name="marketplace" 
             classname="it.freedomotic.marketplace.AntUploader" 
-            classpath="../../../lib/ant/freedomotic-marketplace.jar"
+            classpath="${workspace-base}/lib/ant/freedomotic-marketplace.jar"
             />
         <!-- read properties from build.options file -->
         <loadproperties>

@@ -54,6 +54,7 @@ Desktop.ini
 ###############
 /plugins/*/*/*/market-dist/
 /plugins/*/*/nbproject/private/
+/plugins/*/*/*/javadoc/
 /*/*/nbproject/private/
 /framework/freedomotic/plugins/
 market-dist/
