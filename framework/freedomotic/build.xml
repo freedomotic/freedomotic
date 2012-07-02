@@ -99,7 +99,18 @@
     -->
     
     <target name="create-release" >
+        <!--
+        Target that creates a package with all necesary to run freedomoticT        
+        If a property plugin_list is used with the format:
+        devices/frontend-java,devices/restapi
+        the package will include the name of the plugins defined.
+        -->
         <echo>Building release of Freedomotic</echo>
+         <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+            <classpath>
+                <pathelement location="../../lib/ant/ant-contrib-1.0b3.jar"/>
+            </classpath>
+         </taskdef>        
         <input
             message="Please enter the release major number and minor number separated by a dot."
             addproperty="release.version"
@@ -111,8 +122,21 @@
         <property name="release-dump" value="${release-base}/temp"/>
         <property name="base" value="${basedir}"/>
         <property name="include" value="${workspace-base}/scripts/shared"/>
-        <property name="changeLogFile" value="${include}/CHANGELOG.TXT"/>
-       
+        <property name="changeLogFile" value="${include}/CHANGELOG.TXT"/>        
+
+
+<!--    <property name="plugin_list" value="devices/frontend-java,devices/restapi"/> -->
+        <!-- Compiles the plugins to be included on the package-->
+        <if> 
+            <isset property = "plugin_list"/> 
+            <then>   
+                <subant target="default">
+                    <filelist dir="${workspace-base}/plugins" files="${plugin_list}"/>
+                </subant>
+            </then>
+        </if>
+          
+
         <buildnumber/>
         <mkdir dir="${release-folder}" />
         <mkdir dir="${release-dump}" />
@@ -166,30 +190,31 @@
         <delete dir="${release-folder}" />
         <echo>FINISH... Release created. Now it is ready to be distributed.</echo>
     </target>
+    
     <target name="upload-release" >
         <taskdef resource="net/sf/antcontrib/antcontrib.properties">
             <classpath>
                 <pathelement location="../../lib/ant/ant-contrib-1.0b3.jar"/>
             </classpath>
         </taskdef>
-         <property environment = "env"/>                
-         <propertyregex property="vm.commit_sha" input="${env.GIT_COMMIT}" 
-                regexp="(\w{7})\w*" 
-                select="\1" 
-                defaultvalue="Error" 
-                override="true"/>                   
-                <property name="workspace-base" value="../../"/>               
-                <property file="${workspace-base}/framework/freedomotic/releasetoupload" />
-                <taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="${workspace-base}/lib/ant/ant-googlecode-0.0.3.jar" name="gcupload"/>
-                <gcupload 
-        username="${username}"
-        password="${password}"        
-        projectname="freedomotic"
-        filename="${workspace-base}/${upload.file.name}"
-        targetfilename="freedomotic-dailybuild-${upload.release.major}.${env.BUILD_NUMBER}-${vm.commit_sha}.zip"        
-        summary="Daily build created by a Continuous Integration System. This release is unstable, do not use in production environment."
-        labels="Featured, Type-DailyBuild, Type-Beta, Type-Archive, OpSys-All"
-                verbose="true"/>
+        <property environment = "env"/>                
+        <propertyregex property="vm.commit_sha" input="${env.GIT_COMMIT}" 
+                        regexp="(\w{7})\w*" 
+                        select="\1" 
+                        defaultvalue="Error" 
+                        override="true"/>                   
+        <property name="workspace-base" value="../../"/>               
+        <property file="${workspace-base}/framework/freedomotic/releasetoupload" />
+        <taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="${workspace-base}/lib/ant/ant-googlecode-0.0.3.jar" name="gcupload"/>
+        <gcupload 
+            username="${username}"
+            password="${password}"        
+            projectname="freedomotic"
+            filename="${workspace-base}/${upload.file.name}"
+            targetfilename="freedomotic-dailybuild-${upload.release.major}.${env.BUILD_NUMBER}-${vm.commit_sha}.zip"        
+            summary="Daily build created by a Continuous Integration System. This release is unstable, do not use in production environment."
+            labels="Featured, Type-DailyBuild, Type-Beta, Type-Archive, OpSys-All"
+            verbose="true"/>
     </target>
 
 </project>
