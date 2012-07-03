@@ -222,6 +222,7 @@
     
     <target name="upload-to-marketplace" description="Uploads a plugin release on freedomotic online marketplace">
         <!-- WARNING: classpath varible must be in your classpath when ant is started -->
+        <property name="workspace-base" value="../../../"/>
         <taskdef 
             name="marketplace" 
             classname="it.freedomotic.marketplace.AntUploader" 
