@@ -58,7 +58,7 @@ public class AbstractBusConnector {
                 //only on the local machine not from LAN IPs
                 BROKER.addConnector("stomp://0.0.0.0:61666");
 //                //websocket connector for javascript apps
-//                broker.addConnector("ws://0.0.0.0:61614");
+                BROKER.addConnector("ws://0.0.0.0:61614");
                 BROKER.setPersistent(false); //we don't need to save messages on disk
                 //start the broker
                 BROKER.start();
