@@ -8,6 +8,7 @@
         <property name="required" value="5.1.0"/>
         <property name="category" value="category"/>
         <property name="short-name" value="shortname"/>
+        <property name="startup-time" value="on load"/>
     </properties>
 </config>
 

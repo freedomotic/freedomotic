@@ -39,12 +39,20 @@ public class ApplicationServer extends Protocol{
          try {
         String dir = Info.getApplicationPath() + "/plugins/devices/es.gpulido.webserver/data"+WEBAPP_DIR;              
         server = new Server(PORT);               
-        WebAppContext context = new WebAppContext();        
-        context.setDescriptor(dir+"/WEB-INF/web.xml");
-        context.setResourceBase(dir);
-        context.setContextPath(WEBAPP_CTX);
-        context.setParentLoaderPriority(true);  
-        server.setHandler(context);                 
+//        WebAppContext context = new WebAppContext();        
+//        context.setDescriptor(dir+"/WEB-INF/web.xml");
+//        context.setResourceBase(dir);
+//        context.setContextPath(WEBAPP_CTX);
+//        context.setParentLoaderPriority(true);  
+//        server.setHandler(context);
+        
+        
+         WebAppContext webapp = new WebAppContext();
+        webapp.setContextPath(WEBAPP_CTX);
+        webapp.setWar(dir+"/Freedomotic_gwt_client.war");
+        server.setHandler(webapp);
+        
+        
        
             server.start();            
         } catch (Exception ex) {
