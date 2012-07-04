@@ -1,8 +1,7 @@
 <config>
     <properties>
         <property name="description"    value="A sensor for Arduino WeatherShield"/>
-        <property name="version"        value="40"/>
-        <property name="required"       value="40"/>
+        <property name="protocol.name"  value="ArduinoWeatherShield"/>
         <property name="category"       value="protocol"/>
         <property name="short-name"     value="WeatherShield"/>
         <property name="polling-time"   value="200"/>
