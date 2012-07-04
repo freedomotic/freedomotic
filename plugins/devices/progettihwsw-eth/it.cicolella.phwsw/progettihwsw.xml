@@ -1,9 +1,7 @@
-
 <config>
     <properties>
         <property name="description"    value="Communicates with the ethernet board SNT084Eth8R8I developed by www.progetti-hw-sw.it"/>
-        <property name="version"        value="40"/>
-        <property name="required"       value="40"/>
+        <property name="protocol.name"  value="SNT084Eth8R8I"/>
         <property name="category"       value="protocol"/>
         <property name="short-name"     value="SNT084Eth8R8I"/>
         <property name="address-delimiter" value=":"/>
