@@ -47,9 +47,9 @@ public class ApplicationServer extends Protocol{
 //        server.setHandler(context);
         
         
-         WebAppContext webapp = new WebAppContext();
+        WebAppContext webapp = new WebAppContext();
         webapp.setContextPath(WEBAPP_CTX);
-        webapp.setWar(dir+"/Freedomotic_gwt_client.war");
+        webapp.setWar(dir+"/Freedomotic.war");
         server.setHandler(webapp);
         
         
