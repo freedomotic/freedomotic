@@ -2,8 +2,7 @@
     <properties>
         <property name="name" value="Souliss"/>
         <property name="description" value="Communicates with Souliss boards"/>
-        <property name="version" value="1.0.0"/>
-        <property name="required" value="5.1.0"/>
+        <property name="protocol.name" value="souliss"/>
         <property name="category" value="protocol"/>
         <property name="short-name" value="souliss"/>
         <property name="address-delimiter" value=":"/>
