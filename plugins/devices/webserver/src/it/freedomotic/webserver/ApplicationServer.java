@@ -24,21 +24,27 @@ import org.eclipse.jetty.webapp.WebAppContext;
  */
 public class ApplicationServer extends Protocol{
     //TODO: read from config file
-    public static final int PORT = 8080;
-    public static final String WEBAPP_DIR = "/webapps/gwt_client";
-    public static final String WEBAPP_CTX = "/";
+    int port;// = 8080;
+    String webapp_dir;
+    String war_file;
+    public static final String WEBAPP_CTX = "/";    
 
     public static Server server;
     
     public ApplicationServer() {
         super("ApplicationServer", "/es.gpulido.webserver/applicationserver-manifest.xml");
+        
+        port = configuration.getIntProperty("PORT", 8080);
+        webapp_dir = configuration.getStringProperty("WEBAPP_DIR","/webapps/gwt_client");
+        war_file=configuration.getStringProperty("WAR_FILE","Freedomotic.war");
+        //TODO: check that the war file is correct.
     }
     
     @Override
     public void onStart(){
          try {
-        String dir = Info.getApplicationPath() + "/plugins/devices/es.gpulido.webserver/data"+WEBAPP_DIR;              
-        server = new Server(PORT);               
+        String dir = Info.getApplicationPath() + "/plugins/devices/es.gpulido.webserver/data"+webapp_dir;              
+        server = new Server(port);               
 //        WebAppContext context = new WebAppContext();        
 //        context.setDescriptor(dir+"/WEB-INF/web.xml");
 //        context.setResourceBase(dir);
@@ -49,7 +55,7 @@ public class ApplicationServer extends Protocol{
         
         WebAppContext webapp = new WebAppContext();
         webapp.setContextPath(WEBAPP_CTX);
-        webapp.setWar(dir+"/Freedomotic.war");
+        webapp.setWar(dir+"/"+war_file);
         server.setHandler(webapp);
         
         
