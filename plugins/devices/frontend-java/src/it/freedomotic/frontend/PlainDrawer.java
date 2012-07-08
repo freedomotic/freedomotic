@@ -5,7 +5,6 @@
 package it.freedomotic.frontend;
 
 import it.freedomotic.events.ObjectReceiveClick;
-import it.freedomotic.events.ObjectReceiveClick.Click;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.model.geometry.FreedomPoint;
@@ -216,19 +215,19 @@ public class PlainDrawer extends Renderer {
 
     @Override
     public void mouseClickObject(EnvObjectLogic obj) {
-        ObjectReceiveClick event = new ObjectReceiveClick(this, obj, Click.SINGLE_CLICK);
+        ObjectReceiveClick event = new ObjectReceiveClick(this, obj, ObjectReceiveClick.SINGLE_CLICK);
         Freedomotic.sendEvent(event);
     }
 
     @Override
     public void mouseDoubleClickObject(EnvObjectLogic obj) {
-        ObjectReceiveClick event = new ObjectReceiveClick(this, obj, Click.DOUBLE_CLICK);
+        ObjectReceiveClick event = new ObjectReceiveClick(this, obj, ObjectReceiveClick.DOUBLE_CLICK);
         Freedomotic.sendEvent(event);
     }
 
     @Override
     public void mouseRightClickObject(EnvObjectLogic obj) {
-        ObjectReceiveClick event = new ObjectReceiveClick(this, obj, Click.RIGHT_CLICK);
+        ObjectReceiveClick event = new ObjectReceiveClick(this, obj, ObjectReceiveClick.RIGHT_CLICK);
         Freedomotic.sendEvent(event);
     }
 }
