@@ -16,7 +16,9 @@ public abstract class Behavior implements Serializable {
     private String description;
     private boolean active;
     private int priority;
-
+    public final static String VALUE_OPPOSITE = "opposite";
+    public final static String VALUE_NEXT = "next";
+    public final static String VALUE_PREVIOUS = "previous";
 
     public boolean isActive() {
         return active;
