@@ -4,6 +4,8 @@ package it.freedomotic.model.object;
 public class BooleanBehavior extends Behavior{
 
     private boolean value;
+    public final static String VALUE_TRUE = "true";
+    public final static String VALUE_FALSE = "false";
 
     public final boolean getValue() {
         return value;
