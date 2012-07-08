@@ -7,6 +7,7 @@ package it.freedomotic.core;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
+import it.freedomotic.model.object.Representation;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.persistence.EnvObjectPersistence;
 import it.freedomotic.plugins.ObjectPlugin;
@@ -43,6 +44,34 @@ public class JoinDevice implements BusConsumer {
         channel.consumeFrom(getMessagingChannel());
     }
 
+    protected static void join(String clazz, String name, String protocol, String address) {
+        try {
+            ObjectPlugin client = (ObjectPlugin) Freedomotic.clients.get(clazz);
+            if (client == null) {
+                Freedomotic.logger.warning("Don't exist an object class called " + clazz);
+                return;
+            }
+            System.out.println(client.getName());
+            File exampleObject = client.getExample();
+            EnvObjectLogic loaded = EnvObjectPersistence.loadObject(exampleObject, true);
+            System.out.println(loaded.getPojo().getName());
+            //changing the name and other properties invalidates related trigger and commands
+            //call init() again after this changes
+            loaded.getPojo().setName(name);
+            loaded.getPojo().setProtocol(protocol);
+            loaded.getPojo().setPhisicalAddress(address);
+            loaded.init();
+            //set at random position
+            for (Representation rep : loaded.getPojo().getRepresentations()) {
+                int x = 0 + (int) (Math.random() * Freedomotic.environment.getPojo().getWidth());
+                int y = 0 + (int) (Math.random() * Freedomotic.environment.getPojo().getHeight());
+                rep.setOffset(x, y);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(JoinDevice.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     @Override
     public void onMessage(ObjectMessage message) {
         try {
@@ -54,24 +83,8 @@ public class JoinDevice implements BusConsumer {
                 String protocol = command.getProperty("object.protocol");
                 String address = command.getProperty("object.address");
                 String clazz = command.getProperty("object.class");
-                ObjectPlugin client = (ObjectPlugin) Freedomotic.clients.get(clazz);
-                if (client == null) {
-                    Freedomotic.logger.warning("Don't exist an object class called " + clazz);
-                    return;
-                }
-                System.out.println(client.getName());
-                File exampleObject = client.getExample();
-                EnvObjectLogic loaded = EnvObjectPersistence.loadObject(exampleObject, true);
-                System.out.println(loaded.getPojo().getName());
-                //changing the name and other properties invalidates related trigger and commands
-                //call init() again after this changes
-                loaded.getPojo().setName(name);
-                loaded.getPojo().setProtocol(protocol);
-                loaded.getPojo().setPhisicalAddress(address);
-                loaded.init();
+                join(clazz, name, protocol, address);
             }
-        } catch (IOException ex) {
-            Logger.getLogger(JoinDevice.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JMSException ex) {
             Logger.getLogger(JoinDevice.class.getName()).log(Level.SEVERE, null, ex);
         }

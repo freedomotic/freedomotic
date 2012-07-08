@@ -14,6 +14,7 @@ import it.freedomotic.reactions.Reaction;
 import it.freedomotic.persistence.ReactionPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.util.UidGenerator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
@@ -29,7 +30,7 @@ import java.util.logging.Logger;
  * @author Enrico
  */
 public final class TriggerCheck {
-
+    
     private static ExecutorService executor = Executors.newCachedThreadPool();
 
     //uncallable constructor
@@ -45,31 +46,21 @@ public final class TriggerCheck {
      * @throws TriggerCheckException
      */
     public static boolean check(final EventTemplate event, final Trigger trigger) throws TriggerCheckException {
-
+        
         Callable check = new Callable() {
-
+            
             @Override
             public Object call() throws Exception {
-
+                
                 StringBuilder buff = new StringBuilder();
                 try {
                     if (trigger.isHardwareLevel()) {
                         if (!trigger.isConsistentWith(event)) {
-                            buff.append("[NOT CONSISTENT] hardware level trigger '")
-                                    .append(trigger.getName())
-                                    .append(trigger.getPayload().toString())
-                                    .append("'\nnot consistent with received event '")
-                                    .append(event.getEventName()).append("' ")
-                                    .append(event.getPayload().toString());
+                            buff.append("[NOT CONSISTENT] hardware level trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
                             Freedomotic.logger.fine(buff.toString());
                             return false;
                         } else {
-                            buff.append("[CONSISTENT] hardware level trigger '")
-                                    .append(trigger.getName())
-                                    .append(trigger.getPayload().toString())
-                                    .append("'\nnot consistent with received event '")
-                                    .append(event.getEventName()).append("' ")
-                                    .append(event.getPayload().toString());
+                            buff.append("[CONSISTENT] hardware level trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
                             Freedomotic.logger.fine(buff.toString());
                             changeObjectProperties(trigger, event);
                             return true;
@@ -79,21 +70,11 @@ public final class TriggerCheck {
                             return false;
                         }
                         if (!trigger.isConsistentWith(event)) {
-                            buff.append("[NOT CONSISTENT] registred trigger '")
-                                    .append(trigger.getName())
-                                    .append(trigger.getPayload().toString())
-                                    .append("'\nnot consistent with received event '")
-                                    .append(event.getEventName()).append("' ")
-                                    .append(event.getPayload().toString());
+                            buff.append("[NOT CONSISTENT] registred trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
                             Freedomotic.logger.fine(buff.toString());
                             return false;
                         }
-                        buff.append("[CONSISTENT] registred trigger '")
-                                    .append(trigger.getName())
-                                    .append(trigger.getPayload().toString())
-                                    .append("'\nnot consistent with received event '")
-                                    .append(event.getEventName()).append("' ")
-                                    .append(event.getPayload().toString());
+                        buff.append("[CONSISTENT] registred trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
                         executeRelatedReactions(trigger, event);
                         return true;
                     }
@@ -103,7 +84,7 @@ public final class TriggerCheck {
                 } finally {
                     Freedomotic.logger.config(buff.toString());
                 }
-                    
+                
             }
         };
         Future<Boolean> result = executor.submit(check);
@@ -116,7 +97,7 @@ public final class TriggerCheck {
         }
         return false;
     }
-
+    
     private synchronized static void changeObjectProperties(Trigger trigger, final EventTemplate event) {
         Resolver resolver = new Resolver();
         resolver.addContext("event.", event.getPayload());
@@ -133,7 +114,12 @@ public final class TriggerCheck {
         address = resolved.getPayload().getStatements("event.address").get(0).getValue();
         objectList = EnvObjectPersistence.getObject(protocol, address);
         if (objectList.isEmpty()) {
-            Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + trigger.getName() + ")");
+            Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + trigger.getName() + ") creating a new one");
+            JoinDevice.join(
+                    "Switch", 
+                    protocol + "-" + UidGenerator.getNextStringUid(), 
+                    protocol, 
+                    address);
             return;
         }
         boolean done = false;
@@ -150,7 +136,7 @@ public final class TriggerCheck {
             Freedomotic.logger.warning("Hardware trigger " + trigger.getName() + " is not associated to any object.");
         }
     }
-
+    
     public static void executeRelatedReactions(final Trigger trigger, final EventTemplate event) {
         Iterator it = ReactionPersistence.iterator();
         //Searching for reactions using this trigger
