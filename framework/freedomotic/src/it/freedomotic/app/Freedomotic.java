@@ -57,6 +57,7 @@ import it.freedomotic.util.LogFormatter;
 import it.freedomotic.serial.SerialConnectionProvider;
 import it.freedomotic.service.MarketPlaceService;
 import it.freedomotic.service.PluginPackage;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.PrintWriter;
@@ -124,7 +125,8 @@ public final class Freedomotic {
                 handler.setFormatter(new LogFormatter());
                 logger.addHandler(handler);
                 logger.info("Freedomotic startup begins. (Press F5 to read the other messages)");
-                if (Freedomotic.config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true) {
+                if ((Freedomotic.config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true) && 
+                        (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))){
                     java.awt.Desktop.getDesktop().browse(new File(Info.getApplicationPath() + "/log/freedomotic.html").toURI());
                 }
             } catch (IOException ex) {

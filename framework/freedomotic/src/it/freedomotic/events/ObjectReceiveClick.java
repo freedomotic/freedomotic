@@ -10,19 +10,18 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 /**
- * An object receives a click on its representation on the GUI.
- * Different types of click are supported (single_click, double_click, right_click)
+ * An object receives a click on its representation on the GUI. Different types
+ * of click are supported (single_click, double_click, right_click)
+ *
  * @author Enrico
  */
 public final class ObjectReceiveClick extends EventTemplate {
 
-    public enum Click {
+    public static final String SINGLE_CLICK = "SINGLE_CLICK";
+    public static final String DOUBLE_CLICK = "DOUBLE_CLICK";
+    public static final String RIGHT_CLICK = "RIGHT_CLICK";
 
-        SINGLE_CLICK, DOUBLE_CLICK, RIGHT_CLICK
-    };
-
-
-    public ObjectReceiveClick(Object source, EnvObjectLogic obj, Click click) {
+    public ObjectReceiveClick(Object source, EnvObjectLogic obj, String click) {
         this.setSender(source);
         payload.addStatement("click", click.toString());
         Iterator it = obj.getExposedProperties().entrySet().iterator();

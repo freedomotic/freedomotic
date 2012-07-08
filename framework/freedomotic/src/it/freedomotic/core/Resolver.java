@@ -36,6 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 /**
  * Resolves command values using an event as the context of resolution eg: param
@@ -174,7 +175,7 @@ public class Resolver {
                     String replacer = command.getProperty(referenceToResolve);
 
                     //Freedomotic.logger.severe("Event variable name '" + eventVarName + "' is substituted with its value '" + replacer + "'");
-                    if ((replacer == null ? "" != null : !replacer.isEmpty())) {
+                    if ((replacer != null && !replacer.isEmpty())) {
                         String propertyValueResolved = propertyValue.replaceFirst(occurrence, replacer);
                         aProperty.setValue(propertyValueResolved);
                     } else {
@@ -192,7 +193,11 @@ public class Resolver {
                     ScriptEngineManager mgr = new ScriptEngineManager();
                     ScriptEngine js = mgr.getEngineByName("JavaScript");
                     String script = possibleScript.substring(1); //removing equal sign on the head
+                    if (js == null) {
+                        Freedomotic.logger.severe("Cannot instatiate a JavaScript engine");
+                    }
                     js.eval(script);
+                    System.out.println(js.getContext().toString());
 //                    Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to: '" + script + "' the complete value is '" + possibleScript);
 //                    Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
                     if (js.get(key) == null) {
@@ -202,11 +207,12 @@ public class Resolver {
                     success = true;
                 } catch (Exception ex) {
                     success = false;
-                    Freedomotic.logger.severe(ex.getMessage());
+                    Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
                 }
             }
             if (!success) {
                 aProperty.setValue(possibleScript);
+                Freedomotic.logger.severe("Cannot resolve script " + possibleScript);
             }
         }
     }

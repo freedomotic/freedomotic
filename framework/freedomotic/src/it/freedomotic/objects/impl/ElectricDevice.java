@@ -5,6 +5,7 @@
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.objects.EnvObjectLogic;
@@ -22,10 +23,13 @@ import it.freedomotic.reactions.Trigger;
 public class ElectricDevice extends EnvObjectLogic {
 
     protected BooleanBehaviorLogic powered;
+    protected final static String BEHAVIOR_POWERED = "powered";
+    protected final static String ACTION_TURN_ON = "turn on";
+    protected final static String ACTION_TURN_OFF = "turn off";
 
     @Override
     public void init() {
-        powered = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior("powered"));
+        powered = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior(BEHAVIOR_POWERED));
         //add a listener to values changes
         powered.addListener(new BooleanBehaviorListener() {
 
@@ -61,7 +65,7 @@ public class ElectricDevice extends EnvObjectLogic {
      * @param params
      */
     public void executePowerOn(Config params) {
-        boolean executed = executeCommand("turn on", params);
+        boolean executed = executeCommand(ACTION_TURN_ON, params);
         if (executed) {
             setOn();
         }
@@ -75,7 +79,7 @@ public class ElectricDevice extends EnvObjectLogic {
      * @param params
      */
     public void executePowerOff(Config params) {
-        boolean executed = executeCommand("turn off", params);
+        boolean executed = executeCommand(ACTION_TURN_OFF, params);
         if (executed) {
             setOff();
         }
@@ -113,24 +117,24 @@ public class ElectricDevice extends EnvObjectLogic {
         setOn.setDescription(getPojo().getName() + " turns on");
         setOn.setReceiver("app.events.sensors.behavior.request.objects");
         setOn.setProperty("object", getPojo().getName());
-        setOn.setProperty("behavior", "powered");
-        setOn.setProperty("value", "true");
+        setOn.setProperty("behavior", BEHAVIOR_POWERED);
+        setOn.setProperty("value", BooleanBehavior.VALUE_TRUE);
 
         Command setOff = new Command();
         setOff.setName("Turn off " + getPojo().getName());
         setOff.setDescription(getPojo().getName() + " turns off");
         setOff.setReceiver("app.events.sensors.behavior.request.objects");
         setOff.setProperty("object", getPojo().getName());
-        setOff.setProperty("behavior", "powered");
-        setOff.setProperty("value", "false");
+        setOff.setProperty("behavior", BEHAVIOR_POWERED);
+        setOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
 
         Command switchPower = new Command();
         switchPower.setName("Switch " + getPojo().getName() + " power");
         switchPower.setDescription("switches the power of " + getPojo().getName());
         switchPower.setReceiver("app.events.sensors.behavior.request.objects");
         switchPower.setProperty("object", getPojo().getName());
-        switchPower.setProperty("behavior", "powered");
-        switchPower.setProperty("value", "opposite");
+        switchPower.setProperty("behavior", BEHAVIOR_POWERED);
+        switchPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
 
 
         Command setItOn = new Command();
@@ -138,7 +142,7 @@ public class ElectricDevice extends EnvObjectLogic {
         setItOn.setDescription(getPojo().getName() + " turns on");
         setItOn.setReceiver("app.events.sensors.behavior.request.objects");
         setItOn.setProperty("object", "@event.object.name");
-        setItOn.setProperty("behavior", "powered");
+        setItOn.setProperty("behavior", BEHAVIOR_POWERED);
         setItOn.setProperty("value", "true");
 
         Command setItOff = new Command();
@@ -146,16 +150,16 @@ public class ElectricDevice extends EnvObjectLogic {
         setItOff.setDescription(getPojo().getName() + " turns off");
         setItOff.setReceiver("app.events.sensors.behavior.request.objects");
         setItOff.setProperty("object", "@event.object.name");
-        setItOff.setProperty("behavior", "powered");
-        setItOff.setProperty("value", "false");
+        setItOff.setProperty("behavior", BEHAVIOR_POWERED);
+        setItOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
 
         Command switchItsPower = new Command();
         switchItsPower.setName("Switch its power");
         switchItsPower.setDescription(getPojo().getName() + " switches its power");
         switchItsPower.setReceiver("app.events.sensors.behavior.request.objects");
         switchItsPower.setProperty("object", "@event.object.name");
-        switchItsPower.setProperty("behavior", "powered");
-        switchItsPower.setProperty("value", "opposite");
+        switchItsPower.setProperty("behavior", BEHAVIOR_POWERED);
+        switchItsPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
 
         CommandPersistence.add(setOff);
         CommandPersistence.add(setOn);
@@ -171,7 +175,7 @@ public class ElectricDevice extends EnvObjectLogic {
         clicked.setName("When " + this.getPojo().getName() + " is clicked");
         clicked.setChannel("app.event.sensor.object.behavior.clicked");
         clicked.getPayload().addStatement("object.name", this.getPojo().getName());
-        clicked.getPayload().addStatement("click", "SINGLE_CLICK");
+        clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
 
         TriggerPersistence.add(clicked);
