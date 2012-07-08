@@ -30,8 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Classe che tiene traccia del nome del client che si è connesso tramite socket
- * e del suo outputStrem
+ * A storage of loaded plugins and connected clients
  */
 public class ClientStorage {
 

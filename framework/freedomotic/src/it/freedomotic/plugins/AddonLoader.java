@@ -18,6 +18,8 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.freedomotic.plugins;
 
+import it.freedomotic.api.Client;
+import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.persistence.CommandPersistence;
 import it.freedomotic.persistence.ReactionPersistence;
@@ -215,6 +217,5 @@ public class AddonLoader {
             in.close();
             out.close();
         }
-
     }
 }

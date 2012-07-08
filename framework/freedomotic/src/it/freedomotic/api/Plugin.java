@@ -24,6 +24,7 @@ import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.persistence.ConfigPersistence;
+import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.util.EqualsUtil;
 import it.freedomotic.util.Info;
 import java.io.*;
@@ -225,9 +226,9 @@ public abstract class Plugin implements Client {
         try {
             plugin.load(new FileInputStream(new File(pluginFolder + "/PACKAGE")));
 
-            int requiredMajor = getIntProperty(plugin, "framework.required.major");
-            int requiredMinor = requiredMajor = getIntProperty(plugin, "framework.required.minor");
-            int requiredBuild = requiredMajor = getIntProperty(plugin, "framework.required.build");
+            int requiredMajor = getVersionProperty(plugin, "framework.required.major");
+            int requiredMinor = requiredMajor = getVersionProperty(plugin, "framework.required.minor");
+            int requiredBuild = requiredMajor = getVersionProperty(plugin, "framework.required.build");
             //checking framework version compatibility
             if ((getLaterVersion(
                     Info.getVersion(),
@@ -244,8 +245,22 @@ public abstract class Plugin implements Client {
         }
         return false;
     }
+    
+ public static String extractVersion(String filename) {
+        //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
+        //only 5.2.x-1.212 is needed
+        //remove extension
+        filename = filename.substring(0, filename.lastIndexOf("."));
+        String[] tokens = filename.split("-");
+        //3 tokens expected
+        if (tokens.length == 3) {
+            return tokens[1] + "-" + tokens[2];
+        } else {
+            return filename;
+        }
+    }
 
-    private static int getIntProperty(Properties properties, String property) {
+    private static int getVersionProperty(Properties properties, String property) {
         //if property is not specified returns 99999
         //if is a string returns 0 to match any value with "x"
         try {
@@ -253,6 +268,23 @@ public abstract class Plugin implements Client {
             return value;
         } catch (NumberFormatException numberFormatException) {
             return 0;
+        }
+    }
+
+    /*
+     * Checks if a plugin is already installed, if is an obsolete or newer
+     * version
+     */
+    public static int compareVersions(String name, String version) {
+        Client client = ClientStorage.get(name);
+        if (client != null && client instanceof Plugin) {
+            //already installed
+            //now check for version
+            Plugin plugin = (Plugin) client;
+            return Plugin.getLaterVersion(plugin.getVersion(), version);
+        } else {
+            //not installed
+            return -1;
         }
     }
 
@@ -279,19 +311,8 @@ public abstract class Plugin implements Client {
         return vals1.length < vals2.length ? -1 : vals1.length == vals2.length ? 0 : 1;
     }
 
-    public static String extractVersion(String filename) {
-        //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
-        //only 5.2.x-1.212 is needed
-        //remove extension
-        filename = filename.substring(0, filename.lastIndexOf("."));
-        String[] tokens = filename.split("-");
-        //3 tokens expected
-        if (tokens.length == 3) {
-            return tokens[1] + "-" + tokens[2];
-        } else {
-            return filename;
-        }
-    }
+
+
 
     public static void mergePackageConfiguration(Plugin plugin, File pluginFolder) {
         //seach for a file called PACKAGE
@@ -316,10 +337,8 @@ public abstract class Plugin implements Client {
     }
 
     protected void onShowGui() {
-
     }
 
     protected void onHideGui() {
-
     }
 }

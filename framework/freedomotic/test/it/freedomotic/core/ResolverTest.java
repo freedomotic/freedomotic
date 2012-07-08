@@ -57,6 +57,7 @@ public class ResolverTest {
         c.setProperty("seven", "= seven=\"Current temperature is @event.temperature celsius degrees. In fahrenheit is \" + Math.floor(((@event.temperature+40)*1.8)-40) + \" degrees.\";");
         c.setProperty("eight", "= eight=10+5;"); //this always returns a double
         c.setProperty("nine", "= nine=Math.floor(10+5).toString();"); //print the number as is to avoid conversion to double
+        c.setProperty("ten", "= if (@event.temperature<= 20) ten=2; else what=@event.temperature/10;");
         GenericEvent event = new GenericEvent(this);
         event.addProperty("zone", "Kitchen");
         event.addProperty("temperature", "25");
@@ -79,6 +80,7 @@ public class ResolverTest {
         assertEquals("Current temperature is 25 celsius degrees. In fahrenheit is 77 degrees.", result.getProperty("seven"));
         assertEquals("15.0", result.getProperty("eight"));
         assertEquals("15", result.getProperty("nine"));
+        assertEquals("15", result.getProperty("ten"));
     }
 
     @Test
