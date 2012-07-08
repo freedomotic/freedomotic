@@ -120,6 +120,17 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
 
     public void setNeedRepaint(boolean repaintBackground) {
         backgroundChanged = repaintBackground;
+        Graphics2D g2 = (Graphics2D) this.getGraphics();
+        g2.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+        g2.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(
+                RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+
         this.repaint();
     }
 
@@ -589,7 +600,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
             }
         }
         inDrag = false;
-        dragDiff=null;
+        dragDiff = null;
         selectedObject = null;
         removeIndicators();
         rebuildShapesCache();
@@ -628,7 +639,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         if (objectEditMode && getSelectedObject() != null) {
             for (Representation representation : getSelectedObject().getPojo().getRepresentations()) {
                 //move an object
-                representation.setOffset(xSnapped - (int)dragDiff.getWidth(), ySnapped - (int)dragDiff.getHeight());
+                representation.setOffset(xSnapped - (int) dragDiff.getWidth(), ySnapped - (int) dragDiff.getHeight());
                 setNeedRepaint(true);
             }
         } else {

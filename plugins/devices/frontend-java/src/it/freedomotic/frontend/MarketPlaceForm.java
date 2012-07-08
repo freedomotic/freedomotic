@@ -53,20 +53,20 @@ public class MarketPlaceForm extends javax.swing.JFrame {
      */
     public MarketPlaceForm() {
         initComponents();
-//        EventQueue.invokeLater(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                new Thread(new Runnable() {
-//
-//                    public void run() {
-//                        MarketPlaceService mps = MarketPlaceService.getInstance();
-//                        pluginList = mps.getPackageList();
-//                        updatePluginsList();
-//                    }
-//                }).start();
-//            }
-//        });
+        EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                new Thread(new Runnable() {
+
+                    public void run() {
+                        MarketPlaceService mps = MarketPlaceService.getInstance();
+                        pluginList = mps.getPackageList();
+                        updatePluginsList();
+                    }
+                }).start();
+            }
+        });
         pluginList = Freedomotic.onlinePlugins;
         updatePluginsList();
         lstPlugins.addMouseListener(new MouseAdapter() {
@@ -88,7 +88,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         //TODO: check if the plugin package is already installed.
     }
 
-    public Vector updatePluginsList() {
+    public final Vector updatePluginsList() {
         try {
             String path = Info.getResourcesPath();
             //TODO: use package images.
@@ -114,7 +114,14 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 String description = "";
                 if (pp.getFilePath() != null) {
                     String version = Plugin.extractVersion(new File(pp.getFilePath()).getName().toString());
-                    text = new JLabel(pp.getTitle() + " (" + version + ")");
+                    int result = Plugin.compareVersions(pp.getTitle(), version);
+                    if (result == -1) {
+                        text = new JLabel(pp.getTitle() + " (Install version " + version + ")");
+                    } else {
+                        if (result == 1) {
+                            text = new JLabel(pp.getTitle() + " (Update from " + version + " to " + version + ")");
+                        }
+                    }
                 } else {
                     text = new JLabel(pp.getTitle());
                 }
@@ -124,6 +131,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 Font font = lstPlugins.getFont();
                 text.setFont(font.deriveFont(Font.BOLD, 12));
                 lblDescription.setForeground(Color.gray);
+                
 
                 JPanel jpcenter = new JPanel();
                 GridLayout grid = new GridLayout(0, 1);
@@ -148,6 +156,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
+        validate();
         return null;
     }
 
@@ -174,7 +183,8 @@ public class MarketPlaceForm extends javax.swing.JFrame {
             return;
         }
         JOptionPane.showMessageDialog(null,
-                "Download of the requested plugin started in background (may take minutes). Continue to use Freedom, you will be notified when download completes.",
+                "Download of the requested plugin started in background (may take minutes). \n"
+                + "Continue to use Freedomotic, you will be notified when download completes.",
                 "Download in progress", JOptionPane.INFORMATION_MESSAGE);
         Runnable task;
         final String string = pp.getFilePath();
@@ -193,7 +203,8 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 }
                 if (!done) {
                     JOptionPane.showMessageDialog(null,
-                            "Unable to download the requested plugin. Check your internet connection and the provided URL.",
+                            "Unable to download the requested plugin. Check your internet connection and "
+                            + "the provided URL.",
                             "Download Error", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null,
