@@ -32,9 +32,14 @@ public class ImageResourceServerResource extends ServerResource implements Image
     
     @Override
     public String getImagePath() {        
-        String path = (imageFilePath.split(Info.getResourcesPath()))[1];
-        redirectSeeOther(FreedomRestServer.RESOURCES_PATH+path);
-        return path;    
+        System.out.println("RESTAPI getImagePath: "+imageFilePath);
+        //String resourcesPath =  Info.getResourcesPath();
+        
+        //Path relativePath = resourcesPath.relativize(new File(imageFilePath).toPath());
+        //System.out.println("RESTAPI relativePath: "+relativePath);
+        String path = imageFilePath.split(Info.getResourcesPath())[1];
+        redirectSeeOther(FreedomRestServer.RESOURCES_PATH+"/"+path);
+        return path;   
     }
     
 }
