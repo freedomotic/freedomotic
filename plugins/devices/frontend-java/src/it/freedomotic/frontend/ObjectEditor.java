@@ -792,7 +792,6 @@ public class ObjectEditor extends javax.swing.JFrame {
     private void populateAutomationsTab() {
         tabAutomations.setLayout(new BoxLayout(tabAutomations, BoxLayout.PAGE_AXIS));
         for (Trigger trigger : TriggerPersistence.getTriggers()) {
-            System.out.println("check " + trigger.getName());
             boolean isRelated = false;
             if (!trigger.isHardwareLevel()) {
                 Iterator it = trigger.getPayload().iterator();
@@ -801,7 +800,6 @@ public class ObjectEditor extends javax.swing.JFrame {
                     Statement statement = (Statement) it.next();
                     if (statement.getValue().contains(object.getPojo().getName())) {
                         isRelated = true; //is a trigger related with this object
-                        System.out.println(trigger.getName() + "is related");
                         break; //no need to check the other statements
                     }
                 }
@@ -820,7 +818,6 @@ public class ObjectEditor extends javax.swing.JFrame {
                         ReactionEditor editor = new ReactionEditor(new Reaction(trigger));
                         tabAutomations.add(editor);
                     }
-                    //tabAutomations.add(new JSeparator());
                 }
             }
         }
