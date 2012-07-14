@@ -36,6 +36,7 @@ public abstract class EnvObjectLogic {
     private ArrayList<BehaviorLogic> behaviors = new ArrayList<BehaviorLogic>();
 
     protected abstract void createCommands();
+
     protected abstract void createTriggers();
 
     /**
@@ -246,7 +247,7 @@ public abstract class EnvObjectLogic {
     public void init() throws EnvObjectMappingException {
         createCommands();
         createTriggers();
-        commandsMapping = new HashMap<String, Command>(); 
+        commandsMapping = new HashMap<String, Command>();
         cacheDeveloperLevelCommand();
         for (Entry e : pojo.getTriggers().entrySet()) {
             Freedomotic.logger.info("Trigger '" + e.getKey() + "' of object '" + pojo.getName() + "' is mapped to its '" + e.getValue() + "' behavior");
@@ -372,6 +373,20 @@ public abstract class EnvObjectLogic {
             return "";
         } else {
             return message;
+        }
+    }
+
+    public void setRandomLocation() {
+        int randomX = 0 + (int) (Math.random() * Freedomotic.environment.getPojo().getWidth());
+        int randomY = 0 + (int) (Math.random() * Freedomotic.environment.getPojo().getHeight());
+        for (Representation rep : getPojo().getRepresentations()) {
+            rep.setOffset(randomX, randomY);
+        }
+    }
+
+    public void setLocation(int x, int y) {
+        for (Representation rep : getPojo().getRepresentations()) {
+            rep.setOffset(x, y);
         }
     }
 }

@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * @author Enrico
  */
 public final class TriggerCheck {
-    
+
     private static ExecutorService executor = Executors.newCachedThreadPool();
 
     //uncallable constructor
@@ -46,12 +46,12 @@ public final class TriggerCheck {
      * @throws TriggerCheckException
      */
     public static boolean check(final EventTemplate event, final Trigger trigger) throws TriggerCheckException {
-        
+
         Callable check = new Callable() {
-            
+
             @Override
             public Object call() throws Exception {
-                
+
                 StringBuilder buff = new StringBuilder();
                 try {
                     if (trigger.isHardwareLevel()) {
@@ -84,7 +84,7 @@ public final class TriggerCheck {
                 } finally {
                     Freedomotic.logger.config(buff.toString());
                 }
-                
+
             }
         };
         Future<Boolean> result = executor.submit(check);
@@ -97,7 +97,7 @@ public final class TriggerCheck {
         }
         return false;
     }
-    
+
     private synchronized static void changeObjectProperties(Trigger trigger, final EventTemplate event) {
         Resolver resolver = new Resolver();
         resolver.addContext("event.", event.getPayload());
@@ -112,14 +112,26 @@ public final class TriggerCheck {
         ArrayList<EnvObjectLogic> objectList = null;
         protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
         address = resolved.getPayload().getStatements("event.address").get(0).getValue();
+        //TODO: refactor this code avoiding to use a Payload class in events. Use a simple map instead
+        String clazz = "";
+        if (!resolved.getPayload().getStatements("object.class").isEmpty()) {
+            clazz = resolved.getPayload().getStatements("object.class").get(0).getValue();
+        }
+        String name = "";
+        if (!resolved.getPayload().getStatements("object.name").isEmpty()) {
+            name = resolved.getPayload().getStatements("object.name").get(0).getValue();
+        }
         objectList = EnvObjectPersistence.getObject(protocol, address);
         if (objectList.isEmpty()) {
-            Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + trigger.getName() + ") creating a new one");
-            JoinDevice.join(
-                    "Switch", 
-                    protocol + "-" + UidGenerator.getNextStringUid(), 
-                    protocol, 
-                    address);
+            if (clazz != null && !clazz.isEmpty()) {
+                JoinDevice.join(
+                        clazz,
+                        name,
+                        protocol,
+                        address);
+            } else {
+                Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + trigger.getName() + ") creating a new one");
+            }
             return;
         }
         boolean done = false;
@@ -136,7 +148,7 @@ public final class TriggerCheck {
             Freedomotic.logger.warning("Hardware trigger " + trigger.getName() + " is not associated to any object.");
         }
     }
-    
+
     public static void executeRelatedReactions(final Trigger trigger, final EventTemplate event) {
         Iterator it = ReactionPersistence.iterator();
         //Searching for reactions using this trigger
