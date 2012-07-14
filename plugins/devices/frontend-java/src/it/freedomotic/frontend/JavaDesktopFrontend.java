@@ -76,7 +76,6 @@ public class JavaDesktopFrontend extends Actuator {
 
     @Override
     protected void onCommand(final Command c) throws IOException, UnableToExecuteException {
-        System.out.println("received callout");
         String callout = c.getProperty("callout.message");
         if (callout != null) {
             Callout callout1 = new Callout(this.getClass().getCanonicalName(), "info", callout, 0, 0, 0, 10000);
@@ -110,7 +109,6 @@ public class JavaDesktopFrontend extends Actuator {
 
     @Override
     protected void onEvent(EventTemplate event) {
-        System.out.println("JFrontend receives event " + event.getEventName() + " " + event.getPayload().toString());
         if (isRunning()) {
             if (event instanceof ObjectHasChangedBehavior) {
                 drawer.setNeedRepaint(true);

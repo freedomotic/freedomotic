@@ -161,7 +161,6 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
      */
     @Override
     public void onMessage(Message aMessage) {
-        System.out.println("received " + aMessage.getClass().getCanonicalName());
         Profiler.incrementReceivedCommands();
         if (getHandler() != null) {
             if (aMessage instanceof ObjectMessage) {
