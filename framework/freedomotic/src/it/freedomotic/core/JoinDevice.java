@@ -12,6 +12,7 @@ import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.persistence.EnvObjectPersistence;
 import it.freedomotic.plugins.ObjectPlugin;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.util.UidGenerator;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -48,7 +49,7 @@ public class JoinDevice implements BusConsumer {
         try {
             ObjectPlugin client = (ObjectPlugin) Freedomotic.clients.get(clazz);
             if (client == null) {
-                Freedomotic.logger.warning("Don't exist an object class called " + clazz);
+                Freedomotic.logger.warning("Doesen't exist an object class called " + clazz);
                 return;
             }
             System.out.println(client.getName());
@@ -57,16 +58,15 @@ public class JoinDevice implements BusConsumer {
             System.out.println(loaded.getPojo().getName());
             //changing the name and other properties invalidates related trigger and commands
             //call init() again after this changes
-            loaded.getPojo().setName(name);
+            if (name != null && !name.isEmpty()) {
+                loaded.getPojo().setName(name);
+            } else {
+                loaded.getPojo().setName(protocol + "-" + UidGenerator.getNextStringUid());
+            }
             loaded.getPojo().setProtocol(protocol);
             loaded.getPojo().setPhisicalAddress(address);
+            loaded.setRandomLocation();
             loaded.init();
-            //set at random position
-            for (Representation rep : loaded.getPojo().getRepresentations()) {
-                int x = 0 + (int) (Math.random() * Freedomotic.environment.getPojo().getWidth());
-                int y = 0 + (int) (Math.random() * Freedomotic.environment.getPojo().getHeight());
-                rep.setOffset(x, y);
-            }
         } catch (IOException ex) {
             Logger.getLogger(JoinDevice.class.getName()).log(Level.SEVERE, null, ex);
         }

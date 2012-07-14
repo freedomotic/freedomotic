@@ -212,7 +212,6 @@ public class Resolver {
             }
             if (!success) {
                 aProperty.setValue(possibleScript);
-                Freedomotic.logger.severe("Cannot resolve script " + possibleScript);
             }
         }
     }
