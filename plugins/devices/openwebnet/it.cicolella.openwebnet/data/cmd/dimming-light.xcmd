@@ -11,7 +11,7 @@
       <property name="address" value="@owner.object.address"/>
       <property name="object" value="@event.object.name"/> 
       <property name="who" value="1"/>
-      <property name="what" value="= if (@event.object.brightness&lt;=20) what=2; else what=@event.object.brightness/10; "/>
+      <property name="what" value="= if (@owner.object.brightness&lt;=20) what=Math.floor(2).toString(); else what=Math.floor(@owner.object.brightness/10).toString(); "/>
     </properties>
   </properties>
 </it.freedomotic.reactions.Command>
