@@ -18,7 +18,9 @@ import java.io.*;
  */
 public class OpenWebNet extends Protocol {
 
-    /* Initializations */
+    /*
+     * Initializations
+     */
     private String address = null;
     private String host = configuration.getProperty("host");
     private Integer port = Integer.parseInt(configuration.getProperty("port"));
@@ -30,35 +32,35 @@ public class OpenWebNet extends Protocol {
     static Integer passwordOpen = 0;
     private static int POLLING_TIME = 1000;
     OWNFrame JFrame = new OWNFrame(this);
-
-    
-     /* OWN Diagnostic Frames */
+    /*
+     * OWN Diagnostic Frames
+     */
     final static String LIGHTNING_DIAGNOSTIC_FRAME = "*#1*0##";
     final static String AUTOMATIONS_DIAGNOSTIC_FRAME = "*#2*0##";
     final static String ALARM_DIAGNOSTIC_FRAME = "*#5##";
     final static String POWER_MANAGEMENT_DIAGNOSTIC_FRAME = "*#3##";
-    
-    /* OWN Control Messages */
+    /*
+     * OWN Control Messages
+     */
     final static String MSG_OPEN_ACK = "*#*1##";
     final static String MSG_OPEN_NACK = "*#*0##";
-    
-      
-    
-    
+
     public OpenWebNet() {
         super("OpenWebNet", "/it.cicolella.openwebnet/openwebnet.xml");
-        
+
     }
 
     protected void onShowGui() {
         bindGuiToPlugin(JFrame);
     }
 
-    /* Sensor side */
+    /*
+     * Sensor side
+     */
     @Override
     public void onStart() {
         super.onStart();
-        setPollingWait(POLLING_TIME);  
+        setPollingWait(POLLING_TIME);
         //connect to own gateway
         gestSocketMonitor = new BTicinoSocketReadManager(this);
         boolean connected = gestSocketMonitor.connect(host, port, passwordOpen);
@@ -84,6 +86,8 @@ public class OpenWebNet extends Protocol {
         String who = null;
         String what = null;
         String where = null;
+        String objectClass = null;
+        String objectName = null;
         String messageType = null;
         String messageDescription = null;
         String[] frameParts = null;
@@ -108,10 +112,12 @@ public class OpenWebNet extends Protocol {
 
 
         if (frame.substring(0, 2).equalsIgnoreCase("*#")) { // remove *# and ## frame = frame.substring(2, length - 2); frameParts =
-            frameParts=frame.split("\\*"); // * is reserved so it must be escaped 
+            frameParts = frame.split("\\*"); // * is reserved so it must be escaped 
             who = frameParts[0];
             where = frameParts[1];
-            event = new ProtocolRead(this, "openwebnet", who+"*"+where); // LIGHTING if (who.equalsIgnoreCase("1")) {
+            objectClass = "Light";
+            objectName = who + "*" + where;
+            event = new ProtocolRead(this, "openwebnet", who + "*" + where); // LIGHTING if (who.equalsIgnoreCase("1")) {
             if (frameParts[2].equalsIgnoreCase("1")) {
                 String level = frameParts[3];
                 String speed = frameParts[4];
@@ -352,10 +358,16 @@ public class OpenWebNet extends Protocol {
             if (messageType != null) {
                 event.addProperty("messageType", messageType);
             }
+            if (objectClass != null) {
+                event.addProperty("object.class", objectClass);
+            }
+            if (objectName != null) {
+                event.addProperty("object.name", objectName);
+            }
             // notify event
             notifyEvent(event);
             OWNFrame.writeAreaLog(OWNUtilities.getDateTime() + " Rx: " + frame + " " + "(" + messageDescription + ")");
-           
+
         }
 
 
@@ -365,7 +377,9 @@ public class OpenWebNet extends Protocol {
             frameParts = frame.split("\\*"); // * is reserved so it must be escaped
             who = frameParts[0];
             where = frameParts[2];
-            event = new ProtocolRead(this, "openwebnet", who+"*"+where);
+            event = new ProtocolRead(this, "openwebnet", who + "*" + where);
+            objectClass = "Light";
+            objectName = who + "*" + where;
 
             // LIGHTING
             if (who.equalsIgnoreCase("1")) {
@@ -398,7 +412,7 @@ public class OpenWebNet extends Protocol {
                     messageDescription = "Automation DOWN";
                 }
             }
-            
+
             // POWER MANAGEMENT
             if (who.equalsIgnoreCase("3")) {
                 what = frameParts[1];
@@ -587,6 +601,12 @@ public class OpenWebNet extends Protocol {
             if (messageDescription != null) {
                 event.addProperty("messageDescription", messageDescription);
             }
+            if (objectClass != null) {
+                event.addProperty("object.class", objectClass);
+            }
+            if (objectName != null) {
+                event.addProperty("object.name", objectName);
+            }
 
             Freedomotic.logger.info("Frame " + frame + " " + "is " + messageType + " message. Notify it as Freedomotic event " + messageDescription); // for debug
             OWNFrame.writeAreaLog(OWNUtilities.getDateTime() + " Rx: " + frame + " " + "(" + messageDescription + ")");
@@ -649,16 +669,15 @@ public class OpenWebNet extends Protocol {
         return (temp);
     }
 
-    
-  /* Actuator side */
-    
+    /*
+     * Actuator side
+     */
     @Override
     public void onCommand(Command c) throws IOException, UnableToExecuteException {
         sendFrame(OWNUtilities.createFrame(c));
-        } // close  on command
+    } // close  on command
 
-      
-   public void sendFrame(String frame) throws IOException, UnableToExecuteException {
+    public void sendFrame(String frame) throws IOException, UnableToExecuteException {
         gestSocketCommands = new BTicinoSocketWriteManager();
         if (gestSocketCommands.getSocketCommandState() == 0) { // not connected
             if (gestSocketCommands.connect(host, port, passwordOpen)) {
@@ -681,12 +700,11 @@ public class OpenWebNet extends Protocol {
         } //close lenght
     } // close  on command
 
-   
     // sends diagnostic frames to inizialize system
     public void initSystem() {
         try {
             Freedomotic.logger.info("Sending " + LIGHTNING_DIAGNOSTIC_FRAME + " frame to inizialize LIGHTNING");
-            OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Sending " + LIGHTNING_DIAGNOSTIC_FRAME + " (inizialize LIGHTNING)");
+            OWNFrame.writeAreaLog(OWNUtilities.getDateTime() + " Act:" + "Sending " + LIGHTNING_DIAGNOSTIC_FRAME + " (inizialize LIGHTNING)");
             sendFrame(LIGHTNING_DIAGNOSTIC_FRAME);
             //Freedomotic.logger.info("Sending " + AUTOMATIONS_DIAGNOSTIC_FRAME + " frame to inizialize AUTOMATIONS");
             //OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Sending " + AUTOMATIONS_DIAGNOSTIC_FRAME + " (inizialize AUTOMATIONS)");
@@ -698,11 +716,11 @@ public class OpenWebNet extends Protocol {
             //OWNFrame.writeAreaLog(OWNUtilities.getDateTime()+" Act:"+"Sending " + POWER_MANAGEMENT_DIAGNOSTIC_FRAME + " (inizialize POWER MANAGEMENT)");
             //sendFrame(POWER_MANAGEMENT_DIAGNOSTIC_FRAME);
         } catch (UnableToExecuteException e) {
-        } catch (IOException e) {  }
+        } catch (IOException e) {
+        }
         ;
     }
-    
-    
+
     public boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -715,7 +733,4 @@ public class OpenWebNet extends Protocol {
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-   
 }
-
