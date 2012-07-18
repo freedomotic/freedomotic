@@ -164,7 +164,7 @@ public class ReactionPersistence {
             Freedomotic.logger.finer("Added new reaction " + r.getDescription());
             for (Command command : r.getCommands()) {
                 if (command == null) {
-                    Freedomotic.logger.warning("The reaction '" + r.getDescription() + "' has broken link to a commands. Maybe this command don't exists or its name is misspelled.");
+                    Freedomotic.logger.warning("The reaction '" + r.getDescription() + "' has broken link to a commands. Maybe this command doesn't exists or its name is misspelled.");
                 }
             }
         } else {

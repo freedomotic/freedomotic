@@ -112,40 +112,32 @@ public final class TriggerCheck {
         ArrayList<EnvObjectLogic> objectList = null;
         protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
         address = resolved.getPayload().getStatements("event.address").get(0).getValue();
-        //TODO: refactor this code avoiding to use a Payload class in events. Use a simple map instead
-        String clazz = "";
-        if (!resolved.getPayload().getStatements("object.class").isEmpty()) {
-            clazz = resolved.getPayload().getStatements("object.class").get(0).getValue();
-        }
-        String name = "";
-        if (!resolved.getPayload().getStatements("object.name").isEmpty()) {
-            name = resolved.getPayload().getStatements("object.name").get(0).getValue();
-        }
+        String clazz = event.getProperty("object.class");
+        String name = event.getProperty("object.name");
         objectList = EnvObjectPersistence.getObject(protocol, address);
-        if (objectList.isEmpty()) {
+        if (objectList.isEmpty()) { //there isn't an object with this protocol and address
+            Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + trigger.getName() + ")");
             if (clazz != null && !clazz.isEmpty()) {
                 JoinDevice.join(
                         clazz,
                         name,
                         protocol,
                         address);
-            } else {
-                Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + trigger.getName() + ") creating a new one");
             }
-            return;
-        }
-        boolean done = false;
-        for (EnvObjectLogic object : objectList) {
-            boolean executed = object.executeTrigger(resolved); //user trigger->behavior mapping to apply the trigger to this object
-            if (executed) {
-                done = true;
-                long elapsedTime = System.currentTimeMillis() - event.getCreation();
-                Freedomotic.logger.info("Sensor notification '" + trigger.getName() + "' applied to object '"
-                        + object.getPojo().getName() + "' in " + elapsedTime + "ms.");
+        } else { //this object already exist, change its behavior value
+            boolean done = false;
+            for (EnvObjectLogic object : objectList) {
+                boolean executed = object.executeTrigger(resolved); //user trigger->behavior mapping to apply the trigger to this object
+                if (executed) {
+                    done = true;
+                    long elapsedTime = System.currentTimeMillis() - event.getCreation();
+                    Freedomotic.logger.info("Sensor notification '" + trigger.getName() + "' applied to object '"
+                            + object.getPojo().getName() + "' in " + elapsedTime + "ms.");
+                }
             }
-        }
-        if (!done) {
-            Freedomotic.logger.warning("Hardware trigger " + trigger.getName() + " is not associated to any object.");
+            if (!done) {
+                Freedomotic.logger.warning("Hardware trigger " + trigger.getName() + " is not associated to any object.");
+            }
         }
     }
 

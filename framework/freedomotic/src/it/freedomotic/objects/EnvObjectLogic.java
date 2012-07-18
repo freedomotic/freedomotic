@@ -54,7 +54,7 @@ public abstract class EnvObjectLogic {
             if (commandToSearch != null) {
                 return commandToSearch;
             } else {
-                Freedomotic.logger.severe("Don't exists a valid hardware command associated to action '" + action + "' of object '" + pojo.getName() + "'. \n"
+                Freedomotic.logger.severe("Doesn't exists a valid hardware command associated to action '" + action + "' of object '" + pojo.getName() + "'. \n"
                         + "This are the available mappings between action -> command for object '" + pojo.getName() + "': " + commandsMapping.toString());
                 return null;
             }
@@ -293,7 +293,7 @@ public abstract class EnvObjectLogic {
         }
         Command command = getHardwareCommand(action.trim());
         if (command == null) {
-            Freedomotic.logger.warning("The hardware level command for action '" + action + "' in object '" + pojo.getName() + "' don't exists or is not setted");
+            Freedomotic.logger.warning("The hardware level command for action '" + action + "' in object '" + pojo.getName() + "' doesn't exists or is not setted");
             return false; //command not executed
         }
         //resolves developer level command parameters like myObjectName = "@event.object.name" -> myObjectName = "Light 1"
