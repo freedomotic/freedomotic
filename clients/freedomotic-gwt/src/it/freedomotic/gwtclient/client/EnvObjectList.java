@@ -46,7 +46,7 @@ HasValueChangeHandlers<String> {
 	   */
 
 	  static interface Images extends ClientBundle {
-	    @Source("object.png")
+	    @Source("resources/object.png")
 		ImageResource object();
 	  }
 	
