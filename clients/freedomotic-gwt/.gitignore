@@ -25,3 +25,7 @@ war/WEB-INF/classes/
 
 # temporal editing files
 *~
+
+# add html removed files
+!*.html
+!*.HTML
