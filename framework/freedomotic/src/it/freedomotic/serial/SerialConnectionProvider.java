@@ -192,6 +192,10 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
 
         }
     }
+    
+    public boolean isConnected(){
+        return isConnected;
+    }
 
     public void connect() {
         //is already connected
