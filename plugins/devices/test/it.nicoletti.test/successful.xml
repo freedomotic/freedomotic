@@ -8,4 +8,11 @@
         <property name="short-name"                       value="actuator"/>
         <property name="protocol.name"                       value="test"/>
     </properties>
+    <tuples>
+        <tuple>
+            <property name="object.class" value="Light"/>
+            <property name="powered" value="OWN protocol reads a lighting change"/>
+            <property name="turn on" value="Switch ON OWN light"/>
+        </tuple>
+    </tuples>
 </config>

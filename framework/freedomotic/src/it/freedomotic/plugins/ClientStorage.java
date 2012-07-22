@@ -68,6 +68,15 @@ public class ClientStorage {
         return tmp;
     }
     
+    public Client getClientByProtocol(String protocol) {
+        for (Client client : clients) {
+            if (client.getConfiguration().getStringProperty("protocol.name", "").equals(protocol)) {
+                return client;
+            }
+        }
+        return null;
+    }
+    
     public static boolean alreadyLoaded(Client input) {
         if (input == null) {
             throw new IllegalArgumentException();

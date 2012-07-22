@@ -4,17 +4,23 @@
  */
 package it.freedomotic.core;
 
+import it.freedomotic.api.Client;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
+import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.Representation;
 import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.persistence.CommandPersistence;
 import it.freedomotic.persistence.EnvObjectPersistence;
+import it.freedomotic.persistence.TriggerPersistence;
 import it.freedomotic.plugins.ObjectPlugin;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.util.UidGenerator;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.JMSException;
@@ -66,6 +72,33 @@ public class JoinDevice implements BusConsumer {
             loaded.getPojo().setProtocol(protocol);
             loaded.getPojo().setPhisicalAddress(address);
             loaded.setRandomLocation();
+
+            //use the preferred mapping of the protocol plugin
+            Client addon = Freedomotic.clients.getClientByProtocol(protocol);
+            if (addon != null) {
+                for (int i = 0; i < addon.getConfiguration().getTuples().size(); i++) {
+                    HashMap tuple = addon.getConfiguration().getTuples().getTuple(i);
+                    String regex = (String) tuple.get("object.class");
+                    if (clazz.matches(regex)) {
+                        //map object behaviors to hardware triggers
+                        for (Behavior behavior : loaded.getPojo().getBehaviors()) {
+                            String triggerName = (String) tuple.get(behavior.getName());
+                            loaded.addTriggerMapping(TriggerPersistence.getTrigger(triggerName), behavior.getName());
+                        }
+                        //map object actions to hardware commands
+                        Iterator it = loaded.getPojo().getActions().stringPropertyNames().iterator();
+                        while (it.hasNext()) {
+                            String action = (String) it.next();
+                            System.out.println("action is " + action);
+                            String commandName = (String) tuple.get(action);
+                            if (commandName != null) {
+                                loaded.setAction(action, CommandPersistence.getHardwareCommand(commandName));
+                            }
+                        }
+                    }
+                }
+            }
+            //validate the object
             loaded.init();
         } catch (IOException ex) {
             Logger.getLogger(JoinDevice.class.getName()).log(Level.SEVERE, null, ex);
