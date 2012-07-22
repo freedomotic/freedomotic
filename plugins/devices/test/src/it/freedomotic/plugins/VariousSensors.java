@@ -23,13 +23,13 @@ import java.util.logging.Logger;
 public class VariousSensors extends Protocol {
 
     int hour = 0, month = 1;
-    Boolean powered = true;
 
     public VariousSensors() {
         super("Sensors Simulator", "/it.nicoletti.test/sensors-simulator.xml");
         setPollingWait(2000);
     }
 
+    @Override
     protected void onShowGui() {
         bindGuiToPlugin(new VariousSensorsGui(this));
     }
@@ -66,22 +66,7 @@ public class VariousSensors extends Protocol {
 
     @Override
     protected void onRun() {
-        //sends a fake sensor read event
-        ProtocolRead event = new ProtocolRead(this, "test", "test");
-        event.getPayload().addStatement("value", powered.toString());
-        //invert the value for the next round
-        notifyEvent(event);
-        if (powered) {
-            powered = false;
-        } else {
-            powered = true;
-        }
-        //wait two seconds before sending another event
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(VariousSensors.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }
 
     @Override
