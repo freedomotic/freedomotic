@@ -1,6 +1,6 @@
 <trigger>
-    <name>OWN protocol reads a lighting change</name>
-    <description>OWN protocol reads light state change</description>
+    <name>OWN protocol reads a light power change</name>
+    <description>OWN protocol reads a light power change</description>
     <channel>app.event.sensor.protocol.read</channel>
     <payload>
         <payload>

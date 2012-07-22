@@ -1,7 +1,7 @@
 <it.freedomotic.reactions.Command>
-  <name>Switch ON OWN light</name>
+  <name>Dim OWN light</name>
   <receiver>app.actuators.protocol.openwebnet.in</receiver>
-  <description>An OWN light will turn on</description>
+  <description>An OWN light will dimm</description>
   <hardwareLevel>true</hardwareLevel>
   <delay>0</delay>
   <timeout>0</timeout>
@@ -11,7 +11,7 @@
       <property name="address" value="@owner.object.address"/>
       <property name="object" value="@event.object.name"/> 
       <property name="who" value="1"/>
-      <property name="what" value="1"/>
+      <property name="what" value="= if (@owner.object.brightness&lt;=20) what=Math.floor(2).toString(); else what=Math.floor(@owner.object.brightness/10).toString(); "/>
     </properties>
   </properties>
 </it.freedomotic.reactions.Command>
