@@ -1,0 +1,18 @@
+
+
+<config>
+    <properties>
+        <property name="name" value="MassaBus"/>
+        <property name="description" value="It enables communications with MassaBus Protocol"/>
+        <property name="category" value="protocol"/>
+        <!-- UNCOMMENT IF NEEDED.
+        <property name="serial.boudrate" value="9600"/>
+        <property name="serial.databits" value="8"/>
+        <property name="serial.parity" value="0"/>
+        <property name="serial.stopbits" value="1"/>
+        <property name="serial.port" value="dev/usb0"/>
+        -->
+    </properties>
+</config>
+
+                
