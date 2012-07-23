@@ -4,7 +4,7 @@
   <property name="gwt.args" value="" />
   <property environment = "env"/> 
   <!--  <property name="env.WORKSPACE" value = "/home/gpt/freedomotic_webapp/"/> -->
-  <property name="freedomotic_workspace" value = "${env.WORKSPACE}/../../Freedomotic/workspace"/>-
+  <property name="freedomotic_workspace" value = "${env.WORKSPACE}/../../Freedomotic/workspace"/>
   <!--  <property name="freedomotic_workspace" value = "${env.WORKSPACE}"/> -->
   
   <!-- Configure path to GWT SDK -->
