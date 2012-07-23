@@ -30,13 +30,13 @@
 	   
 	<!-- <copy todir="war/WEB-INF/lib" t file="${env.WORKSPACE}/freedomotic-gwt/freedomotic/lib/freedomotic-model.jar"/>
 		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic-gwt/freedomotic/lib/RestApiInterfaces.jar"/> -->	
-		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/gwt-awt-0.0.1-SNAPSHOT.jar"/>
-		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/org.restlet-gwt-2.1rc5.jar"/>
-		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/org.restlet.ext.gwt.jar"/>
-		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/org.restlet.ext.servlet.jar"/>
-		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/org.restlet.jar"/>
-		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/gwt-slider-bar-1.0.jar"/>
-		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/lib-gwt-svg-0.5.6.jar"/>					
+		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/clients/freedomotic-gwt/lib/gwt-awt-0.0.1-SNAPSHOT.jar"/>
+		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/clients/freedomotic-gwt/freedomotic/lib/org.restlet-gwt-2.1rc5.jar"/>
+		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/clients/freedomotic-gwt/lib/org.restlet.ext.gwt.jar"/>
+		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/clients/freedomotic-gwt/lib/org.restlet.ext.servlet.jar"/>
+		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/clients/freedomotic-gwt/lib/org.restlet.jar"/>
+		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/clients/freedomotic-gwt/lib/gwt-slider-bar-1.0.jar"/>
+		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/clients/freedomotic-gwt/lib/lib-gwt-svg-0.5.6.jar"/>					
   </target>
 
   <target name="javac" depends="libs" description="Compile java source to bytecode">
