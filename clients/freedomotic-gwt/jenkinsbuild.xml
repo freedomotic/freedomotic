@@ -4,7 +4,8 @@
   <property name="gwt.args" value="" />
   <property environment = "env"/> 
   <!--  <property name="env.WORKSPACE" value = "/home/gpt/freedomotic_webapp/"/> -->
-  <property name="freedomotic_workspace" value = "${env.WORKSPACE}/../../Freedomotic/workspace"/>
+  <!--  <property name="freedomotic_workspace" value = "${env.WORKSPACE}/../../Freedomotic/workspace"/>-->
+  <property name="freedomotic_workspace" value = "${env.WORKSPACE}"/>
   
   <!-- Configure path to GWT SDK -->
   <property name="gwt.sdk" location="/media/data/Desarrollo/gwt-2.4.0" />
@@ -34,7 +35,8 @@
 		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/org.restlet.ext.gwt.jar"/>
 		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/org.restlet.ext.servlet.jar"/>
 		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/org.restlet.jar"/>
-		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/gwt-slider-bar-1.0.jar"/>			
+		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/gwt-slider-bar-1.0.jar"/>
+		<copy todir="war/WEB-INF/lib"  file="${env.WORKSPACE}/freedomotic/lib/lib-gwt-svg-0.5.6.jar"/>					
   </target>
 
   <target name="javac" depends="libs" description="Compile java source to bytecode">
