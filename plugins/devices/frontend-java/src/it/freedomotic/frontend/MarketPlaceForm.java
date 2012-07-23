@@ -96,20 +96,22 @@ public class MarketPlaceForm extends javax.swing.JFrame {
             ImageIcon iconCoolPlugin = new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
             ImageIcon iconClient = new ImageIcon(path + File.separatorChar + "clientIcon1.png", "Icon");
 
-            Vector vector = new Vector();
-
+            Vector vector = new Vector();           
             if (pluginList == null) {
                 return null;
+            } 
+            if (pluginList.size()== 0)
+            {
+                JPanel jp = new JPanel();
+                jp.setLayout(new BorderLayout());
+                jp.add(new JLabel("There are no plugins available for download"));
+                vector.add(jp);                
             }
             for (PluginPackage pp : pluginList) {
-                //boolean isRunning = c.isRunning();
                 JPanel jp = new JPanel();
-
-                jp.setLayout(new BorderLayout());
-
-
+                jp.setLayout(new BorderLayout());                
+                //boolean isRunning = c.isRunning();              
                 jp.add(new JLabel(pp.getIcon()), BorderLayout.LINE_START);
-
                 JLabel text = null;
                 String description = "";
                 if (pp.getFilePath() != null) {
