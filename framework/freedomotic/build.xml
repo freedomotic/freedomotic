@@ -111,11 +111,21 @@
                 <pathelement location="../../lib/ant/ant-contrib-1.0b3.jar"/>
             </classpath>
          </taskdef>        
-        <input
-            message="Please enter the release major number and minor number separated by a dot."
-            addproperty="release.version"
-            defaultvalue="5.2"
-        />
+
+        <!-- We check if the release.version has been given externally of we have to ask-->
+        <if> 
+            <not>
+                <isset property = "release.version"/> 
+                <input
+                    message="Please enter the release major number and minor number separated by a dot."
+                    addproperty="release.version"
+                    defaultvalue="5.3.0"
+                />
+            </not>
+        </if>
+        
+        
+       
         <property name="workspace-base" value="../../"/>
         <property name="release-base" value="${workspace-base}/release"/>
         <property name="release-folder" value="${release-base}/freedomotic"/>
