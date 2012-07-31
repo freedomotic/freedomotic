@@ -122,7 +122,7 @@ public class DrupalRestHelper {
                         while (reader.hasNext()) {
                             String name2 = reader.nextName();
                             if (name2.equals("filepath")) {
-                                pp.setFilePath(DRUPALSCHEMA +"://"+DRUPALPATH + reader.nextString());
+                                pp.setFilePath(DRUPALSCHEMA +"://"+DRUPALPATH +"/"+ reader.nextString());
                             } else {
                                 reader.skipValue();
                             }
