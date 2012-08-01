@@ -113,16 +113,11 @@
          </taskdef>        
 
         <!-- We check if the release.version has been given externally of we have to ask-->
-        <if> 
-            <not>
-                <isset property = "release.version"/> 
-                <input
-                    message="Please enter the release major number and minor number separated by a dot."
-                    addproperty="release.version"
-                    defaultvalue="5.3.0"
-                />
-            </not>
-        </if>
+        <input
+            message="Please enter the release major number and minor number separated by a dot."
+            addproperty="release.version"
+            defaultvalue="5.3.0"
+        />
         
         
        
