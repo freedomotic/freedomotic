@@ -19,7 +19,7 @@
             </classpath>
         </taskdef>
         
-        <!-- create buil.option file if not available -->
+        <!-- create build.option file if not available -->
         <if>
             <not>
                 <available file="build.options"/>
@@ -232,12 +232,25 @@
         <loadproperties>
             <file file="build.options"/>
         </loadproperties>
-        <input message="Insert the username you use to access freedomotic.com" addproperty="username">
-            <handler classname="org.apache.tools.ant.input.SecureInputHandler" />
-        </input>
-        <input message="Insert the password you use to access freedomotic.com" addproperty="password">
-            <handler classname="org.apache.tools.ant.input.SecureInputHandler" />
-        </input>
+	
+	<!-- If the username or the password are not passed as parameters, ask for them -->	
+	<if>
+	    <not>
+	        <isset property = "username"/> 
+	    	<input message="Insert the username you use to access freedomotic.com" addproperty="username">
+	            <handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+        	</input>
+	    </not>
+	</if>
+	<if>
+	    <not>
+	        <isset property = "password"/> 
+	    	<input message="Insert the password you use to access freedomotic.com" addproperty="password">
+           	    <handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+        	</input>
+	    </not>
+	</if>
+                
         <marketplace 
             username="${username}" 
             password="${password}" 

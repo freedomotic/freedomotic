@@ -201,7 +201,7 @@
         <echo>FINISH... Release created. Now it is ready to be distributed.</echo>
     </target>
     
-    <target name="upload-release" >
+    <target name="upload-dailybuild" >
         <taskdef resource="net/sf/antcontrib/antcontrib.properties">
             <classpath>
                 <pathelement location="../../lib/ant/ant-contrib-1.0b3.jar"/>
@@ -226,5 +226,35 @@
             labels="Featured, Type-DailyBuild, OpSys-All"
             verbose="true"/>
     </target>
-
+    
+    <target name="upload-release" >
+        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+            <classpath>
+                <pathelement location="../../lib/ant/ant-contrib-1.0b3.jar"/>
+            </classpath>
+        </taskdef>                        
+        <property name="workspace-base" value="../../"/>               
+        <property file="${workspace-base}/framework/freedomotic/releasetoupload" />
+        <taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="${workspace-base}/lib/ant/ant-googlecode-0.0.3.jar" name="gcupload"/>
+        <gcupload 
+            username="${googlecode_username}"
+            password="${googlecode_password}"        
+            projectname="freedomotic"
+            filename="${workspace-base}/${upload.file.name}"
+            targetfilename="Freedomotic_v${upload.release.major}.zip"        
+            summary="The currently RECOMMENDED version to download. You may try the latest daily build if you feel brave."
+            labels="Featured, Type-Beta, OpSys-All"
+            verbose="true"/>
+            
+        <if>
+            <isset property = "plugin_list"/> 
+            <then>   
+                <subant target="upload-to-marketplace">
+                    <filelist dir="${workspace-base}/plugins" files="${plugin_list}"/>
+                </subant>
+            </then>
+        </if>
+ 
+    </target>
+    
 </project>
