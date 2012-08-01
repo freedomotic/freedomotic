@@ -80,5 +80,6 @@
             <fileset dir="dist">
             </fileset>
         </copy>
+        <copy file="dist/freedomotic-marketplace.jar" todir="../../lib/ant"/>
     </target>
 </project>
