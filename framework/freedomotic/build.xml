@@ -244,7 +244,7 @@
         <if>
             <isset property = "plugin_list"/> 
             <then>   
-                <subant target="upload-to-marketplace">
+                <subant target="upload">
                     <filelist dir="${workspace-base}/plugins" files="${plugin_list}"/>
                 </subant>
             </then>
