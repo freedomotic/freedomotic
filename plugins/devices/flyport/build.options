@@ -1,4 +1,4 @@
-#Wed, 04 Jul 2012 14:07:13 +0200
+#Thu, 02 Aug 2012 21:47:37 +0200
 
 package.type=device
 package.name=it.cicolella.flyport
@@ -10,10 +10,10 @@ package.vendor.contact=info@freedomotic.com
 package.vendor.company=freedomotic
 package.vendor.nation=it
 framework.required.major=5
-framework.required.minor=2
+framework.required.minor=3
 framework.required.build=x
 build.major=1
-build.number=9
+build.number=10
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
