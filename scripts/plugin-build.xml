@@ -225,9 +225,13 @@
         <property name="workspace-base" value="../../../"/>
         <taskdef 
             name="marketplace" 
-            classname="it.freedomotic.marketplace.AntUploader" 
-            classpath="${workspace-base}/lib/ant/freedomotic-marketplace.jar"
-            />
+            classname="it.freedomotic.marketplace.AntUploader" >
+          <classpath>
+            <pathelement location="${workspace-base}/tools/freedomotic-marketplace/dist/freedomotic-marketplace.jar"/>
+            <pathelement location="${workspace-base}/framework/freedomotic/dist/freedomotic.jar"/>
+          </classpath>
+        </taskdef>
+
         <!-- read properties from build.options file -->
         <loadproperties>
             <file file="build.options"/>
