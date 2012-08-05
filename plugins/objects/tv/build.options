@@ -1,4 +1,4 @@
-#Mon, 21 May 2012 17:01:08 +0200
+#Sun, 05 Aug 2012 18:25:40 +0200
 
 package.type=object
 package.name=es.gpulido.tv
@@ -10,10 +10,10 @@ package.vendor.contact=gabriel@freedomotic.com
 package.vendor.company=Freedomotic
 package.vendor.nation=es
 framework.required.major=5
-framework.required.minor=2
+framework.required.minor=3
 framework.required.build=x
 build.major=1
-build.number=18
+build.number=19
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
