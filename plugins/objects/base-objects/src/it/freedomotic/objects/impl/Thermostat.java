@@ -5,11 +5,14 @@
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.RangedIntBehaviorListener;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
+import it.freedomotic.persistence.TriggerPersistence;
+import it.freedomotic.reactions.Trigger;
 
 /**
  *
@@ -130,6 +133,13 @@ public class Thermostat extends EnvObjectLogic {
 
     @Override
     protected void createTriggers() {
+        Trigger clicked = new Trigger();
+        clicked.setName("When " + this.getPojo().getName() + " is clicked");
+        clicked.setChannel("app.event.sensor.object.behavior.clicked");
+        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
+        clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
+        clicked.setPersistence(false);
 
+        TriggerPersistence.add(clicked);
     }
 }
