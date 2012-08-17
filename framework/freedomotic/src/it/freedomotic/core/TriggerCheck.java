@@ -48,7 +48,6 @@ public final class TriggerCheck {
     public static boolean check(final EventTemplate event, final Trigger trigger) throws TriggerCheckException {
 
         Callable check = new Callable() {
-
             @Override
             public Object call() throws Exception {
 
@@ -124,20 +123,20 @@ public final class TriggerCheck {
                         protocol,
                         address);
             }
-        } else { //this object already exist, change its behavior value
-            boolean done = false;
-            for (EnvObjectLogic object : objectList) {
-                boolean executed = object.executeTrigger(resolved); //user trigger->behavior mapping to apply the trigger to this object
-                if (executed) {
-                    done = true;
-                    long elapsedTime = System.currentTimeMillis() - event.getCreation();
-                    Freedomotic.logger.info("Sensor notification '" + trigger.getName() + "' applied to object '"
-                            + object.getPojo().getName() + "' in " + elapsedTime + "ms.");
-                }
+        }
+        //now we have the target object on the map for sure
+        boolean done = false;
+        for (EnvObjectLogic object : objectList) {
+            boolean executed = object.executeTrigger(resolved); //user trigger->behavior mapping to apply the trigger to this object
+            if (executed) {
+                done = true;
+                long elapsedTime = System.currentTimeMillis() - event.getCreation();
+                Freedomotic.logger.info("Sensor notification '" + trigger.getName() + "' applied to object '"
+                        + object.getPojo().getName() + "' in " + elapsedTime + "ms.");
             }
-            if (!done) {
-                Freedomotic.logger.warning("Hardware trigger " + trigger.getName() + " is not associated to any object.");
-            }
+        }
+        if (!done) {
+            Freedomotic.logger.warning("Hardware trigger " + trigger.getName() + " is not associated to any object.");
         }
     }
 
