@@ -1,0 +1,24 @@
+<config>
+    <properties>
+        <property name="description"    value="Communicates with ipx800 board"/>
+        <property name="protocol.name"  value="ipx800"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="ipx800"/>
+        <property name="address-delimiter" value=":"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="change-state-relay-url" value="leds.cgi?led="/>
+        <property name="send-pulse-relay-url" value="rlyfs.cgi?rlyf="/>
+        <property name="get-status-url" value="status.xml"/>
+     </properties>
+    <tuples>
+        <tuple>
+            <property name="ip-to-query" value="ipx.dyndns.org"/>
+            <property name="port-to-query" value="80"/>
+            <property name="relay-number" value="8"/>
+            <property name="analog-input-number" value="2"/>
+            <property name="digital-input-number" value="4"/>
+            <property name="starting-relay" value="0"/>
+            <property name="line-to-monitorize" value="btn"/>
+        </tuple>
+    </tuples>
+</config>
