@@ -2,16 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.freedomotic.plugins;
+package it.freedomotic.plugins.webcam;
 
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.GenericEvent;
 import it.freedomotic.exceptions.UnableToExecuteException;
-import it.freedomotic.plugins.cammotion.MjpegWebcamConnector;
-import it.freedomotic.plugins.cammotion.MotionDetector;
-import it.freedomotic.plugins.cammotion.SimpleMotionDetector;
 import it.freedomotic.reactions.Command;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +26,7 @@ public class CamMotionDetector extends Protocol {
     private int lastMotionLevel = 0;
 
     public CamMotionDetector() {
-        super("Camera Motion Detector", "/it.nicoletti.media/camera-motion-detector.xml");
+        super("Camera Motion Detector", "/it.freedomotic.wmotion/camera-motion-detector.xml");
         ipCamera = configuration.getStringProperty("camera-url", "http://194.218.96.93/axis-cgi/mjpg/video.cgi?resolution=320x240");
     }
 
@@ -52,7 +49,7 @@ public class CamMotionDetector extends Protocol {
             motion.add(motionLevel);
         }
         int averageMotionLevel = applyForgettingFactor(motion);
-        Freedomotic.logger.info("Motion level in " + ipCamera + " is " + averageMotionLevel + "%");
+        Freedomotic.logger.fine("Motion level in " + ipCamera + " is " + averageMotionLevel + "%");
         sendMotionNotification(averageMotionLevel);
     }
 
@@ -98,10 +95,11 @@ public class CamMotionDetector extends Protocol {
         if (configuration.getStringProperty("algorithm", "simple").equalsIgnoreCase("simple")) {
             algorithm = new SimpleMotionDetector();
         }
+        //instantiate a camera connection with simple motion detection algorithm
         algorithm.setNoiseThreshold(configuration.getIntProperty("noise-threshold", 20));
-        MjpegWebcamConnector mjpegWebcam = new MjpegWebcamConnector(ipCamera, algorithm, this);
+        MjpegWebcamConnector webcam = new MjpegWebcamConnector(ipCamera, algorithm, this);
         try {
-            mjpegWebcam.connect();
+            webcam.connect();
             setDescription("Connected to " + ipCamera.toString());
             displayVideo();
         } catch (IOException ex) {

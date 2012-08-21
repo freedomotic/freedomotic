@@ -45,7 +45,7 @@ public class TextToSpeechGui extends javax.swing.JFrame {
 
         txtArea.setColumns(20);
         txtArea.setRows(5);
-        txtArea.setText("Hello, how are you? \nYou can use this speech engine to say \nwhat you want in reactions. Take a look \nat the tutorial on \nhttp://www.opensourceautomation.net/content/plugins/text-speech");
+        txtArea.setText("Hello, how are you? \nYou can use this speech engine to say \nwhat you want in automations. Take a look \nat the tutorial on \nhttp://www.freedomotic.com/content/plugins/text-speech");
         jScrollPane1.setViewportView(txtArea);
 
         btnOk.setText("Speak!");
@@ -65,7 +65,7 @@ public class TextToSpeechGui extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnOk)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(

@@ -7,8 +7,8 @@
 <!-- the Compile on Save feature is turned off for the project. -->
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
-<project name="media" default="default" basedir=".">
-    <description>Builds, tests, and runs the project media.</description>
+<project name="webcam-motion" default="default" basedir=".">
+    <description>Builds, tests, and runs the project webcam-motion.</description>
     <import file="nbproject/build-impl.xml"/>
     <!--
 
@@ -59,7 +59,7 @@
 
     An example of overriding the target for project execution could look like this:
 
-        <target name="run" depends="media-impl.jar">
+        <target name="run" depends="webcam-motion-impl.jar">
             <exec dir="bin" executable="launcher.exe">
                 <arg file="${dist.jar}"/>
             </exec>
@@ -71,4 +71,15 @@
     nbproject/build-impl.xml file. 
 
     -->
+    
+         <target name="-post-jar">
+    <!-- calls an external build file located in SVN_ROOT/scripts folder -->    
+        <ant antfile = "${basedir}../../../../scripts/plugin-build.xml" inheritAll="true"/>
+    </target>
+    
+        
+    <target name="upload">
+    <!-- calls an external build file located in scripts folder -->
+        <ant antfile="${basedir}../../../../scripts/plugin-build.xml" target="upload-to-marketplace" inheritAll="true"/>
+    </target>
 </project>
