@@ -1,8 +1,8 @@
-#Sun, 19 Aug 2012 16:24:56 +0200
+#Fri, 17 Aug 2012 14:12:28 +0200
 
 package.type=device
-package.name=it.freedomotic.freetts
-package.nodeid=348
+package.name=it.freedomotic.wmotion
+package.nodeid=395
 package.license=GNU GPL2
 package.vendor.name=Freedomotic
 package.vendor.surname=Automation
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=3
 framework.required.build=x
 build.major=1
-build.number=44
+build.number=75
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
