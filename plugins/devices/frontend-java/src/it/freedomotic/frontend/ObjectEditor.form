@@ -111,7 +111,7 @@
                                   <Component id="btnDelete" min="-2" pref="158" max="-2" attributes="1"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="3695" max="32767" attributes="0"/>
+                          <EmptySpace pref="3692" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -236,20 +236,20 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="1"/>
                                       <Component id="jLabel12" min="-2" max="-2" attributes="1"/>
-                                      <Component id="jLabel13" alignment="0" pref="569" max="32767" attributes="1"/>
+                                      <Component id="jLabel13" alignment="0" pref="568" max="32767" attributes="1"/>
                                       <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="1" attributes="0">
-                                      <Component id="spnRotation" alignment="0" pref="537" max="32767" attributes="1"/>
+                                      <Component id="spnRotation" alignment="0" pref="536" max="32767" attributes="1"/>
                                       <Component id="spnScaleHeight" alignment="0" max="32767" attributes="1"/>
                                       <Component id="spnScaleWidth" alignment="0" max="32767" attributes="1"/>
                                       <Component id="spnY" alignment="1" max="32767" attributes="1"/>
                                       <Component id="spnX" alignment="0" max="32767" attributes="1"/>
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="btnChangeImage" pref="632" max="32767" attributes="1"/>
+                                  <Component id="btnChangeImage" pref="631" max="32767" attributes="1"/>
                                   <EmptySpace min="2343" pref="2343" max="-2" attributes="0"/>
                               </Group>
                           </Group>

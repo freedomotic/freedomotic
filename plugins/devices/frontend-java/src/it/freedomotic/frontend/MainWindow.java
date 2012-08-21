@@ -27,14 +27,12 @@ import it.freedomotic.persistence.EnvironmentPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.OpenDialogFileFilter;
-import it.freedomotic.util.PathFinder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -423,7 +421,6 @@ public class MainWindow extends javax.swing.JFrame {
         mnuSaveAs.add(jMenuItem5);
         mnuSaveAs.add(jSeparator1);
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
         jMenuItem1.setText("Esci");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
