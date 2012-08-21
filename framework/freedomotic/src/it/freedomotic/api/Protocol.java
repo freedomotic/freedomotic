@@ -160,7 +160,8 @@ public abstract class Protocol extends Plugin implements BusConsumer {
             } catch (UnableToExecuteException ex) {
                 command.setExecuted(false);
             }
-            if (configuration.getBooleanProperty("automatic-reply-to-commands", true) == true) {
+            if ((configuration.getBooleanProperty("automatic-reply-to-commands", true) == true) //default value is true
+                    && (command.getReplyTimeout() > 0)) {
                 commandsChannel.reply(command, reply, correlationID); //sends back the command marked as executed or not
             }
         }

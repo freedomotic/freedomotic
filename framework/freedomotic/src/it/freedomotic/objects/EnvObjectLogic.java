@@ -279,7 +279,7 @@ public abstract class EnvObjectLogic {
      *
      * @param action the name of the action to executeCommand as defined in the
      * object XML
-     * @param params parameters of the event that have triggered the reaction
+     * @param params parameters of the event that have started the reaction
      * execution
      * @return true if the command is succesfully executed by the actuator and
      * false otherways
@@ -291,7 +291,7 @@ public abstract class EnvObjectLogic {
             Freedomotic.logger.info("The object '" + getPojo().getName() + "' act as virtual device, so its hardware commands are not executed.");
             return true;
         }
-        Command command = getHardwareCommand(action.trim());
+        final Command command = getHardwareCommand(action.trim());
         if (command == null) {
             Freedomotic.logger.warning("The hardware level command for action '" + action + "' in object '" + pojo.getName() + "' doesn't exists or is not setted");
             return false; //command not executed
@@ -304,16 +304,15 @@ public abstract class EnvObjectLogic {
         //adding a resolution context for object that owns this hardware level command. 'owner.' is the prefix of this context
         resolver.addContext("owner.", getExposedProperties());
         //adding a resolution context for event parameters. 'event.' is the prefix of this context
-        resolver.addContext("event.", params);
+        //resolver.addContext("event.", params);
         try {
-            command = resolver.resolve(command); //eg: turn on an X10 device
+            final Command resolvedCommand = resolver.resolve(command); //eg: turn on an X10 device
+            Command result = Freedomotic.sendCommand(resolvedCommand); //blocking wait until timeout
+            if (result != null && result.isExecuted()) {
+                return true; //succesfully executed
+            }
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(EnvObjectLogic.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        Command result = Freedomotic.sendCommand(command); //blocking wait until timeout
-        if (result != null && result.isExecuted()) {
-            return true; //succesfully executed
         }
         return false; //command not executed
     }

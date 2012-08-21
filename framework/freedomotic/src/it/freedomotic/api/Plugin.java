@@ -29,9 +29,6 @@ import it.freedomotic.util.EqualsUtil;
 import it.freedomotic.util.Info;
 import java.io.*;
 import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 public abstract class Plugin implements Client {
@@ -246,19 +243,6 @@ public abstract class Plugin implements Client {
         return false;
     }
     
- public static String extractVersion(String filename) {
-        //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
-        //only 5.2.x-1.212 is needed
-        //remove extension
-        filename = filename.substring(0, filename.lastIndexOf("."));
-        String[] tokens = filename.split("-");
-        //3 tokens expected
-        if (tokens.length == 3) {
-            return tokens[1] + "-" + tokens[2];
-        } else {
-            return filename;
-        }
-    }
 
     private static int getVersionProperty(Properties properties, String property) {
         //if property is not specified returns 99999

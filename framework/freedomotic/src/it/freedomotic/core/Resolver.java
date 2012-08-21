@@ -40,17 +40,19 @@ import javax.script.ScriptException;
 
 /**
  * Resolves command values using an event as the context of resolution eg: param
- * sensorPlugin = "@event.sender" becomes sensorPlugin="TemperatureSensorPlugin"
+ * sensorPlugin = "
+ *
+ * @event.sender" becomes sensorPlugin="TemperatureSensorPlugin"
  *
  * <p> This class takes a list of properties in form key=value and propagates
  * this list to all commands in a given reaction. After that this list (called
  * context) is used to resolve the references to external values in the command.
- * For example Commmand: turn on this x10 device x10-object = @event.object.name
- * x10-address = @event.object.address this are resolved according to the
- * parameters in the event that has fired the reaction containing the command
- * 'turn on this x10 device' in this case the event can be something like
- * 'object receive click on the GUI' with paramenter object = Light 1 click =
- * SINGLE_CLICK </p>
+ * For example Commmand: turn on this x10 device x10-object =
+ * @event.object.name x10-address =
+ * @event.object.address this are resolved according to the parameters in the
+ * event that has fired the reaction containing the command 'turn on this x10
+ * device' in this case the event can be something like 'object receive click on
+ * the GUI' with paramenter object = Light 1 click = SINGLE_CLICK </p>
  *
  * @author Enrico Nicoletti (enrico.nicoletti84@gmail.com)
  */
@@ -147,8 +149,10 @@ public class Resolver {
     }
 
     /**
-     * search in a command attribute for a pattern @event.VARIABLE_NAME and
-     * replace it with the real value from event Payload p
+     * search in a command attribute for a pattern
+     *
+     * @event.VARIABLE_NAME and replace it with the real value from event
+     * Payload p
      *
      * @param command
      */
@@ -217,8 +221,10 @@ public class Resolver {
     }
 
     /**
-     * search in a trigger attribute for a pattern @event.VARIABLE_NAME and
-     * replace it with the real value from event Payload p
+     * search in a trigger attribute for a pattern
+     *
+     * @event.VARIABLE_NAME and replace it with the real value from event
+     * Payload p
      *
      * @param trigger
      */
@@ -316,6 +322,7 @@ public class Resolver {
             } else {
                 key = entry.getKey().toString();
             }
+            System.out.println("    statement " + PREFIX + key + "=" + entry.getValue().toString());
             context.addStatement(PREFIX + key, entry.getValue().toString());
         }
     }
@@ -333,12 +340,13 @@ public class Resolver {
             String key;
             Entry entry = (Entry) it.next();
             //removing the prefix of the properties if already exists
-            //to avoid dublicate prefixes like @event.event.object.name
+            //to avoid duplicate prefixes like @event.event.object.name
             if (entry.getKey().toString().startsWith(PREFIX)) {
                 key = entry.getKey().toString().substring(PREFIX.length());
             } else {
                 key = entry.getKey().toString();
             }
+            System.out.println("    statement " + PREFIX + key + "=" + entry.getValue().toString());
             context.addStatement(PREFIX + key, entry.getValue().toString());
         }
     }
