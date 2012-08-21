@@ -10,15 +10,12 @@
  */
 package it.freedomotic.plugins.gui;
 
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.reactions.Payload;
 import it.freedomotic.persistence.TriggerPersistence;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
-import it.freedomotic.util.PropertiesPanel;
 import it.freedomotic.util.PropertiesPanel_1;
 import java.util.Iterator;
-import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 /**

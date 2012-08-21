@@ -6,7 +6,6 @@ package it.freedomotic.plugins;
 
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
-import it.freedomotic.api.Tool;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.persistence.CommandPersistence;
 import it.freedomotic.plugins.gui.CustomizeCommand;

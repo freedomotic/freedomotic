@@ -11,18 +11,21 @@
 package it.freedomotic.plugins.gui;
 
 import it.freedomotic.persistence.ReactionPersistence;
+import it.freedomotic.persistence.TriggerPersistence;
 import it.freedomotic.plugins.AutomationsEditor;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Trigger;
-import it.freedomotic.util.PropertiesPanel_1;
 import it.freedomotic.util.ReactionEditor;
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  *
@@ -31,24 +34,64 @@ import javax.swing.event.ListSelectionListener;
 public final class ReactionList extends javax.swing.JFrame {
 
     private AutomationsEditor plugin;
-    private PropertiesPanel_1 pnlAutomations;
+    private JPanel panel = new JPanel();
 
     /**
      * Creates new form ReactionList
      */
     public ReactionList(AutomationsEditor plugin) {
         initComponents();
-        btnDelete.setEnabled(false);
         this.plugin = plugin;
+
+        JScrollPane scrollPane = new JScrollPane(panel);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        setPreferredSize(new Dimension(450, 110));
+        add(scrollPane, BorderLayout.CENTER);
+        JButton ok = new JButton("OK");
+        ok.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                for (Component component : panel.getComponents()) {
+                    if (component instanceof ReactionEditor) {
+                        ReactionEditor editor = (ReactionEditor) component;
+                        editor.finalizeEditing();
+                    }
+                }
+                dispose();
+            }
+        });
+        add(ok, BorderLayout.SOUTH);
+        populateAutomations();
+        this.pack();
     }
 
-    private void populateEditor(Reaction selected) {
-        JFrame frame = new JFrame("this is a test");
-        frame.setLayout(new BorderLayout());
-        ReactionEditor editor = new ReactionEditor(selected);
-        frame.setPreferredSize(new Dimension(400, 30));
-        frame.add(editor);
-        frame.setVisible(true);
+//    private void populateEditor(Reaction selected) {
+//        JFrame frame = new JFrame("this is a test");
+//        frame.setLayout(new BorderLayout());
+//        ReactionEditor editor = new ReactionEditor(selected);
+//        frame.setPreferredSize(new Dimension(400, 30));
+//        frame.add(editor);
+//        frame.setVisible(true);
+//    }
+    private void populateAutomations() {
+        panel.removeAll();
+        for (Trigger trigger : TriggerPersistence.getTriggers()) {
+            if (!trigger.isHardwareLevel()) {
+                //display already stored reactions related to this objects
+                boolean found = false;
+                for (Reaction r : ReactionPersistence.getReactions()) {
+                    if (r.getTrigger().equals(trigger)) {
+                        ReactionEditor editor = new ReactionEditor(r);
+                        panel.add(editor);
+                        found = true;
+                    }
+                }
+                if (!found) {//add an empty reaction if none
+                    ReactionEditor editor = new ReactionEditor(new Reaction(trigger));
+                    panel.add(editor);
+                }
+            }
+        }
+        validate();
     }
 
     /**
@@ -60,13 +103,8 @@ public final class ReactionList extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        lstReactions = new javax.swing.JList();
-        btnDelete = new javax.swing.JButton();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Current Reactions");
+        setTitle("Current Automations");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
@@ -76,44 +114,6 @@ public final class ReactionList extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Currently available automations:");
-
-        jScrollPane1.setViewportView(lstReactions);
-
-        btnDelete.setText("Delete Reaction");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnDelete)
-                            .addComponent(jLabel1))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnDelete)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -121,35 +121,29 @@ public final class ReactionList extends javax.swing.JFrame {
         updateData();
     }//GEN-LAST:event_formWindowActivated
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        Reaction rea = (Reaction) lstReactions.getSelectedValue();
-        ReactionPersistence.remove(rea);
-        updateData();
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         plugin.stop();
     }//GEN-LAST:event_formWindowClosing
 
     protected void updateData() {
-        DefaultListModel model = new DefaultListModel();
-        model.clear();
-        for (Reaction rea : ReactionPersistence.getReactions()) {
-            model.addElement(rea);
-        }
-        lstReactions.setModel(model);
-        lstReactions.addListSelectionListener(new ListSelectionListener() {
-
-            public void valueChanged(ListSelectionEvent e) {
-                Reaction selected = (Reaction) lstReactions.getSelectedValue();
-                if (selected != null) {
-                    populateEditor(selected);
-                    btnDelete.setEnabled(true);
-                } else {
-                    btnDelete.setEnabled(false);
-                }
-            }
-        });
+//        DefaultListModel model = new DefaultListModel();
+//        model.clear();
+//        for (Reaction rea : ReactionPersistence.getReactions()) {
+//            model.addElement(rea);
+//        }
+//        lstReactions.setModel(model);
+//        lstReactions.addListSelectionListener(new ListSelectionListener() {
+//            public void valueChanged(ListSelectionEvent e) {
+//                Reaction selected = (Reaction) lstReactions.getSelectedValue();
+//                if (selected != null) {
+//                    //populateEditor(selected);
+//                    btnDelete.setEnabled(true);
+//                } else {
+//                    btnDelete.setEnabled(false);
+//                }
+//            }
+//        });
+        populateAutomations();
     }
 
     protected void setTargetTrigger(Trigger t) {
@@ -158,9 +152,5 @@ public final class ReactionList extends javax.swing.JFrame {
     protected void setTargetCommand(Command c) {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDelete;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList lstReactions;
     // End of variables declaration//GEN-END:variables
 }
