@@ -109,19 +109,18 @@ public final class TriggerCheck {
         String protocol = null;
         String address = null;
         ArrayList<EnvObjectLogic> objectList = null;
+
         protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
         address = resolved.getPayload().getStatements("event.address").get(0).getValue();
-        String clazz = event.getProperty("object.class");
-        String name = event.getProperty("object.name");
-        objectList = EnvObjectPersistence.getObject(protocol, address);
-        if (objectList.isEmpty()) { //there isn't an object with this protocol and address
-            Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + trigger.getName() + ")");
-            if (clazz != null && !clazz.isEmpty()) {
-                JoinDevice.join(
-                        clazz,
-                        name,
-                        protocol,
-                        address);
+        if (protocol != null && address != null) {
+            String clazz = event.getProperty("object.class");
+            String name = event.getProperty("object.name");
+            objectList = EnvObjectPersistence.getObject(protocol, address);
+            if (objectList.isEmpty()) { //there isn't an object with this protocol and address
+                Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + trigger.getName() + ")");
+                if (clazz != null && !clazz.isEmpty()) {
+                    JoinDevice.join(clazz, name, protocol, address);
+                }
             }
         }
         //now we have the target object on the map for sure
@@ -148,7 +147,7 @@ public final class TriggerCheck {
             Reaction reaction = (Reaction) it.next();
             //the trigger defined in the current reaction
             Trigger reactionTrigger = reaction.getTrigger();
-            Reaction resolved = null;
+            //Reaction resolved = null;
             //found a related reaction. This must be executed
             if (trigger.equals(reactionTrigger)) {
                 trigger.setExecuted();
@@ -156,40 +155,44 @@ public final class TriggerCheck {
                 Freedomotic.logger.config("Try to execute reaction " + reaction.toString());
                 try {
                     //resolves temporary values in command like @event.date replacing freedomotic variables with string or numerical values
-                    event.getPayload().addStatement("description", trigger.getDescription()); //embedd the trigger description to the event payload
                     //new the trigger description can be used in commands (as it was the event description) with @event.description
-                    Resolver resolver = new Resolver();
-                    resolver.addContext("event.", event.getPayload());
-                    resolved = resolver.resolve(reaction);
-                } catch (Exception e) {
-                    Freedomotic.logger.severe("Exception while merging event parameters into reaction.\n");
-                    Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
-                    return;
-                }
+                    event.getPayload().addStatement("description", trigger.getDescription()); //embedd the trigger description to the event payload
 //                SchedulingData data = new SchedulingData(event.getCreation());
 //                data.getLog().append(buff.toString());
 //                resolved.setScheduling(data);
 //                Freedomotic.getScheduler().schedule(resolved);
-                //executes the commands in sequence (only the first sequence is used) 
-                //if more then one sequence is needed it can be done with two reactions with the same trigger
-                for (Command command : resolved.getCommands()) {
-//                    if (command.getReceiver().equalsIgnoreCase(BehaviorManagerForObjects.getMessagingChannel())) {
-//                        //doing so we bypass messagin system gaining better performances
-//                        BehaviorManagerForObjects.parseCommand(command);
-//                    } else {
-                    //it's not a usel level command for objects (eg: turn it on), it is for another kind of actuator
-                    Command reply = Freedomotic.sendCommand(command); //blocking wait (in this case in a thread) until executed
-                    if (reply != null) {
-                        if (reply.isExecuted() == true) {
-                            Freedomotic.logger.config("Executed succesfully " + command.getName());
-                        } else {
-                            Freedomotic.logger.config("Unable to execute " + command.getName());
+                    //executes the commands in sequence (only the first sequence is used) 
+                    //if more then one sequence is needed it can be done with two reactions with the same trigger
+                    Resolver resolver = new Resolver();
+                    resolver.addContext("event.", event.getPayload());
+                    EnvObjectLogic targetObject = EnvObjectPersistence.getObject(event.getProperty("object.name"));
+                    for (Command command : reaction.getCommands()) {
+                        if (targetObject != null) {
+                            resolver.addContext("current.", targetObject.getExposedProperties());
                         }
-                    } else {
-                        Freedomotic.logger.config("Unreceived reply within given time ("
-                                + command.getReplyTimeout() + "ms) for command " + command.getName());
+                        Command resolvedCommand = resolver.resolve(command);
+                        if (command.getReceiver().equalsIgnoreCase(BehaviorManagerForObjects.getMessagingChannel())) {
+                            //doing so we bypass messaging system gaining better performances
+                            BehaviorManagerForObjects.parseCommand(resolvedCommand);
+                        } else {
+                            //it's not a user level command for objects (eg: turn it on), it is for another kind of actuator
+                            Command reply = Freedomotic.sendCommand(resolvedCommand); //blocking wait (in this case in a thread) until executed
+                            if (reply != null) {
+                                if (reply.isExecuted() == true) {
+                                    Freedomotic.logger.config("Executed succesfully " + command.getName());
+                                } else {
+                                    Freedomotic.logger.config("Unable to execute " + command.getName());
+                                }
+                            } else {
+                                Freedomotic.logger.config("Unreceived reply within given time ("
+                                        + command.getReplyTimeout() + "ms) for command " + command.getName());
+                            }
+                        }
                     }
-//                    }
+                } catch (Exception e) {
+                    Freedomotic.logger.severe("Exception while merging event parameters into reaction.\n");
+                    Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+                    return;
                 }
                 Freedomotic.logger.info("Executing reaction '" + reaction.toString()
                         + "' takes " + (System.currentTimeMillis() - event.getCreation()) + "ms.");
