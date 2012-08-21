@@ -17,7 +17,10 @@ import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.persistence.CommandPersistence;
 import it.freedomotic.plugins.AddonLoader;
+import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.Payload;
+import it.freedomotic.reactions.Trigger;
 import it.freedomotic.util.PropertiesPanel_1;
 import java.util.Map.Entry;
 import javax.swing.DefaultComboBoxModel;
@@ -69,18 +72,20 @@ public class CustomizeCommand extends javax.swing.JFrame {
     }
 
     private Command fillWithFormData(Command c) {
-//        c.setName(txtName.getText());
-//        c.setDescription(txtDescription.getText());
-//        if (cmbReceiver.isEnabled()) {
-//            Plugin plugin = AddonManager.getPluginByName((String) cmbReceiver.getSelectedItem());
-//            c.setReceiver(plugin.getReadQueue());
-//        } else {
-//            c.setReceiver(original.getReceiver());
-//        }
-//        System.out.println("receiver for  " + c.getName() + " is: " + c.getReceiver());
-//        for (Entry e : panel.getProperties()) {
-//            c.setProperty(e.getKey().toString(), e.getValue().toString());
-//        }
+        c.setName(txtName.getText());
+        c.setDescription(txtDescription.getText());
+        if (cmbReceiver.isEnabled()) {
+            Plugin plugin = (Plugin) ClientStorage.get((String) cmbReceiver.getSelectedItem());
+            c.setReceiver(plugin.getReadQueue());
+        } else {
+            c.setReceiver(original.getReceiver());
+        }
+        System.out.println("receiver for  " + c.getName() + " is: " + c.getReceiver());
+        for (int row = 0; row < panel.getRows(); row++) {
+            String key = panel.getComponent(row, 0);
+            String value = panel.getComponent(row, 1);
+            c.setProperty(key, value);
+        }
         return c;
     }
 
