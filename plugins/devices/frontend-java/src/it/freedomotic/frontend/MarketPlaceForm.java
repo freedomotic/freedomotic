@@ -54,11 +54,9 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     public MarketPlaceForm() {
         initComponents();
         EventQueue.invokeLater(new Runnable() {
-
             @Override
             public void run() {
                 new Thread(new Runnable() {
-
                     public void run() {
                         MarketPlaceService mps = MarketPlaceService.getInstance();
                         pluginList = mps.getPackageList();
@@ -70,7 +68,6 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         pluginList = Freedomotic.onlinePlugins;
         updatePluginsList();
         lstPlugins.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(MouseEvent e) {
                 Point p = e.getPoint();
@@ -115,17 +112,18 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 JLabel text = null;
                 String description = "";
                 if (pp.getFilePath() != null) {
-                    String version = Plugin.extractVersion(new File(pp.getFilePath()).getName().toString());
+                    String version = extractVersion(new File(pp.getFilePath()).getName().toString());
                     int result = Plugin.compareVersions(pp.getTitle(), version);
-                    if (result == -1) {
+                    //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
+                    if (result == -1) { //older version
                         text = new JLabel(pp.getTitle() + " (Install version " + version + ")");
                     } else {
-                        if (result == 1) {
+                        if (result == 1) { //newer version
                             text = new JLabel(pp.getTitle() + " (Update from " + version + " to " + version + ")");
                         }
                     }
                 } else {
-                    text = new JLabel(pp.getTitle());
+                    text = new JLabel(pp.getTitle() + (" (Unavailable)"));
                 }
                 description = pp.getDescription();
                 JLabel lblDescription = new JLabel(description);
@@ -133,7 +131,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 Font font = lstPlugins.getFont();
                 text.setFont(font.deriveFont(Font.BOLD, 12));
                 lblDescription.setForeground(Color.gray);
-                
+
 
                 JPanel jpcenter = new JPanel();
                 GridLayout grid = new GridLayout(0, 1);
@@ -160,6 +158,20 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         }
         validate();
         return null;
+    }
+
+    private String extractVersion(String filename) {
+        //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
+        //only 5.2.x-1.212 is needed
+        //remove extension
+        filename = filename.substring(0, filename.lastIndexOf("."));
+        String[] tokens = filename.split("-");
+        //3 tokens expected
+        if (tokens.length == 3) {
+            return tokens[1] + "-" + tokens[2];
+        } else {
+            return filename;
+        }
     }
 
     private void installPackage(PluginPackage pp) {
@@ -192,7 +204,6 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         final String string = pp.getFilePath();
         System.out.println("string de download:" + string);
         task = new Runnable() {
-
             boolean done = false;
 
             @Override
