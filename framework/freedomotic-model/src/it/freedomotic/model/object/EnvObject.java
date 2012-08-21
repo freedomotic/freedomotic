@@ -120,7 +120,7 @@ public class EnvObject implements Serializable {
             }
         }
         //Freedomotic.logger.warning("Searching for behavior named '" + behavior + "' but it doesen't exists for object '" + getName() + "'.");
-        return null; //this behaviors don't exists for this object
+        return null; //this behaviors doesn't exists for this object
     }
 
     public void setActAs(String actAs) {
