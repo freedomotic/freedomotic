@@ -1,105 +1,128 @@
 package it.freedomotic.util;
 
-import it.freedomotic.app.Freedomotic;
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Info {
+    //framework versioning
 
-    static final private Integer major = 5;
-    static final private Integer minor = 2;
-    static final private Integer revision = 0;
-    static final private String releaseDate = "March 2012";
-    static final private String license = "GNU Generic Public License v2";
-    static final private String authorMail = "info@freedomotic.com";
-    static final private String releaseType = "beta";
-    private static final String applicationPath = System.getProperty("user.dir");
+    public static final Integer FRAMEWORK_MAJOR = 5;
+    public static final Integer FRAMEWORK_MINOR = 3;
+    public static final Integer FRAMEWORK_BUILD = 0;
+    public static final String FRAMEWORK_RELEASE_DATE = "March 2012";
+    public static final String FRAMEWORK_LICENSE = "GNU Generic Public License v2";
+    public static final String PROJECT_MAIL = "info@freedomotic.com";
+    public static final String FRAMEWORK_RELEASE_TYPE = "beta";
+    //framework base paths
+    public static final String FRAMEWORK_WORKDIR = System.getProperty("user.dir");
+    public static final File FRAMEWORK_DATA_PATH = new File(FRAMEWORK_WORKDIR + "/data/");
+    public static final File FRAMEWORK_RESOURCES_PATH = new File(FRAMEWORK_WORKDIR + "/data/resources/");
+    public static final File FRAMEWORK_PLUGINS_PATH = new File(FRAMEWORK_WORKDIR + "/plugins/");
+    public static final File FRAMEWORK_DEVICES_PATH = new File(FRAMEWORK_WORKDIR + "/plugins/devices/");
+    public static final File FRAMEWORK_OBJECTS_PATH = new File(FRAMEWORK_WORKDIR + "/plugins/objects/");
+    public static final File FRAMEWORK_EVENTS_PATH = new File(FRAMEWORK_WORKDIR + "/plugins/events/");
+    public static final File FRAMEWORK_PROVIDERS_PATH = new File(FRAMEWORK_WORKDIR + "/plugins/providers/");
+    //framework API and messaging
+    public static final String FRAMEWORK_BROKER_IP = getLocalHost();
+    public static final int FRAMEWORK_BROKER_PORT = 61616;
+    public static final String FRAMEWORK_BROKER_STOMP = "stomp://0.0.0.0:61666";
+    public static final String FRAMEWORK_BROKER_WEBSOCKET = "ws://0.0.0.0:61614";
     //default queues
-    public static final String OBJECT_CHANGE_BEHAVIOR_QUEUE = "app.event.object.behavior.change";
-    public static final String ZONE_EVENTS_QUEUE = "app.event.person.zone";
-    public static final String PERSON_MOVEMENT_QUEUE = "app.event.sensor.person.movement.*";
-    public static final String DEBUG_LOGGER_QUEUE = "app.actuators.debug.logger.*";
-
-    public static final int MAX_BEHAVIOR_PRIORITY=9;
-    public static final int MIN_BEHAVIOR_PRIORITY=0;
-
+    public static final String CHANNEL_OBJECT_UPDATE = "app.event.object.behavior.change";
+    public static final String CHANNEL_ZONE_OCCUPIERS = "app.event.person.zone";
+    public static final String CHANNELS_PEOPLE_LOCATION = "app.event.sensor.person.movement.*";
+    //behavior proprities
+    public static final int BEHAVIOR_MAX_PRIORITY = 9;
+    public static final int BEHAVIOR_MIN_PRIORITY = 0;
+    
+    private static String getLocalHost() {
+        String address = "";
+        try {
+            address = InetAddress.getLocalHost().toString();
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Info.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return address;
+    }
+    
     public static Integer getMajor() {
-        return major;
+        return FRAMEWORK_MAJOR;
     }
-
+    
     public static Integer getMinor() {
-        return minor;
+        return FRAMEWORK_MINOR;
     }
-
+    
     public static Integer getRevision() {
-        return revision;
+        return FRAMEWORK_BUILD;
     }
-
+    
     static public String getVersion() {
-        return major.toString() + "." + minor.toString() + "." + revision.toString();
+        return FRAMEWORK_MAJOR.toString() + "." + FRAMEWORK_MINOR.toString() + "." + FRAMEWORK_BUILD.toString();
     }
-
+    
     static public String getReleaseDate() {
-        return releaseDate;
+        return FRAMEWORK_RELEASE_DATE;
     }
-
+    
     public static String getReleaseType() {
-        return releaseType;
+        return FRAMEWORK_RELEASE_TYPE;
     }
-
+    
     static public String getLicense() {
-        return license;
+        return FRAMEWORK_LICENSE;
     }
-
+    
     static public String getAuthor() {
         return "Freedomotic Development Team";
     }
-
+    
     static public String getAuthorMail() {
-        return authorMail;
+        return PROJECT_MAIL;
     }
-
+    
     static public String getAClasspathView() {
-        String str = ("Sistema operativo: " + System.getProperty("os.name") + "\n"
-                + "Architettura: " + System.getProperty("os.arch") + "\n"
-                + "Versione: " + System.getProperty("os.version") + "\n"
-                + "Utente: " + System.getProperty("user.name") + "\n"
+        String str = ("Operative System: " + System.getProperty("os.name") + "\n"
+                + "Architecture: " + System.getProperty("os.arch") + "\n"
+                + "Version: " + System.getProperty("os.version") + "\n"
+                + "User: " + System.getProperty("user.name") + "\n"
                 + "Program path: " + System.getProperty("user.dir") + "\n"
                 + "Classpath: " + splitPathString(System.getProperty("java.class.path")) + "\n"
                 + "Ext directories included on classpath: " + splitPathString(System.getProperty("java.ext.dirs")) + "\n"
                 + "Low Level classpath: " + splitPathString(System.getProperty("java.library.path")) + "\n");
-
+        
         return str;
     }
-
+    
     public static String getApplicationPath() {
-        return applicationPath;
+        return FRAMEWORK_WORKDIR;
     }
-
-    public static String getRemoteRepository() {
-        return Freedomotic.config.getStringProperty("KEY_REPOSITORY_URL", "http://freedomotic.googlecode.com/files/");
-    }
-
+    
+    @Deprecated
     public static String getDatafilePath() {
-        return (new File(applicationPath + "/data/").getAbsolutePath());
+        return (new File(FRAMEWORK_WORKDIR + "/data/").getAbsolutePath());
     }
-
-    public static String getPluginsPath() {
-        return (new File(applicationPath + "/plugins/").getAbsolutePath());
-    }
-
-        public static String getDevicesPath() {
-        return (new File(getPluginsPath() + "/devices/").getAbsolutePath());
-    }
-
-//    public static String getFuzzyRulesPath() {
-//        return (new File(Info.getDatafilePath() + "/fcl/").getPath());
-//    }
-
+    
+    @Deprecated
     public static String getResourcesPath() {
-        return (new File(applicationPath + Freedomotic.config.getProperty("KEY_RESOURCES_PATH")).getPath());
+        return (new File(FRAMEWORK_WORKDIR + "/data/resources/").getAbsolutePath());
     }
-
+    
+    @Deprecated
+    public static String getPluginsPath() {
+        return (new File(FRAMEWORK_WORKDIR + "/plugins/").getAbsolutePath());
+    }
+    
+    @Deprecated    
+    public static String getDevicesPath() {
+        return (new File(FRAMEWORK_WORKDIR + "/plugins/devices/").getAbsolutePath());
+    }
+    
+    @Deprecated
     private static String splitPathString(String str) {
         StringBuffer buff = new StringBuffer();
         StringTokenizer token = new StringTokenizer(str, System.getProperty("path.separator"));
@@ -107,10 +130,6 @@ public class Info {
             buff.append("\n    ").append(token.nextToken());
         }
         return buff.toString();
-
-    }
-
-    static int getIntVersion() {
-        return Integer.parseInt(major.toString() + minor.toString() + revision.toString());
+        
     }
 }
