@@ -75,3 +75,4 @@ market-dist/
 !/tools/*/lib/*.jar
 !/scripts/shared/*.txt
 !/scripts/shared/*.TXT
+/scripts/FreedomoticTemplates/pluginTemplate/nbproject/private/
