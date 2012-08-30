@@ -1,0 +1,16 @@
+
+<it.freedomotic.reactions.Command>
+  <name>Save data on the harvester</name>
+  <receiver>app.actuators.harvester.harvester.in</receiver>
+  <description>The harvester has register a new log entry</description>
+  <delay>0</delay>
+  <timeout>10000</timeout>  
+  <properties>
+    <properties>      
+      <property name="date" value="I have changed the status"/>
+      <property name="object" value="@event.object.name"/>
+      <property name="behavior" value="@event.object.behavior"/>
+      <property name="value" value="@event.value"/>
+    </properties>
+  </properties>
+</it.freedomotic.reactions.Command>
