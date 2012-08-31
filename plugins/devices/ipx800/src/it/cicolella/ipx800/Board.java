@@ -11,7 +11,9 @@ package it.cicolella.ipx800;
 public class Board {
 
     private String ipAddress = null;
-    private String lineToMonitorize;
+    private String ledTag;
+    private String analogInputTag;
+    private String digitalInputTag;
     private int port;
     private int relayNumber;
     private int analogInputNumber;
@@ -19,15 +21,16 @@ public class Board {
     private int startingRelay;
 
     public Board(String ipAddress, int port, int relayNumber, int analogInputNumber,
-            int digitalInputNumber, String lineToMonitorize, int startingRelay) {
-            setIpAddress(ipAddress);
-            setPort(port);
-            setRelayNumber(relayNumber);
-            setAnalogInputNumber(analogInputNumber);
-            setDigitalInputNumber(digitalInputNumber);
-            setLineToMonitorize(lineToMonitorize);
-            setStartingRelay(startingRelay);
-            
+            int digitalInputNumber, int startingRelay, String ledTag, String digitalInputTag, String analogInputTag) {
+        setIpAddress(ipAddress);
+        setPort(port);
+        setRelayNumber(relayNumber);
+        setAnalogInputNumber(analogInputNumber);
+        setDigitalInputNumber(digitalInputNumber);
+        setStartingRelay(startingRelay);
+        setLedTag(ledTag);
+        setDigitalInputTag(digitalInputTag);
+        setAnalogInputTag(analogInputTag);
     }
 
     public int getAnalogInputNumber() {
@@ -54,12 +57,28 @@ public class Board {
         this.ipAddress = ipAddress;
     }
 
-    public String getLineToMonitorize() {
-        return lineToMonitorize;
+    public String getLedTag() {
+        return ledTag;
     }
 
-    public void setLineToMonitorize(String lineToMonitorize) {
-        this.lineToMonitorize = lineToMonitorize;
+    public void setLedTag(String ledTag) {
+        this.ledTag = ledTag;
+    }
+    
+    public String getAnalogInputTag() {
+        return analogInputTag;
+    }
+
+    public void setAnalogInputTag(String analogInputTag) {
+        this.analogInputTag = analogInputTag;
+    }
+    
+    public String getDigitalInputTag() {
+        return digitalInputTag;
+    }
+
+    public void setDigitalInputTag(String digitalInputTag) {
+        this.digitalInputTag = digitalInputTag;
     }
 
     public int getPort() {
