@@ -27,8 +27,9 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
- * A sensor for the board IPX800 developed by author Mauro Cicolella -
- * www.emmecilab.net For more details please refer to
+ * A sensor for the board IPX800 developed by www.gce-electronics.com author
+ * Mauro Cicolella - www.emmecilab.net For more details please refer to
+ * technical forum http://freedomotic.com/forum/6/1031
  *
  */
 public class Ipx800 extends Protocol {
@@ -60,7 +61,9 @@ public class Ipx800 extends Protocol {
         setDescription("Reading status changes from"); //empty description
         for (int i = 0; i < BOARD_NUMBER; i++) {
             String ipToQuery;
-            String lineToMonitorize;
+            String ledTag;
+            String digitalInputTag;
+            String analogInputTag;
             int portToQuery;
             int digitalInputNumber;
             int analogInputNumber;
@@ -68,15 +71,17 @@ public class Ipx800 extends Protocol {
             int startingRelay;
             ipToQuery = configuration.getTuples().getStringProperty(i, "ip-to-query", "192.168.1.201");
             portToQuery = configuration.getTuples().getIntProperty(i, "port-to-query", 80);
-            lineToMonitorize = configuration.getTuples().getStringProperty(i, "line-to-monitorize", "led");
             relayNumber = configuration.getTuples().getIntProperty(i, "relay-number", 8);
             analogInputNumber = configuration.getTuples().getIntProperty(i, "analog-input-number", 4);
             digitalInputNumber = configuration.getTuples().getIntProperty(i, "digital-input-number", 4);
             startingRelay = configuration.getTuples().getIntProperty(i, "starting-relay", 0);
+            ledTag = configuration.getTuples().getStringProperty(i, "led-tag", "led");
+            digitalInputTag = configuration.getTuples().getStringProperty(i, "digital-input-tag", "btn");
+            analogInputTag = configuration.getTuples().getStringProperty(i, "analog-input-tag", "analog");
             Board board = new Board(ipToQuery, portToQuery, relayNumber, analogInputNumber,
-                    digitalInputNumber, lineToMonitorize, startingRelay);
+                    digitalInputNumber, startingRelay, ledTag, digitalInputTag, analogInputTag);
             boards.add(board);
-            setDescription(getDescription() + " " + ipToQuery + ":" + portToQuery + ":" + lineToMonitorize + ";");
+            setDescription(getDescription() + " " + ipToQuery + ":" + portToQuery + ";");
         }
     }
 
@@ -184,18 +189,17 @@ public class Ipx800 extends Protocol {
         if (doc != null && board != null) {
             Node n = doc.getFirstChild();
             NodeList nl = n.getChildNodes();
-            valueTag(doc, board, nl, "led", 0);
-            valueTag(doc, board, nl, "btn", 0);
-            valueTag(doc, board, nl, "an", 1);
+            valueTag(doc, board, board.getRelayNumber(), board.getLedTag(), 0);
+            valueTag(doc, board, board.getDigitalInputNumber(), board.getDigitalInputTag(), 0);
+            valueTag(doc, board, board.getAnalogInputNumber(), board.getAnalogInputTag(), 0);
         }
     }
 
-    private void valueTag(Document doc, Board board, NodeList nl, String tag, int startingRelay) {
-        for (int i = startingRelay; i < nl.getLength(); i++) {
+    private void valueTag(Document doc, Board board, Integer nl, String tag, int startingRelay) {
+        for (int i = startingRelay; i < nl; i++) {
             try {
-                // converts i into hexadecimal value (string) and sends the parameters
-                String tagName = tag + HexIntConverter.convert(i);
-                Freedomotic.logger.severe("Ipx800 monitorizes tags " + tagName);
+                String tagName = tag + i;
+                //Freedomotic.logger.severe("Ipx800 monitorizes tags " + tagName);
                 sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
             } catch (DOMException dOMException) {
                 //do nothing
@@ -208,14 +212,10 @@ public class Ipx800 extends Protocol {
     }
 
     private void sendChanges(int relayLine, Board board, String status, String tag) {
-        // if starting-relay = 0 then increments relayLine to start from 1 not from zero
-        if (!(tag.compareToIgnoreCase("an") == 0)) {
-            relayLine++;
-        }
-        // }
+        relayLine++;
         //reconstruct freedomotic object address
         String address = board.getIpAddress() + ":" + board.getPort() + ":" + relayLine + ":" + tag;
-        Freedomotic.logger.info("Sending Ipx800 protocol read event for object address '" + address + "'. It's readed status is " + status);
+        //Freedomotic.logger.info("Sending Ipx800 protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "ipx800", address); //IP:PORT:RELAYLINE
         // relay lines - status=0 -> off; status=1 -> on
@@ -225,7 +225,7 @@ public class Ipx800 extends Protocol {
             } else {
                 event.addProperty("isOn", "true");
             }
-        } else // digital inputs btn - status=up -> on; status=down -> off
+        } else // digital inputs (btn tag) status = up -> on; status = down -> off
         if (tag.equalsIgnoreCase("btn")) {
             if (status.equalsIgnoreCase("up")) {
                 event.addProperty("isOn", "true");
@@ -234,8 +234,8 @@ public class Ipx800 extends Protocol {
             }
             event.addProperty("valueRead", status);
         } else {
-            // analog inputs an - status=0 -> off; status>0 -> on
-            if (tag.equalsIgnoreCase("an")) {
+            // analog inputs (an/analog input) status = 0 -> off; status > 0 -> on
+            if (tag.equalsIgnoreCase("an") || tag.equalsIgnoreCase("analog")) {
                 if (status.equalsIgnoreCase("0")) {
                     event.addProperty("isOn", "false");
                 } else {
@@ -312,37 +312,23 @@ public class Ipx800 extends Protocol {
     public String createMessage(Command c) {
         String message = null;
         String page = null;
-        //String behavior = null;
-        String relay = null;
+        Integer relay = 0;
 
         if (c.getProperty("command").equals("CHANGE-STATE-RELAY")) {
-            // convert relay number (integer) into hexadecimal value (string) for board compatibility
-            relay = HexIntConverter.convert(Integer.parseInt(address[2]) - 1);
-            // convert freedom behavior(on/off) to board behavior (1/0)
-            //if (c.getProperty("behavior").equals("on")) {
-            //  behavior = "1";
-            // }
-            //if (c.getProperty("behavior").equals("off")) {
-            //  behavior = "0";
-            // }
+            relay = Integer.parseInt(address[2]) - 1;
             page = CHANGE_STATE_RELAY_URL + relay;
         }
 
         if (c.getProperty("command").equals("PULSE-RELAY")) {
             // mapping relay line -> protocol
-            relay = HexIntConverter.convert(Integer.parseInt(address[2]) - 1);
-            //int time = Integer.parseInt(c.getProperty("time-in-ms"));
-            //int seconds = time / 1000;
-            //String relayLine = configuration.getProperty("TOGGLE" + seconds + "S" + relay);
-
+            relay = Integer.parseInt(address[2]) - 1;
             //compose requested link
             page = SEND_PULSE_RELAY_URL + relay;
         }
 
-
         // http request sending to the board
         message = "GET /" + page + " HTTP 1.1\r\n\r\n";
-        Freedomotic.logger.info("Sending 'GET /" + page + " HTTP 1.1' to relay board");
+        //Freedomotic.logger.info("Sending 'GET /" + page + " HTTP 1.1' to relay board");
         return (message);
     }
 

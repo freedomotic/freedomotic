@@ -15,10 +15,12 @@
             <property name="ip-to-query" value="ipx.dyndns.org"/>
             <property name="port-to-query" value="80"/>
             <property name="relay-number" value="8"/>
-            <property name="analog-input-number" value="2"/>
+            <property name="analog-input-number" value="4"/>
             <property name="digital-input-number" value="4"/>
             <property name="starting-relay" value="0"/>
-            <property name="line-to-monitorize" value="btn"/>
+            <property name="led-tag" value="led"/>
+            <property name="analog-input-tag" value="analog"/>
+            <property name="digital-input-tag" value="btn"/>
         </tuple>
     </tuples>
 </config>
