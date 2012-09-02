@@ -1,0 +1,34 @@
+<it.freedomotic.model.object.EnvObject>
+  <name>A Plant</name>
+  <description>A decorative green plant</description>
+  <actAs>unimplemented</actAs>
+  <type>EnvObject.Decoration</type>
+  <hierarchy>it.freedomotic.objects.impl.EnvObjectLogic</hierarchy>
+  <protocol>unknown</protocol>
+  <phisicalAddress>unknown</phisicalAddress>
+  <behaviors>
+  </behaviors>
+  <representation>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>plant.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+  </representation>
+  <actions>
+  </actions>
+  <triggers>
+  </triggers>
+  <currentRepresentation>0</currentRepresentation>
+</it.freedomotic.model.object.EnvObject>
