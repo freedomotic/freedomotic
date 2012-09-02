@@ -3,6 +3,7 @@ package it.freedomotic.frontend;
 import it.freedomotic.api.Client;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.ResourcesManager;
+import it.freedomotic.plugins.ObjectPlugin;
 import it.freedomotic.util.Info;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -26,13 +27,12 @@ import javax.swing.*;
 public final class PluginJList extends JList {
 
     private String filter;
-    public boolean inDrag=false;
+    public boolean inDrag = false;
     public int dragged = 0;
 
     public PluginJList() {
         setFilter("plugin"); //default value for filterning the list
         addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(MouseEvent e) {
                 Point p = e.getPoint();
@@ -55,9 +55,9 @@ public final class PluginJList extends JList {
             public void mousePressed(MouseEvent e) {
                 if (e.isPopupTrigger()) {
                     doPop(e);
-                }else{
+                } else {
                     //drag started
-                    inDrag=true;
+                    inDrag = true;
                     dragged = 0;
                 }
             }
@@ -87,7 +87,6 @@ public final class PluginJList extends JList {
                 }
 
                 mnuConfigure.addActionListener(new ActionListener() {
-
                     public void actionPerformed(ActionEvent e) {
                         if (client.getType().equalsIgnoreCase("plugin")) {
                             client.start();
@@ -117,20 +116,33 @@ public final class PluginJList extends JList {
     public void update() {
         try {
             String path = Info.getResourcesPath();
-            ImageIcon defaultIconRunning = new ImageIcon(ResourcesManager.getResource("plugin-running.png"));//new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
-            ImageIcon defaultIconStopped = new ImageIcon(ResourcesManager.getResource("plugin-stopped.png"));//new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
+            ImageIcon defaultIconRunning = new ImageIcon(ResourcesManager.getResource("plugin-running.png", 64, 64));//new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
+            ImageIcon defaultIconStopped = new ImageIcon(ResourcesManager.getResource("plugin-stopped.png", 64, 64));//new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
 
             Vector vector = new Vector();
             Iterator it = Freedomotic.clients.getClients().iterator();
             while (it.hasNext()) {
-                Client addon = (Client)it.next();
+                Client addon = (Client) it.next();
                 if (addon.getType().equalsIgnoreCase(getFilter())) {
                     boolean isRunning = addon.isRunning();
                     JPanel jp = new JPanel();
 
                     jp.setLayout(new BorderLayout());
-                    BufferedImage imageRunning = ResourcesManager.getResource(addon.getName().toLowerCase() + "-running.png", 64, 64);
-                    BufferedImage imageStopped = ResourcesManager.getResource(addon.getName().toLowerCase() + "-stopped.png", 64, 64);
+                    BufferedImage imageRunning = null;
+                    BufferedImage imageStopped = null;
+                    if (addon.getType().equalsIgnoreCase("plugin")) {
+                        imageRunning = ResourcesManager.getResource(addon.getName().toLowerCase() + "-running.png", 64, 64);
+                        imageStopped = ResourcesManager.getResource(addon.getName().toLowerCase() + "-stopped.png", 64, 64);
+                    } else {
+                        if (addon.getType().equalsIgnoreCase("object")) {
+                            ObjectPlugin obj = (ObjectPlugin) addon;
+                            String icon = obj.getObject().getPojo().getRepresentations().get(0).getIcon();
+                            if (icon != null) {
+                                imageRunning = ResourcesManager.getResource(icon, 64, 64);
+                                imageStopped = ResourcesManager.getResource(icon, 64, 64);
+                            }
+                        }
+                    }
                     ImageIcon customIconRunning = defaultIconRunning;
                     ImageIcon customIconStopped = defaultIconStopped;
                     if (imageRunning != null) {

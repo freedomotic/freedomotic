@@ -322,7 +322,7 @@ public final class Resolver {
             } else {
                 key = entry.getKey().toString();
             }
-            System.out.println("    statement " + PREFIX + key + "=" + entry.getValue().toString());
+            //System.out.println("    statement " + PREFIX + key + "=" + entry.getValue().toString());
             context.addStatement(PREFIX + key, entry.getValue().toString());
         }
     }
@@ -346,7 +346,7 @@ public final class Resolver {
             } else {
                 key = entry.getKey().toString();
             }
-            System.out.println("    statement " + PREFIX + key + "=" + entry.getValue().toString());
+            //System.out.println("    statement " + PREFIX + key + "=" + entry.getValue().toString());
             context.addStatement(PREFIX + key, entry.getValue().toString());
         }
     }

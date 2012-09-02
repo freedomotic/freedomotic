@@ -59,10 +59,8 @@ public final class JoinDevice implements BusConsumer {
                 Freedomotic.logger.warning("Doesen't exist an object class called " + clazz);
                 return;
             }
-            System.out.println(client.getName());
             File exampleObject = client.getExample();
-            EnvObjectLogic loaded = EnvObjectPersistence.loadObject(exampleObject, EnvObjectPersistence.MAKE_UNIQUE);
-            System.out.println(loaded.getPojo().getName());
+            EnvObjectLogic loaded = EnvObjectPersistence.loadObject(exampleObject);
             //changing the name and other properties invalidates related trigger and commands
             //call init() again after this changes
             if (name != null && !name.isEmpty()) {
@@ -74,6 +72,8 @@ public final class JoinDevice implements BusConsumer {
             loaded.getPojo().setPhisicalAddress(address);
             loaded.setRandomLocation();
 
+            EnvObjectPersistence.add(loaded, EnvObjectPersistence.MAKE_NOT_UNIQUE);
+            
             //use the preferred mapping of the protocol plugin
             Client addon = Freedomotic.clients.getClientByProtocol(protocol);
             if (addon != null) {
@@ -90,7 +90,6 @@ public final class JoinDevice implements BusConsumer {
                         Iterator it = loaded.getPojo().getActions().stringPropertyNames().iterator();
                         while (it.hasNext()) {
                             String action = (String) it.next();
-                            System.out.println("action is " + action);
                             String commandName = (String) tuple.get(action);
                             if (commandName != null) {
                                 loaded.setAction(action, CommandPersistence.getHardwareCommand(commandName));
@@ -99,8 +98,6 @@ public final class JoinDevice implements BusConsumer {
                     }
                 }
             }
-            //validate the object
-            loaded.init();
         } catch (IOException ex) {
             Logger.getLogger(JoinDevice.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -112,7 +109,6 @@ public final class JoinDevice implements BusConsumer {
             Object jmsObject = message.getObject();
             if (jmsObject instanceof Command) {
                 Command command = (Command) jmsObject;
-                System.out.println("received " + command.getName());
                 String name = command.getProperty("object.name");
                 String protocol = command.getProperty("object.protocol");
                 String address = command.getProperty("object.address");
