@@ -13,7 +13,7 @@ import it.freedomotic.api.EventTemplate;
  * Different types of click are supported (single_click, double_click, right_click)
  * @author Enrico
  */
-public final class ProtocolRead extends EventTemplate {
+public class ProtocolRead extends EventTemplate {
 
 
     public ProtocolRead(Object source, String protocol, String address) {

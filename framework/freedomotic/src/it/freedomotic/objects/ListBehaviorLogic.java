@@ -5,15 +5,22 @@ import it.freedomotic.model.object.ListBehavior;
 import java.util.ArrayList;
 
 /**
- * This behavior accepts a string which is an element of the list or "next" or "previous"
- * as input params. The selectedChanged is called only if the request is valid (new selection
- * is a value in the list) and if is not the current selected value.
+ * This behavior accepts a string which is an element of the list or "next" or
+ * "previous" as input params. The selectedChanged is called only if the request
+ * is valid (new selection is a value in the list) and if is not the current
+ * selected value.
+ *
  * @author Enrico
  */
 public class ListBehaviorLogic implements BehaviorLogic {
 
     private ListBehavior data;
-    protected ListBehaviorListener listener;
+    private Listener listener;
+
+    public interface Listener {
+
+        public void selectedChanged(final Config params, boolean fireCommand);
+    }
 
     public ListBehaviorLogic(ListBehavior pojo) {
         this.data = pojo;
@@ -56,7 +63,7 @@ public class ListBehaviorLogic implements BehaviorLogic {
         listener.selectedChanged(params, fireCommand);
     }
 
-    public void addListener(ListBehaviorListener listBehaviorListener) {
+    public void addListener(Listener listBehaviorListener) {
         listener = listBehaviorListener;
     }
 
@@ -73,10 +80,10 @@ public class ListBehaviorLogic implements BehaviorLogic {
         return data.setSelected(key);
     }
 
-    public ArrayList<String> getValuesList(){
+    public ArrayList<String> getValuesList() {
         return data.getList();
     }
-    
+
     @Override
     public boolean isActive() {
         return data.isActive();

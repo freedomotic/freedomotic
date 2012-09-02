@@ -24,7 +24,7 @@ public boolean equals(Object aThat){
 * This is because the <code>Arrays.equals</code> methods should be used for
 * array fields.
 */
-public final class EqualsUtil {
+public class EqualsUtil {
 
   static public boolean areEqual(boolean aThis, boolean aThat){
     //Freedomotic.logger.info("boolean");
@@ -66,4 +66,7 @@ public final class EqualsUtil {
     //Freedomotic.logger.info("Object");
     return aThis == null ? aThat == null : aThis.equals(aThat);
   }
+
+    private EqualsUtil() {
+    }
 }

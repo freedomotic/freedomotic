@@ -82,4 +82,7 @@ public class ClassPathUpdater {
     private static URLClassLoader getClassLoader() {
         return (URLClassLoader) ClassLoader.getSystemClassLoader();
     }
+
+    private ClassPathUpdater() {
+    }
 }

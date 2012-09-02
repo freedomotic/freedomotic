@@ -23,7 +23,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.persistence.ConfigPersistence;
+import it.freedomotic.app.ConfigPersistence;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.util.EqualsUtil;
 import it.freedomotic.util.Info;
@@ -31,12 +31,12 @@ import java.io.*;
 import java.util.Properties;
 import javax.swing.JFrame;
 
-public abstract class Plugin implements Client {
+public class Plugin implements Client {
 
 //    private boolean isConnected = false;
     protected boolean isRunning = false;
     private String pluginName;
-    protected String type = "Plugin";
+    private String type = "Plugin";
     protected Config configuration;
     protected JFrame gui;
     private static final String SEPARATOR = "-";
@@ -78,19 +78,16 @@ public abstract class Plugin implements Client {
         }
     }
 
-    public Config getConfiguration() {
+    @Override
+    public final Config getConfiguration() {
         return configuration;
     }
 
-    public String getReadQueue() {
+    public final String getReadQueue() {
         return listenOn;
     }
-//
-//    public String getWriteQueue() {
-//        return sendOn;
-//    }
 
-    public String getCategory() {
+    public final String getCategory() {
         return category;
     }
 
@@ -295,34 +292,19 @@ public abstract class Plugin implements Client {
         return vals1.length < vals2.length ? -1 : vals1.length == vals2.length ? 0 : 1;
     }
 
-
-
-
-    public static void mergePackageConfiguration(Plugin plugin, File pluginFolder) {
-        //seach for a file called PACKAGE
-        Properties pack = new Properties();
-        try {
-            pack.load(new FileInputStream(new File(pluginFolder + "/PACKAGE")));
-            //merges data found in file PACKGE to the the configuration of every single plugin in this package
-            plugin.getConfiguration().setProperty("package.name", pack.getProperty("package.name"));
-            plugin.getConfiguration().setProperty("package.nodeid", pack.getProperty("package.nodeid"));
-            plugin.getConfiguration().setProperty("package.version",
-                    pack.getProperty("build.major") + "."
-                    + pack.getProperty("build.number"));
-            plugin.getConfiguration().setProperty("framework.required.version",
-                    pack.getProperty("framework.required.major") + "."
-                    + pack.getProperty("framework.required.minor") + "."
-                    + pack.getProperty("framework.required.build"));
-            //TODO: add also the other properties
-
-        } catch (IOException ex) {
-            Freedomotic.logger.severe("Folder " + pluginFolder + " doesen't contains a PACKAGE file. This plugin is not loaded.");
-        }
-    }
-
     protected void onShowGui() {
     }
 
     protected void onHideGui() {
+    }
+
+    @Override
+    public void start() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void stop() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

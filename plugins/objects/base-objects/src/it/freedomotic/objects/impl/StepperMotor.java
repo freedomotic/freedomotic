@@ -2,9 +2,8 @@ package it.freedomotic.objects.impl;
 
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
-import it.freedomotic.objects.RangedIntBehaviorListener;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
-import it.freedomotic.persistence.CommandPersistence;
+import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Command;
 
 /**
@@ -20,9 +19,8 @@ public class StepperMotor extends ElectricDevice {
         super.init();
 
         //linking this property with the behavior defined in the XML
-        position = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior("position"));
-        position.addListener(new RangedIntBehaviorListener() {
-
+        position = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(1));
+        position.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOff(params);
@@ -151,5 +149,10 @@ public class StepperMotor extends ElectricDevice {
         CommandPersistence.add(e);
         CommandPersistence.add(f);
         CommandPersistence.add(g);
+    }
+
+    @Override
+    protected void createTriggers() {
+        super.createTriggers();
     }
 }

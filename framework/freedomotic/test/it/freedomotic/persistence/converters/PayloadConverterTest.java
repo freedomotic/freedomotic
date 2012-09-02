@@ -4,6 +4,7 @@
  */
 package it.freedomotic.persistence.converters;
 
+import it.freedomotic.persistence.PayloadConverter;
 import com.thoughtworks.xstream.XStream;
 import it.freedomotic.reactions.Payload;
 import org.junit.AfterClass;

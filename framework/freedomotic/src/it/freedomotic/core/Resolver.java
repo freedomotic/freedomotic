@@ -56,7 +56,7 @@ import javax.script.ScriptException;
  *
  * @author Enrico Nicoletti (enrico.nicoletti84@gmail.com)
  */
-public class Resolver {
+public final class Resolver {
 
     private static final String REFERENCE_DELIMITER = "@";
     private ArrayList<String> prefixes = new ArrayList<String>();
@@ -327,7 +327,7 @@ public class Resolver {
         }
     }
 
-    public void addContext(final String PREFIX, HashMap aContext) {
+    public void addContext(final String PREFIX, Map aContext) {
         if (context == null) {
             context = new Payload();
         }

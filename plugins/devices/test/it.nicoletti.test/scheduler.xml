@@ -2,8 +2,6 @@
 <config>
     <properties>
         <property name="description"                       value="Freedomotic clock for scheduled events"/>
-        <property name="version"                       value="40"/>
-        <property name="required"                       value="40"/>
         <property name="category"                       value="clock"/>
         <property name="short-name"                       value="clock"/>
         <property name="timer-resolution"					value="1000"/>

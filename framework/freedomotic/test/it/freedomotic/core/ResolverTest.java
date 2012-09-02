@@ -1,5 +1,6 @@
 package it.freedomotic.core;
 
+import com.thoughtworks.xstream.XStream;
 import it.freedomotic.events.GenericEvent;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Trigger;
@@ -57,7 +58,7 @@ public class ResolverTest {
         c.setProperty("seven", "= seven=\"Current temperature is @event.temperature celsius degrees. In fahrenheit is \" + Math.floor(((@event.temperature+40)*1.8)-40) + \" degrees.\";");
         c.setProperty("eight", "= eight=10+5;"); //this always returns a double
         c.setProperty("nine", "= nine=Math.floor(10+5).toString();"); //print the number as is to avoid conversion to double
-        c.setProperty("ten", "= if (@event.temperature<= 20) ten=2; else what=@event.temperature/10;");
+        //c.setProperty("ten", "= if (@event.temperature<= 20) ten=2; else what=@event.temperature/10;");
         GenericEvent event = new GenericEvent(this);
         event.addProperty("zone", "Kitchen");
         event.addProperty("temperature", "25");
@@ -105,6 +106,8 @@ public class ResolverTest {
         Resolver resolver = new Resolver();
         resolver.addContext("event.", event.getPayload());
         Trigger result = resolver.resolve(c);
+        XStream x = new XStream();
+        System.out.println(x.toXML(c));
         assertEquals("25", result.getPayload().getStatements("zero").get(0).getValue());
         assertEquals("temperature is 25.", result.getPayload().getStatements("one").get(0).getValue());
         assertEquals("temperature is 25celsius degree.", result.getPayload().getStatements("two").get(0).getValue());

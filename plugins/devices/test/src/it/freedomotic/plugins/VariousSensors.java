@@ -83,7 +83,8 @@ public class VariousSensors extends Protocol {
         try {
             Thread.sleep(2000);
         } catch (InterruptedException ex) {
-            Logger.getLogger(VariousSensors.class.getName()).log(Level.SEVERE, null, ex);
+             // Restore the interrupted status
+             Thread.currentThread().interrupt();
         }
     }
 

@@ -20,7 +20,6 @@
 package it.freedomotic.api;
 
 import it.freedomotic.model.ds.Config;
-import javax.swing.JInternalFrame;
 
 /**
  *

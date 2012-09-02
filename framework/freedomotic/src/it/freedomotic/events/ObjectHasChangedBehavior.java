@@ -27,7 +27,7 @@ import it.freedomotic.model.object.EnvObject;
  * An object has changed its behavior (eg: a light change behavior from off to on)
  * @author enrico
  */
-public final class ObjectHasChangedBehavior extends EventTemplate {
+public class ObjectHasChangedBehavior extends EventTemplate {
 
     private EnvObject obj;
 

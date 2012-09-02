@@ -4,7 +4,8 @@
  */
 package it.freedomotic.objects.impl;
 
-import it.freedomotic.persistence.TriggerPersistence;
+import it.freedomotic.events.ObjectReceiveClick;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Trigger;
 
 /**
@@ -49,7 +50,15 @@ public class Clock extends Decoration {
         morning.getPayload().addStatement("AND", "time.hour", "GREATER_THEN", "7");
         morning.getPayload().addStatement("AND", "time.hour", "LESS_THEN", "13");
         morning.setSuspensionTime(60000);
+        
+        Trigger clicked = new Trigger();
+        clicked.setName("When " + this.getPojo().getName() + " is clicked");
+        clicked.setChannel("app.event.sensor.object.behavior.clicked");
+        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
+        clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
+        clicked.setPersistence(false);
 
+        TriggerPersistence.add(clicked);
         TriggerPersistence.add(everySecond);
         TriggerPersistence.add(everyMinute);
         TriggerPersistence.add(morning);

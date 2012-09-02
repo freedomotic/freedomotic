@@ -150,4 +150,7 @@ public class FetchHttpFiles {
 //            }
 //        }
 //    }
+
+    private FetchHttpFiles() {
+    }
 }

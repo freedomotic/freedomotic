@@ -19,17 +19,19 @@
  */
 package it.freedomotic.app;
 
+import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.reactions.ReactionPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
+import it.freedomotic.environment.EnvironmentPersistence;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.EventTemplate;
-import it.freedomotic.api.Plugin;
 import it.freedomotic.bus.AbstractBusConnector;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.bus.EventChannel;
-import it.freedomotic.core.BehaviorManagerForObjects;
+import it.freedomotic.core.BehaviorManager;
 import it.freedomotic.core.JoinDevice;
-import it.freedomotic.core.Profiler;
 import it.freedomotic.environment.EnvironmentLogic;
-import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
@@ -37,22 +39,19 @@ import java.io.File;
 import java.io.IOException;
 
 
-import java.util.List;
 
 
 import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.model.ds.ColorList;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.core.EnvObjectLogic;
 
-import it.freedomotic.persistence.*;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.service.ClassPathUpdater;
 import it.freedomotic.util.Info;
-import it.freedomotic.util.InternetBrowser;
 import it.freedomotic.util.LogFormatter;
 import it.freedomotic.serial.SerialConnectionProvider;
 import it.freedomotic.service.MarketPlaceService;
@@ -62,6 +61,8 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.FileHandler;
@@ -73,7 +74,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico Nicoletti
  */
-public final class Freedomotic {
+public class Freedomotic {
 
     public static Config config;
     public static EnvironmentLogic environment;
@@ -83,7 +84,6 @@ public final class Freedomotic {
     private static EventChannel eventChannel;
     private static CommandChannel commandChannel;
     public static ArrayList<PluginPackage> onlinePlugins;
-
 
     public Freedomotic() {
         /**
@@ -125,8 +125,8 @@ public final class Freedomotic {
                 handler.setFormatter(new LogFormatter());
                 logger.addHandler(handler);
                 logger.info("Freedomotic startup begins. (Press F5 to read the other messages)");
-                if ((Freedomotic.config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true) && 
-                        (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))){
+                if ((Freedomotic.config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
+                        && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
                     java.awt.Desktop.getDesktop().browse(new File(Info.getApplicationPath() + "/log/freedomotic.html").toURI());
                 }
             } catch (IOException ex) {
@@ -152,14 +152,21 @@ public final class Freedomotic {
          * *****************************************************************
          */
         clients = new ClientStorage();
-
+        
         /**
          * ******************************************************************
          * Shows the freedomotic website if stated in the config file
          * *****************************************************************
          */
         if (Freedomotic.config.getBooleanProperty("KEY_SHOW_WEBSITE_ON_STARTUP", false)) {
-            new InternetBrowser("http://freedomotic.com/");
+            try {
+                java.awt.Desktop.getDesktop().browse(new URI("www.freedomotic.com"));
+            } catch (URISyntaxException ex) {
+                Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
 
 
@@ -205,11 +212,9 @@ public final class Freedomotic {
         if (Freedomotic.config.getBooleanProperty("CACHE_MARKETPLACE_ON_STARTUP", false)) {
             try {
                 EventQueue.invokeLater(new Runnable() {
-
                     @Override
                     public void run() {
                         new Thread(new Runnable() {
-
                             @Override
                             public void run() {
 
@@ -247,7 +252,7 @@ public final class Freedomotic {
          * *****************************************************************
          */
         //it takes user level commands like 'turn on light 1' and map it to the right hardware level command eg: 'turn on an x10 device'
-        new BehaviorManagerForObjects();
+        new BehaviorManager();
 
         /**
          * ******************************************************************
@@ -281,11 +286,10 @@ public final class Freedomotic {
          * Updating zone object list
          * *****************************************************************
          */
-        Freedomotic.logger.config("---- Checking zones topology ----");
-        for (ZoneLogic z : environment.getZones()) {
-            z.checkTopology();
-        }
-
+//        Freedomotic.logger.config("---- Checking zones topology ----");
+//        for (ZoneLogic z : environment.getZones()) {
+//            z.checkTopology();
+//        }
         /**
          * ******************************************************************
          * Loads the entire Reactions system (Trigger + Commands + Reactions)
@@ -305,7 +309,7 @@ public final class Freedomotic {
          * Starting plugins
          * *****************************************************************
          */
-        for (Client plugin : clients.getClients()) {
+        for (Client plugin : ClientStorage.getClients()) {
             String startupTime = plugin.getConfiguration().getStringProperty("startup-time", "undefined");
             if (startupTime.equalsIgnoreCase("on load")) {
                 plugin.start();
@@ -313,7 +317,7 @@ public final class Freedomotic {
                 sendEvent(event);
             }
         }
-        
+
         /**
          * A service to add environment objects using XML commands
          */
@@ -333,7 +337,7 @@ public final class Freedomotic {
 
         while (itTrigger.hasNext()) {
             Trigger t = (Trigger) itTrigger.next();
-            buffTrigger.append("'").append(t.getName()).append("' listening on channel ").append(t.getChannel()).append("; ");
+            buffTrigger.append("'").append(t.getName()).append("' listening on channel ").append(t.getChannel()).append("\n ");
         }
         buffTrigger.append("} ");
         Freedomotic.logger.info(buffTrigger.toString());
@@ -358,13 +362,6 @@ public final class Freedomotic {
         }
         buffReaction.append("} ");
         Freedomotic.logger.info(buffReaction.toString());
-
-        /**
-         * ******************************************************************
-         * Init statistic logger
-         * *****************************************************************
-         */
-        new Profiler();
 
     }
 
@@ -483,15 +480,16 @@ public final class Freedomotic {
         Freedomotic.logger.info("Sending the exit signal (TODO: not yet implemented)");
         //...send the signal on a topic channel
         Freedomotic.logger.info("Force stopping the plugins that are not already stopped");
-        for (Client plugin : clients.getClients()) {
+        for (Client plugin : ClientStorage.getClients()) {
             plugin.stop();
         }
         Freedomotic.logger.info(Profiler.print());
+        AbstractBusConnector.disconnect();
         Profiler.saveToFile();
         Freedomotic.logger.info("DONE");
         System.exit(0);
     }
-    
+
     public static void kill() {
         Freedomotic.logger.info("Raw kill is called... terminate immediately.");
         System.exit(0);

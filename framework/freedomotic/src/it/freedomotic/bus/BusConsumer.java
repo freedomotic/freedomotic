@@ -20,7 +20,6 @@
 
 package it.freedomotic.bus;
 
-import javax.jms.Message;
 import javax.jms.ObjectMessage;
 
 /**

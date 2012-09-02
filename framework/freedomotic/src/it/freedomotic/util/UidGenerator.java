@@ -24,4 +24,7 @@ public class UidGenerator {
         return Integer.valueOf(lastId).toString();
     }
 
+    private UidGenerator() {
+    }
+
 }

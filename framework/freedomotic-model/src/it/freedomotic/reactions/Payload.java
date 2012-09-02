@@ -175,7 +175,7 @@ public final class Payload implements Serializable {
     }
 
 //    //ERROR: the attribut can have multiple instances in a trigger
-    public ArrayList<Statement> getStatements(String attribute) {
+    public List<Statement> getStatements(String attribute) {
         ArrayList<Statement> statements = new ArrayList<Statement>();
         for (Statement i : payload) {
             if (i.getAttribute().equalsIgnoreCase(attribute)) {

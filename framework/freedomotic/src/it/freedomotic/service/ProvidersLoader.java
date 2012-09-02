@@ -7,7 +7,7 @@ package it.freedomotic.service;
  */
 
 
-public class ProvidersLoader {
+public interface ProvidersLoader {
    
 //     @Override
 //    public void load(File path) {

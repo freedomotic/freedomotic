@@ -1,12 +1,7 @@
 package it.freedomotic.plugins;
 
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.persistence.CommandPersistence;
-import it.freedomotic.persistence.ReactionPersistence;
-import it.freedomotic.persistence.TriggerPersistence;
-import it.freedomotic.util.CopyFile;
-import it.freedomotic.util.Info;
+import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.util.JarFilter;
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class ObjectLoader implements AddonLoaderInterface {
 
-    Logger log = Freedomotic.logger;
+    static final Logger log = Freedomotic.logger;
 
     @Override
     public void load(AddonLoader manager, File path) {

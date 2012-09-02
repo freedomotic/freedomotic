@@ -2,8 +2,6 @@
 <config>
     <properties>
         <property name="description"                   value="Simulate temperature and luminosity sensors"/>
-        <property name="version"                       value="40"/>
-        <property name="required"                      value="40"/>
         <property name="category"                      value="simulator"/>
         <property name="short-name"                    value="sensor"/>
         <property name="startup-time"                  value="on load"/>

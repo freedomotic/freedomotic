@@ -1,8 +1,6 @@
 <config>
     <properties>
         <property name="description"                       value="Insert a description in config file"/>
-        <property name="version"                       value="40"/>
-        <property name="required"                       value="40"/>
         <property name="category"                       value="tracking"/>
         <property name="short-name"                       value="file"/>
         <property name="send-on"                       value="tracking.fromfile.out"/>

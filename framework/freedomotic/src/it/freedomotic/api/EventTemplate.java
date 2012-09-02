@@ -24,16 +24,15 @@ import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.util.UidGenerator;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
-import javax.jms.Destination;
 
 /**
  *
  * @author enrico
  */
-public abstract class EventTemplate implements Serializable {
+public class EventTemplate implements Serializable {
 
     protected String eventName;
     protected String sender;
@@ -45,18 +44,18 @@ public abstract class EventTemplate implements Serializable {
     private long creation;
     private int priority;
     //TODO: change destination to simple String
-    private Destination replyTo = null;
+    //private Destination replyTo = null;
 
-    protected abstract void generateEventPayload();
+    protected void generateEventPayload(){}
 
-    public abstract String getDefaultDestination();
+    public String getDefaultDestination(){return "app.event.sensor";}
 
     public EventTemplate() {
         fillPayloadWithDefaults();
     }
 
     public EventTemplate(Object source) {
-        sender = source.getClass().getSimpleName();
+        setSender(source);
         fillPayloadWithDefaults();
     }
 
@@ -68,29 +67,17 @@ public abstract class EventTemplate implements Serializable {
         return creation;
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
     public void addProperty(String key, String value) {
         payload.addStatement(key, value);
     }
 
     public String getProperty(String key) {
-        ArrayList<Statement> statements = payload.getStatements(key);
+        List<Statement> statements = payload.getStatements(key);
         if (statements.isEmpty()) {
             return "";
         } else {
             return statements.get(0).getValue();
         }
-    }
-
-    public int getUid() {
-        return uid;
     }
 
     private void setUid() {
@@ -106,7 +93,7 @@ public abstract class EventTemplate implements Serializable {
         creation = System.currentTimeMillis();
     }
 
-    public void fillPayloadWithDefaults() {
+    private final void fillPayloadWithDefaults() {
         init();
         try {
             Calendar rightNow = Calendar.getInstance();
@@ -125,7 +112,7 @@ public abstract class EventTemplate implements Serializable {
         }
     }
 
-    public String getSender() {
+    private String getSender() {
         try {
             if (sender != null) {
                 return sender;
@@ -137,7 +124,7 @@ public abstract class EventTemplate implements Serializable {
         }
     }
 
-    public void setSender(Object source) {
+    protected final void setSender(Object source) {
         if (source != null) {
             sender = source.getClass().getSimpleName();
         } else {
@@ -147,41 +134,5 @@ public abstract class EventTemplate implements Serializable {
 
     public Payload getPayload() {
         return payload;
-    }
-
-    public void setValid(boolean isValid) {
-        this.isValid = isValid;
-    }
-
-    public boolean isExecuted() {
-        return executed;
-    }
-
-    public void setExecuted(boolean value) {
-        executed = value;
-    }
-
-    public boolean isExecutable() {
-        return isExecutable;
-    }
-
-    public void setExecutable(boolean can) {
-        isExecutable = can;
-    }
-
-    public Destination getReplyTo() {
-        return replyTo;
-    }
-
-    public void setReplyTo(Destination to) {
-        replyTo = to;
-    }
-
-    public boolean isValid() {
-        return isValid;
-    }
-
-    protected void invalidate() {
-        isValid = false;
     }
 }

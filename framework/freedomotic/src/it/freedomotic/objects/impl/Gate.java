@@ -1,22 +1,18 @@
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
-import it.freedomotic.events.ObjectHasChangedBehavior;
-import it.freedomotic.objects.BooleanBehaviorListener;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.geometry.FreedomShape;
 import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.model.object.RangedIntBehavior;
 import it.freedomotic.model.object.Representation;
 import it.freedomotic.objects.BooleanBehaviorLogic;
-import it.freedomotic.objects.RangedIntBehaviorListener;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
-import it.freedomotic.persistence.CommandPersistence;
-import it.freedomotic.persistence.TriggerPersistence;
+import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.util.AWTConverter;
@@ -39,10 +35,9 @@ public class Gate extends EnvObjectLogic {
     public void init() {
         super.init();
         //linking this open property with the open behavior defined in the XML
-        open = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior("open"));
+        open = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehaviors().get(0));
 //        open.createCommands(this);
-        open.addListener(new BooleanBehaviorListener() {
-
+        open.addListener(new BooleanBehaviorLogic.Listener() {
             @Override
             public void onTrue(Config params, boolean fireCommand) {
                 //open = true
@@ -57,10 +52,9 @@ public class Gate extends EnvObjectLogic {
         });
 
         //linking this property with the behavior defined in the XML
-        openness = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior("openness"));
+        openness = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(1));
 //        openness.createCommands(this);
-        openness.addListener(new RangedIntBehaviorListener() {
-
+        openness.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //on value = 0
@@ -88,7 +82,7 @@ public class Gate extends EnvObjectLogic {
         evaluateGate();
     }
 
-    public void setClosed(Config params) {
+    protected void setClosed(Config params) {
         boolean executed = executeCommand("close", params); //executes the developer level command associated with 'set brightness' action
         if (executed) {
             open.setValue(false);
@@ -100,7 +94,7 @@ public class Gate extends EnvObjectLogic {
         }
     }
 
-    public void setOpen(Config params) {
+    protected void setOpen(Config params) {
         boolean executed = executeCommand("open", params); //executes the developer level command associated with 'set brightness' action
         if (executed) {
             open.setValue(true);
@@ -112,7 +106,7 @@ public class Gate extends EnvObjectLogic {
         }
     }
 
-    public void setOpeness(int rangeValue, Config params) {
+    protected void setOpeness(int rangeValue, Config params) {
         boolean executed = executeCommand("measured open", params); //executes the developer level command associated with 'set brightness' action
         if (executed) {
             //here we never had 0 or 100
@@ -156,16 +150,8 @@ public class Gate extends EnvObjectLogic {
         return from;
     }
 
-    public void setFrom(Room from) {
-        this.from = from;
-    }
-
     public Room getTo() {
         return to;
-    }
-
-    public void setTo(Room to) {
-        this.to = to;
     }
 
     public void evaluateGate() {

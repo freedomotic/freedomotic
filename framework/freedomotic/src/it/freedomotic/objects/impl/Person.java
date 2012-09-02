@@ -1,17 +1,17 @@
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.model.object.ListBehavior;
 import it.freedomotic.model.object.PropertiesBehavior;
-import it.freedomotic.objects.BooleanBehaviorListener;
 import it.freedomotic.objects.BooleanBehaviorLogic;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.ListBehaviorListener;
+import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.objects.ListBehaviorLogic;
-import it.freedomotic.objects.PropertiesBehaviorListener;
 import it.freedomotic.objects.PropertiesBehaviorLogic;
+import it.freedomotic.reactions.TriggerPersistence;
+import it.freedomotic.reactions.Trigger;
 
 /**
  *
@@ -25,9 +25,9 @@ public class Person extends EnvObjectLogic {
 
     @Override
     public void init() {
-        present = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior("present"));
+        present = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehaviors().get(0));
         //add a listener to values changes
-        present.addListener(new BooleanBehaviorListener() {
+        present.addListener(new BooleanBehaviorLogic.Listener() {
 
             @Override
             public void onTrue(Config params, boolean fireCommand) {
@@ -40,8 +40,8 @@ public class Person extends EnvObjectLogic {
             }
         });
 
-        activity = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior("activity"));
-        activity.addListener(new ListBehaviorListener() {
+        activity = new ListBehaviorLogic((ListBehavior) getPojo().getBehaviors().get(1));
+        activity.addListener(new ListBehaviorLogic.Listener() {
 
             @Override
             public void selectedChanged(Config params, boolean fireCommand) {
@@ -53,8 +53,8 @@ public class Person extends EnvObjectLogic {
             }
         });
 
-        properties = new PropertiesBehaviorLogic((PropertiesBehavior) getPojo().getBehavior("properties"));
-        properties.addListener(new PropertiesBehaviorListener() {
+        properties = new PropertiesBehaviorLogic((PropertiesBehavior) getPojo().getBehaviors().get(2));
+        properties.addListener(new PropertiesBehaviorLogic.Listener() {
 
             @Override
             public void propertyChanged(String key, String newValue, Config params, boolean fireCommand) {
@@ -87,11 +87,18 @@ public class Person extends EnvObjectLogic {
 
     @Override
     protected void createCommands() {
-        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected void createTriggers() {
-//        throw new UnsupportedOperationException("Not supported yet.");
+        
+        Trigger clicked = new Trigger();
+        clicked.setName("When " + this.getPojo().getName() + " is clicked");
+        clicked.setChannel("app.event.sensor.object.behavior.clicked");
+        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
+        clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
+        clicked.setPersistence(false);
+
+        TriggerPersistence.add(clicked);
     }
 }

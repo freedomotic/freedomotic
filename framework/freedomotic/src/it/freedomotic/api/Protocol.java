@@ -14,8 +14,8 @@ import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
 /**
- *
- * @author Enrico
+ * Uses a Template Method pattern which allows subclass to define how to perform
+ * a command or how to act when a specific event is received.
  */
 public abstract class Protocol extends Plugin implements BusConsumer {
 
@@ -55,7 +55,7 @@ public abstract class Protocol extends Plugin implements BusConsumer {
     private String getCommandsChannelToListen() {
         String defaultQueue = ACTUATORS_QUEUE_DOMAIN + category + "." + shortName;
         String customizedQueue = ACTUATORS_QUEUE_DOMAIN + listenOn;
-        if (listenOn.equalsIgnoreCase("undefined")) {
+        if (getReadQueue().equalsIgnoreCase("undefined")) {
             listenOn = defaultQueue + ".in";
             return listenOn;
         } else {
@@ -144,7 +144,7 @@ public abstract class Protocol extends Plugin implements BusConsumer {
         private Destination reply;
         private String correlationID;
 
-        public ActuatorPerforms(Command c, Destination reply, String correlationID) {
+        ActuatorPerforms(Command c, Destination reply, String correlationID) {
             this.command = c;
             this.reply = reply;
             this.correlationID = correlationID;
@@ -160,7 +160,7 @@ public abstract class Protocol extends Plugin implements BusConsumer {
             } catch (UnableToExecuteException ex) {
                 command.setExecuted(false);
             }
-            if ((configuration.getBooleanProperty("automatic-reply-to-commands", true) == true) //default value is true
+            if ((getConfiguration().getBooleanProperty("automatic-reply-to-commands", true) == true) //default value is true
                     && (command.getReplyTimeout() > 0)) {
                 commandsChannel.reply(command, reply, correlationID); //sends back the command marked as executed or not
             }
@@ -181,7 +181,8 @@ public abstract class Protocol extends Plugin implements BusConsumer {
                     try {
                         Thread.sleep(POLLING_WAIT_TIME);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(Protocol.class.getName()).log(Level.SEVERE, null, ex);
+                        // Restore the interrupted status
+                        Thread.currentThread().interrupt();
                     }
                 }
             } else {

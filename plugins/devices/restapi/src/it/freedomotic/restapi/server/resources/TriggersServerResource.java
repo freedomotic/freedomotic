@@ -6,9 +6,9 @@ package it.freedomotic.restapi.server.resources;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import it.freedomotic.persistence.CommandPersistence;
+import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.persistence.FreedomXStream;
-import it.freedomotic.persistence.TriggerPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.restapi.server.interfaces.TriggersResource;

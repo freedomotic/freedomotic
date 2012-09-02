@@ -18,7 +18,6 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.freedomotic.reactions;
 
-import it.freedomotic.persistence.TriggerPersistence;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,7 +26,7 @@ import java.util.Iterator;
  *
  * @author enrico
  */
-public class Reaction implements Serializable {
+public final class Reaction implements Serializable {
 
     private Trigger trigger=new Trigger();
     private String uuid;

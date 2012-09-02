@@ -4,17 +4,14 @@
  */
 package it.freedomotic.core;
 
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.CommandChannel;
-import it.freedomotic.exceptions.TriggerCheckException;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.persistence.EnvObjectPersistence;
-import it.freedomotic.reactions.Reaction;
-import it.freedomotic.persistence.ReactionPersistence;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.Reaction;
+import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Trigger;
-import it.freedomotic.util.UidGenerator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
@@ -38,14 +35,17 @@ public final class TriggerCheck {
     }
 
     /**
-     * Executes trigger comparision in a separated thread
+     * Executes trigger-event comparison in a separated thread
      *
      * @param event
      * @param trigger
      * @return
      * @throws TriggerCheckException
      */
-    public static boolean check(final EventTemplate event, final Trigger trigger) throws TriggerCheckException {
+    public static boolean check(final EventTemplate event, final Trigger trigger) {
+        if (event == null || trigger == null) {
+            throw new IllegalArgumentException("Event and Trigger cannot be null while performing trigger check");
+        }
 
         Callable check = new Callable() {
             @Override
@@ -54,36 +54,27 @@ public final class TriggerCheck {
                 StringBuilder buff = new StringBuilder();
                 try {
                     if (trigger.isHardwareLevel()) {
-                        if (!trigger.isConsistentWith(event)) {
-                            buff.append("[NOT CONSISTENT] hardware level trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
-                            Freedomotic.logger.fine(buff.toString());
-                            return false;
-                        } else {
+                        if (trigger.isConsistentWith(event)) {
                             buff.append("[CONSISTENT] hardware level trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
                             Freedomotic.logger.fine(buff.toString());
                             changeObjectProperties(trigger, event);
-                            return true;
                         }
                     } else {
-                        if (!trigger.canFire()) {
-                            return false;
+                        if (trigger.canFire() && trigger.isConsistentWith(event)) {
+                            buff.append("[CONSISTENT] registred trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
+                            executeRelatedReactions(trigger, event);
                         }
-                        if (!trigger.isConsistentWith(event)) {
-                            buff.append("[NOT CONSISTENT] registred trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
-                            Freedomotic.logger.fine(buff.toString());
-                            return false;
-                        }
-                        buff.append("[CONSISTENT] registred trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
-                        executeRelatedReactions(trigger, event);
-                        return true;
                     }
+                    //if we are here the trigger is not consistent
+                    buff.append("[NOT CONSISTENT] registred trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
+                    Freedomotic.logger.fine(buff.toString());
+                    return false;
                 } catch (Exception e) {
                     Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
                     return false;
                 } finally {
                     Freedomotic.logger.config(buff.toString());
                 }
-
             }
         };
         Future<Boolean> result = executor.submit(check);
@@ -139,7 +130,7 @@ public final class TriggerCheck {
         }
     }
 
-    public static void executeRelatedReactions(final Trigger trigger, final EventTemplate event) {
+    private static void executeRelatedReactions(final Trigger trigger, final EventTemplate event) {
         Iterator it = ReactionPersistence.iterator();
         //Searching for reactions using this trigger
         boolean found = false;
@@ -171,9 +162,9 @@ public final class TriggerCheck {
                             resolver.addContext("current.", targetObject.getExposedProperties());
                         }
                         Command resolvedCommand = resolver.resolve(command);
-                        if (command.getReceiver().equalsIgnoreCase(BehaviorManagerForObjects.getMessagingChannel())) {
+                        if (command.getReceiver().equalsIgnoreCase(BehaviorManager.getMessagingChannel())) {
                             //doing so we bypass messaging system gaining better performances
-                            BehaviorManagerForObjects.parseCommand(resolvedCommand);
+                            BehaviorManager.parseCommand(resolvedCommand);
                         } else {
                             //it's not a user level command for objects (eg: turn it on), it is for another kind of actuator
                             Command reply = Freedomotic.sendCommand(resolvedCommand); //blocking wait (in this case in a thread) until executed

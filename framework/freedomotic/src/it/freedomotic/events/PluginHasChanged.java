@@ -10,7 +10,7 @@ import it.freedomotic.api.EventTemplate;
  *
  * @author Enrico
  */
-public final class PluginHasChanged extends EventTemplate {
+public class PluginHasChanged extends EventTemplate {
 
     public enum PluginActions {
 

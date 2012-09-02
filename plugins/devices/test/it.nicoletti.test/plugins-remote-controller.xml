@@ -1,8 +1,6 @@
 <config>
     <properties>
         <property name="description"                       value="Makes plugins start, stop, show or hide GUI from remote"/>
-        <property name="version"                       value="40"/>
-        <property name="required"                       value="40"/>
         <property name="category"                       value="plugins"/>
         <property name="short-name"                       value="controller"/>
     </properties>

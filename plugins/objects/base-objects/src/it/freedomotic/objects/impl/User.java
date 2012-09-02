@@ -8,6 +8,15 @@ package it.freedomotic.objects.impl;
  *
  * @author enrico
  */
-public class User extends Person{
-    
+public class User extends Person {
+
+    @Override
+    protected void createCommands() {
+        super.createCommands();
+    }
+
+    @Override
+    protected void createTriggers() {
+        super.createTriggers();
+    }
 }

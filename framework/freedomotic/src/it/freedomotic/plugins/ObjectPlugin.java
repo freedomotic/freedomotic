@@ -6,8 +6,8 @@ package it.freedomotic.plugins;
 
 import it.freedomotic.api.Client;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.persistence.EnvObjectPersistence;
+import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectPersistence;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;

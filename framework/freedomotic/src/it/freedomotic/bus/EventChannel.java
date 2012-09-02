@@ -21,10 +21,12 @@ package it.freedomotic.bus;
 
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.core.Profiler;
+import it.freedomotic.app.Profiler;
 import it.freedomotic.util.UidGenerator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -34,6 +36,7 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
 
     private BusConsumer handler;
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+    private javax.jms.Queue subscriberVirtualTopic=null;
 
     /*produce on a queue and listen on another queue*/
     public EventChannel() {
@@ -43,7 +46,7 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
     public void consumeFrom(String topicName) {
         if (handler != null) {
             try {
-                javax.jms.Queue subscriberVirtualTopic = getBusSharedSession().createQueue("Consumer." + UidGenerator.getNextStringUid() + ".VirtualTopic." + topicName);
+                subscriberVirtualTopic = getBusSharedSession().createQueue("Consumer." + UidGenerator.getNextStringUid() + ".VirtualTopic." + topicName);
                 javax.jms.MessageConsumer subscriber = getBusSharedSession().createConsumer(subscriberVirtualTopic);
                 subscriber.setMessageListener(this);
                 Freedomotic.logger.info(getHandler().getClass().getSimpleName() + " listen on " + subscriberVirtualTopic.toString());
@@ -86,7 +89,7 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
      * @param aMessage
      */
     @Override
-    public void onMessage(Message aMessage) {
+    public final void onMessage(Message aMessage) {
         Profiler.incrementReceivedEvents();
         if (getHandler() != null) {
             if (aMessage instanceof ObjectMessage) {
@@ -101,5 +104,13 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
 
     public void setHandler(BusConsumer handler) {
         this.handler = handler;
+    }
+    
+    public void unsubscribe(){
+        try {
+            getBusSharedSession().unsubscribe(subscriberVirtualTopic.toString());
+        } catch (JMSException ex) {
+            Freedomotic.logger.severe("Unable to unsubscribe from event channel " + subscriberVirtualTopic.toString());
+        }
     }
 }

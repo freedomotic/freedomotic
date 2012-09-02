@@ -1,6 +1,5 @@
 package it.freedomotic.objects;
 
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.BooleanBehavior;
 
@@ -10,15 +9,22 @@ import it.freedomotic.model.object.BooleanBehavior;
  */
 public class BooleanBehaviorLogic implements BehaviorLogic {
 
-    private BooleanBehavior data;
-    protected BooleanBehaviorListener listener;
+    private final BooleanBehavior data;
+    private Listener listener;
+
+    public interface Listener {
+
+        public void onTrue(Config params, boolean fireCommand);
+
+        public void onFalse(Config params, boolean fireCommand);
+    }
 
     public BooleanBehaviorLogic(BooleanBehavior pojo) {
         this.data = pojo;
     }
 
     @Override
-    public synchronized final void filterParams(Config params, boolean fireCommand) {
+    public synchronized final void filterParams(final Config params, boolean fireCommand) {
         //filter accepted values
         String parsed = params.getProperty("value").trim();
         if (parsed.equalsIgnoreCase("false") || parsed.equals("0")) {
@@ -55,7 +61,7 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
         }
     }
 
-    public void addListener(BooleanBehaviorListener booleanBehaviorListener) {
+    public void addListener(Listener booleanBehaviorListener) {
         listener = booleanBehaviorListener;
     }
 

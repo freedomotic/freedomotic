@@ -8,7 +8,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.ResourcesManager;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
-import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.util.AWTConverter;
 import java.awt.Color;
 import java.awt.Polygon;

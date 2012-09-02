@@ -1,8 +1,6 @@
 <config>
     <properties>
         <property name="description"                       value="Simulates Fontana Mote Traking system. Positions randomly generated"/>
-        <property name="version"                       value="1.0.0"/>
-        <property name="required"                       value="4.0.0"/>
         <property name="category"                       value="tracking"/>
         <property name="short-name"                       value="random"/>
         <property name="send-on"                       value="tracking.random.out"/>

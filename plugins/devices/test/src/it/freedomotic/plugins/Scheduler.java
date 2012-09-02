@@ -8,7 +8,6 @@ import it.freedomotic.api.Sensor;
 import it.freedomotic.events.ScheduledEvent;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.plugins.gui.ClockForm;
-import it.freedomotic.plugins.gui.ReactionList;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;

@@ -124,12 +124,15 @@ public class Info {
     
     @Deprecated
     private static String splitPathString(String str) {
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
         StringTokenizer token = new StringTokenizer(str, System.getProperty("path.separator"));
         while (token.hasMoreElements()) {
             buff.append("\n    ").append(token.nextToken());
         }
         return buff.toString();
         
+    }
+
+    private Info() {
     }
 }

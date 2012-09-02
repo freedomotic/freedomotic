@@ -1,8 +1,6 @@
 <config>
     <properties>
         <property name="description"                       value="Simulates Fontana Mote Traking system. Positions from socket"/>
-        <property name="version"                       value="40"/>
-        <property name="required"                       value="40"/>
         <property name="category"                       value="tracking"/>
         <property name="short-name"                       value="socket"/>
         <property name="send-on"                       value="tracking.fromsocket.out"/>

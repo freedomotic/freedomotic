@@ -37,8 +37,8 @@ public final class PluginJList extends JList {
             public void mouseClicked(MouseEvent e) {
                 Point p = e.getPoint();
                 int i = locationToIndex(p);
-                ArrayList<Client> c = Freedomotic.clients.getClients(getFilter());
-                Client client = (Client) c.get(i);
+                java.util.List<Client> clients = Freedomotic.clients.getClients(getFilter());
+                Client client = (Client) clients.get(i);
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     if (e.getClickCount() == 2) {
                         if (client.isRunning()) {
@@ -72,8 +72,8 @@ public final class PluginJList extends JList {
             private void doPop(MouseEvent e) {
                 Point p = e.getPoint();
                 int i = locationToIndex(p);
-                ArrayList<Client> c = Freedomotic.clients.getClients(getFilter());
-                final Client client = (Client) c.get(i);
+                java.util.List<Client> clients = Freedomotic.clients.getClients(getFilter());
+                final Client client = (Client) clients.get(i);
                 JPopupMenu menu = new JPopupMenu();
                 JMenuItem mnuConfigure = null;
                 if (client.getType().equalsIgnoreCase("plugin")) {
