@@ -85,7 +85,7 @@ public class ClientStorage {
         }
         return clients.contains(input);
     }
-
+    
     protected Plugin createPlaceholder(final String simpleName, final String type, final String description) {
         final Plugin placeholder = new Plugin(simpleName, null) {
             @Override
@@ -133,8 +133,8 @@ public class ClientStorage {
         return placeholder;
     }
 
-    protected void createObjectPlaceholder(final Class objClazz, final File folder) {
-        ObjectPlugin placeholder = new ObjectPlugin(objClazz, folder);
+    protected void createObjectTemplate(final File template) {
+        ObjectPlugin placeholder = new ObjectPlugin(template);
         enqueue(placeholder);
     }
 }

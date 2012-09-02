@@ -546,19 +546,19 @@ public class ObjectEditor extends javax.swing.JFrame {
 }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnCreateObjectCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateObjectCopyActionPerformed
-        EnvObject pojoCopy = null;
-
-        pojoCopy = SerialClone.clone(object.getPojo());
-
-        pojoCopy.setName(object.getPojo().getName() + UidGenerator.getNextStringUid());
-        pojoCopy.setProtocol(object.getPojo().getProtocol());
-        pojoCopy.setPhisicalAddress("unknown");
-        for (Representation view : pojoCopy.getRepresentations()) {
-            view.setOffset(0, 0);
-        }
-        EnvObjectLogic envObjectLogic = EnvObjectFactory.create(pojoCopy);
-        envObjectLogic.getPojo().setUUID("");
-        EnvObjectPersistence.add(envObjectLogic);
+//        EnvObject pojoCopy = null;
+//
+//        pojoCopy = SerialClone.clone(object.getPojo());
+//
+//        pojoCopy.setName(object.getPojo().getName() + UidGenerator.getNextStringUid());
+//        pojoCopy.setProtocol(object.getPojo().getProtocol());
+//        pojoCopy.setPhisicalAddress("unknown");
+//        for (Representation view : pojoCopy.getRepresentations()) {
+//            view.setOffset(0, 0);
+//        }
+//        EnvObjectLogic envObjectLogic = EnvObjectFactory.create(pojoCopy);
+//        envObjectLogic.getPojo().setUUID("");
+        EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
         object.setChanged(true);
         this.dispose();
 }//GEN-LAST:event_btnCreateObjectCopyActionPerformed

@@ -4,6 +4,7 @@
  */
 package it.freedomotic.objects.impl;
 
+import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Trigger;
@@ -12,7 +13,7 @@ import it.freedomotic.reactions.Trigger;
  *
  * @author enrico
  */
-public class Clock extends Decoration {
+public class Clock extends EnvObjectLogic {
 
     @Override
     public void init() {

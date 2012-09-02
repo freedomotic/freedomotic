@@ -4,6 +4,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.util.JarFilter;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -53,12 +54,6 @@ public class ObjectLoader implements AddonLoaderInterface {
                                 clazz.asSubclass(EnvObjectLogic.class);
                                 if (superclass.getName().startsWith("it.freedomotic.objects.")) {
                                     clazz.newInstance();
-                                    //for every envobject class a placeholder is created
-                                    File sample = new File(pluginFolder.getAbsolutePath() + "/data/examples/" + clazz.getSimpleName().toLowerCase());
-                                    if (sample.exists()) {
-                                        Freedomotic.clients.createObjectPlaceholder(clazz, pluginFolder);
-                                    }
-                                    log.info("Object " + clazz.getCanonicalName() + " loaded");
                                 }
                             } catch (NoClassDefFoundError err) {
                                 log.warning(clazz.getName() + " is not in Freedomotic objects hierarchy. Skipped.");
@@ -75,8 +70,24 @@ public class ObjectLoader implements AddonLoaderInterface {
                     }
                 }
             }
+            File templatesFolder = new File(pluginFolder.getAbsolutePath() + "/data/templates/");
+            loadTemplates(templatesFolder);
         } else {
             log.warning("No object can be found in folder " + pluginFolder.getAbsolutePath());
+        }
+    }
+
+    private void loadTemplates(File templatesFolder) {
+        //for every envobject class a placeholder is created
+        File[] templates = templatesFolder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return (name.endsWith(".xobj"));
+            }
+        });
+        for (File sample : templates) {
+            Freedomotic.clients.createObjectTemplate(sample);
+            log.info("Template object '" + sample.getName() + "' loaded");
         }
     }
 }

@@ -5,9 +5,11 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.core.EnvObjectFactory;
 import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.model.object.Representation;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.util.DOMValidateDTD;
 import it.freedomotic.util.Info;
+import it.freedomotic.util.SerialClone;
 import it.freedomotic.util.UidGenerator;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -96,6 +98,12 @@ public class EnvObjectPersistence {
         }
     }
 
+    /**
+     * Loads all objects file filesystem folder and adds the objects to the list
+     *
+     * @param folder
+     * @param makeUnique
+     */
     public synchronized static void loadObjects(File folder, boolean makeUnique) {
         objectList.clear();
         Freedomotic.logger.info("-- Initialization of Objects --");
@@ -116,7 +124,8 @@ public class EnvObjectPersistence {
         files = folder.listFiles(objectFileFileter);
         try {
             for (File file : files) {
-                EnvObjectLogic loaded = loadObject(file, makeUnique);
+                EnvObjectLogic loaded = loadObject(file);
+                add(loaded, makeUnique);
             }
             Freedomotic.logger.info("Loaded " + objectList.size() + " of " + files.length + " environment objects.");
         } catch (Exception e) {
@@ -124,20 +133,20 @@ public class EnvObjectPersistence {
         }
     }
 
-    public static EnvObjectLogic loadObject(File file, boolean makeUnique) throws IOException {
+    /**
+     * Loads the object file from file but NOT add the object to the list
+     *
+     * @param folder
+     */
+    public static EnvObjectLogic loadObject(File file) throws IOException {
         XStream xstream = FreedomXStream.getXstream();
         Freedomotic.logger.info("---- Loading object file named " + file.getName() + " from folder '" + file.getAbsolutePath() + "' ----");
         //validate the object against a predefined DTD
         String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/object.dtd");
         EnvObject pojo = (EnvObject) xstream.fromXML(xml);
         EnvObjectLogic objectLogic = EnvObjectFactory.create(pojo);
-        if (makeUnique) {
-            objectLogic.getPojo().setName(objectLogic.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
-            objectLogic.getPojo().setProtocol("unknown");
-            objectLogic.getPojo().setPhisicalAddress("unknown");
-        }
         Freedomotic.logger.info("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
-        add(objectLogic);
+        //add(objectLogic);
         return objectLogic;
     }
 
@@ -213,18 +222,29 @@ public class EnvObjectPersistence {
         return objectList.size();
     }
 
-    public static void add(EnvObjectLogic obj) {
+    public static void add(final EnvObjectLogic obj, final boolean MAKE_UNIQUE) {
         if (obj == null
                 || obj.getPojo() == null
                 || obj.getPojo().getName() == null
                 || obj.getPojo().getName().isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("This is not a valid object");
         }
-        if (!objectList.containsValue(obj)) {
-            objectList.put(obj.getPojo().getName(), obj);
-            obj.setChanged(true);
+        EnvObjectLogic envObjectLogic = obj;
+        if (MAKE_UNIQUE) {
+            //defensive copy to not affect the passed object with the changes
+            EnvObject  pojoCopy = SerialClone.clone(obj.getPojo());
+            pojoCopy.setName(obj.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
+            pojoCopy.setProtocol("unknown");
+            pojoCopy.setPhisicalAddress("unknown");
+            envObjectLogic = EnvObjectFactory.create(pojoCopy);
+            envObjectLogic.getPojo().setUUID("");
+        }
+        envObjectLogic.init();
+        if (!objectList.containsValue(envObjectLogic)) {
+            objectList.put(envObjectLogic.getPojo().getName(), envObjectLogic);
+            envObjectLogic.setChanged(true);
         } else {
-            throw new RuntimeException("Cannot add the same object two times");
+            throw new RuntimeException("Cannot add the same object more than one time");
         }
     }
 

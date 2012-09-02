@@ -153,6 +153,12 @@ public class Gate extends EnvObjectLogic {
     public Room getTo() {
         return to;
     }
+    
+    @Override
+    public void setLocation(int x, int y) {
+        super.setLocation(x, y);
+        evaluateGate();
+    }
 
     public void evaluateGate() {
         //checks the intersection with the first view in the list

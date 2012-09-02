@@ -248,7 +248,7 @@ public class EnvObjectLogic {
         setLocation(randomX, randomY);
     }
 
-    public final void setLocation(int x, int y) {
+    public void setLocation(int x, int y) {
         for (Representation rep : getPojo().getRepresentations()) {
             rep.setOffset(x, y);
         }

@@ -32,7 +32,7 @@ public final class EnvObjectFactory {
             EnvObjectLogic logic = (EnvObjectLogic) clazz.newInstance();
             logic.setPojo(pojo);
 //            try {
-                logic.init();
+                //logic.init();
 //            } catch (EnvObjectMappingException envObjectMappingException) {
 //                if (!pojo.getActAs().contains("virtual")) {
 //                    logic.setMessage("To bound this object to a real device \n"

@@ -19,16 +19,20 @@ import java.util.logging.Logger;
  */
 public class ObjectPlugin implements Client {
 
-    private Class clazz;
-    public File example;
+    private File example;
+    private EnvObjectLogic object;
 
-    public ObjectPlugin(Class clazz, File folder) {
-        this.clazz = clazz;
-        String tmp = clazz.getSimpleName().toLowerCase();
-        this.example = new File(folder + "/data/examples/" + tmp + "/" + tmp + ".xobj");
+    public ObjectPlugin(File example) {
+        this.example = example;
+        try {
+            object = EnvObjectPersistence.loadObject(example);
+        } catch (IOException ex) {
+            Logger.getLogger(ObjectPlugin.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    public void setManifest(File manifest) {
+    public EnvObjectLogic getObject() {
+        return object;
     }
 
     @Override
@@ -38,7 +42,7 @@ public class ObjectPlugin implements Client {
 
     @Override
     public String getDescription() {
-        return "This object is a " + clazz.getSimpleName();
+        return object.getPojo().getDescription();
     }
 
     @Override
@@ -48,7 +52,7 @@ public class ObjectPlugin implements Client {
 
     @Override
     public String getName() {
-        return clazz.getSimpleName();
+        return object.getPojo().getName();
     }
 
     @Override
@@ -58,28 +62,24 @@ public class ObjectPlugin implements Client {
 
     @Override
     public void start() {
-        try {
-            EnvObjectPersistence.loadObject(example, true);
-        } catch (IOException ex) {
-            Logger.getLogger(ObjectPlugin.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
     }
 
     @Override
     public void stop() {
-
     }
 
     @Override
     public boolean isRunning() {
         //is running if there is already an object of this kind in the map
-        boolean found = false;
-        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectList()) {
-            if (obj.getClass().getCanonicalName().equals(clazz.getCanonicalName())) {
-                found = true;
-            }
-        }
-        return found;
+//        boolean found = false;
+//        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectList()) {
+//            if (obj.getClass().getCanonicalName().equals(clazz.getCanonicalName())) {
+//                found = true;
+//            }
+//        }
+//        return found;
+        return true;
     }
 
     public File getExample() {
