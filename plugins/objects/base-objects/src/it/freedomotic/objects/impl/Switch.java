@@ -8,6 +8,15 @@ package it.freedomotic.objects.impl;
  *
  * @author Enrico
  */
-public class Switch extends ElectricDevice{
-    
+public class Switch extends ElectricDevice {
+
+    @Override
+    protected void createCommands() {
+        super.createCommands();
+    }
+
+    @Override
+    protected void createTriggers() {
+        super.createTriggers();
+    }
 }

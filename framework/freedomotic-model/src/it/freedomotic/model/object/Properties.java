@@ -43,7 +43,6 @@ public class Properties implements Serializable {
     {
         return propertyList.entrySet();    
     }
-    
     public int size()
     {
         return propertyList.size();            

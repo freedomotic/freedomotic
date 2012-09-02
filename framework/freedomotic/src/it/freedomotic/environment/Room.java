@@ -5,9 +5,11 @@
 package it.freedomotic.environment;
 
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.model.environment.Zone;
 import it.freedomotic.objects.impl.Gate;
 import it.freedomotic.util.Edge;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -16,13 +18,17 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class Room extends ZoneLogic {
 
-    private ArrayList<Gate> gates;
-    public ArrayList<Room> reachable;
+    private List<Gate> gates;
+    private List<Room> reachable;
+    
+    public Room(Zone pojo){
+        super(pojo);
+    }
 
     public void addGate(Gate gate) {
         try {
             gates.add(gate);
-            Freedomotic.environment.getGraph().add(gate.getFrom(), gate.getTo(), gate);
+            EnvironmentLogic.getGraph().add(gate.getFrom(), gate.getTo(), gate);
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
@@ -58,8 +64,8 @@ public class Room extends ZoneLogic {
             Room node = queue.poll();
             //Freedomotic.logger.info("Evaluating node " + node.getPojo().getName());
 
-            if (Freedomotic.environment.getGraph().getEdgeSet(node) != null) { //if this room (the node) has adiacent rooms
-                for (Object object : Freedomotic.environment.getGraph().getEdgeSet(node)) {
+            if (EnvironmentLogic.getGraph().getEdgeSet(node) != null) { //if this room (the node) has adiacent rooms
+                for (Object object : EnvironmentLogic.getGraph().getEdgeSet(node)) {
                     Edge adiacent = (Edge) object;
                     //Freedomotic.logger.info("  " + node.getPojo().getName() + " is linked with arch " + adiacent.toString());
                     if (!visited.contains(adiacent)) {

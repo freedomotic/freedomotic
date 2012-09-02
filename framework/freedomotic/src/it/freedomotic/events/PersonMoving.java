@@ -28,7 +28,7 @@ import java.awt.Point;
  *
  * @author Enrico
  */
-public final class PersonMoving extends EventTemplate {
+public class PersonMoving extends EventTemplate {
 
     String id;
     int x;

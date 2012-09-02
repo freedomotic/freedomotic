@@ -4,16 +4,16 @@
  */
 package it.freedomotic.core;
 
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.api.Client;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.Representation;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.persistence.CommandPersistence;
-import it.freedomotic.persistence.EnvObjectPersistence;
-import it.freedomotic.persistence.TriggerPersistence;
+import it.freedomotic.plugins.ClientStorage;
+import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.plugins.ObjectPlugin;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.util.UidGenerator;
@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.JMSException;
@@ -30,7 +31,7 @@ import javax.jms.ObjectMessage;
  *
  * @author enrico
  */
-public class JoinDevice implements BusConsumer {
+public final class JoinDevice implements BusConsumer {
 
     private static CommandChannel channel;
 
@@ -53,14 +54,14 @@ public class JoinDevice implements BusConsumer {
 
     protected static void join(String clazz, String name, String protocol, String address) {
         try {
-            ObjectPlugin client = (ObjectPlugin) Freedomotic.clients.get(clazz);
+            ObjectPlugin client = (ObjectPlugin) ClientStorage.get(clazz);
             if (client == null) {
                 Freedomotic.logger.warning("Doesen't exist an object class called " + clazz);
                 return;
             }
             System.out.println(client.getName());
             File exampleObject = client.getExample();
-            EnvObjectLogic loaded = EnvObjectPersistence.loadObject(exampleObject, true);
+            EnvObjectLogic loaded = EnvObjectPersistence.loadObject(exampleObject, EnvObjectPersistence.MAKE_UNIQUE);
             System.out.println(loaded.getPojo().getName());
             //changing the name and other properties invalidates related trigger and commands
             //call init() again after this changes
@@ -77,7 +78,7 @@ public class JoinDevice implements BusConsumer {
             Client addon = Freedomotic.clients.getClientByProtocol(protocol);
             if (addon != null) {
                 for (int i = 0; i < addon.getConfiguration().getTuples().size(); i++) {
-                    HashMap tuple = addon.getConfiguration().getTuples().getTuple(i);
+                    Map tuple = addon.getConfiguration().getTuples().getTuple(i);
                     String regex = (String) tuple.get("object.class");
                     if (clazz.matches(regex)) {
                         //map object behaviors to hardware triggers

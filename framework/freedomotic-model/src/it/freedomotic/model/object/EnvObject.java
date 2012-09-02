@@ -1,9 +1,11 @@
 package it.freedomotic.model.object;
 
+
 import it.freedomotic.model.geometry.FreedomShape;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -19,22 +21,12 @@ public class EnvObject implements Serializable {
     private String hierarchy;
     private String protocol;
     private String phisicalAddress;
-    private ArrayList<Behavior> behaviors;
-    private ArrayList<Representation> representation = new ArrayList<Representation>();
+    private List<Behavior> behaviors;
+    private List<Representation> representation = new ArrayList<Representation>();
     private Properties actions;
     private Properties triggers;
     private int currentRepresentation;
 
-//    public Properties getActions() {
-//        return actions;
-//    }
-//
-//    public Properties getTriggers() {
-//        if (triggers == null) {
-//            triggers = new Properties();
-//        }
-//        return triggers;
-//    }
     public Properties getActions() {
         return actions;
     }
@@ -84,7 +76,7 @@ public class EnvObject implements Serializable {
         return currentRepresentation;
     }
 
-    public ArrayList<Representation> getRepresentations() {
+    public List<Representation> getRepresentations() {
         return representation;
     }
 
@@ -109,7 +101,7 @@ public class EnvObject implements Serializable {
         return activeBehaviors;
     }
 
-    public ArrayList<Behavior> getBehaviors() {
+    public List<Behavior> getBehaviors() {
         return behaviors;
     }
 

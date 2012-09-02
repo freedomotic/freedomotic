@@ -5,7 +5,7 @@
 package it.freedomotic.core;
 
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.persistence.CommandPersistence;
+import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.util.DamerauLevenshtein;
 import java.util.*;
@@ -50,7 +50,7 @@ public class NaturalLanguageProcessor {
         buildRanking(inputTags);
         Collections.sort(ranking, new DescendingRankComparator());
         if (ranking.size() == 0) {
-            return ranking;
+            return Collections.unmodifiableList(ranking);
         } else {
             return ranking.subList(0, Math.min(resultSize - 1, ranking.size()));
         }

@@ -90,4 +90,7 @@ public class SerialClone {
     	    return output.classQueue.poll();
     	}
     }
+
+    private SerialClone() {
+    }
 }

@@ -8,11 +8,10 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.BooleanBehavior;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.BooleanBehaviorListener;
+import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.objects.BooleanBehaviorLogic;
-import it.freedomotic.persistence.CommandPersistence;
-import it.freedomotic.persistence.TriggerPersistence;
+import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Trigger;
 
@@ -29,10 +28,9 @@ public class ElectricDevice extends EnvObjectLogic {
 
     @Override
     public void init() {
-        powered = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior(BEHAVIOR_POWERED));
+        powered = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehaviors().get(0));
         //add a listener to values changes
-        powered.addListener(new BooleanBehaviorListener() {
-
+        powered.addListener(new BooleanBehaviorLogic.Listener() {
             @Override
             public void onTrue(Config params, boolean fireCommand) {
                 if (fireCommand) {

@@ -2,13 +2,12 @@ package it.freedomotic.plugins;
 
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.persistence.CommandPersistence;
-import it.freedomotic.persistence.ReactionPersistence;
-import it.freedomotic.persistence.TriggerPersistence;
 import it.freedomotic.util.JarFilter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class DevicesLoader implements AddonLoaderInterface {
 
-    private Logger log = Freedomotic.logger;
+    private static final Logger log = Freedomotic.logger;
     private boolean dataFolderAlreadyLoaded = false;
 
     @Override
@@ -65,11 +64,11 @@ public class DevicesLoader implements AddonLoaderInterface {
                                 try {
                                     if (Plugin.isCompatible(path)) {
                                         plugin = (Plugin) clazz.newInstance();
-                                        Plugin.mergePackageConfiguration(plugin, path);
+                                        mergePackageConfiguration(plugin, path);
                                     } else {
                                         Freedomotic.logger.severe("Plugin in " + path.getAbsolutePath()
                                                 + " is not compatible with this framework version.");
-                                        plugin = Freedomotic.clients.createPlaceholder(clazz.getSimpleName(), "Plugin", 
+                                        plugin = Freedomotic.clients.createPlaceholder(clazz.getSimpleName(), "Plugin",
                                                 "Not compatible with this framework version");
                                     }
                                 } catch (NoClassDefFoundError noClassDefFoundError) {
@@ -78,7 +77,7 @@ public class DevicesLoader implements AddonLoaderInterface {
                                 } catch (Exception e) {
                                     Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
                                 }
-                                if (!ClientStorage.alreadyLoaded(plugin)) {
+                                if (!ClientStorage.isLoaded(plugin)) {
                                     log.info(plugin.getName() + " added to plugins list.");
                                     Freedomotic.logger.info("\n");
                                     Freedomotic.clients.enqueue(plugin);
@@ -102,6 +101,28 @@ public class DevicesLoader implements AddonLoaderInterface {
                     }
                 }
             }
+        }
+    }
+
+    public static void mergePackageConfiguration(Plugin plugin, File pluginFolder) {
+        //seach for a file called PACKAGE
+        Properties pack = new Properties();
+        try {
+            pack.load(new FileInputStream(new File(pluginFolder + "/PACKAGE")));
+            //merges data found in file PACKGE to the the configuration of every single plugin in this package
+            plugin.getConfiguration().setProperty("package.name", pack.getProperty("package.name"));
+            plugin.getConfiguration().setProperty("package.nodeid", pack.getProperty("package.nodeid"));
+            plugin.getConfiguration().setProperty("package.version",
+                    pack.getProperty("build.major") + "."
+                    + pack.getProperty("build.number"));
+            plugin.getConfiguration().setProperty("framework.required.version",
+                    pack.getProperty("framework.required.major") + "."
+                    + pack.getProperty("framework.required.minor") + "."
+                    + pack.getProperty("framework.required.build"));
+            //TODO: add also the other properties
+
+        } catch (IOException ex) {
+            Freedomotic.logger.severe("Folder " + pluginFolder + " doesen't contains a PACKAGE file. This plugin is not loaded.");
         }
     }
 }

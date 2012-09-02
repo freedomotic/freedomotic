@@ -1,9 +1,9 @@
 package it.freedomotic.plugins;
 
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.persistence.CommandPersistence;
-import it.freedomotic.persistence.ReactionPersistence;
-import it.freedomotic.persistence.TriggerPersistence;
+import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.reactions.ReactionPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.util.JarFilter;
 import java.io.File;
 import java.io.IOException;

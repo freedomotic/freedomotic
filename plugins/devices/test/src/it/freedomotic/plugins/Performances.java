@@ -7,7 +7,7 @@ package it.freedomotic.plugins;
 import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
-import it.freedomotic.core.Profiler;
+import it.freedomotic.app.Profiler;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.plugins.gui.ClockForm;
 import it.freedomotic.reactions.Command;

@@ -21,9 +21,9 @@ package it.freedomotic.plugins;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.persistence.CommandPersistence;
-import it.freedomotic.persistence.ReactionPersistence;
-import it.freedomotic.persistence.TriggerPersistence;
+import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.reactions.ReactionPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.util.FetchHttpFiles;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.Unzip;
@@ -191,31 +191,45 @@ public class AddonLoader {
         return true; //done
     }
 
-    private void recursiveCopy(File source, File target) throws IOException {
+    private void recursiveCopy(File source, File target) {
+        InputStream input = null;
+        OutputStream output = null;
+        try {
+            if (source.isDirectory()) {
+                if (!target.exists()) {
+                    target.mkdir();
+                }
 
-        if (source.isDirectory()) {
-            if (!target.exists()) {
-                target.mkdir();
+                String[] children = source.list();
+                for (int i = 0; i < children.length; i++) {
+                    recursiveCopy(new File(source, children[i]),
+                            new File(target, children[i]));
+                }
+            } else {
+                input = new FileInputStream(source);
+                output = new FileOutputStream(target);
+                // Copy the bits from instream to outstream
+                byte[] buf = new byte[1024];
+                int len;
+
+                while ((len = input.read(buf)) > 0) {
+                    output.write(buf, 0, len);
+                }
             }
-
-            String[] children = source.list();
-            for (int i = 0; i < children.length; i++) {
-                recursiveCopy(new File(source, children[i]),
-                        new File(target, children[i]));
+        } catch (FileNotFoundException foundEx){
+            Freedomotic.logger.warning("No file to copy in " + source);
+        } catch (IOException ex) {
+            Logger.getLogger(AddonLoader.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (input != null) {
+                    input.close();
+                }   
+                if (output != null) {
+                    output.close();
+                }
+            } catch (IOException e) {  //second catch block
             }
-        } else {
-
-            InputStream in = new FileInputStream(source);
-            OutputStream out = new FileOutputStream(target);
-
-            // Copy the bits from instream to outstream
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            in.close();
-            out.close();
         }
     }
 }

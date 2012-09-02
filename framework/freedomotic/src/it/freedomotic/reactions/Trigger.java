@@ -19,13 +19,12 @@
  */
 package it.freedomotic.reactions;
 
+import it.freedomotic.core.TriggerCheck;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.EventChannel;
-import it.freedomotic.core.Profiler;
-import it.freedomotic.core.TriggerCheck;
-import it.freedomotic.exceptions.TriggerCheckException;
+import it.freedomotic.app.Profiler;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,7 +38,7 @@ import javax.jms.ObjectMessage;
  *
  * @author enrico
  */
-public class Trigger implements BusConsumer, Cloneable {
+public final class Trigger implements BusConsumer, Cloneable {
 
     private String name;
     private String description;
@@ -237,14 +236,10 @@ public class Trigger implements BusConsumer, Cloneable {
         if (payload instanceof EventTemplate) {
             EventTemplate event = (EventTemplate) payload;
             Freedomotic.logger.config("Trigger '" + this.getName() + "' filters event '" + event.getEventName() + "' on channel " + this.getChannel());
-            try {
-                long start = System.currentTimeMillis();
-                boolean testPassed = TriggerCheck.check(event, this);
-                long end = System.currentTimeMillis();
-                Profiler.appendTriggerCheckingTime(end - start);
-            } catch (TriggerCheckException ex) {
-                Logger.getLogger(Trigger.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            long start = System.currentTimeMillis();
+            boolean testPassed = TriggerCheck.check(event, this);
+            long end = System.currentTimeMillis();
+            Profiler.appendTriggerCheckingTime(end - start);
         }
     }
 
@@ -269,7 +264,7 @@ public class Trigger implements BusConsumer, Cloneable {
     }
 
     public void unregister() {
-        //TODO: implement unregistration
+        busChannel.unsubscribe();
     }
 
     public String getUUID() {
@@ -287,6 +282,4 @@ public class Trigger implements BusConsumer, Cloneable {
     public boolean isToPersist() {
         return persistence;
     }
-    
-    
 }

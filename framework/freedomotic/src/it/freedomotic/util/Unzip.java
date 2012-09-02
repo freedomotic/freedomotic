@@ -63,4 +63,7 @@ public class Unzip {
             }
         }
     }
+
+    private Unzip() {
+    }
 }

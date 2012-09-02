@@ -128,4 +128,7 @@ public final class ResourcesManager {
             return output;
         }
     }
+
+    private ResourcesManager() {
+    }
 }

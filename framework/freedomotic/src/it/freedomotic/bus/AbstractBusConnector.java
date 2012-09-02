@@ -96,10 +96,11 @@ public class AbstractBusConnector {
         return emptySharedWriter;
     }
 
-    public void disconnect() {
+    public static void disconnect() {
         try {
-            connection.close();
-        } catch (JMSException jMSException) {
+            BROKER.stop();
+        } catch (Exception ex) {
+            Logger.getLogger(AbstractBusConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

@@ -5,7 +5,7 @@
 package it.freedomotic.frontend;
 
 import it.freedomotic.core.ResourcesManager;
-import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.core.EnvObjectLogic;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;

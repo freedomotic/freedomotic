@@ -8,10 +8,9 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.RangedIntBehaviorListener;
+import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
-import it.freedomotic.persistence.TriggerPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Trigger;
 
 /**
@@ -25,8 +24,8 @@ public class Thermostat extends EnvObjectLogic {
     @Override
     public void init() {
         //linking this property with the behavior defined in the XML
-        temperature = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior("temperature"));
-        temperature.addListener(new RangedIntBehaviorListener() {
+        temperature = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(0));
+        temperature.addListener(new RangedIntBehaviorLogic.Listener() {
 
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
@@ -73,66 +72,13 @@ public class Thermostat extends EnvObjectLogic {
      */
     @Override
     protected void createCommands() {
-//        Command setOn = new Command();
-//        setOn.setName("Turn on " + getPojo().getName());
-//        setOn.setDescription(getPojo().getSimpleType() + " turns on");
-//        setOn.setReceiver("app.events.sensors.behavior.request.objects");
-//        setOn.setProperty("object", getPojo().getName());
-//        setOn.setProperty("behavior", "powered");
-//        setOn.setProperty("value", "true");
-//
-//        Command setOff = new Command();
-//        setOff.setName("Turn off " + getPojo().getName());
-//        setOff.setDescription(getPojo().getSimpleType() + " turns off");
-//        setOff.setReceiver("app.events.sensors.behavior.request.objects");
-//        setOff.setProperty("object", getPojo().getName());
-//        setOff.setProperty("behavior", "powered");
-//        setOff.setProperty("value", "false");
-//
-//        Command switchPower = new Command();
-//        switchPower.setName("Switch " + getPojo().getName() + " power");
-//        switchPower.setDescription("switches the power of " + getPojo().getName());
-//        switchPower.setReceiver("app.events.sensors.behavior.request.objects");
-//        switchPower.setProperty("object", getPojo().getName());
-//        switchPower.setProperty("behavior", "powered");
-//        switchPower.setProperty("value", "opposite");
-//
-//
-//        Command setItOn = new Command();
-//        setItOn.setName("Turn it on");
-//        setItOn.setDescription("this electric device turns on");
-//        setItOn.setReceiver("app.events.sensors.behavior.request.objects");
-//        setItOn.setProperty("object", "@event.object.name");
-//        setItOn.setProperty("behavior", "powered");
-//        setItOn.setProperty("value", "true");
-//
-//        Command setItOff = new Command();
-//        setItOff.setName("Turn it off");
-//        setItOff.setDescription("this electric device turns off");
-//        setItOff.setReceiver("app.events.sensors.behavior.request.objects");
-//        setItOff.setProperty("object", "@event.object.name");
-//        setItOff.setProperty("behavior", "powered");
-//        setItOff.setProperty("value", "false");
-//
-//        Command switchItsPower = new Command();
-//        switchItsPower.setName("Switch its power");
-//        switchItsPower.setDescription("switches its power");
-//        switchItsPower.setReceiver("app.events.sensors.behavior.request.objects");
-//        switchItsPower.setProperty("object", "@event.object.name");
-//        switchItsPower.setProperty("behavior", "powered");
-//        switchItsPower.setProperty("value", "opposite");
-//
-//
-//        CommandPersistence.add(setOff);
-//        CommandPersistence.add(setOn);
-//        CommandPersistence.add(switchPower);
-//        CommandPersistence.add(setItOff);
-//        CommandPersistence.add(setItOn);
-//        CommandPersistence.add(switchItsPower);
+
+
     }
 
     @Override
     protected void createTriggers() {
+        
         Trigger clicked = new Trigger();
         clicked.setName("When " + this.getPojo().getName() + " is clicked");
         clicked.setChannel("app.event.sensor.object.behavior.clicked");

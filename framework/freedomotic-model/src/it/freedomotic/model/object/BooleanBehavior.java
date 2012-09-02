@@ -21,6 +21,4 @@ public class BooleanBehavior extends Behavior{
         setActive(true);
         value = inputValue;
     }
-
-
 }

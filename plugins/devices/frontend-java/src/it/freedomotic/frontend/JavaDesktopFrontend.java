@@ -7,7 +7,7 @@ import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.ZoneHasChanged;
 import it.freedomotic.exceptions.UnableToExecuteException;
-import it.freedomotic.persistence.EnvObjectPersistence;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
 import java.awt.Color;
 import java.awt.EventQueue;

@@ -10,14 +10,19 @@ import it.freedomotic.model.object.PropertiesBehavior;
 public class PropertiesBehaviorLogic implements BehaviorLogic {
 
     private PropertiesBehavior data;
-    protected PropertiesBehaviorListener listener;
+    private Listener listener;
+    
+    public interface Listener {
+        
+    public void propertyChanged(String key, String value, Config params, boolean fireCommand);
+}
 
     public PropertiesBehaviorLogic(PropertiesBehavior pojo) {
         this.data = pojo;
     }
 
     @Override
-    public synchronized final void  filterParams(Config params, boolean fireCommand) {
+    public synchronized final void filterParams(final Config params, boolean fireCommand) {
         String[] parsed = params.getProperty("value").trim().split("=");
         String key = parsed[0].trim();
         String value = parsed[1].trim();
@@ -46,7 +51,6 @@ public class PropertiesBehaviorLogic implements BehaviorLogic {
 //    public void setProperty(String key, String value) {
 //        data.setProperty(key, value);
 //    }
-
     @Override
     public boolean isActive() {
         return data.isActive();
@@ -57,7 +61,7 @@ public class PropertiesBehaviorLogic implements BehaviorLogic {
         return data.toString();
     }
 
-    public void addListener(PropertiesBehaviorListener propertiesBehaviorListener) {
+    public void addListener(Listener propertiesBehaviorListener) {
         listener = propertiesBehaviorListener;
     }
 }

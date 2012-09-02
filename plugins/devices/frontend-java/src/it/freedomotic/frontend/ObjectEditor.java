@@ -10,20 +10,22 @@
  */
 package it.freedomotic.frontend;
 
+import it.freedomotic.frontend.utils.ReactionEditor;
+import it.freedomotic.frontend.utils.PropertiesPanel_1;
+import it.freedomotic.core.EnvObjectFactory;
+import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.exceptions.AlreadyExistentException;
-import it.freedomotic.exceptions.NotValidElementException;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
 import it.freedomotic.objects.*;
-import it.freedomotic.persistence.CommandPersistence;
-import it.freedomotic.persistence.EnvObjectPersistence;
-import it.freedomotic.persistence.ReactionPersistence;
-import it.freedomotic.persistence.TriggerPersistence;
+import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.objects.EnvObjectPersistence;
+import it.freedomotic.reactions.ReactionPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Statement;
@@ -36,8 +38,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -106,7 +106,6 @@ public class ObjectEditor extends javax.swing.JFrame {
         spnRotation.setValue(rotation);
 
         tabObjectEditor.addChangeListener(new ChangeListener() {
-
             public void stateChanged(ChangeEvent e) {
                 if (tabObjectEditor.getSelectedIndex() == 5) {
                     populateAutomationsTab();
@@ -150,7 +149,6 @@ public class ObjectEditor extends javax.swing.JFrame {
                 controlPanel.addElement(label, row, 0);
                 controlPanel.addElement(button, row, 1);
                 button.addActionListener(new ActionListener() {
-
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         Config params = new Config();
@@ -180,7 +178,6 @@ public class ObjectEditor extends javax.swing.JFrame {
                 controlPanel.addElement(slider, row, 1);
                 //slider.setPreferredSize(new Dimension(500, 100));
                 slider.addChangeListener(new ChangeListener() {
-
                     @Override
                     public void stateChanged(ChangeEvent e) {
                         if (!slider.getValueIsAdjusting()) {
@@ -204,7 +201,6 @@ public class ObjectEditor extends javax.swing.JFrame {
                 controlPanel.addElement(label, row, 0);
                 controlPanel.addElement(comboBox, row, 1);
                 comboBox.addActionListener(new ActionListener() {
-
                     public void actionPerformed(ActionEvent e) {
                         Config params = new Config();
                         params.setProperty("value", (String) comboBox.getSelectedItem());
@@ -228,7 +224,6 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         tabObjectEditor = new javax.swing.JTabbedPane();
-        tabControls = new javax.swing.JPanel();
         tabProperties = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
@@ -241,6 +236,8 @@ public class ObjectEditor extends javax.swing.JFrame {
         btnCreateObjectCopy = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         txtProtocol = new javax.swing.JComboBox();
+        tabTriggersConfig = new javax.swing.JPanel();
+        tabCommandsConfig = new javax.swing.JPanel();
         tabRepresentation = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         spnX = new javax.swing.JSpinner();
@@ -254,8 +251,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         spnScaleHeight = new javax.swing.JSpinner();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        tabTriggersConfig = new javax.swing.JPanel();
-        tabCommandsConfig = new javax.swing.JPanel();
+        tabControls = new javax.swing.JPanel();
         tabAutomations = new javax.swing.JPanel();
         pnlFrameButtons = new javax.swing.JPanel();
         btnOk = new javax.swing.JButton();
@@ -278,9 +274,6 @@ public class ObjectEditor extends javax.swing.JFrame {
         tabObjectEditor.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
         tabObjectEditor.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         tabObjectEditor.setPreferredSize(new java.awt.Dimension(500, 457));
-
-        tabControls.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab("Control Panel", tabControls);
 
         jLabel14.setText("Name:");
 
@@ -370,6 +363,12 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         tabObjectEditor.addTab("Properties", tabProperties);
 
+        tabTriggersConfig.setLayout(new java.awt.BorderLayout());
+        tabObjectEditor.addTab("Data Sources", tabTriggersConfig);
+
+        tabCommandsConfig.setLayout(new java.awt.BorderLayout());
+        tabObjectEditor.addTab("Actuator", tabCommandsConfig);
+
         jLabel11.setText("Position X:");
 
         spnX.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -438,18 +437,18 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11)
                             .addComponent(jLabel12)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
+                            .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)
                             .addComponent(spnScaleHeight, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(spnScaleWidth, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(spnY)
                             .addComponent(spnX, javax.swing.GroupLayout.Alignment.LEADING))
                         .addGap(18, 18, 18)
-                        .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, 631, Short.MAX_VALUE)
+                        .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
                         .addGap(2343, 2343, 2343))))
         );
         tabRepresentationLayout.setVerticalGroup(
@@ -479,21 +478,18 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spnScaleHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(748, Short.MAX_VALUE))
+                .addContainerGap(233, Short.MAX_VALUE))
         );
 
         tabObjectEditor.addTab("Appearance", tabRepresentation);
 
-        tabTriggersConfig.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab("Triggers", tabTriggersConfig);
-
-        tabCommandsConfig.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab("Commands", tabCommandsConfig);
+        tabControls.setLayout(new java.awt.BorderLayout());
+        tabObjectEditor.addTab("Control Panel", tabControls);
 
         tabAutomations.setLayout(new java.awt.BorderLayout());
         tabObjectEditor.addTab("Automations", tabAutomations);
 
-        jPanel1.add(tabObjectEditor, java.awt.BorderLayout.CENTER);
+        jPanel1.add(tabObjectEditor, java.awt.BorderLayout.PAGE_START);
 
         btnOk.setText("OK");
         btnOk.addActionListener(new java.awt.event.ActionListener() {
@@ -562,13 +558,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         }
         EnvObjectLogic envObjectLogic = EnvObjectFactory.create(pojoCopy);
         envObjectLogic.getPojo().setUUID("");
-        try {
-            EnvObjectPersistence.add(envObjectLogic);
-        } catch (NotValidElementException ex) {
-            Logger.getLogger(ObjectEditor.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (AlreadyExistentException ex) {
-            Logger.getLogger(ObjectEditor.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        EnvObjectPersistence.add(envObjectLogic);
         object.setChanged(true);
         this.dispose();
 }//GEN-LAST:event_btnCreateObjectCopyActionPerformed
@@ -716,7 +706,6 @@ public class ObjectEditor extends javax.swing.JFrame {
                 cmbCommand.setSelectedIndex(-1); //no mapping
             }
             cmbCommand.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Command command = (Command) cmbCommand.getSelectedItem();
@@ -769,12 +758,11 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
             //addAndRegister a listener on trigger combobox item selection
             comboSelectTrigger.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     object.addTriggerMapping((Trigger) comboSelectTrigger.getSelectedItem(), behavior.getName());
                     tabTriggersConfig.removeAll();
-                    pnlTriggers=null;
+                    pnlTriggers = null;
                     populateTriggersTab();
                 }
             });
@@ -800,7 +788,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                     Statement statement = (Statement) it.next();
                     if (statement.getValue().contains(object.getPojo().getName())) {
                         isRelated = true; //is a trigger related with this object
-                        break; //no need to check the other statements
+                        break; //no need to check the other statements in current trigger
                     }
                 }
                 //if this trigger is related to this object

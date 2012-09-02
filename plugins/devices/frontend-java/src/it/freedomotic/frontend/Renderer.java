@@ -11,8 +11,8 @@ import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.persistence.EnvObjectPersistence;
+import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.util.AWTConverter;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -118,7 +118,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
 
     }
 
-    public void setNeedRepaint(boolean repaintBackground) {
+    public synchronized void setNeedRepaint(boolean repaintBackground) {
         backgroundChanged = repaintBackground;
         Graphics2D g2 = (Graphics2D) this.getGraphics();
         g2.setRenderingHint(
@@ -597,6 +597,13 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         if (inDrag) {
             for (Handle handle : handles) {
                 handle.setSelected(false);
+            }
+            //stop dragging an object
+            if (selectedObject!=null){
+                Point coords = toRealCoords(e.getPoint());
+                selectedObject.setLocation(
+                        (int)(coords.getX() - dragDiff.getWidth()), 
+                        (int)(coords.getY() - (int) dragDiff.getHeight()));
             }
         }
         inDrag = false;

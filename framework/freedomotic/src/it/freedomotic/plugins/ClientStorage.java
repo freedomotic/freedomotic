@@ -26,7 +26,7 @@ import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,19 +34,21 @@ import java.util.List;
  */
 public class ClientStorage {
 
-    private static final ArrayList<it.freedomotic.api.Client> clients = new ArrayList<it.freedomotic.api.Client>();
+    private static final List<Client> clients = new ArrayList<Client>();
 
+    //instantiated into Freedomotic.java
+    //an instance is needed
     public ClientStorage() {
     }
 
-    public void enqueue(it.freedomotic.api.Client c) {
-        clients.add((it.freedomotic.api.Client) c);
+    public void enqueue(Client c) {
+        clients.add(c);
         PluginHasChanged event = new PluginHasChanged(this, c.getName(), PluginActions.ENQUEUE);
         Freedomotic.sendEvent(event);
     }
 
-    public ArrayList<it.freedomotic.api.Client> getClients() {
-        return clients;
+    public static List<Client> getClients() {
+        return Collections.unmodifiableList(clients);
     }
 
     public static Client get(String name) {
@@ -58,16 +60,16 @@ public class ClientStorage {
         return null;
     }
 
-    public ArrayList<Client> getClients(String filterType) {
-        ArrayList<Client> tmp = new ArrayList<Client>();
+    public List<Client> getClients(String filterType) {
+        List<Client> tmp = new ArrayList<Client>();
         for (Client client : clients) {
             if (client.getType().equalsIgnoreCase(filterType)) {
                 tmp.add(client);
             }
         }
-        return tmp;
+        return Collections.unmodifiableList(tmp);
     }
-    
+
     public Client getClientByProtocol(String protocol) {
         for (Client client : clients) {
             if (client.getConfiguration().getStringProperty("protocol.name", "").equals(protocol)) {
@@ -76,24 +78,16 @@ public class ClientStorage {
         }
         return null;
     }
-    
-    public static boolean alreadyLoaded(Client input) {
+
+    public static boolean isLoaded(Client input) {
         if (input == null) {
             throw new IllegalArgumentException();
         }
-        Iterator it = clients.iterator();
-        while (it.hasNext()) {
-            Client client = (Client) it.next();
-            if (input.getName().equalsIgnoreCase(client.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return clients.contains(input);
     }
 
-    public Plugin createPlaceholder(final String simpleName, final String type, final String description) {
+    protected Plugin createPlaceholder(final String simpleName, final String type, final String description) {
         final Plugin placeholder = new Plugin(simpleName, null) {
-
             @Override
             public String getDescription() {
                 if (description == null) {
@@ -139,7 +133,7 @@ public class ClientStorage {
         return placeholder;
     }
 
-    void createObjectPlaceholder(final Class objClazz, final File folder) {
+    protected void createObjectPlaceholder(final Class objClazz, final File folder) {
         ObjectPlugin placeholder = new ObjectPlugin(objClazz, folder);
         enqueue(placeholder);
     }

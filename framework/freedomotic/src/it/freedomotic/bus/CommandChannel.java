@@ -20,7 +20,7 @@
 package it.freedomotic.bus;
 
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.core.Profiler;
+import it.freedomotic.app.Profiler;
 import it.freedomotic.reactions.Command;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -160,7 +160,7 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
      * @param aMessage
      */
     @Override
-    public void onMessage(Message aMessage) {
+    public final void onMessage(Message aMessage) {
         Profiler.incrementReceivedCommands();
         if (getHandler() != null) {
             if (aMessage instanceof ObjectMessage) {

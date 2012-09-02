@@ -5,7 +5,7 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
-import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.core.EnvObjectLogic;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -15,7 +15,7 @@ import java.util.Map.Entry;
  *
  * @author Enrico
  */
-public final class ObjectReceiveClick extends EventTemplate {
+public class ObjectReceiveClick extends EventTemplate {
 
     public static final String SINGLE_CLICK = "SINGLE_CLICK";
     public static final String DOUBLE_CLICK = "DOUBLE_CLICK";

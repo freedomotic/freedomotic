@@ -6,9 +6,9 @@ package it.freedomotic.plugins;
 
 import it.freedomotic.api.Sensor;
 import it.freedomotic.exceptions.UnableToExecuteException;
-import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.objects.impl.Person;
-import it.freedomotic.persistence.EnvObjectPersistence;
+import it.freedomotic.objects.EnvObjectPersistence;
 import java.awt.Point;
 import java.io.IOException;
 import java.io.OutputStream;

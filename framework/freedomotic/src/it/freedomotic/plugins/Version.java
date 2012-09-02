@@ -21,12 +21,11 @@ public class Version {
     private int versionMajor;
     private int versionMinor;
     private int versionBuild;
-    private static final Version frameworkVersion = new Version(Info.getVersion());
 
-    public Version() {
-    }
-
-    public Version(Plugin plugin) {
+    public Version(int major, int minor, int build) {
+        versionMajor= major;
+        versionMinor=minor;
+        versionBuild=build;
     }
 
     public Version(String version) {

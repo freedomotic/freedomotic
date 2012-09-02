@@ -75,4 +75,7 @@ public class DOMValidateDTD {
             throw new RuntimeException(ex);
         }
     }
+
+    private DOMValidateDTD() {
+    }
 }

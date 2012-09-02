@@ -4,15 +4,15 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.environment.Zone;
 import it.freedomotic.model.geometry.FreedomPolygon;
-import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.objects.impl.Gate;
-import it.freedomotic.persistence.EnvObjectPersistence;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.util.Graph;
-import it.freedomotic.util.Info;
 import it.freedomotic.util.UidGenerator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -22,7 +22,7 @@ public class EnvironmentLogic {
 
     private static Graph graph;
     private Environment pojo;
-    private ArrayList<ZoneLogic> zones = new ArrayList<ZoneLogic>();
+    private List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
     private File source;
 
     public EnvironmentLogic() {
@@ -53,8 +53,7 @@ public class EnvironmentLogic {
     public void addRoom(ZoneLogic zone) {
         //null and duplicate check
         if (zone == null) {
-            zone = new ZoneLogic();
-            zone.setPojo(new Zone());
+            zone = new ZoneLogic(new Zone());
         }
 
         if (zones.contains(zone)) {
@@ -135,21 +134,19 @@ public class EnvironmentLogic {
             //null and duplicate check
             if (z != null) {
                 if (z.isRoom()) {
-                    Room room = new Room();
-                    room.setPojo(z);
+                    Room room = new Room(z);
                     room.init();
                     if (!zones.contains(room)) {
-                        Freedomotic.logger.info("Adding room " + room);
+                        Freedomotic.logger.config("Adding room " + room);
                         this.zones.add(room);
                     } else {
                         Freedomotic.logger.warning("Attempt to add a null or an already existent room " + room);
                     }
                 } else {
-                    ZoneLogic zoneLogic = new ZoneLogic();
-                    zoneLogic.setPojo(z);
+                    ZoneLogic zoneLogic = new ZoneLogic(z);
                     zoneLogic.init();
                     if (!zones.contains(zoneLogic)) {
-                        Freedomotic.logger.info("Adding zone " + zoneLogic);
+                        Freedomotic.logger.config("Adding zone " + zoneLogic);
                         this.zones.add(zoneLogic);
                     } else {
                         Freedomotic.logger.warning("Attempt to add a null or an already existent zone " + zoneLogic);

@@ -28,7 +28,7 @@ import java.awt.Point;
  * if the person moves, a {@link PersonMoving} event is thwowed.
  * @author Enrico
  */
-public final class PersonDetected extends EventTemplate {
+public class PersonDetected extends EventTemplate {
 
     int id;
     int x;

@@ -7,9 +7,8 @@ package it.freedomotic.objects.impl;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.RangedIntBehavior;
-import it.freedomotic.objects.RangedIntBehaviorListener;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
-import it.freedomotic.persistence.CommandPersistence;
+import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Command;
 
 /**
@@ -24,8 +23,8 @@ public class Light extends ElectricDevice {
     @Override
     public void init() {
         //linking this property with the behavior defined in the XML
-        brightness = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_BRIGHTNESS));
-        brightness.addListener(new RangedIntBehaviorListener() {
+        brightness = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(1));
+        brightness.addListener(new RangedIntBehaviorLogic.Listener() {
 
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {

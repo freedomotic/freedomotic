@@ -10,14 +10,23 @@ import it.freedomotic.model.object.RangedIntBehavior;
  */
 public class RangedIntBehaviorLogic implements BehaviorLogic {
 
-    private RangedIntBehavior data;
-    protected RangedIntBehaviorListener listener;
+    private final RangedIntBehavior data;
+    private Listener listener;
+
+    public interface Listener {
+
+        public void onLowerBoundValue(Config params, boolean fireCommand);
+
+        public void onUpperBoundValue(Config params, boolean fireCommand);
+
+        public void onRangeValue(int rangeValue, Config params, boolean fireCommand);
+    }
 
     public RangedIntBehaviorLogic(RangedIntBehavior pojo) {
         this.data = pojo;
     }
 
-    public void addListener(RangedIntBehaviorListener listener) {
+    public void addListener(Listener listener) {
         this.listener = listener;
     }
 
@@ -43,7 +52,7 @@ public class RangedIntBehaviorLogic implements BehaviorLogic {
     }
 
     @Override
-    public synchronized final void filterParams(Config params, boolean fireCommand) {
+    public synchronized final void filterParams(final Config params, boolean fireCommand) {
         //from dim to dim
         String input = params.getProperty("value").trim();
         int parsed = getMin();
