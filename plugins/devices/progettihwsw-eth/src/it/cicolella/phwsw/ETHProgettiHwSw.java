@@ -320,7 +320,7 @@ public class ETHProgettiHwSw extends Protocol {
 
         if (c.getProperty("command").equals("TOGGLE")) {
             // mapping relay line -> protocol
-            relay = HexIntConverter.convert(Integer.parseInt(address[2]) - 1);
+            relay = address[2]; // toggle range from 1
             int time = Integer.parseInt(c.getProperty("time-in-ms"));
             int seconds = time / 1000;
             String relayLine = configuration.getProperty("TOGGLE" + seconds + "S" + relay);
