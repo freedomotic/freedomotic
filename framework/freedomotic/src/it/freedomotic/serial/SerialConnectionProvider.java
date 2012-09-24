@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-public class SerialConnectionProvider implements SerialPortEventListener, Runnable {
+public class SerialConnectionProvider implements SerialPortEventListener {
 
     private CommPortIdentifier currentPortID = null;
     private SerialPort currentPort = null;
@@ -99,29 +99,28 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
          * other data
          */
         MAX_WAIT_RESPONSE_TIME = Long.parseLong(config.getProperty("wait-response-time", "1000000000"));
-        System.out.println("MAX WAIT: " + MAX_WAIT_RESPONSE_TIME);
     }
 
     private CommPortIdentifier discoverDevice() {
-        //I already know the port id
-        if (currentPortID != null) {
-            return currentPortID;
-        }
-
-        //for every active port
-        Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-        while (portEnum.hasMoreElements()) {
-            CommPortIdentifier portIdentifier = portEnum.nextElement();
-            System.out.println("Searching the device on serial port " + portIdentifier.getName());
-            //if the port has something listening on it
-            if (isSomethingListeningOn(portIdentifier)) {
-                //identificate the device sending the hello message specified in the contructor. If the response is as espected we have found the device
-                if (isTheDeviceWeAreLookingFor(portIdentifier)) {
-                    return portIdentifier;
-                }
-            }
-        }
-        //no device found
+//        //I already know the port id
+//        if (currentPortID != null) {
+//            return currentPortID;
+//        }
+//
+//        //for every active port
+//        Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+//        while (portEnum.hasMoreElements()) {
+//            CommPortIdentifier portIdentifier = portEnum.nextElement();
+//            System.out.println("Searching the device on serial port " + portIdentifier.getName());
+//            //if the port has something listening on it
+//            if (isSomethingListeningOn(portIdentifier)) {
+//                //identificate the device sending the hello message specified in the contructor. If the response is as espected we have found the device
+//                if (isTheDeviceWeAreLookingFor(portIdentifier)) {
+//                    return portIdentifier;
+//                }
+//            }
+//        }
+//        //no device found
         return null;
     }
 
@@ -153,47 +152,21 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
     }
 
     @Override
-    public void serialEvent(SerialPortEvent spe) {
-        // Create a StringBuffer and int to receive input data.
-        StringBuffer inputBuffer = new StringBuffer();
-        int newData = 0;
+    public synchronized void serialEvent(SerialPortEvent spe) {
         switch (spe.getEventType()) {
             case SerialPortEvent.DATA_AVAILABLE:
-                if (isConnected) {
-                    synchronized (this) {
-                        while (newData != -1) {
-                            try {
-                                newData = in.read();
-                                if (newData == -1) {
-                                    break;
-                                }
-                                if ('\r' == (char) newData) {
-                                    inputBuffer.append('\n');
-                                } else {
-                                    inputBuffer.append((char) newData);
-                                }
-                            } catch (IOException ex) {
-                                System.err.println(ex);
-                                return;
-                            }
-                        }
-                        for (SerialDataConsumer handler : consumers) {
-                            handler.onDataAvailable(new String(inputBuffer));
-                        }
-                    }
-                } else {
-                    System.err.println("Connection lost with serial device on port " + this.getPortName());
-                    disconnect();
+                String readed = read();
+                for (SerialDataConsumer handler : consumers) {
+                    handler.onDataAvailable(readed);
                 }
                 break;
             // If break event append BREAK RECEIVED message.
             case SerialPortEvent.BI:
                 System.out.println("\n--- BREAK RECEIVED ---\n");
-
         }
     }
-    
-    public boolean isConnected(){
+
+    public boolean isConnected() {
         return isConnected;
     }
 
@@ -203,18 +176,18 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
             return;
         }
         CommPortIdentifier portId = null;
-        if (PORT_NAME == null) { //port undefined in xml, try to discover using hello message on all ports
-            //discover using hello message
-            portId = discoverDevice();
-            if (portId == null) {
-                System.err.println("No device reply to hello-message=" + HELLO_MESSAGE);
-                isConnected = false;
-                return;
-            }
-        } else {
-            //use the port name in xml to get a reference
-            portId = discoverDevice(PORT_NAME); //with a given port name like COM1
-        }
+//        if (PORT_NAME == null) { //port undefined in xml, try to discover using hello message on all ports
+//            //discover using hello message
+//            portId = discoverDevice();
+//            if (portId == null) {
+//                System.err.println("No device reply to hello-message=" + HELLO_MESSAGE);
+//                isConnected = false;
+//                return;
+//            }
+//        } else {
+        //use the port name in xml to get a reference
+        portId = discoverDevice(PORT_NAME); //with a given port name like COM1
+//        }
         currentPort = openPort(portId);
         if (currentPort == null) {
             isConnected = false;
@@ -241,10 +214,10 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
             // Add ownership listener to allow ownership event handling.
 //            portId.addPortOwnershipListener(this);
 
-            if (POLLING_MESSAGE.length() != 0) { //needs polling
-                Thread t = new Thread(this);
-                t.start();
-            }
+//            if (POLLING_MESSAGE.length() != 0) { //needs polling
+//                Thread t = new Thread(this);
+//                t.start();
+//            }
             isConnected = true;
         }
     }
@@ -258,17 +231,17 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
      */
     public void disconnect() {
         // E' gia disconnesso
-        if (!isConnected) {
-            System.out.println("Disconnected from serial port " + currentPort.getName());
-            return;
-        } // Non riesco a chiudere la porta
-        if (!closePort(currentPort)) {
-            System.out.println("Unable to close serial port.");
-            return;
+        if (currentPort != null) {
+            System.out.println("Disconnecting from serial port " + currentPort.getName());
+            try {
+                in.close();
+                out.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            currentPort = null;
+            isConnected = false;
         }
-        System.out.println("Disconnected from serial port " + currentPort.getName());
-        currentPort = null;
-        isConnected = false;
     }
 
     public String getPortName() {
@@ -300,8 +273,12 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
         pathToAdd = new File(Info.getApplicationPath() + sep + pathToAdd + sep + os + sep + arch).toString();
         // Modifico il valore della variabile a livello d'ambiente
         Freedomotic.logger.info("Adding to classpath '" + pathToAdd + "'");
-        String libraryPath = System.getProperty("java.library.path").concat(System.getProperty("path.separator") + pathToAdd);
-
+        String libraryPath =
+                System.getProperty("java.library.path")
+                .concat(System.getProperty("path.separator")
+                + pathToAdd)
+                .concat(System.getProperty("path.separator")
+                + new File(Info.getApplicationPath() + "/config/serial/").toString());
         System.setProperty("java.library.path", libraryPath);
         Freedomotic.logger.info("java.library.path: " + libraryPath);
     }
@@ -315,142 +292,102 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
         }
         if (isConnected) {
             // Scrivo i dati
-            byte[] buff; // = new byte[1024];
-            String readed = ""; // = new String(buff);            
+//            String readed = "";
             try {
                 this.out.write(message.getBytes());
-                out.flush();
-                long tm = System.nanoTime();
-                while (in.available() == 0 && (System.nanoTime() - tm) < MAX_WAIT_RESPONSE_TIME) {
-                    //Wait until we have the response
-                }
-//                try {
-//                    Thread.sleep(50); //to ensure the message is completed maybe could be avoid if the exact size of the response is know
-//                } catch (InterruptedException ex) {
-//                    Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-                if (in.available() > 0) {
-                    int numBytes = in.available();
-                    System.out.println("NumBytes:" + numBytes);
-                    buff = new byte[numBytes];
-                    int readBytes = in.read(buff);
-                    readed = new String(buff);
-                }
-
-                // Leggo la risposta
-                //this.in.read(buff);
-                //readed = new String(buff);
+//                readed = read();
+//                System.out.println("readed reply: " + readed);
             } catch (IOException e) {
                 System.err.println("Device connected to USB port but error on writing. Unable to send '" + message + "'");
                 disconnect();
                 throw new IOException();
             }
-            return readed.trim();
+//            return readed.trim();
         } //device not connected, throw exception
-        throw new IOException();
+        return "";
     }
 
     //asynchronous write to serial device
-    public synchronized void asyncSend(String message) throws IOException {
-        // Nessuna porta è stata aperta
-        if (currentPort == null) {
-            //lazy init of serial connection
-            connect();
-        }
-        if (isConnected) {
-            // Scrivo i dati
-            try {
-                this.out.write(message.getBytes());
-                out.flush();
-//                try {
-//                    Thread.sleep(50); //to ensure the message is arrived
-//                } catch (InterruptedException ex) {
-//                    Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-            } catch (IOException e) {
-                System.err.println("Device connected to USB port but error on writing. Unable to send '" + message + "'");
-                disconnect();
-                throw new IOException();
-            }
-        }
-        //device not connected, throw exception
-        throw new IOException();
-    }
-
-    @Override
-    public void run() {
-        while (isConnected) {
-            //polling
-            if (POLLING_MESSAGE != null) {
-                //force data request (needed by some type of devices)
-                try {
-                    asyncSend(POLLING_MESSAGE);
-                } catch (IOException ex) {
-                    Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            try {
-                Thread.sleep(POLLING_TIME);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-//    private synchronized String read() throws IOException {
+//    public void asyncSend(String message) throws IOException {
+////        try {
+////            Thread.sleep(100); //to ensure the message is arrived
+////        } catch (InterruptedException ex) {
+////            Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
+////        }
 //        // Nessuna porta è stata aperta
 //        if (currentPort == null) {
 //            //lazy init of serial connection
 //            connect();
 //        }
 //        if (isConnected) {
-//            // Leggo la risposta
-//            // Creo il buffer e leggo i dati
-//            byte[] buff = new byte[1024];
-//            in.read(buff);
-//            String readed = new String(buff);
-//            if (!readed.trim().equals("")) {
-//                return readed.trim();
+//            // Scrivo i dati
+//            try {
+//                this.out.write(message.getBytes());
+//            } catch (IOException e) {
+//                System.err.println("Device connected to USB port but error on writing. Unable to send '" + message + "'");
+//                disconnect();
+//                throw new IOException();
+//            }
+//        } else {
+//            disconnect();
+//            throw new IOException();
+//        }
+//    }
+//    @Override
+//    public void run() {
+//        while (isConnected) {
+//            //polling
+//            if (POLLING_MESSAGE != null) {
+//                //force data request (needed by some type of devices)
+//                try {
+//                    asyncSend(POLLING_MESSAGE);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            try {
+//                Thread.sleep(POLLING_TIME);
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
 //            }
 //        }
-//        //device not connected, throw exception
-//        throw new IOException();
 //    }
     private boolean isTheDeviceWeAreLookingFor(CommPortIdentifier portIdentifier) {
         //invia un hello message e riceve un reply. se hello e reply corrispondono a quelle dell xml allora è il device che stiamo cercando
-        SerialPort tmpPort = openPort(portIdentifier);
-        if (tmpPort != null) {
-            // opening streams
-            InputStream inStream = null;
-            OutputStream outStream = null;
-            try {
-                synchronized (tmpPort) {
-                    this.in = tmpPort.getInputStream();
-                    this.out = tmpPort.getOutputStream();
-                    try {
-                        System.out.println("Sending hello message " + HELLO_MESSAGE + " on port " + portIdentifier.getName());
-                        this.out.write(HELLO_MESSAGE.getBytes());
-                    } catch (IOException e) {
-                        tmpPort.close();
-                    }
-                    //read reply
-                    byte[] buff = new byte[1024];
-                    in.read(buff);
-                    String ret = new String(buff);
-                    System.out.println("Readed from serial " + portIdentifier.getName() + ": " + ret);
-
-                    if (ret.trim().startsWith(HELLO_REPLY.trim())) {
-                        tmpPort.close();
-                        return true;
-                    }
-                }
-            } catch (IOException e) {
-                tmpPort.close();
-                return false;
-            }
-        }
-        tmpPort.close();
-        return false;
+//        SerialPort tmpPort = openPort(portIdentifier);
+//        if (tmpPort != null) {
+//            // opening streams
+//            InputStream inStream = null;
+//            OutputStream outStream = null;
+//            try {
+//                synchronized (tmpPort) {
+//                    this.in = tmpPort.getInputStream();
+//                    this.out = tmpPort.getOutputStream();
+//                    try {
+//                        System.out.println("Sending hello message " + HELLO_MESSAGE + " on port " + portIdentifier.getName());
+//                        this.out.write(HELLO_MESSAGE.getBytes());
+//                    } catch (IOException e) {
+//                        tmpPort.close();
+//                    }
+//                    //read reply
+//                    byte[] buff = new byte[1024];
+//                    in.read(buff);
+//                    String ret = new String(buff);
+//                    System.out.println("Readed from serial " + portIdentifier.getName() + ": " + ret);
+//
+//                    if (ret.trim().startsWith(HELLO_REPLY.trim())) {
+//                        tmpPort.close();
+//                        return true;
+//                    }
+//                }
+//            } catch (IOException e) {
+//                tmpPort.close();
+//                return false;
+//            }
+//        }
+//        tmpPort.close();
+//        return false;
+        throw new UnsupportedOperationException();
     }
 
     private synchronized SerialPort openPort(CommPortIdentifier port) {
@@ -483,7 +420,7 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
             serialPort.enableReceiveTimeout(PORT_IN_TIMEOUT);
             serialPort.enableReceiveThreshold(PORT_IN_THRESHOLD);
         } catch (UnsupportedCommOperationException e) {
-            System.out.println("Parameter not allowed for port \"" + port.getName() + "\".");
+            System.out.println("Parameters not allowed for port \"" + port.getName() + "\".");
             serialPort.close();
             return null;
         }
@@ -550,5 +487,23 @@ public class SerialConnectionProvider implements SerialPortEventListener, Runnab
 
     public void setPortStopbits(int PORT_STOPBITS) {
         this.PORT_STOPBITS = PORT_STOPBITS;
+    }
+
+    private synchronized String read() {
+        // Create a StringBuffer and int to receive input data.
+        StringBuilder inputBuffer = new StringBuilder();
+        byte[] readBuffer = new byte[400];
+        int newData = 0;
+        try {
+            int availableBytes = in.available();
+            if (availableBytes > 0) {
+                // Read the serial port
+                in.read(readBuffer, 0, availableBytes);
+                return new String(readBuffer, 0, availableBytes);
+            }
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+        return "";
     }
 }
