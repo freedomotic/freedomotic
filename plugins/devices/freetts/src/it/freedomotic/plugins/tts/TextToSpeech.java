@@ -4,7 +4,6 @@
  */
 package it.freedomotic.plugins.tts;
 
-
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
 import com.sun.speech.freetts.util.Utilities;
@@ -13,6 +12,8 @@ import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.util.Info;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -31,7 +32,6 @@ public class TextToSpeech extends Protocol {
     protected void onStart() {
         loadVoice();
     }
-    
 
     @Override
     protected void onShowGui() {
@@ -40,24 +40,30 @@ public class TextToSpeech extends Protocol {
 
     public void loadVoice() {
         try {
-            System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-            //System.setProperty("mbrola.base", "de.dfki.lt.freetts.en.us.MbrolaVoiceDirectory");
-            voice = VoiceManager.getInstance().getVoice(
-                    Utilities.getProperty("voice16kName", "kevin16"));
+            File mbrola = new File(Info.FRAMEWORK_DEVICES_PATH + "/it.freedomotic.freetts/data/voices/");
+            if (mbrola.exists()) {
+                System.setProperty("mbrola.base", mbrola.getAbsolutePath().toString());
+                voice = VoiceManager.getInstance().getVoice("mbrola_us1");
+            } else{
+                //use default basic voices
+                System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
+                 voice = VoiceManager.getInstance().getVoice(Utilities.getProperty("voice16kName", "kevin16"));
+            }
             VoiceManager voiceManager = VoiceManager.getInstance();
             Voice[] voices = voiceManager.getVoices();
             for (int i = 0; i < voices.length; i++) {
                 System.out.println("Found TTS voice '" + voices[i].getName() + "' (" + voices[i].getDomain() + " domain)");
             }
             voice.allocate();
-            voice.setPitch(90);
-            voice.setRate(150);
+//            voice.setPitch(90);
+//            voice.setRate(150);
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
     public void say(String message) {
+        System.out.println("say: " + message);
         try {
             new Speaker(message).start();
         } catch (Exception e) {
