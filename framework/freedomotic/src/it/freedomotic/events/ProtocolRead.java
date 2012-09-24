@@ -14,10 +14,11 @@ import it.freedomotic.api.EventTemplate;
  * @author Enrico
  */
 public class ProtocolRead extends EventTemplate {
-
+    String protocol;
 
     public ProtocolRead(Object source, String protocol, String address) {
         this.setSender(source);
+        this.protocol=protocol;
         addProperty("protocol", protocol);
         addProperty("address", address);
         generateEventPayload();
@@ -30,6 +31,6 @@ public class ProtocolRead extends EventTemplate {
 
     @Override
     public String getDefaultDestination() {
-        return "app.event.sensor.protocol.read";
+        return "app.event.sensor.protocol.read."+ protocol.trim().toLowerCase();
     }
 }
