@@ -1,0 +1,15 @@
+
+
+<config>
+    <properties>
+        <property name="name" value="x10"/>
+        <property name="description" value="Enables communication with X10 devices"/>
+        <property name="category" value="protocol"/>
+        <property name="short-name" value="x10"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="protocol.name" value="X10"/>       
+        <property name="gateway.name" value="PMIX35"/> 
+    </properties>
+</config>
+
+                
