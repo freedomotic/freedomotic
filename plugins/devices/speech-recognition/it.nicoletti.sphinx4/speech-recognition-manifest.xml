@@ -1,0 +1,12 @@
+
+
+<config>
+    <properties>
+        <property name="name" value="speech-recognition"/>
+        <property name="description" value="It is a speech-recognition"/>
+        <property name="category" value="speech"/>
+        <property name="short-name" value="recognition"/>
+    </properties>
+</config>
+
+                
