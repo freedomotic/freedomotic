@@ -23,17 +23,9 @@ public class JavaStompClientExample {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-//        if (args.length <4)
-//        {
-//            System.out.println("parameters needed: ActiveMqIP objectName behavior value");
-//            return;            
-//        }
-        String activeMqIp = "192.168.1.2";
-//        String object = "Luce Camera";
-//        String behavior = "powered";
-//        String value = "opposite";
-        String queue = "/queue/app.data.request";
+        String activeMqIp = "192.168.1.3";
+        //create an XML command to send
+        String commandDestination = "/queue/app.data.request";
         String command =
                 "<it.freedomotic.reactions.Command>"
                 + "    <name>A message from STOMP</name>"
@@ -48,24 +40,56 @@ public class JavaStompClientExample {
                 + "        </properties>"
                 + "    </properties>"
                 + "</it.freedomotic.reactions.Command>";
+        //create a event to send (simulate object click)
+        String eventDestination="/topic/VirtualTopic.app.event.sensor.object.behavior.clicked";
+        String event =
+                "<it.freedomotic.events.ObjectReceiveClick>"
+                + "<eventName>ObjectReceiveClick</eventName>"
+                + "<sender>AndroidFrontend</sender>"
+                + "<payload>"
+                + "  <payload>"
+                + "    <it.freedomotic.reactions.Statement>"
+                + "      <logical>AND</logical>"
+                + "      <attribute>click</attribute>"
+                + "      <operand>EQUALS</operand>"
+                + "      <value>SINGLE_CLICK</value>"
+                + "    </it.freedomotic.reactions.Statement>"
+                + "    <it.freedomotic.reactions.Statement>"
+                + "      <logical>AND</logical>"
+                + "      <attribute>object.type</attribute>"
+                + "      <operand>EQUALS</operand>"
+                + "      <value>EnvObject.ElectricDevice.Light</value>"
+                + "    </it.freedomotic.reactions.Statement>"
+                + "    <it.freedomotic.reactions.Statement>"
+                + "      <logical>AND</logical>"
+                + "      <attribute>object.name</attribute>"
+                + "      <operand>EQUALS</operand>"
+                + "      <value>Light-75</value>"
+                + "    </it.freedomotic.reactions.Statement>"
+                + "  </payload>"
+                + "</payload>"
+                + "</it.freedomotic.events.ObjectReceiveClick>";
 
         Client c;
         try {
             c = new Client(activeMqIp, 61666, "", "");
-            //TODO: A sendw could be used, using a header with the queue
-            System.out.println("connected");
+            System.out.println("Connected to broker");
             Map header = new HashMap();
             header.put("transformation", "jms-object-xml");
             header.put("reply-to", "/queue/app.data.response");
+            System.out.println("Subscribe for replies to command");
             c.subscribe("/queue/app.data.response", new Listener() {
 
                 @Override
                 public void message(Map map, String string) {
-                    System.out.println("stomp receives something");
+                    System.out.println("STOMP client receives something...");
                     System.out.println(string);
                 }
             });
-            c.send(queue, command, header);
+            System.out.println("Sending XML command...");
+            c.send(commandDestination, command, header);
+            System.out.println("Sending XML event...");
+            c.send(eventDestination, event, header);
             System.out.println("sent");
         } catch (IOException ex) {
             Logger.getLogger(JavaStompClientExample.class.getName()).log(Level.SEVERE, null, ex);
