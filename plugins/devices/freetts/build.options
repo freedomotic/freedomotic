@@ -1,4 +1,4 @@
-#Sun, 02 Sep 2012 09:54:26 +0200
+#Mon, 24 Sep 2012 17:23:52 +0200
 
 package.type=device
 package.name=it.freedomotic.freetts
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=3
 framework.required.build=x
 build.major=1
-build.number=45
+build.number=58
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
