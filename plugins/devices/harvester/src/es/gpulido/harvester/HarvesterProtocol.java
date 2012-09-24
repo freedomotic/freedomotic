@@ -6,7 +6,6 @@ package es.gpulido.harvester;
 
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.util.Info;
@@ -24,7 +23,7 @@ public class HarvesterProtocol extends Protocol{
 
    Connection conn;
    PreparedStatement prep;
-   String createTable ="CREATE TABLE IF NOT EXIST EVENTS"
+   String createTable ="CREATE TABLE IF NOT EXISTS EVENTS"
                     + " (ID bigint auto_increment, "
                     + "DATE dateTime, "
                     + "OBJECT VARCHAR(200),"
@@ -35,7 +34,8 @@ public class HarvesterProtocol extends Protocol{
                     + " (ID, DATE, OBJECT, BEHAVIOR,VALUE) "
                     + "VALUES (?,?,?,?,?)";            
    public HarvesterProtocol() {
-       super("HarvesterProtocol", "/es.gpulido.harvester/harvester-protocol");       
+       super("HarvesterProtocol", "/es.gpulido.harvester/harvester-manifest.xml");
+       this.setName("Harvester");       
        setPollingWait(-1); // disable polling
    }
     
@@ -47,22 +47,22 @@ public class HarvesterProtocol extends Protocol{
     public void onStart() {
      try {
             Class.forName("org.h2.Driver");
-            
-            //TODO: use config file database name
-            String dbPath = Info.getDevicesPath()+File.separator +"/es.gpulido.harvester/"+"harvester";
-            //Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
-            Connection conn = DriverManager.getConnection("jdbc:h2:"+dbPath, "sa", "");
+            String dbName = configuration.getStringProperty("dbname", "harvester");
+            String dbPath = Info.getDevicesPath()+File.separator +"/es.gpulido.harvester/data/"+dbName;            
+            Connection connection = DriverManager.getConnection("jdbc:h2:"+dbPath, "sa", "");
             // add application code here
-            Statement stat = conn.createStatement();                      
+            Statement stat = connection.createStatement();                      
             //create Table
-            stat.execute(createTable);                
-            this.setDescription("Online");
+            stat.execute(createTable);            
+            this.setDescription("Connected to " +dbName + " database");
         } catch (SQLException ex) {
+            Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, null, ex);            
+            stop();
+        } catch (ClassNotFoundException ex) {            
             Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, null, ex);
-        }
-                
+            this.setDescription("The H2 Driver is not loaded");
+            stop();
+        }                
     }
     @Override
     public void onStop() {
@@ -75,14 +75,21 @@ public class HarvesterProtocol extends Protocol{
         this.setDescription("Disconnected");
         setPollingWait(-1); // disable polling
     }
-    
-    
-    
+            
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
         try {
-            prep = conn.prepareStatement(insertStatement);
-            prep.setTimestamp(0,java.sql.Timestamp.valueOf(c.getProperty("date")));
+            prep = conn.prepareStatement(insertStatement);            
+            prep.setTimestamp(0, 
+            new java.sql.Timestamp(
+                    Integer.parseInt(c.getProperty("year")),
+                    Integer.parseInt(c.getProperty("month")),
+                    Integer.parseInt(c.getProperty("day")),
+                    Integer.parseInt(c.getProperty("hour")),
+                    Integer.parseInt(c.getProperty("minute")),
+                    Integer.parseInt(c.getProperty("second")),
+                    0                    
+                    ));                        
             prep.setString(1,c.getProperty("object"));
             prep.setString(2,c.getProperty("behavior"));
             prep.setString(3,c.getProperty("value"));         
