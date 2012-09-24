@@ -7,7 +7,12 @@
   <timeout>10000</timeout>  
   <properties>
     <properties>      
-      <property name="date" value="I have changed the status"/>
+      <property name="day" value="@event.date.day"/>
+      <property name="month" value="month"/>
+      <property name="year" value="@event.date.year"/>
+      <property name="hour" value="@event.time.hour"/>
+      <property name="hour" value="@event.time.minute"/>
+      <property name="hour" value="@event.time.second"/>   
       <property name="object" value="@event.object.name"/>
       <property name="behavior" value="@event.object.behavior"/>
       <property name="value" value="@event.value"/>
