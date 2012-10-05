@@ -15,6 +15,9 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.util.Info;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -44,10 +47,10 @@ public class TextToSpeech extends Protocol {
             if (mbrola.exists()) {
                 System.setProperty("mbrola.base", mbrola.getAbsolutePath().toString());
                 voice = VoiceManager.getInstance().getVoice("mbrola_us1");
-            } else{
+            } else {
                 //use default basic voices
                 System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-                 voice = VoiceManager.getInstance().getVoice(Utilities.getProperty("voice16kName", "kevin16"));
+                voice = VoiceManager.getInstance().getVoice(Utilities.getProperty("voice16kName", "kevin16"));
             }
             VoiceManager voiceManager = VoiceManager.getInstance();
             Voice[] voices = voiceManager.getVoices();
@@ -64,6 +67,12 @@ public class TextToSpeech extends Protocol {
 
     public void say(String message) {
         System.out.println("say: " + message);
+//        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+//                1, // core size
+//                3, // max size
+//                60, // idle timeout
+//                TimeUnit.SECONDS,
+//                new ArrayBlockingQueue<Runnable>(5)); // queue with a size
         try {
             new Speaker(message).start();
         } catch (Exception e) {
@@ -101,7 +110,7 @@ public class TextToSpeech extends Protocol {
         }
 
         @Override
-        public void run() {
+        public synchronized void run() {
             try {
                 voice.speak(message);
             } catch (Exception e) {
