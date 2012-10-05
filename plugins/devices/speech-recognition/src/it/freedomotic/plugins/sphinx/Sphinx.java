@@ -15,6 +15,7 @@ import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
+import edu.cmu.sphinx.util.props.InternalConfigurationException;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
@@ -46,23 +47,24 @@ public class Sphinx extends Protocol {
     @Override
     public void onStart() {
         ConfigurationManager cm;
-
         cm = new ConfigurationManager(Sphinx.class.getResource("sphinx.config.xml"));
 
-
-        recognizer = (Recognizer) cm.lookup("recognizer");
-        recognizer.allocate();
-
+        try {
+            recognizer = (Recognizer) cm.lookup("recognizer");
+            recognizer.allocate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // start the microphone or exit if the programm if this is not possible
         Microphone microphone = (Microphone) cm.lookup("microphone");
-        if (!microphone.startRecording()) {
-            System.out.println("Cannot start microphone.");
+        if (microphone == null || !microphone.startRecording()) {
+            System.out.println("Cannot start microphone. Check if connected.");
             recognizer.deallocate();
         }
+        System.out.println("5");
 
         System.out.println("Say: (turn on | turn off | switch ) ( light one | light two | light ten | light seven )");
-        // loop the recognition until the programm exits.
-        getGrammar();
+        //getGrammar();
     }
 
     @Override
@@ -108,26 +110,25 @@ public class Sphinx extends Protocol {
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    private String getGrammar() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("#JSGF V1.0;\ngrammar hello;\npublic <command> = ( ");
-        for (Command command : CommandPersistence.getUserCommands()) {
-            buffer.append(command.getName().replace("-", " ") + " | ");
-        }
-        buffer.append(");");
-        Writer output = null;
-        System.out.println(buffer.toString());
-        File file = new File("commands.gram2");
-        System.out.println(file.getAbsolutePath());
-        try {
-            output = new BufferedWriter(new FileWriter(file));
-            output.write(buffer.toString());
-            output.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Sphinx.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return buffer.toString();
-    }
+//    private String getGrammar() {
+//        StringBuilder buffer = new StringBuilder();
+//        buffer.append("#JSGF V1.0;\ngrammar hello;\npublic <command> = ( ");
+//        for (Command command : CommandPersistence.getUserCommands()) {
+//            buffer.append(command.getName().replace("-", " ") + " | ");
+//        }
+//        buffer.append(");");
+//        Writer output = null;
+//        System.out.println(buffer.toString());
+//        File file = new File("commands.gram2");
+//        System.out.println(file.getAbsolutePath());
+//        try {
+//            output = new BufferedWriter(new FileWriter(file));
+//            output.write(buffer.toString());
+//            output.close();
+//        } catch (IOException ex) {
+//            Logger.getLogger(Sphinx.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        return buffer.toString();
+//    }
 }
