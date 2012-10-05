@@ -15,6 +15,7 @@ import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.frontend.utils.PropertiesPanel_1;
+import it.freedomotic.reactions.Command;
 import java.util.Iterator;
 import javax.swing.JTextField;
 
@@ -160,7 +161,7 @@ public class CustomizeTrigger extends javax.swing.JFrame {
             }
         });
 
-        lblTemplateWarning.setText("This trigger is a template so you cannot change it. Save it as new trigger.");
+        lblTemplateWarning.setText("This trigger is a predefined template so you cannot change it. Save it as new trigger.");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

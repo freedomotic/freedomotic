@@ -1,5 +1,6 @@
-package it.freedomotic.frontend.utils;
+package it.freedomotic.frontend.automationeditor;
 
+import it.freedomotic.frontend.automationeditor.ReactionEditor;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.NaturalLanguageProcessor;
 import it.freedomotic.reactions.CommandPersistence;

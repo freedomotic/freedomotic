@@ -9,9 +9,9 @@ import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.objects.BehaviorLogic;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
-import it.freedomotic.util.AWTConverter;
+import it.freedomotic.util.TopologyUtils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Polygon;
@@ -38,28 +38,30 @@ public class ImageDrawer extends PlainDrawer {
     public void renderObjects() {
         for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic obj = (EnvObjectLogic) it.next();
-            if (obj != null) {
-                setTransformContextFor(obj.getPojo());
-                if (obj.getPojo().getCurrentRepresentation().getIcon() != null
-                        && !obj.getPojo().getCurrentRepresentation().getIcon().equalsIgnoreCase("")) {
-                    try {
-                        //WidgetTest widget = new WidgetTest(obj);
-                        //paintImage(widget.draw());
-                        paintImage(obj.getPojo());
-                    } catch (RuntimeException e) {
-                        drawPlainObject(obj);
-                    } finally {
-                        invalidateAnyTransform();
-                    }
-                } else {
+            renderSingleObject(obj);
+
+        }
+    }
+
+    public void renderSingleObject(EnvObjectLogic obj) {
+        if (obj != null) {
+            setTransformContextFor(obj.getPojo());
+            if (obj.getPojo().getCurrentRepresentation().getIcon() != null
+                    && !obj.getPojo().getCurrentRepresentation().getIcon().equalsIgnoreCase("")) {
+                try {
+                    //WidgetTest widget = new WidgetTest(obj);
+                    //paintImage(widget.draw());
+                    paintImage(obj.getPojo());
+                } catch (RuntimeException e) {
                     drawPlainObject(obj);
+                } finally {
+                    invalidateAnyTransform();
                 }
-                if (obj.isChanged()) {
-                    paintObjectDescription(obj);
-                    obj.setChanged(false);
-                }
-                invalidateAnyTransform();
+            } else {
+                drawPlainObject(obj);
             }
+            //paintObjectDescription(obj);
+            invalidateAnyTransform();
         }
     }
 
@@ -99,7 +101,7 @@ public class ImageDrawer extends PlainDrawer {
     public void renderZones() {
         for (ZoneLogic zone : Freedomotic.environment.getZones()) {
             if (zone != null) {
-                Polygon pol = (Polygon) AWTConverter.convertToAWT(zone.getPojo().getShape());
+                Polygon pol = (Polygon) TopologyUtils.convertToAWT(zone.getPojo().getShape());
                 paintTexture(zone.getPojo().getTexture(), pol);
                 if (zone instanceof Room) {
                     Room room = (Room) zone;
@@ -121,9 +123,9 @@ public class ImageDrawer extends PlainDrawer {
 
     private void paintObjectDescription(EnvObjectLogic obj) {
         StringBuilder description = new StringBuilder();
-        if (!obj.getMessage().isEmpty()) {
-            description.append(obj.getMessage()).append("\n");
-        }
+//        if (!obj.getMessage().isEmpty()) {
+//            description.append(obj.getMessage()).append("\n");
+//        }
         description.append(obj.getPojo().getName()).append("\n");
         description.append(obj.getPojo().getDescription()).append("\n");
         for (BehaviorLogic b : obj.getBehaviors()) {
@@ -141,10 +143,11 @@ public class ImageDrawer extends PlainDrawer {
                 "object.description",
                 description.toString(),
                 x, y, 0.0f, 2000);
-        if (!obj.getMessage().isEmpty()) {
-            callout.setColor(Color.red.darker());
-        }
+//        if (!obj.getMessage().isEmpty()) {
+//            callout.setColor(Color.red.darker());
+//        }
         createCallout(callout);
+        setNeedRepaint(true);
 
     }
 

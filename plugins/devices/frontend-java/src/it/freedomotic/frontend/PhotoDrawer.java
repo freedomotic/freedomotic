@@ -8,8 +8,8 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.ResourcesManager;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
-import it.freedomotic.core.EnvObjectLogic;
-import it.freedomotic.util.AWTConverter;
+import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.util.TopologyUtils;
 import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
@@ -51,7 +51,7 @@ public class PhotoDrawer extends ImageDrawer {
     public void renderZones() {
         for (ZoneLogic zone : Freedomotic.environment.getZones()) {
             if (zone != null) {
-                Polygon pol = (Polygon) AWTConverter.convertToAWT(zone.getPojo().getShape());
+                Polygon pol = (Polygon) TopologyUtils.convertToAWT(zone.getPojo().getShape());
                 if (zone instanceof Room) {
                     Room room = (Room) zone;
                 }

@@ -9,9 +9,9 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.model.geometry.FreedomPolygon;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
-import it.freedomotic.util.AWTConverter;
+import it.freedomotic.util.TopologyUtils;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -55,7 +55,7 @@ public class PlainDrawer extends Renderer {
 
     @Override
     public void renderEnvironment() {
-        Polygon poly = (Polygon) AWTConverter.convertToAWT(Freedomotic.environment.getPojo().getShape());
+        Polygon poly = (Polygon) TopologyUtils.convertToAWT(Freedomotic.environment.getPojo().getShape());
 //        System.out.println("Shape: "+Freedomotic.environment.getShape());
 //        System.out.println("Polygon: "+poly);
 
@@ -155,7 +155,7 @@ public class PlainDrawer extends Renderer {
     public void renderZones() {
         for (ZoneLogic zone : Freedomotic.environment.getZones()) {
             if (zone != null) {
-                getContext().drawPolygon((Polygon) AWTConverter.convertToAWT(zone.getPojo().getShape()));
+                getContext().drawPolygon((Polygon) TopologyUtils.convertToAWT(zone.getPojo().getShape()));
             }
         }
     }
@@ -188,7 +188,7 @@ public class PlainDrawer extends Renderer {
         Graphics2D graph2D = (Graphics2D) getContext();
         //rebuildShapeCache(obj);
         //Shape shape = getCachedShape(obj);
-        Shape shape = AWTConverter.convertToAWT(obj.getPojo().getCurrentRepresentation().getShape());
+        Shape shape = TopologyUtils.convertToAWT(obj.getPojo().getCurrentRepresentation().getShape());
         Color fill = Color.decode(obj.getPojo().getCurrentRepresentation().getFillColor());
         Color border = Color.decode(obj.getPojo().getCurrentRepresentation().getBorderColor());
         if (fill != null) {

@@ -83,7 +83,7 @@ public class Handle {
     }
 
     public FreedomPoint addAdiacent() {
-        FreedomPoint added = zone.getPojo().getShape().add(point);
+        FreedomPoint added = zone.getPojo().getShape().insert(point);
         return added;
     }
 }

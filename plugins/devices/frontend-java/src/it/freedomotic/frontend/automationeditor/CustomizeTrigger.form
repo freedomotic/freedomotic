@@ -160,7 +160,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblTemplateWarning">
       <Properties>
-        <Property name="text" type="java.lang.String" value="This trigger is a template so you cannot change it. Save it as new trigger."/>
+        <Property name="text" type="java.lang.String" value="This trigger is a predefined template so you cannot change it. Save it as new trigger."/>
       </Properties>
     </Component>
   </SubComponents>
