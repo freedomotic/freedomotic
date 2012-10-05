@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 import it.freedomotic.model.object.EnvObject;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.restapi.server.interfaces.ObjectsResource;

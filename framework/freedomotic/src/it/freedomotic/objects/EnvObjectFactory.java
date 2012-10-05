@@ -1,5 +1,6 @@
-package it.freedomotic.core;
+package it.freedomotic.objects;
 
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.object.EnvObject;
 import java.net.URLClassLoader;

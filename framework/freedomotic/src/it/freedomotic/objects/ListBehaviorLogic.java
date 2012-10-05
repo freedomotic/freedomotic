@@ -16,6 +16,7 @@ public class ListBehaviorLogic implements BehaviorLogic {
 
     private ListBehavior data;
     private Listener listener;
+    private boolean changed;
 
     public interface Listener {
 
@@ -76,8 +77,11 @@ public class ListBehaviorLogic implements BehaviorLogic {
         return data.getSelected();
     }
 
-    public boolean setSelected(String key) {
-        return data.setSelected(key);
+    public void setSelected(String key) {
+        if (!data.getSelected().equalsIgnoreCase(key)) {
+            data.setSelected(key);
+            setChanged(true);
+        }
     }
 
     public ArrayList<String> getValuesList() {
@@ -92,5 +96,15 @@ public class ListBehaviorLogic implements BehaviorLogic {
     @Override
     public String getValueAsString() {
         return data.toString();
+    }
+
+    @Override
+    public boolean isChanged() {
+        return changed;
+    }
+
+    @Override
+    public void setChanged(boolean value) {
+        changed = value;
     }
 }

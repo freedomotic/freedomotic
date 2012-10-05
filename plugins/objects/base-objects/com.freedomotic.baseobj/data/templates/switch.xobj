@@ -1,9 +1,9 @@
 <it.freedomotic.model.object.EnvObject>
   <name>A Switch</name>
-  <description>A Switchn</description>
+  <description>A Switch</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.ElectricDevice.Switch</type>
-  <hierarchy>it.freedomotic.objects.impl.Switch</hierarchy>
+  <hierarchy>it.freedomotic.objects.impl.ElectricDevice</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

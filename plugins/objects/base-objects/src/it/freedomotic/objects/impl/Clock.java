@@ -4,7 +4,7 @@
  */
 package it.freedomotic.objects.impl;
 
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Trigger;

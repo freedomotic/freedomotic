@@ -27,13 +27,13 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Trigger;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -200,7 +200,14 @@ public final class Resolver {
                     if (js == null) {
                         Freedomotic.logger.severe("Cannot instatiate a JavaScript engine");
                     }
-                    js.eval(script);
+//                    ScriptContext cont = js.getContext();
+//                    cont.setAttribute("name", "JavaScript",
+//                            ScriptContext.ENGINE_SCOPE);
+                    try {
+                        js.eval(script);
+                    } catch (ScriptException scriptException) {
+                        Freedomotic.logger.severe(scriptException.getMessage());
+                    }
                     System.out.println(js.getContext().toString());
 //                    Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to: '" + script + "' the complete value is '" + possibleScript);
 //                    Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
@@ -269,9 +276,16 @@ public final class Resolver {
                     ScriptEngineManager mgr = new ScriptEngineManager();
                     ScriptEngine js = mgr.getEngineByName("JavaScript");
                     String script = possibleScript.substring(1); //removing equal sign on the head
-                    js.eval(script);
-                    //Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to trigger value: '" + script + "' the complete value is '" + possibleScript);
-                    //Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
+                    if (js == null) {
+                        Freedomotic.logger.severe("Cannot instatiate a JavaScript engine");
+                    }
+                    try {
+                        js.eval(script);
+                    } catch (ScriptException scriptException) {
+                        Freedomotic.logger.severe(scriptException.getMessage());
+                    }
+                    Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to trigger value: '" + script + "' the complete value is '" + possibleScript);
+                    Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
                     if (js.get(key) == null) {
                         Freedomotic.logger.severe("Script evaluation in trigger '" + trigger.getName() + "' has returned a null value, maybe the key '" + key + "' is not evaluated properly.");
                     }

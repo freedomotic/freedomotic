@@ -1,4 +1,4 @@
-#Sun, 02 Sep 2012 09:12:31 +0200
+#Tue, 18 Sep 2012 10:56:33 +0200
 
 package.type=device
 package.name=it.nicoletti.test
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=3
 framework.required.build=x
 build.major=1
-build.number=422
+build.number=423
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true

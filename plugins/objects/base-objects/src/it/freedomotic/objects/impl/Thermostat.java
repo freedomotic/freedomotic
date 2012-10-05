@@ -8,7 +8,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
 import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Trigger;
@@ -56,7 +56,7 @@ public class Thermostat extends EnvObjectLogic {
         if (executed) {
             temperature.setValue(rangeValue);
             getPojo().setCurrentRepresentation(0);
-            setChanged(true);
+                setChanged(true);
         }
     }
 
@@ -64,7 +64,7 @@ public class Thermostat extends EnvObjectLogic {
         Freedomotic.logger.config("Setting behavior 'temperature' of object '" + getPojo().getName() + "' to " + value);
         temperature.setValue(value);
         getPojo().setCurrentRepresentation(0);
-        setChanged(true);
+                setChanged(true);
     }
 
     /**

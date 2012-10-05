@@ -1,5 +1,6 @@
 package it.freedomotic.core;
 
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;

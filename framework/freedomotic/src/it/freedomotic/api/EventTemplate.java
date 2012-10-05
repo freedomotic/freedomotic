@@ -98,9 +98,10 @@ public class EventTemplate implements Serializable {
         try {
             Calendar rightNow = Calendar.getInstance();
             //adding date and time data
-            payload.addStatement("date.dayname", rightNow.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.UK));
+            payload.addStatement("date.day.name", rightNow.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.UK));
             payload.addStatement("date.day", rightNow.get(Calendar.DAY_OF_MONTH));
-            payload.addStatement("date.month", rightNow.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.UK));
+            payload.addStatement("date.month.name", rightNow.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.UK));
+            payload.addStatement("date.month", rightNow.get(Calendar.MONTH) +1);
             payload.addStatement("date.year", rightNow.get(Calendar.YEAR));
             payload.addStatement("time.hour", rightNow.get(Calendar.HOUR_OF_DAY));
             payload.addStatement("time.minute", rightNow.get(Calendar.MINUTE));

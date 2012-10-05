@@ -49,7 +49,6 @@ public class StepperMotor extends ElectricDevice {
             setPosition(rangeValue);
             //TODO: set the light graphical representation
             //setCurrentRepresentation(1); //points to the second element in the XML views array (light on image)
-            setChanged(true);
         }
     }
 

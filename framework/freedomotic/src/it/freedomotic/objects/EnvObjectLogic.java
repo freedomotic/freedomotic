@@ -1,14 +1,18 @@
-package it.freedomotic.core;
+package it.freedomotic.objects;
 
+import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.core.Resolver;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.geometry.FreedomShape;
+import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
 import it.freedomotic.objects.BehaviorLogic;
+import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.TriggerPersistence;
@@ -16,7 +20,7 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
-import it.freedomotic.util.AWTConverter;
+import it.freedomotic.util.TopologyUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -70,11 +74,13 @@ public class EnvObjectLogic {
      */
     public Map getExposedProperties() {
         HashMap result = pojo.getExposedProperties();
-        for (BehaviorLogic behavior : behaviors) {
-            //returns the logic value like true or false for boolean
-            result.put("object." + behavior.getName().toLowerCase().trim(), behavior.getValueAsString());
-            //returna an human readable alias like on or off
-            //result.put("object." + behavior.getName().toLowerCase().trim()+ ".alias", behavior.getAlias());
+        return result;
+    }
+
+    public Map getExposedBehaviors() {
+        Map result = new HashMap();
+        for (BehaviorLogic behavior : getBehaviors()) {
+            result.put("object.behavior." + behavior.getName(), behavior.getValueAsString());
         }
         return result;
     }
@@ -134,7 +140,7 @@ public class EnvObjectLogic {
     public synchronized void setChanged(boolean value) {
         if (value == true) {
             this.changed = true;
-            ObjectHasChangedBehavior objectEvent = new ObjectHasChangedBehavior(this, pojo);
+            ObjectHasChangedBehavior objectEvent = new ObjectHasChangedBehavior(this, this);
             //send multicast because an event must be received by all triggers registred on the destination channel
             Freedomotic.logger.config("Object " + this.getPojo().getName() + " changes something in its status (eg: a behavior value)");
             Freedomotic.sendEvent(objectEvent);
@@ -186,9 +192,11 @@ public class EnvObjectLogic {
         createTriggers();
         commandsMapping = new HashMap<String, Command>();
         cacheDeveloperLevelCommand();
+        checkTopology();
     }
 
-    public boolean isChanged() {
+    @Deprecated
+    private boolean isChanged() {
         return changed;
     }
 
@@ -230,18 +238,6 @@ public class EnvObjectLogic {
         return behaviors;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        if (message == null) {
-            return "";
-        } else {
-            return message;
-        }
-    }
-
     public final void setRandomLocation() {
         int randomX = 0 + (int) (Math.random() * Freedomotic.environment.getPojo().getWidth());
         int randomY = 0 + (int) (Math.random() * Freedomotic.environment.getPojo().getHeight());
@@ -255,24 +251,27 @@ public class EnvObjectLogic {
         checkTopology();
     }
 
-    private final void checkTopology() {
+    private void checkTopology() {
         FreedomShape shape = getPojo().getRepresentations().get(0).getShape();
         int xoffset = getPojo().getCurrentRepresentation().getOffset().getX();
         int yoffset = getPojo().getCurrentRepresentation().getOffset().getY();
         //now apply offset to the shape
-        FreedomShape translatedObject = (FreedomPolygon) AWTConverter.translate((FreedomPolygon) shape, xoffset, yoffset);
+        FreedomPolygon translatedObject = (FreedomPolygon) TopologyUtils.translate((FreedomPolygon) shape, xoffset, yoffset);
         for (ZoneLogic zone : Freedomotic.environment.getZones()) {
             //remove from every zone
             zone.getPojo().getObjects().remove(this.getPojo());
-            if (AWTConverter.intersects(translatedObject, zone.getPojo().getShape())) {
+            if (TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
+                System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
                 //add to the zones this object belongs
                 zone.getPojo().getObjects().add(this.getPojo());
                 Freedomotic.logger.config("Object " + getPojo().getName() + " is in zone " + zone.getPojo().getName());
+            } else {
+                System.out.println("object " + getPojo().getName() + " NOT intersects zone " + zone.getPojo().getName());
             }
         }
     }
 
-    protected final boolean executeTrigger(Trigger t) {
+    public final boolean executeTrigger(Trigger t) {
         String behavior = getAction(t.getName());
         if (behavior == null) {
             //Freedomotic.logger.severe("Hardware trigger '" + t.getName() + "' is not bound to any action of object " + this.getPojo().getName());
@@ -303,7 +302,7 @@ public class EnvObjectLogic {
      * false otherways
      */
     protected final boolean executeCommand(final String action, final Config params) {
-        Freedomotic.logger.config("Executing action '" + action + "' of object '" + getPojo().getName() + "'");
+        Freedomotic.logger.fine("Executing action '" + action + "' of object '" + getPojo().getName() + "'");
         if (getPojo().getActAs().equalsIgnoreCase("virtual")) {
             //it's a virtual object like a button, not needed real execution of a command
             Freedomotic.logger.info("The object '" + getPojo().getName() + "' act as virtual device, so its hardware commands are not executed.");
@@ -317,14 +316,15 @@ public class EnvObjectLogic {
         //resolves developer level command parameters like myObjectName = "@event.object.name" -> myObjectName = "Light 1"
         //in this case the parameter in the userLevelCommand are used as basis for the resolution process (the context)
         //along with the parameters getted from the relative behavior (if exists)
-        Freedomotic.logger.config("Environment object '" + pojo.getName() + "' tries to '" + action + "' itself using hardware command '" + command.getName() + "'");
+        Freedomotic.logger.fine("Environment object '" + pojo.getName() + "' tries to '" + action + "' itself using hardware command '" + command.getName() + "'");
         Resolver resolver = new Resolver();
         //adding a resolution context for object that owns this hardware level command. 'owner.' is the prefix of this context
         resolver.addContext("owner.", getExposedProperties());
-        //adding a resolution context for event parameters. 'event.' is the prefix of this context
-        //resolver.addContext("event.", params);
+        resolver.addContext("owner.", getExposedBehaviors());
         try {
             final Command resolvedCommand = resolver.resolve(command); //eg: turn on an X10 device
+//            XStream s = FreedomXStream.getXstream();
+//            System.out.println(s.toXML(resolvedCommand));
             Command result = Freedomotic.sendCommand(resolvedCommand); //blocking wait until timeout
             if (result != null && result.isExecuted()) {
                 return true; //succesfully executed

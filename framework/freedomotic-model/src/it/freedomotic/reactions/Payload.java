@@ -203,5 +203,4 @@ public final class Payload implements Serializable {
         }
         return buffer.toString();
     }
-    
 }

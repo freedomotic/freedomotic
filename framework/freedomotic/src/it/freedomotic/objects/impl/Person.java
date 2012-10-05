@@ -7,7 +7,7 @@ import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.model.object.ListBehavior;
 import it.freedomotic.model.object.PropertiesBehavior;
 import it.freedomotic.objects.BooleanBehaviorLogic;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.ListBehaviorLogic;
 import it.freedomotic.objects.PropertiesBehaviorLogic;
 import it.freedomotic.reactions.TriggerPersistence;

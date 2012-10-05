@@ -4,10 +4,12 @@
  */
 package it.freedomotic.core;
 
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.CommandChannel;
+import it.freedomotic.events.MessageEvent;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.ReactionPersistence;
@@ -53,27 +55,28 @@ public final class TriggerCheck {
 
                 StringBuilder buff = new StringBuilder();
                 try {
-                    if (trigger.isHardwareLevel()) {
-                        if (trigger.isConsistentWith(event)) {
-                            buff.append("[CONSISTENT] hardware level trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
-                            Freedomotic.logger.fine(buff.toString());
-                            changeObjectProperties(trigger, event);
+                    if (trigger.isHardwareLevel()) { //hardware triggers can always fire
+                        Trigger resolved = resolveTrigger(event, trigger);
+                        if (resolved.isConsistentWith(event)) {
+                            buff.append("[CONSISTENT] hardware level trigger '").append(resolved.getName()).append(resolved.getPayload().toString()).append("'\nconsistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
+                            applySensorNotification(resolved, event);
                         }
                     } else {
-                        if (trigger.canFire() && trigger.isConsistentWith(event)) {
-                            buff.append("[CONSISTENT] registred trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
-                            executeRelatedReactions(trigger, event);
+                        if (trigger.canFire()) {
+                            Trigger resolved = resolveTrigger(event, trigger);
+                            if (resolved.isConsistentWith(event)) {
+                                buff.append("[CONSISTENT] registred trigger '").append(resolved.getName()).append(resolved.getPayload().toString()).append("'\nconsistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
+                                executeTriggeredAutomations(resolved, event);
+                            }
                         }
                     }
                     //if we are here the trigger is not consistent
                     buff.append("[NOT CONSISTENT] registred trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
-                    Freedomotic.logger.fine(buff.toString());
+                    Freedomotic.logger.config(buff.toString());
                     return false;
                 } catch (Exception e) {
                     Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
                     return false;
-                } finally {
-                    Freedomotic.logger.config(buff.toString());
                 }
             }
         };
@@ -88,19 +91,19 @@ public final class TriggerCheck {
         return false;
     }
 
-    private synchronized static void changeObjectProperties(Trigger trigger, final EventTemplate event) {
+    private static Trigger resolveTrigger(final EventTemplate event, final Trigger trigger) {
         Resolver resolver = new Resolver();
+        event.getPayload().addStatement("description", trigger.getDescription()); //embedd the trigger description to the event payload
         resolver.addContext("event.", event.getPayload());
-        Trigger resolved = null;
-        try {
-            resolved = resolver.resolve(trigger);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        String protocol = null;
-        String address = null;
-        ArrayList<EnvObjectLogic> objectList = null;
+        return resolver.resolve(trigger);
+    }
 
+    private synchronized static void applySensorNotification(Trigger resolved, final EventTemplate event) {
+        String protocol;
+        String address;
+        ArrayList<EnvObjectLogic> objectList = new ArrayList<EnvObjectLogic>();
+
+        //join device: add the object on the map if not already there
         protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
         address = resolved.getPayload().getStatements("event.address").get(0).getValue();
         if (protocol != null && address != null) {
@@ -108,75 +111,73 @@ public final class TriggerCheck {
             String name = event.getProperty("object.name");
             objectList = EnvObjectPersistence.getObject(protocol, address);
             if (objectList.isEmpty()) { //there isn't an object with this protocol and address
-                Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + trigger.getName() + ")");
+                Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + resolved.getName() + ")");
                 if (clazz != null && !clazz.isEmpty()) {
-                    JoinDevice.join(clazz, name, protocol, address);
+                    EnvObjectLogic joined = JoinDevice.join(clazz, name, protocol, address);
+                    objectList.add(joined);
                 }
             }
         }
-        //now we have the target object on the map for sure
+        //now we have the target object on the map for sure. Apply changes notified by sensors
         boolean done = false;
         for (EnvObjectLogic object : objectList) {
             boolean executed = object.executeTrigger(resolved); //user trigger->behavior mapping to apply the trigger to this object
             if (executed) {
                 done = true;
                 long elapsedTime = System.currentTimeMillis() - event.getCreation();
-                Freedomotic.logger.info("Sensor notification '" + trigger.getName() + "' applied to object '"
+                Freedomotic.logger.info("Sensor notification '" + resolved.getName() + "' applied to object '"
                         + object.getPojo().getName() + "' in " + elapsedTime + "ms.");
             }
         }
         if (!done) {
-            Freedomotic.logger.warning("Hardware trigger " + trigger.getName() + " is not associated to any object.");
+            Freedomotic.logger.warning("Hardware trigger " + resolved.getName() + " is not associated to any object.");
         }
     }
 
-    private static void executeRelatedReactions(final Trigger trigger, final EventTemplate event) {
+    private static void executeTriggeredAutomations(final Trigger trigger, final EventTemplate event) {
         Iterator it = ReactionPersistence.iterator();
         //Searching for reactions using this trigger
         boolean found = false;
         while (it.hasNext()) {
             Reaction reaction = (Reaction) it.next();
-            //the trigger defined in the current reaction
             Trigger reactionTrigger = reaction.getTrigger();
-            //Reaction resolved = null;
             //found a related reaction. This must be executed
             if (trigger.equals(reactionTrigger)) {
                 trigger.setExecuted();
                 found = true;
-                Freedomotic.logger.config("Try to execute reaction " + reaction.toString());
+                Freedomotic.logger.fine("Try to execute reaction " + reaction.toString());
                 try {
-                    //resolves temporary values in command like @event.date replacing freedomotic variables with string or numerical values
-                    //new the trigger description can be used in commands (as it was the event description) with @event.description
-                    event.getPayload().addStatement("description", trigger.getDescription()); //embedd the trigger description to the event payload
-//                SchedulingData data = new SchedulingData(event.getCreation());
-//                data.getLog().append(buff.toString());
-//                resolved.setScheduling(data);
-//                Freedomotic.getScheduler().schedule(resolved);
                     //executes the commands in sequence (only the first sequence is used) 
                     //if more then one sequence is needed it can be done with two reactions with the same trigger
-                    Resolver resolver = new Resolver();
-                    resolver.addContext("event.", event.getPayload());
-                    EnvObjectLogic targetObject = EnvObjectPersistence.getObject(event.getProperty("object.name"));
-                    for (Command command : reaction.getCommands()) {
-                        if (targetObject != null) {
-                            resolver.addContext("current.", targetObject.getExposedProperties());
-                        }
-                        Command resolvedCommand = resolver.resolve(command);
+                    for (final Command command : reaction.getCommands()) {
                         if (command.getReceiver().equalsIgnoreCase(BehaviorManager.getMessagingChannel())) {
+                            Resolver commandResolver = new Resolver();
+                            //this command is for an object so it needs only to know only about event parameters
+                            commandResolver.addContext("event.", event.getPayload());
+                            Command resolvedCommand = commandResolver.resolve(command);
                             //doing so we bypass messaging system gaining better performances
                             BehaviorManager.parseCommand(resolvedCommand);
                         } else {
+                            Resolver commandResolver = new Resolver();
+                            commandResolver.addContext("event.", event.getPayload());
+                            //if the event has a target object we include also object info
+                            EnvObjectLogic targetObject = EnvObjectPersistence.getObject(event.getProperty("object.name"));
+                            if (targetObject != null) {
+                                commandResolver.addContext("current.", targetObject.getExposedProperties());
+                                commandResolver.addContext("current.", targetObject.getExposedBehaviors());
+                            }
+                            Command resolvedCommand = commandResolver.resolve(command);
                             //it's not a user level command for objects (eg: turn it on), it is for another kind of actuator
                             Command reply = Freedomotic.sendCommand(resolvedCommand); //blocking wait (in this case in a thread) until executed
-                            if (reply != null) {
-                                if (reply.isExecuted() == true) {
-                                    Freedomotic.logger.config("Executed succesfully " + command.getName());
-                                } else {
-                                    Freedomotic.logger.config("Unable to execute " + command.getName());
-                                }
-                            } else {
-                                Freedomotic.logger.config("Unreceived reply within given time ("
+                            if (reply == null) {
+                                Freedomotic.logger.fine("Unreceived reply within given time ("
                                         + command.getReplyTimeout() + "ms) for command " + command.getName());
+                            } else {
+                                if (reply.isExecuted()) {
+                                    Freedomotic.logger.fine("Executed succesfully " + command.getName());
+                                } else {
+                                    Freedomotic.logger.fine("Unable to execute " + command.getName());
+                                }
                             }
                         }
                     }
@@ -185,23 +186,15 @@ public final class TriggerCheck {
                     Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
                     return;
                 }
-                Freedomotic.logger.info("Executing reaction '" + reaction.toString()
-                        + "' takes " + (System.currentTimeMillis() - event.getCreation()) + "ms.");
+                String info = "Executing automation '" + reaction.toString()
+                        + "' takes " + (System.currentTimeMillis() - event.getCreation()) + "ms.";
+                Freedomotic.logger.info(info);
+                MessageEvent message = new MessageEvent(null, info);
+                Freedomotic.sendEvent(message);
             }
         }
         if (!found) {
             Freedomotic.logger.warning("No reaction bound to trigger '" + trigger.getName() + "'");
         }
     }
-//    private static void displayOnFrontend(String message) {
-//        final Command c = new Command();
-//        c.setName("A callout from the scheduler");
-//        c.setDelay(0);
-//        c.setExecuted(true);
-//        c.setEditable(false);
-//        c.setReceiver("app.actuators.frontend.javadesktop.in");
-//        c.setProperty("callout-message", message);
-//        //this method is supposed to be called in threads so it not instantiate others
-//        Freedomotic.sendCommand(c);
-//    }
 }

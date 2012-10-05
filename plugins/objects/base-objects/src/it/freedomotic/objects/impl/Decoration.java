@@ -1,6 +1,6 @@
 package it.freedomotic.objects.impl;
 
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 
 /**
  *

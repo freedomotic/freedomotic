@@ -25,6 +25,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.EventChannel;
 import it.freedomotic.app.Profiler;
+import it.freedomotic.core.Resolver;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -77,6 +78,10 @@ public final class Trigger implements BusConsumer, Cloneable {
 
     public boolean isHardwareLevel() {
         return hardwareLevel;
+    }
+
+    public void setIsHardwareLevel(boolean hardwareLevel) {
+        this.hardwareLevel = hardwareLevel;
     }
 
     public void setDescription(String sender) {
@@ -227,6 +232,7 @@ public final class Trigger implements BusConsumer, Cloneable {
      * trigger)
      */
     public void onMessage(ObjectMessage message) {
+        long start = System.currentTimeMillis();
         Object payload = null;
         try {
             payload = message.getObject();
@@ -235,8 +241,7 @@ public final class Trigger implements BusConsumer, Cloneable {
         }
         if (payload instanceof EventTemplate) {
             EventTemplate event = (EventTemplate) payload;
-            Freedomotic.logger.config("Trigger '" + this.getName() + "' filters event '" + event.getEventName() + "' on channel " + this.getChannel());
-            long start = System.currentTimeMillis();
+            Freedomotic.logger.fine("Trigger '" + this.getName() + "' filters event '" + event.getEventName() + "' on channel " + this.getChannel());
             boolean testPassed = TriggerCheck.check(event, this);
             long end = System.currentTimeMillis();
             Profiler.appendTriggerCheckingTime(end - start);
@@ -255,6 +260,7 @@ public final class Trigger implements BusConsumer, Cloneable {
             clonePayload.addStatement(original.getLogical(), original.getAttribute(), original.getOperand(), original.getValue());
         }
         clone.setPayload(clonePayload);
+        clone.setIsHardwareLevel(isHardwareLevel());
         clone.setMaxExecutions(getMaxExecutions());
         clone.setNumberOfExecutions(getNumberOfExecutions());
         clone.setSuspensionTime(getSuspensionTime());
@@ -264,7 +270,9 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     public void unregister() {
-        busChannel.unsubscribe();
+        if (busChannel != null) {
+            busChannel.unsubscribe();
+        }
     }
 
     public String getUUID() {

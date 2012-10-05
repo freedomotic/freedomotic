@@ -23,7 +23,7 @@ public class FreedomPolygon implements FreedomShape, Serializable {
         points.add(point);
     }
 
-    public FreedomPoint add(FreedomPoint nextTo) {
+    public FreedomPoint insert(FreedomPoint nextTo) {
         int index = points.indexOf(nextTo);
         FreedomPoint currentPoint = null;
         FreedomPoint nextPoint = null;
@@ -52,5 +52,16 @@ public class FreedomPolygon implements FreedomShape, Serializable {
         } else {
             return new ArrayList<FreedomPoint>();
         }
+    }
+    
+    @Override
+    public String toString(){
+        StringBuilder buff = new StringBuilder();
+        buff.append(points.size() + " points ");
+        for (FreedomPoint p : points) {
+            buff.append("(").append(p.getX()).append(",").append(p.getY()).append(")");
+        }
+        return buff.toString();
+        
     }
 }
