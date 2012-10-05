@@ -1,0 +1,13 @@
+
+
+<config>
+    <properties>
+        <property name="name" value="Google Calendar UI"/>
+        <property name="description" value="Uses Google Calendar to define time based automations"/>
+        <property name="category" value="google"/>
+        <property name="short-name" value="calendar"/>
+        <property name="calendar-id" value="mp89m2b7gpih0s6hkijkm7ci6c@group.calendar.google.com"/>
+    </properties>
+</config>
+
+                
