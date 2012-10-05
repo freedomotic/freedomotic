@@ -37,7 +37,7 @@ public class Plugin implements Client {
     protected boolean isRunning = false;
     private String pluginName;
     private String type = "Plugin";
-    protected Config configuration;
+    public Config configuration;
     protected JFrame gui;
     private static final String SEPARATOR = "-";
     //config file parameters
@@ -220,13 +220,17 @@ public class Plugin implements Client {
         try {
             plugin.load(new FileInputStream(new File(pluginFolder + "/PACKAGE")));
 
+            System.out.println(plugin.toString());
+
             int requiredMajor = getVersionProperty(plugin, "framework.required.major");
-            int requiredMinor = requiredMajor = getVersionProperty(plugin, "framework.required.minor");
-            int requiredBuild = requiredMajor = getVersionProperty(plugin, "framework.required.build");
+            int requiredMinor = getVersionProperty(plugin, "framework.required.minor");
+            int requiredBuild = getVersionProperty(plugin, "framework.required.build");
             //checking framework version compatibility
-            if ((getLaterVersion(
-                    Info.getVersion(),
-                    requiredMajor + "." + requiredMinor + "." + requiredBuild) >= 0)) {
+            //required version must be older (or equal) then current version
+            if ((getOldestVersion(
+                    requiredMajor + "." + requiredMinor + "." + requiredBuild,
+                    Info.getVersion())
+                    <= 0)) {
                 return true;
             }
 
@@ -239,16 +243,20 @@ public class Plugin implements Client {
         }
         return false;
     }
-    
 
-    private static int getVersionProperty(Properties properties, String property) {
-        //if property is not specified returns 99999
+    private static int getVersionProperty(Properties properties, String key) {
+        //if property is not specified returns Integer.MAX_VALUE so it never match
         //if is a string returns 0 to match any value with "x"
         try {
-            int value = Integer.parseInt(properties.getProperty(property, "999999"));
+            int value;
+            if (properties.getProperty(key).equalsIgnoreCase("x")) {
+                value = 0;
+            } else {
+                value = Integer.parseInt(properties.getProperty(key, new Integer(Integer.MAX_VALUE).toString()));
+            }
             return value;
         } catch (NumberFormatException numberFormatException) {
-            return 0;
+            throw new IllegalArgumentException();
         }
     }
 
@@ -262,7 +270,7 @@ public class Plugin implements Client {
             //already installed
             //now check for version
             Plugin plugin = (Plugin) client;
-            return Plugin.getLaterVersion(plugin.getVersion(), version);
+            return Plugin.getOldestVersion(plugin.getVersion(), version);
         } else {
             //not installed
             return -1;
@@ -270,13 +278,16 @@ public class Plugin implements Client {
     }
 
     /**
+     * Calculates the oldest version between two version string
+     * MAJOR.MINOR.BUILD (eg: 5.3.1)
      *
-     *
-     * @param str1
-     * @param str2
-     * @return
+     * @param str1 first version string 5.3.0
+     * @param str2 second version string 5.3.1
+     * @return -1 if str1 is older then str2, 0 if str1 equals str2, 1 if str2
+     * is older then str1
      */
-    public static int getLaterVersion(String str1, String str2) {
+    public static int getOldestVersion(String str1, String str2) {
+        //System.out.println("VERSION: " + str1 + " - " + str2);
         String[] vals1 = str1.split("\\.");
         String[] vals2 = str2.split("\\.");
         int i = 0;
@@ -288,8 +299,8 @@ public class Plugin implements Client {
             int diff = new Integer(vals1[i]).compareTo(new Integer(vals2[i]));
             return diff < 0 ? -1 : diff == 0 ? 0 : 1;
         }
-
-        return vals1.length < vals2.length ? -1 : vals1.length == vals2.length ? 0 : 1;
+        int result = vals1.length < vals2.length ? -1 : vals1.length == vals2.length ? 0 : 1;
+        return result;
     }
 
     protected void onShowGui() {

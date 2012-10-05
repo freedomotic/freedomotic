@@ -4,8 +4,10 @@
  */
 package it.freedomotic.events;
 
+import com.thoughtworks.xstream.XStream;
 import it.freedomotic.api.EventTemplate;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.persistence.FreedomXStream;
 import java.util.Iterator;
 import java.util.Map.Entry;
 

@@ -3,8 +3,6 @@ package it.freedomotic.objects;
 import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.object.EnvObject;
-import it.freedomotic.core.EnvObjectFactory;
-import it.freedomotic.core.EnvObjectLogic;
 import it.freedomotic.model.object.Representation;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.util.DOMValidateDTD;
@@ -143,7 +141,14 @@ public class EnvObjectPersistence {
         Freedomotic.logger.info("---- Loading object file named " + file.getName() + " from folder '" + file.getAbsolutePath() + "' ----");
         //validate the object against a predefined DTD
         String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/object.dtd");
-        EnvObject pojo = (EnvObject) xstream.fromXML(xml);
+        EnvObject pojo = null;
+        try {
+            pojo = (EnvObject) xstream.fromXML(xml);
+            System.out.println(pojo);
+        } catch (Exception e) {
+            Freedomotic.logger.severe("XML parsing error. Readed XML is \n" + xml);
+            
+        }
         EnvObjectLogic objectLogic = EnvObjectFactory.create(pojo);
         Freedomotic.logger.info("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
         //add(objectLogic);
@@ -232,7 +237,7 @@ public class EnvObjectPersistence {
         EnvObjectLogic envObjectLogic = obj;
         if (MAKE_UNIQUE) {
             //defensive copy to not affect the passed object with the changes
-            EnvObject  pojoCopy = SerialClone.clone(obj.getPojo());
+            EnvObject pojoCopy = SerialClone.clone(obj.getPojo());
             pojoCopy.setName(obj.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
             pojoCopy.setProtocol("unknown");
             pojoCopy.setPhisicalAddress("unknown");

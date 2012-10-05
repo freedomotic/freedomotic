@@ -99,6 +99,7 @@ public class ResolverTest {
         c.getPayload().addStatement("seven", "= seven=\"Current temperature is @event.temperature celsius degrees. In fahrenheit is \" + Math.floor(((@event.temperature+40)*1.8)-40) + \" degrees.\";");
         c.getPayload().addStatement("eight", "= eight=10+5;"); //this always returns a double
         c.getPayload().addStatement("nine", "= nine=Math.floor(10+5).toString();"); //print the number as is to avoid conversion to double
+        c.getPayload().addStatement("SET", "behaviorValue", "EQUALS", "= if (@event.temperature > 20) behaviorValue=\"it's hot\"; else behaviorValue=\"it's cold\";");
         GenericEvent event = new GenericEvent(this);
         event.addProperty("zone", "Kitchen");
         event.addProperty("temperature", "25");
@@ -119,5 +120,6 @@ public class ResolverTest {
         assertEquals("Current temperature is 25 celsius degrees. In fahrenheit is 77 degrees.", result.getPayload().getStatements("seven").get(0).getValue());
         assertEquals("15.0", result.getPayload().getStatements("eight").get(0).getValue());
         assertEquals("15", result.getPayload().getStatements("nine").get(0).getValue());
+         assertEquals("it's hot", result.getPayload().getStatements("behaviorValue").get(0).getValue());
     }
 }

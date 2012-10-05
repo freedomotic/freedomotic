@@ -12,6 +12,7 @@ public class RangedIntBehaviorLogic implements BehaviorLogic {
 
     private final RangedIntBehavior data;
     private Listener listener;
+    private boolean changed;
 
     public interface Listener {
 
@@ -98,7 +99,10 @@ public class RangedIntBehaviorLogic implements BehaviorLogic {
     }
 
     public void setValue(int inputValue) {
-        data.setValue(inputValue);
+        if (data.getValue() != inputValue) {
+            data.setValue(inputValue);
+            setChanged(true);
+        }
     }
 
     @Override
@@ -136,5 +140,15 @@ public class RangedIntBehaviorLogic implements BehaviorLogic {
     @Override
     public boolean isActive() {
         return data.isActive();
+    }
+
+    @Override
+    public boolean isChanged() {
+        return changed;
+    }
+
+    @Override
+    public void setChanged(boolean value) {
+        changed = value;
     }
 }

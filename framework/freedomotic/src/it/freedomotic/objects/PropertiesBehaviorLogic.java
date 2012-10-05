@@ -11,6 +11,7 @@ public class PropertiesBehaviorLogic implements BehaviorLogic {
 
     private PropertiesBehavior data;
     private Listener listener;
+    private boolean changed;
     
     public interface Listener {
         
@@ -63,5 +64,15 @@ public class PropertiesBehaviorLogic implements BehaviorLogic {
 
     public void addListener(Listener propertiesBehaviorListener) {
         listener = propertiesBehaviorListener;
+    }
+    
+        @Override
+    public boolean isChanged() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setChanged(boolean value) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

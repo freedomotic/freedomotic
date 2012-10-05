@@ -4,12 +4,14 @@
  */
 package it.freedomotic.objects.impl;
 
+import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.BooleanBehavior;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.BooleanBehaviorLogic;
+import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
@@ -175,7 +177,23 @@ public class ElectricDevice extends EnvObjectLogic {
         clicked.getPayload().addStatement("object.name", this.getPojo().getName());
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
+        
+        Trigger turnsOn = new Trigger();
+        turnsOn.setName(this.getPojo().getName() + " turns on");
+        turnsOn.setChannel("app.event.sensor.object.behavior.change");
+        turnsOn.getPayload().addStatement("object.name", this.getPojo().getName());
+        turnsOn.getPayload().addStatement("object.behavior."+BEHAVIOR_POWERED, BooleanBehavior.VALUE_TRUE);
+//        XStream stream = FreedomXStream.getXstream();
+//        System.out.println(stream.toXML(turnsOn));
+        
+        Trigger turnsOff = new Trigger();
+        turnsOff.setName(this.getPojo().getName() + " turns off");
+        turnsOff.setChannel("app.event.sensor.object.behavior.change");
+        turnsOff.getPayload().addStatement("object.name", this.getPojo().getName());
+        turnsOff.getPayload().addStatement("object.behavior."+BEHAVIOR_POWERED, BooleanBehavior.VALUE_FALSE);
 
         TriggerPersistence.add(clicked);
+        TriggerPersistence.add(turnsOn);
+        TriggerPersistence.add(turnsOff);
     }
 }

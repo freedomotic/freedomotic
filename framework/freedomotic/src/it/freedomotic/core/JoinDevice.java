@@ -4,6 +4,7 @@
  */
 package it.freedomotic.core;
 
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.api.Client;
 import it.freedomotic.app.Freedomotic;
@@ -52,29 +53,30 @@ public final class JoinDevice implements BusConsumer {
         channel.consumeFrom(getMessagingChannel());
     }
 
-    protected static void join(String clazz, String name, String protocol, String address) {
+    protected static EnvObjectLogic join(String clazz, String name, String protocol, String address) {
+        EnvObjectLogic loaded = null;
         try {
             ObjectPlugin client = (ObjectPlugin) ClientStorage.get(clazz);
             if (client == null) {
                 Freedomotic.logger.warning("Doesen't exist an object class called " + clazz);
-                return;
+                return null;
             }
             File exampleObject = client.getExample();
-            EnvObjectLogic loaded = EnvObjectPersistence.loadObject(exampleObject);
+            loaded = EnvObjectPersistence.loadObject(exampleObject);
             //changing the name and other properties invalidates related trigger and commands
             //call init() again after this changes
             if (name != null && !name.isEmpty()) {
                 loaded.getPojo().setName(name);
             } else {
-                loaded.getPojo().setName(protocol + "-" + UidGenerator.getNextStringUid());
+                loaded.getPojo().setName(protocol);
             }
             loaded.getPojo().setProtocol(protocol);
             loaded.getPojo().setPhisicalAddress(address);
             loaded.setRandomLocation();
 
-            EnvObjectPersistence.add(loaded, EnvObjectPersistence.MAKE_NOT_UNIQUE);
+            EnvObjectPersistence.add(loaded, EnvObjectPersistence.MAKE_UNIQUE);
             
-            //use the preferred mapping of the protocol plugin
+            //set the PREFERRED MAPPING of the protocol plugin (if any is defined in its manifest)
             Client addon = Freedomotic.clients.getClientByProtocol(protocol);
             if (addon != null) {
                 for (int i = 0; i < addon.getConfiguration().getTuples().size(); i++) {
@@ -101,6 +103,7 @@ public final class JoinDevice implements BusConsumer {
         } catch (IOException ex) {
             Logger.getLogger(JoinDevice.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return loaded;
     }
 
     @Override

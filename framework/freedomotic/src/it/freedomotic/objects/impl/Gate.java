@@ -1,23 +1,24 @@
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.model.geometry.FreedomShape;
+import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.model.object.RangedIntBehavior;
 import it.freedomotic.model.object.Representation;
+import it.freedomotic.objects.BehaviorLogic;
 import it.freedomotic.objects.BooleanBehaviorLogic;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Trigger;
-import it.freedomotic.util.AWTConverter;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
+import it.freedomotic.util.TopologyUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -120,26 +121,23 @@ public class Gate extends EnvObjectLogic {
     }
 
     @Override
-    public final void setChanged(final boolean isChanged) {
-        //first update the object
-        if (isChanged) {
-            //update the room that can be reached
-            for (ZoneLogic z : Freedomotic.environment.getZones()) {
-                if (z instanceof Room) {
-                    final Room room = (Room) z;
-                    //the gate is opened or closed we update the reachable rooms
-                    room.visit();
-                }
+    public final void setChanged(boolean value) {
+        //update the room that can be reached
+        for (ZoneLogic z : Freedomotic.environment.getZones()) {
+            if (z instanceof Room) {
+                final Room room = (Room) z;
+                //the gate is opened or closed we update the reachable rooms
+                room.visit();
             }
-            for (ZoneLogic z : Freedomotic.environment.getZones()) {
-                if (z instanceof Room) {
-                    final Room room = (Room) z;
-                    room.updateDescription();
-                }
+        }
+        for (ZoneLogic z : Freedomotic.environment.getZones()) {
+            if (z instanceof Room) {
+                final Room room = (Room) z;
+                room.updateDescription();
             }
         }
         //then executeCommand the super which notifies the event
-        super.setChanged(isChanged);
+        super.setChanged(true);
     }
 
     public boolean isOpen() {
@@ -153,7 +151,7 @@ public class Gate extends EnvObjectLogic {
     public Room getTo() {
         return to;
     }
-    
+
     @Override
     public void setLocation(int x, int y) {
         super.setLocation(x, y);
@@ -164,21 +162,34 @@ public class Gate extends EnvObjectLogic {
         //checks the intersection with the first view in the list
         //others views are ignored!!!
         Representation representation = getPojo().getRepresentations().get(0);
-        FreedomShape pojoShape = representation.getShape();
+        FreedomPolygon pojoShape = (FreedomPolygon) representation.getShape();
         int xoffset = representation.getOffset().getX();
         int yoffset = representation.getOffset().getY();
-        double rotation = Math.toRadians(representation.getRotation());
+//        double rotation = Math.toRadians(representation.getRotation());
         from = null;
         to = null;
         //now apply offset and rotation to gate the shape
-        AffineTransform transform = new AffineTransform();
-        transform.translate(xoffset, yoffset);
-        transform.rotate(rotation);
-        Shape gateShape = transform.createTransformedShape(AWTConverter.convertToAWT(pojoShape));
-
+//        AffineTransform transform = new AffineTransform();
+//        transform.translate(xoffset, yoffset);
+//        transform.rotate(rotation);
+//        Shape gateShape = transform.createTransformedShape(TopologyUtils.convertToAWT(pojoShape));
+//
+//        for (Room room : Freedomotic.environment.getRooms()) {
+//            Shape roomPolygon = TopologyUtils.convertToAWT(room.getPojo().getShape());
+//            if (roomPolygon.intersects(gateShape.getBounds2D())) {
+//                if (from == null) {
+//                    from = (Room) room;
+//                    to = (Room) room;
+//                } else {
+//                    to = (Room) room;
+//                }
+//            }
+//        }
+        FreedomPolygon objShape =
+                TopologyUtils.rotate(
+                TopologyUtils.translate(pojoShape, xoffset, yoffset), (int) representation.getRotation());
         for (Room room : Freedomotic.environment.getRooms()) {
-            Shape roomPolygon = AWTConverter.convertToAWT(room.getPojo().getShape());
-            if (roomPolygon.intersects(gateShape.getBounds2D())) {
+            if (TopologyUtils.intersects(objShape, room.getPojo().getShape())) {
                 if (from == null) {
                     from = (Room) room;
                     to = (Room) room;
@@ -339,13 +350,13 @@ public class Gate extends EnvObjectLogic {
         turnsOpen.setName(this.getPojo().getName() + " becomes open");
         turnsOpen.setChannel("app.event.sensor.object.behavior.change");
         turnsOpen.getPayload().addStatement("object.name", this.getPojo().getName());
-        turnsOpen.getPayload().addStatement("open", "true");
+        turnsOpen.getPayload().addStatement("object.behavior.open", "true");
 
         Trigger turnsClosed = new Trigger();
         turnsClosed.setName(this.getPojo().getName() + " becomes closed");
         turnsClosed.setChannel("app.event.sensor.object.behavior.change");
         turnsClosed.getPayload().addStatement("object.name", this.getPojo().getName());
-        turnsClosed.getPayload().addStatement("open", "false");
+        turnsClosed.getPayload().addStatement("object.behavior.open", "false");
 
         TriggerPersistence.add(clicked);
         TriggerPersistence.add(turnsOpen);

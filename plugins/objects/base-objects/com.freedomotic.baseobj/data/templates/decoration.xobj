@@ -3,7 +3,7 @@
   <description>A decorative green plant</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.Decoration</type>
-  <hierarchy>it.freedomotic.objects.impl.EnvObjectLogic</hierarchy>
+  <hierarchy>it.freedomotic.objects.impl.EmptyObject</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

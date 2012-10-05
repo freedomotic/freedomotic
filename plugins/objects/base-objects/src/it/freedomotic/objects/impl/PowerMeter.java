@@ -135,7 +135,7 @@ public class PowerMeter extends ElectricDevice {
         Freedomotic.logger.config("Setting behavior 'current' of object '" + getPojo().getName() + "' to " + value);
         current.setValue(value);
         getPojo().setCurrentRepresentation(0);
-        setChanged(true);
+            setChanged(true);
     }
 
     public void executeSetVoltage(int rangeValue, Config params) {

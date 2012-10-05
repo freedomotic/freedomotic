@@ -6,7 +6,7 @@ package it.freedomotic.plugins;
 
 import it.freedomotic.api.Sensor;
 import it.freedomotic.exceptions.UnableToExecuteException;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.impl.Person;
 import it.freedomotic.objects.EnvObjectPersistence;
 import java.awt.Point;
@@ -69,7 +69,6 @@ public class TrackingRandomPosition extends Sensor {
                 Point position = inventPosition();
                 person.getPojo().setCurrentRepresentation(0);
                 person.getPojo().getCurrentRepresentation().setOffset((int)position.getX(), (int)position.getY());
-                person.setChanged(true);
             }
         }
     }

@@ -63,8 +63,19 @@ public class DevicesLoader implements AddonLoaderInterface {
                                 log.info("---- " + clazz.getSimpleName() + " ----");
                                 try {
                                     if (Plugin.isCompatible(path)) {
+                                        System.out.println(clazz.getCanonicalName() + " loaded");
                                         plugin = (Plugin) clazz.newInstance();
                                         mergePackageConfiguration(plugin, path);
+                                        if (!ClientStorage.isLoaded(plugin)) {
+                                            log.info(plugin.getName() + " added to plugins list.");
+                                            Freedomotic.logger.info("\n");
+                                            Freedomotic.clients.enqueue(plugin);
+                                        } else {
+                                            log.warning("This plugin is already loaded or not valid. Skip it.");
+                                            Freedomotic.logger.info("\n");
+                                            plugin = null; //discard this entry
+                                            Freedomotic.clients.createPlaceholder(clazz.getSimpleName(), "Plugin", null);
+                                        }
                                     } else {
                                         Freedomotic.logger.severe("Plugin in " + path.getAbsolutePath()
                                                 + " is not compatible with this framework version.");
@@ -77,18 +88,8 @@ public class DevicesLoader implements AddonLoaderInterface {
                                 } catch (Exception e) {
                                     Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
                                 }
-                                if (!ClientStorage.isLoaded(plugin)) {
-                                    log.info(plugin.getName() + " added to plugins list.");
-                                    Freedomotic.logger.info("\n");
-                                    Freedomotic.clients.enqueue(plugin);
-                                } else {
-                                    log.warning("This plugin is already loaded or not valid. Skip it.");
-                                    Freedomotic.logger.info("\n");
-                                    plugin = null; //discard this entry
-                                    Freedomotic.clients.createPlaceholder(clazz.getSimpleName(), "Plugin", null);
-                                }
                             } else {
-                                //Is not a valid plugin. Skip it
+                                //Is not a valid plugin class. Skip it
                             }
                         } catch (Exception exception) {
                             log.warning("Exception raised while loading this plugin. This plugin is not loaded.");

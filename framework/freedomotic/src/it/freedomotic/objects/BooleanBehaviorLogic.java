@@ -11,6 +11,7 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
 
     private final BooleanBehavior data;
     private Listener listener;
+    private boolean changed;
 
     public interface Listener {
 
@@ -26,25 +27,25 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
     @Override
     public synchronized final void filterParams(final Config params, boolean fireCommand) {
         //filter accepted values
-        String parsed = params.getProperty("value").trim();
-        if (parsed.equalsIgnoreCase("false") || parsed.equals("0")) {
+        String value = params.getProperty("value").trim();
+        if (value.equalsIgnoreCase("false") || value.equals("0")) {
             if (this.getValue() != false) { //if is really changed
                 listener.onFalse(params, fireCommand);
             }
         }
-        if (parsed.equalsIgnoreCase("true") || parsed.equals("1")) {
+        if (value.equalsIgnoreCase("true") || value.equals("1")) {
             if (this.getValue() != true) { //if is really changed
                 listener.onTrue(params, fireCommand);
             }
         }
 
-        if (parsed.equalsIgnoreCase("opposite")) {
+        if (value.equalsIgnoreCase(VALUE_OPPOSITE)) {
             opposite(params, fireCommand);
         }
-        if (parsed.equalsIgnoreCase("next")) {
+        if (value.equalsIgnoreCase(VALUE_NEXT)) {
             opposite(params, fireCommand);
         }
-        if (parsed.equalsIgnoreCase("previous")) {
+        if (value.equalsIgnoreCase(VALUE_PREVIOUS)) {
             opposite(params, fireCommand);
         }
     }
@@ -71,7 +72,10 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
     }
 
     public void setValue(boolean b) {
-        data.setValue(b);
+        if (data.getValue() != b) {
+            data.setValue(b);
+            setChanged(true);
+        }
     }
 
     public boolean getValue() {
@@ -108,5 +112,15 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
     @Override
     public String getValueAsString() {
         return data.toString();
+    }
+
+    @Override
+    public boolean isChanged() {
+        return changed;
+    }
+
+    @Override
+    public void setChanged(boolean value) {
+        changed = value;
     }
 }

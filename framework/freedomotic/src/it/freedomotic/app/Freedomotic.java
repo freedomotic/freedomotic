@@ -32,6 +32,7 @@ import it.freedomotic.bus.EventChannel;
 import it.freedomotic.core.BehaviorManager;
 import it.freedomotic.core.JoinDevice;
 import it.freedomotic.environment.EnvironmentLogic;
+import it.freedomotic.events.MessageEvent;
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
@@ -44,7 +45,8 @@ import java.io.IOException;
 import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.model.ds.ColorList;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.BehaviorLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.plugins.ClientStorage;
@@ -65,6 +67,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -277,7 +280,9 @@ public class Freedomotic {
          * *****************************************************************
          */
         for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
-            ObjectHasChangedBehavior event = new ObjectHasChangedBehavior(this, object.getPojo());
+            ObjectHasChangedBehavior event = new ObjectHasChangedBehavior(
+                    this, 
+                    object);
             sendEvent(event);
         }
 
@@ -324,6 +329,9 @@ public class Freedomotic {
         new JoinDevice();
 
         Freedomotic.logger.info("---- FREEDOM IS READY TO WORK ----");
+        
+        MessageEvent message = new MessageEvent(this, "Freedomotic has started");
+        sendEvent(message);
 
         /**
          * ******************************************************************

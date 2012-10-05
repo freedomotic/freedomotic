@@ -76,7 +76,7 @@ public class Version {
             //already installed
             //now check for version
             Plugin plugin = (Plugin) client;
-            return Plugin.getLaterVersion(plugin.getVersion(), version);
+            return Plugin.getOldestVersion(plugin.getVersion(), version);
         } else {
             //not installed
             return -1;

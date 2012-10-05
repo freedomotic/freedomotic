@@ -17,8 +17,8 @@ import java.util.*;
  */
 public class CommandPersistence {
 
-    private static Map<String, Command> userCommands = new TreeMap<String, Command>();
-    private static Map<String, Command> hardwareCommands = new TreeMap<String, Command>();
+    private static Map<String, Command> userCommands = new HashMap<String, Command>();
+    private static Map<String, Command> hardwareCommands = new HashMap<String, Command>();
 
     public static void add(Command c) {
         if (c != null) {
