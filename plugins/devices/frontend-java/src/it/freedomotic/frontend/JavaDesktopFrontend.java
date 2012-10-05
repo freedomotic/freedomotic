@@ -4,14 +4,17 @@ import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.ZoneLogic;
+import it.freedomotic.events.MessageEvent;
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.ZoneHasChanged;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.objects.EnvObjectPersistence;
+import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.reactions.Command;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.io.IOException;
+import java.util.EventListener;
 import javax.swing.JOptionPane;
 
 /**
@@ -34,6 +37,7 @@ public class JavaDesktopFrontend extends Actuator {
             addEventListener("app.event.sensor.object.behavior.change");
             addEventListener("app.event.sensor.environment.zone.change");
             addEventListener("app.event.sensor.plugin.change");
+            addEventListener("app.event.sensor.messages.>");
             //onCommand stuff
             addCommandListener("app.actuators.plugins.controller.in");
             addCommandListener("command.jfrontend.user.callout");
@@ -82,11 +86,9 @@ public class JavaDesktopFrontend extends Actuator {
             drawer.createCallout(callout1);
         } else {
             EventQueue.invokeLater(new Runnable() {
-
                 @Override
                 public void run() {
                     new Thread(new Runnable() {
-
                         public void run() {
                             //Custom button text
                             Object[] options = c.getProperty("options").split(";");
@@ -115,15 +117,26 @@ public class JavaDesktopFrontend extends Actuator {
             } else {
                 if (event instanceof ZoneHasChanged) {
                     //writing the string on the screen
-                    String description = event.getProperty("zone.description");
+                    String zoneDesc = event.getProperty("zone.description");
                     Callout callout = new Callout(
-                            description,
+                            zoneDesc,
                             2000,
                             Color.blue);
                     drawer.createCallout(callout);
                     drawer.setNeedRepaint(true);
                 } else {
-                    window.getPluginJList().update();
+                    if (event instanceof MessageEvent) {
+                        MessageEvent message = (MessageEvent) event;
+                        String text = message.getProperty("message.text");
+                        Callout callout = new Callout(
+                                text,
+                                2000,
+                                Color.blue);
+                        drawer.createCallout(callout);
+                        drawer.setNeedRepaint(true);
+                    } else {
+                        window.getPluginJList().update();
+                    }
                 }
             }
         }

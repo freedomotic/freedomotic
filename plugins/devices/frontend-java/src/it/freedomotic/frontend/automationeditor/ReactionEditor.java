@@ -2,14 +2,18 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.freedomotic.frontend.utils;
+package it.freedomotic.frontend.automationeditor;
 
+import it.freedomotic.app.Freedomotic;
 import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.reactions.TriggerPersistence;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
 
@@ -39,25 +43,40 @@ public class ReactionEditor extends javax.swing.JPanel {
     }
 
     private void init() {
-        this.setLayout(new FlowLayout(FlowLayout.LEFT));
+        this.setLayout(new FlowLayout());
         //add trigger widget
-        if (reaction.hasTrigger()) {
-            Trigger trigger = reaction.getTrigger();
-            JButton btnTrigger = new JButton(trigger.getName());
-            btnTrigger.setEnabled(false);
-            btnTrigger.setToolTipText(trigger.getDescription());
-            btnTrigger.setPreferredSize(new Dimension(300, 30));
-            this.add(btnTrigger);
-        } else {
-            GuessTriggerBox triggerBox = new GuessTriggerBox();
-            this.add(triggerBox);
-
-        }
+        final Trigger trigger = reaction.getTrigger();
+        final JButton btnTrigger = new JButton(trigger.getName());
+        //btnTrigger.setEnabled(false);
+        btnTrigger.setToolTipText(trigger.getDescription());
+        btnTrigger.setPreferredSize(new Dimension(300, 30));
+        btnTrigger.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (trigger != null) {
+                    Command c = new Command();
+                    c.setName("Edit a trigger");
+                    c.setReceiver("app.actuators.nlautomationseditor.nlautomationseditor.in");
+                    c.setProperty("editor", "trigger");
+                    c.setProperty("editable", trigger.getName()); //the default choice
+                    c.setReplyTimeout(Integer.MAX_VALUE);
+                    Command reply = Freedomotic.sendCommand(c);
+                    String newTrigger = reply.getProperty("edited");
+                    if (newTrigger != null) {
+                        btnTrigger.setName(TriggerPersistence.getTrigger(newTrigger).getName());
+                    }
+                    //trigger = null;
+                    //setText(INFO_MESSAGE);
+                }
+            }
+        });
+        this.add(btnTrigger);
         //add commands widget
         for (Command command : reaction.getCommands()) {
             GuessCommandBox box = new GuessCommandBox(this, command);
             addBox(box);
         }
+        //add empty command box to append new commands
         addEmptyBox();
     }
 
@@ -128,8 +147,8 @@ public class ReactionEditor extends javax.swing.JPanel {
     public Reaction getReaction() {
         return reaction;
     }
-    
-    public void finalizeEditing(){
+
+    public void finalizeEditing() {
         ReactionPersistence.add(reaction);
     }
 }

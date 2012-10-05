@@ -12,11 +12,9 @@ package it.freedomotic.frontend.automationeditor;
 
 import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.TriggerPersistence;
-import it.freedomotic.frontend.automationeditor.AutomationsEditor;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Trigger;
-import it.freedomotic.frontend.utils.ReactionEditor;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -45,7 +43,7 @@ public final class ReactionList extends javax.swing.JFrame {
 
         JScrollPane scrollPane = new JScrollPane(panel);
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        setPreferredSize(new Dimension(450, 110));
+        setPreferredSize(new Dimension(800, 600));
         add(scrollPane, BorderLayout.CENTER);
         JButton ok = new JButton("OK");
         ok.addActionListener(new ActionListener() {

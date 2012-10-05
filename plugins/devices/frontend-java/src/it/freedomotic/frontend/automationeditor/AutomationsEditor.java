@@ -9,7 +9,16 @@ import it.freedomotic.api.Protocol;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.Trigger;
+import it.freedomotic.reactions.TriggerPersistence;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
 /**
  *
@@ -23,11 +32,18 @@ public class AutomationsEditor extends Protocol {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        if (c.getProperty("editor").equalsIgnoreCase("command")){
+        if (c.getProperty("editor").equalsIgnoreCase("command")) {
             Command command = CommandPersistence.getCommand(c.getProperty("editable"));
             ReactionList reactionList = new ReactionList(this);
             CustomizeCommand cc = new CustomizeCommand(reactionList, command);
             cc.setVisible(true);
+        } else {
+            if (c.getProperty("editor").equalsIgnoreCase("trigger")) {
+                Trigger trigger= TriggerPersistence.getTrigger(c.getProperty("editable"));
+                ReactionList reactionList = new ReactionList(this);
+                CustomizeTrigger ct = new CustomizeTrigger(reactionList, trigger);
+                ct.setVisible(true);
+            }
         }
     }
 
@@ -37,7 +53,25 @@ public class AutomationsEditor extends Protocol {
 
     @Override
     public void onShowGui() {
-        bindGuiToPlugin(new ReactionList(this));
+        final JFrame frame = new JFrame();
+        frame.setPreferredSize(new Dimension(800,600));
+        final ReactionsPanel panel = new ReactionsPanel(this);
+        frame.setContentPane(panel);
+        JButton ok = new JButton("OK");
+        ok.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                for (Component component : panel.getPanel().getComponents()) {
+                    if (component instanceof ReactionEditor) {
+                        ReactionEditor editor = (ReactionEditor) component;
+                        editor.finalizeEditing();
+                    }
+                }
+                frame.dispose();
+            }
+        });
+        frame.add(ok, BorderLayout.SOUTH);
+        frame.pack();
+        bindGuiToPlugin(frame);
     }
 
     @Override

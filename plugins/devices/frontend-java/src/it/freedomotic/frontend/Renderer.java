@@ -11,9 +11,9 @@ import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
-import it.freedomotic.util.AWTConverter;
+import it.freedomotic.util.TopologyUtils;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -51,7 +51,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
     private static int BORDER_Y = 10; //the empty space around the map
     private double CANVAS_WIDTH = ENVIRONMENT_WIDTH + (BORDER_X * 2);
     private double CANVAS_HEIGHT = ENVIRONMENT_HEIGHT + (BORDER_Y * 2);
-    protected static Color BACKGROUND_COLOR = AWTConverter.convertColorToAWT(Freedomotic.environment.getPojo().getBackgroundColor());
+    protected static Color BACKGROUND_COLOR = TopologyUtils.convertColorToAWT(Freedomotic.environment.getPojo().getBackgroundColor());
     private EnvObjectLogic selectedObject;
     private ArrayList<Shape> indicators = new ArrayList<Shape>();
     private HashMap<EnvObjectLogic, Shape> cachedShapes = new HashMap<EnvObjectLogic, Shape>();
@@ -95,7 +95,6 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         addCustomMouseMotionListener();
         setBackground(BACKGROUND_COLOR);
         addComponentListener(new ComponentAdapter() {
-
             @Override
             public void componentResized(ComponentEvent e) {
                 backgroundChanged = true;
@@ -219,7 +218,6 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
             backgroundChanged = false;
             synchronized (this) {
                 new Runnable() {
-
                     @Override
                     public void run() {
                         BufferedImage background = createDrawableCanvas();
@@ -378,7 +376,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
 
     protected void paintImage(EnvObject obj) throws RuntimeException {
         BufferedImage img = null;
-        Shape shape = AWTConverter.convertToAWT(obj.getCurrentRepresentation().getShape());
+        Shape shape = TopologyUtils.convertToAWT(obj.getCurrentRepresentation().getShape());
         Rectangle box = shape.getBounds();
         img = ResourcesManager.getResource(obj.getCurrentRepresentation().getIcon(), (int) box.getWidth(), (int) box.getHeight()); //-1 means no resizeing
         if (img != null) {
@@ -462,7 +460,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
             ZoneLogic zone = (ZoneLogic) it.next();
             if (zone.getPojo().isRoom()) {
                 Point mouse = toRealCoords(p);
-                onZone = AWTConverter.contains(zone.getPojo().getShape(), new FreedomPoint((int) mouse.getX(), (int) mouse.getY()));
+                onZone = TopologyUtils.contains(zone.getPojo().getShape(), new FreedomPoint((int) mouse.getX(), (int) mouse.getY()));
                 if (onZone == true) {
                     return zone;
                 }
@@ -486,7 +484,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
         EnvObject obj = object.getPojo();
         int x = obj.getCurrentRepresentation().getOffset().getX();
         int y = obj.getCurrentRepresentation().getOffset().getY();
-        Shape shape = AWTConverter.convertToAWT(obj.getShape());
+        Shape shape = TopologyUtils.convertToAWT(obj.getShape());
         shape = getTranslatedShape(shape, new Point(x, y));
         shape = getRotatedShape(shape, obj.getCurrentRepresentation().getRotation());
         cachedShapes.put(object, shape);
@@ -563,7 +561,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
                 ZoneLogic zone = mouseOnZone(e.getPoint());
                 if (zone != null) {
                     removeIndicators();
-                    addIndicator(AWTConverter.convertToAWT(zone.getPojo().getShape()));
+                    addIndicator(TopologyUtils.convertToAWT(zone.getPojo().getShape()));
                     selectedZone = zone;
                     createHandles(zone);
                 } else {
@@ -599,11 +597,11 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
                 handle.setSelected(false);
             }
             //stop dragging an object
-            if (selectedObject!=null){
+            if (selectedObject != null) {
                 Point coords = toRealCoords(e.getPoint());
                 selectedObject.setLocation(
-                        (int)(coords.getX() - dragDiff.getWidth()), 
-                        (int)(coords.getY() - (int) dragDiff.getHeight()));
+                        (int) (coords.getX() - dragDiff.getWidth()),
+                        (int) (coords.getY() - (int) dragDiff.getHeight()));
             }
         }
         inDrag = false;
@@ -659,7 +657,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
                     if (handle.isSelected()) {
                         handle.move(xSnapped, ySnapped);
                         removeIndicators();
-                        addIndicator(AWTConverter.convertToAWT(handle.getZone().getPojo().getShape()));
+                        addIndicator(TopologyUtils.convertToAWT(handle.getZone().getPojo().getShape()));
                         selectedZone = handle.getZone();
                     }
                 }
@@ -684,10 +682,8 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
                 callouts.clear("object.description");
             }
             if (obj != null) {
+                //addIndicator(cachedShapes.get(obj));
                 if (obj != selectedObject) {
-                    if (cachedShapes.containsKey(obj)) {
-                        addIndicator(cachedShapes.get(obj));
-                    }
                     mouseEntersObject(obj);
                     selectedObject = obj;
                 }

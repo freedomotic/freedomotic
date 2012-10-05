@@ -10,13 +10,14 @@
  */
 package it.freedomotic.frontend;
 
-import it.freedomotic.frontend.utils.ReactionEditor;
+import it.freedomotic.frontend.automationeditor.ReactionEditor;
 import it.freedomotic.frontend.utils.PropertiesPanel_1;
-import it.freedomotic.core.EnvObjectFactory;
-import it.freedomotic.core.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.frontend.automationeditor.ReactionsPanel;
+import it.freedomotic.frontend.utils.CheckBoxList;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.EnvObject;
@@ -24,19 +25,15 @@ import it.freedomotic.model.object.Representation;
 import it.freedomotic.objects.*;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.objects.EnvObjectPersistence;
-import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
-import it.freedomotic.reactions.Reaction;
-import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.util.*;
+import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Iterator;
 import java.util.Map.Entry;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -52,7 +49,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private String oldName;
     private PropertiesPanel_1 commandsControlPanel;
     private PropertiesPanel_1 pnlTriggers;
-    private PropertiesPanel_1 controlPanel;
+    //private PropertiesPanel_1 controlPanel;
 
     /**
      * Creates new form ObjectEditor
@@ -63,6 +60,10 @@ public class ObjectEditor extends javax.swing.JFrame {
         EnvObject pojo = obj.getPojo();
         initComponents();
         setSize(600, 400);
+        if (obj.getPojo().getActAs().equalsIgnoreCase("virtual")) {
+            btnVirtual.setSelected(true);
+        }
+        checkIfVirtual();
         txtName.setText(pojo.getName());
         txtDescription.setText(pojo.getDescription());
         populateProtocol();
@@ -107,14 +108,11 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         tabObjectEditor.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                if (tabObjectEditor.getSelectedIndex() == 5) {
+                if (tabObjectEditor.getSelectedComponent().equals(tabAutomations)) {
                     populateAutomationsTab();
                 }
             }
         });
-
-        populateCommandsTab();
-        populateTriggersTab();
 
         //population combo box representation
         DefaultComboBoxModel representationsModel = new DefaultComboBoxModel();
@@ -130,8 +128,10 @@ public class ObjectEditor extends javax.swing.JFrame {
             setTitle(pojo.getName() + " (" + pojo.getSimpleType() + ")");
         }
 
-        controlPanel = new PropertiesPanel_1(0, 2);
-        tabControls.add(controlPanel);
+//        controlPanel = new PropertiesPanel_1(0, 1);
+//        tabControls.add(controlPanel);
+
+        tabControls.setLayout(new BoxLayout(tabControls, BoxLayout.PAGE_AXIS));
 
         //create an array of controllers for the object behaviors
         int row = 0;
@@ -145,9 +145,12 @@ public class ObjectEditor extends javax.swing.JFrame {
                     button = new JToggleButton("Set " + bb.getName() + " true");
                 }
                 JLabel label = new JLabel(b.getName() + ":");
-                controlPanel.addRow();
-                controlPanel.addElement(label, row, 0);
-                controlPanel.addElement(button, row, 1);
+//                controlPanel.addRow();
+//                controlPanel.addElement(label, row, 0);
+//                controlPanel.addRow();
+//                controlPanel.addElement(button, row+1, 0);
+                tabControls.add(label);
+                tabControls.add(button);
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -173,10 +176,13 @@ public class ObjectEditor extends javax.swing.JFrame {
                 slider.setMinorTickSpacing(10);
                 slider.setSnapToTicks(true);
                 JLabel label = new JLabel(b.getName() + ":");
-                controlPanel.addRow();
-                controlPanel.addElement(label, row, 0);
-                controlPanel.addElement(slider, row, 1);
+//                controlPanel.addRow();
+//                controlPanel.addElement(label, row, 0);
+//                controlPanel.addElement(slider, row, 1);
                 //slider.setPreferredSize(new Dimension(500, 100));
+
+                tabControls.add(label);
+                tabControls.add(slider);
                 slider.addChangeListener(new ChangeListener() {
                     @Override
                     public void stateChanged(ChangeEvent e) {
@@ -197,9 +203,11 @@ public class ObjectEditor extends javax.swing.JFrame {
                 comboBox.setEditable(false);
                 comboBox.setSelectedItem(lb.getSelected());
                 JLabel label = new JLabel(b.getName() + ":");
-                controlPanel.addRow();
-                controlPanel.addElement(label, row, 0);
-                controlPanel.addElement(comboBox, row, 1);
+//                controlPanel.addRow();
+//                controlPanel.addElement(label, row, 0);
+//                controlPanel.addElement(comboBox, row, 1);
+                tabControls.add(label);
+                tabControls.add(comboBox);
                 comboBox.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         Config params = new Config();
@@ -208,9 +216,10 @@ public class ObjectEditor extends javax.swing.JFrame {
                     }
                 });
             }
-            row++;
+            if (b instanceof TaxonomyBehaviorLogic) {
+                populateMultiselectionList(b);
+            }
         }
-        controlPanel.layoutPanel();
     }
 
     /**
@@ -236,6 +245,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         btnCreateObjectCopy = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         txtProtocol = new javax.swing.JComboBox();
+        btnVirtual = new javax.swing.JCheckBox();
         tabTriggersConfig = new javax.swing.JPanel();
         tabCommandsConfig = new javax.swing.JPanel();
         tabRepresentation = new javax.swing.JPanel();
@@ -269,7 +279,7 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         });
 
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.PAGE_AXIS));
 
         tabObjectEditor.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
         tabObjectEditor.setTabPlacement(javax.swing.JTabbedPane.LEFT);
@@ -306,6 +316,13 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         });
 
+        btnVirtual.setText("is a virtual object (not connected to any sensors or actuators)");
+        btnVirtual.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVirtualActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout tabPropertiesLayout = new javax.swing.GroupLayout(tabProperties);
         tabProperties.setLayout(tabPropertiesLayout);
         tabPropertiesLayout.setHorizontalGroup(
@@ -317,21 +334,27 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel15)
                             .addComponent(jLabel14)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
+                            .addGroup(tabPropertiesLayout.createSequentialGroup()
+                                .addGap(4, 4, 4)
+                                .addComponent(jLabel2)))
                         .addGap(18, 18, 18)
+                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtDescription, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+                            .addComponent(txtName, javax.swing.GroupLayout.Alignment.LEADING)))
+                    .addGroup(tabPropertiesLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(38, 38, 38)
                         .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(txtAddress, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtDescription, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtName, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(txtProtocol, javax.swing.GroupLayout.Alignment.LEADING, 0, 311, Short.MAX_VALUE))))
                     .addGroup(tabPropertiesLayout.createSequentialGroup()
                         .addComponent(btnCreateObjectCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(3692, Short.MAX_VALUE))
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnVirtual))
+                .addContainerGap(2148, Short.MAX_VALUE))
         );
         tabPropertiesLayout.setVerticalGroup(
             tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -344,10 +367,12 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
                     .addComponent(txtDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
+                .addComponent(btnVirtual)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtProtocol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtProtocol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -358,7 +383,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCreateObjectCopy)
                     .addComponent(btnDelete))
-                .addGap(480, 480, 480))
+                .addContainerGap())
         );
 
         tabObjectEditor.addTab("Properties", tabProperties);
@@ -367,7 +392,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         tabObjectEditor.addTab("Data Sources", tabTriggersConfig);
 
         tabCommandsConfig.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab("Actuator", tabCommandsConfig);
+        tabObjectEditor.addTab("Actions", tabCommandsConfig);
 
         jLabel11.setText("Position X:");
 
@@ -437,18 +462,18 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11)
                             .addComponent(jLabel12)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)
+                            .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(spnScaleHeight, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(spnScaleWidth, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(spnY)
                             .addComponent(spnX, javax.swing.GroupLayout.Alignment.LEADING))
                         .addGap(18, 18, 18)
-                        .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
+                        .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(2343, 2343, 2343))))
         );
         tabRepresentationLayout.setVerticalGroup(
@@ -489,7 +514,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         tabAutomations.setLayout(new java.awt.BorderLayout());
         tabObjectEditor.addTab("Automations", tabAutomations);
 
-        jPanel1.add(tabObjectEditor, java.awt.BorderLayout.PAGE_START);
+        jPanel1.add(tabObjectEditor);
 
         btnOk.setText("OK");
         btnOk.addActionListener(new java.awt.event.ActionListener() {
@@ -507,7 +532,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         });
         pnlFrameButtons.add(btnCancel);
 
-        jPanel1.add(pnlFrameButtons, java.awt.BorderLayout.PAGE_END);
+        jPanel1.add(pnlFrameButtons);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -524,7 +549,12 @@ public class ObjectEditor extends javax.swing.JFrame {
             if (!(oldName.equals(txtName.getText().trim()))) {
                 object.rename(txtName.getText().trim());
             }
-            object.setChanged(true);
+            if (btnVirtual.isSelected()){
+                pojo.setActAs("virtual");
+            }else{
+                pojo.setActAs("");
+            }
+            //object.setChanged(true);
             saveRepresentationChanges();
             for (Component component : tabAutomations.getComponents()) {
                 if (component instanceof ReactionEditor) {
@@ -539,29 +569,6 @@ public class ObjectEditor extends javax.swing.JFrame {
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         this.dispose();
 }//GEN-LAST:event_btnCancelActionPerformed
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        EnvObjectPersistence.remove(object);
-        this.dispose();
-}//GEN-LAST:event_btnDeleteActionPerformed
-
-    private void btnCreateObjectCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateObjectCopyActionPerformed
-//        EnvObject pojoCopy = null;
-//
-//        pojoCopy = SerialClone.clone(object.getPojo());
-//
-//        pojoCopy.setName(object.getPojo().getName() + UidGenerator.getNextStringUid());
-//        pojoCopy.setProtocol(object.getPojo().getProtocol());
-//        pojoCopy.setPhisicalAddress("unknown");
-//        for (Representation view : pojoCopy.getRepresentations()) {
-//            view.setOffset(0, 0);
-//        }
-//        EnvObjectLogic envObjectLogic = EnvObjectFactory.create(pojoCopy);
-//        envObjectLogic.getPojo().setUUID("");
-        EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
-        object.setChanged(true);
-        this.dispose();
-}//GEN-LAST:event_btnCreateObjectCopyActionPerformed
 
     private void btnChangeImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeImageActionPerformed
         JFileChooser fc = new JFileChooser();
@@ -589,10 +596,6 @@ public class ObjectEditor extends javax.swing.JFrame {
         saveRepresentationChanges();
 }//GEN-LAST:event_spnXStateChanged
 
-    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
-        // TODO addAndRegister your handling code here:
-    }//GEN-LAST:event_txtNameActionPerformed
-
     private void spnScaleWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnScaleWidthStateChanged
         Representation rep = object.getPojo().getCurrentRepresentation();
 //        Shape shape = AWTConverter.convertToAWT(rep.getShape(), 1.5, 1.5);
@@ -600,7 +603,7 @@ public class ObjectEditor extends javax.swing.JFrame {
 //                new Double(spnScaleHeight.getValue().toString()).doubleValue());
         rep.setScaleX(new Double(spnScaleWidth.getValue().toString()).doubleValue());
         //rep.setScaleX(new Double(spnScaleWidth.getValue().toString()).doubleValue());
-        object.setChanged(true);
+        //object.setChanged(true);
     }//GEN-LAST:event_spnScaleWidthStateChanged
 
     private void spnScaleHeightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnScaleHeightStateChanged
@@ -611,6 +614,54 @@ public class ObjectEditor extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_formWindowClosed
 
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        EnvObjectPersistence.remove(object);
+        this.dispose();
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnCreateObjectCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateObjectCopyActionPerformed
+        //        EnvObject pojoCopy = null;
+        //
+        //        pojoCopy = SerialClone.clone(object.getPojo());
+        //
+        //        pojoCopy.setName(object.getPojo().getName() + UidGenerator.getNextStringUid());
+        //        pojoCopy.setProtocol(object.getPojo().getProtocol());
+        //        pojoCopy.setPhisicalAddress("unknown");
+        //        for (Representation view : pojoCopy.getRepresentations()) {
+        //            view.setOffset(0, 0);
+        //        }
+        //        EnvObjectLogic envObjectLogic = EnvObjectFactory.create(pojoCopy);
+        //        envObjectLogic.getPojo().setUUID("");
+        EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
+        //object.setChanged(true);
+        this.dispose();
+    }//GEN-LAST:event_btnCreateObjectCopyActionPerformed
+
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+        // TODO addAndRegister your handling code here:
+    }//GEN-LAST:event_txtNameActionPerformed
+
+    private void btnVirtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVirtualActionPerformed
+        checkIfVirtual();
+
+    }//GEN-LAST:event_btnVirtualActionPerformed
+
+    private void checkIfVirtual() {
+        if (btnVirtual.isSelected()) {
+            tabObjectEditor.remove(tabTriggersConfig);
+            tabObjectEditor.remove(tabCommandsConfig);
+            txtProtocol.setEnabled(false);
+            txtAddress.setEnabled(false);
+        } else {
+            txtProtocol.setEnabled(true);
+            txtAddress.setEnabled(true);
+            populateCommandsTab();
+            populateTriggersTab();
+            tabObjectEditor.add(tabTriggersConfig, 1);
+            tabObjectEditor.add(tabCommandsConfig, 2);
+        }
+    }
+
     private void changeCurrentRepresentation() {
         try {
             Representation b = object.getPojo().getCurrentRepresentation();
@@ -619,7 +670,7 @@ public class ObjectEditor extends javax.swing.JFrame {
             int rotation = (Integer) spnRotation.getValue();
             b.setOffset(x, y);
             b.setRotation(rotation);
-            object.setChanged(true);
+            //object.setChanged(true);
         } catch (NumberFormatException numberFormatException) {
         }
     }
@@ -641,7 +692,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 b.setOffset(x, y);
                 b.setRotation(rotation);
             }
-            object.setChanged(true);
+            //object.setChanged(true);
         } catch (NumberFormatException numberFormatException) {
         }
     }
@@ -651,6 +702,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private javax.swing.JButton btnCreateObjectCopy;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnOk;
+    private javax.swing.JCheckBox btnVirtual;
     private javax.swing.JCheckBox chkAllRepresentations;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
@@ -685,6 +737,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private void populateCommandsTab() {
         //addAndRegister a properties panel
         commandsControlPanel = new PropertiesPanel_1(0, 2);
+        tabCommandsConfig.setName("Actions");
         tabCommandsConfig.add(commandsControlPanel);
 
         //creates an array of mapping behavior to hardware command
@@ -713,10 +766,10 @@ public class ObjectEditor extends javax.swing.JFrame {
                 }
             });
             commandsControlPanel.addRow();
-            JLabel lblAction = new JLabel("To " + action + " this object execute ");
+            JLabel lblAction = new JLabel(action + ": ");
             commandsControlPanel.addElement(lblAction, row, 0);
             commandsControlPanel.addElement(cmbCommand, row, 1);
-            lblAction.setPreferredSize(new Dimension(350, 30));
+            //lblAction.setPreferredSize(new Dimension(350, 30));
             row++;
         }
         commandsControlPanel.layoutPanel();
@@ -725,6 +778,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private void populateTriggersTab() {
         //addAndRegister a properties panel
         pnlTriggers = new PropertiesPanel_1(0, 2);
+        tabTriggersConfig.setName("Data Sources");
         tabTriggersConfig.add(pnlTriggers);
 
         //creates an array of mapping behavior to hardware trigger
@@ -767,48 +821,21 @@ public class ObjectEditor extends javax.swing.JFrame {
                 }
             });
 
-            JLabel behaviorLabel = new JLabel("Changes " + behavior.getName() + " value");
+            JLabel behaviorLabel = new JLabel(behavior.getName() + ": ");
             pnlTriggers.addRow();
-            pnlTriggers.addElement(comboSelectTrigger, row, 0);
-            pnlTriggers.addElement(behaviorLabel, row, 1);
-            comboSelectTrigger.setPreferredSize(new Dimension(350, 30));
+            pnlTriggers.addElement(behaviorLabel, row, 0);
+            pnlTriggers.addElement(comboSelectTrigger, row, 1);
+            //comboSelectTrigger.setPreferredSize(new Dimension(350, 30));
             row++;
         }
         pnlTriggers.layoutPanel();
     }
 
     private void populateAutomationsTab() {
-        tabAutomations.setLayout(new BoxLayout(tabAutomations, BoxLayout.PAGE_AXIS));
-        for (Trigger trigger : TriggerPersistence.getTriggers()) {
-            boolean isRelated = false;
-            if (!trigger.isHardwareLevel()) {
-                Iterator it = trigger.getPayload().iterator();
-                //chack if this trigger is related toi the object and set a flag
-                while (it.hasNext()) {
-                    Statement statement = (Statement) it.next();
-                    if (statement.getValue().contains(object.getPojo().getName())) {
-                        isRelated = true; //is a trigger related with this object
-                        break; //no need to check the other statements in current trigger
-                    }
-                }
-                //if this trigger is related to this object
-                if (isRelated) { //current trigger is related to this env object
-                    boolean alreadyStored = false;
-                    //display already stored reactions related to this objects
-                    for (Reaction r : ReactionPersistence.getReactions()) {
-                        if (r.getTrigger().equals(trigger)) {
-                            ReactionEditor editor = new ReactionEditor(r);
-                            tabAutomations.add(editor);
-                            alreadyStored = true;
-                        }
-                    }
-                    if (!alreadyStored) { //add an empty reaction if none
-                        ReactionEditor editor = new ReactionEditor(new Reaction(trigger));
-                        tabAutomations.add(editor);
-                    }
-                }
-            }
-        }
+        tabAutomations.removeAll();
+        tabAutomations.setLayout(new BorderLayout());
+        ReactionsPanel reactionsPanel = new ReactionsPanel(object);
+        tabAutomations.add(reactionsPanel);
         tabAutomations.validate();
     }
 
@@ -825,5 +852,64 @@ public class ObjectEditor extends javax.swing.JFrame {
                 }
             }
         }
+    }
+
+    private void populateMultiselectionList(BehaviorLogic b) {
+        final TaxonomyBehaviorLogic lb = (TaxonomyBehaviorLogic) b;
+        JLabel label = new JLabel(b.getName() + ":");
+        final CheckBoxList list = new CheckBoxList();
+        final JTextField newItem = new JTextField("Add new item");
+        JButton btnAdd = new JButton("Add");
+        btnAdd.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!newItem.getText().isEmpty()) {
+                    refreshMultiselectionList(lb, list);
+                    Config params = new Config();
+                    params.setProperty("item", newItem.getText());
+                    params.setProperty("value", "add");
+                    lb.filterParams(params, true);
+                }
+            }
+        });
+        JButton btnRemove = new JButton("Remove");
+        btnRemove.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!newItem.getText().isEmpty()) {
+                    Config params = new Config();
+                    params.setProperty("item", newItem.getText());
+                    params.setProperty("value", "remove");
+                    lb.filterParams(params, true);
+                    refreshMultiselectionList(lb, list);
+                }
+            }
+        });
+        refreshMultiselectionList(lb, list);
+        tabControls.add(label);
+        tabControls.add(list);
+        tabControls.add(newItem);
+        tabControls.add(btnAdd);
+        tabControls.add(btnRemove);
+        tabControls.validate();
+    }
+
+    private void refreshMultiselectionList(final TaxonomyBehaviorLogic source, CheckBoxList list) {
+        final DefaultListModel model = new DefaultListModel();
+        for (String item : source.getList()) {
+            final JCheckBox box = new JCheckBox(item);
+            if (!model.contains(box)) { //no duplicates allowed
+                box.addChangeListener(new ChangeListener() {
+                    public void stateChanged(ChangeEvent e) {
+                        Config params = new Config();
+                        params.setProperty("item", box.getText());
+                        params.setProperty("value", new Boolean(box.isSelected()).toString());
+                        source.filterParams(params, true);
+                    }
+                });
+                box.setSelected(source.getSelected().contains(item));
+                model.addElement(box);
+            }
+        }
+        list.setModel(model);
+        tabControls.validate();
     }
 }

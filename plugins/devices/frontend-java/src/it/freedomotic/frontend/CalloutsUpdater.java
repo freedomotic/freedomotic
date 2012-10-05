@@ -4,7 +4,6 @@
  */
 package it.freedomotic.frontend;
 
-import it.freedomotic.core.EnvObjectLogic;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Timer;
