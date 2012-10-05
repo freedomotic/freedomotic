@@ -1,4 +1,4 @@
-#Mon, 24 Sep 2012 16:07:43 +0200
+#Wed, 03 Oct 2012 11:21:12 +0200
 
 package.type=device
 package.name=it.nicoletti.sphinx4
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=3
 framework.required.build=1
 build.major=1
-build.number=38
+build.number=45
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
