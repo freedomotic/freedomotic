@@ -3,11 +3,9 @@
 <config>
     <properties>
         <property name="name" value="webserver"/>
-        <property name="description" value="It is a webserver"/>
-        <property name="version" value="1.0.0"/>
-        <property name="required" value="5.1.0"/>
-        <property name="category" value="category"/>
-        <property name="short-name" value="shortname"/>
+        <property name="description" value="A Jetty Webserver"/>
+        <property name="category" value="webserver"/>
+        <property name="short-name" value="jetty"/>
         <property name="startup-time" value="on load"/>
         <property name="PORT" value="8090"/>
         <property name="WEBAPP_DIR" value="/webapps/gwt_client"/>
