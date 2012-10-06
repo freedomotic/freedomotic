@@ -54,6 +54,7 @@ public class VersionTest {
     /**
      * Test of compareVersions method, of class Version.
      */
+     /*
     @Test
     public void testCompareVersions() {
         System.out.println("compareVersions");
@@ -65,4 +66,5 @@ public class VersionTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
+    */
 }
