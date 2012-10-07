@@ -3,10 +3,10 @@
     <properties>
         <property name="name" value="harvester"/>
         <property name="description" value="Database for store and retrieve Freedomotic events"/>
-        <property name="version" value="1.0.0"/>
+        <property name="version" value="1.1.0"/>
         <property name="required" value="5.3.0"/>
         <property name="dbname" value="harvester"/>
-        <property name="category" value="plugins"/>
+        <property name="category" value="logging"/>
         <property name="short-name" value="harvester"/>
     </properties>
 </config>

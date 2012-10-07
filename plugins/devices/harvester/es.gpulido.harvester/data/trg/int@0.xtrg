@@ -1,16 +1,10 @@
 <it.freedomotic.reactions.Trigger>
     <name>An object has changed</name>
     <description>When an object changed one of his behaviors</description>
-    <channel>app.event.sensor.object.behavior.change</channel>
+    <channel>app.event.sensor.object.behavior.change</channel>   
+    <delay>0</delay>
     <payload>
         <payload>
-            <it.freedomotic.reactions.Statement>
-                <logical>AND</logical>
-                <attribute>object.name</attribute>
-                <operand>EQUALS</operand>
-                <value>ANY</value>
-            </it.freedomotic.reactions.Statement> 
         </payload>
     </payload>
-    <delay>0</delay>
 </it.freedomotic.reactions.Trigger>
