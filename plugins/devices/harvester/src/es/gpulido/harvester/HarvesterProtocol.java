@@ -12,8 +12,11 @@ import it.freedomotic.util.Info;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -21,18 +24,20 @@ import java.util.logging.Logger;
  */
 public class HarvesterProtocol extends Protocol{
 
-   Connection conn;
+   Connection connection;
    PreparedStatement prep;
    String createTable ="CREATE TABLE IF NOT EXISTS EVENTS"
                     + " (ID bigint auto_increment, "
                     + "DATE dateTime, "
                     + "OBJECT VARCHAR(200),"
-                    + "BEHAVIOR VARCHAR(200), "
+                    + "PROTOCOL VARCHAR(200),"
+                    + "ADDRESS  VARCHAR(200),"
+                    + "BEHAVIOR VARCHAR(200),"
                     + "VALUE VARCHAR(20), "
                     + "PRIMARY KEY (ID))";
    String insertStatement = "INSERT INTO EVENTS"
-                    + " (ID, DATE, OBJECT, BEHAVIOR,VALUE) "
-                    + "VALUES (?,?,?,?,?)";            
+                    + " (DATE, OBJECT, PROTOCOL,ADDRESS,BEHAVIOR,VALUE) "
+                    + "VALUES (?,?,?,?,?,?)";            
    public HarvesterProtocol() {
        super("HarvesterProtocol", "/es.gpulido.harvester/harvester-manifest.xml");
        this.setName("Harvester");       
@@ -49,7 +54,7 @@ public class HarvesterProtocol extends Protocol{
             Class.forName("org.h2.Driver");
             String dbName = configuration.getStringProperty("dbname", "harvester");
             String dbPath = Info.getDevicesPath()+File.separator +"/es.gpulido.harvester/data/"+dbName;            
-            Connection connection = DriverManager.getConnection("jdbc:h2:"+dbPath, "sa", "");
+            connection = DriverManager.getConnection("jdbc:h2:"+dbPath, "sa", "");
             // add application code here
             Statement stat = connection.createStatement();                      
             //create Table
@@ -68,7 +73,7 @@ public class HarvesterProtocol extends Protocol{
     public void onStop() {
         super.onStop();
         try {
-            conn.close();
+            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -78,22 +83,36 @@ public class HarvesterProtocol extends Protocol{
             
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        try {
-            prep = conn.prepareStatement(insertStatement);            
-            prep.setTimestamp(0, 
-            new java.sql.Timestamp(
-                    Integer.parseInt(c.getProperty("year")),
-                    Integer.parseInt(c.getProperty("month")),
-                    Integer.parseInt(c.getProperty("day")),
-                    Integer.parseInt(c.getProperty("hour")),
-                    Integer.parseInt(c.getProperty("minute")),
-                    Integer.parseInt(c.getProperty("second")),
+        try {           
+            prep = connection.prepareStatement(insertStatement);            
+             System.out.println("Harvester: year: " + c.getProperty("event.date.year"));
+             Timestamp ts= new java.sql.Timestamp(
+                    Integer.parseInt(c.getProperty("event.date.year")),
+                    Integer.parseInt(c.getProperty("event.date.month")),
+                    Integer.parseInt(c.getProperty("event.date.day")),
+                    Integer.parseInt(c.getProperty("event.time.hour")),
+                    Integer.parseInt(c.getProperty("event.time.minute")),
+                    Integer.parseInt(c.getProperty("event.time.second")),
                     0                    
-                    ));                        
-            prep.setString(1,c.getProperty("object"));
-            prep.setString(2,c.getProperty("behavior"));
-            prep.setString(3,c.getProperty("value"));         
-            prep.executeQuery();
+                    );
+             prep.setTimestamp(1, ts);
+             prep.setString(2,c.getProperty("event.object.name"));
+             prep.setString(3,c.getProperty("event.object.protocol"));
+             prep.setString(4,c.getProperty("event.object.address"));
+            
+             //search for all objects behaviors changes    
+            Pattern pat = Pattern.compile("^current\\.object\\.behavior\\.(.*)");
+            for (Entry<Object,Object> entry : c.getProperties().entrySet()) {
+                String key = (String)entry.getKey();
+                Matcher fits = pat.matcher(key);                
+                if (fits.find())
+                {                    
+                    prep.setString(5,fits.group(1));
+                    prep.setString(6,(String)entry.getValue());                    
+                    prep.execute();
+                }
+            }
+
         } catch (SQLException ex) {
             Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, null, ex);
         }

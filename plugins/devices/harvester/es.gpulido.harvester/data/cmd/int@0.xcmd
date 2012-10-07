@@ -1,21 +1,12 @@
 
 <it.freedomotic.reactions.Command>
   <name>Save data on the harvester</name>
-  <receiver>app.actuators.harvester.harvester.in</receiver>
+  <receiver>app.actuators.logging.harvester.in</receiver>
   <description>The harvester has register a new log entry</description>
   <delay>0</delay>
-  <timeout>10000</timeout>  
+  <timeout>10000</timeout>
   <properties>
-    <properties>      
-      <property name="day" value="@event.date.day"/>
-      <property name="month" value="month"/>
-      <property name="year" value="@event.date.year"/>
-      <property name="hour" value="@event.time.hour"/>
-      <property name="hour" value="@event.time.minute"/>
-      <property name="hour" value="@event.time.second"/>   
-      <property name="object" value="@event.object.name"/>
-      <property name="behavior" value="@event.object.behavior"/>
-      <property name="value" value="@event.value"/>
+    <properties>        
     </properties>
   </properties>
 </it.freedomotic.reactions.Command>
