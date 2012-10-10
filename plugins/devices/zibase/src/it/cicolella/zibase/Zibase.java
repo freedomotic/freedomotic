@@ -41,6 +41,7 @@ public class Zibase extends Protocol {
 
     private static ArrayList<Board> boards = null;
     private static Map<String, String> X10Map;
+    private static Map<String, String> ZwaveMap;
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
     private Socket socket = null;
@@ -115,6 +116,7 @@ public class Zibase extends Protocol {
         BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
         initX10Map(); // inizialize X10 addresses hash map
+        initZwaveMap(); // inizialize Zwave addresses hash map
         loadBoards();
     }
 
@@ -155,7 +157,6 @@ public class Zibase extends Protocol {
         try {
             statusFileURL = "http://" + board.getIpAddress() + ":"
                     + Integer.toString(board.getPort()) + "/" + GET_SENSORS_URL;
-            //statusFileURL = "http://lnx.virtualcalcio.com/sensors.xml";
             //Freedomotic.logger.info("Zibase gets relay status from file " + statusFileURL); // FOR DEBUG
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
@@ -202,11 +203,33 @@ public class Zibase extends Protocol {
                     if (!X10Map.get(address).equalsIgnoreCase(status)) {
                         X10Map.put(address, status);
                         sendChanges(board, address, status, "CHACON");
-                        sendChanges(board, address, status, "XDD");
+                        sendChanges(board, address, status, "XDD868INTER");
                         sendChanges(board, address, status, "X10");
                     }
                 }
             }
+            // read <zwtab> element from sensors.xml
+            String zwtab = doc.getElementsByTagName("zwtab").item(0).getTextContent();
+            // split <zwtab> in groups of 4 digits (each of them is an x10 houseCode
+            x10Address = zwtab.split("(?<=\\G.{4})");
+            for (int i = 0; i < x10Address.length; i++) {
+                String[] x10AddressDigits = x10Address[i].split("(?<=\\G.{1})");
+                String x10AddressReordered = x10AddressDigits[2] + x10AddressDigits[3] + x10AddressDigits[0] + x10AddressDigits[1];
+                System.out.println(x10HouseCode[i] + x10AddressReordered + " converted " + hexToBinary(x10AddressReordered));
+                String[] deviceAddress = hexToBinary(x10AddressReordered).split("(?<=\\G.{1})");
+                for (int j = 0; j < deviceAddress.length; j++) {
+                    int step = 16 - j;
+                    address = "Z" + x10HouseCode[i] + step;
+                    status = deviceAddress[j];
+                    // if actual device status is different from stored one
+                    // notify the event and change the value in the map
+                    if (!ZwaveMap.get(address).equalsIgnoreCase(status)) {
+                        ZwaveMap.put(address, status);
+                        sendChanges(board, address, status, "ZWAVE");
+                    }
+                }
+            }
+
             // for sensor devices get all <ev> tags in the sensors.xml
             NodeList evs = doc.getElementsByTagName("ev");
             for (int i = 0; i < evs.getLength(); i++) {
@@ -371,6 +394,32 @@ public class Zibase extends Protocol {
             X10Map.put("N" + i, "0");
             X10Map.put("O" + i, "0");
             X10Map.put("P" + i, "0");
+        }
+    }
+
+    // inizialize the Zwave x10 addresses map to "0" - all devices OFF
+    // this map stores the status of each device
+    public static void initZwaveMap() {
+        ZwaveMap = new HashMap();
+        String prefix = "Z";
+
+        for (int i = 1; i <= 16; i++) {
+            ZwaveMap.put(prefix + "A" + i, "0");
+            ZwaveMap.put(prefix + "B" + i, "0");
+            ZwaveMap.put(prefix + "C" + i, "0");
+            ZwaveMap.put(prefix + "D" + i, "0");
+            ZwaveMap.put(prefix + "E" + i, "0");
+            ZwaveMap.put(prefix + "F" + i, "0");
+            ZwaveMap.put(prefix + "G" + i, "0");
+            ZwaveMap.put(prefix + "H" + i, "0");
+            ZwaveMap.put(prefix + "I" + i, "0");
+            ZwaveMap.put(prefix + "J" + i, "0");
+            ZwaveMap.put(prefix + "K" + i, "0");
+            ZwaveMap.put(prefix + "L" + i, "0");
+            ZwaveMap.put(prefix + "M" + i, "0");
+            ZwaveMap.put(prefix + "N" + i, "0");
+            ZwaveMap.put(prefix + "O" + i, "0");
+            ZwaveMap.put(prefix + "P" + i, "0");
         }
     }
 

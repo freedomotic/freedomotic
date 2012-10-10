@@ -14,7 +14,14 @@
         <property name="VISIONIC868"  value="P2"/>
         <property name="CHACON"  value="P3"/>
         <property name="DOMIA"  value="P4"/>
-        <property name="XDD"  value="P10"/>
+        <property name="RFX10"  value="P5"/>
+        <property name="ZWAVE"  value="P6"/>
+        <property name="RFS10/TS10"  value="P7"/>
+        <property name="XDD433ALRM"  value="P8"/>
+        <property name="XDD868ALRM"  value="P9"/>
+        <property name="XDD868INTER"  value="P10"/>
+        <property name="XDD868PILOTWIRE"  value="P11"/>
+        <property name="XDD868BOILER"  value="P12"/>
     </properties>
     <tuples>
         <tuple>
