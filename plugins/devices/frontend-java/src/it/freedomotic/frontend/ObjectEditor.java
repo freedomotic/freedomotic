@@ -31,13 +31,18 @@ import it.freedomotic.reactions.Trigger;
 import it.freedomotic.util.*;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.SliderUI;
+import javax.swing.plaf.basic.BasicSliderUI;
 
 /**
  *
@@ -58,6 +63,8 @@ public class ObjectEditor extends javax.swing.JFrame {
         this.object = obj;
         oldName = object.getPojo().getName();
         EnvObject pojo = obj.getPojo();
+        //AVOID the paint of the value over sliders that will conflic with double values
+        UIManager.put("Slider.paintValue", false);        
         initComponents();
         setSize(600, 400);
         if (obj.getPojo().getActAs().equalsIgnoreCase("virtual")) {
@@ -135,7 +142,7 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         //create an array of controllers for the object behaviors
         int row = 0;
-        for (BehaviorLogic b : object.getBehaviors()) {
+        for (BehaviorLogic b : object.getBehaviors()) {            
             if (b instanceof BooleanBehaviorLogic) {
                 final BooleanBehaviorLogic bb = (BooleanBehaviorLogic) b;
                 final JToggleButton button;
@@ -166,33 +173,41 @@ public class ObjectEditor extends javax.swing.JFrame {
                 });
             }
             if (b instanceof RangedIntBehaviorLogic) {
+              
                 final RangedIntBehaviorLogic rb = (RangedIntBehaviorLogic) b;
-                final JSlider slider = new JSlider();
+                final JLabel doubleValue = new JLabel(rb.getValueAsString());
+                final JPanel sliderPanel = new JPanel(new FlowLayout());
+                final JSlider slider = new JSlider();                 
+                
                 slider.setValue(rb.getValue());
                 slider.setMaximum(rb.getMax());
-                slider.setMinimum(rb.getMin());
+                slider.setMinimum(rb.getMin());                
                 slider.setPaintTicks(true);
-                slider.setMajorTickSpacing(10);
-                slider.setMinorTickSpacing(10);
+                slider.setPaintTrack(true);
+                slider.setPaintLabels(false);                
+                slider.setMajorTickSpacing(rb.getScale()*10);
+                slider.setMinorTickSpacing(rb.getStep());                
                 slider.setSnapToTicks(true);
-                JLabel label = new JLabel(b.getName() + ":");
-//                controlPanel.addRow();
-//                controlPanel.addElement(label, row, 0);
-//                controlPanel.addElement(slider, row, 1);
-                //slider.setPreferredSize(new Dimension(500, 100));
-
+                JLabel label = new JLabel(b.getName() + ":");               
                 tabControls.add(label);
-                tabControls.add(slider);
-                slider.addChangeListener(new ChangeListener() {
+                sliderPanel.add(slider);
+                sliderPanel.add(doubleValue);                
+                tabControls.add(sliderPanel); 
+               slider.addChangeListener(new ChangeListener() {
                     @Override
                     public void stateChanged(ChangeEvent e) {
                         if (!slider.getValueIsAdjusting()) {
                             Config params = new Config();
                             params.setProperty("value", new Integer(slider.getValue()).toString());
-                            rb.filterParams(params, true);
+                            System.out.println("Slider value: "+slider.getValue());
+                            rb.filterParams(params, true);                            
                         }
-                    }
-                });
+                        if (rb.getScale()!=1)
+                            doubleValue.setText(new Double((double)slider.getValue()/rb.getScale()).toString());
+                        else
+                            doubleValue.setText(new Integer(slider.getValue()).toString());
+                    }                    
+                });               
             }
             if (b instanceof ListBehaviorLogic) {
                 final ListBehaviorLogic lb = (ListBehaviorLogic) b;
@@ -354,7 +369,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnVirtual))
-                .addContainerGap(2148, Short.MAX_VALUE))
+                .addContainerGap(2135, Short.MAX_VALUE))
         );
         tabPropertiesLayout.setVerticalGroup(
             tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -503,7 +518,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spnScaleHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(233, Short.MAX_VALUE))
+                .addContainerGap(234, Short.MAX_VALUE))
         );
 
         tabObjectEditor.addTab("Appearance", tabRepresentation);
