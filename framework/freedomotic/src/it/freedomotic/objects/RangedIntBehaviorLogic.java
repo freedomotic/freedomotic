@@ -51,6 +51,10 @@ public class RangedIntBehaviorLogic implements BehaviorLogic {
     public int getMin() {
         return data.getMin();
     }
+    
+    public int getScale() {
+        return data.getScale();
+    }
 
     @Override
     public synchronized final void filterParams(final Config params, boolean fireCommand) {
