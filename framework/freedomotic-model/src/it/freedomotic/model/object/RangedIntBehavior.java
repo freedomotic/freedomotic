@@ -10,11 +10,14 @@ public class RangedIntBehavior extends Behavior {
     private int value;
     private int max;
     private int min;
+    private int scale;
     private int step;
 
     @Override
-    public String toString() {
-        return new Integer(value).toString();
+    public String toString() { 
+        if (scale == 1)
+            return new Integer(value).toString();
+        return new Double((double)value/(double)getScale()).toString();        
     }
 
     public int getValue() {
@@ -32,7 +35,12 @@ public class RangedIntBehavior extends Behavior {
     public int getMin() {
         return min;
     }
-
+    
+    public int getScale() {
+        if (scale<=0)
+            scale = 1;
+        return scale;
+    }        
  
     public void setValue(int inputValue) {
         //activate this behavior if it was unactivated
