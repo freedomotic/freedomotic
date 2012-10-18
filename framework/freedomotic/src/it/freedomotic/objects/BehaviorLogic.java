@@ -22,6 +22,8 @@ public interface BehaviorLogic {
     public void setChanged(boolean value);
 
     public boolean isActive();
+    
+    public boolean isReadOnly();
 
     public String getValueAsString();
     public final String VALUE_OPPOSITE = "opposite";

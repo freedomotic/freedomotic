@@ -16,6 +16,7 @@ public abstract class Behavior implements Serializable {
     private String description;
     private boolean active;
     private int priority;
+    private boolean readOnly;
     
     public final static String VALUE_OPPOSITE = "opposite";
     public final static String VALUE_NEXT = "next";
@@ -37,6 +38,14 @@ public abstract class Behavior implements Serializable {
         return name;
     }
 
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+    
+    public void setReadonly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+    
     public void setDescription(String desc) {
         this.description = desc;
     }

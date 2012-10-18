@@ -110,6 +110,11 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
     }
 
     @Override
+    public boolean isReadOnly() {
+        return data.isReadOnly();
+    }
+    
+    @Override
     public String getValueAsString() {
         return data.toString();
     }
