@@ -92,6 +92,12 @@ public class ListBehaviorLogic implements BehaviorLogic {
     public boolean isActive() {
         return data.isActive();
     }
+    
+    @Override
+    public boolean isReadOnly() {
+        return data.isReadOnly();
+    }
+
 
     @Override
     public String getValueAsString() {
