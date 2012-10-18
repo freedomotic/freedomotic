@@ -170,7 +170,8 @@ public class ObjectEditor extends javax.swing.JFrame {
                             button.setText("Set " + bb.getName() + " true");
                         }
                     }
-                });
+                });                
+                button.setEnabled(!b.isReadOnly());
             }
             if (b instanceof RangedIntBehaviorLogic) {
               
@@ -207,7 +208,8 @@ public class ObjectEditor extends javax.swing.JFrame {
                         else
                             doubleValue.setText(new Integer(slider.getValue()).toString());
                     }                    
-                });               
+                }); 
+                slider.setEnabled(!b.isReadOnly());
             }
             if (b instanceof ListBehaviorLogic) {
                 final ListBehaviorLogic lb = (ListBehaviorLogic) b;
@@ -230,6 +232,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                         lb.filterParams(params, true);
                     }
                 });
+                comboBox.setEnabled(!b.isReadOnly());
             }
             if (b instanceof TaxonomyBehaviorLogic) {
                 populateMultiselectionList(b);
