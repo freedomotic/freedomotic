@@ -9,32 +9,33 @@ import java.util.logging.Logger;
 
 public class Info {
     //framework versioning
-
     public static final Integer FRAMEWORK_MAJOR = 5;
     public static final Integer FRAMEWORK_MINOR = 3;
     public static final Integer FRAMEWORK_BUILD = 1;
-    public static final String FRAMEWORK_RELEASE_DATE = "March 2012";
-    public static final String FRAMEWORK_LICENSE = "GNU Generic Public License v2";
+    public static final String  FRAMEWORK_RELEASE_DATE = "March 2012";
+    public static final String  FRAMEWORK_LICENSE = "GNU Generic Public License v2";
+    public static final String  FRAMEWORK_RELEASE_TYPE = "beta";
+    //project info
     public static final String PROJECT_MAIL = "info@freedomotic.com";
-    public static final String FRAMEWORK_RELEASE_TYPE = "beta";
     //framework base paths
-    public static final String FRAMEWORK_WORKDIR = System.getProperty("user.dir");
-    public static final File FRAMEWORK_DATA_PATH = new File(FRAMEWORK_WORKDIR + "/data/");
-    public static final File FRAMEWORK_RESOURCES_PATH = new File(FRAMEWORK_WORKDIR + "/data/resources/");
-    public static final File FRAMEWORK_PLUGINS_PATH = new File(FRAMEWORK_WORKDIR + "/plugins/");
-    public static final File FRAMEWORK_DEVICES_PATH = new File(FRAMEWORK_WORKDIR + "/plugins/devices/");
-    public static final File FRAMEWORK_OBJECTS_PATH = new File(FRAMEWORK_WORKDIR + "/plugins/objects/");
-    public static final File FRAMEWORK_EVENTS_PATH = new File(FRAMEWORK_WORKDIR + "/plugins/events/");
-    public static final File FRAMEWORK_PROVIDERS_PATH = new File(FRAMEWORK_WORKDIR + "/plugins/providers/");
+    public static final String PATH_WORKDIR = System.getProperty("user.dir");
+    public static final File PATH_DATA_FOLDER = new File(PATH_WORKDIR + "/data/");
+    public static final File PATH_RESOURCES_FOLDER = new File(PATH_WORKDIR + "/data/resources/");
+    public static final File PATH_PLUGINS_FOLDER = new File(PATH_WORKDIR + "/plugins/");
+    public static final File PATH_DEVICES_FOLDER = new File(PATH_WORKDIR + "/plugins/devices/");
+    public static final File PATH_OBJECTS_FOLDER = new File(PATH_WORKDIR + "/plugins/objects/");
+    public static final File PATH_EVENTS_FOLDER = new File(PATH_WORKDIR + "/plugins/events/");
+    public static final File PATH_PROVIDERS_FOLDER = new File(PATH_WORKDIR + "/plugins/providers/");
     //framework API and messaging
-    public static final String FRAMEWORK_BROKER_IP = getLocalHost();
-    public static final int FRAMEWORK_BROKER_PORT = 61616;
-    public static final String FRAMEWORK_BROKER_STOMP = "stomp://0.0.0.0:61666";
-    public static final String FRAMEWORK_BROKER_WEBSOCKET = "ws://0.0.0.0:61614";
+    public static final String BROKER_IP = getLocalHost();
+    public static final String BROKER_DEFAULT = "vm://freedomotic";
+    public static final int    BROKER_PORT = 61616;
+    public static final String BROKER_STOMP = "stomp://0.0.0.0:61666";
+    public static final String BROKER_WEBSOCKET = "ws://0.0.0.0:61614";
     //default queues
     public static final String CHANNEL_OBJECT_UPDATE = "app.event.object.behavior.change";
     public static final String CHANNEL_ZONE_OCCUPIERS = "app.event.person.zone";
-    public static final String CHANNELS_PEOPLE_LOCATION = "app.event.sensor.person.movement.*";
+    public static final String CHANNEL_PEOPLE_LOCATION = "app.event.sensor.person.movement.*";
     //behavior proprities
     public static final int BEHAVIOR_MAX_PRIORITY = 9;
     public static final int BEHAVIOR_MIN_PRIORITY = 0;
@@ -99,27 +100,27 @@ public class Info {
     }
     
     public static String getApplicationPath() {
-        return FRAMEWORK_WORKDIR;
+        return PATH_WORKDIR;
     }
     
     @Deprecated
     public static String getDatafilePath() {
-        return (new File(FRAMEWORK_WORKDIR + "/data/").getAbsolutePath());
+        return (new File(PATH_WORKDIR + "/data/").getAbsolutePath());
     }
     
     @Deprecated
     public static String getResourcesPath() {
-        return (new File(FRAMEWORK_WORKDIR + "/data/resources/").getAbsolutePath());
+        return (new File(PATH_WORKDIR + "/data/resources/").getAbsolutePath());
     }
     
     @Deprecated
     public static String getPluginsPath() {
-        return (new File(FRAMEWORK_WORKDIR + "/plugins/").getAbsolutePath());
+        return (new File(PATH_WORKDIR + "/plugins/").getAbsolutePath());
     }
     
     @Deprecated    
     public static String getDevicesPath() {
-        return (new File(FRAMEWORK_WORKDIR + "/plugins/devices/").getAbsolutePath());
+        return (new File(PATH_WORKDIR + "/plugins/devices/").getAbsolutePath());
     }
     
     @Deprecated
