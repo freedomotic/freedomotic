@@ -150,92 +150,41 @@ public class TopologyUtils {
     }
 
     /**
-     * checks if some of the edge of source polygon is inside target polygon
-     * area
+     * Checks if some of the edge of source polygon is inside target polygon
+     * area.
+     * 
+     * WARNING: some use case are not covered. 
+     * For example to know if to polygons instersects we check only if one or 
+     * more edges of the two polygon are inside the other polygon shape. 
+     * This works for our uses cases (check if a door is inside a room) but if 
+     * we have two polygons like this (a "plus sign" shape) it will return false 
+     * even if they "intersects" each other (because no edges are contained)
      *
      * @param source
      * @param target
      * @return
      */
     public static boolean intersects(FreedomPolygon source, FreedomPolygon target) {
-//        Shape shape = AWTConverter.convertToAWT(fShape);
-//        Shape polygon = AWTConverter.convertToAWT(fPolygon);
-//
-//        return shape.intersects(polygon.getBounds2D());
-//        for (int i = 1; i < fShape.getPoints().size(); i++) {
-//            //get a segment from fShape
-//            FreedomPoint p1 = fShape.getPoints().get(i - 1);
-//            FreedomPoint p2 = fShape.getPoints().get(i);
-//            //check this segment instersections with all segments on the other poly
-//            for (int j = 1; j < fPolygon.getPoints().size(); j++) {
-//                FreedomPoint p3 = fPolygon.getPoints().get(j - 1);
-//                FreedomPoint p4 = fPolygon.getPoints().get(j);
-//                Point intersection = intersection(
-//                        p1.getX(), p1.getY(),
-//                        p2.getX(), p2.getY(),
-//                        p3.getX(), p3.getY(),
-//                        p4.getX(), p4.getY());
-//                if (intersection != null) {
-//                    System.out.println("intersection in " +  intersection +" \n (segment " +i + "/"+j+")");
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
-        boolean sourceInside=false;
-        boolean targetInside=false;
         for (FreedomPoint edge : source.getPoints()) {
             if (contains(target, edge)) {
-                sourceInside = true;
+               return true;
             }
         }
         for (FreedomPoint edge : target.getPoints()) {
             if (contains(source, edge)) {
-                targetInside = true;
+                return true;
             }
         }
-        return (sourceInside || targetInside);
+        return false;
     }
 
-//    /**
-//     * Computes the intersection between two lines. The calculated point is
-//     * approximate, since integers are used. If you need a more precise result,
-//     * use doubles everywhere. (c) 2007 Alexander Hristov. Use Freely (LGPL
-//     * license). http://www.ahristov.com
-//     *
-//     * @param x1 Point 1 of Line 1
-//     * @param y1 Point 1 of Line 1
-//     * @param x2 Point 2 of Line 1
-//     * @param y2 Point 2 of Line 1
-//     * @param x3 Point 1 of Line 2
-//     * @param y3 Point 1 of Line 2
-//     * @param x4 Point 2 of Line 2
-//     * @param y4 Point 2 of Line 2
-//     * @return Point where the segments intersect, or null if they don't
-//     */
-//    private static Point intersection(
-//            int x1, int y1, int x2, int y2,
-//            int x3, int y3, int x4, int y4) {
-//        int d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-//        if (d == 0) {
-//            return null;
-//        }
-//
-//        int xi = ((x3 - x4) * (x1 * y2 - y1 * x2) - (x1 - x2) * (x3 * y4 - y3 * x4)) / d;
-//        int yi = ((y3 - y4) * (x1 * y2 - y1 * x2) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
-//
-//        return new Point(xi, yi);
-//    }
     /**
-     * Checks if a point is inside the polygon.
+     * Checks if a point is inside the polygon shape.
      * @param fShape
      * @param fPoint
      * @return true if inside, false if on border or outside
      */
     public static boolean contains(FreedomShape fShape, FreedomPoint fPoint) {
-//        Shape shape = convertToAWT(fShape);
-//        Point point = convertToAWT(fPoint);
-//        return shape.contains(point);
         ArrayList<Float> lx = new ArrayList<Float>();
         ArrayList<Float> ly = new ArrayList<Float>();
         int verticesNum = 0;
