@@ -54,8 +54,15 @@ public final class Payload implements Serializable {
             final boolean precedingCheckResult = true;
             //check all statement for consistency
             while (it.hasNext()) {
-                Statement trigger = (Statement) it.next();
-                for (Statement eventStatement : eventPayload.getStatements(trigger.attribute)) {
+                Statement triggerStatement = (Statement) it.next();
+                if (triggerStatement.value.equalsIgnoreCase(Statement.ANY)) {
+                    //check if the property exists in the event
+                    List<Statement> statements = eventPayload.getStatements(triggerStatement.attribute);
+                    if (statements.isEmpty()) {
+                        return false;
+                    }
+                }
+                for (Statement eventStatement : eventPayload.getStatements(triggerStatement.attribute)) {
                     /*
                      * TODO: waring, supports only operand equal in event
                      * compared to equal, morethen, lessthen in triggers.
@@ -63,14 +70,14 @@ public final class Payload implements Serializable {
                      */
                     if (eventStatement != null) {
                         //is setting a value must be not used to filter
-                        if (trigger.logical.equalsIgnoreCase("SET")) {
+                        if (triggerStatement.logical.equalsIgnoreCase("SET")) {
                             return true;
                         } else {
-                            boolean isStatementConsistent = isStatementConsistent(trigger.operand, trigger.value, eventStatement.value);
-                            if (trigger.getLogical().equalsIgnoreCase("AND")) {
+                            boolean isStatementConsistent = isStatementConsistent(triggerStatement.operand, triggerStatement.value, eventStatement.value);
+                            if (triggerStatement.getLogical().equalsIgnoreCase("AND")) {
                                 payloadConsistence = payloadConsistence && isStatementConsistent; //true AND true; false AND true; false AND false; true AND false
                             } else {
-                                if (trigger.getLogical().equalsIgnoreCase("OR")) {
+                                if (triggerStatement.getLogical().equalsIgnoreCase("OR")) {
                                     payloadConsistence = payloadConsistence || isStatementConsistent;
                                 }
                             }
