@@ -7,7 +7,7 @@
     <timeout>0</timeout>
     <properties>
         <properties>
-            <property name="say" value="Current temperature is @event.object.temperature Celsius degrees. Information readed at @event.time.hour and @event.time.minute minutes from @event.object.name"/>
+            <property name="say" value="@event.object.name temperature is @current.object.behavior.temperature Celsius degrees."/>
         </properties>
     </properties>
 </it.freedomotic.reactions.Command>

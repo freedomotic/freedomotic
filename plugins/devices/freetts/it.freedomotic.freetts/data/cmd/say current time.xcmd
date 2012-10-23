@@ -1,0 +1,13 @@
+
+<it.freedomotic.reactions.Command>
+    <name>Say current time</name>
+    <receiver>app.actuators.media.tts.in</receiver>
+    <description>say current time</description>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="say" value="It's @event.time.hour and @event.time.minute minutes"/>
+        </properties>
+    </properties>
+</it.freedomotic.reactions.Command>
