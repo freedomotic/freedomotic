@@ -19,6 +19,7 @@
  */
 package it.freedomotic.api;
 
+import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
@@ -34,7 +35,7 @@ import javax.swing.JFrame;
 public class Plugin implements Client {
 
 //    private boolean isConnected = false;
-    protected boolean isRunning = false;
+    protected volatile boolean isRunning;
     private String pluginName;
     private String type = "Plugin";
     public Config configuration;
@@ -49,9 +50,18 @@ public class Plugin implements Client {
     protected String listenOn;
     protected String sendOn;
 
-    public Plugin(String pluginName, String manifest) {
+    public Plugin(String pluginName, String manifestPath) {
         setName(pluginName);
-        init(new File(Info.getDevicesPath() + manifest));
+        init(new File(Info.getDevicesPath() + manifestPath));        
+    }
+
+    public Plugin(String pluginName, Config manifest) {
+        setName(pluginName);
+        init(manifest);
+    }
+
+    public Plugin(String pluginName) {
+        setName(pluginName);
     }
 
     protected void onStart() {
@@ -190,25 +200,23 @@ public class Plugin implements Client {
     }
 
     private void init(File manifest) {
-        setDescription("No description");
         try {
             configuration = ConfigPersistence.deserialize(manifest);
         } catch (IOException ex) {
             Freedomotic.logger.severe("Missing manifest " + manifest.toString() + " for plugin " + getName());
             setDescription("Missing manifest file " + manifest.toString());
         }
+        init(configuration);
+    }
+
+    private void init(Config configuration) {
+        setDescription("No description");
         description = configuration.getStringProperty("description", "Missing plugin manifest");
         setDescription(description);
-        version = configuration.getStringProperty("version", "1.0.0");
-        requiredVersion = configuration.getStringProperty("required", "1.0.0");
-//        if (!isCompatible("requiredVersion")) {
-//            setDescription("This plugin cannot work with this framework version. Framework version " + requiredVersion + " is needed.");
-//        }
         category = configuration.getStringProperty("category", "undefined");
         shortName = configuration.getStringProperty("short-name", "undefined");
         listenOn = configuration.getStringProperty("listen-on", "undefined");
         sendOn = configuration.getStringProperty("send-on", "undefined");
-
     }
 
     public static boolean isCompatible(final File pluginFolder) {
