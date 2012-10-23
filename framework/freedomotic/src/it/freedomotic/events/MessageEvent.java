@@ -35,7 +35,7 @@ public class MessageEvent extends EventTemplate {
         //adds the type to channel definition only if is not empty
         String type = "";
         try {
-            type = "." + getPayload().getStatements("message.type").get(0).getValue();
+            type = "." + getPayload().getStatements("message.type").get(0).getValue().toLowerCase().trim();
         } catch (Exception e) {
         }
         return "app.event.sensor.messages" + type;
