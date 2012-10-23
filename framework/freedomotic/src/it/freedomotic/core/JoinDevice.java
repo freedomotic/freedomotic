@@ -56,13 +56,13 @@ public final class JoinDevice implements BusConsumer {
     protected static EnvObjectLogic join(String clazz, String name, String protocol, String address) {
         EnvObjectLogic loaded = null;
         try {
-            ObjectPlugin client = (ObjectPlugin) ClientStorage.get(clazz);
-            if (client == null) {
+            ObjectPlugin objectPlugin = (ObjectPlugin) ClientStorage.get(clazz);
+            if (objectPlugin == null) {
                 Freedomotic.logger.warning("Doesen't exist an object class called " + clazz);
                 return null;
             }
-            File exampleObject = client.getExample();
-            loaded = EnvObjectPersistence.loadObject(exampleObject);
+            File templateFile = objectPlugin.getTemplate();
+            loaded = EnvObjectPersistence.loadObject(templateFile);
             //changing the name and other properties invalidates related trigger and commands
             //call init() again after this changes
             if (name != null && !name.isEmpty()) {
@@ -70,11 +70,10 @@ public final class JoinDevice implements BusConsumer {
             } else {
                 loaded.getPojo().setName(protocol);
             }
+            EnvObjectPersistence.add(loaded, EnvObjectPersistence.MAKE_UNIQUE);
             loaded.getPojo().setProtocol(protocol);
             loaded.getPojo().setPhisicalAddress(address);
             loaded.setRandomLocation();
-
-            EnvObjectPersistence.add(loaded, EnvObjectPersistence.MAKE_UNIQUE);
             
             //set the PREFERRED MAPPING of the protocol plugin (if any is defined in its manifest)
             Client addon = Freedomotic.clients.getClientByProtocol(protocol);
