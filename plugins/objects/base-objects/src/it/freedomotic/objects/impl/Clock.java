@@ -51,7 +51,7 @@ public class Clock extends EnvObjectLogic {
         morning.getPayload().addStatement("AND", "time.hour", "GREATER_THEN", "7");
         morning.getPayload().addStatement("AND", "time.hour", "LESS_THEN", "13");
         morning.setSuspensionTime(60000);
-        
+
         Trigger clicked = new Trigger();
         clicked.setName("When " + this.getPojo().getName() + " is clicked");
         clicked.setChannel("app.event.sensor.object.behavior.clicked");
@@ -59,9 +59,19 @@ public class Clock extends EnvObjectLogic {
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
 
+        Trigger eight = new Trigger();
+        eight.setName("At 8:00AM");
+        eight.setDescription("at 8:00 in the morning");
+        eight.setChannel("app.event.sensor.calendar.event.schedule");
+        eight.getPayload().addStatement("object.name", getPojo().getName());
+        eight.getPayload().addStatement("AND", "time.hour", "EQUALS", "8");
+        eight.getPayload().addStatement("AND", "time.minute", "EQUALS", "0");
+        eight.getPayload().addStatement("AND", "time.second", "EQUALS", "0");
+
         TriggerPersistence.add(clicked);
         TriggerPersistence.add(everySecond);
         TriggerPersistence.add(everyMinute);
         TriggerPersistence.add(morning);
+        TriggerPersistence.add(eight);
     }
 }
