@@ -23,7 +23,7 @@ public abstract class Protocol extends Plugin implements BusConsumer {
     private int POLLING_WAIT_TIME = -1;
     private CommandChannel commandsChannel; //one to one messaging pattern
     private EventChannel eventsChannel; //one to many messaging pattern
-    private SensorThread sensorThread;
+    private Protocol.SensorThread sensorThread;
     private volatile Destination lastDestination;
 
     protected abstract void onRun();
@@ -77,23 +77,22 @@ public abstract class Protocol extends Plugin implements BusConsumer {
     }
 
     @Override
-    public void start() {
+    public synchronized void start() {
         if (!isRunning) {
             isRunning = true;
             onStart();
-            sensorThread = new SensorThread();
+            sensorThread = new Protocol.SensorThread();
             sensorThread.start();
         }
     }
 
     @Override
-    public void stop() {
+    public synchronized void stop() {
         if (isRunning) {
             isRunning = false;
             onStop();
-            if (sensorThread != null) {
-                sensorThread.interrupt();
-            }
+            sensorThread = null;
+            notify();
         }
     }
 
@@ -123,9 +122,9 @@ public abstract class Protocol extends Plugin implements BusConsumer {
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
                 Freedomotic.logger.config(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
-                ActuatorPerforms task;
+                Protocol.ActuatorPerforms task;
                 lastDestination = message.getJMSReplyTo();
-                task = new ActuatorPerforms(command, message.getJMSReplyTo(), message.getJMSCorrelationID());
+                task = new Protocol.ActuatorPerforms(command, message.getJMSReplyTo(), message.getJMSCorrelationID());
                 task.start();
             } else {
                 if (payload instanceof EventTemplate) {
@@ -176,14 +175,18 @@ public abstract class Protocol extends Plugin implements BusConsumer {
         @Override
         public void run() {
             if (isPollingSensor()) {
-                while (isRunning && isPollingSensor()) {
-                    onRun();
+                Thread thisThread = Thread.currentThread();
+                while (sensorThread == thisThread) {
                     try {
-                        Thread.sleep(POLLING_WAIT_TIME);
-                    } catch (InterruptedException ex) {
-                        // Restore the interrupted status
-                        Thread.currentThread().interrupt();
+                        thisThread.sleep(POLLING_WAIT_TIME);
+                        synchronized (this) {
+                            while (!isRunning && sensorThread == thisThread) {
+                                wait();
+                            }
+                        }
+                    } catch (InterruptedException e) {
                     }
+                    onRun();
                 }
             } else {
                 if (isRunning) {
@@ -192,4 +195,6 @@ public abstract class Protocol extends Plugin implements BusConsumer {
             }
         }
     }
+    
+    
 }

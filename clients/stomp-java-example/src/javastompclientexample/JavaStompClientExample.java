@@ -41,7 +41,7 @@ public class JavaStompClientExample {
                 + "    </properties>"
                 + "</it.freedomotic.reactions.Command>";
         //create a event to send (simulate object click)
-        String eventDestination="/topic/VirtualTopic.app.event.sensor.object.behavior.clicked";
+        String eventDestination = "/topic/VirtualTopic.app.event.sensor.object.behavior.clicked";
         String event =
                 "<it.freedomotic.events.ObjectReceiveClick>"
                 + "<eventName>ObjectReceiveClick</eventName>"
@@ -64,11 +64,27 @@ public class JavaStompClientExample {
                 + "      <logical>AND</logical>"
                 + "      <attribute>object.name</attribute>"
                 + "      <operand>EQUALS</operand>"
-                + "      <value>Light-75</value>"
+                + "      <value>Livingroom Light</value>"
                 + "    </it.freedomotic.reactions.Statement>"
                 + "  </payload>"
                 + "</payload>"
                 + "</it.freedomotic.events.ObjectReceiveClick>";
+
+        String manifest = 
+                "  <it.freedomotic.model.ds.Config>\n"
+                + "  <properties>\n"
+                + "    <property name=\"startup-time\" value=\"on load\"/>\n"
+                + "    <property name=\"name\" value=\"Remote Plugin\"/>\n"
+                + "    <property name=\"category\" value=\"category\"/>\n"
+                + "    <property name=\"description\" value=\"Plugin added with join plugin\"/>\n"
+                + "    <property name=\"short-name\" value=\"shortname\"/>\n"
+                + "  </properties>\n"
+                + "  <xmlFile/>\n"
+                + "</it.freedomotic.model.ds.Config>";
+                
+
+          
+        String manifestDestination = "/queue/app.plugin.create";
 
         Client c;
         try {
@@ -79,13 +95,14 @@ public class JavaStompClientExample {
             header.put("reply-to", "/queue/app.data.response");
             System.out.println("Subscribe for replies to command");
             c.subscribe("/queue/app.data.response", new Listener() {
-
                 @Override
                 public void message(Map map, String string) {
                     System.out.println("STOMP client receives something...");
                     System.out.println(string);
                 }
             });
+            System.out.println("Sending XML manifest...");
+            c.send(manifestDestination, manifest, header);
             System.out.println("Sending XML command...");
             c.send(commandDestination, command, header);
             System.out.println("Sending XML event...");
