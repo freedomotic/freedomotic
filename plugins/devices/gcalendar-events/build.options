@@ -1,4 +1,4 @@
-#Thu, 04 Oct 2012 13:59:47 +0200
+#Mon, 15 Oct 2012 17:15:13 +0200
 
 package.type=device
 package.name=it.freedomotic.gcalendarevents
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=2
 framework.required.build=x
 build.major=1
-build.number=74
+build.number=75
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
