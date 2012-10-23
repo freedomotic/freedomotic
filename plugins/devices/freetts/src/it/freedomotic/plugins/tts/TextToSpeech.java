@@ -15,9 +15,6 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.util.Info;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -43,7 +40,7 @@ public class TextToSpeech extends Protocol {
 
     public void loadVoice() {
         try {
-            File mbrola = new File(Info.FRAMEWORK_DEVICES_PATH + "/it.freedomotic.freetts/data/voices/");
+            File mbrola = new File(Info.PATH_DEVICES_FOLDER + "/it.freedomotic.freetts/data/voices/");
             if (mbrola.exists()) {
                 System.setProperty("mbrola.base", mbrola.getAbsolutePath().toString());
                 voice = VoiceManager.getInstance().getVoice("mbrola_us1");
@@ -74,7 +71,7 @@ public class TextToSpeech extends Protocol {
 //                TimeUnit.SECONDS,
 //                new ArrayBlockingQueue<Runnable>(5)); // queue with a size
         try {
-            new Speaker(message).start();
+            new TextToSpeech.Speaker(message).start();
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
