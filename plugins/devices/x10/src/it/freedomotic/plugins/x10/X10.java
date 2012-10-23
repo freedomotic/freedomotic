@@ -87,11 +87,13 @@ public class X10 extends Protocol {
 
     @Override
     protected void onRun() {
-//        try {
-//            gateways.get(0).send(gateways.get(0).composeMessage("A", "01", "OFF"));
-//        } catch (IOException ex) {
-//            Logger.getLogger(X10.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            for (X10AbstractGateway gateway : gateways) {
+                gateway.read();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(X10.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

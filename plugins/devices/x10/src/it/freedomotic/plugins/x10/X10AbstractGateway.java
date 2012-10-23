@@ -17,7 +17,6 @@
  * along with Freedom; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package it.freedomotic.plugins.x10;
 
 import java.io.IOException;
@@ -27,41 +26,49 @@ import java.io.IOException;
  * @author enrico
  */
 public interface X10AbstractGateway {
+
     /**
      * Starts a connection to send data
      */
     void connect();
+
     /**
      * Parses the raw string readed from hardware to retrieve x10 housecode,
-     * address and function.
-     * For example parseReaded("$>9000LW A01A01 AONAON0E#")
-     * will return "A01AON" for gateway PMIX35
+     * address and function. For example parseReaded("$>9000LW A01A01
+     * AONAON0E#") will return "A01AON" for gateway PMIX35
+     *
      * @param readed
-     * @return 
+     * @return
      */
     String parseReaded(String readed);
+
     /**
      * Write data using the connection previously created
+     *
      * @param message
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     String send(String message) throws IOException;
+
+    void read() throws IOException;
+
     /**
-     * Performs the conversion from simple x10 string like "A01AON"
-     * to the harware counterpart.
-     * For example composeMessage("A", "01", "ON"); will return
-     * "$>9000LW A01A01 AONAON0E#" for gateway PMIX35
+     * Performs the conversion from simple x10 string like "A01AON" to the
+     * harware counterpart. For example composeMessage("A", "01", "ON"); will
+     * return "$>9000LW A01A01 AONAON0E#" for gateway PMIX35
+     *
      * @param housecode
      * @param address
      * @param command
-     * @return 
+     * @return
      */
     public String composeMessage(String housecode, String address, String command);
 
     /**
      * The gateway readable name (eg: CM15)
-     * @return 
+     *
+     * @return
      */
     public String getName();
 
