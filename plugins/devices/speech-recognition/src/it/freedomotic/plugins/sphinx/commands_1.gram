@@ -1,4 +1,4 @@
 #JSGF V1.0;
 grammar hello;
 
-public <command> = (turn on | turn off) ( light one | light two | light ten | light seven );
+public <command> = (turn on | turn off) ( kitchen light | livingroom light | light one | light two );

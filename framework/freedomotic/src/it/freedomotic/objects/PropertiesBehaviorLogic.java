@@ -10,7 +10,7 @@ import it.freedomotic.model.object.PropertiesBehavior;
 public class PropertiesBehaviorLogic implements BehaviorLogic {
 
     private PropertiesBehavior data;
-    private Listener listener;
+    private PropertiesBehaviorLogic.Listener listener;
     private boolean changed;
     
     public interface Listener {
@@ -67,17 +67,17 @@ public class PropertiesBehaviorLogic implements BehaviorLogic {
         return data.toString();
     }
 
-    public void addListener(Listener propertiesBehaviorListener) {
+    public void addListener(PropertiesBehaviorLogic.Listener propertiesBehaviorListener) {
         listener = propertiesBehaviorListener;
     }
     
-        @Override
+    @Override
     public boolean isChanged() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return changed;
     }
 
     @Override
     public void setChanged(boolean value) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        changed = value;
     }
 }

@@ -20,6 +20,7 @@
 package it.freedomotic.bus;
 
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.util.Info;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.*;
@@ -33,7 +34,6 @@ import org.apache.activemq.broker.BrokerService;
 public class AbstractBusConnector {
 
     protected static final String DEFAULT_USER = "user";
-    protected static final String DEFAULT_BROKER = "vm://freedomotic";
     protected static final String DEFAULT_PASSWORD = "password";
     protected Connection connection;
     protected MessageConsumer receiver;
@@ -45,7 +45,7 @@ public class AbstractBusConnector {
 
     public AbstractBusConnector() {
 
-        connect(DEFAULT_BROKER, DEFAULT_USER, DEFAULT_PASSWORD);
+        connect(Info.BROKER_DEFAULT, DEFAULT_USER, DEFAULT_PASSWORD);
     }
 
     private void connect(String brokerString, String username, String password) {
@@ -56,15 +56,16 @@ public class AbstractBusConnector {
                 BROKER.setBrokerName("freedomotic");
                 //use always 0.0.0.0 not localhost. localhost allows connections 
                 //only on the local machine not from LAN IPs
-                BROKER.addConnector("stomp://0.0.0.0:61666");
+                BROKER.addConnector(Info.BROKER_STOMP);
 //                //websocket connector for javascript apps
-                BROKER.addConnector("ws://0.0.0.0:61614");
+                BROKER.addConnector(Info.BROKER_WEBSOCKET);
                 BROKER.setPersistent(false); //we don't need to save messages on disk
+                BROKER.setUseJmx(false);
                 //start the broker
                 BROKER.start();
 
                 //connect to the embedded broker defined above
-                ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(Freedomotic.config.getStringProperty("vm://freedomotic", DEFAULT_BROKER));
+                ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(Info.BROKER_DEFAULT);
                 //tuned for performances http://activemq.apache.org/performance-tuning.html
                 factory.setUseAsyncSend(true);
                 factory.setOptimizeAcknowledge(true);

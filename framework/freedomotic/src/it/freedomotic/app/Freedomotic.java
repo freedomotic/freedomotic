@@ -31,6 +31,7 @@ import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.bus.EventChannel;
 import it.freedomotic.core.BehaviorManager;
 import it.freedomotic.core.JoinDevice;
+import it.freedomotic.core.JoinPlugin;
 import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.events.MessageEvent;
 import it.freedomotic.events.ObjectHasChangedBehavior;
@@ -327,6 +328,7 @@ public class Freedomotic {
          * A service to add environment objects using XML commands
          */
         new JoinDevice();
+        new JoinPlugin();
 
         Freedomotic.logger.info("---- FREEDOM IS READY TO WORK ----");
         
