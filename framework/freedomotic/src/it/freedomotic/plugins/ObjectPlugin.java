@@ -82,7 +82,7 @@ public class ObjectPlugin implements Client {
         return true;
     }
 
-    public File getExample() {
+    public File getTemplate() {
         return example;
     }
 
