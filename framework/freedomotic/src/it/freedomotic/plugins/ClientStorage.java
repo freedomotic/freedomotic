@@ -87,7 +87,7 @@ public class ClientStorage {
     }
     
     protected Plugin createPlaceholder(final String simpleName, final String type, final String description) {
-        final Plugin placeholder = new Plugin(simpleName, null) {
+        final Plugin placeholder = new Plugin(simpleName) {
             @Override
             public String getDescription() {
                 if (description == null) {
