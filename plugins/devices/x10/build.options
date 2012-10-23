@@ -1,4 +1,4 @@
-#Sat, 22 Sep 2012 00:59:45 +0200
+#Mon, 15 Oct 2012 16:46:16 +0200
 
 package.type=device
 package.name=it.nicoletti.x10
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=3
 framework.required.build=x
 build.major=1
-build.number=190
+build.number=192
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true

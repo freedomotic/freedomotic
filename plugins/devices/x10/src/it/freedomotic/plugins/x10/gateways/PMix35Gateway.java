@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico Nicoletti (enrico.nicoletti84@gmail.com)
  */
-public final class PMix35Gateway implements X10AbstractGateway, SerialDataConsumer, Runnable {
+public final class PMix35Gateway implements X10AbstractGateway, SerialDataConsumer {
 
     private static SerialConnectionProvider usb = null;
     //PMIX strings for ack, nack and null messages
@@ -29,7 +29,6 @@ public final class PMix35Gateway implements X10AbstractGateway, SerialDataConsum
     private String lastReceived = "";
     private X10Event x10Event = new X10Event();
     private X10 plugin;
-    private Thread polling;
 
     public PMix35Gateway(X10 plugin) {
         this.plugin = plugin;
@@ -54,8 +53,6 @@ public final class PMix35Gateway implements X10AbstractGateway, SerialDataConsum
             usb.connect();
             if (usb.isConnected()) {
                 plugin.setDescription("Connected to " + usb.getPortName());
-                polling = new Thread(this);
-                polling.start();
             } else {
                 plugin.setDescription("Unable to connect to " + config.getProperty("port"));
             }
@@ -104,7 +101,7 @@ public final class PMix35Gateway implements X10AbstractGateway, SerialDataConsum
         //CS is the checksum (2 characters)
         readed = readed.substring(6, readed.length() - 3);
         //it's a command echo
-        if (readed.startsWith("LE")){
+        if (readed.startsWith("LE")) {
             System.out.println(readed);
             return "";
         }
@@ -119,9 +116,9 @@ public final class PMix35Gateway implements X10AbstractGateway, SerialDataConsum
             int impedance = new Integer(readed.substring(2, 6)); //Network inmpedance
             readed = readed.substring(6);
         }
-        
+
         //check again for command echo as we can have ND00LE A01... or NI0000LE A01...
-        if (readed.startsWith("LE")){
+        if (readed.startsWith("LE")) {
             System.out.println(readed);
             return "";
         }
@@ -194,18 +191,11 @@ public final class PMix35Gateway implements X10AbstractGateway, SerialDataConsum
     }
 
     @Override
-    public void run() {
-        while (true) {
-            try {
-                send("$>9000RQCE#");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SerialConnectionProvider.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(PMix35Gateway.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public void read() {
+        try {
+            send("$>9000RQCE#");
+        } catch (IOException ex) {
+            Logger.getLogger(PMix35Gateway.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
