@@ -6,11 +6,11 @@
 package it.freedomotic.events;
 
 
+import com.thoughtworks.xstream.XStream;
 import it.freedomotic.api.EventTemplate;
 
 /**
- * An object receives a click on its representation on the GUI.
- * Different types of click are supported (single_click, double_click, right_click)
+ * Notify a state change for an object identified by the protocol and address values.
  * @author Enrico
  */
 public class ProtocolRead extends EventTemplate {
@@ -22,6 +22,8 @@ public class ProtocolRead extends EventTemplate {
         addProperty("protocol", protocol);
         addProperty("address", address);
         generateEventPayload();
+//        XStream x = new XStream();
+//        System.out.println(x.toXML(this));
     }
 
     @Override

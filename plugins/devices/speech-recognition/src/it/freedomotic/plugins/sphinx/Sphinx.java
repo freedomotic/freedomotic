@@ -63,7 +63,7 @@ public class Sphinx extends Protocol {
         }
         System.out.println("5");
 
-        System.out.println("Say: (turn on | turn off | switch ) ( light one | light two | light ten | light seven )");
+        System.out.println("Say: (turn on | turn off) ( kitchen light | livingroom light | light one | light two )");
         //getGrammar();
     }
 
