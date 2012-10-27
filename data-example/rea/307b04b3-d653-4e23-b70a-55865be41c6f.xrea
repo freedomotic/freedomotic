@@ -1,0 +1,7 @@
+<it.freedomotic.reactions.Reaction>
+  <trigger>Every one second</trigger>
+  <sequence>
+    <command>Wait five seconds</command>
+    <command>Switch Livingroom light power</command>
+  </sequence>
+</it.freedomotic.reactions.Reaction>

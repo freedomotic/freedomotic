@@ -1,6 +1,6 @@
 <it.freedomotic.reactions.Reaction>
-  <trigger>When Cut off is clicked</trigger>
+  <trigger>Bedroom door becomes open</trigger>
   <sequence>
-    <command>turn off all lights</command>
+    <command>Say door/window status</command>
   </sequence>
 </it.freedomotic.reactions.Reaction>

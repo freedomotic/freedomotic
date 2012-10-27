@@ -1,0 +1,29 @@
+<trigger>
+  <name>When a door is clicked</name>
+  <description>When a door is clicked</description>
+  <uuid>a1b02741-dcbb-4919-a5ec-3aa91b8dac64</uuid>
+  <channel>app.event.sensor.object.behavior.clicked</channel>
+  <payload>
+    <payload>
+      <it.freedomotic.reactions.Statement>
+        <logical>AND</logical>
+        <attribute>object.type</attribute>
+        <operand>REGEX</operand>
+        <value>^EnvObject.Gate(.*)</value>
+      </it.freedomotic.reactions.Statement>
+      <it.freedomotic.reactions.Statement>
+        <logical>AND</logical>
+        <attribute>click</attribute>
+        <operand>EQUALS</operand>
+        <value>SINGLE_CLICK</value>
+      </it.freedomotic.reactions.Statement>
+    </payload>
+  </payload>
+  <suspensionTime>0</suspensionTime>
+  <hardwareLevel>false</hardwareLevel>
+  <persistence>true</persistence>
+  <delay>0</delay>
+  <priority>0</priority>
+  <maxExecutions>-1</maxExecutions>
+  <numberOfExecutions>0</numberOfExecutions>
+</trigger>

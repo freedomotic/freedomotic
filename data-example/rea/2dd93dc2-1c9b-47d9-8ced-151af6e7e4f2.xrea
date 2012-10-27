@@ -1,6 +1,6 @@
 <it.freedomotic.reactions.Reaction>
-  <trigger>When Light 2 is clicked</trigger>
+  <trigger>Livingroom light turns off</trigger>
   <sequence>
-    <command>Switch its power</command>
+    <command>Say electric device status</command>
   </sequence>
 </it.freedomotic.reactions.Reaction>

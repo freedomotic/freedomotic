@@ -1,0 +1,92 @@
+<it.freedomotic.model.object.EnvObject>
+  <name>Kitchen door</name>
+  <description>Connects Livingroom to Kitchen</description>
+  <actAs>virtual</actAs>
+  <type>EnvObject.Gate</type>
+  <uuid>641d9d3f-c8ad-4a9b-824e-8f7285fbe12a</uuid>
+  <hierarchy>it.freedomotic.objects.impl.Gate</hierarchy>
+  <protocol>unknown</protocol>
+  <phisicalAddress>unknown</phisicalAddress>
+  <behaviors>
+    <it.freedomotic.model.object.BooleanBehavior>
+      <name>open</name>
+      <description>asd</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>false</value>
+    </it.freedomotic.model.object.BooleanBehavior>
+    <it.freedomotic.model.object.RangedIntBehavior>
+      <name>openness</name>
+      <description>asd</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>100</max>
+      <min>0</min>
+      <scale>1</scale>
+      <step>1</step>
+    </it.freedomotic.model.object.RangedIntBehavior>
+  </behaviors>
+  <representation>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="785" y="727"/>
+      <rotation>0.0</rotation>
+      <fillColor>#eee9e9</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#606060</borderColor>
+      <scaleX>0.0</scaleX>
+      <scaleY>0.0</scaleY>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="60" y="0"/>
+        <point x="60" y="8"/>
+        <point x="0" y="8"/>
+      </shape>
+    </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="785" y="727"/>
+      <rotation>25.0</rotation>
+      <fillColor>#eee9e9</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#606060</borderColor>
+      <scaleX>0.0</scaleX>
+      <scaleY>0.0</scaleY>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="60" y="0"/>
+        <point x="60" y="8"/>
+        <point x="0" y="8"/>
+      </shape>
+    </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="785" y="727"/>
+      <rotation>0.0</rotation>
+      <fillColor>#eee9e9</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#606060</borderColor>
+      <scaleX>0.0</scaleX>
+      <scaleY>0.0</scaleY>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="60" y="0"/>
+        <point x="60" y="8"/>
+        <point x="0" y="8"/>
+      </shape>
+    </view>
+  </representation>
+  <actions>
+    <property name="open" value="Execute it successfully"/>
+    <property name="measured open" value="Execute it successfully"/>
+    <property name="close" value="Execute it successfully"/>
+  </actions>
+  <triggers>
+    <property name="" value="openness"/>
+  </triggers>
+  <currentRepresentation>0</currentRepresentation>
+</it.freedomotic.model.object.EnvObject>
