@@ -1,5 +1,5 @@
 <it.freedomotic.reactions.Command>
-  <name>switch power for all lights asdasd</name>
+  <name>switch power for all lights</name>
   <receiver>app.events.sensors.behavior.request.objects</receiver>
   <uuid>7caa9992-52f1-4e73-a079-c50661a54909</uuid>
   <delay>0</delay>
@@ -15,12 +15,12 @@
   </tags>
   <hardwareLevel>false</hardwareLevel>
   <editable>true</editable>
-  <executed>false</executed>
+  <executed>true</executed>
   <properties>
     <properties>
       <property name="behavior" value="powered"/>
-      <property name="object.class" value="EnvObject.ElectricDevice.Light"/>
       <property name="value" value="opposite"/>
+      <property name="object.class" value="EnvObject.ElectricDevice.Light"/>
     </properties>
     <tuples/>
   </properties>

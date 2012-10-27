@@ -2,7 +2,7 @@
   <name>My Environment</name>
   <width>1100</width>
   <height>1100</height>
-  <renderer>image</renderer>
+  <renderer>photo</renderer>
   <backgroundColor>
     <red>255</red>
     <green>255</green>

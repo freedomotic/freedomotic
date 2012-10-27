@@ -1,6 +1,6 @@
 <it.freedomotic.reactions.Reaction>
-  <trigger>Every one second</trigger>
+  <trigger>Kitchen door becomes open</trigger>
   <sequence>
-    <command>Switch Created with JoinDevice power</command>
+    <command>Say door/window status</command>
   </sequence>
 </it.freedomotic.reactions.Reaction>
