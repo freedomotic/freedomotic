@@ -55,6 +55,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private PropertiesPanel_1 commandsControlPanel;
     private PropertiesPanel_1 pnlTriggers;
     //private PropertiesPanel_1 controlPanel;
+    ReactionsPanel reactionsPanel;
 
     /**
      * Creates new form ObjectEditor
@@ -64,7 +65,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         oldName = object.getPojo().getName();
         EnvObject pojo = obj.getPojo();
         //AVOID the paint of the value over sliders that will conflic with double values
-        UIManager.put("Slider.paintValue", false);        
+        UIManager.put("Slider.paintValue", false);
         initComponents();
         setSize(600, 400);
         if (obj.getPojo().getActAs().equalsIgnoreCase("virtual")) {
@@ -142,7 +143,7 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         //create an array of controllers for the object behaviors
         int row = 0;
-        for (BehaviorLogic b : object.getBehaviors()) {            
+        for (BehaviorLogic b : object.getBehaviors()) {
             if (b instanceof BooleanBehaviorLogic) {
                 final BooleanBehaviorLogic bb = (BooleanBehaviorLogic) b;
                 final JToggleButton button;
@@ -174,38 +175,38 @@ public class ObjectEditor extends javax.swing.JFrame {
                 button.setEnabled(!b.isReadOnly());
             }
             if (b instanceof RangedIntBehaviorLogic) {
-              
+
                 final RangedIntBehaviorLogic rb = (RangedIntBehaviorLogic) b;
                 final JLabel doubleValue = new JLabel(rb.getValueAsString());
                 final JPanel sliderPanel = new JPanel(new FlowLayout());
-                final JSlider slider = new JSlider();                 
-                
+                final JSlider slider = new JSlider();
+
                 slider.setValue(rb.getValue());
                 slider.setMaximum(rb.getMax());
-                slider.setMinimum(rb.getMin());                
+                slider.setMinimum(rb.getMin());
                 slider.setPaintTicks(true);
                 slider.setPaintTrack(true);
-                slider.setPaintLabels(false);                
-                slider.setMajorTickSpacing(rb.getScale()*10);
-                slider.setMinorTickSpacing(rb.getStep());                
+                slider.setPaintLabels(false);
+                slider.setMajorTickSpacing(rb.getScale() * 10);
+                slider.setMinorTickSpacing(rb.getStep());
                 slider.setSnapToTicks(true);
-                JLabel label = new JLabel(b.getName() + ":");               
+                JLabel label = new JLabel(b.getName() + ":");
                 tabControls.add(label);
                 sliderPanel.add(slider);
-                sliderPanel.add(doubleValue);                
-                tabControls.add(sliderPanel); 
-               slider.addChangeListener(new ChangeListener() {
+                sliderPanel.add(doubleValue);
+                tabControls.add(sliderPanel);
+                slider.addChangeListener(new ChangeListener() {
                     @Override
                     public void stateChanged(ChangeEvent e) {
                         if (!slider.getValueIsAdjusting()) {
                             Config params = new Config();
                             params.setProperty("value", new Integer(slider.getValue()).toString());
-                            System.out.println("Slider value: "+slider.getValue());
-                            rb.filterParams(params, true);                            
+                            System.out.println("Slider value: " + slider.getValue());
+                            rb.filterParams(params, true);
                         }
-                        if (rb.getScale()!=1)
-                            doubleValue.setText(new Double((double)slider.getValue()/rb.getScale()).toString());
-                        else
+                        if (rb.getScale() != 1) {
+                            doubleValue.setText(new Double((double) slider.getValue() / rb.getScale()).toString());
+                        } else {
                             doubleValue.setText(new Integer(slider.getValue()).toString());
                     }                    
                 }); 
@@ -372,7 +373,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnVirtual))
-                .addContainerGap(2135, Short.MAX_VALUE))
+                .addContainerGap(2148, Short.MAX_VALUE))
         );
         tabPropertiesLayout.setVerticalGroup(
             tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -521,7 +522,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spnScaleHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(234, Short.MAX_VALUE))
+                .addContainerGap(233, Short.MAX_VALUE))
         );
 
         tabObjectEditor.addTab("Appearance", tabRepresentation);
@@ -567,17 +568,19 @@ public class ObjectEditor extends javax.swing.JFrame {
             if (!(oldName.equals(txtName.getText().trim()))) {
                 object.rename(txtName.getText().trim());
             }
-            if (btnVirtual.isSelected()){
+            if (btnVirtual.isSelected()) {
                 pojo.setActAs("virtual");
-            }else{
+            } else {
                 pojo.setActAs("");
             }
             //object.setChanged(true);
             saveRepresentationChanges();
-            for (Component component : tabAutomations.getComponents()) {
-                if (component instanceof ReactionEditor) {
-                    ReactionEditor editor = (ReactionEditor) component;
-                    editor.finalizeEditing();
+            if (reactionsPanel != null) {
+                for (Component component : reactionsPanel.getPanel().getComponents()) {
+                    if (component instanceof ReactionEditor) {
+                        ReactionEditor editor = (ReactionEditor) component;
+                        editor.finalizeEditing();
+                    }
                 }
             }
             this.dispose();
@@ -852,7 +855,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private void populateAutomationsTab() {
         tabAutomations.removeAll();
         tabAutomations.setLayout(new BorderLayout());
-        ReactionsPanel reactionsPanel = new ReactionsPanel(object);
+        reactionsPanel = new ReactionsPanel(object);
         tabAutomations.add(reactionsPanel);
         tabAutomations.validate();
     }
