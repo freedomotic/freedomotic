@@ -236,6 +236,8 @@ public class CustomizeTrigger extends javax.swing.JFrame {
         } else {
             System.err.println("Error while addind a trigger in trigger editor");
         }
+        //to be sure it can be saved on hard drive
+        t.setPersistence(true);
         main.setTargetTrigger(t);
         this.dispose();
     }//GEN-LAST:event_btnSaveActionPerformed

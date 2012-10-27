@@ -75,6 +75,7 @@ public class JavaDesktopFrontend extends Actuator {
             System.out.println("Error while initializing a drawer in desktop frontend.");
             e.printStackTrace();
         }
+        drawer.callouts = new CalloutsUpdater(drawer, 1000);
         return drawer;
     }
 
@@ -82,7 +83,7 @@ public class JavaDesktopFrontend extends Actuator {
     protected void onCommand(final Command c) throws IOException, UnableToExecuteException {
         String callout = c.getProperty("callout.message");
         if (callout != null) {
-            Callout callout1 = new Callout(this.getClass().getCanonicalName(), "info", callout, 0, 0, 0, 10000);
+            Callout callout1 = new Callout(this.getClass().getCanonicalName(), "info", callout, 0, 0, 0, 0);
             drawer.createCallout(callout1);
         } else {
             EventQueue.invokeLater(new Runnable() {

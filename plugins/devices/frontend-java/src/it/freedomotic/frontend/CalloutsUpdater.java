@@ -4,6 +4,7 @@
  */
 package it.freedomotic.frontend;
 
+import java.awt.Point;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Timer;
@@ -23,7 +24,6 @@ public class CalloutsUpdater {
         timer = new Timer();
         CalloutsUpdater.drawer = drawer;
         timer.scheduleAtFixedRate(new TimerTask() {
-
             @Override
             public void run() {
                 long now = System.currentTimeMillis();
@@ -36,7 +36,9 @@ public class CalloutsUpdater {
                         it.remove();
                     }
                 }
-                drawer.setNeedRepaint(false);
+                if (drawer != null) {
+                    drawer.setNeedRepaint(false);
+                }
             }
         }, 0, milliseconds);
     }
@@ -44,23 +46,36 @@ public class CalloutsUpdater {
     public void addCallout(Callout newCallout) {
         Iterator it = callouts.values().iterator();
         boolean found = false;
-        while (it.hasNext()) {
-            Callout callout = (Callout) it.next();
-            if (callout.getRelated() != null) {
-                if (callout.getRelated().equals(newCallout.getRelated())) {
-                    //this new callout overrides an old one. Remove old callout
-                    callout.setText(newCallout.getText());
-                    callout.setPosition(newCallout.getPosition());
-                    callout.setRotation(newCallout.getRotation());
-                    //extend callout duration
-                    callout.setDuration(callout.getDuration() + newCallout.getDuration());
-                    found = true;
+        int line = 0;
+        //is an info callout
+        if (newCallout.getGroup().equalsIgnoreCase("info")) {
+            while (it.hasNext()) {
+                Callout callout = (Callout) it.next();
+                if (callout.getGroup().equalsIgnoreCase("info")) {
+                    //shift old info callout to the next line
+                    callout.setPosition(new Point(
+                            (int) callout.getPosition().getX()+100,
+                            (int) callout.getPosition().getY() + 300));
+                    callout.setDuration(callout.getDuration()+1000);
                 }
             }
-        }
-        if (!found) {
+            //add the new info callout on top
             callouts.put(newCallout.getRelated(), newCallout);
+        } else {
+            //is an object callout
+            if (callouts.containsKey(newCallout.getRelated())) {
+                Callout callout = (Callout) callouts.get(newCallout.getRelated());
+                callout.setText(newCallout.getText());
+                callout.setPosition(newCallout.getPosition());
+                callout.setRotation(newCallout.getRotation());
+                //extend old callout duration
+                callout.setDuration(callout.getDuration() + newCallout.getDuration());
+                found = true;
+            } else {
+                callouts.put(newCallout.getRelated(), newCallout);
+            }
         }
+
     }
 
     public static void clearAll() {
@@ -71,7 +86,7 @@ public class CalloutsUpdater {
         Iterator it = callouts.values().iterator();
         while (it.hasNext()) {
             Callout callout = (Callout) it.next();
-            if (callout.getGroup().matches(group)){
+            if (callout.getGroup().equals(group)) {
                 it.remove();
             }
         }

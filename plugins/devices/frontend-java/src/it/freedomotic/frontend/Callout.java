@@ -134,4 +134,8 @@ public class Callout {
     public Color getColor() {
         return color;
     }
+
+    void setTimestamp() {
+        this.timestamp = System.currentTimeMillis();
+    }
 }

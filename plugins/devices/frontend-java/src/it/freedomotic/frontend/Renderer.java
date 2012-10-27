@@ -59,7 +59,7 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
     private boolean roomEditMode = false;
     private ArrayList<Handle> handles = new ArrayList<Handle>();
     private ZoneLogic selectedZone;
-    private CalloutsUpdater callouts;
+    protected CalloutsUpdater callouts;
     private boolean objectEditMode = false;
     private Point messageCorner = new Point(50, 50);
     private Dimension dragDiff = null;
@@ -120,15 +120,17 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
     public synchronized void setNeedRepaint(boolean repaintBackground) {
         backgroundChanged = repaintBackground;
         Graphics2D g2 = (Graphics2D) this.getGraphics();
-        g2.setRenderingHint(
-                RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-        g2.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(
-                RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
+        if (g2 != null) {
+            g2.setRenderingHint(
+                    RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+            g2.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(
+                    RenderingHints.KEY_RENDERING,
+                    RenderingHints.VALUE_RENDER_QUALITY);
+        }
 
         this.repaint();
     }
