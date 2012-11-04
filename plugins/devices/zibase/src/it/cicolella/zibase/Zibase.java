@@ -23,9 +23,7 @@ import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,6 +38,7 @@ import org.xml.sax.SAXException;
 public class Zibase extends Protocol {
 
     private static ArrayList<Board> boards = null;
+    Map<String, Board> devices = new HashMap<String, Board>();
     private static Map<String, String> X10Map;
     private static Map<String, String> ZwaveMap;
     private static int BOARD_NUMBER = 1;
@@ -56,7 +55,7 @@ public class Zibase extends Protocol {
      * Initializations
      */
     public Zibase() {
-        super("Zibase", "/it.cicolella.zibase/zibase.xml");
+        super("Zibase", "/it.cicolella.zibase/zibase-manifest.xml");
         setPollingWait(POLLING_TIME);
     }
 
@@ -64,14 +63,20 @@ public class Zibase extends Protocol {
         if (boards == null) {
             boards = new ArrayList<Board>();
         }
+        if (devices == null) {
+            devices = new HashMap<String, Board>();
+        }
         setDescription("Reading status changes from"); //empty description
         for (int i = 0; i < BOARD_NUMBER; i++) {
+            String alias = null;
             String ipToQuery;
             int portToQuery;
+            alias = configuration.getTuples().getStringProperty(i, "alias", "default");
             ipToQuery = configuration.getTuples().getStringProperty(i, "ip-to-query", "192.168.0.115");
             portToQuery = configuration.getTuples().getIntProperty(i, "port-to-query", 80);
-            Board board = new Board(ipToQuery, portToQuery);
+            Board board = new Board(alias, ipToQuery, portToQuery);
             boards.add(board);
+            devices.put(alias, board);
             setDescription(getDescription() + " " + ipToQuery + ":" + portToQuery + ";");
         }
     }
@@ -133,15 +138,22 @@ public class Zibase extends Protocol {
 
     @Override
     protected void onRun() {
-        for (Board board : boards) {
-            evaluateDiffs(getXMLStatusFile(board), board); //parses the xml and crosscheck the data with the previous read
-            try {
-                Thread.sleep(POLLING_TIME);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Zibase.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        // for (Board board : boards) {
+        //   evaluateDiffs(getXMLStatusFile(board), board); //parses the xml and crosscheck the data with the previous read
+        Set keys = devices.keySet();
+        Iterator keyIter = keys.iterator();
+        while (keyIter.hasNext()) {
+            String alias = (String) keyIter.next();
+            Board board = (Board) devices.get(alias);
+            evaluateDiffs(getXMLStatusFile(board), board);
+        }
+        try {
+            Thread.sleep(POLLING_TIME);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Zibase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    // }
 
     private Document getXMLStatusFile(Board board) {
         //get the xml file from the socket connection
@@ -255,7 +267,8 @@ public class Zibase extends Protocol {
 
     private void sendChanges(Board board, String x10Address, String status, String protocol) {
         //reconstruct freedomotic object address
-        String address = board.getIpAddress() + ":" + board.getPort() + ":" + x10Address + ":" + protocol;
+        String address = board.getAlias() + ":" + x10Address + ":" + protocol;
+        //String address = board.getIpAddress() + ":" + board.getPort() + ":" + x10Address + ":" + protocol;
         //Freedomotic.logger.info("Sending Zibase protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "zibase", address); //IP:PORT:X10ADDRESS:PROTOCOL
@@ -276,14 +289,19 @@ public class Zibase extends Protocol {
         //get connection paramentes address:port from received freedom command
         String delimiter = configuration.getProperty("address-delimiter");
         address = c.getProperty("address").split(delimiter);
-        String ip_board = address[0];
-        String port_board = address[1];
-        String address_object = address[2];
-        String protocol_object = address[3];
+        Board board = (Board) getKeyFromValue(devices, address[0]);
+        String ip_board = board.getIpAddress();
+        int port_board = board.getPort();
+        String address_object = address[1];
+        String protocol_object = address[2];
+        //String ip_board = address[0];
+        //String port_board = address[1];
+        //String address_object = address[2];
+        //String protocol_object = address[3];
         //connect to the ethernet board
         boolean connected = false;
         try {
-            connected = connect(ip_board, Integer.parseInt(port_board));
+            connected = connect(ip_board, port_board);
         } catch (ArrayIndexOutOfBoundsException outEx) {
             Freedomotic.logger.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
             throw new UnableToExecuteException();
@@ -335,10 +353,16 @@ public class Zibase extends Protocol {
         String cmd = c.getProperty("control").toUpperCase();
         String delimiter = configuration.getProperty("address-delimiter");
         address = c.getProperty("address").split(delimiter);
-        String ip_board = address[0];
-        String port_board = address[1];
-        String address_object = address[2];
-        String protocol_object = address[3];
+        //String ip_board = address[0];
+        //String port_board = address[1];
+        //String address_object = address[2];
+        //String protocol_object = address[3];
+        address = c.getProperty("address").split(delimiter);
+        Board board = (Board) getKeyFromValue(devices, address[0]);
+        String ip_board = board.getIpAddress();
+        int port_board = board.getPort();
+        String address_object = address[1];
+        String protocol_object = address[2];
         String protocol = configuration.getStringProperty(protocol_object, "X10");
 
         //  if (cmd.equals("DIM")) {
@@ -431,5 +455,14 @@ public class Zibase extends Protocol {
     @Override
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public static Object getKeyFromValue(Map hm, Object value) {
+        for (Object o : hm.keySet()) {
+            if (hm.get(o).equals(value)) {
+                return o;
+            }
+        }
+        return null;
     }
 }
