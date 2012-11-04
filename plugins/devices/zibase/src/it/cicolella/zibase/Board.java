@@ -11,11 +11,13 @@ package it.cicolella.zibase;
 public class Board {
 
     private String ipAddress = null;
+    private String alias = null;
     private String sensorsUrl;
     private String commandsUrl;
     private int port;
 
-    public Board(String ipAddress, int port) {
+    public Board(String alias, String ipAddress, int port) {
+        setAlias(alias);
         setIpAddress(ipAddress);
         setPort(port);
       }
@@ -36,6 +38,14 @@ public class Board {
         this.commandsUrl = commandsUrl;
     }
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+    
     public String getIpAddress() {
         return ipAddress;
     }
