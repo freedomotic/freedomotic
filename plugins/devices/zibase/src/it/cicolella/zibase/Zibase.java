@@ -5,7 +5,7 @@
 package it.cicolella.zibase;
 
 /**
- * Plugin for Zibase board by zodianet.com
+ * Plugin for Zibase board by www.zodianet.com
  *
  * @author Mauro Cicolella - www.emmecilab.net
  */
