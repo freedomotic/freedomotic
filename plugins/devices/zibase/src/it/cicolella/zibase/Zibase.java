@@ -140,11 +140,16 @@ public class Zibase extends Protocol {
     protected void onRun() {
         // for (Board board : boards) {
         //   evaluateDiffs(getXMLStatusFile(board), board); //parses the xml and crosscheck the data with the previous read
-        Set keys = devices.keySet();
-        Iterator keyIter = keys.iterator();
-        while (keyIter.hasNext()) {
-            String alias = (String) keyIter.next();
-            Board board = (Board) devices.get(alias);
+        // Set keys = devices.keySet();
+        // Iterator keyIter = keys.iterator();
+        // while (keyIter.hasNext()) {
+        //    String alias = (String) keyIter.next();
+        //    Board board = (Board) devices.get(alias);
+        //   evaluateDiffs(getXMLStatusFile(board), board);
+        // }
+        Set<String> keySet = devices.keySet();
+        for (String key : keySet) {
+            Board board = devices.get(key);
             evaluateDiffs(getXMLStatusFile(board), board);
         }
         try {
@@ -252,7 +257,8 @@ public class Zibase extends Protocol {
                 String v1 = ev.getAttribute("v1");
                 String v2 = ev.getAttribute("v2");
                 String lowbatt = ev.getAttribute("lowbatt");
-                address = board.getIpAddress() + ":" + board.getPort() + ":" + protocol + id;
+                //address = board.getIpAddress() + ":" + board.getPort() + ":" + protocol + id;
+                address = board.getAlias() + ":" + protocol + id;
                 // print out its manager attribute value
                 //System.out.println("Device = " + protocol + id + " v1=" + v1 + " v2=" + v2 + " lowbatt=" + lowbatt);
                 ProtocolRead event = new ProtocolRead(this, "zibase", address); //IP:PORT:PROTOCOl+ID
@@ -269,7 +275,7 @@ public class Zibase extends Protocol {
         //reconstruct freedomotic object address
         String address = board.getAlias() + ":" + x10Address + ":" + protocol;
         //String address = board.getIpAddress() + ":" + board.getPort() + ":" + x10Address + ":" + protocol;
-        //Freedomotic.logger.info("Sending Zibase protocol read event for object address '" + address + "'. It's readed status is " + status);
+        Freedomotic.logger.severe("Sending Zibase protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "zibase", address); //IP:PORT:X10ADDRESS:PROTOCOL
         if (status.equals("0")) {
@@ -289,7 +295,8 @@ public class Zibase extends Protocol {
         //get connection paramentes address:port from received freedom command
         String delimiter = configuration.getProperty("address-delimiter");
         address = c.getProperty("address").split(delimiter);
-        Board board = (Board) getKeyFromValue(devices, address[0]);
+        //Board board = (Board) getKeyFromValue(devices, address[0]);
+        Board board = (Board) devices.get(address[0]);
         String ip_board = board.getIpAddress();
         int port_board = board.getPort();
         String address_object = address[1];
@@ -358,7 +365,8 @@ public class Zibase extends Protocol {
         //String address_object = address[2];
         //String protocol_object = address[3];
         address = c.getProperty("address").split(delimiter);
-        Board board = (Board) getKeyFromValue(devices, address[0]);
+        //Board board = (Board) getKeyFromValue(devices, address[0]);
+        Board board = (Board) devices.get(address[0]);
         String ip_board = board.getIpAddress();
         int port_board = board.getPort();
         String address_object = address[1];
