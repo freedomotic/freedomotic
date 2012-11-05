@@ -1,4 +1,4 @@
-#Sun, 04 Nov 2012 17:40:14 +0100
+#Sun, 04 Nov 2012 23:14:59 +0100
 
 package.type=device
 package.name=it.cicolella.zibase
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=3
 framework.required.build=x
 build.major=1
-build.number=36
+build.number=41
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
