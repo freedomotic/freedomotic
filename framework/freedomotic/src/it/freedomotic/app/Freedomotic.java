@@ -58,7 +58,7 @@ import it.freedomotic.util.Info;
 import it.freedomotic.util.LogFormatter;
 import it.freedomotic.serial.SerialConnectionProvider;
 import it.freedomotic.service.MarketPlaceService;
-import it.freedomotic.service.PluginPackage;
+import it.freedomotic.service.IPluginPackage;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -87,7 +87,7 @@ public class Freedomotic {
     public static final Logger logger = Logger.getLogger("app.log");
     private static EventChannel eventChannel;
     private static CommandChannel commandChannel;
-    public static ArrayList<PluginPackage> onlinePlugins;
+    public static ArrayList<IPluginPackage> onlinePlugins;
 
     public Freedomotic() {
         /**

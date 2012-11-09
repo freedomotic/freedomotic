@@ -7,7 +7,7 @@ package it.freedomotic.marketplace.postplugin;
 import java.util.ArrayList;
 
 /**
- *  POJO class that represents all information available from the Drupal arketPlace that is
+ *  POJO class that represents all information available from the Drupal MarketPlace that is
  *  retrieved using the Drupal Rest server.
  * At this moment only a few fields are parsed, just the necesary to retrieve the plugin zip
  * @author GGPT

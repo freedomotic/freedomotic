@@ -6,7 +6,9 @@ package it.freedomotic.marketplace;
 
 import it.freedomotic.marketplace.util.DrupalRestHelper;
 import it.freedomotic.service.IMarketPlace;
-import it.freedomotic.service.PluginPackage;
+import it.freedomotic.service.IPluginCategory;
+import it.freedomotic.service.IPluginPackage;
+import java.io.IOException;
 import java.util.ArrayList;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -16,21 +18,49 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = IMarketPlace.class)
 public class FreedomoticMarketPlace implements IMarketPlace{
-    private ArrayList<PluginPackage> packageList;
+    private ArrayList<IPluginPackage> packageList;
+    private ArrayList<IPluginCategory> categoryList;
     
     public FreedomoticMarketPlace() {
-        packageList = new ArrayList<PluginPackage>();
-        updatePackageList();    
+        packageList = new ArrayList<IPluginPackage>();
+        categoryList = new ArrayList<IPluginCategory>();
+        updateCategoryList();        
+        
     }
       
     @Override
-    public ArrayList<PluginPackage> getAvailablePackages() {
+    public ArrayList<IPluginPackage> getAvailablePackages() {
         return packageList;
     }
 
     @Override
-    public void updatePackageList() {
-        packageList = DrupalRestHelper.retrievePackageList();
+    public void updateAllPackageList() {
+        packageList = new ArrayList<IPluginPackage>();
+        packageList.addAll(DrupalRestHelper.retrieveAllPlugins());
+    }
+
+    @Override
+    public ArrayList<IPluginCategory> getAvailableCategories() {
+        return categoryList;        
+    }
+
+    @Override
+    public ArrayList<IPluginPackage> getAvailablePackages(IPluginCategory category) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateCategoryList() {        
+        categoryList.clear();
+        categoryList.addAll(DrupalRestHelper.retrieveCategories());        
+    }        
+    
+      /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) throws IOException {
+        FreedomoticMarketPlace market= new FreedomoticMarketPlace();            
+    
     }
     
 }

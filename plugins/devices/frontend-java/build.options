@@ -1,4 +1,4 @@
-#Sat, 27 Oct 2012 18:00:21 +0200
+#Fri, 09 Nov 2012 20:04:05 +0100
 
 package.type=device
 package.name=it.freedomotic.jfrontend
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=3
 framework.required.build=x
 build.major=1
-build.number=30
+build.number=34
 build.base.dist=dist
 build.create.dist.market=true
 build.create.dist.framework=true

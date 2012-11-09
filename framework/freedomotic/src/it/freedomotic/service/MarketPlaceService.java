@@ -49,10 +49,10 @@ public class MarketPlaceService {
         return service;
     }
 
-    public ArrayList<PluginPackage> getPackageList() {
-        ArrayList<PluginPackage> packageList = null;
+    public ArrayList<IPluginPackage> getPackageList() {
+        ArrayList<IPluginPackage> packageList = null;
         try {
-            packageList = new ArrayList<PluginPackage>();
+            packageList = new ArrayList<IPluginPackage>();
             for (IMarketPlace market : marketPlaces) {
                 packageList.addAll(market.getAvailablePackages());
             }
@@ -61,4 +61,32 @@ public class MarketPlaceService {
         }
         return packageList;
     }
+    public ArrayList<IPluginPackage> getPackageList(IPluginCategory category) {
+        ArrayList<IPluginPackage> packageList = null;
+        try {
+            packageList = new ArrayList<IPluginPackage>();
+            for (IMarketPlace market : marketPlaces) {
+                packageList.addAll(market.getAvailablePackages(category));
+            }
+        } catch (Exception e) {
+            Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+        }
+        return packageList;
+    }
+    
+    public ArrayList<IPluginCategory> getCategoryList() {
+        ArrayList<IPluginCategory> categoryList = null;
+        try {
+            categoryList = new ArrayList<IPluginCategory>();
+            for (IMarketPlace market : marketPlaces) {
+                categoryList.addAll(market.getAvailableCategories());
+            }
+        } catch (Exception e) {
+            Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+        }
+        return categoryList;
+    }
+    
+    
+    
 }

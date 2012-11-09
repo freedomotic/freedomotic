@@ -4,13 +4,16 @@
  */
 package it.freedomotic.service;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author GGPT
  */
 public interface IMarketPlace {
-    ArrayList<PluginPackage> getAvailablePackages();
-    public void updatePackageList();     
+    List<IPluginCategory> getAvailableCategories();
+    List<IPluginPackage> getAvailablePackages();
+    List<IPluginPackage> getAvailablePackages(IPluginCategory category);
+    public void updateAllPackageList();
+    public void updateCategoryList();
 }
