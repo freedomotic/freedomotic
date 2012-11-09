@@ -4,7 +4,6 @@
  */
 package it.freedomotic.marketplace.util;
 
-import it.freedomotic.service.PluginPackage;
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;

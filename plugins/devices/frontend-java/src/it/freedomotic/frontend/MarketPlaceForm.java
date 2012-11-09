@@ -13,8 +13,9 @@ package it.freedomotic.frontend;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.plugins.AddonLoader;
+import it.freedomotic.service.IPluginCategory;
 import it.freedomotic.service.MarketPlaceService;
-import it.freedomotic.service.PluginPackage;
+import it.freedomotic.service.IPluginPackage;
 import it.freedomotic.util.Info;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -46,7 +47,8 @@ import javax.swing.SwingUtilities;
  */
 public class MarketPlaceForm extends javax.swing.JFrame {
 
-    ArrayList<PluginPackage> pluginList;
+    ArrayList<IPluginPackage> pluginList;
+    ArrayList<IPluginCategory> pluginCategoryList;
 
     /**
      * Creates new form MarketPlaceForm
@@ -72,7 +74,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
             public void mouseClicked(MouseEvent e) {
                 Point p = e.getPoint();
                 int i = lstPlugins.locationToIndex(p);
-                PluginPackage pp = pluginList.get(i);
+                IPluginPackage pp = pluginList.get(i);
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     if (e.getClickCount() == 2) {
                         installPackage(pp);
@@ -104,14 +106,15 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 jp.add(new JLabel("There are no plugins available for download"));
                 vector.add(jp);                
             }
-            for (PluginPackage pp : pluginList) {
+            for (IPluginPackage pp : pluginList) {
+                System.out.println("processing plugin package:" + pp.getTitle());
                 JPanel jp = new JPanel();
                 jp.setLayout(new BorderLayout());                
                 //boolean isRunning = c.isRunning();              
                 jp.add(new JLabel(pp.getIcon()), BorderLayout.LINE_START);
                 JLabel text = null;
                 String description = "";
-                if (pp.getFilePath() != null) {
+                if (pp.getFilePath() != null && pp.getFilePath()!= "") {
                     String version = extractVersion(new File(pp.getFilePath()).getName().toString());
                     int result = Plugin.compareVersions(pp.getTitle(), version);
                     //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
@@ -174,7 +177,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         }
     }
 
-    private void installPackage(PluginPackage pp) {
+    private void installPackage(IPluginPackage pp) {
         if (pp.getFilePath() == null) {
             JOptionPane.showMessageDialog(this,
                     "It seems that " + pp.getTitle() + " plugin developer have not "
