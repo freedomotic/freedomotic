@@ -57,6 +57,7 @@ import it.freedomotic.service.ClassPathUpdater;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.LogFormatter;
 import it.freedomotic.serial.SerialConnectionProvider;
+import it.freedomotic.service.IPluginCategory;
 import it.freedomotic.service.MarketPlaceService;
 import it.freedomotic.service.IPluginPackage;
 import java.awt.Desktop;
@@ -87,7 +88,7 @@ public class Freedomotic {
     public static final Logger logger = Logger.getLogger("app.log");
     private static EventChannel eventChannel;
     private static CommandChannel commandChannel;
-    public static ArrayList<IPluginPackage> onlinePlugins;
+    public static ArrayList<IPluginCategory> onlinePluginCategories;
 
     public Freedomotic() {
         /**
@@ -224,7 +225,7 @@ public class Freedomotic {
 
                                 Freedomotic.logger.info("Starting marketplace service");
                                 MarketPlaceService mps = MarketPlaceService.getInstance();
-                                onlinePlugins = mps.getPackageList();
+                                onlinePluginCategories = mps.getCategoryList();
                             }
                         }).start();
                     }

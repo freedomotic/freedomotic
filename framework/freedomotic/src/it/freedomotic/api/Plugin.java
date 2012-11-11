@@ -19,7 +19,6 @@
  */
 package it.freedomotic.api;
 
-import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
@@ -278,6 +277,8 @@ public class Plugin implements Client {
             //already installed
             //now check for version
             Plugin plugin = (Plugin) client;
+            if (plugin.getVersion() == null)
+                return -1;            
             return Plugin.getOldestVersion(plugin.getVersion(), version);
         } else {
             //not installed
