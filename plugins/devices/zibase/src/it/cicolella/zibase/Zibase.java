@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
  */
 public class Zibase extends Protocol {
 
-    private static ArrayList<Board> boards = null;
+    //private static ArrayList<Board> boards = null;
     Map<String, Board> devices = new HashMap<String, Board>();
     private static Map<String, String> X10Map;
     private static Map<String, String> ZwaveMap;
@@ -60,9 +60,9 @@ public class Zibase extends Protocol {
     }
 
     private void loadBoards() {
-        if (boards == null) {
-            boards = new ArrayList<Board>();
-        }
+        // if (boards == null) {
+        //   boards = new ArrayList<Board>();
+        // }
         if (devices == null) {
             devices = new HashMap<String, Board>();
         }
@@ -75,7 +75,8 @@ public class Zibase extends Protocol {
             ipToQuery = configuration.getTuples().getStringProperty(i, "ip-to-query", "192.168.0.115");
             portToQuery = configuration.getTuples().getIntProperty(i, "port-to-query", 80);
             Board board = new Board(alias, ipToQuery, portToQuery);
-            boards.add(board);
+            //boards.add(board);
+            // add board object and its alias as key for the hashmap
             devices.put(alias, board);
             setDescription(getDescription() + " " + ipToQuery + ":" + portToQuery + ";");
         }
@@ -129,8 +130,10 @@ public class Zibase extends Protocol {
     public void onStop() {
         super.onStop();
         //release resources
-        boards.clear();
-        boards = null;
+        //boards.clear();
+        //boards = null;
+        devices.clear();
+        devices = null;
         setPollingWait(-1); //disable polling
         //display the default description
         setDescription(configuration.getStringProperty("description", "Zibase"));
@@ -147,6 +150,7 @@ public class Zibase extends Protocol {
         //    Board board = (Board) devices.get(alias);
         //   evaluateDiffs(getXMLStatusFile(board), board);
         // }
+        // select all boards in the devices hashmap and evaluate the status
         Set<String> keySet = devices.keySet();
         for (String key : keySet) {
             Board board = devices.get(key);
@@ -174,7 +178,7 @@ public class Zibase extends Protocol {
         try {
             statusFileURL = "http://" + board.getIpAddress() + ":"
                     + Integer.toString(board.getPort()) + "/" + GET_SENSORS_URL;
-            //Freedomotic.logger.info("Zibase gets relay status from file " + statusFileURL); // FOR DEBUG
+            Freedomotic.logger.info("Zibase gets relay status from file " + statusFileURL); // FOR DEBUG
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
         } catch (ConnectException connEx) {
@@ -204,7 +208,7 @@ public class Zibase extends Protocol {
             NodeList nl = n.getChildNodes();
             // read <x10tab> element from sensors.xml
             String x10tab = doc.getElementsByTagName("x10tab").item(0).getTextContent();
-            // split <x10tab> in groups of 4 digits (each of them is an x10 houseCode
+            // split <x10tab> in groups of 4 digits (each of them is an x10 houseCode A,B,C...)
             String[] x10Address = x10tab.split("(?<=\\G.{4})");
             for (int i = 0; i < x10Address.length; i++) {
                 String[] x10AddressDigits = x10Address[i].split("(?<=\\G.{1})");
@@ -220,6 +224,9 @@ public class Zibase extends Protocol {
                     if (!X10Map.get(address).equalsIgnoreCase(status)) {
                         X10Map.put(address, status);
                         sendChanges(board, address, status, "CHACON");
+                        sendChanges(board, address, status, "DOMIA");
+                        sendChanges(board, address, status, "XDD433ALRM");
+                        sendChanges(board, address, status, "XDD868ALRM");
                         sendChanges(board, address, status, "XDD868INTER");
                         sendChanges(board, address, status, "X10");
                     }
@@ -227,7 +234,7 @@ public class Zibase extends Protocol {
             }
             // read <zwtab> element from sensors.xml
             String zwtab = doc.getElementsByTagName("zwtab").item(0).getTextContent();
-            // split <zwtab> in groups of 4 digits (each of them is an x10 houseCode
+            // split <zwtab> in groups of 4 digits (each of them is an x10 houseCode A,B,C...)
             x10Address = zwtab.split("(?<=\\G.{4})");
             for (int i = 0; i < x10Address.length; i++) {
                 String[] x10AddressDigits = x10Address[i].split("(?<=\\G.{1})");
@@ -236,6 +243,7 @@ public class Zibase extends Protocol {
                 String[] deviceAddress = hexToBinary(x10AddressReordered).split("(?<=\\G.{1})");
                 for (int j = 0; j < deviceAddress.length; j++) {
                     int step = 16 - j;
+                    // zwave address in the format Z+HouseCode+Device e.g. ZA1, ZB3 ...
                     address = "Z" + x10HouseCode[i] + step;
                     status = deviceAddress[j];
                     // if actual device status is different from stored one
@@ -261,7 +269,7 @@ public class Zibase extends Protocol {
                 address = board.getAlias() + ":" + protocol + id;
                 // print out its manager attribute value
                 //System.out.println("Device = " + protocol + id + " v1=" + v1 + " v2=" + v2 + " lowbatt=" + lowbatt);
-                ProtocolRead event = new ProtocolRead(this, "zibase", address); //IP:PORT:PROTOCOl+ID
+                ProtocolRead event = new ProtocolRead(this, "zibase", address); //object address ALIAS:PROTOCOL+ID
                 event.addProperty("sensor.v1", v1);
                 event.addProperty("sensor.v2", v2);
                 event.addProperty("sensor.lowbatt", lowbatt);
@@ -277,7 +285,7 @@ public class Zibase extends Protocol {
         //String address = board.getIpAddress() + ":" + board.getPort() + ":" + x10Address + ":" + protocol;
         Freedomotic.logger.severe("Sending Zibase protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
-        ProtocolRead event = new ProtocolRead(this, "zibase", address); //IP:PORT:X10ADDRESS:PROTOCOL
+        ProtocolRead event = new ProtocolRead(this, "zibase", address); //object address ALIAS:X10ADDRESS:PROTOCOL
         if (status.equals("0")) {
             event.addProperty("isOn", "false");
         } else {
@@ -301,11 +309,7 @@ public class Zibase extends Protocol {
         int port_board = board.getPort();
         String address_object = address[1];
         String protocol_object = address[2];
-        //String ip_board = address[0];
-        //String port_board = address[1];
-        //String address_object = address[2];
-        //String protocol_object = address[3];
-        //connect to the ethernet board
+        //connect to the Zibase board
         boolean connected = false;
         try {
             connected = connect(ip_board, port_board);
@@ -353,32 +357,26 @@ public class Zibase extends Protocol {
     }
 
     // create message to send to the board
-    // this part must be changed to relect board protocol
     public String createMessage(Command c) {
         String message = null;
         String page = null;
-        String cmd = c.getProperty("control").toUpperCase();
+        String control = c.getProperty("control").toUpperCase();
         String delimiter = configuration.getProperty("address-delimiter");
-        address = c.getProperty("address").split(delimiter);
-        //String ip_board = address[0];
-        //String port_board = address[1];
-        //String address_object = address[2];
-        //String protocol_object = address[3];
         address = c.getProperty("address").split(delimiter);
         //Board board = (Board) getKeyFromValue(devices, address[0]);
         Board board = (Board) devices.get(address[0]);
-        String ip_board = board.getIpAddress();
-        int port_board = board.getPort();
-        String address_object = address[1];
-        String protocol_object = address[2];
-        String protocol = configuration.getStringProperty(protocol_object, "X10");
+        String ipBoard = board.getIpAddress();
+        int portBoard = board.getPort();
+        String addressObject = address[1];
+        String protocolObject = address[2];
+        String protocol = configuration.getStringProperty(protocolObject, "X10");
 
         //  if (cmd.equals("DIM")) {
         //relay = HexIntConverter.convert(Integer.parseInt(address[2]) - 1);
         //relay = HexIntConverter.convert(Integer.parseInt(address[2]));
         //    page = "cgi-bin/domo.cgi?cmd=" + relay;
         //} else
-        page = SEND_COMMANDS_URL + cmd + "%20" + address_object + "%20" + protocol;
+        page = SEND_COMMANDS_URL + control + "%20" + addressObject + "%20" + protocol;
 
         // http request sending to the board
         message = "GET /" + page + " HTTP 1.0\r\n\r\n";
@@ -386,7 +384,7 @@ public class Zibase extends Protocol {
         return (message);
     }
 
-    // convert an hexadecimal digit to binary format
+    // convert an hexadecimal digit to a 4 binary digits format
     public static String hexToBinary(String hexString) {
         String[] hexDigit = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
         String[] binary = {"0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001", "1010", "1011", "1100", "1101", "1110", "1111"};
@@ -405,6 +403,7 @@ public class Zibase extends Protocol {
     }
 
     // inizialize the x10 addresses map to "0" - all devices OFF
+    // A1 = 0, A2 =0 etc...
     // this map stores the status of each device
     public static void initX10Map() {
         X10Map = new HashMap();
@@ -430,6 +429,7 @@ public class Zibase extends Protocol {
     }
 
     // inizialize the Zwave x10 addresses map to "0" - all devices OFF
+    // ZA1 = 0, ZA2 = 0 etc...
     // this map stores the status of each device
     public static void initZwaveMap() {
         ZwaveMap = new HashMap();
@@ -465,6 +465,7 @@ public class Zibase extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    // retrieve a key from value in the hashmap 
     public static Object getKeyFromValue(Map hm, Object value) {
         for (Object o : hm.keySet()) {
             if (hm.get(o).equals(value)) {
