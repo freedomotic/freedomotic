@@ -99,11 +99,11 @@ void loop()
     }
 
     if(readValues(weatherShield)) 
-       client.print(weatherData.getInstTemperature());
+       client.print(weatherData.getInstTemperature()*10);
        client.print(":"); 
-       client.print(weatherData.getInstPressure());
+       client.print(weatherData.getInstPressure()*10);
        client.print(":"); 
-       client.print(weatherData.getInstHumidity());
+       client.print(weatherData.getInstHumidity()*10);
      
     // delay for data acquiring
     delay(1);
