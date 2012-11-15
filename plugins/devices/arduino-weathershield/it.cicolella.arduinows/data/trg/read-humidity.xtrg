@@ -1,7 +1,7 @@
 <trigger>
     <name>Arduino WeatherShield reads humidity change</name>
     <description>Arduino WeatherShield reads humidity change</description>
-    <channel>app.event.sensor.protocol.read</channel>
+    <channel>app.event.sensor.protocol.read.ArduinoWeatherShield</channel>
     <payload>
         <payload>
             <it.freedom.reactions.Statement>
@@ -14,7 +14,7 @@
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>@event.humidity</value>
+                <value>@event.sensor.humidity</value>
             </it.freedom.reactions.Statement>
         </payload>
     </payload>

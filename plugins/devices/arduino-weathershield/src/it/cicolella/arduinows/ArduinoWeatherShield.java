@@ -1,9 +1,11 @@
 package it.cicolella.arduinows;
 
-import it.freedomotic.api.Sensor;
+import it.freedomotic.api.EventTemplate;
+import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.exceptions.UnableToExecuteException;
+import it.freedomotic.reactions.Command;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -12,10 +14,10 @@ import java.util.logging.Logger;
 
 /**
  * A sensor for the Arduino Weather Shield developed by www.ethermania.com
- * author Mauro Cicolella - www.emmecilab.net
- * For details please refer to http://www.ethermania.com/shop/index.php?main_page=product_info&cPath=91_104&products_id=612
+ * author Mauro Cicolella - www.emmecilab.net For details please refer to
+ * http://www.ethermania.com/shop/index.php?main_page=product_info&cPath=91_104&products_id=612
  */
-public class ArduinoWeatherShield extends Sensor {
+public class ArduinoWeatherShield extends Protocol {
 
     private static int POLLING_TIME = 10000;
     private int SOCKET_TIMEOUT = 10000;
@@ -31,10 +33,7 @@ public class ArduinoWeatherShield extends Sensor {
     private BufferedReader inputStream = null;
 
     public ArduinoWeatherShield() {
-        super("Arduino WeatherShield", "/it.cicolella.arduinows/arduinows-sensors.xml");
-        this.setAsPollingSensor(); //onRun in a loop
-        BOARD_NUMBER = configuration.getTuples().size();
-        loadBoards();
+        super("Arduino WeatherShield", "/it.cicolella.arduinows/arduinows-manifest.xml");
     }
 
     private void loadBoards() {
@@ -53,9 +52,27 @@ public class ArduinoWeatherShield extends Sensor {
 
     }
 
+    /**
+     * Sensor side
+     */
     @Override
-    protected void onInformationRequest() throws IOException, UnableToExecuteException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void onStart() {
+        super.onStart();
+        POLLING_TIME = configuration.getIntProperty("time-between-reads", 1000);
+        BOARD_NUMBER = configuration.getTuples().size();
+        setPollingWait(POLLING_TIME);
+        loadBoards();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        //release resources
+        boards.clear();
+        boards = null;
+        setPollingWait(-1); //disable polling
+        //display the default description
+        setDescription(configuration.getStringProperty("description", "ArduinoWeatherShield"));
     }
 
     @Override
@@ -144,17 +161,32 @@ public class ArduinoWeatherShield extends Sensor {
 
     private void sendChanges(Board board, String parametersValue) {
         String address = board.getIpAddress() + ":" + board.getPort();
-        Freedomotic.logger.severe("Sending Arduino WeatherShield protocol read event for board '" + address + "'");
+        //Freedomotic.logger.severe("Sending Arduino WeatherShield protocol read event for board '" + address + "'");
         String values[] = parametersValue.split(board.getDelimiter());
         //building the event
         ProtocolRead event = new ProtocolRead(this, "ArduinoWeatherShield", address); //IP:PORT
         //adding some optional information to the event
         event.addProperty("boardIP", board.getIpAddress());
         event.addProperty("boardPort", new Integer(board.getPort()).toString());
-        event.addProperty("temperature", values[0]);
-        event.addProperty("pressure", values[1]);
-        event.addProperty("humidity", values[2]);
+        event.addProperty("sensor.temperature", values[0]);
+        event.addProperty("sensor.pressure", values[1]);
+        event.addProperty("sensor.humidity", values[2]);
         //publish the event on the messaging bus
         this.notifyEvent(event);
+    }
+
+    @Override
+    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected boolean canExecute(Command c) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected void onEvent(EventTemplate event) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -1,0 +1,18 @@
+<config>
+    <properties>
+        <property name="description"    value="A sensor for Arduino WeatherShield"/>
+        <property name="protocol.name"  value="ArduinoWeatherShield"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="WeatherShield"/>
+        <property name="time-between-read"   value="10000"/>
+    </properties>
+    <tuples>
+        <tuple>
+          <property name="ip-to-query" value="192.168.1.150"/>
+          <property name="port-to-query" value="80"/>
+          <property name="socket-timeout" value="10000"/>
+          <property name="time-between-reads" value="10000"/>
+          <property name="delimiter" value=":"/>
+        </tuple>
+    </tuples>
+</config>
