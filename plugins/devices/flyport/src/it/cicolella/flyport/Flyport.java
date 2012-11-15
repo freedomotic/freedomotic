@@ -53,7 +53,7 @@ public class Flyport extends Protocol {
      * Initializations
      */
     public Flyport() {
-        super("Flyport", "/it.cicolella.flyport/flyport.xml");
+        super("Flyport", "/it.cicolella.flyport/flyport-manifest.xml");
         setPollingWait(POLLING_TIME);
     }
 
