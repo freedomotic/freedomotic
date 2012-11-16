@@ -1,7 +1,7 @@
 <trigger>
     <name>Isy99i reads a state change</name>
     <description>Isy99i reads a state change</description>
-    <channel>app.event.sensor.protocol.read</channel>
+    <channel>app.event.sensor.protocol.read.Isy99i</channel>
     <payload>
         <payload>
             <it.freedomotic.reactions.Statement>
