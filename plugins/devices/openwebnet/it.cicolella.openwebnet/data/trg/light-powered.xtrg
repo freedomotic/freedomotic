@@ -1,7 +1,7 @@
 <trigger>
     <name>OWN protocol reads a light power change</name>
     <description>OWN protocol reads a light power change</description>
-    <channel>app.event.sensor.protocol.read</channel>
+    <channel>app.event.sensor.protocol.read.openwebnet</channel>
     <payload>
         <payload>
             <it.freedomotic.reactions.Statement>
