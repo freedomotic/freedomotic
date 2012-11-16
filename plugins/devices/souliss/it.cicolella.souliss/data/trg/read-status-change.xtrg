@@ -1,7 +1,7 @@
 <trigger>
     <name>Souliss reads a state change</name>
     <description>Souliss reads a state change</description>
-    <channel>app.event.sensor.protocol.read</channel>
+    <channel>app.event.sensor.protocol.read.souliss</channel>
     <payload>
         <payload>
             <it.freedomotic.reactions.Statement>
