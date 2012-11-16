@@ -2,7 +2,7 @@
 <trigger>
     <name>Progetti HWSW board reads a state change</name>
     <description>Progetti HWSW reads relay state change</description>
-    <channel>app.event.sensor.protocol.read</channel>
+    <channel>app.event.sensor.protocol.read.SNT084Eth8R8I</channel>
     <payload>
         <payload>
             <it.freedomotic.reactions.Statement>
