@@ -157,7 +157,7 @@ public class Freedomotic {
          * *****************************************************************
          */
         clients = new ClientStorage();
-        
+
         /**
          * ******************************************************************
          * Shows the freedomotic website if stated in the config file
@@ -283,7 +283,7 @@ public class Freedomotic {
          */
         for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
             ObjectHasChangedBehavior event = new ObjectHasChangedBehavior(
-                    this, 
+                    this,
                     object);
             sendEvent(event);
         }
@@ -305,23 +305,25 @@ public class Freedomotic {
         TriggerPersistence.loadTriggers(new File(Info.getDatafilePath() + "/trg/"));
         CommandPersistence.loadCommands(new File(Info.getDatafilePath() + "/cmd/"));
         ReactionPersistence.loadReactions(new File(Info.getDatafilePath() + "/rea/"));
-        Freedomotic.logger.info("\nLoaded Reactions:");
-        for (Iterator it = ReactionPersistence.iterator(); it.hasNext();) {
-            Reaction r = (Reaction) it.next();
-            Freedomotic.logger.info(r.toString());
-        }
-
         /**
          * ******************************************************************
          * Starting plugins
          * *****************************************************************
          */
+        double MB = 1024 * 1024;
+        Runtime runtime = Runtime.getRuntime();
+        double memory = ((runtime.totalMemory() - runtime.freeMemory()) / MB);
+        Freedomotic.logger.info("Freedomotic + data uses " + memory + "mb");
         for (Client plugin : ClientStorage.getClients()) {
             String startupTime = plugin.getConfiguration().getStringProperty("startup-time", "undefined");
             if (startupTime.equalsIgnoreCase("on load")) {
                 plugin.start();
                 PluginHasChanged event = new PluginHasChanged(this, plugin.getName(), PluginActions.DESCRIPTION);
                 sendEvent(event);
+                double snapshot = (((runtime.totalMemory() - runtime.freeMemory()) / MB) - memory);
+                Freedomotic.logger.info(plugin.getName() + " uses " + snapshot + "mb of memory");
+                memory += snapshot;
+
             }
         }
 
@@ -332,7 +334,7 @@ public class Freedomotic {
         new JoinPlugin();
 
         Freedomotic.logger.info("---- FREEDOM IS READY TO WORK ----");
-        
+
         MessageEvent message = new MessageEvent(this, "Freedomotic has started");
         sendEvent(message);
 
@@ -341,39 +343,44 @@ public class Freedomotic {
          * Logging a summary of loaded resources
          * *****************************************************************
          */
-        Freedomotic.logger.info("-- Information Summary --");
-        Freedomotic.logger.info("---- Loaded Triggers ----");
-        Iterator itTrigger = TriggerPersistence.iterator();
-        StringBuilder buffTrigger = new StringBuilder();
-
-        while (itTrigger.hasNext()) {
-            Trigger t = (Trigger) itTrigger.next();
-            buffTrigger.append("'").append(t.getName()).append("' listening on channel ").append(t.getChannel()).append("\n ");
-        }
-        buffTrigger.append("} ");
-        Freedomotic.logger.info(buffTrigger.toString());
-
-        Freedomotic.logger.info("---- Loaded Commands ----");
-        Iterator itCommand = CommandPersistence.iterator();
-        StringBuilder buffCommand = new StringBuilder();
-        while (itCommand.hasNext()) {
-            Command c = (Command) itCommand.next();
-            buffCommand.append(c.getName()).append("\n");
-        }
-        buffCommand.append("} ");
-        Freedomotic.logger.info(buffCommand.toString());
-
-        Freedomotic.logger.info("---- Loaded Reactions ----");
-        Iterator itReaction = ReactionPersistence.iterator();
-        StringBuilder buffReaction = new StringBuilder();
-        buffReaction.append("{ ");
-        while (itReaction.hasNext()) {
-            Reaction r = (Reaction) itReaction.next();
-            buffReaction.append("'").append(r.toString()).append("; ");
-        }
-        buffReaction.append("} ");
-        Freedomotic.logger.info(buffReaction.toString());
-
+//        Freedomotic.logger.info("-- Information Summary --");
+//        Freedomotic.logger.info("---- Loaded Triggers ----");
+//        Iterator itTrigger = TriggerPersistence.iterator();
+//        StringBuilder buffTrigger = new StringBuilder();
+//
+//        while (itTrigger.hasNext()) {
+//            Trigger t = (Trigger) itTrigger.next();
+//            buffTrigger.append("'").append(t.getName()).append("' listening on channel ").append(t.getChannel()).append("\n ");
+//        }
+//        buffTrigger.append("} ");
+//        Freedomotic.logger.info(buffTrigger.toString());
+//
+//        Freedomotic.logger.info("---- Loaded Commands ----");
+//        Iterator itCommand = CommandPersistence.iterator();
+//        StringBuilder buffCommand = new StringBuilder();
+//        while (itCommand.hasNext()) {
+//            Command c = (Command) itCommand.next();
+//            buffCommand.append(c.getName()).append("\n");
+//        }
+//        buffCommand.append("} ");
+//        Freedomotic.logger.info(buffCommand.toString());
+//
+//        Freedomotic.logger.info("---- Loaded Reactions ----");
+//        Iterator itReaction = ReactionPersistence.iterator();
+//        StringBuilder buffReaction = new StringBuilder();
+//        buffReaction.append("{ ");
+//        while (itReaction.hasNext()) {
+//            Reaction r = (Reaction) itReaction.next();
+//            buffReaction.append("'").append(r.toString()).append("; ");
+//        }
+//        buffReaction.append("} ");
+//        Freedomotic.logger.info(buffReaction.toString());
+        runtime.gc();
+        //Print used memory
+        Freedomotic.logger.info("Used Memory:"
+                + (runtime.totalMemory() - runtime.freeMemory()) / MB);
+        //Print total available memory
+        Freedomotic.logger.info("Total Memory:" + runtime.totalMemory() / MB);
     }
 
     public static void loadDefaultEnvironment() {

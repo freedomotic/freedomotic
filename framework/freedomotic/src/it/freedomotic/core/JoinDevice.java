@@ -53,7 +53,7 @@ public final class JoinDevice implements BusConsumer {
         channel.consumeFrom(getMessagingChannel());
     }
 
-    protected static EnvObjectLogic join(String clazz, String name, String protocol, String address) {
+  protected static EnvObjectLogic join(String clazz, String name, String protocol, String address) {
         EnvObjectLogic loaded = null;
         try {
             ObjectPlugin objectPlugin = (ObjectPlugin) ClientStorage.get(clazz);
@@ -70,11 +70,11 @@ public final class JoinDevice implements BusConsumer {
             } else {
                 loaded.getPojo().setName(protocol);
             }
-            EnvObjectPersistence.add(loaded, EnvObjectPersistence.MAKE_UNIQUE);
+            loaded = EnvObjectPersistence.add(loaded, EnvObjectPersistence.MAKE_UNIQUE);
             loaded.getPojo().setProtocol(protocol);
             loaded.getPojo().setPhisicalAddress(address);
             loaded.setRandomLocation();
-            
+
             //set the PREFERRED MAPPING of the protocol plugin (if any is defined in its manifest)
             Client addon = Freedomotic.clients.getClientByProtocol(protocol);
             if (addon != null) {
@@ -115,10 +115,13 @@ public final class JoinDevice implements BusConsumer {
                 String protocol = command.getProperty("object.protocol");
                 String address = command.getProperty("object.address");
                 String clazz = command.getProperty("object.class");
-                join(clazz, name, protocol, address);
+                if (EnvObjectPersistence.getObject(protocol, address).isEmpty()) {
+                    join(clazz, name, protocol, address);
+                }
             }
         } catch (JMSException ex) {
             Logger.getLogger(JoinDevice.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
+
