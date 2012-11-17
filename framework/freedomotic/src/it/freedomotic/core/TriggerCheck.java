@@ -8,6 +8,7 @@ import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.app.Profiler;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.events.MessageEvent;
 import it.freedomotic.reactions.Command;
@@ -98,10 +99,10 @@ public final class TriggerCheck {
         return resolver.resolve(trigger);
     }
 
-    private synchronized static void applySensorNotification(Trigger resolved, final EventTemplate event) {
-        String protocol;
-        String address;
-        ArrayList<EnvObjectLogic> objectList = new ArrayList<EnvObjectLogic>();
+    private static void applySensorNotification(Trigger resolved, final EventTemplate event) {
+        String protocol=null;
+        String address=null;
+        ArrayList<EnvObjectLogic> affectedObjects = new ArrayList<EnvObjectLogic>();
 
         //join device: add the object on the map if not already there
         protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
@@ -109,18 +110,17 @@ public final class TriggerCheck {
         if (protocol != null && address != null) {
             String clazz = event.getProperty("object.class");
             String name = event.getProperty("object.name");
-            objectList = EnvObjectPersistence.getObject(protocol, address);
-            if (objectList.isEmpty()) { //there isn't an object with this protocol and address
-                Freedomotic.logger.warning("No objects with protocol=" + protocol + " and address=" + address + " (" + resolved.getName() + ")");
+            affectedObjects = EnvObjectPersistence.getObject(protocol, address);
+            if (affectedObjects.isEmpty()) { //there isn't an object with this protocol and address
                 if (clazz != null && !clazz.isEmpty()) {
                     EnvObjectLogic joined = JoinDevice.join(clazz, name, protocol, address);
-                    objectList.add(joined);
+                    affectedObjects.add(joined);
                 }
             }
         }
         //now we have the target object on the map for sure. Apply changes notified by sensors
         boolean done = false;
-        for (EnvObjectLogic object : objectList) {
+        for (EnvObjectLogic object : affectedObjects) {
             boolean executed = object.executeTrigger(resolved); //user trigger->behavior mapping to apply the trigger to this object
             if (executed) {
                 done = true;

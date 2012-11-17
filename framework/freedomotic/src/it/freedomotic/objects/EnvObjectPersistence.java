@@ -227,7 +227,15 @@ public class EnvObjectPersistence {
         return objectList.size();
     }
 
-    public static void add(final EnvObjectLogic obj, final boolean MAKE_UNIQUE) {
+    /**
+     * Add an object to the environment. You can use EnvObjectPersistnce.MAKE_UNIQUE to create
+     * an object that will surely be unique. Beware this means it is created with defensive copy
+     * of the object in input and name, protocol, address and UUID are reset to a default value.
+     * @param obj the environment object to add
+     * @param MAKE_UNIQUE can be true or false. Creates a defensive copy reference to the object in input.
+     * @return A pointer to the newly created environment object
+     */
+    public static EnvObjectLogic add(final EnvObjectLogic obj, final boolean MAKE_UNIQUE) {
         if (obj == null
                 || obj.getPojo() == null
                 || obj.getPojo().getName() == null
@@ -251,6 +259,7 @@ public class EnvObjectPersistence {
         } else {
             throw new RuntimeException("Cannot add the same object more than one time");
         }
+        return envObjectLogic;
     }
 
     public static void remove(EnvObjectLogic input) {
