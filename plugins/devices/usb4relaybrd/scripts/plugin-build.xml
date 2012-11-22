@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="plugin-builder" default="default" basedir=".">
+    <description>Builds, tests, and runs a freedomotic plugin.</description>
+    <target name="default">
+        <!-- init the lib for contrib conditional if then else ant task
+        remember the path is considerd from the plugin folder in which this script
+        is called not from freedomotic/scripts/plugin-build.xml-->
+	<property name="workspace-base" value="."/>
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+            <classpath>
+                <pathelement location="${workspace-base}/lib/ant/ant-contrib-1.0b3.jar"/>
+            </classpath>
+        </taskdef>
+        
+        <taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask">
+            <classpath>
+                <pathelement location="${workspace-base}/lib/ant/xmltask.jar"/>
+            </classpath>
+        </taskdef>
+        
+        <!-- create build.option file if not available -->
+        <if>
+            <not>
+                <available file="build.options"/>
+            </not>
+            <then>
+                <echo>build.options file don't exists. Created a default one. Remember to edit its properties.</echo>
+                <propertyfile file="build.options">
+                    <entry key="package.type" value="device"/>
+                    <entry key="package.name" value="net.${user.name}.myproject"/>
+                    <entry key="package.license" value="GNU GPL2"/>
+                    <entry key="package.nodeid" value="999999"/>
+                    <entry key="package.vendor.name" value="${user.name}"/>
+                    <entry key="package.vendor.surname" value="${user.name}"/>
+                    <entry key="package.vendor.contact" value="${user.name}@vendorEmailProvider.com"/>
+                    <entry key="package.vendor.company" value="mycompany"/>
+                    <entry key="package.vendor.nation" value="net"/>
+                    <entry key="framework.required.major=" value="5"/>
+                    <entry key="framework.required.minor" value="2"/>
+                    <entry key="framework.required.build=" value="x"/>
+                    <entry key="build.major=" value="1"/>
+                    <entry key="build.number" value="0"/>
+                    <entry key="build.create.dist.market" value="true"/>
+                    <entry key="build.create.dist.framework" value="true"/>
+                    <entry key="build.synch.dist" value="true"/>
+                    <entry key="build.synch.dist.path" value="${workspace-base}/framework/freedomotic/plugins/"/>
+                </propertyfile>
+            </then>
+        </if>
+        
+        <!-- read properties from build.options file -->
+        <loadproperties>
+            <file file="build.options"/>
+        </loadproperties>
+        
+        <!-- create redistributable output folders if not already exists -->
+        <echo>Creating folders structure for the freedomotic package.</echo>
+        <property name="plugin-dist" value="${package.name}"/>
+        <property name="market-dist" value="${plugin-dist}/market-dist"/>
+        <property name="plugin.name" value="${application.title}"/>
+        <mkdir dir="${plugin-dist}"/>
+        <mkdir dir="${market-dist}"/>
+        
+        <!-- evaluate plugin destination folder using declared plugin.type -->
+        <if>
+            <equals arg1="${package.type}" arg2="device" />
+            <then>
+                <property name="plugin.dest" value="devices"/>
+            </then>
+            <else>
+                <if>
+                    <equals arg1="${package.type}" arg2="object" />
+                    <then>
+                        <property name="plugin.dest" value="objects"/>
+                    </then>
+                    <else>
+                        <if>
+                            <equals arg1="${package.type}" arg2="event" />
+                            <then>
+                                <property name="plugin.dest" value="events"/>
+                            </then>
+                            <else>
+                                <echo>Wrong plugin type, set it to default value 'device'. It can be 'device','object','event'. Change it to the right value.</echo>
+                                <property name="plugin.dest" value="devices"/>
+                            </else>
+                        </if>
+                    </else>
+                </if>
+            </else>
+        </if>
+
+        
+
+        <!-- create data folder structure if not already exists -->
+        <copy todir="${plugin-dist}">
+            <fileset dir="dist">
+            </fileset>
+        </copy>
+        <mkdir dir="${plugin-dist}/data"/>
+        <mkdir dir="${plugin-dist}/data/cmd"/>
+        <mkdir dir="${plugin-dist}/data/trg"/>
+        <mkdir dir="${plugin-dist}/data/resources"/>
+        <mkdir dir="${plugin-dist}/data/rea"/>
+
+        <!-- add an example folder only if it is a envobject plugin -->
+        <if>
+            <equals arg1="${package.type}" arg2="object" />
+            <then>
+                <mkdir dir="${plugin-dist}/data/examples"/>
+            </then>
+        </if>
+        
+        
+        <!-- check if there are already plugin manifests otherwise create one
+             if it is an object plugin it don't needs a manifest file -->
+
+        <fileset dir="${plugin-dist}" id="xml.files">
+            <include name="*.xml"/>
+        </fileset>
+        <pathconvert pathsep="" refid="xml.files" setonempty="true"    property="aaa.xml.files">
+            <mergemapper to="a"/>
+        </pathconvert>
+        <length property="count.xml.files" string="${aaa.xml.files}"/>
+        <if>
+            <equals arg1="${count.xml.files}" arg2="0" />
+            <then>
+                <echo>No plugin manifest file found, created an example in ${plugin-dist}/${application.title}-manifest.xml. Remember to edit it otherwise you can have loading errors.</echo>
+                <echo file="${plugin-dist}/${application.title}-manifest.xml">
+<![CDATA[
+<config>
+    <properties>
+        <property name="name" value="${application.title}"/>
+        <property name="description" value="It is a ${application.title}"/>
+        <property name="version" value="1.0.0"/>
+        <property name="required" value="5.1.0"/>
+        <property name="category" value="category"/>
+        <property name="short-name" value="shortname"/>
+    </properties>
+</config>
+]]>
+                </echo>
+            </then>
+        </if>
+        
+       
+ 
+
+        <!-- create a README file with usefull informations for users -->
+        <echo file="${plugin-dist}/README.TXT" append="false">
+            The package ${package.name} version is part of Freedomotic building automation framework.
+            This package is released under the terms of ${package.license} license by ${package.vendor.name} ${package.vendor.surname}.
+
+            To add this to your current framework you have to copy the folder containing this file in folder FRAMEWORK_ROOT/plugins/${plugin.dest}
+            Please be sure this plugin is compatible with your current framework version.
+            For any problem you can contact the author at ${package.vendor.contact}
+        </echo>
+
+        <!-- delete common shared libs -->
+        <echo>Delete redundant jar libraries in this package (eg: freedom.jar, freedom-data.jar)).</echo>
+        <delete file="${plugin-dist}/lib/freedomotic.jar"/>
+        <delete file="${plugin-dist}/lib/freedomotic-model.jar"/>
+        
+        <!-- add build.option file as package properties -->
+        <copy file="build.options" tofile="${plugin-dist}/PACKAGE"/>
+
+        <!-- INSTALL PLUGIN INTO FREEDOMOTIC -->
+        <if>
+            <equals arg1="${build.synch.dist}" arg2="true" />
+            <then>
+                <!-- delete market-dist folder if any -->
+                <delete dir="${market-dist}"/>
+                <echo>Synch ${plugin-dist} folder with ${build.synch.dist.path}/${plugin.dest}/${package.name}</echo>
+                <copy todir="${build.synch.dist.path}/${plugin.dest}/${package.name}">
+                    <fileset dir="${plugin-dist}">
+                    </fileset>
+                </copy>
+            </then>
+        </if>       
+        
+        <!-- CREATE MARKETPLACE ARCHIVE -->
+        <if>
+            <equals arg1="${build.create.dist.market}" arg2="true" />
+            <then>
+                <echo>Creating the marketplace redestributable archive in ${market-dist}</echo>
+                <!-- create a temp folder in which construct the archive the compress it-->
+                <delete dir="${market-dist}"/>
+                <mkdir dir="${market-dist}/${package.name}"/>
+                <copy todir="${market-dist}/${package.name}" includeEmptyDirs="false">
+                    <fileset dir="${plugin-dist}">
+                    </fileset>
+                </copy>
+                <zip destfile="${market-dist}/${package.name}-${framework.required.major}.${framework.required.minor}.${framework.required.build}-${build.major}.${build.number}.${package.type}" basedir="${market-dist}" />
+
+                <!-- create a README file with usefull informations for developer -->
+                <echo file="${market-dist}/README.TXT" append="false">
+                    This package is part of Freedomotic building automation framework.
+                    This package is released under the terms of ${package.license} license by ${package.vendor.name} ${package.vendor.surname}.
+
+                    PLEASE UPDATE this info in plugin manifest XML files if they are not correct, otherwise the plugins may be not loaded at framework startup!
+
+                    You can create a plugin page on our marketplace and upload the compressed file ${package.name}.zip as it is.
+
+                    For more detailed instructions see the related project wiki page
+                    http://code.google.com/p/freedomotic/wiki/PostOnMarket
+
+                    For any problem you can contact freedomotic staff on the project developers mailing list
+                    https://groups.google.com/forum/?hl=en#!forum/freedom-domotics
+                </echo>
+                <delete dir="${market-dist}/${package.name}"/>
+            </then>
+        </if>
+        
+
+        <!-- increment the buildnumber and save it to properties file -->
+        <propertyfile file="build.options">
+            <entry  key="build.number" default="0" type="int" operation="+" value="1" />
+        </propertyfile>
+        
+        <echo>Done... Read README.txt files in ${market-dist} and ${plugin-dist} folder to get help.</echo>
+    </target>
+    
+    <target name="upload-to-marketplace" description="Uploads a plugin release on freedomotic online marketplace">
+        <!-- WARNING: classpath varible must be in your classpath when ant is started -->
+        <property name="workspace-base" value="../../../"/>
+        <taskdef 
+            name="marketplace" 
+            classname="it.freedomotic.marketplace.AntUploader" >
+          <classpath>
+            <pathelement location="${workspace-base}/tools/freedomotic-marketplace/dist/freedomotic-marketplace.jar"/>
+            <pathelement location="${workspace-base}/framework/freedomotic/dist/freedomotic.jar"/>
+          </classpath>
+        </taskdef>
+
+        <!-- read properties from build.options file -->
+        <loadproperties>
+            <file file="build.options"/>
+        </loadproperties>
+	
+	<!-- If the username or the password are not passed as parameters, ask for them -->	
+	<input message="Insert the username you use to access freedomotic.com" addproperty="username">
+           <handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+       	</input>
+    	<input message="Insert the password you use to access freedomotic.com" addproperty="password">
+       	    <handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+       	</input>
+                
+        <marketplace 
+            username="${username}" 
+            password="${password}" 
+            nodeid="${package.nodeid}"
+            attachment="${basedir}/${package.name}/market-dist/"
+            />
+    </target>
+</project>
