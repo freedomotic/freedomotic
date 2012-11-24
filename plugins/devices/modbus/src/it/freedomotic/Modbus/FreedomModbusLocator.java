@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package it.freedom.Modbus;
+package it.freedomotic.Modbus;
 
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.BatchResults;

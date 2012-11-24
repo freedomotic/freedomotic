@@ -1,12 +1,13 @@
 <config>
     <properties>
         <property name="description"    value="Sensor for Modbus"/>
-        <property name="version"        value="40"/>
-        <property name="required"       value="40"/>
-        <property name="category"       value="Modbus"/>
-        <property name="short-name"     value="ModbusSensor"/>
+        <property name="category"       value="Protocol"/>
+        <property name="short-name"     value="ModbusSensor"/>                
         <property name="PollingTime"     value="1000"/>
         <property name="NumRegisters"     value="5"/>
+        <property name="ModbusProtocol" value="TCP"/>
+        <property name="host" value="192.168.1.9"/>
+        <property name="tcpport" value="502"/>    
         <property name="port"       value="/dev/ttyUSB10"/>
         <property name="baudrate"      value="19200"/>
         <property name="data-bits"     value="8"/>

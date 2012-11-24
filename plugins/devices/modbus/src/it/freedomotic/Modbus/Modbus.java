@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.freedom.Modbus;
+package it.freedomotic.Modbus;
 
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.BatchResults;
@@ -10,9 +10,10 @@ import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.exception.ErrorResponseException;
 import com.serotonin.modbus4j.exception.ModbusInitException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
-import it.freedom.Modbus.gateways.ModbusMasterGateway;
+import it.freedomotic.Modbus.gateways.ModbusMasterGateway;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
+import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.GenericEvent;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
@@ -58,9 +59,9 @@ public class Modbus extends Protocol{
             locator.updateBatchRead(batchRead);
         }
         master = ModbusMasterGateway.getInstance(configuration);
-        setPollingWait(pollingTime);                  
-    
-    
+        setPollingWait(pollingTime);
+        this.setDescription(ModbusMasterGateway.ConnectionInfo());
+        
     }
      
     
@@ -106,9 +107,10 @@ public class Modbus extends Protocol{
     private void sendEvents() {       
         for (int i = 0; i < points.size(); i++) {
             //TODO: Generate the modified point. At this moment, the points ArrayList is of ModbusLocator.
-            //TODO: Use a more especific event (using the eventname property of the xml)
+            //TODO: Use a more especific event (using the eventname property of the xml)            
             GenericEvent event = new GenericEvent(this);
             points.get(i).fillEvent(results, event);
+            Freedomotic.logger.info("Sending Modbus Generic read event: '" + event.toString());
             notifyEvent(event); //sends the event on the messaging bus
         }
     }
