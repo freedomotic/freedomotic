@@ -12,7 +12,7 @@ import com.serotonin.modbus4j.code.RegisterRange;
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.locator.NumericLocator;
-import it.freedom.Modbus.gateways.ModbusMasterGateway;
+import it.freedomotic.Modbus.gateways.ModbusMasterGateway;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
