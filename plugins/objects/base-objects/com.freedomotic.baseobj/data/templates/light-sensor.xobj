@@ -1,23 +1,23 @@
 <it.freedomotic.model.object.EnvObject>
-  <name>A Thermostat</name>
-  <description>Collects temperature events</description>
+  <name>A Light Sensor</name>
+  <description>Collects light events</description>
   <actAs>unimplemented</actAs>
-  <type>EnvObject.Thermostat</type>
-  <hierarchy>it.freedomotic.objects.impl.Thermostat</hierarchy>
+  <type>EnvObject.GenericSensor</type>
+  <hierarchy>it.freedomotic.objects.impl.GenericSensor</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
     <it.freedomotic.model.object.RangedIntBehavior>
-      <name>temperature</name>
+      <name>luminosity</name>
       <description></description>
       <active>true</active>
       <priority>-1</priority>
       <readOnly>true</readOnly>
       <value>0</value>
       <max>1000</max>
-      <min>-400</min>
+      <min>0</min>
       <step>1</step>
-      <scale>10</scale> 
+      <scale>10</scale>
     </it.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
@@ -26,7 +26,7 @@
       <intersecable>false</intersecable>
       <offset x="0" y="0"/>
       <rotation>0.0</rotation>
-      <icon>thermostat.png</icon>
+      <icon>light-sensor.png</icon>
       <fillColor>#000000</fillColor>
       <textColor>#000000</textColor>
       <borderColor>#000000</borderColor>
@@ -39,10 +39,10 @@
     </view>
   </representation>
   <actions>
-    <property name="set temperature" value="Execute it successfully"/>
+    <property name="set luminosity" value="Execute it successfully"/>
   </actions>
   <triggers>
-    <property name="" value="temperature"/>
+    <property name="" value="luminosity"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
 </it.freedomotic.model.object.EnvObject>
