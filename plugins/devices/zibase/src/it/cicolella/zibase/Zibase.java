@@ -14,6 +14,8 @@ import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.exceptions.UnableToExecuteException;
+import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.persistence.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -37,7 +39,6 @@ import org.xml.sax.SAXException;
  */
 public class Zibase extends Protocol {
 
-    //private static ArrayList<Board> boards = null;
     Map<String, Board> devices = new HashMap<String, Board>();
     private static Map<String, String> X10Map;
     private static Map<String, String> ZwaveMap;
@@ -60,9 +61,6 @@ public class Zibase extends Protocol {
     }
 
     private void loadBoards() {
-        // if (boards == null) {
-        //   boards = new ArrayList<Board>();
-        // }
         if (devices == null) {
             devices = new HashMap<String, Board>();
         }
@@ -124,14 +122,13 @@ public class Zibase extends Protocol {
         initX10Map(); // inizialize X10 addresses hash map
         initZwaveMap(); // inizialize Zwave addresses hash map
         loadBoards();
+        initializeEnvironmentObjects();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         //release resources
-        //boards.clear();
-        //boards = null;
         devices.clear();
         devices = null;
         setPollingWait(-1); //disable polling
@@ -141,15 +138,6 @@ public class Zibase extends Protocol {
 
     @Override
     protected void onRun() {
-        // for (Board board : boards) {
-        //   evaluateDiffs(getXMLStatusFile(board), board); //parses the xml and crosscheck the data with the previous read
-        // Set keys = devices.keySet();
-        // Iterator keyIter = keys.iterator();
-        // while (keyIter.hasNext()) {
-        //    String alias = (String) keyIter.next();
-        //    Board board = (Board) devices.get(alias);
-        //   evaluateDiffs(getXMLStatusFile(board), board);
-        // }
         // select all boards in the devices hashmap and evaluate the status
         Set<String> keySet = devices.keySet();
         for (String key : keySet) {
@@ -162,7 +150,6 @@ public class Zibase extends Protocol {
             Logger.getLogger(Zibase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    // }
 
     private Document getXMLStatusFile(Board board) {
         //get the xml file from the socket connection
@@ -363,7 +350,6 @@ public class Zibase extends Protocol {
         String control = c.getProperty("control").toUpperCase();
         String delimiter = configuration.getProperty("address-delimiter");
         address = c.getProperty("address").split(delimiter);
-        //Board board = (Board) getKeyFromValue(devices, address[0]);
         Board board = (Board) devices.get(address[0]);
         String ipBoard = board.getIpAddress();
         int portBoard = board.getPort();
@@ -473,5 +459,24 @@ public class Zibase extends Protocol {
             }
         }
         return null;
+    }
+
+    // initialize configured environment objects 
+    public void initializeEnvironmentObjects() {
+        ArrayList<EnvObjectLogic> objectsList = EnvObjectPersistence.getObjectByProtocol("zibase");
+        if (objectsList.size() > 0) {
+            for (EnvObjectLogic obj : objectsList) {
+                String objectAddress = obj.getPojo().getPhisicalAddress();
+                String delimiter = configuration.getProperty("address-delimiter");
+                address = objectAddress.split(delimiter);
+                if (address.length == 3) {
+                    if (address[2].equalsIgnoreCase("ZWAVE")) {
+                        ZwaveMap.put(address[1], "-1");
+                    } else {
+                        X10Map.put(address[1], "-1");
+                    }
+                }
+            }
+        }
     }
 }
