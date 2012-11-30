@@ -1,0 +1,36 @@
+<config>
+    <properties>
+        <property name="description"    value="Communicates with TCW122B-CM board"/>
+        <property name="protocol.name"  value="tcw122bcm"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="tcw122bcm"/>
+        <property name="address-delimiter" value=":"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="snmp-port" value="161"/>
+        <property name="snmp-oid" value="1.3.6.1.4.1.38783"/>
+        <property name="digital-input1-value" value="3.1.0"/>
+        <property name="digital-input2-value" value="3.2.0"/>
+        <property name="r1" value="3.3.0"/>
+        <property name="r2" value="3.5.0"/>
+        <property name="analog-input1-value" value="3.7.0"/>
+        <property name="analog-input2-value" value="3.8.0"/>
+        <property name="temperature1-value" value="3.9.0"/>
+        <property name="temperature2-value" value="3.10.0"/>
+        <property name="humidity1-value" value="3.11.0"/>
+        <property name="humidity2-value" value="3.12.0"/>
+        <property name="http-authentication" value="true"/>
+        <property name="username" value="admin"/>
+        <property name="password" value="admin"/>
+     </properties>
+    <tuples>
+        <tuple>
+            <property name="alias" value="board1"/>
+            <property name="ip-to-query" value="192.168.1.2"/>
+            <property name="port-number" value="80"/>
+        </tuple>
+    </tuples>
+</config>
+
+
+
+
