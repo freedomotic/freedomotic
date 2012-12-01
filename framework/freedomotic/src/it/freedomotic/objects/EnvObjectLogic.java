@@ -261,12 +261,12 @@ public class EnvObjectLogic {
             //remove from every zone
             zone.getPojo().getObjects().remove(this.getPojo());
             if (TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
-                System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
+                //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
                 //add to the zones this object belongs
                 zone.getPojo().getObjects().add(this.getPojo());
                 Freedomotic.logger.config("Object " + getPojo().getName() + " is in zone " + zone.getPojo().getName());
             } else {
-                System.out.println("object " + getPojo().getName() + " NOT intersects zone " + zone.getPojo().getName());
+                //DEBUG: System.out.println("object " + getPojo().getName() + " NOT intersects zone " + zone.getPojo().getName());
             }
         }
     }

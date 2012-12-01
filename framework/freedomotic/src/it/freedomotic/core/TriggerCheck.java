@@ -100,8 +100,8 @@ public final class TriggerCheck {
     }
 
     private static void applySensorNotification(Trigger resolved, final EventTemplate event) {
-        String protocol=null;
-        String address=null;
+        String protocol = null;
+        String address = null;
         ArrayList<EnvObjectLogic> affectedObjects = new ArrayList<EnvObjectLogic>();
 
         //join device: add the object on the map if not already there
@@ -149,17 +149,15 @@ public final class TriggerCheck {
                 try {
                     //executes the commands in sequence (only the first sequence is used) 
                     //if more then one sequence is needed it can be done with two reactions with the same trigger
+                    Resolver commandResolver = new Resolver();
+                    commandResolver.addContext("event.", event.getPayload());
                     for (final Command command : reaction.getCommands()) {
                         if (command.getReceiver().equalsIgnoreCase(BehaviorManager.getMessagingChannel())) {
-                            Resolver commandResolver = new Resolver();
                             //this command is for an object so it needs only to know only about event parameters
-                            commandResolver.addContext("event.", event.getPayload());
                             Command resolvedCommand = commandResolver.resolve(command);
                             //doing so we bypass messaging system gaining better performances
                             BehaviorManager.parseCommand(resolvedCommand);
                         } else {
-                            Resolver commandResolver = new Resolver();
-                            commandResolver.addContext("event.", event.getPayload());
                             //if the event has a target object we include also object info
                             EnvObjectLogic targetObject = EnvObjectPersistence.getObject(event.getProperty("object.name"));
                             if (targetObject != null) {
