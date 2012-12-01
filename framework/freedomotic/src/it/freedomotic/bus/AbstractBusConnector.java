@@ -21,6 +21,7 @@ package it.freedomotic.bus;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.util.Info;
+import java.net.BindException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.*;
@@ -53,12 +54,16 @@ public class AbstractBusConnector {
         if (emptySharedWriter == null) { //not already connected to the bus
             try {
                 //create an embedded messaging broker
-                BROKER.setBrokerName("freedomotic");
+                //BROKER.setBrokerName("freedomotic");
                 //use always 0.0.0.0 not localhost. localhost allows connections 
                 //only on the local machine not from LAN IPs
-                BROKER.addConnector(Info.BROKER_STOMP);
+                try {
+                    BROKER.addConnector(Info.BROKER_STOMP);
 //                //websocket connector for javascript apps
-                BROKER.addConnector(Info.BROKER_WEBSOCKET);
+                    BROKER.addConnector(Info.BROKER_WEBSOCKET);
+                } catch (Exception exception) {
+                    Freedomotic.logger.warning("Broker connector not started due to " + exception.getLocalizedMessage());
+                }
                 BROKER.setPersistent(false); //we don't need to save messages on disk
                 BROKER.setUseJmx(false);
                 //start the broker
@@ -69,7 +74,10 @@ public class AbstractBusConnector {
                 //tuned for performances http://activemq.apache.org/performance-tuning.html
                 factory.setUseAsyncSend(true);
                 factory.setOptimizeAcknowledge(true);
-                factory.setAlwaysSessionAsync(false);
+                factory.setAlwaysSessionAsync(true);
+                factory.setObjectMessageSerializationDefered(true);
+                factory.setCopyMessageOnSend(false);
+
                 connection = factory.createConnection(username, password);
                 sharedSession = connection.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
                 unlistenedSession = connection.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE); //an unlistened session
