@@ -1,9 +1,9 @@
-#Mon, 15 Oct 2012 17:15:13 +0200
+#Sun, 18 Nov 2012 18:12:42 +0100
 
 package.type=device
 package.name=it.freedomotic.gcalendarevents
 package.license=GNU GPL2
-package.nodeid=999999
+package.nodeid=1129
 package.vendor.name=enrico
 package.vendor.surname=enrico
 package.vendor.contact=enrico@freedomotic.com
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=2
 framework.required.build=x
 build.major=1
-build.number=75
+build.number=76
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
