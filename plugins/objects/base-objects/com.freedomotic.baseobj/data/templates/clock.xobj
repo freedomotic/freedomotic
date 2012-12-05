@@ -1,5 +1,5 @@
 <it.freedomotic.model.object.EnvObject>
-  <name>A Clock</name>
+  <name>Clock</name>
   <description>A clock for timed automations</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.Decoration.Clock</type>
