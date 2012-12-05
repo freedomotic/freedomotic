@@ -25,25 +25,18 @@ import org.restlet.resource.ClientResource;
 
 /**
  *
- * @author GGPT
+ * @author GPT
  */
 public class DrupalRestHelper {
 
     public static final String DRUPALSCHEMA = "http";
     public static final String DRUPALPATH = "www.freedomotic.com";
+    public static final String DRUPALSERVICE = "rest";
     public static final String DEFAULTIMAGEPATH = "/sites/default/files/imagefield_default_images/Addons-64_0.png";
     public static ImageIcon defaultIconImage;
 
     public static List<IPluginPackage> retrieveAllPlugins(){
-//        List<IPluginPackage> pluginPackageList = new ArrayList<IPluginPackage>();
-//        ArrayList<MarketPlacePluginResume> resumes = retrieveResumes();
-//        for (MarketPlacePluginResume mpr : resumes) {
-//            if (mpr.getUri() != null) {
-//                pluginPackageList.add(retrievePluginPackage(mpr.getUri()));
-//            }
-//        }
-//        return pluginPackageList;
-        
+       
         List<IPluginPackage> pluginPackageList = new ArrayList<IPluginPackage>();
         ArrayList<MarketPlacePluginResume> resumes = retrieveResumes();
         for (MarketPlacePluginResume mpr : resumes) {
@@ -112,24 +105,10 @@ public class DrupalRestHelper {
         pluginPackageList = gson.fromJson(jsonData, collectionType);                                                   
         return pluginPackageList;                                                                        
     }
+       
 
-    
-    
-
-    protected static IPluginPackage retrievePluginPackage(String uri) {
-        //MarketPlacePluginResume mpr
-//        PluginPackage pp = new PluginPackage();
-//        ClientResource cr = new ClientResource(mpr.getUri());
-//        Representation test2 = cr.get();
-//        String jsonData;
-//        try {
-//            jsonData = test2.getText();
-//            pp.setIcon(defaultIconImage);
-//            fillPluginPackage(pp, jsonData);
-//        } catch (IOException ex) {
-//            //         Logger.getLogger(MarketPlacePluginResume.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return pp;
+    public static IPluginPackage retrievePluginPackage(String uri) {
+ 
         ClientResource cr = new ClientResource(uri);
         Gson gson;
         try {

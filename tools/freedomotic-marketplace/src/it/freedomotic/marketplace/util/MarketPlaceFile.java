@@ -4,6 +4,9 @@
  */
 package it.freedomotic.marketplace.util;
 
+import com.google.gson.annotations.SerializedName;
+import java.util.ArrayList;
+
 /**
  *
  * @author gpt
@@ -14,7 +17,12 @@ public class MarketPlaceFile {
     private String uid;
     private String filename;
     private String filepath;
+    
+    private transient String description = "";
 
+    public MarketPlaceFile()
+    {    
+    }
     /**
      * @return the filename
      */
@@ -35,5 +43,27 @@ public class MarketPlaceFile {
         return filepath;
     }
     
+    public MarketPlaceFile(String fid, String description)            
+    {
+        this.fid = fid;
+        this.description = description;
+    }
     
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
+    
+    
+     public String formatFile()
+    {
+        return "\"fid\":\""+fid+"\",\"data\":{\"description\":\""+description+"\"}";    
+    }
+    
+     public void setFilename(String filename)
+     {
+         this.filename = filename;
+     }
 }
+    
+    
