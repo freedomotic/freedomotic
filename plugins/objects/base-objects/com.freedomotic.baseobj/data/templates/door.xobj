@@ -1,5 +1,5 @@
 <it.freedomotic.model.object.EnvObject>
-  <name>A Door</name>
+  <name>Door</name>
   <description>A door capable of open and close</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.Gate</type>
@@ -11,6 +11,7 @@
       <name>open</name>
       <description>asd</description>
       <active>true</active>
+      <readOnly>false</readOnly>
       <priority>-1</priority>
       <value>false</value>
     </it.freedomotic.model.object.BooleanBehavior>
@@ -19,6 +20,7 @@
       <description>asd</description>
       <active>true</active>
       <priority>-1</priority>
+      <readOnly>false</readOnly>
       <value>0</value>
       <max>100</max>
       <min>0</min>

@@ -1,5 +1,5 @@
 <it.freedomotic.model.object.EnvObject>
-  <name>A Thermostat</name>
+  <name>Thermostat</name>
   <description>Collects temperature events</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.Thermostat</type>

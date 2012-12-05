@@ -1,5 +1,5 @@
 <it.freedomotic.model.object.EnvObject>
-  <name>A Plant</name>
+  <name>Plant</name>
   <description>A decorative green plant</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.Decoration</type>

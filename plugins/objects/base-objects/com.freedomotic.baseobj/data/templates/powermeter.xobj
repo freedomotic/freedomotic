@@ -13,14 +13,16 @@
       <active>true</active>
       <priority>-1</priority>
       <value>false</value>
+      <readOnly>true</readOnly>
     </it.freedomotic.model.object.BooleanBehavior>
     <it.freedomotic.model.object.RangedIntBehavior>
       <name>current</name>
       <description></description>
       <active>true</active>
       <priority>-1</priority>
+      <readOnly>true</readOnly>
       <value>0</value>
-      <max>20</max>
+      <max>200</max>
       <min>0</min>
       <step>1</step>
     </it.freedomotic.model.object.RangedIntBehavior>
@@ -29,8 +31,9 @@
       <description></description>
       <active>true</active>
       <priority>-1</priority>
+      <readOnly>true</readOnly>
       <value>0</value>
-      <max>1000</max>
+      <max>10000</max>
       <min>0</min>
       <step>1</step>
     </it.freedomotic.model.object.RangedIntBehavior>
@@ -39,8 +42,9 @@
       <description></description>
       <active>true</active>
       <priority>-1</priority>
+      <readOnly>true</readOnly> 
       <value>0</value>
-      <max>230</max>
+      <max>2400</max>
       <min>0</min>
       <step>1</step>
     </it.freedomotic.model.object.RangedIntBehavior>
@@ -49,6 +53,7 @@
       <description></description>
       <active>true</active>
       <priority>-1</priority>
+      <readOnly>true</readOnly>
       <value>0</value>
       <max>6000</max>
       <min>0</min>

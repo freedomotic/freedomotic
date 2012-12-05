@@ -1,5 +1,5 @@
 <it.freedomotic.model.object.EnvObject>
-  <name>A Light Sensor</name>
+  <name>Light Sensor</name>
   <description>Collects light events</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.GenericSensor</type>

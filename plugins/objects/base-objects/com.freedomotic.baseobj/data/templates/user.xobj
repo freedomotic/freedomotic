@@ -12,6 +12,7 @@
       <description></description>
       <active>true</active>
       <priority>-1</priority>
+      <readOnly>false</readOnly>
       <value>true</value>
     </it.freedomotic.model.object.BooleanBehavior>
     <it.freedomotic.model.object.ListBehavior>
