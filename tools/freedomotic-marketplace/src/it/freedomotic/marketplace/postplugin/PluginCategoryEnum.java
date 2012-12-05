@@ -9,5 +9,5 @@ package it.freedomotic.marketplace.postplugin;
  * @author gpt
  */
 public enum PluginCategoryEnum {
-    Protocol, Sensor, Actuator, Object, Frontend, Automation
+    Driver,  Object, Frontend, Automation
 }

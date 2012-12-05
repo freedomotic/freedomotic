@@ -9,5 +9,23 @@ package it.freedomotic.marketplace.util;
  * @author gpt
  */
 public class MarketPlaceValue {
-    private String data;    
+    private String value;
+    
+    public String formatValue()
+    {
+        return "{\"value\":\""+value+"\"}";
+    }
+    
+    public String formatValueAsListElement()
+    {        
+        if (value.equals("null"))
+            return "";
+        else
+            return "\""+value+"\":\""+value+"\"";
+    }
+    
+    public String getValue()
+    {
+        return value;
+    }
 }

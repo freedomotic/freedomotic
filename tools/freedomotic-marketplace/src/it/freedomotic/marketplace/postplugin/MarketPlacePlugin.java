@@ -18,10 +18,11 @@ public class MarketPlacePlugin {
     public static final String STATUS_PROTOTYPE = "Prototype";
     public static final String STATUS_BETA_VERSION = "Beta Version";
     public static final String STATUS_STABLE_RELEASE = "Stable Release";
-     public static final String OS_LINUX = "Linux";
+    public static final String OS_ALL = "All supported";
+    public static final String OS_LINUX = "Linux";
     public static final String OS_WINDOWS = "Windows";
     public static final String OS_MAC = "Mac";
-    public static final String OS_SOLARIS = "Solaries";
+    public static final String OS_SOLARIS = "Solaris";
 //    private String nid;
 //    private String type;
 //    private String language;
@@ -53,12 +54,13 @@ public class MarketPlacePlugin {
    private String field_status;//list
 ////    private String field_forum;
     private String field_description;
-    private PluginCategoryEnum field_category;
+    private PluginCategoryEnum field_category;       
 ////    private String field_icon;
     private ArrayList<String> field_os;
 ////    private String filename;
 ////    private String field_requires;    
     private MarketPlacePluginFileField field_file; //*** 
+    private int field_file_position=0;
 
     //    private String field_screenshot;
 //    private String field_hardware;
@@ -102,15 +104,17 @@ public class MarketPlacePlugin {
      if (formatFieldFile()!="")
         pluginData += formatFieldFile()+",";
      pluginData += "\"body\":{\"und\":{\"0\":{\"value\":\""+getBody()+"\"}}}"
-                + "}"
+               // + "}"
                 + "}";
         return pluginData;
     }
     public String formatBaseData()
     {
-    return "{\"node\":"
-                + "{\"type\":\"plugin\","
+    return "{\"type\":\"plugin\","
                 + "\"language\":\"und\"";    
+//        return "{\"node\":"
+//                + "{\"type\":\"plugin\","
+//                + "\"language\":\"und\"";    
     }
     
     public String formatFieldOS()
@@ -148,7 +152,15 @@ public class MarketPlacePlugin {
     public String formatFieldFile()
     {
         if (field_file != null)
-            return "\"field_file\":{\"0\":{"+field_file.formatFile()+"}}";
+            return "\"field_file\":{\""+ field_file_position+"\":{"+field_file.formatFile()+"}}";
+        else
+            return "";
+    }
+    //At this moment we only mantain one file on the plugin
+    public String formatFieldCategory()
+    {
+        if (field_category != null)
+            return "\"field_category\":[{\"value\":\""+getField_category()+"\"}]";
         else
             return "";
     }
@@ -269,11 +281,16 @@ public class MarketPlacePlugin {
             field_os.remove(os);
     }     
        
+    public void setField_file(MarketPlacePluginFileField field_file) {
+        setField_file(field_file, 0);
+    }
+     
     /**
      * @param field_file the field_file to set
      */
-    public void setField_file(MarketPlacePluginFileField field_file) {
+    public void setField_file(MarketPlacePluginFileField field_file, int position) {
         this.field_file = field_file;
+        this.field_file_position = position;
     }
 
    
