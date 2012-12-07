@@ -46,7 +46,7 @@ public class PropertiesPanel_1 extends javax.swing.JPanel {
 
     public synchronized void addElement(Component component, final int row, final int col) {
         if (component == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Cannot add a null component");
         }
         try {
             table[row][col] = component;

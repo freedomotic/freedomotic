@@ -12,34 +12,28 @@ package it.freedomotic.frontend;
 
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.frontend.utils.PropertiesPanel_1;
 import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.service.IPluginCategory;
 import it.freedomotic.service.MarketPlaceService;
 import it.freedomotic.service.IPluginPackage;
 import it.freedomotic.util.Info;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -48,9 +42,8 @@ import javax.swing.SwingUtilities;
 public class MarketPlaceForm extends javax.swing.JFrame {
 
     ArrayList<IPluginPackage> pluginList;
-    ArrayList<IPluginCategory> pluginCategoryList;    
-    boolean showingCategories = true;
-    IPluginCategory selectedCategory = null;
+    ArrayList<IPluginCategory> pluginCategoryList;
+
     /**
      * Creates new form MarketPlaceForm
      */
@@ -63,184 +56,115 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                     public void run() {
                         MarketPlaceService mps = MarketPlaceService.getInstance();
                         pluginCategoryList = mps.getCategoryList();
-                        updateCategoryList();
+                        retrieveCategories();
                     }
                 }).start();
             }
         });
-               
-        pluginCategoryList = Freedomotic.onlinePluginCategories;
-        updateCategoryList();
-        lstPlugins.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                Point p = e.getPoint();
-                int i = lstPlugins.locationToIndex(p);
-                if (showingCategories)
-                {
-                    IPluginCategory pc = pluginCategoryList.get(i);
-                    if (e.getButton() == MouseEvent.BUTTON1) {
-                        selectedCategory = pc;
-                        updatePluginsList(pc);
-                    }
-                }
-                else
-                {                    
-                    if (i == 0)
-                    {
-                        updateCategoryList();
-                    }
-                    else
-                    {
-                        IPluginPackage pp = selectedCategory.getPlugins().get(i-1);
-                        if (e.getButton() == MouseEvent.BUTTON1) {
-                            if (e.getClickCount() == 2) {
-                                installPackage(pp);
-                            } else if (e.getClickCount() == 1) {
-                                System.out.println("one click");
-                            }
-                        }
-                    }
-                }
+
+        //pluginCategoryList = Freedomotic.onlinePluginCategories;
+    }
+
+    public final void retrieveCategories() {
+        for (IPluginCategory pc : pluginCategoryList) {
+            cmbCategory.addItem(pc.getName() + " (" + pc.getPlugins().size() + " plugins)");
+        }
+        //add listener to category selection changes
+        cmbCategory.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int index = cmbCategory.getSelectedIndex();
+                retrievePlugins(pluginCategoryList.get(index));
             }
         });
-        //TODO: check if the plugin package is already installed.
-    }
-        
-    public final Vector updateCategoryList() {
-        try {
-            showingCategories = true;
-            Vector vector = new Vector();           
-            if (pluginCategoryList == null) {
-                return null;
-            } 
-            if (pluginCategoryList.size()== 0)
-            {
-                JPanel jp = new JPanel();
-                jp.setLayout(new BorderLayout());
-                jp.add(new JLabel("There are no plugins available for download"));
-                vector.add(jp);                
-            }
-            for (IPluginCategory pc : pluginCategoryList) {
-                System.out.println("processing Category:" + pc.getName());
-                JPanel jp = new JPanel();
-                jp.setLayout(new BorderLayout());                
-                //boolean isRunning = c.isRunning();              
-                //jp.add(new JLabel(pp.getIcon()), BorderLayout.LINE_START);
-                JLabel text = null;
-                String description = "";
-                text = new JLabel(pc.getName()); 
-                            
-                text.setForeground(Color.black);
-                Font font = lstPlugins.getFont();
-                text.setFont(font.deriveFont(Font.BOLD, 12));                
-
-                JPanel jpcenter = new JPanel();
-                GridLayout grid = new GridLayout(0, 1);
-                jpcenter.setLayout(grid);
-                jpcenter.setOpaque(false);
-                jp.add(jpcenter, BorderLayout.CENTER);
-                jpcenter.add(text);               
-
-                JPanel last = new JPanel();
-                last.setOpaque(false);
-                jp.add(last, BorderLayout.LINE_END);
-                jp.setBackground(Color.white);
-                vector.add(jp);
-            }
-            lstPlugins.setListData(vector);
-            ListCellRenderer renderer = new CustomCellRenderer();
-            lstPlugins.setCellRenderer(renderer);
-            this.jProgressBar1.setVisible(false);
-            return vector;
-        } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+        //force to retrive plugins for first category
+        if (!pluginCategoryList.isEmpty()) {
+            retrievePlugins(pluginCategoryList.get(0));
         }
+        jProgressBar1.setVisible(false);
         validate();
-        return null;
     }
-    
-    
-    public final Vector updatePluginsList(IPluginCategory pc) {
-        try {
-            showingCategories = false;
-            String path = Info.getResourcesPath();
-            //TODO: use package images.
-            ImageIcon iconPlugin = new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
-            ImageIcon iconCoolPlugin = new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
-            ImageIcon iconClient = new ImageIcon(path + File.separatorChar + "clientIcon1.png", "Icon");
 
-            Vector vector = new Vector();           
-            if (pc.getPlugins() == null) {
-                return null;
-            } 
-//            if (pc.getPlugins().size()== 0)
-//            {
-//                JPanel jp = new JPanel();
-//                jp.setLayout(new BorderLayout());
-//                jp.add(new JLabel(".."));
-//                vector.add(jp);                
-//            }            
-            //Add the first line to back to the categoryList
-            JPanel jp = new JPanel();
-            jp.setLayout(new BorderLayout());
-            jp.add(new JLabel(".."));
-            vector.add(jp);       
-            for (IPluginPackage pp : pc.getPlugins()) {
-                System.out.println("processing plugin package:" + pp.getTitle());
-                jp = new JPanel();
-                jp.setLayout(new BorderLayout());                
-                //boolean isRunning = c.isRunning();              
-                jp.add(new JLabel(pp.getIcon()), BorderLayout.LINE_START);
-                JLabel text = null;
-                String description = "";
-                if (pp.getFilePath() != null && pp.getFilePath()!= "" && pp.getTitle()!=null) {                    
-                    String version = extractVersion(new File(pp.getFilePath()).getName().toString());                    
-                    int result = Plugin.compareVersions(pp.getTitle(), version);
-                    //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
-                    if (result == -1) { //older version
-                        text = new JLabel(pp.getTitle() + " (Install version " + version + ")");
-                    } else {
-                        if (result == 1) { //newer version
-                            text = new JLabel(pp.getTitle() + " (Update from " + version + " to " + version + ")");
-                        }
-                    }
+    public final void retrievePlugins(IPluginCategory category) {
+        String path = Info.PATH_RESOURCES_FOLDER.toString();
+        if (category.getPlugins() == null) {
+            return;
+        }
+        //TODO: use package images.
+        ImageIcon iconPlugin = new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
+        ImageIcon iconCoolPlugin = new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
+        ImageIcon iconClient = new ImageIcon(path + File.separatorChar + "clientIcon1.png", "Icon");
+
+        PropertiesPanel_1 panel = new PropertiesPanel_1(category.getPlugins().size(), 5);
+        panel.removeAll();
+        int row = 0;
+        for (final IPluginPackage pp : category.getPlugins()) {
+            JLabel lblIcon;
+            if (pp.getIcon() != null) {
+                lblIcon = new JLabel(pp.getIcon());
+            } else {
+                lblIcon = new JLabel(iconPlugin);
+            }
+            JLabel lblName = new JLabel(pp.getTitle());
+            JButton btnAction = null;
+            if (pp.getFilePath() != null
+                    && pp.getFilePath() != ""
+                    && pp.getTitle() != null) {
+                String version = extractVersion(new File(pp.getFilePath()).getName().toString());
+                int result = Plugin.compareVersions(pp.getTitle(), version);
+                //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
+                if (result == -1) { //older version
+                    //btnAction = new JButton(pp.getTitle() + " (Install version " + version + ")");
+                    btnAction = new JButton("Install");
                 } else {
-                    text = new JLabel(pp.getTitle() + (" (Unavailable)"));
+                    if (result == 1) { //newer version
+                        //btnAction = new JButton(pp.getTitle() + " (Update from " + version + " to " + version + ")");
+                        btnAction = new JButton("Update");
+                    }
                 }
-                description = pp.getDescription();
-                JLabel lblDescription = new JLabel(description);
-                text.setForeground(Color.black);
-                Font font = lstPlugins.getFont();
-                text.setFont(font.deriveFont(Font.BOLD, 12));
-                lblDescription.setForeground(Color.gray);
-
-
-                JPanel jpcenter = new JPanel();
-                GridLayout grid = new GridLayout(0, 1);
-                jpcenter.setLayout(grid);
-                jpcenter.setOpaque(false);
-                jp.add(jpcenter, BorderLayout.CENTER);
-                jpcenter.add(text);
-                jpcenter.add(lblDescription);
-                jpcenter.setToolTipText(description);
-
-                JPanel last = new JPanel();
-                last.setOpaque(false);
-                jp.add(last, BorderLayout.LINE_END);
-                jp.setBackground(Color.white);
-                vector.add(jp);
+            } else {
+                lblName = new JLabel(pp.getTitle() + (" (Unavailable)"));
             }
-            lstPlugins.setListData(vector);
-            ListCellRenderer renderer = new CustomCellRenderer();
-            lstPlugins.setCellRenderer(renderer);
-            this.jProgressBar1.setVisible(false);
-            return vector;
-        } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            JLabel lblDescription = new JLabel(pp.getDescription());
+            if (btnAction != null) {
+                btnAction.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        installPackage(pp);
+                    }
+                });
+            }
+
+            JButton btnMore = new JButton("More info...");
+            btnMore.setEnabled(false);
+            btnMore.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        browse(new URI(pp.getUri()));
+                    } catch (URISyntaxException ex) {
+                        Logger.getLogger(MarketPlaceForm.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+
+            lblIcon.setPreferredSize(new Dimension(80, 80));
+            lblIcon.setMaximumSize(new Dimension(80, 80));
+            panel.addElement(lblIcon, row, 0);
+            panel.addElement(lblName, row, 1);
+            panel.addElement(lblDescription, row, 2);
+            panel.addElement(btnMore, row, 3);
+            if (btnAction != null) {
+                panel.addElement(btnAction, row, 4);
+            } else {
+                JButton disabled = new JButton("Install");
+                disabled.setEnabled(false);
+                panel.addElement(disabled, row, 4);
+            }
+            row++;
         }
+        panel.layoutPanel();
+        jPanel1.removeAll();
+        jPanel1.add(panel);
+        jProgressBar1.setVisible(false);
         validate();
-        return null;
     }
 
     private String extractVersion(String filename) {
@@ -312,28 +236,19 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         task.run();
     }
 
-    class CustomCellRenderer implements ListCellRenderer {
-
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index,
-                boolean isSelected, boolean cellHasFocus) {
-            Component component = (Component) value;
-            component.setBackground(isSelected ? list.getSelectionBackground() : /*
-                     * list.getBackground()
-                     */ getListBackground(list, value, index, isSelected, cellHasFocus));
-            component.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
-            setFont(list.getFont());
-            return component;
+    private void browse(URI uri) {
+        if (!java.awt.Desktop.isDesktopSupported()) {
+            JOptionPane.showMessageDialog(null, "Please point your browser to " + uri.toString());
+        }
+        java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+        if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+            JOptionPane.showMessageDialog(null, "Please point your browser to " + uri.toString());
         }
 
-        private Color getListBackground(JList list, Object value, int index,
-                boolean isSelected, boolean cellHasFocus) {
-            if (index % 2 == 0) {
-                return (Color.decode("#f7f7f7"));
-            } else {
-                return list.getBackground();
-            }
-
+        try {
+            desktop.browse(uri);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
     }
 
@@ -346,11 +261,11 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
+        cmbCategory = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        lstPlugins = new javax.swing.JList();
+        jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Freedomotic Official Online Marketplace");
@@ -363,22 +278,20 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         jProgressBar1.setIndeterminate(true);
         getContentPane().add(jProgressBar1);
 
-        lstPlugins.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Download of plugins list in progress...", "it can take up to one minute", "please wait" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(lstPlugins);
+        getContentPane().add(cmbCategory);
+
+        jPanel1.setLayout(new java.awt.BorderLayout());
+        jScrollPane1.setViewportView(jPanel1);
 
         getContentPane().add(jScrollPane1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox cmbCategory;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JList lstPlugins;
     // End of variables declaration//GEN-END:variables
 }
