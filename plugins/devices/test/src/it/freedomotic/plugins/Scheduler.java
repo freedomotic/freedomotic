@@ -37,7 +37,7 @@ public class Scheduler extends Protocol {
     }
 
     protected void onRun() {
-        throw new UnsupportedOperationException("Not supported yet.");
+
     }
 
     @Override
