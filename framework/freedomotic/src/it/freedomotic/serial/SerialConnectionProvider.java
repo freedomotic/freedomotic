@@ -272,7 +272,11 @@ public class SerialConnectionProvider implements SerialPortEventListener {
         String sep = System.getProperty("file.separator");
         pathToAdd = new File(Info.getApplicationPath() + sep + pathToAdd + sep + os + sep + arch).toString();
         // Modifico il valore della variabile a livello d'ambiente
-        Freedomotic.logger.info("Adding to classpath '" + pathToAdd + "'");
+        //Freedomotic.logger.info("Adding to classpath '" + pathToAdd + "'");
+        File dynLibraryFile = new File(pathToAdd);
+        if (!dynLibraryFile.exists() || (dynLibraryFile.isDirectory() && dynLibraryFile.list().length < 1)) {
+            Freedomotic.logger.warning("Missing serial port (RXTX) dynamic library for this architecture in " + pathToAdd.toString());
+        }
         String libraryPath =
                 System.getProperty("java.library.path")
                 .concat(System.getProperty("path.separator")
@@ -280,7 +284,7 @@ public class SerialConnectionProvider implements SerialPortEventListener {
                 .concat(System.getProperty("path.separator")
                 + new File(Info.getApplicationPath() + "/config/serial/").toString());
         System.setProperty("java.library.path", libraryPath);
-        Freedomotic.logger.info("java.library.path: " + libraryPath);
+        //Freedomotic.logger.info("java.library.path: " + libraryPath);
     }
 
     //synchronous write to serial device

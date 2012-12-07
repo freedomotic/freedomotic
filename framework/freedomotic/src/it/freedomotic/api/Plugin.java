@@ -320,11 +320,9 @@ public class Plugin implements Client {
 
     @Override
     public void start() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void stop() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

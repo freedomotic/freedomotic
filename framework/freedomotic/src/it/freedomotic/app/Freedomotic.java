@@ -46,20 +46,16 @@ import java.io.IOException;
 import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.model.ds.ColorList;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.objects.BehaviorLogic;
 import it.freedomotic.objects.EnvObjectLogic;
 
-import it.freedomotic.reactions.Reaction;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.reactions.Command;
-import it.freedomotic.reactions.Trigger;
 import it.freedomotic.service.ClassPathUpdater;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.LogFormatter;
 import it.freedomotic.serial.SerialConnectionProvider;
 import it.freedomotic.service.IPluginCategory;
 import it.freedomotic.service.MarketPlaceService;
-import it.freedomotic.service.IPluginPackage;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -68,8 +64,6 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,7 +91,7 @@ public class Freedomotic {
          * *****************************************************************
          */
         loadAppConfig();
-        logger.setLevel(Level.ALL);
+        //logger.setLevel(Level.ALL);
         logger.info("OS: " + System.getProperty("os.name") + "\n"
                 + "Architecture: " + System.getProperty("os.arch") + "\n"
                 + "OS Version: " + System.getProperty("os.version") + "\n"
@@ -225,7 +219,7 @@ public class Freedomotic {
 
                                 Freedomotic.logger.info("Starting marketplace service");
                                 MarketPlaceService mps = MarketPlaceService.getInstance();
-                                onlinePluginCategories = mps.getCategoryList();
+                                onlinePluginCategories = mps.getCategoryList(); 
                             }
                         }).start();
                     }
@@ -495,21 +489,19 @@ public class Freedomotic {
         } catch (IOException ex) {
             Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Freedomotic.logger.info("Sending the exit signal (TODO: not yet implemented)");
+        //Freedomotic.logger.info("Sending the exit signal (TODO: not yet implemented)");
         //...send the signal on a topic channel
-        Freedomotic.logger.info("Force stopping the plugins that are not already stopped");
+        //Freedomotic.logger.info("Force stopping the plugins that are not already stopped");
         for (Client plugin : ClientStorage.getClients()) {
             plugin.stop();
         }
         Freedomotic.logger.info(Profiler.print());
         AbstractBusConnector.disconnect();
         Profiler.saveToFile();
-        Freedomotic.logger.info("DONE");
         System.exit(0);
     }
 
     public static void kill() {
-        Freedomotic.logger.info("Raw kill is called... terminate immediately.");
         System.exit(0);
     }
 

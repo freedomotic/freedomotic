@@ -42,9 +42,11 @@ public class ClientStorage {
     }
 
     public void enqueue(Client c) {
-        clients.add(c);
-        PluginHasChanged event = new PluginHasChanged(this, c.getName(), PluginActions.ENQUEUE);
-        Freedomotic.sendEvent(event);
+        if (!clients.contains(c)) {
+            clients.add(c);
+            PluginHasChanged event = new PluginHasChanged(this, c.getName(), PluginActions.ENQUEUE);
+            Freedomotic.sendEvent(event);
+        }
     }
 
     public static List<Client> getClients() {
@@ -85,7 +87,7 @@ public class ClientStorage {
         }
         return clients.contains(input);
     }
-    
+
     protected Plugin createPlaceholder(final String simpleName, final String type, final String description) {
         final Plugin placeholder = new Plugin(simpleName) {
             @Override
