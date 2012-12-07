@@ -1,4 +1,14 @@
 #JSGF V1.0;
 grammar hello;
-
-public <command> = (turn on | turn off) ( kitchen light | livingroom light | light one | light two );
+  
+  public <basicCmd> = <command>;
+  
+  <command> = <action> <where> <object> <behavior> <value>;
+  <action> = turn on | turn off | open |close | increase | decrease | set | say;
+  <where> = [in | the | a] [kitchen | living room | bedroom | bathroom | stairs];
+  <object> = [the | a] (light | door | window | tv);
+  <behavior> = [power | brightness | temperature | luminosity | openness];
+  <value> = [by | to] [0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | next | previous]; 
+  
+  <startPolite> = (please | kindly | could you | oh mighty computer) *;
+  <endPolite> = [ please | thanks | thank you ];
