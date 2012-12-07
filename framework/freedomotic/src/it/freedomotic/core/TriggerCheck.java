@@ -142,7 +142,7 @@ public final class TriggerCheck {
             Reaction reaction = (Reaction) it.next();
             Trigger reactionTrigger = reaction.getTrigger();
             //found a related reaction. This must be executed
-            if (trigger.equals(reactionTrigger)) {
+            if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {
                 trigger.setExecuted();
                 found = true;
                 Freedomotic.logger.fine("Try to execute reaction " + reaction.toString());
@@ -152,6 +152,9 @@ public final class TriggerCheck {
                     Resolver commandResolver = new Resolver();
                     commandResolver.addContext("event.", event.getPayload());
                     for (final Command command : reaction.getCommands()) {
+                        if (command==null){
+                            continue; //skip this loop
+                        }
                         if (command.getReceiver().equalsIgnoreCase(BehaviorManager.getMessagingChannel())) {
                             //this command is for an object so it needs only to know only about event parameters
                             Command resolvedCommand = commandResolver.resolve(command);
@@ -168,13 +171,13 @@ public final class TriggerCheck {
                             //it's not a user level command for objects (eg: turn it on), it is for another kind of actuator
                             Command reply = Freedomotic.sendCommand(resolvedCommand); //blocking wait (in this case in a thread) until executed
                             if (reply == null) {
-                                Freedomotic.logger.fine("Unreceived reply within given time ("
+                                Freedomotic.logger.info("Unreceived reply within given time ("
                                         + command.getReplyTimeout() + "ms) for command " + command.getName());
                             } else {
                                 if (reply.isExecuted()) {
                                     Freedomotic.logger.fine("Executed succesfully " + command.getName());
                                 } else {
-                                    Freedomotic.logger.fine("Unable to execute " + command.getName());
+                                    Freedomotic.logger.info("Unable to execute command" + command.getName());
                                 }
                             }
                         }
@@ -192,7 +195,7 @@ public final class TriggerCheck {
             }
         }
         if (!found) {
-            Freedomotic.logger.warning("No reaction bound to trigger '" + trigger.getName() + "'");
+            Freedomotic.logger.config("No valid reaction bound to trigger '" + trigger.getName() + "'");
         }
     }
 }

@@ -5,15 +5,6 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import it.freedomotic.reactions.TriggerPersistence;
-import it.freedomotic.reactions.Command;
-import it.freedomotic.reactions.Command;
-import it.freedomotic.reactions.CommandPersistence;
-import it.freedomotic.reactions.Reaction;
-import it.freedomotic.reactions.Reaction;
-import it.freedomotic.reactions.Trigger;
-import it.freedomotic.reactions.Trigger;
-import it.freedomotic.reactions.TriggerPersistence;
 import java.util.ArrayList;
 
 /**
@@ -30,9 +21,11 @@ public class ReactionConverter implements Converter {
         writer.endNode();
         writer.startNode("sequence");
         for (Command c : rea.getCommands()) {
-            writer.startNode("command");
-            writer.setValue(c.getName());
-            writer.endNode(); //end command
+            if (c != null) {
+                writer.startNode("command");
+                writer.setValue(c.getName());
+                writer.endNode(); //end command
+            }
         }
         writer.endNode(); //end sequence
     }
@@ -47,13 +40,15 @@ public class ReactionConverter implements Converter {
         t = TriggerPersistence.getTrigger(triggerName.trim());
         reader.moveUp();
         reader.moveDown();
-            while (reader.hasMoreChildren()) {
-                reader.moveDown();
-                Command c = CommandPersistence.getCommand(reader.getValue().trim());
+        while (reader.hasMoreChildren()) {
+            reader.moveDown();
+            Command c = CommandPersistence.getCommand(reader.getValue().trim());
+            if (c != null) {
                 list.add(c);
-                reader.moveUp();
             }
-            reader.moveUp(); //goes up to the next <tuple>
+            reader.moveUp();
+        }
+        reader.moveUp(); //goes up to the next <tuple>
         return new Reaction(t, list);
     }
 

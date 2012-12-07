@@ -28,7 +28,7 @@ import java.util.Iterator;
  */
 public final class Reaction implements Serializable {
 
-    private Trigger trigger=new Trigger();
+    private Trigger trigger = new Trigger();
     private String uuid;
     private ArrayList<Command> commands = new ArrayList<Command>();
     private String description;
@@ -87,6 +87,9 @@ public final class Reaction implements Serializable {
     }
 
     public ArrayList<Command> getCommands() {
+        if (commands==null){
+            commands = new ArrayList<Command>();
+        }
         return commands;
     }
 
@@ -101,10 +104,12 @@ public final class Reaction implements Serializable {
         b.append(trigger);
         b.append("] THEN ");
 
-        Iterator commandIterator = commands.iterator();
+        Iterator commandIterator = getCommands().iterator();
         while (commandIterator.hasNext()) {
             Command c = (Command) commandIterator.next();
-            b.append("(").append(c.getName()).append(")");
+            if (c != null) {
+                b.append("(").append(c.getName()).append(")");
+            }
             if (commandIterator.hasNext()) {
                 b.append(" AFTER THAT ");
             }
@@ -119,7 +124,9 @@ public final class Reaction implements Serializable {
         Iterator it = getCommands().iterator();
         while (it.hasNext()) {
             Command c = (Command) it.next();
-            b.append(c.getDescription());
+            if (c != null) {
+                b.append(c.getDescription());
+            }
             if (it.hasNext()) {
                 b.append(" and ");
             }

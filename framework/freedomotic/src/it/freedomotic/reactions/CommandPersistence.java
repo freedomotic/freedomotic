@@ -65,7 +65,9 @@ public class CommandPersistence {
     public static Command getHardwareCommand(String name) {
         Command command = hardwareCommands.get(name);
         if (command == null) {
-            Freedomotic.logger.severe("The system is searching for an hardware command named '" + name + "' but it doesen't exists. Check the spelling!");
+            Freedomotic.logger.severe("The system is searching for an hardware"
+                    + " command named '" + name + "' but it doesen't exists. "
+                    + "Maybe the related plugin is missing or cannot be loaded");
         }
         return command;
     }

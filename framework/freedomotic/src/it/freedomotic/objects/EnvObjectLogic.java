@@ -1,6 +1,5 @@
 package it.freedomotic.objects;
 
-import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.Resolver;
 import it.freedomotic.environment.ZoneLogic;
@@ -8,11 +7,8 @@ import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.geometry.FreedomShape;
-import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
-import it.freedomotic.objects.BehaviorLogic;
-import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.TriggerPersistence;
@@ -305,7 +301,7 @@ public class EnvObjectLogic {
         Freedomotic.logger.fine("Executing action '" + action + "' of object '" + getPojo().getName() + "'");
         if (getPojo().getActAs().equalsIgnoreCase("virtual")) {
             //it's a virtual object like a button, not needed real execution of a command
-            Freedomotic.logger.info("The object '" + getPojo().getName() + "' act as virtual device, so its hardware commands are not executed.");
+            Freedomotic.logger.config("The object '" + getPojo().getName() + "' act as virtual device, so its hardware commands are not executed.");
             return true;
         }
         final Command command = getHardwareCommand(action.trim());
@@ -385,10 +381,12 @@ public class EnvObjectLogic {
             String commandName = pojo.getActions().getProperty(action);
             Command command = CommandPersistence.getHardwareCommand(commandName);
             if (command != null) {
-                Freedomotic.logger.config("Caching the command '" + command.getName() + "' as related to action '" + action + "' ");
+                Freedomotic.logger.config("Caching the command '" + command.getName() + 
+                        "' as related to action '" + action + "' ");
                 setAction(action, command);
             } else {
-                Freedomotic.logger.warning("Don't exist a command called '" + commandName + "' is not possible to related this command to action '" + action + "' ");
+                Freedomotic.logger.warning("Don't exist a command called '" + commandName + 
+                        "' is not possible to related this command to action '" + action + "' ");
             }
         }
     }

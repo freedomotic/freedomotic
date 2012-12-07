@@ -44,6 +44,7 @@ public class JoinPlugin implements BusConsumer {
             Config manifest = (Config) message.getObject();
             Plugin plugin = new Plugin(manifest.getProperty("name"), manifest);
             Freedomotic.clients.enqueue(plugin);
+            Freedomotic.logger.info("Enqueued remote plugin " + plugin.getName());
         } catch (JMSException ex) {
             Freedomotic.logger.severe("Join Plugin receives a not valid plugin manifest");
         }

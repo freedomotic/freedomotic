@@ -232,6 +232,7 @@ public final class Command implements Serializable, Cloneable {
         clonedCmd.setReceiver(getReceiver());
         clonedCmd.setDelay(getDelay());
         clonedCmd.setReplyTimeout(getReplyTimeout());
+        clonedCmd.setExecuted(executed);
         Iterator it = getProperties().entrySet().iterator();
         while (it.hasNext()) {
             Entry e = (Entry) it.next();
