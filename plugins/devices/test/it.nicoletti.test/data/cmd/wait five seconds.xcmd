@@ -5,7 +5,7 @@
     <description>delays next command of five seconds</description>
     <hardwareLevel>false</hardwareLevel>
     <delay>0</delay>
-    <timeout>0</timeout>
+    <timeout>15000</timeout>
     <properties>
         <properties>
             <property name="delay" value="5000"/>
