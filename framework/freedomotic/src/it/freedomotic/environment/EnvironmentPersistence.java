@@ -60,8 +60,6 @@ public class EnvironmentPersistence {
     }
 
     public static EnvironmentLogic load(final File file) throws IOException {
-        Freedomotic.logger.info("-- Initialization of Environment --");
-        Freedomotic.logger.log(Level.INFO, "Deserializing environment from {0}", file.toString());
         final StringBuilder xml = new StringBuilder();
         FileInputStream fin;
         BufferedReader myInput = null;

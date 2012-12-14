@@ -66,7 +66,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     public void register() {
         busChannel = new EventChannel();
         busChannel.setHandler(this);
-        Freedomotic.logger.info("Registering the trigger named '" + getName() + "'");
+        Freedomotic.logger.config("Registering the trigger named '" + getName() + "'");
         busChannel.consumeFrom(channel);
         numberOfExecutions = 0;
         suspensionStart = System.currentTimeMillis();

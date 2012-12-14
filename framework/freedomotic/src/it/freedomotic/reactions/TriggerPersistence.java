@@ -38,7 +38,7 @@ public class TriggerPersistence {
         XStream xstream = FreedomXStream.getXstream();
         deleteTriggerFiles(folder);
         try {
-            Freedomotic.logger.info("---- Saving triggers to file in " + folder.getAbsolutePath() + " ----");
+            Freedomotic.logger.config("Saving triggers to file in " + folder.getAbsolutePath());
             for (Trigger trigger : list) {
                 if (trigger.isToPersist()) {
                     String uuid = trigger.getUUID();
@@ -88,9 +88,6 @@ public class TriggerPersistence {
 
     public synchronized static void loadTriggers(File folder) {
         XStream xstream = FreedomXStream.getXstream();
-        Freedomotic.logger.info("-- Initialization of Triggers --");
-        Freedomotic.logger.info("Loading triggers from: " + folder.getAbsolutePath());
-
         // This filter only returns object files
         FileFilter objectFileFileter = new FileFilter() {
 
@@ -109,7 +106,6 @@ public class TriggerPersistence {
             summary.append("#Filename \t\t #TriggerName \t\t\t #ListenedChannel").append("\n");
             if (files != null) {
                 for (File file : files) {
-                    Freedomotic.logger.fine("Loading trigger file named " + file.getName() + " from folder '" + folder.getAbsolutePath());
                     //validate the object against a predefined DTD
                     String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/trigger.dtd");
                     Trigger trigger = (Trigger) xstream.fromXML(xml);
@@ -138,7 +134,7 @@ public class TriggerPersistence {
                 //Close the output stream
                 indexfile.close();
             } else {
-                Freedomotic.logger.info("No triggers to load from this folder");
+                Freedomotic.logger.config("No triggers to load from this folder " + folder.toString());
             }
         } catch (Exception e) {
             Freedomotic.logger.severe("Exception while loading this trigger.\n" + Freedomotic.getStackTraceInfo(e));

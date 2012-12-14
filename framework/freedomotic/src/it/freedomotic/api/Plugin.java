@@ -227,7 +227,6 @@ public class Plugin implements Client {
         try {
             plugin.load(new FileInputStream(new File(pluginFolder + "/PACKAGE")));
 
-            System.out.println(plugin.toString());
 
             int requiredMajor = getVersionProperty(plugin, "framework.required.major");
             int requiredMinor = getVersionProperty(plugin, "framework.required.minor");

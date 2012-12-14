@@ -54,7 +54,7 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
                 this.channelName = channelName;
                 receiver = getBusSharedSession().createConsumer(queue);
                 receiver.setMessageListener(this);
-                Freedomotic.logger.info(getHandler().getClass().getSimpleName() + " listen on " + queue.toString());
+                Freedomotic.logger.config(getHandler().getClass().getSimpleName() + " listen on " + queue.toString());
             } catch (javax.jms.JMSException jmse) {
                 Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jmse));
             }

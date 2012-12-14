@@ -1,6 +1,7 @@
 package it.freedomotic.reactions;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.util.DOMValidateDTD;
@@ -9,7 +10,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -65,22 +69,18 @@ public class CommandPersistence {
     public static Command getHardwareCommand(String name) {
         Command command = hardwareCommands.get(name);
         if (command == null) {
-            Freedomotic.logger.severe("The system is searching for an hardware"
-                    + " command named '" + name + "' but it doesen't exists. "
-                    + "Maybe the related plugin is missing or cannot be loaded");
+            Freedomotic.logger.severe("Missing command '" + name + "'. "
+                    + "Maybe the related plugin is not installed or cannot be loaded");
         }
         return command;
     }
 
     public static void loadCommands(File folder) {
         XStream xstream = FreedomXStream.getXstream();
-        Freedomotic.logger.info("---- Initialization of Commands ----");
-        Freedomotic.logger.info("Loading commands from: " + folder.getAbsolutePath());
         File[] files = folder.listFiles();
 
         // This filter only returns object files
         FileFilter objectFileFileter = new FileFilter() {
-
             public boolean accept(File file) {
                 if (file.isFile() && file.getName().endsWith(".xcmd")) {
                     return true;
@@ -91,36 +91,46 @@ public class CommandPersistence {
         };
         files = folder.listFiles(objectFileFileter);
         if (files != null) {
+            FileWriter fstream = null;
             try {
                 StringBuilder summary = new StringBuilder();
                 //print an header for the index.txt file
                 summary.append("#Filename \t\t #CommandName \t\t\t #Destination").append("\n");
                 for (File file : files) {
                     String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/command.dtd");
-                    Command command = (Command) xstream.fromXML(xml);
-                    if (command.isHardwareLevel()) { //an hardware level command
-                        hardwareCommands.put(command.getName(), command);
-                        Freedomotic.logger.info("Loaded hardware command '" + command.getName() + "'");
-                    } else { //a user level commmand
-                        if (folder.getAbsolutePath().startsWith(Info.getPluginsPath())) {
-                            command.setEditable(false);
+                    Command command = null;
+                    try {
+                        command = (Command) xstream.fromXML(xml);
+                        if (command.isHardwareLevel()) { //an hardware level command
+                            hardwareCommands.put(command.getName(), command);
+                        } else { //a user level commmand
+                            if (folder.getAbsolutePath().startsWith(Info.getPluginsPath())) {
+                                command.setEditable(false);
+                            }
+                            add(command);
                         }
-                        add(command);
-                        Freedomotic.logger.info("Loaded user command '" + command.getName() + "'");
+                        summary.append(file.getName()).append("\t\t").append(command.getName()).append("\t\t\t").append(command.getReceiver()).append("\n");
+                    } catch (CannotResolveClassException e) {
+                        Freedomotic.logger.severe("Cannot unserialize command due to unrecognized class '" 
+                                + e.getMessage() + "' in \n" + xml);
                     }
-                    summary.append(file.getName()).append("\t\t").append(command.getName()).append("\t\t\t").append(command.getReceiver()).append("\n");
-                    //writing a summary .txt file with the list of commands in this folder
-                    FileWriter fstream = new FileWriter(folder + "/index.txt");
-                    BufferedWriter indexfile = new BufferedWriter(fstream);
-                    indexfile.write(summary.toString());
-                    //Close the output stream
-                    indexfile.close();
                 }
-            } catch (Exception e) {
-                Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+                fstream = new FileWriter(folder + "/index.txt");
+                BufferedWriter indexfile = new BufferedWriter(fstream);
+                indexfile.write(summary.toString());
+                //Close the output stream
+                indexfile.close();
+            } catch (IOException ex) {
+                Logger.getLogger(CommandPersistence.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    fstream.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(CommandPersistence.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         } else {
-            Freedomotic.logger.info("No commands to load from this folder");
+            Freedomotic.logger.config("No commands to load from this folder " + folder.toString());
         }
     }
 
@@ -161,7 +171,6 @@ public class CommandPersistence {
         File[] files = folder.listFiles();
         // This filter only returns object files
         FileFilter objectFileFileter = new FileFilter() {
-
             public boolean accept(File file) {
                 if (file.isFile() && file.getName().endsWith(".xcmd")) {
                     return true;

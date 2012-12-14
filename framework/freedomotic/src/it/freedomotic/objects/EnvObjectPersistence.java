@@ -46,7 +46,6 @@ public class EnvObjectPersistence {
         XStream xstream = FreedomXStream.getXstream();
         deleteObjectFiles(folder);
         try {
-            Freedomotic.logger.info("---- Saving objects to file in " + folder.getAbsolutePath() + " ----");
             // Create file
             StringBuilder summary = new StringBuilder();
             //print an header for the index.txt file
@@ -104,8 +103,6 @@ public class EnvObjectPersistence {
      */
     public synchronized static void loadObjects(File folder, boolean makeUnique) {
         objectList.clear();
-        Freedomotic.logger.info("-- Initialization of Objects --");
-        Freedomotic.logger.info("Loading environment objects from: " + folder.getAbsolutePath());
         File[] files = folder.listFiles();
 
         // This filter only returns object files
@@ -125,7 +122,7 @@ public class EnvObjectPersistence {
                 EnvObjectLogic loaded = loadObject(file);
                 add(loaded, makeUnique);
             }
-            Freedomotic.logger.info("Loaded " + objectList.size() + " of " + files.length + " environment objects.");
+            //Freedomotic.logger.info("Loaded " + objectList.size() + " of " + files.length + " environment objects.");
         } catch (Exception e) {
             Freedomotic.logger.severe("Exception while loading this object.\n" + Freedomotic.getStackTraceInfo(e));
         }
@@ -138,19 +135,17 @@ public class EnvObjectPersistence {
      */
     public static EnvObjectLogic loadObject(File file) throws IOException {
         XStream xstream = FreedomXStream.getXstream();
-        Freedomotic.logger.info("---- Loading object file named " + file.getName() + " from folder '" + file.getAbsolutePath() + "' ----");
         //validate the object against a predefined DTD
         String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/object.dtd");
         EnvObject pojo = null;
         try {
             pojo = (EnvObject) xstream.fromXML(xml);
-            System.out.println(pojo);
         } catch (Exception e) {
             Freedomotic.logger.severe("XML parsing error. Readed XML is \n" + xml);
             
         }
         EnvObjectLogic objectLogic = EnvObjectFactory.create(pojo);
-        Freedomotic.logger.info("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
+        Freedomotic.logger.config("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
         //add(objectLogic);
         return objectLogic;
     }

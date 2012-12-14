@@ -36,7 +36,7 @@ public class ReactionPersistence {
         XStream xstream = FreedomXStream.getXstream();
         deleteReactionFiles(folder);
         try {
-            Freedomotic.logger.info("---- Saving reactions to file in " + folder.getAbsolutePath() + " ----");
+            Freedomotic.logger.config("Saving reactions to file in " + folder.getAbsolutePath());
             for (Reaction reaction : list) {
                 String uuid = reaction.getUUID();
                 if (uuid == null || uuid.isEmpty()) {
@@ -76,9 +76,6 @@ public class ReactionPersistence {
 
     public synchronized static void loadReactions(File folder) {
         XStream xstream = FreedomXStream.getXstream();
-        Freedomotic.logger.info("-- Initialization of Reactions --");
-        Freedomotic.logger.info("Loading reactions from: " + folder.getAbsolutePath());
-
         // This filter only returns object files
         FileFilter objectFileFileter = new FileFilter() {
             public boolean accept(File file) {
@@ -96,7 +93,6 @@ public class ReactionPersistence {
             summary.append("#Filename \t\t #Reaction \t\t\t #Description").append("\n");
             if (files != null) {
                 for (File file : files) {
-                    Freedomotic.logger.info("---- Loading reaction file named " + file.getName() + " from folder '" + folder.getAbsolutePath() + "' ----");
                     //validate the object against a predefined DTD
                     String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/reaction.dtd");
                     Reaction reaction = (Reaction) xstream.fromXML(xml);
@@ -113,7 +109,7 @@ public class ReactionPersistence {
                 //Close the output stream
                 indexfile.close();
             } else {
-                Freedomotic.logger.info("No reactions to load from this folder");
+                Freedomotic.logger.config("No reactions to load from this folder " + folder.toString());
             }
         } catch (Exception e) {
             Freedomotic.logger.severe("Exception while loading this object.\n" + Freedomotic.getStackTraceInfo(e));
@@ -125,7 +121,7 @@ public class ReactionPersistence {
             r.getTrigger().register(); //trigger starts to listen on its channel
             list.add(r);
             r.setChanged();
-            Freedomotic.logger.info("Added new reaction " + r.getDescription());
+            Freedomotic.logger.config("Added new reaction " + r.getDescription());
         } else {
             Freedomotic.logger.config("The reaction '" + r.getDescription() + "' is already loaded so its skipped.");
         }
@@ -134,7 +130,7 @@ public class ReactionPersistence {
     public static void remove(Reaction input) {
         if (input != null) {
             boolean removed = list.remove(input);
-            Freedomotic.logger.info("Removed reaction " + input.getDescription());
+            Freedomotic.logger.config("Removed reaction " + input.getDescription());
             input.getTrigger().unregister();
             if ((!removed) && (list.contains(input))) {
                 Freedomotic.logger.warning("Error while removing Reaction " + input.getDescription() + " from the list");

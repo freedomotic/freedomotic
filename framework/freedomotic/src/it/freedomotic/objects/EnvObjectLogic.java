@@ -385,8 +385,8 @@ public class EnvObjectLogic {
                         "' as related to action '" + action + "' ");
                 setAction(action, command);
             } else {
-                Freedomotic.logger.warning("Don't exist a command called '" + commandName + 
-                        "' is not possible to related this command to action '" + action + "' ");
+                Freedomotic.logger.config("Don't exist a command called '" + commandName + 
+                        "' is not possible to bound this command to action '" + action + "' of " + this.getPojo().getName());
             }
         }
     }

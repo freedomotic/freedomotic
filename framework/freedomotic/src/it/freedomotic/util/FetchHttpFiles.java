@@ -41,9 +41,9 @@ public class FetchHttpFiles {
         //File sourceFile = new File(url.getPath());
         //File destinationFile = new File(destFolder.getPath() + "/" + sourceFile.getName());
         File destinationFile = new File(destFolder.getPath() + "/" + filename);
-        Freedomotic.logger.info("  Download started");
-        Freedomotic.logger.info("    Source folder:      " + url);
-        Freedomotic.logger.info("    Destination folder: " + destinationFile);
+        Freedomotic.logger.config("  Download started");
+        Freedomotic.logger.config("    Source folder:      " + url);
+        Freedomotic.logger.config("    Destination folder: " + destinationFile);
         //destination.getParentFile().mkdirs();
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
