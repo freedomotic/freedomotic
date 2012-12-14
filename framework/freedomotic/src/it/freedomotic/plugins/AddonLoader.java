@@ -42,36 +42,30 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class AddonLoader {
+public final class AddonLoader {
 
     // Parameters
     private static final Class[] PARAMETERS = new Class[]{URL.class};
 
-    public AddonLoader() {
+    private AddonLoader() {
     }
 
-    public void searchIn(File directory) throws Exception {
+    public static void load(File directory) throws Exception {
         //intantiate the right loader based on the directory passed to the searchIn method
         String devicesPath = new File(Info.getPluginsPath() + "/devices/").toString();
         int numLoadedPlugins = 0;
         if (directory.toString().startsWith(devicesPath)) {
-            Freedomotic.logger.info("--- Dynamic loading of a Plugin Archive from " + directory.toString() + " ---");
-            AddonLoaderInterface device = new DevicesLoader();
-            device.load(this, directory);
+            DevicesLoader.load(directory);
             numLoadedPlugins++;
         }
         String objectsPath = new File(Info.getPluginsPath() + "/objects/").toString();
         if (directory.toString().startsWith(objectsPath)) {
-            Freedomotic.logger.info("--- Dynamic loading of Object Addons from " + directory.toString() + " ---");
-            AddonLoaderInterface object = new ObjectLoader();
-            object.load(this, directory);
+            ObjectLoader.load(directory);
             numLoadedPlugins++;
         }
         String eventsPath = new File(Info.getPluginsPath() + "/events/").toString();
         if (directory.toString().startsWith(eventsPath)) {
-            Freedomotic.logger.info("--- Dynamic loading of Event Addons from " + directory.toString() + " ---");
-            AddonLoaderInterface event = new EventLoader();
-            event.load(this, directory);
+            EventLoader.load(directory);
             numLoadedPlugins++;
         }
         if (numLoadedPlugins > 0) { //at least one plugin in this package is loaded succesfully
@@ -87,13 +81,13 @@ public class AddonLoader {
         }
     }
 
-    public void recursiveSearchIn(File directory) {
+    public static void recursiveSearchIn(File directory) {
         if (directory.isDirectory()) {
             //search in subfolder. Go down a level starting from /plugins/. Is not real recursive
             for (File subfolder : directory.listFiles()) {
                 if (subfolder.isDirectory()) {
                     try {
-                        searchIn(subfolder);
+                        load(subfolder);
                     } catch (Exception ex) {
                         Logger.getLogger(AddonLoader.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -102,7 +96,7 @@ public class AddonLoader {
         }
     }
 
-    protected List<String> getClassNames(String jarName) throws IOException {
+    protected static List<String> getClassNames(String jarName) throws IOException {
         ArrayList<String> classes = new ArrayList<String>(10);
         JarInputStream jarFile = new JarInputStream(new FileInputStream(jarName));
         JarEntry jarEntry;
@@ -118,7 +112,7 @@ public class AddonLoader {
         return classes;
     }
 
-    protected Class getClass(File file, String name) throws Exception {
+    protected static Class getClass(File file, String name) throws Exception {
         addURL(file.toURL());
         URLClassLoader clazzLoader;
         Class clazz;
@@ -130,7 +124,7 @@ public class AddonLoader {
         return clazz;
     }
 
-    private void addURL(URL u) throws IOException {
+    private static void addURL(URL u) throws IOException {
         URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
         URL urls[] = sysLoader.getURLs();
         for (int i = 0; i < urls.length; i++) {
@@ -153,22 +147,28 @@ public class AddonLoader {
         try {
             String url = fromURL.toString();
             String filename = url.substring(url.lastIndexOf('/') + 1);
+            //extracts plugin name from zip file name
+            String pluginName = filename.substring(0, filename.indexOf("-"));
 
             //get the zip from the url and copy in plugin/device folder
             if (filename.endsWith(".device")) {
                 File zipFile = new File(Info.getPluginsPath() + "/devices/" + filename);
                 FetchHttpFiles.download(fromURL, new File(Info.getPluginsPath() + "/devices"), filename);
+                System.out.println(zipFile);
                 unzipAndDelete(zipFile);
+                load(new File(Info.PATH_DEVICES_FOLDER + "/" + pluginName));
             } else {
                 if (filename.endsWith(".object")) {
                     FetchHttpFiles.download(fromURL, new File(Info.getPluginsPath() + "/objects"), filename);
                     File zipFile = new File(Info.getPluginsPath() + "/objects/" + filename);
                     unzipAndDelete(zipFile);
+                    load(new File(Info.PATH_OBJECTS_FOLDER + "/" + pluginName));
                 } else {
                     Freedomotic.logger.warning("No installable Freedomotic plugins at URL " + fromURL);
                 }
             }
         } catch (Exception ex) {
+            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
             return false; //not done
         }
         return true;
@@ -191,7 +191,7 @@ public class AddonLoader {
         return true; //done
     }
 
-    private void recursiveCopy(File source, File target) {
+    private static void recursiveCopy(File source, File target) {
         InputStream input = null;
         OutputStream output = null;
         try {
@@ -216,15 +216,15 @@ public class AddonLoader {
                     output.write(buf, 0, len);
                 }
             }
-        } catch (FileNotFoundException foundEx){
-            Freedomotic.logger.warning("No file to copy in " + source);
+        } catch (FileNotFoundException foundEx) {
+            Freedomotic.logger.config("No file to copy in " + source);
         } catch (IOException ex) {
             Logger.getLogger(AddonLoader.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 if (input != null) {
                     input.close();
-                }   
+                }
                 if (output != null) {
                     output.close();
                 }

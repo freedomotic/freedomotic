@@ -13,14 +13,16 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class ObjectLoader implements AddonLoaderInterface {
+public final class ObjectLoader {
 
     static final Logger log = Freedomotic.logger;
+    
+    private ObjectLoader(){
+        
+    }
 
-    @Override
-    public void load(AddonLoader manager, File path) {
+    public static void load(File path) {
         File pluginFolder = new File(path.getAbsolutePath());
-        String SEPARATOR = "\n";
         if (pluginFolder.isFile()) {
             return;
         }
@@ -30,20 +32,17 @@ public class ObjectLoader implements AddonLoaderInterface {
             //the list of files in the jar
             for (File jar : jarList) {
                 if (jar.isFile()) {
-                    Freedomotic.logger.info(SEPARATOR);
-                    log.info("Searching for Objects in " + jar.getName());
                     List<String> classNames = null;
                     try {
-                        classNames = manager.getClassNames(jar.getAbsolutePath());
+                        classNames = AddonLoader.getClassNames(jar.getAbsolutePath());
                     } catch (IOException ex) {
-                        Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+                        log.severe(Freedomotic.getStackTraceInfo(ex));
                     }
-                    log.info("[" + classNames.size() + " classes]");
                     for (String className : classNames) {
                         String name = className.substring(0, className.length() - 6);
                         Class clazz = null;
                         try {
-                            clazz = manager.getClass(jar, name);
+                            clazz = AddonLoader.getClass(jar, name);
                         } catch (Exception ex) {
                             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
                         }
@@ -58,10 +57,9 @@ public class ObjectLoader implements AddonLoaderInterface {
                             } catch (NoClassDefFoundError err) {
                                 log.warning(clazz.getName() + " is not in Freedomotic objects hierarchy. Skipped.");
                             } catch (ClassCastException e) {
-                                log.warning(clazz.getName() + " is not in Freedomotic objects hierarchy. Skipped.");
+                                //log.warning(clazz.getName() + " is not in Freedomotic objects hierarchy. Skipped.");
                             } catch (Exception exception) {
                                 log.severe("Exception raised while loading this object. This is not a valid Freedomotic object. Skip it. ");
-                                Freedomotic.logger.info("\n");
                                 Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(exception));
                             }
                         } else {
@@ -77,7 +75,7 @@ public class ObjectLoader implements AddonLoaderInterface {
         }
     }
 
-    private void loadTemplates(File templatesFolder) {
+    private static void loadTemplates(File templatesFolder) {
         //for every envobject class a placeholder is created
         File[] templates = templatesFolder.listFiles(new FilenameFilter() {
             @Override
@@ -87,7 +85,6 @@ public class ObjectLoader implements AddonLoaderInterface {
         });
         for (File sample : templates) {
             Freedomotic.clients.createObjectTemplate(sample);
-            log.info("Template object '" + sample.getName() + "' loaded");
         }
     }
 }
