@@ -68,6 +68,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     public final void retrieveCategories() {
         for (IPluginCategory pc : pluginCategoryList) {
             cmbCategory.addItem(pc.getName() + " (" + pc.getPlugins().size() + " plugins)");
+            txtInfo.setText("Retrieved new category: " + pc.getName());
         }
         //add listener to category selection changes
         cmbCategory.addActionListener(new ActionListener() {
@@ -98,6 +99,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         panel.removeAll();
         int row = 0;
         for (final IPluginPackage pp : category.getPlugins()) {
+            txtInfo.setText("Retrieved plugin " + (row +1) + " of " + category.getPlugins().size());
             JLabel lblIcon;
             if (pp.getIcon() != null) {
                 lblIcon = new JLabel(pp.getIcon());
@@ -160,6 +162,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
             }
             row++;
         }
+        txtInfo.setText("Click on Install button to enable one of this plugins.");
         panel.layoutPanel();
         jPanel1.removeAll();
         jPanel1.add(panel);
@@ -228,7 +231,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                             "Download Error", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null,
-                            "Plugin downloaded. Restart Freedomotic to changes take effect.",
+                            "Plugin downloaded, installed and ready to be started.",
                             "Download Complete", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -261,7 +264,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        txtInfo = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
         cmbCategory = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -272,8 +275,8 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(521, 370));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
 
-        jLabel1.setText("This are the plugins available from our official online marketplace. Double click on a plugin name to install it.");
-        getContentPane().add(jLabel1);
+        txtInfo.setText("Connecting to online repository...");
+        getContentPane().add(txtInfo);
 
         jProgressBar1.setIndeterminate(true);
         getContentPane().add(jProgressBar1);
@@ -289,9 +292,9 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cmbCategory;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel txtInfo;
     // End of variables declaration//GEN-END:variables
 }
