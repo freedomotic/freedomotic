@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * A storage of loaded plugins and connected clients
  */
-public class ClientStorage {
+public final class ClientStorage {
 
     private static final List<Client> clients = new ArrayList<Client>();
 

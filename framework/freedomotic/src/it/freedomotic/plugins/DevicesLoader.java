@@ -15,15 +15,16 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class DevicesLoader implements AddonLoaderInterface {
+public final class DevicesLoader {
 
     private static final Logger log = Freedomotic.logger;
-    private boolean dataFolderAlreadyLoaded = false;
+    
+    private DevicesLoader(){
+        
+    }
 
-    @Override
-    public void load(AddonLoader manager, File path) {
+    public static void load(File path) {
         File pluginRootFolder = new File(path.getAbsolutePath());
-        String SEPARATOR = "\n";
         if (pluginRootFolder.isFile()) {
             return;
         }
@@ -32,20 +33,17 @@ public class DevicesLoader implements AddonLoaderInterface {
         //the list of files in the jar
         for (File jar : jarList) {
             if (jar.isFile()) {
-                Freedomotic.logger.info(SEPARATOR);
-                log.info("Searching for Plugins in " + jar.getName());
                 List<String> classNames = null;
                 try {
-                    classNames = manager.getClassNames(jar.getAbsolutePath());
+                    classNames = AddonLoader.getClassNames(jar.getAbsolutePath());
                 } catch (IOException ex) {
                     log.severe(ex.getLocalizedMessage());
                 }
-                Freedomotic.logger.info("[" + classNames.size() + " classes]");
                 for (String className : classNames) {
                     String name = className.substring(0, className.length() - 6);
                     Class clazz = null;
                     try {
-                        clazz = manager.getClass(jar, name);
+                        clazz = AddonLoader.getClass(jar, name);
                     } catch (Exception ex) {
                         Logger.getLogger(DevicesLoader.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -60,19 +58,15 @@ public class DevicesLoader implements AddonLoaderInterface {
                                     || (superclass.getName().equals("it.freedomotic.api.Tool"))) {
                                 //creatae a new instance of the loaded class. It leads to the initialization using manifest xml as basis
                                 Plugin plugin = null;
-                                log.info("---- " + clazz.getSimpleName() + " ----");
                                 try {
                                     if (Plugin.isCompatible(path)) {
-                                        System.out.println(clazz.getCanonicalName() + " loaded");
                                         plugin = (Plugin) clazz.newInstance();
                                         mergePackageConfiguration(plugin, path);
                                         if (!ClientStorage.isLoaded(plugin)) {
-                                            log.info(plugin.getName() + " added to plugins list.");
-                                            Freedomotic.logger.info("\n");
+                                            log.config(plugin.getName() + " added to plugins list.");
                                             Freedomotic.clients.enqueue(plugin);
                                         } else {
                                             log.warning("This plugin is already loaded or not valid. Skip it.");
-                                            Freedomotic.logger.info("\n");
                                             plugin = null; //discard this entry
                                             Freedomotic.clients.createPlaceholder(clazz.getSimpleName(), "Plugin", null);
                                         }
@@ -95,7 +89,6 @@ public class DevicesLoader implements AddonLoaderInterface {
                             log.warning("Exception raised while loading this plugin. This plugin is not loaded.");
                             log.warning(Freedomotic.getStackTraceInfo(exception));
                             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(exception));
-                            Freedomotic.logger.info("\n");
                         }
                     } else {
                         //null superclass --> the class is Object, cannot be loaded as plugin
