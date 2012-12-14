@@ -21,15 +21,15 @@ public class LogFormatter extends Formatter {
 
     @Override
     public String format(LogRecord record) {
-        if (record.getLevel().intValue() > Level.WARNING.intValue()) {
+        if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
             return ("<tr bgcolor=\"#cf2d2d\"><td><font size='1'>" + date.format(record.getMillis()) + " " + getShortClassName(record.getSourceClassName()) + "</font></td><td><font size='1'>"
                     + formatTextToHTML(record.getMessage()) + "</font></td></tr>\n");
         } else {
-            if (record.getLevel().intValue() > Level.INFO.intValue()) {
+            if (record.getLevel().intValue() == Level.INFO.intValue()) {
                 return ("<tr bgcolor=\"#CC9999\"><td><font size='1'>" + date.format(record.getMillis()) + " " + getShortClassName(record.getSourceClassName()) +  "</font></td><td><font size='1'>"
                         + formatTextToHTML(record.getMessage()) + "</font></td></tr>\n");
             } else {
-                return ("<tr bgcolor=\"#99CC99\"><td><font size='1'>" + date.format(record.getMillis()) + " " + getShortClassName(record.getSourceClassName()) +  "</font></td><td><font size='1'>"
+                return ("<tr bgcolor=\"#D6D6D6\"><td><font size='1'>" + date.format(record.getMillis()) + " " + getShortClassName(record.getSourceClassName()) +  "</font></td><td><font size='1'>"
                         + formatTextToHTML(record.getMessage()) + "</font></td></tr>\n");
             }
         }
