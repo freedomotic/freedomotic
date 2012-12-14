@@ -18,12 +18,12 @@ import java.util.List;
  *
  * @author enrico
  */
-public class EnvironmentLogic {
+public final class EnvironmentLogic {
 
     private static Graph graph;
-    private Environment pojo;
-    private List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
-    private File source;
+    private static Environment pojo;
+    private static List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
+    private static File source;
 
     public EnvironmentLogic() {
     }

@@ -91,19 +91,16 @@ public class Freedomotic {
          * *****************************************************************
          */
         loadAppConfig();
-        //logger.setLevel(Level.ALL);
-        logger.info("OS: " + System.getProperty("os.name") + "\n"
+        String resourcesPath = new File(Info.getApplicationPath() + Freedomotic.config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
+        logger.info("\nOS: " + System.getProperty("os.name") + "\n"
                 + "Architecture: " + System.getProperty("os.arch") + "\n"
                 + "OS Version: " + System.getProperty("os.version") + "\n"
                 + "Utente: " + System.getProperty("user.name") + "\n"
                 + "Java Home: " + System.getProperty("java.home") + "\n"
                 + "Java Library Path: {" + System.getProperty("java.library.path") + "}\n"
                 + "Program path: " + System.getProperty("user.dir") + "\n"
-                + "Java Version: " + System.getProperty("java.version"));
-        String resourcesPath = new File(Info.getApplicationPath() + Freedomotic.config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
-        Freedomotic.logger.info("Resources Path: " + resourcesPath);
-
-
+                + "Java Version: " + System.getProperty("java.version") + "\n"
+                + "Resources Path: " + resourcesPath);
 
         eventChannel = new EventChannel();
         commandChannel = new CommandChannel();
@@ -174,9 +171,8 @@ public class Freedomotic {
          * Dynamically load events jar files in /plugin/events folder
          * *****************************************************************
          */
-        AddonLoader eventsLoader = new AddonLoader();
         try {
-            eventsLoader.searchIn(new File(Info.getPluginsPath() + "/events/"));
+            AddonLoader.load(new File(Info.PATH_PLUGINS_FOLDER + "/events/"));
         } catch (Exception ex) {
             Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -186,9 +182,8 @@ public class Freedomotic {
          * Dynamically load objects jar files in /plugin/objects folder
          * *****************************************************************
          */
-        AddonLoader objectsLoader = new AddonLoader();
         try {
-            objectsLoader.recursiveSearchIn(new File(Info.getPluginsPath() + "/objects/"));
+            AddonLoader.recursiveSearchIn(new File(Info.PATH_PLUGINS_FOLDER + "/objects/"));
         } catch (Exception ex) {
             Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -219,7 +214,7 @@ public class Freedomotic {
 
                                 Freedomotic.logger.info("Starting marketplace service");
                                 MarketPlaceService mps = MarketPlaceService.getInstance();
-                                onlinePluginCategories = mps.getCategoryList(); 
+                                onlinePluginCategories = mps.getCategoryList();
                             }
                         }).start();
                     }
@@ -296,9 +291,18 @@ public class Freedomotic {
          * Loads the entire Reactions system (Trigger + Commands + Reactions)
          * *****************************************************************
          */
-        TriggerPersistence.loadTriggers(new File(Info.getDatafilePath() + "/trg/"));
-        CommandPersistence.loadCommands(new File(Info.getDatafilePath() + "/cmd/"));
-        ReactionPersistence.loadReactions(new File(Info.getDatafilePath() + "/rea/"));
+        TriggerPersistence.loadTriggers(new File(Info.PATH_DATA_FOLDER + "/trg/"));
+        CommandPersistence.loadCommands(new File(Info.PATH_DATA_FOLDER + "/cmd/"));
+        ReactionPersistence.loadReactions(new File(Info.PATH_DATA_FOLDER + "/rea/"));
+
+
+        /**
+         * A service to add environment objects using XML commands
+         */
+        new JoinDevice();
+        new JoinPlugin();
+
+
         /**
          * ******************************************************************
          * Starting plugins
@@ -321,60 +325,8 @@ public class Freedomotic {
             }
         }
 
-        /**
-         * A service to add environment objects using XML commands
-         */
-        new JoinDevice();
-        new JoinPlugin();
-
-        Freedomotic.logger.info("---- FREEDOM IS READY TO WORK ----");
-
-        MessageEvent message = new MessageEvent(this, "Freedomotic has started");
-        sendEvent(message);
-
-        /**
-         * ******************************************************************
-         * Logging a summary of loaded resources
-         * *****************************************************************
-         */
-//        Freedomotic.logger.info("-- Information Summary --");
-//        Freedomotic.logger.info("---- Loaded Triggers ----");
-//        Iterator itTrigger = TriggerPersistence.iterator();
-//        StringBuilder buffTrigger = new StringBuilder();
-//
-//        while (itTrigger.hasNext()) {
-//            Trigger t = (Trigger) itTrigger.next();
-//            buffTrigger.append("'").append(t.getName()).append("' listening on channel ").append(t.getChannel()).append("\n ");
-//        }
-//        buffTrigger.append("} ");
-//        Freedomotic.logger.info(buffTrigger.toString());
-//
-//        Freedomotic.logger.info("---- Loaded Commands ----");
-//        Iterator itCommand = CommandPersistence.iterator();
-//        StringBuilder buffCommand = new StringBuilder();
-//        while (itCommand.hasNext()) {
-//            Command c = (Command) itCommand.next();
-//            buffCommand.append(c.getName()).append("\n");
-//        }
-//        buffCommand.append("} ");
-//        Freedomotic.logger.info(buffCommand.toString());
-//
-//        Freedomotic.logger.info("---- Loaded Reactions ----");
-//        Iterator itReaction = ReactionPersistence.iterator();
-//        StringBuilder buffReaction = new StringBuilder();
-//        buffReaction.append("{ ");
-//        while (itReaction.hasNext()) {
-//            Reaction r = (Reaction) itReaction.next();
-//            buffReaction.append("'").append(r.toString()).append("; ");
-//        }
-//        buffReaction.append("} ");
-//        Freedomotic.logger.info(buffReaction.toString());
-        runtime.gc();
-        //Print used memory
         Freedomotic.logger.info("Used Memory:"
                 + (runtime.totalMemory() - runtime.freeMemory()) / MB);
-        //Print total available memory
-        Freedomotic.logger.info("Total Memory:" + runtime.totalMemory() / MB);
     }
 
     public static void loadDefaultEnvironment() {
@@ -414,10 +366,8 @@ public class Freedomotic {
 
     private void loadPlugins() {
         try {
-            AddonLoader loader = new AddonLoader();
-            File pluginFolder = new File(Info.getPluginsPath() + "/devices/");
-
-            loader.recursiveSearchIn(pluginFolder);
+            File pluginFolder = new File(Info.PATH_PLUGINS_FOLDER + "/devices/");
+            AddonLoader.recursiveSearchIn(pluginFolder);
         } catch (Exception e) {
             Freedomotic.logger.warning("Error while loading this plugin: " + e.getMessage());
             Freedomotic.logger.severe(getStackTraceInfo(e));
@@ -425,13 +375,12 @@ public class Freedomotic {
     }
 
     private void loadAppConfig() {
-        Freedomotic.logger.info("Loading App Configuration from " + new File(Info.getApplicationPath() + "/config/config.xml").toString());
         try {
             config = ConfigPersistence.deserialize(new File(Info.getApplicationPath() + "/config/config.xml"));
         } catch (IOException ex) {
             Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Freedomotic.logger.info("Freedomotic starts with this configuration:\n" + "{" + config.toString() + "}");
+        Freedomotic.logger.info(config.toString());
     }
 
     public static void sendEvent(EventTemplate event) {
