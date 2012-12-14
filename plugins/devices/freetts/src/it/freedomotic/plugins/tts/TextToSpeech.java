@@ -52,7 +52,7 @@ public class TextToSpeech extends Protocol {
             VoiceManager voiceManager = VoiceManager.getInstance();
             Voice[] voices = voiceManager.getVoices();
             for (int i = 0; i < voices.length; i++) {
-                System.out.println("Found TTS voice '" + voices[i].getName() + "' (" + voices[i].getDomain() + " domain)");
+                Freedomotic.logger.config("Found TTS voice '" + voices[i].getName() + "' (" + voices[i].getDomain() + " domain)");
             }
             voice.allocate();
 //            voice.setPitch(90);
