@@ -66,6 +66,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
@@ -119,14 +120,15 @@ public class Freedomotic {
                 logfile.createNewFile();
                 FileHandler handler = new FileHandler(logfile.getAbsolutePath(), false);
                 handler.setFormatter(new LogFormatter());
+                logger.setLevel(Level.ALL);
                 logger.addHandler(handler);
-                logger.info("Freedomotic startup begins. (Press F5 to read the other messages)");
+                logger.config("Freedomotic startup begins. (Press F5 to read the other messages)");
                 if ((Freedomotic.config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
                         && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
                     java.awt.Desktop.getDesktop().browse(new File(Info.getApplicationPath() + "/log/freedomotic.html").toURI());
                 }
             } catch (IOException ex) {
-                Logger.getLogger(AbstractBusConnector.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -225,28 +227,12 @@ public class Freedomotic {
             }
         }
 
-
-        /**
-         * ******************************************************************
-         * Autoloading of the right RXTX system file
-         * *****************************************************************
-         */
-        new SerialConnectionProvider();
-
         /**
          * ******************************************************************
          * Deserialize the default environment (its shape + zones)
          * *****************************************************************
          */
         loadDefaultEnvironment();
-
-        /**
-         * ******************************************************************
-         * Creates the Behavior managers
-         * *****************************************************************
-         */
-        //it takes user level commands like 'turn on light 1' and map it to the right hardware level command eg: 'turn on an x10 device'
-        new BehaviorManager();
 
         /**
          * ******************************************************************
@@ -270,13 +256,12 @@ public class Freedomotic {
          * Init frontends sending an object changed behavior event
          * *****************************************************************
          */
-        for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
-            ObjectHasChangedBehavior event = new ObjectHasChangedBehavior(
-                    this,
-                    object);
-            sendEvent(event);
-        }
-
+//        for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
+//            ObjectHasChangedBehavior event = new ObjectHasChangedBehavior(
+//                    this,
+//                    object);
+//            sendEvent(event);
+//        }
         /**
          * ******************************************************************
          * Updating zone object list
@@ -301,6 +286,8 @@ public class Freedomotic {
          */
         new JoinDevice();
         new JoinPlugin();
+        new BehaviorManager();
+        new SerialConnectionProvider();
 
 
         /**
@@ -311,7 +298,7 @@ public class Freedomotic {
         double MB = 1024 * 1024;
         Runtime runtime = Runtime.getRuntime();
         double memory = ((runtime.totalMemory() - runtime.freeMemory()) / MB);
-        Freedomotic.logger.info("Freedomotic + data uses " + memory + "mb");
+        logger.config("Freedomotic + data uses " + memory + "MB");
         for (Client plugin : ClientStorage.getClients()) {
             String startupTime = plugin.getConfiguration().getStringProperty("startup-time", "undefined");
             if (startupTime.equalsIgnoreCase("on load")) {
@@ -319,14 +306,12 @@ public class Freedomotic {
                 PluginHasChanged event = new PluginHasChanged(this, plugin.getName(), PluginActions.DESCRIPTION);
                 sendEvent(event);
                 double snapshot = (((runtime.totalMemory() - runtime.freeMemory()) / MB) - memory);
-                Freedomotic.logger.info(plugin.getName() + " uses " + snapshot + "mb of memory");
+                logger.config(plugin.getName() + " uses " + snapshot + "MB of memory");
                 memory += snapshot;
-
             }
         }
 
-        Freedomotic.logger.info("Used Memory:"
-                + (runtime.totalMemory() - runtime.freeMemory()) / MB);
+        logger.config("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / MB);
     }
 
     public static void loadDefaultEnvironment() {

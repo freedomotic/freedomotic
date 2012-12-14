@@ -87,7 +87,7 @@ public final class Reaction implements Serializable {
     }
 
     public ArrayList<Command> getCommands() {
-        if (commands==null){
+        if (commands == null) {
             commands = new ArrayList<Command>();
         }
         return commands;
@@ -119,7 +119,9 @@ public final class Reaction implements Serializable {
 
     private String buildDescription() {
         StringBuilder b = new StringBuilder();
-        b.append(TriggerPersistence.getTrigger(trigger).getDescription());
+        if (trigger != null && trigger.getDescription()!=null) {
+            b.append(TriggerPersistence.getTrigger(trigger).getDescription());
+        }
         b.append(" then ");
         Iterator it = getCommands().iterator();
         while (it.hasNext()) {
