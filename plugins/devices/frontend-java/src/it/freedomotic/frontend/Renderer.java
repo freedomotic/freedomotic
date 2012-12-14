@@ -88,7 +88,6 @@ public class Renderer extends JPanel implements MouseListener, MouseMotionListen
 
     public Renderer(JavaDesktopFrontend master) {
         this.plugin = master;
-        Freedomotic.logger.info("Creating base renderer");
         ResourcesManager.clear();
         clear();
         addCustomMouseListener();

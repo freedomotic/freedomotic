@@ -27,7 +27,6 @@ public class ImageDrawer extends PlainDrawer {
 
     public ImageDrawer(JavaDesktopFrontend master) {
         super(master);
-        Freedomotic.logger.info("Creating Image Drawer");
     }
 
     @Override

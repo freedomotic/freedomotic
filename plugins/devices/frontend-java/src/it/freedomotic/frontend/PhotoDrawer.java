@@ -22,7 +22,6 @@ public class PhotoDrawer extends ImageDrawer {
 
     public PhotoDrawer(JavaDesktopFrontend master) {
         super(master);
-        Freedomotic.logger.info("Creating photo drawer");
     }
 
     @Override

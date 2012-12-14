@@ -38,7 +38,6 @@ public class PlainDrawer extends Renderer {
 
     public PlainDrawer(JavaDesktopFrontend master) {
         super(master);
-        Freedomotic.logger.info("Creating Plain Drawer");
     }
 
     @Override

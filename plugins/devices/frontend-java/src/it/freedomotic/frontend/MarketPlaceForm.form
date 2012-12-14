@@ -28,9 +28,9 @@
     <Property name="axis" type="int" value="3"/>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="txtInfo">
       <Properties>
-        <Property name="text" type="java.lang.String" value="This are the plugins available from our official online marketplace. Double click on a plugin name to install it."/>
+        <Property name="text" type="java.lang.String" value="Connecting to online repository..."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JProgressBar" name="jProgressBar1">
