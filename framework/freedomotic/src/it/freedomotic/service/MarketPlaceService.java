@@ -11,7 +11,7 @@ import org.openide.util.LookupListener;
 
 /**
  *
- * @author GGPT
+ * @author Gabriel Pulido
  */
 public class MarketPlaceService {
 
