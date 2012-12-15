@@ -5,7 +5,6 @@
 package it.freedomotic.restapi.server;
 
 import it.freedomotic.restapi.server.resources.*;
-import it.freedomotic.util.Info;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
@@ -15,7 +14,6 @@ import org.restlet.data.Protocol;
 import org.restlet.engine.Engine;
 import org.restlet.ext.simple.HttpServerHelper;
 import org.restlet.resource.Directory;
-import org.restlet.routing.Redirector;
 import org.restlet.routing.Router;
 
 /**
@@ -42,9 +40,7 @@ public class FreedomRestServer extends Application{
     {
         this();
         this.resourcesPath = resourcesPath+"/";    
-    }
-    
-    
+    }        
     
  
 /**
