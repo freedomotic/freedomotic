@@ -1,5 +1,6 @@
 <config>
     <properties>
+        <property name="protocol.name"  value="Modbus"/>
         <property name="description"    value="Sensor for Modbus"/>
         <property name="category"       value="Protocol"/>
         <property name="short-name"     value="ModbusSensor"/>                

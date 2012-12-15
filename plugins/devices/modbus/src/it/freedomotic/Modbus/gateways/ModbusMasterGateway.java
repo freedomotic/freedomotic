@@ -11,7 +11,6 @@ import com.serotonin.modbus4j.ip.IpParameters;
 import com.serotonin.modbus4j.serial.SerialMaster;
 import gnu.io.SerialPort;
 import it.freedomotic.model.ds.Config;
-import java.util.Properties;
 
 /**
  *

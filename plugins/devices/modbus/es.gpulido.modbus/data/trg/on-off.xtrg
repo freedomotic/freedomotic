@@ -1,0 +1,23 @@
+<trigger>
+    <name>Modbus: behavior change</name>
+    <description>Modbus: behavior change coil</description>
+    <channel>app.event.sensor.protocol.read.modbus</channel>
+    <payload>
+        <payload>
+            <it.freedomotic.reactions.Statement>
+               <logical>AND</logical>
+               <attribute>behavior</attribute>
+               <operand>EQUALS</operand>
+               <value>powered</value>
+            </it.freedomotic.reactions.Statement>
+            <it.freedomotic.reactions.Statement>
+               <logical>SET</logical>
+               <attribute>behaviorValue</attribute>
+               <operand>EQUALS</operand>
+               <value>@event.behaviorValue</value>
+            </it.freedomotic.reactions.Statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <maxExecutions>-1</maxExecutions>
+</trigger>

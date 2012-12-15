@@ -2,7 +2,8 @@
     <properties>
         <property name="description"    value="Sensor for Modbus"/>
         <property name="category"       value="Protocol"/>
-        <property name="short-name"     value="ModbusSensor"/>                
+        <property name="short-name"     value="ModbusSensor"/>
+        <property name="protocol.name" value="Modbus"/>
         <property name="PollingTime"     value="1000"/>
         <property name="NumRegisters"     value="5"/>
         <property name="ModbusProtocol" value="TCP"/>
@@ -15,6 +16,7 @@
         <property name="stop-bits"     value="1"/>
         <property name="timeout"     value="10000"/>
         <property name="retries"     value="1"/>
+        
     </properties>
     <tuples>
         <tuple>
