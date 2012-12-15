@@ -5,13 +5,10 @@
 package it.freedomotic.restapi;
 
 import it.freedomotic.api.Actuator;
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.restapi.server.FreedomRestServer;
-import it.freedomotic.service.ClassPathUpdater;
 import it.freedomotic.util.Info;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
