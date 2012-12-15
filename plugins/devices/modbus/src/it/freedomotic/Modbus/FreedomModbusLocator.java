@@ -12,6 +12,7 @@ import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.locator.BinaryLocator;
 import com.serotonin.modbus4j.locator.NumericLocator;
 import it.freedomotic.events.GenericEvent;
+import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.model.ds.Config;
 
 /**
@@ -35,7 +36,13 @@ class FreedomModbusLocator {
     private Double multiplier;
     private Double additive;
     private String eventName;
+    private String objectName;
+    private String objectClass;
+    private String objectBehavior;
 
+    //used to store the lastvalue readed and only send if changes
+    //TODO: to be used
+    private Object lastValueReaded;
     /**
      *  Constructor.
      * @param configuration
@@ -48,6 +55,11 @@ class FreedomModbusLocator {
             registerRange = parseRegisterRange(configuration.getTuples().getStringProperty(i,"RegisterRange","COIL_STATUS"));
             dataType = parseDataType(configuration.getTuples().getStringProperty(i,"DataType","BINARY"));
             offset = configuration.getTuples().getIntProperty(i,"Offset",0);
+            
+            //protocol read link
+            objectName = configuration.getTuples().getStringProperty(i,"objectName","");
+            objectClass = configuration.getTuples().getStringProperty(i,"objectClass","");
+            objectBehavior = configuration.getTuples().getStringProperty(i,"objectBehavior","");
 
 
             //TODO: The Modbus4j functionality must be extend to allow to read and combine several "bit" values from
@@ -71,7 +83,14 @@ class FreedomModbusLocator {
             }
             else
             {
+               if (registerRange == RegisterRange.COIL_STATUS)
+               {
+                   modbusLocator = new BinaryLocator(slaveId,registerRange,offset);               
+               }
+               else
+               {    
                 modbusLocator = new NumericLocator(slaveId,registerRange,offset,dataType);
+               }
             }
             //TODO: use the number of registers
             //numberOfRegisters= configuration.getTuples().getIntProperty(i,"NumberOfRegisters",1);
@@ -161,11 +180,30 @@ class FreedomModbusLocator {
         String value;
         if (bit!=-1) //it's a bit value
             value=results.getValue(name).toString();
+        else if (dataType== parseDataType("BINARY"))
+            value = results.getValue(name).toString();
         else //it's a numeric value
             value = Double.toString(getAdjustedValue(Double.parseDouble((results.getValue(name).toString()))));
 
-        event.addProperty(eventName,  value);
+        event.addProperty(getName(),  value);
     }
+    
+    void fillProtocolEvent(BatchResults<String> results, ProtocolRead event) {                
+        String value;
+        System.out.println("value: "+ results.getValue(name));
+        if (bit!=-1) //it's a bit value
+            value=results.getValue(name).toString();
+        else if (dataType== parseDataType("BINARY"))
+            value = results.getValue(name).toString();
+        else //it's a numeric value
+            value = Double.toString(getAdjustedValue(Double.parseDouble((results.getValue(name).toString()))));
+        event.addProperty("object.class", objectClass);
+        event.addProperty("object.name", objectName);
+        event.addProperty("behavior", objectBehavior);
+        event.addProperty("behaviorValue", value);
+    }
+    
+    
 
     /**
      * @return the modbusLocator
@@ -187,11 +225,21 @@ class FreedomModbusLocator {
     Object parseValue(Config properties, int i) {
         //TODO: use the DataType to parse the correct type
         String value = properties.getTuples().getStringProperty(0,"value","0");
-        if (bit!=-1)
+        if (bit!=-1)          
             return value;
+        else if (dataType == parseDataType("BINARY"))
+            return Boolean.parseBoolean(value);
         else
             return getAdjustedValue(Double.parseDouble(value));
     }
+
+    /**
+     * @return the Name
+     */
+    public String getName() {
+        return name;
+    }
+  
 
 
 

@@ -14,7 +14,7 @@ import it.freedomotic.Modbus.gateways.ModbusMasterGateway;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.events.GenericEvent;
+import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import java.io.IOException;
@@ -51,17 +51,17 @@ public class Modbus extends Protocol{
         batchRead.setContiguousRequests(true);
         //ModBus General Configuration
         pollingTime = configuration.getIntProperty("PollingTime", 1000);
-        numRegisters = configuration.getIntProperty("NumRegisters", 1);
-        //Modbus registers configuration
-        for (int i = 0; i < numRegisters; i++) {
+        points.clear();        
+        //Modbus registers configuration        
+        for (int i = 0; i < configuration.getTuples().size(); i++) {
             FreedomModbusLocator locator = new FreedomModbusLocator(configuration, i);
             points.add(locator);
             locator.updateBatchRead(batchRead);
         }
         master = ModbusMasterGateway.getInstance(configuration);
-        setPollingWait(pollingTime);
-        this.setDescription(ModbusMasterGateway.ConnectionInfo());
-        
+        setPollingWait(pollingTime);                  
+    
+    
     }
      
     
@@ -105,13 +105,19 @@ public class Modbus extends Protocol{
     }
     
     private void sendEvents() {       
-        for (int i = 0; i < points.size(); i++) {
-            //TODO: Generate the modified point. At this moment, the points ArrayList is of ModbusLocator.
-            //TODO: Use a more especific event (using the eventname property of the xml)            
-            GenericEvent event = new GenericEvent(this);
-            points.get(i).fillEvent(results, event);
-            Freedomotic.logger.info("Sending Modbus Generic read event: '" + event.toString());
-            notifyEvent(event); //sends the event on the messaging bus
+        for(FreedomModbusLocator point: points){
+            //TODO: Generate the modified point. At this moment, the points ArrayList is of ModbusLocator.            
+//            GenericEvent event = new GenericEvent(this);                                                
+//            point.fillEvent(results, event);
+//            Freedomotic.logger.info("Sending Modbus Generic read event: '" + event.toString() + " with value: "+ event.getProperty("value"));
+//            notifyEvent(event); //sends the event on the messaging bus
+            
+            //use of Protocol Reads
+            
+            ProtocolRead protocolEvent = new ProtocolRead(this, "Modbus", point.getName());
+            point.fillProtocolEvent(results, protocolEvent);
+            Freedomotic.logger.info("Sending Modbus protocol read event for eventName name: "+ point.getName() + " value: "+ protocolEvent.getProperty("behaviorValue"));
+            Freedomotic.sendEvent(protocolEvent);            
         }
     }
     
