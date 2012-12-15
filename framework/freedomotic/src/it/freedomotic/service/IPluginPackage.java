@@ -28,6 +28,12 @@ public interface IPluginPackage {
     public String getFilePath();
  
     /**
+     * Returns the path of the file matching the core version
+     * Empty string if it doesn't have any file matching the version
+     */
+    public String getFilePath(String version);
+    
+    /**
      * @return the type
      */
     public String getType();
