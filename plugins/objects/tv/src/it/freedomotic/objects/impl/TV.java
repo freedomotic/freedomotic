@@ -4,13 +4,10 @@ import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.model.object.ListBehavior;
 import it.freedomotic.model.object.RangedIntBehavior;
-import it.freedomotic.objects.BooleanBehaviorListener;
 import it.freedomotic.objects.BooleanBehaviorLogic;
-import it.freedomotic.objects.ListBehaviorListener;
 import it.freedomotic.objects.ListBehaviorLogic;
-import it.freedomotic.objects.RangedIntBehaviorListener;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
-import it.freedomotic.persistence.CommandPersistence;
+import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Command;
 
 /**
@@ -29,11 +26,11 @@ public class TV extends ElectricDevice {
 
     @Override
     public void init() {
-        super.init();
+        
                      
         //linking this property with the behavior defined in the XML
         volume = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior("volume"));
-        volume.addListener(new RangedIntBehaviorListener() {
+        volume.addListener(new RangedIntBehaviorLogic.Listener() {
 
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
@@ -59,7 +56,7 @@ public class TV extends ElectricDevice {
         //linking this property with the behavior defined in the XML
         channel = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior("channel"));
                 
-        channel.addListener(new RangedIntBehaviorListener() {
+        channel.addListener(new RangedIntBehaviorLogic.Listener() {
 
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
@@ -83,7 +80,7 @@ public class TV extends ElectricDevice {
 
         //linking this property with the behavior defined in the XML
         input = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior("input"));
-        input.addListener(new ListBehaviorListener() {
+        input.addListener(new ListBehaviorLogic.Listener() {
 
             @Override
             public void selectedChanged(Config params, boolean fireCommand) {
@@ -98,7 +95,7 @@ public class TV extends ElectricDevice {
 
         //linking this powered property with the muted behavior defined in the XML
         muted = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior("muted"));
-        muted.addListener(new BooleanBehaviorListener() {
+        muted.addListener(new BooleanBehaviorLogic.Listener() {
 
             @Override
             public void onTrue(Config params, boolean fireCommand) {
@@ -122,7 +119,7 @@ public class TV extends ElectricDevice {
 
         //linking this powered property with the avSelection behavior defined in the XML
         avSelection = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior("avselection"));
-        avSelection.addListener(new ListBehaviorListener() {
+        avSelection.addListener(new ListBehaviorLogic.Listener() {
 
             @Override
             public void selectedChanged(Config params, boolean fireCommand) {
@@ -137,7 +134,7 @@ public class TV extends ElectricDevice {
 
         //linking this powered property with the screenMode behavior defined in the XML
         screenMode = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior("screenMode"));
-        screenMode.addListener(new ListBehaviorListener() {
+        screenMode.addListener(new ListBehaviorLogic.Listener() {
             //TODO: in the kuro the screen modes available depends of the source.
 
             @Override
@@ -149,7 +146,8 @@ public class TV extends ElectricDevice {
                 }
             }
         });
-        registerBehavior(screenMode);
+        registerBehavior(screenMode);        
+        super.init();
     }
 
     public void executeSetVolume(int rangeValue, Config params) {
