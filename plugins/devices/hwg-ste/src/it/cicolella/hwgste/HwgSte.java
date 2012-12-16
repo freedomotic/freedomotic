@@ -28,9 +28,9 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 /**
- * A sensor for the board IPX800 developed by author Mauro Cicolella -
- * www.emmecilab.net For more details please refer to
- *
+ * A sensor for the HWg-STE Ethernet thermometer by HWgroup
+ * For more details please refer to http://www.hw-group.com/products/HWg-STE/STE_ip_temperature_sensor_en.html
+ * Author: Mauro Cicolella
  */
 public class HwgSte extends Protocol {
 
@@ -56,7 +56,7 @@ public class HwgSte extends Protocol {
      * Initializations
      */
     public HwgSte() {
-        super("HwgSte", "/it.cicolella.hwgste/hwgste.xml");
+        super("HwgSte", "/it.cicolella.hwgste/hwgste-manifest.xml");
         setPollingWait(POLLING_TIME);
     }
 
@@ -74,7 +74,7 @@ public class HwgSte extends Protocol {
             sensorsNumber = configuration.getTuples().getIntProperty(i, "sensors-number", 1);
             Board board = new Board(ipToQuery, portToQuery, sensorsNumber);
             boards.add(board);
-            setDescription(getDescription() + " " + ipToQuery + ":" + portToQuery + ";");
+            setDescription(getDescription());
         }
     }
 
@@ -128,7 +128,7 @@ public class HwgSte extends Protocol {
         boards = null;
         setPollingWait(-1); //disable polling
         //display the default description
-        setDescription(configuration.getStringProperty("description", "Ipx800"));
+        setDescription(configuration.getStringProperty("description", "HWg-STE stopped"));
     }
 
     @Override
