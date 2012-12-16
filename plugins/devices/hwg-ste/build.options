@@ -1,4 +1,4 @@
-#Wed, 26 Sep 2012 22:27:56 +0200
+#Sun, 16 Dec 2012 11:16:18 +0100
 
 package.type=device
 package.name=it.cicolella.hwgste
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=4
 framework.required.build=x
 build.major=1
-build.number=19
+build.number=20
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
