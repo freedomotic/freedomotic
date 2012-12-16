@@ -116,11 +116,9 @@
         <input
             message="Please enter the release major number and minor number separated by a dot."
             addproperty="release.version"
-            defaultvalue="5.3.0"
-        />
-        
-        
-       
+            defaultvalue="5.4.0"
+        />                
+       	
         <property name="workspace-base" value="../../"/>
         <property name="release-base" value="${workspace-base}/release"/>
         <property name="release-folder" value="${release-base}/freedomotic"/>

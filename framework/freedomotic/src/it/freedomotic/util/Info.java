@@ -11,9 +11,9 @@ import java.util.logging.Logger;
 public class Info {
     //framework versioning
     public static final Integer FRAMEWORK_MAJOR = 5;
-    public static final Integer FRAMEWORK_MINOR = 3;
-    public static final Integer FRAMEWORK_BUILD = 1;
-    public static final String  FRAMEWORK_RELEASE_DATE = "March 2012";
+    public static final Integer FRAMEWORK_MINOR = 4;
+    public static final Integer FRAMEWORK_BUILD = 0;
+    public static final String  FRAMEWORK_RELEASE_DATE = "December 2012";
     public static final String  FRAMEWORK_LICENSE = "GNU Generic Public License v2";
     public static final String  FRAMEWORK_RELEASE_TYPE = "beta";
     //project info
