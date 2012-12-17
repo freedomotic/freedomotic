@@ -1,5 +1,6 @@
 /**
  * A plugin for the Usb4RelayBord by www.denkovi.com 
+ * More details at http://www.denkovi.com/product/44/usb-four-4-relay-output-module-board-for-home-automation.html
  * Author Mauro Cicolella
  *
  */
