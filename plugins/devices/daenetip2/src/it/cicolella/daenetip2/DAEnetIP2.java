@@ -31,8 +31,9 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 /**
- * A sensor for the board IPX800 developed by author Mauro Cicolella -
- * www.emmecilab.net For more details please refer to
+ * A sensor for the DAEneIP2 board by denkovi.com Author Mauro Cicolella For
+ * more details please refer to
+ * http://www.denkovi.com/product/8/snmp-ethernet-controller-with-24-digital-analog-i-o.html
  *
  */
 public class DAEnetIP2 extends Protocol {
@@ -64,9 +65,6 @@ public class DAEnetIP2 extends Protocol {
     }
 
     private void loadBoards() {
-       // if (boards == null) {
-         //   boards = new ArrayList<Board>();
-       // }
         if (devices == null) {
             devices = new HashMap<String, Board>();
         }
@@ -83,7 +81,7 @@ public class DAEnetIP2 extends Protocol {
             ipAddress = configuration.getTuples().getStringProperty(i, "ip-address", "172.16.100.2");
             snmpPort = configuration.getTuples().getIntProperty(i, "snmp-port", 161);
             Board board = new Board(alias, ipAddress, snmpPort, readOnlyCommunity, readWriteCommunity);
-         //   boards.add(board);
+            //   boards.add(board);
             devices.put(alias, board);
             setDescription(getDescription() + " " + ipAddress + ":" + snmpPort + ";");
         }
@@ -135,8 +133,6 @@ public class DAEnetIP2 extends Protocol {
     public void onStop() {
         super.onStop();
         //release resources
-        //boards.clear();
-        //boards = null;
         devices.clear();
         devices = null;
         setPollingWait(-1); //disable polling
@@ -219,8 +215,6 @@ public class DAEnetIP2 extends Protocol {
         System.out.println("P3 =" + P3Status);
         System.out.println("P5 =" + P5Status);
 
-
-
     }
 
     private void readP6Port(Board board) {
@@ -233,7 +227,7 @@ public class DAEnetIP2 extends Protocol {
                 objectAddress = board.getAlias() + ADDRESS_DELIMITER + "P6." + i;
                 //System.out.println(objectAddress + " has changed Status " + relayStatus + " Address " + objectAddress);
                 sendEvent(objectAddress, "input.value", P6PinStatus);
-                System.out.println(objectAddress+" "+P6PinStatus);
+                System.out.println(objectAddress + " " + P6PinStatus);
                 board.setP6Status(i - 1, Integer.valueOf(P6PinStatus));
             }
         }
@@ -251,8 +245,6 @@ public class DAEnetIP2 extends Protocol {
      */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
-        System.out.println("Reply timeout " + c.getReplyTimeout());
-        // do nothing 
         final MYSNMP snmpRequest = new MYSNMP();
         String status = null;
         String OID_REQUEST = null;
@@ -269,8 +261,8 @@ public class DAEnetIP2 extends Protocol {
         } else {
             status = "0";
         }
-        System.out.println("IP "+board.getIpAddress()+ " OID "+SNMP_OID+"."+OID_REQUEST+" Status "+status+" pass "+board.getReadWriteCommunity());
-        System.out.println("request risult "+snmpRequest.SNMP_SET(board.getIpAddress(), board.getSnmpPort(), SNMP_OID+"."+OID_REQUEST, SnmpAPI.INTEGER, status, board.getReadWriteCommunity()));
+        System.out.println("IP " + board.getIpAddress() + " OID " + SNMP_OID + "." + OID_REQUEST + " Status " + status + " pass " + board.getReadWriteCommunity());
+        System.out.println("request risult " + snmpRequest.SNMP_SET(board.getIpAddress(), board.getSnmpPort(), SNMP_OID + "." + OID_REQUEST, SnmpAPI.INTEGER, status, board.getReadWriteCommunity()));
     }
 
     @Override
