@@ -1,4 +1,4 @@
-#Sun, 26 Aug 2012 12:18:05 +0200
+#Tue, 18 Dec 2012 16:31:36 +0100
 
 package.type=device
 package.name=it.cicolella.ipx800
@@ -10,10 +10,10 @@ package.vendor.contact=info@freedomotic.com
 package.vendor.company=freedomotic
 package.vendor.nation=it
 framework.required.major=5
-framework.required.minor=3
+framework.required.minor=4
 framework.required.build=x
 build.major=1
-build.number=16
+build.number=25
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true

@@ -12,6 +12,7 @@
      </properties>
     <tuples>
         <tuple>
+            <property name="alias" value="default"/>
             <property name="ip-to-query" value="ipx.dyndns.org"/>
             <property name="port-to-query" value="80"/>
             <property name="relay-number" value="8"/>
@@ -21,6 +22,11 @@
             <property name="led-tag" value="led"/>
             <property name="analog-input-tag" value="analog"/>
             <property name="digital-input-tag" value="btn"/>
+            <property name="auto-configuration" value="true"/>
+            <property name="object.class" value="Light"/>
+            <property name="powered" value="Ipx800 board reads a relay state change"/>
+            <property name="turn on" value="Turn on relay on Ipx800 board"/>
+            <property name="turn off" value="Turn off relay on Ipx800 board"/>
         </tuple>
     </tuples>
 </config>
