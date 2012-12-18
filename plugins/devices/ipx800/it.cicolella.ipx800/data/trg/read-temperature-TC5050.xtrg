@@ -1,7 +1,7 @@
 <trigger>
     <name>Ipx800 board reads a temperature (TC5050 sensor)</name>
-    <description>Ipx800 reads a temperature change</description>
-    <channel>app.event.sensor.protocol.read</channel>
+    <description>Ipx800 reads a temperature change (TC5050 sensor)</description>
+    <channel>app.event.sensor.protocol.read.ipx800</channel>
     <payload>
         <payload>
             <it.freedomotic.reactions.Statement>
@@ -14,7 +14,7 @@
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>@event.valueRead</value>
+                <value>= behaviorValue=Math.round((((@event.input.value*0.00323)-1.63))/0.326*10)</value>
             </it.freedomotic.reactions.Statement>
         </payload>
     </payload>

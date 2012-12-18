@@ -15,6 +15,9 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,6 +38,7 @@ import org.xml.sax.SAXException;
 public class Ipx800 extends Protocol {
 
     private static ArrayList<Board> boards = null;
+    Map<String, Board> devices = new HashMap<String, Board>();
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
     private Socket socket = null;
@@ -50,7 +54,7 @@ public class Ipx800 extends Protocol {
      * Initializations
      */
     public Ipx800() {
-        super("Ipx800", "/it.cicolella.ipx800/ipx800.xml");
+        super("Ipx800", "/it.cicolella.ipx800/ipx800-manifest.xml");
         setPollingWait(POLLING_TIME);
     }
 
@@ -58,12 +62,18 @@ public class Ipx800 extends Protocol {
         if (boards == null) {
             boards = new ArrayList<Board>();
         }
+        if (devices == null) {
+            devices = new HashMap<String, Board>();
+        }
         setDescription("Reading status changes from"); //empty description
         for (int i = 0; i < BOARD_NUMBER; i++) {
             String ipToQuery;
             String ledTag;
             String digitalInputTag;
             String analogInputTag;
+            String autoConfiguration;
+            String objectClass;
+            String alias;
             int portToQuery;
             int digitalInputNumber;
             int analogInputNumber;
@@ -71,6 +81,7 @@ public class Ipx800 extends Protocol {
             int startingRelay;
             ipToQuery = configuration.getTuples().getStringProperty(i, "ip-to-query", "192.168.1.201");
             portToQuery = configuration.getTuples().getIntProperty(i, "port-to-query", 80);
+            alias = configuration.getTuples().getStringProperty(i, "alias", "default");
             relayNumber = configuration.getTuples().getIntProperty(i, "relay-number", 8);
             analogInputNumber = configuration.getTuples().getIntProperty(i, "analog-input-number", 4);
             digitalInputNumber = configuration.getTuples().getIntProperty(i, "digital-input-number", 4);
@@ -78,9 +89,13 @@ public class Ipx800 extends Protocol {
             ledTag = configuration.getTuples().getStringProperty(i, "led-tag", "led");
             digitalInputTag = configuration.getTuples().getStringProperty(i, "digital-input-tag", "btn");
             analogInputTag = configuration.getTuples().getStringProperty(i, "analog-input-tag", "analog");
-            Board board = new Board(ipToQuery, portToQuery, relayNumber, analogInputNumber,
-                    digitalInputNumber, startingRelay, ledTag, digitalInputTag, analogInputTag);
+            autoConfiguration = configuration.getTuples().getStringProperty(i, "auto-configuration", "false");
+            objectClass = configuration.getTuples().getStringProperty(i, "object.class", "Light");
+            Board board = new Board(ipToQuery, portToQuery, alias, relayNumber, analogInputNumber,
+                    digitalInputNumber, startingRelay, ledTag, digitalInputTag, analogInputTag, autoConfiguration, objectClass);
             boards.add(board);
+            // add board object and its alias as key for the hashmap
+            devices.put(alias, board);
             setDescription(getDescription() + " " + ipToQuery + ":" + portToQuery + ";");
         }
     }
@@ -133,6 +148,8 @@ public class Ipx800 extends Protocol {
         //release resources
         boards.clear();
         boards = null;
+        devices.clear();
+        devices = null;
         setPollingWait(-1); //disable polling
         //display the default description
         setDescription(configuration.getStringProperty("description", "Ipx800"));
@@ -140,14 +157,21 @@ public class Ipx800 extends Protocol {
 
     @Override
     protected void onRun() {
-        for (Board board : boards) {
-            evaluateDiffs(getXMLStatusFile(board), board); //parses the xml and crosscheck the data with the previous read
-            try {
-                Thread.sleep(POLLING_TIME);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Ipx800.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        //for (Board board : boards) {
+        //  evaluateDiffs(getXMLStatusFile(board), board); //parses the xml and crosscheck the data with the previous read
+        // select all boards in the devices hashmap and evaluate the status
+        Set<String> keySet = devices.keySet();
+        for (String key : keySet) {
+            Board board = devices.get(key);
+            evaluateDiffs(getXMLStatusFile(board), board);
         }
+
+        try {
+            Thread.sleep(POLLING_TIME);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Ipx800.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //}
     }
 
     private Document getXMLStatusFile(Board board) {
@@ -200,7 +224,15 @@ public class Ipx800 extends Protocol {
             try {
                 String tagName = tag + i;
                 //Freedomotic.logger.severe("Ipx800 monitorizes tags " + tagName);
-                sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                // control for storing value
+                if (tag.equalsIgnoreCase("led")) {
+                    if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
+                        sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                        board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
+                    }
+                }
+
+                // sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
             } catch (DOMException dOMException) {
                 //do nothing
             } catch (NumberFormatException numberFormatException) {
@@ -214,7 +246,8 @@ public class Ipx800 extends Protocol {
     private void sendChanges(int relayLine, Board board, String status, String tag) {
         relayLine++;
         //reconstruct freedomotic object address
-        String address = board.getIpAddress() + ":" + board.getPort() + ":" + relayLine + ":" + tag;
+        //String address = board.getIpAddress() + ":" + board.getPort() + ":" + relayLine + ":" + tag;
+        String address = board.getAlias() + ":" + relayLine + ":" + tag;
         //Freedomotic.logger.info("Sending Ipx800 protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "ipx800", address); //IP:PORT:RELAYLINE
@@ -224,6 +257,11 @@ public class Ipx800 extends Protocol {
                 event.addProperty("isOn", "false");
             } else {
                 event.addProperty("isOn", "true");
+                //if autoconfiguration is true create an object if not already exists
+                if (board.getAutoConfiguration().equalsIgnoreCase("true")) {
+                    event.addProperty("object.class", board.getObjectClass());
+                    event.addProperty("object.name", address);
+                }
             }
         } else // digital inputs (btn tag) status = up -> on; status = down -> off
         if (tag.equalsIgnoreCase("btn")) {
@@ -232,7 +270,7 @@ public class Ipx800 extends Protocol {
             } else {
                 event.addProperty("isOn", "false");
             }
-            event.addProperty("valueRead", status);
+            event.addProperty("input.value", status);
         } else {
             // analog inputs (an/analog input) status = 0 -> off; status > 0 -> on
             if (tag.equalsIgnoreCase("an") || tag.equalsIgnoreCase("analog")) {
@@ -241,7 +279,7 @@ public class Ipx800 extends Protocol {
                 } else {
                     event.addProperty("isOn", "true");
                 }
-                event.addProperty("valueRead", status);
+                event.addProperty("input.value", status);
             }
         }
         //adding some optional information to the event
@@ -260,15 +298,19 @@ public class Ipx800 extends Protocol {
         //get connection paramentes address:port from received freedomotic command
         String delimiter = configuration.getProperty("address-delimiter");
         address = c.getProperty("address").split(delimiter);
+        Board board = (Board) devices.get(address[0]);
+        String ip_board = board.getIpAddress();
+        int port_board = board.getPort();
         //connect to the ethernet board
         boolean connected = false;
         try {
-            connected = connect(address[0], Integer.parseInt(address[1]));
+            //connected = connect(address[0], Integer.parseInt(address[1]));
+            connected = connect(ip_board, port_board);
         } catch (ArrayIndexOutOfBoundsException outEx) {
             Freedomotic.logger.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
             throw new UnableToExecuteException();
         } catch (NumberFormatException numberFormatException) {
-            Freedomotic.logger.severe(address[1] + " is not a valid ethernet port to connect to");
+            Freedomotic.logger.severe(port_board + " is not a valid ethernet port to connect to");
             throw new UnableToExecuteException();
         }
 
@@ -315,13 +357,15 @@ public class Ipx800 extends Protocol {
         Integer relay = 0;
 
         if (c.getProperty("command").equals("CHANGE-STATE-RELAY")) {
-            relay = Integer.parseInt(address[2]) - 1;
+            //relay = Integer.parseInt(address[2]) - 1;
+            relay = Integer.parseInt(address[1]) - 1;
             page = CHANGE_STATE_RELAY_URL + relay;
         }
 
         if (c.getProperty("command").equals("PULSE-RELAY")) {
             // mapping relay line -> protocol
-            relay = Integer.parseInt(address[2]) - 1;
+            //relay = Integer.parseInt(address[2]) - 1;
+            relay = Integer.parseInt(address[1]) - 1;
             //compose requested link
             page = SEND_PULSE_RELAY_URL + relay;
         }
@@ -340,5 +384,15 @@ public class Ipx800 extends Protocol {
     @Override
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    // retrieve a key from value in the hashmap 
+    public static Object getKeyFromValue(Map hm, Object value) {
+        for (Object o : hm.keySet()) {
+            if (hm.get(o).equals(value)) {
+                return o;
+            }
+        }
+        return null;
     }
 }

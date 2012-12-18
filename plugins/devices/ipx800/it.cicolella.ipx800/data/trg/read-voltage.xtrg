@@ -1,6 +1,6 @@
 <trigger>
-    <name>Ipx800 board reads a relay state change</name>
-    <description>Ipx800 HWSW reads a relay state change</description>
+    <name>Ipx800 board reads a voltage</name>
+    <description>Ipx800 reads a voltage value</description>
     <channel>app.event.sensor.protocol.read.ipx800</channel>
     <payload>
         <payload>
@@ -14,7 +14,7 @@
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>@event.isOn</value>
+                <value>= behaviorValue=Math.round(@event.input.value*0.00322*10)</value>
             </it.freedomotic.reactions.Statement>
         </payload>
     </payload>
