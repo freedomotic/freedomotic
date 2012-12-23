@@ -184,6 +184,9 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     public String getDescription() {
+        if ((description == null) || (description.isEmpty())) {
+            description = name;
+        }
         return description;
     }
 

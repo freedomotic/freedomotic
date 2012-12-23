@@ -46,9 +46,12 @@ public class EventTemplate implements Serializable {
     //TODO: change destination to simple String
     //private Destination replyTo = null;
 
-    protected void generateEventPayload(){}
+    protected void generateEventPayload() {
+    }
 
-    public String getDefaultDestination(){return "app.event.sensor";}
+    public String getDefaultDestination() {
+        return "app.event.sensor";
+    }
 
     public EventTemplate() {
         fillPayloadWithDefaults();
@@ -72,11 +75,13 @@ public class EventTemplate implements Serializable {
     }
 
     public String getProperty(String key) {
-        List<Statement> statements = payload.getStatements(key);
-        if (statements.isEmpty()) {
-            return "";
-        } else {
-            return statements.get(0).getValue();
+        synchronized (payload) {
+            List<Statement> statements = payload.getStatements(key);
+            if (statements.isEmpty()) {
+                return "";
+            } else {
+                return statements.get(0).getValue();
+            }
         }
     }
 
@@ -101,7 +106,7 @@ public class EventTemplate implements Serializable {
             payload.addStatement("date.day.name", rightNow.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.UK));
             payload.addStatement("date.day", rightNow.get(Calendar.DAY_OF_MONTH));
             payload.addStatement("date.month.name", rightNow.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.UK));
-            payload.addStatement("date.month", rightNow.get(Calendar.MONTH) +1);
+            payload.addStatement("date.month", rightNow.get(Calendar.MONTH) + 1);
             payload.addStatement("date.year", rightNow.get(Calendar.YEAR));
             payload.addStatement("time.hour", rightNow.get(Calendar.HOUR_OF_DAY));
             payload.addStatement("time.minute", rightNow.get(Calendar.MINUTE));

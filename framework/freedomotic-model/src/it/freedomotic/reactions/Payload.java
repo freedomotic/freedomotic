@@ -6,9 +6,9 @@ package it.freedomotic.reactions;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  */
 public final class Payload implements Serializable {
 
-    List<Statement> payload = new ArrayList<Statement>();
+    List<Statement> payload = new CopyOnWriteArrayList<Statement>();
 
     public void addStatement(String logical,
             String attribute,
@@ -181,7 +181,6 @@ public final class Payload implements Serializable {
         return false;
     }
 
-//    //ERROR: the attribut can have multiple instances in a trigger
     public List<Statement> getStatements(String attribute) {
         ArrayList<Statement> statements = new ArrayList<Statement>();
         for (Statement i : payload) {
@@ -206,8 +205,12 @@ public final class Payload implements Serializable {
         Iterator it = payload.iterator();
         while (it.hasNext()) {
             Statement s = (Statement) it.next();
-            buffer.append("; ").append(s.toString());
+            buffer.append("\n").append(s.toString());
         }
         return buffer.toString();
+    }
+
+    public void clear() {
+        payload.clear();
     }
 }

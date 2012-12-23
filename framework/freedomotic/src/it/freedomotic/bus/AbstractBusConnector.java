@@ -36,13 +36,11 @@ public class AbstractBusConnector {
 
     protected static final String DEFAULT_USER = "user";
     protected static final String DEFAULT_PASSWORD = "password";
-    protected Connection connection;
-    protected MessageConsumer receiver;
-    protected MessageProducer sender;
-    private static Session sharedSession;
-    private static Session unlistenedSession;
-    private static MessageProducer emptySharedWriter;
+    protected static Connection connection;
+    protected static Session sendSession;
+    protected static Session receiveSession;
     private static final BrokerService BROKER = new BrokerService();
+    protected static Session unlistenedSession;
 
     public AbstractBusConnector() {
 
@@ -51,8 +49,9 @@ public class AbstractBusConnector {
 
     private void connect(String brokerString, String username, String password) {
         //create a connection
-        if (emptySharedWriter == null) { //not already connected to the bus
+        if (connection == null) { //not already connected to the bus
             try {
+                Freedomotic.logger.config("Creating new messaging broker");
                 //create an embedded messaging broker
                 //BROKER.setBrokerName("freedomotic");
                 //use always 0.0.0.0 not localhost. localhost allows connections 
@@ -79,10 +78,9 @@ public class AbstractBusConnector {
                 factory.setCopyMessageOnSend(false);
 
                 connection = factory.createConnection(username, password);
-                sharedSession = connection.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
+                sendSession = connection.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
+                receiveSession = connection.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
                 unlistenedSession = connection.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE); //an unlistened session
-                emptySharedWriter = unlistenedSession.createProducer(null); //a shared bus writer for all freedomotic classes
-                emptySharedWriter.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
                 new StompDispatcher(); //just for testing, don't mind it
                 connection.start();
             } catch (JMSException jMSException) {
@@ -91,18 +89,6 @@ public class AbstractBusConnector {
                 Logger.getLogger(AbstractBusConnector.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
-
-    protected Session getBusUnlistenedSession() {
-        return unlistenedSession;
-    }
-
-    protected Session getBusSharedSession() {
-        return sharedSession;
-    }
-
-    protected MessageProducer getBusSharedWriter() {
-        return emptySharedWriter;
     }
 
     public static void disconnect() {
