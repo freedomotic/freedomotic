@@ -50,7 +50,7 @@ public class VariousSensors extends Protocol {
 
             public void run() {
                 VariousSensorsGui guiHook = (VariousSensorsGui) gui;
-                Command reply = Freedomotic.sendCommand(c);
+                Command reply = send(c);
                 if (reply != null) {
                     String userInput = reply.getProperty("result");
                     if (userInput != null) {

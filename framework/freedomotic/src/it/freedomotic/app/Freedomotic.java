@@ -33,8 +33,6 @@ import it.freedomotic.core.BehaviorManager;
 import it.freedomotic.core.JoinDevice;
 import it.freedomotic.core.JoinPlugin;
 import it.freedomotic.environment.EnvironmentLogic;
-import it.freedomotic.events.MessageEvent;
-import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
 import java.io.File;
@@ -46,7 +44,6 @@ import java.io.IOException;
 import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.model.ds.ColorList;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.objects.EnvObjectLogic;
 
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.reactions.Command;
@@ -64,9 +61,15 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
@@ -84,6 +87,7 @@ public class Freedomotic {
     private static EventChannel eventChannel;
     private static CommandChannel commandChannel;
     public static ArrayList<IPluginCategory> onlinePluginCategories;
+    private static ExecutorService executor = Executors.newCachedThreadPool();
 
     public Freedomotic() {
         /**
@@ -372,7 +376,7 @@ public class Freedomotic {
         eventChannel.send(event);
     }
 
-    public static Command sendCommand(Command command) {
+    public static Command sendCommand(final Command command) {
         return commandChannel.send(command);
     }
 

@@ -165,6 +165,9 @@ public abstract class Protocol extends Plugin implements BusConsumer {
             }
         }
     }
+    protected Command send(Command command) {
+        return commandsChannel.send(command);
+    }
 
     public void reply(Command command) {
         commandsChannel.reply(command, lastDestination, "-1"); //sends back the command
@@ -178,7 +181,7 @@ public abstract class Protocol extends Plugin implements BusConsumer {
                 Thread thisThread = Thread.currentThread();
                 while (sensorThread == thisThread) {
                     try {
-                        thisThread.sleep(POLLING_WAIT_TIME);
+                        sensorThread.sleep(POLLING_WAIT_TIME);
                         synchronized (this) {
                             while (!isRunning && sensorThread == thisThread) {
                                 wait();
@@ -195,6 +198,4 @@ public abstract class Protocol extends Plugin implements BusConsumer {
             }
         }
     }
-    
-    
 }

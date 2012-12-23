@@ -27,7 +27,9 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Trigger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -184,7 +186,8 @@ public final class Resolver {
                         aProperty.setValue(propertyValueResolved);
                     } else {
                         Freedomotic.logger.severe("Variable '" + referenceToResolve
-                                + "' cannot be resolved in command '" + command.getName() + "'.");
+                                + "' cannot be resolved in command '" + command.getName() + "'.\n"
+                                + "Availabe tokens are: " + context.toString());
                     }
                 }
             }
@@ -261,14 +264,14 @@ public final class Resolver {
                             statement.setValue(propertyValueResolved);
                         } else {
                             Freedomotic.logger.severe("Variable '" + referenceToResolve
-                                    + "' cannot be resolved in trigger '" + trigger.getName() + "'. "
-                                    + "Check if '" + referenceToResolve + "'exists in event");
+                                    + "' cannot be resolved in trigger '" + trigger.getName() + "'.\n"
+                                    + "Availabe tokens are: " + context.toString());
                         }
                     }
                 }
             }
             //all references are replaced with real values in the current statement, now perform scripting
-            String possibleScript = (String) statement.getValue();
+            String possibleScript = (String) statement.getValue().trim();
             boolean success = false;
             if (possibleScript.startsWith("=")) {
                 //this is a javascript
@@ -284,8 +287,8 @@ public final class Resolver {
                     } catch (ScriptException scriptException) {
                         Freedomotic.logger.severe(scriptException.getMessage());
                     }
-                    Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to trigger value: '" + script + "' the complete value is '" + possibleScript);
-                    Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
+                    //Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to trigger value: '" + script + "' the complete value is '" + possibleScript);
+                    //Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
                     if (js.get(key) == null) {
                         Freedomotic.logger.severe("Script evaluation in trigger '" + trigger.getName() + "' has returned a null value, maybe the key '" + key + "' is not evaluated properly.");
                     }
@@ -316,7 +319,7 @@ public final class Resolver {
         t.getPayload().merge(context);
     }
 
-    public void addContext(final String PREFIX, Config aContext) {
+    public void addContext(final String PREFIX, final Config aContext) {
         if (context == null) {
             context = new Payload();
         }
@@ -341,7 +344,7 @@ public final class Resolver {
         }
     }
 
-    public void addContext(final String PREFIX, Map aContext) {
+    public void addContext(final String PREFIX, final Map aContext) {
         if (context == null) {
             context = new Payload();
         }
@@ -365,7 +368,7 @@ public final class Resolver {
         }
     }
 
-    public void addContext(final String PREFIX, Payload aContext) {
+    public void addContext(final String PREFIX, final Payload aContext) {
         if (context == null) {
             context = new Payload();
         }
@@ -375,7 +378,7 @@ public final class Resolver {
         }
         Iterator it = aContext.iterator();
         while (it.hasNext()) {
-            String key = "";
+            String key;
             Statement statement = (Statement) it.next();
             //removing the prefix of the properties if already exists
             //to avoid dublicate prefixes like @event.event.object.name
@@ -386,5 +389,13 @@ public final class Resolver {
             }
             context.addStatement(PREFIX + key, statement.getValue());
         }
+    }
+
+    void clear() {
+        prefixes.clear();
+        context.clear();
+        reaction = null;
+        command = null;
+        trigger = null;
     }
 }

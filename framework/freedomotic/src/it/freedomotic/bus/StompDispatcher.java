@@ -50,8 +50,6 @@ public class StompDispatcher implements BusConsumer {
             XStream xstream = FreedomXStream.getXstream();
             String xml = xstream.toXML(Freedomotic.environment.getPojo());
             System.out.println("XML Message from STOMP received");
-            //System.out.println(xml);
-            //command.setProperty("plugins", "<![CDATA[\n" + xml + "\n]]>");
             channel.reply(command, message.getJMSReplyTo(), message.getJMSCorrelationID());
         } catch (JMSException ex) {
             Logger.getLogger(StompDispatcher.class.getName()).log(Level.SEVERE, null, ex);
