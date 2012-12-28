@@ -18,6 +18,14 @@
      </properties>
     <tuples>
         <tuple>
+            <property name="object.class" value="Thermostat"/>
+            <property name="temperature" value="HWg-STE reads celsius temperature"/>
+        </tuple>
+        <tuple>
+            <property name="object.class" value="Hygrometer"/>
+            <property name="humidity" value="HWg-STE reads humidity"/>
+        </tuple>
+        <tuple>
             <property name="ip-to-query" value="ste.hwg.cz"/>
             <property name="port-to-query" value="80"/>
             <property name="relay-number" value="8"/>
