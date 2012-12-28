@@ -28,8 +28,9 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 /**
- * A sensor for the HWg-STE Ethernet thermometer by HWgroup
- * For more details please refer to http://www.hw-group.com/products/HWg-STE/STE_ip_temperature_sensor_en.html
+ * A sensor for the HWg-STE Ethernet thermometer by HWgroup For more details
+ * please refer to
+ * http://www.hw-group.com/products/HWg-STE/STE_ip_temperature_sensor_en.html
  * Author: Mauro Cicolella
  */
 public class HwgSte extends Protocol {
@@ -64,17 +65,22 @@ public class HwgSte extends Protocol {
         if (boards == null) {
             boards = new ArrayList<Board>();
         }
-        setDescription("Reading status changes from"); //empty description
+        setDescription("HWG-Ste running"); //empty description
         for (int i = 0; i < BOARD_NUMBER; i++) {
-            String ipToQuery;
-            int portToQuery;
-            int sensorsNumber;
-            ipToQuery = configuration.getTuples().getStringProperty(i, "ip-to-query", "192.168.1.201");
-            portToQuery = configuration.getTuples().getIntProperty(i, "port-to-query", 80);
-            sensorsNumber = configuration.getTuples().getIntProperty(i, "sensors-number", 1);
-            Board board = new Board(ipToQuery, portToQuery, sensorsNumber);
-            boards.add(board);
-            setDescription(getDescription());
+            // filter the tuples with "object.class" property
+            String result = configuration.getTuples().getProperty(i, "object.class");
+            // if the tuple hasn't an "object.class" property it's a board configuration one 
+            if (result == null) {
+                String ipToQuery;
+                int portToQuery;
+                int sensorsNumber;
+                ipToQuery = configuration.getTuples().getStringProperty(i, "ip-to-query", "192.168.1.201");
+                portToQuery = configuration.getTuples().getIntProperty(i, "port-to-query", 80);
+                sensorsNumber = configuration.getTuples().getIntProperty(i, "sensors-number", 1);
+                Board board = new Board(ipToQuery, portToQuery, sensorsNumber);
+                boards.add(board);
+                setDescription(getDescription());
+            }
         }
     }
 
@@ -175,17 +181,27 @@ public class HwgSte extends Protocol {
                     state = "alarmHigh";
             }
             String unit = null;
+            String objectClass = null;
             switch (sensorUnit) {
                 case 0:
                     unit = "unknown";
+                    break;
                 case 1:
                     unit = "C";
+                    objectClass = "Thermostat";
+                    break;
                 case 2:
                     unit = "F";
+                    objectClass = "Thermostat";
+                    break;
                 case 3:
                     unit = "K";
+                    objectClass = "Thermostat";
+                    break;
                 case 4:
                     unit = "%";
+                    objectClass = "Hygrometer";
+                    break;
             }
 
             String address = board.getIpAddress() + ":" + sensorID;
@@ -193,6 +209,8 @@ public class HwgSte extends Protocol {
             //building the event
             ProtocolRead event = new ProtocolRead(this, "hwgste", address);
             //adding some optional information to the event
+            event.addProperty("object.class", objectClass);
+            event.addProperty("object.name", address);
             event.addProperty("sensor.unit", unit);
             event.addProperty("sensor.value", sensorValue.toString());
             event.addProperty("sensor.name", sensorName);
