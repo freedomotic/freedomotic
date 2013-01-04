@@ -62,9 +62,11 @@ public class MarketPlacePlugin2 implements IPluginPackage{
         if (field_file!= null)
         {
             for (MarketPlaceFile marketPlaceFile: field_file)
-            {            
+            {                            
                 //TODO: change for a regular expresion to match the version
-                if (marketPlaceFile.getFilename().contains(version))
+                if (marketPlaceFile!= null &&
+                    marketPlaceFile.getFilename()!= null && 
+                    marketPlaceFile.getFilename().contains(version))
                 {
                     return marketPlaceFile.getFilepath();                    
                 }

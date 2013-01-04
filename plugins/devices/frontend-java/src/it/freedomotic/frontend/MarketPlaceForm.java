@@ -108,11 +108,12 @@ public class MarketPlaceForm extends javax.swing.JFrame {
             }
             JLabel lblName = new JLabel(pp.getTitle());
             JButton btnAction = null;
-            if (pp.getFilePath() != null
-                    && pp.getFilePath() != ""
+            String freedomoticVersion = Info.getMajor() +"."+Info.getMinor();
+            if (pp.getFilePath(freedomoticVersion) != null
+                    && pp.getFilePath(freedomoticVersion) != ""
                     && pp.getTitle() != null) {
-                String version = extractVersion(new File(pp.getFilePath()).getName().toString());
-                int result = Plugin.compareVersions(pp.getTitle(), version);
+                String version = extractVersion(new File(pp.getFilePath(freedomoticVersion)).getName().toString());                
+                int result = Plugin.compareVersions(pp.getTitle(), version);                
                 //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
                 if (result == -1) { //older version
                     //btnAction = new JButton(pp.getTitle() + " (Install version " + version + ")");
