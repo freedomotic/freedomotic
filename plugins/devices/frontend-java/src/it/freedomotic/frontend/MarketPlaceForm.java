@@ -186,7 +186,8 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     }
 
     private void installPackage(IPluginPackage pp) {
-        if (pp.getFilePath() == null) {
+        String freedomoticVersion = Info.getMajor() +"."+Info.getMinor();
+        if (pp.getFilePath(freedomoticVersion) == null) {
             JOptionPane.showMessageDialog(this,
                     "It seems that " + pp.getTitle() + " plugin developer have not "
                     + "already released any stable version. \nYou can ask more info about this plugin "
@@ -212,7 +213,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 + "Continue to use Freedomotic, you will be notified when download completes.",
                 "Download in progress", JOptionPane.INFORMATION_MESSAGE);
         Runnable task;
-        final String string = pp.getFilePath();
+        final String string = pp.getFilePath(freedomoticVersion);
         System.out.println("string de download:" + string);
         task = new Runnable() {
             boolean done = false;
