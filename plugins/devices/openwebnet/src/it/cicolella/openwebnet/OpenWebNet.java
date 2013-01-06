@@ -46,7 +46,7 @@ public class OpenWebNet extends Protocol {
     final static String MSG_OPEN_NACK = "*#*0##";
 
     public OpenWebNet() {
-        super("OpenWebNet", "/it.cicolella.openwebnet/openwebnet.xml");
+        super("OpenWebNet", "/it.cicolella.openwebnet/openwebnet-manifest.xml");
 
     }
 
@@ -357,12 +357,6 @@ public class OpenWebNet extends Protocol {
             }
             if (messageType != null) {
                 event.addProperty("messageType", messageType);
-            }
-            if (objectClass != null) {
-                event.addProperty("object.class", objectClass);
-            }
-            if (objectName != null) {
-                event.addProperty("object.name", objectName);
             }
             // notify event
             notifyEvent(event);
