@@ -1,4 +1,4 @@
-#Mon, 17 Dec 2012 17:31:20 +0100
+#Tue, 08 Jan 2013 14:33:50 +0100
 
 package.type=device
 package.name=it.cicolella.usb4relaybrd
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=4
 framework.required.build=x
 build.major=1
-build.number=86
+build.number=87
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true

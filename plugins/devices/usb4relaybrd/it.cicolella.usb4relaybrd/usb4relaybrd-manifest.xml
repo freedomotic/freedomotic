@@ -8,7 +8,10 @@
     </properties>
     <tuples>
         <tuple>
-            <property name="default" value="A6VT4NYO"/>
+            <property name="object.class" value="Light"/>
+            <property name="powered" value="Usb4RelayBrd reads relay state"/>
+            <property name="turn on" value="Turn on a relay on Usb4Relay device"/>
+            <property name="turn off" value="Turn off a relay on Usb4Relay device"/>
         </tuple>
     </tuples>
 </config>

@@ -231,6 +231,8 @@ public class Usb4RelayBrd extends Protocol {
     private void sendEvent(String objectAddress, String eventProperty, String eventValue) {
         ProtocolRead event = new ProtocolRead(this, "usb4relaybrd", objectAddress);
         event.addProperty(eventProperty, eventValue);
+        event.addProperty("object.class", "Light");
+        event.addProperty("object.name", objectAddress);
         //publish the event on the messaging bus
         this.notifyEvent(event);
     }
