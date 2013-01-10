@@ -12,6 +12,7 @@ import it.freedomotic.marketplace.util.MarketPlaceFile;
 import it.freedomotic.marketplace.util.MarketPlacePlugin2;
 import java.io.*;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.restlet.Client;
@@ -39,21 +40,24 @@ public class JavaUploader {
     public static void main(String[] args) throws IOException {
 
         //change this for real username and password        
-        String loginJson = login("sharedadmin", "qEJPAfuRo");
-        CookieSetting cS = parseCookie(loginJson);
-        String uid = parseUid(loginJson);
+        //String loginJson = login("username", "password");
+        //CookieSetting cS = parseCookie(loginJson);
+        //String uid = parseUid(loginJson);
         
-        MarketPlacePlugin2 pluginTest = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.freedomotic.com/rest/node/394");
-        putPlugin(cS, "394", pluginTest); 
-        String nid = "394";
-        if (cS != null) {
+        //String test = postTaxonomySelectNodes("151",0);        
+        List<MarketPlacePlugin2> testlist = DrupalRestHelper.retrievePluginsByCategory("151");
+        
+//        MarketPlacePlugin2 pluginTest = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.freedomotic.com/rest/node/394");
+//        putPlugin(cS, "394", pluginTest); 
+//        String nid = "394";
+        //if (cS != null) {
             //String nid = postPlugin(cS, plugin);
             //String fid = postFile(cS, uid, "/home/gpt/Desarrollo/", "testfile1.zip");            
             //MarketPlacePluginFileField fileField = new MarketPlacePluginFileField(fid, "file asociated by code");
             //MarketPlaceFile fileField = postFile(cS, uid, "/home/gpt/Desarrollo/", "testfile1.zip", true);
             //plugin.setField_file(fileField);
             //putPlugin(cS, nid, plugin);
-        }        
+        //}        
     }
 
     /**
@@ -157,8 +161,8 @@ public class JavaUploader {
         String jsonResponse = "";
         String nid = "";
         if (resp.getStatus().isSuccess()) {
-            try {
-                jsonResponse = resp.getEntity().getText();
+            try { 
+               jsonResponse = resp.getEntity().getText();
                 System.out.println(jsonResponse);
                 return jsonResponse;
             } catch (IOException e) {
@@ -172,13 +176,13 @@ public class JavaUploader {
     /**
      * 
      *
-     * @return the nid of the created plugin, "" if it has not been created
+     * @return A string with the selected nodes information as JSON representation
      */
-    public static String postTaxonomySelectNodes(String taxonomyTreeNumber) {
+    public static String postTaxonomySelectNodes(String taxonomyTreeNumber, int page) {
         //plugin post                 
-        ClientResource cr2 = new ClientResource(DRUPALPATH + "/rest/taxonomy_term/selectNodes");                
-        String text = "{\"tids\":\""+taxonomyTreeNumber+"\"}";
-        
+        ClientResource cr2 = new ClientResource(DRUPALPATH + "/rest/taxonomy_term/selectNodes?page="+page);        
+        //String text = "{\"tids\":\""+taxonomyTreeNumber+"\",\"pager\":false}";        
+        String text = "{\"tids\":\""+taxonomyTreeNumber+"\"}";                
         cr2.setMethod(Method.POST);
         Representation rep2 = cr2.post(new JsonRepresentation(text));
         Response resp = cr2.getResponse();
