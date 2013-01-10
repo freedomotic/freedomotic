@@ -98,12 +98,28 @@ public class DrupalRestHelper {
     
     public static ArrayList<MarketPlacePlugin2> retrievePluginsByCategory(String categoryId) {
         ArrayList<MarketPlacePlugin2> pluginPackageList = new ArrayList<MarketPlacePlugin2>();
-        String jsonData = JavaUploader.postTaxonomySelectNodes(categoryId);
-        Gson gson = new Gson();
-        Type collectionType = new TypeToken<ArrayList<MarketPlacePlugin2>>() {
-        }.getType();
-        pluginPackageList = gson.fromJson(jsonData, collectionType);                                                   
+        int page = 0;        
+        boolean newData = true;
+        String previousJsonData = "";
+        ArrayList<MarketPlacePlugin2> pagePluginPackageList = new ArrayList<MarketPlacePlugin2>(); 
+        while (newData)
+        {            
+            String jsonData = JavaUploader.postTaxonomySelectNodes(categoryId, page);
+            if (page == 0 || !jsonData.equals(previousJsonData))
+            {                
+                Gson gson = new Gson();
+                Type collectionType = new TypeToken<ArrayList<MarketPlacePlugin2>>() {
+                }.getType();
+                pagePluginPackageList = gson.fromJson(jsonData, collectionType);
+                pluginPackageList.addAll(pagePluginPackageList);
+                page++;
+                previousJsonData = jsonData;
+            }
+            else
+                newData = false;
+        }        
         return pluginPackageList;                                                                        
+    
     }
        
 
