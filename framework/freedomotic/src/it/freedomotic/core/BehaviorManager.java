@@ -1,5 +1,6 @@
 package it.freedomotic.core;
 
+import com.thoughtworks.xstream.XStream;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.app.Freedomotic;

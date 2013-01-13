@@ -153,6 +153,7 @@ public abstract class Protocol extends Plugin implements BusConsumer {
         @Override
         public void run() {
             try {
+                command.setExecuted(true);
                 onCommand(command);
             } catch (IOException ex) {
                 Logger.getLogger(Actuator.class.getName()).log(Level.SEVERE, null, ex);

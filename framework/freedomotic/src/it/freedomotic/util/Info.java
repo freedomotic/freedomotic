@@ -33,7 +33,7 @@ public class Info {
     //http://marcelojabali.blogspot.it/2011/10/apache-activemq-enhancements-to-jms.html
     //public static final String BROKER_DEFAULT = "vm://freedomotic";
     //info about peer brokers http://fusesource.com/docs/broker/5.2/connectivity_guide/N04F73598.04EE2290.html
-    public static final String BROKER_DEFAULT = "peer://freedomotic/broker"+UUID.randomUUID();
+    public static final String BROKER_DEFAULT = "vm://localhost";//"peer://localhost/broker"+UUID.randomUUID();
     public static final int    BROKER_PORT = 61616;
     public static final String BROKER_STOMP = "stomp://0.0.0.0:61666";
     public static final String BROKER_WEBSOCKET = "ws://0.0.0.0:61614";

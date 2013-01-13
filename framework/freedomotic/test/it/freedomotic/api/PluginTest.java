@@ -4,9 +4,6 @@
  */
 package it.freedomotic.api;
 
-import it.freedomotic.model.ds.Config;
-import java.io.File;
-import javax.swing.JFrame;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -44,14 +41,16 @@ public class PluginTest {
      * Test of getMostRecentVersion method, of class Plugin.
      */
     @Test
-    public void testGetMostRecentVersion() {
-        System.out.println("getOldestVersion");
-        assertEquals(0, Plugin.getOldestVersion("5.3.0", "5.3.0"));
-        assertEquals(-1, Plugin.getOldestVersion("5.3.0", "5.4.0"));
-        assertEquals(1, Plugin.getOldestVersion("5.4.0", "5.3.0"));
-        assertEquals(1, Plugin.getOldestVersion("5.4.0", "5.3.999"));
-        assertEquals(-1, Plugin.getOldestVersion("5.4.0", "5.99.999"));
-        assertEquals(1, Plugin.getOldestVersion("6.0.0", "5.3.999"));
-        assertEquals(1, Plugin.getOldestVersion("6.1.0", "5.3.999"));
+    public void testCompareVersions() {
+        System.out.println("compareVersions");
+        assertEquals(Plugin.SAME_VERSION, Plugin.getOldestVersion("5.1.0", "5.1.0"));
+        assertEquals(Plugin.FIRST_IS_OLDER, Plugin.getOldestVersion("5.1.0", "5.2.0"));
+        assertEquals(Plugin.FIRST_IS_OLDER, Plugin.getOldestVersion("5.1.0", "6.1.0"));
+        assertEquals(Plugin.FIRST_IS_OLDER, Plugin.getOldestVersion("5.1.0", "5.1.1"));
+        assertEquals(Plugin.FIRST_IS_OLDER, Plugin.getOldestVersion("5.1.0", "5.1.x"));
+        assertEquals(Plugin.SAME_VERSION, Plugin.getOldestVersion("5.1.x", "5.1.x"));
+        assertEquals(Plugin.LAST_IS_OLDER, Plugin.getOldestVersion("5.2.x", "5.1.x"));
+        assertEquals(Plugin.LAST_IS_OLDER, Plugin.getOldestVersion("5.2.x", "5.1.0"));
+        assertEquals(Plugin.LAST_IS_OLDER, Plugin.getOldestVersion("5.2.1", "5.2.0"));
     }
 }

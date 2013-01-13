@@ -4,6 +4,7 @@
  */
 package it.freedomotic.plugins;
 
+import it.freedomotic.api.Plugin;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -50,21 +51,4 @@ public class VersionTest {
         String result = Version.extractVersion(filename);
         assertEquals(expResult, result);
     }
-
-    /**
-     * Test of compareVersions method, of class Version.
-     */
-     /*
-    @Test
-    public void testCompareVersions() {
-        System.out.println("compareVersions");
-        String name = "";
-        String version = "";
-        int expResult = 0;
-        int result = Version.compareVersions(name, version);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-    */
 }
