@@ -1,0 +1,30 @@
+
+
+<config>
+    <properties>
+        <property name="name" value="i2c"/>
+        <property name="description" value="It is a i2c"/>
+        <property name="version" value="1.0.0"/>
+        <property name="required" value="5.1.0"/>
+        <property name="short-name" value="shortname"/>
+        <property name="category" value="protocol"/>
+        <property name="short-name" value="i2c"/>
+        <property name="polling-time" value="1000"/>
+        <property name="protocol.name"  value="i2c"/>
+        <property name="address-delimiter" value=":"/>
+        <property name="object.class" value="Light"/>
+        <property name="powered" value="I2C board reads a line state change"/>
+        <property name="turn on" value="Turn on I2C line"/>
+        <property name="turn off" value="Turn off I2C line"/> 
+        <property name="startup-time"   value="on load"/>
+    </properties>
+    <tuples>
+        <tuple>
+            <property name="address" value="" />
+            <property name="" value=""/>
+            <property name="" value=""/>
+        </tuple>
+    </tuples>
+</config>
+
+                
