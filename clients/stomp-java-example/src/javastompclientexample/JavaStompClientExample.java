@@ -23,9 +23,9 @@ public class JavaStompClientExample {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String activeMqIp = "192.168.1.3";
+        String activeMqIp = "127.0.0.1";
         //create an XML command to send
-        String commandDestination = "/queue/app.data.request";
+        String commandDestination = "/queue/app.actuators.frontend.javadesktop.in";
         String command =
                 "<it.freedomotic.reactions.Command>"
                 + "    <name>A message from STOMP</name>"
@@ -64,7 +64,7 @@ public class JavaStompClientExample {
                 + "      <logical>AND</logical>"
                 + "      <attribute>object.name</attribute>"
                 + "      <operand>EQUALS</operand>"
-                + "      <value>Livingroom Light</value>"
+                + "      <value>Living room light</value>"
                 + "    </it.freedomotic.reactions.Statement>"
                 + "  </payload>"
                 + "</payload>"
