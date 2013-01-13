@@ -34,7 +34,7 @@ import javax.swing.JPanel;
  *
  * @author enrico
  */
-public class Renderer extends JPanel implements MouseListener, MouseMotionListener {
+public class Renderer extends Drawer implements MouseListener, MouseMotionListener {
 
     private JavaDesktopFrontend plugin;
     private Graphics graph;
