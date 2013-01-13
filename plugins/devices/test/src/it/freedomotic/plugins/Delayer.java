@@ -27,15 +27,7 @@ public class Delayer extends Protocol {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-//        System.out.println("Delayer STARTS sleeping for " + Integer.parseInt(c.getProperty("delay")));
-//        try {
-            reminder(c, Long.parseLong(c.getProperty("delay")));
-//            Thread.sleep(5000);
-//            System.out.println("Delayer ENDS  sleeping for " + Integer.parseInt(c.getProperty("delay")));
-//            c.setExecuted(true);
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(Delayer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        reminder(c, Long.parseLong(c.getProperty("delay")));
     }
 
     public void reminder(Command c, long ms) {
@@ -54,10 +46,9 @@ public class Delayer extends Protocol {
         }
 
         public void run() {
-            System.out.println("Delayer ENDS  sleeping for " + Integer.parseInt(c.getProperty("delay")));
+            t.cancel(); //Terminate the timer thread
             c.setExecuted(true);
             reply(c);
-            t.cancel(); //Terminate the timer thread
         }
     }
 
