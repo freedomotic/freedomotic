@@ -48,20 +48,20 @@ public final class TriggerCheck {
             if (trigger.isHardwareLevel()) { //hardware triggers can always fire
                 Trigger resolved = resolveTrigger(event, trigger);
                 if (resolved.isConsistentWith(event)) {
-                    buff.append("[CONSISTENT] hardware level trigger '").append(resolved.getName()).append(resolved.getPayload().toString()).append("'\nconsistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
+                    buff.append("[CONSISTENT] hardware level trigger '").append(resolved.getName()).append("' ").append(resolved.getPayload().toString()).append("'\nconsistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
                     applySensorNotification(resolved, event);
                 }
             } else {
                 if (trigger.canFire()) {
                     Trigger resolved = resolveTrigger(event, trigger);
                     if (resolved.isConsistentWith(event)) {
-                        buff.append("[CONSISTENT] registred trigger '").append(resolved.getName()).append(resolved.getPayload().toString()).append("'\nconsistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
+                        buff.append("[CONSISTENT] registred trigger '").append(resolved.getName()).append("' ").append(resolved.getPayload().toString()).append("'\nconsistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
                         executeTriggeredAutomations(resolved, event);
                     }
                 }
             }
             //if we are here the trigger is not consistent
-            buff.append("[NOT CONSISTENT] registred trigger '").append(trigger.getName()).append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
+            buff.append("[NOT CONSISTENT] registred trigger '").append(trigger.getName()).append("' ").append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
             Freedomotic.logger.config(buff.toString());
             return false;
         } catch (Exception e) {
@@ -123,7 +123,7 @@ public final class TriggerCheck {
                     Trigger reactionTrigger = reaction.getTrigger();
                     //found a related reaction. This must be executed
                     if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {
-                        trigger.setExecuted();
+                        reactionTrigger.setExecuted();
                         found = true;
                         Freedomotic.logger.fine("Try to execute reaction " + reaction.toString());
                         try {
@@ -152,13 +152,13 @@ public final class TriggerCheck {
                                     //it's not a user level command for objects (eg: turn it on), it is for another kind of actuator
                                     Command reply = Freedomotic.sendCommand(resolvedCommand); //blocking wait until executed
                                     if (reply == null) {
-                                        Freedomotic.logger.info("Unreceived reply within given time ("
+                                        Freedomotic.logger.warning("Unreceived reply within given time ("
                                                 + command.getReplyTimeout() + "ms) for command " + command.getName());
                                     } else {
                                         if (reply.isExecuted()) {
                                             Freedomotic.logger.fine("Executed succesfully " + command.getName());
                                         } else {
-                                            Freedomotic.logger.info("Unable to execute command" + command.getName());
+                                            Freedomotic.logger.warning("Unable to execute command" + command.getName());
                                         }
                                     }
                                 }

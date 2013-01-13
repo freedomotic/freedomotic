@@ -124,7 +124,7 @@ public class EnvObjectPersistence {
             }
             //Freedomotic.logger.info("Loaded " + objectList.size() + " of " + files.length + " environment objects.");
         } catch (Exception e) {
-            Freedomotic.logger.severe("Exception while loading this object.\n" + Freedomotic.getStackTraceInfo(e));
+            Freedomotic.logger.severe("Exception while loading object in " + folder.getAbsolutePath()+ ".\n" + Freedomotic.getStackTraceInfo(e));
         }
     }
 

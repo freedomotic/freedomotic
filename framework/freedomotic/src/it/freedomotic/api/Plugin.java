@@ -48,10 +48,13 @@ public class Plugin implements Client {
     protected String shortName;
     protected String listenOn;
     protected String sendOn;
+    final static int SAME_VERSION = 0;
+    final static int FIRST_IS_OLDER = -1;
+    final static int LAST_IS_OLDER = 1;
 
     public Plugin(String pluginName, String manifestPath) {
         setName(pluginName);
-        init(new File(Info.getDevicesPath() + manifestPath));        
+        init(new File(Info.getDevicesPath() + manifestPath));
     }
 
     public Plugin(String pluginName, Config manifest) {
@@ -236,12 +239,11 @@ public class Plugin implements Client {
             if ((getOldestVersion(
                     requiredMajor + "." + requiredMinor + "." + requiredBuild,
                     Info.getVersion())
-                    <= 0)) {
+                    <= Plugin.SAME_VERSION)) {
                 return true;
             }
-
         } catch (IOException ex) {
-            Freedomotic.logger.severe("Folder " + pluginFolder + " don't contains a PACKAGE file. This plugin is not loaded.");
+            Freedomotic.logger.severe("Folder " + pluginFolder + " doesn't contains a PACKAGE file. This plugin is not loaded.");
         } catch (NumberFormatException numex) {
             //do nothing
         } catch (Exception e) {
@@ -276,8 +278,9 @@ public class Plugin implements Client {
             //already installed
             //now check for version
             Plugin plugin = (Plugin) client;
-            if (plugin.getVersion() == null)
-                return -1;            
+            if (plugin.getVersion() == null) {
+                return -1;
+            }
             return Plugin.getOldestVersion(plugin.getVersion(), version);
         } else {
             //not installed
@@ -296,6 +299,10 @@ public class Plugin implements Client {
      */
     public static int getOldestVersion(String str1, String str2) {
         //System.out.println("VERSION: " + str1 + " - " + str2);
+        String MAX = Integer.toString(Integer.MAX_VALUE).toString();
+        str1 = str1.replaceAll("x", MAX);
+        str2 = str2.replaceAll("x", MAX);
+        System.out.println(str1 + "  " + str2);
         String[] vals1 = str1.split("\\.");
         String[] vals2 = str2.split("\\.");
         int i = 0;

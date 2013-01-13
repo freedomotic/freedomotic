@@ -95,7 +95,13 @@ public class ReactionPersistence {
                 for (File file : files) {
                     //validate the object against a predefined DTD
                     String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/reaction.dtd");
-                    Reaction reaction = (Reaction) xstream.fromXML(xml);
+                    Reaction reaction = null;
+                    try {
+                        reaction = (Reaction) xstream.fromXML(xml);
+                    } catch (Exception e) {
+                        Freedomotic.logger.severe("Reaction file " + reaction.toString() + " is not well formatted");
+                        continue;
+                    }
                     if (reaction.getCommands().size() == 0) {
                         Freedomotic.logger.severe("Reaction " + reaction.toString() + " has no valid commands. Maybe related objects are missing or not configured properly.");
                     }
@@ -112,7 +118,7 @@ public class ReactionPersistence {
                 Freedomotic.logger.config("No reactions to load from this folder " + folder.toString());
             }
         } catch (Exception e) {
-            Freedomotic.logger.severe("Exception while loading this object.\n" + Freedomotic.getStackTraceInfo(e));
+            Freedomotic.logger.severe("Exception while loading reaction in " + folder.getAbsolutePath() + ".\n" + Freedomotic.getStackTraceInfo(e));
         }
     }
 
