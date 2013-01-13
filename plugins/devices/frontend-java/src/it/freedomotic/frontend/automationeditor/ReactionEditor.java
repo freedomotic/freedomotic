@@ -130,7 +130,7 @@ public class ReactionEditor extends javax.swing.JPanel {
             reaction.getCommands().set(index, box.getCommand());
         }
         reaction.setChanged();
-        System.out.println(reaction.toString());
+        System.out.println("Temporary reaction added :" + reaction.toString());
     }
 
     void onCommandCleared(GuessCommandBox box) {
@@ -141,7 +141,7 @@ public class ReactionEditor extends javax.swing.JPanel {
             addEmptyBox();
         }
         reaction.setChanged();
-        System.out.println(reaction.toString());
+        System.out.println("Temporary reaction removed :" + reaction.toString());
     }
 
     public Reaction getReaction() {

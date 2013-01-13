@@ -110,7 +110,8 @@ public class GuessCommandBox extends JTextField {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (isEnabled()) {
-                    if (CommandPersistence.getCommand(getText()) != null) {
+                    command = CommandPersistence.getCommand(getText());
+                    if (command != null) {
                         setEnabled(false);
                         btnAdd.setText("Clear");
                         editor.onCommandConfirmed(me);

@@ -19,6 +19,7 @@
 package it.freedomotic.frontend;
 
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.core.ResourcesManager;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.model.environment.Zone;
@@ -43,7 +44,7 @@ import javax.swing.*;
  */
 public class MainWindow extends javax.swing.JFrame {
 
-    private Renderer drawer;
+    private Drawer drawer;
     private float referenceRatio;
     private static boolean isFullscreen = false;
     private JavaDesktopFrontend master;
@@ -54,8 +55,8 @@ public class MainWindow extends javax.swing.JFrame {
     //JComboBox cmbFilter;
     boolean editMode;
 
-    public Renderer getDrawer() {
-        return (Renderer) drawer;
+    public Drawer getDrawer() {
+        return drawer;
     }
 
     public MainWindow(final JavaDesktopFrontend master) {
@@ -143,6 +144,7 @@ public class MainWindow extends javax.swing.JFrame {
         drawer = master.createRenderer();
         if (drawer != null) {
             setDrawer(drawer);
+            ResourcesManager.clear();
         } else {
             Freedomotic.logger.severe("Unable to create a drawer to render the environment on the desktop frontend");
         }
@@ -255,7 +257,7 @@ public class MainWindow extends javax.swing.JFrame {
         frameMap.getContentPane().setBackground(Renderer.BACKGROUND_COLOR);
     }
 
-    public void setDrawer(JPanel drawer) {
+    public void setDrawer(Drawer drawer) {
         frameMap.getContentPane().add(drawer);
     }
 
@@ -636,11 +638,11 @@ private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_formComponentResized
 
 private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-    if (frameClient.isClosed()) {
-        frameClient.show();
-    } else {
-        frameClient.hide();
-    }
+        if (frameClient.isClosed()) {
+            frameClient.show();
+        } else {
+            frameClient.hide();
+        }
 }//GEN-LAST:event_jMenuItem2ActionPerformed
 
 private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
@@ -748,7 +750,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     }//GEN-LAST:event_mnuAutomationsActionPerformed
 
     private void mnuChangeRendererActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuChangeRendererActionPerformed
-        Object[] possibilities = {"plain", "image", "photo"};
+        Object[] possibilities = {"list", "plain", "image", "photo"};
         String input = (String) JOptionPane.showInputDialog(
                 this,
                 "Select a renderer for the map",
@@ -756,7 +758,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 possibilities,
-                "plain");
+                "list");
 
         //If a string was returned
         if ((input != null) && (input.length() > 0)) {

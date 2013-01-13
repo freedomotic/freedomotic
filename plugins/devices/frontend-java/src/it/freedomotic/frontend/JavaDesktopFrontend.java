@@ -3,18 +3,15 @@ package it.freedomotic.frontend;
 import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.events.MessageEvent;
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.ZoneHasChanged;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.objects.EnvObjectPersistence;
-import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.reactions.Command;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.io.IOException;
-import java.util.EventListener;
 import javax.swing.JOptionPane;
 
 /**
@@ -24,7 +21,8 @@ import javax.swing.JOptionPane;
 public class JavaDesktopFrontend extends Actuator {
 
     private MainWindow window;
-    private Renderer drawer;
+    private Drawer drawer;
+    private ListDrawer listDrawer;
 
     public JavaDesktopFrontend() {
         super("Desktop Frontend", "/it.freedomotic.jfrontend/desktop-frontend.xml");
@@ -42,6 +40,8 @@ public class JavaDesktopFrontend extends Actuator {
             addCommandListener("app.actuators.plugins.controller.in");
             addCommandListener("command.jfrontend.user.callout");
             createMainWindow(); //creates the main frame
+            listDrawer = new ListDrawer();
+            listDrawer.setVisible(true);
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
@@ -60,7 +60,7 @@ public class JavaDesktopFrontend extends Actuator {
         return window;
     }
 
-    protected Renderer createRenderer() {
+    protected Drawer createRenderer() {
         try {
             if (Freedomotic.environment.getPojo().getRenderer().equalsIgnoreCase("photo")) {
                 drawer = new PhotoDrawer(this);
@@ -68,14 +68,21 @@ public class JavaDesktopFrontend extends Actuator {
                 if (Freedomotic.environment.getPojo().getRenderer().equalsIgnoreCase("image")) {
                     drawer = new ImageDrawer(this);
                 } else {
-                    drawer = new PlainDrawer(this);
+                    if (Freedomotic.environment.getPojo().getRenderer().equalsIgnoreCase("image")) {
+                        drawer = new PlainDrawer(this);
+                    } else {
+                        drawer = new ListDrawer();
+                    }
                 }
             }
         } catch (Exception e) {
             System.out.println("Error while initializing a drawer in desktop frontend.");
             e.printStackTrace();
         }
-        drawer.callouts = new CalloutsUpdater(drawer, 1000);
+        if (drawer instanceof Renderer) {
+            Renderer renderer = (Renderer) drawer;
+            renderer.callouts = new CalloutsUpdater(renderer, 1000);
+        }
         return drawer;
     }
 

@@ -373,7 +373,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnVirtual))
-                .addContainerGap(2135, Short.MAX_VALUE))
+                .addContainerGap(2148, Short.MAX_VALUE))
         );
         tabPropertiesLayout.setVerticalGroup(
             tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -522,7 +522,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spnScaleHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(234, Short.MAX_VALUE))
+                .addContainerGap(233, Short.MAX_VALUE))
         );
 
         tabObjectEditor.addTab("Appearance", tabRepresentation);

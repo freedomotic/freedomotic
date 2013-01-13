@@ -13,6 +13,7 @@ package it.freedomotic.frontend.utils;
 import it.freedomotic.app.Freedomotic;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -24,8 +25,7 @@ import javax.swing.SpringLayout;
  */
 public class PropertiesPanel_1 extends javax.swing.JPanel {
 
-    private Component[][] table;
-    private int elements = 0;
+    private ArrayList<Component> table;
     private int rows;
     private int cols;
     private static final int MAX_ROWS = 100;
@@ -39,8 +39,7 @@ public class PropertiesPanel_1 extends javax.swing.JPanel {
         this.setPreferredSize(new Dimension(500, 500));
         this.rows = rows;
         this.cols = cols;
-        table = new Component[MAX_ROWS][cols];
-        elements = 0;
+        table = new ArrayList<Component>();
         this.setLayout(new SpringLayout());
     }
 
@@ -48,11 +47,7 @@ public class PropertiesPanel_1 extends javax.swing.JPanel {
         if (component == null) {
             throw new IllegalArgumentException("Cannot add a null component");
         }
-        try {
-            table[row][col] = component;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            Freedomotic.logger.warning("Only " + MAX_ROWS + " statements are tracked in PropertiesPanel");
-        }
+        table.add(component);
         if (col == cols - 1) {//is the last col
             component.setMaximumSize(new Dimension(2000, 50));
             component.setPreferredSize(new Dimension(200, 50));
@@ -61,11 +56,11 @@ public class PropertiesPanel_1 extends javax.swing.JPanel {
             component.setPreferredSize(new Dimension(200, 50));
         }
         add(component);
-        elements++;
     }
 
     public void layoutPanel() {
         //Lay out the panel.
+        System.out.println("row:" +  rows + " cols:" + cols);
         SpringUtilities.makeCompactGrid(this,
                 rows, cols, //rows, cols
                 5, 5, //initX, initY
@@ -90,7 +85,7 @@ public class PropertiesPanel_1 extends javax.swing.JPanel {
     }
 
     public String getComponent(int row, int col) {
-        Component comp = table[row][col];
+        Component comp = table.get((row * col) + col);
         if (comp != null) {
             if (comp instanceof JTextField) {
                 JTextField jTextField = (JTextField) comp;
@@ -103,6 +98,12 @@ public class PropertiesPanel_1 extends javax.swing.JPanel {
             }
         }
         return null;
+    }
+
+    @Override
+    public void removeAll() {
+        super.removeAll();
+        table.clear();
     }
 
     /**
