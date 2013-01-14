@@ -13,6 +13,8 @@ import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.objects.BehaviorLogic;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +25,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
@@ -34,6 +37,7 @@ import javax.swing.SpringLayout;
 public class ListDrawer extends Drawer {
 
     JComboBox cmbZone = new JComboBox();
+    JPanel panel = new JPanel();
 
     public ListDrawer() {
 
@@ -44,6 +48,10 @@ public class ListDrawer extends Drawer {
                 enlistObjects(zone);
             }
         });
+        this.setLayout(new BorderLayout());
+        this.setBackground(Color.white);
+        JScrollPane scroll = new JScrollPane(panel);
+        add(scroll);
         enlistZones();
         //autoselect the first element
         enlistObjects((ZoneLogic) cmbZone.getItemAt(0));
@@ -60,11 +68,11 @@ public class ListDrawer extends Drawer {
     }
 
     private void enlistObjects(ZoneLogic zone) {
-        removeAll();
-        setLayout(new SpringLayout());
+        panel.removeAll();
+        panel.setLayout(new SpringLayout());
         int row = 0;
         if (zone.getPojo().getObjects().isEmpty()) {
-            add(new JLabel("No objects in this zone"));
+            panel.add(new JLabel("No objects in this zone"));
         }
         for (final EnvObject objPojo : zone.getPojo().getObjects()) {
             final EnvObjectLogic obj = EnvObjectPersistence.getObject(objPojo.getName());
@@ -76,12 +84,12 @@ public class ListDrawer extends Drawer {
                     mouseClickObject(obj);
                 }
             });
-            add(icon);
+            panel.add(icon);
             StringBuilder description = new StringBuilder();
 
             JTextArea lblName = new JTextArea(objPojo.getName() + "\n\n" + getCompleteDescription(obj));
             lblName.setBackground(getBackground());
-            add(lblName);
+            panel.add(lblName);
             //a configuration button with a listener
             JButton btnConfig = new JButton("Configure");
             btnConfig.addActionListener(new ActionListener() {
@@ -90,10 +98,10 @@ public class ListDrawer extends Drawer {
                     objectEditor.setVisible(true);
                 }
             });
-            add(btnConfig);
+            panel.add(btnConfig);
             row++;
-        }
-        SpringUtilities.makeCompactGrid(this,
+        }       
+        SpringUtilities.makeCompactGrid(panel,
                 row, 3, //rows, cols
                 5, 5, //initX, initY
                 5, 5);//xPad, yPad
