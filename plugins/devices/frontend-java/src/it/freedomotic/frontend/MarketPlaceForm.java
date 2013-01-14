@@ -13,11 +13,13 @@ package it.freedomotic.frontend;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.frontend.utils.PropertiesPanel_1;
+import it.freedomotic.frontend.utils.SpringUtilities;
 import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.service.IPluginCategory;
 import it.freedomotic.service.MarketPlaceService;
 import it.freedomotic.service.IPluginPackage;
 import it.freedomotic.util.Info;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -34,6 +36,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.SpringLayout;
 
 /**
  *
@@ -85,90 +89,98 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         validate();
     }
 
-    public final void retrievePlugins(IPluginCategory category) {
-        String path = Info.PATH_RESOURCES_FOLDER.toString();
-        if (category.getPlugins() == null) {
-            return;
-        }
-        //TODO: use package images.
-        ImageIcon iconPlugin = new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
-        ImageIcon iconCoolPlugin = new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
-        ImageIcon iconClient = new ImageIcon(path + File.separatorChar + "clientIcon1.png", "Icon");
-
-        PropertiesPanel_1 panel = new PropertiesPanel_1(category.getPlugins().size(), 5);
-        panel.removeAll();
-        int row = 0;
-        for (final IPluginPackage pp : category.getPlugins()) {
-            txtInfo.setText("Retrieved plugin " + (row +1) + " of " + category.getPlugins().size());
-            JLabel lblIcon;
-            if (pp.getIcon() != null) {
-                lblIcon = new JLabel(pp.getIcon());
-            } else {
-                lblIcon = new JLabel(iconPlugin);
-            }
-            JLabel lblName = new JLabel(pp.getTitle());
-            JButton btnAction = null;
-            String freedomoticVersion = Info.getMajor() +"."+Info.getMinor();
-            if (pp.getFilePath(freedomoticVersion) != null
-                    && pp.getFilePath(freedomoticVersion) != ""
-                    && pp.getTitle() != null) {
-                String version = extractVersion(new File(pp.getFilePath(freedomoticVersion)).getName().toString());                
-                int result = Plugin.compareVersions(pp.getTitle(), version);                
-                //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
-                if (result == -1) { //older version
-                    //btnAction = new JButton(pp.getTitle() + " (Install version " + version + ")");
-                    btnAction = new JButton("Install");
-                } else {
-                    if (result == 1) { //newer version
-                        //btnAction = new JButton(pp.getTitle() + " (Update from " + version + " to " + version + ")");
-                        btnAction = new JButton("Update");
-                    }
+    public final void retrievePlugins(final IPluginCategory category) {
+        Runnable retrieveTask = new Runnable() {
+            public void run() {
+                String path = Info.PATH_RESOURCES_FOLDER.toString();
+                if (category.getPlugins() == null) {
+                    return;
                 }
-            } else {
-                lblName = new JLabel(pp.getTitle() + (" (Unavailable)"));
-            }
-            JLabel lblDescription = new JLabel(pp.getDescription());
-            if (btnAction != null) {
-                btnAction.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        installPackage(pp);
-                    }
-                });
-            }
+                //TODO: use package images.
+                ImageIcon iconPlugin = new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
+                ImageIcon iconCoolPlugin = new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
+                ImageIcon iconClient = new ImageIcon(path + File.separatorChar + "clientIcon1.png", "Icon");
 
-            JButton btnMore = new JButton("More info...");
-            btnMore.setEnabled(false);
-            btnMore.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        browse(new URI(pp.getUri()));
-                    } catch (URISyntaxException ex) {
-                        Logger.getLogger(MarketPlaceForm.class.getName()).log(Level.SEVERE, null, ex);
+                jPanel1.setLayout(new SpringLayout());
+                jPanel1.removeAll();
+                jPanel1.setBackground(Color.white);
+                int row = 0;
+                for (final IPluginPackage pp : category.getPlugins()) {
+                    txtInfo.setText("Retrieved plugin " + (row + 1) + " of " + category.getPlugins().size());
+                    JLabel lblIcon;
+                    if (pp.getIcon() != null) {
+                        lblIcon = new JLabel(pp.getIcon());
+                    } else {
+                        lblIcon = new JLabel(iconPlugin);
                     }
+                    JLabel lblName = new JLabel(pp.getTitle());
+                    JButton btnAction = null;
+                    String freedomoticVersion = Info.getMajor() + "." + Info.getMinor();
+                    if (pp.getFilePath(freedomoticVersion) != null
+                            && pp.getFilePath(freedomoticVersion) != ""
+                            && pp.getTitle() != null) {
+                        String version = extractVersion(new File(pp.getFilePath(freedomoticVersion)).getName().toString());
+                        int result = Plugin.compareVersions(pp.getTitle(), version);
+                        //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
+                        if (result == -1) { //older version
+                            //btnAction = new JButton(pp.getTitle() + " (Install version " + version + ")");
+                            btnAction = new JButton("Install");
+                        } else {
+                            if (result == 1) { //newer version
+                                //btnAction = new JButton(pp.getTitle() + " (Update from " + version + " to " + version + ")");
+                                btnAction = new JButton("Update");
+                            }
+                        }
+                    } else {
+                        lblName = new JLabel(pp.getTitle() + (" (Unavailable)"));
+                    }
+                    JLabel lblDescription = new JLabel(pp.getDescription());
+                    if (btnAction != null) {
+                        btnAction.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                installPackage(pp);
+                            }
+                        });
+                    }
+
+                    JButton btnMore = new JButton("More info...");
+                    btnMore.setEnabled(false);
+                    btnMore.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                browse(new URI(pp.getUri()));
+                            } catch (URISyntaxException ex) {
+                                Logger.getLogger(MarketPlaceForm.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    });
+
+                    lblIcon.setPreferredSize(new Dimension(80, 80));
+                    lblIcon.setMaximumSize(new Dimension(80, 80));
+                    jPanel1.add(lblIcon);
+                    jPanel1.add(lblName);
+                    jPanel1.add(lblDescription);
+                    jPanel1.add(btnMore);
+                    if (btnAction != null) {
+                        jPanel1.add(btnAction);
+                    } else {
+                        JButton disabled = new JButton("Install");
+                        disabled.setEnabled(false);
+                        jPanel1.add(disabled);
+                    }
+                    row++;
                 }
-            });
-
-            lblIcon.setPreferredSize(new Dimension(80, 80));
-            lblIcon.setMaximumSize(new Dimension(80, 80));
-            panel.addElement(lblIcon, row, 0);
-            panel.addElement(lblName, row, 1);
-            panel.addElement(lblDescription, row, 2);
-            panel.addElement(btnMore, row, 3);
-            if (btnAction != null) {
-                panel.addElement(btnAction, row, 4);
-            } else {
-                JButton disabled = new JButton("Install");
-                disabled.setEnabled(false);
-                panel.addElement(disabled, row, 4);
+                SpringUtilities.makeCompactGrid(jPanel1,
+                        row, 5, //rows, cols
+                        5, 5, //initX, initY
+                        5, 5);//xPad, yPad
+                validate();
+                txtInfo.setText("Click on Install button to enable one of this plugins.");
+                jProgressBar1.setVisible(false);
+                validate();
             }
-            row++;
-        }
-        txtInfo.setText("Click on Install button to enable one of this plugins.");
-        panel.layoutPanel();
-        jPanel1.removeAll();
-        jPanel1.add(panel);
-        jProgressBar1.setVisible(false);
-        validate();
+        };
+        retrieveTask.run();
     }
 
     private String extractVersion(String filename) {
@@ -186,7 +198,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     }
 
     private void installPackage(IPluginPackage pp) {
-        String freedomoticVersion = Info.getMajor() +"."+Info.getMinor();
+        String freedomoticVersion = Info.getMajor() + "." + Info.getMinor();
         if (pp.getFilePath(freedomoticVersion) == null) {
             JOptionPane.showMessageDialog(this,
                     "It seems that " + pp.getTitle() + " plugin developer have not "

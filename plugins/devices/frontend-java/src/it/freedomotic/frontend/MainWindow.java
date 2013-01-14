@@ -312,15 +312,15 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         mnuEditMode = new javax.swing.JMenu();
         mnuRoomEditMode = new javax.swing.JCheckBoxMenuItem();
-        mnuObjectEditMode = new javax.swing.JCheckBoxMenuItem();
+        mnuChangeRenderer = new javax.swing.JMenuItem();
+        mnuBackground = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         mnuRenameRoom = new javax.swing.JMenuItem();
         mnuAddRoom = new javax.swing.JMenuItem();
         mnuRoomBackground = new javax.swing.JMenuItem();
         mnuRemoveRoom = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
-        mnuChangeRenderer = new javax.swing.JMenuItem();
-        mnuBackground = new javax.swing.JMenuItem();
+        mnuObjects = new javax.swing.JMenu();
+        mnuObjectEditMode = new javax.swing.JCheckBoxMenuItem();
         jMenu2 = new javax.swing.JMenu();
         mnuAutomations = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
@@ -423,7 +423,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuSaveAs.add(jMenuItem5);
         mnuSaveAs.add(jSeparator1);
 
-        jMenuItem1.setText("Esci");
+        jMenuItem1.setText("Exit");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
@@ -433,7 +433,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuBar.add(mnuSaveAs);
 
-        mnuEditMode.setText("Edit");
+        mnuEditMode.setText("Environment");
 
         mnuRoomEditMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         mnuRoomEditMode.setText("Rooms Edit Mode");
@@ -444,17 +444,25 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mnuEditMode.add(mnuRoomEditMode);
 
-        mnuObjectEditMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
-        mnuObjectEditMode.setText("Objects Edit Mode");
-        mnuObjectEditMode.addActionListener(new java.awt.event.ActionListener() {
+        mnuChangeRenderer.setText("Change Renderer");
+        mnuChangeRenderer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuObjectEditModeActionPerformed(evt);
+                mnuChangeRendererActionPerformed(evt);
             }
         });
-        mnuEditMode.add(mnuObjectEditMode);
+        mnuEditMode.add(mnuChangeRenderer);
+
+        mnuBackground.setText("Change Background");
+        mnuBackground.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuBackgroundActionPerformed(evt);
+            }
+        });
+        mnuEditMode.add(mnuBackground);
 
         jMenu3.setText("Rooms");
 
+        mnuRenameRoom.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
         mnuRenameRoom.setText("Rename Room");
         mnuRenameRoom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -490,29 +498,22 @@ public class MainWindow extends javax.swing.JFrame {
 
         mnuEditMode.add(jMenu3);
 
-        jMenu4.setText("Environment");
-
-        mnuChangeRenderer.setText("Change Renderer");
-        mnuChangeRenderer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuChangeRendererActionPerformed(evt);
-            }
-        });
-        jMenu4.add(mnuChangeRenderer);
-
-        mnuBackground.setText("Change Background");
-        mnuBackground.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuBackgroundActionPerformed(evt);
-            }
-        });
-        jMenu4.add(mnuBackground);
-
-        mnuEditMode.add(jMenu4);
-
         menuBar.add(mnuEditMode);
 
-        jMenu2.setText("Automation");
+        mnuObjects.setText("Objects");
+
+        mnuObjectEditMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
+        mnuObjectEditMode.setText("Objects Edit Mode");
+        mnuObjectEditMode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuObjectEditModeActionPerformed(evt);
+            }
+        });
+        mnuObjects.add(mnuObjectEditMode);
+
+        menuBar.add(mnuObjects);
+
+        jMenu2.setText("Automations");
 
         mnuAutomations.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, 0));
         mnuAutomations.setText("Manage Automations");
@@ -563,7 +564,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuHelp.setText("Help");
 
         submnuHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        submnuHelp.setText("Help");
+        submnuHelp.setText("About");
         submnuHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 submnuHelpActionPerformed(evt);
@@ -849,7 +850,6 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
@@ -866,6 +866,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JMenu mnuHelp;
     private javax.swing.JMenuItem mnuNewEnvironment;
     private javax.swing.JCheckBoxMenuItem mnuObjectEditMode;
+    private javax.swing.JMenu mnuObjects;
     private javax.swing.JMenuItem mnuOpenEnvironment;
     private javax.swing.JMenuItem mnuRemoveRoom;
     private javax.swing.JMenuItem mnuRenameRoom;
