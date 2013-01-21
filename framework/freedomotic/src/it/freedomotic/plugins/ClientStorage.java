@@ -48,6 +48,14 @@ public final class ClientStorage {
             Freedomotic.sendEvent(event);
         }
     }
+    
+    public void dequeue(Client c){
+        if (clients.contains(c)) {
+            clients.remove(c);
+            PluginHasChanged event = new PluginHasChanged(this, c.getName(), PluginActions.DEQUEUE);
+            Freedomotic.sendEvent(event);
+        }
+    }
 
     public static List<Client> getClients() {
         return Collections.unmodifiableList(clients);

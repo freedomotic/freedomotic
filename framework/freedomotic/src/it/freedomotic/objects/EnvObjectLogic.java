@@ -113,7 +113,7 @@ public class EnvObjectLogic {
     public void addTriggerMapping(Trigger trigger, String behaviorName) {
         //checking input parameters
         if (behaviorName == null || behaviorName.isEmpty() || trigger == null) {
-            return;
+            throw new IllegalArgumentException("behavior name and trigger cannot be null");
         }
         //parameters in input are ok, continue...
         Iterator it = pojo.getTriggers().entrySet().iterator();

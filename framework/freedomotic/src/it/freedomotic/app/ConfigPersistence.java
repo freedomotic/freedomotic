@@ -5,6 +5,7 @@
 package it.freedomotic.app;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.ConversionException;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.persistence.FreedomXStream;
@@ -36,7 +37,7 @@ public class ConfigPersistence {
         }
     }
 
-    public static Config deserialize(File file) throws IOException {
+    public static Config deserialize(File file) throws IOException, ConversionException {
         Freedomotic.logger.config("Deserializing configuration from " + file.getAbsolutePath());
         XStream xstream = FreedomXStream.getXstream();
         xstream.autodetectAnnotations(true);

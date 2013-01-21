@@ -211,7 +211,6 @@ public final class Resolver {
                     } catch (ScriptException scriptException) {
                         Freedomotic.logger.severe(scriptException.getMessage());
                     }
-                    System.out.println(js.getContext().toString());
 //                    Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to: '" + script + "' the complete value is '" + possibleScript);
 //                    Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
                     if (js.get(key) == null) {
