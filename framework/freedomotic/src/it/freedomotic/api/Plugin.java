@@ -48,13 +48,15 @@ public class Plugin implements Client {
     protected String shortName;
     protected String listenOn;
     protected String sendOn;
+    private File path;
     final static int SAME_VERSION = 0;
     final static int FIRST_IS_OLDER = -1;
     final static int LAST_IS_OLDER = 1;
 
     public Plugin(String pluginName, String manifestPath) {
         setName(pluginName);
-        init(new File(Info.getDevicesPath() + manifestPath));
+        path = new File(Info.getDevicesPath() + manifestPath);
+        init(path);
     }
 
     public Plugin(String pluginName, Config manifest) {
@@ -64,6 +66,10 @@ public class Plugin implements Client {
 
     public Plugin(String pluginName) {
         setName(pluginName);
+    }
+    
+    public File getFile(){
+        return path;
     }
 
     protected void onStart() {
@@ -302,7 +308,6 @@ public class Plugin implements Client {
         String MAX = Integer.toString(Integer.MAX_VALUE).toString();
         str1 = str1.replaceAll("x", MAX);
         str2 = str2.replaceAll("x", MAX);
-        System.out.println(str1 + "  " + str2);
         String[] vals1 = str1.split("\\.");
         String[] vals2 = str2.split("\\.");
         int i = 0;
@@ -330,5 +335,10 @@ public class Plugin implements Client {
 
     @Override
     public void stop() {
+    }
+    
+    @Override
+    public String toString(){
+        return getName();
     }
 }

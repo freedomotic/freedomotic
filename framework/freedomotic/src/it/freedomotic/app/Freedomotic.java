@@ -397,6 +397,12 @@ public class Freedomotic {
 
     public static void onExit() {
         Freedomotic.logger.info("Exiting application...");
+        //Freedomotic.logger.info("Sending the exit signal (TODO: not yet implemented)");
+        //...send the signal on a topic channel
+        for (Client plugin : ClientStorage.getClients()) {
+            plugin.stop();
+        }
+        //AbstractBusConnector.disconnect();
         ConfigPersistence.serialize(config, new File(Info.getApplicationPath() + "/config/config.xml"));
 
         //save changes to object in the default test environment
@@ -422,14 +428,7 @@ public class Freedomotic {
         } catch (IOException ex) {
             Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //Freedomotic.logger.info("Sending the exit signal (TODO: not yet implemented)");
-        //...send the signal on a topic channel
-        //Freedomotic.logger.info("Force stopping the plugins that are not already stopped");
-        for (Client plugin : ClientStorage.getClients()) {
-            plugin.stop();
-        }
         Freedomotic.logger.info(Profiler.print());
-        AbstractBusConnector.disconnect();
         Profiler.saveToFile();
         System.exit(0);
     }
