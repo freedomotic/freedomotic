@@ -55,6 +55,7 @@ public final class PMix35Gateway implements X10AbstractGateway, SerialDataConsum
                 plugin.setDescription("Connected to " + usb.getPortName());
             } else {
                 plugin.setDescription("Unable to connect to " + config.getProperty("port"));
+                plugin.stop();
             }
         }
     }
