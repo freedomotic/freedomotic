@@ -325,6 +325,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuAutomations = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        mnuPluginConfigure = new javax.swing.JMenuItem();
         mnuWindow = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -536,6 +537,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jCheckBoxMenuItem1);
+
+        mnuPluginConfigure.setText("Configure");
+        mnuPluginConfigure.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuPluginConfigureActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mnuPluginConfigure);
 
         menuBar.add(jMenu1);
 
@@ -845,6 +854,11 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private void mnuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSaveActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_mnuSaveActionPerformed
+
+    private void mnuPluginConfigureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPluginConfigureActionPerformed
+        new PluginConfigure();
+    }//GEN-LAST:event_mnuPluginConfigureActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenu jMenu1;
@@ -868,6 +882,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JCheckBoxMenuItem mnuObjectEditMode;
     private javax.swing.JMenu mnuObjects;
     private javax.swing.JMenuItem mnuOpenEnvironment;
+    private javax.swing.JMenuItem mnuPluginConfigure;
     private javax.swing.JMenuItem mnuRemoveRoom;
     private javax.swing.JMenuItem mnuRenameRoom;
     private javax.swing.JMenuItem mnuRoomBackground;
