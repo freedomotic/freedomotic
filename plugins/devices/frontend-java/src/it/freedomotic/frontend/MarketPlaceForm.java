@@ -71,8 +71,10 @@ public class MarketPlaceForm extends javax.swing.JFrame {
 
     public final void retrieveCategories() {
         for (IPluginCategory pc : pluginCategoryList) {
-            cmbCategory.addItem(pc.getName() + " (" + pc.getPlugins().size() + " plugins)");
-            txtInfo.setText("Retrieved new category: " + pc.getName());
+            if (!pc.getPlugins().isEmpty()) {
+                cmbCategory.addItem(pc.getName() + " (" + pc.getPlugins().size() + " plugins)");
+                txtInfo.setText("Retrieved new category: " + pc.getName());
+            }
         }
         //add listener to category selection changes
         cmbCategory.addActionListener(new ActionListener() {
@@ -86,7 +88,6 @@ public class MarketPlaceForm extends javax.swing.JFrame {
             retrievePlugins(pluginCategoryList.get(0));
         }
         jProgressBar1.setVisible(false);
-        validate();
     }
 
     public final void retrievePlugins(final IPluginCategory category) {
@@ -101,9 +102,9 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 ImageIcon iconCoolPlugin = new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
                 ImageIcon iconClient = new ImageIcon(path + File.separatorChar + "clientIcon1.png", "Icon");
 
-                jPanel1.setLayout(new SpringLayout());
-                jPanel1.removeAll();
-                jPanel1.setBackground(Color.white);
+                pnlMain.setLayout(new SpringLayout());
+                pnlMain.removeAll();
+                pnlMain.setBackground(Color.white);
                 int row = 0;
                 for (final IPluginPackage pp : category.getPlugins()) {
                     txtInfo.setText("Retrieved plugin " + (row + 1) + " of " + category.getPlugins().size());
@@ -157,27 +158,26 @@ public class MarketPlaceForm extends javax.swing.JFrame {
 
                     lblIcon.setPreferredSize(new Dimension(80, 80));
                     lblIcon.setMaximumSize(new Dimension(80, 80));
-                    jPanel1.add(lblIcon);
-                    jPanel1.add(lblName);
-                    jPanel1.add(lblDescription);
-                    jPanel1.add(btnMore);
+                    pnlMain.add(lblIcon);
+                    pnlMain.add(lblName);
+                    pnlMain.add(lblDescription);
+                    pnlMain.add(btnMore);
                     if (btnAction != null) {
-                        jPanel1.add(btnAction);
+                        pnlMain.add(btnAction);
                     } else {
                         JButton disabled = new JButton("Install");
                         disabled.setEnabled(false);
-                        jPanel1.add(disabled);
+                        pnlMain.add(disabled);
                     }
                     row++;
                 }
-                SpringUtilities.makeCompactGrid(jPanel1,
+                SpringUtilities.makeCompactGrid(pnlMain,
                         row, 5, //rows, cols
                         5, 5, //initX, initY
                         5, 5);//xPad, yPad
-                validate();
                 txtInfo.setText("Click on Install button to enable one of this plugins.");
                 jProgressBar1.setVisible(false);
-                validate();
+                pnlMain.repaint();
             }
         };
         retrieveTask.run();
@@ -282,33 +282,54 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         jProgressBar1 = new javax.swing.JProgressBar();
         cmbCategory = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
+        pnlMain = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Freedomotic Official Online Marketplace");
         setMinimumSize(new java.awt.Dimension(521, 370));
-        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
 
         txtInfo.setText("Connecting to online repository...");
-        getContentPane().add(txtInfo);
 
         jProgressBar1.setIndeterminate(true);
-        getContentPane().add(jProgressBar1);
 
-        getContentPane().add(cmbCategory);
+        pnlMain.setLayout(new java.awt.BorderLayout());
+        jScrollPane1.setViewportView(pnlMain);
 
-        jPanel1.setLayout(new java.awt.BorderLayout());
-        jScrollPane1.setViewportView(jPanel1);
-
-        getContentPane().add(jScrollPane1);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36)
+                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+            .addComponent(jScrollPane1)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtInfo)
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(cmbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE))
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cmbCategory;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel pnlMain;
     private javax.swing.JLabel txtInfo;
     // End of variables declaration//GEN-END:variables
 }

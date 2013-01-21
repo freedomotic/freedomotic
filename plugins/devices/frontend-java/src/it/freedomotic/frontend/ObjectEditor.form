@@ -4,7 +4,6 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="title" type="java.lang.String" value="Object Editor"/>
-    <Property name="alwaysOnTop" type="boolean" value="true"/>
     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[2000, 2000]"/>
     </Property>
@@ -106,7 +105,7 @@
                               </Group>
                               <Component id="btnVirtual" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="2148" max="32767" attributes="0"/>
+                          <EmptySpace pref="2165" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -210,7 +209,7 @@
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="btnVirtual">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="is a virtual object (not connected to any sensors or actuators)"/>
+                    <Property name="text" type="java.lang.String" value="is a virtual object (not connected to any sensor or actuator)"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVirtualActionPerformed"/>
@@ -263,20 +262,20 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="1"/>
                                       <Component id="jLabel12" min="-2" max="-2" attributes="1"/>
-                                      <Component id="jLabel13" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="jLabel13" alignment="0" pref="72" max="32767" attributes="1"/>
                                       <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="1" attributes="0">
-                                      <Component id="spnRotation" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="spnRotation" alignment="0" pref="40" max="32767" attributes="1"/>
                                       <Component id="spnScaleHeight" alignment="0" max="32767" attributes="1"/>
                                       <Component id="spnScaleWidth" alignment="0" max="32767" attributes="1"/>
                                       <Component id="spnY" alignment="1" max="32767" attributes="1"/>
                                       <Component id="spnX" alignment="0" max="32767" attributes="1"/>
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="btnChangeImage" max="32767" attributes="1"/>
+                                  <Component id="btnChangeImage" pref="112" max="32767" attributes="1"/>
                                   <EmptySpace min="2343" pref="2343" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -316,7 +315,7 @@
                               <Component id="spnScaleHeight" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="233" max="32767" attributes="0"/>
+                          <EmptySpace pref="234" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
