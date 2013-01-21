@@ -94,9 +94,8 @@
 
     <component name="jsgfGrammar" type="edu.cmu.sphinx.jsgf.JSGFGrammar">
         <property name="dictionary" value="dictionary"/>
-        <property name="grammarLocation"
-                  value="resource:/it/freedomotic/plugins/sphinx/"/>
-        <property name="grammarName" value="commands_1"/>
+        <property name="grammarLocation" value="resource:/it/freedomotic/plugins/sphinx/"/>
+        <property name="grammarName" value="commands_gram.2"/>
         <property name="logMath" value="logMath"/>
     </component>
 
