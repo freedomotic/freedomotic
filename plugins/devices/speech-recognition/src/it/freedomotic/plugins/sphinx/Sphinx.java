@@ -15,19 +15,21 @@ import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
-import edu.cmu.sphinx.util.props.InternalConfigurationException;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.SpeechEvent;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
-import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.util.Info;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,9 +48,10 @@ public class Sphinx extends Protocol {
 
     @Override
     public void onStart() {
+        //setGrammar();
         ConfigurationManager cm;
         cm = new ConfigurationManager(Sphinx.class.getResource("sphinx.config.xml"));
-
+        URL configURL = cm.getConfigURL();
         try {
             recognizer = (Recognizer) cm.lookup("recognizer");
             recognizer.allocate();
@@ -62,7 +65,6 @@ public class Sphinx extends Protocol {
             recognizer.deallocate();
         }
         System.out.println("Say: (turn on | turn off) ( kitchen light | livingroom light | light one | light two )");
-        //getGrammar();
     }
 
     @Override
@@ -72,17 +74,13 @@ public class Sphinx extends Protocol {
         } catch (IllegalStateException illegalStateException) {
         }
     }
-
+    
     @Override
     protected void onRun() {
         while (true) {
             Result result = recognizer.recognize();
             if (result != null) {
                 String resultText = result.getBestFinalResultNoFiller();
-//                if (resultText.trim().isEmpty()){
-//                    resultText="";
-//                }
-                System.out.println("You said: " + resultText);
                 setDescription("You said: " + resultText);
                 if (!resultText.trim().isEmpty()) {
                     SpeechEvent event = new SpeechEvent(this, resultText);
@@ -108,25 +106,28 @@ public class Sphinx extends Protocol {
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-//    private String getGrammar() {
-//        StringBuilder buffer = new StringBuilder();
-//        buffer.append("#JSGF V1.0;\ngrammar hello;\npublic <command> = ( ");
-//        for (Command command : CommandPersistence.getUserCommands()) {
-//            buffer.append(command.getName().replace("-", " ") + " | ");
-//        }
-//        buffer.append(");");
-//        Writer output = null;
-//        System.out.println(buffer.toString());
-//        File file = new File("commands.gram2");
-//        System.out.println(file.getAbsolutePath());
-//        try {
-//            output = new BufferedWriter(new FileWriter(file));
-//            output.write(buffer.toString());
-//            output.close();
-//        } catch (IOException ex) {
-//            Logger.getLogger(Sphinx.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-//        return buffer.toString();
-//    }
+    
+    
+    private String setGrammar() {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("#JSGF V1.0;\ngrammar hello;\npublic <command> = ( ");
+        for (Iterator it = configuration.getTuples().getTuple(0).entrySet().iterator(); it.hasNext();) {
+            Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
+            buffer.append(entry.getKey() + " | ");
+        }
+        buffer.append(");");
+        Writer output = null;
+        System.out.println(buffer.toString());
+        File file = new File(Info.PATH_DATA_FOLDER + "commands.gram2");
+        System.out.println(file.getAbsolutePath());
+        try {
+            output = new BufferedWriter(new FileWriter(file));
+            output.write(buffer.toString());
+            output.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Sphinx.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return buffer.toString();
+    }
 }
