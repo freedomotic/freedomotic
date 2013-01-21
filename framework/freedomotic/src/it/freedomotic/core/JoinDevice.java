@@ -53,7 +53,7 @@ public final class JoinDevice implements BusConsumer {
         channel.consumeFrom(getMessagingChannel());
     }
 
-  protected static EnvObjectLogic join(String clazz, String name, String protocol, String address) {
+    protected static EnvObjectLogic join(String clazz, String name, String protocol, String address) {
         EnvObjectLogic loaded = null;
         try {
             ObjectPlugin objectPlugin = (ObjectPlugin) ClientStorage.get(clazz);
@@ -81,7 +81,7 @@ public final class JoinDevice implements BusConsumer {
                 for (int i = 0; i < addon.getConfiguration().getTuples().size(); i++) {
                     Map tuple = addon.getConfiguration().getTuples().getTuple(i);
                     String regex = (String) tuple.get("object.class");
-                    if (clazz.matches(regex)) {
+                    if (regex != null && clazz.matches(regex)) {
                         //map object behaviors to hardware triggers
                         for (Behavior behavior : loaded.getPojo().getBehaviors()) {
                             String triggerName = (String) tuple.get(behavior.getName());
@@ -124,4 +124,3 @@ public final class JoinDevice implements BusConsumer {
         }
     }
 }
-
