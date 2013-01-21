@@ -6,6 +6,7 @@ package it.freedomotic.marketplace.util;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import it.freedomotic.app.Freedomotic;
 import it.freedomotic.marketplace.postplugin.JavaUploader;
 import it.freedomotic.service.IPluginPackage;
 import java.awt.Image;
@@ -35,8 +36,8 @@ public class DrupalRestHelper {
     public static final String DEFAULTIMAGEPATH = "/sites/default/files/imagefield_default_images/Addons-64_0.png";
     public static ImageIcon defaultIconImage;
 
-    public static List<IPluginPackage> retrieveAllPlugins(){
-       
+    public static List<IPluginPackage> retrieveAllPlugins() {
+
         List<IPluginPackage> pluginPackageList = new ArrayList<IPluginPackage>();
         ArrayList<MarketPlacePluginResume> resumes = retrieveResumes();
         for (MarketPlacePluginResume mpr : resumes) {
@@ -45,7 +46,7 @@ public class DrupalRestHelper {
             }
         }
         return pluginPackageList;
-        
+
     }
 
     protected static ImageIcon retrieveImageIcon(String drupalRelativePath) {
@@ -53,7 +54,7 @@ public class DrupalRestHelper {
         ImageIcon imageIcon = null;
         URL url;
         try {
-            URI uri = new URI(DRUPALSCHEMA, DRUPALPATH, drupalRelativePath,"","");
+            URI uri = new URI(DRUPALSCHEMA, DRUPALPATH, drupalRelativePath, "", "");
             url = uri.toURL();
             Image img = ImageIO.read(url);
             //TODO: scale the same from both dimensions
@@ -68,9 +69,9 @@ public class DrupalRestHelper {
     }
 
     protected static ArrayList<MarketPlacePluginResume> retrieveResumes() {
-        ArrayList<MarketPlacePluginResume> pluginList = new ArrayList<MarketPlacePluginResume>();        
-        try {       
-            ClientResource cr = new ClientResource(DRUPALSCHEMA+"://"+DRUPALPATH+"/rest/node?parameters[type]=plugin");
+        ArrayList<MarketPlacePluginResume> pluginList = new ArrayList<MarketPlacePluginResume>();
+        try {
+            ClientResource cr = new ClientResource(DRUPALSCHEMA + "://" + DRUPALPATH + "/rest/node?parameters[type]=plugin");
             Representation test2 = cr.get();
             String jsonData2;
             jsonData2 = test2.getText();
@@ -79,52 +80,57 @@ public class DrupalRestHelper {
             }.getType();
             pluginList = gson.fromJson(jsonData2, collectionType);
             defaultIconImage = retrieveImageIcon(DEFAULTIMAGEPATH);
-        } catch (IOException ex) 
-        {
-        
-        }         
+        } catch (IOException ex) {
+        }
         return pluginList;
     }
-    
+
     public static ArrayList<MarketPlacePluginCategory> retrieveCategories() {
-        ArrayList<MarketPlacePluginCategory> categoryList = new ArrayList<MarketPlacePluginCategory>();                
+        ArrayList<MarketPlacePluginCategory> categoryList = new ArrayList<MarketPlacePluginCategory>();
         String jsonData = JavaUploader.postTaxonomyGetTree("5");
         Gson gson = new Gson();
         Type collectionType = new TypeToken<ArrayList<MarketPlacePluginCategory>>() {
         }.getType();
-        categoryList = gson.fromJson(jsonData, collectionType);                            
+        categoryList = gson.fromJson(jsonData, collectionType);
         return categoryList;
     }
-    
+
     public static ArrayList<MarketPlacePlugin2> retrievePluginsByCategory(String categoryId) {
         ArrayList<MarketPlacePlugin2> pluginPackageList = new ArrayList<MarketPlacePlugin2>();
-        int page = 0;        
+        int page = 0;
         boolean newData = true;
-        String previousJsonData = "";
-        ArrayList<MarketPlacePlugin2> pagePluginPackageList = new ArrayList<MarketPlacePlugin2>(); 
-        while (newData)
-        {            
-            String jsonData = JavaUploader.postTaxonomySelectNodes(categoryId, page);
-            if (page == 0 || !jsonData.equals(previousJsonData))
-            {                
-                Gson gson = new Gson();
-                Type collectionType = new TypeToken<ArrayList<MarketPlacePlugin2>>() {
-                }.getType();
-                pagePluginPackageList = gson.fromJson(jsonData, collectionType);
-                pluginPackageList.addAll(pagePluginPackageList);
-                page++;
-                previousJsonData = jsonData;
+        String previousJsonData = "EMPTY";
+        ArrayList<MarketPlacePlugin2> pagePluginPackageList = new ArrayList<MarketPlacePlugin2>();
+        while (newData) {
+            String jsonData = "";
+            try {
+                jsonData = JavaUploader.postTaxonomySelectNodes(categoryId, page);
+                if (!jsonData.isEmpty()) {
+                    if (page == 0 || !jsonData.equals(previousJsonData)) {
+                        Gson gson = new Gson();
+                        Type collectionType = new TypeToken<ArrayList<MarketPlacePlugin2>>() {
+                        }.getType();
+                        pagePluginPackageList = gson.fromJson(jsonData, collectionType);
+                        pluginPackageList.addAll(pagePluginPackageList);
+                        page++;
+                        previousJsonData = jsonData;
+                    } else {
+                        newData = false;
+                    }
+                }else{
+                    previousJsonData = "EMPTY";
+                    newData = false;
+                }
+            } catch (Exception e) {
+                Freedomotic.logger.severe(e.getMessage());
             }
-            else
-                newData = false;
-        }        
-        return pluginPackageList;                                                                        
-    
+        }
+        return pluginPackageList;
+
     }
-       
 
     public static IPluginPackage retrievePluginPackage(String uri) {
- 
+
         ClientResource cr = new ClientResource(uri);
         Gson gson;
         try {
@@ -132,13 +138,12 @@ public class DrupalRestHelper {
             gson = new Gson();
             Type collectionType = new TypeToken<MarketPlacePlugin2>() {
             }.getType();
-            return gson.fromJson(jsonData, collectionType);              
-         }catch (IOException ex) {
+            return gson.fromJson(jsonData, collectionType);
+        } catch (IOException ex) {
             //         Logger.getLogger(MarketPlacePluginResume.class.getName()).log(Level.SEVERE, null, ex);
-         }         
-         return null;                                                            
+        }
+        return null;
     }
-
     //Very quick parse, should be done better
     //This is a monster refactor!!!
 //    protected static void fillPluginPackage(PluginPackage pp, String json) {

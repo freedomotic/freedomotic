@@ -7,6 +7,7 @@ package it.freedomotic.marketplace.postplugin;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import it.freedomotic.app.Freedomotic;
 import it.freedomotic.marketplace.util.DrupalRestHelper;
 import it.freedomotic.marketplace.util.MarketPlaceFile;
 import it.freedomotic.marketplace.util.MarketPlacePlugin2;
@@ -25,6 +26,7 @@ import org.restlet.engine.util.Base64;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+import org.restlet.resource.ResourceException;
 
 /**
  *
@@ -43,20 +45,20 @@ public class JavaUploader {
         //String loginJson = login("username", "password");
         //CookieSetting cS = parseCookie(loginJson);
         //String uid = parseUid(loginJson);
-        
+
         //String test = postTaxonomySelectNodes("151",0);        
         List<MarketPlacePlugin2> testlist = DrupalRestHelper.retrievePluginsByCategory("151");
-        
+
 //        MarketPlacePlugin2 pluginTest = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.freedomotic.com/rest/node/394");
 //        putPlugin(cS, "394", pluginTest); 
 //        String nid = "394";
         //if (cS != null) {
-            //String nid = postPlugin(cS, plugin);
-            //String fid = postFile(cS, uid, "/home/gpt/Desarrollo/", "testfile1.zip");            
-            //MarketPlacePluginFileField fileField = new MarketPlacePluginFileField(fid, "file asociated by code");
-            //MarketPlaceFile fileField = postFile(cS, uid, "/home/gpt/Desarrollo/", "testfile1.zip", true);
-            //plugin.setField_file(fileField);
-            //putPlugin(cS, nid, plugin);
+        //String nid = postPlugin(cS, plugin);
+        //String fid = postFile(cS, uid, "/home/gpt/Desarrollo/", "testfile1.zip");            
+        //MarketPlacePluginFileField fileField = new MarketPlacePluginFileField(fid, "file asociated by code");
+        //MarketPlaceFile fileField = postFile(cS, uid, "/home/gpt/Desarrollo/", "testfile1.zip", true);
+        //plugin.setField_file(fileField);
+        //putPlugin(cS, nid, plugin);
         //}        
     }
 
@@ -147,42 +149,14 @@ public class JavaUploader {
     }
 
     /**
-     * 
+     *
      *
      * @return the nid of the created plugin, "" if it has not been created
      */
     public static String postTaxonomyGetTree(String vocabularyNumber) {
         ClientResource cr2 = new ClientResource(DRUPALPATH + "/rest/taxonomy_vocabulary/getTree");
-        String text = "{\"vid\":\""+vocabularyNumber+"\"}";
+        String text = "{\"vid\":\"" + vocabularyNumber + "\"}";
 
-        cr2.setMethod(Method.POST);
-        Representation rep2 = cr2.post(new JsonRepresentation(text));
-        Response resp = cr2.getResponse();
-        String jsonResponse = "";
-        String nid = "";
-        if (resp.getStatus().isSuccess()) {
-            try { 
-               jsonResponse = resp.getEntity().getText();
-                System.out.println(jsonResponse);
-                return jsonResponse;
-            } catch (IOException e) {
-                System.out.println("IOException: " + e.getMessage());
-            }
-        } else {
-            System.out.println(resp.getStatus().getName());
-        }
-        return "";
-    }
-    /**
-     * 
-     *
-     * @return A string with the selected nodes information as JSON representation
-     */
-    public static String postTaxonomySelectNodes(String taxonomyTreeNumber, int page) {
-        //plugin post                 
-        ClientResource cr2 = new ClientResource(DRUPALPATH + "/rest/taxonomy_term/selectNodes?page="+page);        
-        //String text = "{\"tids\":\""+taxonomyTreeNumber+"\",\"pager\":false}";        
-        String text = "{\"tids\":\""+taxonomyTreeNumber+"\"}";                
         cr2.setMethod(Method.POST);
         Representation rep2 = cr2.post(new JsonRepresentation(text));
         Response resp = cr2.getResponse();
@@ -200,18 +174,53 @@ public class JavaUploader {
             System.out.println(resp.getStatus().getName());
         }
         return "";
-
     }
-    
-    
+
+    /**
+     *
+     *
+     * @return A string with the selected nodes information as JSON
+     * representation
+     */
+    public static String postTaxonomySelectNodes(String taxonomyTreeNumber, int page) {
+        //plugin post                 
+        try {
+            ClientResource cr2 = new ClientResource(DRUPALPATH + "/rest/taxonomy_term/selectNodes?page=" + page);
+            //String text = "{\"tids\":\""+taxonomyTreeNumber+"\",\"pager\":false}";        
+            String text = "{\"tids\":\"" + taxonomyTreeNumber + "\"}";
+            cr2.setMethod(Method.POST);
+            JsonRepresentation jsonRepresentation = new JsonRepresentation(text);
+            if (jsonRepresentation != null) {
+                Representation rep2 = cr2.post(jsonRepresentation);
+                Response resp = cr2.getResponse();
+                String jsonResponse = "";
+                String nid = "";
+                if (resp.getStatus().isSuccess()) {
+                    try {
+                        jsonResponse = resp.getEntity().getText();
+                        System.out.println(jsonResponse);
+                        return jsonResponse;
+                    } catch (IOException e) {
+                        System.out.println("IOException: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println(resp.getStatus().getName());
+                }
+            }
+        } catch (ResourceException resourceException) {
+            Freedomotic.logger.warning(resourceException.toString());
+        }
+        return "";
+    }
+
     /**
      * Creates a new plugin info on the drupal site
      *
      * @param cS CookieSetting retrieved from the login method
      * @param plugin Plugin to be posted on the Drupal site
      * @return the nid of the created plugin, "" if it has not been created
-     */    
-    public  static String postPlugin(CookieSetting cS, MarketPlacePlugin plugin) {
+     */
+    public static String postPlugin(CookieSetting cS, MarketPlacePlugin plugin) {
         //plugin post                 
         ClientResource cr2 = new ClientResource(DRUPALPATH + "/rest/node");
         cr2.getRequest().getCookies().add(cS);
@@ -278,17 +287,17 @@ public class JavaUploader {
         pluginResource.setNext(client);
         pluginResource.getRequest().getCookies().add(cS);
         //the only data needed to update a plugin is the node, type, and field_os
-        String pluginData = plugin.formatBaseData() + ",";        
+        String pluginData = plugin.formatBaseData() + ",";
         pluginData += plugin.formatFieldOS() + ",";
-        pluginData +="\"field_category\":{\"0\":{\"value\":\""+plugin.getField_category()+"\"}},";
-        pluginData +="\"field_plugin_category\":{\"0\":{\"value\":\"151\"}}";
+        pluginData += "\"field_category\":{\"0\":{\"value\":\"" + plugin.getField_category() + "\"}},";
+        pluginData += "\"field_plugin_category\":{\"0\":{\"value\":\"151\"}}";
 
-        
+
         //pluginData += "\"field_plugin_category\":[{\"value\":\"151\"},{\"value\":null},{\"value\":null},{\"value\":null},{\"value\":null}]" +",";        
         //pluginData += plugin.formatFieldCategory();
         pluginData += plugin.formatFieldFile();
         pluginData += "}";
-                //+ "}";
+        //+ "}";
         Representation rep = pluginResource.put(new JsonRepresentation(pluginData));
         Response resp2 = pluginResource.getResponse();
         if (resp2.getStatus().isSuccess()) {
@@ -318,14 +327,14 @@ public class JavaUploader {
         pluginResource.setNext(client);
         pluginResource.getRequest().getCookies().add(cS);
         //the only data needed to update a plugin is the node, type, field_os and plugin_category
-        String pluginData = "{"                          
-                           + plugin.formatBaseData() + ","
-                           + plugin.formatFieldCategory() +","
-                           + plugin.formatFieldPluginCategory() + ","
-                           + plugin.formatFieldOS() + ","
-                           + plugin.formatFieldFile()
-                           + "}";
-        System.out.println("PluginData "+ pluginData);
+        String pluginData = "{"
+                + plugin.formatBaseData() + ","
+                + plugin.formatFieldCategory() + ","
+                + plugin.formatFieldPluginCategory() + ","
+                + plugin.formatFieldOS() + ","
+                + plugin.formatFieldFile()
+                + "}";
+        System.out.println("PluginData " + pluginData);
         Representation rep = pluginResource.put(new JsonRepresentation(pluginData));
         Response resp2 = pluginResource.getResponse();
         if (resp2.getStatus().isSuccess()) {
@@ -338,9 +347,9 @@ public class JavaUploader {
             System.out.println(resp2.getStatus().getName());
         }
 
-    }           
-    
-        /**
+    }
+
+    /**
      * Uploads a new file on the drupal site
      *
      * @param cS CookieSetting retrieved from the login method
@@ -384,10 +393,10 @@ public class JavaUploader {
                 System.out.println(jsonResponse);
                 Gson gson = new Gson();
                 Type collectionType = new TypeToken<MarketPlaceFile>() {
-                }.getType();                
+                }.getType();
                 MarketPlaceFile pluginFile = gson.fromJson(jsonResponse, collectionType);
                 pluginFile.setFilename(name);
-                return pluginFile;                                                                           
+                return pluginFile;
             } catch (IOException e) {
                 System.out.println("IOException: " + e.getMessage());
             }
@@ -396,9 +405,6 @@ public class JavaUploader {
         }
         return null;
     }
-    
-    
-    
 
     //Helper method to transform a File to a byte[]
     public static byte[] fileToByteArray(File file) throws FileNotFoundException {
