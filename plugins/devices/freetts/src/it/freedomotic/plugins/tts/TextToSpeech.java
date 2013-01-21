@@ -51,25 +51,19 @@ public class TextToSpeech extends Protocol {
             }
             VoiceManager voiceManager = VoiceManager.getInstance();
             Voice[] voices = voiceManager.getVoices();
-            for (int i = 0; i < voices.length; i++) {
-                Freedomotic.logger.config("Found TTS voice '" + voices[i].getName() + "' (" + voices[i].getDomain() + " domain)");
+            if (voices.length <= 0) {
+                Freedomotic.logger.severe("Cannot use text to speech, no voice found");
+                setDescription("Cannot use text to speech, no voice found");
+                stop();
+            } else {
+                voice.allocate();
             }
-            voice.allocate();
-//            voice.setPitch(90);
-//            voice.setRate(150);
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
     public void say(String message) {
-        System.out.println("say: " + message);
-//        ThreadPoolExecutor executor = new ThreadPoolExecutor(
-//                1, // core size
-//                3, // max size
-//                60, // idle timeout
-//                TimeUnit.SECONDS,
-//                new ArrayBlockingQueue<Runnable>(5)); // queue with a size
         try {
             new TextToSpeech.Speaker(message).start();
         } catch (Exception e) {
