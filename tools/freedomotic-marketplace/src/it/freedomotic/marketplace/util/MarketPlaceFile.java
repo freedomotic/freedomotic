@@ -26,7 +26,7 @@ public class MarketPlaceFile {
     /**
      * @return the filename
      */
-    public String getFilename() {
+    public String getFilename() {        
         return filename;
     }
 

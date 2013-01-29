@@ -6,6 +6,7 @@ package it.freedomotic.marketplace.util;
 
 import it.freedomotic.service.IPluginPackage;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.ImageIcon;
 
 /**
@@ -49,6 +50,7 @@ public class MarketPlacePlugin2 implements IPluginPackage{
     }
 
     @Override
+    @Deprecated
     public String getFilePath() {
         if (field_file!= null)            
             if (field_file.size()>0)
@@ -97,7 +99,16 @@ public class MarketPlacePlugin2 implements IPluginPackage{
         return field_file.size();
     }
     
-
+    public ArrayList<MarketPlaceFile> getFiles()
+    {
+        if (field_file== null)
+            return new ArrayList<MarketPlaceFile>();
+        else
+        {
+            field_file.removeAll(Collections.singleton(null));
+            return field_file;
+        }
+    }
     @Override
     public String getType() {
         return type;
@@ -128,12 +139,13 @@ public class MarketPlacePlugin2 implements IPluginPackage{
     */
     public void addFile(MarketPlaceFile file)
     {
-        String version = extractCorePluginVersion(file.getFilename());
-        boolean found = false;
+        String version = extractCorePluginVersion(file.getFilename());        
+        boolean found = false;                
         //check if the plugin has a file with that version
-        for(MarketPlaceFile pluginFile: field_file)
-        {
-            if (extractCorePluginVersion(pluginFile.getFilename()).equals(version))
+        for(MarketPlaceFile pluginFile: getFiles())
+        {            
+            if (pluginFile.getFilename()!=null &&        
+                extractCorePluginVersion(pluginFile.getFilename()).equals(version))
             {                
                 int index = field_file.indexOf(pluginFile);
                 //Substitute the file
@@ -235,19 +247,20 @@ public class MarketPlacePlugin2 implements IPluginPackage{
     public String formatFieldFile()
     {
         String jsonString= "";
-        for (int i = 0; i < field_file.size(); i++) {
-            MarketPlaceFile pluginFile = field_file.get(i);
+        ArrayList<MarketPlaceFile> files = getFiles();
+        for (int i = 0; i < files.size(); i++) {
+            MarketPlaceFile pluginFile = files.get(i);
             pluginFile.setDescription(extractVersion(pluginFile.getFilename()));
             if(i==0)
             {
                 jsonString += "\"field_file\":{";
             }            
             jsonString+= "\""+i+"\":{"+ pluginFile.formatFile()+"}";
-            if (i!= field_file.size()-1)
+            if (i!= files.size()-1)
             {
               jsonString+= ",";              
             }
-            if(i==field_file.size()-1)
+            if(i==files.size()-1)
             {
                 jsonString += "}";            
             }
@@ -282,6 +295,5 @@ public class MarketPlacePlugin2 implements IPluginPackage{
         } else {
             return filename;
         }
-    }
-    
+    }       
 }
