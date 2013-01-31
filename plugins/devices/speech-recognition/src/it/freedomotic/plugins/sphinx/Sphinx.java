@@ -51,7 +51,6 @@ public class Sphinx extends Protocol {
         //setGrammar();
         ConfigurationManager cm;
         cm = new ConfigurationManager(Sphinx.class.getResource("sphinx.config.xml"));
-        URL configURL = cm.getConfigURL();
         try {
             recognizer = (Recognizer) cm.lookup("recognizer");
             recognizer.allocate();
