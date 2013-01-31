@@ -1,0 +1,16 @@
+
+<it.freedomotic.reactions.Command>
+    <name>Notify event by mail</name>
+    <receiver>app.actuators.messaging.mail.in</receiver>
+    <description>send a mail</description>
+    <hardwareLevel>false</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <editable>false</editable>
+    <properties>
+        <properties>
+            <property name="subject" value="A notification from your home"/>
+            <property name="message" value="@event.description"/>
+        </properties>
+    </properties>
+</it.freedomotic.reactions.Command>
