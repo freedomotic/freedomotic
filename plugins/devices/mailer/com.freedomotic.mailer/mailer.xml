@@ -1,0 +1,12 @@
+
+<config>
+    <properties>
+        <property name="description"        value="Sends emails"/>
+        <property name="category"           value="messaging"/>
+        <property name="short-name"         value="mail"/>
+        <property name="mail.smtp.host"     value="smtp.gmail.com"/>
+        <property name="mail.smtp.port"     value="587"/>
+        <property name="username"           value="youremail@gmail.com"/>
+        <property name="password"           value="yourGmalPassword"/>
+    </properties>
+</config>
