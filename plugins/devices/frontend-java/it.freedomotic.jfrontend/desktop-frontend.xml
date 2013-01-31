@@ -8,5 +8,6 @@
         <property name="short-name"                     value="javadesktop"/>
         <property name="startup-time"                   value="on load"/>
         <property name="automatic-reply-to-commands"    value="false"/>
+        <property name="show.tips"                      value="true"/>
     </properties>
 </config>

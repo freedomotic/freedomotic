@@ -28,6 +28,7 @@ import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.util.Info;
 import it.freedomotic.frontend.utils.OpenDialogFileFilter;
+import it.freedomotic.frontend.utils.TipOfTheDay;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -62,12 +63,16 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow(final JavaDesktopFrontend master) {
         this.master = master;
         setWindowedMode();
-
-
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(new MyDispatcher());
-
+        if (master.configuration.getBooleanProperty("show.tips", true)) {
+            new TipOfTheDay(this);
+        }
     }
+
+//    public void showTipsOnStartup(boolean show) {
+//        master.configuration.setProperty("show.tips", new Boolean(show).toString());
+//    }
 
     private class MyDispatcher implements KeyEventDispatcher {
 
@@ -330,6 +335,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         mnuHelp = new javax.swing.JMenu();
+        mnuTutorial = new javax.swing.JMenuItem();
         submnuHelp = new javax.swing.JMenuItem();
 
         jTextField1.setText("jTextField1");
@@ -572,6 +578,14 @@ public class MainWindow extends javax.swing.JFrame {
 
         mnuHelp.setText("Help");
 
+        mnuTutorial.setText("Tutorial");
+        mnuTutorial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuTutorialActionPerformed(evt);
+            }
+        });
+        mnuHelp.add(mnuTutorial);
+
         submnuHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         submnuHelp.setText("About");
         submnuHelp.addActionListener(new java.awt.event.ActionListener() {
@@ -648,11 +662,11 @@ private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_formComponentResized
 
 private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        if (frameClient.isClosed()) {
-            frameClient.show();
-        } else {
-            frameClient.hide();
-        }
+    if (frameClient.isClosed()) {
+        frameClient.show();
+    } else {
+        frameClient.hide();
+    }
 }//GEN-LAST:event_jMenuItem2ActionPerformed
 
 private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
@@ -859,6 +873,9 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         new PluginConfigure();
     }//GEN-LAST:event_mnuPluginConfigureActionPerformed
 
+    private void mnuTutorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuTutorialActionPerformed
+        new TipOfTheDay(this);
+    }//GEN-LAST:event_mnuTutorialActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenu jMenu1;
@@ -889,6 +906,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JCheckBoxMenuItem mnuRoomEditMode;
     private javax.swing.JMenuItem mnuSave;
     private javax.swing.JMenu mnuSaveAs;
+    private javax.swing.JMenuItem mnuTutorial;
     private javax.swing.JMenu mnuWindow;
     private javax.swing.JScrollPane scrollTxtOut1;
     private javax.swing.JScrollPane scrollTxtOut2;
