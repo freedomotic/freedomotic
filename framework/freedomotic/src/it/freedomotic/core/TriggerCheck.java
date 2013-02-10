@@ -82,6 +82,7 @@ public final class TriggerCheck {
         ArrayList<EnvObjectLogic> affectedObjects = new ArrayList<EnvObjectLogic>();
 
         //join device: add the object on the map if not already there
+        //join device requires to know 'object.class' and 'object.name' properties
         protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
         address = resolved.getPayload().getStatements("event.address").get(0).getValue();
         if (protocol != null && address != null) {
@@ -98,7 +99,8 @@ public final class TriggerCheck {
         //now we have the target object on the map for sure. Apply changes notified by sensors
         boolean done = false;
         for (EnvObjectLogic object : affectedObjects) {
-            boolean executed = object.executeTrigger(resolved); //user trigger->behavior mapping to apply the trigger to this object
+            //uses trigger->behavior mapping to apply the trigger to this object
+            boolean executed = object.executeTrigger(resolved); 
             if (executed) {
                 done = true;
                 long elapsedTime = System.currentTimeMillis() - event.getCreation();
@@ -172,6 +174,7 @@ public final class TriggerCheck {
                                 + "' takes " + (System.currentTimeMillis() - event.getCreation()) + "ms.";
                         Freedomotic.logger.info(info);
                         MessageEvent message = new MessageEvent(null, info);
+                        message.setType("callout"); //display as callout on frontends
                         Freedomotic.sendEvent(message);
                     }
                 }

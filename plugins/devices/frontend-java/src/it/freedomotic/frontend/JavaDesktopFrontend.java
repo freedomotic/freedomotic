@@ -35,10 +35,9 @@ public class JavaDesktopFrontend extends Actuator {
             addEventListener("app.event.sensor.object.behavior.change");
             addEventListener("app.event.sensor.environment.zone.change");
             addEventListener("app.event.sensor.plugin.change");
-            addEventListener("app.event.sensor.messages.>");
+            addEventListener("app.event.sensor.messages.callout");
             //onCommand stuff
             addCommandListener("app.actuators.plugins.controller.in");
-            addCommandListener("command.jfrontend.user.callout");
             createMainWindow(); //creates the main frame
             listDrawer = new ListDrawer();
             listDrawer.setVisible(true);
