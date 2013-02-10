@@ -72,7 +72,7 @@ public abstract class Actuator extends Plugin implements BusConsumer {
     }
     
     public void addCommandListener(String listento) {
-        eventChannel.consumeFrom(listento);
+        channel.consumeFrom(listento);
     }
 
     public String listenMessagesOn() {
