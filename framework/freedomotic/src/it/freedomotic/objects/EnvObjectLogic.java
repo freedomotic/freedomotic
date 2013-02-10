@@ -271,7 +271,11 @@ public class EnvObjectLogic {
         String behavior = getAction(t.getName());
         if (behavior == null) {
             //Freedomotic.logger.severe("Hardware trigger '" + t.getName() + "' is not bound to any action of object " + this.getPojo().getName());
-            return false;
+            //check if the behavior name is written in the trigger
+            behavior = t.getPayload().getStatements("behavior.name").get(0).getValue();
+            if (behavior.isEmpty()) {
+                return false;
+            }
         }
 
         Statement valueStatement = t.getPayload().getStatements("behaviorValue").get(0);
@@ -381,12 +385,12 @@ public class EnvObjectLogic {
             String commandName = pojo.getActions().getProperty(action);
             Command command = CommandPersistence.getHardwareCommand(commandName);
             if (command != null) {
-                Freedomotic.logger.config("Caching the command '" + command.getName() + 
-                        "' as related to action '" + action + "' ");
+                Freedomotic.logger.config("Caching the command '" + command.getName()
+                        + "' as related to action '" + action + "' ");
                 setAction(action, command);
             } else {
-                Freedomotic.logger.config("Don't exist a command called '" + commandName + 
-                        "' is not possible to bound this command to action '" + action + "' of " + this.getPojo().getName());
+                Freedomotic.logger.config("Don't exist a command called '" + commandName
+                        + "' is not possible to bound this command to action '" + action + "' of " + this.getPojo().getName());
             }
         }
     }

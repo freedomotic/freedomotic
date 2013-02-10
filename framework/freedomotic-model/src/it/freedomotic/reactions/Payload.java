@@ -181,6 +181,7 @@ public final class Payload implements Serializable {
         return false;
     }
 
+    
     public List<Statement> getStatements(String attribute) {
         ArrayList<Statement> statements = new ArrayList<Statement>();
         for (Statement i : payload) {
@@ -189,6 +190,21 @@ public final class Payload implements Serializable {
             }
         }
         return statements;
+    }
+
+    /**
+     * Returns the value of the statement.
+     * BEWARE: there can be more the one statement with the same key. This 
+     * method returns the first occurrence only.
+     * @param attribute is the key of the statement
+     * @return the String value of the statement
+     */
+    public String getStatementValue(String attribute) {
+        List<Statement> statements = getStatements(attribute);
+        if (statements != null && !statements.isEmpty()) {
+            return statements.get(0).getValue();
+        }
+        return "";
     }
 
     public Iterator iterator() {
