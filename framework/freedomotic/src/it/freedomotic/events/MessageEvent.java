@@ -16,18 +16,59 @@ public class MessageEvent extends EventTemplate {
     public MessageEvent(Object source, String message) {
         super(source);
         this.getPayload().addStatement("message.text", message);
+        //set a default message type
+        this.getPayload().addStatement("message.type", "callout");
     }
 
+    /**
+     * Type of message. For example 'callout', 'mail', ...
+     * This is used to build the destination of the message. If this is
+     * 'mail' then the destination address will be
+     * app.event.sensor.messages.mail
+     * if it is 'callout' this event is sent on channel
+     * app.event.sensor.messages.callout
+     * @param type 
+     */
     public void setType(String type) {
         this.getPayload().addStatement("message.type", type);
     }
 
-    public void setMedium(String medium) {
-        this.getPayload().addStatement("message.medium", medium);
+    /**
+     * After how many milliseconds this message should expire
+     * @param expires 
+     */
+    public void setExpiration(long expires) {
+        this.getPayload().addStatement("message.expires", new Long(expires).toString());
     }
-
-    public void setExpiration(Date expires) {
-        this.getPayload().addStatement("message.expires", expires.toString());
+    
+    /**
+     * Sets the name of the sender, for example an email address
+     * @param from 
+     */
+    public void setFrom(String from) {
+        this.getPayload().addStatement("message.from", from);
+    }
+    
+    /**
+     * Sets the receiver of the message, for example a receiver address.
+     * This property can be OPTIONAL or REQUIRED depending on the 'message.type'
+     * property (which can be set using setType(String type)
+     * @param to 
+     */
+    public void setTo(String to) {
+        this.getPayload().addStatement("message.to", to);
+    }
+    
+    public String getFrom(){
+        return getPayload().getStatementValue("message.from");
+    }
+    
+    public String getTo(){
+        return getPayload().getStatementValue("message.to");
+    }
+    
+    public String getText(){
+        return getPayload().getStatementValue("message.text");
     }
 
     @Override
