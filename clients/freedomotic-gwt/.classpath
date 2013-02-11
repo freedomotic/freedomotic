@@ -4,7 +4,6 @@
 	<classpathentry kind="src" output="test-classes" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/gwt-awt-0.0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/org.restlet-gwt-2.1rc5.jar"/>
 	<classpathentry kind="lib" path="lib/org.restlet.ext.gwt.jar"/>
 	<classpathentry kind="lib" path="lib/org.restlet.ext.servlet.jar"/>
 	<classpathentry kind="lib" path="lib/org.restlet.jar"/>
@@ -13,5 +12,6 @@
 	<classpathentry kind="lib" path="/home/gpt/Desarrollo/freedomotic_test/freedomotic/lib/freedomotic-model.jar"/>
 	<classpathentry kind="lib" path="/home/gpt/Desarrollo/freedomotic_test/freedomotic/plugins/devices/es.gpulido.restapi/lib/RestApiInterfaces.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/GWT"/>
+	<classpathentry kind="lib" path="/home/gpt/Desarrollo/TestGWT/freedomotic/clients/freedomotic-gwt/lib/org.restlet-gwt-2.1.1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
