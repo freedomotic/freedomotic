@@ -1,9 +1,9 @@
 package it.freedomotic.gwtclient.client;
 
 import it.freedomotic.gwtclient.client.api.FreedomoticStompHelper;
-import it.freedomotic.gwtclient.client.api.ObjectsResourceProxy;
-import it.freedomotic.gwtclient.client.api.Payload;
+import it.freedomotic.gwtclient.client.api.proxies.ObjectsResourceProxy;
 import it.freedomotic.model.object.EnvObject;
+import it.freedomotic.reactions.Payload;
 
 import java.util.ArrayList;
 import java.util.HashMap;
