@@ -1,4 +1,4 @@
-package it.freedomotic.gwtclient.client.api;
+package it.freedomotic.gwtclient.client.api.proxies;
 
 import it.freedomotic.model.object.EnvObject;
 

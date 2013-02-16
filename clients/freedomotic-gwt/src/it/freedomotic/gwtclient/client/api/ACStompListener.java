@@ -1,7 +1,6 @@
 package it.freedomotic.gwtclient.client.api;
 
 
-
 import com.furiousbob.jms.client.Message;
 import com.furiousbob.jms.client.MessageListener;
 import com.furiousbob.jms.client.StompClient;

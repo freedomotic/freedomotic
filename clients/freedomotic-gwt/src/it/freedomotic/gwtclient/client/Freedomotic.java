@@ -18,7 +18,7 @@ import org.vectomatic.dom.svg.ui.SVGImage;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
 import it.freedomotic.gwtclient.client.api.EnvironmentController;
-import it.freedomotic.gwtclient.client.api.FreedomoticUrlResourceProxy;
+import it.freedomotic.gwtclient.client.api.proxies.FreedomoticUrlResourceProxy;
 import it.freedomotic.gwtclient.client.widgets.ConfigurationDialog;
 import it.freedomotic.gwtclient.client.widgets.FloorPlanWidget;
 import it.freedomotic.gwtclient.client.widgets.OkCancelDialogCallback;

@@ -2,13 +2,20 @@ package it.freedomotic.gwtclient.client.api;
 
 
 
+import it.freedomotic.reactions.Payload;
+import it.freedomotic.reactions.Statement;
+
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
 
-//helper class with methods to parse messages from the stomp queue
+//
+/**
+ * @author gpt
+ *h elper class with methods to parse messages from the stomp queue
+ */
 public class FreedomoticStompHelper {
 
 
