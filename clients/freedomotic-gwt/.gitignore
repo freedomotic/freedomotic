@@ -29,3 +29,6 @@ war/WEB-INF/classes/
 # add html removed files
 !*.html
 !*.HTML
+
+#gwt logs
+.gwt/.gwt-log
