@@ -4,6 +4,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.bus.EventChannel;
+import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import java.io.IOException;
@@ -83,6 +84,8 @@ public abstract class Protocol extends Plugin implements BusConsumer {
             onStart();
             sensorThread = new Protocol.SensorThread();
             sensorThread.start();
+            PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
+            Freedomotic.sendEvent(event);
         }
     }
 
@@ -93,6 +96,8 @@ public abstract class Protocol extends Plugin implements BusConsumer {
             onStop();
             sensorThread = null;
             notify();
+            PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
+            Freedomotic.sendEvent(event);
         }
     }
 
