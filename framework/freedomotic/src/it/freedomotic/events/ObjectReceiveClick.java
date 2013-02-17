@@ -4,15 +4,14 @@
  */
 package it.freedomotic.events;
 
-import com.thoughtworks.xstream.XStream;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.persistence.FreedomXStream;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
 /**
- * An object receives a click on its representation on the GUI. Different types
+ * Channel <b>app.event.sensor.object.behavior.clicked</b> informs that an
+ * object is clicked on a frontend. Different types
  * of click are supported (single_click, double_click, right_click)
  *
  * @author Enrico

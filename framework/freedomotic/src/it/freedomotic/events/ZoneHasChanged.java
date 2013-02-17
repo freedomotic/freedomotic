@@ -5,7 +5,8 @@ import it.freedomotic.environment.Room;
 import it.freedomotic.model.environment.Zone;
 
 /**
- *
+ * Channel <b>app.event.sensor.environment.zone.change</b> informs that a zone
+ * (eg: an environment room) has changed its state (zone description or zone topology)
  * @author Enrico
  */
 public class ZoneHasChanged extends EventTemplate {

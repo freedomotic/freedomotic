@@ -10,8 +10,8 @@ import it.freedomotic.core.TriggerCheck;
 import it.freedomotic.reactions.Trigger;
 
 /**
- * Notify a state change for an object identified by the protocol and address
- * values.
+ * Channel <b>app.event.sensor.protocol.read.PROTOCOL_NAME</b> informs about
+ * state changes of objects identified by protocol PROTOCOL_NAME
  *
  * @author Enrico
  */

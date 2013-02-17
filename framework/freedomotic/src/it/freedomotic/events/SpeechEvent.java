@@ -14,7 +14,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Channel <b>app.event.sensor.speech</b> informs that a speech recognition 
+ * plugin have recognized a string of text. This event makes freedomotic execute
+ * the most similar command.
  * @author enrico
  */
 public class SpeechEvent extends EventTemplate {
