@@ -7,15 +7,21 @@ package it.freedomotic.events;
 import it.freedomotic.api.EventTemplate;
 
 /**
- *
+ * Channel <b>app.event.sensor.plugin.change</b> informs about plugin related 
+ * events like plugin started, stopped, description
+ * changes, and so on.
+ * 
  * @author Enrico
  */
 public class PluginHasChanged extends EventTemplate {
 
     public enum PluginActions {
-
-        SHOW, HIDE, DISPOSE, MAXIMIZE, MINIMIZE, START, STOP, ENQUEUE, DEQUEUE, DESCRIPTION
-    };
+        SHOW, HIDE, 
+        DESCRIPTION,
+        START, STOP, DISPOSE, 
+        MAXIMIZE, MINIMIZE, 
+        ENQUEUE, DEQUEUE
+   };
 
 
     public PluginHasChanged(Object source, String pluginName, PluginActions action) {

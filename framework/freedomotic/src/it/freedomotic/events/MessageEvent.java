@@ -8,7 +8,19 @@ import it.freedomotic.api.EventTemplate;
 import java.util.Date;
 
 /**
- *
+ * Channel <b>app.event.sensor.messages.MESSAGE_TYPE</b> informs that freedomotic
+ * needs to inform the user with a message. The message type can be rendered on screen,
+ * sent by email or other delivery methods depending on the specified MESSAGE_TYPE.
+ * The MESSAGE_TYPE is a simple string like
+ * <li>callout<li>
+ * <li>mail<li>
+ * <li>dialog<li>
+ * 
+ * depending on the value of this string the message is send on a different channel
+ * for example 'app.event.sensor.messages.callout' or 'app.event.sensor.messages.mail'
+ * so it can be received listened by different plugins that can implement the
+ * messaging feature their way.
+ * 
  * @author enrico
  */
 public class MessageEvent extends EventTemplate {

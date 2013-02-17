@@ -26,8 +26,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * An object has changed its behavior (eg: a light change behavior from off to
- * on).
+ * Channel <b>app.event.sensor.object.behavior.change</b> informs that an object 
+ * has changed its behavior (eg: a light change behavior from off to on).
  *
  * Available tokens for triggers:
  *
