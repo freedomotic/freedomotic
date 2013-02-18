@@ -4,6 +4,9 @@
  */
 package it.freedomotic.restapi.server.interfaces;
 
+import it.freedomotic.model.object.EnvObject;
+import it.freedomotic.restapi.model.PluginPojo;
+import java.util.ArrayList;
 import org.restlet.resource.Get;
 
 /**
@@ -12,5 +15,7 @@ import org.restlet.resource.Get;
  */
 public interface PluginsResource extends FreedomoticResource{
    
+    @Get("object|gwt_object")
+    public ArrayList<PluginPojo> retrievePlugins();
   
 }
