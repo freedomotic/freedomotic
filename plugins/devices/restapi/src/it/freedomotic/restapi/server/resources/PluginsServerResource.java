@@ -4,6 +4,7 @@
  */
 package it.freedomotic.restapi.server.resources;
 
+import it.freedomotic.restapi.model.PluginPojo;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import it.freedomotic.api.Client;
@@ -41,7 +42,7 @@ public class PluginsServerResource extends ServerResource implements PluginsReso
         return ret;                
     }
     
-        @Override
+    @Override
     public String retrieveJson() {        
         String ret = "";
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
@@ -49,6 +50,13 @@ public class PluginsServerResource extends ServerResource implements PluginsReso
         ret = xstream.toXML(plugins);        
         return ret;
     }
+
+    @Override
+    public ArrayList<PluginPojo> retrievePlugins() {
+        return plugins;
+    }
+    
+    
 
   
 }

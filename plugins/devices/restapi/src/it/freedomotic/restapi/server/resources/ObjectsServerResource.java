@@ -59,7 +59,6 @@ public class ObjectsServerResource extends ServerResource implements ObjectsReso
     
     @Override
     public ArrayList<EnvObject> retrieveObjects() {
-        System.out.println("retrieveObjects: "+ objects.toString());
         return objects;
     }
 }
