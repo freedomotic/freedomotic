@@ -49,6 +49,7 @@ Thumbs.db
 Desktop.ini
 *~
 *.lck
+*.deb
 
 # Freedomotic #
 ###############

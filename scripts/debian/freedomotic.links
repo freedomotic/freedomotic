@@ -1,0 +1,6 @@
+usr/share/freedomotic/freedomotic.sh 	usr/bin/freedomotic
+etc/freedomotic				usr/share/freedomotic/config
+var/lib/freedomotic			usr/share/freedomotic/data
+var/log/freedomotic			usr/share/freedomotic/log
+usr/lib/jni/librxtxSerial.so 		etc/freedomotic/serial/linux/i386/librxtxSerial.so
+

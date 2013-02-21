@@ -150,7 +150,7 @@
         <mkdir dir="plugins/providers"/>
         <mkdir dir="plugins/events"/>
         <mkdir dir="data"/>
-        
+   
         <echo>  Add jar file and libraries</echo>
         <copy todir="${release-folder}">
             <fileset dir="dist" includes="**/*" /> 
@@ -172,15 +172,25 @@
         </copy>
         
         <!--<echo>Append changes to CHANGELOG file</echo>	
-        <antcall target="-create-changelog" />-->
+        <antcall target="-create-changelog" />-->        
 
         <echo>  Add exe and changelog file and licensing info taken from shared folder</echo>
         <copy todir="${release-folder}">
             <fileset dir="${include}" includes="**/*" />
         </copy>
         
+	
         <echo>  Creating logger directory</echo>
         <mkdir dir="${release-folder}/log" />
+        
+         <if> 
+            <isset property = "generate_deb"/> 
+            <then>                   
+                <antcall target="generate-deb">            
+                </antcall>
+            </then>
+        </if>
+                   
         
         <echo>Compress the whole release folder</echo>
         <delete dir="${release-dump}" />
@@ -190,7 +200,7 @@
             <entry  key="upload.release.build" value="${build.number}"/>
             <entry  key="upload.file.name" value="freedomotic-${release.version}.${build.number}.zip"/>
         </propertyfile>
-        <delete dir="${release-folder}" />
+        <delete dir="${release-folder}" /> 
         <echo>FINISH... Release created. Now it is ready to be distributed.</echo>
     </target>
     
@@ -249,5 +259,30 @@
         </if>
  
     </target>
-    
+    <target name="generate-deb" >
+    <echo>  Add debian folder for .deb creation</echo>
+        <copy todir="${release-folder}/debian">
+            <fileset dir="${workspace-base}/scripts/debian" includes="**/*" />
+        </copy>    
+  
+        <echo>  Creating .deb package</echo>
+	<exec executable="chmod" dir="${release-folder}" os="Linux">
+		<arg value="a+x"/>
+		<arg value="debian/rules"/>
+	</exec>
+	<exec executable="fakeroot" dir="${release-folder}" os="Linux"> 
+		<arg value="debian/rules"/>
+		<arg value="clean"/>
+	</exec>
+        <exec executable="fakeroot" dir="${release-folder}" os="Linux">
+                <arg value="debian/rules"/>
+                <arg value="binary"/>
+        </exec>
+	<echo>Moving .deb file </echo>
+	<copy todir="$workspace-base}">
+		<fileset dir="${release-base}" includes="**/*.deb" />
+	</copy>
+	<echo>Deleting debian folder before compressing</echo>
+	<delete dir="${release-folder}/debian" />
+     </target>
 </project>
