@@ -1,0 +1,10 @@
+freedomotic.jar				usr/share/freedomotic
+freedomotic.sh				usr/share/freedomotic
+config/config.xml			etc/freedomotic
+config/validator                	etc/freedomotic
+data/*					var/lib/freedomotic
+plugins/*				usr/share/freedomotic/plugins
+lib/*					usr/share/freedomotic/lib
+javadoc/*				usr/share/doc/freedomotic/javadoc
+log/.placeholder			var/log/freedomotic
+config/serial/linux/i386/.placeholder	etc/freedomotic/serial/linux/i386		
