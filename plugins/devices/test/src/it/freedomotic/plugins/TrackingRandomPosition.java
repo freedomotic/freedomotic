@@ -4,77 +4,84 @@
  */
 package it.freedomotic.plugins;
 
-import it.freedomotic.api.Sensor;
+import it.freedomotic.api.EventTemplate;
+import it.freedomotic.api.Protocol;
+import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.UnableToExecuteException;
+import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.impl.Person;
 import it.freedomotic.objects.EnvObjectPersistence;
-import java.awt.Point;
+import it.freedomotic.objects.impl.Person;
+import it.freedomotic.reactions.Command;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Random;
 
 /**
  *
  * @author Enrico
  */
-public class TrackingRandomPosition extends Sensor {
-
-    OutputStream out;
-    boolean connected = false;
-    final int SLEEP_TIME = 1000;
-    final int NUM_MOTE = configuration.getIntProperty("people-count", 1);
+public class TrackingRandomPosition extends Protocol {
 
     public TrackingRandomPosition() {
-        super("Tracking Simulator (Random)", "/it.nicoletti.test/tracking-simulator-random.xml");
-        setDescription("It simulates a motes WSN that send information about movable sensors position. Positions are randomly generated");
-        setAsPollingSensor();
+        //set plugin name and manufest path
+        super("Tracking Simulator (Random)", 
+                "/it.nicoletti.test/tracking-simulator-random.xml");
+        //set plugin description
+        setDescription("It simulates a motes WSN that send information about "
+                + "movable sensors position. Positions are randomly generated");
+        //wait time between events generation
+        //onRun() is called every 2000 milliseconds
+        setPollingWait(2000);
     }
 
 
     private boolean canGo(int destX, int destY) {
+        //can be reimplemented
+        //always true
         return true;
     }
 
-    private Point inventPosition() {
+    private FreedomPoint randomLocation() {
         int x = 0, y = 0;
         boolean validPos = false;
         while (!validPos) {
-
-            Random rsegno = new Random();
-            int segno = rsegno.nextInt(2);
-
             Random rx = new Random();
             Random ry = new Random();
-            x = rx.nextInt(700);
-            y = ry.nextInt(700);
+            x = rx.nextInt(Freedomotic.environment.getPojo().getWidth());
+            y = ry.nextInt(Freedomotic.environment.getPojo().getHeight());
             if (canGo(x, y)) {
                 validPos = true;
             }
         }
-        return new Point(x, y);
+        return new FreedomPoint(x, y);
     }
 
     protected void onRun() {
-        Random numero = new Random();
-        int s = numero.nextInt(SLEEP_TIME);
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException interruptedException) {
-        }
-
         for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
             if (object instanceof it.freedomotic.objects.impl.Person){
                 Person person = (Person)object;
-                Point position = inventPosition();
-                person.getPojo().setCurrentRepresentation(0);
-                person.getPojo().getCurrentRepresentation().setOffset((int)position.getX(), (int)position.getY());
+                FreedomPoint location = randomLocation();
+                person.getPojo().getCurrentRepresentation().setOffset(
+                        (int)location.getX(), 
+                        (int)location.getY()
+                        );
+                person.setChanged(true);
             }
         }
     }
 
     @Override
-    protected void onInformationRequest() throws IOException, UnableToExecuteException {
+    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
+        //do nothing, this plugin just sends events
+    }
+
+    @Override
+    protected boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected void onEvent(EventTemplate event) {
+        //do nothing, no external event is listened
     }
 }
