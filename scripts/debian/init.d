@@ -17,10 +17,12 @@
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC=freedomotic             # Introduce a short description here
 NAME=freedomotic             # Introduce the short server's name here
-DAEMON=/usr/sbin/freedomotic # Introduce the server's location here
+DAEMON=/usr/bin/freedomotic # Introduce the server's location here
 DAEMON_ARGS=""             # Arguments to run the daemon with
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
+RUNAS_USER=freedomotic
+RUNAS_GRP=freedomotic
 
 # Exit if the package is not installed
 [ -x $DAEMON ] || exit 0
@@ -28,6 +30,7 @@ SCRIPTNAME=/etc/init.d/$NAME
 # Read configuration variable file if it is present
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
+[ $AUTO_START -eq 1 ] || exit 0
 # Load the VERBOSE setting and other rcS variables
 . /lib/init/vars.sh
 
@@ -44,9 +47,9 @@ do_start()
 	#   0 if daemon has been started
 	#   1 if daemon was already running
 	#   2 if daemon could not be started
-	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
+	start-stop-daemon --start --quiet --user $RUNAS_USER --group $RUNAS_GRP --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
 		|| return 1
-	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $DAEMON -- \
+	start-stop-daemon --start --quiet --user $RUNAS_USER --group $RUNAS_GRP --pidfile $PIDFILE --exec $DAEMON -- \
 		$DAEMON_ARGS \
 		|| return 2
 	# Add code here, if necessary, that waits for the process to be ready

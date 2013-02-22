@@ -20,12 +20,20 @@ set -e
 
 
 case "$1" in
-    purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
-    ;;
+	purge)
+	rm /etc/freedomotic -r
+	rm /usr/share/freedomotic -r
+	rm /var/lib/freedomotic -r
+	rm /var/log/freedomotic -r
+	delgroup freedomotic
+	deluser freedomotic
+	;;
+	remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    	;;
 
-    *)
-        echo "postrm called with unknown argument \`$1'" >&2
-        exit 1
+	*)
+        	echo "postrm called with unknown argument \`$1'" >&2
+        	exit 1
     ;;
 esac
 

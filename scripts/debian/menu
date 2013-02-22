@@ -1,0 +1,2 @@
+?package(freedomotic):needs="X11|text|vc|wm" section="Applications/Normal applications"\
+  title="freedomotic" command="/usr/bin/freedomotic"
