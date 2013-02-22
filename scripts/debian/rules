@@ -19,4 +19,4 @@ override_dh_builddeb:
 override_dh_auto_build:
 	chmod a+x freedomotic.sh 
 	touch log/.placeholder
-	touch config/serial/linux/i386/.placeholder
+

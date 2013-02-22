@@ -11,8 +11,8 @@ Homepage: http://www.freedomotic.com
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/freedomotic.git;a=summary
 
 Package: freedomotic
-Architecture: any
-Depends: ${misc:depends}, default-jre, librxtx-java, adduser
+Architecture: all
+Depends: default-jre, librxtx-java, adduser
 Description: Freedomotic - open Source building Automation
  Freedomotic is an open, flexible, scalable and mashups oriented software 
  that can interact with well known standard building automation protocols

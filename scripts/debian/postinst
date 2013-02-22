@@ -23,7 +23,7 @@ case "$1" in
           # If the package has default file it could be sourced, so that
        # the local admin can overwrite the defaults
 
-       [ -f "/etc/default/freedomotic" ] && . /etc/default/packagename
+       [ -f "/etc/default/freedomotic" ] && . /etc/default/freedomotic
 
        # Sane defaults:
 
@@ -31,9 +31,6 @@ case "$1" in
        [ -z "$SERVER_USER" ] && SERVER_USER=freedomotic
        [ -z "$SERVER_NAME" ] && SERVER_NAME="Freedomotic"
        [ -z "$SERVER_GROUP" ] && SERVER_GROUP=freedomotic
-
-       # Groups that the user will be added to, if undefined, then none.
-       ADDGROUP=""
 
        # create user to avoid running server as root
        # 1. create group if not existing
@@ -60,6 +57,48 @@ case "$1" in
                -d $SERVER_HOME   \
                -g $SERVER_GROUP  \
                   $SERVER_USER
+
+#  Create correct dir and link for the librxtx-java.so
+	RXTXLIB=/usr/lib/jni/librxtxSerial.so
+	ARCHDIR=/etc/$SERVER_USER/serial/linux
+	DESTDIR=none
+	case $(uname -i) in
+	i386)
+		DESTDIR=i386
+	;;
+	arm)
+		DESTDIR=arm
+	;;
+	amd64)
+		DESTDIR=amd64
+	;;
+	x86_64)
+		DESTDIR=x86
+	;;
+	unknown)
+		case $(uname -m) in
+		arm6vl)
+			DESTDIR=arm
+		;;
+		x86_64)
+			DESTDIR=x86
+		;;
+		*)
+			echo "ERROR: UNIDENTIFIED ARCHITECTURE FOR `uname -a`"
+		;;
+		esac
+	;;
+	*)
+		echo "ERROR: DON'T KNOW WHAT TO DO WITH ARCHITECTURE `arch`"
+	;;
+	esac
+
+	if [ DESTDIR != "none" ]
+	then
+		mkdir -p $ARCHDIR/$DESTDIR
+		ln -sf $RXTXLIB $ARCHDIR/$DESTDIR/
+	fi
+
        # 5. adjust file and directory permissions
        if ! dpkg-statoverride --list $SERVER_HOME >/dev/null
        then
@@ -73,15 +112,6 @@ case "$1" in
 	   chmod -R u=rwx,g=rwx,o= /var/log/$SERVER_USER
 	   chmod -R u=rwx,g=rwx,o= /usr/share/$SERVER_USER
        fi
-       # 6. Add the user to the ADDGROUP group
-#       if test -n $ADDGROUP
-#       then
-#           if ! groups $SERVER_USER | cut -d: -f2 | \
-#              grep -qw $ADDGROUP; then
-#                adduser $SERVER_USER $ADDGROUP
-#           fi
-#       fi
-
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

@@ -5,6 +5,7 @@
 #
 # This is a POSIX shell fragment
 #
+AUTO_START=0
 
 # Additional options that are passed to the Daemon.
 DAEMON_OPTS=""
