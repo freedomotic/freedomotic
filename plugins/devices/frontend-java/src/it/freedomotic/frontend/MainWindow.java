@@ -617,7 +617,7 @@ public class MainWindow extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, ""
                 + "Author: " + Info.getAuthor() + "\n"
                 + "E-mail: " + Info.getAuthorMail() + "\n"
-                + "Release: " + Info.getReleaseDate() + " - v" + Info.getVersion() + "\n"
+                + "Release: " + Info.getReleaseDate() + ". " + Info.getVersionCodeName()+" - v" + Info.getVersion() + "\n"
                 + "Licence: " + Info.getLicense() + "\n\n"
                 + "You can find support on:\n"
                 + "http://code.google.com/p/freedomotic/" + "\n"
