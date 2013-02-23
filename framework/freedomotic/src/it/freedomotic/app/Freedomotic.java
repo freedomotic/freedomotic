@@ -26,7 +26,6 @@ import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.EventTemplate;
-import it.freedomotic.bus.AbstractBusConnector;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.bus.EventChannel;
 import it.freedomotic.core.BehaviorManager;

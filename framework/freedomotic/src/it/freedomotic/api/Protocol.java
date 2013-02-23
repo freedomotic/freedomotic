@@ -8,6 +8,7 @@ import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.Destination;
@@ -39,6 +40,11 @@ public abstract class Protocol extends Plugin implements BusConsumer {
         super(pluginName, manifest);
         POLLING_WAIT_TIME = -1; //just to be sure
         register();
+        try {
+            findAnnotations();
+        } catch (Exception ex) {
+            Logger.getLogger(Protocol.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void register() {
@@ -107,6 +113,10 @@ public abstract class Protocol extends Plugin implements BusConsumer {
         }
     }
 
+    public int getScheduleRate() {
+        return POLLING_WAIT_TIME;
+    }
+
     private boolean isPollingSensor() {
         if (POLLING_WAIT_TIME > 0) {
             return true;
@@ -171,6 +181,7 @@ public abstract class Protocol extends Plugin implements BusConsumer {
             }
         }
     }
+
     protected Command send(Command command) {
         return commandsChannel.send(command);
     }
@@ -201,6 +212,27 @@ public abstract class Protocol extends Plugin implements BusConsumer {
                 if (isRunning) {
                     onRun();
                 }
+            }
+        }
+    }
+
+    private void findAnnotations() throws Exception {
+        Class<? extends Protocol> currClass = getClass();
+        Method[] methods = currClass.getDeclaredMethods();
+
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(Schedule.class)) {
+                Schedule schedule = method.getAnnotation(Schedule.class);
+                int rate = schedule.rate();
+                System.out.println("EXPERIMENTAL: found @Schedule annotation in " + currClass.getCanonicalName());
+                setPollingWait(rate);
+            } else {
+                if (method.isAnnotationPresent(ListenEventsOn.class)) {
+                    ListenEventsOn listen = method.getAnnotation(ListenEventsOn.class);
+                    String channel = listen.channel();
+                    eventsChannel.consumeFrom(channel, method);
+                }
+                //TODO: serach for ListenCommandOn annotations
             }
         }
     }
