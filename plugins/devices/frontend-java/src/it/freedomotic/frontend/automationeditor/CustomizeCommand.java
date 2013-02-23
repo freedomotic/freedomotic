@@ -15,13 +15,19 @@ import it.freedomotic.api.Actuator;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.frontend.utils.PropertiesPanel_1;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.reactions.Command;
-import it.freedomotic.frontend.utils.PropertiesPanel_1;
+import it.freedomotic.reactions.CommandPersistence;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 /**
  *
@@ -31,7 +37,8 @@ public class CustomizeCommand extends javax.swing.JFrame {
 
     ReactionList main;
     Command original;
-    PropertiesPanel_1 panel;
+    DefaultTableModel model = new DefaultTableModel();
+    JTable table;
 
     /**
      * Creates new form CustomizeEvent
@@ -42,33 +49,34 @@ public class CustomizeCommand extends javax.swing.JFrame {
         this.original = original;
         txtName.setText(original.getName());
         txtDescription.setText(original.getDescription());
-        //txtDescription.setText(t.getDescription());
 
 
-        panel = new PropertiesPanel_1(0, 2);
-        pnlParam.add(panel);
+        model.addColumn("Property");
+        model.addColumn("Value");
+        table = new JTable(model);
+        pnlParam.add(table);
         int row = 0;
         for (Entry e : original.getProperties().entrySet()) {
-            panel.addRow();
-            panel.addElement(new JTextField(e.getKey().toString()), row, 0);
-            panel.addElement(new JTextField(e.getValue().toString()), row, 1);
+            List list = new ArrayList();
+            list.add(e.getKey().toString());
+            list.add(e.getValue().toString());
+            model.insertRow(row, list.toArray());
             row++;
         }
-        panel.layoutPanel();
         this.toFront();
     }
 
     private void enqueueReceivers() {
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
-        for (Client p : Freedomotic.clients.getClients()) {
-            if (p instanceof Actuator) {
-                model.addElement(p.getName());
-            }
+        DefaultComboBoxModel receiversModel = new DefaultComboBoxModel();
+        for (Client c : ClientStorage.getClients()) {
+            receiversModel.addElement(c.getName());
         }
-        cmbReceiver.setModel(model);
+        cmbReceiver.setModel(receiversModel);
     }
 
-    private Command fillWithFormData(Command c) {
+    private Command fillWithFormData() {
+        table.getCellEditor().stopCellEditing();
+        Command c = new Command();
         c.setName(txtName.getText());
         c.setDescription(txtDescription.getText());
         if (cmbReceiver.isEnabled()) {
@@ -78,11 +86,12 @@ public class CustomizeCommand extends javax.swing.JFrame {
             c.setReceiver(original.getReceiver());
         }
         System.out.println("receiver for  " + c.getName() + " is: " + c.getReceiver());
-        for (int row = 0; row < panel.getRows(); row++) {
-            String key = panel.getComponent(row, 0);
-            String value = panel.getComponent(row, 1);
-            c.setProperty(key, value);
+        for (int r = 0; r < model.getRowCount(); r++) {
+            c.setProperty(
+                    model.getValueAt(r, 0).toString(),
+                    model.getValueAt(r, 1).toString());
         }
+        System.out.println(c.getProperties().toString());
         return c;
     }
 
@@ -108,7 +117,7 @@ public class CustomizeCommand extends javax.swing.JFrame {
         btnDelete = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         pnlParam = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        txtAddRow = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -156,10 +165,10 @@ public class CustomizeCommand extends javax.swing.JFrame {
         pnlParam.setLayout(new java.awt.BorderLayout());
         jScrollPane1.setViewportView(pnlParam);
 
-        jButton1.setText("Add Parameter");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        txtAddRow.setText("Add Parameter");
+        txtAddRow.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                txtAddRowActionPerformed(evt);
             }
         });
 
@@ -187,7 +196,7 @@ public class CustomizeCommand extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
+                        .addComponent(txtAddRow))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnEdit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -215,7 +224,7 @@ public class CustomizeCommand extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jButton1))
+                    .addComponent(txtAddRow))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -232,8 +241,7 @@ public class CustomizeCommand extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        Command c = new Command();
-        c = fillWithFormData(c);
+        Command c = fillWithFormData();
         c.setEditable(true); //sets it needs to be saved on disk
         int preSize = CommandPersistence.size();
         CommandPersistence.add(c);
@@ -255,19 +263,18 @@ public class CustomizeCommand extends javax.swing.JFrame {
     }//GEN-LAST:event_btnChangeReceiverActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        Command c = original;
-        c = fillWithFormData(c);
-        c.setEditable(true);
+        Command newCommand = fillWithFormData();
+        newCommand.setEditable(true);
         int preSize = CommandPersistence.size();
         CommandPersistence.remove(original);
-        CommandPersistence.add(c);
+        CommandPersistence.add(newCommand);
         int postSize = CommandPersistence.size();
         if (preSize == postSize) {
             Freedomotic.logger.info("Command edited correctly [" + postSize + " commands]");
         } else {
             Freedomotic.logger.severe("Error while edit a command");
         }
-        main.setTargetCommand(c);
+        main.setTargetCommand(newCommand);
         this.dispose();
 
     }//GEN-LAST:event_btnEditActionPerformed
@@ -280,24 +287,21 @@ public class CustomizeCommand extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        panel.addRow(); //empty row
-        panel.addElement(new JTextField(), panel.getRows(), 0);
-        panel.addElement(new JTextField(), panel.getRows(), 1);
-        panel.layoutPanel();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void txtAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAddRowActionPerformed
+        model.addRow(new Object[]{"", "", "", ""});
+    }//GEN-LAST:event_txtAddRowActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChangeReceiver;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnSave;
     private javax.swing.JComboBox cmbReceiver;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnlParam;
+    private javax.swing.JButton txtAddRow;
     private javax.swing.JTextField txtDescription;
     private javax.swing.JTextField txtName;
     private javax.swing.JLabel txtReceiver;

@@ -11,13 +11,11 @@
 package it.freedomotic.frontend;
 
 import it.freedomotic.api.Plugin;
-import it.freedomotic.app.Freedomotic;
-import it.freedomotic.frontend.utils.PropertiesPanel_1;
 import it.freedomotic.frontend.utils.SpringUtilities;
 import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.service.IPluginCategory;
-import it.freedomotic.service.MarketPlaceService;
 import it.freedomotic.service.IPluginPackage;
+import it.freedomotic.service.MarketPlaceService;
 import it.freedomotic.util.Info;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,7 +34,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
 /**

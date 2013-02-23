@@ -10,24 +10,22 @@
  */
 package it.freedomotic.frontend;
 
-import it.freedomotic.frontend.automationeditor.ReactionEditor;
-import it.freedomotic.frontend.utils.PropertiesPanel_1;
-import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.frontend.automationeditor.ReactionEditor;
 import it.freedomotic.frontend.automationeditor.ReactionsPanel;
 import it.freedomotic.frontend.utils.CheckBoxList;
+import it.freedomotic.frontend.utils.PropertiesPanel_1;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
 import it.freedomotic.objects.*;
-import it.freedomotic.reactions.CommandPersistence;
-import it.freedomotic.objects.EnvObjectPersistence;
-import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.util.*;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -36,13 +34,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.SliderUI;
-import javax.swing.plaf.basic.BasicSliderUI;
 
 /**
  *

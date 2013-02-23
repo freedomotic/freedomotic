@@ -10,14 +10,16 @@
  */
 package it.freedomotic.frontend.automationeditor;
 
+import it.freedomotic.app.Freedomotic;
 import it.freedomotic.reactions.Payload;
-import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
-import it.freedomotic.frontend.utils.PropertiesPanel_1;
-import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.TriggerPersistence;
+import java.util.ArrayList;
 import java.util.Iterator;
-import javax.swing.JTextField;
+import java.util.List;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -27,7 +29,8 @@ public class CustomizeTrigger extends javax.swing.JFrame {
 
     ReactionList main;
     Trigger original;
-    PropertiesPanel_1 panel;
+    DefaultTableModel model = new DefaultTableModel();
+    JTable table;
 
     /**
      * Creates new form CustomizeEvent
@@ -46,56 +49,46 @@ public class CustomizeTrigger extends javax.swing.JFrame {
         }
         lblTemplateWarning.setVisible(!t.isToPersist());
 
-        panel = new PropertiesPanel_1(t.getPayload().size(), 4);
-        pnlParam.add(panel);
+        model.addColumn("Logical");
+        model.addColumn("Attribute");
+        model.addColumn("Operand");
+        model.addColumn("Value");
+        table = new JTable(model);
+        pnlParam.add(table);
         Iterator it = t.getPayload().iterator();
         int row = 0;
         while (it.hasNext()) {
             Statement statement = (Statement) it.next();
-            panel.addElement(new JTextField(statement.getLogical()), row, 0);
-            panel.addElement(new JTextField(statement.getAttribute()), row, 1);
-            panel.addElement(new JTextField(statement.getOperand()), row, 2);
-            panel.addElement(new JTextField(statement.getValue()), row, 3);
-            row++;
+            List list = new ArrayList();
+            list.add(statement.getLogical());
+            list.add(statement.getAttribute());
+            list.add(statement.getOperand());
+            list.add(statement.getValue());
+            model.insertRow(row, list.toArray());
         }
-        panel.layoutPanel();
     }
 
     private void addEmptyRow() {
-        int rows = panel.addRow();
-        panel.addElement(new JTextField(""), rows, 0);
-        panel.addElement(new JTextField(""), rows, 1);
-        panel.addElement(new JTextField(""), rows, 2);
-        panel.addElement(new JTextField(""), rows, 3);
-        panel.layoutPanel();
-        this.validate();
+        model.addRow(new Object[]{"", "", "", ""});
     }
 
     private void save(Trigger t) {
-        synchronized (t) {
-            Payload payload = new Payload();
-            for (int row = 0; row < panel.getRows(); row++) {
-//                for (int col = 0; col < panel.getColumns(); col++) {
+        table.getCellEditor().stopCellEditing();
+        Payload payload = new Payload();
+        for (int r = 0; r < model.getRowCount(); r++) {
+            payload.addStatement(
+                    model.getValueAt(r, 0).toString(),
+                    model.getValueAt(r, 1).toString(),
+                    model.getValueAt(r, 2).toString(),
+                    model.getValueAt(r, 3).toString());
 
-                    String logical = panel.getComponent(row, 0);
-                    String attribute = panel.getComponent(row, 1);
-                    String operand = panel.getComponent(row, 2);
-                    String value = panel.getComponent(row, 3);
-                    payload.addStatement(
-                            logical,
-                            attribute,
-                            operand,
-                            value);
-//                }
-            }
-            t.setName(txtName.getText());
-            t.setDescription(txtDescription.getName());
-            t.setChannel(original.getChannel());
-            t.setDescription(txtDescription.getText());
-            t.setPersistence(true);
-            t.setPayload(payload);
-            System.out.println(t.getPayload().toString());
         }
+        t.setName(txtName.getText());
+        t.setDescription(txtDescription.getName());
+        t.setChannel(original.getChannel());
+        t.setDescription(txtDescription.getText());
+        t.setPersistence(true);
+        t.setPayload(payload);
     }
 
     /**
@@ -226,20 +219,19 @@ public class CustomizeTrigger extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        Trigger t = new Trigger();
-        save(t); //saves as new trigger
+        Trigger trigger = new Trigger();
+        save(trigger); //saves as new trigger
+        trigger.setPersistence(true);
         int preSize = TriggerPersistence.size();
-        TriggerPersistence.addAndRegister(t);
+        TriggerPersistence.addAndRegister(trigger);
         int postSize = TriggerPersistence.size();
         if (preSize < postSize) {
-            System.out.println("Trigger addedd correctly [" + postSize + " triggers]");
+            Freedomotic.logger.info("Trigger addedd correctly [" + postSize + " triggers]");
         } else {
-            System.err.println("Error while addind a trigger in trigger editor");
+            Freedomotic.logger.warning("Error while addind a trigger in trigger editor");
         }
         //to be sure it can be saved on hard drive
-        t.setPersistence(true);
-        main.setTargetTrigger(t);
-        this.dispose();
+        main.setTargetTrigger(trigger);
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
