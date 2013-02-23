@@ -13,7 +13,8 @@ public class Info {
     public static final Integer FRAMEWORK_MAJOR = 5;
     public static final Integer FRAMEWORK_MINOR = 4;
     public static final Integer FRAMEWORK_BUILD = 0;
-    public static final String  FRAMEWORK_RELEASE_DATE = "December 2012";
+    public static final String  FRAMEWORK_VERSION_CODENAME = "Andrew";
+    public static final String  FRAMEWORK_RELEASE_DATE = "Februrary 2012";
     public static final String  FRAMEWORK_LICENSE = "GNU Generic Public License v2";
     public static final String  FRAMEWORK_RELEASE_TYPE = "beta";
     //project info
@@ -71,9 +72,14 @@ public class Info {
         return FRAMEWORK_MAJOR.toString() + "." + FRAMEWORK_MINOR.toString() + "." + FRAMEWORK_BUILD.toString();
     }
     
+    static public String getVersionCodeName() {
+        return FRAMEWORK_VERSION_CODENAME;
+    }
+    
     static public String getReleaseDate() {
         return FRAMEWORK_RELEASE_DATE;
     }
+       
     
     public static String getReleaseType() {
         return FRAMEWORK_RELEASE_TYPE;
