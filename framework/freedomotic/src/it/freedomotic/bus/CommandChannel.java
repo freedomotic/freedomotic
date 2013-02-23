@@ -19,9 +19,12 @@
  */
 package it.freedomotic.bus;
 
+import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.app.Profiler;
 import it.freedomotic.reactions.Command;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,24 +92,24 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
                 producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
                 ActiveMQDestination temporaryQueue = (ActiveMQDestination) unlistenedSession.createTemporaryQueue();
                 msg.setJMSReplyTo(temporaryQueue);
-                 //a temporary consumer on a temporary queue
+                //a temporary consumer on a temporary queue
                 MessageConsumer responseConsumer = unlistenedSession.createConsumer(temporaryQueue);
                 producer.send(destination, msg);
                 Profiler.incrementSentCommands();
                 //the receive() call is blocking so we execute it in a thread
-                Freedomotic.logger.config("Send and await reply to command '" + command.getName() 
+                Freedomotic.logger.config("Send and await reply to command '" + command.getName()
                         + "' for " + command.getReplyTimeout() + "ms");
                 Message jmsResponse = responseConsumer.receive(command.getReplyTimeout());
                 if (jmsResponse != null) {
                     ObjectMessage objMessage = (ObjectMessage) jmsResponse;
                     //a command is sent, we expect a command as reply
                     Command reply = (Command) objMessage.getObject();
-                    Freedomotic.logger.config("Reply to command '" + command.getName() 
+                    Freedomotic.logger.config("Reply to command '" + command.getName()
                             + "' received. Result is " + reply.getProperty("result"));
                     Profiler.incrementReceivedReplies();
                     return reply;
                 } else {
-                    Freedomotic.logger.config("Command '" + command.getName() 
+                    Freedomotic.logger.config("Command '" + command.getName()
                             + "' timed out after " + command.getReplyTimeout() + "ms");
                     Profiler.incrementTimeoutedReplies();
                 }
