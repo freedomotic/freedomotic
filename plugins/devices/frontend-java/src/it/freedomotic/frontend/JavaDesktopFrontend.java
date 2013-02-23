@@ -2,12 +2,13 @@ package it.freedomotic.frontend;
 
 import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
+import it.freedomotic.api.ListenEventsOn;
+import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.MessageEvent;
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.ZoneHasChanged;
 import it.freedomotic.exceptions.UnableToExecuteException;
-import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -35,7 +36,7 @@ public class JavaDesktopFrontend extends Actuator {
             addEventListener("app.event.sensor.object.behavior.change");
             addEventListener("app.event.sensor.environment.zone.change");
             addEventListener("app.event.sensor.plugin.change");
-            addEventListener("app.event.sensor.messages.callout");
+            //addEventListener("app.event.sensor.messages.callout");
             //onCommand stuff
             addCommandListener("app.actuators.plugins.controller.in");
             createMainWindow(); //creates the main frame
@@ -108,7 +109,7 @@ public class JavaDesktopFrontend extends Actuator {
                                     options,
                                     options[2]);
                             c.setProperty("result", options[n].toString());
-                            sendBack(c);
+                            //sendBack(c);
                         }
                     }).start();
                 }
@@ -132,22 +133,25 @@ public class JavaDesktopFrontend extends Actuator {
                     drawer.createCallout(callout);
                     drawer.setNeedRepaint(true);
                 } else {
-                    if (event instanceof MessageEvent) {
-                        MessageEvent message = (MessageEvent) event;
-                        String text = message.getProperty("message.text");
-                        Callout callout = new Callout(
-                                text,
-                                2000,
-                                Color.blue);
-                        drawer.createCallout(callout);
-                        drawer.setNeedRepaint(true);
-                    } else {
-                        window.getPluginJList().update();
-                    }
+                    window.getPluginJList().update();
                 }
             }
         }
     }
+    
+//    //annotation doesen't work because annotation parsing is enabled only in Protocol subclasses
+//    @ListenEventsOn(channel = "app.event.sensor.messages.callout")
+//    public void printCallout(EventTemplate event) {
+//        System.out.println("received event " + event.toString());
+//        MessageEvent message = (MessageEvent) event;
+//        String text = message.getProperty("message.text");
+//        Callout callout = new Callout(
+//                text,
+//                2000,
+//                Color.blue);
+//        drawer.createCallout(callout);
+//        drawer.setNeedRepaint(true);
+//    }
 
     @Override
     protected boolean canExecute(Command c) {
