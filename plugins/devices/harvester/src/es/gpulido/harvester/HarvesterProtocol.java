@@ -67,6 +67,7 @@ public class HarvesterProtocol extends Protocol {
             char shortDBType = 'z';
             if ("h2".equals(dbType))  shortDBType =  'h';
             if ("mysql".equals(dbType)) shortDBType = 'm';
+            if ("sqlserver".equals(dbType)) shortDBType = 's';
             
             switch (shortDBType) {
                 case ('h'):
@@ -75,9 +76,14 @@ public class HarvesterProtocol extends Protocol {
                     driverClass = "org.h2.Driver";
                     break;
                 case ('m'):
-                    dbBasePath = configuration.getStringProperty("dbpath", "localhost:3306");
+                    dbBasePath = configuration.getStringProperty("dbpath", "localhost");
                     dbPath = "//" + dbBasePath ;
                     driverClass="com.mysql.jdbc.Driver";
+                    break;
+                case('s'):
+                    dbBasePath = configuration.getStringProperty("dbpath", "localhost");
+                    dbPath = "//" + dbBasePath ;
+                    driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver";
                     break;
                 default:
                     dbPath = "";
@@ -91,10 +97,10 @@ public class HarvesterProtocol extends Protocol {
             stat.execute(createTable);
             this.setDescription("Connected to jdbc:" + dbType + ":" + dbPath + "/"+ dbName + " as user:"+ dbUser );
         } catch (SQLException ex) {
-            Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE,  ex.getLocalizedMessage());
             stop();
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, ex.getLocalizedMessage());
             this.setDescription("The " + driverClass + " Driver is not loaded");
             stop();
         }
@@ -106,7 +112,7 @@ public class HarvesterProtocol extends Protocol {
         try {
             connection.close();
         } catch (SQLException ex) {
-            Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, ex.getLocalizedMessage());
         }
         this.setDescription("Disconnected");
         setPollingWait(-1); // disable polling
@@ -146,7 +152,7 @@ public class HarvesterProtocol extends Protocol {
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HarvesterProtocol.class.getName()).log(Level.SEVERE, ex.getLocalizedMessage());
         }
     }
 
