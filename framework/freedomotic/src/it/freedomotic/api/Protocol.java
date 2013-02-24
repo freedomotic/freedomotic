@@ -224,7 +224,6 @@ public abstract class Protocol extends Plugin implements BusConsumer {
             if (method.isAnnotationPresent(Schedule.class)) {
                 Schedule schedule = method.getAnnotation(Schedule.class);
                 int rate = schedule.rate();
-                System.out.println("EXPERIMENTAL: found @Schedule annotation in " + currClass.getCanonicalName());
                 setPollingWait(rate);
             } else {
                 if (method.isAnnotationPresent(ListenEventsOn.class)) {
