@@ -21,12 +21,12 @@ set -e
 
 case "$1" in
 	purge)
-	rm /etc/freedomotic -r
-	rm /usr/share/freedomotic -r
-	rm /var/lib/freedomotic -r
-	rm /var/log/freedomotic -r
-	delgroup freedomotic
+	rm /etc/freedomotic -rf
+	rm /usr/share/freedomotic -rf
+	rm /var/lib/freedomotic -rf
+	rm /var/log/freedomotic -rf
 	deluser freedomotic
+	delgroup freedomotic
 	;;
 	remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
     	;;
