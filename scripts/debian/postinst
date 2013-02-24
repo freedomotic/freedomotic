@@ -77,7 +77,7 @@ case "$1" in
 	;;
 	unknown)
 		case $(uname -m) in
-		arm6vl)
+		armv6l)
 			DESTDIR=arm
 		;;
 		x86_64)

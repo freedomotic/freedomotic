@@ -1,7 +1,7 @@
 freedomotic.jar				usr/share/freedomotic
 freedomotic.sh				usr/share/freedomotic
 config/config.xml			etc/freedomotic
-config/validator                	etc/freedomotic
+config/validator/*                	etc/freedomotic/validator
 data/*					var/lib/freedomotic
 plugins/*				usr/share/freedomotic/plugins
 lib/*					usr/share/freedomotic/lib
