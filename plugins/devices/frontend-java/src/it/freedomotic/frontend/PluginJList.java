@@ -131,8 +131,8 @@ public final class PluginJList extends JList {
                     BufferedImage imageRunning = null;
                     BufferedImage imageStopped = null;
                     if (addon.getType().equalsIgnoreCase("plugin")) {
-                        imageRunning = ResourcesManager.getResource(addon.getName().toLowerCase() + "-running.png", 64, 64);
-                        imageStopped = ResourcesManager.getResource(addon.getName().toLowerCase() + "-stopped.png", 64, 64);
+                        imageRunning = ResourcesManager.getResource(addon.getClass().getSimpleName().toLowerCase() + "-running.png", 64, 64);
+                        imageStopped = ResourcesManager.getResource(addon.getClass().getSimpleName().toLowerCase() + "-stopped.png", 64, 64);
                     } else {
                         if (addon.getType().equalsIgnoreCase("object")) {
                             ObjectPlugin obj = (ObjectPlugin) addon;
