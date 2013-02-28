@@ -2,9 +2,7 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.7.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.7.0/distro-source/core/src/gwt-module.dtd">
 <module>
 	<!-- Add necessary source paths.                               -->
-	<source path="model" />
-        <!-- Add necessary source paths.                               -->
-	<source path="reactions" />              
+	<source path="model" />       
 	<!-- Inherit the core Web Toolkit stuff.                        -->
 	<inherits name='com.google.gwt.user.User' />
 	<!-- Inherits the Restlet core module                           -->

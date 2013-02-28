@@ -8,8 +8,6 @@ import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.ListBehavior;
 import it.freedomotic.model.object.RangedIntBehavior;
-import it.freedomotic.reactions.Payload;
-import it.freedomotic.reactions.Statement;
 
 import java.util.ArrayList;
 import java.util.HashMap;

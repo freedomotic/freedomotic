@@ -1,10 +1,6 @@
 package it.freedomotic.gwtclient.client.api;
 
 
-
-import it.freedomotic.reactions.Payload;
-import it.freedomotic.reactions.Statement;
-
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NodeList;
