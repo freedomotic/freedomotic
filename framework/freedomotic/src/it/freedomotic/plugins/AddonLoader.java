@@ -146,10 +146,15 @@ public final class AddonLoader {
     public static boolean installDevice(URL fromURL) {
         try {
             String url = fromURL.toString();
+            if (url.lastIndexOf("&")>-1){
+                //remove any parameter (starts with '&' char) at the end of file name
+                url = url.substring(0, url.lastIndexOf('&'));
+            }
             String filename = url.substring(url.lastIndexOf('/') + 1);
+            System.out.println("DEBUG: file name: " + filename);
             //extracts plugin name from zip file name
             String pluginName = filename.substring(0, filename.indexOf("-"));
-
+            System.out.println("DEBUG: plugin name: " + pluginName);
             //get the zip from the url and copy in plugin/device folder
             if (filename.endsWith(".device")) {
                 File zipFile = new File(Info.getPluginsPath() + "/devices/" + filename);

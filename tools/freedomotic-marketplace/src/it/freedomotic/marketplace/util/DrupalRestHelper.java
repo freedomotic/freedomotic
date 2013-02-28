@@ -130,7 +130,6 @@ public class DrupalRestHelper {
     }
 
     public static IPluginPackage retrievePluginPackage(String uri) {
-
         ClientResource cr = new ClientResource(uri);
         Gson gson;
         try {

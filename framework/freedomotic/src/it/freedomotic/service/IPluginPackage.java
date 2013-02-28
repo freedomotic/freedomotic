@@ -20,7 +20,7 @@ public interface IPluginPackage {
     /**
      * @return the uri
      */
-    public String getUri();
+    public String getURI();
 
     /**
      * @return the path
@@ -47,5 +47,5 @@ public interface IPluginPackage {
      * @return the icon
      */
     public ImageIcon getIcon();
-
+    
 }
