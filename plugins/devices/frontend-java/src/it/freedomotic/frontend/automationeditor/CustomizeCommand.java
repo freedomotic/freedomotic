@@ -75,7 +75,10 @@ public class CustomizeCommand extends javax.swing.JFrame {
     }
 
     private Command fillWithFormData() {
-        table.getCellEditor().stopCellEditing();
+        try {
+            table.getCellEditor().stopCellEditing();
+        } catch (Exception e) {
+        }
         Command c = new Command();
         c.setName(txtName.getText());
         c.setDescription(txtDescription.getText());
