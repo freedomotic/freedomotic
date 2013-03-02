@@ -85,7 +85,7 @@ public class ApplicationServer extends Protocol {
 
     @Override
     protected void onRun() {
-        throw new UnsupportedOperationException("Not supported yet.");
+       // throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
