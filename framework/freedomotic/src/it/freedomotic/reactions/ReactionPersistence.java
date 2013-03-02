@@ -99,7 +99,7 @@ public class ReactionPersistence {
                     try {
                         reaction = (Reaction) xstream.fromXML(xml);
                     } catch (Exception e) {
-                        Freedomotic.logger.severe("Reaction file " + reaction.toString() + " is not well formatted");
+                        Freedomotic.logger.severe("Reaction file is not well formatted");
                         continue;
                     }
                     if (reaction.getCommands().size() == 0) {
