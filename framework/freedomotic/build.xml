@@ -116,7 +116,7 @@
         <input
             message="Please enter the release major number and minor number separated by a dot."
             addproperty="release.version"
-            defaultvalue="5.4.0"
+            defaultvalue="5.5.0"
         />                
        	
         <property name="workspace-base" value="../../"/>
@@ -176,7 +176,7 @@
 
         <echo>  Add exe and changelog file and licensing info taken from shared folder</echo>
         <copy todir="${release-folder}">
-            <fileset dir="${include}" includes="**/*" />
+            <fileset dir="${include} "includes="**/*" />
         </copy>
         
 	
