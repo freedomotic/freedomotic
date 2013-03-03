@@ -1,0 +1,64 @@
+Version 5.4 (Andrew) Changelog
+
+------------
+Framework
+------------
+-Added Marketplace multifile / multiversion management
+-Added hot-plug install / uninstall of plugins
+-Improvements on the Join Device Feature (objects autoconfiguration)
+-Improvements on the reusability of the objects plugins XML
+-Created an abstract messaging API to display text messages to users
+-The system now autodetects the zone to which an object belongs
+-Implemented a behavior manager for zones and class of objects that allows filters like “all lights in kitchen”
+-RangeIntBehaviors now have scales.
+-Created read only behaviors
+-Added automatic segmentation of traffic by protocol
+-Improvements on concurrent execution of automation and request-response messaging pattern
+-Improvements on logging levels
+-Huge set of code refactoring to make it more efficient
+
+------------
+Devices
+------------
+-Implemented voice recognition that allows the user to execute commands by voice
+-Integrated Google Calendars to be used for time based event creation
+-Improvements on the download plugins screen
+-You can receive event notifications by mail with Mailer plugin 
+-The Text to speech feature is now a plugin.
+
+------------
+Objects
+------------
+-Refinement of the Thermostat object. 
+-New objects types: Luminosity, Pressure and Humidity sensors.
+
+------------
+GUI Frontend
+------------
+-Improvements on the Automations Editor
+-Added a new configuration menu Plugins -> Configure. Now It's possible to configure plugins without opening the XML -manifest manually
+
+------------
+Docs
+------------
+-As always, a huge effort is made on document new features and improve the wiki of the project
+
+------------
+New Plugins added to the Marketplace
+------------
+-BTicino OpenWebNet
+-ProgettiHw-Sw Ethernet Board
+-Denkovi Usb Four(4) Relay Output Module
+-Denkovi DAENetIP2
+-HWg-Ste
+-Devantech Ltd Eth-Rly16
+-Teracom TCW122B-CM
+-Arduino WeatherShield
+-Openpicus Grove System
+-Zibase
+-GCE Electronics Ipx800
+-Isy99i
+-OpenPicus Flyport
+-OneWire
+-Velleman k8055
+
