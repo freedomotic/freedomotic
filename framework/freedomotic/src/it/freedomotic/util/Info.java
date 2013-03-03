@@ -14,7 +14,7 @@ public class Info {
     public static final Integer FRAMEWORK_MINOR = 4;
     public static final Integer FRAMEWORK_BUILD = 0;
     public static final String  FRAMEWORK_VERSION_CODENAME = "Andrew";
-    public static final String  FRAMEWORK_RELEASE_DATE = "Februrary 2012";
+    public static final String  FRAMEWORK_RELEASE_DATE = "March 2013";
     public static final String  FRAMEWORK_LICENSE = "GNU Generic Public License v2";
     public static final String  FRAMEWORK_RELEASE_TYPE = "beta";
     //project info
