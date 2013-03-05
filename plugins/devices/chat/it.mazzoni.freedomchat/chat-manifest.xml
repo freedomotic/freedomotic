@@ -1,0 +1,17 @@
+<config>
+    <properties>
+        <property name="name" value="chat"/>
+         <property name="short-name" value="chat"/>
+        <property name="description" value="It is a chat"/>
+        <property name="version" value="1.0.0"/>
+        <property name="startup-time" value="on load"/>
+        <property name="hostname" value="jabber.com"/>
+        <property name="port" value="5222"/>
+        <property name="use-tls" value="true"/>
+        <property name="username" value="user@jabber.org"/>
+        <property name="password" value="password"/>
+        <property name="acceptance-password" value="bemyfriend"/>
+    </properties>
+</config>
+
+                
