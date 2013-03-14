@@ -15,7 +15,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.persistence.EnvObjectPersistence;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -28,11 +28,12 @@ import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
+
 
 /**
  *
