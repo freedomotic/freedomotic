@@ -150,7 +150,7 @@
         <mkdir dir="plugins/providers"/>
         <mkdir dir="plugins/events"/>
         <mkdir dir="data"/>
-   
+        <mkdir dir="i18n"/>
         <echo>  Add jar file and libraries</echo>
         <copy todir="${release-folder}">
             <fileset dir="dist" includes="**/*" /> 
@@ -171,6 +171,10 @@
             <fileset dir="${workspace-base}/data-example" includes="**/*" />
         </copy>
         
+         <echo>  Add global i18n files</echo>
+        <copy todir="${release-folder}/i18n">
+            <fileset dir="${workspace-base}/i18n" includes="**/*" />
+        </copy>       
         <!--<echo>Append changes to CHANGELOG file</echo>	
         <antcall target="-create-changelog" />-->        
 

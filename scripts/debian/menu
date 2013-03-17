@@ -1,2 +1,3 @@
 ?package(freedomotic):needs="X11|text|vc|wm" section="Applications/Normal applications"\
-  title="freedomotic" command="/usr/bin/freedomotic"
+  title="freedomotic" command="/usr/bin/freedomotic"\
+  icon="/usr/share/pixmaps/freedomotic-icon.png"
