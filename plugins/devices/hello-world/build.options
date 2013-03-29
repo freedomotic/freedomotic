@@ -1,4 +1,4 @@
-#Wed, 02 Jan 2013 19:04:02 +0100
+#Fri, 29 Mar 2013 21:56:09 +0100
 
 package.type=device
 package.name=com.freedomotic.hello
@@ -13,7 +13,7 @@ framework.required.major=5
 framework.required.minor=4
 framework.required.build=x
 build.major=1
-build.number=9
+build.number=10
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
