@@ -1,7 +1,7 @@
 <trigger>
     <name>Zibase reads temperature from Oregon sensor</name>
     <description>Zibase reads temperature from Oregon sensor</description>
-    <channel>app.event.sensor.protocol.read</channel>
+    <channel>app.event.sensor.protocol.read.zibase</channel>
     <payload>
         <payload>
             <it.freedomotic.reactions.Statement>
