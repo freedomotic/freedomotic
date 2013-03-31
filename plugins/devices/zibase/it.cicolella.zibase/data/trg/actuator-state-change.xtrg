@@ -1,7 +1,7 @@
 <trigger>
     <name>Zibase reads an actuator state change</name>
     <description>Zibase reads an actuator state change</description>
-    <channel>app.event.sensor.protocol.read</channel>
+    <channel>app.event.sensor.protocol.read.zibase</channel>
     <payload>
         <payload>
             <it.freedomotic.reactions.Statement>
