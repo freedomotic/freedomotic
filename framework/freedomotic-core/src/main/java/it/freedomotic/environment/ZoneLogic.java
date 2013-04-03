@@ -25,6 +25,7 @@ import it.freedomotic.objects.impl.Person;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
@@ -36,19 +37,22 @@ public class ZoneLogic {
     private Ownership owner = new LastOutStrategy();
     private List<Person> occupiers = new ArrayList<Person>();
     private EnvironmentLogic FatherEnv = null;
-   
-    public EnvironmentLogic getEnv(){
+
+    @RequiresPermissions("zones:read")
+    public EnvironmentLogic getEnv() {
         return this.FatherEnv;
     }
     
     public ZoneLogic(final Zone pojo) {
-        this.pojo=pojo;
+        this.pojo = pojo;
     }
 
+    @RequiresPermissions("zones:read")
     public Zone getPojo() {
         return pojo;
     }
 
+    @RequiresPermissions("zones:read")
     public boolean alreadyTakenBy(Person g) {
         try {
             if (occupiers.contains(g)) {
@@ -62,15 +66,18 @@ public class ZoneLogic {
         }
     }
 
+    @RequiresPermissions("zones:read")
     public Ownership getOwnershipStrategy() {
         Ownership os = new LastOutStrategy();
         return os;
     }
 
+    @RequiresPermissions("zones:read")
     public int howManyInside() {
         return occupiers.size();
     }
 
+    @RequiresPermissions("zones:update")
     public boolean enter(Person g) {
         boolean success = false;
         owner = getOwnershipStrategy();
@@ -85,6 +92,7 @@ public class ZoneLogic {
         return success;
     }
 
+    @RequiresPermissions("zones:update")
     public boolean exit(Person g) {
         boolean success = false;
         owner = getOwnershipStrategy();
@@ -99,20 +107,24 @@ public class ZoneLogic {
     }
 
     @Override
+    @RequiresPermissions("zones:read")
     public String toString() {
         return getPojo().getName();
     }
 
+    @RequiresPermissions("zones:update")
     public void setChanged() {
         ZoneHasChanged event = new ZoneHasChanged(this, getPojo());
         Freedomotic.sendEvent(event);
     }
 
+    @RequiresPermissions("zones:read")
     protected void init(EnvironmentLogic env) {
         this.FatherEnv = env;
     }
 
     @Override
+    @RequiresPermissions("zones:read")
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -128,6 +140,7 @@ public class ZoneLogic {
     }
 
     @Override
+    @RequiresPermissions("zones:read")
     public int hashCode() {
         int hash = 5;
         hash = 89 * hash + (this.pojo != null ? this.pojo.hashCode() : 0);

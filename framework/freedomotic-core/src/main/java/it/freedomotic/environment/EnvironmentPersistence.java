@@ -6,6 +6,7 @@ import it.freedomotic.model.environment.Zone;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.persistence.FreedomXStream;
+import it.freedomotic.security.Auth;
 import it.freedomotic.util.DOMValidateDTD;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.SerialClone;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -35,7 +37,7 @@ public class EnvironmentPersistence {
     private EnvironmentPersistence() {
         //disable instance creation
     }
-
+@RequiresPermissions("environments:save")
     public static void saveEnvironmentsToFolder(File folder) {
         if (envList.isEmpty()) {
             Freedomotic.logger.warning("There is no environment to persist, " + folder.getAbsolutePath() + " will not be altered.");
@@ -73,6 +75,7 @@ public class EnvironmentPersistence {
         }
     }
 
+    @RequiresPermissions("environments:save")
     private static void deleteEnvFiles(File folder) {
         // This filter only returns object files
         FileFilter objectFileFileter = new FileFilter() {
@@ -97,6 +100,7 @@ public class EnvironmentPersistence {
      * @param folder
      * @param makeUnique
      */
+    @RequiresPermissions("environments:load")
     public synchronized static boolean loadEnvironmentsFromDir(File folder, boolean makeUnique) {
         envList.clear();
         boolean check = true;
@@ -138,6 +142,7 @@ public class EnvironmentPersistence {
      * reference to the object in input.
      * @return A pointer to the newly created environment object
      */
+    @RequiresPermissions("environments:create")
     public static EnvironmentLogic add(final EnvironmentLogic obj, boolean MAKE_UNIQUE) {
         if (obj == null
                 || obj.getPojo() == null
@@ -163,7 +168,8 @@ public class EnvironmentPersistence {
         //  }
         return envLogic;
     }
-
+    
+    @RequiresPermissions("environments:delete")
     public static void remove(EnvironmentLogic input) {
         for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(input.getPojo().getUUID())) {
             EnvObjectPersistence.remove(obj);
@@ -171,18 +177,19 @@ public class EnvironmentPersistence {
         envList.remove(input);
         input.clear();
     }
-
+    
+    @RequiresPermissions("environments:delete")
     public static void clear() {
         try {
             envList.clear();
         } catch (Exception e) {
         }
     }
-
+    
     public static int size() {
         return envList.size();
     }
-
+    @RequiresPermissions("environments:save")
     public static void save(EnvironmentLogic env, File file) throws IOException {
         XStream xstream = FreedomXStream.getEnviromentXstream();
         for (Zone zone : env.getPojo().getZones()) {
@@ -204,7 +211,8 @@ public class EnvironmentPersistence {
             out.close();
         }
     }
-
+    
+    @RequiresPermissions("environments:save")
     public static void saveAs(EnvironmentLogic env, File folder) throws IOException {
         Freedomotic.logger.config("Serializing new environment to " + folder);
         String fileName = folder.getName();
@@ -221,7 +229,8 @@ public class EnvironmentPersistence {
         //TODO: Freedomotic.environment.getPojo().setObjectsFolder()
         //  EnvObjectPersistence.saveObjects(new File(folder + "/objects"));
     }
-
+    
+    @RequiresPermissions("environments:load")
     public static void loadEnvironmentFromFile(final File file) throws IOException {
         XStream xstream = FreedomXStream.getXstream();
         //validate the object against a predefined DTD
@@ -241,16 +250,19 @@ public class EnvironmentPersistence {
         add(envLogic, false);
 
     }
-
+@RequiresPermissions("environments:read")
     public static List<EnvironmentLogic> getEnvironments() {
         return envList;
     }
-
+    
+    @RequiresPermissions("environments:read")
     public static EnvironmentLogic getEnvByUUID(String UUID) {
+        if (Auth.isPermitted("environments:read:"+UUID)) {
         for (EnvironmentLogic env : envList) {
             if (env.getPojo().getUUID().equals(UUID)) {
                 return env;
             }
+        }
         }
         return null;
     }

@@ -1,12 +1,12 @@
 package it.freedomotic.model.object;
 
-
 import it.freedomotic.model.geometry.FreedomShape;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
@@ -30,19 +30,23 @@ public class EnvObject implements Serializable {
     private Properties triggers;
     private int currentRepresentation;
     private String envUUID;
-    
-    public String getEnvironmentID(){
+
+    @RequiresPermissions("objects:read")
+    public String getEnvironmentID() {
         return this.envUUID;
     }
-    
-    public void setEnvID(String uuid){
+
+    @RequiresPermissions("objects:update")
+    public void setEnvID(String uuid) {
         this.envUUID = uuid;
     }
-    
+
+    @RequiresPermissions("objects:read")
     public Properties getActions() {
         return actions;
     }
 
+    @RequiresPermissions("objects:read")
     public Properties getTriggers() {
         if (triggers == null) {
             triggers = new Properties();
@@ -50,48 +54,59 @@ public class EnvObject implements Serializable {
         return triggers;
     }
 
+    @RequiresPermissions("objects:update")
     public void setName(String name) {
         this.name = name;
     }
 
+    @RequiresPermissions("objects:read")
     public String getName() {
         return this.name;
     }
 
+    @RequiresPermissions("objects:read")
     public String getUUID() {
         return uuid;
     }
 
+    @RequiresPermissions("objects:update")
     public void setUUID(String uuid) {
         this.uuid = uuid;
     }
 
+    @RequiresPermissions("objects:read")
     public String getHierarchy() {
         return hierarchy;
     }
 
+    @RequiresPermissions("objects:update")
     public void setHierarchy(String hierarchy) {
         this.hierarchy = hierarchy;
     }
 
+    @RequiresPermissions("objects:update")
     public void setCurrentRepresentation(int index) {
         if (representation.get(index) != null) {
             currentRepresentation = index;
         }
     }
 
+    @RequiresPermissions("objects:read")
     public Representation getCurrentRepresentation() {
         return representation.get(currentRepresentation);
     }
 
+    @RequiresPermissions("objects:read")
     public int getCurrentRepresentationIndex() {
         return currentRepresentation;
     }
 
+    @RequiresPermissions("objects:read")
     public List<Representation> getRepresentations() {
         return representation;
     }
 
+    @RequiresPermissions("objects:read")
     public String getProtocol() {
         if ((protocol == null) || (protocol.isEmpty())) {
             protocol = "unknown";
@@ -99,10 +114,12 @@ public class EnvObject implements Serializable {
         return protocol;
     }
 
+    @RequiresPermissions("objects:update")
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
 
+    @RequiresPermissions("objects:read")
     public ArrayList<Behavior> getActiveBehaviors() {
         ArrayList<Behavior> activeBehaviors = new ArrayList<Behavior>();
         for (Behavior behavior : behaviors) {
@@ -113,10 +130,12 @@ public class EnvObject implements Serializable {
         return activeBehaviors;
     }
 
+    @RequiresPermissions("objects:read")
     public List<Behavior> getBehaviors() {
         return behaviors;
     }
 
+    @RequiresPermissions("objects:read")
     public Behavior getBehavior(String behavior) {
         for (Behavior b : behaviors) {
             if (b.getName().equalsIgnoreCase(behavior)) {
@@ -127,30 +146,37 @@ public class EnvObject implements Serializable {
         return null; //this behaviors doesn't exists for this object
     }
 
+    @RequiresPermissions("objects:update")
     public void setActAs(String actAs) {
         this.actAs = actAs;
     }
 
+    @RequiresPermissions("objects:read")
     public String getActAs() {
         return this.actAs;
     }
 
+    @RequiresPermissions("objects:read")
     public String getDescription() {
         return description;
     }
 
+    @RequiresPermissions("objects:update")
     public void setDescription(String desc) {
         this.description = desc;
     }
 
+    @RequiresPermissions("objects:update")
     public void setType(String type) {
         this.type = type;
     }
 
+    @RequiresPermissions("objects:read")
     public String getType() {
         return this.type;
     }
 
+    @RequiresPermissions("objects:read")
     public String getPhisicalAddress() {
         if ((phisicalAddress == null) || (phisicalAddress.isEmpty())) {
             phisicalAddress = "unknown";
@@ -158,10 +184,12 @@ public class EnvObject implements Serializable {
         return phisicalAddress.trim();
     }
 
+    @RequiresPermissions("objects:update")
     public void setPhisicalAddress(String address) {
         phisicalAddress = address;
     }
 
+    @RequiresPermissions("objects:read")
     public FreedomShape getShape() {
         return getCurrentRepresentation().getShape();
     }
@@ -173,6 +201,7 @@ public class EnvObject implements Serializable {
      *
      * @return a set of key/values of object properties
      */
+    @RequiresPermissions("objects:read")
     public HashMap<String, String> getExposedProperties() {
         HashMap<String, String> result = new HashMap<String, String>();
         result.put("object.name", getName());
@@ -187,6 +216,7 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
+    @RequiresPermissions("objects:read")
     public String getSimpleType() {
         //get the part of the string after the last dot characher
         //eg: 'EnvObject.ElectricDevice.Light' -> returns 'light'
@@ -195,6 +225,7 @@ public class EnvObject implements Serializable {
     }
 
     @Override
+    @RequiresPermissions("objects:read")
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -224,6 +255,7 @@ public class EnvObject implements Serializable {
     }
 
     @Override
+    @RequiresPermissions("objects:read")
     public int hashCode() {
         int hash = 5;
         hash = 89 * hash + (this.name != null ? this.name.hashCode() : 0);
@@ -231,6 +263,7 @@ public class EnvObject implements Serializable {
     }
 
     @Override
+    @RequiresPermissions("objects:read")
     public String toString() {
         return getName();
     }

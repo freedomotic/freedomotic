@@ -15,6 +15,7 @@
     <property name="KEY_RESOURCES_PATH" value="/data/resources/"/>
     <property name="KEY_MESSAGES_TTL" value="5000"/>
     <property name="KEY_OVERRIDE_REACTIONS_ON_EXIT" value="true"/>
+    <property name="KEY_SECURITY_ENABLE" value="true" />
   </properties>
   <tuples/>
 </config>

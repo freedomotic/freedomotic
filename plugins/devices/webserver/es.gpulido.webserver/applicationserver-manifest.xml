@@ -10,6 +10,7 @@
         <property name="PORT" value="8090"/>
         <property name="WEBAPP_DIR" value="/webapps/gwt_client"/>
         <property name="WAR_FILE" value="Freedomotic.war"/>
+        <property name="permissions" value="*"/>
     </properties>
 </config>
 

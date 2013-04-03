@@ -41,7 +41,7 @@ public class ListDrawer extends Drawer {
     JComboBox cmbZone = new JComboBox();
     JPanel panel = new JPanel();
     EnvironmentLogic currEnv = EnvironmentPersistence.getEnvironments().get(0);
-    
+
     public ListDrawer() {
 
         cmbZone.removeAllItems();
@@ -63,13 +63,15 @@ public class ListDrawer extends Drawer {
         //add(scroll);
         validate();
     }
-    public void setCurrEnv(EnvironmentLogic env){
+
+    public void setCurrEnv(EnvironmentLogic env) {
         this.currEnv = env;
     }
-      
-    public EnvironmentLogic getCurrEnv(){
+
+    public EnvironmentLogic getCurrEnv() {
         return this.currEnv;
     }
+
     private void enlistZones() {
         for (ZoneLogic zone : getCurrEnv().getZones()) {
             cmbZone.addItem(zone);
@@ -96,20 +98,21 @@ public class ListDrawer extends Drawer {
             panel.add(icon);
             StringBuilder description = new StringBuilder();
 
-            JTextArea lblName = new JTextArea(objPojo.getName() + "\n\n" + getCompleteDescription(obj));
-            lblName.setBackground(getBackground());
-            panel.add(lblName);
-            //a configuration button with a listener
-            JButton btnConfig = new JButton("Configure");
-            btnConfig.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    ObjectEditor objectEditor = new ObjectEditor(obj);
-                    objectEditor.setVisible(true);
-                }
-            });
-            panel.add(btnConfig);
-            row++;
-        }       
+
+                JTextArea lblName = new JTextArea(objPojo.getName() + "\n\n" + getCompleteDescription(obj));
+                lblName.setBackground(getBackground());
+                panel.add(lblName);
+                //a configuration button with a listener
+                JButton btnConfig = new JButton("Configure");
+                btnConfig.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        ObjectEditor objectEditor = new ObjectEditor(obj);
+                        objectEditor.setVisible(true);
+                    }
+                });
+                panel.add(btnConfig);
+                row++;
+        }
         SpringUtilities.makeCompactGrid(panel,
                 row, 3, //rows, cols
                 5, 5, //initX, initY

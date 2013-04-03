@@ -7,8 +7,6 @@ package it.freedomotic.plugins;
 import it.freedomotic.api.Actuator;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.UnableToExecuteException;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.plugins.gui.LogWindowHandler;
 import it.freedomotic.reactions.Command;
 import java.io.IOException;
@@ -28,7 +26,6 @@ public class LogViewer extends Actuator {
 
     public LogViewer() {
         super("Log Viewer", "/it.nicoletti.test/logviewer-manifest.xml");
-
     }
 
     @Override

@@ -8,6 +8,8 @@ import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 
+import it.freedomotic.security.Auth;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
@@ -86,26 +88,38 @@ public abstract class Protocol extends Plugin implements BusConsumer {
     }
 
     @Override
-    public synchronized void start() {
+    public void start() {
         if (!isRunning) {
             isRunning = true;
-            onStart();
-            sensorThread = new Protocol.SensorThread();
-            sensorThread.start();
-            PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
-            Freedomotic.sendEvent(event);
+            Runnable action = new Runnable() {
+                @Override
+                public synchronized void run() {
+                    onStart();
+                    sensorThread = new Protocol.SensorThread();
+                    sensorThread.start();
+                    PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
+                    Freedomotic.sendEvent(event);
+                }
+            };
+            Auth.pluginExecutePrivileged(this, action);
         }
     }
 
     @Override
-    public synchronized void stop() {
+    public void stop() {
+        Runnable action = new Runnable() {
+            @Override
+            public synchronized void run() {
+                onStop();
+                sensorThread = null;
+                notify();
+                PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
+                Freedomotic.sendEvent(event);
+            }
+        };
         if (isRunning) {
             isRunning = false;
-            onStop();
-            sensorThread = null;
-            notify();
-            PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
-            Freedomotic.sendEvent(event);
+            Auth.pluginExecutePrivileged(this, action);
         }
     }
 
@@ -196,6 +210,7 @@ public abstract class Protocol extends Plugin implements BusConsumer {
 
         @Override
         public void run() {
+
             if (isPollingSensor()) {
                 Thread thisThread = Thread.currentThread();
                 while (sensorThread == thisThread) {
@@ -208,6 +223,7 @@ public abstract class Protocol extends Plugin implements BusConsumer {
                         }
                     } catch (InterruptedException e) {
                     }
+
                     onRun();
                 }
             } else {

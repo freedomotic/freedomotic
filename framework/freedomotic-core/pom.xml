@@ -52,5 +52,11 @@
             <version>7.2</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        
     </dependencies>
 </project>

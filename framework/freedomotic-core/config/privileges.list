@@ -1,0 +1,42 @@
+#Currently supported and used privileges
+
+[environments]
+environments:create
+environments:read
+environments:update
+environments:delete
+environments:load #from file
+environments:save #to file
+
+[zones]
+zones:create
+zones:read
+zones:update
+zones:delete
+
+[objects]
+objects:create
+objects:read
+objects:update
+objects:delete
+objects:load #from file
+objects:save #to file
+
+[system]
+sys:config:load
+sys:plugins:load 
+sys:plugins:read
+sys:plugins:update
+
+[auth]
+auth:privileges:update
+auth:privileges:read
+auth:realms:create
+auth:realms:delete
+
+#Privileges to be added soon
+
+[triggers]
+[reactions]
+[commands]
+

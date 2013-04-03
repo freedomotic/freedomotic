@@ -6,6 +6,7 @@
         <property name="category"       value="protocol"/>
         <property name="short-name"     value="ipx800"/>
         <property name="address-delimiter" value=":"/>
+        <property name="permissions" value="*"/>
         <property name="startup-time"   value="on load"/>
         <property name="change-state-relay-url" value="leds.cgi?led="/>
         <property name="send-pulse-relay-url" value="rlyfs.cgi?rlyf="/>

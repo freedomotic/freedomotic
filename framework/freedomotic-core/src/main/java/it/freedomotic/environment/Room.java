@@ -12,6 +12,7 @@ import it.freedomotic.util.Edge;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
@@ -26,6 +27,7 @@ public class Room extends ZoneLogic {
         super(pojo);
     }
 
+    @RequiresPermissions("zones:update")    
     public void addGate(Gate gate) {
         try {
             gates.add(gate);
@@ -35,6 +37,7 @@ public class Room extends ZoneLogic {
         }
     }
 
+    @RequiresPermissions("zones:update")    
     private void addLink(Room link) {
         if ((!reachable.contains(link)) && (link != this)) {
             reachable.add(link);
@@ -42,6 +45,7 @@ public class Room extends ZoneLogic {
     }
 
     @Override
+    @RequiresPermissions("zones:read")    
     public void init(EnvironmentLogic env) {
         super.init(env);
         if (gates == null) {
@@ -53,6 +57,7 @@ public class Room extends ZoneLogic {
         getPojo().setAsRoom(true);
     }
 
+    @RequiresPermissions("zones:read")    
     public void visit() {
         //reset current links
         reachable.clear();
@@ -98,14 +103,17 @@ public class Room extends ZoneLogic {
         }
     }
 
+    @RequiresPermissions("zones:read")    
     public String getDescription() {
         return getPojo().getDescription();
     }
 
+    @RequiresPermissions("zones:update")    
     public void setDescription(String description) {
         getPojo().setDescription(description);
     }
 
+    @RequiresPermissions("zones:update")    
     public void updateDescription() {
         StringBuilder buff = new StringBuilder();
         for (Room room : reachable) {
@@ -120,11 +128,13 @@ public class Room extends ZoneLogic {
     }
 
     @Override
+    @RequiresPermissions("zones:read")    
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
 
     @Override
+    @RequiresPermissions("zones:read")    
     public int hashCode() {
         int hash = 3;
         return hash;

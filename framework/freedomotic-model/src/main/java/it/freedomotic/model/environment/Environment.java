@@ -23,6 +23,7 @@ import it.freedomotic.model.geometry.FreedomPolygon;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
@@ -40,44 +41,53 @@ public class Environment implements Serializable {
     private String backgroundImage;
     private ArrayList<Zone> zones = new ArrayList<Zone>();
     private String uuid;
-    
+
     public Environment() {
     }
 
-    public String getUUID(){
+    @RequiresPermissions("environments:read")
+    public String getUUID() {
         return this.uuid;
     }
-    
-    public void setUUID(String uuid){
+
+    @RequiresPermissions("environments:update")
+    public void setUUID(String uuid) {
         this.uuid = uuid;
     }
-    
+
+    @RequiresPermissions("environments:read")
     public String getRenderer() {
         return renderer;
     }
 
+    @RequiresPermissions("environments:update")
     public void setRenderer(String renderer) {
         this.renderer = renderer;
     }
 
+    @RequiresPermissions("environments:read")
     public String getEnvironmentName() {
         return name;
     }
 
     @Override
+    @RequiresPermissions("environments:read")
     public String toString() {
         return name;
     }
 
+    @RequiresPermissions("environments:read")
     public FreedomPolygon getShape() {
         //it returns the first zone in the environment. It is considered the Indoor
         return zones.get(0).getShape();
     }
 
+    @RequiresPermissions("environments:read")
     public FreedomColor getBackgroundColor() {
         return backgroundColor;
     }
 
+    @RequiresPermissions("environments:read")
     public String getBackgroundImage() {
         if (backgroundImage == null) {
             return "environment-map.png";
@@ -86,38 +96,47 @@ public class Environment implements Serializable {
         }
     }
 
+    @RequiresPermissions("environments:update")
     public void setBackgroundImage(String backgroundImage) {
         this.backgroundImage = backgroundImage;
     }
 
+    @RequiresPermissions("environments:read")
     public String getName() {
         return name;
     }
 
+    @RequiresPermissions("environments:update")
     public void setName(String name) {
         this.name = name;
     }
 
+    @RequiresPermissions("environments:read,zones:read")
     public Zone getZone(int index) {
         return zones.get(index);
     }
 
+    @RequiresPermissions("environments:read,zones:read")
     public ArrayList<Zone> getZones() {
         return zones;
     }
 
+    @RequiresPermissions("environments:read,zones:read")
     public int getLastZoneIndex() {
         return zones.size();
     }
 
+    @RequiresPermissions("environments:read")
     public int getWidth() {
         return width;
     }
 
+    @RequiresPermissions("environments:read")
     public int getHeight() {
         return height;
     }
 
+    @RequiresPermissions("environments:update")
     public void clear() {
         zones.clear();
         zones = null;
