@@ -300,7 +300,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         tabObjectEditor.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         tabObjectEditor.setPreferredSize(new java.awt.Dimension(500, 457));
 
-        jLabel14.setText("Name:");
+        jLabel14.setText(i18n.msg("name")+":");
 
         txtName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -308,11 +308,11 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         });
 
-        jLabel15.setText("Description:");
+        jLabel15.setText(i18n.msg("description")+":");
 
-        jLabel1.setText("Protocol:");
+        jLabel1.setText(i18n.msg("protocol")+":");
 
-        jLabel2.setText("Address:");
+        jLabel2.setText(i18n.msg("address")+":");
 
         jLabel3.setForeground(new java.awt.Color(121, 121, 121));
         jLabel3.setText("for more info www.freedomotic.com/plugins");
@@ -324,7 +324,7 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         });
 
-        btnDelete.setText("Delete Object");
+        btnDelete.setText(i18n.msg("delete")+i18n.msg("object"));
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteActionPerformed(evt);
@@ -369,7 +369,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnVirtual))
-                .addContainerGap(2183, Short.MAX_VALUE))
+                .addContainerGap(2163, Short.MAX_VALUE))
         );
         tabPropertiesLayout.setVerticalGroup(
             tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -652,8 +652,11 @@ public class ObjectEditor extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        EnvObjectPersistence.remove(object);
-        this.dispose();
+        int result = JOptionPane.showConfirmDialog(null, "Confirm deletion?","You're about to delete the current object", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            EnvObjectPersistence.remove(object);
+            this.dispose();
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnCreateObjectCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateObjectCopyActionPerformed
