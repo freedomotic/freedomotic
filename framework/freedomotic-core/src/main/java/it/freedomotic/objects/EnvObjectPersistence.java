@@ -4,6 +4,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.persistence.FreedomXStream;
+import it.freedomotic.security.Auth;
 import it.freedomotic.util.DOMValidateDTD;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.SerialClone;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,6 +24,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.thoughtworks.xstream.XStream;
+
+import java.util.*;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+
 
 /**
  *
@@ -37,10 +43,12 @@ public class EnvObjectPersistence {
         //disable instance creation
     }
 
+    @RequiresPermissions("objects:read")
     public static Collection<EnvObjectLogic> getObjectList() {
         return objectList.values();
     }
 
+    @RequiresPermissions("objects:save")
     public static void saveObjects(File folder) {
         if (objectList.isEmpty()) {
             Freedomotic.logger.warning("There are no object to persist, " + folder.getAbsolutePath() + " will not be altered.");
@@ -62,7 +70,7 @@ public class EnvObjectPersistence {
                 if (uuid == null || uuid.isEmpty()) {
                     envObject.getPojo().setUUID(UUID.randomUUID().toString());
                 }
-                if (envObject.getPojo().getEnvironmentID() == null || envObject.getPojo().getEnvironmentID().isEmpty()){
+                if (envObject.getPojo().getEnvironmentID() == null || envObject.getPojo().getEnvironmentID().isEmpty()) {
                     envObject.getPojo().setEnvID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
                 }
                 String fileName = envObject.getPojo().getUUID() + ".xobj";
@@ -86,6 +94,7 @@ public class EnvObjectPersistence {
         }
     }
 
+    @RequiresPermissions("objects:delete")
     private static void deleteObjectFiles(File folder) {
         File[] files = folder.listFiles();
         // This filter only returns object files
@@ -111,6 +120,7 @@ public class EnvObjectPersistence {
      * @param folder
      * @param makeUnique
      */
+    @RequiresPermissions("objects:load")
     public synchronized static void loadObjects(File folder, boolean makeUnique) {
         objectList.clear();
         File[] files = folder.listFiles();
@@ -127,24 +137,25 @@ public class EnvObjectPersistence {
             }
         };
         files = folder.listFiles(objectFileFilter);
-        if (files != null){
-        try {
-            for (File file : files) {
-                EnvObjectLogic loaded = loadObject(file);
-                add(loaded, makeUnique);
+        if (files != null) {
+            try {
+                for (File file : files) {
+                    EnvObjectLogic loaded = loadObject(file);
+                    add(loaded, makeUnique);
+                }
+                //Freedomotic.logger.info("Loaded " + objectList.size() + " of " + files.length + " environment objects.");
+            } catch (Exception e) {
+                Freedomotic.logger.severe("Exception while loading object in " + folder.getAbsolutePath() + ".\n" + Freedomotic.getStackTraceInfo(e));
             }
-            //Freedomotic.logger.info("Loaded " + objectList.size() + " of " + files.length + " environment objects.");
-        } catch (Exception e) {
-            Freedomotic.logger.severe("Exception while loading object in " + folder.getAbsolutePath()+ ".\n" + Freedomotic.getStackTraceInfo(e));
-        }
         }
     }
 
     /**
      * Loads the object file from file but NOT add the object to the list
      *
-     * @param folder
+     * @param file
      */
+    @RequiresPermissions("objects:load")
     public static EnvObjectLogic loadObject(File file) throws IOException {
         XStream xstream = FreedomXStream.getXstream();
         //validate the object against a predefined DTD
@@ -154,7 +165,7 @@ public class EnvObjectPersistence {
             pojo = (EnvObject) xstream.fromXML(xml);
         } catch (Exception e) {
             Freedomotic.logger.severe("XML parsing error. Readed XML is \n" + xml);
-            
+
         }
         EnvObjectLogic objectLogic = EnvObjectFactory.create(pojo);
         Freedomotic.logger.config("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
@@ -162,6 +173,7 @@ public class EnvObjectPersistence {
         return objectLogic;
     }
 
+    @RequiresPermissions("objects:read")
     public static Iterator<EnvObjectLogic> iterator() {
         return objectList.values().iterator();
     }
@@ -172,21 +184,25 @@ public class EnvObjectPersistence {
      * @param name
      * @return
      */
+    @RequiresPermissions("objects:read")
     public static EnvObjectLogic getObjectByName(String name) {
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
-            if (object.getPojo().getName().equalsIgnoreCase(name)) {
+            if (object.getPojo().getName().equalsIgnoreCase(name)
+                    && Auth.isPermitted("objects:read:" + object.getPojo().getUUID())) {
                 return object;
             }
         }
         return null;
     }
+
     /**
      * Gets the object by name
      *
-     * @param name
+     * @param uuid
      * @return
      */
+    @RequiresPermissions("objects:read")
     public static EnvObjectLogic getObjectByUUID(String uuid) {
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
@@ -196,7 +212,7 @@ public class EnvObjectPersistence {
         }
         return null;
     }
-    
+
     /**
      * Gets the object by its address and protocol
      *
@@ -204,7 +220,9 @@ public class EnvObjectPersistence {
      * @param address
      * @return
      */
+    @RequiresPermissions("objects:read")
     public static ArrayList<EnvObjectLogic> getObjectByAddress(String protocol, String address) {
+
         if (protocol == null
                 || address == null
                 || protocol.trim().equalsIgnoreCase("unknown")
@@ -217,8 +235,8 @@ public class EnvObjectPersistence {
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if ((object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()))
-                    && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(address.trim()))) {
-                //Freedomotic.logger.info("Found object " + object.getPojo().getName() + " {protocol = " + object.getPojo().getProtocol() + "; address = " + object.getPojo().getPhisicalAddress() + "}");
+                    && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(address.trim()))
+                    && Auth.isPermitted("objects:read:" + object.getPojo().getUUID())) {
                 list.add(object);
             }
         }
@@ -234,45 +252,56 @@ public class EnvObjectPersistence {
      * @param protocol
      * @return
      */
+    @RequiresPermissions("objects:read")
     public static ArrayList<EnvObjectLogic> getObjectByProtocol(String protocol) {
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
-            if ((object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()))) {
-                list.add(object);
-            }
-        }
-        return list;
-    }
-        /**
-     * Gets the object by its environment
-     *
-     * @param environment uuid
-     * @return
-     */
-    public static ArrayList<EnvObjectLogic> getObjectByEnvironment(String uuid) {
-        ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
-        for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
-            EnvObjectLogic object = it.next();
-            if ((object.getPojo().getEnvironmentID().equalsIgnoreCase(uuid))) {
+            if (object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim())
+                    && Auth.isPermitted("objects:read:" + object.getPojo().getUUID())) {
                 list.add(object);
             }
         }
         return list;
     }
 
+    /**
+     * Gets the object by its environment
+     *
+     * @param  uuid
+     * @return
+     */
+    @RequiresPermissions("objects:read")
+    public static ArrayList<EnvObjectLogic> getObjectByEnvironment(String uuid) {
+        ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
+        for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
+            EnvObjectLogic object = it.next();
+            if (object.getPojo().getEnvironmentID().equalsIgnoreCase(uuid)
+                    && Auth.isPermitted("objects:read:" + object.getPojo().getUUID())) {
+                list.add(object);
+            }
+        }
+        return list;
+    }
+
+    @RequiresPermissions("objects:read")
     public static int size() {
         return objectList.size();
     }
 
     /**
-     * Add an object to the environment. You can use EnvObjectPersistnce.MAKE_UNIQUE to create
-     * an object that will surely be unique. Beware this means it is created with defensive copy
-     * of the object in input and name, protocol, address and UUID are reset to a default value.
+     * Add an object to the environment. You can use
+     * EnvObjectPersistnce.MAKE_UNIQUE to create an object that will surely be
+     * unique. Beware this means it is created with defensive copy of the object
+     * in input and name, protocol, address and UUID are reset to a default
+     * value.
+     *
      * @param obj the environment object to add
-     * @param MAKE_UNIQUE can be true or false. Creates a defensive copy reference to the object in input.
+     * @param MAKE_UNIQUE can be true or false. Creates a defensive copy
+     * reference to the object in input.
      * @return A pointer to the newly created environment object
      */
+    @RequiresPermissions("objects:create")
     public static EnvObjectLogic add(final EnvObjectLogic obj, final boolean MAKE_UNIQUE) {
         if (obj == null
                 || obj.getPojo() == null
@@ -287,8 +316,8 @@ public class EnvObjectPersistence {
             pojoCopy.setName(obj.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
             pojoCopy.setProtocol(obj.getPojo().getProtocol());
             pojoCopy.setPhisicalAddress("unknown");
-            pojoCopy.getCurrentRepresentation().getOffset().setX(obj.getPojo().getCurrentRepresentation().getOffset().getX()+30);
-            pojoCopy.getCurrentRepresentation().getOffset().setY(obj.getPojo().getCurrentRepresentation().getOffset().getY()+30);
+            pojoCopy.getCurrentRepresentation().getOffset().setX(obj.getPojo().getCurrentRepresentation().getOffset().getX() + 30);
+            pojoCopy.getCurrentRepresentation().getOffset().setY(obj.getPojo().getCurrentRepresentation().getOffset().getY() + 30);
             pojoCopy.setUUID(UUID.randomUUID().toString());
             envObjectLogic = EnvObjectFactory.create(pojoCopy);
         }
@@ -302,12 +331,14 @@ public class EnvObjectPersistence {
         return envObjectLogic;
     }
 
+    @RequiresPermissions("objects:delete")
     public static void remove(EnvObjectLogic input) {
         objectList.remove(input.getPojo().getUUID());
         input.setChanged(true); //force repainting on frontends clients
         input.destroy(); //free memory
     }
 
+    @RequiresPermissions("objects:delete")
     public static void clear() {
         try {
             objectList.clear();

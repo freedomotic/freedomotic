@@ -21,15 +21,16 @@ package it.freedomotic.jfrontend;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.ResourcesManager;
 import it.freedomotic.environment.EnvironmentLogic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
-import it.freedomotic.model.environment.Zone;
-import it.freedomotic.objects.EnvObjectPersistence;
-import it.freedomotic.environment.EnvironmentPersistence;
-import it.freedomotic.reactions.Command;
-import it.freedomotic.util.Info;
+import it.freedomotic.jfrontend.Renderer;
 import it.freedomotic.jfrontend.utils.OpenDialogFileFilter;
 import it.freedomotic.jfrontend.utils.TipOfTheDay;
+import it.freedomotic.model.environment.Zone;
+import it.freedomotic.reactions.Command;
+import it.freedomotic.security.Auth;
+import it.freedomotic.util.Info;
 import it.freedomotic.util.i18n;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -64,14 +65,34 @@ public class MainWindow extends javax.swing.JFrame {
 
     public MainWindow(final JavaDesktopFrontend master) {
         this.master = master;
+
+        if (Auth.realmInited) {
+            logUser(true);
+        }
         setWindowedMode();
+        updateMenusPermissions();
+        mnuSelectEnvironmentActionPerformed(null);
         checkDeletableEnvironments();
-        
+
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(new MyDispatcher());
         if (master.configuration.getBooleanProperty("show.tips", true)) {
             new TipOfTheDay(this);
         }
+    }
+
+    private void updateMenusPermissions() {
+        mnuSwitchUser.setEnabled(       Auth.realmInited);
+        mnuNewEnvironment.setEnabled(   Auth.isPermitted("environments:create"));
+        mnuOpenEnvironment.setEnabled(  Auth.isPermitted("environments:load"));
+        frameMap.setVisible(            Auth.isPermitted("environments:read"));
+        mnuSave.setEnabled(             Auth.isPermitted("environments:save"));
+        mnuSaveAs.setEnabled(           Auth.isPermitted("environments:save"));
+        mnuRenameEnvironment.setEnabled(Auth.isPermitted("environments:update"));
+        mnuPluginConfigure.setEnabled(  Auth.isPermitted("sys:plugins:update"));
+        mnuPluginList.setEnabled(       Auth.isPermitted("sys:plugins:read"));
+        frameClient.setVisible(         Auth.isPermitted("sys:plugins:read"));
+        mnuPrivileges.setEnabled(       Auth.isPermitted("auth:privileges:read") || Auth.isPermitted("auth:privileges:update"));
     }
 
 //    public void showTipsOnStartup(boolean show) {
@@ -100,15 +121,17 @@ public class MainWindow extends javax.swing.JFrame {
         mnuAddRoom.setEnabled(editMode);
         mnuRoomBackground.setEnabled(editMode);
     }
-    private void checkDeletableEnvironments(){
-         // disable delete option if ther's just an available environment
-        if (EnvironmentPersistence.getEnvironments().size() == 1 ) {
+
+    private void checkDeletableEnvironments() {
+        // disable delete option if ther's just an available environment
+        if (EnvironmentPersistence.getEnvironments().size() == 1) {
             mnuDelete.setEnabled(false);
         } else {
             mnuDelete.setEnabled(true);
         }
-            
+
     }
+
     private void setWindowedMode() {
         this.setVisible(false);
         this.dispose();
@@ -142,13 +165,14 @@ public class MainWindow extends javax.swing.JFrame {
         frameClient.setTitle(i18n.msg("loaded_plugins"));
         frameClient.setResizable(true);
         frameClient.setMaximizable(true);
-
         frameMap = new JInternalFrame();
         setMapTitle("");
         frameMap.setMaximizable(true);
         frameMap.setResizable(true);
         desktopPane.add(frameMap);
         desktopPane.add(frameClient);
+        frameClient.moveToFront();
+        frameClient.setVisible(Auth.isPermitted("sys:plugins:read"));
         desktopPane.moveToFront(this);
         this.getContentPane().add(desktopPane);
         try {
@@ -176,11 +200,12 @@ public class MainWindow extends javax.swing.JFrame {
         optimizeFramesDimension();
         drawer.repaint();
         lstClients.update();
-        frameClient.setVisible(true);
+        frameClient.setVisible(Auth.isPermitted("sys:plugins:read"));
         frameMap.setVisible(true);
         setEditMode(false);
         this.setVisible(true);
         isFullscreen = false;
+
     }
 
     private void setFullscreenMode() {
@@ -188,10 +213,12 @@ public class MainWindow extends javax.swing.JFrame {
         GraphicsDevice gd = ge.getDefaultScreenDevice();
         if (gd.isFullScreenSupported()) {
             frameMap.setVisible(false);
-            frameClient.setVisible(false);
             menuBar.setVisible(false);
             frameMap.dispose();
-            frameClient.dispose();
+            if (Auth.isPermitted("sys:plugins:read")) {
+                frameClient.setVisible(false);
+                frameClient.dispose();
+            }
             desktopPane.removeAll();
             desktopPane.moveToBack(this);
             setVisible(false);
@@ -210,12 +237,43 @@ public class MainWindow extends javax.swing.JFrame {
             add(drawer);
             drawer.repaint();
             drawer.setVisible(true);
-            Callout callout = new Callout(this.getClass().getCanonicalName(), "info", i18n.msg(this,"esc_to_exit_fullscreen"), 100, 100, 0, 5000);
+            Callout callout = new Callout(this.getClass().getCanonicalName(), "info", i18n.msg(this, "esc_to_exit_fullscreen"), 100, 100, 0, 5000);
             drawer.createCallout(callout);
             this.repaint();
             this.setVisible(true);
             isFullscreen = true;
         }
+    }
+
+    private void logUser(boolean init) {
+        if (frameClient != null) {
+            frameClient.setVisible(false);
+        }
+        if (frameMap != null) {
+            frameMap.setVisible(false);
+        }
+        JLabel nameLbl = new JLabel(i18n.msg(this, "enter_username"));
+        JTextField jnf = new JTextField();
+        JLabel label = new JLabel(i18n.msg(this, "enter_password"));
+        JPasswordField jpf = new JPasswordField();
+        boolean loginSuccessfull = false;
+        while (!loginSuccessfull) {
+            int result = JOptionPane.showConfirmDialog(null,
+                    new Object[]{nameLbl, jnf, label, jpf},
+                    i18n.msg(this, "enter_credentials"),
+                    JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                loginSuccessfull = Auth.login(jnf.getText(), jpf.getPassword());
+            } else {
+                loginSuccessfull = true;
+            }
+        }
+        if (!init) {
+            mnuSelectEnvironmentActionPerformed(null);
+            updateMenusPermissions();
+        }
+        Freedomotic.logger.info("JFrontend running as user: " + Auth.getPrincipal());
+
     }
 
     private void changeRenderer(String renderer) {
@@ -323,6 +381,7 @@ public class MainWindow extends javax.swing.JFrame {
         scrollTxtOut2 = new javax.swing.JScrollPane();
         txtOut2 = new javax.swing.JTextArea();
         jMenuItem4 = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JSeparator();
         menuBar = new javax.swing.JMenuBar();
         mnuOpenNew = new javax.swing.JMenu();
         mnuNewEnvironment = new javax.swing.JMenuItem();
@@ -330,6 +389,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuSave = new javax.swing.JMenuItem();
         mnuSaveAs = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
+        mnuSwitchUser = new javax.swing.JMenuItem();
         mnuExit = new javax.swing.JMenuItem();
         mnuEditMode = new javax.swing.JMenu();
         mnuSelectEnvironment = new javax.swing.JMenuItem();
@@ -350,10 +410,13 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         mnuAutomations = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
-        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMarket = new javax.swing.JCheckBoxMenuItem();
         mnuPluginConfigure = new javax.swing.JMenuItem();
+        jMenu5 = new javax.swing.JMenu();
+        mnuLanguage = new javax.swing.JMenuItem();
+        mnuPrivileges = new javax.swing.JMenuItem();
         mnuWindow = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        mnuPluginList = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         mnuHelp = new javax.swing.JMenu();
         mnuTutorial = new javax.swing.JMenuItem();
@@ -406,6 +469,7 @@ public class MainWindow extends javax.swing.JFrame {
                 formMouseMoved(evt);
             }
         });
+        getContentPane().add(jSeparator2, java.awt.BorderLayout.CENTER);
 
         mnuOpenNew.setText(i18n.msg("file"));
         mnuOpenNew.addActionListener(new java.awt.event.ActionListener() {
@@ -450,6 +514,14 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mnuOpenNew.add(mnuSaveAs);
         mnuOpenNew.add(jSeparator1);
+
+        mnuSwitchUser.setText(i18n.msg(this,"change_user"));
+        mnuSwitchUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuSwitchUserActionPerformed(evt);
+            }
+        });
+        mnuOpenNew.add(mnuSwitchUser);
 
         mnuExit.setText(i18n.msg("exit"));
         mnuExit.addActionListener(new java.awt.event.ActionListener() {
@@ -593,14 +665,14 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenu1.setText(i18n.msg("plugins"));
 
-        jCheckBoxMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, 0));
-        jCheckBoxMenuItem1.setText(i18n.msg(this,"install_from_marketplace"));
-        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        jCheckBoxMarket.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, 0));
+        jCheckBoxMarket.setText(i18n.msg(this,"install_from_marketplace"));
+        jCheckBoxMarket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxMenuItem1ActionPerformed(evt);
+                jCheckBoxMarketActionPerformed(evt);
             }
         });
-        jMenu1.add(jCheckBoxMenuItem1);
+        jMenu1.add(jCheckBoxMarket);
 
         mnuPluginConfigure.setText(i18n.msg("configure"));
         mnuPluginConfigure.addActionListener(new java.awt.event.ActionListener() {
@@ -612,16 +684,31 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuBar.add(jMenu1);
 
-        mnuWindow.setText(i18n.msg(this,"window"));
+        jMenu5.setText(i18n.msg("settings"));
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
-        jMenuItem2.setText(i18n.msg("X_list",new Object[]{i18n.msg("plugins")}));
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        mnuLanguage.setText(i18n.msg("language"));
+        jMenu5.add(mnuLanguage);
+
+        mnuPrivileges.setText(i18n.msg("privileges"));
+        mnuPrivileges.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                mnuPrivilegesActionPerformed(evt);
             }
         });
-        mnuWindow.add(jMenuItem2);
+        jMenu5.add(mnuPrivileges);
+
+        menuBar.add(jMenu5);
+
+        mnuWindow.setText(i18n.msg(this,"window"));
+
+        mnuPluginList.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
+        mnuPluginList.setText(i18n.msg("X_list",new Object[]{i18n.msg("plugins")}));
+        mnuPluginList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuPluginListActionPerformed(evt);
+            }
+        });
+        mnuWindow.add(mnuPluginList);
 
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, 0));
         jMenuItem3.setText(i18n.msg(this,"fullscreen"));
@@ -673,7 +760,8 @@ public class MainWindow extends javax.swing.JFrame {
     private void submnuHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submnuHelpActionPerformed
 
         JOptionPane.showMessageDialog(this, ""
-                + i18n.msg("author") +": " + Info.getAuthor() + "\n"
+                + "Running User: " + Auth.getPrincipal() + "\n"
+                + i18n.msg("author") + ": " + Info.getAuthor() + "\n"
                 + "E-mail: " + Info.getAuthorMail() + "\n"
                 + "Release: " + Info.getReleaseDate() + ". " + Info.getVersionCodeName() + " - v" + Info.getVersion() + "\n"
                 + "Licence: " + Info.getLicense() + "\n\n"
@@ -713,7 +801,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
             setWindowedMode();
         } else {
-            Freedomotic.logger.info(i18n.msg(this,"canceled_by_user"));
+            Freedomotic.logger.info(i18n.msg(this, "canceled_by_user"));
         }
 }//GEN-LAST:event_mnuOpenEnvironmentActionPerformed
 
@@ -721,18 +809,18 @@ private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRS
     optimizeFramesDimension();
 }//GEN-LAST:event_formComponentResized
 
-private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+private void mnuPluginListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPluginListActionPerformed
     if (frameClient.isClosed()) {
         frameClient.show();
     } else {
         frameClient.hide();
     }
-}//GEN-LAST:event_jMenuItem2ActionPerformed
+}//GEN-LAST:event_mnuPluginListActionPerformed
 
-private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMarketActionPerformed
     MarketPlaceForm marketPlace = new MarketPlaceForm();
     marketPlace.setVisible(true);
-}//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
+}//GEN-LAST:event_jCheckBoxMarketActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         master.getMainWindow().setFullscreenMode();
@@ -745,7 +833,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
             setEditMode(true);
             drawer.setRoomEditMode(true);
             lstClients.setFilter("Plugin");
-            setMapTitle("("+ i18n.msg(this,"room_edit_mode") +") " + drawer.getCurrEnv().getPojo().getName());
+            setMapTitle("(" + i18n.msg(this, "room_edit_mode") + ") " + drawer.getCurrEnv().getPojo().getName());
         } else {
             drawer.setRoomEditMode(false);
             setEditMode(false);
@@ -760,7 +848,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         if (zone == null) {
             JOptionPane.showMessageDialog(this, i18n.msg("select_room_first"));
         } else {
-            String input = JOptionPane.showInputDialog(i18n.msg(this,"enter_new_name_for_zone") + zone.getPojo().getName());
+            String input = JOptionPane.showInputDialog(i18n.msg(this, "enter_new_name_for_zone") + zone.getPojo().getName());
             zone.getPojo().setName(input.trim());
             drawer.setNeedRepaint(true);
         }
@@ -780,7 +868,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private void mnuRemoveRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRemoveRoomActionPerformed
         ZoneLogic zone = drawer.getSelectedZone();
         if (zone == null) {
-            JOptionPane.showMessageDialog(this,i18n.msg("select_room_first"));
+            JOptionPane.showMessageDialog(this, i18n.msg("select_room_first"));
         } else {
             drawer.getCurrEnv().removeZone(zone);
             drawer.createHandles(null);
@@ -801,7 +889,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            Freedomotic.logger.info(i18n.msg(this,"canceled_by_user"));
+            Freedomotic.logger.info(i18n.msg(this, "canceled_by_user"));
         }
     }//GEN-LAST:event_mnuSaveAsActionPerformed
 
@@ -815,7 +903,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
             drawer.setObjectEditMode(true);
             //switch to objects list
             lstClients.setFilter("Object");
-            setMapTitle("("+i18n.msg(this,"object_edit_mode")+"): " + drawer.getCurrEnv().getPojo().getName());
+            setMapTitle("(" + i18n.msg(this, "object_edit_mode") + "): " + drawer.getCurrEnv().getPojo().getName());
         } else {
             drawer.setObjectEditMode(false);
             mnuObjectEditMode.setSelected(drawer.getObjectEditMode());
@@ -837,8 +925,8 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         Object[] possibilities = {"list", "plain", "image", "photo"};
         String input = (String) JOptionPane.showInputDialog(
                 this,
-                i18n.msg(this,"select_renderer"),
-                i18n.msg(this,"select_renderer_title"),
+                i18n.msg(this, "select_renderer"),
+                i18n.msg(this, "select_renderer_title"),
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 possibilities,
@@ -922,9 +1010,9 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
                     Freedomotic.logger.info("Save command cancelled by user.");
                     EnvironmentPersistence.loadEnvironmentsFromDir(oldEnv.getParentFile(), false);
                     Freedomotic.config.setProperty("KEY_ROOM_XML_PATH",
-                                oldEnv.getAbsolutePath().toString().replace(
-                                new File(Info.getApplicationPath() + "/data/furn").toString(), ""));
-                    drawer.setCurrEnv(0);        
+                            oldEnv.getAbsolutePath().toString().replace(
+                            new File(Info.getApplicationPath() + "/data/furn").toString(), ""));
+                    drawer.setCurrEnv(0);
                 }
             }
         } catch (Exception e) {
@@ -950,8 +1038,8 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         Object[] possibilities = EnvironmentPersistence.getEnvironments().toArray();
         EnvironmentLogic input = (EnvironmentLogic) JOptionPane.showInputDialog(
                 this,
-                i18n.msg(this,"select_environment"),
-                i18n.msg(this,"select_envitonment_title"),
+                i18n.msg(this, "select_env"),
+                i18n.msg(this, "select_env_title"),
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 possibilities,
@@ -966,7 +1054,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
 
     private void mnuAddDuplicateEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAddDuplicateEnvironmentActionPerformed
         EnvironmentLogic newEnv = EnvironmentPersistence.add(drawer.getCurrEnv(), true);
-        String input = JOptionPane.showInputDialog(i18n.msg(this,"enter_new_name_for_env") + newEnv.getPojo().getName());
+        String input = JOptionPane.showInputDialog(i18n.msg(this, "enter_new_name_for_env") + newEnv.getPojo().getName());
         newEnv.getPojo().setName(input.trim());
         drawer.setCurrEnv(newEnv);
         setMapTitle(newEnv.getPojo().getName());
@@ -974,16 +1062,16 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
     private void mnuRenameEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameEnvironmentActionPerformed
-        String input = JOptionPane.showInputDialog(i18n.msg(this,"enter_new_name_for_env"), drawer.getCurrEnv().getPojo().getName());
+        String input = JOptionPane.showInputDialog(i18n.msg(this, "enter_new_name_for_env"), drawer.getCurrEnv().getPojo().getName());
         drawer.getCurrEnv().getPojo().setName(input.trim());
         setMapTitle(drawer.getCurrEnv().getPojo().getName());
     }//GEN-LAST:event_mnuRenameEnvironmentActionPerformed
 
     private void mnuDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuDeleteActionPerformed
-        int result = JOptionPane.showConfirmDialog(null,  
-                i18n.msg(this,"confirm_deletion_title"),
-                i18n.msg(this,"confirm_env_delete"),
-                JOptionPane.OK_CANCEL_OPTION, 
+        int result = JOptionPane.showConfirmDialog(null,
+                i18n.msg(this, "confirm_deletion_title"),
+                i18n.msg(this, "confirm_env_delete"),
+                JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
             EnvironmentLogic oldenv = drawer.getCurrEnv();
@@ -993,16 +1081,26 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
             checkDeletableEnvironments();
         }
     }//GEN-LAST:event_mnuDeleteActionPerformed
+
+    private void mnuSwitchUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSwitchUserActionPerformed
+        logUser(false);
+    }//GEN-LAST:event_mnuSwitchUserActionPerformed
+
+    private void mnuPrivilegesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPrivilegesActionPerformed
+        // TODO add your handling code here:
+        new PrivilegesConfiguration();
+    }//GEN-LAST:event_mnuPrivilegesActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMarket;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem mnuAddDuplicateEnvironment;
@@ -1014,12 +1112,15 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JMenu mnuEditMode;
     private javax.swing.JMenuItem mnuExit;
     private javax.swing.JMenu mnuHelp;
+    private javax.swing.JMenuItem mnuLanguage;
     private javax.swing.JMenuItem mnuNewEnvironment;
     private javax.swing.JCheckBoxMenuItem mnuObjectEditMode;
     private javax.swing.JMenu mnuObjects;
     private javax.swing.JMenuItem mnuOpenEnvironment;
     private javax.swing.JMenu mnuOpenNew;
     private javax.swing.JMenuItem mnuPluginConfigure;
+    private javax.swing.JMenuItem mnuPluginList;
+    private javax.swing.JMenuItem mnuPrivileges;
     private javax.swing.JMenuItem mnuRemoveRoom;
     private javax.swing.JMenuItem mnuRenameEnvironment;
     private javax.swing.JMenuItem mnuRenameRoom;
@@ -1028,6 +1129,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JMenuItem mnuSave;
     private javax.swing.JMenuItem mnuSaveAs;
     private javax.swing.JMenuItem mnuSelectEnvironment;
+    private javax.swing.JMenuItem mnuSwitchUser;
     private javax.swing.JMenuItem mnuTutorial;
     private javax.swing.JMenu mnuWindow;
     private javax.swing.JScrollPane scrollTxtOut1;

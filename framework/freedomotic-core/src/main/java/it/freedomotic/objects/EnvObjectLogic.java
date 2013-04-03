@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
@@ -51,6 +52,7 @@ public class EnvObjectLogic {
      * @return a Command or null if action doesn't exist or the mapping is not
      * valid
      */
+    @RequiresPermissions("objects:read")
     public final Command getHardwareCommand(String action) {
         if ((action != null) && (!action.trim().isEmpty())) {
             Command commandToSearch = commandsMapping.get(action.trim().toLowerCase());
@@ -72,11 +74,12 @@ public class EnvObjectLogic {
      *
      * @return a set of key/values of object properties
      */
+    @RequiresPermissions("objects:read")
     public Map<String, String> getExposedProperties() {
     	HashMap<String, String> result = pojo.getExposedProperties();
         return result;
     }
-
+    @RequiresPermissions("objects:read")
     public Map<String, String> getExposedBehaviors() {
         Map<String, String> result = new HashMap<String, String>();
         for (BehaviorLogic behavior : getBehaviors()) {
@@ -85,6 +88,7 @@ public class EnvObjectLogic {
         return result;
     }
 
+    @RequiresPermissions("objects:update")
     public final void rename(String newName) {
         String oldName = this.getPojo().getName();
         newName = newName.trim();
@@ -107,6 +111,7 @@ public class EnvObjectLogic {
         }
     }
 
+    @RequiresPermissions("objects:update")
     public void setAction(String action, Command command) {
         if (action != null && !action.isEmpty() && command != null) {
             commandsMapping.put(action.trim(), command);
@@ -114,6 +119,7 @@ public class EnvObjectLogic {
         }
     }
 
+    @RequiresPermissions("objects:update")
     public void addTriggerMapping(Trigger trigger, String behaviorName) {
         //checking input parameters
         if (behaviorName == null || behaviorName.isEmpty() || trigger == null) {
@@ -133,10 +139,12 @@ public class EnvObjectLogic {
                 + ": behavior '" + behaviorName + "' is now associated to trigger named '" + trigger.getName() + "'");
     }
 
+    @RequiresPermissions("objects:read")
     public String getAction(String t) {
         return getPojo().getTriggers().getProperty(t);
     }
 
+    @RequiresPermissions("objects:update")
     public synchronized void setChanged(boolean value) {
         if (value == true) {
             this.changed = true;
@@ -155,6 +163,7 @@ public class EnvObjectLogic {
      *
      * @param b
      */
+    @RequiresPermissions("objects:update")
     public final void registerBehavior(BehaviorLogic b) {
         if (getBehavior(b.getName()) != null) {
             throw new IllegalArgumentException("Impossible to register behavior "
@@ -170,6 +179,7 @@ public class EnvObjectLogic {
      * @param name
      * @return the reference to the behavior or null if it doesn't exists
      */
+    @RequiresPermissions("objects:read")
     public final BehaviorLogic getBehavior(String name) {
         for (BehaviorLogic behaviorLogic : behaviors) {
             if (behaviorLogic.getName().equals(name)) {
@@ -183,6 +193,7 @@ public class EnvObjectLogic {
      * Caches developers level commands and creates user level commands as
      * specified in the createCommands() method of its subclasses
      */
+    @RequiresPermissions("objects:read")
     public void init() {
         //validation
         if (pojo == null) {
@@ -196,18 +207,22 @@ public class EnvObjectLogic {
     }
 
     @Deprecated
+    @RequiresPermissions("objects:read")
     private boolean isChanged() {
         return changed;
     }
 
+    @RequiresPermissions("objects:read")
     public EnvironmentLogic getEnv() {
         return this.env;
     }
 
+    @RequiresPermissions("objects:read")
     public EnvObject getPojo() {
         return pojo;
     }
 
+    @RequiresPermissions("objects:delete")
     public final void destroy() {
         pojo = null;
         commandsMapping.clear();
@@ -217,6 +232,7 @@ public class EnvObjectLogic {
     }
 
     @Override
+    @RequiresPermissions("objects:read")
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -232,22 +248,26 @@ public class EnvObjectLogic {
     }
 
     @Override
+    @RequiresPermissions("objects:read")
     public int hashCode() {
         int hash = 7;
         hash = 53 * hash + (this.pojo != null ? this.pojo.hashCode() : 0);
         return hash;
     }
 
+    @RequiresPermissions("objects:read")
     public Iterable<BehaviorLogic> getBehaviors() {
         return behaviors;
     }
 
+    @RequiresPermissions("objects:create")
     public final void setRandomLocation() {
         int randomX = 0 + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth());
         int randomY = 0 + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight());
         setLocation(randomX, randomY);
     }
 
+    @RequiresPermissions("objects:update")
     public void setLocation(int x, int y) {
         for (Representation rep : getPojo().getRepresentations()) {
             rep.setOffset(x, y);
@@ -255,6 +275,7 @@ public class EnvObjectLogic {
         checkTopology();
     }
 
+    @RequiresPermissions({"objects:read", "zones.update"})
     private void checkTopology() {
         FreedomShape shape = getPojo().getRepresentations().get(0).getShape();
         int xoffset = getPojo().getCurrentRepresentation().getOffset().getX();
@@ -265,7 +286,7 @@ public class EnvObjectLogic {
             for (ZoneLogic zone : locEnv.getZones()) {
                 //remove from every zone
                 zone.getPojo().getObjects().remove(this.getPojo());
-                if (this.getEnv() == locEnv && TopologyUtils.intersects(translatedObject, zone.getPojo().getShape()) ) {
+                if (this.getEnv() == locEnv && TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
                     //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
                     //add to the zones this object belongs
                     zone.getPojo().getObjects().add(this.getPojo());
@@ -311,6 +332,7 @@ public class EnvObjectLogic {
      * @return true if the command is succesfully executed by the actuator and
      * false otherways
      */
+    @RequiresPermissions("objects:read")
     protected final boolean executeCommand(final String action, final Config params) {
         Freedomotic.logger.fine("Executing action '" + action + "' of object '" + getPojo().getName() + "'");
         if (getPojo().getActAs().equalsIgnoreCase("virtual")) {
@@ -353,6 +375,7 @@ public class EnvObjectLogic {
         //default empty implementation
     }
 
+    @RequiresPermissions("objects:update")
     protected void setPojo(EnvObject pojo) {
         if ((pojo.getEnvironmentID() == null || pojo.getEnvironmentID().isEmpty()) && EnvironmentPersistence.getEnvironments().size() > 0) {
             pojo.setEnvID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
@@ -361,6 +384,7 @@ public class EnvObjectLogic {
         this.env = EnvironmentPersistence.getEnvByUUID(pojo.getEnvironmentID());
     }
 
+    @RequiresPermissions({"objects:update", "triggers:update"})
     private void renameValuesInTrigger(Trigger t, String oldName, String newName) {
         if (!t.isHardwareLevel()) {
             if (t.getName().contains(oldName)) {
@@ -378,6 +402,7 @@ public class EnvObjectLogic {
         }
     }
 
+    @RequiresPermissions({"objects:read", "commands:update"})
     private void renameValuesInCommand(Command c, String oldName, String newName) {
         if (c.getName().contains(oldName)) {
             c.setName(c.getName().replace(oldName, newName));
@@ -409,6 +434,7 @@ public class EnvObjectLogic {
         }
     }
 
+    @RequiresPermissions("objects:update")
     public void setEnv(EnvironmentLogic selEnv) {
         if (selEnv != null) {
             this.env = selEnv;

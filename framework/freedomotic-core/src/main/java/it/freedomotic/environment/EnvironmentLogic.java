@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
@@ -23,28 +25,32 @@ import java.util.UUID;
 public final class EnvironmentLogic {
 
     private Graph graph = null;
-    private Environment pojo =null;
+    private Environment pojo = null;
     private List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
     private File source = null;
 
     public EnvironmentLogic() {
     }
 
+    @RequiresPermissions("environments:read")
     public Environment getPojo() {
         return pojo;
     }
 
+    @RequiresPermissions("environments:update")
     public void setPojo(Environment pojo) {
-        if (pojo.getUUID() == null || pojo.getUUID().isEmpty()){
+        if (pojo.getUUID() == null || pojo.getUUID().isEmpty()) {
             pojo.setUUID(UUID.randomUUID().toString());
         }
         this.pojo = pojo;
     }
 
+    @RequiresPermissions("environments:read")
     public Graph getGraph() {
         return graph;
     }
 
+    @RequiresPermissions("environments:read")
     public List<Room> getRooms() {
         List<Room> rooms = new ArrayList<Room>();
         for (ZoneLogic zone : getZones()) {
@@ -55,6 +61,7 @@ public final class EnvironmentLogic {
         return rooms;
     }
 
+    @RequiresPermissions({"environments:update", "zones:create"})
     public void addRoom(ZoneLogic zone) {
         //null and duplicate check
         if (zone == null) {
@@ -108,15 +115,19 @@ public final class EnvironmentLogic {
         }
     }
 
+    @RequiresPermissions("environments:delete")
     public void removeZone(ZoneLogic zone) {
         getPojo().getZones().remove(zone.getPojo());
         zones.remove(zone);
     }
 
+    @Deprecated
+    @RequiresPermissions("environments:read")
     public int getLastObjectIndex() {
         return EnvObjectPersistence.size();
     }
 
+    @RequiresPermissions("environments:delete")
     public void clear() {
         //release resources
         try {
@@ -129,6 +140,7 @@ public final class EnvironmentLogic {
         }
     }
 
+    @RequiresPermissions("environments:read")
     public void init() {
         graph = new Graph(); //the graph data structure that describes how rooms are connected through gates
         if (zones == null) {
@@ -161,32 +173,39 @@ public final class EnvironmentLogic {
         }
     }
 
+    @RequiresPermissions("environments:read")
     public List<ZoneLogic> getZones() {
         return zones;
     }
 
+    @RequiresPermissions({"environments:read", "zones:read"})
     public ZoneLogic getZone(String zoneName) {
         for (ZoneLogic zone : zones) {
-            if (zone.getPojo().getName().equalsIgnoreCase(zoneName)) {
+            if (zone.getPojo().getName().equalsIgnoreCase(zoneName)
+                    && SecurityUtils.getSubject().isPermitted("zone:read" + zoneName)) {
                 return zone;
             }
         }
         return null;
     }
 
+    @RequiresPermissions("environments:read")
     public File getSource() {
         return source;
     }
 
+    @RequiresPermissions("environments:read")
     public File getObjectFolder() {
         return new File(source.getParent() + "/data/obj/");
     }
 
+    @RequiresPermissions("environments:update,create")
     public void setSource(File source) {
         this.source = source;
     }
-    
-    public String toString(){
+
+    @RequiresPermissions("environments:read")
+    public String toString() {
         return this.getPojo().getName();
     }
 }

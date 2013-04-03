@@ -28,6 +28,8 @@ import it.freedomotic.events.PluginHasChanged.PluginActions;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 
+import it.freedomotic.security.Auth;
+
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -72,7 +74,7 @@ public abstract class Actuator extends Plugin implements BusConsumer {
     public void addEventListener(String listento) {
         eventChannel.consumeFrom(listento);
     }
-    
+
     public void addCommandListener(String listento) {
         channel.consumeFrom(listento);
     }
@@ -100,10 +102,16 @@ public abstract class Actuator extends Plugin implements BusConsumer {
     public void start() {
         if (!isRunning) {
             isRunning = true;
-            onStart();
-            Freedomotic.logger.config("Actuator " + getName() + " started.");
-            PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.START);
-            Freedomotic.sendEvent(change);
+            Runnable action = new Runnable() {
+                @Override
+                public void run() {
+                    onStart();
+                    Freedomotic.logger.config("Actuator " + getName() + " started.");
+                    PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.START);
+                    Freedomotic.sendEvent(change);
+                }
+            };
+            Auth.pluginExecutePrivileged(this, action);
         }
     }
 
@@ -111,10 +119,16 @@ public abstract class Actuator extends Plugin implements BusConsumer {
     public void stop() {
         if (isRunning) {
             isRunning = false;
-            onStop();
-            Freedomotic.logger.config("Actuator " + getName() + " stopped.");
-            PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.STOP);
-            Freedomotic.sendEvent(change);
+            Runnable action = new Runnable() {
+                @Override
+                public void run() {
+                    onStop();
+                    Freedomotic.logger.config("Actuator " + getName() + " stopped.");
+                    PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.STOP);
+                    Freedomotic.sendEvent(change);
+                }
+            };
+            Auth.pluginExecutePrivileged(this, action);
         }
     }
 
@@ -130,7 +144,6 @@ public abstract class Actuator extends Plugin implements BusConsumer {
                 final Command command = (Command) payload;
                 Freedomotic.logger.config(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
                 Runnable executorThread = new Runnable() {
-
                     @Override
                     public void run() {
                         try {

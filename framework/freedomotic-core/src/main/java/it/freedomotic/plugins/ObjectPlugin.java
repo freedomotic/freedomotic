@@ -9,7 +9,7 @@ import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
-
+import it.freedomotic.security.Auth;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -105,4 +105,6 @@ public class ObjectPlugin implements Client {
         EnvObjectLogic obj = EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
         obj.setEnv(env);
     }
+
+
 }

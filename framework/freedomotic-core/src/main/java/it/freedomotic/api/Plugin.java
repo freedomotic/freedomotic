@@ -25,6 +25,7 @@ import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.plugins.ClientStorage;
+import it.freedomotic.security.Auth;
 import it.freedomotic.util.EqualsUtil;
 import it.freedomotic.util.Info;
 
@@ -34,6 +35,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 import javax.swing.JFrame;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.Subject;
 
 public class Plugin implements Client {
 
@@ -71,8 +75,8 @@ public class Plugin implements Client {
     public Plugin(String pluginName) {
         setName(pluginName);
     }
-    
-    public File getFile(){
+
+    public File getFile() {
         return path;
     }
 
@@ -229,6 +233,7 @@ public class Plugin implements Client {
         shortName = configuration.getStringProperty("short-name", "undefined");
         listenOn = configuration.getStringProperty("listen-on", "undefined");
         sendOn = configuration.getStringProperty("send-on", "undefined");
+        loadPermissionsFromManifest();
     }
 
     public static boolean isCompatible(final File pluginFolder) {
@@ -335,14 +340,25 @@ public class Plugin implements Client {
 
     @Override
     public void start() {
+        Runnable action = new Runnable() {
+            @Override
+            public void run() {
+                onStart();
+            }
+        };
+        Auth.pluginExecutePrivileged(this, action);
     }
 
     @Override
     public void stop() {
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return getName();
+    }
+
+    protected void loadPermissionsFromManifest() {
+        Auth.setPluginPrivileges(this, configuration.getStringProperty("permissions", Auth.getPluginDefaultPermission()));
     }
 }

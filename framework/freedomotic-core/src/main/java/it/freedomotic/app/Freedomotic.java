@@ -38,6 +38,7 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.TriggerPersistence;
+import it.freedomotic.security.Auth;
 import it.freedomotic.serial.SerialConnectionProvider;
 import it.freedomotic.service.ClassPathUpdater;
 import it.freedomotic.service.IPluginCategory;
@@ -45,10 +46,16 @@ import it.freedomotic.service.MarketPlaceService;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.LogFormatter;
 import it.freedomotic.util.i18n;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresUser;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.subject.support.SubjectThreadState;
+import org.apache.shiro.util.ThreadState;
 
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.EventQueue;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -79,7 +86,6 @@ public class Freedomotic {
     private static CommandChannel commandChannel;
     public static ArrayList<IPluginCategory> onlinePluginCategories;
     private static ExecutorService executor = Executors.newCachedThreadPool();
-    private static FileHandler handler;
 
     public Freedomotic() {
         /**
@@ -88,51 +94,61 @@ public class Freedomotic {
          * *****************************************************************
          */
         loadAppConfig();
-        String resourcesPath = new File(Info.getApplicationPath() + Freedomotic.config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
-        logger.info("\nOS: " + System.getProperty("os.name") + "\n"
-                + i18n.msg("architecture") + ": " + System.getProperty("os.arch") + "\n"
-                + "OS Version: " + System.getProperty("os.version") + "\n"
-                + i18n.msg("user") +": " + System.getProperty("user.name") + "\n"
-                + "Java Home: " + System.getProperty("java.home") + "\n"
-                + "Java Library Path: {" + System.getProperty("java.library.path") + "}\n"
-                + "Program path: " + System.getProperty("user.dir") + "\n"
-                + "Java Version: " + System.getProperty("java.version") + "\n"
-                + "Resources Path: " + resourcesPath);
-
-        eventChannel = new EventChannel();
-        commandChannel = new CommandChannel();
-        new ColorList(); //initialize an ordered list of colors used for various purposes, eg: people colors
-
-        /**
-         * ******************************************************************
-         * Starting the logger and popup it in the browser
-         * *****************************************************************
-         */
-        if (Freedomotic.config.getBooleanProperty("KEY_SAVE_LOG_TO_FILE", false)) {
-            try {
-                File logdir = new File(Info.getApplicationPath() + "/log/");
-                logdir.mkdir();
-                File logfile = new File(logdir + "/freedomotic.html");
-                logfile.createNewFile();
-                handler = new FileHandler(logfile.getAbsolutePath(), false);
-                handler.setFormatter(new LogFormatter());
-                logger.setLevel(Level.ALL);
-                logger.addHandler(handler);
-                logger.config(i18n.msg("INIT_MESSAGE"));
-                if ((Freedomotic.config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
-                        && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
-                    java.awt.Desktop.getDesktop().browse(new File(Info.getApplicationPath() + "/log/freedomotic.html").toURI());
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        Auth.initBaseRealm();
+        if (Auth.realmInited) {
+            PrincipalCollection principals = new SimplePrincipalCollection("system", "it.freedomotic.security");
+            Subject SysSubject = new Subject.Builder().principals(principals).buildSubject();
+            ThreadState threadState = new SubjectThreadState(SysSubject);
+            threadState.bind();
+            logger.info("Booting as user:" + SecurityUtils.getSubject().getPrincipal());
         }
 
-        /**
-         * ******************************************************************
-         * Create data backup folder (FEATURE DISABLED!!!)
-         * *****************************************************************
-         */
+        try {
+            String resourcesPath = new File(Info.getApplicationPath() + Freedomotic.config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
+            logger.info("\nOS: " + System.getProperty("os.name") + "\n"
+                    + i18n.msg("architecture") + ": " + System.getProperty("os.arch") + "\n"
+                    + "OS Version: " + System.getProperty("os.version") + "\n"
+                    + i18n.msg("user") + ": " + System.getProperty("user.name") + "\n"
+                    + "Java Home: " + System.getProperty("java.home") + "\n"
+                    + "Java Library Path: {" + System.getProperty("java.library.path") + "}\n"
+                    + "Program path: " + System.getProperty("user.dir") + "\n"
+                    + "Java Version: " + System.getProperty("java.version") + "\n"
+                    + "Resources Path: " + resourcesPath);
+
+            eventChannel = new EventChannel();
+            commandChannel = new CommandChannel();
+            new ColorList(); //initialize an ordered list of colors used for various purposes, eg: people colors
+
+            /**
+             * ******************************************************************
+             * Starting the logger and popup it in the browser
+             * *****************************************************************
+             */
+            if (Freedomotic.config.getBooleanProperty("KEY_SAVE_LOG_TO_FILE", false)) {
+                try {
+                    File logdir = new File(Info.getApplicationPath() + "/log/");
+                    logdir.mkdir();
+                    File logfile = new File(logdir + "/freedomotic.html");
+                    logfile.createNewFile();
+                    FileHandler handler = new FileHandler(logfile.getAbsolutePath(), false);
+                    handler.setFormatter(new LogFormatter());
+                    logger.setLevel(Level.ALL);
+                    logger.addHandler(handler);
+                    logger.config(i18n.msg("INIT_MESSAGE"));
+                    if ((Freedomotic.config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
+                            && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
+                        java.awt.Desktop.getDesktop().browse(new File(Info.getApplicationPath() + "/log/freedomotic.html").toURI());
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            /**
+             * ******************************************************************
+             * Create data backup folder (FEATURE DISABLED!!!)
+             * *****************************************************************
+             */
 //        if (Freedomotic.config.getBooleanProperty("KEY_BACKUP_DATA_BEFORE_START", true) == true) {
 //            try {
 //                CopyFile.copy(new File(Info.getDatafilePath()), new File(Info.getApplicationPath() + "/backup"));
@@ -140,181 +156,187 @@ public class Freedomotic {
 //                logger.warning("unable to create a backup copy of application data " + getStackTraceInfo(ex));
 //            }
 //        }
-        /**
-         * ******************************************************************
-         * Init the plugin storage
-         * *****************************************************************
-         */
-        clients = new ClientStorage();
+            /**
+             * ******************************************************************
+             * Init the plugin storage
+             * *****************************************************************
+             */
+            clients = new ClientStorage();
 
-        /**
-         * ******************************************************************
-         * Shows the freedomotic website if stated in the config file
-         * *****************************************************************
-         */
-        if (Freedomotic.config.getBooleanProperty("KEY_SHOW_WEBSITE_ON_STARTUP", false)) {
+            /**
+             * ******************************************************************
+             * Shows the freedomotic website if stated in the config file
+             * *****************************************************************
+             */
+            if (Freedomotic.config.getBooleanProperty("KEY_SHOW_WEBSITE_ON_STARTUP", false)) {
+                try {
+                    java.awt.Desktop.getDesktop().browse(new URI("www.freedomotic.com"));
+                } catch (URISyntaxException ex) {
+                    Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+
+            /**
+             * ******************************************************************
+             * Dynamically load events jar files in /plugin/events folder
+             * *****************************************************************
+             */
             try {
-                java.awt.Desktop.getDesktop().browse(new URI("www.freedomotic.com"));
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
+                AddonLoader.load(new File(Info.PATH_PLUGINS_FOLDER + "/events/"));
+            } catch (Exception ex) {
                 Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-        }
-
-
-        /**
-         * ******************************************************************
-         * Dynamically load events jar files in /plugin/events folder
-         * *****************************************************************
-         */
-        try {
-            AddonLoader.load(new File(Info.PATH_PLUGINS_FOLDER + "/events/"));
-        } catch (Exception ex) {
-            Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        /**
-         * ******************************************************************
-         * Dynamically load objects jar files in /plugin/objects folder
-         * *****************************************************************
-         */
-        try {
-            AddonLoader.recursiveSearchIn(new File(Info.PATH_PLUGINS_FOLDER + "/objects/"));
-        } catch (Exception ex) {
-            Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        /**
-         * ******************************************************************
-         * Dynamically load jar files in /plugin/providers folder for plugins
-         * *****************************************************************
-         */
-        try {
-            ClassPathUpdater.add(new File(Info.getApplicationPath() + "/plugins/providers/"));
-        } catch (Exception ex) {
-            Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        /**
-         * ******************************************************************
-         * Cache online plugins
-         * *****************************************************************
-         */
-        if (Freedomotic.config.getBooleanProperty("CACHE_MARKETPLACE_ON_STARTUP", false)) {
+            /**
+             * ******************************************************************
+             * Dynamically load objects jar files in /plugin/objects folder
+             * *****************************************************************
+             */
             try {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                Freedomotic.logger.info("Starting marketplace service");
-                                MarketPlaceService mps = MarketPlaceService.getInstance();
-                                onlinePluginCategories = mps.getCategoryList();
-                            }
-                        }).start();
-                    }
-                });
-            } catch (Exception e) {
-                Freedomotic.logger.warning("Unable to cache plugins package from marketplace");
-                Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+                AddonLoader.recursiveSearchIn(new File(Info.PATH_PLUGINS_FOLDER + "/objects/"));
+            } catch (Exception ex) {
+                Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
 
-        /**
-         * ******************************************************************
-         * Deserialize the default environment (its shape + zones)
-         * *****************************************************************
-         */
-        
-        /**
-         * ******************************************************************
-         * Loads sensors and actuators This must be loaded before object
-         * deserialization because objects can user hardware level commands and
-         * trigger that are loaded at this stage
-         * *****************************************************************
-         */
-        loadPlugins();
+            /**
+             * ******************************************************************
+             * Dynamically load jar files in /plugin/providers folder for
+             * plugins
+             * *****************************************************************
+             */
+            try {
+                ClassPathUpdater.add(new File(Info.getApplicationPath() + "/plugins/providers/"));
+            } catch (Exception ex) {
+                Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            /**
+             * ******************************************************************
+             * Cache online plugins
+             * *****************************************************************
+             */
+            if (Freedomotic.config.getBooleanProperty("CACHE_MARKETPLACE_ON_STARTUP", false)) {
+                try {
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    Freedomotic.logger.info("Starting marketplace service");
+                                    MarketPlaceService mps = MarketPlaceService.getInstance();
+                                    onlinePluginCategories = mps.getCategoryList();
+                                }
+                            }).start();
+                        }
+                    });
+                } catch (Exception e) {
+                    Freedomotic.logger.warning("Unable to cache plugins package from marketplace");
+                    Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+                }
+            }
+
+            /**
+             * ******************************************************************
+             * Deserialize the default environment (its shape + zones)
+             * *****************************************************************
+             */
+            /**
+             * ******************************************************************
+             * Loads sensors and actuators This must be loaded before object
+             * deserialization because objects can user hardware level commands
+             * and trigger that are loaded at this stage
+             * *****************************************************************
+             */
+            loadPlugins();
 
 
-        /**
-         * ******************************************************************
-         * Deserialize objects from XML
-         * *****************************************************************
-         */
-        // REMOVED: now it's up to EnvironmentPersistence to load objects.
-       // EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
-        loadDefaultEnvironment();
+            /**
+             * ******************************************************************
+             * Deserialize objects from XML
+             * *****************************************************************
+             */
+            // REMOVED: now it's up to EnvironmentPersistence to load objects.
+            // EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
+            loadDefaultEnvironment();
 
-        /**
-         * ******************************************************************
-         * Init frontends sending an object changed behavior event
-         * *****************************************************************
-         */
+            /**
+             * ******************************************************************
+             * Init frontends sending an object changed behavior event
+             * *****************************************************************
+             */
 //        for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
 //            ObjectHasChangedBehavior event = new ObjectHasChangedBehavior(
 //                    this,
 //                    object);
 //            sendEvent(event);
 //        }
-        /**
-         * ******************************************************************
-         * Updating zone object list
-         * *****************************************************************
-         */
+            /**
+             * ******************************************************************
+             * Updating zone object list
+             * *****************************************************************
+             */
 //        Freedomotic.logger.config("---- Checking zones topology ----");
 //        for (ZoneLogic z : environment.getZones()) {
 //            z.checkTopology();
 //        }
-        /**
-         * ******************************************************************
-         * Loads the entire Reactions system (Trigger + Commands + Reactions)
-         * *****************************************************************
-         */
-        TriggerPersistence.loadTriggers(new File(Info.PATH_DATA_FOLDER + "/trg/"));
-        CommandPersistence.loadCommands(new File(Info.PATH_DATA_FOLDER + "/cmd/"));
-        ReactionPersistence.loadReactions(new File(Info.PATH_DATA_FOLDER + "/rea/"));
+            /**
+             * ******************************************************************
+             * Loads the entire Reactions system (Trigger + Commands +
+             * Reactions)
+             * *****************************************************************
+             */
+            TriggerPersistence.loadTriggers(new File(Info.PATH_DATA_FOLDER + "/trg/"));
+            CommandPersistence.loadCommands(new File(Info.PATH_DATA_FOLDER + "/cmd/"));
+            ReactionPersistence.loadReactions(new File(Info.PATH_DATA_FOLDER + "/rea/"));
 
 
-        /**
-         * A service to add environment objects using XML commands
-         */
-        new JoinDevice();
-        new JoinPlugin();
-        new BehaviorManager();
-        new SerialConnectionProvider();
+            /**
+             * A service to add environment objects using XML commands
+             */
+            new JoinDevice();
+            new JoinPlugin();
+            new BehaviorManager();
+            new SerialConnectionProvider();
 
 
-        /**
-         * ******************************************************************
-         * Starting plugins
-         * *****************************************************************
-         */
-        double MB = 1024 * 1024;
-        Runtime runtime = Runtime.getRuntime();
-        double memory = ((runtime.totalMemory() - runtime.freeMemory()) / MB);
-        logger.config("Freedomotic + data uses " + memory + "MB");
-        for (Client plugin : ClientStorage.getClients()) {
-            String startupTime = plugin.getConfiguration().getStringProperty("startup-time", "undefined");
-            if (startupTime.equalsIgnoreCase("on load")) {
-                plugin.start();
-                PluginHasChanged event = new PluginHasChanged(this, plugin.getName(), PluginActions.DESCRIPTION);
-                sendEvent(event);
-                double snapshot = (((runtime.totalMemory() - runtime.freeMemory()) / MB) - memory);
-                logger.config(plugin.getName() + " uses " + snapshot + "MB of memory");
-                memory += snapshot;
+            /**
+             * ******************************************************************
+             * Starting plugins
+             * *****************************************************************
+             */
+            double MB = 1024 * 1024;
+            Runtime runtime = Runtime.getRuntime();
+            double memory = ((runtime.totalMemory() - runtime.freeMemory()) / MB);
+            logger.config("Freedomotic + data uses " + memory + "MB");
+            for (final Client plugin : ClientStorage.getClients()) {
+                String startupTime = plugin.getConfiguration().getStringProperty("startup-time", "undefined");
+                if (startupTime.equalsIgnoreCase("on load")) {
+                    plugin.start();
+                    PluginHasChanged event = new PluginHasChanged(this, plugin.getName(), PluginActions.DESCRIPTION);
+                    sendEvent(event);
+                    double snapshot = (((runtime.totalMemory() - runtime.freeMemory()) / MB) - memory);
+                    logger.config(plugin.getName() + " uses " + snapshot + "MB of memory");
+                    memory += snapshot;
+                }
             }
+
+            logger.config("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / MB);
+        } finally {
+            //           threadState.clear();
         }
 
-        logger.config("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / MB);
     }
 
+    @RequiresPermissions("environments:load")
     public static void loadDefaultEnvironment() {
         try {
-            String envFilePath = config.getProperty("KEY_ROOM_XML_PATH" );
-            File envFile= new File(Info.getApplicationPath() + File.separator + "data" + File.separator +"furn" + envFilePath);
+            String envFilePath = config.getProperty("KEY_ROOM_XML_PATH");
+            File envFile = new File(Info.getApplicationPath() + File.separator + "data" + File.separator + "furn" + envFilePath);
             File folder = envFile.getParentFile();
             EnvironmentPersistence.loadEnvironmentsFromDir(folder, false);
         } catch (Exception e) {
@@ -330,6 +352,7 @@ public class Freedomotic {
         new ColorList();
     }
 
+    @RequiresPermissions("sys:plugins:load")
     private void loadPlugins() {
         try {
             File pluginFolder = new File(Info.PATH_PLUGINS_FOLDER + "/devices/");
@@ -338,8 +361,10 @@ public class Freedomotic {
             Freedomotic.logger.warning("Error while loading this plugin: " + e.getMessage());
             Freedomotic.logger.severe(getStackTraceInfo(e));
         }
+
     }
 
+    @RequiresPermissions("sys:config:load")
     private void loadAppConfig() {
         try {
             config = ConfigPersistence.deserialize(new File(Info.getApplicationPath() + "/config/config.xml"));
@@ -349,10 +374,12 @@ public class Freedomotic {
         Freedomotic.logger.info(config.toString());
     }
 
+    @RequiresUser
     public static void sendEvent(EventTemplate event) {
         eventChannel.send(event);
     }
 
+    @RequiresUser
     public static Command sendCommand(final Command command) {
         return commandChannel.send(command);
     }

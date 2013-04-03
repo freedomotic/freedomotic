@@ -3,6 +3,7 @@ package it.freedomotic.jfrontend;
 import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.ListenEventsOn;
+import it.freedomotic.api.Plugin;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.EnvironmentLogic;

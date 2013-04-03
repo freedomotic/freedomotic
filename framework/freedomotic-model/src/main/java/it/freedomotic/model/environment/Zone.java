@@ -18,12 +18,12 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.freedomotic.model.environment;
 
-
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.object.EnvObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
@@ -40,22 +40,27 @@ public class Zone implements Serializable {
     private ArrayList<EnvObject> objects;
     private String texture;
 
+    @RequiresPermissions("zones:read")
     public String getName() {
         return this.name;
     }
 
+    @RequiresPermissions("zones:read")
     public FreedomPolygon getShape() {
         return this.shape;
     }
 
+    @RequiresPermissions("zones:read")
     public boolean isRoom() {
         return room;
     }
 
+    @RequiresPermissions("zones:update")
     public void setAsRoom(boolean room) {
         this.room = room;
     }
 
+    @RequiresPermissions("zones:read")
     public String getDescription() {
         if (description == null) {
             description = "";
@@ -63,18 +68,22 @@ public class Zone implements Serializable {
         return description;
     }
 
+    @RequiresPermissions("zones:update")
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @RequiresPermissions("zones:read")
     public String getTexture() {
         return texture;
     }
 
+    @RequiresPermissions("zones:update")
     public void setName(String name) {
         this.name = name;
     }
 
+    @RequiresPermissions("zones:update")
     public void setShape(FreedomPolygon shape) {
         this.shape = shape;
     }
@@ -84,13 +93,15 @@ public class Zone implements Serializable {
         return this.getName();
     }
 
+    @RequiresPermissions("zones:update")
     public void setTexture(String file) {
-        
-            this.texture = file;
-        
+
+        this.texture = file;
+
         //file.getName();
     }
 
+    @RequiresPermissions("zones:read")
     public ArrayList<EnvObject> getObjects() {
         if (objects == null) {
             objects = new ArrayList<EnvObject>();
@@ -98,6 +109,7 @@ public class Zone implements Serializable {
         return objects;
     }
 
+    @RequiresPermissions("zones:update")
     public void setObjects(ArrayList<EnvObject> objects) {
         this.objects = objects;
     }
@@ -109,6 +121,7 @@ public class Zone implements Serializable {
     }
 
     @Override
+    @RequiresPermissions("zones:read")
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -124,6 +137,7 @@ public class Zone implements Serializable {
     }
 
     @Override
+    @RequiresPermissions("zones:read")
     public int hashCode() {
         int hash = 5;
         hash = 17 * hash + (this.name != null ? this.name.hashCode() : 0);
