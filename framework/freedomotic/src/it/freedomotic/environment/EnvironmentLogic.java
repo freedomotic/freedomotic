@@ -20,10 +20,10 @@ import java.util.List;
  */
 public final class EnvironmentLogic {
 
-    private static Graph graph;
-    private static Environment pojo;
-    private static List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
-    private static File source;
+    private Graph graph = null;
+    private Environment pojo =null;
+    private List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
+    private File source = null;
 
     public EnvironmentLogic() {
     }
@@ -36,7 +36,7 @@ public final class EnvironmentLogic {
         this.pojo = pojo;
     }
 
-    public static Graph getGraph() {
+    public Graph getGraph() {
         return graph;
     }
 
@@ -83,11 +83,11 @@ public final class EnvironmentLogic {
         getPojo().getZones().add(zone.getPojo());
         zones.add(zone);
 
-        zone.init();
+        zone.init(this);
 
         if (zone.getPojo().isRoom()) {
             Room room = (Room) zone;
-            room.init();
+            room.init(this);
             Iterator it = EnvObjectPersistence.iterator();
             //check if this rooms has gates
             while (it.hasNext()) {
@@ -135,7 +135,7 @@ public final class EnvironmentLogic {
             if (z != null) {
                 if (z.isRoom()) {
                     Room room = new Room(z);
-                    room.init();
+                    room.init(this);
                     if (!zones.contains(room)) {
                         Freedomotic.logger.config("Adding room " + room);
                         this.zones.add(room);
@@ -144,7 +144,7 @@ public final class EnvironmentLogic {
                     }
                 } else {
                     ZoneLogic zoneLogic = new ZoneLogic(z);
-                    zoneLogic.init();
+                    zoneLogic.init(this);
                     if (!zones.contains(zoneLogic)) {
                         Freedomotic.logger.config("Adding zone " + zoneLogic);
                         this.zones.add(zoneLogic);
@@ -179,5 +179,9 @@ public final class EnvironmentLogic {
 
     public void setSource(File source) {
         this.source = source;
+    }
+    
+    public String toString(){
+        return this.getPojo().getName();
     }
 }

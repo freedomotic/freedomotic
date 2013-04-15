@@ -2,6 +2,8 @@ package it.freedomotic.objects;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.Resolver;
+import it.freedomotic.environment.EnvironmentLogic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.model.ds.Config;
@@ -37,7 +39,8 @@ public class EnvObjectLogic {
     private String message;
     private HashMap<String, Command> commandsMapping; //mapping between action name -> hardware command instance
     private List<BehaviorLogic> behaviors = new ArrayList<BehaviorLogic>();
-
+    private EnvironmentLogic env;
+    
     /**
      * gets the hardware command mapped to the action in input for example:
      * Action -> Hardware Command Turn on -> Turn on light with X10 Actuator
@@ -195,7 +198,11 @@ public class EnvObjectLogic {
     private boolean isChanged() {
         return changed;
     }
-
+    
+    public EnvironmentLogic getEnv(){
+        return this.env;
+    }
+    
     public EnvObject getPojo() {
         return pojo;
     }
@@ -235,8 +242,8 @@ public class EnvObjectLogic {
     }
 
     public final void setRandomLocation() {
-        int randomX = 0 + (int) (Math.random() * Freedomotic.environment.getPojo().getWidth());
-        int randomY = 0 + (int) (Math.random() * Freedomotic.environment.getPojo().getHeight());
+        int randomX = 0 + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth());
+        int randomY = 0 + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight());
         setLocation(randomX, randomY);
     }
 
@@ -253,7 +260,8 @@ public class EnvObjectLogic {
         int yoffset = getPojo().getCurrentRepresentation().getOffset().getY();
         //now apply offset to the shape
         FreedomPolygon translatedObject = (FreedomPolygon) TopologyUtils.translate((FreedomPolygon) shape, xoffset, yoffset);
-        for (ZoneLogic zone : Freedomotic.environment.getZones()) {
+        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+        for (ZoneLogic zone : env.getZones()) {
             //remove from every zone
             zone.getPojo().getObjects().remove(this.getPojo());
             if (TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
@@ -264,6 +272,7 @@ public class EnvObjectLogic {
             } else {
                 //DEBUG: System.out.println("object " + getPojo().getName() + " NOT intersects zone " + zone.getPojo().getName());
             }
+        }
         }
     }
 
@@ -345,8 +354,9 @@ public class EnvObjectLogic {
 
     protected void setPojo(EnvObject pojo) {
         this.pojo = pojo;
+        this.env = EnvironmentPersistence.getEnvByUUID(pojo.getEnvironmentID());
     }
-
+    
     private void renameValuesInTrigger(Trigger t, String oldName, String newName) {
         if (!t.isHardwareLevel()) {
             if (t.getName().contains(oldName)) {

@@ -54,7 +54,7 @@ public class PlainDrawer extends Renderer {
 
     @Override
     public void renderEnvironment() {
-        Polygon poly = (Polygon) TopologyUtils.convertToAWT(Freedomotic.environment.getPojo().getShape());
+        Polygon poly = (Polygon) TopologyUtils.convertToAWT(getCurrEnv().getPojo().getShape());
 //        System.out.println("Shape: "+Freedomotic.environment.getShape());
 //        System.out.println("Polygon: "+poly);
 
@@ -104,9 +104,8 @@ public class PlainDrawer extends Renderer {
 
     @Override
     public void renderObjects() {
-        for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
-            EnvObjectLogic obj = (EnvObjectLogic) it.next();
-            if (obj != null) {
+              for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
+                  if (obj != null) {
                 setTransformContextFor(obj.getPojo());
                 drawPlainObject(obj);
                 invalidateAnyTransform();
@@ -152,7 +151,7 @@ public class PlainDrawer extends Renderer {
 
     @Override
     public void renderZones() {
-        for (ZoneLogic zone : Freedomotic.environment.getZones()) {
+        for (ZoneLogic zone : getCurrEnv().getZones()) {
             if (zone != null) {
                 getContext().drawPolygon((Polygon) TopologyUtils.convertToAWT(zone.getPojo().getShape()));
             }

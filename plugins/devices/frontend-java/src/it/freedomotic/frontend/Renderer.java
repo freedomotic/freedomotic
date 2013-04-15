@@ -7,6 +7,8 @@ package it.freedomotic.frontend;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.ResourcesManager;
+import it.freedomotic.environment.EnvironmentLogic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.model.object.EnvObject;
@@ -45,13 +47,13 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     private double widthRescale = 1.0;
     private double heightRescale = 1.0;
     private boolean backgroundChanged = true;
-    private static int ENVIRONMENT_WIDTH = (int) Freedomotic.environment.getPojo().getWidth();
-    private static int ENVIRONMENT_HEIGHT = (int) Freedomotic.environment.getPojo().getHeight();
+    private static int ENVIRONMENT_WIDTH = (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth();
+    private static int ENVIRONMENT_HEIGHT = (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight();
     private static int BORDER_X = 10; //the empty space around the map
     private static int BORDER_Y = 10; //the empty space around the map
     private double CANVAS_WIDTH = ENVIRONMENT_WIDTH + (BORDER_X * 2);
     private double CANVAS_HEIGHT = ENVIRONMENT_HEIGHT + (BORDER_Y * 2);
-    protected static Color BACKGROUND_COLOR = TopologyUtils.convertColorToAWT(Freedomotic.environment.getPojo().getBackgroundColor());
+    protected static Color BACKGROUND_COLOR = TopologyUtils.convertColorToAWT(EnvironmentPersistence.getEnvironments().get(0).getPojo().getBackgroundColor());
     private EnvObjectLogic selectedObject;
     private ArrayList<Shape> indicators = new ArrayList<Shape>();
     private HashMap<EnvObjectLogic, Shape> cachedShapes = new HashMap<EnvObjectLogic, Shape>();
@@ -63,7 +65,26 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     private boolean objectEditMode = false;
     private Point messageCorner = new Point(50, 50);
     private Dimension dragDiff = null;
+    private EnvironmentLogic currEnv = EnvironmentPersistence.getEnvironments().get(0);
 
+    public EnvironmentLogic getCurrEnv(){
+        return this.currEnv;
+    }
+    
+ 
+    public void setCurrEnv(EnvironmentLogic env){
+        this.currEnv = env;
+        updateEnvRelatedVars();
+        
+        setNeedRepaint(true);
+        
+    }
+    
+    public void updateEnvRelatedVars(){
+        ENVIRONMENT_WIDTH = currEnv.getPojo().getWidth();
+        ENVIRONMENT_HEIGHT = currEnv.getPojo().getHeight();
+        BACKGROUND_COLOR = TopologyUtils.convertColorToAWT(currEnv.getPojo().getBackgroundColor());
+    }
     protected EnvObjectLogic getSelectedObject() {
         return selectedObject;
     }
@@ -455,7 +476,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     }
 
     protected ZoneLogic mouseOnZone(Point p) {
-        Iterator it = Freedomotic.environment.getZones().iterator();
+        Iterator it = currEnv.getZones().iterator();
         boolean onZone = false;
         while (it.hasNext()) {
             ZoneLogic zone = (ZoneLogic) it.next();
@@ -719,7 +740,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 handles.add(new Handle(forZone, corner));
             }
         } else {
-            for (ZoneLogic zone : Freedomotic.environment.getZones()) {
+            for (ZoneLogic zone : currEnv.getZones()) {
                 Iterator<FreedomPoint> it = zone.getPojo().getShape().getPoints().iterator();
                 while (it.hasNext()) {
                     FreedomPoint corner = (FreedomPoint) it.next();

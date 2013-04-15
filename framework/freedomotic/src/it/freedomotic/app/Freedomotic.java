@@ -60,6 +60,7 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.FileHandler;
@@ -74,7 +75,8 @@ import java.util.logging.Logger;
 public class Freedomotic {
 
     public static Config config;
-    public static EnvironmentLogic environment;
+//    public static ArrayList<EnvironmentLogic> environmentAreas;
+//    public static EnvironmentLogic environment;
     public static ClientStorage clients;
     private static String INSTANCE_ID;
     public static final Logger logger = Logger.getLogger("app.log");
@@ -247,8 +249,7 @@ public class Freedomotic {
          * Deserialize objects from XML
          * *****************************************************************
          */
-        EnvObjectPersistence.loadObjects(environment.getObjectFolder(), false);
-
+        EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
         /**
          * ******************************************************************
          * Init frontends sending an object changed behavior event
@@ -314,29 +315,12 @@ public class Freedomotic {
 
     public static void loadDefaultEnvironment() {
         try {
-            File folder = new File(Info.getApplicationPath() + "/data/furn/" + config.getProperty("KEY_ROOM_XML_PATH"));
-            loadEnvironment(folder);
+            String envFolder = config.getProperty("KEY_ROOM_XML_PATH").substring(0, config.getProperty("KEY_ROOM_XML_PATH").lastIndexOf("/") );
+            File folder = new File(Info.getApplicationPath() + "/data/furn/" + envFolder);
+            EnvironmentPersistence.loadEnvironmentsFromDir(folder, false);
         } catch (Exception e) {
             Freedomotic.logger.severe(getStackTraceInfo(e));
         }
-    }
-
-    public static boolean loadEnvironment(File folder) {
-        boolean done = false;
-        if (folder == null) {
-            return false;
-        }
-        try {
-            if (environment != null) {
-                environment.clear();
-            }
-            environment = EnvironmentPersistence.load(folder);
-            done = true;
-        } catch (Exception e) {
-            done = false;
-            Freedomotic.logger.severe(getStackTraceInfo(e));
-        }
-        return done;
     }
 
     public static String getInstanceID() {
@@ -407,7 +391,7 @@ public class Freedomotic {
         //save changes to object in the default test environment
         //on error there is a copy (manually created) of original test environment in the data/furn folder
         if (Freedomotic.config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
-            EnvObjectPersistence.saveObjects(Freedomotic.environment.getObjectFolder());
+            EnvObjectPersistence.saveObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder());
         }
 
         String savedDataRoot;
@@ -420,13 +404,9 @@ public class Freedomotic {
         CommandPersistence.saveCommands(new File(savedDataRoot + "/cmd"));
         ReactionPersistence.saveReactions(new File(savedDataRoot + "/rea"));
 
-        try {
-            //save the environment
-            String environmentFilePath = Info.getApplicationPath() + "/data/furn/" + Freedomotic.config.getProperty("KEY_ROOM_XML_PATH");
-            EnvironmentPersistence.save(new File(environmentFilePath));
-        } catch (IOException ex) {
-            Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //save the environment
+        String environmentFilePath = Info.getApplicationPath() + "/data/furn/" + Freedomotic.config.getProperty("KEY_ROOM_XML_PATH");
+        EnvironmentPersistence.saveEnvironmentsToFolder(new File(environmentFilePath).getParentFile());
         Freedomotic.logger.info(Profiler.print());
         Profiler.saveToFile();
         System.exit(0);

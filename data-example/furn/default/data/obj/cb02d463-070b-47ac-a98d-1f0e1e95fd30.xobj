@@ -13,6 +13,7 @@
       <description></description>
       <active>true</active>
       <priority>-1</priority>
+      <readOnly>false</readOnly>
       <value>0</value>
       <max>60</max>
       <min>-40</min>
@@ -47,4 +48,5 @@
     <property name="" value="temperature"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
+  <envUUID>df28cda0-a866-11e2-9e96-0800200c9a66</envUUID>
 </it.freedomotic.model.object.EnvObject>

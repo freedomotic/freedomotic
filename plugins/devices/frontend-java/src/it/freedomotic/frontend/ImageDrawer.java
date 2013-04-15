@@ -35,11 +35,9 @@ public class ImageDrawer extends PlainDrawer {
 
     @Override
     public void renderObjects() {
-        for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
-            EnvObjectLogic obj = (EnvObjectLogic) it.next();
+        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
             renderSingleObject(obj);
-
-        }
+            }
     }
 
     public void renderSingleObject(EnvObjectLogic obj) {
@@ -98,7 +96,7 @@ public class ImageDrawer extends PlainDrawer {
 
     @Override
     public void renderZones() {
-        for (ZoneLogic zone : Freedomotic.environment.getZones()) {
+        for (ZoneLogic zone : getCurrEnv().getZones()) {
             if (zone != null) {
                 Polygon pol = (Polygon) TopologyUtils.convertToAWT(zone.getPojo().getShape());
                 paintTexture(zone.getPojo().getTexture(), pol);

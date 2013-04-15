@@ -217,6 +217,22 @@ public class EnvObjectPersistence {
         }
         return list;
     }
+        /**
+     * Gets the object by its environment
+     *
+     * @param environment uuid
+     * @return
+     */
+    public static ArrayList<EnvObjectLogic> getObjectByEnvironment(String uuid) {
+        ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
+        for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
+            EnvObjectLogic object = (EnvObjectLogic) it.next();
+            if ((object.getPojo().getEnvironmentID().equalsIgnoreCase(uuid))) {
+                list.add(object);
+            }
+        }
+        return list;
+    }
 
     public static int size() {
         return objectList.size();

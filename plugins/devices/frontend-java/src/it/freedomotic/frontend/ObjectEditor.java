@@ -76,12 +76,12 @@ public class ObjectEditor extends javax.swing.JFrame {
         SpinnerModel modelX =
                 new SpinnerNumberModel(0, //initial value
                 -100, //min
-                (int) Freedomotic.environment.getPojo().getWidth() + 100, //max= env dimension + 1 meter
+                (int) obj.getEnv().getPojo().getWidth() + 100, //max= env dimension + 1 meter
                 1); //step
         SpinnerModel modelY =
                 new SpinnerNumberModel(0, //initial value
                 -100, //min
-                (int) Freedomotic.environment.getPojo().getWidth() + 100, //max
+                (int) obj.getEnv().getPojo().getWidth() + 100, //max
                 1); //step
         SpinnerModel modelRotation =
                 new SpinnerNumberModel(0, //initial value

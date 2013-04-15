@@ -13,6 +13,7 @@
       <description></description>
       <active>true</active>
       <priority>-1</priority>
+      <readOnly>false</readOnly>
       <value>false</value>
     </it.freedomotic.model.object.BooleanBehavior>
   </behaviors>
@@ -62,4 +63,5 @@
     <property name="" value="powered"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
+  <envUUID>df28cda0-a866-11e2-9e96-0800200c9a66</envUUID>
 </it.freedomotic.model.object.EnvObject>

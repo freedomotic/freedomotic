@@ -6,6 +6,8 @@ package it.freedomotic.frontend;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.ResourcesManager;
+import it.freedomotic.environment.EnvironmentLogic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.frontend.utils.SpringUtilities;
@@ -38,7 +40,8 @@ public class ListDrawer extends Drawer {
 
     JComboBox cmbZone = new JComboBox();
     JPanel panel = new JPanel();
-
+    EnvironmentLogic currEnv = EnvironmentPersistence.getEnvironments().get(0);
+    
     public ListDrawer() {
 
         cmbZone.removeAllItems();
@@ -60,9 +63,15 @@ public class ListDrawer extends Drawer {
         //add(scroll);
         validate();
     }
-
+    public void setCurrEnv(EnvironmentLogic env){
+        this.currEnv = env;
+    }
+      
+    public EnvironmentLogic getCurrEnv(){
+        return this.currEnv;
+    }
     private void enlistZones() {
-        for (ZoneLogic zone : Freedomotic.environment.getZones()) {
+        for (ZoneLogic zone : getCurrEnv().getZones()) {
             cmbZone.addItem(zone);
         }
     }

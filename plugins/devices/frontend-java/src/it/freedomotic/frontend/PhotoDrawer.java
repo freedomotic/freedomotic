@@ -27,10 +27,10 @@ public class PhotoDrawer extends ImageDrawer {
     @Override
     public void prepareBackground() {
         BufferedImage img = null;
-        String fileName = Freedomotic.environment.getPojo().getBackgroundImage();
+        String fileName = getCurrEnv().getPojo().getBackgroundImage();
         img = ResourcesManager.getResource(fileName,
-                Freedomotic.environment.getPojo().getWidth(),
-                Freedomotic.environment.getPojo().getHeight());
+                getCurrEnv().getPojo().getWidth(),
+                getCurrEnv().getPojo().getHeight());
         if (img != null) {
             getContext().drawImage(img, 0, 0, this);
         } else {
@@ -48,7 +48,7 @@ public class PhotoDrawer extends ImageDrawer {
 
     @Override
     public void renderZones() {
-        for (ZoneLogic zone : Freedomotic.environment.getZones()) {
+        for (ZoneLogic zone : getCurrEnv().getZones()) {
             if (zone != null) {
                 Polygon pol = (Polygon) TopologyUtils.convertToAWT(zone.getPojo().getShape());
                 if (zone instanceof Room) {

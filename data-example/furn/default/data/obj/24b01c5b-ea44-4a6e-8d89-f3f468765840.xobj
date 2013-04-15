@@ -1,24 +1,24 @@
 <it.freedomotic.model.object.EnvObject>
-  <name>Bedroom door</name>
-  <description>Connects SW 1 to Livingroom</description>
+  <name>Kitchen Light-145</name>
+  <description>A light</description>
   <actAs>virtual</actAs>
-  <type>EnvObject.Gate</type>
-  <uuid>06e94ceb-7218-4fff-9305-668d94d0fa59</uuid>
-  <hierarchy>it.freedomotic.objects.impl.Gate</hierarchy>
+  <type>EnvObject.ElectricDevice.Light</type>
+  <uuid>24b01c5b-ea44-4a6e-8d89-f3f468765840</uuid>
+  <hierarchy>it.freedomotic.objects.impl.Light</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
     <it.freedomotic.model.object.BooleanBehavior>
-      <name>open</name>
-      <description>asd</description>
+      <name>powered</name>
+      <description></description>
       <active>true</active>
       <priority>-1</priority>
       <readOnly>false</readOnly>
       <value>false</value>
     </it.freedomotic.model.object.BooleanBehavior>
     <it.freedomotic.model.object.RangedIntBehavior>
-      <name>openness</name>
-      <description>asd</description>
+      <name>brightness</name>
+      <description></description>
       <active>true</active>
       <priority>-1</priority>
       <readOnly>false</readOnly>
@@ -26,69 +26,54 @@
       <max>100</max>
       <min>0</min>
       <scale>1</scale>
-      <step>1</step>
+      <step>10</step>
     </it.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
     <view>
       <tangible>true</tangible>
       <intersecable>false</intersecable>
-      <offset x="320" y="679"/>
+      <offset x="766" y="1001"/>
       <rotation>0.0</rotation>
-      <fillColor>#eee9e9</fillColor>
+      <icon>light-off.png</icon>
+      <fillColor>#000000</fillColor>
       <textColor>#000000</textColor>
-      <borderColor>#606060</borderColor>
+      <borderColor>#000000</borderColor>
       <scaleX>0.0</scaleX>
       <scaleY>0.0</scaleY>
       <shape class="polygon">
         <point x="0" y="0"/>
-        <point x="60" y="0"/>
-        <point x="60" y="8"/>
-        <point x="0" y="8"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
       </shape>
     </view>
     <view>
       <tangible>true</tangible>
       <intersecable>false</intersecable>
-      <offset x="320" y="679"/>
-      <rotation>25.0</rotation>
-      <fillColor>#eee9e9</fillColor>
-      <textColor>#000000</textColor>
-      <borderColor>#606060</borderColor>
-      <scaleX>0.0</scaleX>
-      <scaleY>0.0</scaleY>
-      <shape class="polygon">
-        <point x="0" y="0"/>
-        <point x="60" y="0"/>
-        <point x="60" y="8"/>
-        <point x="0" y="8"/>
-      </shape>
-    </view>
-    <view>
-      <tangible>true</tangible>
-      <intersecable>false</intersecable>
-      <offset x="320" y="679"/>
+      <offset x="766" y="1001"/>
       <rotation>0.0</rotation>
-      <fillColor>#eee9e9</fillColor>
+      <icon>light-on.png</icon>
+      <fillColor>#000000</fillColor>
       <textColor>#000000</textColor>
-      <borderColor>#606060</borderColor>
+      <borderColor>#000000</borderColor>
       <scaleX>0.0</scaleX>
       <scaleY>0.0</scaleY>
       <shape class="polygon">
         <point x="0" y="0"/>
-        <point x="60" y="0"/>
-        <point x="60" y="8"/>
-        <point x="0" y="8"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
       </shape>
     </view>
   </representation>
   <actions>
-    <property name="open" value="Execute it successfully"/>
-    <property name="measured open" value="Execute it successfully"/>
-    <property name="close" value="Execute it successfully"/>
+    <property name="turn off" value="Execute it successfully"/>
+    <property name="set brightness" value="Execute it successfully"/>
+    <property name="turn on" value="Execute it successfully"/>
   </actions>
   <triggers>
-    <property name="" value="openness"/>
+    <property name="" value="brightness"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
   <envUUID>df28cda0-a866-11e2-9e96-0800200c9a66</envUUID>
