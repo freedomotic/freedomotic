@@ -1,10 +1,13 @@
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.environment.EnvironmentLogic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.model.ds.Config;
+import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.model.object.RangedIntBehavior;
@@ -123,17 +126,20 @@ public class Gate extends EnvObjectLogic {
     @Override
     public final void setChanged(boolean value) {
         //update the room that can be reached
-        for (ZoneLogic z : Freedomotic.environment.getZones()) {
-            if (z instanceof Room) {
-                final Room room = (Room) z;
-                //the gate is opened or closed we update the reachable rooms
-                room.visit();
+        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+            for (ZoneLogic z : env.getZones()) {
+                if (z instanceof Room) {
+                    final Room room = (Room) z;
+                    //the gate is opened or closed we update the reachable rooms
+                    room.visit();
+                }
             }
-        }
-        for (ZoneLogic z : Freedomotic.environment.getZones()) {
-            if (z instanceof Room) {
-                final Room room = (Room) z;
-                room.updateDescription();
+
+            for (ZoneLogic z : env.getZones()) {
+                if (z instanceof Room) {
+                    final Room room = (Room) z;
+                    room.updateDescription();
+                }
             }
         }
         //then executeCommand the super which notifies the event
@@ -188,16 +194,22 @@ public class Gate extends EnvObjectLogic {
         FreedomPolygon objShape =
                 TopologyUtils.rotate(
                 TopologyUtils.translate(pojoShape, xoffset, yoffset), (int) representation.getRotation());
-        for (Room room : Freedomotic.environment.getRooms()) {
-            if (TopologyUtils.intersects(objShape, room.getPojo().getShape())) {
-                if (from == null) {
-                    from = (Room) room;
-                    to = (Room) room;
-                } else {
-                    to = (Room) room;
+        EnvironmentLogic env = EnvironmentPersistence.getEnvByUUID(getPojo().getEnvironmentID());
+        if (env != null) {
+            for (Room room : env.getRooms()) {
+                if (TopologyUtils.intersects(objShape, room.getPojo().getShape())) {
+                    if (from == null) {
+                        from = (Room) room;
+                        to = (Room) room;
+                    } else {
+                        to = (Room) room;
+                    }
                 }
             }
+        } else {
+            Freedomotic.logger.severe("The gate '"+ getPojo().getName() +"' is not linked to any any environment");
         }
+
         if (to != from) {
             getPojo().setDescription("Connects " + from + " to " + to);
             from.addGate(this); //informs the room that it has a gate to another room

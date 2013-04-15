@@ -20,7 +20,7 @@
 -->
 
 <!--- Put your DTDDoc comment here. -->
-<!ELEMENT it.freedomotic.model.object.EnvObject (currentRepresentation|triggers|actions|representation|behaviors|phisicalAddress|protocol|hierarchy|type|actAs|description|name)*>
+<!ELEMENT it.freedomotic.model.object.EnvObject (envUUID|currentRepresentation|triggers|actions|representation|behaviors|phisicalAddress|protocol|hierarchy|type|actAs|description|name)*>
 
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT name (#PCDATA)>
@@ -42,6 +42,9 @@
 
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT phisicalAddress (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT envUUID (#PCDATA)>
 
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT behaviors (it.freedomotic.model.object.RangedIntBehavior|it.freedomotic.model.object.BooleanBehavior)*>

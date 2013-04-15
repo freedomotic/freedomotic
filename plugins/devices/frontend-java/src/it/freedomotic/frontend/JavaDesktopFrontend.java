@@ -5,6 +5,7 @@ import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.ListenEventsOn;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.events.MessageEvent;
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.ZoneHasChanged;
@@ -60,18 +61,22 @@ public class JavaDesktopFrontend extends Actuator {
         return window;
     }
 
-    protected Drawer createRenderer() {
+    protected Drawer createRenderer(EnvironmentLogic env) {
         try {
-            if (Freedomotic.environment.getPojo().getRenderer().equalsIgnoreCase("photo")) {
+            if (env.getPojo().getRenderer().equalsIgnoreCase("photo")) {
                 drawer = new PhotoDrawer(this);
+                drawer.setCurrEnv(env);
             } else {
-                if (Freedomotic.environment.getPojo().getRenderer().equalsIgnoreCase("image")) {
+                if (env.getPojo().getRenderer().equalsIgnoreCase("image")) {
                     drawer = new ImageDrawer(this);
+                    drawer.setCurrEnv(env);
                 } else {
-                    if (Freedomotic.environment.getPojo().getRenderer().equalsIgnoreCase("image")) {
+                    if (env.getPojo().getRenderer().equalsIgnoreCase("image")) {
                         drawer = new PlainDrawer(this);
+                        drawer.setCurrEnv(env);
                     } else {
                         drawer = new ListDrawer();
+                        drawer.setCurrEnv(env);
                     }
                 }
             }

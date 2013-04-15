@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/object.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE it.freedomotic.model.object.EnvObject SYSTEM "object.dtd">
+
+    <it.freedomotic.model.object.EnvObject>
+    ...
+    </it.freedomotic.model.object.EnvObject>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT it.freedomotic.model.object.Environment (name|width|height|renderer|backgroundImage|backgroundColor|zones)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT name (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT width (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT height (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT renderer (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT backgroundImage (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT backgroundColor (red|green|blue|alpha)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT red (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT green (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT blue (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT alpha (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT zones (it.freedomotic.model.environment.Zone)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT it.freedomotic.model.environment.Zone (room|shape|texture|description|name)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT room (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT texture (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT description (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT shape (point)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT point EMPTY>
+<!ATTLIST point
+    y CDATA #IMPLIED
+    x CDATA #IMPLIED
+  >
+

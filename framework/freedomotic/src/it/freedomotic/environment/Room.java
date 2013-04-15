@@ -28,7 +28,7 @@ public class Room extends ZoneLogic {
     public void addGate(Gate gate) {
         try {
             gates.add(gate);
-            EnvironmentLogic.getGraph().add(gate.getFrom(), gate.getTo(), gate);
+            getEnv().getGraph().add(gate.getFrom(), gate.getTo(), gate);
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
@@ -41,8 +41,8 @@ public class Room extends ZoneLogic {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void init(EnvironmentLogic env) {
+        super.init(env);
         if (gates == null) {
             gates = new ArrayList<Gate>();
         }
@@ -64,8 +64,8 @@ public class Room extends ZoneLogic {
             Room node = queue.poll();
             //Freedomotic.logger.info("Evaluating node " + node.getPojo().getName());
 
-            if (EnvironmentLogic.getGraph().getEdgeSet(node) != null) { //if this room (the node) has adiacent rooms
-                for (Object object : EnvironmentLogic.getGraph().getEdgeSet(node)) {
+            if (getEnv().getGraph().getEdgeSet(node) != null) { //if this room (the node) has adiacent rooms
+                for (Object object : getEnv().getGraph().getEdgeSet(node)) {
                     Edge adiacent = (Edge) object;
                     //Freedomotic.logger.info("  " + node.getPojo().getName() + " is linked with arch " + adiacent.toString());
                     if (!visited.contains(adiacent)) {

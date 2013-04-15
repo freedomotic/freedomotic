@@ -34,8 +34,12 @@ public class ZoneLogic {
     private Zone pojo;
     private Ownership owner = new LastOutStrategy();
     private List<Person> occupiers = new ArrayList<Person>();
-
-
+    private EnvironmentLogic FatherEnv = null;
+   
+    public EnvironmentLogic getEnv(){
+        return this.FatherEnv;
+    }
+    
     public ZoneLogic(final Zone pojo) {
         this.pojo=pojo;
     }
@@ -103,7 +107,8 @@ public class ZoneLogic {
         Freedomotic.sendEvent(event);
     }
 
-    protected void init() {
+    protected void init(EnvironmentLogic env) {
+        this.FatherEnv = env;
     }
 
     @Override

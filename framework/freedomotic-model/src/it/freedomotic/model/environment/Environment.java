@@ -36,10 +36,19 @@ public class Environment implements Serializable {
     private FreedomColor backgroundColor;
     private String backgroundImage;
     private ArrayList<Zone> zones = new ArrayList<Zone>();
-
+    private String uuid;
+    
     public Environment() {
     }
 
+    public String getUUID(){
+        return this.uuid;
+    }
+    
+    public void setUUID(String uuid){
+        this.uuid = uuid;
+    }
+    
     public String getRenderer() {
         return renderer;
     }

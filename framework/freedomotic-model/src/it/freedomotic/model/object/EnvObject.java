@@ -26,7 +26,16 @@ public class EnvObject implements Serializable {
     private Properties actions;
     private Properties triggers;
     private int currentRepresentation;
-
+    private String envUUID;
+    
+    public String getEnvironmentID(){
+        return this.envUUID;
+    }
+    
+    public void setEnvID(String uuid){
+        this.envUUID = uuid;
+    }
+    
     public Properties getActions() {
         return actions;
     }

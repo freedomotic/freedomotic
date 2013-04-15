@@ -44,11 +44,11 @@ public class StompDispatcher implements BusConsumer {
 
     @Override
     public void onMessage(final ObjectMessage message) {
-        System.out.println("stomp reqest received");
+        System.out.println("stomp request received");
         try {
             Command command = (Command) message.getObject();
-            XStream xstream = FreedomXStream.getXstream();
-            String xml = xstream.toXML(Freedomotic.environment.getPojo());
+            //XStream xstream = FreedomXStream.getXstream();
+            //String xml = xstream.toXML(Freedomotic.environment.getPojo());
             System.out.println("XML Message from STOMP received");
             channel.reply(command, message.getJMSReplyTo(), message.getJMSCorrelationID());
         } catch (JMSException ex) {
