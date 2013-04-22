@@ -30,6 +30,7 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.util.Info;
 import it.freedomotic.frontend.utils.OpenDialogFileFilter;
 import it.freedomotic.frontend.utils.TipOfTheDay;
+import it.freedomotic.objects.EnvObjectLogic;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -74,7 +75,6 @@ public class MainWindow extends javax.swing.JFrame {
 //    public void showTipsOnStartup(boolean show) {
 //        master.configuration.setProperty("show.tips", new Boolean(show).toString());
 //    }
-
     private class MyDispatcher implements KeyEventDispatcher {
 
         @Override
@@ -147,9 +147,9 @@ public class MainWindow extends javax.swing.JFrame {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
         }
         EnvironmentLogic previousEnv = EnvironmentPersistence.getEnvironments().get(0);
-        if (drawer != null){
+        if (drawer != null) {
             previousEnv = drawer.getCurrEnv();
-        }          
+        }
         initializeRenderer(previousEnv);
         drawer = master.createRenderer(previousEnv);
         if (drawer != null) {
@@ -314,13 +314,13 @@ public class MainWindow extends javax.swing.JFrame {
         txtOut2 = new javax.swing.JTextArea();
         jMenuItem4 = new javax.swing.JMenuItem();
         menuBar = new javax.swing.JMenuBar();
-        mnuSaveAs = new javax.swing.JMenu();
+        mnuOpenNew = new javax.swing.JMenu();
         mnuNewEnvironment = new javax.swing.JMenuItem();
         mnuOpenEnvironment = new javax.swing.JMenuItem();
         mnuSave = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        mnuSaveAs = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        mnuExit = new javax.swing.JMenuItem();
         mnuEditMode = new javax.swing.JMenu();
         mnuSelectEnvironment = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
@@ -328,6 +328,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuAddDuplicateEnvironment = new javax.swing.JMenuItem();
         mnuChangeRenderer = new javax.swing.JMenuItem();
         mnuBackground = new javax.swing.JMenuItem();
+        mnuDelete = new javax.swing.JMenuItem();
         mnuRoomEditMode = new javax.swing.JCheckBoxMenuItem();
         jMenu3 = new javax.swing.JMenu();
         mnuRenameRoom = new javax.swing.JMenuItem();
@@ -396,10 +397,10 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        mnuSaveAs.setText("File");
-        mnuSaveAs.addActionListener(new java.awt.event.ActionListener() {
+        mnuOpenNew.setText("File");
+        mnuOpenNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuSaveAsActionPerformed(evt);
+                mnuOpenNewActionPerformed(evt);
             }
         });
 
@@ -410,7 +411,7 @@ public class MainWindow extends javax.swing.JFrame {
                 mnuNewEnvironmentActionPerformed(evt);
             }
         });
-        mnuSaveAs.add(mnuNewEnvironment);
+        mnuOpenNew.add(mnuNewEnvironment);
 
         mnuOpenEnvironment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         mnuOpenEnvironment.setText("Open Environment");
@@ -419,7 +420,7 @@ public class MainWindow extends javax.swing.JFrame {
                 mnuOpenEnvironmentActionPerformed(evt);
             }
         });
-        mnuSaveAs.add(mnuOpenEnvironment);
+        mnuOpenNew.add(mnuOpenEnvironment);
 
         mnuSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         mnuSave.setText("Save Environment");
@@ -428,30 +429,31 @@ public class MainWindow extends javax.swing.JFrame {
                 mnuSaveActionPerformed(evt);
             }
         });
-        mnuSaveAs.add(mnuSave);
+        mnuOpenNew.add(mnuSave);
 
-        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem5.setText("Save Environment As...");
-        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+        mnuSaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        mnuSaveAs.setText("Save Environment As...");
+        mnuSaveAs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem5ActionPerformed(evt);
+                mnuSaveAsActionPerformed(evt);
             }
         });
-        mnuSaveAs.add(jMenuItem5);
-        mnuSaveAs.add(jSeparator1);
+        mnuOpenNew.add(mnuSaveAs);
+        mnuOpenNew.add(jSeparator1);
 
-        jMenuItem1.setText("Exit");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        mnuExit.setText("Exit");
+        mnuExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                mnuExitActionPerformed(evt);
             }
         });
-        mnuSaveAs.add(jMenuItem1);
+        mnuOpenNew.add(mnuExit);
 
-        menuBar.add(mnuSaveAs);
+        menuBar.add(mnuOpenNew);
 
         mnuEditMode.setText("Environment");
 
+        mnuSelectEnvironment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
         mnuSelectEnvironment.setText("Select Area/Floor");
         mnuSelectEnvironment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -493,6 +495,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         jMenu4.add(mnuBackground);
+
+        mnuDelete.setText("Delete");
+        mnuDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuDeleteActionPerformed(evt);
+            }
+        });
+        jMenu4.add(mnuDelete);
 
         mnuEditMode.add(jMenu4);
 
@@ -655,14 +665,14 @@ public class MainWindow extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, ""
                 + "Author: " + Info.getAuthor() + "\n"
                 + "E-mail: " + Info.getAuthorMail() + "\n"
-                + "Release: " + Info.getReleaseDate() + ". " + Info.getVersionCodeName()+" - v" + Info.getVersion() + "\n"
+                + "Release: " + Info.getReleaseDate() + ". " + Info.getVersionCodeName() + " - v" + Info.getVersion() + "\n"
                 + "Licence: " + Info.getLicense() + "\n\n"
                 + "You can find support on:\n"
                 + "http://code.google.com/p/freedomotic/" + "\n"
                 + "http://freedomotic.com/");
 }//GEN-LAST:event_submnuHelpActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void mnuExitActionPerformed(java.awt.event.ActionEvent evt) {
         Freedomotic.onExit();
     }
 
@@ -681,12 +691,12 @@ public class MainWindow extends javax.swing.JFrame {
             try {
                 boolean loaded = EnvironmentPersistence.loadEnvironmentsFromDir(file.getParentFile(), false);
                 if (loaded) {
-                    for (EnvironmentLogic env: EnvironmentPersistence.getEnvironments()){
-                        EnvObjectPersistence.loadObjects(env.getObjectFolder(), false);
-                    Freedomotic.config.setProperty("KEY_ROOM_XML_PATH",
-                            env.getSource().toString().replace(
-                            new File(Info.getApplicationPath() + "/data/furn").toString(), ""));
-                }
+                    for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+                        //EnvObjectPersistence.loadObjects(env.getObjectFolder(), false);
+                        Freedomotic.config.setProperty("KEY_ROOM_XML_PATH",
+                                env.getSource().toString().replace(
+                                new File(Info.getApplicationPath() + "/data/furn").toString(), ""));
+                    }
                 }
             } catch (Exception e) {
                 Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
@@ -725,13 +735,13 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
             setEditMode(true);
             drawer.setRoomEditMode(true);
             lstClients.setFilter("Plugin");
-            setMapTitle("(EDIT ROOMS MODE) "+ drawer.getCurrEnv().getPojo().getName() );
+            setMapTitle("(EDIT ROOMS MODE) " + drawer.getCurrEnv().getPojo().getName());
         } else {
             drawer.setRoomEditMode(false);
             setEditMode(false);
             mnuRoomEditMode.setSelected(drawer.getRoomEditMode());
             lstClients.setFilter("Plugin");
-            setMapTitle(drawer.getCurrEnv().getPojo().getName() );
+            setMapTitle(drawer.getCurrEnv().getPojo().getName());
         }
     }//GEN-LAST:event_mnuRoomEditModeActionPerformed
 
@@ -767,23 +777,23 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         }
     }//GEN-LAST:event_mnuRemoveRoomActionPerformed
 
-    private void mnuSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSaveAsActionPerformed
-    }//GEN-LAST:event_mnuSaveAsActionPerformed
+    private void mnuOpenNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOpenNewActionPerformed
+    }//GEN-LAST:event_mnuOpenNewActionPerformed
 
-    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+    private void mnuSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSaveAsActionPerformed
         final JFileChooser fc = new JFileChooser(Info.getDatafilePath() + "/furn/");
         int returnVal = fc.showSaveDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File folder = fc.getSelectedFile();
             try {
-                EnvironmentPersistence.saveAs(drawer.getCurrEnv(), folder);
-            } catch (IOException ex) {
+                EnvironmentPersistence.saveEnvironmentsToFolder(folder);
+            } catch (Exception ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             Freedomotic.logger.info("Save command cancelled by user.");
         }
-    }//GEN-LAST:event_jMenuItem5ActionPerformed
+    }//GEN-LAST:event_mnuSaveAsActionPerformed
 
     private void mnuObjectEditModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuObjectEditModeActionPerformed
         if (mnuObjectEditMode.getState() == true) {
@@ -795,12 +805,12 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
             drawer.setObjectEditMode(true);
             //switch to objects list
             lstClients.setFilter("Object");
-            setMapTitle("(EDIT OBJECTS MODE): " + drawer.getCurrEnv().getPojo().getName() );
+            setMapTitle("(EDIT OBJECTS MODE): " + drawer.getCurrEnv().getPojo().getName());
         } else {
             drawer.setObjectEditMode(false);
             mnuObjectEditMode.setSelected(drawer.getObjectEditMode());
             lstClients.setFilter("Plugin");
-            setMapTitle(drawer.getCurrEnv().getPojo().getName() );
+            setMapTitle(drawer.getCurrEnv().getPojo().getName());
         }
     }//GEN-LAST:event_mnuObjectEditModeActionPerformed
 
@@ -877,25 +887,34 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     }//GEN-LAST:event_mnuRoomBackgroundActionPerformed
 
     private void mnuNewEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuNewEnvironmentActionPerformed
+        File oldEnv = EnvironmentPersistence.getEnvironments().get(0).getSource();
         File template = new File(Info.getApplicationPath() + "/data/furn/templates/template-square/template-square.xenv");
         Freedomotic.logger.info("Opening " + template.getAbsolutePath());
+        drawer.setCurrEnv(0);
         try {
-            boolean loaded = EnvironmentPersistence.loadEnvironmentsFromDir(template, false);
+            boolean loaded = EnvironmentPersistence.loadEnvironmentsFromDir(template.getParentFile(), false);
             if (loaded) {
-                EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
+                //EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
                 final JFileChooser fc = new JFileChooser(Info.getDatafilePath() + "/furn/");
                 int returnVal = fc.showSaveDialog(this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File folder = fc.getSelectedFile();
-                    try {
-                        EnvironmentPersistence.saveAs(drawer.getCurrEnv(), folder);
-                        Freedomotic.config.setProperty("KEY_ROOM_XML_PATH", folder.getName() + "/" + folder.getName() + ".xenv");
-                        drawer.getCurrEnv().setSource(new File(folder + "/" + folder.getName() + ".xenv"));
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    if (!folder.getName().isEmpty()) {
+                        try {
+                            EnvironmentPersistence.saveAs(drawer.getCurrEnv(), folder);
+                            Freedomotic.config.setProperty("KEY_ROOM_XML_PATH", folder.getName() + "/" + folder.getName() + ".xenv");
+                            drawer.getCurrEnv().setSource(new File(folder + "/" + folder.getName() + ".xenv"));
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 } else {
                     Freedomotic.logger.info("Save command cancelled by user.");
+                    EnvironmentPersistence.loadEnvironmentsFromDir(oldEnv.getParentFile(), false);
+                    Freedomotic.config.setProperty("KEY_ROOM_XML_PATH",
+                                oldEnv.getAbsolutePath().toString().replace(
+                                new File(Info.getApplicationPath() + "/data/furn").toString(), ""));
+                    drawer.setCurrEnv(0);        
                 }
             }
         } catch (Exception e) {
@@ -905,7 +924,8 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     }//GEN-LAST:event_mnuNewEnvironmentActionPerformed
 
     private void mnuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSaveActionPerformed
-        // TODO add your handling code here:
+        String environmentFilePath = Info.getApplicationPath() + "/data/furn/" + Freedomotic.config.getProperty("KEY_ROOM_XML_PATH");
+        EnvironmentPersistence.saveEnvironmentsToFolder(new File(environmentFilePath).getParentFile());
     }//GEN-LAST:event_mnuSaveActionPerformed
 
     private void mnuPluginConfigureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPluginConfigureActionPerformed
@@ -929,36 +949,45 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
 
         //If a string was returned
         if (input != null) {
-                drawer.setCurrEnv(input);
+            drawer.setCurrEnv(input);
         }
     }//GEN-LAST:event_mnuSelectEnvironmentActionPerformed
 
     private void mnuAddDuplicateEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAddDuplicateEnvironmentActionPerformed
         EnvironmentLogic newEnv = EnvironmentPersistence.add(drawer.getCurrEnv(), true);
         String input = JOptionPane.showInputDialog("Enter here the new name for Area/Floor " + newEnv.getPojo().getName());
-            newEnv.getPojo().setName(input.trim());
+        newEnv.getPojo().setName(input.trim());
         drawer.setCurrEnv(newEnv);
         setMapTitle(newEnv.getPojo().getName());
-        
+
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
     private void mnuRenameEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameEnvironmentActionPerformed
-            String input = JOptionPane.showInputDialog("Enter here the new name for Area/Floor", drawer.getCurrEnv().getPojo().getName());
-            drawer.getCurrEnv().getPojo().setName(input.trim());
-            setMapTitle(drawer.getCurrEnv().getPojo().getName());
+        String input = JOptionPane.showInputDialog("Enter here the new name for Area/Floor", drawer.getCurrEnv().getPojo().getName());
+        drawer.getCurrEnv().getPojo().setName(input.trim());
+        setMapTitle(drawer.getCurrEnv().getPojo().getName());
     }//GEN-LAST:event_mnuRenameEnvironmentActionPerformed
 
+    private void mnuDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuDeleteActionPerformed
+        int result = JOptionPane.showConfirmDialog(null, "You're about to delete the current environment", "Confirm deletion?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            EnvironmentLogic oldenv = drawer.getCurrEnv();
+            drawer.setCurrEnv(0);
+
+
+            EnvironmentPersistence.remove(oldenv);
+
+        }
+    }//GEN-LAST:event_mnuDeleteActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JMenuBar menuBar;
@@ -967,12 +996,15 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JMenuItem mnuAutomations;
     private javax.swing.JMenuItem mnuBackground;
     private javax.swing.JMenuItem mnuChangeRenderer;
+    private javax.swing.JMenuItem mnuDelete;
     private javax.swing.JMenu mnuEditMode;
+    private javax.swing.JMenuItem mnuExit;
     private javax.swing.JMenu mnuHelp;
     private javax.swing.JMenuItem mnuNewEnvironment;
     private javax.swing.JCheckBoxMenuItem mnuObjectEditMode;
     private javax.swing.JMenu mnuObjects;
     private javax.swing.JMenuItem mnuOpenEnvironment;
+    private javax.swing.JMenu mnuOpenNew;
     private javax.swing.JMenuItem mnuPluginConfigure;
     private javax.swing.JMenuItem mnuRemoveRoom;
     private javax.swing.JMenuItem mnuRenameEnvironment;
@@ -980,7 +1012,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JMenuItem mnuRoomBackground;
     private javax.swing.JCheckBoxMenuItem mnuRoomEditMode;
     private javax.swing.JMenuItem mnuSave;
-    private javax.swing.JMenu mnuSaveAs;
+    private javax.swing.JMenuItem mnuSaveAs;
     private javax.swing.JMenuItem mnuSelectEnvironment;
     private javax.swing.JMenuItem mnuTutorial;
     private javax.swing.JMenu mnuWindow;

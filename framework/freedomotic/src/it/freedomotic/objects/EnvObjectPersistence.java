@@ -110,7 +110,7 @@ public class EnvObjectPersistence {
         File[] files = folder.listFiles();
 
         // This filter only returns object files
-        FileFilter objectFileFileter = new FileFilter() {
+        FileFilter objectFileFilter = new FileFilter() {
             @Override
             public boolean accept(File file) {
                 if (file.isFile() && file.getName().endsWith(".xobj")) {
@@ -120,7 +120,8 @@ public class EnvObjectPersistence {
                 }
             }
         };
-        files = folder.listFiles(objectFileFileter);
+        files = folder.listFiles(objectFileFilter);
+        if (files != null){
         try {
             for (File file : files) {
                 EnvObjectLogic loaded = loadObject(file);
@@ -129,6 +130,7 @@ public class EnvObjectPersistence {
             //Freedomotic.logger.info("Loaded " + objectList.size() + " of " + files.length + " environment objects.");
         } catch (Exception e) {
             Freedomotic.logger.severe("Exception while loading object in " + folder.getAbsolutePath()+ ".\n" + Freedomotic.getStackTraceInfo(e));
+        }
         }
     }
 

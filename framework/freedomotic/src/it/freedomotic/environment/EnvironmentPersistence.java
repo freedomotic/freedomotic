@@ -4,6 +4,7 @@ import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.environment.Zone;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.util.DOMValidateDTD;
@@ -158,6 +159,9 @@ public class EnvironmentPersistence {
     }
 
     public static void remove(EnvironmentLogic input) {
+        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(input.getPojo().getUUID())) {
+            EnvObjectPersistence.remove(obj);
+        }
         envList.remove(input);
         input.clear();
     }
