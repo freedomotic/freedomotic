@@ -353,6 +353,9 @@ public class EnvObjectLogic {
     }
 
     protected void setPojo(EnvObject pojo) {
+        if ((pojo.getEnvironmentID() == null || pojo.getEnvironmentID().isEmpty())  && EnvironmentPersistence.getEnvironments().size()>0){
+            pojo.setEnvID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
+        }
         this.pojo = pojo;
         this.env = EnvironmentPersistence.getEnvByUUID(pojo.getEnvironmentID());
     }

@@ -4,6 +4,7 @@ import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.environment.Zone;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.util.DOMValidateDTD;
 import it.freedomotic.util.Info;
@@ -21,13 +22,14 @@ import java.util.logging.Logger;
  * @author Enrico
  */
 public class EnvironmentPersistence {
-     private static List<EnvironmentLogic> envList = new ArrayList< EnvironmentLogic>();
-     
-    private EnvironmentPersistence(){
+
+    private static List<EnvironmentLogic> envList = new ArrayList< EnvironmentLogic>();
+
+    private EnvironmentPersistence() {
         //disable instance creation
     }
-   
-       public static void saveEnvironmentsToFolder(File folder) {
+
+    public static void saveEnvironmentsToFolder(File folder) {
         if (envList.isEmpty()) {
             Freedomotic.logger.warning("There is no environment to persist, " + folder.getAbsolutePath() + " will not be altered.");
             return;
@@ -47,10 +49,10 @@ public class EnvironmentPersistence {
                 if (uuid == null || uuid.isEmpty()) {
                     environment.getPojo().setUUID(UUID.randomUUID().toString());
                 }
-                String fileName = environment.getPojo().getUUID() + ".xenv";            
-                save(environment,new File(folder + "/" + fileName));
+                String fileName = environment.getPojo().getUUID() + ".xenv";
+                save(environment, new File(folder + "/" + fileName));
                 summary.append(fileName).append("\t").append(environment.getPojo().getName()).append("\n");
-                
+
             }
             //writing a summary .txt file with the list of commands in this folder
             FileWriter fstream = new FileWriter(folder + "/index.txt");
@@ -63,7 +65,7 @@ public class EnvironmentPersistence {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
-       
+
     private static void deleteEnvFiles(File folder) {
         // This filter only returns object files
         FileFilter objectFileFileter = new FileFilter() {
@@ -81,7 +83,8 @@ public class EnvironmentPersistence {
             file.delete();
         }
     }
-     /**
+
+    /**
      * Loads all objects file filesystem folder and adds the objects to the list
      *
      * @param folder
@@ -102,27 +105,30 @@ public class EnvironmentPersistence {
             }
         };
         File[] files = folder.listFiles(envFileFilter);
-        try {
-            for (File file : files) {               
+        for (File file : files) {
+            try {
                 loadEnvironmentFromFile(file);
+            } catch (Exception e) {
+                Freedomotic.logger.severe("Exception while loading environment in " + file.getAbsolutePath() + ".\n" + Freedomotic.getStackTraceInfo(e));
+                check = false;
+                break;
             }
-            
-        } catch (Exception e) {
-            Freedomotic.logger.severe("Exception while loading object in " + folder.getAbsolutePath()+ ".\n" + Freedomotic.getStackTraceInfo(e));            
-            check = false;
+        }
+        if (check) {
+            EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
         }
         return check;
     }
-    
 
-    
-    
-/**
+    /**
      * Add an environment. You can use EnvObjectPersistnce.MAKE_UNIQUE to create
-     * an object that will surely be unique. Beware this means it is created with defensive copy
-     * of the object in input and name, protocol, address and UUID are reset to a default value.
-     * @param obj the environment  to add
-     * @param MAKE_UNIQUE can be true or false. Creates a defensive copy reference to the object in input.
+     * an object that will surely be unique. Beware this means it is created
+     * with defensive copy of the object in input and name, protocol, address
+     * and UUID are reset to a default value.
+     *
+     * @param obj the environment to add
+     * @param MAKE_UNIQUE can be true or false. Creates a defensive copy
+     * reference to the object in input.
      * @return A pointer to the newly created environment object
      */
     public static EnvironmentLogic add(final EnvironmentLogic obj, boolean MAKE_UNIQUE) {
@@ -140,14 +146,14 @@ public class EnvironmentPersistence {
             pojoCopy.setName(obj.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
             envLogic.setPojo(pojoCopy);
             envLogic.getPojo().setUUID("");
-        }     
+        }
         envLogic.init();
-      //  if (!envList.contains(envLogic)) {
-            envList.add(envLogic);
-            //envLogic.setChanged(true);
-      //  } else {
-      //      throw new RuntimeException("Cannot add the same environment more than one time");
-      //  }
+        //  if (!envList.contains(envLogic)) {
+        envList.add(envLogic);
+        //envLogic.setChanged(true);
+        //  } else {
+        //      throw new RuntimeException("Cannot add the same environment more than one time");
+        //  }
         return envLogic;
     }
 
@@ -162,10 +168,11 @@ public class EnvironmentPersistence {
         } catch (Exception e) {
         }
     }
+
     public static int size() {
         return envList.size();
     }
-        
+
     public static void save(EnvironmentLogic env, File file) throws IOException {
         XStream xstream = FreedomXStream.getEnviromentXstream();
         for (Zone zone : env.getPojo().getZones()) {
@@ -180,7 +187,7 @@ public class EnvironmentPersistence {
             out = new BufferedWriter(fstream);
             out.write(xml);
             //Close the output stream
-            Freedomotic.logger.info("Application environment "+env.getPojo().getName()+" succesfully serialized");
+            Freedomotic.logger.info("Application environment " + env.getPojo().getName() + " succesfully serialized");
         } catch (IOException ex) {
             Logger.getLogger(Environment.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -202,7 +209,7 @@ public class EnvironmentPersistence {
         }
         save(env, new File(folder + "/" + fileName + ".xenv"));
         //TODO: Freedomotic.environment.getPojo().setObjectsFolder()
-      //  EnvObjectPersistence.saveObjects(new File(folder + "/objects"));
+        //  EnvObjectPersistence.saveObjects(new File(folder + "/objects"));
     }
 
     public static void loadEnvironmentFromFile(final File file) throws IOException {
@@ -214,28 +221,27 @@ public class EnvironmentPersistence {
             pojo = (Environment) xstream.fromXML(xml);
         } catch (Exception e) {
             Freedomotic.logger.severe("XML parsing error. Readed XML is \n" + xml);
-            
+
         }
         EnvironmentLogic envLogic = new EnvironmentLogic();
         envLogic.setPojo(pojo);
         envLogic.setSource(file);
         // next line is commented as the method init() is called in the add()
         //envLogic.init();
-        add(envLogic,false);
-        
+        add(envLogic, false);
+
     }
-    
-    public static List<EnvironmentLogic> getEnvironments(){
-       return envList;
+
+    public static List<EnvironmentLogic> getEnvironments() {
+        return envList;
     }
-    
-    public static EnvironmentLogic getEnvByUUID(String UUID){
-        for (EnvironmentLogic env: envList){
-            if (env.getPojo().getUUID().equals(UUID) ){
+
+    public static EnvironmentLogic getEnvByUUID(String UUID) {
+        for (EnvironmentLogic env : envList) {
+            if (env.getPojo().getUUID().equals(UUID)) {
                 return env;
             }
         }
-        return null; 
+        return null;
     }
-    
 }

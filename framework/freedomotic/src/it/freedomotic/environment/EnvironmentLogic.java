@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -33,6 +34,9 @@ public final class EnvironmentLogic {
     }
 
     public void setPojo(Environment pojo) {
+        if (pojo.getUUID() == null || pojo.getUUID().isEmpty()){
+            pojo.setUUID(UUID.randomUUID().toString());
+        }
         this.pojo = pojo;
     }
 
