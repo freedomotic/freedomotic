@@ -44,8 +44,8 @@ public final class EnvironmentLogic {
         return graph;
     }
 
-    public ArrayList<Room> getRooms() {
-        ArrayList<Room> rooms = new ArrayList<Room>();
+    public List<Room> getRooms() {
+        List<Room> rooms = new ArrayList<Room>();
         for (ZoneLogic zone : getZones()) {
             if (zone instanceof Room) {
                 rooms.add((Room) zone);
@@ -160,7 +160,7 @@ public final class EnvironmentLogic {
         }
     }
 
-    public Iterable<ZoneLogic> getZones() {
+    public List<ZoneLogic> getZones() {
         return zones;
     }
 
