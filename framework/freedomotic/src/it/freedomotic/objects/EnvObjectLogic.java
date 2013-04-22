@@ -260,8 +260,8 @@ public class EnvObjectLogic {
         int yoffset = getPojo().getCurrentRepresentation().getOffset().getY();
         //now apply offset to the shape
         FreedomPolygon translatedObject = (FreedomPolygon) TopologyUtils.translate((FreedomPolygon) shape, xoffset, yoffset);
-        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
-        for (ZoneLogic zone : env.getZones()) {
+        for (EnvironmentLogic locEnv : EnvironmentPersistence.getEnvironments()) {
+        for (ZoneLogic zone : locEnv.getZones()) {
             //remove from every zone
             zone.getPojo().getObjects().remove(this.getPojo());
             if (TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
