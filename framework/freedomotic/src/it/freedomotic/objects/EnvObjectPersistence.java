@@ -2,6 +2,7 @@ package it.freedomotic.objects;
 
 import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
 import it.freedomotic.persistence.FreedomXStream;
@@ -54,6 +55,9 @@ public class EnvObjectPersistence {
                 String uuid = envObject.getPojo().getUUID();
                 if (uuid == null || uuid.isEmpty()) {
                     envObject.getPojo().setUUID(UUID.randomUUID().toString());
+                }
+                if (envObject.getPojo().getEnvironmentID() == null || envObject.getPojo().getEnvironmentID().isEmpty()){
+                    envObject.getPojo().setEnvID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
                 }
                 String fileName = envObject.getPojo().getUUID() + ".xobj";
                 FileWriter fstream = new FileWriter(folder + "/" + fileName);

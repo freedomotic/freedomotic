@@ -249,7 +249,8 @@ public class Freedomotic {
          * Deserialize objects from XML
          * *****************************************************************
          */
-        EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
+        // REMOVED: now it's up to EnvironmentPersistence to load objects.
+       // EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
         /**
          * ******************************************************************
          * Init frontends sending an object changed behavior event

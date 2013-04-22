@@ -260,7 +260,7 @@ public class MainWindow extends javax.swing.JFrame {
         frameMap.setIconifiable(false);
         frameMap.setMaximizable(true);
         frameMap.setResizable(true);
-        frameMap.setTitle("Environment");
+        setMapTitle("Not inited");
         desktopPane.add(frameMap, javax.swing.JLayeredPane.DEFAULT_LAYER);
         desktopPane.setBackground(Renderer.BACKGROUND_COLOR);
         referenceRatio = new Float(prevEnv.getPojo().getWidth() / new Float(prevEnv.getPojo().getWidth()));
@@ -269,10 +269,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     public void setDrawer(Drawer drawer) {
         frameMap.getContentPane().add(drawer);
+        setMapTitle(drawer.getCurrEnv().getPojo().getName());
     }
 
     public void setMapTitle(String name) {
-        frameMap.setTitle(name);
+        frameMap.setTitle("Environment - " + name);
     }
 
     class StringListModel extends AbstractListModel {
@@ -678,7 +679,7 @@ public class MainWindow extends javax.swing.JFrame {
             file = fc.getSelectedFile();
             Freedomotic.logger.info("Opening " + file.getAbsolutePath());
             try {
-                boolean loaded = EnvironmentPersistence.loadEnvironmentsFromDir(file, false);
+                boolean loaded = EnvironmentPersistence.loadEnvironmentsFromDir(file.getParentFile(), false);
                 if (loaded) {
                     for (EnvironmentLogic env: EnvironmentPersistence.getEnvironments()){
                         EnvObjectPersistence.loadObjects(env.getObjectFolder(), false);
@@ -724,13 +725,13 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
             setEditMode(true);
             drawer.setRoomEditMode(true);
             lstClients.setFilter("Plugin");
-            frameMap.setTitle("Environment (EDIT ROOMS MODE)");
+            setMapTitle("(EDIT ROOMS MODE) "+ drawer.getCurrEnv().getPojo().getName() );
         } else {
             drawer.setRoomEditMode(false);
             setEditMode(false);
             mnuRoomEditMode.setSelected(drawer.getRoomEditMode());
             lstClients.setFilter("Plugin");
-            frameMap.setTitle("Environment: " + drawer.getCurrEnv().getPojo().getName() );
+            setMapTitle(drawer.getCurrEnv().getPojo().getName() );
         }
     }//GEN-LAST:event_mnuRoomEditModeActionPerformed
 
@@ -794,12 +795,12 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
             drawer.setObjectEditMode(true);
             //switch to objects list
             lstClients.setFilter("Object");
-            frameMap.setTitle("Environment (EDIT OBJECTS MODE): " + drawer.getCurrEnv().getPojo().getName() );
+            setMapTitle("(EDIT OBJECTS MODE): " + drawer.getCurrEnv().getPojo().getName() );
         } else {
             drawer.setObjectEditMode(false);
             mnuObjectEditMode.setSelected(drawer.getObjectEditMode());
             lstClients.setFilter("Plugin");
-            frameMap.setTitle("Environment: " + drawer.getCurrEnv().getPojo().getName() );
+            setMapTitle(drawer.getCurrEnv().getPojo().getName() );
         }
     }//GEN-LAST:event_mnuObjectEditModeActionPerformed
 
@@ -821,12 +822,11 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 possibilities,
-                "list");
+                drawer.getCurrEnv().getPojo().getRenderer());
 
         //If a string was returned
         if ((input != null) && (input.length() > 0)) {
             changeRenderer(input);
-            return;
         }
 
     }//GEN-LAST:event_mnuChangeRendererActionPerformed
@@ -943,7 +943,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
     private void mnuRenameEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameEnvironmentActionPerformed
-            String input = JOptionPane.showInputDialog("Enter here the new name for Area/Floor " + drawer.getCurrEnv().getPojo().getName());
+            String input = JOptionPane.showInputDialog("Enter here the new name for Area/Floor", drawer.getCurrEnv().getPojo().getName());
             drawer.getCurrEnv().getPojo().setName(input.trim());
             setMapTitle(drawer.getCurrEnv().getPojo().getName());
     }//GEN-LAST:event_mnuRenameEnvironmentActionPerformed
