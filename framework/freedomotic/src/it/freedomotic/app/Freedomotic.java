@@ -52,6 +52,7 @@ import it.freedomotic.util.LogFormatter;
 import it.freedomotic.serial.SerialConnectionProvider;
 import it.freedomotic.service.IPluginCategory;
 import it.freedomotic.service.MarketPlaceService;
+import it.freedomotic.util.i18n;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -94,9 +95,9 @@ public class Freedomotic {
         loadAppConfig();
         String resourcesPath = new File(Info.getApplicationPath() + Freedomotic.config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
         logger.info("\nOS: " + System.getProperty("os.name") + "\n"
-                + "Architecture: " + System.getProperty("os.arch") + "\n"
+                + i18n.msg("MSG_Architecture") + ": " + System.getProperty("os.arch") + "\n"
                 + "OS Version: " + System.getProperty("os.version") + "\n"
-                + "Utente: " + System.getProperty("user.name") + "\n"
+                + i18n.msg("MSG_User") +": " + System.getProperty("user.name") + "\n"
                 + "Java Home: " + System.getProperty("java.home") + "\n"
                 + "Java Library Path: {" + System.getProperty("java.library.path") + "}\n"
                 + "Program path: " + System.getProperty("user.dir") + "\n"
@@ -122,7 +123,7 @@ public class Freedomotic {
                 handler.setFormatter(new LogFormatter());
                 logger.setLevel(Level.ALL);
                 logger.addHandler(handler);
-                logger.config("Freedomotic startup begins. (Press F5 to read the other messages)");
+                logger.config(i18n.msg("INIT_MESSAGE"));
                 if ((Freedomotic.config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
                         && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
                     java.awt.Desktop.getDesktop().browse(new File(Info.getApplicationPath() + "/log/freedomotic.html").toURI());
