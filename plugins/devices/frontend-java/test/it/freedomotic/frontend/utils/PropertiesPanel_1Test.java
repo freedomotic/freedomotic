@@ -4,7 +4,7 @@
  */
 package it.freedomotic.frontend.utils;
 
-import it.freedomotic.frontend.utils.PropertiesPanel_1;
+
 import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;

@@ -232,8 +232,7 @@ public class Freedomotic {
          * Deserialize the default environment (its shape + zones)
          * *****************************************************************
          */
-        loadDefaultEnvironment();
-
+        
         /**
          * ******************************************************************
          * Loads sensors and actuators This must be loaded before object
@@ -251,6 +250,8 @@ public class Freedomotic {
          */
         // REMOVED: now it's up to EnvironmentPersistence to load objects.
        // EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
+        loadDefaultEnvironment();
+
         /**
          * ******************************************************************
          * Init frontends sending an object changed behavior event
@@ -316,8 +317,8 @@ public class Freedomotic {
 
     public static void loadDefaultEnvironment() {
         try {
-            String envFolder = config.getProperty("KEY_ROOM_XML_PATH").substring(0, config.getProperty("KEY_ROOM_XML_PATH").lastIndexOf("/") );
-            File folder = new File(Info.getApplicationPath() + "/data/furn/" + envFolder);
+            String envFolder = config.getProperty("KEY_ROOM_XML_PATH").substring(0, config.getProperty("KEY_ROOM_XML_PATH").lastIndexOf(File.separator) );
+            File folder = new File(Info.getApplicationPath() + File.separator + "data" + File.separator +"furn" +File.separator+ envFolder);
             EnvironmentPersistence.loadEnvironmentsFromDir(folder, false);
         } catch (Exception e) {
             Freedomotic.logger.severe(getStackTraceInfo(e));

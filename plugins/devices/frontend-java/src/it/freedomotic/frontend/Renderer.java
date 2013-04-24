@@ -466,8 +466,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
 
     protected EnvObjectLogic mouseOnObject(Point p) {
         Point mousePointer = toRealCoords(p);
-        for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
-            EnvObjectLogic logic = (EnvObjectLogic) it.next();
+        for (EnvObjectLogic logic : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
             if (getCachedShape(logic).contains(mousePointer)) {
                 return logic;
             }
