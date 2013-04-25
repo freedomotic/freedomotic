@@ -264,8 +264,10 @@ public class EnvObjectPersistence {
             //defensive copy to not affect the passed object with the changes
             EnvObject pojoCopy = SerialClone.clone(obj.getPojo());
             pojoCopy.setName(obj.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
-            pojoCopy.setProtocol("unknown");
+            pojoCopy.setProtocol(obj.getPojo().getProtocol());
             pojoCopy.setPhisicalAddress("unknown");
+            pojoCopy.getCurrentRepresentation().getOffset().setX(obj.getPojo().getCurrentRepresentation().getOffset().getX()+30);
+            pojoCopy.getCurrentRepresentation().getOffset().setY(obj.getPojo().getCurrentRepresentation().getOffset().getY()+30);
             envObjectLogic = EnvObjectFactory.create(pojoCopy);
             envObjectLogic.getPojo().setUUID("");
         }
