@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +32,7 @@ public class i18n {
  * For Freedomotic core: translations are inside /i18n/Freedomotic.properties
  * For Plugin: translations are inside plugins/_plugin_type_/_plugin_package_/i18n/_package_last_part_.properties
  */
-    public static String msg(Object obj, String key) {
+    public static String msg(Object obj, String key, Object[] fields) {
         String bundleName = "Freedomotic";
         if(obj != null){
            bundleName = obj.getClass().getPackage().getName();
@@ -59,11 +60,32 @@ public class i18n {
 
         }
         if (messages.containsKey(bundleName)) {
-            return messages.get(bundleName).getString(key);
+            if (messages.get(bundleName).containsKey(key)) {
+                return java.text.MessageFormat.format(messages.get(bundleName).getString(key), fields) + " ";
+            }
         }
-        return "";
+        return "@@@";
     }
+    
     public static String  msg(String key){
-        return msg(null,key);
+        return msg(null,key,null);
     }
+    
+    public static String  msg(String key, Object[] fields){
+        return msg(null,key,fields);
+    }
+    
+    public static String msg(String key,String field){
+        return msg(null,key,new Object[]{field});
+    }
+    
+    public static String  msg(Object obj, String key){
+        if (obj instanceof String) {
+            return msg((String) obj, key);
+        } else {
+        return msg(obj,key,null);
+        }
+    }
+    
+
 }
