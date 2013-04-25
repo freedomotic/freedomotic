@@ -129,7 +129,7 @@ public class MainWindow extends javax.swing.JFrame {
         frameClient.setLayout(new BorderLayout());
         JScrollPane clientScroll = new JScrollPane(lstClients);
         frameClient.add(clientScroll, BorderLayout.CENTER);
-        frameClient.setTitle(i18n.msg(this, "Loaded_Plugins"));
+        frameClient.setTitle(i18n.msg("loaded_plugins"));
         frameClient.setResizable(true);
         frameClient.setMaximizable(true);
 
@@ -260,7 +260,7 @@ public class MainWindow extends javax.swing.JFrame {
         frameMap.setIconifiable(false);
         frameMap.setMaximizable(true);
         frameMap.setResizable(true);
-        setMapTitle(i18n.msg(this, "Not_inited"));
+        setMapTitle(i18n.msg("not_inited") + i18n.msg("inited"));
         desktopPane.add(frameMap, javax.swing.JLayeredPane.DEFAULT_LAYER);
         desktopPane.setBackground(Renderer.BACKGROUND_COLOR);
         referenceRatio = new Float(prevEnv.getPojo().getWidth() / new Float(prevEnv.getPojo().getWidth()));
@@ -273,7 +273,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     public void setMapTitle(String name) {
-        frameMap.setTitle(i18n.msg("Environment") + " - " + name);
+        frameMap.setTitle(i18n.msg("environment") + "- " + name);
     }
 
     class StringListModel extends AbstractListModel {
@@ -405,7 +405,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
         mnuNewEnvironment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
-        mnuNewEnvironment.setText(i18n.msg(this, "new_environment"));
+        mnuNewEnvironment.setText(i18n.msg("new") + i18n.msg("environment"));
         mnuNewEnvironment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuNewEnvironmentActionPerformed(evt);
@@ -414,7 +414,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuOpenNew.add(mnuNewEnvironment);
 
         mnuOpenEnvironment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        mnuOpenEnvironment.setText(i18n.msg(this,"open_environment"));
+        mnuOpenEnvironment.setText(i18n.msg("open") + i18n.msg("environment"));
         mnuOpenEnvironment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuOpenEnvironmentActionPerformed(evt);
@@ -423,7 +423,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuOpenNew.add(mnuOpenEnvironment);
 
         mnuSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        mnuSave.setText(i18n.msg(this,"save_environment"));
+        mnuSave.setText(i18n.msg("save") + i18n.msg("environment"));
         mnuSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuSaveActionPerformed(evt);
@@ -432,7 +432,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuOpenNew.add(mnuSave);
 
         mnuSaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        mnuSaveAs.setText(i18n.msg(this,"save_environment_as"));
+        mnuSaveAs.setText(i18n.msg("save_as",new Object[]{i18n.msg("environment")}));
         mnuSaveAs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuSaveAsActionPerformed(evt);
@@ -441,7 +441,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuOpenNew.add(mnuSaveAs);
         mnuOpenNew.add(jSeparator1);
 
-        mnuExit.setText("Exit");
+        mnuExit.setText(i18n.msg("exit"));
         mnuExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuExitActionPerformed(evt);
@@ -515,10 +515,10 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mnuEditMode.add(mnuRoomEditMode);
 
-        jMenu3.setText("Rooms");
+        jMenu3.setText(i18n.msg("rooms"));
 
         mnuRenameRoom.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
-        mnuRenameRoom.setText("Rename Room");
+        mnuRenameRoom.setText(i18n.msg("rename") + i18n.msg("room"));
         mnuRenameRoom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuRenameRoomActionPerformed(evt);
@@ -527,7 +527,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu3.add(mnuRenameRoom);
 
         mnuAddRoom.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
-        mnuAddRoom.setText("Add Room");
+        mnuAddRoom.setText(i18n.msg("add") + i18n.msg("room"));
         mnuAddRoom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuAddRoomActionPerformed(evt);
@@ -543,7 +543,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(mnuRoomBackground);
 
-        mnuRemoveRoom.setText("Remove Room");
+        mnuRemoveRoom.setText(i18n.msg("remove") + i18n.msg("room"));
         mnuRemoveRoom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuRemoveRoomActionPerformed(evt);
@@ -555,7 +555,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuBar.add(mnuEditMode);
 
-        mnuObjects.setText("Objects");
+        mnuObjects.setText(i18n.msg("objects"));
 
         mnuObjectEditMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
         mnuObjectEditMode.setText("Objects Edit Mode");
@@ -568,10 +568,10 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuBar.add(mnuObjects);
 
-        jMenu2.setText("Automations");
+        jMenu2.setText(i18n.msg("automations"));
 
         mnuAutomations.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, 0));
-        mnuAutomations.setText("Manage Automations");
+        mnuAutomations.setText(i18n.msg("manage") + i18n.msg("automations"));
         mnuAutomations.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuAutomationsActionPerformed(evt);

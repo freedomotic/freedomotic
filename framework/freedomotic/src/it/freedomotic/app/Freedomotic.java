@@ -318,8 +318,9 @@ public class Freedomotic {
 
     public static void loadDefaultEnvironment() {
         try {
-            String envFolder = config.getProperty("KEY_ROOM_XML_PATH").substring(0, config.getProperty("KEY_ROOM_XML_PATH").lastIndexOf(File.separator) );
-            File folder = new File(Info.getApplicationPath() + File.separator + "data" + File.separator +"furn" +File.separator+ envFolder);
+            String envFilePath = config.getProperty("KEY_ROOM_XML_PATH" );
+            File envFile= new File(Info.getApplicationPath() + File.separator + "data" + File.separator +"furn" + envFilePath);
+            File folder = envFile.getParentFile();
             EnvironmentPersistence.loadEnvironmentsFromDir(folder, false);
         } catch (Exception e) {
             Freedomotic.logger.severe(getStackTraceInfo(e));

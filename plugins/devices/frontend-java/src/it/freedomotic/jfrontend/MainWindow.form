@@ -78,7 +78,7 @@
                   <KeyStroke key="Ctrl+N"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="i18n.msg(this, &quot;new_environment&quot;)" type="code"/>
+                  <Connection code="i18n.msg(&quot;new&quot;) + i18n.msg(&quot;environment&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -91,7 +91,7 @@
                   <KeyStroke key="Ctrl+O"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="i18n.msg(this,&quot;open_environment&quot;)" type="code"/>
+                  <Connection code="i18n.msg(&quot;open&quot;) + i18n.msg(&quot;environment&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -104,7 +104,7 @@
                   <KeyStroke key="Ctrl+S"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="i18n.msg(this,&quot;save_environment&quot;)" type="code"/>
+                  <Connection code="i18n.msg(&quot;save&quot;) + i18n.msg(&quot;environment&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -117,7 +117,7 @@
                   <KeyStroke key="Shift+Ctrl+S"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="i18n.msg(this,&quot;save_environment_as&quot;)" type="code"/>
+                  <Connection code="i18n.msg(&quot;save_as&quot;,new Object[]{i18n.msg(&quot;environment&quot;)})" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -128,7 +128,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mnuExit">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Exit"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="i18n.msg(&quot;exit&quot;)" type="code"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuExitActionPerformed"/>
@@ -214,7 +216,9 @@
             </MenuItem>
             <Menu class="javax.swing.JMenu" name="jMenu3">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Rooms"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="i18n.msg(&quot;rooms&quot;)" type="code"/>
+                </Property>
               </Properties>
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="mnuRenameRoom">
@@ -222,7 +226,9 @@
                     <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                       <KeyStroke key="Ctrl+R"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Rename Room"/>
+                    <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="i18n.msg(&quot;rename&quot;) + i18n.msg(&quot;room&quot;)" type="code"/>
+                    </Property>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuRenameRoomActionPerformed"/>
@@ -233,7 +239,9 @@
                     <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                       <KeyStroke key="Ctrl+A"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Add Room"/>
+                    <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="i18n.msg(&quot;add&quot;) + i18n.msg(&quot;room&quot;)" type="code"/>
+                    </Property>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuAddRoomActionPerformed"/>
@@ -249,7 +257,9 @@
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="mnuRemoveRoom">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Remove Room"/>
+                    <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="i18n.msg(&quot;remove&quot;) + i18n.msg(&quot;room&quot;)" type="code"/>
+                    </Property>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuRemoveRoomActionPerformed"/>
@@ -261,7 +271,9 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="mnuObjects">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Objects"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="i18n.msg(&quot;objects&quot;)" type="code"/>
+            </Property>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="mnuObjectEditMode">
@@ -279,7 +291,9 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenu2">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Automations"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="i18n.msg(&quot;automations&quot;)" type="code"/>
+            </Property>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="mnuAutomations">
@@ -287,7 +301,9 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="F7"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Manage Automations"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="i18n.msg(&quot;manage&quot;) + i18n.msg(&quot;automations&quot;)" type="code"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuAutomationsActionPerformed"/>
