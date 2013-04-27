@@ -7,6 +7,7 @@ package it.freedomotic.plugins;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.objects.EnvObjectLogic;
@@ -47,8 +48,8 @@ public class TrackingRandomPosition extends Protocol {
         while (!validPos) {
             Random rx = new Random();
             Random ry = new Random();
-            x = rx.nextInt(Freedomotic.environment.getPojo().getWidth());
-            y = ry.nextInt(Freedomotic.environment.getPojo().getHeight());
+            x = rx.nextInt(EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth());
+            y = ry.nextInt(EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight());
             if (canGo(x, y)) {
                 validPos = true;
             }

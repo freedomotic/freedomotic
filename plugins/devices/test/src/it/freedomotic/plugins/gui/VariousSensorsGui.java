@@ -12,6 +12,7 @@ package it.freedomotic.plugins.gui;
 
 import it.freedomotic.plugins.VariousSensors;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.events.LuminosityEvent;
 import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.events.TemperatureEvent;
@@ -62,12 +63,12 @@ public class VariousSensorsGui extends javax.swing.JFrame {
     }
 
     private void notifyLuminosityEvent(int luminosity) {
-        LuminosityEvent luminosityEvent = new LuminosityEvent(this, luminosity, Freedomotic.environment.getPojo().getZone(0));
+        LuminosityEvent luminosityEvent = new LuminosityEvent(this, luminosity, EnvironmentPersistence.getEnvironments().get(0).getPojo().getZone(0));
         sensor.notifyEvent(luminosityEvent);
     }
 
     private void notifyTemperatureEvent(int temperature) {
-        TemperatureEvent temperatureEvent = new TemperatureEvent(this, temperature, Freedomotic.environment.getPojo().getZone(0));
+        TemperatureEvent temperatureEvent = new TemperatureEvent(this, temperature, EnvironmentPersistence.getEnvironments().get(0).getPojo().getZone(0));
         sensor.notifyEvent(temperatureEvent);
     }
 
