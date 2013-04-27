@@ -7,6 +7,7 @@ package it.freedomotic.restapi.server.resources;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.restapi.server.interfaces.EnvironmentResource;
@@ -20,8 +21,9 @@ public class EnvironmentServerResource extends ServerResource implements Environ
     private static volatile  Environment env;    
  	
     @Override
-    public void doInit() {                    
-        env = Freedomotic.environment.getPojo();        
+    public void doInit() { 
+        int number =Integer.parseInt((String)getRequest().getAttributes().get("number"));                
+        env = EnvironmentPersistence.getEnvironments().get(number).getPojo();
     }
 
     @Override
