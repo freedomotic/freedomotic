@@ -7,6 +7,7 @@ package it.freedomotic.restapi.server.resources;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.model.environment.Zone;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.restapi.server.interfaces.ZoneResource;
@@ -19,9 +20,10 @@ import org.restlet.resource.ServerResource;
 public class ZoneServerResource extends ServerResource implements ZoneResource{
     private static volatile Zone zone;    	
     @Override
-    public void doInit() {                           
+    public void doInit() { 
+        int env =Integer.parseInt((String)getRequest().getAttributes().get("env"));
         int number =Integer.parseInt((String)getRequest().getAttributes().get("number"));        
-        zone = Freedomotic.environment.getPojo().getZone(number);                           
+        zone = EnvironmentPersistence.getEnvironments().get(env).getPojo().getZone(number);                           
     }
 
     @Override
