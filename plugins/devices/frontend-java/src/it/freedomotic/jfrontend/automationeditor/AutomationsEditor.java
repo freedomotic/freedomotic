@@ -11,6 +11,7 @@ import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
+import it.freedomotic.util.i18n;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -54,6 +55,7 @@ public class AutomationsEditor extends Protocol {
     @Override
     public void onShowGui() {
         final JFrame frame = new JFrame();
+        frame.setTitle(i18n.msg("manage") + i18n.msg("automations"));
         frame.setPreferredSize(new Dimension(800,600));
         final ReactionsPanel panel = new ReactionsPanel(this);
         frame.setContentPane(panel);
