@@ -66,6 +66,9 @@ case "$1" in
 	i386)
 		DESTDIR=i386
 	;;
+	i686)
+		DESTDIR=i386
+	;;
 	arm)
 		DESTDIR=arm
 	;;

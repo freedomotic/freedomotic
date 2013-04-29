@@ -173,7 +173,7 @@
         
          <echo>  Add global i18n files</echo>
         <copy todir="${release-folder}/i18n">
-            <fileset dir="${workspace-base}/i18n" includes="**/*" />
+            <fileset dir="${base}/i18n" includes="**/*" />
         </copy>       
         <!--<echo>Append changes to CHANGELOG file</echo>	
         <antcall target="-create-changelog" />-->        
@@ -283,7 +283,7 @@
                 <arg value="binary"/>
         </exec>
 	<echo>Moving .deb file </echo>
-	<copy todir="$workspace-base}">
+	<copy todir="${workspace-base}">
 		<fileset dir="${release-base}" includes="**/*.deb" />
 	</copy>
 	<echo>Deleting debian folder before compressing</echo>
