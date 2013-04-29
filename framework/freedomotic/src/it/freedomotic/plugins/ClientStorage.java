@@ -27,6 +27,7 @@ import it.freedomotic.events.PluginHasChanged.PluginActions;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ import java.util.List;
 public final class ClientStorage {
 
     private static final List<Client> clients = new ArrayList<Client>();
-
+    private static final ClientComparator compare = new ClientComparator();
     //instantiated into Freedomotic.java
     //an instance is needed
     public ClientStorage() {
@@ -58,6 +59,7 @@ public final class ClientStorage {
     }
 
     public static List<Client> getClients() {
+        Collections.sort(clients, compare);
         return Collections.unmodifiableList(clients);
     }
 
@@ -147,4 +149,12 @@ public final class ClientStorage {
         ObjectPlugin placeholder = new ObjectPlugin(template);
         enqueue(placeholder);
     }
+    
+    static class ClientComparator implements Comparator<Client> {
+        @Override
+    public int compare(Client m1, Client m2) {
+       //possibly check for nulls to avoid NullPointerException
+       return m1.getName().compareTo(m2.getName());
+    }
+}
 }
