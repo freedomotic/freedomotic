@@ -163,7 +163,6 @@ public class ImageDrawer extends PlainDrawer {
     @Override
     public void mouseRightClickObject(EnvObjectLogic obj) {
         super.mouseRightClickObject(obj);
-        ObjectEditor editor = new ObjectEditor(obj);
-        editor.setVisible(true);
+        openObjEditor(obj);
     }
 }
