@@ -40,7 +40,7 @@ public class EnvObjectLogic {
     private HashMap<String, Command> commandsMapping; //mapping between action name -> hardware command instance
     private List<BehaviorLogic> behaviors = new ArrayList<BehaviorLogic>();
     private EnvironmentLogic env;
-    
+
     /**
      * gets the hardware command mapped to the action in input for example:
      * Action -> Hardware Command Turn on -> Turn on light with X10 Actuator
@@ -198,11 +198,11 @@ public class EnvObjectLogic {
     private boolean isChanged() {
         return changed;
     }
-    
-    public EnvironmentLogic getEnv(){
+
+    public EnvironmentLogic getEnv() {
         return this.env;
     }
-    
+
     public EnvObject getPojo() {
         return pojo;
     }
@@ -261,18 +261,18 @@ public class EnvObjectLogic {
         //now apply offset to the shape
         FreedomPolygon translatedObject = (FreedomPolygon) TopologyUtils.translate((FreedomPolygon) shape, xoffset, yoffset);
         for (EnvironmentLogic locEnv : EnvironmentPersistence.getEnvironments()) {
-        for (ZoneLogic zone : locEnv.getZones()) {
-            //remove from every zone
-            zone.getPojo().getObjects().remove(this.getPojo());
-            if (TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
-                //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
-                //add to the zones this object belongs
-                zone.getPojo().getObjects().add(this.getPojo());
-                Freedomotic.logger.config("Object " + getPojo().getName() + " is in zone " + zone.getPojo().getName());
-            } else {
-                //DEBUG: System.out.println("object " + getPojo().getName() + " NOT intersects zone " + zone.getPojo().getName());
+            for (ZoneLogic zone : locEnv.getZones()) {
+                //remove from every zone
+                zone.getPojo().getObjects().remove(this.getPojo());
+                if (TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
+                    //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
+                    //add to the zones this object belongs
+                    zone.getPojo().getObjects().add(this.getPojo());
+                    Freedomotic.logger.config("Object " + getPojo().getName() + " is in zone " + zone.getPojo().getName());
+                } else {
+                    //DEBUG: System.out.println("object " + getPojo().getName() + " NOT intersects zone " + zone.getPojo().getName());
+                }
             }
-        }
         }
     }
 
@@ -353,13 +353,13 @@ public class EnvObjectLogic {
     }
 
     protected void setPojo(EnvObject pojo) {
-        if ((pojo.getEnvironmentID() == null || pojo.getEnvironmentID().isEmpty())  && EnvironmentPersistence.getEnvironments().size()>0){
+        if ((pojo.getEnvironmentID() == null || pojo.getEnvironmentID().isEmpty()) && EnvironmentPersistence.getEnvironments().size() > 0) {
             pojo.setEnvID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
         }
         this.pojo = pojo;
         this.env = EnvironmentPersistence.getEnvByUUID(pojo.getEnvironmentID());
     }
-    
+
     private void renameValuesInTrigger(Trigger t, String oldName, String newName) {
         if (!t.isHardwareLevel()) {
             if (t.getName().contains(oldName)) {
@@ -405,6 +405,13 @@ public class EnvObjectLogic {
                 Freedomotic.logger.config("Don't exist a command called '" + commandName
                         + "' is not possible to bound this command to action '" + action + "' of " + this.getPojo().getName());
             }
+        }
+    }
+
+    public void setEnv(EnvironmentLogic selEnv) {
+        if (selEnv != null) {
+            this.env = selEnv;
+            getPojo().setEnvID(selEnv.getPojo().getUUID());
         }
     }
 }

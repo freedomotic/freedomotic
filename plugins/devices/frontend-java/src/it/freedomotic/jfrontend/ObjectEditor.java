@@ -13,6 +13,8 @@ package it.freedomotic.jfrontend;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.environment.EnvironmentLogic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.jfrontend.automationeditor.ReactionEditor;
 import it.freedomotic.jfrontend.automationeditor.ReactionsPanel;
 import it.freedomotic.jfrontend.utils.CheckBoxList;
@@ -69,6 +71,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         txtName.setText(pojo.getName());
         txtDescription.setText(pojo.getDescription());
         populateProtocol();
+        populateEnvironment();
         txtAddress.setText(pojo.getPhisicalAddress());
         Integer x = (int) pojo.getCurrentRepresentation().getOffset().getX();
         Integer y = (int) pojo.getCurrentRepresentation().getOffset().getY();
@@ -274,6 +277,8 @@ public class ObjectEditor extends javax.swing.JFrame {
         spnScaleHeight = new javax.swing.JSpinner();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        environmentComboBox = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
         tabControls = new javax.swing.JPanel();
         tabAutomations = new javax.swing.JPanel();
         pnlFrameButtons = new javax.swing.JPanel();
@@ -364,7 +369,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnVirtual))
-                .addContainerGap(2165, Short.MAX_VALUE))
+                .addContainerGap(2183, Short.MAX_VALUE))
         );
         tabPropertiesLayout.setVerticalGroup(
             tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -458,6 +463,10 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         jLabel5.setText("Height:");
 
+        environmentComboBox.setSelectedItem(object.getEnv());
+
+        jLabel6.setText(i18n.msg("environment") + ":");
+
         javax.swing.GroupLayout tabRepresentationLayout = new javax.swing.GroupLayout(tabRepresentation);
         tabRepresentation.setLayout(tabRepresentationLayout);
         tabRepresentationLayout.setHorizontalGroup(
@@ -470,20 +479,27 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addGap(18, 18, 18))
                     .addGroup(tabRepresentationLayout.createSequentialGroup()
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
+                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(tabRepresentationLayout.createSequentialGroup()
+                                .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                            .addComponent(spnScaleHeight, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(spnScaleWidth, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(spnY)
-                            .addComponent(spnX, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addGap(18, 18, 18)
-                        .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                        .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(tabRepresentationLayout.createSequentialGroup()
+                                .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(spnScaleHeight, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(spnScaleWidth, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(spnY)
+                                    .addComponent(spnX, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGap(18, 18, 18)
+                                .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(environmentComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(2343, 2343, 2343))))
         );
         tabRepresentationLayout.setVerticalGroup(
@@ -513,7 +529,11 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spnScaleHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(234, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(environmentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addContainerGap(211, Short.MAX_VALUE))
         );
 
         tabObjectEditor.addTab("Appearance", tabRepresentation);
@@ -573,6 +593,11 @@ public class ObjectEditor extends javax.swing.JFrame {
                         editor.finalizeEditing();
                     }
                 }
+            }
+            if (environmentComboBox.getSelectedItem() != null){
+               EnvironmentLogic selEnv  = (EnvironmentLogic)environmentComboBox.getSelectedItem();
+                object.setEnv(selEnv);  
+                object.setChanged(true);
             }
             this.dispose();
         }
@@ -716,6 +741,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private javax.swing.JButton btnOk;
     private javax.swing.JCheckBox btnVirtual;
     private javax.swing.JCheckBox chkAllRepresentations;
+    private javax.swing.JComboBox environmentComboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -726,6 +752,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel pnlFrameButtons;
     private javax.swing.JSpinner spnRotation;
@@ -863,6 +890,12 @@ public class ObjectEditor extends javax.swing.JFrame {
                     txtProtocol.setSelectedItem(protocol);
                 }
             }
+        }
+    }
+    
+    private void populateEnvironment(){
+        for (EnvironmentLogic env: EnvironmentPersistence.getEnvironments()){
+        environmentComboBox.addItem(env);
         }
     }
 

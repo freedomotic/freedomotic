@@ -65,6 +65,8 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow(final JavaDesktopFrontend master) {
         this.master = master;
         setWindowedMode();
+        checkDeletableEnvironments();
+        
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(new MyDispatcher());
         if (master.configuration.getBooleanProperty("show.tips", true)) {
@@ -98,7 +100,15 @@ public class MainWindow extends javax.swing.JFrame {
         mnuAddRoom.setEnabled(editMode);
         mnuRoomBackground.setEnabled(editMode);
     }
-
+    private void checkDeletableEnvironments(){
+         // disable delete option if ther's just an available environment
+        if (EnvironmentPersistence.getEnvironments().size() == 1 ) {
+            mnuDelete.setEnabled(false);
+        } else {
+            mnuDelete.setEnabled(true);
+        }
+            
+    }
     private void setWindowedMode() {
         this.setVisible(false);
         this.dispose();
@@ -950,6 +960,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         //If a string was returned
         if (input != null) {
             drawer.setCurrEnv(input);
+            setMapTitle(input.getPojo().getName());
         }
     }//GEN-LAST:event_mnuSelectEnvironmentActionPerformed
 
@@ -959,7 +970,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         newEnv.getPojo().setName(input.trim());
         drawer.setCurrEnv(newEnv);
         setMapTitle(newEnv.getPojo().getName());
-
+        checkDeletableEnvironments();
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
     private void mnuRenameEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameEnvironmentActionPerformed
@@ -972,11 +983,10 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         int result = JOptionPane.showConfirmDialog(null, "You're about to delete the current environment", "Confirm deletion?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
             EnvironmentLogic oldenv = drawer.getCurrEnv();
-            drawer.setCurrEnv(0);
-
-
             EnvironmentPersistence.remove(oldenv);
-
+            drawer.setCurrEnv(EnvironmentPersistence.getEnvironments().get(0));
+            setMapTitle(EnvironmentPersistence.getEnvironments().get(0).getPojo().getName());
+            checkDeletableEnvironments();
         }
     }//GEN-LAST:event_mnuDeleteActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

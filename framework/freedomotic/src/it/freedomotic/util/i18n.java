@@ -62,8 +62,7 @@ public class i18n {
                 if (enableLocalization.equals("auto") || enableLocalization.equals("yes") || enableLocalization.equals("true")) {
                     loc = Locale.getDefault();
                 } else {
-			// TODO: find a way of loading a custom locale 
-                    loc = Locale.getDefault();
+                    loc = new Locale(enableLocalization.substring(0,2),enableLocalization.substring(3,5));
                     
                     if (loc == null){
                         Freedomotic.logger.severe("Cannot set locale "+  enableLocalization + " falling back to default locale");
