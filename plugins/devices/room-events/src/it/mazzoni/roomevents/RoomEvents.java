@@ -1,18 +1,18 @@
 /*
-Copyright (c) Matteo Mazzoni 2013  
+ Copyright (c) Matteo Mazzoni 2013  
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
  */
 package it.mazzoni.roomevents;
@@ -21,6 +21,8 @@ import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.ListenEventsOn;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.environment.EnvironmentLogic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.model.environment.Zone;
@@ -70,16 +72,17 @@ public class RoomEvents extends Protocol {
         String command = c.getProperty("command");
 
         if (command.equals("Turn off room devices")) {
-            for (Zone z : Freedomotic.environment.getPojo().getZones()) {
-                if (z.getName().equals(address[2])) {
-                    for (EnvObject obj : z.getObjects()) {
-                        if (obj.getType().startsWith(c.getProperty("devType"))) {
-                            Command c2 = CommandPersistence.getCommand("Turn off " + obj.getName());
-                            if (c2 != null) {
-                                Freedomotic.sendCommand(c2);
+            for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+                for (Zone z : env.getPojo().getZones()) {
+                    if (z.getName().equals(address[2])) {
+                        for (EnvObject obj : z.getObjects()) {
+                            if (obj.getType().startsWith(c.getProperty("devType"))) {
+                                Command c2 = CommandPersistence.getCommand("Turn off " + obj.getName());
+                                if (c2 != null) {
+                                    Freedomotic.sendCommand(c2);
+                                }
                             }
                         }
-
                     }
                 }
             }
@@ -147,29 +150,30 @@ public class RoomEvents extends Protocol {
 
     private void addRoomCommands() {
         String cmdName;
-
-        for (Zone z : Freedomotic.environment.getPojo().getZones()) {
-            if (z.isRoom()) {
-                cmdName = "Turn off devices inside room " + z.getName();
-                Command c = CommandPersistence.getCommand(cmdName);
-                if (c != null) {
-                    CommandPersistence.remove(c);
+        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+            for (Zone z : env.getPojo().getZones()) {
+                if (z.isRoom()) {
+                    cmdName = "Turn off devices inside room " + z.getName();
+                    Command c = CommandPersistence.getCommand(cmdName);
+                    if (c != null) {
+                        CommandPersistence.remove(c);
+                    }
+                    c = new Command();
+                    c.setReceiver("app.actuators.logging.roomevents.in");
+                    c.setName(cmdName);
+                    c.setDescription(cmdName);
+                    c.setProperty("address", "env:room:" + z.getName());
+                    c.setProperty("command", "Turn off room devices");
+                    c.setProperty("devType", "EnvObject.ElectricDevice");
+                    HashSet<String> tags = new HashSet<String>();
+                    tags.add("turn");
+                    tags.add("off");
+                    tags.add("room");
+                    tags.add("devices");
+                    tags.add(z.getName());
+                    c.setTags(tags);
+                    CommandPersistence.add(c);
                 }
-                c = new Command();
-                c.setReceiver("app.actuators.logging.roomevents.in");
-                c.setName(cmdName);
-                c.setDescription(cmdName);
-                c.setProperty("address", "env:room:" + z.getName());
-                c.setProperty("command", "Turn off room devices");
-                c.setProperty("devType", "EnvObject.ElectricDevice");
-                HashSet<String> tags = new HashSet<String>();
-                tags.add("turn");
-                tags.add("off");
-                tags.add("room");
-                tags.add("devices");
-                tags.add(z.getName());
-                c.setTags(tags);
-                CommandPersistence.add(c);
             }
         }
     }
@@ -183,18 +187,20 @@ public class RoomEvents extends Protocol {
         String objName = event.getProperty("object.name");
 
         boolean found = false;
-        for (Zone z : Freedomotic.environment.getPojo().getZones()) {
-            if (z.isRoom()) {
-                for (EnvObject obj : z.getObjects()) {
-                    if (obj.getName().equalsIgnoreCase(objName)) {
-                        found = true;
-                        break;
+        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+            for (Zone z : env.getPojo().getZones()) {
+                if (z.isRoom()) {
+                    for (EnvObject obj : z.getObjects()) {
+                        if (obj.getName().equalsIgnoreCase(objName)) {
+                            found = true;
+                            break;
+                        }
                     }
                 }
-            }
-            if (found) {
-                notifyRoomStatus(z);
-                break;
+                if (found) {
+                    notifyRoomStatus(z);
+                    break;
+                }
             }
         }
     }

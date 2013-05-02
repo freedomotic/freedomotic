@@ -1,18 +1,18 @@
 /*
-    Copyright (c) Matteo Mazzoni <matteo@bestmazzo.it> 2013   
+ Copyright (c) Matteo Mazzoni <matteo@bestmazzo.it> 2013   
    
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
  */
 package it.mazzoni.twilight;
@@ -41,8 +41,11 @@ public class Twilight extends Protocol {
     final int POLLING_WAIT;
     private String Latitude;
     private String Longitude;
-   
-    
+    private DateTime sunriseTime;
+    private DateTime sunsetTime;
+    private Duration toSunset;
+    private Duration toSunrise;
+
     public Twilight() {
         //every plugin needs a name and a manifest XML file
         super("Twilight", "/it.mazzoni.twilight/twilight-manifest.xml");
@@ -75,57 +78,37 @@ public class Twilight extends Protocol {
 
     @Override
     protected void onRun() {
-        // get time and date params
-       DateTime dt = new DateTime();
-       int dst = dt.getZone().isStandardOffset(dt.getMillis())? 0:1;
-       int offset = dt.getZone().getStandardOffset(dt.getMillis())/3600000;
-       Freedomotic.logger.log(Level.INFO, "Current TIME: {0}/{1} {2} DST: {3}", new Object[]{dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst});
-       Document doc = getXMLStatusFile(dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst);
-        //parse xml 
-        if (doc !=null){
-            Node sunrise = doc.getElementsByTagName("sunrise").item(0);
-            Node sunset = doc.getElementsByTagName("sunset").item(0);
-            // compara con l'ora attuale
-            String srTime[] = sunrise.getFirstChild().getNodeValue().split(":");
-            String ssTime[] = sunset.getFirstChild().getNodeValue().split(":");
-            DateTime sunriseTime = new DateTime(dt.getYear(),dt.getMonthOfYear(),dt.getDayOfMonth(),
-                                                Integer.parseInt(srTime[0]), Integer.parseInt(srTime[1]),Integer.parseInt(srTime[2]));
-            DateTime sunsetTime = new DateTime(dt.getYear(),dt.getMonthOfYear(),dt.getDayOfMonth(),
-                                                Integer.parseInt(ssTime[0]), Integer.parseInt(ssTime[1]),Integer.parseInt(ssTime[2]));
-            
-            Duration toSunset = sunsetTime.isAfter(dt)? new Duration(dt,sunsetTime) : new Duration(sunsetTime,dt);
-            Duration toSunrise = sunriseTime.isAfter(dt)? new Duration(dt,sunriseTime): new Duration(sunriseTime,dt);
-            // genera evento: 
-            GenericEvent ev = new GenericEvent(getClass());
-            ev.setDestination("app.event.sensor.calendar.event.twilight");
-            
-                   if (toSunset.getMillis() < POLLING_WAIT/2) {
-                    // it's sunset
-                    ev.addProperty("isSunset", "true");   
-            } else if (toSunrise.getMillis() < POLLING_WAIT/2) {
-                // it's sunrise
-                ev.addProperty("isSunrise", "true");
-            } else if (sunriseTime.isAfterNow()){
-                // prima dell'alba
-                ev.addProperty("beforeSunrise", Long.toString(toSunrise.getStandardMinutes()));
-            } else if (sunsetTime.isBeforeNow()){
-                // dopo il tramonto
-                ev.addProperty("afterSunset", Long.toString(toSunset.getStandardMinutes()));
-            } else if (toSunrise.isShorterThan(toSunset)){
-                // dopo l'alba, 
-                ev.addProperty("afterSunrise", Long.toString(toSunrise.getStandardMinutes()));
-            } else {
-                // prima del tramonto
-                ev.addProperty("beforeSunset", Long.toString(toSunset.getStandardMinutes()));
-            }
-            
+
+        // genera evento: 
+        GenericEvent ev = new GenericEvent(getClass());
+        ev.setDestination("app.event.sensor.calendar.event.twilight");
+
+        if (toSunset.getMillis() < POLLING_WAIT / 2) {
+            // it's sunset
+            ev.addProperty("isSunset", "true");
+        } else if (toSunrise.getMillis() < POLLING_WAIT / 2) {
+            // it's sunrise
+            ev.addProperty("isSunrise", "true");
+        } else if (sunriseTime.isAfterNow()) {
+            // prima dell'alba
+            ev.addProperty("beforeSunrise", Long.toString(toSunrise.getStandardMinutes()));
+        } else if (sunsetTime.isBeforeNow()) {
+            // dopo il tramonto
+            ev.addProperty("afterSunset", Long.toString(toSunset.getStandardMinutes()));
+        } else if (toSunrise.isShorterThan(toSunset)) {
+            // dopo l'alba, 
+            ev.addProperty("afterSunrise", Long.toString(toSunrise.getStandardMinutes()));
+        } else {
+            // prima del tramonto
+            ev.addProperty("beforeSunset", Long.toString(toSunset.getStandardMinutes()));
         }
-        
+
     }
 
     @Override
     protected void onStart() {
         Freedomotic.logger.info("Twilight plugin is started");
+        updateData();
     }
 
     @Override
@@ -135,7 +118,10 @@ public class Twilight extends Protocol {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-     throw new UnsupportedOperationException("Not supported yet.");
+        String command = c.getProperty("command");
+        if (command.equals("Update Twilight Data")) {
+            updateData();
+        }
     }
 
     @Override
@@ -149,8 +135,8 @@ public class Twilight extends Protocol {
         //don't mind this method for now
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
- private Document getXMLStatusFile(int dom, int moy, int zone, int dst) {
+
+    private Document getXMLStatusFile(int dom, int moy, int zone, int dst) {
         //get the xml file from the socket connection
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = null;
@@ -162,7 +148,7 @@ public class Twilight extends Protocol {
         Document doc = null;
         String statusFileURL = null;
         try {
-            statusFileURL = "http://www.earthtools.org/sun/"+ Latitude+ "/"+ Longitude+ "/"+ dom+ "/"+ moy+ "/"+ zone+ "/"+ dst;
+            statusFileURL = "http://www.earthtools.org/sun/" + Latitude + "/" + Longitude + "/" + dom + "/" + moy + "/" + zone + "/" + dst;
             Freedomotic.logger.info("Getting twilight data from: " + statusFileURL);
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
@@ -180,4 +166,30 @@ public class Twilight extends Protocol {
         return doc;
     }
 
+    private boolean updateData() {
+        DateTime dt = new DateTime();
+        int dst = dt.getZone().isStandardOffset(dt.getMillis()) ? 0 : 1;
+        int offset = dt.getZone().getStandardOffset(dt.getMillis()) / 3600000;
+        Freedomotic.logger.log(Level.INFO, "Current TIME: {0}/{1} {2} DST: {3}", new Object[]{dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst});
+        Document doc = getXMLStatusFile(dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst);
+        //parse xml 
+        if (doc != null) {
+            Node sunriseNode = doc.getElementsByTagName("sunrise").item(0);
+            Node sunsetNode = doc.getElementsByTagName("sunset").item(0);
+            // compara con l'ora attuale
+            String srTime[] = sunriseNode.getFirstChild().getNodeValue().split(":");
+            String ssTime[] = sunsetNode.getFirstChild().getNodeValue().split(":");
+            sunriseTime = new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
+                    Integer.parseInt(srTime[0]), Integer.parseInt(srTime[1]), Integer.parseInt(srTime[2]));
+            sunsetTime = new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
+                    Integer.parseInt(ssTime[0]), Integer.parseInt(ssTime[1]), Integer.parseInt(ssTime[2]));
+
+            toSunset = sunsetTime.isAfter(dt) ? new Duration(dt, sunsetTime) : new Duration(sunsetTime, dt);
+            toSunrise = sunriseTime.isAfter(dt) ? new Duration(dt, sunriseTime) : new Duration(sunriseTime, dt);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
