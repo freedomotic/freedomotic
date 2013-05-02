@@ -24,6 +24,8 @@ import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.util.UidGenerator;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -111,6 +113,10 @@ public class EventTemplate implements Serializable {
             payload.addStatement("time.hour", rightNow.get(Calendar.HOUR_OF_DAY));
             payload.addStatement("time.minute", rightNow.get(Calendar.MINUTE));
             payload.addStatement("time.second", rightNow.get(Calendar.SECOND));
+            DateFormat datefmt = new SimpleDateFormat("yyyyMMdd");
+            DateFormat timefmt = new SimpleDateFormat("HHmmss");
+            payload.addStatement("time", timefmt.format(rightNow.getTime()));
+            payload.addStatement("date", datefmt.format(rightNow.getTime()));
             //adding event.sender to event payload. So it can be used by trigger
             payload.addStatement("sender", getSender());
         } catch (Exception e) {
