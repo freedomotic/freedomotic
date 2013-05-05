@@ -401,13 +401,13 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        tabObjectEditor.addTab("Properties", tabProperties);
+        tabObjectEditor.addTab(i18n.msg("properties"), tabProperties);
 
         tabTriggersConfig.setLayout(new java.awt.BorderLayout());
         tabObjectEditor.addTab("Data Sources", tabTriggersConfig);
 
         tabCommandsConfig.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab("Actions", tabCommandsConfig);
+        tabObjectEditor.addTab(i18n.msg("actions"), tabCommandsConfig);
 
         jLabel11.setText("Position X:");
 
@@ -542,7 +542,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         tabObjectEditor.addTab("Control Panel", tabControls);
 
         tabAutomations.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab("Automations", tabAutomations);
+        tabObjectEditor.addTab(i18n.msg("automations"), tabAutomations);
 
         jPanel1.add(tabObjectEditor);
 

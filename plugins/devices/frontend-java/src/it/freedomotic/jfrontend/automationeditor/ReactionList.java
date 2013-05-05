@@ -16,6 +16,7 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Trigger;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -24,6 +25,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 
 /**
  *
@@ -87,7 +89,9 @@ public final class ReactionList extends javax.swing.JFrame {
                     ReactionEditor editor = new ReactionEditor(new Reaction(trigger));
                     panel.add(editor);
                 }
+                panel.add(new JSeparator());
             }
+            
         }
         validate();
     }

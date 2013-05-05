@@ -98,23 +98,28 @@ public class JavaDesktopFrontend extends Actuator {
             Callout callout1 = new Callout(this.getClass().getCanonicalName(), "info", callout, 0, 0, 0, 0);
             drawer.createCallout(callout1);
         } else {
+
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     new Thread(new Runnable() {
                         public void run() {
                             //Custom button text
-                            Object[] options = c.getProperty("options").split(";");
-                            int n = JOptionPane.showOptionDialog(window,
-                                    c.getProperty("question"),
-                                    "Please reply within " + (int) (c.getReplyTimeout() / 1000) + " seconds",
-                                    JOptionPane.YES_NO_CANCEL_OPTION,
-                                    JOptionPane.QUESTION_MESSAGE,
-                                    null,
-                                    options,
-                                    options[2]);
-                            c.setProperty("result", options[n].toString());
+                            if (c.getProperty("options") != null) {
+
+                                Object[] options = c.getProperty("options").split(";");
+                                int n = JOptionPane.showOptionDialog(window,
+                                        c.getProperty("question"),
+                                        "Please reply within " + (int) (c.getReplyTimeout() / 1000) + " seconds",
+                                        JOptionPane.YES_NO_CANCEL_OPTION,
+                                        JOptionPane.QUESTION_MESSAGE,
+                                        null,
+                                        options,
+                                        options[2]);
+                                c.setProperty("result", options[n].toString());
+                            }
                             //sendBack(c);
+
                         }
                     }).start();
                 }
@@ -143,7 +148,7 @@ public class JavaDesktopFrontend extends Actuator {
             }
         }
     }
-    
+
 //    //annotation doesen't work because annotation parsing is enabled only in Protocol subclasses
 //    @ListenEventsOn(channel = "app.event.sensor.messages.callout")
 //    public void printCallout(EventTemplate event) {
@@ -157,7 +162,6 @@ public class JavaDesktopFrontend extends Actuator {
 //        drawer.createCallout(callout);
 //        drawer.setNeedRepaint(true);
 //    }
-
     @Override
     protected boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
