@@ -56,7 +56,7 @@ public class AutomationsEditor extends Protocol {
     public void onShowGui() {
         final JFrame frame = new JFrame();
         frame.setTitle(i18n.msg("manage") + i18n.msg("automations"));
-        frame.setPreferredSize(new Dimension(800,600));
+        frame.setPreferredSize(new Dimension(700,600));
         final ReactionsPanel panel = new ReactionsPanel(this);
         frame.setContentPane(panel);
         JButton ok = new JButton("OK");

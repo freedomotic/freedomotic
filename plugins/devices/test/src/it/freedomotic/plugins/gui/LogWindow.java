@@ -38,9 +38,9 @@ public class LogWindow extends JFrame {
     private final Handler handler;
 
     public LogWindow(final Handler handler) {
-        super("");
+        super("Log Window");
         this.handler = handler;
-        setSize(300, 300);
+        setSize(600, 400);
         this.setLayout(new BorderLayout());
         areaDetail.setContentType("text/html");
         model.addColumn("Level");
@@ -54,9 +54,11 @@ public class LogWindow extends JFrame {
         selectionModel.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    areaDetail.setText("<html>" + 
-                            table.getValueAt(table.getSelectedRow(), 1).toString()
-                            + "</html>");
+                    if (table.getSelectedRow() != -1) {
+                        areaDetail.setText("<html>"
+                                + table.getValueAt(table.getSelectedRow(), 1).toString()
+                                + "</html>");
+                    }
                 }
             }
         });
@@ -67,19 +69,22 @@ public class LogWindow extends JFrame {
                 handler.setLevel(Level.parse(cmbLevel.getSelectedItem().toString()));
             }
         });
-        add(new JLabel("Level: "), BorderLayout.PAGE_START);
+        add(new JLabel("Level: "), BorderLayout.NORTH);
         cmbLevel.setEditable(false);
-        add(cmbLevel, BorderLayout.PAGE_START);
+        add(cmbLevel, BorderLayout.NORTH);
         //add(btnStop, BorderLayout.PAGE_START);
         add(new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
-        areaDetail.setPreferredSize(new Dimension(300, 200));
-        areaDetail.setMinimumSize(new Dimension(300, 200));
+        areaDetail.setPreferredSize(new Dimension(600, 100));
+        areaDetail.setMinimumSize(new Dimension(600, 100));
         JScrollPane scroll = new JScrollPane(areaDetail, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //areaDetail.setLineWrap(true);
         add(scroll, BorderLayout.SOUTH);
     }
 
     public void append(Object[] row) {
+        if (table.getSelectedRow() == 100) {
+            table.clearSelection();
+        }
         model.insertRow(0, row);
         if (model.getRowCount() > 100 && !btnStop.isSelected()) {
             model.removeRow(model.getRowCount() - 1);

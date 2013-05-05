@@ -407,7 +407,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        mnuOpenNew.setText("File");
+        mnuOpenNew.setText(i18n.msg("file"));
         mnuOpenNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuOpenNewActionPerformed(evt);
@@ -442,7 +442,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuOpenNew.add(mnuSave);
 
         mnuSaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        mnuSaveAs.setText(i18n.msg("save_as",new Object[]{i18n.msg("environment")}));
+        mnuSaveAs.setText(i18n.msg("save_X_as",new Object[]{i18n.msg("environment")}));
         mnuSaveAs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuSaveAsActionPerformed(evt);
@@ -474,7 +474,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenu4.setText("Area/Floor");
 
-        mnuRenameEnvironment.setText("Rename");
+        mnuRenameEnvironment.setText(i18n.msg("rename"));
         mnuRenameEnvironment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuRenameEnvironmentActionPerformed(evt);
@@ -482,7 +482,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu4.add(mnuRenameEnvironment);
 
-        mnuAddDuplicateEnvironment.setText("Add/Duplicate");
+        mnuAddDuplicateEnvironment.setText(i18n.msg("add")+"/"+i18n.msg("duplicate"));
         mnuAddDuplicateEnvironment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuAddDuplicateEnvironmentActionPerformed(evt);
@@ -490,7 +490,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu4.add(mnuAddDuplicateEnvironment);
 
-        mnuChangeRenderer.setText("Change Renderer");
+        mnuChangeRenderer.setText(i18n.msg("change_X",new Object[]{i18n.msg("renderer")}));
         mnuChangeRenderer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuChangeRendererActionPerformed(evt);
@@ -498,7 +498,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu4.add(mnuChangeRenderer);
 
-        mnuBackground.setText("Change Background");
+        mnuBackground.setText(i18n.msg("change_X",new Object[]{i18n.msg("background")}));
         mnuBackground.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuBackgroundActionPerformed(evt);
@@ -506,7 +506,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu4.add(mnuBackground);
 
-        mnuDelete.setText("Delete");
+        mnuDelete.setText(i18n.msg("delete"));
         mnuDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuDeleteActionPerformed(evt);
@@ -517,7 +517,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuEditMode.add(jMenu4);
 
         mnuRoomEditMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        mnuRoomEditMode.setText("Rooms Edit Mode");
+        mnuRoomEditMode.setText(i18n.msg(this,"X_edit_mode",new Object[]{i18n.msg("rooms")}));
         mnuRoomEditMode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuRoomEditModeActionPerformed(evt);
@@ -568,7 +568,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuObjects.setText(i18n.msg("objects"));
 
         mnuObjectEditMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
-        mnuObjectEditMode.setText("Objects Edit Mode");
+        mnuObjectEditMode.setText(i18n.msg(this,"X_edit_mode",new Object[]{i18n.msg("objects")}));
         mnuObjectEditMode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuObjectEditModeActionPerformed(evt);
@@ -591,10 +591,10 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuBar.add(jMenu2);
 
-        jMenu1.setText("Plugins");
+        jMenu1.setText(i18n.msg("plugins"));
 
         jCheckBoxMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, 0));
-        jCheckBoxMenuItem1.setText("Install from Marketplace");
+        jCheckBoxMenuItem1.setText(i18n.msg(this,"install_from_marketplace"));
         jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBoxMenuItem1ActionPerformed(evt);
@@ -602,7 +602,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu1.add(jCheckBoxMenuItem1);
 
-        mnuPluginConfigure.setText("Configure");
+        mnuPluginConfigure.setText(i18n.msg("configure"));
         mnuPluginConfigure.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuPluginConfigureActionPerformed(evt);
@@ -612,10 +612,10 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuBar.add(jMenu1);
 
-        mnuWindow.setText("Window");
+        mnuWindow.setText(i18n.msg(this,"window"));
 
         jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
-        jMenuItem2.setText("Plugins List");
+        jMenuItem2.setText(i18n.msg("X_list",new Object[]{i18n.msg("plugins")}));
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem2ActionPerformed(evt);
@@ -624,7 +624,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuWindow.add(jMenuItem2);
 
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, 0));
-        jMenuItem3.setText("Fullscreen");
+        jMenuItem3.setText(i18n.msg(this,"fullscreen"));
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem3ActionPerformed(evt);
@@ -634,7 +634,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuBar.add(mnuWindow);
 
-        mnuHelp.setText("Help");
+        mnuHelp.setText(i18n.msg("help"));
 
         mnuTutorial.setText("Tutorial");
         mnuTutorial.addActionListener(new java.awt.event.ActionListener() {

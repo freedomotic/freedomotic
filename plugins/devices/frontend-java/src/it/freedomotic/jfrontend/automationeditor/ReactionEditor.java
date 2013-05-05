@@ -10,12 +10,18 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JSeparator;
 
 /**
  *
@@ -26,7 +32,7 @@ public class ReactionEditor extends javax.swing.JPanel {
     //private PropertiesPanel_1 panel = new PropertiesPanel_1(0, 1);
     private Reaction reaction;
     private ArrayList<GuessCommandBox> list = new ArrayList<GuessCommandBox>();
-
+    private Box cmdBox = Box.createVerticalBox();
     /**
      * Creates new form ReactionEditor
      */
@@ -70,10 +76,13 @@ public class ReactionEditor extends javax.swing.JPanel {
                 }
             }
         });
-        this.add(btnTrigger);
+        this.add(btnTrigger,BorderLayout.WEST);
+        this.add(cmdBox, BorderLayout.EAST);
         //add commands widget
+        int i=0;
         for (Command command : reaction.getCommands()) {
             GuessCommandBox box = new GuessCommandBox(this, command);
+
             addBox(box);
         }
         //add empty command box to append new commands
@@ -87,13 +96,13 @@ public class ReactionEditor extends javax.swing.JPanel {
     }
 
     private void addBox(GuessCommandBox box) {
-        this.add(box);
+        cmdBox.add(box);
         list.add(box);
         this.validate();
     }
 
     private void removeBox(GuessCommandBox box) {
-        this.remove(box);
+        cmdBox.remove(box);
         list.remove(box);
         this.validate();
     }
@@ -107,16 +116,8 @@ public class ReactionEditor extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setBorder(null);
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

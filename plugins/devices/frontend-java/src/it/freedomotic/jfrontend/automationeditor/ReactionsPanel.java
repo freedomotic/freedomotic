@@ -18,6 +18,7 @@ import java.util.Iterator;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 
 /**
  *
@@ -59,17 +60,20 @@ public class ReactionsPanel extends JPanel {
             if (!trigger.isHardwareLevel()) {
                 //display already stored reactions related to this objects
                 boolean found = false;
+                int pos = 0;
                 for (Reaction r : ReactionPersistence.getReactions()) {
-                    if (r.getTrigger().equals(trigger)) {
+                    if (r.getTrigger().equals(trigger) && !r.getCommands().isEmpty()) {
                         ReactionEditor editor = new ReactionEditor(r);
-                        panel.add(editor);
+                        panel.add(editor,pos++);
                         found = true;
                     }
                 }
                 if (!found) {//add an empty reaction if none
+                    pos = panel.getComponentCount();
                     ReactionEditor editor = new ReactionEditor(new Reaction(trigger));
-                    panel.add(editor);
+                    panel.add(editor,pos++);
                 }
+                panel.add (new JSeparator(),pos);
             }
         }
         validate();
