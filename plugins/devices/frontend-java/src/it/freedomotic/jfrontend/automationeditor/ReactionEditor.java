@@ -12,6 +12,7 @@ import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -33,12 +34,14 @@ public class ReactionEditor extends javax.swing.JPanel {
     private Reaction reaction;
     private ArrayList<GuessCommandBox> list = new ArrayList<GuessCommandBox>();
     private Box cmdBox = Box.createVerticalBox();
+    private Component parent = null;
     /**
      * Creates new form ReactionEditor
      */
-    public ReactionEditor(Reaction reaction) {
+    public ReactionEditor(Reaction reaction, Component parent) {
         initComponents();
         this.reaction = reaction;
+        this.parent= parent;
         init();
     }
 
@@ -93,18 +96,21 @@ public class ReactionEditor extends javax.swing.JPanel {
         GuessCommandBox emptyBox = new GuessCommandBox(this);
         addBox(emptyBox);
         this.validate();
+        this.parent.validate();
     }
 
     private void addBox(GuessCommandBox box) {
         cmdBox.add(box);
         list.add(box);
         this.validate();
+        this.parent.validate();
     }
 
     private void removeBox(GuessCommandBox box) {
         cmdBox.remove(box);
         list.remove(box);
         this.validate();
+        this.parent.validate();
     }
 
     /**

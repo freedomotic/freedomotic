@@ -63,14 +63,14 @@ public class ReactionsPanel extends JPanel {
                 int pos = 0;
                 for (Reaction r : ReactionPersistence.getReactions()) {
                     if (r.getTrigger().equals(trigger) && !r.getCommands().isEmpty()) {
-                        ReactionEditor editor = new ReactionEditor(r);
+                        ReactionEditor editor = new ReactionEditor(r,this);
                         panel.add(editor,pos++);
                         found = true;
                     }
                 }
                 if (!found) {//add an empty reaction if none
                     pos = panel.getComponentCount();
-                    ReactionEditor editor = new ReactionEditor(new Reaction(trigger));
+                    ReactionEditor editor = new ReactionEditor(new Reaction(trigger),this);
                     panel.add(editor,pos++);
                 }
                 panel.add (new JSeparator(),pos);
@@ -99,13 +99,13 @@ public class ReactionsPanel extends JPanel {
                     //display already stored reactions related to this objects
                     for (Reaction r : ReactionPersistence.getReactions()) {
                         if (r.getTrigger().equals(trigger)) {
-                            ReactionEditor editor = new ReactionEditor(r);
+                            ReactionEditor editor = new ReactionEditor(r,this);
                             panel.add(editor);
                             alreadyStored = true;
                         }
                     }
                     if (!alreadyStored) { //add an empty reaction if none
-                        ReactionEditor editor = new ReactionEditor(new Reaction(trigger));
+                        ReactionEditor editor = new ReactionEditor(new Reaction(trigger),this);
                         panel.add(editor);
                     }
                 }

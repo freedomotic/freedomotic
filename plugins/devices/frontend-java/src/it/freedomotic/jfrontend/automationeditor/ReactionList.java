@@ -80,13 +80,13 @@ public final class ReactionList extends javax.swing.JFrame {
                 boolean found = false;
                 for (Reaction r : ReactionPersistence.getReactions()) {
                     if (r.getTrigger().equals(trigger)) {
-                        ReactionEditor editor = new ReactionEditor(r);
+                        ReactionEditor editor = new ReactionEditor(r,this);
                         panel.add(editor);
                         found = true;
                     }
                 }
                 if (!found) {//add an empty reaction if none
-                    ReactionEditor editor = new ReactionEditor(new Reaction(trigger));
+                    ReactionEditor editor = new ReactionEditor(new Reaction(trigger),this);
                     panel.add(editor);
                 }
                 panel.add(new JSeparator());
