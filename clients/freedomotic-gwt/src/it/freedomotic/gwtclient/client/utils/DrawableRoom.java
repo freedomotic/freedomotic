@@ -1,5 +1,6 @@
 package it.freedomotic.gwtclient.client.utils;
 
+import it.freedomotic.gwtclient.client.Freedomotic;
 import it.freedomotic.model.environment.Zone;
 
 import java.awt.Color;
@@ -23,7 +24,7 @@ public class DrawableRoom extends DrawableElement{
 	String textureName;
 	private Rectangle2D  bounds;
 	//TODO: create global CONSTANTS for all restapi paths
-	public static final String TEXTURE_PATH = "v1/environment/resources/";
+	public static final String TEXTURE_PATH = Freedomotic.RESOURCES_URL;
 	CanvasPattern cp;
 	//If true the room is renderer and filled with the pattern
 	private boolean fillRoom= false;

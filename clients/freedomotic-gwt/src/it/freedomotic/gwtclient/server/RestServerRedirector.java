@@ -17,10 +17,10 @@ public class RestServerRedirector extends Application {
 		String restapihost = getContext().getParameters().getFirstValue("restapi.host","localhost");
 		String restapiport = getContext().getParameters().getFirstValue("restapi.port","8111");
 				
-		String target = "http://"+restapihost+":"+restapiport+"/v1{rr}";
+		String target = "http://"+restapihost+":"+restapiport+"/v2{rr}";
 		router.setDefaultMatchingMode(Template.MODE_STARTS_WITH);
 		Redirector redirector = new Redirector(getContext(),target, Redirector.MODE_SERVER_OUTBOUND);
-		router.attach("/v1", redirector);
+		router.attach("/v2", redirector);
 		router.attach("/", new Directory(getContext(), "war:///"));
 		return  router;
 	};
@@ -28,10 +28,10 @@ public class RestServerRedirector extends Application {
 	public void createRedirector(String ip)
 	{				
 		System.out.println("creating redirector: "+ ip);
-		String target = "http://"+ip+"8111/v1{rr}";		
+		String target = "http://"+ip+"8111/v2{rr}";		
 		Redirector redirector = new Redirector(getContext(),target, Redirector.MODE_SERVER_OUTBOUND);
 //		router.attach("/v1", redirector);
-		((Router)getInboundRoot()).attach("/v1", redirector);
+		((Router)getInboundRoot()).attach("/v2", redirector);
 		System.out.println("Finishing redirector");
 	}
 	

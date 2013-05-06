@@ -1,47 +1,28 @@
 package it.freedomotic.gwtclient.client;
 
-import java.util.Date;
-
-import org.restlet.client.Client;
-import org.restlet.client.Context;
-import org.restlet.client.Request;
-import org.restlet.client.Response;
-import org.restlet.client.Uniform;
-import org.restlet.client.representation.StringRepresentation;
-import org.restlet.client.resource.ClientResource;
-import org.restlet.client.resource.Result;
-import org.restlet.data.Protocol;
-import org.vectomatic.dom.svg.OMSVGRect;
-import org.vectomatic.dom.svg.OMSVGSVGElement;
-import org.vectomatic.dom.svg.ui.ExternalSVGResource;
-import org.vectomatic.dom.svg.ui.SVGImage;
-import org.vectomatic.dom.svg.ui.SVGResource;
-
-import it.freedomotic.gwtclient.client.api.EnvironmentController;
-import it.freedomotic.gwtclient.client.api.proxies.FreedomoticUrlResourceProxy;
+import it.freedomotic.gwtclient.client.api.EnvironmentsController;
 import it.freedomotic.gwtclient.client.widgets.ConfigurationDialog;
 import it.freedomotic.gwtclient.client.widgets.FloorPlanWidget;
 import it.freedomotic.gwtclient.client.widgets.OkCancelDialogCallback;
 
+import java.util.Date;
+
+import org.vectomatic.dom.svg.OMSVGRect;
+import org.vectomatic.dom.svg.OMSVGSVGElement;
+import org.vectomatic.dom.svg.ui.SVGImage;
+import org.vectomatic.dom.svg.ui.SVGResource;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ResourceCallback;
-import com.google.gwt.resources.client.ResourceException;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
@@ -55,7 +36,11 @@ public class Freedomotic implements EntryPoint {
 	private static final String SERVER_ERROR = "An error occurred while "
 			+ "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
-
+	
+	public static final String RESOURCES_URL = "v2/resources/";
+	public static final String OBJECTS_URL = "v2/objects/";
+	
+	
 	interface Images extends ClientBundle {		
 		@Source("resources/background.png")
 		@ImageOptions(repeatStyle = RepeatStyle.Both)
@@ -164,11 +149,11 @@ public class Freedomotic implements EntryPoint {
 
 	public void init() {							
 		//TODO: check the format of the brokerip
-		EnvironmentController.getInstance().setBrokerIp(brokerIp);
+		EnvironmentsController.getInstance().setBrokerIp(brokerIp);
 		// retrieve data from the restapi
-		EnvironmentController.getInstance().prepareRestResource();
-		EnvironmentController.getInstance().retrieve();
-		EnvironmentController.getInstance().initStomp();
+		EnvironmentsController.getInstance().prepareRestResource();
+		EnvironmentsController.getInstance().retrieve();
+		EnvironmentsController.getInstance().initStomp();
 
 	}
 }

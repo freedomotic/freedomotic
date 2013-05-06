@@ -1,5 +1,6 @@
 package it.freedomotic.gwtclient.client.utils;
 
+import it.freedomotic.gwtclient.client.Freedomotic;
 import it.freedomotic.gwtclient.client.widgets.EnvObjectProperties;
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.object.EnvObject;
@@ -28,7 +29,7 @@ public class DrawableObject extends DrawableElement{
 //	private Paint ghostPaint= new Paint();
 	//current scale/rotate matrix of the object
 //	Matrix drawingMatrix = new Matrix();
-	public static final String OBJECT_PATH = "v1/environment/resources/";	
+	public static final String OBJECT_PATH = Freedomotic.RESOURCES_URL;	
 	EnvObjectProperties eop;
 	public DrawableObject(EnvObject envObject)
 	{

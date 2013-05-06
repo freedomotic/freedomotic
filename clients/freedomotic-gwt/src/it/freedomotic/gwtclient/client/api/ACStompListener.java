@@ -19,7 +19,7 @@ public class ACStompListener implements MessageListener {
 	@Override
 	public void onMessage(Message message) {
 		GWT.log("Received message: " + message);		
-		EnvironmentController.message(message.getBody());
+		EnvironmentsController.message(message.getBody());
 	}
 
 }

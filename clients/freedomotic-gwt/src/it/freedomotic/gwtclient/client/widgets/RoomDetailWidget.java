@@ -5,7 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import it.freedomotic.gwtclient.client.api.EnvironmentController;
+import it.freedomotic.gwtclient.client.api.EnvironmentsController;
 import it.freedomotic.gwtclient.client.utils.DrawableElement;
 import it.freedomotic.gwtclient.client.utils.DrawableObject;
 import it.freedomotic.gwtclient.client.utils.DrawableRoom;
@@ -81,7 +81,7 @@ public class RoomDetailWidget  {
 	}
 
 	public void init() {
-		Environment env = EnvironmentController.getInstance().getEnvironment();
+		Environment env = EnvironmentsController.getInstance().getEnvironments().get(0);
 		GWT.log("Zone id: " + id);
 		
 		for (Zone z : env.getZones()) {
