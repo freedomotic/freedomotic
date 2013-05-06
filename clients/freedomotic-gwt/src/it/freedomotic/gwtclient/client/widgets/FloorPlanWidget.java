@@ -1,6 +1,7 @@
 package it.freedomotic.gwtclient.client.widgets;
 
-import it.freedomotic.gwtclient.client.api.EnvironmentController;
+import it.freedomotic.gwtclient.client.Freedomotic;
+import it.freedomotic.gwtclient.client.api.EnvironmentsController;
 import it.freedomotic.gwtclient.client.utils.DrawableElement;
 import it.freedomotic.gwtclient.client.utils.DrawableObject;
 import it.freedomotic.gwtclient.client.utils.DrawableRoom;
@@ -180,16 +181,16 @@ public class FloorPlanWidget {
 	}
 	void initializeData()
 	{
-		if (EnvironmentController.getInstance().HasData())
+		if (EnvironmentsController.getInstance().HasData())
 			{
-				environment = EnvironmentController.getInstance().getEnvironment();
+				environment = EnvironmentsController.getInstance().getEnvironments().get(0);
 				FreedomPolygon poly = environment.getShape();
 				envPath = DrawingUtils.freedomPolygonToPath(poly);				
 				ENVIRONMENT_WIDTH = environment.getWidth();
 				ENVIRONMENT_HEIGHT = environment.getHeight();
 			
 								
-				ImageUtils.queueImage("v1/environment/resources/"+environment.getBackgroundImage());
+				ImageUtils.queueImage(Freedomotic.RESOURCES_URL+environment.getBackgroundImage());
 				// create all drawingrooms
 				for (Zone r : environment.getZones()) {					
 					if( r.isRoom())
@@ -259,9 +260,9 @@ public class FloorPlanWidget {
 	}
 	public void prepareBackground()
 	{
-		if (ImageUtils.CachedImages.containsKey("v1/environment/resources/"+environment.getBackgroundImage()))
+		if (ImageUtils.CachedImages.containsKey(Freedomotic.RESOURCES_URL+environment.getBackgroundImage()))
     	{
-			Image im =ImageUtils.CachedImages.get("v1/environment/resources/"+environment.getBackgroundImage());
+			Image im =ImageUtils.CachedImages.get(Freedomotic.RESOURCES_URL+environment.getBackgroundImage());
 			ImageElement ie = ImageElement.as(im.getElement());
 			//ghostBitmap =Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(),Config.ARGB_8888);
 			//im.setVisible(true);								

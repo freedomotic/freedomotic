@@ -1,6 +1,6 @@
 package it.freedomotic.gwtclient.client.api;
 
-import it.freedomotic.gwtclient.client.api.proxies.EnvironmentResourceProxy;
+import it.freedomotic.gwtclient.client.api.proxies.EnvironmentsResourceProxy;
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.environment.Zone;
 import it.freedomotic.model.object.Behavior;
@@ -28,28 +28,20 @@ import com.google.gwt.view.client.ListDataProvider;
 
 /**
  * @author gpt
- * Class that stores a Environment object synched with the freedomotic core
+ * Class that stores a Environments Listobject synched with the freedomotic core
  * 
  */
-/**
- * @author gpt
- *
- */
-/**
- * @author gpt
- *
- */
-public class EnvironmentController {
+public class EnvironmentsController {
 
 	public static final int STOMP_ERROR = 0;
 	public static final int REST_ERROR = 1;
 	public static final int CONNECTED= 2;
-	public static final String ROOT_URL= "/gwt_client/v1";
-	public static final String ENVIRONMENT_REFERENCE = "v1/environment/";
+	public static final String ROOT_URL= "/gwt_client/v2";
+	public static final String ENVIRONMENTS_REFERENCE = "v2/environments/";
 	
-	private static EnvironmentController INSTANCE=null;  //Singleton reference
-	private static EnvironmentResourceProxy environmentResource;			
-	private Environment environment;
+	private static EnvironmentsController INSTANCE=null;  //Singleton reference
+	private static EnvironmentsResourceProxy environmentsResource;			
+	private ArrayList<Environment> environments;
 	private ArrayList<Zone> rooms;
 	private boolean hasData= false;
 	
@@ -69,17 +61,17 @@ public class EnvironmentController {
 	private ListDataProvider<Zone> zoneDataProvider = new ListDataProvider<Zone>();
 	  
 	 // Private constructor suppresses 
-    private EnvironmentController() {    		
+    private EnvironmentsController() {    		
     }
  
     // Sync creator to avoid multi-thread problems
     private static void createInstance() {
         if (INSTANCE == null) { 
-            INSTANCE = new EnvironmentController();
+            INSTANCE = new EnvironmentsController();
         }
     }
  
-    public static EnvironmentController getInstance() {
+    public static EnvironmentsController getInstance() {
         if (INSTANCE == null) createInstance();
         return INSTANCE;
     }
@@ -98,9 +90,9 @@ public class EnvironmentController {
      */
     public static boolean prepareRestResource()
     {
-    	environmentResource = GWT.create(EnvironmentResourceProxy.class);
+    	environmentsResource = GWT.create(EnvironmentsResourceProxy.class);
 		// Set up the environment resource
-    	environmentResource.getClientResource().setReference(ENVIRONMENT_REFERENCE);    	   
+    	environmentsResource.getClientResource().setReference(ENVIRONMENTS_REFERENCE);    	   
         //TODO: Find how to check the configuration
         return true; 
     }
@@ -192,25 +184,28 @@ public class EnvironmentController {
 	{		
     	// Retrieve the environment
 		GWT.log("retrieve data");
-    	environmentResource.retrieve(new Result<Environment>() {
+    	environmentsResource.retrieve(new Result<ArrayList<Environment>>() {
 		    public void onFailure(Throwable caught) {
 		        //TODO: Handle the error
 		    }		   
 			@Override
-			public void onSuccess(Environment result) {
+			public void onSuccess(ArrayList<Environment> result) {
 				GWT.log("retrieve data: success");
-				environment = result;
+				environments = result;
 				hasData =true;
 				rooms= new ArrayList<Zone>();
 				freedomObjectsDictionary = new HashMap<String, EnvObject>();
-				for(Zone z: getEnvironment().getZones())
+				for (Environment e: getEnvironments())
 				{
-					if (z.isRoom())
+					for(Zone z: e.getZones())
 					{
-						rooms.add(z);
+						if (z.isRoom())
+						{
+							rooms.add(z);
+						}
+						for (EnvObject obj: z.getObjects())
+							freedomObjectsDictionary.put(obj.getName(), obj);
 					}
-					for (EnvObject obj: z.getObjects())
-						freedomObjectsDictionary.put(obj.getName(), obj);
 				}
 				//roomsSize=rooms.size();
 																			
@@ -263,7 +258,7 @@ public class EnvironmentController {
 	 */
 	public static void message(String message) {   		
 		Payload payload = FreedomoticStompHelper.parseMessage(message);
-		final EnvObject obj = EnvironmentController.getInstance().getObject(payload.getStatements("object.name").get(0).getValue());
+		final EnvObject obj = EnvironmentsController.getInstance().getObject(payload.getStatements("object.name").get(0).getValue());
 //	//TODO: This way is not very efficient, as we are ignoring the message and retrieving the data again.
 //		ObjectResourceProxy objectResource;		
 //		final EnvObject new_obj; 	
@@ -345,9 +340,10 @@ public class EnvironmentController {
 		return hasData;
 	}
 
-	public Environment getEnvironment() {
-		return environment;
-	}
+	public ArrayList<Environment> getEnvironments() {
+		return environments;
+	}	
+	
 	public EnvObject getObject(String objectName)
 	{			
 		return freedomObjectsDictionary.get(objectName);

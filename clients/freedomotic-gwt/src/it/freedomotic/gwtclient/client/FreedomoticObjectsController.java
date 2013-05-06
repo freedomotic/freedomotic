@@ -21,7 +21,7 @@ public class FreedomoticObjectsController {
 	public static final int STOMP_ERROR = 0;
 	public static final int REST_ERROR = 1;
 	public static final int CONNECTED= 2;
-	public static final String ROOT_URL= "/gwt_client/v1"; 
+	public static final String ROOT_URL= "/gwt_client/v2"; 
 	
 	private static FreedomoticObjectsController INSTANCE=null;  //Singleton reference
 	//private Client stompClient;
@@ -65,7 +65,7 @@ public class FreedomoticObjectsController {
     {
     	objectsResource = GWT.create(ObjectsResourceProxy.class);
 		// Set up the contact resource
-		objectsResource.getClientResource().setReference("v1/environment/objects/");    	   
+		objectsResource.getClientResource().setReference("v2/objects/");    	   
         //TODO: Find how to check the configuration
         return true; 
     }

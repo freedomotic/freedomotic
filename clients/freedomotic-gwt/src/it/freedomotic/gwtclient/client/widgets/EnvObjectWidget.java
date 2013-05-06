@@ -1,6 +1,6 @@
 package it.freedomotic.gwtclient.client.widgets;
 
-import it.freedomotic.gwtclient.client.api.EnvironmentController;
+import it.freedomotic.gwtclient.client.api.EnvironmentsController;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.model.object.EnvObject;
@@ -62,7 +62,7 @@ public class EnvObjectWidget extends Composite {
 					public void onBarValueChanged(BarValueChangedEvent event) {
 						// TODO Auto-generated method stub
 						if (((BooleanBehavior) b).getValue()!= Boolean.valueOf(ipSliderBar51OnOff.getValue()!=0))
-							EnvironmentController.changeBehavior(obj.getName(), b.getName(), Boolean.valueOf(ipSliderBar51OnOff.getValue()!=0).toString());
+							EnvironmentsController.changeBehavior(obj.getName(), b.getName(), Boolean.valueOf(ipSliderBar51OnOff.getValue()!=0).toString());
 					}
 				});		
 		
@@ -82,7 +82,7 @@ public class EnvObjectWidget extends Composite {
 					public void onBarValueChanged(BarValueChangedEvent event) {
 						//((RangedIntBehavior) b).setValue(slide.getValue()+rb.getMin());
 						if (((RangedIntBehavior) b).getValue()!= (slide.getValue()+rb.getMin()))
-							EnvironmentController.changeBehavior(obj.getName(), b.getName(), String.valueOf((slide.getValue()+rb.getMin())));	
+							EnvironmentsController.changeBehavior(obj.getName(), b.getName(), String.valueOf((slide.getValue()+rb.getMin())));	
 					}
 				});
 				//verticalPanel.add(slide);	
@@ -104,7 +104,7 @@ public class EnvObjectWidget extends Composite {
 					public void onChange(ChangeEvent event) {
 						//lb.setSelected(lb.get(comboBox.getSelectedIndex()).toString());
 						if (lb.indexOfSelection()!=comboBox.getSelectedIndex())
-							EnvironmentController.changeBehavior(obj.getName(), b.getName(), lb.get(comboBox.getSelectedIndex()).toString()); 					
+							EnvironmentsController.changeBehavior(obj.getName(), b.getName(), lb.get(comboBox.getSelectedIndex()).toString()); 					
 					}
 				});
 				

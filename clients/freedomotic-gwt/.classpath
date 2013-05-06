@@ -12,6 +12,6 @@
 	<classpathentry kind="lib" path="/home/gpt/Desarrollo/freedomotic_test/freedomotic/lib/freedomotic-model.jar"/>
 	<classpathentry kind="lib" path="/home/gpt/Desarrollo/freedomotic_test/freedomotic/plugins/devices/es.gpulido.restapi/lib/RestApiInterfaces.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/GWT"/>
-	<classpathentry kind="lib" path="/home/gpt/Desarrollo/TestGWT/freedomotic/clients/freedomotic-gwt/lib/org.restlet-gwt-2.1.1.jar"/>
+	<classpathentry kind="lib" path="/home/gpt/Desarrollo/freedomotic/clients/freedomotic-gwt/lib/org.restlet-gwt-2.1.1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
