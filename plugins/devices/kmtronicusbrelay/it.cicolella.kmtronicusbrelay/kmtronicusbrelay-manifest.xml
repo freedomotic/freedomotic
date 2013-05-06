@@ -1,0 +1,21 @@
+<config>
+    <properties>
+        <property name="description" value="A plugin for KMronic Usb Relay"/>
+        <property name="category"  value="protocol"/>
+        <property name="protocol.name" value="kmtronicusbrelay"/>
+        <property name="short-name" value="kmtronicusbrelay"/>
+        <property name="time-between-reads" value="1000"/>
+        <property name="relay-number" value="1"/>
+    </properties>
+    <tuples>
+        <tuple>
+            <property name="object.class" value="Light"/>
+            <property name="powered" value="KMTronic reads usb relay state"/>
+            <property name="brightness" value="Simulate a powered change"/>
+            <property name="turn on" value="Turn on a relay on KMTronic usb device"/>
+            <property name="turn off" value="Turn off a relay on KMTronic usb device"/>
+        </tuple>
+    </tuples>
+</config>
+
+                
