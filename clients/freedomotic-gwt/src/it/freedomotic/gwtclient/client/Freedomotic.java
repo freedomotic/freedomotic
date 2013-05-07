@@ -2,8 +2,10 @@ package it.freedomotic.gwtclient.client;
 
 import it.freedomotic.gwtclient.client.api.EnvironmentsController;
 import it.freedomotic.gwtclient.client.widgets.ConfigurationDialog;
+import it.freedomotic.gwtclient.client.widgets.EnvListBox;
 import it.freedomotic.gwtclient.client.widgets.FloorPlanWidget;
 import it.freedomotic.gwtclient.client.widgets.OkCancelDialogCallback;
+import it.freedomotic.model.environment.Environment;
 
 import java.util.Date;
 
@@ -15,6 +17,8 @@ import org.vectomatic.dom.svg.ui.SVGResource;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
@@ -22,6 +26,7 @@ import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -70,7 +75,7 @@ public class Freedomotic implements EntryPoint {
 		
 		DockLayoutPanel myDockLayoutPanel = new DockLayoutPanel(Unit.EM);
 		// draw the environment
-		FloorPlanWidget floorPlan = new FloorPlanWidget(myDockLayoutPanel);
+		FloorPlanWidget floorPlan = new FloorPlanWidget(myDockLayoutPanel,null);
 		RootLayoutPanel rootPanel = RootLayoutPanel.get();
 
 		SimplePanel greenLateralPanel = new SimplePanel();
@@ -100,7 +105,7 @@ public class Freedomotic implements EntryPoint {
 		logoPanel.add(myImage);
 		logoPanel.setStyleName("header_panel");			
 		myDockLayoutPanel.addNorth(logoPanel, 10.7);		
-		
+		myDockLayoutPanel.addNorth(new EnvListBox(floorPlan), 2);
 		SimplePanel footerPanel = new SimplePanel();
 		footerPanel.setStyleName("header_panel");
 		myDockLayoutPanel.addSouth(footerPanel, 4);

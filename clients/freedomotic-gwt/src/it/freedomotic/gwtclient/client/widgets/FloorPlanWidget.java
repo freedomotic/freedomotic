@@ -53,7 +53,7 @@ public class FloorPlanWidget {
 //	WebGraphics environmentShadowPaint;
 	
 	//GPT private static EnvironmentResourceProxy environmentResource;		
-	public static Environment environment;	
+	public static Environment environment = null;	
 	ArrayList<DrawableRoom> drawingRooms = new ArrayList<DrawableRoom>();
 	ArrayList<DrawableObject> drawingObjects = new ArrayList<DrawableObject>();
 	ArrayList<DrawableObject> objectsShowingBehaviors = new ArrayList<DrawableObject>(); 
@@ -84,14 +84,49 @@ public class FloorPlanWidget {
 	private double mPosY;
 	private DockLayoutPanel parent;
     
-	public FloorPlanWidget(DockLayoutPanel parent)  {
+	public FloorPlanWidget(DockLayoutPanel parent, Environment env)  {
 		this.parent = parent;
+		environment= env;
+		initCanvas();
+			
+		// setup timer
+		final Timer timer = new Timer() {
+			@Override
+			public void run() {
+				if (dataInitialized)
+					draw();
+				else
+				{
+					initializeData();
+					fitToScreen();
+				}
+			}
+		};
+		timer.scheduleRepeating(refreshRate);
+		
+		Window.addResizeHandler(new ResizeHandler() {
+			
+			@Override
+			public void onResize(ResizeEvent event) {
+				// TODO Auto-generated method stub
+				GWT.log("resized");
+				GWT.log("parentHeight: "+canvas.getParent().getOffsetHeight());
+				GWT.log("parentWidth: "+canvas.getParent().getOffsetWidth());
+			}
+		});
+		
+		
+	}
+	
+	void initCanvas(){
 		canvas = Canvas.createIfSupported();
 		canvas.setWidth(CANVAS_WIDTH + "px");
 		canvas.setHeight(CANVAS_HEIGHT + "px");
 		canvas.setCoordinateSpaceWidth(CANVAS_WIDTH);
 		canvas.setCoordinateSpaceHeight(CANVAS_HEIGHT);		
 		ctx = canvas.getContext2d();
+		
+		
 		canvas.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -150,46 +185,22 @@ public class FloorPlanWidget {
 		ghostCanvas.setCoordinateSpaceWidth(CANVAS_WIDTH);
 		ghostCanvas.setCoordinateSpaceHeight(CANVAS_HEIGHT);
 		gctx = ghostCanvas.getContext2d();
-	
-		// setup timer
-		final Timer timer = new Timer() {
-			@Override
-			public void run() {
-				if (dataInitialized)
-					draw();
-				else
-				{
-					initializeData();
-					fitToScreen();
-				}
-			}
-		};
-		timer.scheduleRepeating(refreshRate);
-		
-		Window.addResizeHandler(new ResizeHandler() {
-			
-			@Override
-			public void onResize(ResizeEvent event) {
-				// TODO Auto-generated method stub
-				GWT.log("resized");
-				GWT.log("parentHeight: "+canvas.getParent().getOffsetHeight());
-				GWT.log("parentWidth: "+canvas.getParent().getOffsetWidth());
-			}
-		});
-		
-		
 	}
+	
 	void initializeData()
-	{
+	{	
 		if (EnvironmentsController.getInstance().HasData())
 			{
-				environment = EnvironmentsController.getInstance().getEnvironments().get(0);
+		    if (environment == null) environment = EnvironmentsController.getInstance().getEnvironments().get(0);
+				
 				FreedomPolygon poly = environment.getShape();
 				envPath = DrawingUtils.freedomPolygonToPath(poly);				
 				ENVIRONMENT_WIDTH = environment.getWidth();
 				ENVIRONMENT_HEIGHT = environment.getHeight();
-			
-								
+				
+				drawingRooms.clear();
+				drawingObjects.clear();
+				objectsIndex.clear();
 				ImageUtils.queueImage(Freedomotic.RESOURCES_URL+environment.getBackgroundImage());
 				// create all drawingrooms
 				for (Zone r : environment.getZones()) {					
@@ -209,6 +220,7 @@ public class FloorPlanWidget {
 						}
 					}
 				}
+				//this.parent.addNorth(new EnvListBox(this), 4);
 				dataInitialized = true;
 			}
 			
@@ -358,6 +370,16 @@ public class FloorPlanWidget {
 		  mPosX = 0;//MARGIN;
 		  mPosY = 0;//MARGIN;
 
+	  }
+	  
+	  public void setEnvironment(String envUUID){
+		  for (Environment env : EnvironmentsController.getInstance().getEnvironments() ){
+			  if (env.getUUID().equals(envUUID)){
+				  environment = env;
+				  this.dataInitialized = false;
+				  break;
+			  }
+		  }
 	  }
     
 }

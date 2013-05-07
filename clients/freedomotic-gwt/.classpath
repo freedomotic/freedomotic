@@ -9,9 +9,9 @@
 	<classpathentry kind="lib" path="lib/org.restlet.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-slider-bar-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/lib-gwt-svg-0.5.6.jar"/>
-	<classpathentry kind="lib" path="/home/gpt/Desarrollo/freedomotic_test/freedomotic/lib/freedomotic-model.jar"/>
-	<classpathentry kind="lib" path="/home/gpt/Desarrollo/freedomotic_test/freedomotic/plugins/devices/es.gpulido.restapi/lib/RestApiInterfaces.jar"/>
+	<classpathentry kind="lib" path="../../framework/freedomotic/dist/lib/freedomotic-model.jar"/>
+	<classpathentry kind="lib" path="../../plugins/devices/restapi/es.gpulido.restapi/lib/RestApiInterfaces.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/GWT"/>
-	<classpathentry kind="lib" path="/home/gpt/Desarrollo/freedomotic/clients/freedomotic-gwt/lib/org.restlet-gwt-2.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/org.restlet-gwt-2.1.1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
