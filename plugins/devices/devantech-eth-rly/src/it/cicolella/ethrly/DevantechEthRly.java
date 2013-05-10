@@ -1,3 +1,21 @@
+/*
+ Copyright FILE Mauro Cicolella, 2013
+
+ This file is part of FREEDOMOTIC.
+
+ FREEDOMOTIC is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ FREEDOMOTIC is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package it.cicolella.ethrly;
 
 import it.freedomotic.api.EventTemplate;
@@ -31,11 +49,6 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import org.apache.commons.codec.binary.Base64;
 
-/**
- * A plugin for the relay boards by Devantech Ltd http://www.devantech.co.uk/
- * Author Mauro Cicolella - www.emmecilab.net
- *
- */
 public class DevantechEthRly extends Protocol {
 
     Map<String, Board> devices = new HashMap<String, Board>();

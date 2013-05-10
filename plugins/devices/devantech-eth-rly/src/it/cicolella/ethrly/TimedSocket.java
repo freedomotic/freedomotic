@@ -1,3 +1,22 @@
+/*
+ Copyright FILE Mauro Cicolella, 2013
+
+ This file is part of FREEDOMOTIC.
+
+ FREEDOMOTIC is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ FREEDOMOTIC is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package it.cicolella.ethrly;
 
 import java.net.*;
@@ -81,22 +100,6 @@ public class TimedSocket {
         return getSocket(inetAddr, port, delay);
     }
 
-    /*public static void main(String args[]) throws Exception
-    {
-    try
-    {
-    //InetAddress addr = InetAddress.getByName("192.168.0.3");
-    //Socket s = TimedSocket.getSocket (addr, 80, 5000);
-    Socket s = TimedSocket.getSocket ("192.168.0.3", 80, 5000);
-    s.close();
-    System.out.println ("connected");
-    }
-    catch (IOException ioe)
-    {
-    System.out.println ("time out");
-    }
-
-    }*/
     // Inner class for establishing a socket thread
     // within another thread, to prevent blocking.
     static class SocketThread extends Thread {
