@@ -1,4 +1,5 @@
 <config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
     <properties>
         <property name="description"    value="Communicates with TCW122B-CM board"/>
         <property name="protocol.name"  value="tcw122bcm"/>
@@ -23,6 +24,7 @@
         <property name="password" value="admin"/>
      </properties>
     <tuples>
+        <!-- DEVICES CONFIGURATION -->
         <tuple>
             <property name="alias" value="board1"/>
             <property name="ip-to-query" value="192.168.1.2"/>
