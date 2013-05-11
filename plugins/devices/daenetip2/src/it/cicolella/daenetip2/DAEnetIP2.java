@@ -1,7 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ Copyright FILE Mauro Cicolella, 2012-2013
+
+ This file is part of FREEDOMOTIC.
+
+ FREEDOMOTIC is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ FREEDOMOTIC is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package it.cicolella.daenetip2;
 
 import com.adventnet.snmp.snmp2.SnmpAPI;
@@ -30,12 +45,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-/**
- * A sensor for the DAEneIP2 board by denkovi.com Author Mauro Cicolella For
- * more details please refer to
- * http://www.denkovi.com/product/8/snmp-ethernet-controller-with-24-digital-analog-i-o.html
- *
- */
 public class DAEnetIP2 extends Protocol {
 
     //private static ArrayList<Board> boards = null;

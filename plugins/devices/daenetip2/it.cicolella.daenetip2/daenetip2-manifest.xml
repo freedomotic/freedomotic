@@ -1,4 +1,5 @@
 <config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
     <properties>
         <property name="description"    value="Communicates with DAEnetIP2 board"/>
         <property name="protocol.name"  value="daenetip2"/>
@@ -15,7 +16,8 @@
         <property name="p5-status-oid" value="1.2.2.33.0"/>
      </properties>
     <tuples>
-        <tuple>
+        <!-- DEVICES CONFIGURATION -->
+         <tuple>
             <property name="alias" value="board1"/>
             <property name="ip-address" value="172.16.100.2"/>
             <property name="snmp-port" value="161"/>
