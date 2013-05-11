@@ -1,4 +1,5 @@
 <config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
     <properties>
         <property name="description"    value="Communicates with Openpicus Grove Nest board"/>
         <property name="protocol.name"  value="openpicus-grove-system"/>
