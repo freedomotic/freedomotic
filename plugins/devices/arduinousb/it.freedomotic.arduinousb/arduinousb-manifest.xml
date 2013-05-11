@@ -1,4 +1,5 @@
 <config>
+    <!-- PLUGINS DEFAULT PARAMETERS --> 
     <properties>
         <property name="name" value="arduinousb"/>
         <property name="description" value="It is a arduinousb"/>
