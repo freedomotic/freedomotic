@@ -463,8 +463,6 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         jLabel5.setText("Height:");
 
-        environmentComboBox.setSelectedItem(object.getEnv());
-
         jLabel6.setText(i18n.msg("environment") + ":");
 
         javax.swing.GroupLayout tabRepresentationLayout = new javax.swing.GroupLayout(tabRepresentation);
@@ -900,6 +898,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         for (EnvironmentLogic env: EnvironmentPersistence.getEnvironments()){
         environmentComboBox.addItem(env);
         }
+        environmentComboBox.setSelectedItem(object.getEnv());
     }
 
     private void populateMultiselectionList(BehaviorLogic b) {
