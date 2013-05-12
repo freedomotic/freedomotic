@@ -23,10 +23,13 @@ import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.EnvironmentPersistence;
+import it.freedomotic.environment.Room;
 import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.model.environment.Zone;
 import it.freedomotic.model.object.EnvObject;
+import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Payload;
@@ -56,6 +59,7 @@ public class RoomEvents extends Protocol {
     protected void onStart() {
         Freedomotic.logger.info("RoomEvents plugin is started");
         this.setDescription("Started");
+        addEnvCommands();
         addRoomCommands();
     }
 
@@ -87,7 +91,19 @@ public class RoomEvents extends Protocol {
                 }
             }
 
-        } else {
+        } else if (command.equals("Turn off area devices")) {
+            for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+                if (env.getPojo().getName().equals(address[2])) {
+                    for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(env.getPojo().getUUID())) {
+                        if (obj.getPojo().getType().startsWith(c.getProperty("devType"))) {
+                            Command c2 = CommandPersistence.getCommand("Turn off " + obj.getPojo().getName());
+                            if (c2 != null) {
+                                Freedomotic.sendCommand(c2);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -103,12 +119,13 @@ public class RoomEvents extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private void notifyRoomStatus(Zone z) {
-        ProtocolRead event = new ProtocolRead(this, "roomevent", z.getName());
+    private void notifyRoomStatus(Room z) {
+        ProtocolRead event = new ProtocolRead(this, "roomevent", z.getPojo().getName());
         //   Freedomotic.logger.info(event.toString());
         int numLightsOn = 0;
         int totLights = 0;
-        for (EnvObject obj : z.getObjects()) {
+        String roomName = z.getPojo().getName();
+        for (EnvObject obj : z.getPojo().getObjects()) {
             if (obj.getType().equalsIgnoreCase("EnvObject.ElectricDevice.Light")) {
                 totLights++;
                 if (obj.getCurrentRepresentationIndex() == 1) {
@@ -129,10 +146,10 @@ public class RoomEvents extends Protocol {
 
 
             event.addProperty("hasLightsOn", amount);
-            event.addProperty("roomName", z.getName());
+            event.addProperty("roomName", roomName);
             this.notifyEvent(event);
             // add and register this 
-            String triggerName = "Room " + z.getName() + " has " + amount + " lights On";
+            String triggerName = "Room " + roomName + " has " + amount + " lights On";
             Trigger t = TriggerPersistence.getTrigger(triggerName);
             if (t == null) {
                 t = new Trigger();
@@ -140,7 +157,7 @@ public class RoomEvents extends Protocol {
                 t.setChannel(event);
                 Payload p = new Payload();
                 p.addStatement("hasLightsOn", amount);
-                p.addStatement("roomName", z.getName());
+                p.addStatement("roomName", roomName);
                 t.setPayload(p);
 
                 TriggerPersistence.addAndRegister(t);
@@ -177,7 +194,32 @@ public class RoomEvents extends Protocol {
             }
         }
     }
-    //with this annotation a custom method can receive all events published on the channel in the argument
+
+    private void addEnvCommands() {
+        String cmdName;
+        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+            cmdName = "Turn off devices inside area " + env.getPojo().getName();
+            Command c = CommandPersistence.getCommand(cmdName);
+            if (c != null) {
+                CommandPersistence.remove(c);
+            }
+            c = new Command();
+            c.setReceiver("app.actuators.logging.roomevents.in");
+            c.setName(cmdName);
+            c.setDescription(cmdName);
+            c.setProperty("address", "env:area:" + env.getPojo().getName());
+            c.setProperty("command", "Turn off area devices");
+            c.setProperty("devType", "EnvObject.ElectricDevice");
+            HashSet<String> tags = new HashSet<String>();
+            tags.add("turn");
+            tags.add("off");
+            tags.add("area");
+            tags.add("devices");
+            tags.add(env.getPojo().getName());
+            c.setTags(tags);
+            CommandPersistence.add(c);
+        }
+    }
 
     @ListenEventsOn(channel = "app.event.sensor.object.behavior.change")
     public void onObjectStateChanges(EventTemplate event) {
@@ -188,20 +230,18 @@ public class RoomEvents extends Protocol {
 
         boolean found = false;
         for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
-            for (Zone z : env.getPojo().getZones()) {
-                if (z.isRoom()) {
-                    for (EnvObject obj : z.getObjects()) {
+            for (Room z : env.getRooms()) {
+                    for (EnvObject obj : z.getPojo().getObjects()) {
                         if (obj.getName().equalsIgnoreCase(objName)) {
                             found = true;
                             break;
                         }
-                    }
                 }
                 if (found) {
                     notifyRoomStatus(z);
                     break;
                 }
             }
-        }
+        }  
     }
 }
