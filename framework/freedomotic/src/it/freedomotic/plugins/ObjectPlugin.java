@@ -5,6 +5,7 @@
 package it.freedomotic.plugins;
 
 import it.freedomotic.api.Client;
+import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
@@ -97,5 +98,10 @@ public class ObjectPlugin implements Client {
     @Override
     public Config getConfiguration() {
         return new Config();
+    }
+    
+    public void startOnEnv(EnvironmentLogic env){
+        EnvObjectLogic obj = EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
+        obj.setEnv(env);
     }
 }

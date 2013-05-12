@@ -29,8 +29,10 @@ public final class PluginJList extends JList {
     private String filter;
     public boolean inDrag = false;
     public int dragged = 0;
+    private Component parent;
 
-    public PluginJList() {
+    public PluginJList(final Component parent) {
+        this.parent = parent;
         setFilter("plugin"); //default value for filterning the list
         addMouseListener(new MouseAdapter() {
             @Override
@@ -94,7 +96,11 @@ public final class PluginJList extends JList {
                             update();
                         }
                         if (client.getType().equalsIgnoreCase("object")) {
-                            client.start(); //adds the object to the environment
+                            ObjectPlugin objp = (ObjectPlugin) client;
+                            if (parent instanceof MainWindow) {
+                                MainWindow mw = (MainWindow) parent;
+                                objp.startOnEnv(mw.getDrawer().getCurrEnv()); //adds the object to the environment
+                            }
                         }
                     }
                 });

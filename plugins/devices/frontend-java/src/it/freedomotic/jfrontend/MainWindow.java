@@ -134,7 +134,7 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         setLayout(new BorderLayout());
         desktopPane = new JDesktopPane();
-        lstClients = new PluginJList();
+        lstClients = new PluginJList(this);
         frameClient = new JInternalFrame();
         frameClient.setLayout(new BorderLayout());
         JScrollPane clientScroll = new JScrollPane(lstClients);
