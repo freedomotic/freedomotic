@@ -711,7 +711,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (!roomEditMode) {
+        if (objectEditMode) {
             EnvObjectLogic obj = mouseOnObject(e.getPoint());
             if ((obj == null) && (selectedObject != null)) {
                 removeIndicators();
@@ -726,7 +726,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 }
             }
         } else { //in edit mode but no dragging
-            if (!inDrag) {
+            if (roomEditMode && !inDrag) {
                 Point mouse = toRealCoords(e.getPoint());
                 //create a callot which says the coordinates of click
                 Callout callout = new Callout(this.getClass().getCanonicalName(), "mouse",
