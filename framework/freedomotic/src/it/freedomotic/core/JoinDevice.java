@@ -115,7 +115,7 @@ public final class JoinDevice implements BusConsumer {
                 String protocol = command.getProperty("object.protocol");
                 String address = command.getProperty("object.address");
                 String clazz = command.getProperty("object.class");
-                if (EnvObjectPersistence.getObject(protocol, address).isEmpty()) {
+                if (EnvObjectPersistence.getObjectByAddress(protocol, address).isEmpty()) {
                     join(clazz, name, protocol, address);
                 }
             }
