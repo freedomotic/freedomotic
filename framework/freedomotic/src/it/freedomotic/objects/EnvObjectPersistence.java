@@ -166,7 +166,7 @@ public class EnvObjectPersistence {
      * @param name
      * @return
      */
-    public static EnvObjectLogic getObject(String name) {
+    public static EnvObjectLogic getObjectByName(String name) {
         for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = (EnvObjectLogic) it.next();
             if (object.getPojo().getName().equalsIgnoreCase(name)) {
@@ -175,7 +175,22 @@ public class EnvObjectPersistence {
         }
         return null;
     }
-
+    /**
+     * Gets the object by name
+     *
+     * @param name
+     * @return
+     */
+    public static EnvObjectLogic getObjectByUUID(String uuid) {
+        for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
+            EnvObjectLogic object = (EnvObjectLogic) it.next();
+            if (object.getPojo().getUUID().equalsIgnoreCase(uuid)) {
+                return object;
+            }
+        }
+        return null;
+    }
+    
     /**
      * Gets the object by its address and protocol
      *
@@ -183,7 +198,7 @@ public class EnvObjectPersistence {
      * @param address
      * @return
      */
-    public static ArrayList<EnvObjectLogic> getObject(String protocol, String address) {
+    public static ArrayList<EnvObjectLogic> getObjectByAddress(String protocol, String address) {
         if (protocol == null
                 || address == null
                 || protocol.trim().equalsIgnoreCase("unknown")
@@ -268,12 +283,12 @@ public class EnvObjectPersistence {
             pojoCopy.setPhisicalAddress("unknown");
             pojoCopy.getCurrentRepresentation().getOffset().setX(obj.getPojo().getCurrentRepresentation().getOffset().getX()+30);
             pojoCopy.getCurrentRepresentation().getOffset().setY(obj.getPojo().getCurrentRepresentation().getOffset().getY()+30);
+            pojoCopy.setUUID(UUID.randomUUID().toString());
             envObjectLogic = EnvObjectFactory.create(pojoCopy);
-            envObjectLogic.getPojo().setUUID("");
         }
         envObjectLogic.init();
         if (!objectList.containsValue(envObjectLogic)) {
-            objectList.put(envObjectLogic.getPojo().getName(), envObjectLogic);
+            objectList.put(envObjectLogic.getPojo().getUUID(), envObjectLogic);
             envObjectLogic.setChanged(true);
         } else {
             throw new RuntimeException("Cannot add the same object more than one time");
@@ -282,7 +297,7 @@ public class EnvObjectPersistence {
     }
 
     public static void remove(EnvObjectLogic input) {
-        objectList.remove(input.getPojo().getName());
+        objectList.remove(input.getPojo().getUUID());
         input.setChanged(true); //force repainting on frontends clients
         input.destroy(); //free memory
     }

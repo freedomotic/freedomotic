@@ -115,7 +115,7 @@ public final class BehaviorManager implements BusConsumer {
         //gets the behavior name in the user level command
         String behaviorName = userLevelCommand.getProperty("behavior");
         //gets a reference to an EnvObject using the key 'object' in the user level command
-        EnvObjectLogic obj = EnvObjectPersistence.getObject(userLevelCommand.getProperty("object"));
+        EnvObjectLogic obj = EnvObjectPersistence.getObjectByName(userLevelCommand.getProperty("object"));
 
 
         if (obj != null) { //if the object exists

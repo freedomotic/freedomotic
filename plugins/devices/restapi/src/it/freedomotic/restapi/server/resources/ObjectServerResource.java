@@ -25,7 +25,7 @@ public class ObjectServerResource extends ServerResource implements ObjectResour
     @Override
     public void doInit() {
         name =Reference.decode((String)getRequest().getAttributes().get("name"));                              
-        envObject = EnvObjectPersistence.getObject(name).getPojo();                           
+        envObject = EnvObjectPersistence.getObjectByName(name).getPojo();                           
     }
 
     @Override

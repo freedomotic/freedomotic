@@ -88,7 +88,7 @@ public final class TriggerCheck {
         if (protocol != null && address != null) {
             String clazz = event.getProperty("object.class");
             String name = event.getProperty("object.name");
-            affectedObjects = EnvObjectPersistence.getObject(protocol, address);
+            affectedObjects = EnvObjectPersistence.getObjectByAddress(protocol, address);
             if (affectedObjects.isEmpty()) { //there isn't an object with this protocol and address
                 if (clazz != null && !clazz.isEmpty()) {
                     EnvObjectLogic joined = JoinDevice.join(clazz, name, protocol, address);
@@ -145,7 +145,7 @@ public final class TriggerCheck {
                                     BehaviorManager.parseCommand(resolvedCommand);
                                 } else {
                                     //if the event has a target object we include also object info
-                                    EnvObjectLogic targetObject = EnvObjectPersistence.getObject(event.getProperty("object.name"));
+                                    EnvObjectLogic targetObject = EnvObjectPersistence.getObjectByName(event.getProperty("object.name"));
                                     if (targetObject != null) {
                                         commandResolver.addContext("current.", targetObject.getExposedProperties());
                                         commandResolver.addContext("current.", targetObject.getExposedBehaviors());

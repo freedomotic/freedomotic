@@ -56,7 +56,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     protected static Color BACKGROUND_COLOR = TopologyUtils.convertColorToAWT(EnvironmentPersistence.getEnvironments().get(0).getPojo().getBackgroundColor());
     private EnvObjectLogic selectedObject;
     private ArrayList<Shape> indicators = new ArrayList<Shape>();
-    private HashMap<EnvObjectLogic, Shape> cachedShapes = new HashMap<EnvObjectLogic, Shape>();
+    private HashMap<String, Shape> cachedShapes = new HashMap<String, Shape>();
     private boolean inDrag;
     private boolean roomEditMode = false;
     private ArrayList<Handle> handles = new ArrayList<Handle>();
@@ -524,12 +524,12 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         Shape shape = TopologyUtils.convertToAWT(obj.getShape());
         shape = getTranslatedShape(shape, new Point(x, y));
         shape = getRotatedShape(shape, obj.getCurrentRepresentation().getRotation());
-        cachedShapes.put(object, shape);
+        cachedShapes.put(object.getPojo().getUUID(), shape);
         return shape;
     }
     
     private void rebuildShapesCache() {
-        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectList()) {
+        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
             rebuildShapeCache(obj);
         }
     }
@@ -539,8 +539,8 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     }
     
     protected Shape getCachedShape(EnvObjectLogic obj) {
-        if (cachedShapes.containsKey(obj)) {
-            return cachedShapes.get(obj);
+        if (cachedShapes.containsKey(obj.getPojo().getUUID())) {
+            return cachedShapes.get(obj.getPojo().getUUID());
         } else {
             return applyShapeModifiers(obj);
         }
@@ -634,7 +634,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 handle.setSelected(false);
             }
             //stop dragging an object
-            if (selectedObject != null) {
+            if (objectEditMode && (selectedObject != null)) {
                 Point coords = toRealCoords(e.getPoint());
                 selectedObject.setLocation(
                         (int) (coords.getX() - dragDiff.getWidth()),
@@ -711,7 +711,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (objectEditMode) {
+        if (!roomEditMode) {
             EnvObjectLogic obj = mouseOnObject(e.getPoint());
             if ((obj == null) && (selectedObject != null)) {
                 removeIndicators();
@@ -726,7 +726,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 }
             }
         } else { //in edit mode but no dragging
-            if (roomEditMode && !inDrag) {
+            if (!inDrag) {
                 Point mouse = toRealCoords(e.getPoint());
                 //create a callot which says the coordinates of click
                 Callout callout = new Callout(this.getClass().getCanonicalName(), "mouse",

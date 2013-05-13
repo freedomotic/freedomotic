@@ -84,7 +84,7 @@ public class ListDrawer extends Drawer {
             panel.add(new JLabel("No objects in this zone"));
         }
         for (final EnvObject objPojo : zone.getPojo().getObjects()) {
-            final EnvObjectLogic obj = EnvObjectPersistence.getObject(objPojo.getName());
+            final EnvObjectLogic obj = EnvObjectPersistence.getObjectByUUID(objPojo.getUUID());
             //a coloumn with object name
             JLabel icon = new JLabel(renderSingleObject(obj.getPojo()));
             icon.addMouseListener(new MouseAdapter() {
