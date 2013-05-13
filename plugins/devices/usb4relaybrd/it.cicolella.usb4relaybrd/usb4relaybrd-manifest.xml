@@ -1,4 +1,5 @@
 <config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
     <properties>
         <property name="description" value="A plugin for Usb4RelayBrd"/>
         <property name="category"  value="protocol"/>
