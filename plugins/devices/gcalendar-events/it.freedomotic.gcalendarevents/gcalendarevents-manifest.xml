@@ -1,6 +1,5 @@
-
-
 <config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
     <properties>
         <property name="name" value="Google Calendar UI"/>
         <property name="description" value="Uses Google Calendar to define time based automations"/>
