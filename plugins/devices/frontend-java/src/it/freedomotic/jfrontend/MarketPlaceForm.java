@@ -10,10 +10,12 @@
  */
 package it.freedomotic.jfrontend;
 
+import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.jfrontend.utils.SpringUtilities;
 import it.freedomotic.plugins.AddonLoader;
+import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.service.IPluginCategory;
 import it.freedomotic.service.IPluginPackage;
 import it.freedomotic.service.MarketPlaceService;
@@ -29,6 +31,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -44,8 +48,10 @@ import javax.swing.SwingUtilities;
  */
 public class MarketPlaceForm extends javax.swing.JFrame {
 
-    ArrayList<IPluginPackage> pluginList;
+    //ArrayList<IPluginPackage> pluginList;
     ArrayList<IPluginCategory> pluginCategoryList;
+    private static final IPlugCatComparator CatComp = new IPlugCatComparator();
+    private static final IPlugPackComparator PackComp = new IPlugPackComparator();
 
     /**
      * Creates new form MarketPlaceForm
@@ -69,6 +75,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
 
     public final void retrieveCategories() {
         cmbCategory.setEnabled(false);
+        Collections.sort(pluginCategoryList, CatComp);
         for (IPluginCategory pc : pluginCategoryList) {
             cmbCategory.addItem(pc.getName());
         }
@@ -108,6 +115,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                             if (category.getPlugins() == null) {
                                 return;
                             }
+                            Collections.sort(category.getPlugins(),PackComp);
                             //TODO: use package images.
                             ImageIcon iconPlugin = new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
                             ImageIcon iconCoolPlugin = new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
@@ -276,6 +284,22 @@ public class MarketPlaceForm extends javax.swing.JFrame {
             } catch (Exception e) {
                 System.err.println(e.getMessage());
             }
+        }
+    }
+
+    public static class IPlugCatComparator implements Comparator<IPluginCategory> {
+
+        @Override
+        public int compare(IPluginCategory m1, IPluginCategory m2) {
+            return m1.getName().compareTo(m2.getName());
+        }
+    }
+
+    public static class IPlugPackComparator implements Comparator<IPluginPackage> {
+
+        @Override
+        public int compare(IPluginPackage m1, IPluginPackage m2) {
+            return m1.getTitle().compareTo(m2.getTitle());
         }
     }
 
