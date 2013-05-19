@@ -1,4 +1,4 @@
-#Mon, 06 May 2013 14:40:28 +0200
+#Sun, 19 May 2013 15:35:10 +0200
 
 package.type=device
 package.name=it.cicolella.kmtronicusbrelay
@@ -10,10 +10,10 @@ package.vendor.contact=info@freedomotic.com
 package.vendor.company=freedomotic
 package.vendor.nation=it
 framework.required.major=5
-framework.required.minor=4
+framework.required.minor=5
 framework.required.build=x
 build.major=1
-build.number=37
+build.number=38
 build.create.dist.market=true
 build.create.dist.framework=true
 build.synch.dist=true
