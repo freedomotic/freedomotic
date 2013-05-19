@@ -1,7 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ Copyright FILE Mauro Cicolella, 2012-2013
+
+ This file is part of FREEDOMOTIC.
+
+ FREEDOMOTIC is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ FREEDOMOTIC is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
@@ -9,16 +24,14 @@ import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
 
-/**
- *
- * @author Mauro Cicolella
- */
+
 public class PowerMeter extends ElectricDevice {
 
     private RangedIntBehaviorLogic current;
     private RangedIntBehaviorLogic voltage;
     private RangedIntBehaviorLogic power;
     private RangedIntBehaviorLogic energy;
+    private RangedIntBehaviorLogic powerFactor;
 
     @Override
     public void init() {
@@ -94,6 +107,30 @@ public class PowerMeter extends ElectricDevice {
         });
         //register this behavior to the superclass to make it visible to it
         registerBehavior(power);
+        
+        powerFactor = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior("power-factor"));
+        powerFactor.addListener(new RangedIntBehaviorLogic.Listener() {
+            @Override
+            public void onLowerBoundValue(Config params, boolean fireCommand) {
+                //there is an hardware read error
+            }
+
+            @Override
+            public void onUpperBoundValue(Config params, boolean fireCommand) {
+                //there is as hardware read error
+            }
+
+            @Override
+            public void onRangeValue(int rangeValue, Config params, boolean fireCommand) {
+                if (fireCommand) {
+                    executeSetPowerFactor(rangeValue, params);
+                } else {
+                    setPowerFactor(rangeValue);
+                }
+            }
+        });
+        //register this behavior to the superclass to make it visible to it
+        registerBehavior(powerFactor);
 
         energy = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior("energy"));
         energy.addListener(new RangedIntBehaviorLogic.Listener() {
@@ -166,6 +203,22 @@ public class PowerMeter extends ElectricDevice {
     private void setPower(int value) {
         Freedomotic.logger.config("Setting behavior 'power' of object '" + getPojo().getName() + "' to " + value);
         power.setValue(value);
+        getPojo().setCurrentRepresentation(0);
+        setChanged(true);
+    }
+    
+    public void executeSetPowerFactor(int rangeValue, Config params) {
+        boolean executed = executeCommand("set power-factor", params);
+        if (executed) {
+            powerFactor.setValue(rangeValue);
+            getPojo().setCurrentRepresentation(0);
+            setChanged(true);
+        }
+    }
+
+    private void setPowerFactor(int value) {
+        Freedomotic.logger.config("Setting behavior 'power-factor' of object '" + getPojo().getName() + "' to " + value);
+        powerFactor.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
     }

@@ -59,6 +59,17 @@
       <min>0</min>
       <step>1</step>
     </it.freedomotic.model.object.RangedIntBehavior>
+   <it.freedomotic.model.object.RangedIntBehavior>
+        <name>power-factor</name>
+        <description></description>
+        <active>true</active>
+        <priority>-1</priority>
+        <readOnly>true</readOnly>
+        <value>0</value>
+        <max>100</max>
+        <min>0</min>
+        <step>1</step>
+    </it.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
     <view>
