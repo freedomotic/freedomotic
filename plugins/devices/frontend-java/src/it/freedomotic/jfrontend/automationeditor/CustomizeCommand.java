@@ -19,6 +19,7 @@ import it.freedomotic.jfrontend.utils.PropertiesPanel_1;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.util.i18n;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +52,8 @@ public class CustomizeCommand extends javax.swing.JFrame {
         txtDescription.setText(original.getDescription());
 
 
-        model.addColumn("Property");
-        model.addColumn("Value");
+        model.addColumn(i18n.msg("property"));
+        model.addColumn(i18n.msg("value"));
         table = new JTable(model);
         pnlParam.add(table);
         int row = 0;
@@ -124,20 +125,20 @@ public class CustomizeCommand extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        btnSave.setText("Save as New Command");
+        btnSave.setText(i18n.msg("save_as_new"));
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("Name:");
+        jLabel1.setText(i18n.msg("name")+":");
 
-        jLabel2.setText("Description:");
+        jLabel2.setText(i18n.msg("description")+":");
 
-        jLabel3.setText("Command parameters:");
+        jLabel3.setText(i18n.msg("parameters")+":");
 
-        btnEdit.setText("Save Changes");
+        btnEdit.setText(i18n.msg("save_changes"));
         btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditActionPerformed(evt);
@@ -149,14 +150,14 @@ public class CustomizeCommand extends javax.swing.JFrame {
         txtReceiver.setText("Performed by:");
         txtReceiver.setEnabled(false);
 
-        btnChangeReceiver.setText("Change");
+        btnChangeReceiver.setText(i18n.msg("change"));
         btnChangeReceiver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnChangeReceiverActionPerformed(evt);
             }
         });
 
-        btnDelete.setText("Delete Command");
+        btnDelete.setText(i18n.msg("delete_X",new Object[]{i18n.msg("command")}));
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteActionPerformed(evt);
@@ -168,7 +169,7 @@ public class CustomizeCommand extends javax.swing.JFrame {
         pnlParam.setLayout(new java.awt.BorderLayout());
         jScrollPane1.setViewportView(pnlParam);
 
-        txtAddRow.setText("Add Parameter");
+        txtAddRow.setText(i18n.msg("add_X",new Object[]{i18n.msg("parameter")}));
         txtAddRow.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtAddRowActionPerformed(evt);
@@ -192,7 +193,7 @@ public class CustomizeCommand extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(cmbReceiver, 0, 408, Short.MAX_VALUE)
+                                .addComponent(cmbReceiver, 0, 385, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnChangeReceiver))
                             .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)))

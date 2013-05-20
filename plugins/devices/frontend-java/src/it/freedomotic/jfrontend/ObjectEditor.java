@@ -315,9 +315,9 @@ public class ObjectEditor extends javax.swing.JFrame {
         jLabel2.setText(i18n.msg("address")+":");
 
         jLabel3.setForeground(new java.awt.Color(121, 121, 121));
-        jLabel3.setText("for more info www.freedomotic.com/plugins");
+        jLabel3.setText(i18n.msg(this,"plugins_more_info"));
 
-        btnCreateObjectCopy.setText("Create a copy");
+        btnCreateObjectCopy.setText(i18n.msg("create_a_copy"));
         btnCreateObjectCopy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCreateObjectCopyActionPerformed(evt);
@@ -331,7 +331,7 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         });
 
-        btnVirtual.setText("is a virtual object (not connected to any sensor or actuator)");
+        btnVirtual.setText(i18n.msg(this,"is_virtual_object"));
         btnVirtual.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnVirtualActionPerformed(evt);
@@ -369,7 +369,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnVirtual))
-                .addContainerGap(2163, Short.MAX_VALUE))
+                .addContainerGap(2160, Short.MAX_VALUE))
         );
         tabPropertiesLayout.setVerticalGroup(
             tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -404,12 +404,12 @@ public class ObjectEditor extends javax.swing.JFrame {
         tabObjectEditor.addTab(i18n.msg("properties"), tabProperties);
 
         tabTriggersConfig.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab("Data Sources", tabTriggersConfig);
+        tabObjectEditor.addTab(i18n.msg(this,"data_sources"), tabTriggersConfig);
 
         tabCommandsConfig.setLayout(new java.awt.BorderLayout());
         tabObjectEditor.addTab(i18n.msg("actions"), tabCommandsConfig);
 
-        jLabel11.setText("Position X:");
+        jLabel11.setText(i18n.msg("position_X",new Object[]{"X"})+":");
 
         spnX.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -417,7 +417,7 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         });
 
-        jLabel12.setText("Position Y:");
+        jLabel12.setText(i18n.msg("position_X",new Object[]{"Y"})+":");
 
         spnY.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -431,16 +431,16 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         });
 
-        jLabel13.setText("Rotation:");
+        jLabel13.setText(i18n.msg("rotation")+ ":");
 
-        chkAllRepresentations.setText("Apply changes to all representations");
+        chkAllRepresentations.setText(i18n.msg(this,"apply_changes_all_representations"));
         chkAllRepresentations.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkAllRepresentationsActionPerformed(evt);
             }
         });
 
-        btnChangeImage.setText("Change Image");
+        btnChangeImage.setText(i18n.msg("change_X",new Object[]{i18n.msg("image")}));
         btnChangeImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnChangeImageActionPerformed(evt);
@@ -459,9 +459,9 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("Width:");
+        jLabel4.setText(i18n.msg("width")+":");
 
-        jLabel5.setText("Height:");
+        jLabel5.setText(i18n.msg("height")+":");
 
         jLabel6.setText(i18n.msg("environment") + ":");
 
@@ -477,7 +477,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addGap(18, 18, 18))
                     .addGroup(tabRepresentationLayout.createSequentialGroup()
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
                             .addGroup(tabRepresentationLayout.createSequentialGroup()
                                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel11)
@@ -490,13 +490,13 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(tabRepresentationLayout.createSequentialGroup()
                                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
                                     .addComponent(spnScaleHeight, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(spnScaleWidth, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(spnY)
                                     .addComponent(spnX, javax.swing.GroupLayout.Alignment.LEADING))
                                 .addGap(18, 18, 18)
-                                .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
                             .addComponent(environmentComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(2343, 2343, 2343))))
         );
@@ -534,10 +534,10 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addContainerGap(211, Short.MAX_VALUE))
         );
 
-        tabObjectEditor.addTab("Appearance", tabRepresentation);
+        tabObjectEditor.addTab(i18n.msg("appearance"), tabRepresentation);
 
         tabControls.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab("Control Panel", tabControls);
+        tabObjectEditor.addTab(i18n.msg(this,"control_panel"), tabControls);
 
         tabAutomations.setLayout(new java.awt.BorderLayout());
         tabObjectEditor.addTab(i18n.msg("automations"), tabAutomations);
