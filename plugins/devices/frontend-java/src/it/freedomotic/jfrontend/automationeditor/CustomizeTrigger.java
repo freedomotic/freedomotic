@@ -54,10 +54,10 @@ public class CustomizeTrigger extends javax.swing.JFrame {
         }
         lblTemplateWarning.setVisible(!t.isToPersist());
 
-        model.addColumn("Logical");
-        model.addColumn("Attribute");
-        model.addColumn("Operand");
-        model.addColumn("Value");
+        model.addColumn(i18n.msg("logical"));
+        model.addColumn(i18n.msg("attribute"));
+        model.addColumn(i18n.msg("operand"));
+        model.addColumn(i18n.msg("value"));
         table = new JTable(model);
         pnlParam.add(table);
         Iterator it = t.getPayload().iterator();
@@ -285,7 +285,7 @@ public class CustomizeTrigger extends javax.swing.JFrame {
         TriggerPersistence.addAndRegister(trigger);
         int postSize = TriggerPersistence.size();
         if (preSize < postSize) {
-            Freedomotic.logger.info("Trigger addedd correctly [" + postSize + " triggers]");
+            Freedomotic.logger.info("Trigger added correctly [" + postSize + " triggers]");
         } else {
             Freedomotic.logger.warning("Error while addind a trigger in trigger editor");
         }

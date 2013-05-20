@@ -60,7 +60,9 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="txtInfo">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Connecting to online repository..."/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(this,&quot;connecting_online_repo&quot;)" type="code"/>
+        </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JProgressBar" name="jProgressBar1">

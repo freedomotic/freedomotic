@@ -36,7 +36,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="txtDescription" pref="483" max="32767" attributes="1"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="cmbReceiver" pref="408" max="32767" attributes="1"/>
+                              <Component id="cmbReceiver" pref="385" max="32767" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnChangeReceiver" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -100,7 +100,9 @@
   <SubComponents>
     <Component class="javax.swing.JButton" name="btnSave">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Save as New Command"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(&quot;save_as_new&quot;)" type="code"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveActionPerformed"/>
@@ -108,21 +110,27 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Name:"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(&quot;name&quot;)+&quot;:&quot;" type="code"/>
+        </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtName">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Description:"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(&quot;description&quot;)+&quot;:&quot;" type="code"/>
+        </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtDescription">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Command parameters:"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(&quot;parameters&quot;)+&quot;:&quot;" type="code"/>
+        </Property>
       </Properties>
       <AccessibilityProperties>
         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
@@ -130,7 +138,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnEdit">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Save Changes"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(&quot;save_changes&quot;)" type="code"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEditActionPerformed"/>
@@ -152,7 +162,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnChangeReceiver">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Change"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(&quot;change&quot;)" type="code"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnChangeReceiverActionPerformed"/>
@@ -160,7 +172,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnDelete">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Delete Command"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(&quot;delete_X&quot;,new Object[]{i18n.msg(&quot;command&quot;)})" type="code"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteActionPerformed"/>
@@ -181,7 +195,9 @@
     </Container>
     <Component class="javax.swing.JButton" name="txtAddRow">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Add Parameter"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(&quot;add_X&quot;,new Object[]{i18n.msg(&quot;parameter&quot;)})" type="code"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtAddRowActionPerformed"/>

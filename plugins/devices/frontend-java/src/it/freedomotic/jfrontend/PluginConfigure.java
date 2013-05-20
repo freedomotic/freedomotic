@@ -9,6 +9,7 @@ import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.plugins.ClientStorage;
+import it.freedomotic.util.i18n;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -140,16 +141,16 @@ public class PluginConfigure extends javax.swing.JFrame {
         btnDefault = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Plugins Configuration Editor");
+        setTitle(i18n.msg(this,"plugins_configuration_editor"));
 
-        btnSave.setText("Save");
+        btnSave.setText(i18n.msg("save"));
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);
             }
         });
 
-        btnCancel.setText("Cancel");
+        btnCancel.setText(i18n.msg("cancel"));
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelActionPerformed(evt);
@@ -158,7 +159,7 @@ public class PluginConfigure extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(txtArea);
 
-        btnDefault.setText("Restore Default");
+        btnDefault.setText(i18n.msg("restore_default"));
         btnDefault.setEnabled(false);
         btnDefault.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

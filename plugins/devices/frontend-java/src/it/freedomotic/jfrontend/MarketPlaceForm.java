@@ -20,6 +20,7 @@ import it.freedomotic.service.IPluginCategory;
 import it.freedomotic.service.IPluginPackage;
 import it.freedomotic.service.MarketPlaceService;
 import it.freedomotic.util.Info;
+import it.freedomotic.util.i18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -139,15 +140,15 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                                     //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
                                     if (result == -1) { //older version
                                         //btnAction = new JButton(pp.getTitle() + " (Install version " + version + ")");
-                                        btnAction = new JButton("Install");
+                                        btnAction = new JButton(i18n.msg(this,"install"));
                                     } else {
                                         if (result == 1) { //newer version
                                             //btnAction = new JButton(pp.getTitle() + " (Update from " + version + " to " + version + ")");
-                                            btnAction = new JButton("Update");
+                                            btnAction = new JButton(i18n.msg(this,"update"));
                                         }
                                     }
                                 } else {
-                                    lblName = new JLabel(pp.getTitle() + (" (Unavailable)"));
+                                    lblName = new JLabel(i18n.msg(this,"X_unavailable",new Object[]{pp.getTitle()}));
                                 }
                                 JLabel lblDescription = new JLabel(pp.getDescription());
                                 if (btnAction != null) {
@@ -158,7 +159,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                                     });
                                 }
 
-                                JButton btnMore = new JButton("More info...");
+                                JButton btnMore = new JButton(i18n.msg("more_info"));
                                 //btnMore.setEnabled(false);
                                 btnMore.addActionListener(new ActionListener() {
                                     public void actionPerformed(ActionEvent e) {
@@ -179,7 +180,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                                 if (btnAction != null) {
                                     pnlMain.add(btnAction);
                                 } else {
-                                    JButton disabled = new JButton("Install");
+                                    JButton disabled = new JButton(i18n.msg(this,"install"));
                                     disabled.setEnabled(false);
                                     pnlMain.add(disabled);
                                 }
@@ -218,17 +219,14 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         String freedomoticVersion = Info.getMajor() + "." + Info.getMinor();
         if (pp.getFilePath(freedomoticVersion) == null) {
             JOptionPane.showMessageDialog(this,
-                    "It seems that " + pp.getTitle() + " plugin developer have not "
-                    + "already released any stable version. \nYou can ask more info about this plugin "
-                    + "sending a mail to its author. \nYou can get author mail from " + pp.getURI());
+                    i18n.msg(this,"warn_plugin_X_unavailable", new Object[]{ pp.getTitle(), pp.getURI()}));
             return;
         }
         //Custom button text
-        Object[] options = {"Yes, please",
-            "No, thanks"};
-        int n = JOptionPane.showOptionDialog(null, "Do you want to download and install the package \n"
-                + pp.getTitle() + "?",
-                "Install package",
+        Object[] options = {i18n.msg("yes_please"),
+        i18n.msg("no_thanks")};
+        int n = JOptionPane.showOptionDialog(null, i18n.msg(this,"confirm_package_X_download",new Object[]{pp.getTitle()}),
+                i18n.msg(this,"title_install_package"),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
@@ -238,12 +236,11 @@ public class MarketPlaceForm extends javax.swing.JFrame {
             return;
         }
         JOptionPane.showMessageDialog(null,
-                "Download of the requested plugin started in background (may take minutes). \n"
-                + "Continue to use Freedomotic, you will be notified when download completes.",
-                "Download in progress", JOptionPane.INFORMATION_MESSAGE);
+                i18n.msg(this,"info_download_started"),
+                i18n.msg(this,"title_download_started"), JOptionPane.INFORMATION_MESSAGE);
         Runnable task;
         final String string = pp.getFilePath(freedomoticVersion);
-        System.out.println("string de download:" + string);
+        Freedomotic.logger.finest("Download string:" + string);
         task = new Runnable() {
             boolean done = false;
 
@@ -257,13 +254,12 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 }
                 if (!done) {
                     JOptionPane.showMessageDialog(null,
-                            "Unable to download the requested plugin. Check your internet connection and "
-                            + "the provided URL.",
-                            "Download Error", JOptionPane.INFORMATION_MESSAGE);
+                            i18n.msg(this,"info_download_failed"),
+                            i18n.msg(this,"title_download_failed"), JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null,
-                            "Plugin downloaded, installed and ready to be started.",
-                            "Download Complete", JOptionPane.INFORMATION_MESSAGE);
+                            i18n.msg(this,"info_package_install_completed"),
+                            i18n.msg(this,"title_install_completed"), JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         };
@@ -322,7 +318,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         setTitle("Freedomotic Official Online Marketplace");
         setMinimumSize(new java.awt.Dimension(521, 370));
 
-        txtInfo.setText("Connecting to online repository...");
+        txtInfo.setText(i18n.msg(this,"connecting_online_repo"));
 
         jProgressBar1.setIndeterminate(true);
 
