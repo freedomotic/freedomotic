@@ -264,7 +264,7 @@ public class EnvObjectLogic {
             for (ZoneLogic zone : locEnv.getZones()) {
                 //remove from every zone
                 zone.getPojo().getObjects().remove(this.getPojo());
-                if (TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
+                if (this.getEnv() == locEnv && TopologyUtils.intersects(translatedObject, zone.getPojo().getShape()) ) {
                     //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
                     //add to the zones this object belongs
                     zone.getPojo().getObjects().add(this.getPojo());
