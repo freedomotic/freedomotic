@@ -5,6 +5,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.NaturalLanguageProcessor;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.util.i18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -26,14 +27,16 @@ public class GuessCommandBox extends JTextField {
     private ReactionEditor editor;
     private static NaturalLanguageProcessor nlp = new NaturalLanguageProcessor();
     private final JButton btnAdd = new JButton();
-    private final JButton btnCustomize = new JButton("Edit");
+    private final JButton btnCustomize = new JButton(i18n.msg(this,"edit"));
     private final GuessCommandBox me = this;
-    private static final String ERROR_MESSAGE = "This command does not exist";
-    private static final String INFO_MESSAGE = "Write here a command";
+    private static String ERROR_MESSAGE;
+    private static String INFO_MESSAGE;
 
     public GuessCommandBox(ReactionEditor editor) {
         super();
         this.editor = editor;
+        ERROR_MESSAGE = i18n.msg(this,"this_command_not_exists");
+        INFO_MESSAGE = i18n.msg(this,"write_here_command");
         init();
     }
 
@@ -98,10 +101,10 @@ public class GuessCommandBox extends JTextField {
 
 
         if (command == null) {
-            btnAdd.setText("Confirm");
-            setToolTipText("Start writing and choose a command from the suggestions list");
+            btnAdd.setText(i18n.msg(this,"confirm"));
+            setToolTipText(i18n.msg(this,"cmd_box_msg"));
         } else {
-            btnAdd.setText("Clear");
+            btnAdd.setText(i18n.msg("remove"));
             setToolTipText(command.getDescription());
         }
         this.add(btnAdd);
@@ -113,7 +116,7 @@ public class GuessCommandBox extends JTextField {
                     command = CommandPersistence.getCommand(getText());
                     if (command != null) {
                         setEnabled(false);
-                        btnAdd.setText("Clear");
+                        btnAdd.setText(i18n.msg("remove"));
                         editor.onCommandConfirmed(me);
                     } else {
                         setForeground(Color.red);
@@ -121,7 +124,7 @@ public class GuessCommandBox extends JTextField {
                     }
                 } else {
                     setEnabled(true);
-                    btnAdd.setText("Confirm");
+                    btnAdd.setText(i18n.msg(this,"confirm"));
                     editor.onCommandCleared(me);
                     command = null;
                     setText(INFO_MESSAGE);

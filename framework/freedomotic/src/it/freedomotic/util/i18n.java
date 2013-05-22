@@ -38,44 +38,52 @@ public class i18n {
         if (enableLocalization.equals("no") || enableLocalization.equals("false")) {
             return key;
         }
-        
+
         if (obj != null) {
             bundleName = obj.getClass().getPackage().getName();
         }
-                
+
         if (!messages.containsKey(bundleName)) {
-            try {
-                if (obj != null) {
-                    String packageName = bundleName;
-                    int lastSize = bundleName.split("\\.").length;
-                    bundleName = bundleName.split("\\.")[lastSize - 1];
-                    //Plugin plug = (Plugin) obj;
-                    folder = new File(Info.getApplicationPath() + File.separator + "plugins" + File.separator + "devices" + File.separator + packageName + File.separator + "i18n");
-                } else {
-                    folder = new File(Info.getApplicationPath() + File.separator + "i18n");
-                }
-                ClassLoader loader;
-
-                URL[] urls = {folder.toURI().toURL()};
-                loader = new URLClassLoader(urls);
-                Locale loc;
-                if (enableLocalization.equals("auto") || enableLocalization.equals("yes") || enableLocalization.equals("true")) {
-                    loc = Locale.getDefault();
-                } else {
-                    loc = new Locale(enableLocalization.substring(0,2),enableLocalization.substring(3,5));
-                    
-                    if (loc == null){
-                        Freedomotic.logger.severe("Cannot set locale "+  enableLocalization + " falling back to default locale");
-                        loc = Locale.getDefault();
+            String superBundleName = bundleName.lastIndexOf('.') == -1 ? bundleName : bundleName.substring(0, bundleName.lastIndexOf('.'));
+            if (!messages.containsKey(superBundleName)) {
+                try {
+                    if (obj != null) {
+                        //String packageName = bundleName;
+                        //int lastSize = bundleName.split("\\.").length;
+                        //bundleName = bundleName.split("\\.")[lastSize - 1];
+                        //Plugin plug = (Plugin) obj;
+                        folder = new File(Info.getApplicationPath() + File.separator + "plugins" + File.separator + "devices" + File.separator + bundleName + File.separator + "i18n");
+                    } else {
+                        folder = new File(Info.getApplicationPath() + File.separator + "i18n");
                     }
-                    
-                }
-                messages.put(bundleName, ResourceBundle.getBundle(bundleName, loc, loader));
-                Freedomotic.logger.info("Adding resoulceBundle: package=" + bundleName + ", locale="+ loc.getLanguage() +"_" +loc.getCountry() + ". pointing at " + folder.getAbsolutePath());
-            } catch (MalformedURLException ex) {
-                Freedomotic.logger.severe("Cannot load resourceBundle for package" + bundleName);
-            }
+                    ClassLoader loader;
 
+                    URL[] urls = {folder.toURI().toURL()};
+                    loader = new URLClassLoader(urls);
+                    Locale loc;
+                    if (enableLocalization.equals("auto") || enableLocalization.equals("yes") || enableLocalization.equals("true")) {
+                        loc = Locale.getDefault();
+                    } else {
+                        loc = new Locale(enableLocalization.substring(0, 2), enableLocalization.substring(3, 5));
+
+                        if (loc == null) {
+                            Freedomotic.logger.severe("Cannot set locale " + enableLocalization + " falling back to default locale");
+                            loc = Locale.getDefault();
+                        }
+
+                    }
+                    String fileName = bundleName;
+                    int lastSize = bundleName.split("\\.").length;
+                   fileName = bundleName.split("\\.")[lastSize - 1];
+                        
+                    messages.put(bundleName, ResourceBundle.getBundle(fileName, loc, loader));
+                    Freedomotic.logger.info("Adding resoulceBundle: package=" + bundleName + ", locale=" + loc.getLanguage() + "_" + loc.getCountry() + ". pointing at " + folder.getAbsolutePath());
+                } catch (MalformedURLException ex) {
+                    Freedomotic.logger.severe("Cannot load resourceBundle for package" + bundleName);
+                }
+            } else {
+                bundleName = superBundleName;
+            }
         }
         if (messages.containsKey(bundleName)) {
             try {

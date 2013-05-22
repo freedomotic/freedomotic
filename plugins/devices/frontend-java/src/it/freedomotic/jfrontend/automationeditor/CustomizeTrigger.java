@@ -40,14 +40,14 @@ public class CustomizeTrigger extends javax.swing.JFrame {
         initComponents();
         this.main = main;
         original = t;
-        this.setTitle(t.getName() + " Trigger Editor");
+        this.setTitle(i18n.msg(this,"trigger_X_editor", new Object[]{t.getName()}));
         txtName.setText(t.getName());
         txtDescription.setText(t.getDescription());
         txtChannel.setText(t.getChannel());
         txtSuspTime.setText(Long.toString(t.getSuspensionTime())) ;
         txtDelay.setText(Integer.toString(t.getDelay()));
         txtMaxExTimes.setText(Long.toString(t.getMaxExecutions()));
-        lblExplanation.setText("Fire this trigger if parameters are:");
+        lblExplanation.setText(i18n.msg(this,"fire_trigger_msg")+":");
 
         if (t.isHardwareLevel() || !t.isToPersist()) {
             btnEdit.setEnabled(false);
@@ -152,7 +152,7 @@ public class CustomizeTrigger extends javax.swing.JFrame {
 
         jLabel2.setText(i18n.msg("description")+":");
 
-        lblExplanation.setText("Fire the event if this parameters are consistent with the received event:");
+        lblExplanation.setText(i18n.msg(this,"fire_trigger_if_event_msg")+":");
 
         btnEdit.setText(i18n.msg("save"));
         btnEdit.addActionListener(new java.awt.event.ActionListener() {
@@ -173,14 +173,14 @@ public class CustomizeTrigger extends javax.swing.JFrame {
         pnlParam.setLayout(new java.awt.BorderLayout());
         jScrollPane1.setViewportView(pnlParam);
 
-        btnAddRow.setText("Add Statement");
+        btnAddRow.setText(i18n.msg("add_X",new Object[]{i18n.msg("statement")}));
         btnAddRow.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddRowActionPerformed(evt);
             }
         });
 
-        lblTemplateWarning.setText("This trigger is a predefined template so you cannot change it. Save it as new trigger.");
+        lblTemplateWarning.setText(i18n.msg(this,"trigger_is_template_msg"));
 
         jLabel3.setText(i18n.msg("channel")+":");
 
@@ -228,7 +228,7 @@ public class CustomizeTrigger extends javax.swing.JFrame {
                                         .addComponent(txtChannel)
                                         .addComponent(txtSuspTime, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(txtDelay, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(0, 183, Short.MAX_VALUE)))
+                        .addGap(0, 257, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -258,7 +258,7 @@ public class CustomizeTrigger extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtMaxExTimes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
-                .addGap(42, 42, 42)
+                .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblExplanation)
                     .addComponent(btnAddRow))

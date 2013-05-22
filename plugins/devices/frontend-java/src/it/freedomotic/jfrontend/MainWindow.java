@@ -210,7 +210,7 @@ public class MainWindow extends javax.swing.JFrame {
             add(drawer);
             drawer.repaint();
             drawer.setVisible(true);
-            Callout callout = new Callout(this.getClass().getCanonicalName(), "info", "Press ESC to exit fullscreen mode", 100, 100, 0, 5000);
+            Callout callout = new Callout(this.getClass().getCanonicalName(), "info", i18n.msg(this,"esc_to_exit_fullscreen"), 100, 100, 0, 5000);
             drawer.createCallout(callout);
             this.repaint();
             this.setVisible(true);
@@ -673,7 +673,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void submnuHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submnuHelpActionPerformed
 
         JOptionPane.showMessageDialog(this, ""
-                + "Author: " + Info.getAuthor() + "\n"
+                + i18n.msg("author") +": " + Info.getAuthor() + "\n"
                 + "E-mail: " + Info.getAuthorMail() + "\n"
                 + "Release: " + Info.getReleaseDate() + ". " + Info.getVersionCodeName() + " - v" + Info.getVersion() + "\n"
                 + "Licence: " + Info.getLicense() + "\n\n"
@@ -713,7 +713,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
             setWindowedMode();
         } else {
-            Freedomotic.logger.info("Open command cancelled by user.");
+            Freedomotic.logger.info(i18n.msg(this,"canceled_by_user"));
         }
 }//GEN-LAST:event_mnuOpenEnvironmentActionPerformed
 
@@ -745,7 +745,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
             setEditMode(true);
             drawer.setRoomEditMode(true);
             lstClients.setFilter("Plugin");
-            setMapTitle("(EDIT ROOMS MODE) " + drawer.getCurrEnv().getPojo().getName());
+            setMapTitle("("+ i18n.msg(this,"room_edit_mode") +") " + drawer.getCurrEnv().getPojo().getName());
         } else {
             drawer.setRoomEditMode(false);
             setEditMode(false);
@@ -758,9 +758,9 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private void mnuRenameRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameRoomActionPerformed
         ZoneLogic zone = drawer.getSelectedZone();
         if (zone == null) {
-            JOptionPane.showMessageDialog(this, "Select a room first");
+            JOptionPane.showMessageDialog(this, i18n.msg("select_room_first"));
         } else {
-            String input = JOptionPane.showInputDialog("Enter here the new name for zone " + zone.getPojo().getName());
+            String input = JOptionPane.showInputDialog(i18n.msg(this,"enter_new_name_for_zone") + zone.getPojo().getName());
             zone.getPojo().setName(input.trim());
             drawer.setNeedRepaint(true);
         }
@@ -769,7 +769,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private void mnuAddRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAddRoomActionPerformed
         Zone z = new Zone();
         z.init();
-        z.setName("NewRoom" + Math.random());
+        z.setName(i18n.msg("room") + Math.random());
         Room room = new Room(z);
         room.getPojo().setTexture((new File(Info.getResourcesPath() + "/wood.jpg")).getName());
         room.init(drawer.getCurrEnv());
@@ -780,7 +780,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private void mnuRemoveRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRemoveRoomActionPerformed
         ZoneLogic zone = drawer.getSelectedZone();
         if (zone == null) {
-            JOptionPane.showMessageDialog(this, "Select a room first");
+            JOptionPane.showMessageDialog(this,i18n.msg("select_room_first"));
         } else {
             drawer.getCurrEnv().removeZone(zone);
             drawer.createHandles(null);
@@ -801,7 +801,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            Freedomotic.logger.info("Save command cancelled by user.");
+            Freedomotic.logger.info(i18n.msg(this,"canceled_by_user"));
         }
     }//GEN-LAST:event_mnuSaveAsActionPerformed
 
@@ -815,7 +815,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
             drawer.setObjectEditMode(true);
             //switch to objects list
             lstClients.setFilter("Object");
-            setMapTitle("(EDIT OBJECTS MODE): " + drawer.getCurrEnv().getPojo().getName());
+            setMapTitle("("+i18n.msg(this,"object_edit_mode")+"): " + drawer.getCurrEnv().getPojo().getName());
         } else {
             drawer.setObjectEditMode(false);
             mnuObjectEditMode.setSelected(drawer.getObjectEditMode());
@@ -837,8 +837,8 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         Object[] possibilities = {"list", "plain", "image", "photo"};
         String input = (String) JOptionPane.showInputDialog(
                 this,
-                "Select a renderer for the map",
-                "Choose map renderer",
+                i18n.msg(this,"select_renderer"),
+                i18n.msg(this,"select_renderer_title"),
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 possibilities,
@@ -874,7 +874,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     private void mnuRoomBackgroundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRoomBackgroundActionPerformed
         ZoneLogic zone = drawer.getSelectedZone();
         if (zone == null) {
-            JOptionPane.showMessageDialog(this, "Select a room first");
+            JOptionPane.showMessageDialog(this, i18n.msg("select_room_first"));
         } else {
             final JFileChooser fc = new JFileChooser(Info.getDatafilePath() + "/resources/");
             OpenDialogFileFilter filter = new OpenDialogFileFilter();
@@ -950,8 +950,8 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         Object[] possibilities = EnvironmentPersistence.getEnvironments().toArray();
         EnvironmentLogic input = (EnvironmentLogic) JOptionPane.showInputDialog(
                 this,
-                "Please select an environment",
-                "Choose environment",
+                i18n.msg(this,"select_environment"),
+                i18n.msg(this,"select_envitonment_title"),
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 possibilities,
@@ -966,7 +966,7 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
 
     private void mnuAddDuplicateEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAddDuplicateEnvironmentActionPerformed
         EnvironmentLogic newEnv = EnvironmentPersistence.add(drawer.getCurrEnv(), true);
-        String input = JOptionPane.showInputDialog("Enter here the new name for Area/Floor " + newEnv.getPojo().getName());
+        String input = JOptionPane.showInputDialog(i18n.msg(this,"enter_new_name_for_env") + newEnv.getPojo().getName());
         newEnv.getPojo().setName(input.trim());
         drawer.setCurrEnv(newEnv);
         setMapTitle(newEnv.getPojo().getName());
@@ -974,13 +974,17 @@ private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
     private void mnuRenameEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameEnvironmentActionPerformed
-        String input = JOptionPane.showInputDialog("Enter here the new name for Area/Floor", drawer.getCurrEnv().getPojo().getName());
+        String input = JOptionPane.showInputDialog(i18n.msg(this,"enter_new_name_for_env"), drawer.getCurrEnv().getPojo().getName());
         drawer.getCurrEnv().getPojo().setName(input.trim());
         setMapTitle(drawer.getCurrEnv().getPojo().getName());
     }//GEN-LAST:event_mnuRenameEnvironmentActionPerformed
 
     private void mnuDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuDeleteActionPerformed
-        int result = JOptionPane.showConfirmDialog(null,  "Confirm deletion?","You're about to delete the current environment", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int result = JOptionPane.showConfirmDialog(null,  
+                i18n.msg(this,"confirm_deletion_title"),
+                i18n.msg(this,"confirm_env_delete"),
+                JOptionPane.OK_CANCEL_OPTION, 
+                JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
             EnvironmentLogic oldenv = drawer.getCurrEnv();
             EnvironmentPersistence.remove(oldenv);

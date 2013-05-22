@@ -63,7 +63,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace min="0" pref="183" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="257" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -103,7 +103,7 @@
                   <Component id="txtMaxExTimes" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblExplanation" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnAddRow" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -154,7 +154,9 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblExplanation">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Fire the event if this parameters are consistent with the received event:"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(this,&quot;fire_trigger_if_event_msg&quot;)+&quot;:&quot;" type="code"/>
+        </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnEdit">
@@ -192,7 +194,9 @@
     </Container>
     <Component class="javax.swing.JButton" name="btnAddRow">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Add Statement"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(&quot;add_X&quot;,new Object[]{i18n.msg(&quot;statement&quot;)})" type="code"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddRowActionPerformed"/>
@@ -200,7 +204,9 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblTemplateWarning">
       <Properties>
-        <Property name="text" type="java.lang.String" value="This trigger is a predefined template so you cannot change it. Save it as new trigger."/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(this,&quot;trigger_is_template_msg&quot;)" type="code"/>
+        </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">

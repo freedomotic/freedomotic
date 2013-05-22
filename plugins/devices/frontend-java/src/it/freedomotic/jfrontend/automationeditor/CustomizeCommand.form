@@ -156,7 +156,9 @@
     </Component>
     <Component class="javax.swing.JLabel" name="txtReceiver">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Performed by:"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="i18n.msg(this, &quot;performed_by&quot;)" type="code"/>
+        </Property>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>

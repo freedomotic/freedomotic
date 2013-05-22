@@ -15,6 +15,7 @@ import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.util.i18n;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -47,7 +48,7 @@ public final class ReactionList extends javax.swing.JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         setPreferredSize(new Dimension(800, 600));
         add(scrollPane, BorderLayout.CENTER);
-        JButton ok = new JButton("OK");
+        JButton ok = new JButton(i18n.msg("ok"));
         ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (Component component : panel.getComponents()) {
