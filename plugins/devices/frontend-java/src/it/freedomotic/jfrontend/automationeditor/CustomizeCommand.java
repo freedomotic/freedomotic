@@ -147,7 +147,7 @@ public class CustomizeCommand extends javax.swing.JFrame {
 
         cmbReceiver.setEnabled(false);
 
-        txtReceiver.setText("Performed by:");
+        txtReceiver.setText(i18n.msg(this, "performed_by"));
         txtReceiver.setEnabled(false);
 
         btnChangeReceiver.setText(i18n.msg("change"));

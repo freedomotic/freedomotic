@@ -145,9 +145,9 @@ public class ObjectEditor extends javax.swing.JFrame {
                 final BooleanBehaviorLogic bb = (BooleanBehaviorLogic) b;
                 final JToggleButton button;
                 if (bb.getValue()) {
-                    button = new JToggleButton("Set " + bb.getName() + " false");
+                    button = new JToggleButton(i18n.msg(this,"set_PROPERTY_VALUE",new Object[]{ bb.getName(), i18n.msg("false")}));
                 } else {
-                    button = new JToggleButton("Set " + bb.getName() + " true");
+                    button = new JToggleButton(i18n.msg(this,"set_PROPERTY_VALUE",new Object[]{ bb.getName(), i18n.msg("true")}));
                 }
                 JLabel label = new JLabel(b.getName() + ":");
 //                controlPanel.addRow();
@@ -163,9 +163,9 @@ public class ObjectEditor extends javax.swing.JFrame {
                         params.setProperty("value", new Boolean(!bb.getValue()).toString());
                         bb.filterParams(params, true);
                         if (bb.getValue()) {
-                            button.setText("Set " + bb.getName() + " false");
+                            button.setText(i18n.msg(this,"set_PROPERTY_VALUE",new Object[]{ bb.getName(), i18n.msg("false")}));
                         } else {
-                            button.setText("Set " + bb.getName() + " true");
+                            button.setText(i18n.msg(this,"set_PROPERTY_VALUE",new Object[]{ bb.getName(), i18n.msg("true")}));
                         }
                     }
                 });                
@@ -650,7 +650,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int result = JOptionPane.showConfirmDialog(null, "Confirm deletion?","You're about to delete the current object", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int result = JOptionPane.showConfirmDialog(null, i18n.msg("confirm_object_delete"),i18n.msg("configm_deletion_title"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
             EnvObjectPersistence.remove(object);
             this.dispose();
@@ -777,7 +777,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private void populateCommandsTab() {
         //addAndRegister a properties panel
         commandsControlPanel = new PropertiesPanel_1(0, 2);
-        tabCommandsConfig.setName("Actions");
+        tabCommandsConfig.setName(i18n.msg("actions"));
         tabCommandsConfig.add(commandsControlPanel);
 
         //creates an array of mapping behavior to hardware command
@@ -818,7 +818,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private void populateTriggersTab() {
         //addAndRegister a properties panel
         pnlTriggers = new PropertiesPanel_1(0, 2);
-        tabTriggersConfig.setName("Data Sources");
+        tabTriggersConfig.setName(i18n.msg(this,"data_sources"));
         tabTriggersConfig.add(pnlTriggers);
 
         //creates an array of mapping behavior to hardware trigger
@@ -905,8 +905,8 @@ public class ObjectEditor extends javax.swing.JFrame {
         final TaxonomyBehaviorLogic lb = (TaxonomyBehaviorLogic) b;
         JLabel label = new JLabel(b.getName() + ":");
         final CheckBoxList list = new CheckBoxList();
-        final JTextField newItem = new JTextField("Add new item");
-        JButton btnAdd = new JButton("Add");
+        final JTextField newItem = new JTextField(i18n.msg(this, "add_new_item"));
+        JButton btnAdd = new JButton(i18n.msg("add"));
         btnAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!newItem.getText().isEmpty()) {
@@ -918,7 +918,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 }
             }
         });
-        JButton btnRemove = new JButton("Remove");
+        JButton btnRemove = new JButton(i18n.msg("remove"));
         btnRemove.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!newItem.getText().isEmpty()) {

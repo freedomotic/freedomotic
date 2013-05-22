@@ -59,7 +59,7 @@ public class AutomationsEditor extends Protocol {
         frame.setPreferredSize(new Dimension(700,600));
         final ReactionsPanel panel = new ReactionsPanel(this);
         frame.setContentPane(panel);
-        JButton ok = new JButton("OK");
+        JButton ok = new JButton(i18n.msg("ok"));
         ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (Component component : panel.getPanel().getComponents()) {
