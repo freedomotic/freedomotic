@@ -18,37 +18,37 @@ import java.util.logging.Logger;
  *
  * @author gpt
  */
-public class PioneerKuroProtocol extends Protocol{
+public class PioneerKuroProtocol extends Protocol {
 
-    static public final char STX=02;
-    static public final char ETX=03;
+    static public final char STX = 02;
+    static public final char ETX = 03;
     SerialConnectionProvider usb;
     private static int POLLING_TIME = 1000;
     private boolean osd_active = true;
-    
     static public final int OK = 1;
-    static public final int ERR = 0;    
+    static public final int ERR = 0;
+
     public PioneerKuroProtocol() {
-        super("Pioneer Kuro", "/es.gpulido.pioneer-kuro/PioneerKuro-Protocol.xml");                    
+        super("Pioneer Kuro", "/es.gpulido.pioneer-kuro/PioneerKuro-Protocol.xml");
         usb = new SerialConnectionProvider();
         usb.setPortStopbits(1);
         usb.setPortParity(0);
         usb.setPortDatabits(8);
         String port = configuration.getStringProperty("port", "/dev/ttyUSB10");
         usb.setPortName(port);
-        int baudrate = configuration.getIntProperty("baudrate",19200);            
+        int baudrate = configuration.getIntProperty("baudrate", 19200);
         usb.setPortBaudrate(baudrate);
-        setPollingWait(POLLING_TIME);                
-        start();             
+        setPollingWait(POLLING_TIME);
+        start();
     }
-    
-     /**
+
+    /**
      * Sensor side
      */
     @Override
     public void onStart() {
         super.onStart();
-        POLLING_TIME = configuration.getIntProperty("polling-time", 1000);                            
+        POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
         setPollingWait(POLLING_TIME);
         usb.connect();
         disableOSD();
@@ -58,20 +58,20 @@ public class PioneerKuroProtocol extends Protocol{
     public void onStop() {
         super.onStop();
         //set the OSD on
-        String output= sendCommand("OSDS01");
+        String output = sendCommand("OSDS01");
         enableOSD();
         //release resources       
         setPollingWait(-1); //disable polling
         usb.disconnect();
         //display the default description
         setDescription(configuration.getStringProperty("description", "Kuro Pioneer"));
-        
+
     }
-    
+
     String sendCommand(String command) {
-        String output="";
-        try {            
-            String serialCommand = STX + "**" + command + ETX;           
+        String output = "";
+        try {
+            String serialCommand = STX + "**" + command + ETX;
             output = usb.send(serialCommand);
             return output;
         } catch (IOException ex) {
@@ -79,66 +79,57 @@ public class PioneerKuroProtocol extends Protocol{
             return output;
         }
     }
-    
-    
+
     @Override
     protected void onRun() {
-        
-            disableOSD();
-            int readedValues = 0;
-            readedValues+=readHardwareInputValue();
-            readedValues+=readHardwareBehaviorValue("VOL", "volume-value",3);       
-            readedValues+=readHardwareBehaviorValue("AMT", "mute-value",2);       
-            readedValues+=readHardwareBehaviorValue("AVS", "avselection-value",2);       
-            readedValues+=readHardwareBehaviorValue("SZM", "screenmode-value",2);
-    
+
+        disableOSD();
+        int readedValues = 0;
+        readedValues += readHardwareInputValue();
+        readedValues += readHardwareBehaviorValue("VOL", "volume-value", 3);
+        readedValues += readHardwareBehaviorValue("AMT", "mute-value", 2);
+        readedValues += readHardwareBehaviorValue("AVS", "avselection-value", 2);
+        readedValues += readHardwareBehaviorValue("SZM", "screenmode-value", 2);
+
     }
-       
-    void disableOSD()
-    {
-      if (osd_active)
-      {      
-        String op= sendCommand("OSDS00"); 
-        System.out.println("DisableOSD: "+ op);
-        osd_active = false;
-      }      
-    
+
+    void disableOSD() {
+        if (osd_active) {
+            String op = sendCommand("OSDS00");
+            System.out.println("DisableOSD: " + op);
+            osd_active = false;
+        }
+
     }
-    void enableOSD()
-    {
-      if (!osd_active)
-      {      
-        String op= sendCommand("OSDS01");
-        System.out.println("EnableOSD: "+ op);
-        osd_active = true;
-      }      
-    
+
+    void enableOSD() {
+        if (!osd_active) {
+            String op = sendCommand("OSDS01");
+            System.out.println("EnableOSD: " + op);
+            osd_active = true;
+        }
+
     }
-    
-    
-    
-    public void close() throws IOException, UnableToExecuteException
-    {
+
+    public void close() throws IOException, UnableToExecuteException {
         usb.disconnect();
     }
-    
-    
+
     @Override
-    protected void onCommand(Command c) throws IOException, UnableToExecuteException {                                   
-        System.out.println("Command receive: "+c.toString());
+    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
+        System.out.println("Command receive: " + c.toString());
         String serialCommand = composeSerialCommand(c);
-        System.out.println("Command to send to serial: "+serialCommand);
+        System.out.println("Command to send to serial: " + serialCommand);
         //pause the polling
         setPollingWait(-1);
         enableOSD();
         String output = usb.send(serialCommand);
-        System.out.println("Output from serial: "+output);
-        if (output.contains("ERR"))
+        System.out.println("Output from serial: " + output);
+        if (output.contains("ERR")) {
             c.setExecuted(false);
-        else if (output.contains("XXX"))
-        {//this means that the TV was already in the state that the command try to send
+        } else if (output.contains("XXX")) {//this means that the TV was already in the state that the command try to send
             c.setExecuted(false);
-        }        
+        }
         setPollingWait(POLLING_TIME);
     }
 
@@ -151,11 +142,9 @@ public class PioneerKuroProtocol extends Protocol{
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    
-     private String composeSerialCommand(Command c)
-    {                            
-  
+
+    private String composeSerialCommand(Command c) {
+
         String command = c.getProperty("command");
         String parameter = c.getProperty("parameter");
         String hardwareString = command;
@@ -180,18 +169,18 @@ public class PioneerKuroProtocol extends Protocol{
             }
             hardwareString += parameter;
         } else if (command.equals("INP")) {
-            hardwareString += "S"+parameter;
+            hardwareString += "S" + parameter;
 //            if (parameter.split("Input ")[1].equals("6(PC)"))
 //                hardwareString += "S06";
 //            else
 //                hardwareString += "S0" + parameter.split("Input ")[1];        
-        
+
         } else if (command.equals("AMT")) {
             hardwareString += parameter;
         } else if (command.equals("CHN")) {
             hardwareString += parameter;
         } else if (command.equals("AVS")) {
-            hardwareString+= "S"+parameter;
+            hardwareString += "S" + parameter;
             //TODO: Use enum
 //            if (parameter.equals("STANDARD")) {
 //                hardwareString += "S" + "01";
@@ -209,8 +198,8 @@ public class PioneerKuroProtocol extends Protocol{
 //                hardwareString += "S" + "07";
 //            }
         } else if (command.equals("SZM")) {
-            
-            hardwareString += "S"+parameter;
+
+            hardwareString += "S" + parameter;
 //            if (parameter.equals("DOTbyDOT")) {
 //                hardwareString += "S" + "01";
 //            } else if (parameter.equals("4:3")) {
@@ -231,89 +220,76 @@ public class PioneerKuroProtocol extends Protocol{
 //                hardwareString += "S" + "07";
 //            } else if (parameter.equals("WIDE2")) {
 //                hardwareString += "S" + "07";
-            }else if (command.equals("RMC")) {
-                hardwareString += parameter;
+        } else if (command.equals("RMC")) {
+            hardwareString += parameter;
 //            }
         }
         return STX + "**" + hardwareString + ETX;
     }
-    
-     //special Case
-      private int readHardwareInputValue()
-      {
-        ProtocolRead event; 
+
+    //special Case
+    private int readHardwareInputValue() {
+        ProtocolRead event;
         try {
-            String serialCommand = STX + "**" + "INP" + ETX;              
-             System.out.println("Command to send to serial: "+serialCommand);
-             String output = usb.send(serialCommand);
-             System.out.println("Output from serial: "+output);        
-             if (output.contains("XXX")) //TV is off
-             {      
+            String serialCommand = STX + "**" + "INP" + ETX;
+            System.out.println("Command to send to serial: " + serialCommand);
+            String output = usb.send(serialCommand);
+            System.out.println("Output from serial: " + output);
+            if (output.contains("XXX")) //TV is off
+            {
                 event = new ProtocolRead(this, "pioneer-kuro", "pioneer-kuro");
                 event.addProperty("hardware-behavior", "POWER");
                 event.addProperty("power-value", "false");
                 this.notifyEvent(event);
-             }
-             else if (!output.contains("ERR"))
-             {                                               
+            } else if (!output.contains("ERR")) {
                 event = new ProtocolRead(this, "pioneer-kuro", "pioneer-kuro");
                 event.addProperty("hardware-behavior", "POWER");
-                event.addProperty("power-value", "true");                                                
+                event.addProperty("power-value", "true");
                 this.notifyEvent(event);
-                String value = output.substring(4, 6);         
-                if (value.equals("81")){
-                //analog
+                String value = output.substring(4, 6);
+                if (value.equals("81")) {
+                    //analog
+                } else if (value.equals("83")) {//terrestrial
+                } else if (value.equals("84")) {//Digital
+                } else {
+                    event = new ProtocolRead(this, "pioneer-kuro", "pioneer-kuro");
+                    event.addProperty("hardware-behavior", "INP");
+                    event.addProperty("input-value", value);
+                    this.notifyEvent(event);
                 }
-                else if(value.equals("83"))
-                {//terrestrial
-                }
-                else if(value.equals("84"))
-                {//Digital
-                }
-                else
-                {
-                   event =  new ProtocolRead(this, "pioneer-kuro", "pioneer-kuro");
-                   event.addProperty("hardware-behavior", "INP");
-                   event.addProperty("input-value", value);
-                   this.notifyEvent(event);
-                }
-             }                                       
-           return OK;
-        
+            }
+            return OK;
+
         } catch (IOException ex) {
             Logger.getLogger(PioneerKuroProtocol.class.getName()).log(Level.SEVERE, null, ex);
             return ERR;
         }
 
-      }
-     
-     //Tries to read the callback of a command with the format INPS01
+    }
+
+    //Tries to read the callback of a command with the format INPS01
     private int readHardwareBehaviorValue(String command, String eventPropertyName, int numChars) {
         try {
             ProtocolRead event;
-            String serialCommand = STX + "**" + command + ETX;              
-            System.out.println("Command to send to serial: "+serialCommand);
+            String serialCommand = STX + "**" + command + ETX;
+            System.out.println("Command to send to serial: " + serialCommand);
             String output = usb.send(serialCommand);
-            System.out.println("Output from serial: "+output);            
-           
-            if (output.contains(command))
-            {            
+            System.out.println("Output from serial: " + output);
+
+            if (output.contains(command)) {
                 String behavior = command;
-                String value = output.substring(6-numChars, 6);
-                event =  new ProtocolRead(this, "pioneer-kuro", "pioneer-kuro");
+                String value = output.substring(6 - numChars, 6);
+                event = new ProtocolRead(this, "pioneer-kuro", "pioneer-kuro");
                 event.addProperty("hardware-behavior", behavior);
                 event.addProperty(eventPropertyName, value);
                 this.notifyEvent(event);
                 return OK;
-            }
-            else if (output.contains("ERR")|| output.contains("XXX"))
-            {
+            } else if (output.contains("ERR") || output.contains("XXX")) {
                 return ERR;
-            }          
+            }
         } catch (IOException ex) {
             Logger.getLogger(PioneerKuroProtocol.class.getName()).log(Level.SEVERE, null, ex);
         }
         return ERR;
     }
-        
 }

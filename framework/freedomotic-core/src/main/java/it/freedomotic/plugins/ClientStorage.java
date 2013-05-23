@@ -23,141 +23,51 @@ package it.freedomotic.plugins;
 
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
-import it.freedomotic.app.Freedomotic;
-import it.freedomotic.events.PluginHasChanged;
-import it.freedomotic.events.PluginHasChanged.PluginActions;
+
+import it.freedomotic.exceptions.DaoLayerException;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
- * A storage of loaded plugins and connected clients
+ *
+ * @author enrico
  */
-public final class ClientStorage {
+public interface ClientStorage {
+    /*
+     * Checks if a plugin is already installed, if is an obsolete or newer
+     * version
+     */
 
-    private static final List<Client> clients = new ArrayList<Client>();
-    private static final ClientComparator compare = new ClientComparator();
-    //instantiated into Freedomotic.java
-    //an instance is needed
-    public ClientStorage() {
-    }
+    int compareVersions(String name, String version);
 
-    public void enqueue(Client c) {
-        if (!clients.contains(c)) {
-            clients.add(c);
-            PluginHasChanged event = new PluginHasChanged(this, c.getName(), PluginActions.ENQUEUE);
-            Freedomotic.sendEvent(event);
-        }
-    }
-    
-    public void dequeue(Client c){
-        if (clients.contains(c)) {
-            clients.remove(c);
-            PluginHasChanged event = new PluginHasChanged(this, c.getName(), PluginActions.DEQUEUE);
-            Freedomotic.sendEvent(event);
-        }
-    }
+    Client createObjectPlaceholder(final File template)
+            throws DaoLayerException;
 
-    public static List<Client> getClients() {
-        Collections.sort(clients, compare);
-        return Collections.unmodifiableList(clients);
-    }
+    /**
+     * Creates a placeholder plugin and adds it to the list of loaded plugins.
+     * This plugin is just a mock object to inform the user that an object with
+     * complete features is expected here. It can be used for example to list a
+     * fake plugin that informs the user the real plugin cannot be loaded.
+     *
+     * @param simpleName
+     * @param type
+     * @param description
+     * @return
+     */
+    Plugin createPluginPlaceholder(final String simpleName, final String type, final String description);
 
-    public static Client get(String name) {
-        for (Client client : clients) {
-            if (client.getName().equalsIgnoreCase(name)) {
-                return client;
-            }
-        }
-        return null;
-    }
+    void remove(Client c);
 
-    public List<Client> getClients(String filterType) {
-        List<Client> tmp = new ArrayList<Client>();
-        for (Client client : clients) {
-            if (client.getType().equalsIgnoreCase(filterType)) {
-                tmp.add(client);
-            }
-        }
-        return Collections.unmodifiableList(tmp);
-    }
+    void add(Client c);
 
-    public Client getClientByProtocol(String protocol) {
-        for (Client client : clients) {
-            if (client.getConfiguration().getStringProperty("protocol.name", "").equals(protocol)) {
-                return client;
-            }
-        }
-        return null;
-    }
+    Client get(String name);
 
-    public static boolean isLoaded(Client input) {
-        if (input == null) {
-            throw new IllegalArgumentException();
-        }
-        return clients.contains(input);
-    }
+    Client getClientByProtocol(String protocol);
 
-    protected Plugin createPlaceholder(final String simpleName, final String type, final String description) {
-        final Plugin placeholder = new Plugin(simpleName) {
-            @Override
-            public String getDescription() {
-                if (description == null) {
-                    return "Plugin Unavailable. Error on loading";
-                } else {
-                    return description;
-                }
-            }
+    List<Client> getClients();
 
-            @Override
-            public String getName() {
-                return "Cannot start " + simpleName;
-            }
+    List<Client> getClients(String filterType);
 
-            @Override
-            public String getType() {
-                return type;
-            }
-
-            @Override
-            public void start() {
-            }
-
-            @Override
-            public void stop() {
-            }
-
-            @Override
-            public boolean isRunning() {
-                return false;
-            }
-
-            @Override
-            public void showGui() {
-            }
-
-            @Override
-            public void hideGui() {
-            }
-        };
-        placeholder.setDescription(description);
-        enqueue(placeholder);
-        return placeholder;
-    }
-
-    protected void createObjectTemplate(final File template) {
-        ObjectPlugin placeholder = new ObjectPlugin(template);
-        enqueue(placeholder);
-    }
-    
-    static class ClientComparator implements Comparator<Client> {
-        @Override
-    public int compare(Client m1, Client m2) {
-       //possibly check for nulls to avoid NullPointerException
-       return m1.getName().compareTo(m2.getName());
-    }
-}
+    boolean isLoaded(Client input);
 }

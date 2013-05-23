@@ -6,18 +6,22 @@ package it.freedomotic.jfrontend.automationeditor;
 
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
+
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
+
 import it.freedomotic.util.i18n;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -25,14 +29,16 @@ import javax.swing.JFrame;
  *
  * @author enrico
  */
-public class AutomationsEditor extends Protocol {
+public class AutomationsEditor
+        extends Protocol {
 
     public AutomationsEditor() {
         super("Automations Editor", "/it.freedomotic.jfrontend/automations-editor.xml");
     }
 
     @Override
-    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
+    protected void onCommand(Command c)
+            throws IOException, UnableToExecuteException {
         if (c.getProperty("editor").equalsIgnoreCase("command")) {
             Command command = CommandPersistence.getCommand(c.getProperty("editable"));
             ReactionList reactionList = new ReactionList(this);
@@ -40,7 +46,7 @@ public class AutomationsEditor extends Protocol {
             cc.setVisible(true);
         } else {
             if (c.getProperty("editor").equalsIgnoreCase("trigger")) {
-                Trigger trigger= TriggerPersistence.getTrigger(c.getProperty("editable"));
+                Trigger trigger = TriggerPersistence.getTrigger(c.getProperty("editable"));
                 ReactionList reactionList = new ReactionList(this);
                 CustomizeTrigger ct = new CustomizeTrigger(reactionList, trigger);
                 ct.setVisible(true);
@@ -56,9 +62,11 @@ public class AutomationsEditor extends Protocol {
     public void onShowGui() {
         final JFrame frame = new JFrame();
         frame.setTitle(i18n.msg("manage") + i18n.msg("automations"));
-        frame.setPreferredSize(new Dimension(700,600));
+        frame.setPreferredSize(new Dimension(700, 600));
+
         final ReactionsPanel panel = new ReactionsPanel(this);
         frame.setContentPane(panel);
+
         JButton ok = new JButton(i18n.msg("ok"));
         ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -68,6 +76,7 @@ public class AutomationsEditor extends Protocol {
                         editor.finalizeEditing();
                     }
                 }
+
                 frame.dispose();
             }
         });

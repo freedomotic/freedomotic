@@ -17,7 +17,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.phwsw;
 
 import java.net.*;
@@ -29,20 +28,20 @@ import java.io.*;
 // Written by David Reilly, for JavaWorld
 //
 /**
- * This class offers a timeout feature on socket connections.
- * A maximum length of time allowed for a connection can be
- * specified, along with a host and port.
+ * This class offers a timeout feature on socket connections. A maximum length
+ * of time allowed for a connection can be specified, along with a host and
+ * port.
  *
  * @author	David Reilly
  */
 public class TimedSocket {
 
     /**
-     * Attempts to connect to a service at the specified address
-     * and port, for a specified maximum amount of time.
+     * Attempts to connect to a service at the specified address and port, for a
+     * specified maximum amount of time.
      *
-     *	@param	addr	Address of host
-     *	@param	port	Port of service
+     * @param	addr	Address of host
+     * @param	port	Port of service
      * @param	delay	Delay in milliseconds
      */
     public static Socket getSocket(InetAddress addr, int port, int delay) throws InterruptedIOException, IOException {
@@ -87,11 +86,11 @@ public class TimedSocket {
     }
 
     /**
-     * Attempts to connect to a service at the specified address
-     * and port, for a specified maximum amount of time.
+     * Attempts to connect to a service at the specified address and port, for a
+     * specified maximum amount of time.
      *
-     *	@param	host	Hostname of machine
-     *	@param	port	Port of service
+     * @param	host	Hostname of machine
+     * @param	port	Port of service
      * @param	delay	Delay in milliseconds
      */
     public static Socket getSocket(String host, int port, int delay) throws InterruptedIOException, IOException {

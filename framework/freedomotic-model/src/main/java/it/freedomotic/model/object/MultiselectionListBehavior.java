@@ -28,7 +28,8 @@ import java.util.List;
  *
  * @author Enrico
  */
-public class MultiselectionListBehavior extends Behavior {
+public class MultiselectionListBehavior
+        extends Behavior {
 
     private static final long serialVersionUID = -7839150128393354068L;
 	
@@ -57,12 +58,14 @@ public class MultiselectionListBehavior extends Behavior {
 
     public List<String> getSelected() {
         List<String> tmp = new ArrayList<String>();
+
         for (String item : list) {
             if (selected.contains(item)) {
                 //is selected
                 tmp.add(item);
             }
         }
+
         return tmp;
     }
 
@@ -80,9 +83,11 @@ public class MultiselectionListBehavior extends Behavior {
 
     public int indexOfSelection() {
         int selection = -1;
+
         if (selected.get(0) != null) {
             selection = list.indexOf(selected.get(0));
         }
+
         return Math.max(0, selection);
     }
 

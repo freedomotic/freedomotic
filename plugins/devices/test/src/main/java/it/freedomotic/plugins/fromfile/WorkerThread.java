@@ -6,6 +6,7 @@ package it.freedomotic.plugins.fromfile;
 
 import it.freedomotic.plugins.Coordinate;
 import it.freedomotic.plugins.TrackingReadFile;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -13,7 +14,8 @@ import java.util.Iterator;
  *
  * @author Enrico
  */
-public class WorkerThread extends Thread {
+public class WorkerThread
+        extends Thread {
 
     ArrayList<Coordinate> coord;
     TrackingReadFile master;
@@ -27,8 +29,10 @@ public class WorkerThread extends Thread {
     @Override
     public void run() {
         Iterator it = coord.iterator();
+
         while (it.hasNext()) {
             Coordinate c = (Coordinate) it.next();
+
             if (c != null) {
                 //MUST BE REIMPLEMENTED
 //                PersonLogic p = Freedom.people.get(c.getId());

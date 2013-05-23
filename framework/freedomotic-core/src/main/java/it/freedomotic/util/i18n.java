@@ -55,11 +55,11 @@ public class i18n {
     
     private i18n() {
     }
+
     /*
      * For Freedomotic core: translations are inside /i18n/Freedomotic.properties
      * For Plugin: translations are inside plugins/_plugin_type_/_plugin_package_/i18n/_package_last_part_.properties
      */
-
     public static String msg(Object obj, String key, Object[] fields) {
         String bundleName = "Freedomotic";
         File folder = null;
@@ -108,6 +108,7 @@ public class i18n {
                 Freedomotic.logger.severe("Cannot find resourceBundle files inside folder for package" + bundleName);
             }
         }
+
         return "@@@";
     }
 
@@ -120,7 +121,9 @@ public class i18n {
     }
 
     public static String msg(String key, String field) {
-        return msg(null, key, new Object[]{field});
+        return msg(null,
+                key,
+                new Object[]{field});
     }
 
     public static String msg(Object obj, String key) {
@@ -130,28 +133,32 @@ public class i18n {
             return msg(obj, key, null);
         }
     }
-    
+
     /**
      *
      */
-    protected static class UTF8control extends ResourceBundle.Control {
+    protected static class UTF8control
+            extends ResourceBundle.Control {
+
         protected static final String BUNDLE_EXTENSION = "properties";
-    
+
         @Override
-        public ResourceBundle newBundle
-            (String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
-                throws IllegalAccessException, InstantiationException, IOException
-        {
+        public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader,
+                boolean reload)
+                throws IllegalAccessException, InstantiationException, IOException {
             // The below code is copied from default Control#newBundle() implementation.
             // Only the PropertyResourceBundle line is changed to read the file as UTF-8.
             String bundleName = toBundleName(baseName, locale);
             String resourceName = toResourceName(bundleName, BUNDLE_EXTENSION);
             ResourceBundle bundle = null;
             InputStream stream = null;
+
             if (reload) {
                 URL url = loader.getResource(resourceName);
+
                 if (url != null) {
                     URLConnection connection = url.openConnection();
+
                     if (connection != null) {
                         connection.setUseCaches(false);
                         stream = connection.getInputStream();
@@ -160,6 +167,7 @@ public class i18n {
             } else {
                 stream = loader.getResourceAsStream(resourceName);
             }
+
             if (stream != null) {
                 try {
                     bundle = new PropertyResourceBundle(new InputStreamReader(stream, "UTF-8"));
@@ -167,6 +175,7 @@ public class i18n {
                     stream.close();
                 }
             }
+
             return bundle;
         }
     }

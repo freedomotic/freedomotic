@@ -3,21 +3,28 @@ package it.freedomotic.jfrontend;
 import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.environment.EnvironmentLogic;
+
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.ZoneHasChanged;
+
 import it.freedomotic.exceptions.UnableToExecuteException;
+
 import it.freedomotic.reactions.Command;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.io.IOException;
+
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author Enrico
  */
-public class JavaDesktopFrontend extends Actuator {
+public class JavaDesktopFrontend
+        extends Actuator {
 
     private MainWindow window;
     private Drawer drawer;
@@ -56,6 +63,7 @@ public class JavaDesktopFrontend extends Actuator {
             window.setVisible(false);
             window.dispose();
         }
+
         window = new MainWindow(this);
         window.setVisible(true);
     }
@@ -87,21 +95,30 @@ public class JavaDesktopFrontend extends Actuator {
             System.out.println("Error while initializing a drawer in desktop frontend.");
             e.printStackTrace();
         }
+
         if (drawer instanceof Renderer) {
             Renderer renderer = (Renderer) drawer;
             renderer.callouts = new CalloutsUpdater(renderer, 1000);
         }
+
         return drawer;
     }
 
     @Override
-    protected void onCommand(final Command c) throws IOException, UnableToExecuteException {
+    protected void onCommand(final Command c)
+            throws IOException, UnableToExecuteException {
         String callout = c.getProperty("callout.message");
+
         if (callout != null) {
-            Callout callout1 = new Callout(this.getClass().getCanonicalName(), "info", callout, 0, 0, 0, 0);
+            Callout callout1 = new Callout(this.getClass().getCanonicalName(),
+                    "info",
+                    callout,
+                    0,
+                    0,
+                    0,
+                    0);
             drawer.createCallout(callout1);
         } else {
-
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -109,20 +126,23 @@ public class JavaDesktopFrontend extends Actuator {
                         public void run() {
                             //Custom button text
                             if (c.getProperty("options") != null) {
-
                                 Object[] options = c.getProperty("options").split(";");
-                                int n = JOptionPane.showOptionDialog(window,
+                                int n =
+                                        JOptionPane.showOptionDialog(window,
                                         c.getProperty("question"),
-                                        "Please reply within " + (int) (c.getReplyTimeout() / 1000) + " seconds",
+                                        "Please reply within "
+                                        + (int) (c.getReplyTimeout() / 1000)
+                                        + " seconds",
                                         JOptionPane.YES_NO_CANCEL_OPTION,
                                         JOptionPane.QUESTION_MESSAGE,
                                         null,
                                         options,
                                         options[2]);
-                                c.setProperty("result", options[n].toString());
+                                c.setProperty("result",
+                                        options[n].toString());
                             }
-                            //sendBack(c);
 
+                            //sendBack(c);
                         }
                     }).start();
                 }
@@ -139,10 +159,7 @@ public class JavaDesktopFrontend extends Actuator {
                 if (event instanceof ZoneHasChanged) {
                     //writing the string on the screen
                     String zoneDesc = event.getProperty("zone.description");
-                    Callout callout = new Callout(
-                            zoneDesc,
-                            2000,
-                            Color.blue);
+                    Callout callout = new Callout(zoneDesc, 2000, Color.blue);
                     drawer.createCallout(callout);
                     drawer.setNeedRepaint(true);
                 } else {

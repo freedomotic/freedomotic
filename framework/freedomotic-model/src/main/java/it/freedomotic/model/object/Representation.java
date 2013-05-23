@@ -30,7 +30,8 @@ import java.io.Serializable;
  *
  * @author Enrico
  */
-public class Representation implements Serializable {
+public class Representation
+        implements Serializable {
 
     private static final long serialVersionUID = 5024359210563760316L;
 	
@@ -68,7 +69,6 @@ public class Representation implements Serializable {
 
     public void setScaleY(double scaleY) {
         this.scaleY = Math.max(0.1, scaleY);
-
     }
 
     public void setTangible(boolean value) {

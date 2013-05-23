@@ -1,7 +1,7 @@
 <config>
     <properties>
         <property name="name" value="chat"/>
-         <property name="short-name" value="chat"/>
+        <property name="short-name" value="chat"/>
         <property name="description" value="It is a chat"/>
         <property name="version" value="1.0.0"/>
         <property name="startup-time" value="on load"/>

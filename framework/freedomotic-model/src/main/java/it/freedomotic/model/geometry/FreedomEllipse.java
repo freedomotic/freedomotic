@@ -27,7 +27,9 @@ import java.io.Serializable;
  *
  * @author Enrico
  */
-public class FreedomEllipse implements FreedomShape, Serializable {
+public class FreedomEllipse
+        implements FreedomShape,
+        Serializable {
 
     private static final long serialVersionUID = -2776037977467820777L;
 	
@@ -41,8 +43,8 @@ public class FreedomEllipse implements FreedomShape, Serializable {
         this.yRadius = yRadius;
     }
 
-        public FreedomEllipse(int x, int y, int xRadius, int yRadius) {
-        this.center = new FreedomPoint(x,y);
+    public FreedomEllipse(int x, int y, int xRadius, int yRadius) {
+        this.center = new FreedomPoint(x, y);
         this.xRadius = xRadius;
         this.yRadius = yRadius;
     }

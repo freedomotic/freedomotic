@@ -24,8 +24,7 @@ public class TestServer extends Component {
 //        getClients().add(Protocol.CLAP);
 //        getClients().add(Protocol.FILE);
 //        getClients().add(Protocol.WAR);
-    	getClients().add(Protocol.HTTP);
+        getClients().add(Protocol.HTTP);
         getDefaultHost().attach(new RestServerRedirector());
     }
-
 }

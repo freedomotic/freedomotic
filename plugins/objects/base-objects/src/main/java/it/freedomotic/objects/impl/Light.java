@@ -7,10 +7,13 @@ package it.freedomotic.objects.impl;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.RangedIntBehavior;
+
 import it.freedomotic.objects.BehaviorLogic;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
-import it.freedomotic.reactions.CommandPersistence;
+
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.CommandPersistence;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +21,8 @@ import java.util.List;
  *
  * @author Enrico
  */
-public class Light extends ElectricDevice {
+public class Light
+        extends ElectricDevice {
 
     private RangedIntBehaviorLogic brightness;
     protected final static String BEHAVIOR_BRIGHTNESS = "brightness";
@@ -28,7 +32,6 @@ public class Light extends ElectricDevice {
         //linking this property with the behavior defined in the XML
         brightness = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(1));
         brightness.addListener(new RangedIntBehaviorLogic.Listener() {
-
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 executePowerOff(params);
@@ -80,6 +83,7 @@ public class Light extends ElectricDevice {
 
     public void setBrightness(int rangeValue, Config params) {
         boolean executed = executeCommand("set brightness", params); //executes the developer level command associated with 'set brightness' action
+
         if (executed) {
             powered.setValue(true);
             brightness.setValue(rangeValue);
@@ -97,7 +101,8 @@ public class Light extends ElectricDevice {
         a.setName("Set " + getPojo().getName() + " brightness to 50%");
         a.setDescription("the light " + getPojo().getName() + " changes its brightness");
         a.setReceiver("app.events.sensors.behavior.request.objects");
-        a.setProperty("object", getPojo().getName());
+        a.setProperty("object",
+                getPojo().getName());
         a.setProperty("behavior", BEHAVIOR_BRIGHTNESS);
         a.setProperty("value", "50");
 
@@ -105,7 +110,8 @@ public class Light extends ElectricDevice {
         b.setName("Increase " + getPojo().getName() + " brightness");
         b.setDescription("increases " + getPojo().getName() + " brigthness of one step");
         b.setReceiver("app.events.sensors.behavior.request.objects");
-        b.setProperty("object", getPojo().getName());
+        b.setProperty("object",
+                getPojo().getName());
         b.setProperty("behavior", BEHAVIOR_BRIGHTNESS);
         b.setProperty("value", Behavior.VALUE_NEXT);
 
@@ -113,7 +119,8 @@ public class Light extends ElectricDevice {
         c.setName("Decrease " + getPojo().getName() + " brightness");
         c.setDescription("decreases " + getPojo().getName() + " brigthness of one step");
         c.setReceiver("app.events.sensors.behavior.request.objects");
-        c.setProperty("object", getPojo().getName());
+        c.setProperty("object",
+                getPojo().getName());
         c.setProperty("behavior", BEHAVIOR_BRIGHTNESS);
         c.setProperty("value", Behavior.VALUE_PREVIOUS);
 
@@ -141,7 +148,6 @@ public class Light extends ElectricDevice {
         f.setProperty("behavior", BEHAVIOR_BRIGHTNESS);
         f.setProperty("value", Behavior.VALUE_PREVIOUS);
 
-
         Command g = new Command();
         g.setName("Set its brightness to the value in the event");
         g.setDescription("set its brighness to the value in the event");
@@ -149,9 +155,6 @@ public class Light extends ElectricDevice {
         g.setProperty("object", "@event.object.name");
         g.setProperty("behavior", BEHAVIOR_BRIGHTNESS);
         g.setProperty("value", "@event.value");
-
-
-
 
         CommandPersistence.add(a);
         CommandPersistence.add(b);

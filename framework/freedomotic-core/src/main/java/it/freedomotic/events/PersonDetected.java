@@ -27,11 +27,13 @@ import java.awt.Point;
 
 /**
  * A person is detected in a position with coordinates x,y of the environment.
- * This event is throwed on the first relevation of the person, after a detection,
- * if the person moves, a {@link PersonMoving} event is thwowed.
+ * This event is throwed on the first relevation of the person, after a
+ * detection, if the person moves, a {@link PersonMoving} event is thwowed.
+ *
  * @author Enrico
  */
-public class PersonDetected extends EventTemplate {
+public class PersonDetected
+        extends EventTemplate {
 
     private static final long serialVersionUID = 180422544433345304L;
 	
@@ -40,10 +42,9 @@ public class PersonDetected extends EventTemplate {
     int y;
 
     public PersonDetected(Object source, int id, Point startLocation) {
-        
         this.id = id;
         x = (int) startLocation.getX();
-        y=(int) startLocation.getY();
+        y = (int) startLocation.getY();
         generateEventPayload();
     }
 
@@ -52,16 +53,14 @@ public class PersonDetected extends EventTemplate {
 //        p.addDestination(startLocation);
 //        generateEventPayload();
 //    }
-
 //    public int getPersonId() {
 //        return id;
 //    }
-
     @Override
     protected void generateEventPayload() {
         payload.addStatement("id", id);
         payload.addStatement("xCord", x);
-        payload.addStatement("yCord",y);
+        payload.addStatement("yCord", y);
     }
 
     public int getId() {
@@ -76,13 +75,12 @@ public class PersonDetected extends EventTemplate {
         return y;
     }
 
-   
     @Override
-    public String toString(){
-       return ("Person " + id + " has been detected in the environment at location " + x+","+y);
+    public String toString() {
+        return ("Person " + id + " has been detected in the environment at location " + x + "," + y);
     }
 
-        @Override
+    @Override
     public String getDefaultDestination() {
         return "app.event.sensor.person.movement.detected";
     }

@@ -31,8 +31,9 @@ import java.io.Serializable;
  *
  * @author Enrico
  */
-public class LastOutStrategy implements Ownership, Serializable {
-
+public class LastOutStrategy
+        implements Ownership,
+        Serializable {
 
     private static final long serialVersionUID = -4839776027684778640L;
 
@@ -44,6 +45,7 @@ public class LastOutStrategy implements Ownership, Serializable {
     @Override
     public boolean canTriggerReactionsOnExit(ZoneLogic z) {
         if (z.howManyInside() <= 1) { //the last person in the zone is exiting from it
+
             return true;
         } else {
             return false;

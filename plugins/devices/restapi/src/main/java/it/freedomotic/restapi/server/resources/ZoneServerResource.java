@@ -18,36 +18,36 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
  *
  * @author gpt
  */
-public class ZoneServerResource extends ServerResource implements ZoneResource{
-    private static volatile Zone zone;    	
+public class ZoneServerResource extends ServerResource implements ZoneResource {
+
+    private static volatile Zone zone;
+
     @Override
-    public void doInit() { 
-        int env =Integer.parseInt((String)getRequest().getAttributes().get("env"));
-        int number =Integer.parseInt((String)getRequest().getAttributes().get("number"));        
-        zone = EnvironmentPersistence.getEnvironments().get(env).getPojo().getZone(number);                           
+    public void doInit() {
+        int env = Integer.parseInt((String) getRequest().getAttributes().get("env"));
+        int number = Integer.parseInt((String) getRequest().getAttributes().get("number"));
+        zone = EnvironmentPersistence.getEnvironments().get(env).getPojo().getZone(number);
     }
 
     @Override
-    public String retrieveXml() {        
+    public String retrieveXml() {
         String ret = "";
-        XStream xstream =FreedomXStream.getXstream(); 
+        XStream xstream = FreedomXStream.getXstream();
         ret = xstream.toXML(zone);
         return ret;
     }
-    
+
     @Override
-    public String retrieveJson() {        
+    public String retrieveJson() {
         String ret = "";
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
-        xstream.setMode(XStream.NO_REFERENCES);                
-        ret = xstream.toXML(zone);        
+        xstream.setMode(XStream.NO_REFERENCES);
+        ret = xstream.toXML(zone);
         return ret;
     }
-    
-    @Override   
-    public Zone retrieveZone() {       
-       return zone;
-    }  
-    
-}
 
+    @Override
+    public Zone retrieveZone() {
+        return zone;
+    }
+}

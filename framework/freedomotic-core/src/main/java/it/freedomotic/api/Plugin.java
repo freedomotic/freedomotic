@@ -21,24 +21,28 @@
  */
 package it.freedomotic.api;
 
+import com.google.inject.Inject;
+
 import it.freedomotic.app.ConfigPersistence;
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
+
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.plugins.ClientStorage;
-import it.freedomotic.security.Auth;
+
 import it.freedomotic.util.EqualsUtil;
 import it.freedomotic.util.Info;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
+
+import java.io.*;
+
 import javax.swing.JFrame;
+import it.freedomotic.security.Auth;
 
-public class Plugin implements Client {
-
+public class Plugin
+        implements Client {
 //    private boolean isConnected = false;
+
     protected volatile boolean isRunning;
     private String pluginName;
     private String type = "Plugin";
@@ -58,6 +62,8 @@ public class Plugin implements Client {
     final static int SAME_VERSION = 0;
     final static int FIRST_IS_OLDER = -1;
     final static int LAST_IS_OLDER = 1;
+    @Inject
+    private API api;
 
     public Plugin(String pluginName, String manifestPath) {
         setName(pluginName);
@@ -78,6 +84,14 @@ public class Plugin implements Client {
         return path;
     }
 
+    public API getApi() {
+        return api;
+    }
+
+    public void setApi(API api) {
+        this.api = api;
+    }
+
     protected void onStart() {
     }
 
@@ -88,7 +102,10 @@ public class Plugin implements Client {
     public final void setDescription(String description) {
         if (!getDescription().equalsIgnoreCase(description)) {
             this.description = description;
-            PluginHasChanged event = new PluginHasChanged(this, this.getName(), PluginActions.DESCRIPTION);
+
+            PluginHasChanged event = new PluginHasChanged(this,
+                    this.getName(),
+                    PluginActions.DESCRIPTION);
             Freedomotic.sendEvent(event);
         }
     }
@@ -134,7 +151,9 @@ public class Plugin implements Client {
         if (!isRunning()) {
             start();
         }
+
         onShowGui();
+
         if (gui != null) {
             gui.setVisible(true);
         } else {
@@ -145,6 +164,7 @@ public class Plugin implements Client {
     @Override
     public void hideGui() {
         onHideGui();
+
         if (gui != null) {
             gui.setVisible(false);
         }
@@ -196,6 +216,7 @@ public class Plugin implements Client {
         if (!(aThat instanceof Plugin)) {
             return false;
         }
+
         //Alternative to the above line :
         //if ( aThat == null || aThat.getClass() != this.getClass() ) return false;
 
@@ -203,13 +224,15 @@ public class Plugin implements Client {
         Plugin that = (Plugin) aThat;
 
         //now a proper field-by-field evaluation can be made
-        return EqualsUtil.areEqual(this.getName().toLowerCase(), that.getName().toLowerCase());
+        return EqualsUtil.areEqual(this.getName().toLowerCase(),
+                that.getName().toLowerCase());
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 53 * hash + (this.pluginName != null ? this.pluginName.hashCode() : 0);
+        hash = (53 * hash) + ((this.pluginName != null) ? this.pluginName.hashCode() : 0);
+
         return hash;
     }
 
@@ -220,6 +243,7 @@ public class Plugin implements Client {
             Freedomotic.logger.severe("Missing manifest " + manifest.toString() + " for plugin " + getName());
             setDescription("Missing manifest file " + manifest.toString());
         }
+
         init(configuration);
     }
 
@@ -232,102 +256,6 @@ public class Plugin implements Client {
         listenOn = configuration.getStringProperty("listen-on", "undefined");
         sendOn = configuration.getStringProperty("send-on", "undefined");
         loadPermissionsFromManifest();
-    }
-
-    public static boolean isCompatible(final File pluginFolder) {
-        if (!pluginFolder.isDirectory()) {
-            throw new IllegalArgumentException();
-        }
-        //seach for a file called PACKAGE
-        Properties plugin = new Properties();
-        try {
-            plugin.load(new FileInputStream(new File(pluginFolder + "/PACKAGE")));
-
-
-            int requiredMajor = getVersionProperty(plugin, "framework.required.major");
-            int requiredMinor = getVersionProperty(plugin, "framework.required.minor");
-            int requiredBuild = getVersionProperty(plugin, "framework.required.build");
-            //checking framework version compatibility
-            //required version must be older (or equal) then current version
-            if ((getOldestVersion(
-                    requiredMajor + "." + requiredMinor + "." + requiredBuild,
-                    Info.getVersion())
-                    <= Plugin.SAME_VERSION)) {
-                return true;
-            }
-        } catch (IOException ex) {
-            Freedomotic.logger.severe("Folder " + pluginFolder + " doesn't contains a PACKAGE file. This plugin is not loaded.");
-        } catch (NumberFormatException numex) {
-            //do nothing
-        } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
-        }
-        return false;
-    }
-
-    private static int getVersionProperty(Properties properties, String key) {
-        //if property is not specified returns Integer.MAX_VALUE so it never match
-        //if is a string returns 0 to match any value with "x"
-        try {
-            int value;
-            if (properties.getProperty(key).equalsIgnoreCase("x")) {
-                value = 0;
-            } else {
-                value = Integer.parseInt(properties.getProperty(key, new Integer(Integer.MAX_VALUE).toString()));
-            }
-            return value;
-        } catch (NumberFormatException numberFormatException) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /*
-     * Checks if a plugin is already installed, if is an obsolete or newer
-     * version
-     */
-    public static int compareVersions(String name, String version) {
-        Client client = ClientStorage.get(name);
-        if (client != null && client instanceof Plugin) {
-            //already installed
-            //now check for version
-            Plugin plugin = (Plugin) client;
-            if (plugin.getVersion() == null) {
-                return -1;
-            }
-            return Plugin.getOldestVersion(plugin.getVersion(), version);
-        } else {
-            //not installed
-            return -1;
-        }
-    }
-
-    /**
-     * Calculates the oldest version between two version string
-     * MAJOR.MINOR.BUILD (eg: 5.3.1)
-     *
-     * @param str1 first version string 5.3.0
-     * @param str2 second version string 5.3.1
-     * @return -1 if str1 is older then str2, 0 if str1 equals str2, 1 if str2
-     * is older then str1
-     */
-    public static int getOldestVersion(String str1, String str2) {
-        //System.out.println("VERSION: " + str1 + " - " + str2);
-        String MAX = Integer.toString(Integer.MAX_VALUE).toString();
-        str1 = str1.replaceAll("x", MAX);
-        str2 = str2.replaceAll("x", MAX);
-        String[] vals1 = str1.split("\\.");
-        String[] vals2 = str2.split("\\.");
-        int i = 0;
-        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
-            i++;
-        }
-
-        if (i < vals1.length && i < vals2.length) {
-            int diff = new Integer(vals1[i]).compareTo(new Integer(vals2[i]));
-            return diff < 0 ? -1 : diff == 0 ? 0 : 1;
-        }
-        int result = vals1.length < vals2.length ? -1 : vals1.length == vals2.length ? 0 : 1;
-        return result;
     }
 
     protected void onShowGui() {

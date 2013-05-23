@@ -5,19 +5,24 @@
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.events.ObjectReceiveClick;
+
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
+
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
-import it.freedomotic.reactions.TriggerPersistence;
+
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.reactions.TriggerPersistence;
 
 /**
  *
  * @author enrico
  */
-public class GenericSensor extends EnvObjectLogic {
+public class GenericSensor
+        extends EnvObjectLogic {
 
     private RangedIntBehaviorLogic readValue;
 
@@ -26,7 +31,6 @@ public class GenericSensor extends EnvObjectLogic {
         //linking this property with the behavior defined in the XML
         readValue = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(0));
         readValue.addListener(new RangedIntBehaviorLogic.Listener() {
-
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //there is an hardware read error
@@ -41,7 +45,7 @@ public class GenericSensor extends EnvObjectLogic {
             public void onRangeValue(int rangeValue, Config params, boolean fireCommand) {
                 if (fireCommand) {
                     executeSetReadValue(rangeValue, params);
-                } else { 
+                } else {
                     setReadValue(rangeValue);
                 }
             }
@@ -53,10 +57,11 @@ public class GenericSensor extends EnvObjectLogic {
 
     public void executeSetReadValue(int rangeValue, Config params) {
         boolean executed = executeCommand("set read value", params);
+
         if (executed) {
             readValue.setValue(rangeValue);
             getPojo().setCurrentRepresentation(0);
-                setChanged(true);
+            setChanged(true);
         }
     }
 
@@ -64,7 +69,7 @@ public class GenericSensor extends EnvObjectLogic {
         Freedomotic.logger.info("Setting behavior 'readValue' of object '" + getPojo().getName() + "' to " + value);
         readValue.setValue(value);
         getPojo().setCurrentRepresentation(0);
-                setChanged(true);
+        setChanged(true);
     }
 
     /**
@@ -72,17 +77,15 @@ public class GenericSensor extends EnvObjectLogic {
      */
     @Override
     protected void createCommands() {
-
-
     }
 
     @Override
     protected void createTriggers() {
-        
         Trigger clicked = new Trigger();
         clicked.setName("When " + this.getPojo().getName() + " is clicked");
         clicked.setChannel("app.event.sensor.object.behavior.clicked");
-        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
+        clicked.getPayload().addStatement("object.name",
+                this.getPojo().getName());
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
 

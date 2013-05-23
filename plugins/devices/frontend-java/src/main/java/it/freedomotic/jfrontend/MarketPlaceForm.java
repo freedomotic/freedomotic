@@ -10,15 +10,24 @@
  */
 package it.freedomotic.jfrontend;
 
+import com.google.inject.Inject;
+
 import it.freedomotic.api.Plugin;
+
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.jfrontend.utils.SpringUtilities;
-import it.freedomotic.plugins.AddonLoader;
-import it.freedomotic.service.IPluginCategory;
-import it.freedomotic.service.IPluginPackage;
-import it.freedomotic.service.MarketPlaceService;
+
+import it.freedomotic.marketplace.IPluginCategory;
+import it.freedomotic.marketplace.IPluginPackage;
+import it.freedomotic.marketplace.MarketPlaceService;
+
+import it.freedomotic.plugins.ClientStorage;
+import it.freedomotic.plugins.filesystem.PluginLoaderFilesystem;
+
 import it.freedomotic.util.Info;
 import it.freedomotic.util.i18n;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -34,6 +43,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -44,12 +54,17 @@ import javax.swing.SpringLayout;
  *
  * @author gpt
  */
-public class MarketPlaceForm extends javax.swing.JFrame {
-
+public class MarketPlaceForm
+        extends javax.swing.JFrame {
     //ArrayList<IPluginPackage> pluginList;
+
     ArrayList<IPluginCategory> pluginCategoryList;
     private static final IPlugCatComparator CatComp = new IPlugCatComparator();
     private static final IPlugPackComparator PackComp = new IPlugPackComparator();
+    @Inject
+    private ClientStorage clients;
+    @Inject
+    private PluginLoaderFilesystem pluginsLoader;
 
     /**
      * Creates new form MarketPlaceForm
@@ -74,9 +89,11 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     public final void retrieveCategories() {
         cmbCategory.setEnabled(false);
         Collections.sort(pluginCategoryList, CatComp);
+
         for (IPluginCategory pc : pluginCategoryList) {
             cmbCategory.addItem(pc.getName());
         }
+
         //add listener to category selection changes
         cmbCategory.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -84,6 +101,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 retrievePlugins(pluginCategoryList.get(index));
             }
         });
+
         //force to retrive plugins for first category
         if (!pluginCategoryList.isEmpty()) {
             retrievePlugins(pluginCategoryList.get(0));
@@ -110,22 +128,35 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                     public void run() {
                         try {
                             String path = Info.PATH_RESOURCES_FOLDER.toString();
+
                             if (category.getPlugins() == null) {
                                 return;
                             }
-                            Collections.sort(category.getPlugins(),PackComp);
+
+                            Collections.sort(category.getPlugins(),
+                                    PackComp);
+
                             //TODO: use package images.
-                            ImageIcon iconPlugin = new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
-                            ImageIcon iconCoolPlugin = new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
-                            ImageIcon iconClient = new ImageIcon(path + File.separatorChar + "clientIcon1.png", "Icon");
+                            ImageIcon iconPlugin =
+                                    new ImageIcon(path + File.separatorChar
+                                    + "plug.png", "Icon");
+                            ImageIcon iconCoolPlugin =
+                                    new ImageIcon(path + File.separatorChar
+                                    + "plug-cool.png", "Icon");
+                            ImageIcon iconClient =
+                                    new ImageIcon(path + File.separatorChar
+                                    + "clientIcon1.png", "Icon");
                             int row = 0;
+
                             for (final IPluginPackage pp : category.getPlugins()) {
                                 JLabel lblIcon;
+
                                 if (pp.getIcon() != null) {
                                     lblIcon = new JLabel(pp.getIcon());
                                 } else {
                                     lblIcon = new JLabel(iconPlugin);
                                 }
+
                                 JLabel lblName = new JLabel(pp.getTitle());
                                 JButton btnAction = null;
                                 String freedomoticVersion = Info.getMajor() + "." + Info.getMinor();
@@ -133,21 +164,29 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                                         && !pp.getFilePath(freedomoticVersion).isEmpty()
                                         && pp.getTitle() != null) {
                                     String version = extractVersion(new File(pp.getFilePath(freedomoticVersion)).getName().toString());
-                                    int result = Plugin.compareVersions(pp.getTitle(), version);
+                                    int result = clients.compareVersions(pp.getTitle(), version);
                                     //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
                                     if (result == -1) { //older version
                                         //btnAction = new JButton(pp.getTitle() + " (Install version " + version + ")");
-                                        btnAction = new JButton(i18n.msg(this,"install"));
+                                        btnAction = new JButton(i18n.msg(this, "install"));
                                     } else {
                                         if (result == 1) { //newer version
                                             //btnAction = new JButton(pp.getTitle() + " (Update from " + version + " to " + version + ")");
-                                            btnAction = new JButton(i18n.msg(this,"update"));
+                                            btnAction = new JButton(i18n.msg(this, "update"));
                                         }
                                     }
                                 } else {
-                                    lblName = new JLabel(i18n.msg(this,"X_unavailable",new Object[]{pp.getTitle()}));
+                                    lblName =
+                                            new JLabel(i18n.msg(
+                                            this,
+                                            "X_unavailable",
+                                            new Object[]{
+                                                pp.getTitle()
+                                            }));
                                 }
+
                                 JLabel lblDescription = new JLabel(pp.getDescription());
+
                                 if (btnAction != null) {
                                     btnAction.addActionListener(new ActionListener() {
                                         public void actionPerformed(ActionEvent e) {
@@ -163,7 +202,8 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                                         try {
                                             browse(new URI(pp.getURI()));
                                         } catch (URISyntaxException ex) {
-                                            Logger.getLogger(MarketPlaceForm.class.getName()).log(Level.SEVERE, null, ex);
+                                            Logger.getLogger(MarketPlaceForm.class.getName())
+                                                    .log(Level.SEVERE, null, ex);
                                         }
                                     }
                                 });
@@ -174,19 +214,21 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                                 pnlMain.add(lblName);
                                 pnlMain.add(lblDescription);
                                 pnlMain.add(btnMore);
+
                                 if (btnAction != null) {
                                     pnlMain.add(btnAction);
                                 } else {
-                                    JButton disabled = new JButton(i18n.msg(this,"install"));
+                                    JButton disabled = new JButton(i18n.msg(this, "install"));
                                     disabled.setEnabled(false);
                                     pnlMain.add(disabled);
                                 }
+
                                 row++;
                             }
-                            SpringUtilities.makeCompactGrid(pnlMain,
-                                    row, 5, //rows, cols
+
+                            SpringUtilities.makeCompactGrid(pnlMain, row, 5, //rows, cols
                                     5, 5, //initX, initY
-                                    5, 5);//xPad, yPad
+                                    5, 5); //xPad, yPad
                             politeWaitingMessage(false);
                             pnlMain.repaint();
                         } catch (Exception e) {
@@ -202,8 +244,12 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
         //only 5.2.x-1.212 is needed
         //remove extension
-        filename = filename.substring(0, filename.lastIndexOf("."));
+        filename =
+                filename.substring(0,
+                filename.lastIndexOf("."));
+
         String[] tokens = filename.split("-");
+
         //3 tokens expected
         if (tokens.length == 3) {
             return tokens[1] + "-" + tokens[2];
@@ -214,52 +260,68 @@ public class MarketPlaceForm extends javax.swing.JFrame {
 
     private void installPackage(IPluginPackage pp) {
         String freedomoticVersion = Info.getMajor() + "." + Info.getMinor();
+
         if (pp.getFilePath(freedomoticVersion) == null) {
             JOptionPane.showMessageDialog(this,
-                    i18n.msg(this,"warn_plugin_X_unavailable", new Object[]{ pp.getTitle(), pp.getURI()}));
+                    i18n.msg(this,
+                    "warn_plugin_X_unavailable",
+                    new Object[]{pp.getTitle(), pp.getURI()}));
+
             return;
         }
+
         //Custom button text
-        Object[] options = {i18n.msg("yes_please"),
-        i18n.msg("no_thanks")};
-        int n = JOptionPane.showOptionDialog(null, i18n.msg(this,"confirm_package_X_download",new Object[]{pp.getTitle()}),
-                i18n.msg(this,"title_install_package"),
+        Object[] options = {i18n.msg("yes_please"), i18n.msg("no_thanks")};
+        int n =
+                JOptionPane.showOptionDialog(null,
+                i18n.msg(this,
+                "confirm_package_X_download",
+                new Object[]{pp.getTitle()}),
+                i18n.msg(this, "title_install_package"),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 options,
                 options[1]);
+
         if (n != 0) {
             return;
         }
+
         JOptionPane.showMessageDialog(null,
-                i18n.msg(this,"info_download_started"),
-                i18n.msg(this,"title_download_started"), JOptionPane.INFORMATION_MESSAGE);
+                i18n.msg(this, "info_download_started"),
+                i18n.msg(this, "title_download_started"),
+                JOptionPane.INFORMATION_MESSAGE);
+
         Runnable task;
         final String string = pp.getFilePath(freedomoticVersion);
         Freedomotic.logger.finest("Download string:" + string);
-        task = new Runnable() {
-            boolean done = false;
+        task =
+                new Runnable() {
+                    boolean done = false;
 
-            @Override
-            public void run() {
-                try {
-                    done = AddonLoader.installDevice(new URL(string));
-                } catch (MalformedURLException ex) {
-                    done = false;
-                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                if (!done) {
-                    JOptionPane.showMessageDialog(null,
-                            i18n.msg(this,"info_download_failed"),
-                            i18n.msg(this,"title_download_failed"), JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                            i18n.msg(this,"info_package_install_completed"),
-                            i18n.msg(this,"title_install_completed"), JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        };
+                    @Override
+                    public void run() {
+                        try {
+                            done = pluginsLoader.installPlugin(new URL(string));
+                        } catch (MalformedURLException ex) {
+                            done = false;
+                            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        if (!done) {
+                            JOptionPane.showMessageDialog(null,
+                                    i18n.msg(this, "info_download_failed"),
+                                    i18n.msg(this, "title_download_failed"),
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null,
+                                    i18n.msg(this, "info_package_install_completed"),
+                                    i18n.msg(this, "title_install_completed"),
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                };
         task.run();
     }
 
@@ -280,7 +342,8 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         }
     }
 
-    public static class IPlugCatComparator implements Comparator<IPluginCategory> {
+    public static class IPlugCatComparator
+            implements Comparator<IPluginCategory> {
 
         @Override
         public int compare(IPluginCategory m1, IPluginCategory m2) {
@@ -288,7 +351,8 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         }
     }
 
-    public static class IPlugPackComparator implements Comparator<IPluginPackage> {
+    public static class IPlugPackComparator
+            implements Comparator<IPluginPackage> {
 
         @Override
         public int compare(IPluginPackage m1, IPluginPackage m2) {
@@ -301,7 +365,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -358,5 +422,6 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JLabel txtInfo;
+
     // End of variables declaration//GEN-END:variables
 }

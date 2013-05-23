@@ -9,7 +9,7 @@
         <property name="udp-server-port" value="7331"/>
         <property name="delimiter" value=":"/>
         <property name="startup-time"   value=""/>
-     </properties>
+    </properties>
     <tuples>
         <tuple>
             <property name="object.class" value="Thermostat"/>

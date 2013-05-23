@@ -23,15 +23,37 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package it.freedomotic.exceptions;
 
 /**
  *
  * @author Enrico
  */
-public class UnableToExecuteException extends Exception {
+public class UnableToExecuteException
+        extends FreedomoticException {
 
-	private static final long serialVersionUID = 8791599031825647880L;
+    /**
+     * Creates a new instance of
+     * <code>DaoLayerException</code> without detail message.
+     */
+    public UnableToExecuteException() {
+    }
 
+    /**
+     * Constructs an instance of
+     * <code>DaoLayerException</code> with the specified detail message.
+     *
+     * @param msg the detail message.
+     */
+    public UnableToExecuteException(String msg) {
+        super(msg);
+    }
+
+    public UnableToExecuteException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public UnableToExecuteException(Throwable cause) {
+        super(cause);
+    }
 }

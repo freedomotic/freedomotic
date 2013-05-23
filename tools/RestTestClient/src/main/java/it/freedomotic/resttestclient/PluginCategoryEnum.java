@@ -9,5 +9,6 @@ package it.freedomotic.resttestclient;
  * @author gpt
  */
 public enum PluginCategoryEnum {
+
     Protocol, Sensor, Actuator, Object, Frontend, Automation
 }

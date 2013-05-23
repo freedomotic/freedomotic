@@ -14,9 +14,8 @@ import org.restlet.resource.Get;
  *
  * @author gpt
  */
-public interface PluginsResource extends FreedomoticResource{
-   
+public interface PluginsResource extends FreedomoticResource {
+
     @Get("object|gwt_object")
     public ArrayList<PluginPojo> retrievePlugins();
-  
 }

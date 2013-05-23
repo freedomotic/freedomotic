@@ -70,7 +70,7 @@ public class JavaStompClientExample {
                 + "</payload>"
                 + "</it.freedomotic.events.ObjectReceiveClick>";
 
-        String manifest = 
+        String manifest =
                 "  <it.freedomotic.model.ds.Config>\n"
                 + "  <properties>\n"
                 + "    <property name=\"startup-time\" value=\"on load\"/>\n"
@@ -81,9 +81,9 @@ public class JavaStompClientExample {
                 + "  </properties>\n"
                 + "  <xmlFile/>\n"
                 + "</it.freedomotic.model.ds.Config>";
-                
 
-          
+
+
         String manifestDestination = "/queue/app.plugin.create";
 
         Client c;

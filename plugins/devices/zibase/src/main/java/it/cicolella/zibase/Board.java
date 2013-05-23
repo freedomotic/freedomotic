@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.zibase;
 
 public class Board {
@@ -31,7 +30,7 @@ public class Board {
         setAlias(alias);
         setIpAddress(ipAddress);
         setPort(port);
-      }
+    }
 
     public String getSensorsUrl() {
         return sensorsUrl;
@@ -56,7 +55,7 @@ public class Board {
     public void setAlias(String alias) {
         this.alias = alias;
     }
-    
+
     public String getIpAddress() {
         return ipAddress;
     }

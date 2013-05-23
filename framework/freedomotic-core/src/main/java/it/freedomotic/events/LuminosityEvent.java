@@ -22,13 +22,15 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
+
 import it.freedomotic.model.environment.Zone;
 
 /**
  *
  * @author Enrico
  */
-public class LuminosityEvent extends EventTemplate {
+public class LuminosityEvent
+        extends EventTemplate {
 
     private static final long serialVersionUID = 1605869382477368794L;
 	
@@ -40,7 +42,6 @@ public class LuminosityEvent extends EventTemplate {
         zone = z.getName();
         generateEventPayload();
     }
-
 
     @Override
     protected void generateEventPayload() {

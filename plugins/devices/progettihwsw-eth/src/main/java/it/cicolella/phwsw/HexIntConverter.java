@@ -17,15 +17,14 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.phwsw;
 
 public class HexIntConverter {
 
-
     /**
-     * Takes in input an int and returns a String representing its hex value
-     * Eg: input= 42 returns "2a". Alpha characters are lower case
+     * Takes in input an int and returns a String representing its hex value Eg:
+     * input= 42 returns "2a". Alpha characters are lower case
+     *
      * @param integer
      * @return its corresponding int
      */
@@ -40,8 +39,10 @@ public class HexIntConverter {
     }
 
     /**
-     * Takes in input an hex string eg: "2A" or "2a" and returns the int 42.
-     * If the String in input is not a valid hex a NumberFormatException is throwed.
+     * Takes in input an hex string eg: "2A" or "2a" and returns the int 42. If
+     * the String in input is not a valid hex a NumberFormatException is
+     * throwed.
+     *
      * @param hex
      * @return the input value converted to int
      */

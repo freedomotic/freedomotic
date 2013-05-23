@@ -22,10 +22,12 @@
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
+
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.object.BooleanBehavior;
@@ -44,7 +46,8 @@ import it.freedomotic.util.TopologyUtils;
  *
  * @author Enrico
  */
-public class Gate extends EnvObjectLogic {
+public class Gate
+        extends EnvObjectLogic {
     //suppose from and to are always reflexive from->to; to->from
 
     private Room from;
@@ -105,6 +108,7 @@ public class Gate extends EnvObjectLogic {
 
     protected void setClosed(Config params) {
         boolean executed = executeCommand("close", params); //executes the developer level command associated with 'set brightness' action
+
         if (executed) {
             open.setValue(false);
             //to mantain the object coerence
@@ -117,6 +121,7 @@ public class Gate extends EnvObjectLogic {
 
     protected void setOpen(Config params) {
         boolean executed = executeCommand("open", params); //executes the developer level command associated with 'set brightness' action
+
         if (executed) {
             open.setValue(true);
             //to mantain the object coerence
@@ -129,6 +134,7 @@ public class Gate extends EnvObjectLogic {
 
     protected void setOpeness(int rangeValue, Config params) {
         boolean executed = executeCommand("measured open", params); //executes the developer level command associated with 'set brightness' action
+
         if (executed) {
             //here we never had 0 or 100
             open.setValue(true);
@@ -159,6 +165,7 @@ public class Gate extends EnvObjectLogic {
                 }
             }
         }
+
         //then executeCommand the super which notifies the event
         super.setChanged(true);
     }
@@ -191,6 +198,7 @@ public class Gate extends EnvObjectLogic {
 //        double rotation = Math.toRadians(representation.getRotation());
         from = null;
         to = null;
+
         //now apply offset and rotation to gate the shape
 //        AffineTransform transform = new AffineTransform();
 //        transform.translate(xoffset, yoffset);
@@ -209,12 +217,14 @@ public class Gate extends EnvObjectLogic {
 //            }
 //        }
         FreedomPolygon objShape =
-                TopologyUtils.rotate(
-                TopologyUtils.translate(pojoShape, xoffset, yoffset), (int) representation.getRotation());
+                TopologyUtils.rotate(TopologyUtils.translate(pojoShape, xoffset, yoffset),
+                (int) representation.getRotation());
         EnvironmentLogic env = EnvironmentPersistence.getEnvByUUID(getPojo().getEnvironmentID());
+
         if (env != null) {
             for (Room room : env.getRooms()) {
-                if (TopologyUtils.intersects(objShape, room.getPojo().getShape())) {
+                if (TopologyUtils.intersects(objShape,
+                        room.getPojo().getShape())) {
                     if (from == null) {
                         from = (Room) room;
                         to = (Room) room;
@@ -224,7 +234,8 @@ public class Gate extends EnvObjectLogic {
                 }
             }
         } else {
-            Freedomotic.logger.severe("The gate '"+ getPojo().getName() +"' is not linked to any any environment");
+            Freedomotic.logger.severe("The gate '" + getPojo().getName()
+                    + "' is not linked to any any environment");
         }
 
         if (to != from) {
@@ -235,10 +246,11 @@ public class Gate extends EnvObjectLogic {
             //the gate interects two equals zones
             if (from != null) {
                 Freedomotic.logger.warning("The gate '" + getPojo().getName() + "' connects the same zones ["
-                        + from.getPojo().getName() + "; "
-                        + to.getPojo().getName() + "]. This is not possible.");
+                        + from.getPojo().getName() + "; " + to.getPojo().getName()
+                        + "]. This is not possible.");
             }
         }
+
         //notify if the passage connect two rooms
         Freedomotic.logger.info("The gate '" + getPojo().getName() + "' connects " + from + " to " + to);
     }
@@ -249,7 +261,8 @@ public class Gate extends EnvObjectLogic {
         a.setName("Set " + getPojo().getName() + " openness to 50%");
         a.setDescription("the " + getPojo().getName() + " changes its openness");
         a.setReceiver("app.events.sensors.behavior.request.objects");
-        a.setProperty("object", getPojo().getName());
+        a.setProperty("object",
+                getPojo().getName());
         a.setProperty("behavior", "openness");
         a.setProperty("value", "50");
 
@@ -257,7 +270,8 @@ public class Gate extends EnvObjectLogic {
         b.setName("Increase " + getPojo().getName() + " openness");
         b.setDescription("increases " + getPojo().getName() + " openness of one step");
         b.setReceiver("app.events.sensors.behavior.request.objects");
-        b.setProperty("object", getPojo().getName());
+        b.setProperty("object",
+                getPojo().getName());
         b.setProperty("behavior", "openness");
         b.setProperty("value", "next");
 
@@ -265,7 +279,8 @@ public class Gate extends EnvObjectLogic {
         c.setName("Decrease " + getPojo().getName() + " openness");
         c.setDescription("decreases " + getPojo().getName() + " openness of one step");
         c.setReceiver("app.events.sensors.behavior.request.objects");
-        c.setProperty("object", getPojo().getName());
+        c.setProperty("object",
+                getPojo().getName());
         c.setProperty("behavior", "openness");
         c.setProperty("value", "previous");
 
@@ -293,7 +308,6 @@ public class Gate extends EnvObjectLogic {
         f.setProperty("behavior", "openness");
         f.setProperty("value", "previous");
 
-
         Command g = new Command();
         g.setName("Set its openness to the value in the event");
         g.setDescription("set its openness to the value in the event");
@@ -306,7 +320,8 @@ public class Gate extends EnvObjectLogic {
         h.setName("Open " + getPojo().getName());
         h.setDescription(getPojo().getSimpleType() + " opens");
         h.setReceiver("app.events.sensors.behavior.request.objects");
-        h.setProperty("object", getPojo().getName());
+        h.setProperty("object",
+                getPojo().getName());
         h.setProperty("behavior", "open");
         h.setProperty("value", "true");
 
@@ -314,7 +329,8 @@ public class Gate extends EnvObjectLogic {
         i.setName("Close " + getPojo().getName());
         i.setDescription(getPojo().getSimpleType() + " closes");
         i.setReceiver("app.events.sensors.behavior.request.objects");
-        i.setProperty("object", getPojo().getName());
+        i.setProperty("object",
+                getPojo().getName());
         i.setProperty("behavior", "open");
         i.setProperty("value", "false");
 
@@ -322,7 +338,8 @@ public class Gate extends EnvObjectLogic {
         l.setName("Switch " + getPojo().getName() + " open state");
         l.setDescription("closes/opens " + getPojo().getName());
         l.setReceiver("app.events.sensors.behavior.request.objects");
-        l.setProperty("object", getPojo().getName());
+        l.setProperty("object",
+                getPojo().getName());
         l.setProperty("behavior", "open");
         l.setProperty("value", "opposite");
 
@@ -350,7 +367,6 @@ public class Gate extends EnvObjectLogic {
         o.setProperty("behavior", "open");
         o.setProperty("value", "opposite");
 
-
         CommandPersistence.add(a);
         CommandPersistence.add(b);
         CommandPersistence.add(c);
@@ -364,7 +380,6 @@ public class Gate extends EnvObjectLogic {
         CommandPersistence.add(m);
         CommandPersistence.add(n);
         CommandPersistence.add(o);
-
     }
 
     @Override
@@ -372,19 +387,22 @@ public class Gate extends EnvObjectLogic {
         Trigger clicked = new Trigger();
         clicked.setName("When " + this.getPojo().getName() + " is clicked");
         clicked.setChannel("app.event.sensor.object.behavior.clicked");
-        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
+        clicked.getPayload().addStatement("object.name",
+                this.getPojo().getName());
         clicked.getPayload().addStatement("click", "SINGLE_CLICK");
 
         Trigger turnsOpen = new Trigger();
         turnsOpen.setName(this.getPojo().getName() + " becomes open");
         turnsOpen.setChannel("app.event.sensor.object.behavior.change");
-        turnsOpen.getPayload().addStatement("object.name", this.getPojo().getName());
+        turnsOpen.getPayload().addStatement("object.name",
+                this.getPojo().getName());
         turnsOpen.getPayload().addStatement("object.behavior.open", "true");
 
         Trigger turnsClosed = new Trigger();
         turnsClosed.setName(this.getPojo().getName() + " becomes closed");
         turnsClosed.setChannel("app.event.sensor.object.behavior.change");
-        turnsClosed.getPayload().addStatement("object.name", this.getPojo().getName());
+        turnsClosed.getPayload().addStatement("object.name",
+                this.getPojo().getName());
         turnsClosed.getPayload().addStatement("object.behavior.open", "false");
 
         TriggerPersistence.add(clicked);

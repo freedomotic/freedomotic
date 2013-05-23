@@ -135,8 +135,8 @@ public class Souliss extends Protocol {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = null;
         //statusFileURL = "http://" + board.getIpAddress() + ":"
-          //      + Integer.toString(board.getPort()) + "/status";
-        statusFileURL = board.getStatusToQuery(); 
+        //      + Integer.toString(board.getPort()) + "/status";
+        statusFileURL = board.getStatusToQuery();
         Freedomotic.logger.info("Souliss Sensor gets nodes status from file " + statusFileURL);
         try {
             // add json server http
@@ -159,7 +159,7 @@ public class Souliss extends Protocol {
             System.out.println("Json string from server " + jsonText);
             // find the json start point 
             int startJson = jsonText.indexOf('(');
-            jsonText = jsonText.substring(startJson+1, jsonText.length() - 1);
+            jsonText = jsonText.substring(startJson + 1, jsonText.length() - 1);
             System.out.println("Json string filtered " + jsonText);
             JSONObject json = new JSONObject(jsonText);
             return jsonText;
@@ -250,7 +250,7 @@ public class Souliss extends Protocol {
             try {
                 String reply = sendToBoard(message);
                 //if ((reply != null) && (!reply.equals(expectedReply))) {
-                    //TODO: implement reply check
+                //TODO: implement reply check
                 //}
             } catch (IOException iOException) {
                 setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);

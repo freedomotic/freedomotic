@@ -4,15 +4,16 @@
  */
 package it.freedomotic.jfrontend.utils;
 
-import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class CheckBoxList extends JList {
+import javax.swing.*;
+import javax.swing.border.*;
 
-    protected static Border noFocusBorder =
-            new EmptyBorder(1, 1, 1, 1);
+public class CheckBoxList
+        extends JList {
+
+    protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
 
     public CheckBoxList() {
         setCellRenderer(new CellRenderer());
@@ -23,8 +24,7 @@ public class CheckBoxList extends JList {
 
                 if (index != -1) {
                     JCheckBox checkbox = (JCheckBox) getModel().getElementAt(index);
-                    checkbox.setSelected(
-                            !checkbox.isSelected());
+                    checkbox.setSelected(!checkbox.isSelected());
                     repaint();
                 }
             }
@@ -33,23 +33,20 @@ public class CheckBoxList extends JList {
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
-    protected class CellRenderer implements ListCellRenderer {
+    protected class CellRenderer
+            implements ListCellRenderer {
 
-        public Component getListCellRendererComponent(
-                JList list, Object value, int index,
-                boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+                boolean cellHasFocus) {
             JCheckBox checkbox = (JCheckBox) value;
-            checkbox.setBackground(isSelected
-                    ? getSelectionBackground() : getBackground());
-            checkbox.setForeground(isSelected
-                    ? getSelectionForeground() : getForeground());
+            checkbox.setBackground(isSelected ? getSelectionBackground() : getBackground());
+            checkbox.setForeground(isSelected ? getSelectionForeground() : getForeground());
             checkbox.setEnabled(isEnabled());
             checkbox.setFont(getFont());
             checkbox.setFocusPainted(false);
             checkbox.setBorderPainted(true);
-            checkbox.setBorder(isSelected
-                    ? UIManager.getBorder(
-                    "List.focusCellHighlightBorder") : noFocusBorder);
+            checkbox.setBorder(isSelected ? UIManager.getBorder("List.focusCellHighlightBorder") : noFocusBorder);
+
             return checkbox;
         }
     }

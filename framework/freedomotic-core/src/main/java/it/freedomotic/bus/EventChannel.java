@@ -22,8 +22,10 @@
 package it.freedomotic.bus;
 
 import it.freedomotic.api.EventTemplate;
+
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.app.Profiler;
+
 import it.freedomotic.util.UidGenerator;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,7 +39,9 @@ import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 
-public class EventChannel extends AbstractBusConnector implements MessageListener {
+public class EventChannel
+        extends AbstractBusConnector
+        implements MessageListener {
 
     private BusConsumer handler;
     private javax.jms.Queue virtualTopic = null;
@@ -47,6 +51,7 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
     /*produce on a queue and listen on another queue*/
     public EventChannel() {
         super();
+
         try {
             producer = sendSession.createProducer(null);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
@@ -58,10 +63,13 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
     public void consumeFrom(String topicName) {
         if (handler != null) {
             try {
-                virtualTopic = receiveSession.createQueue("Consumer." + UidGenerator.getNextStringUid() + ".VirtualTopic." + topicName);
+                virtualTopic = receiveSession.createQueue("Consumer." + UidGenerator.getNextStringUid()
+                        + ".VirtualTopic." + topicName);
+
                 javax.jms.MessageConsumer subscriber = receiveSession.createConsumer(virtualTopic);
                 subscriber.setMessageListener(this);
-                Freedomotic.logger.info(getHandler().getClass().getSimpleName() + " listen on " + virtualTopic.toString());
+                Freedomotic.logger.config(getHandler().getClass().getSimpleName() + " listen on "
+                        + virtualTopic.toString());
             } catch (javax.jms.JMSException jmse) {
                 Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jmse));
             }
@@ -71,13 +79,16 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
     public void consumeFrom(String channel, final Method method) {
         if (method != null) {
             try {
-                virtualTopic = receiveSession.createQueue("Consumer." + UidGenerator.getNextStringUid() + ".VirtualTopic." + channel);
+                virtualTopic = receiveSession.createQueue("Consumer." + UidGenerator.getNextStringUid()
+                        + ".VirtualTopic." + channel);
+
                 javax.jms.MessageConsumer subscriber = receiveSession.createConsumer(virtualTopic);
                 subscriber.setMessageListener(new MessageListener() {
                     @Override
                     public void onMessage(Message msg) {
                         if (msg instanceof ObjectMessage) {
                             ObjectMessage objectMessage = (ObjectMessage) msg;
+
                             try {
                                 EventTemplate event = (EventTemplate) objectMessage.getObject();
                                 method.invoke(handler, event);
@@ -93,7 +104,8 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
                         }
                     }
                 });
-                Freedomotic.logger.info(getHandler().getClass().getSimpleName() + " listen on " + virtualTopic.toString());
+                Freedomotic.logger.config(getHandler().getClass().getSimpleName() + " listen on "
+                        + virtualTopic.toString());
             } catch (javax.jms.JMSException jmse) {
                 Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jmse));
             }
@@ -101,7 +113,8 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
     }
 
     public void send(EventTemplate ev) {
-        send(ev, ev.getDefaultDestination());
+        send(ev,
+                ev.getDefaultDestination());
     }
 
     public void send(final EventTemplate ev, final String to) {
@@ -109,6 +122,7 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
             try {
                 ObjectMessage msg = sendSession.createObjectMessage();
                 msg.setObject(ev);
+
                 //a consumer consumes on Consumer.A_PROGRESSIVE_INTEGER_ID.VirtualTopic.
                 javax.jms.Topic tmpTopic = sendSession.createTopic("VirtualTopic." + to);
                 Profiler.incrementSentEvents();
@@ -129,6 +143,7 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
     @Override
     public final void onMessage(Message aMessage) {
         Profiler.incrementReceivedEvents();
+
         if (getHandler() != null) {
             if (aMessage instanceof ObjectMessage) {
                 getHandler().onMessage((ObjectMessage) aMessage);
@@ -151,7 +166,7 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
             receiveSession.unsubscribe(virtualTopic.toString());
         } catch (JMSException ex) {
             Freedomotic.logger.severe("Unable to unsubscribe from event channel " + virtualTopic.toString());
-        } catch (Exception e){
+        } catch (Exception e) {
             Freedomotic.logger.warning(e.getMessage());
         }
     }

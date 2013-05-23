@@ -20,7 +20,6 @@ public class ModbusMasterGateway {
 
     //class attributes
     private static ModbusMaster master = null;  //Singleton reference
-        
     private static String connectionInfo = "No connected";
 
 //        private static String PORT_NAME = "/dev/ttyUSB10";
@@ -43,30 +42,29 @@ public class ModbusMasterGateway {
             return master;
         } else {
             String modbusProtocol = configuration.getStringProperty("modbusProtocol", "TCP");
-            if (modbusProtocol == "TCP")
+            if (modbusProtocol == "TCP") {
                 configureTCP(configuration);
-            else
-                configureSerial(configuration);            
+            } else {
+                configureSerial(configuration);
+            }
             //private static boolean echo = false;
             int receiveTimeout = configuration.getIntProperty("timeout", 5000);//5 seconds
-            int retries = configuration.getIntProperty("retries", 1);            
+            int retries = configuration.getIntProperty("retries", 1);
             master.setTimeout(receiveTimeout);
             master.setRetries(retries);
-            return master;            
+            return master;
         }
 
     }
-    
-    public static String ConnectionInfo()
-    {
+
+    public static String ConnectionInfo() {
         return connectionInfo;
-    
+
     }
-    
-    
+
     private static void configureSerial(Config configuration) {
         ModbusFactory factory = new ModbusFactory();
-        SerialParameters params = new SerialParameters();        
+        SerialParameters params = new SerialParameters();
         String port = configuration.getStringProperty("port", "/dev/ttyUSB10");
         int baudrate = configuration.getIntProperty("baudrate", 19200);
         System.out.println("baudrate: " + baudrate);
@@ -84,18 +82,17 @@ public class ModbusMasterGateway {
         master = factory.createRtuMaster(params, SerialMaster.SYNC_FUNCTION);
         connectionInfo = "Serial Connection to: " + port;
     }
-    
+
     private static void configureTCP(Config configuration) {
         ModbusFactory factory = new ModbusFactory();
         IpParameters params = new IpParameters();
-        String host = configuration.getStringProperty("host", "localhost");        
+        String host = configuration.getStringProperty("host", "localhost");
         System.out.println("host: " + host);
-        int tcpport = configuration.getIntProperty("tcpport", 502);        
+        int tcpport = configuration.getIntProperty("tcpport", 502);
         System.out.println("tcpport: " + tcpport);
         params.setHost(host);
-        params.setPort(tcpport);        
+        params.setPort(tcpport);
         master = factory.createTcpMaster(params, true);
-        connectionInfo = "TCP Connection to: " + host+ ":"+tcpport;
+        connectionInfo = "TCP Connection to: " + host + ":" + tcpport;
     }
-    
 }

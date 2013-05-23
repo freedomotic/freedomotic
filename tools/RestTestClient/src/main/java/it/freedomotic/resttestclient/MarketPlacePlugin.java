@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import com.google.gson.stream.JsonReader;
 
 /**
- *  POJO class that represents all information available from the Drupal arketPlace that is
- *  retrieved using the Drupal Rest server.
- * At this moment only a few fields are parsed, just the necesary to retrieve the plugin zip
+ * POJO class that represents all information available from the Drupal
+ * arketPlace that is retrieved using the Drupal Rest server. At this moment
+ * only a few fields are parsed, just the necesary to retrieve the plugin zip
+ *
  * @author GGPT
  */
 public class MarketPlacePlugin {
@@ -47,11 +48,9 @@ public class MarketPlacePlugin {
 ////    private String name;
 ////    private String picture;
 //    private String data;
-    
-    private String path; 
-
-   private String field_developer; //TODO check for correct developername
-   private String field_status;//list
+    private String path;
+    private String field_developer; //TODO check for correct developername
+    private String field_status;//list
 ////    private String field_forum;
     private String field_description;
     private PluginCategoryEnum field_category;
@@ -61,7 +60,6 @@ public class MarketPlacePlugin {
 ////    private String field_requires;    
     private MarketPlacePluginFileField field_file; //***
     private String filepath;
-
     //    private String field_screenshot;
 //    private String field_hardware;
 //    private String last_comment_timestamp;
@@ -82,85 +80,82 @@ public class MarketPlacePlugin {
 //    private String revisit_after;
 //    private String robots;
 //    private String uri;
-    
+
     //private String vid;
-    public MarketPlacePlugin()
-    {        
+    public MarketPlacePlugin() {
     }
-    
-    public String toJson()
-    {
-     String pluginData =formatBaseData()+",";
-     pluginData += "\"title\":\""+title+"\",";     
-     pluginData += "\"field_category\":[{\"value\":\""+field_category+"\"}],"
-                + "\"field_developer\":{\"0\":{\"uid\":{\"uid\":\""+ field_developer+"\"}}},";
-     pluginData += "\"field_status\":[{\"value\":\""+field_status+"\"}],";     
-     if (formatFieldOS()!="")
-         pluginData+=formatFieldOS()+",";
-    if (formatTaxonomy()!="")
-        pluginData+=formatTaxonomy()+",";               
-     pluginData+="\"field_description\":[{\"value\":\""+field_description+"\"}],";
-     if (formatFieldFile()!="")
-        pluginData += formatFieldFile()+",";
-     pluginData += "\"body\":{\"und\":{\"0\":{\"value\":\""+body+"\"}}}"
+
+    public String toJson() {
+        String pluginData = formatBaseData() + ",";
+        pluginData += "\"title\":\"" + title + "\",";
+        pluginData += "\"field_category\":[{\"value\":\"" + field_category + "\"}],"
+                + "\"field_developer\":{\"0\":{\"uid\":{\"uid\":\"" + field_developer + "\"}}},";
+        pluginData += "\"field_status\":[{\"value\":\"" + field_status + "\"}],";
+        if (formatFieldOS() != "") {
+            pluginData += formatFieldOS() + ",";
+        }
+        if (formatTaxonomy() != "") {
+            pluginData += formatTaxonomy() + ",";
+        }
+        pluginData += "\"field_description\":[{\"value\":\"" + field_description + "\"}],";
+        if (formatFieldFile() != "") {
+            pluginData += formatFieldFile() + ",";
+        }
+        pluginData += "\"body\":{\"und\":{\"0\":{\"value\":\"" + body + "\"}}}"
                 + "}"
                 + "}";
         return pluginData;
     }
-    public String formatBaseData()
-    {
-    return "{\"node\":"
+
+    public String formatBaseData() {
+        return "{\"node\":"
                 + "{\"type\":\"plugin\","
                 + "\"language\":\"und\"";
-    
+
     }
-    
-    public String formatFieldOS()
-    {
-        String list="";
-        for(String s: field_os)
-        {
-            list+="\""+s+"\":\""+s+"\",";
+
+    public String formatFieldOS() {
+        String list = "";
+        for (String s : field_os) {
+            list += "\"" + s + "\":\"" + s + "\",";
         }
         //remove the last ,
-        if (list!="")
-            list = list.substring(0,list.length()-2);
-        else
+        if (list != "") {
+            list = list.substring(0, list.length() - 2);
+        } else {
             return "";
-        return "\"field_os\":{\"value\":{"+list+"}}";
-    
+        }
+        return "\"field_os\":{\"value\":{" + list + "}}";
+
     }
-    
-    public String formatTaxonomy()
-    {
-     String list="";
-        for(String s: taxonomy)
-        {
-            list+=s+" ";
+
+    public String formatTaxonomy() {
+        String list = "";
+        for (String s : taxonomy) {
+            list += s + " ";
         }
         //remove the last space
-        if (list!="")
-            list = list.substring(0,list.length()-2);
-        else
-            return "";                                        
-        return "\"taxonomy\":{\"tags\":{\""+list.length()+"\":\""+list+"\"}}";
-    
-    
-    }
-    
-    //At this moment we only mantain one file on the plugin
-    public String formatFieldFile()
-    {
-        if (field_file != null)
-            return "\"field_file\":{\"0\":{"+field_file.formatFile()+"}}";
-        else
+        if (list != "") {
+            list = list.substring(0, list.length() - 2);
+        } else {
             return "";
+        }
+        return "\"taxonomy\":{\"tags\":{\"" + list.length() + "\":\"" + list + "\"}}";
+
+
     }
-    
-    
+
+    //At this moment we only mantain one file on the plugin
+    public String formatFieldFile() {
+        if (field_file != null) {
+            return "\"field_file\":{\"0\":{" + field_file.formatFile() + "}}";
+        } else {
+            return "";
+        }
+    }
+
     //Very quick parse, should be done better
-    public void parseJson(String json)
-    {
+    public void parseJson(String json) {
         try {
             JsonReader reader = new JsonReader(new StringReader(json));
             reader.beginObject();
@@ -170,9 +165,9 @@ public class MarketPlacePlugin {
                     title = reader.nextString();
                 } else if (name.equals("path")) {
                     path = reader.nextString();
-                } else if (name.equals("field_file")) {                                      
+                } else if (name.equals("field_file")) {
                     reader.beginArray();
-                    reader.beginObject();                    
+                    reader.beginObject();
                     while (reader.hasNext()) {
                         String name2 = reader.nextName();
                         if (name2.equals("filename")) {
@@ -197,7 +192,5 @@ public class MarketPlacePlugin {
             e.printStackTrace();
         }
 
-   }    
-   
-    
+    }
 }

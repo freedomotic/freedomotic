@@ -28,7 +28,8 @@ import it.freedomotic.model.object.BooleanBehavior;
  *
  * @author Enrico
  */
-public class BooleanBehaviorLogic implements BehaviorLogic {
+public class BooleanBehaviorLogic
+        implements BehaviorLogic {
 
     private final BooleanBehavior data;
     private Listener listener;
@@ -49,11 +50,13 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
     public synchronized final void filterParams(final Config params, boolean fireCommand) {
         //filter accepted values
         String value = params.getProperty("value").trim();
+
         if (value.equalsIgnoreCase("false") || value.equals("0")) {
             if (this.getValue() != false) { //if is really changed
                 listener.onFalse(params, fireCommand);
             }
         }
+
         if (value.equalsIgnoreCase("true") || value.equals("1")) {
             if (this.getValue() != true) { //if is really changed
                 listener.onTrue(params, fireCommand);
@@ -63,9 +66,11 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
         if (value.equalsIgnoreCase(VALUE_OPPOSITE)) {
             opposite(params, fireCommand);
         }
+
         if (value.equalsIgnoreCase(VALUE_NEXT)) {
             opposite(params, fireCommand);
         }
+
         if (value.equalsIgnoreCase(VALUE_PREVIOUS)) {
             opposite(params, fireCommand);
         }
@@ -108,20 +113,25 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final BooleanBehaviorLogic other = (BooleanBehaviorLogic) obj;
-        if (this.data != other.data && (this.data == null || !this.data.equals(other.data))) {
+
+        if ((this.data != other.data) && ((this.data == null) || !this.data.equals(other.data))) {
             return false;
         }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 71 * hash + (this.data != null ? this.data.hashCode() : 0);
+        hash = (71 * hash) + ((this.data != null) ? this.data.hashCode() : 0);
+
         return hash;
     }
 
@@ -134,7 +144,7 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
     public boolean isReadOnly() {
         return data.isReadOnly();
     }
-    
+
     @Override
     public String getValueAsString() {
         return data.toString();

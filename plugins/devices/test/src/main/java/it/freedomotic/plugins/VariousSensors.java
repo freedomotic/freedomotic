@@ -6,12 +6,18 @@ package it.freedomotic.plugins;
 
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
-import it.freedomotic.plugins.gui.VariousSensorsGui;
 import it.freedomotic.api.Sensor;
+
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.events.ProtocolRead;
+
 import it.freedomotic.exceptions.UnableToExecuteException;
+
+import it.freedomotic.plugins.gui.VariousSensorsGui;
+
 import it.freedomotic.reactions.Command;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,9 +26,11 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class VariousSensors extends Protocol {
+public class VariousSensors
+        extends Protocol {
 
-    int hour = 0, month = 1;
+    int hour = 0;
+    int month = 1;
     Boolean powered = false;
 
     public VariousSensors() {
@@ -47,12 +55,13 @@ public class VariousSensors extends Protocol {
         c.setReplyTimeout(10000); //10 seconds
 
         new Thread(new Runnable() {
-
             public void run() {
                 VariousSensorsGui guiHook = (VariousSensorsGui) gui;
                 Command reply = send(c);
+
                 if (reply != null) {
                     String userInput = reply.getProperty("result");
+
                     if (userInput != null) {
                         guiHook.updateDescription("The reply to the test question is " + userInput);
                     } else {
@@ -69,27 +78,31 @@ public class VariousSensors extends Protocol {
     protected void onRun() {
         //sends a fake sensor read event
         ProtocolRead event = new ProtocolRead(this, "test", "test");
-        event.getPayload().addStatement("value", powered.toString());
+        event.getPayload().addStatement("value",
+                powered.toString());
         event.getPayload().addStatement("object.class", "Light");
         event.getPayload().addStatement("object.name", "Created by VariousSensors");
         //invert the value for the next round
         notifyEvent(event);
+
         if (powered) {
             powered = false;
         } else {
             powered = true;
         }
+
         //wait two seconds before sending another event
         try {
             Thread.sleep(2000);
         } catch (InterruptedException ex) {
-             // Restore the interrupted status
-             Thread.currentThread().interrupt();
+            // Restore the interrupted status
+            Thread.currentThread().interrupt();
         }
     }
 
     @Override
-    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
+    protected void onCommand(Command c)
+            throws IOException, UnableToExecuteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

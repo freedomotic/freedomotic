@@ -7,9 +7,10 @@ package it.freedomotic.marketplace.postplugin;
 import java.util.ArrayList;
 
 /**
- *  POJO class that represents all information available from the Drupal MarketPlace that is
- *  retrieved using the Drupal Rest server.
- * At this moment only a few fields are parsed, just the necesary to retrieve the plugin zip
+ * POJO class that represents all information available from the Drupal
+ * MarketPlace that is retrieved using the Drupal Rest server. At this moment
+ * only a few fields are parsed, just the necesary to retrieve the plugin zip
+ *
  * @author GGPT
  */
 public class MarketPlacePlugin {
@@ -47,21 +48,18 @@ public class MarketPlacePlugin {
 ////    private String name;
 ////    private String picture;
 //    private String data;
-    
-    private String path; 
-
-   private String field_developer; //TODO check for correct developername
-   private String field_status;//list
+    private String path;
+    private String field_developer; //TODO check for correct developername
+    private String field_status;//list
 ////    private String field_forum;
     private String field_description;
-    private PluginCategoryEnum field_category;       
+    private PluginCategoryEnum field_category;
 ////    private String field_icon;
     private ArrayList<String> field_os;
 ////    private String filename;
 ////    private String field_requires;    
     private MarketPlacePluginFileField field_file; //*** 
-    private int field_file_position=0;
-
+    private int field_file_position = 0;
     //    private String field_screenshot;
 //    private String field_hardware;
 //    private String last_comment_timestamp;
@@ -82,90 +80,88 @@ public class MarketPlacePlugin {
 //    private String revisit_after;
 //    private String robots;
 //    private String uri;
-    
+
     //private String vid;
-    public MarketPlacePlugin()
-    {        
+    public MarketPlacePlugin() {
     }
-    
+
     //Returns a Drupal style json of the plugin to be used with the webservice
-    public String toJson()
-    {
-     String pluginData =formatBaseData()+",";
-     pluginData += "\"title\":\""+getTitle()+"\",";     
-     pluginData += "\"field_category\":[{\"value\":\""+getField_category()+"\"}],"
-                + "\"field_developer\":{\"0\":{\"uid\":{\"uid\":\""+ getField_developer()+"\"}}},";
-     pluginData += "\"field_status\":[{\"value\":\""+getField_status()+"\"}],";     
-     if (formatFieldOS()!="")
-         pluginData+=formatFieldOS()+",";
-    if (formatTaxonomy()!="")
-        pluginData+=formatTaxonomy()+",";               
-     pluginData+="\"field_description\":[{\"value\":\""+getField_description()+"\"}],";
-     if (formatFieldFile()!="")
-        pluginData += formatFieldFile()+",";
-     pluginData += "\"body\":{\"und\":{\"0\":{\"value\":\""+getBody()+"\"}}}"
-               // + "}"
+    public String toJson() {
+        String pluginData = formatBaseData() + ",";
+        pluginData += "\"title\":\"" + getTitle() + "\",";
+        pluginData += "\"field_category\":[{\"value\":\"" + getField_category() + "\"}],"
+                + "\"field_developer\":{\"0\":{\"uid\":{\"uid\":\"" + getField_developer() + "\"}}},";
+        pluginData += "\"field_status\":[{\"value\":\"" + getField_status() + "\"}],";
+        if (formatFieldOS() != "") {
+            pluginData += formatFieldOS() + ",";
+        }
+        if (formatTaxonomy() != "") {
+            pluginData += formatTaxonomy() + ",";
+        }
+        pluginData += "\"field_description\":[{\"value\":\"" + getField_description() + "\"}],";
+        if (formatFieldFile() != "") {
+            pluginData += formatFieldFile() + ",";
+        }
+        pluginData += "\"body\":{\"und\":{\"0\":{\"value\":\"" + getBody() + "\"}}}"
+                // + "}"
                 + "}";
         return pluginData;
     }
-    public String formatBaseData()
-    {
-    return "{\"type\":\"plugin\","
-                + "\"language\":\"und\"";    
+
+    public String formatBaseData() {
+        return "{\"type\":\"plugin\","
+                + "\"language\":\"und\"";
 //        return "{\"node\":"
 //                + "{\"type\":\"plugin\","
 //                + "\"language\":\"und\"";    
     }
-    
-    public String formatFieldOS()
-    {
-        String list="";
-        for(String s: field_os)
-        {
-            list+="\""+s+"\":\""+s+"\",";
+
+    public String formatFieldOS() {
+        String list = "";
+        for (String s : field_os) {
+            list += "\"" + s + "\":\"" + s + "\",";
         }
         //remove the last ,
-        if (list!="")
-            list = list.substring(0,list.length()-1);
-        else
+        if (list != "") {
+            list = list.substring(0, list.length() - 1);
+        } else {
             return "";
-        return "\"field_os\":{\"value\":{"+list+"}}";
-    
+        }
+        return "\"field_os\":{\"value\":{" + list + "}}";
+
     }
-    
-    public String formatTaxonomy()
-    {
-     String list="";
-        for(String s: taxonomy)
-        {
-            list+=s+" ";
+
+    public String formatTaxonomy() {
+        String list = "";
+        for (String s : taxonomy) {
+            list += s + " ";
         }
         //remove the last space
-        if (list!="")
-            list = list.substring(0,list.length()-1);
-        else
-            return "";                                        
-        return "\"taxonomy\":{\"tags\":{\""+taxonomy.size()+"\":\""+list+"\"}}";        
-    }
-    
-    //At this moment we only mantain one file on the plugin
-    public String formatFieldFile()
-    {
-        if (field_file != null)
-            return "\"field_file\":{\""+ field_file_position+"\":{"+field_file.formatFile()+"}}";
-        else
+        if (list != "") {
+            list = list.substring(0, list.length() - 1);
+        } else {
             return "";
+        }
+        return "\"taxonomy\":{\"tags\":{\"" + taxonomy.size() + "\":\"" + list + "\"}}";
     }
-    //At this moment we only mantain one file on the plugin
-    public String formatFieldCategory()
-    {
-        if (field_category != null)
-            return "\"field_category\":[{\"value\":\""+getField_category()+"\"}]";
-        else
-            return "";
-    }
-    
 
+    //At this moment we only mantain one file on the plugin
+    public String formatFieldFile() {
+        if (field_file != null) {
+            return "\"field_file\":{\"" + field_file_position + "\":{" + field_file.formatFile() + "}}";
+        } else {
+            return "";
+        }
+    }
+    //At this moment we only mantain one file on the plugin
+
+    public String formatFieldCategory() {
+        if (field_category != null) {
+            return "\"field_category\":[{\"value\":\"" + getField_category() + "\"}]";
+        } else {
+            return "";
+        }
+    }
 
     /**
      * @return the title
@@ -223,7 +219,6 @@ public class MarketPlacePlugin {
         this.field_developer = field_developer;
     }
 
-   
     /**
      * @return the field_status
      */
@@ -248,7 +243,7 @@ public class MarketPlacePlugin {
     /**
      * @param field_status the field_status to set
      */
-    public void setField_status(String field_status) {        
+    public void setField_status(String field_status) {
         this.field_status = field_status;
     }
 
@@ -266,25 +261,25 @@ public class MarketPlacePlugin {
         this.field_category = field_category;
     }
 
-      
-    public void addField_os(String os)
-    {
-        if (field_os == null)
+    public void addField_os(String os) {
+        if (field_os == null) {
             field_os = new ArrayList<String>();
-        if(!field_os.contains(os))
+        }
+        if (!field_os.contains(os)) {
             field_os.add(os);
+        }
     }
-    
-     public void removeField_os(String os)
-    {
-        if(field_os.contains(os))
+
+    public void removeField_os(String os) {
+        if (field_os.contains(os)) {
             field_os.remove(os);
-    }     
-       
+        }
+    }
+
     public void setField_file(MarketPlacePluginFileField field_file) {
         setField_file(field_file, 0);
     }
-     
+
     /**
      * @param field_file the field_file to set
      */
@@ -293,20 +288,18 @@ public class MarketPlacePlugin {
         this.field_file_position = position;
     }
 
-   
-    public void addTaxonomyWord(String word)
-    {        
-        if (taxonomy == null)
+    public void addTaxonomyWord(String word) {
+        if (taxonomy == null) {
             taxonomy = new ArrayList<String>();
-        if (!taxonomy.contains(word))
+        }
+        if (!taxonomy.contains(word)) {
             taxonomy.add(word);
+        }
     }
 
-    public void removeTaxonomyWord(String word)
-    {
-        if (taxonomy.contains(word))
+    public void removeTaxonomyWord(String word) {
+        if (taxonomy.contains(word)) {
             taxonomy.remove(word);
+        }
     }
-  
-      
 }

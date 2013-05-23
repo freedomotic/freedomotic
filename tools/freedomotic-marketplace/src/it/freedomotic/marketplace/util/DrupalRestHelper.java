@@ -117,7 +117,7 @@ public class DrupalRestHelper {
                     } else {
                         newData = false;
                     }
-                }else{
+                } else {
                     previousJsonData = "EMPTY";
                     newData = false;
                 }

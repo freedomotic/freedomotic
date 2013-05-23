@@ -5,16 +5,20 @@
 package it.freedomotic.jfrontend.automationeditor;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.reactions.Command;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JComboBox;
 
 /**
  *
  * @author enrico
  */
-class GuessTriggerBox extends JComboBox{
+class GuessTriggerBox
+        extends JComboBox {
 
     public GuessTriggerBox() {
     }

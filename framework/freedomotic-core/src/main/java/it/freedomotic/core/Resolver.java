@@ -22,7 +22,9 @@
 package it.freedomotic.core;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.model.ds.Config;
+
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Reaction;
@@ -84,12 +86,15 @@ public final class Resolver {
      */
     public Reaction resolve(Reaction r) {
         this.reaction = r;
+
         if ((context != null) && (reaction != null)) {
-            Reaction clone = new Reaction(
-                    reaction.getTrigger(),
+            Reaction clone =
+                    new Reaction(reaction.getTrigger(),
                     performSubstitutionInCommands(reaction.getCommands()));
+
             return clone;
         }
+
         return null;
     }
 
@@ -100,14 +105,18 @@ public final class Resolver {
      * @param c
      * @return
      */
-    public Command resolve(Command c) throws CloneNotSupportedException {
+    public Command resolve(Command c)
+            throws CloneNotSupportedException {
         this.command = c;
+
         if ((context != null) && (command != null)) {
             Command clone = command.clone();
             mergeContextParamsIntoCommand(clone);
             performSubstitutionInCommand(clone);
+
             return clone;
         }
+
         return null;
     }
 
@@ -120,12 +129,15 @@ public final class Resolver {
      */
     public Trigger resolve(Trigger t) {
         this.trigger = t;
+
         if ((context != null) && (trigger != null)) {
             Trigger clone = trigger.clone();
             mergeContextParamsIntoTrigger(clone);
             performSubstitutionInTrigger(clone);
+
             return clone;
         }
+
         return null;
     }
 
@@ -139,6 +151,7 @@ public final class Resolver {
         //clone reaction to not affect the original commands with temporary values
         //construct a cloned reaction
         ArrayList<Command> tmp = new ArrayList<Command>();
+
         try {
             for (Command originalCommand : commands) {
                 //resolving values using context data
@@ -148,6 +161,7 @@ public final class Resolver {
         } catch (Exception e) {
             Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
         }
+
         return tmp;
     }
 
@@ -160,29 +174,35 @@ public final class Resolver {
      * @param command
      */
     private void performSubstitutionInCommand(Command command) {
-        Iterator<Entry<Object, Object>> it = command.getProperties().entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<Object, Object> aProperty =  it.next();
+        for (Map.Entry aProperty : command.getProperties().entrySet()) {
             String key = (String) aProperty.getKey();
             String propertyValue = (String) aProperty.getValue();
+
             for (final String PREFIX : prefixes) {
                 String regex = "@" + PREFIX + "[.A-Za-z0-9_-]*\\b(#)?";
                 Pattern pattern = Pattern.compile(regex);
                 Matcher matcher = pattern.matcher(propertyValue);
+
                 while (matcher.find()) {
                     String occurrence = matcher.group();
                     //re-read the property each loop because is possible the previous loop has already replaced something
                     propertyValue = (String) aProperty.getValue();
+
                     //System.out.println("La proprieta '" + key + " = " + propertyValue + "' contiene: '" + occurrence + "'");
                     String referenceToResolve = occurrence;
+
                     if (occurrence.endsWith("#")) {
-                        referenceToResolve = referenceToResolve.substring(0, referenceToResolve.length() - 1);  //cutting out the optional last '#'
+                        referenceToResolve = referenceToResolve.substring(0, referenceToResolve.length() - 1); //cutting out the optional last '#'
                     }
-                    referenceToResolve = referenceToResolve.substring(1, referenceToResolve.length()); //cutting out the first char '@'
+
+                    referenceToResolve =
+                            referenceToResolve.substring(1,
+                            referenceToResolve.length()); //cutting out the first char '@'
+
                     String replacer = command.getProperty(referenceToResolve);
 
                     //Freedomotic.logger.severe("Event variable name '" + eventVarName + "' is substituted with its value '" + replacer + "'");
-                    if ((replacer != null && !replacer.isEmpty())) {
+                    if (((replacer != null) && !replacer.isEmpty())) {
                         String propertyValueResolved = propertyValue.replaceFirst(occurrence, replacer);
                         aProperty.setValue(propertyValueResolved);
                     } else {
@@ -192,18 +212,22 @@ public final class Resolver {
                     }
                 }
             }
+
             //all references are replaced with real values in the current property, now perform scripting
             String possibleScript = (String) aProperty.getValue();
             boolean success = false;
+
             if (possibleScript.startsWith("=")) {
                 //this is a javascript
                 try {
                     ScriptEngineManager mgr = new ScriptEngineManager();
                     ScriptEngine js = mgr.getEngineByName("JavaScript");
                     String script = possibleScript.substring(1); //removing equal sign on the head
+
                     if (js == null) {
                         Freedomotic.logger.severe("Cannot instatiate a JavaScript engine");
                     }
+
 //                    ScriptContext cont = js.getContext();
 //                    cont.setAttribute("name", "JavaScript",
 //                            ScriptContext.ENGINE_SCOPE);
@@ -212,11 +236,14 @@ public final class Resolver {
                     } catch (ScriptException scriptException) {
                         Freedomotic.logger.severe(scriptException.getMessage());
                     }
+
 //                    Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to: '" + script + "' the complete value is '" + possibleScript);
 //                    Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
                     if (js.get(key) == null) {
-                        Freedomotic.logger.severe("Script evaluation has returned a null value, maybe the key '" + key + "' is not evaluated properly.");
+                        Freedomotic.logger.severe("Script evaluation has returned a null value, maybe the key '"
+                                + key + "' is not evaluated properly.");
                     }
+
                     aProperty.setValue(js.get(key).toString());
                     success = true;
                 } catch (Exception ex) {
@@ -224,6 +251,7 @@ public final class Resolver {
                     Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
                 }
             }
+
             if (!success) {
                 aProperty.setValue(possibleScript);
             }
@@ -239,59 +267,77 @@ public final class Resolver {
      * @param trigger
      */
     private void performSubstitutionInTrigger(Trigger trigger) {
-        Iterator<Statement> it = trigger.getPayload().iterator();
+        Iterator it = trigger.getPayload().iterator();
+
         while (it.hasNext()) {
-            Statement statement = it.next();
+            Statement statement = (Statement) it.next();
             String key = (String) statement.getAttribute();
             String propertyValue = (String) statement.getValue();
+
             for (final String PREFIX : prefixes) {
-                String regex = "@" + PREFIX + "[.A-Za-z0-9_-]*\\b(#)?";
-                Pattern pattern = Pattern.compile(regex);
+                Pattern pattern = Pattern.compile("@" + PREFIX + "[.A-Za-z0-9_-]*\\b(#)?"); //find any @token
                 Matcher matcher = pattern.matcher(propertyValue);
+                StringBuffer result = new StringBuffer(propertyValue.length());
+
                 while (matcher.find()) {
-                    String occurrence = matcher.group();
-                    propertyValue = (String) statement.getValue();
-                    String referenceToResolve = occurrence;
-                    if (occurrence.endsWith("#")) {
-                        referenceToResolve = referenceToResolve.substring(0, referenceToResolve.length() - 1);  //cutting out the optional last '#'
+                    matcher.appendReplacement(result, "");
+
+                    String tokenKey = matcher.group();
+
+                    if (tokenKey.endsWith("#")) {
+                        tokenKey = tokenKey.substring(0, tokenKey.length() - 1); //cutting out the optional last '#'
                     }
-                    referenceToResolve = referenceToResolve.substring(1, referenceToResolve.length()); //cutting out the first char '@'
-                    for (Statement st : trigger.getPayload().getStatements(referenceToResolve)) {
-                        String replacer = st.getValue();
-                        if ((replacer == null ? "" != null : !replacer.isEmpty())) {
-                            //first occurrence is replaced with values and then the system try to resolve math operations
-                            String propertyValueResolved = propertyValue.replaceFirst(occurrence, replacer);
-                            statement.setValue(propertyValueResolved);
-                        } else {
-                            Freedomotic.logger.severe("Variable '" + referenceToResolve
-                                    + "' cannot be resolved in trigger '" + trigger.getName() + "'.\n"
-                                    + "Availabe tokens are: " + context.toString());
-                        }
+
+                    tokenKey =
+                            tokenKey.substring(1,
+                            tokenKey.length()); //cutting out the first char '@'
+
+                    String tokenValue = trigger.getPayload().getStatementValue(tokenKey);
+
+                    if (tokenValue == null) {
+                        Freedomotic.logger.severe("Variable '" + tokenValue + "' cannot be resolved in trigger '"
+                                + trigger.getName() + "'.\n" + "Availabe tokens are: "
+                                + context.toString());
                     }
+
+                    //replace an @token.property with its real value
+                    System.out.println("Replace all " + tokenKey + " with " + tokenValue + " in " + propertyValue);
+                    result.append(tokenValue);
                 }
+
+                matcher.appendTail(result);
+                statement.setValue(result.toString());
             }
+
             //all references are replaced with real values in the current statement, now perform scripting
             String possibleScript = (String) statement.getValue().trim();
             boolean success = false;
+
             if (possibleScript.startsWith("=")) {
                 //this is a javascript
                 try {
                     ScriptEngineManager mgr = new ScriptEngineManager();
                     ScriptEngine js = mgr.getEngineByName("JavaScript");
                     String script = possibleScript.substring(1); //removing equal sign on the head
+
                     if (js == null) {
                         Freedomotic.logger.severe("Cannot instatiate a JavaScript engine");
                     }
+
                     try {
                         js.eval(script);
                     } catch (ScriptException scriptException) {
                         Freedomotic.logger.severe(scriptException.getMessage());
                     }
+
                     //Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to trigger value: '" + script + "' the complete value is '" + possibleScript);
                     //Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
                     if (js.get(key) == null) {
-                        Freedomotic.logger.severe("Script evaluation in trigger '" + trigger.getName() + "' has returned a null value, maybe the key '" + key + "' is not evaluated properly.");
+                        Freedomotic.logger.severe("Script evaluation in trigger '" + trigger.getName()
+                                + "' has returned a null value, maybe the key '" + key
+                                + "' is not evaluated properly.");
                     }
+
                     statement.setValue(js.get(key).toString());
                     success = true;
                 } catch (Exception ex) {
@@ -299,6 +345,7 @@ public final class Resolver {
                     Freedomotic.logger.severe(ex.getMessage());
                 }
             }
+
             if (!success) {
                 statement.setValue(possibleScript); //fall back to the value before scripting evaluation
             }
@@ -323,15 +370,19 @@ public final class Resolver {
         if (context == null) {
             context = new Payload();
         }
+
         //registering the new prefix
         if (!prefixes.contains(PREFIX)) {
             prefixes.add(PREFIX);
         }
-        Set<Entry<Object,Object>> entries = aContext.getProperties().entrySet();
-        Iterator<Entry<Object,Object>> it = entries.iterator();
+
+        Set entries = aContext.getProperties().entrySet();
+        Iterator it = entries.iterator();
+
         while (it.hasNext()) {
             String key;
-            Entry<Object,Object> entry = it.next();
+            Map.Entry entry = (Map.Entry) it.next();
+
             //removing the prefix of the properties if already exists
             //to avoid dublicate prefixes like @event.event.object.name
             if (entry.getKey().toString().startsWith(PREFIX)) {
@@ -339,8 +390,10 @@ public final class Resolver {
             } else {
                 key = entry.getKey().toString();
             }
+
             //System.out.println("    statement " + PREFIX + key + "=" + entry.getValue().toString());
-            context.addStatement(PREFIX + key, entry.getValue().toString());
+            context.addStatement(PREFIX + key,
+                    entry.getValue().toString());
         }
     }
 
@@ -348,14 +401,18 @@ public final class Resolver {
         if (context == null) {
             context = new Payload();
         }
+
         //registering the new prefix
         if (!prefixes.contains(PREFIX)) {
             prefixes.add(PREFIX);
         }
-        Iterator<Entry<String,String>> it = aContext.entrySet().iterator();
+
+        Iterator it = aContext.entrySet().iterator();
+
         while (it.hasNext()) {
             String key;
-            Entry<String,String> entry = it.next();
+            Entry entry = (Entry) it.next();
+
             //removing the prefix of the properties if already exists
             //to avoid duplicate prefixes like @event.event.object.name
             if (entry.getKey().toString().startsWith(PREFIX)) {
@@ -363,8 +420,10 @@ public final class Resolver {
             } else {
                 key = entry.getKey().toString();
             }
+
             //System.out.println("    statement " + PREFIX + key + "=" + entry.getValue().toString());
-            context.addStatement(PREFIX + key, entry.getValue().toString());
+            context.addStatement(PREFIX + key,
+                    entry.getValue().toString());
         }
     }
 
@@ -372,14 +431,18 @@ public final class Resolver {
         if (context == null) {
             context = new Payload();
         }
+
         //registering the new prefix
         if (!prefixes.contains(PREFIX)) {
             prefixes.add(PREFIX);
         }
-        Iterator<Statement> it = aContext.iterator();
+
+        Iterator it = aContext.iterator();
+
         while (it.hasNext()) {
             String key;
-            Statement statement = it.next();
+            Statement statement = (Statement) it.next();
+
             //removing the prefix of the properties if already exists
             //to avoid dublicate prefixes like @event.event.object.name
             if (statement.getAttribute().startsWith(PREFIX)) {
@@ -387,7 +450,9 @@ public final class Resolver {
             } else {
                 key = statement.getAttribute().toString();
             }
-            context.addStatement(PREFIX + key, statement.getValue());
+
+            context.addStatement(PREFIX + key,
+                    statement.getValue());
         }
     }
 

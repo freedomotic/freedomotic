@@ -39,37 +39,42 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
  *
  * @author gpt
  */
-public class PropertiesConverter implements Converter{
+public class PropertiesConverter
+        implements Converter {
 
     @Override
-    public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {        
-        Properties rea = (Properties) o;               
-        for(String name:rea.stringPropertyNames())
-        {
+    public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
+        Properties rea = (Properties) o;
+
+        for (String name : rea.stringPropertyNames()) {
             writer.startNode("property");
             writer.addAttribute("name", name);
-            writer.addAttribute("value", rea.getProperty(name));
+            writer.addAttribute("value",
+                    rea.getProperty(name));
             writer.endNode();
-        }                                     
+        }
     }
 
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
-        HashMap<String,String> propertiesHashMap = new HashMap<String,String>();                 
+        HashMap<String, String> propertiesHashMap = new HashMap<String, String>();
+
         while (reader.hasMoreChildren()) {
-                reader.moveDown();
-                propertiesHashMap.put(reader.getAttribute("name"),reader.getAttribute("value"));               
-                reader.moveUp();
+            reader.moveDown();
+            propertiesHashMap.put(reader.getAttribute("name"),
+                    reader.getAttribute("value"));
+            reader.moveUp();
         }
-        return new Properties(propertiesHashMap);               
+
+        return new Properties(propertiesHashMap);
     }
-        
+
     @Override
     public boolean canConvert(Class type) {
-          if (type == Properties.class) {
+        if (type == Properties.class) {
             return true;
         }
+
         return false;
     }
-    
 }

@@ -5,7 +5,9 @@
 package it.freedomotic.jfrontend;
 
 import it.freedomotic.environment.ZoneLogic;
+
 import it.freedomotic.model.geometry.FreedomPoint;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Iterator;
@@ -26,8 +28,8 @@ public class Handle {
         this.zone = zone;
         this.handle = new Rectangle(point.getX() - 13, point.getY() - 13, 26, 26);
         this.point = point;
-        this.selected=false;
-        this.visible=true;
+        this.selected = false;
+        this.visible = true;
     }
 
     public Rectangle getHandle() {
@@ -57,7 +59,6 @@ public class Handle {
 //    public void setVisible(boolean visible) {
 //        this.visible = visible;
 //    }
-    
     protected void setSelected(boolean selected) {
         this.selected = selected;
     }
@@ -84,6 +85,7 @@ public class Handle {
 
     public FreedomPoint addAdiacent() {
         FreedomPoint added = zone.getPojo().getShape().insert(point);
+
         return added;
     }
 }

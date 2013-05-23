@@ -13,7 +13,6 @@ import it.freedomotic.serial.SerialConnectionProvider;
 import it.freedomotic.serial.SerialDataConsumer;
 import java.io.IOException;
 
-
 /**
  *
  * @author enrico
@@ -37,7 +36,7 @@ public class Massabus extends Protocol implements SerialDataConsumer {
             //the right port using an hello message and an expected reply
             //the hello message will be broadcasted to all usb connected devices
             serial.setAutodiscover(
-                    configuration.getStringProperty("serial.hello", "hello"), 
+                    configuration.getStringProperty("serial.hello", "hello"),
                     configuration.getStringProperty("serial.hello-reply", "hello-reply"));
             //connection parameters
             serial.setPortBaudrate(configuration.getIntProperty("serial.boudrate", 9600));

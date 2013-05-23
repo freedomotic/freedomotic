@@ -40,7 +40,8 @@ import java.util.logging.Logger;
  * @author Expression autor is undefined on line 12, column 14 in
  * Templates/Classes/Class.java.
  */
-public class Config implements Serializable {
+public class Config
+        implements Serializable {
 
     private static final long serialVersionUID = 1380975976029008480L;
 	
@@ -70,6 +71,7 @@ public class Config implements Serializable {
      */
     public String getProperty(String key) {
         String result = properties.getProperty(key);
+
         return result;
     }
 
@@ -87,6 +89,7 @@ public class Config implements Serializable {
 
     public String getStringProperty(String key, String defaultValue) {
         String result = properties.getProperty(key);
+
         if (result != null) {
             return result;
         } else {
@@ -98,6 +101,7 @@ public class Config implements Serializable {
     public int getIntProperty(String key, int defaultValue) {
         try {
             Integer result = Integer.parseInt(properties.getProperty(key));
+
             if (result != null) {
                 return result;
             } else {
@@ -112,6 +116,7 @@ public class Config implements Serializable {
 
     public boolean getBooleanProperty(String key, boolean defaultValue) {
         String result = properties.getProperty(key);
+
         if (result != null) {
             if (result.trim().equalsIgnoreCase("true")) {
                 return true;
@@ -121,11 +126,13 @@ public class Config implements Serializable {
                 }
             }
         }
+
         return defaultValue;
     }
 
     public double getDoubleProperty(String key, double defaultValue) {
         Double result = Double.parseDouble(properties.getProperty(key));
+
         if (result != null) {
             return result;
         } else {
@@ -138,14 +145,17 @@ public class Config implements Serializable {
         ArrayList<URL> list = new ArrayList<URL>();
         String s = getStringProperty(key, "");
         StringTokenizer t = new StringTokenizer(s, " ");
+
         while (t.hasMoreElements()) {
             String token = t.nextToken();
+
             try {
                 list.add(new URL(token));
             } catch (MalformedURLException ex) {
                 Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
         return list;
     }
 
@@ -153,14 +163,17 @@ public class Config implements Serializable {
         ArrayList<String> list = new ArrayList<String>();
         String s = getStringProperty(key, "");
         StringTokenizer t = new StringTokenizer(s, " ");
+
         while (t.hasMoreElements()) {
             String token = t.nextToken();
+
             try {
                 list.add(token);
             } catch (Exception ex) {
                 Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
         return list;
     }
 
@@ -173,12 +186,14 @@ public class Config implements Serializable {
         Set<Entry<Object, Object>> entries = entrySet();
         Iterator<Entry<Object, Object>> it = entries.iterator();
         StringBuilder string = new StringBuilder();
+
         while (it.hasNext()) {
         	Entry<Object, Object> entry = it.next();
             String key = (String) entry.getKey();
             String value = (String) entry.getValue();
             string.append(key + "=" + value + "; ");
         }
+
         return string.toString();
     }
 }

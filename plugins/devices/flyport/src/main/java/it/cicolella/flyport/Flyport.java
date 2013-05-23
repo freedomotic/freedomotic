@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.flyport;
 
 import it.freedomotic.api.EventTemplate;
@@ -202,8 +201,9 @@ public class Flyport extends Protocol {
             int startingValue = board.getStartingValue();
             String lineToMonitorize = board.getLineToMonitorize();
             int linesNumber = 0;
-            if(lineToMonitorize.equalsIgnoreCase("led"))
+            if (lineToMonitorize.equalsIgnoreCase("led")) {
                 linesNumber = board.getLedNumber();
+            }
             for (int i = startingValue; i <= linesNumber; i++) {
                 try {
                     // converts i into hexadecimal value (string) and sends the parameters

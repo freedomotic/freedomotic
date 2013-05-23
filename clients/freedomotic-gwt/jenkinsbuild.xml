@@ -154,24 +154,24 @@ Test targets suppressed because -junit argument was not specified when running w
     </junit>
   </target>
 
-  <target name="test" description="Run development and production mode tests">
-    <antcall target="test.dev" />
-    <antcall target="test.prod" />
-  </target>
--->
+      <target name="test" description="Run development and production mode tests">
+        <antcall target="test.dev" />
+        <antcall target="test.prod" />
+      </target>
+    -->
 
-  <target name="hosted" depends="devmode" description="Run development mode (NOTE: the 'hosted' target is deprecated)" />
+    <target name="hosted" depends="devmode" description="Run development mode (NOTE: the 'hosted' target is deprecated)" />
 
-  <target name="build" depends="gwtc" description="Build this project" />
+    <target name="build" depends="gwtc" description="Build this project" />
 
-  <target name="war" depends="build" description="Create a war file">
-    <delete file="${env.WORKSPACE}/clients/freedomotic-gwt/war/WEB-INF/lib/gwt-dev.jar"/>
-    <zip destfile="Freedomotic.war" basedir="war"/>
-  </target>
+    <target name="war" depends="build" description="Create a war file">
+        <delete file="${env.WORKSPACE}/clients/freedomotic-gwt/war/WEB-INF/lib/gwt-dev.jar"/>
+        <zip destfile="Freedomotic.war" basedir="war"/>
+    </target>
 
-  <target name="clean" description="Cleans this project">
-    <delete dir="${env.WORKSPACE}/clients/freedomotic-gwt/war/WEB-INF/classes" failonerror="false" />
-    <delete dir="${env.WORKSPACE}/clients/freedomotic-gwt/war/freedomotic" failonerror="false" />
-  </target>
+    <target name="clean" description="Cleans this project">
+        <delete dir="${env.WORKSPACE}/clients/freedomotic-gwt/war/WEB-INF/classes" failonerror="false" />
+        <delete dir="${env.WORKSPACE}/clients/freedomotic-gwt/war/freedomotic" failonerror="false" />
+    </target>
 
 </project>

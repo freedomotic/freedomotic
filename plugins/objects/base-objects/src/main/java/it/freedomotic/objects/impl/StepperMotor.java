@@ -2,15 +2,18 @@ package it.freedomotic.objects.impl;
 
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
+
 import it.freedomotic.objects.RangedIntBehaviorLogic;
-import it.freedomotic.reactions.CommandPersistence;
+
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.CommandPersistence;
 
 /**
  *
  * @author gpt
  */
-public class StepperMotor extends ElectricDevice {
+public class StepperMotor
+        extends ElectricDevice {
 
     public RangedIntBehaviorLogic position;
 
@@ -45,8 +48,10 @@ public class StepperMotor extends ElectricDevice {
 
     public void executeSetPosition(int rangeValue, Config params) {
         boolean executed = executeCommand("set position", params); //executes the developer level command associated with 'set volume' action
+
         if (executed) {
             setPosition(rangeValue);
+
             //TODO: set the light graphical representation
             //setCurrentRepresentation(1); //points to the second element in the XML views array (light on image)
         }
@@ -61,6 +66,7 @@ public class StepperMotor extends ElectricDevice {
 
     public void setPositionUp(Config params) {
         boolean executed = executeCommand("move up", params); //executes the developer level command associated with 'set channel' action
+
         if (executed) {
             if (position.getValue() != position.getMax()) {
                 position.setValue(position.getValue() + 1);
@@ -71,6 +77,7 @@ public class StepperMotor extends ElectricDevice {
 
     public void setPositionDown(Config params) {
         boolean executed = executeCommand("move down", params); //executes the developer level command associated with 'set channel' action
+
         if (executed) {
             if (position.getValue() != position.getMin()) {
                 position.setValue(position.getValue() - 1);
@@ -87,7 +94,8 @@ public class StepperMotor extends ElectricDevice {
         a.setName("Set " + getPojo().getName() + " position to 50%");
         a.setDescription("the StepperMotor " + getPojo().getName() + " changes its position to 50%");
         a.setReceiver("app.events.sensors.behavior.request.objects");
-        a.setProperty("object", getPojo().getName());
+        a.setProperty("object",
+                getPojo().getName());
         a.setProperty("behavior", "position");
         a.setProperty("value", "50");
 
@@ -95,7 +103,8 @@ public class StepperMotor extends ElectricDevice {
         b.setName(getPojo().getName() + " position up");
         b.setDescription("increases " + getPojo().getName() + " position of one step");
         b.setReceiver("app.events.sensors.behavior.request.objects");
-        b.setProperty("object", getPojo().getName());
+        b.setProperty("object",
+                getPojo().getName());
         b.setProperty("behavior", "position");
         b.setProperty("value", "next");
 
@@ -103,7 +112,8 @@ public class StepperMotor extends ElectricDevice {
         c.setName(getPojo().getName() + " position down");
         c.setDescription("decreases " + getPojo().getName() + " position of one step");
         c.setReceiver("app.events.sensors.behavior.request.objects");
-        c.setProperty("object", getPojo().getName());
+        c.setProperty("object",
+                getPojo().getName());
         c.setProperty("behavior", "position");
         c.setProperty("value", "previous");
 
@@ -131,7 +141,6 @@ public class StepperMotor extends ElectricDevice {
         f.setProperty("behavior", "position");
         f.setProperty("value", "previous");
 
-
         Command g = new Command();
         g.setName("Set its position to the value in the event");
         g.setDescription("set its position to the value in the event");
@@ -139,7 +148,6 @@ public class StepperMotor extends ElectricDevice {
         g.setProperty("object", "@event.object.name");
         g.setProperty("behavior", "position");
         g.setProperty("value", "@event.value");
-
 
         CommandPersistence.add(a);
         CommandPersistence.add(b);

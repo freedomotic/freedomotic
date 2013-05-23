@@ -273,12 +273,12 @@ public class DevantechEthRly extends Protocol {
         //publish the event on the messaging bus
         this.notifyEvent(event);
     }
-    
-/**
- * Actuator side
- */
-@Override
-        public void onCommand(Command c) throws UnableToExecuteException {
+
+    /**
+     * Actuator side
+     */
+    @Override
+    public void onCommand(Command c) throws UnableToExecuteException {
         //get connection paramentes address:port from received freedomotic command
         String delimiter = configuration.getProperty("address-delimiter");
         address = c.getProperty("address").split(delimiter);
@@ -349,12 +349,12 @@ public class DevantechEthRly extends Protocol {
     }
 
     @Override
-        protected boolean canExecute(Command c) {
+    protected boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-        protected void onEvent(EventTemplate event) {
+    protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

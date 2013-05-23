@@ -28,16 +28,17 @@ import it.freedomotic.model.object.PropertiesBehavior;
  *
  * @author enrico
  */
-public class PropertiesBehaviorLogic implements BehaviorLogic {
+public class PropertiesBehaviorLogic
+        implements BehaviorLogic {
 
     private PropertiesBehavior data;
     private PropertiesBehaviorLogic.Listener listener;
     private boolean changed;
-    
+
     public interface Listener {
-        
-    public void propertyChanged(String key, String value, Config params, boolean fireCommand);
-}
+
+        public void propertyChanged(String key, String value, Config params, boolean fireCommand);
+    }
 
     public PropertiesBehaviorLogic(PropertiesBehavior pojo) {
         this.data = pojo;
@@ -92,7 +93,7 @@ public class PropertiesBehaviorLogic implements BehaviorLogic {
     public void addListener(PropertiesBehaviorLogic.Listener propertiesBehaviorListener) {
         listener = propertiesBehaviorListener;
     }
-    
+
     @Override
     public boolean isChanged() {
         return changed;

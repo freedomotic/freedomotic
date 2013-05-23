@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.usb4relaybrd;
 
 import it.freedomotic.api.EventTemplate;
@@ -166,8 +165,9 @@ public class Usb4RelayBrd extends Protocol {
             // convert the integer relayStatus into a binary string 
             binaryString = Integer.toBinaryString(relayStatus);
             // Integer.toBinaryString removes leading 0 so the first is added if needed 
-            if(binaryString.length()<8)
-                binaryString = "0"+binaryString;
+            if (binaryString.length() < 8) {
+                binaryString = "0" + binaryString;
+            }
             //System.out.println("Stringa binaria " + binaryString);
             // revert the string 
             StringBuffer reverse = new StringBuffer(binaryString).reverse();

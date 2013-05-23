@@ -105,8 +105,8 @@ public final class Mailer extends Protocol {
 
     @Override
     protected void onEvent(EventTemplate event) {
-        if (event instanceof MessageEvent){
-            MessageEvent mail = (MessageEvent)event;
+        if (event instanceof MessageEvent) {
+            MessageEvent mail = (MessageEvent) event;
             send(mail.getFrom(), mail.getTo(), null, mail.getText());
         }
     }

@@ -24,6 +24,7 @@ package it.freedomotic.objects;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.MultiselectionListBehavior;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +35,8 @@ import java.util.List;
  *
  * @author Enrico
  */
-public class TaxonomyBehaviorLogic implements BehaviorLogic {
+public class TaxonomyBehaviorLogic
+        implements BehaviorLogic {
 
     private MultiselectionListBehavior data;
     private TaxonomyBehaviorLogic.Listener listener;
@@ -62,8 +64,7 @@ public class TaxonomyBehaviorLogic implements BehaviorLogic {
         String item = params.getProperty("item").trim();
         String value = params.getProperty("value").trim();
 
-        if (value.equalsIgnoreCase("add")
-                && !data.getSelected().contains(item)) {
+        if (value.equalsIgnoreCase("add") && !data.getSelected().contains(item)) {
             //add the element id not already here
             listener.onAdd(params, fireCommand);
         } else {
@@ -71,9 +72,7 @@ public class TaxonomyBehaviorLogic implements BehaviorLogic {
                 //data.setUnselected(item);
                 listener.onRemove(params, fireCommand);
             } else {
-                if (value.equalsIgnoreCase("true")
-                        || value.equalsIgnoreCase("selected")
-                        || value.equals("1")) {
+                if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("selected") || value.equals("1")) {
                     //data.setSelected(item);
                     listener.onSelection(params, fireCommand);
                 } else {
@@ -143,7 +142,6 @@ public class TaxonomyBehaviorLogic implements BehaviorLogic {
         return data.isReadOnly();
     }
 
-    
     @Override
     public String getValueAsString() {
         return data.toString();

@@ -17,17 +17,18 @@ import org.openide.util.lookup.ServiceProvider;
  * @author GGPT
  */
 @ServiceProvider(service = IMarketPlace.class)
-public class FreedomoticMarketPlace implements IMarketPlace{
+public class FreedomoticMarketPlace implements IMarketPlace {
+
     private ArrayList<IPluginPackage> packageList;
     private ArrayList<IPluginCategory> categoryList;
-    
+
     public FreedomoticMarketPlace() {
         packageList = new ArrayList<IPluginPackage>();
         categoryList = new ArrayList<IPluginCategory>();
-        updateCategoryList();        
-        
+        updateCategoryList();
+
     }
-      
+
     @Override
     public ArrayList<IPluginPackage> getAvailablePackages() {
         return packageList;
@@ -41,7 +42,7 @@ public class FreedomoticMarketPlace implements IMarketPlace{
 
     @Override
     public ArrayList<IPluginCategory> getAvailableCategories() {
-        return categoryList;        
+        return categoryList;
     }
 
     @Override
@@ -50,17 +51,16 @@ public class FreedomoticMarketPlace implements IMarketPlace{
     }
 
     @Override
-    public void updateCategoryList() {        
+    public void updateCategoryList() {
         categoryList.clear();
-        categoryList.addAll(DrupalRestHelper.retrieveCategories());        
-    }        
-    
-      /**
+        categoryList.addAll(DrupalRestHelper.retrieveCategories());
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        FreedomoticMarketPlace market= new FreedomoticMarketPlace();            
-    
+        FreedomoticMarketPlace market = new FreedomoticMarketPlace();
+
     }
-    
 }

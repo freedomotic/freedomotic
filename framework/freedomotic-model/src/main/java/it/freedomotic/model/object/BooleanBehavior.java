@@ -21,8 +21,8 @@
  */
 package it.freedomotic.model.object;
 
-
-public class BooleanBehavior extends Behavior{
+public class BooleanBehavior
+        extends Behavior {
 
     private static final long serialVersionUID = 8000833627513350346L;
 	

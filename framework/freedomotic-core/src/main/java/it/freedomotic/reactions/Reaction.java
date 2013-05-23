@@ -47,7 +47,8 @@ import java.util.Iterator;
  *
  * @author enrico
  */
-public final class Reaction implements Serializable {
+public final class Reaction
+        implements Serializable {
 
     private static final long serialVersionUID = -5474545571527398625L;
 	
@@ -113,6 +114,7 @@ public final class Reaction implements Serializable {
         if (commands == null) {
             commands = new ArrayList<Command>();
         }
+
         return commands;
     }
 
@@ -133,18 +135,22 @@ public final class Reaction implements Serializable {
             if (c != null) {
                 b.append("(").append(c.getName()).append(")");
             }
+
             if (commandIterator.hasNext()) {
                 b.append(" AFTER THAT ");
             }
         }
+
         return b.toString();
     }
 
     private String buildDescription() {
         StringBuilder b = new StringBuilder();
-        if (trigger != null && trigger.getDescription()!=null) {
+
+        if ((trigger != null) && (trigger.getDescription() != null)) {
             b.append(TriggerPersistence.getTrigger(trigger).getDescription());
         }
+
         b.append(" then ");
         Iterator<Command> it = getCommands().iterator();
         while (it.hasNext()) {
@@ -152,10 +158,12 @@ public final class Reaction implements Serializable {
             if (c != null) {
                 b.append(c.getDescription());
             }
+
             if (it.hasNext()) {
                 b.append(" and ");
             }
         }
+
         return b.toString();
     }
 
@@ -168,20 +176,26 @@ public final class Reaction implements Serializable {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final Reaction other = (Reaction) obj;
-        if ((this.shortDescription == null) ? (other.shortDescription != null) : !this.shortDescription.equals(other.shortDescription)) {
+
+        if ((this.shortDescription == null) ? (other.shortDescription != null)
+                : (!this.shortDescription.equals(other.shortDescription))) {
             return false;
         }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 73 * hash + (this.shortDescription != null ? this.shortDescription.hashCode() : 0);
+        hash = (73 * hash) + ((this.shortDescription != null) ? this.shortDescription.hashCode() : 0);
+
         return hash;
     }
 
@@ -207,6 +221,7 @@ public final class Reaction implements Serializable {
         if (trigger != null) {
             return true;
         }
+
         return false;
     }
 }

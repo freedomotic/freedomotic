@@ -11,14 +11,14 @@ import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 /**
  *
  * @author gpt
  */
 public class KuroTest {
 
-    public KuroTest()
-    {
+    public KuroTest() {
     }
 
     @BeforeClass
@@ -30,7 +30,8 @@ public class KuroTest {
     }
     public static final char STX = 0x02;
     public static final char ETX = 0x03;
-       /**
+
+    /**
      * Test of read method, of class SerialConnectionProvider.
      */
     @Test
@@ -47,13 +48,13 @@ public class KuroTest {
 //            usb.setPortStopbits(SerialPort.STOPBITS_1);
             System.out.println("\nTesting write to serial");
             usb.connect();
-            System.out.println("stx: " +STX);
-	    System.out.println("etx: " +ETX);
-             System.out.println("pos eso");
-            String msg = STX+"**PON"+ETX;
+            System.out.println("stx: " + STX);
+            System.out.println("etx: " + ETX);
+            System.out.println("pos eso");
+            String msg = STX + "**PON" + ETX;
             System.out.println("pos eso 222");
-            System.out.println("msg: "+msg );
-            String output = usb.send(msg);           
+            System.out.println("msg: " + msg);
+            String output = usb.send(msg);
             System.out.println("Salida del puerto: " + output);
             usb.disconnect();
             //assertEquals(1, 1);
@@ -64,7 +65,4 @@ public class KuroTest {
             Logger.getLogger(KuroTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-
-
 }

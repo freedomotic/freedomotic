@@ -48,7 +48,7 @@ public class JavaUploader {
 
         //String test = postTaxonomySelectNodes("151",0);        
         //List<MarketPlacePlugin2> testlist = DrupalRestHelper.retrievePluginsByCategory("151");
-         MarketPlacePlugin2 pluginTest = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.freedomotic.com/rest/node/1196");
+        MarketPlacePlugin2 pluginTest = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.freedomotic.com/rest/node/1196");
 //        MarketPlacePlugin2 pluginTest = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.freedomotic.com/rest/node/394");
 //        putPlugin(cS, "394", pluginTest); 
 //        String nid = "394";

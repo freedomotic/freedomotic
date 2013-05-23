@@ -18,12 +18,13 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
  *
  * @author gpt
  */
-public class EnvironmentServerResource extends ServerResource implements EnvironmentResource{
-    private static volatile  Environment env;    
- 	
+public class EnvironmentServerResource extends ServerResource implements EnvironmentResource {
+
+    private static volatile Environment env;
+
     @Override
-    public void doInit() { 
-        int number =Integer.parseInt((String)getRequest().getAttributes().get("number"));                
+    public void doInit() {
+        int number = Integer.parseInt((String) getRequest().getAttributes().get("number"));
         env = EnvironmentPersistence.getEnvironments().get(number).getPojo();
     }
 
@@ -31,22 +32,22 @@ public class EnvironmentServerResource extends ServerResource implements Environ
     public String retrieveXml() {
         System.out.println("RetrieveXML");
         String ret = "";
-        XStream xstream =FreedomXStream.getXstream();
+        XStream xstream = FreedomXStream.getXstream();
         ret = xstream.toXML(env);
         return ret;
     }
-    
+
     @Override
-    public String retrieveJson() {        
+    public String retrieveJson() {
         String ret = "";
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
-        xstream.setMode(XStream.NO_REFERENCES);                
-        ret = xstream.toXML(env);        
+        xstream.setMode(XStream.NO_REFERENCES);
+        ret = xstream.toXML(env);
         return ret;
     }
-    
-    @Override   
-    public Environment retrieveEnvironment() {        
+
+    @Override
+    public Environment retrieveEnvironment() {
         return env;
-    } 
+    }
 }

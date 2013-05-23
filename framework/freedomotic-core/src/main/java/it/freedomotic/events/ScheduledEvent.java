@@ -27,7 +27,8 @@ import it.freedomotic.api.EventTemplate;
  *
  * @author Enrico
  */
-public class ScheduledEvent extends EventTemplate {
+public class ScheduledEvent
+        extends EventTemplate {
 
     private static final long serialVersionUID = 7508683624189475354L;
 

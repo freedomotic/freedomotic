@@ -16,7 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
     </properties>
-
+    
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -28,6 +28,12 @@
             <artifactId>freedomotic-core</artifactId>
             <version>${project.parent.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 
@@ -44,4 +50,4 @@
             </plugin>
         </plugins>
     </build>
- </project>
+</project>

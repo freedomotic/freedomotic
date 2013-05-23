@@ -22,6 +22,7 @@
 package it.freedomotic.objects;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
 
@@ -29,7 +30,8 @@ import it.freedomotic.model.object.RangedIntBehavior;
  *
  * @author Enrico
  */
-public class RangedIntBehaviorLogic implements BehaviorLogic {
+public class RangedIntBehaviorLogic
+        implements BehaviorLogic {
 
     private final RangedIntBehavior data;
     private Listener listener;
@@ -72,7 +74,7 @@ public class RangedIntBehaviorLogic implements BehaviorLogic {
     public int getMin() {
         return data.getMin();
     }
-    
+
     public int getScale() {
         return data.getScale();
     }
@@ -82,39 +84,47 @@ public class RangedIntBehaviorLogic implements BehaviorLogic {
         //from dim to dim
         String input = params.getProperty("value").trim();
         int parsed = getMin();
+
         try {
             if (input.startsWith("+")) {
                 parsed = getValue() + Integer.parseInt(input.replace("+", "")); //eliminate the + and sum the new value
             } else {
                 if (input.startsWith("-")) {
-                    parsed = getValue() - Integer.parseInt(input.replace("-", ""));  //eliminate the - and subtact the new value
+                    parsed = getValue() - Integer.parseInt(input.replace("-", "")); //eliminate the - and subtact the new value
                 } else {
                     parsed = (int) Double.parseDouble(input); //takes doubles and integers. Doubles are truncated to standard int values
                 }
             }
         } catch (NumberFormatException numberFormatException) {
-            Freedomotic.logger.warning("Paramenter 'value = " + params.getProperty("value").trim() + "' in " + this.getName() + " behavior is not an integer.");
+            Freedomotic.logger.warning("Paramenter 'value = " + params.getProperty("value").trim() + "' in "
+                    + this.getName() + " behavior is not an integer.");
         }
+
         if (input.equalsIgnoreCase("next")) {
             parsed = getValue() + getStep();
         }
+
         if (input.equalsIgnoreCase("previous")) {
             parsed = getValue() - getStep();
         }
+
         if (input.equalsIgnoreCase("opposite")) {
             //opposite value not allowed for this behavior. Inform the user.
         }
+
         performValueChange(parsed, params, fireCommand);
     }
 
     private void performValueChange(int tmpValue, Config params, boolean fireCommand) {
         if (getValue() != tmpValue) {
             if (tmpValue <= getMin()) {
-                params.setProperty("value", Integer.valueOf(getMin()).toString());
+                params.setProperty("value",
+                        Integer.valueOf(getMin()).toString());
                 listener.onLowerBoundValue(params, fireCommand);
             } else {
                 if (tmpValue >= getMax()) {
-                    params.setProperty("value", new Integer(getMax()).toString());
+                    params.setProperty("value",
+                            new Integer(getMax()).toString());
                     listener.onUpperBoundValue(params, fireCommand);
                 } else {
                     listener.onRangeValue(tmpValue, params, fireCommand);
@@ -140,20 +150,25 @@ public class RangedIntBehaviorLogic implements BehaviorLogic {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final RangedIntBehaviorLogic other = (RangedIntBehaviorLogic) obj;
-        if (this.data != other.data && (this.data == null || !this.data.equals(other.data))) {
+
+        if ((this.data != other.data) && ((this.data == null) || !this.data.equals(other.data))) {
             return false;
         }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 23 * hash + (this.data != null ? this.data.hashCode() : 0);
+        hash = (23 * hash) + ((this.data != null) ? this.data.hashCode() : 0);
+
         return hash;
     }
 
@@ -172,7 +187,6 @@ public class RangedIntBehaviorLogic implements BehaviorLogic {
         return data.isReadOnly();
     }
 
-    
     @Override
     public boolean isChanged() {
         return changed;

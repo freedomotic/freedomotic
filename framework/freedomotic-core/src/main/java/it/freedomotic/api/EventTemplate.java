@@ -22,6 +22,7 @@
 package it.freedomotic.api;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Statement;
 // import it.freedomotic.util.UidGenerator;
@@ -37,7 +38,8 @@ import java.util.Locale;
  *
  * @author enrico
  */
-public class EventTemplate implements Serializable {
+public class EventTemplate
+        implements Serializable {
 
     private static final long serialVersionUID = -6726283450243677665L;
 	
@@ -53,7 +55,6 @@ public class EventTemplate implements Serializable {
     
     //TODO: change destination to simple String
     //private Destination replyTo = null;
-
     protected void generateEventPayload() {
     }
 
@@ -85,6 +86,7 @@ public class EventTemplate implements Serializable {
     public String getProperty(String key) {
         synchronized (payload) {
             List<Statement> statements = payload.getStatements(key);
+
             if (statements.isEmpty()) {
                 return "";
             } else {
@@ -108,24 +110,37 @@ public class EventTemplate implements Serializable {
 
     private final void fillPayloadWithDefaults() {
         init();
+
         try {
             Calendar rightNow = Calendar.getInstance();
             //adding date and time data
-            payload.addStatement("date.day.name", rightNow.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.UK));
-            payload.addStatement("date.day", rightNow.get(Calendar.DAY_OF_MONTH));
-            payload.addStatement("date.month.name", rightNow.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.UK));
+            payload.addStatement("date.day.name",
+                    rightNow.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.UK));
+            payload.addStatement("date.day",
+                    rightNow.get(Calendar.DAY_OF_MONTH));
+            payload.addStatement("date.month.name",
+                    rightNow.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.UK));
             payload.addStatement("date.month", rightNow.get(Calendar.MONTH) + 1);
-            payload.addStatement("date.year", rightNow.get(Calendar.YEAR));
-            payload.addStatement("date.dow", rightNow.get(Calendar.DAY_OF_WEEK));
-            payload.addStatement("time.hour", rightNow.get(Calendar.HOUR_OF_DAY));
-            payload.addStatement("time.minute", rightNow.get(Calendar.MINUTE));
-            payload.addStatement("time.second", rightNow.get(Calendar.SECOND));
+            payload.addStatement("date.year",
+                    rightNow.get(Calendar.YEAR));
+            payload.addStatement("date.dow",
+                    rightNow.get(Calendar.DAY_OF_WEEK));
+            payload.addStatement("time.hour",
+                    rightNow.get(Calendar.HOUR_OF_DAY));
+            payload.addStatement("time.minute",
+                    rightNow.get(Calendar.MINUTE));
+            payload.addStatement("time.second",
+                    rightNow.get(Calendar.SECOND));
+
             DateFormat datefmt = new SimpleDateFormat("yyyyMMdd");
             DateFormat timefmt = new SimpleDateFormat("HHmmss");
-            payload.addStatement("time", timefmt.format(rightNow.getTime()));
-            payload.addStatement("date", datefmt.format(rightNow.getTime()));
+            payload.addStatement("time",
+                    timefmt.format(rightNow.getTime()));
+            payload.addStatement("date",
+                    datefmt.format(rightNow.getTime()));
             //adding event.sender to event payload. So it can be used by trigger
-            payload.addStatement("sender", getSender());
+            payload.addStatement("sender",
+                    getSender());
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }

@@ -1,37 +1,32 @@
 package it.cicolella.openwebnet;
 
-/*****************************************************************
- * BTicinoReadThread.java                                        *
- * Original code:			          -              *
- * date          : Sep 8, 2004                                   *
- * copyright     : (C) 2005 by Bticino S.p.A. Erba (CO) - Italy  *
- *                     Embedded Software Development Laboratory  *
- * license       : GPL                                           *
- * email         : 		             		         *
- * web site      : www.bticino.it; www.myhome-bticino.it         *
- *                                                               *
- * Modified and adapted for Freedomotic project by:              *
- * Mauro Cicolella - Enrico Nicoletti                            *
- * date          : 24/11/2011                                    *
- * web site      : www.freedomotic.com                           *
- *****************************************************************/
-/***************************************************************************
+/**
+ * ***************************************************************
+ * BTicinoReadThread.java * Original code:	- * date : Sep 8, 2004 * copyright :
+ * (C) 2005 by Bticino S.p.A. Erba (CO) - Italy * Embedded Software Development
+ * Laboratory * license : GPL * email : * web site : www.bticino.it;
+ * www.myhome-bticino.it * * Modified and adapted for Freedomotic project by: *
+ * Mauro Cicolella - Enrico Nicoletti * date : 24/11/2011 * web site :
+ * www.freedomotic.com *
+ * ***************************************************************
+ */
+/**
+ * *************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ * This program is free software; you can redistribute it and/or modify * it
+ * under the terms of the GNU General Public License as published by * the Free
+ * Software Foundation; either version 2 of the License, or * (at your option)
+ * any later version. * *
+ * *************************************************************************
+ */
 import it.freedomotic.app.Freedomotic;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Description:
- * Thread for receiving messages from socket monitor
- * 
+ * Description: Thread for receiving messages from socket monitor
+ *
  */
 public class BTicinoReadThread extends Thread {
 
@@ -112,7 +107,7 @@ public class BTicinoReadThread extends Thread {
 
             Freedomotic.logger.info("Mon: " + BTicinoSocketReadManager.responseLineMon);
             OWNFrame.writeAreaLog(OWNUtilities.getDateTime() + " Mon" + BTicinoSocketReadManager.responseLineMon);
-       
+
             //builds a freedomotic event starting from the frame
             //if it is a change state frame the corresponding freedomotic event is notified
             freedomSensor.buildEventFromFrame(BTicinoSocketReadManager.responseLineMon);

@@ -4,6 +4,8 @@
  */
 package it.freedomotic.restapi.server.resources;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.objects.EnvObjectLogic;
@@ -24,41 +26,40 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
  *
  * @author gpt
  */
-public class ObjectsServerResource extends ServerResource implements ObjectsResource{
-    private static volatile ArrayList<EnvObject> objects;  
-        
+public class ObjectsServerResource extends ServerResource implements ObjectsResource {
+
+    private static volatile ArrayList<EnvObject> objects;
+
     @Override
-    protected void doInit() throws ResourceException{
-        Collection<EnvObjectLogic> objectsLogic= EnvObjectPersistence.getObjectList();        
+    protected void doInit() throws ResourceException {
+        Collection<EnvObjectLogic> objectsLogic = EnvObjectPersistence.getObjectList();
         objects = new ArrayList<EnvObject>();
-        for (EnvObjectLogic objLogic: objectsLogic)
-        {            
+        for (EnvObjectLogic objLogic : objectsLogic) {
             this.objects.add(objLogic.getPojo());
         }
-        
-        
-        
-    }
-        
-    @Override
-    public String retrieveXml() {   
-        String ret = "";
-        XStream xstream =FreedomXStream.getXstream(); 
-        ret = xstream.toXML(objects);
-        return ret;
-                
+
+
+
     }
 
     @Override
-    public String retrieveJson() {        
+    public String retrieveXml() {
+        String ret = "";
+        XStream xstream = FreedomXStream.getXstream();
+        ret = xstream.toXML(objects);
+        return ret;
+
+    }
+
+    @Override
+    public String retrieveJson() {
         String ret = "";
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
-        xstream.setMode(XStream.ID_REFERENCES);                
-        ret = xstream.toXML(objects);        
+        xstream.setMode(XStream.ID_REFERENCES);
+        ret = xstream.toXML(objects);
         return ret;
     }
-    
-    
+
     @Override
     public ArrayList<EnvObject> retrieveObjects() {
         return objects;

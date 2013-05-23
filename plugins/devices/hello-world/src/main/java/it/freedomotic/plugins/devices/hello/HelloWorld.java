@@ -2,12 +2,17 @@ package it.freedomotic.plugins.devices.hello;
 
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
+
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.exceptions.UnableToExecuteException;
+
 import it.freedomotic.reactions.Command;
+
 import java.io.IOException;
 
-public class HelloWorld extends Protocol {
+public class HelloWorld
+        extends Protocol {
 
     final int POLLING_WAIT;
 
@@ -41,8 +46,9 @@ public class HelloWorld extends Protocol {
 
     @Override
     protected void onRun() {
-        Freedomotic.logger.info("HelloWorld onRun() logs this message every "
-                + "POLLINGWAIT=" + POLLING_WAIT + "milliseconds");
+        Freedomotic.logger.info("HelloWorld onRun() logs this message every " + "POLLINGWAIT=" + POLLING_WAIT
+                + "milliseconds");
+
         //at the end of this method the system waits POLLINGTIME 
         //before calling it again. The result is this log message is printed
         //every 2 seconds (2000 millisecs)
@@ -59,9 +65,10 @@ public class HelloWorld extends Protocol {
     }
 
     @Override
-    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        Freedomotic.logger.info("HelloWorld plugin receives a command called " + c.getName()
-                + " with parameters " + c.getProperties().toString());
+    protected void onCommand(Command c)
+            throws IOException, UnableToExecuteException {
+        Freedomotic.logger.info("HelloWorld plugin receives a command called " + c.getName() + " with parameters "
+                + c.getProperties().toString());
     }
 
     @Override

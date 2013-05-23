@@ -6,14 +6,14 @@ import it.freedomotic.objects.EnvObjectLogic;
  *
  * @author Enrico
  */
-public class Decoration extends EnvObjectLogic {
+public class Decoration
+        extends EnvObjectLogic {
 
     @Override
     public void init() {
         //decoration is a static object. It does nothing
         super.init();
     }
-
 
     @Override
     protected void createCommands() {
@@ -22,7 +22,5 @@ public class Decoration extends EnvObjectLogic {
 
     @Override
     protected void createTriggers() {
-
-
     }
 }

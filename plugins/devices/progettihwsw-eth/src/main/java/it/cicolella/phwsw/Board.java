@@ -17,7 +17,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.phwsw;
 
 public class Board {
@@ -32,14 +31,14 @@ public class Board {
 
     public Board(String ipAddress, int port, int relayNumber, int analogInputNumber,
             int digitalInputNumber, String lineToMonitorize, int startingRelay) {
-            setIpAddress(ipAddress);
-            setPort(port);
-            setRelayNumber(relayNumber);
-            setAnalogInputNumber(analogInputNumber);
-            setDigitalInputNumber(digitalInputNumber);
-            setLineToMonitorize(lineToMonitorize);
-            setStartingRelay(startingRelay);
-            
+        setIpAddress(ipAddress);
+        setPort(port);
+        setRelayNumber(relayNumber);
+        setAnalogInputNumber(analogInputNumber);
+        setDigitalInputNumber(digitalInputNumber);
+        setLineToMonitorize(lineToMonitorize);
+        setStartingRelay(startingRelay);
+
     }
 
     public int getAnalogInputNumber() {

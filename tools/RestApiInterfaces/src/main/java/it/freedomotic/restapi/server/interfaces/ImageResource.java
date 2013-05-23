@@ -11,7 +11,7 @@ import org.restlet.resource.Get;
  * @author gpt
  */
 public interface ImageResource {
-    
+
     @Get
     public String getImagePath();
 }

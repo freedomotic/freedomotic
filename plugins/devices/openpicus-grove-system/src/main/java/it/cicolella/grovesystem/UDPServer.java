@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.grovesystem;
 
 import it.freedomotic.app.Freedomotic;
@@ -32,13 +31,13 @@ public class UDPServer extends Thread {
     private final static int BUFFER = 1024;
     private DatagramSocket socket;
     GroveSystem plugin; // reference to the plugin class
-  
+
     public UDPServer(GroveSystem plugin) throws IOException {
         this.plugin = plugin;
         //socket = new DatagramSocket(PORT, InetAddress.getLocalHost());
         socket = new DatagramSocket(plugin.UDP_SERVER_PORT, InetAddress.getByName(plugin.UDP_SERVER_HOSTNAME));
         Freedomotic.logger.info("ServerUDP listen to " + socket.getLocalSocketAddress());
-   
+
     }
 
     public void run() {
@@ -48,15 +47,15 @@ public class UDPServer extends Thread {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);
                 //remove this packets
-                if(!packet.getAddress().toString().contains("0.0.0.0"))
-                extractData(packet);   
+                if (!packet.getAddress().toString().contains("0.0.0.0")) {
+                    extractData(packet);
+                }
             } catch (Exception ex) {
-                Freedomotic.logger.severe("Reading UDP packet exception "+ex);
+                Freedomotic.logger.severe("Reading UDP packet exception " + ex);
             }
         }
     }
-    
-    
+
     private void extractData(DatagramPacket packet) {
         String content = null;
         String fields[] = null;
@@ -64,18 +63,16 @@ public class UDPServer extends Thread {
         String sensorConnector = null;
         String sensorType = null;
         String sensorValue = null;
-        
-        content = new String (packet.getData()); 
+
+        content = new String(packet.getData());
         content = content.substring(0, packet.getLength());
-        fields = content.split(plugin.DELIMITER);   
+        fields = content.split(plugin.DELIMITER);
         sensorConnector = fields[0];
         sensorType = fields[1];
         sensorValue = fields[2];
         clientAddress = packet.getAddress().toString().substring(1, packet.getAddress().toString().length());
         //System.out.println("Received the packet " + clientAddress+" "+sensorConnector + " "+sensorType+" "+sensorValue); // FOR DEBUG
-        plugin.sendEvent(clientAddress+":"+sensorConnector, sensorType, sensorValue);
+        plugin.sendEvent(clientAddress + ":" + sensorConnector, sensorType, sensorValue);
         //  System.out.println(content);  
     }
-      
 }
-    

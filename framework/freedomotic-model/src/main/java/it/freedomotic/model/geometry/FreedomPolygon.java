@@ -28,7 +28,9 @@ import java.util.ArrayList;
  *
  * @author Enrico
  */
-public class FreedomPolygon implements FreedomShape, Serializable {
+public class FreedomPolygon
+        implements FreedomShape,
+        Serializable {
 
     private static final long serialVersionUID = -3740479951903880574L;
 	
@@ -50,18 +52,22 @@ public class FreedomPolygon implements FreedomShape, Serializable {
         int index = points.indexOf(nextTo);
         FreedomPoint currentPoint = null;
         FreedomPoint nextPoint = null;
+
         try {
             nextPoint = points.get((index + 1) % points.size());
             currentPoint = points.get(index);
         } catch (Exception e) {
         }
-        if (currentPoint != null && nextPoint != null) {
+
+        if ((currentPoint != null) && (nextPoint != null)) {
             int x = (int) Math.abs((currentPoint.getX() - nextPoint.getX())) / 2;
             int y = (int) Math.abs((currentPoint.getY() - nextPoint.getY())) / 2;
             FreedomPoint newPoint = new FreedomPoint(x, y);
             points.add(index + 1, newPoint);
+
             return newPoint;
         }
+
         return null;
     }
 
@@ -76,15 +82,16 @@ public class FreedomPolygon implements FreedomShape, Serializable {
             return new ArrayList<FreedomPoint>();
         }
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder buff = new StringBuilder();
         buff.append(points.size() + " points ");
+
         for (FreedomPoint p : points) {
             buff.append("(").append(p.getX()).append(",").append(p.getY()).append(")");
         }
+
         return buff.toString();
-        
     }
 }

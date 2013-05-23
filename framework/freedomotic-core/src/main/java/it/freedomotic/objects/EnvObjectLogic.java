@@ -22,16 +22,21 @@
 package it.freedomotic.objects;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.core.Resolver;
+
 import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.environment.ZoneLogic;
+
 import it.freedomotic.events.ObjectHasChangedBehavior;
+
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.geometry.FreedomShape;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
+
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Reaction;
@@ -41,6 +46,7 @@ import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.security.Auth;
 import it.freedomotic.util.TopologyUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -78,15 +84,20 @@ public class EnvObjectLogic {
     public final Command getHardwareCommand(String action) {
         if ((action != null) && (!action.trim().isEmpty())) {
             Command commandToSearch = commandsMapping.get(action.trim().toLowerCase());
+
             if (commandToSearch != null) {
                 return commandToSearch;
             } else {
-                Freedomotic.logger.severe("Doesn't exists a valid hardware command associated to action '" + action + "' of object '" + pojo.getName() + "'. \n"
-                        + "This are the available mappings between action -> command for object '" + pojo.getName() + "': " + commandsMapping.toString());
+                Freedomotic.logger.severe("Doesn't exists a valid hardware command associated to action '" + action
+                        + "' of object '" + pojo.getName() + "'. \n"
+                        + "This are the available mappings between action -> command for object '"
+                        + pojo.getName() + "': " + commandsMapping.toString());
+
                 return null;
             }
         } else {
             Freedomotic.logger.severe("The action '" + action + "' is not valid in object '" + pojo.getName() + "'");
+
             return null;
         }
     }
@@ -105,8 +116,10 @@ public class EnvObjectLogic {
     public Map<String, String> getExposedBehaviors() {
         Map<String, String> result = new HashMap<String, String>();
         for (BehaviorLogic behavior : getBehaviors()) {
-            result.put("object.behavior." + behavior.getName(), behavior.getValueAsString());
+            result.put("object.behavior." + behavior.getName(),
+                    behavior.getValueAsString());
         }
+
         return result;
     }
 
@@ -127,6 +140,7 @@ public class EnvObjectLogic {
         for (Command c : CommandPersistence.getUserCommands()) {
             renameValuesInCommand(c, oldName, newName);
         }
+
         //rebuild reactions description
         for (Reaction r : ReactionPersistence.getReactions()) {
             r.setChanged();
@@ -135,18 +149,21 @@ public class EnvObjectLogic {
 
     @RequiresPermissions("objects:update")
     public void setAction(String action, Command command) {
-        if (action != null && !action.isEmpty() && command != null) {
-            commandsMapping.put(action.trim(), command);
-            pojo.getActions().setProperty(action.trim(), command.getName());
+        if ((action != null) && !action.isEmpty() && (command != null)) {
+            commandsMapping.put(action.trim(),
+                    command);
+            pojo.getActions().setProperty(action.trim(),
+                    command.getName());
         }
     }
 
     @RequiresPermissions("objects:update")
     public void addTriggerMapping(Trigger trigger, String behaviorName) {
         //checking input parameters
-        if (behaviorName == null || behaviorName.isEmpty() || trigger == null) {
+        if ((behaviorName == null) || behaviorName.isEmpty() || (trigger == null)) {
             throw new IllegalArgumentException("behavior name and trigger cannot be null");
         }
+
         //parameters in input are ok, continue...
         Iterator<Entry<String,String>> it = pojo.getTriggers().entrySet().iterator();
         //remove old references if any
@@ -156,9 +173,11 @@ public class EnvObjectLogic {
                 it.remove(); //remove the old value that had to be updated
             }
         }
-        pojo.getTriggers().setProperty(trigger.getName(), behaviorName);
-        Freedomotic.logger.info("Trigger mapping in object " + this.getPojo().getName()
-                + ": behavior '" + behaviorName + "' is now associated to trigger named '" + trigger.getName() + "'");
+
+        pojo.getTriggers().setProperty(trigger.getName(),
+                behaviorName);
+        Freedomotic.logger.config("Trigger mapping in object " + this.getPojo().getName() + ": behavior '"
+                + behaviorName + "' is now associated to trigger named '" + trigger.getName() + "'");
     }
 
     @RequiresPermissions("objects:read")
@@ -170,9 +189,11 @@ public class EnvObjectLogic {
     public synchronized void setChanged(boolean value) {
         if (value == true) {
             this.changed = true;
+
             ObjectHasChangedBehavior objectEvent = new ObjectHasChangedBehavior(this, this);
             //send multicast because an event must be received by all triggers registred on the destination channel
-            Freedomotic.logger.info("Object " + this.getPojo().getName() + " changes something in its status (eg: a behavior value)");
+            Freedomotic.logger.config("Object " + this.getPojo().getName()
+                    + " changes something in its status (eg: a behavior value)");
             Freedomotic.sendEvent(objectEvent);
         } else {
             changed = false;
@@ -188,10 +209,10 @@ public class EnvObjectLogic {
     @RequiresPermissions("objects:update")
     public final void registerBehavior(BehaviorLogic b) {
         if (getBehavior(b.getName()) != null) {
-            throw new IllegalArgumentException("Impossible to register behavior "
-                    + b.getName() + " in object " + this.getPojo().getName()
-                    + " because it is already registed");
+            throw new IllegalArgumentException("Impossible to register behavior " + b.getName() + " in object "
+                    + this.getPojo().getName() + " because it is already registed");
         }
+
         behaviors.add(b);
     }
 
@@ -208,6 +229,7 @@ public class EnvObjectLogic {
                 return behaviorLogic;
             }
         }
+
         return null;
     }
 
@@ -263,13 +285,17 @@ public class EnvObjectLogic {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final EnvObjectLogic other = (EnvObjectLogic) obj;
-        if (this.pojo != other.pojo && (this.pojo == null || !this.pojo.equals(other.pojo))) {
+
+        if ((this.pojo != other.pojo) && ((this.pojo == null) || !this.pojo.equals(other.pojo))) {
             return false;
         }
+
         return true;
     }
 
@@ -277,7 +303,8 @@ public class EnvObjectLogic {
     @RequiresPermissions("objects:read")
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + (this.pojo != null ? this.pojo.hashCode() : 0);
+        hash = (53 * hash) + ((this.pojo != null) ? this.pojo.hashCode() : 0);
+
         return hash;
     }
 
@@ -288,8 +315,12 @@ public class EnvObjectLogic {
 
     @RequiresPermissions("objects:create")
     public final void setRandomLocation() {
-        int randomX = 0 + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth());
-        int randomY = 0 + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight());
+        int randomX =
+                0
+                + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth());
+        int randomY =
+                0
+                + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight());
         setLocation(randomX, randomY);
     }
 
@@ -298,6 +329,7 @@ public class EnvObjectLogic {
         for (Representation rep : getPojo().getRepresentations()) {
             rep.setOffset(x, y);
         }
+
         checkTopology();
     }
 
@@ -306,8 +338,11 @@ public class EnvObjectLogic {
         FreedomShape shape = getPojo().getRepresentations().get(0).getShape();
         int xoffset = getPojo().getCurrentRepresentation().getOffset().getX();
         int yoffset = getPojo().getCurrentRepresentation().getOffset().getY();
+
         //now apply offset to the shape
-        FreedomPolygon translatedObject = (FreedomPolygon) TopologyUtils.translate((FreedomPolygon) shape, xoffset, yoffset);
+        FreedomPolygon translatedObject =
+                (FreedomPolygon) TopologyUtils.translate((FreedomPolygon) shape, xoffset, yoffset);
+
         for (EnvironmentLogic locEnv : EnvironmentPersistence.getEnvironments()) {
             for (ZoneLogic zone : locEnv.getZones()) {
                 //remove from every zone
@@ -316,7 +351,8 @@ public class EnvObjectLogic {
                     //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
                     //add to the zones this object belongs
                     zone.getPojo().getObjects().add(this.getPojo());
-                    Freedomotic.logger.info("Object " + getPojo().getName() + " is in zone " + zone.getPojo().getName());
+                    Freedomotic.logger.config("Object " + getPojo().getName() + " is in zone "
+                            + zone.getPojo().getName());
                 } else {
                     //DEBUG: System.out.println("object " + getPojo().getName() + " NOT intersects zone " + zone.getPojo().getName());
                 }
@@ -326,24 +362,36 @@ public class EnvObjectLogic {
 
     public final boolean executeTrigger(Trigger t) {
         String behavior = getAction(t.getName());
+
         if (behavior == null) {
             //Freedomotic.logger.severe("Hardware trigger '" + t.getName() + "' is not bound to any action of object " + this.getPojo().getName());
             //check if the behavior name is written in the trigger
             behavior = t.getPayload().getStatements("behavior.name").get(0).getValue();
+
             if (behavior.isEmpty()) {
                 return false;
             }
         }
 
         Statement valueStatement = t.getPayload().getStatements("behaviorValue").get(0);
+
         if (valueStatement == null) {
-            Freedomotic.logger.warning("No value in hardware trigger '" + t.getName() + "' to apply to object action '" + behavior + "' of object " + getPojo().getName());
+            Freedomotic.logger.warning("No value in hardware trigger '" + t.getName()
+                    + "' to apply to object action '" + behavior + "' of object "
+                    + getPojo().getName());
+
             return false;
         }
-        Freedomotic.logger.info("Sensors notification '" + t.getName() + "' has changed '" + getPojo().getName() + "' behavior '" + behavior + "' to " + valueStatement.getValue());
+
+        Freedomotic.logger.config("Sensors notification '" + t.getName() + "' has changed '"
+                + getPojo().getName() + "' behavior '" + behavior + "' to "
+                + valueStatement.getValue());
+
         Config params = new Config();
-        params.setProperty("value", valueStatement.getValue());
+        params.setProperty("value",
+                valueStatement.getValue());
         getBehavior(behavior).filterParams(params, false); //false means not fire commands, only change behavior value
+
         return true;
     }
 
@@ -361,35 +409,51 @@ public class EnvObjectLogic {
     @RequiresPermissions("objects:read")
     protected final boolean executeCommand(final String action, final Config params) {
         Freedomotic.logger.fine("Executing action '" + action + "' of object '" + getPojo().getName() + "'");
+
         if (getPojo().getActAs().equalsIgnoreCase("virtual")) {
             //it's a virtual object like a button, not needed real execution of a command
-            Freedomotic.logger.info("The object '" + getPojo().getName() + "' act as virtual device, so its hardware commands are not executed.");
+            Freedomotic.logger.config("The object '" + getPojo().getName()
+                    + "' act as virtual device, so its hardware commands are not executed.");
+
             return true;
         }
+
         final Command command = getHardwareCommand(action.trim());
+
         if (command == null) {
-            Freedomotic.logger.warning("The hardware level command for action '" + action + "' in object '" + pojo.getName() + "' doesn't exists or is not setted");
+            Freedomotic.logger.warning("The hardware level command for action '" + action + "' in object '"
+                    + pojo.getName() + "' doesn't exists or is not setted");
+
             return false; //command not executed
         }
+
         //resolves developer level command parameters like myObjectName = "@event.object.name" -> myObjectName = "Light 1"
         //in this case the parameter in the userLevelCommand are used as basis for the resolution process (the context)
         //along with the parameters getted from the relative behavior (if exists)
-        Freedomotic.logger.fine("Environment object '" + pojo.getName() + "' tries to '" + action + "' itself using hardware command '" + command.getName() + "'");
+        Freedomotic.logger.fine("Environment object '" + pojo.getName() + "' tries to '" + action
+                + "' itself using hardware command '" + command.getName() + "'");
+
         Resolver resolver = new Resolver();
         //adding a resolution context for object that owns this hardware level command. 'owner.' is the prefix of this context
-        resolver.addContext("owner.", getExposedProperties());
-        resolver.addContext("owner.", getExposedBehaviors());
+        resolver.addContext("owner.",
+                getExposedProperties());
+        resolver.addContext("owner.",
+                getExposedBehaviors());
+
         try {
             final Command resolvedCommand = resolver.resolve(command); //eg: turn on an X10 device
-//            XStream s = FreedomXStream.getXstream();
-//            System.out.println(s.toXML(resolvedCommand));
+            //            XStream s = FreedomXStream.getXstream();
+            //            System.out.println(s.toXML(resolvedCommand));
+
             Command result = Freedomotic.sendCommand(resolvedCommand); //blocking wait until timeout
-            if (result != null && result.isExecuted()) {
+
+            if ((result != null) && result.isExecuted()) {
                 return true; //succesfully executed
             }
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(EnvObjectLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return false; //command not executed
     }
 
@@ -403,9 +467,11 @@ public class EnvObjectLogic {
 
     @RequiresPermissions("objects:update")
     protected void setPojo(EnvObject pojo) {
-        if ((pojo.getEnvironmentID() == null || pojo.getEnvironmentID().isEmpty()) && EnvironmentPersistence.getEnvironments().size() > 0) {
+        if (((pojo.getEnvironmentID() == null) || pojo.getEnvironmentID().isEmpty())
+                && (EnvironmentPersistence.getEnvironments().size() > 0)) {
             pojo.setEnvID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
         }
+
         this.pojo = pojo;
         this.env = EnvironmentPersistence.getEnvByUUID(pojo.getEnvironmentID());
     }
@@ -434,9 +500,11 @@ public class EnvObjectLogic {
             c.setName(c.getName().replace(oldName, newName));
             Freedomotic.logger.warning("Command name renamed to " + c.getName());
         }
+
         if (c.getProperty("object") != null) {
             if (c.getProperty("object").contains(oldName)) {
-                c.setProperty("object", c.getProperty("object").replace(oldName, newName));
+                c.setProperty("object",
+                        c.getProperty("object").replace(oldName, newName));
                 Freedomotic.logger.warning("Property 'object' in command renamed to " + c.getProperty("object"));
             }
         }
@@ -446,16 +514,19 @@ public class EnvObjectLogic {
         if (commandsMapping == null) {
             commandsMapping = new HashMap<String, Command>();
         }
+
         for (String action : pojo.getActions().stringPropertyNames()) {
             String commandName = pojo.getActions().getProperty(action);
             Command command = CommandPersistence.getHardwareCommand(commandName);
+
             if (command != null) {
-                Freedomotic.logger.info("Caching the command '" + command.getName()
-                        + "' as related to action '" + action + "' ");
+                Freedomotic.logger.config("Caching the command '" + command.getName() + "' as related to action '"
+                        + action + "' ");
                 setAction(action, command);
             } else {
-                Freedomotic.logger.info("Don't exist a command called '" + commandName
-                        + "' is not possible to bound this command to action '" + action + "' of " + this.getPojo().getName());
+                Freedomotic.logger.config("Don't exist a command called '" + commandName
+                        + "' is not possible to bound this command to action '" + action + "' of "
+                        + this.getPojo().getName());
             }
         }
     }

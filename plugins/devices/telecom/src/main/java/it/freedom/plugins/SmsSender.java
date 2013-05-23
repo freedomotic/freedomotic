@@ -4,7 +4,6 @@
  */
 package it.freedom.plugins;
 
-
 import it.freedom.api.Tool;
 import it.freedom.exceptions.UnableToExecuteException;
 import it.freedom.plugins.sms.SmsSenderGui;
@@ -38,8 +37,8 @@ public class SmsSender extends Tool {
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
         String phoneNumber = c.getProperty("phone-number");
         String message = c.getProperty("message");
-        if (!(phoneNumber.equalsIgnoreCase(""))&&
-            !(message.equalsIgnoreCase(""))) {
+        if (!(phoneNumber.equalsIgnoreCase(""))
+                && !(message.equalsIgnoreCase(""))) {
             sendSms(phoneNumber, message);
         }
     }

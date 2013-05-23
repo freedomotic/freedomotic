@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.freedomotic.plugins.tts;
 
 import com.sun.speech.freetts.Voice;
@@ -58,8 +57,8 @@ public class TextToSpeech extends Protocol {
         try {
             File mbrola = new File(Info.PATH_DEVICES_FOLDER + "/it.freedomotic.freetts/data/voices/");
             if ((mbrola.exists())) {
-               System.setProperty("mbrola.base", mbrola.getAbsolutePath().toString());
-               voice = VoiceManager.getInstance().getVoice(configuration.getProperty("mbrola-voice"));
+                System.setProperty("mbrola.base", mbrola.getAbsolutePath().toString());
+                voice = VoiceManager.getInstance().getVoice(configuration.getProperty("mbrola-voice"));
             } else {
                 //use default basic voices
                 System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");

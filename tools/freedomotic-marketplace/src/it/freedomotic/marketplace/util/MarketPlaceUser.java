@@ -9,5 +9,6 @@ package it.freedomotic.marketplace.util;
  * @author gpt
  */
 public class MarketPlaceUser {
-    private String uid;    
+
+    private String uid;
 }

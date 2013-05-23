@@ -44,31 +44,28 @@ public class Properties implements Serializable {
     {
         propertyList = new HashMap<String,String>();    
     }
-    public Properties(HashMap<String,String> prop)
-    {
-        propertyList = prop;    
+
+    public Properties(HashMap<String, String> prop) {
+        propertyList = prop;
     }
-    
-    public Set<String> stringPropertyNames()
-    {              
+
+    public Set<String> stringPropertyNames() {
         return propertyList.keySet();
     }
-    
-    public String getProperty(String name)
-    {
+
+    public String getProperty(String name) {
         return propertyList.get(name);
     }
-    public void setProperty(String name, String value)
-    {
-        propertyList.put(name, value);    
+
+    public void setProperty(String name, String value) {
+        propertyList.put(name, value);
     }
-    
-    public Set<Entry<String,String>> entrySet()
-    {
-        return propertyList.entrySet();    
+
+    public Set<Entry<String, String>> entrySet() {
+        return propertyList.entrySet();
     }
-    public int size()
-    {
-        return propertyList.size();            
+
+    public int size() {
+        return propertyList.size();
     }
 }

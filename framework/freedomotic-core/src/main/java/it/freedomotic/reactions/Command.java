@@ -40,6 +40,7 @@
 package it.freedomotic.reactions;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.model.ds.Config;
 
 import java.io.Serializable;
@@ -86,6 +87,7 @@ public final class Command implements Serializable, Cloneable {
             tags = new HashSet<String>();
             tags.addAll(Arrays.asList(getName().toLowerCase().split(" ")));
         }
+
         return tags;
     }
 
@@ -94,9 +96,10 @@ public final class Command implements Serializable, Cloneable {
     }
 
     public String getDescription() {
-        if (description == null){
+        if (description == null) {
             description = getName();
         }
+
         return description;
     }
 
@@ -141,6 +144,7 @@ public final class Command implements Serializable, Cloneable {
             return properties.getProperty("behavior");
         } else {
             Freedomotic.logger.warning("Undefined property 'behavior' in command '" + this.getName() + "'");
+
             return "undefined-behavior";
         }
     }
@@ -174,10 +178,12 @@ public final class Command implements Serializable, Cloneable {
      */
     public ArrayList<String> getParametersAsList() {
         ArrayList<String> output = new ArrayList<String>();
+
         //99 is the max num of elements in list
         for (int i = 0; i < 99; i++) {
             String value = null;
             value = properties.getProperties().getProperty("parameter[" + i + "]");
+
             if (value != null) {
                 //add to array
                 output.add(value);
@@ -186,6 +192,7 @@ public final class Command implements Serializable, Cloneable {
                 return output;
             }
         }
+
         return output;
     }
 
@@ -230,26 +237,33 @@ public final class Command implements Serializable, Cloneable {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final Command other = (Command) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+
+        if ((this.name == null) ? (other.name != null) : (!this.name.equals(other.name))) {
             return false;
         }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 53 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = (53 * hash) + ((this.name != null) ? this.name.hashCode() : 0);
+
         return hash;
     }
 
     @Override
-    public Command clone() throws CloneNotSupportedException {
+    public Command clone()
+            throws CloneNotSupportedException {
         super.clone();
+
         Command clonedCmd = new Command();
         clonedCmd.setName(getName() + "[CLONED]");
         clonedCmd.setDescription(getDescription());
@@ -262,7 +276,9 @@ public final class Command implements Serializable, Cloneable {
         	Entry<Object,Object> e = it.next();
             clonedCmd.setProperty(e.getKey().toString(), e.getValue().toString()); //adding the original command properties to its clone
         }
+
         clonedCmd.properties.setXmlFile(this.getName());
+
         return clonedCmd;
     }
 

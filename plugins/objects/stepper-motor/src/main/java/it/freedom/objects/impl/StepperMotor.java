@@ -34,7 +34,6 @@ public class StepperMotor extends ElectricDevice {
         //linking this property with the behavior defined in the XML
         position = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior("position"));
         position.addListener(new RangedIntBehaviorListener() {
-
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOff(params);

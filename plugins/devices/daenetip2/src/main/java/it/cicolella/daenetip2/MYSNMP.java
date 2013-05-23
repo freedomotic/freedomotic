@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.daenetip2;
 
 import com.adventnet.snmp.beans.SnmpTarget;
@@ -42,7 +41,7 @@ public class MYSNMP {
         try {
             var = SnmpVar.createVariable(SetValue, dataType);
         } catch (SnmpException e) {
-            System.out.println("SNMP exception "+e.toString());
+            System.out.println("SNMP exception " + e.toString());
             return 0;
         }
         SnmpVarBind varbind = new SnmpVarBind(oid, var);
@@ -55,7 +54,7 @@ public class MYSNMP {
                 return 0;
             }
         } catch (SnmpException e) {
-            System.out.println("SNMP exception "+e.toString());
+            System.out.println("SNMP exception " + e.toString());
             return 0;
         }
 

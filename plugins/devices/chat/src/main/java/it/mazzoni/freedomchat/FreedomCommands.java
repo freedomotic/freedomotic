@@ -1,18 +1,18 @@
 /*
-Copyright (c) Matteo Mazzoni 2012  
+ Copyright (c) Matteo Mazzoni 2012  
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
  */
 package it.mazzoni.freedomchat;
@@ -38,23 +38,23 @@ public class FreedomCommands {
         return "Hello, World!";
     }
 
-    @Command(description = "Sends a single command", name="cmd")
+    @Command(description = "Sends a single command", name = "cmd")
     public String cmd(
-            @Param(description ="The command you'd like to execute", name = "CommandName") String ... cmd) {
+            @Param(description = "The command you'd like to execute", name = "CommandName") String... cmd) {
         return conditionedCommand("", cmd);
     }
 
-    @Command(name="if")
-    public String ifCommand(String ... mess) {
+    @Command(name = "if")
+    public String ifCommand(String... mess) {
         return conditionedCommand(FreedomChat.IF, mess);
     }
-    
-    @Command(name="when")
-    public String whenCommand(String ... mess){
+
+    @Command(name = "when")
+    public String whenCommand(String... mess) {
         return conditionedCommand(FreedomChat.WHEN, mess);
     }
-    
-    private String conditionedCommand(String type, String ... tokenMess){
+
+    private String conditionedCommand(String type, String... tokenMess) {
         it.freedomotic.reactions.Command c;
         Trigger t = null;
         Reaction r;
@@ -71,7 +71,7 @@ public class FreedomCommands {
             }
             t = TriggerPersistence.getTrigger(triggername);
         }
-        
+
         String commandName = FreedomChat.unsplit(tokenMess, conditionSep, tokenMess.length - conditionSep, " ");
         List<NaturalLanguageProcessor.Rank> mostSimilar = nlp2.getMostSimilarCommand(commandName, 3);
 
@@ -80,13 +80,12 @@ public class FreedomCommands {
         } else {
             return "No available commands similar to: " + commandName;
         }
-        if (tokenMess[0].equals(FreedomChat.IF)){
+        if (tokenMess[0].equals(FreedomChat.IF)) {
             Trigger NEWt = t.clone();
             NEWt.setNumberOfExecutions(1);
             r = new Reaction(NEWt, c);
             ReactionPersistence.add(r);
-        }
-        else if (tokenMess[0].equals(FreedomChat.WHEN)) {
+        } else if (tokenMess[0].equals(FreedomChat.WHEN)) {
             // do something
             r = new Reaction(t, c);
             ReactionPersistence.add(r);

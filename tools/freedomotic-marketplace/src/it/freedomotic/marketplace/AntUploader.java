@@ -43,7 +43,7 @@ public class AntUploader extends Task {
                     File fileToUpload = findFileToUpload(marketDirectory);
                     if (fileToUpload != null) {
 
-                        MarketPlaceFile pluginFile = drupal.postFile(cS, userid, marketDirectory.getAbsolutePath(), fileToUpload.getName());                                                
+                        MarketPlaceFile pluginFile = drupal.postFile(cS, userid, marketDirectory.getAbsolutePath(), fileToUpload.getName());
                         plugin.addFile(pluginFile);
                         drupal.putPlugin(cS, nodeid, plugin);
 
@@ -53,20 +53,20 @@ public class AntUploader extends Task {
                 } catch (IOException ex) {
                     throw new BuildException("Cannot find attachment file. " + ex.getMessage());
                 }
-            }
-            else
-            {
+            } else {
                 throw new BuildException("There no exist a plugin with id: " + nodeid);
-            
+
             }
         }
 
     }
-    
+
     /**
-     * Search the directory to the correct "marketplace like" file to be uploaded
+     * Search the directory to the correct "marketplace like" file to be
+     * uploaded
+     *
      * @param marketDirectory
-     * @return 
+     * @return
      */
     public File findFileToUpload(File marketDirectory) {
 

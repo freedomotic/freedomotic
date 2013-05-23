@@ -21,38 +21,36 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
  *
  * @author gpt
  */
-public class ZonesServerResource extends ServerResource implements ZonesResource{
+public class ZonesServerResource extends ServerResource implements ZonesResource {
 
-    private static volatile ArrayList<Zone> zones;  
-        
+    private static volatile ArrayList<Zone> zones;
+
     @Override
-    protected void doInit() throws ResourceException{
-        
-        int env =Integer.parseInt((String)getRequest().getAttributes().get("env"));        
-        zones = EnvironmentPersistence.getEnvironments().get(env).getPojo().getZones();                           
+    protected void doInit() throws ResourceException {
+
+        int env = Integer.parseInt((String) getRequest().getAttributes().get("env"));
+        zones = EnvironmentPersistence.getEnvironments().get(env).getPojo().getZones();
     }
-        
+
     @Override
-    public String retrieveXml() {   
+    public String retrieveXml() {
         String ret = "";
-        XStream xstream =FreedomXStream.getXstream(); 
+        XStream xstream = FreedomXStream.getXstream();
         ret = xstream.toXML(zones);
-        return ret;                
-    }
-    
-       @Override
-    public String retrieveJson() {        
-        String ret = "";
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
-        xstream.setMode(XStream.NO_REFERENCES);                
-        ret = xstream.toXML(zones);        
         return ret;
     }
-    
+
+    @Override
+    public String retrieveJson() {
+        String ret = "";
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
+        xstream.setMode(XStream.NO_REFERENCES);
+        ret = xstream.toXML(zones);
+        return ret;
+    }
+
     @Override
     public ArrayList<Zone> retrieveZones() {
         return zones;
     }
-
-  
 }

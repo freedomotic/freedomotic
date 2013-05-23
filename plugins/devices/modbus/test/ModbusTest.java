@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 import gnu.io.SerialPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.CommDriver;
@@ -52,7 +53,6 @@ public class ModbusTest {
 //        config.setProperty("polling-message", "$>9000RQCE#"); //$>9000RQcs# forces read data using this string
 //        return new SerialConnectionProvider(config);
 //    }
-
     /**
      * Test of read method, of class SerialConnectionProvider.
      */
@@ -69,48 +69,46 @@ public class ModbusTest {
         ModbusMaster master = ModbusMasterGateway.getInstance();
         try {
             master.init();
-            NumericLocator bl = new NumericLocator(1, RegisterRange.HOLDING_REGISTER, 266,DataType.TWO_BYTE_INT_UNSIGNED);
+            NumericLocator bl = new NumericLocator(1, RegisterRange.HOLDING_REGISTER, 266, DataType.TWO_BYTE_INT_UNSIGNED);
             System.out.println(master.getValue(bl));
 
         } catch (ModbusTransportException ex) {
-                System.out.println(ex.toString());
+            System.out.println(ex.toString());
         } catch (ErrorResponseException ex) {
-                 System.out.println(ex.toString());
-       } catch (ModbusInitException ex) {
-                System.out.println(ex.toString());
-        }
-        finally {
+            System.out.println(ex.toString());
+        } catch (ModbusInitException ex) {
+            System.out.println(ex.toString());
+        } finally {
             master.destroy();
         }
         assertEquals(1, 1);
-   // sudo socat pty,link=/dev/ttyUSB10,waitslave,ignoreeof tcp:192.168.1.5:54321 &
-   // chown user /dev/ttyUSB10
-   // sudo socat tcp-l:54321,reuseaddr,fork file:/dev/ttyUSB0,nonblock,waitlock=/var/run/ttyUSB0.lock
+        // sudo socat pty,link=/dev/ttyUSB10,waitslave,ignoreeof tcp:192.168.1.5:54321 &
+        // chown user /dev/ttyUSB10
+        // sudo socat tcp-l:54321,reuseaddr,fork file:/dev/ttyUSB0,nonblock,waitlock=/var/run/ttyUSB0.lock
     }
- /**
+
+    /**
      * Test of write method.
      */
     @Test
-    public void testWrite()
-    {
+    public void testWrite() {
         ModbusMaster master = ModbusMasterGateway.getInstance();
-        int value1=235;
-        int value=0;
+        int value1 = 235;
+        int value = 0;
         try {
             master.init();
             //master.setValue(1,768,2,true); 
-            NumericLocator bl = new NumericLocator(1, RegisterRange.HOLDING_REGISTER, 771,DataType.TWO_BYTE_INT_UNSIGNED);
-            master.setValue(bl,value1);
-            value =(Integer) master.getValue(bl);
+            NumericLocator bl = new NumericLocator(1, RegisterRange.HOLDING_REGISTER, 771, DataType.TWO_BYTE_INT_UNSIGNED);
+            master.setValue(bl, value1);
+            value = (Integer) master.getValue(bl);
 
         } catch (ModbusTransportException ex) {
-                System.out.println(ex.toString());
+            System.out.println(ex.toString());
         } catch (ErrorResponseException ex) {
-                 System.out.println(ex.toString());
-       } catch (ModbusInitException ex) {
-                System.out.println(ex.toString());
-        }
-        finally {
+            System.out.println(ex.toString());
+        } catch (ModbusInitException ex) {
+            System.out.println(ex.toString());
+        } finally {
             master.destroy();
         }
         assertEquals(value, value1);
@@ -118,5 +116,3 @@ public class ModbusTest {
 
     }
 }
-
-

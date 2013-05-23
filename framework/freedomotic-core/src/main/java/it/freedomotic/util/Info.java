@@ -69,11 +69,13 @@ public class Info {
 
     private static String getLocalHost() {
         String address = "";
+
         try {
             address = InetAddress.getLocalHost().toString();
         } catch (UnknownHostException ex) {
             Logger.getLogger(Info.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return address;
     }
 
@@ -96,8 +98,10 @@ public class Info {
         if (jarFolder.endsWith("freedomotic.jar")) {
             jarFolder = jarFolder.substring(0, jarFolder.indexOf("freedomotic.jar"));
             System.out.println(jarFolder);
+
             return jarFolder;
         }
+
         return jarFolder;
     }
 
@@ -181,10 +185,13 @@ public class Info {
     @Deprecated
     private static String splitPathString(String str) {
         StringBuilder buff = new StringBuilder();
-        StringTokenizer token = new StringTokenizer(str, System.getProperty("path.separator"));
+        StringTokenizer token = new StringTokenizer(str,
+                System.getProperty("path.separator"));
+
         while (token.hasMoreElements()) {
             buff.append("\n    ").append(token.nextToken());
         }
+
         return buff.toString();
 
     }

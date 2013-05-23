@@ -14,13 +14,13 @@ public class DeviceOneWire {
     private String valueToMonitorize;
     private double value;
     private boolean changed;
-    
+
     public DeviceOneWire(String address, String valueToMonitorize, double value) {
-            setAddress(address);
-            setValueToMonitorize(valueToMonitorize);
-            setValue(value);
-            setChanged(true);
-                        
+        setAddress(address);
+        setValueToMonitorize(valueToMonitorize);
+        setValue(value);
+        setChanged(true);
+
     }
 
     public String getAddress() {
@@ -54,5 +54,4 @@ public class DeviceOneWire {
     public void setChanged(boolean changed) {
         this.changed = changed;
     }
-   
 }

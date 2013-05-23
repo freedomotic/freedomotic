@@ -14,8 +14,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
-		<org.restlet.version>2.1.2</org.restlet.version>
-		<restapi.version>3.0</restapi.version>
+        <org.restlet.version>2.1.2</org.restlet.version>
+        <restapi.version>3.0</restapi.version>
     </properties>
     <build>
         <finalName>freedomotic</finalName> 
@@ -131,9 +131,26 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-assistedinject</artifactId>
+            <version>3.0-rc3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>3.0.2.RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
             <version>1.2.2</version>
+            <type>jar</type>
         </dependency>
-	</dependencies>
+    </dependencies>
 </project>

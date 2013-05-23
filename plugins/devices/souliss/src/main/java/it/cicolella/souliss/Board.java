@@ -15,12 +15,11 @@ public class Board {
     private int port;
 
     public Board(String ipAddress, int port, String statusToQuery) {
-            setIpAddress(ipAddress);
-            setPort(port);
-            setStatusToQuery(statusToQuery);          
+        setIpAddress(ipAddress);
+        setPort(port);
+        setStatusToQuery(statusToQuery);
     }
 
-   
     public String getStatusToQuery() {
         return statusToQuery;
     }
@@ -28,7 +27,7 @@ public class Board {
     public void setStatusToQuery(String statusToQuery) {
         this.statusToQuery = statusToQuery;
     }
-    
+
     public String getIpAddress() {
         return ipAddress;
     }
@@ -37,7 +36,6 @@ public class Board {
         this.ipAddress = ipAddress;
     }
 
-   
     public int getPort() {
         return port;
     }
@@ -45,6 +43,4 @@ public class Board {
     public void setPort(int port) {
         this.port = port;
     }
-
-    
 }

@@ -1,6 +1,6 @@
- /*
+/*
  * Copyright
-(c) 2003 Sun Microsystems, Inc. All Rights Reserved.
+ (c) 2003 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -42,28 +42,28 @@ package it.freedomotic.jfrontend.utils;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
 import javax.swing.filechooser.FileFilter;
 
 /**
- * A convenience implementation of FileFilter that filters out
- * all files except for those type extensions that it knows about.
+ * A convenience implementation of FileFilter that filters out all files except
+ * for those type extensions that it knows about.
  *
- * Extensions are of the type ".foo", which is typically found on
- * Windows and Unix boxes, but not on Macinthosh. Case is ignored.
+ * Extensions are of the type ".foo", which is typically found on Windows and
+ * Unix boxes, but not on Macinthosh. Case is ignored.
  *
- * Example - create a new filter that filerts out all files
- * but gif and jpg image files:
+ * Example - create a new filter that filerts out all files but gif and jpg
+ * image files:
  *
- * JFileChooser chooser = new JFileChooser();
- * OpenDialogFileFilter filter = new OpenDialogFileFilter(
- * new String{"gif", "jpg"}, "JPEG & GIF Images")
- * chooser.addChoosableFileFilter(filter);
- * chooser.showOpenDialog(this);
+ * JFileChooser chooser = new JFileChooser(); OpenDialogFileFilter filter = new
+ * OpenDialogFileFilter( new String{"gif", "jpg"}, "JPEG & GIF Images")
+ * chooser.addChoosableFileFilter(filter); chooser.showOpenDialog(this);
  *
  * @version 1.6 01/23/03
  * @author Jeff Dinkins
  */
-public class OpenDialogFileFilter extends FileFilter {
+public class OpenDialogFileFilter
+        extends FileFilter {
 
     private static String TYPE_UNKNOWN = "Type Unknown";
     private static String HIDDEN_FILE = "Hidden File";
@@ -73,8 +73,8 @@ public class OpenDialogFileFilter extends FileFilter {
     private boolean useExtensionsInDescription = true;
 
     /**
-     * Creates a file filter. If no filters are added, then all
-     * files are accepted.
+     * Creates a file filter. If no filters are added, then all files are
+     * accepted.
      *
      * @see #addExtension
      */
@@ -93,30 +93,31 @@ public class OpenDialogFileFilter extends FileFilter {
     }
 
     /**
-     * Creates a file filter that accepts the given file type.
-     * Example: new OpenDialogFileFilter("jpg", "JPEG Image Images");
+     * Creates a file filter that accepts the given file type. Example: new
+     * OpenDialogFileFilter("jpg", "JPEG Image Images");
      *
-     * Note that the "." before the extension is not needed. If
-     * provided, it will be ignored.
+     * Note that the "." before the extension is not needed. If provided, it
+     * will be ignored.
      *
      * @see #addExtension
      */
     public OpenDialogFileFilter(String extension, String description) {
         this();
+
         if (extension != null) {
             addExtension(extension);
         }
+
         if (description != null) {
             setDescription(description);
         }
     }
 
     /**
-     * Creates a file filter from the given string array.
-     * Example: new OpenDialogFileFilter(String {"gif", "jpg"});
+     * Creates a file filter from the given string array. Example: new
+     * OpenDialogFileFilter(String {"gif", "jpg"});
      *
-     * Note that the "." before the extension is not needed adn
-     * will be ignored.
+     * Note that the "." before the extension is not needed adn will be ignored.
      *
      * @see #addExtension
      */
@@ -126,7 +127,8 @@ public class OpenDialogFileFilter extends FileFilter {
 
     /**
      * Creates a file filter from the given string array and description.
-     * Example: new OpenDialogFileFilter(String {"gif", "jpg"}, "Gif and JPG Images");
+     * Example: new OpenDialogFileFilter(String {"gif", "jpg"}, "Gif and JPG
+     * Images");
      *
      * Note that the "." before the extension is not needed and will be ignored.
      *
@@ -134,18 +136,20 @@ public class OpenDialogFileFilter extends FileFilter {
      */
     public OpenDialogFileFilter(String[] filters, String description) {
         this();
+
         for (int i = 0; i < filters.length; i++) {
             // add filters one by one
             addExtension(filters[i]);
         }
+
         if (description != null) {
             setDescription(description);
         }
     }
 
     /**
-     * Return true if this file should be shown in the directory pane,
-     * false if it shouldn't.
+     * Return true if this file should be shown in the directory pane, false if
+     * it shouldn't.
      *
      * Files that begin with "." are ignored.
      *
@@ -157,12 +161,15 @@ public class OpenDialogFileFilter extends FileFilter {
             if (f.isDirectory()) {
                 return true;
             }
+
             String extension = getExtension(f);
-            if (extension != null && filters.get(getExtension(f)) != null) {
+
+            if ((extension != null) && (filters.get(getExtension(f)) != null)) {
                 return true;
             }
             ;
         }
+
         return false;
     }
 
@@ -176,23 +183,24 @@ public class OpenDialogFileFilter extends FileFilter {
         if (f != null) {
             String filename = f.getName();
             int i = filename.lastIndexOf('.');
-            if (i > 0 && i < filename.length() - 1) {
+
+            if ((i > 0) && (i < (filename.length() - 1))) {
                 return filename.substring(i + 1).toLowerCase();
             }
             ;
         }
+
         return null;
     }
 
     /**
      * Adds a filetype "dot" extension to filter against.
      *
-     * For example: the following code will create a filter that filters
-     * out all files except those that end in ".jpg" and ".tif":
+     * For example: the following code will create a filter that filters out all
+     * files except those that end in ".jpg" and ".tif":
      *
      * OpenDialogFileFilter filter = new OpenDialogFileFilter();
-     * filter.addExtension("jpg");
-     * filter.addExtension("tif");
+     * filter.addExtension("jpg"); filter.addExtension("tif");
      *
      * Note that the "." before the extension is not needed and will be ignored.
      */
@@ -200,13 +208,15 @@ public class OpenDialogFileFilter extends FileFilter {
         if (filters == null) {
             filters = new Hashtable(5);
         }
-        filters.put(extension.toLowerCase(), this);
+
+        filters.put(extension.toLowerCase(),
+                this);
         fullDescription = null;
     }
 
     /**
-     * Returns the human readable description of this filter. For
-     * example: "JPEG and GIF Image Files (*.jpg, *.gif)"
+     * Returns the human readable description of this filter. For example: "JPEG
+     * and GIF Image Files (*.jpg, *.gif)"
      *
      * @see setDescription
      * @see setExtensionListInDescription
@@ -215,27 +225,32 @@ public class OpenDialogFileFilter extends FileFilter {
      */
     public String getDescription() {
         if (fullDescription == null) {
-            if (description == null || isExtensionListInDescription()) {
-                fullDescription = description == null ? "(" : description + " (";
+            if ((description == null) || isExtensionListInDescription()) {
+                fullDescription = (description == null) ? "(" : (description + " (");
+
                 // build the description from the extension list
                 Enumeration extensions = filters.keys();
+
                 if (extensions != null) {
-                    fullDescription += "." + (String) extensions.nextElement();
+                    fullDescription += ("." + (String) extensions.nextElement());
+
                     while (extensions.hasMoreElements()) {
-                        fullDescription += ", ." + (String) extensions.nextElement();
+                        fullDescription += (", ." + (String) extensions.nextElement());
                     }
                 }
+
                 fullDescription += ")";
             } else {
                 fullDescription = description;
             }
         }
+
         return fullDescription;
     }
 
     /**
-     * Sets the human readable description of this filter. For
-     * example: filter.setDescription("Gif and JPG Images");
+     * Sets the human readable description of this filter. For example:
+     * filter.setDescription("Gif and JPG Images");
      *
      * @see setDescription
      * @see setExtensionListInDescription
@@ -247,11 +262,11 @@ public class OpenDialogFileFilter extends FileFilter {
     }
 
     /**
-     * Determines whether the extension list (.jpg, .gif, etc) should
-     * show up in the human readable description.
+     * Determines whether the extension list (.jpg, .gif, etc) should show up in
+     * the human readable description.
      *
-     * Only relevent if a description was provided in the constructor
-     * or using setDescription();
+     * Only relevent if a description was provided in the constructor or using
+     * setDescription();
      *
      * @see getDescription
      * @see setDescription
@@ -263,11 +278,11 @@ public class OpenDialogFileFilter extends FileFilter {
     }
 
     /**
-     * Returns whether the extension list (.jpg, .gif, etc) should
-     * show up in the human readable description.
+     * Returns whether the extension list (.jpg, .gif, etc) should show up in
+     * the human readable description.
      *
-     * Only relevent if a description was provided in the constructor
-     * or using setDescription();
+     * Only relevent if a description was provided in the constructor or using
+     * setDescription();
      *
      * @see getDescription
      * @see setDescription

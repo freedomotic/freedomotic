@@ -50,7 +50,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  *
  * @author enrico
  */
-public class Zone implements Serializable {
+public class Zone
+        implements Serializable {
 
     private static final long serialVersionUID = 4668625650384850879L;
 	
@@ -86,6 +87,7 @@ public class Zone implements Serializable {
         if (description == null) {
             description = "";
         }
+
         return description;
     }
 
@@ -127,6 +129,7 @@ public class Zone implements Serializable {
         if (objects == null) {
             objects = new ArrayList<EnvObject>();
         }
+
         return objects;
     }
 
@@ -147,13 +150,17 @@ public class Zone implements Serializable {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final Zone other = (Zone) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equalsIgnoreCase(other.name)) {
+
+        if ((this.name == null) ? (other.name != null) : (!this.name.equalsIgnoreCase(other.name))) {
             return false;
         }
+
         return true;
     }
 
@@ -161,7 +168,8 @@ public class Zone implements Serializable {
     @RequiresPermissions("zones:read")
     public int hashCode() {
         int hash = 5;
-        hash = 17 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = (17 * hash) + ((this.name != null) ? this.name.hashCode() : 0);
+
         return hash;
     }
 }

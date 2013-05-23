@@ -40,7 +40,6 @@ import java.net.URLConnection;
  * @author Enrico
  */
 public class FetchHttpFiles {
-
 //    public static void downloadAll(URL httpUrl, File destFolder) {
 //        try {
 //            //File destFolder = new File(destFolder);
@@ -59,16 +58,19 @@ public class FetchHttpFiles {
 //        }
 //    }
 
-    public static boolean download(URL url, File destFolder, String filename) throws Exception {
+    public static boolean download(URL url, File destFolder, String filename)
+            throws Exception {
         //File sourceFile = new File(url.getPath());
         //File destinationFile = new File(destFolder.getPath() + "/" + sourceFile.getName());
         File destinationFile = new File(destFolder.getPath() + "/" + filename);
-        Freedomotic.logger.info("  Download started");
-        Freedomotic.logger.info("    Source folder:      " + url);
-        Freedomotic.logger.info("    Destination folder: " + destinationFile);
+        Freedomotic.logger.config("  Download started");
+        Freedomotic.logger.config("    Source folder:      " + url);
+        Freedomotic.logger.config("    Destination folder: " + destinationFile);
+
         //destination.getParentFile().mkdirs();
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
+
         try {
             URLConnection urlc = url.openConnection();
 
@@ -76,6 +78,7 @@ public class FetchHttpFiles {
             bos = new BufferedOutputStream(new FileOutputStream(destinationFile.getPath()));
 
             int i;
+
             while ((i = bis.read()) != -1) {
                 bos.write(i);
             }
@@ -85,20 +88,24 @@ public class FetchHttpFiles {
                     bis.close();
                 } catch (IOException ioe) {
                     Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ioe));
+
                     return false;
                 }
             }
+
             if (bos != null) {
                 try {
                     bos.close();
                 } catch (IOException ioe) {
                     Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ioe));
+
                     return false;
                 }
             }
         }
 
         Freedomotic.logger.info("  Download completed");
+
         return true;
     }
 
@@ -146,7 +153,6 @@ public class FetchHttpFiles {
 //        }
 //        return updated;
 //    }
-
 //    public class Downloader extends Thread {
 //
 //        String urls;
@@ -172,7 +178,6 @@ public class FetchHttpFiles {
 //            }
 //        }
 //    }
-
     private FetchHttpFiles() {
     }
 }

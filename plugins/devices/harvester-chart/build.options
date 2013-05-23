@@ -1,0 +1,20 @@
+#Sat, 08 Jun 2013 17:55:37 +0800
+
+package.type=device
+package.name=com.wilsonkong.harvester-chart
+package.license=GNU GPL2
+package.nodeid=999999
+package.vendor.name=Wilson
+package.vendor.surname=Kong
+package.vendor.contact=wilsonkong888@gmail.com
+package.vendor.company=Auto Home
+package.vendor.nation=es
+framework.required.major=5
+framework.required.minor=3
+framework.required.build=x
+build.major=2
+build.number=48
+build.create.dist.market=false
+build.create.dist.framework=true
+build.synch.dist=true
+build.synch.dist.path=../../..//framework/freedomotic/plugins/

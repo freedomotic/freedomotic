@@ -8,9 +8,8 @@ import org.restlet.client.resource.ClientProxy;
 import org.restlet.client.resource.Get;
 import org.restlet.client.resource.Result;
 
-public interface ObjectsResourceProxy extends ClientProxy{
+public interface ObjectsResourceProxy extends ClientProxy {
 
-	 @Get
-	 public void retrieve(Result<List<EnvObject>> callback);
-	
+    @Get
+    public void retrieve(Result<List<EnvObject>> callback);
 }

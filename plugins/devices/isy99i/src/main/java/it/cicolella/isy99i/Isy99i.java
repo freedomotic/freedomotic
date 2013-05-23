@@ -74,7 +74,7 @@ public class Isy99i extends Protocol {
             return node;
         } catch (NoDeviceException e) {
             Freedomotic.logger.severe("NoDeviceException " + e);
-            Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": NoDeviceException " + e);
+            Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": NoDeviceException " + e);
             return null;
         }
     }
@@ -185,5 +185,4 @@ public class Isy99i extends Protocol {
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-   
 }

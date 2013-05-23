@@ -20,12 +20,12 @@ public class PluginConverter implements Converter {
 
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
-        System.out.println("PluginConverter: "+ o.toString());
+        System.out.println("PluginConverter: " + o.toString());
         PluginPojo plug = (PluginPojo) o;
         writer.startNode("plugin");
         writer.setValue(plug.getName());
         writer.endNode();
-        writer.startNode("running");        
+        writer.startNode("running");
         writer.setValue(Boolean.toString(plug.isRunning()));
         writer.endNode(); //end sequences
     }

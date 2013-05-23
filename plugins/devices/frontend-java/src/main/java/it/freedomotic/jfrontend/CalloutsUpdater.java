@@ -28,39 +28,47 @@ public class CalloutsUpdater {
             public void run() {
                 long now = System.currentTimeMillis();
                 Iterator it = callouts.values().iterator();
+
                 while (it.hasNext()) {
                     Callout callout = (Callout) it.next();
                     long elapsed = now - callout.getTimestamp();
+
                     if ((callout.getDuration() - elapsed) <= 0) {
                         callout.setDuration(-1);
                         it.remove();
                     }
                 }
+
                 if (drawer != null) {
                     drawer.setNeedRepaint(false);
                 }
             }
-        }, 0, milliseconds);
+        },
+                0,
+                milliseconds);
     }
 
     public void addCallout(Callout newCallout) {
         Iterator it = callouts.values().iterator();
         boolean found = false;
         int line = 0;
+
         //is an info callout
         if (newCallout.getGroup().equalsIgnoreCase("info")) {
             while (it.hasNext()) {
                 Callout callout = (Callout) it.next();
+
                 if (callout.getGroup().equalsIgnoreCase("info")) {
                     //shift old info callout to the next line
-                    callout.setPosition(new Point(
-                            (int) callout.getPosition().getX()+100,
+                    callout.setPosition(new Point((int) callout.getPosition().getX() + 100,
                             (int) callout.getPosition().getY() + 300));
-                    callout.setDuration(callout.getDuration()+1000);
+                    callout.setDuration(callout.getDuration() + 1000);
                 }
             }
+
             //add the new info callout on top
-            callouts.put(newCallout.getRelated(), newCallout);
+            callouts.put(newCallout.getRelated(),
+                    newCallout);
         } else {
             //is an object callout
             if (callouts.containsKey(newCallout.getRelated())) {
@@ -72,10 +80,10 @@ public class CalloutsUpdater {
                 callout.setDuration(callout.getDuration() + newCallout.getDuration());
                 found = true;
             } else {
-                callouts.put(newCallout.getRelated(), newCallout);
+                callouts.put(newCallout.getRelated(),
+                        newCallout);
             }
         }
-
     }
 
     public static void clearAll() {
@@ -84,8 +92,10 @@ public class CalloutsUpdater {
 
     public static void clear(String group) {
         Iterator it = callouts.values().iterator();
+
         while (it.hasNext()) {
             Callout callout = (Callout) it.next();
+
             if (callout.getGroup().equals(group)) {
                 it.remove();
             }

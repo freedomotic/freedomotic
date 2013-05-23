@@ -20,7 +20,7 @@ public class SimpleMotionDetector extends MotionDetector {
     private int motionLevel;
     int frameNo = 0;
 
-    public SimpleMotionDetector()  {
+    public SimpleMotionDetector() {
         super();
     }
 

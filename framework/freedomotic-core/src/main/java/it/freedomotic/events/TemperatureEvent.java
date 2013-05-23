@@ -22,13 +22,15 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
+
 import it.freedomotic.model.environment.Zone;
 
 /**
  *
  * @author Enrico
  */
-public class TemperatureEvent extends EventTemplate {
+public class TemperatureEvent
+        extends EventTemplate {
 
     private static final long serialVersionUID = 2965942901211451802L;
 	
@@ -40,7 +42,6 @@ public class TemperatureEvent extends EventTemplate {
         zone = z.getName();
         generateEventPayload();
     }
-
 
     @Override
     protected void generateEventPayload() {

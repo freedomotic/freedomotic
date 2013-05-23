@@ -27,7 +27,8 @@ import java.util.ArrayList;
  *
  * @author Enrico
  */
-public class ListBehavior extends Behavior {
+public class ListBehavior
+        extends Behavior {
 
     private static final long serialVersionUID = 8375501744412227268L;
 	
@@ -45,7 +46,7 @@ public class ListBehavior extends Behavior {
     public boolean contains(String key) {
         return list.contains(key);
     }
-    
+
     public String getSelected() {
         return (String) list.get(selected);
     }
@@ -57,24 +58,26 @@ public class ListBehavior extends Behavior {
     public boolean setSelected(String key) {
         if (list.contains(key)) {
             selected = list.indexOf(key);
+
             return true;
         }
+
         return false;
     }
 
-    public int getItemsNumber(){
+    public int getItemsNumber() {
         return list.size();
     }
 
-    public int indexOf(String key){
+    public int indexOf(String key) {
         return list.indexOf(key);
     }
 
-    public int indexOfSelection(){
+    public int indexOfSelection() {
         return selected;
     }
 
-    public String get(int index){
+    public String get(int index) {
         return list.get(index);
     }
 

@@ -22,13 +22,15 @@
  package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
+
 import it.freedomotic.objects.BehaviorLogic;
 import it.freedomotic.objects.EnvObjectLogic;
+
 import java.util.Iterator;
 import java.util.Map.Entry;
 
 /**
- * Channel <b>app.event.sensor.object.behavior.change</b> informs that an object 
+ * Channel <b>app.event.sensor.object.behavior.change</b> informs that an object
  * has changed its behavior (eg: a light change behavior from off to on).
  *
  * Available tokens for triggers:
@@ -47,17 +49,22 @@ public class ObjectHasChangedBehavior extends EventTemplate {
 	//private EnvObject obj;
     public ObjectHasChangedBehavior(Object source, EnvObjectLogic obj) {
         super(source);
+
         //add default object properties
         Iterator<Entry<String,String>> it = obj.getExposedProperties().entrySet().iterator();
         while (it.hasNext()) {
             Entry<String,String> entry = it.next();
             payload.addStatement(entry.getKey().toString(), entry.getValue().toString());
         }
+
         //add the list of changed behaviors
-        payload.addStatement("object.currentRepresentation", obj.getPojo().getCurrentRepresentationIndex());
+        payload.addStatement("object.currentRepresentation",
+                obj.getPojo().getCurrentRepresentationIndex());
+
         for (BehaviorLogic behavior : obj.getBehaviors()) {
             if (behavior.isChanged()) {
-                payload.addStatement("object.behavior." + behavior.getName(), behavior.getValueAsString());
+                payload.addStatement("object.behavior." + behavior.getName(),
+                        behavior.getValueAsString());
                 behavior.setChanged(false);
             }
         }

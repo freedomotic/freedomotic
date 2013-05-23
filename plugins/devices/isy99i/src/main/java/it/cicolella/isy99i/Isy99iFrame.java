@@ -14,7 +14,9 @@ import java.util.logging.Logger;
  * @author mauro
  */
 public class Isy99iFrame extends javax.swing.JFrame {
-     Isy99i plugin;
+
+    Isy99i plugin;
+
     /**
      * Creates new form OWNFrame
      */
@@ -73,8 +75,6 @@ public class Isy99iFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-            
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;

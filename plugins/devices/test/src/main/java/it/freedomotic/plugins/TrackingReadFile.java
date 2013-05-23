@@ -1,10 +1,15 @@
 package it.freedomotic.plugins;
 
-import it.freedomotic.plugins.fromfile.WorkerThread;
 import it.freedomotic.api.Sensor;
+
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.exceptions.UnableToExecuteException;
+
+import it.freedomotic.plugins.fromfile.WorkerThread;
+
 import it.freedomotic.util.Info;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,7 +25,8 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class TrackingReadFile extends Sensor{
+public class TrackingReadFile
+        extends Sensor {
 
     OutputStream out;
     boolean connected = false;
@@ -35,19 +41,21 @@ public class TrackingReadFile extends Sensor{
 
     @Override
     public void onStart() {
-        NUM_MOTE= new Integer(Freedomotic.config.getIntProperty("KEY_SIMULATED_PERSON_COUNT", 3));
+        NUM_MOTE = new Integer(Freedomotic.config.getIntProperty("KEY_SIMULATED_PERSON_COUNT", 3));
+
         for (int i = 0; i < NUM_MOTE; i++) {
             readMoteFile(i);
         }
+
         for (WorkerThread workerThread : workers) {
             workerThread.start();
         }
-
     }
 
     private void readMoteFile(int n) {
         FileReader fr;
         ArrayList<Coordinate> coord = new ArrayList<Coordinate>();
+
         try {
             File f = new File(Info.getApplicationPath() + "/plugins/mote-" + n + ".txt");
             System.out.println("\nReading coordinates from file " + f.getAbsolutePath());
@@ -55,10 +63,12 @@ public class TrackingReadFile extends Sensor{
 
             BufferedReader br = new BufferedReader(fr);
             String line;
+
             while ((line = br.readLine()) != null) {
                 //tokenize string
                 StringTokenizer st = new StringTokenizer(line);
                 System.out.println("   Mote " + n + " coordinate added " + line);
+
                 Coordinate c = new Coordinate();
                 c.setId(n);
                 c.setX(new Integer(st.nextToken()));
@@ -66,7 +76,9 @@ public class TrackingReadFile extends Sensor{
                 c.setTime(new Integer(st.nextToken()));
                 coord.add(c);
             }
+
             fr.close();
+
             WorkerThread wt = new WorkerThread(this, coord);
             workers.add(wt);
         } catch (FileNotFoundException ex) {
@@ -77,7 +89,8 @@ public class TrackingReadFile extends Sensor{
     }
 
     @Override
-    protected void onInformationRequest() throws IOException, UnableToExecuteException {
+    protected void onInformationRequest()
+            throws IOException, UnableToExecuteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -86,4 +99,3 @@ public class TrackingReadFile extends Sensor{
         //do nothing
     }
 }
-

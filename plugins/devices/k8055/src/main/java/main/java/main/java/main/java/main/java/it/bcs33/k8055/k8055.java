@@ -2,14 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
- 
 package it.bcs33.k8055;
+
 /**
  *
  * @author barbone
  */
-
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
@@ -35,13 +33,14 @@ import org.w3c.dom.DOMException;
 
 public class k8055 extends Protocol {
     //private static boards;
+
     private static ArrayList<Board> boards = null;
     private static int BOARD_NUMBER = 1;
     private int POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
     private int DEVICE = configuration.getIntProperty("address-devices", 0);
     private JK8055 jk8055;
     final int POLLING_WAIT;
-     
+
     public k8055() {
         //every plugin needs a name and a manifest XML file
         super("k8055", "/it.bcs33.k8055/k8055-manifest.xml");
@@ -56,11 +55,10 @@ public class k8055 extends Protocol {
     @Override
     protected void onShowGui() {
         /**
-         * uncomment the line below to add a GUI to this plugin
-         * the GUI can be started with a right-click on plugin list
-         * on the desktop frontend (it.freedomotic.jfrontend plugin)
+         * uncomment the line below to add a GUI to this plugin the GUI can be
+         * started with a right-click on plugin list on the desktop frontend
+         * (it.freedomotic.jfrontend plugin)
          */
-        
         //bindGuiToPlugin(new HelloWorldGui(this));
     }
 
@@ -70,7 +68,8 @@ public class k8055 extends Protocol {
         //for example you can change the plugin description
         setDescription("My GUI is now hidden");
     }
- /**
+
+    /**
      * Sensor side
      */
     @Override
@@ -80,11 +79,11 @@ public class k8055 extends Protocol {
         loadBoards();
     }
 
-     private void loadBoards() {
+    private void loadBoards() {
         if (boards == null) {
             boards = new ArrayList<Board>();
         }
-        setDescription("Reading status changes from"); 
+        setDescription("Reading status changes from");
         for (int i = 0; i < BOARD_NUMBER; i++) {
             String deviceToQuery;
             int digitalOutputNumber;
@@ -105,18 +104,17 @@ public class k8055 extends Protocol {
         }
     }
 
-  
-     /**
-     * Connection to K8055 don't used yet 
+    /**
+     * Connection to K8055 don't used yet
      */
     private boolean connect(int addressdevice) {
 
         Freedomotic.logger.info("Trying to connect to k8055 board on address-device " + addressdevice);
         try {
             jk8055 = JK8055.getInstance();
-            jk8055.OpenDevice( addressdevice );
+            jk8055.OpenDevice(addressdevice);
             //jk8055.ClearAllDigital();
-           
+
             return true;
         } catch (JK8055Exception ex) {
             Logger.getLogger(k8055.class.getName()).log(Level.SEVERE, null, ex);
@@ -133,14 +131,13 @@ public class k8055 extends Protocol {
         Freedomotic.logger.info("k8055 disconnect");
         try {
             jk8055.CloseDevice();
-  
+
         } catch (JK8055Exception ex) {
             Logger.getLogger(k8055.class.getName()).log(Level.SEVERE, null, ex);
             Freedomotic.logger.severe("Problem to disconnect device k8055");
         }
     }
 
-    
     @Override
     public void onStop() {
         super.onStop();
@@ -152,7 +149,7 @@ public class k8055 extends Protocol {
         //display the default description
         //setDescription(configuration.getStringProperty("description", "Ipx800"));
     }
-    
+
     @Override
     protected void onRun() {
         for (Board board : boards) {
@@ -163,95 +160,91 @@ public class k8055 extends Protocol {
                 Logger.getLogger(k8055.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         //at the end of this method the system waits POLLINGTIME 
         //before calling it again. The result is this log message is printed
         //every 2 seconds (2000 millisecs)
-         
-       
+
+
     }
 
-    
-     private void evaluateDiffs(Board board) {
+    private void evaluateDiffs(Board board) {
         if (board != null) {
             Freedomotic.logger.info("k8055 onRun() logs this message every "
-                + "POLLINGWAIT=" + POLLING_WAIT + "milliseconds");
+                    + "POLLINGWAIT=" + POLLING_WAIT + "milliseconds");
             boolean statusDigitalInput;
             int statusAnalogInput;
             try {
-            
-            // Open Interface K8055 
-            jk8055 = JK8055.getInstance();
-            jk8055.OpenDevice(DEVICE);
-            
-            int startingValue=board.getStartingValue();
-            int linesNumber=board.getDigitalInputNumber();
-            
-            // Read all digital input
-            for (int i = startingValue; i <= linesNumber; i++) {
-                    statusDigitalInput= jk8055.ReadDigitalChannel(i);
+
+                // Open Interface K8055 
+                jk8055 = JK8055.getInstance();
+                jk8055.OpenDevice(DEVICE);
+
+                int startingValue = board.getStartingValue();
+                int linesNumber = board.getDigitalInputNumber();
+
+                // Read all digital input
+                for (int i = startingValue; i <= linesNumber; i++) {
+                    statusDigitalInput = jk8055.ReadDigitalChannel(i);
                     //Freedomotic.logger.severe("k8055 status line " + Boolean.toString(status)); 
                     //Freedomotic.logger.info("k8055 change digital Input "+ i + " value: " + statusDigitalInput);
-            
-                    if (statusDigitalInput!=board.getDigitalValue(i-1)) {
+
+                    if (statusDigitalInput != board.getDigitalValue(i - 1)) {
                         Freedomotic.logger.info("k8055 change digital Input ");
-                        board.setDigitalValue(i-1, statusDigitalInput);
-                        if (statusDigitalInput==true)  {
-                            sendChanges(i, DEVICE ,"ID" ,"1");
-                        }
-                        else {
-                            sendChanges(i, DEVICE ,"ID","0");
+                        board.setDigitalValue(i - 1, statusDigitalInput);
+                        if (statusDigitalInput == true) {
+                            sendChanges(i, DEVICE, "ID", "1");
+                        } else {
+                            sendChanges(i, DEVICE, "ID", "0");
                         }
                     }
-            }   
-            
-            linesNumber=board.getAnalogInputNumber();
-            
-            // Read all Analog input
-            for (int i = startingValue; i <= linesNumber; i++) {
-                    statusAnalogInput= jk8055.ReadAnalogChannel(i);
+                }
+
+                linesNumber = board.getAnalogInputNumber();
+
+                // Read all Analog input
+                for (int i = startingValue; i <= linesNumber; i++) {
+                    statusAnalogInput = jk8055.ReadAnalogChannel(i);
                     //Freedomotic.logger.severe("k8055 status line " + Boolean.toString(status)); 
-                    if (statusAnalogInput!=board.getAnalogValue(i-1)){
-                        Freedomotic.logger.info("k8055 change analog Input "+ i + " value: " + statusAnalogInput);
-                        board.setAnalogValue(i-1,statusAnalogInput);
-                        sendChanges(i,DEVICE,"IA",Integer.toString(statusAnalogInput));
+                    if (statusAnalogInput != board.getAnalogValue(i - 1)) {
+                        Freedomotic.logger.info("k8055 change analog Input " + i + " value: " + statusAnalogInput);
+                        board.setAnalogValue(i - 1, statusAnalogInput);
+                        sendChanges(i, DEVICE, "IA", Integer.toString(statusAnalogInput));
                     }
+                }
+                jk8055.CloseDevice();
+            } catch (DOMException dOMException) {
+                //do nothing
+            } catch (NumberFormatException numberFormatException) {
+                //do nothing
+            } catch (NullPointerException ex) {
+                //do nothing
+            } catch (JK8055Exception ex) {
+                Logger.getLogger(k8055.class.getName()).log(Level.SEVERE, "Exception k8055", ex);
             }
-            jk8055.CloseDevice();
-        } catch (DOMException dOMException) {
-                    //do nothing
-        } catch (NumberFormatException numberFormatException) {
-                    //do nothing
-        } catch (NullPointerException ex) {
-                    //do nothing
-        } catch (JK8055Exception ex) {
-            Logger.getLogger(k8055.class.getName()).log(Level.SEVERE, "Exception k8055", ex);
-        }
-        
+
         }
     }
 
-    
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
         Freedomotic.logger.info("k8055 plugin receives a command called " + c.getName()
                 + " with parameters " + c.getProperties().toString());
         String[] address = null;
-        int brightness=0;
+        int brightness = 0;
         if (c.getProperty("command").equals("RELAY")) {
-                
-                String delimiter = configuration.getProperty("address-delimiter");
-                address = c.getProperty("address").split(delimiter);
-               
-                if (c.getProperty("behavior").equals("on")) {
-                    setLineDevice(Integer.parseInt(address[2]),address[1],100);
-                }
-                else {
-                    resetLineDevice(Integer.parseInt(address[2]),address[1],100);
-                }
-                
+
+            String delimiter = configuration.getProperty("address-delimiter");
+            address = c.getProperty("address").split(delimiter);
+
+            if (c.getProperty("behavior").equals("on")) {
+                setLineDevice(Integer.parseInt(address[2]), address[1], 100);
+            } else {
+                resetLineDevice(Integer.parseInt(address[2]), address[1], 100);
+            }
+
         }
-      
+
     }
 
     @Override
@@ -266,12 +259,11 @@ public class k8055 extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    
     private void sendChanges(int relayLine, int device, String typeLine, String status) {
         //first parameter in the constructor is the reference for the source of the event (typically the sensor plugin class)
         //second parameter is the protocol of the object we want to change
         //third parameter must be the exact address of the object we want to change
-        String address = Integer.toString(device) + ":" + typeLine + ":" +relayLine;
+        String address = Integer.toString(device) + ":" + typeLine + ":" + relayLine;
         ProtocolRead event = new ProtocolRead(this, "k8055", address);
         //Freedomotic.logger.severe("k8055 address " + address);
         //add a property that defines the status readed from hardware
@@ -282,9 +274,8 @@ public class k8055 extends Protocol {
             } else {
                 event.addProperty("isOn", "true");
             }
-        }
-        else if (typeLine.equals("IA")) {
-            if (status.equals("0")){
+        } else if (typeLine.equals("IA")) {
+            if (status.equals("0")) {
                 event.addProperty("isOn", "false");
                 event.addProperty("valueLine", status);
             } else {
@@ -292,40 +283,39 @@ public class k8055 extends Protocol {
                 event.addProperty("valueLine", status);
             }
         }
-       
+
         //others additional optional info
         //event.addProperty("status", status);
         //event.addProperty("boardPort", new Integer(device).toString());
         //event.addProperty("relayLine", new Integer(relayLine).toString());
         //publish the event on the messaging bus
-        
-        
+
+
         this.notifyEvent(event);
     }
-    
-    private boolean setLineDevice(int line, String typeLine, int currentLine)  {
+
+    private boolean setLineDevice(int line, String typeLine, int currentLine) {
         try {
             jk8055 = JK8055.getInstance();
             jk8055.OpenDevice(DEVICE);
-            Freedomotic.logger.info("k8055 plugin setLineDevice line:" + Integer.toString(line) + " typeLine: " + typeLine + " currentLine:" + currentLine); 
-               
+            Freedomotic.logger.info("k8055 plugin setLineDevice line:" + Integer.toString(line) + " typeLine: " + typeLine + " currentLine:" + currentLine);
+
             if (typeLine.equals("OD")) {
                 jk8055.SetDigitalChannel(line);
-            }
-            else if (typeLine.equals("OA")) {
+            } else if (typeLine.equals("OA")) {
                 jk8055.SetAnalogChannel(line);
             }
-       
-            
+
+
             jk8055.CloseDevice();
         } catch (DOMException dOMException) {
-                    //do nothing
+            //do nothing
             return false;
         } catch (NumberFormatException numberFormatException) {
-                    //do nothing
+            //do nothing
             return false;
         } catch (NullPointerException ex) {
-                    //do nothing
+            //do nothing
             return false;
         } catch (JK8055Exception ex) {
             Logger.getLogger(k8055.class.getName()).log(Level.SEVERE, "Exception k8055", ex);
@@ -333,30 +323,29 @@ public class k8055 extends Protocol {
         }
         return true;
     }
-    
-     private boolean resetLineDevice(int line, String typeLine, int brightness)  {
+
+    private boolean resetLineDevice(int line, String typeLine, int brightness) {
         try {
             jk8055 = JK8055.getInstance();
             jk8055.OpenDevice(DEVICE);
             if (typeLine.equals("OD")) {
                 jk8055.ClearDigitalChannel(line);
-            }
-            else if (typeLine.equals("OA")) {
-            
-               
+            } else if (typeLine.equals("OA")) {
+
+
                 jk8055.ClearAnalogChannel(line);
             }
-       
-       
+
+
             jk8055.CloseDevice();
         } catch (DOMException dOMException) {
-                    //do nothing
+            //do nothing
             return false;
         } catch (NumberFormatException numberFormatException) {
-                    //do nothing
+            //do nothing
             return false;
         } catch (NullPointerException ex) {
-                    //do nothing
+            //do nothing
             return false;
         } catch (JK8055Exception ex) {
             Logger.getLogger(k8055.class.getName()).log(Level.SEVERE, "Exception k8055", ex);
@@ -364,6 +353,4 @@ public class k8055 extends Protocol {
         }
         return true;
     }
-        
 }
-

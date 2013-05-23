@@ -29,6 +29,12 @@
             <version>${project.parent.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
@@ -44,4 +50,4 @@
             </plugin>
         </plugins>
     </build>
- </project>
+</project>

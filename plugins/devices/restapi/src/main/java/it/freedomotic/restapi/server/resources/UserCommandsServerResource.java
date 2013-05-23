@@ -21,35 +21,33 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
  *
  * @author gpt
  */
-public class UserCommandsServerResource extends ServerResource implements CommandsResource{
+public class UserCommandsServerResource extends ServerResource implements CommandsResource {
 
-    private static volatile ArrayList<Command> commands;  
-        
+    private static volatile ArrayList<Command> commands;
+
     @Override
-    protected void doInit() throws ResourceException{        
+    protected void doInit() throws ResourceException {
         commands = new ArrayList<Command>(CommandPersistence.getUserCommands());
 //        for (Iterator it = CommandPersistence.iterator(); it.hasNext();) {
 //            Command command = (Command) it.next();
 //            commands.add(command);
 //        }
     }
-        
+
     @Override
-    public String retrieveXml() {   
+    public String retrieveXml() {
         String ret = "";
-        XStream xstream =FreedomXStream.getXstream();       
+        XStream xstream = FreedomXStream.getXstream();
         ret = xstream.toXML(commands);
-        return ret;                
-    }
-    
-        @Override
-    public String retrieveJson() {        
-        String ret = "";
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
-        xstream.setMode(XStream.NO_REFERENCES);                
-        ret = xstream.toXML(commands);        
         return ret;
     }
 
-  
+    @Override
+    public String retrieveJson() {
+        String ret = "";
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
+        xstream.setMode(XStream.NO_REFERENCES);
+        ret = xstream.toXML(commands);
+        return ret;
+    }
 }
