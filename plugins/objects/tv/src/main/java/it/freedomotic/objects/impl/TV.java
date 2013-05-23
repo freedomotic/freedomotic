@@ -26,12 +26,11 @@ public class TV extends ElectricDevice {
 
     @Override
     public void init() {
-        
-                     
+
+
         //linking this property with the behavior defined in the XML
         volume = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior("volume"));
         volume.addListener(new RangedIntBehaviorLogic.Listener() {
-
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOff(params);
@@ -55,9 +54,8 @@ public class TV extends ElectricDevice {
 
         //linking this property with the behavior defined in the XML
         channel = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior("channel"));
-                
-        channel.addListener(new RangedIntBehaviorLogic.Listener() {
 
+        channel.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
             }
@@ -81,7 +79,6 @@ public class TV extends ElectricDevice {
         //linking this property with the behavior defined in the XML
         input = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior("input"));
         input.addListener(new ListBehaviorLogic.Listener() {
-
             @Override
             public void selectedChanged(Config params, boolean fireCommand) {
                 if (fireCommand) {
@@ -96,7 +93,6 @@ public class TV extends ElectricDevice {
         //linking this powered property with the muted behavior defined in the XML
         muted = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior("muted"));
         muted.addListener(new BooleanBehaviorLogic.Listener() {
-
             @Override
             public void onTrue(Config params, boolean fireCommand) {
                 if (fireCommand) {
@@ -120,7 +116,6 @@ public class TV extends ElectricDevice {
         //linking this powered property with the avSelection behavior defined in the XML
         avSelection = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior("avselection"));
         avSelection.addListener(new ListBehaviorLogic.Listener() {
-
             @Override
             public void selectedChanged(Config params, boolean fireCommand) {
                 if (fireCommand) {
@@ -136,7 +131,6 @@ public class TV extends ElectricDevice {
         screenMode = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior("screenMode"));
         screenMode.addListener(new ListBehaviorLogic.Listener() {
             //TODO: in the kuro the screen modes available depends of the source.
-
             @Override
             public void selectedChanged(Config params, boolean fireCommand) {
                 if (fireCommand) {
@@ -146,7 +140,7 @@ public class TV extends ElectricDevice {
                 }
             }
         });
-        registerBehavior(screenMode);        
+        registerBehavior(screenMode);
         super.init();
     }
 
@@ -159,7 +153,6 @@ public class TV extends ElectricDevice {
             setChanged(true);
         }
     }
-    
 
     public void setVolume(int rangeValue) {
         if (volume.getValue() != rangeValue) {

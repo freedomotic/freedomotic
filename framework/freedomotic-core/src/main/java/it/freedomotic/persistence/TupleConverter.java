@@ -41,11 +41,13 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
  *
  * @author Enrico
  */
-public class TupleConverter implements Converter {
+public class TupleConverter
+        implements Converter {
 
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
         Tuples t = (Tuples) o;
+
         for (int i = 0; i < t.size(); i++) {
             HashMap<String, String> properties = t.getTuple(i);
             Set<Map.Entry<String, String>> entrySet = properties.entrySet();
@@ -57,6 +59,7 @@ public class TupleConverter implements Converter {
                 writer.addAttribute("value", entry.getValue().toString());
                 writer.endNode();
             }
+
             writer.endNode();
         }
     }
@@ -64,6 +67,7 @@ public class TupleConverter implements Converter {
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
         Tuples t = new Tuples();
+
         //starts from root <tuples>
         while (reader.hasMoreChildren()) {
             reader.moveDown(); //goes down to <tuple>
@@ -71,12 +75,15 @@ public class TupleConverter implements Converter {
             //reads properties on the same level
             while (reader.hasMoreChildren()) {
                 reader.moveDown();
-                map.put(reader.getAttribute("name"), reader.getAttribute("value"));
+                map.put(reader.getAttribute("name"),
+                        reader.getAttribute("value"));
                 reader.moveUp();
             }
+
             t.add(map);
             reader.moveUp(); //goes up to the next <tuple>
         }
+
         return t;
     }
 

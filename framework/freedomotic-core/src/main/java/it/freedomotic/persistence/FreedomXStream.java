@@ -22,6 +22,7 @@
 package it.freedomotic.persistence;
 
 import it.freedomotic.environment.Room;
+
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.environment.Zone;
@@ -30,6 +31,7 @@ import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.geometry.FreedomShape;
 import it.freedomotic.model.object.Representation;
+
 import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.ReactionConverter;
 import it.freedomotic.reactions.Trigger;
@@ -40,7 +42,7 @@ import com.thoughtworks.xstream.XStream;
  *
  * @author gpt
  */
-public class FreedomXStream /*implements FrameTranslator*/{
+public class FreedomXStream /*implements FrameTranslator*/ {
 
     private static XStream xstream = null;
     private static XStream environmentXstream = null;
@@ -75,7 +77,6 @@ public class FreedomXStream /*implements FrameTranslator*/{
 
 //            xstream.alias("RangedIntBehavior", RangedIntBehavior.class);
 //            xstream.omitField(RangedIntBehavior.class, "listener");
-
             xstream.alias("view", Representation.class);
 
 //            xstream.alias("Object.ElectricDevice", ElectricDevice.class);
@@ -93,7 +94,9 @@ public class FreedomXStream /*implements FrameTranslator*/{
 
             //No Object directly
             xstream.omitField(Config.class, "xmlFile");
-            xstream.registerLocalConverter(Config.class, "tuples", new TupleConverter());
+            xstream.registerLocalConverter(Config.class,
+                    "tuples",
+                    new TupleConverter());
 
             xstream.omitField(Zone.class, "occupiers");
             xstream.omitField(Room.class, "gates");
@@ -105,25 +108,22 @@ public class FreedomXStream /*implements FrameTranslator*/{
             xstream.alias("trigger", Trigger.class);
             xstream.omitField(Trigger.class, "suspensionStart");
             xstream.omitField(Trigger.class, "busChannel");
+            xstream.omitField(Trigger.class, "checker");
             //xstream.registerConverter(new PayloadConverter());
             xstream.alias("payload", Payload.class);
 
 //            xstream.omitField(ObjectReceiveClick.class, "obj");
 //            xstream.omitField(ObjectReceiveClick.class, "click");
-
-
             xstream.registerConverter(new ReactionConverter());
             xstream.registerConverter(new PropertiesConverter());
             xstream.registerConverter(new TupleConverter());
-
-
         }
-        return xstream;
 
+        return xstream;
     }
 
     public static XStream getEnviromentXstream() {
-        if (environmentXstream == null) {    //Enviroment serialization
+        if (environmentXstream == null) { //Enviroment serialization
             environmentXstream = new XStream();
             environmentXstream.setMode(XStream.NO_REFERENCES);
             environmentXstream.autodetectAnnotations(true);
@@ -134,9 +134,8 @@ public class FreedomXStream /*implements FrameTranslator*/{
             environmentXstream.alias("point", FreedomPoint.class);
             environmentXstream.useAttributeFor(FreedomPoint.class, "x");
             environmentXstream.useAttributeFor(FreedomPoint.class, "y");
-
         }
-        return environmentXstream;
 
+        return environmentXstream;
     }
 }

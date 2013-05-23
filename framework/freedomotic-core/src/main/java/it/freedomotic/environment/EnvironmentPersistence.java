@@ -21,11 +21,24 @@
  */
 package it.freedomotic.environment;
 
+import com.google.inject.Inject;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
+
+import it.freedomotic.api.Client;
+
 import it.freedomotic.app.Freedomotic;
+
+import it.freedomotic.exceptions.DaoLayerException;
+
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.environment.Zone;
+import it.freedomotic.model.object.Behavior;
+
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
+
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.security.Auth;
 import it.freedomotic.util.DOMValidateDTD;
@@ -33,85 +46,106 @@ import it.freedomotic.util.Info;
 import it.freedomotic.util.SerialClone;
 import it.freedomotic.util.UidGenerator;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import com.thoughtworks.xstream.XStream;
+import it.freedomotic.plugins.ClientStorage;
+import it.freedomotic.plugins.ObjectPluginPlaceholder;
+import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
 
 /**
  *
  * @author Enrico
  */
-public class EnvironmentPersistence {
+public final class EnvironmentPersistence {
 
-    private static List<EnvironmentLogic> envList = new ArrayList< EnvironmentLogic>();
+    private static List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
+    private ClientStorage clientStorage;
 
-    private EnvironmentPersistence() {
+    @Inject
+    public EnvironmentPersistence(ClientStorage clientStorage) {
         //disable instance creation
+        this.clientStorage = clientStorage;
     }
-@RequiresPermissions("environments:save")
-    public static void saveEnvironmentsToFolder(File folder) {
-        if (envList.isEmpty()) {
+
+    @RequiresPermissions("environments:save")
+    public static void saveEnvironmentsToFolder(File folder) throws DaoLayerException {
+        if (environments.isEmpty()) {
             Freedomotic.logger.warning("There is no environment to persist, " + folder.getAbsolutePath() + " will not be altered.");
             return;
         }
+
         if (!folder.isDirectory()) {
-            Freedomotic.logger.warning(folder.getAbsoluteFile() + " is not a valid environment folder. Skipped");
-            return;
+            throw new DaoLayerException(folder.getAbsoluteFile() + " is not a valid environment folder. Skipped");
         }
+
         deleteEnvFiles(folder);
+
         try {
             // Create file
             StringBuilder summary = new StringBuilder();
             //print an header for the index.txt file
             summary.append("#Filename \t\t #EnvName").append("\n");
-            for (EnvironmentLogic environment : envList) {
+
+            for (EnvironmentLogic environment : environments) {
                 String uuid = environment.getPojo().getUUID();
-                if (uuid == null || uuid.isEmpty()) {
+
+                if ((uuid == null) || uuid.isEmpty()) {
                     environment.getPojo().setUUID(UUID.randomUUID().toString());
                 }
-                String fileName = environment.getPojo().getUUID() + ".xenv";
-                save(environment, new File(folder + "/" + fileName));
-                summary.append(fileName).append("\t").append(environment.getPojo().getName()).append("\n");
 
+                String fileName = environment.getPojo().getUUID() + ".xenv";
+                save(environment,
+                        new File(folder + "/" + fileName));
+                summary.append(fileName).append("\t").append(environment.getPojo().getName()).append("\n");
             }
+
             //writing a summary .txt file with the list of commands in this folder
             FileWriter fstream = new FileWriter(folder + "/index.txt");
             BufferedWriter indexfile = new BufferedWriter(fstream);
             indexfile.write(summary.toString());
             //Close the output stream
             indexfile.close();
-        } catch (Exception e) {
-            Freedomotic.logger.info(e.getLocalizedMessage());
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+        } catch (IOException e) {
+            throw new DaoLayerException(e.getCause());
         }
     }
 
-    @RequiresPermissions("environments:save")
-    private static void deleteEnvFiles(File folder) {
+    private static void deleteEnvFiles(File folder)
+            throws DaoLayerException {
+        if ((folder == null) || !folder.isDirectory()) {
+            throw new IllegalArgumentException("Unable to delete environment files in a null or not valid folder");
+        }
+
         // This filter only returns object files
-        FileFilter objectFileFileter = new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xenv")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+        FileFilter objectFileFileter =
+                new FileFilter() {
+                    @Override
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xenv")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
+
         File[] files = folder.listFiles(objectFileFileter);
+
         for (File file : files) {
-            file.delete();
+            boolean deleted = file.delete();
+
+            if (!deleted) {
+                throw new DaoLayerException("Unable to delete file " + file.getAbsoluteFile());
+            }
         }
     }
 
@@ -121,34 +155,40 @@ public class EnvironmentPersistence {
      * @param folder
      * @param makeUnique
      */
-    @RequiresPermissions("environments:load")
-    public synchronized static boolean loadEnvironmentsFromDir(File folder, boolean makeUnique) {
-        envList.clear();
+    public synchronized static boolean loadEnvironmentsFromDir(File folder, boolean makeUnique)
+            throws DaoLayerException {
+        if (folder == null) {
+            throw new DaoLayerException("Cannot");
+        }
+
+        environments.clear();
+
         boolean check = true;
+
         // This filter only returns env files
-        FileFilter envFileFilter = new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xenv")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+        FileFilter envFileFilter =
+                new FileFilter() {
+                    @Override
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xenv")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
+
         File[] files = folder.listFiles(envFileFilter);
+
         for (File file : files) {
-            try {
-                loadEnvironmentFromFile(file);
-            } catch (Exception e) {
-                Freedomotic.logger.severe("Exception while loading environment in " + file.getAbsolutePath() + ".\n" + Freedomotic.getStackTraceInfo(e));
-                check = false;
-                break;
-            }
+            loadEnvironmentFromFile(file);
         }
+
         if (check) {
-            EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
+            EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(),
+                    false);
         }
+
         return check;
     }
 
@@ -165,78 +205,152 @@ public class EnvironmentPersistence {
      */
     @RequiresPermissions("environments:create")
     public static EnvironmentLogic add(final EnvironmentLogic obj, boolean MAKE_UNIQUE) {
-        if (obj == null
-                || obj.getPojo() == null
-                || obj.getPojo().getName() == null
+        if ((obj == null)
+                || (obj.getPojo() == null)
+                || (obj.getPojo().getName() == null)
                 || obj.getPojo().getName().isEmpty()) {
             throw new IllegalArgumentException("This is not a valid environment");
         }
+
         EnvironmentLogic envLogic = obj;
+
         if (MAKE_UNIQUE) {
             envLogic = new EnvironmentLogic();
+
             //defensive copy to not affect the passed object with the changes
             Environment pojoCopy = SerialClone.clone(obj.getPojo());
             pojoCopy.setName(obj.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
             envLogic.setPojo(pojoCopy);
             envLogic.getPojo().setUUID("");
         }
+
         envLogic.init();
         //  if (!envList.contains(envLogic)) {
-        envList.add(envLogic);
+        environments.add(envLogic);
+
         //envLogic.setChanged(true);
         //  } else {
         //      throw new RuntimeException("Cannot add the same environment more than one time");
         //  }
         return envLogic;
     }
-    
-    @RequiresPermissions("environments:delete")
+
+    public EnvObjectLogic join(String clazz, String name, String protocol, String address) {
+        EnvObjectLogic loaded = null;
+        ObjectPluginPlaceholder objectPlugin = (ObjectPluginPlaceholder) clientStorage.get(clazz);
+
+        if (objectPlugin == null) {
+            Freedomotic.logger.warning("Doesen't exist an object class called " + clazz);
+
+            return null;
+        }
+
+        File templateFile = objectPlugin.getTemplate();
+
+        try {
+            loaded = EnvObjectPersistence.loadObject(templateFile);
+        } catch (DaoLayerException ex) {
+            Freedomotic.logger.severe("Cannot join an object taken from template file " + templateFile);
+        }
+
+        //changing the name and other properties invalidates related trigger and commands
+        //call init() again after this changes
+        if ((name != null) && !name.isEmpty()) {
+            loaded.getPojo().setName(name);
+        } else {
+            loaded.getPojo().setName(protocol);
+        }
+
+        loaded = EnvObjectPersistence.add(loaded, EnvObjectPersistence.MAKE_UNIQUE);
+        loaded.getPojo().setProtocol(protocol);
+        loaded.getPojo().setPhisicalAddress(address);
+        loaded.setRandomLocation();
+
+        //set the PREFERRED MAPPING of the protocol plugin (if any is defined in its manifest)
+        Client addon = clientStorage.getClientByProtocol(protocol);
+
+        if (addon != null) {
+            for (int i = 0; i < addon.getConfiguration().getTuples().size(); i++) {
+                Map tuple = addon.getConfiguration().getTuples().getTuple(i);
+                String regex = (String) tuple.get("object.class");
+
+                if ((regex != null) && clazz.matches(regex)) {
+                    //map object behaviors to hardware triggers
+                    for (Behavior behavior : loaded.getPojo().getBehaviors()) {
+                        String triggerName = (String) tuple.get(behavior.getName());
+                        loaded.addTriggerMapping(TriggerPersistence.getTrigger(triggerName),
+                                behavior.getName());
+                    }
+
+                    for (String action : loaded.getPojo().getActions().stringPropertyNames()) {
+                        String commandName = (String) tuple.get(action);
+
+                        if (commandName != null) {
+                            loaded.setAction(action,
+                                    CommandPersistence.getHardwareCommand(commandName));
+                        }
+                    }
+                }
+            }
+        }
+
+        return loaded;
+    }
+
     public static void remove(EnvironmentLogic input) {
         for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(input.getPojo().getUUID())) {
             EnvObjectPersistence.remove(obj);
         }
-        envList.remove(input);
+
+        environments.remove(input);
         input.clear();
     }
-    
+
     @RequiresPermissions("environments:delete")
     public static void clear() {
         try {
-            envList.clear();
+            environments.clear();
         } catch (Exception e) {
         }
     }
-    
+
     public static int size() {
-        return envList.size();
+        return environments.size();
     }
-    @RequiresPermissions("environments:save")
-    public static void save(EnvironmentLogic env, File file) throws IOException {
+
+    private static void save(EnvironmentLogic env, File file)
+            throws IOException {
         XStream xstream = FreedomXStream.getEnviromentXstream();
+
         for (Zone zone : env.getPojo().getZones()) {
             zone.setObjects(null);
         }
+
         String xml = xstream.toXML(env.getPojo());
         FileWriter fstream;
         BufferedWriter out = null;
+
         try {
             Freedomotic.logger.info("Serializing environment to " + file);
             fstream = new FileWriter(file);
             out = new BufferedWriter(fstream);
             out.write(xml);
             //Close the output stream
-            Freedomotic.logger.info("Application environment " + env.getPojo().getName() + " succesfully serialized");
+            Freedomotic.logger.info("Application environment " + env.getPojo().getName()
+                    + " succesfully serialized");
         } catch (IOException ex) {
             Logger.getLogger(Environment.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             out.close();
         }
     }
-    
+
     @RequiresPermissions("environments:save")
     public static void saveAs(EnvironmentLogic env, File folder) throws IOException {
-        Freedomotic.logger.info("Serializing new environment to " + folder);
+        Freedomotic.logger.config("Serializing new environment to " + folder);
+
         String fileName = folder.getName();
+
         if (!folder.exists()) {
             folder.mkdir();
             new File(folder + "/data").mkdir();
@@ -246,44 +360,61 @@ public class EnvironmentPersistence {
             new File(folder + "/data/cmd").mkdir();
             new File(folder + "/data/resources").mkdir();
         }
-        save(env, new File(folder + "/" + fileName + ".xenv"));
+
+        save(env,
+                new File(folder + "/" + fileName + ".xenv"));
+
         //TODO: Freedomotic.environment.getPojo().setObjectsFolder()
         //  EnvObjectPersistence.saveObjects(new File(folder + "/objects"));
     }
-    
-    @RequiresPermissions("environments:load")
-    public static void loadEnvironmentFromFile(final File file) throws IOException {
+
+    public static void loadEnvironmentFromFile(final File file)
+            throws DaoLayerException {
         XStream xstream = FreedomXStream.getXstream();
+
         //validate the object against a predefined DTD
-        String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/environment.dtd");
+        String xml;
+
+        try {
+            xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/environment.dtd");
+        } catch (IOException ex) {
+            throw new DaoLayerException(ex.getMessage(), ex);
+        }
+
         Environment pojo = null;
+
         try {
             pojo = (Environment) xstream.fromXML(xml);
-        } catch (Exception e) {
-            Freedomotic.logger.severe("XML parsing error. Readed XML is \n" + xml);
-
+        } catch (XStreamException e) {
+            throw new DaoLayerException("XML parsing error. Readed XML is \n" + xml, e);
         }
+
         EnvironmentLogic envLogic = new EnvironmentLogic();
+
+        if (pojo == null) {
+            throw new IllegalStateException("Object data cannot be null at this stage");
+        }
+
         envLogic.setPojo(pojo);
         envLogic.setSource(file);
         // next line is commented as the method init() is called in the add()
         //envLogic.init();
         add(envLogic, false);
+    }
 
-    }
-@RequiresPermissions("environments:read")
+    @RequiresPermissions("environments:read")
     public static List<EnvironmentLogic> getEnvironments() {
-        return envList;
+        return environments;
     }
-    
+
     @RequiresPermissions("environments:read")
     public static EnvironmentLogic getEnvByUUID(String UUID) {
-        if (Auth.isPermitted("environments:read:"+UUID)) {
-        for (EnvironmentLogic env : envList) {
-            if (env.getPojo().getUUID().equals(UUID)) {
-                return env;
+        if (Auth.isPermitted("environments:read:" + UUID)) {
+            for (EnvironmentLogic env : environments) {
+                if (env.getPojo().getUUID().equals(UUID)) {
+                    return env;
+                }
             }
-        }
         }
         return null;
     }

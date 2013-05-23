@@ -7,10 +7,15 @@ package it.freedomotic.plugins;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.api.Sensor;
+
 import it.freedomotic.events.ScheduledEvent;
+
 import it.freedomotic.exceptions.UnableToExecuteException;
+
 import it.freedomotic.plugins.gui.ClockForm;
+
 import it.freedomotic.reactions.Command;
+
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -19,7 +24,8 @@ import java.util.TimerTask;
  *
  * @author enrico
  */
-public class Scheduler extends Protocol {
+public class Scheduler
+        extends Protocol {
 
     private int TIMER_RESOLUTION = 1000;
     private int lastSentMinute = -1;
@@ -37,7 +43,6 @@ public class Scheduler extends Protocol {
     }
 
     protected void onRun() {
-
     }
 
     @Override
@@ -46,7 +51,6 @@ public class Scheduler extends Protocol {
         timer = new Timer("FreedomClock", true);
         awake = new Awake();
         timer.scheduleAtFixedRate(awake, TIMER_RESOLUTION, TIMER_RESOLUTION);
-
     }
 
     @Override
@@ -73,7 +77,8 @@ public class Scheduler extends Protocol {
     }
 
     @Override
-    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
+    protected void onCommand(Command c)
+            throws IOException, UnableToExecuteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -87,7 +92,8 @@ public class Scheduler extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private class Awake extends TimerTask {
+    private class Awake
+            extends TimerTask {
 
         @Override
         public void run() {

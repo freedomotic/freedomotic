@@ -5,13 +5,15 @@
 package it.freedomotic.plugins.gui;
 
 import it.freedomotic.util.LogFormatter;
+
 import java.util.logging.*;
 
 /**
  *
  * @author Enrico
  */
-public class LogWindowHandler extends Handler {
+public class LogWindowHandler
+        extends Handler {
 
     public LogWindow window = null;
     private Level level = null;
@@ -23,6 +25,7 @@ public class LogWindowHandler extends Handler {
 //        String level = manager.getProperty(className + ".level");
 //        String filter = manager.getProperty(className + ".filter");
         setLevel(Level.ALL);
+
         if (window == null) {
             window = new LogWindow(this);
         }
@@ -32,25 +35,25 @@ public class LogWindowHandler extends Handler {
         if (handler == null) {
             handler = new LogWindowHandler();
         }
+
         return handler;
     }
 
     public void publish(LogRecord record) {
         String message;
+
         if (!isLoggable(record)) {
             return;
         }
+
         //message = getFormatter().format(record);
 //        message = record.getLevel() + "\t "
 //                + record.getSourceClassName() + "\t"
 //                + record.getSourceMethodName() + "\t "
 //                + record.getMessage();
-        window.append(new Object[]{
-                    record.getLevel(),
-                    //record.getSourceClassName(),
+        window.append(new Object[]{record.getLevel(), //record.getSourceClassName(),
                     //record.getSourceMethodName(),
-                    record.getMessage()
-                });
+                    record.getMessage()});
     }
 
     public void close() {

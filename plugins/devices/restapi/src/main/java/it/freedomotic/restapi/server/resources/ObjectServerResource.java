@@ -19,37 +19,37 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
  *
  * @author gpt
  */
-public class ObjectServerResource extends ServerResource implements ObjectResource{
+public class ObjectServerResource extends ServerResource implements ObjectResource {
+
     private static volatile EnvObject envObject;
     String name;
- 	
+
     @Override
     public void doInit() {
-        name =Reference.decode((String)getRequest().getAttributes().get("name"));                              
-        envObject = EnvObjectPersistence.getObjectByName(name).getPojo();                           
+        name = Reference.decode((String) getRequest().getAttributes().get("name"));
+        envObject = EnvObjectPersistence.getObjectByName(name).getPojo();
     }
 
     @Override
-    public String retrieveXml() {        
+    public String retrieveXml() {
         String ret = "";
-        XStream xstream =FreedomXStream.getXstream(); 
+        XStream xstream = FreedomXStream.getXstream();
         ret = xstream.toXML(envObject);
         return ret;
     }
 
     @Override
-    public String retrieveJson() {        
+    public String retrieveJson() {
         String ret = "";
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
-        xstream.setMode(XStream.NO_REFERENCES);                
+        xstream.setMode(XStream.NO_REFERENCES);
         ret = xstream.toXML(envObject);
-        System.out.println("json: "+ret);
+        System.out.println("json: " + ret);
         return ret;
     }
-        
-    @Override   
-    public EnvObject retrieveObject() {                      
-       return ObjectServerResource.envObject;
+
+    @Override
+    public EnvObject retrieveObject() {
+        return ObjectServerResource.envObject;
     }
-    
 }

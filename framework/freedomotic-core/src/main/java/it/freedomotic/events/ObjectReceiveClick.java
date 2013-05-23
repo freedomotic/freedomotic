@@ -26,6 +26,7 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
+
 import it.freedomotic.objects.EnvObjectLogic;
 
 import java.util.Iterator;
@@ -33,12 +34,13 @@ import java.util.Map.Entry;
 
 /**
  * Channel <b>app.event.sensor.object.behavior.clicked</b> informs that an
- * object is clicked on a frontend. Different types
- * of click are supported (single_click, double_click, right_click)
+ * object is clicked on a frontend. Different types of click are supported
+ * (single_click, double_click, right_click)
  *
  * @author Enrico
  */
-public class ObjectReceiveClick extends EventTemplate {
+public class ObjectReceiveClick
+        extends EventTemplate {
 
     private static final long serialVersionUID = 8985824879207319982L;
 	

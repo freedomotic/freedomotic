@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.ipx800;
 
 public class Board {
@@ -159,8 +158,7 @@ public class Board {
     public void setRelayStatus(int relayNumber, int value) {
         relayStatus[relayNumber] = value;
     }
-    
-    
+
     public int getDigitalInputValue(int digitalInputNumber) {
         return digitalInputValues[digitalInputNumber];
     }
@@ -168,16 +166,14 @@ public class Board {
     public void setDigitalInputValue(int digitalInputNumber, int value) {
         digitalInputValues[digitalInputNumber] = value;
     }
-    
-    
-     public int getanalogInputValue(int analogInputNumber) {
+
+    public int getanalogInputValue(int analogInputNumber) {
         return analogInputValues[analogInputNumber];
     }
 
     public void setAnalogInputValue(int analogInputNumber, int value) {
         analogInputValues[analogInputNumber] = value;
     }
-    
 
     private void initializeRelayStatus(int relayNumber) {
         relayStatus = new int[relayNumber];
@@ -185,20 +181,18 @@ public class Board {
             relayStatus[i] = -1;
         }
     }
-    
+
     private void initializeDigitalInputValues(int digitalInputNumber) {
         digitalInputValues = new int[digitalInputNumber];
         for (int i = 0; i < digitalInputNumber; i++) {
             digitalInputValues[i] = 0;
         }
     }
-    
-     private void initializeAnalogInputValues(int analogInputNumber) {
+
+    private void initializeAnalogInputValues(int analogInputNumber) {
         analogInputValues = new int[analogInputNumber];
         for (int i = 0; i < analogInputNumber; i++) {
             analogInputValues[i] = 0;
         }
     }
-    
-    
 }

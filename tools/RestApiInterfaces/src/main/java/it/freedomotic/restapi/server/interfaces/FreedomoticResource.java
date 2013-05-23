@@ -11,11 +11,10 @@ import org.restlet.resource.Get;
  * @author gpt
  */
 public interface FreedomoticResource {
-    
+
     @Get("json")
     public String retrieveJson();
-    
+
     @Get("xml")
     public String retrieveXml();
-    
 }

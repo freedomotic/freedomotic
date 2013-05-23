@@ -26,8 +26,11 @@
 package it.freedomotic.environment;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.model.environment.Zone;
+
 import it.freedomotic.objects.impl.Gate;
+
 import it.freedomotic.util.Edge;
 
 import java.util.ArrayList;
@@ -39,12 +42,13 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  *
  * @author enrico
  */
-public class Room extends ZoneLogic {
+public class Room
+        extends ZoneLogic {
 
     private List<Gate> gates;
     private List<Room> reachable;
-    
-    public Room(Zone pojo){
+
+    public Room(Zone pojo) {
         super(pojo);
     }
 
@@ -52,7 +56,9 @@ public class Room extends ZoneLogic {
     public void addGate(Gate gate) {
         try {
             gates.add(gate);
-            getEnv().getGraph().add(gate.getFrom(), gate.getTo(), gate);
+            getEnv().getGraph().add(gate.getFrom(),
+                    gate.getTo(),
+                    gate);
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
@@ -69,12 +75,15 @@ public class Room extends ZoneLogic {
     @RequiresPermissions("zones:read")    
     public void init(EnvironmentLogic env) {
         super.init(env);
+
         if (gates == null) {
             gates = new ArrayList<Gate>();
         }
+
         if (reachable == null) {
             reachable = new ArrayList<Room>();
         }
+
         getPojo().setAsRoom(true);
     }
 
@@ -82,6 +91,7 @@ public class Room extends ZoneLogic {
     public void visit() {
         //reset current links
         reachable.clear();
+
         LinkedBlockingQueue<Room> queue = new LinkedBlockingQueue<Room>();
         ArrayList<Edge> visited = new ArrayList<Edge>();
         queue.add(this);
@@ -89,20 +99,24 @@ public class Room extends ZoneLogic {
         while (!queue.isEmpty()) {
             // operazione di dequeue
             Room node = queue.poll();
-            //Freedomotic.logger.info("Evaluating node " + node.getPojo().getName());
 
+            //Freedomotic.logger.info("Evaluating node " + node.getPojo().getName());
             if (getEnv().getGraph().getEdgeSet(node) != null) { //if this room (the node) has adiacent rooms
+
                 for (Object object : getEnv().getGraph().getEdgeSet(node)) {
                     Edge adiacent = (Edge) object;
+
                     //Freedomotic.logger.info("  " + node.getPojo().getName() + " is linked with arch " + adiacent.toString());
                     if (!visited.contains(adiacent)) {
                         //Freedomotic.logger.info("    This arch is not visited ");
                         visited.add(adiacent);
+
                         //operazione di enqueue coda
                         Room x = (Room) adiacent.getX();
                         Room y = (Room) adiacent.getY();
                         Gate gate = (Gate) adiacent.getValue();
                         boolean open = gate.isOpen();
+
                         if (open) {
                             if (x.getPojo().getName().equalsIgnoreCase(node.getPojo().getName())) {
                                 queue.offer(y);
@@ -113,6 +127,7 @@ public class Room extends ZoneLogic {
                                 queue.offer(x);
                                 addLink(node);
                                 addLink(x);
+
                                 //Freedomotic.logger.info("From " + node.getPojo().getName() + " you can reach " + x.getPojo().getName());
                             }
                         }
@@ -137,14 +152,17 @@ public class Room extends ZoneLogic {
     @RequiresPermissions("zones:update")    
     public void updateDescription() {
         StringBuilder buff = new StringBuilder();
+
         for (Room room : reachable) {
             buff.append(room.getPojo().getName()).append(" ");
         }
+
         if (!buff.toString().isEmpty()) {
             setDescription("From " + this.getPojo().getName() + " you can reach " + buff.toString());
         } else {
             setDescription("");
         }
+
         this.setChanged();
     }
 
@@ -158,6 +176,7 @@ public class Room extends ZoneLogic {
     @RequiresPermissions("zones:read")    
     public int hashCode() {
         int hash = 3;
+
         return hash;
     }
 }

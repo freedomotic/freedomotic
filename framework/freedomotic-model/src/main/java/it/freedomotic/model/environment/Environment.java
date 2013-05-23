@@ -50,7 +50,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  *
  * @author enrico
  */
-public class Environment implements Serializable {
+public class Environment
+        implements Serializable {
 
     private static final long serialVersionUID = 2461804483322891608L;
 	

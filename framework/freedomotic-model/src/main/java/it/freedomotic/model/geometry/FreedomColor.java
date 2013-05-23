@@ -36,8 +36,7 @@ public class FreedomColor implements Serializable{
     private int blue;
     private int alpha;
 
-    public FreedomColor(){
-        
+    public FreedomColor() {
     }
 
     public int getAlpha() {

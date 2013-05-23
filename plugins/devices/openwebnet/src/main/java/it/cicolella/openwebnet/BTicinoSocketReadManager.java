@@ -1,28 +1,24 @@
 package it.cicolella.openwebnet;
 
-/*****************************************************************
- * GestSocketMonitor.java                                        *
- * Original code:			          -              *
- * date          : Sep 8, 2004                                   *
- * copyright     : (C) 2005 by Bticino S.p.A. Erba (CO) - Italy  *
- *                     Embedded Software Development Laboratory  *
- * license       : GPL                                           *
- * email         : 		             		         *
- * web site      : www.bticino.it; www.myhome-bticino.it         *
- *                                                               *
- * Modified and adapted for Freedomotic project by:              *
- * Mauro Cicolella - Enrico Nicoletti                            *
- * date          : 24/11/2011                                    *
- * web site      : www.freedomotic.com                           *
- *****************************************************************/
-/***************************************************************************
+/**
+ * ***************************************************************
+ * GestSocketMonitor.java * Original code:	- * date : Sep 8, 2004 * copyright :
+ * (C) 2005 by Bticino S.p.A. Erba (CO) - Italy * Embedded Software Development
+ * Laboratory * license : GPL * email : * web site : www.bticino.it;
+ * www.myhome-bticino.it * * Modified and adapted for Freedomotic project by: *
+ * Mauro Cicolella - Enrico Nicoletti * date : 24/11/2011 * web site :
+ * www.freedomotic.com *
+ * ***************************************************************
+ */
+/**
+ * *************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ * This program is free software; you can redistribute it and/or modify * it
+ * under the terms of the GNU General Public License as published by * the Free
+ * Software Foundation; either version 2 of the License, or * (at your option)
+ * any later version. * *
+ * *************************************************************************
+ */
 import it.freedomotic.app.Freedomotic;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,9 +27,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
- * Description:
- * Handle Socket Monitor
- * 
+ * Description: Handle Socket Monitor
+ *
  */
 public class BTicinoSocketReadManager {
 
@@ -71,7 +66,7 @@ public class BTicinoSocketReadManager {
     /**
      * Socket monitor
      *
-     * @param ip  - gateway ip
+     * @param ip - gateway ip
      * @param port - gateway port
      * @param passwordOpen - gateway password open
      * @return true if connection ok, false if connection ko

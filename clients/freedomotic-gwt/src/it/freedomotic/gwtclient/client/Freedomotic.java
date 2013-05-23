@@ -31,90 +31,87 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Entry point classes define <code>onModuleLoad()</code>.
+ * Entry point classes define
+ * <code>onModuleLoad()</code>.
  */
 public class Freedomotic implements EntryPoint {
-	/**
-	 * The message displayed to the user when the server cannot be reached or
-	 * returns an error.
-	 */
-	private static final String SERVER_ERROR = "An error occurred while "
-			+ "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
-	
-	public static final String RESOURCES_URL = "v2/resources/";
-	public static final String OBJECTS_URL = "v2/objects/";
-	
-	
-	interface Images extends ClientBundle {		
-		@Source("resources/background.png")
-		@ImageOptions(repeatStyle = RepeatStyle.Both)
-		public ImageResource logoBackground();
-		
-		 @Source("resources/logo-ivan-vector_trazo.svg")		 
-	     SVGResource logo_svg();
 
-	}
+    /**
+     * The message displayed to the user when the server cannot be reached or
+     * returns an error.
+     */
+    private static final String SERVER_ERROR = "An error occurred while "
+            + "attempting to contact the server. Please check your network "
+            + "connection and try again.";
+    public static final String RESOURCES_URL = "v2/resources/";
+    public static final String OBJECTS_URL = "v2/objects/";
 
-	interface MyCssResource extends CssResource {
-		String headerPanel();
-	}
+    interface Images extends ClientBundle {
 
-	private String brokerIp;
+        @Source("resources/background.png")
+        @ImageOptions(repeatStyle = RepeatStyle.Both)
+        public ImageResource logoBackground();
 
-	
-	OMSVGSVGElement svg;
-	
-	/**
-	 * This is the entry point method.
-	 */
-	public void onModuleLoad() {
-		Images images = GWT.create(Images.class);
-		Cookies.removeCookie("broker_ip");
-		brokerIp = Cookies.getCookie("broker_ip");
-		
-		DockLayoutPanel myDockLayoutPanel = new DockLayoutPanel(Unit.EM);
-		// draw the environment
-		FloorPlanWidget floorPlan = new FloorPlanWidget(myDockLayoutPanel,null);
-		RootLayoutPanel rootPanel = RootLayoutPanel.get();
+        @Source("resources/logo-ivan-vector_trazo.svg")
+        SVGResource logo_svg();
+    }
 
-		SimplePanel greenLateralPanel = new SimplePanel();
-		greenLateralPanel.setStyleName("lateral_panel");
-		SimplePanel borderpanel = new SimplePanel();
-		borderpanel.setStyleName("header_panel");
-		myDockLayoutPanel.addWest(greenLateralPanel, 10);
-		myDockLayoutPanel.addWest(borderpanel, 2);
+    interface MyCssResource extends CssResource {
 
-		final OMSVGSVGElement svg = images.logo_svg().getSvg();
-		SVGImage myImage = new SVGImage(svg)
-		{
-			protected void onAttach() {
-	    		OMSVGRect viewBox = svg.getViewBox().getBaseVal();
-				if (viewBox.getWidth() == 0 || viewBox.getHeight() == 0) {
-					OMSVGRect bbox = svg.getBBox();
-					bbox.assignTo(viewBox);
-				}				
-				svg.getStyle().setWidth(300, Unit.PX);
-				svg.getStyle().setHeight(130, Unit.PX);
-				super.onAttach();
-	    	}
-		};	
-												
-		myImage.setStyleName("logo");
-		SimplePanel logoPanel = new SimplePanel();
-		logoPanel.add(myImage);
-		logoPanel.setStyleName("header_panel");			
-		myDockLayoutPanel.addNorth(logoPanel, 10.7);		
-		myDockLayoutPanel.addNorth(new EnvListBox(floorPlan), 2);
-		SimplePanel footerPanel = new SimplePanel();
-		footerPanel.setStyleName("header_panel");
-		myDockLayoutPanel.addSouth(footerPanel, 4);
-		rootPanel.add(myDockLayoutPanel);
-		myDockLayoutPanel.add(floorPlan.getCanvas());
-						
-	//Temporal hack to the configuration until we decide about it	
-		brokerIp = com.google.gwt.user.client.Window.Location.getHostName();
-		init();
+        String headerPanel();
+    }
+    private String brokerIp;
+    OMSVGSVGElement svg;
+
+    /**
+     * This is the entry point method.
+     */
+    public void onModuleLoad() {
+        Images images = GWT.create(Images.class);
+        Cookies.removeCookie("broker_ip");
+        brokerIp = Cookies.getCookie("broker_ip");
+
+        DockLayoutPanel myDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+        // draw the environment
+        FloorPlanWidget floorPlan = new FloorPlanWidget(myDockLayoutPanel, null);
+        RootLayoutPanel rootPanel = RootLayoutPanel.get();
+
+        SimplePanel greenLateralPanel = new SimplePanel();
+        greenLateralPanel.setStyleName("lateral_panel");
+        SimplePanel borderpanel = new SimplePanel();
+        borderpanel.setStyleName("header_panel");
+        myDockLayoutPanel.addWest(greenLateralPanel, 10);
+        myDockLayoutPanel.addWest(borderpanel, 2);
+
+        final OMSVGSVGElement svg = images.logo_svg().getSvg();
+        SVGImage myImage = new SVGImage(svg) {
+            protected void onAttach() {
+                OMSVGRect viewBox = svg.getViewBox().getBaseVal();
+                if (viewBox.getWidth() == 0 || viewBox.getHeight() == 0) {
+                    OMSVGRect bbox = svg.getBBox();
+                    bbox.assignTo(viewBox);
+                }
+                svg.getStyle().setWidth(300, Unit.PX);
+                svg.getStyle().setHeight(130, Unit.PX);
+                super.onAttach();
+            }
+        };
+
+        myImage.setStyleName("logo");
+        SimplePanel logoPanel = new SimplePanel();
+        logoPanel.add(myImage);
+        logoPanel.setStyleName("header_panel");
+        myDockLayoutPanel.addNorth(logoPanel, 10.7);
+        myDockLayoutPanel.addNorth(new EnvListBox(floorPlan), 2);
+        SimplePanel footerPanel = new SimplePanel();
+        footerPanel.setStyleName("header_panel");
+        myDockLayoutPanel.addSouth(footerPanel, 4);
+        rootPanel.add(myDockLayoutPanel);
+        myDockLayoutPanel.add(floorPlan.getCanvas());
+
+        //Temporal hack to the configuration until we decide about it	
+        brokerIp = com.google.gwt.user.client.Window.Location.getHostName();
+        init();
 //		String brokerIp = Cookies.getCookie("broker_ip");
 //		if (brokerIp==null)
 //		{
@@ -122,43 +119,42 @@ public class Freedomotic implements EntryPoint {
 //		}
 
 
-	}
-	
-	private void showConfigurationDialog() {
-		final ConfigurationDialog dialog = new ConfigurationDialog(
-				new OkCancelDialogCallback() {
+    }
 
-					@Override
-					public void okButtonClick(String text) {
-						final long DURATION = 1000 * 60 * 60 * 24 * 14;
-						// duration remembering login. 2 weeks in this example.
-						Date expires = new Date(System.currentTimeMillis()
-								+ DURATION);
-						Cookies.setCookie("broker_ip", text, expires, null,
-								"/", false);						
-						GWT.log("on ok ip:" + text);
-						brokerIp = Cookies.getCookie("broker_ip");
-						init();
+    private void showConfigurationDialog() {
+        final ConfigurationDialog dialog = new ConfigurationDialog(
+                new OkCancelDialogCallback() {
+                    @Override
+                    public void okButtonClick(String text) {
+                        final long DURATION = 1000 * 60 * 60 * 24 * 14;
+                        // duration remembering login. 2 weeks in this example.
+                        Date expires = new Date(System.currentTimeMillis()
+                                + DURATION);
+                        Cookies.setCookie("broker_ip", text, expires, null,
+                                "/", false);
+                        GWT.log("on ok ip:" + text);
+                        brokerIp = Cookies.getCookie("broker_ip");
+                        init();
 
-					}
+                    }
 
-					@Override
-					public void cancelButtonClick() {
-						// TODO Auto-generated method stub
-					}
-				});
+                    @Override
+                    public void cancelButtonClick() {
+                        // TODO Auto-generated method stub
+                    }
+                });
 
-		dialog.setPopupPosition(400, 400);
-		dialog.show();		
-	}
+        dialog.setPopupPosition(400, 400);
+        dialog.show();
+    }
 
-	public void init() {							
-		//TODO: check the format of the brokerip
-		EnvironmentsController.getInstance().setBrokerIp(brokerIp);
-		// retrieve data from the restapi
-		EnvironmentsController.getInstance().prepareRestResource();
-		EnvironmentsController.getInstance().retrieve();
-		EnvironmentsController.getInstance().initStomp();
+    public void init() {
+        //TODO: check the format of the brokerip
+        EnvironmentsController.getInstance().setBrokerIp(brokerIp);
+        // retrieve data from the restapi
+        EnvironmentsController.getInstance().prepareRestResource();
+        EnvironmentsController.getInstance().retrieve();
+        EnvironmentsController.getInstance().initStomp();
 
-	}
+    }
 }

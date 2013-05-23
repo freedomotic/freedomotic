@@ -3,6 +3,7 @@
  * and open the template in the editor.
  */
 package it.bcs33.onewire;
+
 import com.dalsemi.onewire.OneWireAccessProvider;
 import com.dalsemi.onewire.OneWireException;
 import com.dalsemi.onewire.adapter.DSPortAdapter;
@@ -33,28 +34,27 @@ import org.w3c.dom.DOMException;
 //import org.w3c.dom.Document;
 //import org.w3c.dom.Node;
 //import org.w3c.dom.NodeList;
+
 /**
  *
  * @author ciro.barbone
  */
 public class onewire extends Protocol {
     //private static devices;
+
     private static ArrayList<PortAdapter> portAdapters = null;
     //private static DSPortAdapter[] dsDevice;
-    private static PortAdapter portAdattatore=null;
-    
+    private static PortAdapter portAdattatore = null;
     private static int DEVICES_NUMBER = 1;
     private int POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
     //private int DEVICE = configuration.getIntProperty("address-devices", 0);
-    boolean       usedefault   = false;
-   
-    String        adapter_name = null;
-    String        port_name    = null;
-
+    boolean usedefault = false;
+    String adapter_name = null;
+    String port_name = null;
     final int POLLING_WAIT;
     private byte[] state;
     //private PortAdapter portAdapter;
-     
+
     public onewire() {
         //every plugin needs a name and a manifest XML file
         super("onewire", "/it.bcs33.onewire/onewire-manifest.xml");
@@ -69,11 +69,10 @@ public class onewire extends Protocol {
     @Override
     protected void onShowGui() {
         /**
-         * uncomment the line below to add a GUI to this plugin
-         * the GUI can be started with a right-click on plugin list
-         * on the desktop frontend (it.freedomotic.jfrontend plugin)
+         * uncomment the line below to add a GUI to this plugin the GUI can be
+         * started with a right-click on plugin list on the desktop frontend
+         * (it.freedomotic.jfrontend plugin)
          */
-        
         //bindGuiToPlugin(new HelloWorldGui(this));
     }
 
@@ -83,69 +82,65 @@ public class onewire extends Protocol {
         //for example you can change the plugin description
         setDescription("My GUI is now hidden");
     }
- /**
+
+    /**
      * Sensor side
      */
     @Override
     public void onStart() {
         super.onStart();
-        
+
         loadDevicesAndConnect();
         String adapterName;
         String portName;
-       //connect(0);
-       //connect(1);
-       //adapterName = "{DS9490}";
-       //portName = "USB1";
-       //portAdattatore = new PortAdapter(adapterName, portName, 0);
-       
-        
-        
+        //connect(0);
+        //connect(1);
+        //adapterName = "{DS9490}";
+        //portName = "USB1";
+        //portAdattatore = new PortAdapter(adapterName, portName, 0);
+
+
+
     }
 
-    static int parseInt (BufferedReader in, int def)
-    {
-      try
-      {
-         return Integer.parseInt(in.readLine());
-      }
-      catch (Exception e)
-      {
-         return def;
-      }
+    static int parseInt(BufferedReader in, int def) {
+        try {
+            return Integer.parseInt(in.readLine());
+        } catch (Exception e) {
+            return def;
+        }
     }
-    
-    
-      private void loadDevicesAndConnect()  {
-          
+
+    private void loadDevicesAndConnect() {
+
         if (portAdapters == null) {
             portAdapters = new ArrayList<PortAdapter>();
         }
-       
+
         setDescription("Reading status changes from"); //empty description
-        
+
         for (int i = 0; i < DEVICES_NUMBER; i++) {
             String adapterName;
             String portName;
-           
+
             double value;
             adapterName = configuration.getTuples().getStringProperty(i, "adapter-name", "{DS9490}");
             portName = configuration.getTuples().getStringProperty(i, "port-name", "USB1");
             value = configuration.getTuples().getDoubleProperty(i, "value", 0.0);
-           
+
             PortAdapter portAdapter = new PortAdapter(adapterName, portName, value);
-           
+
             //portAdapter.connect();
             portAdapters.add(portAdapter);
-            
-            
+
+
             setDescription(getDescription() + " " + adapterName + ":" + portName + ":" + value + ";");
-            
+
         }
     }
-    
-     /**
-     * Connection to 1wire don't used yet 
+
+    /**
+     * Connection to 1wire don't used yet
      */
     private boolean connect(String adapterName, String portName) {
 
@@ -158,10 +153,9 @@ public class onewire extends Protocol {
     private void disconnect() {
         // close streams and socket
         Freedomotic.logger.info("OnwWire disconnect");
-        
+
     }
 
-    
     @Override
     public void onStop() {
         super.onStop();
@@ -173,36 +167,35 @@ public class onewire extends Protocol {
         //display the default description
         //setDescription(configuration.getStringProperty("description", "Ipx800"));
     }
-    
+
     @Override
     protected void onRun() {
         Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, "onewire onRun ");
-       /* try
-        {
-            portAdattatore.checkDeviceListAndEvaluateDiffs();
-        }
-        catch (Exception e)
-        {
-                Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, e);
-        }*/
-            
-        
+        /* try
+         {
+         portAdattatore.checkDeviceListAndEvaluateDiffs();
+         }
+         catch (Exception e)
+         {
+         Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, e);
+         }*/
+
+
         for (PortAdapter portAdapter : portAdapters) {
             //evaluateDiffs(portAdapter); //parses the xml and crosscheck the data with the previous read
             //Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, "dentro adapter onRun ");
-            try
-            {
+            try {
                 Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, "checkDeviceListAndEvaluateDiffs ");
-                
+
                 double value;
                 if (portAdapter != null) {
-                     Freedomotic.logger.info("OneWire onRun() logs this message every "
-                     + "POLLINGWAIT=" +  "milliseconds");
-                   
-                    if (portAdapter.checkDeviceListAndEvaluateDiffs()==true){ // temp device is changed
-                        if (portAdapter.devicesOneWire!=null){
+                    Freedomotic.logger.info("OneWire onRun() logs this message every "
+                            + "POLLINGWAIT=" + "milliseconds");
+
+                    if (portAdapter.checkDeviceListAndEvaluateDiffs() == true) { // temp device is changed
+                        if (portAdapter.devicesOneWire != null) {
                             for (DeviceOneWire device : portAdapter.devicesOneWire) {
-                                if (device.getChanged()){
+                                if (device.getChanged()) {
                                     //building the event
                                     ProtocolRead event = new ProtocolRead(this, "onewire", portAdapter.getAdapterName() + ":" + portAdapter.getPortName() + ":" + device.getAddress());
                                     //adding some optional information to the event
@@ -214,98 +207,92 @@ public class onewire extends Protocol {
                                     this.notifyEvent(event);
                                     device.setChanged(false);
                                 }
-                            }  
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, e);
             }
-            
+
         }
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
             Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         //at the end of this method the system waits POLLINGTIME 
         //before calling it again. The result is this log message is printed
         //every 2 seconds (2000 millisecs)
-         
-       
+
+
     }
 
-    
-    
-     private void evaluateDiffs(PortAdapter portAdapter) {
+    private void evaluateDiffs(PortAdapter portAdapter) {
         if (portAdapter != null) {
             Freedomotic.logger.info("OneWire onRun() logs this message every "
-                + "POLLINGWAIT=" + POLLING_WAIT + "milliseconds");
+                    + "POLLINGWAIT=" + POLLING_WAIT + "milliseconds");
             //boolean statusDigitalInput;
             //int statusAnalogInput;
             try {
-                
-            // Open Interface K8055 
+                // Open Interface K8055 
             /*
-                jk8055 = JK8055.getInstance();
-            jk8055.OpenDevice(DEVICE);
+                 jk8055 = JK8055.getInstance();
+                 jk8055.OpenDevice(DEVICE);
             
-            int startingValue=board.getStartingValue();
-            int linesNumber=board.getDigitalInputNumber();
+                 int startingValue=board.getStartingValue();
+                 int linesNumber=board.getDigitalInputNumber();
             
-            // Read all digital input
-            for (int i = startingValue; i <= linesNumber; i++) {
-                    statusDigitalInput= jk8055.ReadDigitalChannel(i);
-                    //Freedomotic.logger.severe("k8055 status line " + Boolean.toString(status)); 
-                    //Freedomotic.logger.info("k8055 change digital Input "+ i + " value: " + statusDigitalInput);
+                 // Read all digital input
+                 for (int i = startingValue; i <= linesNumber; i++) {
+                 statusDigitalInput= jk8055.ReadDigitalChannel(i);
+                 //Freedomotic.logger.severe("k8055 status line " + Boolean.toString(status)); 
+                 //Freedomotic.logger.info("k8055 change digital Input "+ i + " value: " + statusDigitalInput);
             
-                    if (statusDigitalInput!=board.getDigitalValue(i-1)) {
-                        Freedomotic.logger.info("k8055 change digital Input ");
-                        board.setDigitalValue(i-1, statusDigitalInput);
-                        if (statusDigitalInput==true)  {
-                            sendChanges(i, DEVICE ,"ID" ,"1");
-                        }
-                        else {
-                            sendChanges(i, DEVICE ,"ID","0");
-                        }
-                    }
-            }   
+                 if (statusDigitalInput!=board.getDigitalValue(i-1)) {
+                 Freedomotic.logger.info("k8055 change digital Input ");
+                 board.setDigitalValue(i-1, statusDigitalInput);
+                 if (statusDigitalInput==true)  {
+                 sendChanges(i, DEVICE ,"ID" ,"1");
+                 }
+                 else {
+                 sendChanges(i, DEVICE ,"ID","0");
+                 }
+                 }
+                 }   
             
-            linesNumber=board.getAnalogInputNumber();
+                 linesNumber=board.getAnalogInputNumber();
             
-            // Read all Analog input
-            for (int i = startingValue; i <= linesNumber; i++) {
-                    statusAnalogInput= jk8055.ReadAnalogChannel(i);
-                    //Freedomotic.logger.severe("k8055 status line " + Boolean.toString(status)); 
-                    if (statusAnalogInput!=board.getAnalogValue(i-1)){
-                        Freedomotic.logger.info("k8055 change analog Input "+ i + " value: " + statusAnalogInput);
-                        board.setAnalogValue(i-1,statusAnalogInput);
-                        sendChanges(i,DEVICE,"IA",Integer.toString(statusAnalogInput));
-                    }
+                 // Read all Analog input
+                 for (int i = startingValue; i <= linesNumber; i++) {
+                 statusAnalogInput= jk8055.ReadAnalogChannel(i);
+                 //Freedomotic.logger.severe("k8055 status line " + Boolean.toString(status)); 
+                 if (statusAnalogInput!=board.getAnalogValue(i-1)){
+                 Freedomotic.logger.info("k8055 change analog Input "+ i + " value: " + statusAnalogInput);
+                 board.setAnalogValue(i-1,statusAnalogInput);
+                 sendChanges(i,DEVICE,"IA",Integer.toString(statusAnalogInput));
+                 }
+                 }
+                 jk8055.CloseDevice();
+                 * 
+                 */
+            } catch (DOMException dOMException) {
+                //do nothing
+            } catch (NumberFormatException numberFormatException) {
+                //do nothing
+            } catch (NullPointerException ex) {
+                //do nothing
             }
-            jk8055.CloseDevice();
-            * 
-            */
-        } catch (DOMException dOMException) {
-                    //do nothing
-        } catch (NumberFormatException numberFormatException) {
-                    //do nothing
-        } catch (NullPointerException ex) {
-                    //do nothing
-        }
-        
+
         }
     }
 
-    
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
         Freedomotic.logger.info("onewire plugin receives a command called " + c.getName()
                 + " with parameters " + c.getProperties().toString());
-      
+
     }
 
     @Override
@@ -320,12 +307,11 @@ public class onewire extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    
     private void sendChanges(int relayLine, int device, String typeLine, String status) {
         //first parameter in the constructor is the reference for the source of the event (typically the sensor plugin class)
         //second parameter is the protocol of the object we want to change
         //third parameter must be the exact address of the object we want to change
-        String address = Integer.toString(device) + ":" + typeLine + ":" +relayLine;
+        String address = Integer.toString(device) + ":" + typeLine + ":" + relayLine;
         ProtocolRead event = new ProtocolRead(this, "k8055", address);
         //Freedomotic.logger.severe("k8055 address " + address);
         //add a property that defines the status readed from hardware
@@ -336,9 +322,8 @@ public class onewire extends Protocol {
             } else {
                 event.addProperty("isOn", "true");
             }
-        }
-        else if (typeLine.equals("IA")) {
-            if (status.equals("0")){
+        } else if (typeLine.equals("IA")) {
+            if (status.equals("0")) {
                 event.addProperty("isOn", "false");
                 event.addProperty("valueLine", status);
             } else {
@@ -346,19 +331,14 @@ public class onewire extends Protocol {
                 event.addProperty("valueLine", status);
             }
         }
-       
+
         //others additional optional info
         //event.addProperty("status", status);
         //event.addProperty("boardPort", new Integer(device).toString());
         //event.addProperty("relayLine", new Integer(relayLine).toString());
         //publish the event on the messaging bus
-        
-        
+
+
         this.notifyEvent(event);
     }
-    
-   
-        
 }
-
-

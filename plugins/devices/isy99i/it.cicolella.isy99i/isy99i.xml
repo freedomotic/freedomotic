@@ -11,5 +11,5 @@
         <property name="uuid" value="00:21:b9:00:e0:07"/>
         <property name="userid" value="admin"/>
         <property name="password" value="admin"/>
-     </properties>
+    </properties>
 </config>

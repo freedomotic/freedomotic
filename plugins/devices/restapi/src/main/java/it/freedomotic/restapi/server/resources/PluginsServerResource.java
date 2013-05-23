@@ -4,53 +4,50 @@
  */
 package it.freedomotic.restapi.server.resources;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import it.freedomotic.api.Client;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.restapi.model.PluginPojo;
 import it.freedomotic.restapi.server.interfaces.PluginsResource;
-
 import java.util.ArrayList;
-
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 /**
  *
  * @author gpt
  */
-public class PluginsServerResource extends ServerResource implements PluginsResource{
+public class PluginsServerResource extends ServerResource implements PluginsResource {
 
     private static volatile ArrayList<PluginPojo> plugins;
-        
+
     @Override
-    protected void doInit() throws ResourceException{
+    protected void doInit() throws ResourceException {
         plugins = new ArrayList<PluginPojo>();
         for (Client c : Freedomotic.clients.getClients()) {
             if (c.getType().equalsIgnoreCase("plugin")) {
-                plugins.add(new PluginPojo(c.getName(),c.isRunning()));
+                plugins.add(new PluginPojo(c.getName(), c.isRunning()));
             }
         }
-           
+
     }
-        
+
     @Override
-    public String retrieveXml() {   
+    public String retrieveXml() {
         String ret = "";
         XStream xstream = xstream = new XStream();
         xstream.registerConverter(new PluginConverter());
         ret = xstream.toXML(plugins);
-        return ret;                
+        return ret;
     }
-    
+
     @Override
-    public String retrieveJson() {        
+    public String retrieveJson() {
         String ret = "";
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
-        xstream.setMode(XStream.NO_REFERENCES);                
-        ret = xstream.toXML(plugins);        
+        xstream.setMode(XStream.NO_REFERENCES);
+        ret = xstream.toXML(plugins);
         return ret;
     }
 
@@ -58,8 +55,4 @@ public class PluginsServerResource extends ServerResource implements PluginsReso
     public ArrayList<PluginPojo> retrievePlugins() {
         return plugins;
     }
-    
-    
-
-  
 }

@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.daenetip2;
 
 public class Board {
@@ -79,7 +78,7 @@ public class Board {
     public void setP5Status(int P5Status) {
         this.P5Status = P5Status;
     }
-    
+
     public int getP6Status(int i) {
         return P6Status[i];
     }

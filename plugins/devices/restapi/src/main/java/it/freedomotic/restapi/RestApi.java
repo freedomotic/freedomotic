@@ -79,7 +79,7 @@ public class RestApi extends Actuator {
         } catch (Exception ex) {
             Logger.getLogger(RestApi.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
+
     }
 
     @Override

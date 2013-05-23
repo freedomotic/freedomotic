@@ -73,7 +73,7 @@ public class Sphinx extends Protocol {
         } catch (IllegalStateException illegalStateException) {
         }
     }
-    
+
     @Override
     protected void onRun() {
         while (true) {
@@ -105,8 +105,7 @@ public class Sphinx extends Protocol {
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    
+
     private String setGrammar() {
         StringBuilder buffer = new StringBuilder();
         buffer.append("#JSGF V1.0;\ngrammar hello;\npublic <command> = ( ");

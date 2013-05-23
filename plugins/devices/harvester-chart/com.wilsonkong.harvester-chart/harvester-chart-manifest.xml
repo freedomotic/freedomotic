@@ -1,0 +1,57 @@
+
+<config>
+    <properties>
+        <property name="name" value="harvester-chart"/>
+        <property name="description" value="Display chart for Harvester Database"/>
+        <property name="version" value="1.1.0"/>
+        <property name="required" value="5.3.0"/>
+        <property name="category" value="logging"/>
+        <property name="short-name" value="harvester-chart"/>
+        <property name="startup-time"   value="on load"/>
+
+        <property name="driver" value="sqlite"/> 
+        <property name="dbname" value="harvester.db"/> 
+        <property name="dbuser" value="wilsonkong"/>
+        <property name="dbpassword" value="testing"/>
+        
+        <!-- PROPERTIES AND THEIR DEFAULT VALUES OR POSSIBLE ALTERNATIVES -->
+        <!-- 
+            <property name="driver" value="h2|mysql|sqlserver"/> 
+            <property name="dbname" value="harvester"/> 
+            <property name="dbuser" value="sa"/>
+            <property name="dbpassword" value=""/>
+        -->
+        <!-- CONCERNING DBPATH PROPERTY -->
+        <!-- 
+            for file-based dbms (e.g. H2), it means the directory wher db will be located 
+             otherwise it means "HOST:PORT" or just "HOST"
+            <property name="dbpath" value="localhost"/>
+        -->
+        
+        <!-- H2 EXAMPLE (simply define the driver, and get default values for other params) -->
+        <!--
+            <property name="driver" value="h2"/>
+        -->
+        
+        <!-- MYSQL EXAMPLE -->
+        <!--
+            <property name="driver" value="mysql"/>
+            <property name="dbpath" value="localhost"/>
+            <property name="dbname" value="harvester"/> -
+            <property name="dbuser" value="root"/>
+            <property name="dbpassword" value=""/>
+        -->
+        
+        <!-- SQLSERVER EXAMPLE -->
+        <!--        
+           <property name="driver" value="sqlserver"/>
+           <property name="dbpath" value="localhost"/>
+           <property name="dbname" value="harvester"/> -
+           <property name="dbuser" value="sa"/>
+           <property name="dbpassword" value=""/>
+        -->       
+        
+    </properties>
+</config>
+
+                

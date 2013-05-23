@@ -28,5 +28,6 @@ import javax.jms.ObjectMessage;
  * @author Enrico
  */
 public interface BusConsumer {
+
     public void onMessage(ObjectMessage message);
 }

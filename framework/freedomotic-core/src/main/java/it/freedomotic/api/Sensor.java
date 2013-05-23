@@ -22,8 +22,10 @@
 package it.freedomotic.api;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.EventChannel;
+
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.security.Auth;
 import java.io.IOException;
@@ -60,8 +62,10 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
     public String listenMessagesOn() {
         String defaultQueue = DEFAULT_QUEUE_PREFIX + category + "." + shortName;
         String fromFile = SENSORS_QUEUE_DOMAIN + listenOn;
+
         if (listenOn.equalsIgnoreCase("undefined")) {
             listenOn = defaultQueue;
+
             return listenOn;
         } else {
             return fromFile;
@@ -70,13 +74,15 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
     
     public void notifyEvent(EventTemplate ev) {
         if (isRunning) {
-            notifyEvent(ev, ev.getDefaultDestination());
+            notifyEvent(ev,
+                    ev.getDefaultDestination());
         }
     }
     
     public void notifyEvent(EventTemplate ev, String destination) {
         if (isRunning) {
-            Freedomotic.logger.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":" + ev.getPayload().toString());
+            Freedomotic.logger.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":"
+                    + ev.getPayload().toString());
             channel.send(ev, destination);
         }
     }
@@ -121,6 +127,7 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
         while (isRunning && isPollingSensor) {
             onRun();
         }
+
         //onStop();
     }
     
@@ -139,6 +146,7 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
     @Override
     public void onMessage(ObjectMessage ev) {
         Freedomotic.logger.severe("Sensor class have received a message");
+
 //        if (isRunning) {
 //            if (ev instanceof QueryResult) {
 //                try {

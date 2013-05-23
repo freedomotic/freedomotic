@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.grovesystem;
 
 import it.freedomotic.api.EventTemplate;
@@ -121,9 +120,9 @@ public class GroveSystem extends Protocol {
     }
 
     private void initializeGroveSystem(String UDPServerAddress, String UDPServerPort) {
-        int PACKETSIZE = 100 ;
+        int PACKETSIZE = 100;
         DatagramSocket socket = null;
-        
+
 
         try {
             // Convert the arguments first, to ensure that they are valid

@@ -31,7 +31,8 @@ import java.io.Serializable;
  *
  * @author Enrico
  */
-public class Statement implements Serializable {
+public class Statement
+        implements Serializable {
 
     private static final long serialVersionUID = -6983128779561551125L;
 	
@@ -57,6 +58,7 @@ public class Statement implements Serializable {
                 this.attribute = attribute;
                 this.operand = operand;
                 this.value = value;
+
                 return this;
             } else {
                 return null;
@@ -112,28 +114,36 @@ public class Statement implements Serializable {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final Statement other = (Statement) obj;
-        if ((this.logical == null) ? (other.logical != null) : !this.logical.equals(other.logical)) {
+
+        if ((this.logical == null) ? (other.logical != null) : (!this.logical.equals(other.logical))) {
             return false;
         }
-        if ((this.attribute == null) ? (other.attribute != null) : !this.attribute.equals(other.attribute)) {
+
+        if ((this.attribute == null) ? (other.attribute != null) : (!this.attribute.equals(other.attribute))) {
             return false;
         }
-        if ((this.operand == null) ? (other.operand != null) : !this.operand.equals(other.operand)) {
+
+        if ((this.operand == null) ? (other.operand != null) : (!this.operand.equals(other.operand))) {
             return false;
         }
-        if ((this.value == null) ? (other.value != null) : !this.value.equals(other.value)) {
+
+        if ((this.value == null) ? (other.value != null) : (!this.value.equals(other.value))) {
             return false;
         }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
+
         return hash;
     }
 }

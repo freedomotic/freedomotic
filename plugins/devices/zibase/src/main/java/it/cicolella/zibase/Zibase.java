@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.zibase;
 
 import it.freedomotic.api.EventTemplate;
@@ -43,7 +42,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
-
 
 /**
  *

@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.tcw122bcm;
 
 import it.freedomotic.api.EventTemplate;

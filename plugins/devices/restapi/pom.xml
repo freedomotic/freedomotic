@@ -5,7 +5,7 @@
         <groupId>it.freedomotic</groupId>
         <artifactId>freedomotic</artifactId>
         <version>5.5-SNAPSHOT</version>
-        <relativePath>../../../pom.xml</relativePath>
+        <relativePath>../../../</relativePath>
     </parent>    
     <artifactId>restapi</artifactId>
     <packaging>jar</packaging>
@@ -35,40 +35,35 @@
             <artifactId>restapi-interfaces</artifactId>
             <version>${project.version}</version>
         </dependency>
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet</artifactId>
-			<version>${org.restlet.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet.ext.simple</artifactId>
-			<version>${org.restlet.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet.ext.jackson</artifactId>
-			<version>${org.restlet.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet.ext.gwt</artifactId>
-			<version>${org.restlet.version}</version>
-		</dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>restapi-interfaces</artifactId>
-            <version>3.0</version>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet</artifactId>
+            <version>${org.restlet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.simple</artifactId>
+            <version>${org.restlet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.jackson</artifactId>
+            <version>${org.restlet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.gwt</artifactId>
+            <version>${org.restlet.version}</version>
         </dependency>
     </dependencies>
 
-	<repositories>
-		<repository>
-			<id>maven-restlet</id>
-			<name>Public online Restlet repository</name>
-			<url>http://maven.restlet.org</url>
-		</repository>
-	</repositories>  
+    <repositories>
+        <repository>
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>http://maven.restlet.org</url>
+        </repository>
+    </repositories>  
 	
     <build>
         <plugins>
@@ -83,4 +78,4 @@
             </plugin>
         </plugins>
     </build>
- </project>
+</project>

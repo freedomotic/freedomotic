@@ -14,8 +14,8 @@ import org.restlet.resource.Get;
  *
  * @author gpt
  */
-public interface EnvironmentsResource extends FreedomoticResource{
-    
-    @Get("object|gwt_object") 
+public interface EnvironmentsResource extends FreedomoticResource {
+
+    @Get("object|gwt_object")
     public ArrayList<Environment> retrieveEnvironments();
 }

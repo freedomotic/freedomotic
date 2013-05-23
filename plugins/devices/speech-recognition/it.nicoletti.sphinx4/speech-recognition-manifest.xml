@@ -7,11 +7,11 @@
         <property name="category" value="speech"/>
         <property name="short-name" value="recognition"/>
     </properties>
-      <tuples>
+    <tuples>
         <tuple>
-          <property name="how are you" value="turn on livingroom light"/>
-       </tuple>
-  </tuples>
+            <property name="how are you" value="turn on livingroom light"/>
+        </tuple>
+    </tuples>
 </config>
 
                 

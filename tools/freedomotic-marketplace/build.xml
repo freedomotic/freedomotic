@@ -73,9 +73,9 @@
     -->
     
     <target name="-post-jar">
-         <delete file="dist/lib/ant.jar"/>
-         <delete file="dist/lib/freedomotic.jar"/>
-            <!-- create data folder structure if not already exists -->
+        <delete file="dist/lib/ant.jar"/>
+        <delete file="dist/lib/freedomotic.jar"/>
+        <!-- create data folder structure if not already exists -->
         <copy todir="../../framework/freedomotic/plugins/providers">
             <fileset dir="dist">
             </fileset>

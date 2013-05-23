@@ -40,8 +40,11 @@
 package it.freedomotic.environment;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.events.ZoneHasChanged;
+
 import it.freedomotic.model.environment.Zone;
+
 import it.freedomotic.objects.impl.Person;
 
 import java.util.ArrayList;
@@ -63,7 +66,7 @@ public class ZoneLogic {
     public EnvironmentLogic getEnv() {
         return this.FatherEnv;
     }
-    
+
     public ZoneLogic(final Zone pojo) {
         this.pojo = pojo;
     }
@@ -83,6 +86,7 @@ public class ZoneLogic {
             }
         } catch (Exception e) {
             Freedomotic.logger.info("This zone have no occupiers or null reference in occupiers of Zone class");
+
             return false;
         }
     }
@@ -90,6 +94,7 @@ public class ZoneLogic {
     @RequiresPermissions("zones:read")
     public Ownership getOwnershipStrategy() {
         Ownership os = new LastOutStrategy();
+
         return os;
     }
 
@@ -109,7 +114,9 @@ public class ZoneLogic {
 //            Freedomotic.sendEvent(ev);
 //            success = true;
         }
+
         occupiers.add(g); //this must be AFTER the count
+
         return success;
     }
 
@@ -117,13 +124,16 @@ public class ZoneLogic {
     public boolean exit(Person g) {
         boolean success = false;
         owner = getOwnershipStrategy();
+
         if (owner.canTriggerReactionsOnExit(this)) {
             //REIMPLEMENT
 //            PersonExitZone ev = new PersonExitZone(this, g, getPojo());
 //            Freedomotic.sendEvent(ev);
 //            success = true;
         }
+
         occupiers.remove(g); //this must be AFTER the count
+
         return success;
     }
 
@@ -135,7 +145,8 @@ public class ZoneLogic {
 
     @RequiresPermissions("zones:update")
     public void setChanged() {
-        ZoneHasChanged event = new ZoneHasChanged(this, getPojo());
+        ZoneHasChanged event = new ZoneHasChanged(this,
+                getPojo());
         Freedomotic.sendEvent(event);
     }
 
@@ -150,13 +161,17 @@ public class ZoneLogic {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final ZoneLogic other = (ZoneLogic) obj;
-        if (this.pojo != other.pojo && (this.pojo == null || !this.pojo.equals(other.pojo))) {
+
+        if ((this.pojo != other.pojo) && ((this.pojo == null) || !this.pojo.equals(other.pojo))) {
             return false;
         }
+
         return true;
     }
 
@@ -164,7 +179,8 @@ public class ZoneLogic {
     @RequiresPermissions("zones:read")
     public int hashCode() {
         int hash = 5;
-        hash = 89 * hash + (this.pojo != null ? this.pojo.hashCode() : 0);
+        hash = (89 * hash) + ((this.pojo != null) ? this.pojo.hashCode() : 0);
+
         return hash;
     }
 }

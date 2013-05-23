@@ -25,14 +25,12 @@
  */
 package it.freedomotic.model.object;
 
-
-
-
 /**
  *
  * @author enrico
  */
-public class PropertiesBehavior extends Behavior {
+public class PropertiesBehavior
+        extends Behavior {
 
     private static final long serialVersionUID = 6808299643143488536L;
 	

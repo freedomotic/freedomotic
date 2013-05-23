@@ -33,7 +33,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
  *
  * @author Enrico
  */
-public class ReactionConverter implements Converter {
+public class ReactionConverter
+        implements Converter {
 
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
@@ -42,6 +43,7 @@ public class ReactionConverter implements Converter {
         writer.setValue(rea.getTrigger().getName());
         writer.endNode();
         writer.startNode("sequence");
+
         for (Command c : rea.getCommands()) {
             if (c != null) {
                 writer.startNode("command");
@@ -49,6 +51,7 @@ public class ReactionConverter implements Converter {
                 writer.endNode(); //end command
             }
         }
+
         writer.endNode(); //end sequence
     }
 
@@ -58,19 +61,26 @@ public class ReactionConverter implements Converter {
         ArrayList<Command> list = new ArrayList<Command>();
 
         reader.moveDown(); //goes down to <trigger>
+
         String triggerName = reader.getValue();
         t = TriggerPersistence.getTrigger(triggerName.trim());
         reader.moveUp();
         reader.moveDown();
+
         while (reader.hasMoreChildren()) {
             reader.moveDown();
+
             Command c = CommandPersistence.getCommand(reader.getValue().trim());
+
             if (c != null) {
                 list.add(c);
             }
+
             reader.moveUp();
         }
+
         reader.moveUp(); //goes up to the next <tuple>
+
         return new Reaction(t, list);
     }
 
@@ -79,6 +89,7 @@ public class ReactionConverter implements Converter {
         if (type == Reaction.class) {
             return true;
         }
+
         return false;
     }
 }

@@ -37,13 +37,13 @@ public interface BehaviorLogic {
     public void filterParams(final Config params, boolean fireCommand);
 
     public String getName();
-    
+
     public boolean isChanged();
-    
+
     public void setChanged(boolean value);
 
     public boolean isActive();
-    
+
     public boolean isReadOnly();
 
     public String getValueAsString();

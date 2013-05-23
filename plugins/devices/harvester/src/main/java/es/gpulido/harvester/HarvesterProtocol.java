@@ -34,7 +34,7 @@ public class HarvesterProtocol extends Protocol {
     Connection connection;
     PreparedStatement prep;
     String createTable = "CREATE TABLE fdEVENTS"
-      + " (ID int auto_increment, DATE dateTime, OBJECT VARCHAR(200),PROTOCOL VARCHAR(200), ADDRESS VARCHAR(200), BEHAVIOR VARCHAR(200), VALUE VARCHAR(20), "
+            + " (ID int auto_increment, DATE dateTime, OBJECT VARCHAR(200),PROTOCOL VARCHAR(200), ADDRESS VARCHAR(200), BEHAVIOR VARCHAR(200), VALUE VARCHAR(20), "
             + "PRIMARY KEY (ID))";
     String createMSSQLTable = "CREATE TABLE fdEVENTS"
             + " (ID int identity, DATE dateTime, OBJECT VARCHAR(200),PROTOCOL VARCHAR(200), ADDRESS  VARCHAR(200), BEHAVIOR VARCHAR(200), VALUE VARCHAR(20), "
@@ -101,9 +101,9 @@ public class HarvesterProtocol extends Protocol {
             // due to incompatible "if table not exists" statement, that's a general way of sorting the problem
             ResultSet tables = connection.getMetaData().getTables(null, null, "fdEVENTS", null);
             if (tables.next()) { // Table exists: DO NOTHING 
-              //  Freedomotic.logger.warning(tables.getString(1) + ":" + tables.getString(2) + ":" +tables.getString(3));
+                //  Freedomotic.logger.warning(tables.getString(1) + ":" + tables.getString(2) + ":" +tables.getString(3));
             } else { // Table does not exist: CREATE IT
-            Statement stat = connection.createStatement();
+                Statement stat = connection.createStatement();
                 if (shortDBType == 's') {
                     stat.execute(createMSSQLTable);
                 } else {

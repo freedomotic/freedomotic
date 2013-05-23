@@ -63,12 +63,14 @@ public class FreedomPoint implements Serializable {
     public boolean equals(Object object) {
         if (object instanceof FreedomPoint) {
             FreedomPoint point = (FreedomPoint) object;
+
             if ((point.getX() == this.getX()) && (point.getY() == this.getY())) {
                 return true;
             } else {
                 return false;
             }
         }
+
         return false;
     }
 

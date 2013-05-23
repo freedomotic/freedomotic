@@ -54,28 +54,28 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      */
     public void onNewDeviceAnnounced(UDProxyDevice device) {
         Freedomotic.logger.info("NEW DEVICE: " + device.getFriendlyName());
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": New Device found: " + device.getFriendlyName());
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": New Device found: " + device.getFriendlyName());
     }
 
     /**
      * This method is invoked when ISY goes into Linking mode
      */
     public void onDiscoveringNodes() {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": I am in Linking Mode ...");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": I am in Linking Mode ...");
     }
 
     /**
      * This method is invoked when ISY is no longer in Linking mode
      */
     public void onNodeDiscoveryStopped() {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": I am no longer in Linking mode ...");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": I am no longer in Linking mode ...");
     }
 
     /**
      * This method is invoked when a group/scene is removed
      */
     public void onGroupRemoved(String groupAddress) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Scene: " + groupAddress + " was removed by someone or something!");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Scene: " + groupAddress + " was removed by someone or something!");
         Freedomotic.logger.info("Scene: " + groupAddress + " was removed by someone or something!");
     }
 
@@ -83,7 +83,7 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      * This method is invoked when a group/scene is renamed
      */
     public void onGroupRenamed(UDGroup group) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Scene: " + group.address + " was removed by someone or something!");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Scene: " + group.address + " was removed by someone or something!");
         Freedomotic.logger.info("Scene: " + group.address + " was renamed to " + group.name);
     }
 
@@ -96,7 +96,7 @@ public class MyISYInsteonClient extends ISYInsteonClient {
             return;
         }
         Freedomotic.logger.info("Someone or something changed " + ((control.label == null) ? control.name : control.label) + " to " + value + " at " + node.name);
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Someone or something changed " + ((control.label == null) ? control.name : control.label) + " to " + InsteonOps.convertOnLevelToPercent(value.toString()) + " at " + node.address + " type " + node.typeReadable + " uom " + control.numericUnit);
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Someone or something changed " + ((control.label == null) ? control.name : control.label) + " to " + InsteonOps.convertOnLevelToPercent(value.toString()) + " at " + node.address + " type " + node.typeReadable + " uom " + control.numericUnit);
         ProtocolRead event = new ProtocolRead(this, "Isy99i", node.address); //IP:PORT:RELAYLINE
         int valuePercent = InsteonOps.convertOnLevelToPercent(value.toString());
         event.addProperty("type", node.typeReadable);
@@ -115,21 +115,21 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      * most node in the tree in our applet
      */
     public void onNetworkRenamed(String newName) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Ah, the network was renamed to " + newName);
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Ah, the network was renamed to " + newName);
     }
 
     /**
      * This method is called when a new group/scene has been created
      */
     public void onNewGroup(UDGroup newGroup) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Yummy: we now have a new scene with address " + newGroup.address + " and name " + newGroup.name);
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Yummy: we now have a new scene with address " + newGroup.address + " and name " + newGroup.name);
     }
 
     /**
      * This method is called when a new node (Insteon Device) has been added
      */
     public void onNewNode(UDNode newNode) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Yummy: we now have a new Insteon device with address " + newNode.address + " and name " + newNode.name);
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Yummy: we now have a new Insteon device with address " + newNode.address + " and name " + newNode.name);
 
     }
 
@@ -138,7 +138,7 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      * communicate with ISY
      */
     public void onNodeError(UDNode node) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": What's going on? The Insteon device at address " + node.address + " and name " + node.name + " is no longer responding to my communication attempts!");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": What's going on? The Insteon device at address " + node.address + " and name " + node.name + " is no longer responding to my communication attempts!");
 
     }
 
@@ -149,7 +149,7 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      * @param b
      */
     public void onNodeEnabled(UDNode node, boolean b) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +":" + String.format("Node %s is now %s", node.name, b ? "enabled" : "disabled"));
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ":" + String.format("Node %s is now %s", node.name, b ? "enabled" : "disabled"));
     }
 
     /**
@@ -157,7 +157,7 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      * removed from ISY
      */
     public void onNodeRemoved(String nodeAddress) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Whooah ... node with address " + nodeAddress + " was permanently removed from ISY");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Whooah ... node with address " + nodeAddress + " was permanently removed from ISY");
     }
 
     /**
@@ -165,7 +165,7 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      * scene
      */
     public void onNodeRemovedFromGroup(UDNode node, UDGroup group) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Insteon device with address " + node.address + " and name " + node.name + " is no longer part of the " + group.name + " scene!");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Insteon device with address " + node.address + " and name " + node.name + " is no longer part of the " + group.name + " scene!");
     }
 
     /**
@@ -173,11 +173,11 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      * (master/slave role)
      */
     public void onNodeToGroupRoleChanged(UDNode node, UDGroup group, char new_role) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Insteon device with address " + node.address + " now has a new role in group with address " + group.address + " : ");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Insteon device with address " + node.address + " now has a new role in group with address " + group.address + " : ");
         if (new_role == Constants.UD_LINK_MODE_MASTER) {
-            Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Controller/Master");
+            Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Controller/Master");
         } else {
-            Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Responder/Slave");
+            Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Responder/Slave");
         }
     }
 
@@ -185,7 +185,7 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      * This method is invoked when a node (Insteon Device) is renamed
      */
     public void onNodeRenamed(UDNode node) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Insteon device with address " + node.address + " was renamed to " + node.name);
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Insteon device with address " + node.address + " was renamed to " + node.name);
         Freedomotic.logger.info("Insteon device with address " + node.address + " was renamed to " + node.name);
     }
 
@@ -232,7 +232,7 @@ public class MyISYInsteonClient extends ISYInsteonClient {
             }
             try {
                 Freedomotic.logger.info("AUTHENICATING/SUBSCRIBING");
-                Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Authenticating/Subscribing");
+                Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Authenticating/Subscribing");
                 // passing user/pass
                 authenticate("admin", "admin");
                 Freedomotic.logger.info("AUTHENICATING/SUBSCRIBING DONE");
@@ -248,7 +248,7 @@ public class MyISYInsteonClient extends ISYInsteonClient {
             device.subscribeToEvents(true);
             Freedomotic.logger.info("Subscription done");
             Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Subscription done");
-        
+
         }
     }
 
@@ -260,9 +260,9 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      */
     public void onSystemStatus(boolean busy) {
         if (busy) {
-            Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": I am busy now; please give me some reprieve and don't ask me for more!");
+            Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": I am busy now; please give me some reprieve and don't ask me for more!");
         } else {
-            Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": I am ready and at your service");
+            Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": I am ready and at your service");
         }
     }
 
@@ -270,7 +270,7 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      * This method is invoked when internet access is disabled on ISY
      */
     public void onInternetAccessDisabled() {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": You can no longer reach me through the internet");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": You can no longer reach me through the internet");
     }
 
     /**
@@ -280,7 +280,7 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      * accessed
      */
     public void onInternetAccessEnabled(String url) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": You can now reach me remotely at: " + url);
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": You can now reach me remotely at: " + url);
     }
 
     /**
@@ -290,17 +290,17 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      * @param arg2 - extra information
      */
     public void onTriggerStatus(String arg1, XMLElement arg2) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Trigger status changed: " + arg1);
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Trigger status changed: " + arg1);
     }
 
     public void onDeviceSpecific(String arg1, String node, XMLElement arg2) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Device Specific action: ");
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": "+ arg2.toString());
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Device Specific action: ");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": " + arg2.toString());
     }
 
     public void onProgress(String arg1, XMLElement arg2) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Progress Report:");
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": " + arg2.toString());
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Progress Report:");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": " + arg2.toString());
     }
 
     /**
@@ -308,48 +308,48 @@ public class MyISYInsteonClient extends ISYInsteonClient {
      */
     @Override
     public void cleanUp() {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Clean up whatever other static objects you have around");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Clean up whatever other static objects you have around");
 
     }
 
     @Override
     public void onSystemConfigChanged(String event, XMLElement eventInfo) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": System configuration changed");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": System configuration changed");
     }
 
     @Override
     public void onFolderRemoved(String folderAddress) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": " + String.format("Folder removed %s", folderAddress));
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": " + String.format("Folder removed %s", folderAddress));
     }
 
     @Override
     public void onFolderRenamed(UDFolder folder) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +":" + String.format("Folder renamed %s, new name %s", folder.address, folder.name));
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ":" + String.format("Folder renamed %s, new name %s", folder.address, folder.name));
     }
 
     @Override
     public void onNewFolder(UDFolder folder) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": " + String.format("New Folder %s, name %s", folder.address, folder.name));
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": " + String.format("New Folder %s, name %s", folder.address, folder.name));
     }
 
     @Override
     public void onNodeHasPendingDeviceWrites(UDNode node, boolean hasPending) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": " + String.format("Node %s, %s pending device writes", node.name, hasPending ? "has" : "does not have"));
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": " + String.format("Node %s, %s pending device writes", node.name, hasPending ? "has" : "does not have"));
     }
 
     @Override
     public void onNodeIsWritingToDevice(UDNode node, boolean isWriting) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": " + String.format("Node %s, %s being programmed", node.name, isWriting ? "is" : "is not"));
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": " + String.format("Node %s, %s being programmed", node.name, isWriting ? "is" : "is not"));
     }
 
     @Override
     public void onNodeParentChanged(UDNode node, UDNode newParent) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +":" + String.format("Node %s, has new parent %s", node.name, newParent.name));
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ":" + String.format("Node %s, has new parent %s", node.name, newParent.name));
     }
 
     @Override
     public void onNodePowerInfoChanged(UDNode node) {
-        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() +": Not supported ");
+        Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Not supported ");
     }
 
     /*

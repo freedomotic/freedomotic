@@ -13,20 +13,20 @@ import java.io.*;
 // Written by David Reilly, for JavaWorld
 //
 /**
- * This class offers a timeout feature on socket connections.
- * A maximum length of time allowed for a connection can be
- * specified, along with a host and port.
+ * This class offers a timeout feature on socket connections. A maximum length
+ * of time allowed for a connection can be specified, along with a host and
+ * port.
  *
  * @author	David Reilly
  */
 public class TimedSocket {
 
     /**
-     * Attempts to connect to a service at the specified address
-     * and port, for a specified maximum amount of time.
+     * Attempts to connect to a service at the specified address and port, for a
+     * specified maximum amount of time.
      *
-     *	@param	addr	Address of host
-     *	@param	port	Port of service
+     * @param	addr	Address of host
+     * @param	port	Port of service
      * @param	delay	Delay in milliseconds
      */
     public static Socket getSocket(InetAddress addr, int port, int delay) throws InterruptedIOException, IOException {
@@ -71,11 +71,11 @@ public class TimedSocket {
     }
 
     /**
-     * Attempts to connect to a service at the specified address
-     * and port, for a specified maximum amount of time.
+     * Attempts to connect to a service at the specified address and port, for a
+     * specified maximum amount of time.
      *
-     *	@param	host	Hostname of machine
-     *	@param	port	Port of service
+     * @param	host	Hostname of machine
+     * @param	port	Port of service
      * @param	delay	Delay in milliseconds
      */
     public static Socket getSocket(String host, int port, int delay) throws InterruptedIOException, IOException {
@@ -86,21 +86,21 @@ public class TimedSocket {
     }
 
     /*public static void main(String args[]) throws Exception
-    {
-    try
-    {
-    //InetAddress addr = InetAddress.getByName("192.168.0.3");
-    //Socket s = TimedSocket.getSocket (addr, 80, 5000);
-    Socket s = TimedSocket.getSocket ("192.168.0.3", 80, 5000);
-    s.close();
-    System.out.println ("connected");
-    }
-    catch (IOException ioe)
-    {
-    System.out.println ("time out");
-    }
+     {
+     try
+     {
+     //InetAddress addr = InetAddress.getByName("192.168.0.3");
+     //Socket s = TimedSocket.getSocket (addr, 80, 5000);
+     Socket s = TimedSocket.getSocket ("192.168.0.3", 80, 5000);
+     s.close();
+     System.out.println ("connected");
+     }
+     catch (IOException ioe)
+     {
+     System.out.println ("time out");
+     }
 
-    }*/
+     }*/
     // Inner class for establishing a socket thread
     // within another thread, to prevent blocking.
     static class SocketThread extends Thread {
@@ -185,4 +185,3 @@ public class TimedSocket {
     // Polling delay for socket checks (in milliseconds)
     private static final int POLL_DELAY = 100;
 }
-

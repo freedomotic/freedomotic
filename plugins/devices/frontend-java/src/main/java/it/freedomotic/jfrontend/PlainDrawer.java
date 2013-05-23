@@ -4,14 +4,20 @@
  */
 package it.freedomotic.jfrontend;
 
-import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.environment.ZoneLogic;
+
+import it.freedomotic.events.ObjectReceiveClick;
+
 import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.model.geometry.FreedomPolygon;
+
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
+
 import it.freedomotic.util.TopologyUtils;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -24,7 +30,8 @@ import java.util.Queue;
  *
  * @author enrico
  */
-public class PlainDrawer extends Renderer {
+public class PlainDrawer
+        extends Renderer {
 
     private Color PERIMETRAL_WALLS_COLOR = Color.black;
     private Color PERIMETRAL_WALLS_COLOR_DARK = Color.black;
@@ -55,42 +62,40 @@ public class PlainDrawer extends Renderer {
     @Override
     public void renderEnvironment() {
         Polygon poly = (Polygon) TopologyUtils.convertToAWT(getCurrEnv().getPojo().getShape());
+
 //        System.out.println("Shape: "+Freedomotic.environment.getShape());
 //        System.out.println("Polygon: "+poly);
-
         Graphics2D g2 = (Graphics2D) getContext();
 
         //render fake shadow
         getContext().translate(ENVIRONMENT_SHADOW_OFFSET, ENVIRONMENT_SHADOW_OFFSET);
-        final BasicStroke stroke3 = new BasicStroke(50.0f,
-                BasicStroke.CAP_SQUARE,
-                BasicStroke.JOIN_MITER);
+
+        final BasicStroke stroke3 = new BasicStroke(50.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
         g2.setStroke(stroke3);
         getContext().setColor(ENVIRONMENT_SHADOW_COLOR);
         g2.fillPolygon(poly);
+
         int offset = (ENVIRONMENT_SHADOW_OFFSET / 4) * 3;
         getContext().translate(-offset, -offset);
 
         //external border of perimetral wall
-        final BasicStroke stroke4 = new BasicStroke(PERIMETRAL_WALLS_TICKNESS,
-                BasicStroke.CAP_SQUARE,
-                BasicStroke.JOIN_MITER);
+        final BasicStroke stroke4 =
+                new BasicStroke(PERIMETRAL_WALLS_TICKNESS, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
         g2.setStroke(stroke4);
         getContext().setColor(PERIMETRAL_WALLS_COLOR_LIGHT);
         g2.drawPolygon(poly);
 
         //center of perimetral wall
-        final BasicStroke stroke = new BasicStroke(PERIMETRAL_WALLS_TICKNESS / 10,
-                BasicStroke.CAP_SQUARE,
-                BasicStroke.JOIN_MITER);
+        final BasicStroke stroke =
+                new BasicStroke(PERIMETRAL_WALLS_TICKNESS / 10, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
         g2.setStroke(stroke);
 
         //internal of perimetral wall
         getContext().setColor(PERIMETRAL_WALLS_COLOR);
         g2.drawPolygon(poly);
-        final BasicStroke stroke2 = new BasicStroke(PERIMETRAL_WALLS_TICKNESS / 4,
-                BasicStroke.CAP_SQUARE,
-                BasicStroke.JOIN_MITER);
+
+        final BasicStroke stroke2 =
+                new BasicStroke(PERIMETRAL_WALLS_TICKNESS / 4, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
         g2.setStroke(stroke2);
         getContext().setColor(PERIMETRAL_WALLS_COLOR_DARK);
         g2.drawPolygon(poly);
@@ -104,8 +109,8 @@ public class PlainDrawer extends Renderer {
 
     @Override
     public void renderObjects() {
-              for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
-                  if (obj != null) {
+        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
+            if (obj != null) {
                 setTransformContextFor(obj.getPojo());
                 drawPlainObject(obj);
                 invalidateAnyTransform();
@@ -116,23 +121,22 @@ public class PlainDrawer extends Renderer {
     private void drawTrace(int[] xTrace, int[] yTrace, Color color) {
         getContext().setColor(color);
 
-
         int num = (int) Math.min(xTrace.length, yTrace.length);
         getContext().drawPolyline(xTrace, yTrace, num);
-
-
     }
 
     private int[] getXTrace(Queue<FreedomPoint> trace) {
         int size = trace.size();
         int[] xPoints = new int[size];
         int i = 0;
+
         for (FreedomPoint p : trace) {
             if (i < size) {
                 xPoints[i] = (int) p.getX();
                 i++;
             }
         }
+
         return xPoints;
     }
 
@@ -140,12 +144,14 @@ public class PlainDrawer extends Renderer {
         int size = trace.size();
         int[] yPoints = new int[size];
         int i = 0;
+
         for (FreedomPoint p : trace) {
             if (i < size) {
                 yPoints[i] = (int) p.getY();
                 i++;
             }
         }
+
         return yPoints;
     }
 
@@ -159,7 +165,6 @@ public class PlainDrawer extends Renderer {
     }
 
     protected void drawRoomObject(Polygon poly) {
-
         Graphics2D g2 = (Graphics2D) getContext();
         g2.setColor(Color.green);
         g2.setStroke(new BasicStroke()); //reset to default stroke
@@ -168,13 +173,12 @@ public class PlainDrawer extends Renderer {
         Color walls = INTERNAL_WALLS_COLOR;
         getContext().setColor(walls);
 
-
         g2.drawPolygon(poly);
 
-        final BasicStroke stroke2 = new BasicStroke(INTERNAL_WALLS_TICKNESS,
-                BasicStroke.CAP_SQUARE,
-                BasicStroke.JOIN_MITER);
+        final BasicStroke stroke2 =
+                new BasicStroke(INTERNAL_WALLS_TICKNESS, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
         g2.setStroke(stroke2);
+
         Color walls2 = INTERNAL_WALLS_COLOR_DARK;
         getContext().setColor(walls2);
         g2.drawPolygon(poly);
@@ -184,15 +188,18 @@ public class PlainDrawer extends Renderer {
 
     protected void drawPlainObject(EnvObjectLogic obj) {
         Graphics2D graph2D = (Graphics2D) getContext();
+
         //rebuildShapeCache(obj);
         //Shape shape = getCachedShape(obj);
         Shape shape = TopologyUtils.convertToAWT(obj.getPojo().getCurrentRepresentation().getShape());
         Color fill = Color.decode(obj.getPojo().getCurrentRepresentation().getFillColor());
         Color border = Color.decode(obj.getPojo().getCurrentRepresentation().getBorderColor());
+
         if (fill != null) {
             graph2D.setColor(fill);
             graph2D.fill(shape);
         }
+
         if (border != null) {
             graph2D.setColor(border);
             graph2D.draw(shape);
@@ -200,7 +207,6 @@ public class PlainDrawer extends Renderer {
             graph2D.setColor(Color.black);
             graph2D.draw(shape);
         }
-
     }
 
     @Override

@@ -12,21 +12,20 @@ import java.util.ArrayList;
  * @author gpt
  */
 public class MarketPlaceFile {
-  
+
     private String fid;
     private String uid;
     private String filename;
     private String filepath;
-    
     private transient String description = "";
 
-    public MarketPlaceFile()
-    {    
+    public MarketPlaceFile() {
     }
+
     /**
      * @return the filename
      */
-    public String getFilename() {        
+    public String getFilename() {
         return filename;
     }
 
@@ -34,36 +33,30 @@ public class MarketPlaceFile {
      * @return the filepath
      */
     public String getFilepath() {
-        return DrupalRestHelper.DRUPALSCHEMA +"://"+ DrupalRestHelper.DRUPALPATH+"/"+filepath;
+        return DrupalRestHelper.DRUPALSCHEMA + "://" + DrupalRestHelper.DRUPALPATH + "/" + filepath;
     }
+
     /**
      * @return the filepath
      */
     public String getRelativeFilepath() {
         return filepath;
     }
-    
-    public MarketPlaceFile(String fid, String description)            
-    {
+
+    public MarketPlaceFile(String fid, String description) {
         this.fid = fid;
         this.description = description;
     }
-    
-    public void setDescription(String description)
-    {
+
+    public void setDescription(String description) {
         this.description = description;
     }
-    
-    
-     public String formatFile()
-    {
-        return "\"fid\":\""+fid+"\",\"data\":{\"description\":\""+description+"\"}";    
+
+    public String formatFile() {
+        return "\"fid\":\"" + fid + "\",\"data\":{\"description\":\"" + description + "\"}";
     }
-    
-     public void setFilename(String filename)
-     {
-         this.filename = filename;
-     }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 }
-    
-    

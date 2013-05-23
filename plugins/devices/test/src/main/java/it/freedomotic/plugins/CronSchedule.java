@@ -24,12 +24,9 @@ public class CronSchedule {
     /**
      * Types being used. This array defines the types and their indices.
      */
-    protected static int TYPES[] = new int[]{
-        Calendar.MINUTE, Calendar.HOUR_OF_DAY,
-        Calendar.DAY_OF_MONTH, Calendar.MONTH,
-        Calendar.DAY_OF_WEEK
-    };
-    private AbstractTimeValue timeValues[][] = new AbstractTimeValue[TYPES.length][];
+    protected static int[] TYPES =
+            new int[]{Calendar.MINUTE, Calendar.HOUR_OF_DAY, Calendar.DAY_OF_MONTH, Calendar.MONTH, Calendar.DAY_OF_WEEK};
+    private AbstractTimeValue[][] timeValues = new AbstractTimeValue[TYPES.length][];
 
     /**
      * Default constructor Constructor with all terms set to "*".
@@ -74,14 +71,18 @@ public class CronSchedule {
      * @return characters following the cron definition.
      */
     public String set(String schedule) {
-        String parts[] = schedule.split(" ", TYPES.length + 1);
+        String[] parts = schedule.split(" ", TYPES.length + 1);
+
         if (parts.length < TYPES.length) {
             throw new IllegalArgumentException("Invalid cron format: " + schedule);
         }
+
         for (int i = 0; i < TYPES.length; i++) {
-            set(getType(i), parts[i]);
+            set(getType(i),
+                    parts[i]);
         }
-        return parts.length > TYPES.length ? parts[TYPES.length] : null;
+
+        return (parts.length > TYPES.length) ? parts[TYPES.length] : null;
     }
 
     /**
@@ -92,8 +93,8 @@ public class CronSchedule {
      */
     public void set(int type, String values) {
         // Split the values
-        String parts[] = values.split(",");
-        AbstractTimeValue result[] = new AbstractTimeValue[parts.length];
+        String[] parts = values.split(",");
+        AbstractTimeValue[] result = new AbstractTimeValue[parts.length];
 
         // Iterate over entries
         for (int i = 0; i < parts.length; i++) {
@@ -119,7 +120,7 @@ public class CronSchedule {
      * @param type - Calendar constant defining the time type
      * @param values - values to be set
      */
-    protected void set(int type, AbstractTimeValue values[]) {
+    protected void set(int type, AbstractTimeValue[] values) {
         timeValues[getIndex(type)] = values;
     }
 
@@ -140,11 +141,13 @@ public class CronSchedule {
      * @return cron-like definition
      */
     public String get(int type) {
-        AbstractTimeValue values[] = getValues(type);
+        AbstractTimeValue[] values = getValues(type);
         String rc = "";
+
         for (int i = 0; i < values.length; i++) {
-            rc += "," + values[i].toString();
+            rc += ("," + values[i].toString());
         }
+
         return rc.substring(1);
     }
 
@@ -153,9 +156,11 @@ public class CronSchedule {
      */
     public String toString() {
         String rc = "";
-        for (int i = 0; i < TYPES.length;i++) {
-			rc += " " + get(getType(i));
+
+        for (int i = 0; i < TYPES.length; i++) {
+            rc += (" " + get(getType(i)));
         }
+
         return rc.trim();
     }
 
@@ -248,8 +253,7 @@ public class CronSchedule {
      * @return true when schedule matches
      */
     public boolean isDay(Calendar cal) {
-        return matches(Calendar.DAY_OF_WEEK, cal)
-                && matches(Calendar.DAY_OF_MONTH, cal)
+        return matches(Calendar.DAY_OF_WEEK, cal) && matches(Calendar.DAY_OF_MONTH, cal)
                 && matches(Calendar.MONTH, cal);
     }
 
@@ -263,7 +267,7 @@ public class CronSchedule {
      */
     protected boolean matches(int type, Calendar calendar) {
         // get the definitions and the comparison value
-        AbstractTimeValue defs[] = timeValues[getIndex(type)];
+        AbstractTimeValue[] defs = timeValues[getIndex(type)];
         int value = calendar.get(type);
 
         // Any of the criteria must be met
@@ -272,6 +276,7 @@ public class CronSchedule {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -284,6 +289,7 @@ public class CronSchedule {
     protected Calendar getCalendar(long timeStamp) {
         Calendar rc = new GregorianCalendar();
         rc.setTimeInMillis(timeStamp);
+
         return rc;
     }
 
@@ -309,6 +315,7 @@ public class CronSchedule {
                 return i;
             }
         }
+
         throw new IllegalArgumentException("No such time type: " + type);
     }
 
@@ -333,7 +340,8 @@ public class CronSchedule {
      *
      * @author RalphSchuster
      */
-    public static class SingleTimeValue extends AbstractTimeValue {
+    public static class SingleTimeValue
+            extends AbstractTimeValue {
 
         private int value;
 
@@ -382,7 +390,8 @@ public class CronSchedule {
      *
      * @author RalphSchuster
      */
-    public static class TimeRange extends AbstractTimeValue {
+    public static class TimeRange
+            extends AbstractTimeValue {
 
         private int startValue;
         private int endValue;
@@ -449,7 +458,8 @@ public class CronSchedule {
      *
      * @author RalphSchuster
      */
-    public static class TimeSteps extends AbstractTimeValue {
+    public static class TimeSteps
+            extends AbstractTimeValue {
 
         private AbstractTimeValue range;
         private int steps;
@@ -462,6 +472,7 @@ public class CronSchedule {
         public TimeSteps(String def) {
             int divPos = def.indexOf("/");
             String r = def.substring(0, divPos);
+
             if (r.equals("*")) {
                 setRange(new TimeAll());
             } else if (r.indexOf("-") > 0) {
@@ -469,6 +480,7 @@ public class CronSchedule {
             } else {
                 throw new IllegalArgumentException("Invalid range: " + def);
             }
+
             setSteps(Integer.parseInt(def.substring(divPos + 1)));
         }
 
@@ -480,9 +492,11 @@ public class CronSchedule {
          */
         public boolean matches(int timeValue) {
             boolean rc = getRange().matches(timeValue);
+
             if (rc) {
-                rc = timeValue % getSteps() == 0;
+                rc = (timeValue % getSteps()) == 0;
             }
+
             return rc;
         }
 
@@ -527,7 +541,8 @@ public class CronSchedule {
      *
      * @author RalphSchuster
      */
-    public static class TimeAll extends AbstractTimeValue {
+    public static class TimeAll
+            extends AbstractTimeValue {
 
         public TimeAll() {
         }

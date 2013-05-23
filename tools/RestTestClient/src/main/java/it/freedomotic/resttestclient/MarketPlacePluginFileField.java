@@ -9,17 +9,16 @@ package it.freedomotic.resttestclient;
  * @author gpt
  */
 public class MarketPlacePluginFileField {
+
     String fid;
     String description;
-    
-    MarketPlacePluginFileField(String fid, String description)            
-    {
+
+    MarketPlacePluginFileField(String fid, String description) {
         this.fid = fid;
         this.description = description;
     }
-    public String formatFile()
-    {
-        return "\"fid\":\""+fid+"\",\"data\":{\"description\":\""+description+"\"}";    
+
+    public String formatFile() {
+        return "\"fid\":\"" + fid + "\",\"data\":{\"description\":\"" + description + "\"}";
     }
-    
 }

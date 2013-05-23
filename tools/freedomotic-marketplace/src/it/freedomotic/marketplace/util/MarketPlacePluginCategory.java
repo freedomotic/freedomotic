@@ -13,37 +13,40 @@ import java.util.List;
  *
  * @author gpt
  */
-public class MarketPlacePluginCategory implements IPluginCategory{
+public class MarketPlacePluginCategory implements IPluginCategory {
+
     private String tid;
-    private String name;        
+    private String name;
     private String description;
     private String uri;
     private transient List<IPluginPackage> plugins;
+
     /**
      * @return the tid
      */
     public String getTid() {
         return tid;
-    }   
-        
+    }
+
     /**
      * @return the description
-     */    
+     */
     public String getDescription() {
         return description;
-    }               
-     /**
+    }
+
+    /**
      * @return the uri
      */
     public String getUri() {
         return uri;
-    }   
+    }
 
     @Override
     public Integer getId() {
         return Integer.parseInt(tid);
     }
-        
+
     @Override
     public String getName() {
         return name;
@@ -51,13 +54,10 @@ public class MarketPlacePluginCategory implements IPluginCategory{
 
     @Override
     public List<IPluginPackage> getPlugins() {
-        if (plugins == null)
-        {
+        if (plugins == null) {
             plugins = new ArrayList<IPluginPackage>();
             plugins.addAll(DrupalRestHelper.retrievePluginsByCategory(tid));
         }
-        return plugins;        
+        return plugins;
     }
-    
-    
 }

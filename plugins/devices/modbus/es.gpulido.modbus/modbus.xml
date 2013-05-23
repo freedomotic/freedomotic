@@ -20,60 +20,60 @@
     </properties>
     <tuples>
         <tuple>
-          <property name="Name" value="TemperatureZone1"/>
-          <property name="SlaveId" value="1"/>
-          <property name="RegisterRange" value="HOLDING_REGISTER"/>
-          <property name="DataType" value="TWO_BYTE_INT_UNSIGNED"/>
-          <property name="Offset" value="266"/>
-          <property name="NumberOfRegisters" value="1"/>
-          <property name="Multiplier" value="0.1d"/>
-          <property name="Additive" value="0.0d"/>
-          <property name="EventName" value="TemperatureZone1"/>
-       </tuple>
+            <property name="Name" value="TemperatureZone1"/>
+            <property name="SlaveId" value="1"/>
+            <property name="RegisterRange" value="HOLDING_REGISTER"/>
+            <property name="DataType" value="TWO_BYTE_INT_UNSIGNED"/>
+            <property name="Offset" value="266"/>
+            <property name="NumberOfRegisters" value="1"/>
+            <property name="Multiplier" value="0.1d"/>
+            <property name="Additive" value="0.0d"/>
+            <property name="EventName" value="TemperatureZone1"/>
+        </tuple>
         <tuple>
-          <property name="Name" value="TemperatureZone2"/>
-          <property name="SlaveId" value="1"/>
-          <property name="RegisterRange" value="HOLDING_REGISTER"/>
-          <property name="DataType" value="TWO_BYTE_INT_UNSIGNED"/>
-          <property name="Offset" value="522"/>
-          <property name="NumberOfRegisters" value="1"/>          
-          <property name="Multiplier" value="0.1d"/>
-          <property name="Additive" value="0.0d"/>
-          <property name="EventName" value="TemperatureZone2"/>
-       </tuple>
+            <property name="Name" value="TemperatureZone2"/>
+            <property name="SlaveId" value="1"/>
+            <property name="RegisterRange" value="HOLDING_REGISTER"/>
+            <property name="DataType" value="TWO_BYTE_INT_UNSIGNED"/>
+            <property name="Offset" value="522"/>
+            <property name="NumberOfRegisters" value="1"/>          
+            <property name="Multiplier" value="0.1d"/>
+            <property name="Additive" value="0.0d"/>
+            <property name="EventName" value="TemperatureZone2"/>
+        </tuple>
         <tuple>
-          <property name="Name" value="TemperatureZone3"/>
-          <property name="SlaveId" value="1"/>
-          <property name="RegisterRange" value="HOLDING_REGISTER"/>
-          <property name="DataType" value="TWO_BYTE_INT_UNSIGNED"/>
-          <property name="Offset" value="778"/>
-          <property name="NumberOfRegisters" value="1"/>          
-          <property name="Multiplier" value="0.1d"/>
-          <property name="Additive" value="0.0d"/>
-          <property name="EventName" value="TemperatureZone3"/>
-       </tuple>
-       <tuple>
-          <property name="Name" value="TemperatureZone4"/>
-          <property name="SlaveId" value="1"/>
-          <property name="RegisterRange" value="HOLDING_REGISTER"/>
-          <property name="DataType" value="TWO_BYTE_INT_UNSIGNED"/>
-          <property name="Offset" value="1034"/>
-          <property name="NumberOfRegisters" value="1"/>          
-          <property name="Multiplier" value="0.1d"/>
-          <property name="Additive" value="0.0d"/>
-          <property name="EventName" value="TemperatureZone4"/>
-       </tuple>
-       <tuple>
-          <property name="Name" value="BitTest"/>
-          <property name="SlaveId" value="1"/>
-          <property name="RegisterRange" value="HOLDING_REGISTER"/>
-          <property name="DataType" value="BINARY"/>
-          <property name="Bit" value="6"/>
-          <property name="Multiplier" value="1"/>
-          <property name="Additive" value="0"/>
-          <property name="Offset" value="256"/>
-          <property name="NumberOfRegisters" value="1"/>
-          <property name="EventName" value="BitTest"/>
-       </tuple>
+            <property name="Name" value="TemperatureZone3"/>
+            <property name="SlaveId" value="1"/>
+            <property name="RegisterRange" value="HOLDING_REGISTER"/>
+            <property name="DataType" value="TWO_BYTE_INT_UNSIGNED"/>
+            <property name="Offset" value="778"/>
+            <property name="NumberOfRegisters" value="1"/>          
+            <property name="Multiplier" value="0.1d"/>
+            <property name="Additive" value="0.0d"/>
+            <property name="EventName" value="TemperatureZone3"/>
+        </tuple>
+        <tuple>
+            <property name="Name" value="TemperatureZone4"/>
+            <property name="SlaveId" value="1"/>
+            <property name="RegisterRange" value="HOLDING_REGISTER"/>
+            <property name="DataType" value="TWO_BYTE_INT_UNSIGNED"/>
+            <property name="Offset" value="1034"/>
+            <property name="NumberOfRegisters" value="1"/>          
+            <property name="Multiplier" value="0.1d"/>
+            <property name="Additive" value="0.0d"/>
+            <property name="EventName" value="TemperatureZone4"/>
+        </tuple>
+        <tuple>
+            <property name="Name" value="BitTest"/>
+            <property name="SlaveId" value="1"/>
+            <property name="RegisterRange" value="HOLDING_REGISTER"/>
+            <property name="DataType" value="BINARY"/>
+            <property name="Bit" value="6"/>
+            <property name="Multiplier" value="1"/>
+            <property name="Additive" value="0"/>
+            <property name="Offset" value="256"/>
+            <property name="NumberOfRegisters" value="1"/>
+            <property name="EventName" value="BitTest"/>
+        </tuple>
     </tuples>
 </config>

@@ -1,18 +1,18 @@
 /*
-    Copyright (c) Matteo Mazzoni 2012  
+ Copyright (c) Matteo Mazzoni 2012  
    
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
  */
 package it.mazzoni.freedomchat;
@@ -55,7 +55,7 @@ public class FreedomChat extends Protocol {
     public static String IF = "if";
     public static String THEN = "then";
     public static String WHEN = "when";
-   // private ChatNLP nlp = new ChatNLP();
+    // private ChatNLP nlp = new ChatNLP();
 
     public FreedomChat() {
         //every plugin needs a name and a manifest XML file
@@ -68,9 +68,6 @@ public class FreedomChat extends Protocol {
         setPollingWait(POLLING_WAIT); //millisecs interval between hardware device status reads
 
     }
-
-
-
 
     @Override
     protected void onStart() {
@@ -104,12 +101,10 @@ public class FreedomChat extends Protocol {
         // wait for messages
         ChatManager chatmanager = conn.getChatManager();
         chatmanager.addChatListener(new ChatManagerListener() {
-
             @Override
             public void chatCreated(Chat chat, boolean createdLocally) {
                 if (!createdLocally) {
                     chat.addMessageListener(new MessageListener() {
-
                         public void processMessage(Chat chat, Message message) {
                             try {
                                 // the user is in my list, OK accepc messages
@@ -119,7 +114,7 @@ public class FreedomChat extends Protocol {
                                     // Send back the same text the other user sent us.
                                     //chat.sendMessage(message.getBody());
                                     chat.sendMessage(manageMessage(message.getBody()));
- 
+
                                 } else {
                                     // expect a password in order to add user to friends' list
                                     chat.sendMessage(manageSubscription(chat, message));
@@ -141,7 +136,9 @@ public class FreedomChat extends Protocol {
     @Override
     protected void onStop() {
         // Disconnect from the server
-        if (conn.isConnected()) conn.disconnect();
+        if (conn.isConnected()) {
+            conn.disconnect();
+        }
         Freedomotic.logger.info("Chat plugin has stopped ");
     }
 
@@ -170,7 +167,7 @@ public class FreedomChat extends Protocol {
         Trigger t = null;
         Reaction r;
         NaturalLanguageProcessor nlp2 = new NaturalLanguageProcessor();
-      //  String sentenceMess[] = nlp.getSentenceDetector().sentDetect(mess);
+        //  String sentenceMess[] = nlp.getSentenceDetector().sentDetect(mess);
         String tokenMess[] = mess.split(" "); //nlp.getTokenizer().tokenize(sentenceMess[0]);
         String triggername = "";
         int conditionSep = 0;
@@ -184,7 +181,7 @@ public class FreedomChat extends Protocol {
             }
             t = TriggerPersistence.getTrigger(triggername);
         }
-        
+
         String commandName = unsplit(tokenMess, conditionSep, tokenMess.length - conditionSep, " ");
         List<NaturalLanguageProcessor.Rank> mostSimilar = nlp2.getMostSimilarCommand(commandName, 3);
 
@@ -193,13 +190,12 @@ public class FreedomChat extends Protocol {
         } else {
             return "No available commands similar to: " + commandName;
         }
-        if (tokenMess[0].equals(IF)){
+        if (tokenMess[0].equals(IF)) {
             Trigger NEWt = t.clone();
             NEWt.setNumberOfExecutions(1);
             r = new Reaction(NEWt, c);
             ReactionPersistence.add(r);
-        }
-        else if (tokenMess[0].equals(WHEN)) {
+        } else if (tokenMess[0].equals(WHEN)) {
             // do something
             r = new Reaction(t, c);
             ReactionPersistence.add(r);
@@ -245,7 +241,6 @@ public class FreedomChat extends Protocol {
         buf.setLength(buf.length() - splitter.length());
         return buf.toString();
     }
-
 
     @Override
     protected void onRun() {

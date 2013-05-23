@@ -10,20 +10,29 @@
  */
 package it.freedomotic.jfrontend;
 
+import com.google.inject.Inject;
+
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
-import it.freedomotic.app.Freedomotic;
+
+
 import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.EnvironmentPersistence;
+
 import it.freedomotic.jfrontend.automationeditor.ReactionEditor;
 import it.freedomotic.jfrontend.automationeditor.ReactionsPanel;
 import it.freedomotic.jfrontend.utils.CheckBoxList;
 import it.freedomotic.jfrontend.utils.PropertiesPanel_1;
+
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
+
 import it.freedomotic.objects.*;
+
+import it.freedomotic.plugins.ClientStorage;
+
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Trigger;
@@ -38,6 +47,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Map.Entry;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -46,7 +56,8 @@ import javax.swing.event.ChangeListener;
  *
  * @author enrico
  */
-public class ObjectEditor extends javax.swing.JFrame {
+public class ObjectEditor
+        extends javax.swing.JFrame {
 
     private final EnvObjectLogic object;
     private String oldName;
@@ -54,6 +65,8 @@ public class ObjectEditor extends javax.swing.JFrame {
     private PropertiesPanel_1 pnlTriggers;
     //private PropertiesPanel_1 controlPanel;
     ReactionsPanel reactionsPanel;
+    @Inject
+    private ClientStorage clients;
 
     /**
      * Creates new form ObjectEditor
@@ -61,14 +74,17 @@ public class ObjectEditor extends javax.swing.JFrame {
     public ObjectEditor(final EnvObjectLogic obj) {
         this.object = obj;
         oldName = object.getPojo().getName();
+
         EnvObject pojo = obj.getPojo();
         //AVOID the paint of the value over sliders that will conflic with double values
         UIManager.put("Slider.paintValue", false);
         initComponents();
         setSize(600, 400);
+
         if (obj.getPojo().getActAs().equalsIgnoreCase("virtual")) {
             btnVirtual.setSelected(true);
         }
+
         checkIfVirtual();
         txtName.setText(pojo.getName());
         txtDescription.setText(pojo.getDescription());
@@ -76,6 +92,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         populateProtocol();
         populateEnvironment();
         txtAddress.setText(pojo.getPhisicalAddress());
+
         Integer x = (int) pojo.getCurrentRepresentation().getOffset().getX();
         Integer y = (int) pojo.getCurrentRepresentation().getOffset().getY();
         Integer rotation = (int) pojo.getCurrentRepresentation().getRotation();
@@ -89,8 +106,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 -100, //min
                 (int) obj.getEnv().getPojo().getWidth() + 100, //max
                 1); //step
-        SpinnerModel modelRotation =
-                new SpinnerNumberModel(0, //initial value
+        SpinnerModel modelRotation = new SpinnerNumberModel(0, //initial value
                 0, //min
                 360, //max
                 10); //step
@@ -98,16 +114,16 @@ public class ObjectEditor extends javax.swing.JFrame {
         spnY.setModel(modelY);
         spnX.setValue((Integer) x);
         spnY.setValue((Integer) y);
+
         SpinnerModel scaleWidthModel =
-                new SpinnerNumberModel(
-                new Double(pojo.getCurrentRepresentation().getScaleX()), //initial value
+                new SpinnerNumberModel(new Double(pojo.getCurrentRepresentation().getScaleX()), //initial value
                 new Double(0.1), //min
                 new Double(10.0), //max
                 new Double(0.1)); //step
         spnScaleWidth.setModel(scaleWidthModel);
+
         SpinnerModel scaleHeightModel =
-                new SpinnerNumberModel(
-                new Double(pojo.getCurrentRepresentation().getScaleY()), //initial value
+                new SpinnerNumberModel(new Double(pojo.getCurrentRepresentation().getScaleY()), //initial value
                 new Double(0.1), //min
                 new Double(10.0), //max
                 new Double(0.1)); //step
@@ -124,13 +140,16 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         //population combo box representation
         DefaultComboBoxModel representationsModel = new DefaultComboBoxModel();
+
         for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
             for (Representation rep : object.getPojo().getRepresentations()) {
                 representationsModel.addElement(rep);
             }
         }
 
-        if (pojo.getActAs() != null && !pojo.getActAs().isEmpty() && !pojo.getActAs().equalsIgnoreCase("unimplemented")) {
+        if ((pojo.getActAs() != null)
+                && !pojo.getActAs().isEmpty()
+                && !pojo.getActAs().equalsIgnoreCase("unimplemented")) {
             setTitle(pojo.getName() + " (" + pojo.getActAs() + " " + pojo.getSimpleType() + ")");
         } else {
             setTitle(pojo.getName() + " (" + pojo.getSimpleType() + ")");
@@ -138,20 +157,22 @@ public class ObjectEditor extends javax.swing.JFrame {
 
 //        controlPanel = new PropertiesPanel_1(0, 1);
 //        tabControls.add(controlPanel);
-
         tabControls.setLayout(new BoxLayout(tabControls, BoxLayout.PAGE_AXIS));
 
         //create an array of controllers for the object behaviors
         int row = 0;
+
         for (BehaviorLogic b : object.getBehaviors()) {
             if (b instanceof BooleanBehaviorLogic) {
                 final BooleanBehaviorLogic bb = (BooleanBehaviorLogic) b;
                 final JToggleButton button;
+
                 if (bb.getValue()) {
                     button = new JToggleButton(i18n.msg(this, "set_PROPERTY_VALUE", new Object[]{bb.getName(), i18n.msg("false")}));
                 } else {
                     button = new JToggleButton(i18n.msg(this, "set_PROPERTY_VALUE", new Object[]{bb.getName(), i18n.msg("true")}));
                 }
+
                 JLabel label = new JLabel(b.getName() + ":");
 //                controlPanel.addRow();
 //                controlPanel.addElement(label, row, 0);
@@ -163,8 +184,10 @@ public class ObjectEditor extends javax.swing.JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         Config params = new Config();
-                        params.setProperty("value", new Boolean(!bb.getValue()).toString());
+                        params.setProperty("value",
+                                new Boolean(!bb.getValue()).toString());
                         bb.filterParams(params, true);
+
                         if (bb.getValue()) {
                             button.setText(i18n.msg(this, "set_PROPERTY_VALUE", new Object[]{bb.getName(), i18n.msg("false")}));
                         } else {
@@ -174,8 +197,8 @@ public class ObjectEditor extends javax.swing.JFrame {
                 });
                 button.setEnabled(!b.isReadOnly());
             }
-            if (b instanceof RangedIntBehaviorLogic) {
 
+            if (b instanceof RangedIntBehaviorLogic) {
                 final RangedIntBehaviorLogic rb = (RangedIntBehaviorLogic) b;
                 final JLabel doubleValue = new JLabel(rb.getValueAsString());
                 final JPanel sliderPanel = new JPanel(new FlowLayout());
@@ -190,6 +213,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 slider.setMajorTickSpacing(rb.getScale() * 10);
                 slider.setMinorTickSpacing(rb.getStep());
                 slider.setSnapToTicks(true);
+
                 JLabel label = new JLabel(b.getName() + ":");
                 tabControls.add(label);
                 sliderPanel.add(slider);
@@ -200,10 +224,12 @@ public class ObjectEditor extends javax.swing.JFrame {
                     public void stateChanged(ChangeEvent e) {
                         if (!slider.getValueIsAdjusting()) {
                             Config params = new Config();
-                            params.setProperty("value", new Integer(slider.getValue()).toString());
+                            params.setProperty("value",
+                                    new Integer(slider.getValue()).toString());
                             System.out.println("Slider value: " + slider.getValue());
                             rb.filterParams(params, true);
                         }
+
                         if (rb.getScale() != 1) {
                             doubleValue.setText(new Double((double) slider.getValue() / rb.getScale()).toString());
                         } else {
@@ -213,14 +239,18 @@ public class ObjectEditor extends javax.swing.JFrame {
                 });
                 slider.setEnabled(!b.isReadOnly());
             }
+
             if (b instanceof ListBehaviorLogic) {
                 final ListBehaviorLogic lb = (ListBehaviorLogic) b;
                 final JComboBox comboBox = new JComboBox();
+
                 for (String listValue : lb.getValuesList()) {
                     comboBox.addItem(listValue);
                 }
+
                 comboBox.setEditable(false);
                 comboBox.setSelectedItem(lb.getSelected());
+
                 JLabel label = new JLabel(b.getName() + ":");
 //                controlPanel.addRow();
 //                controlPanel.addElement(label, row, 0);
@@ -236,6 +266,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 });
                 comboBox.setEnabled(!b.isReadOnly());
             }
+
             if (b instanceof TaxonomyBehaviorLogic) {
                 populateMultiselectionList(b);
             }
@@ -317,33 +348,25 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         jLabel15.setText(i18n.msg("description")+":");
 
-        jLabel1.setText(i18n.msg("protocol")+":");
+        jPanel1.setLayout( new javax.swing.BoxLayout( jPanel1, javax.swing.BoxLayout.PAGE_AXIS ) );
 
-        jLabel2.setText(i18n.msg("address")+":");
+        tabObjectEditor.setTabLayoutPolicy( javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT );
+        tabObjectEditor.setTabPlacement( javax.swing.JTabbedPane.LEFT );
+        tabObjectEditor.setPreferredSize( new java.awt.Dimension( 500, 457 ) );
 
-        jLabel3.setForeground(new java.awt.Color(121, 121, 121));
-        jLabel3.setText(i18n.msg(this,"plugins_more_info"));
+        jLabel14.setText( i18n.msg( "name" ) + ":" );
 
-        btnCreateObjectCopy.setText(i18n.msg("create_a_copy"));
-        btnCreateObjectCopy.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateObjectCopyActionPerformed(evt);
-            }
-        });
+        txtName.addActionListener( new java.awt.event.ActionListener(  )
+            {
+                public void actionPerformed( java.awt.event.ActionEvent evt )
+                {
+                    txtNameActionPerformed( evt );
+                }
+            } );
 
-        btnDelete.setText(i18n.msg("delete")+i18n.msg("object"));
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
+        jLabel15.setText( i18n.msg( "description" ) + ":" );
 
-        btnVirtual.setText(i18n.msg(this,"is_virtual_object"));
-        btnVirtual.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVirtualActionPerformed(evt);
-            }
-        });
+        jLabel1.setText( i18n.msg( "protocol" ) + ":" );
 
         jLabel8.setText("Tags");
 
@@ -437,47 +460,105 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         });
 
-        jLabel12.setText(i18n.msg("position_X",new Object[]{"Y"})+":");
+        jLabel3.setForeground( new java.awt.Color( 121, 121, 121 ) );
+        jLabel3.setText( i18n.msg( this, "plugins_more_info" ) );
 
-        spnY.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spnYStateChanged(evt);
-            }
-        });
+        btnCreateObjectCopy.setText( i18n.msg( "create_a_copy" ) );
+        btnCreateObjectCopy.addActionListener( new java.awt.event.ActionListener(  )
+            {
+                public void actionPerformed( java.awt.event.ActionEvent evt )
+                {
+                    btnCreateObjectCopyActionPerformed( evt );
+                }
+            } );
 
-        spnRotation.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spnRotationStateChanged(evt);
-            }
-        });
+        btnDelete.setText( i18n.msg( "delete" ) + i18n.msg( "object" ) );
+        btnDelete.addActionListener( new java.awt.event.ActionListener(  )
+            {
+                public void actionPerformed( java.awt.event.ActionEvent evt )
+                {
+                    btnDeleteActionPerformed( evt );
+                }
+            } );
 
-        jLabel13.setText(i18n.msg("rotation")+ ":");
+        btnVirtual.setText( i18n.msg( this, "is_virtual_object" ) );
+        btnVirtual.addActionListener( new java.awt.event.ActionListener(  )
+            {
+                public void actionPerformed( java.awt.event.ActionEvent evt )
+                {
+                    btnVirtualActionPerformed( evt );
+                }
+            } );
 
-        chkAllRepresentations.setText(i18n.msg(this,"apply_changes_all_representations"));
-        chkAllRepresentations.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkAllRepresentationsActionPerformed(evt);
-            }
-        });
+        tabObjectEditor.addTab( i18n.msg( "properties" ),
+                                tabProperties );
 
-        btnChangeImage.setText(i18n.msg("change_X",new Object[]{i18n.msg("image")}));
-        btnChangeImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChangeImageActionPerformed(evt);
-            }
-        });
+        tabTriggersConfig.setLayout( new java.awt.BorderLayout(  ) );
+        tabObjectEditor.addTab( i18n.msg( this, "data_sources" ),
+                                tabTriggersConfig );
 
-        spnScaleWidth.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spnScaleWidthStateChanged(evt);
-            }
-        });
+        tabCommandsConfig.setLayout( new java.awt.BorderLayout(  ) );
+        tabObjectEditor.addTab( i18n.msg( "actions" ),
+                                tabCommandsConfig );
 
-        spnScaleHeight.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spnScaleHeightStateChanged(evt);
-            }
-        });
+        jLabel11.setText( i18n.msg( "position_X",
+                                    new Object[] { "X" } ) + ":" );
+
+        spnX.addChangeListener( new javax.swing.event.ChangeListener(  )
+            {
+                public void stateChanged( javax.swing.event.ChangeEvent evt )
+                {
+                    spnXStateChanged( evt );
+                }
+            } );
+
+        jLabel12.setText( i18n.msg( "position_X",
+                                    new Object[] { "Y" } ) + ":" );
+
+        spnY.addChangeListener( new javax.swing.event.ChangeListener(  )
+            {
+                public void stateChanged( javax.swing.event.ChangeEvent evt )
+                {
+                    spnYStateChanged( evt );
+                }
+            } );
+
+        spnRotation.addChangeListener( new javax.swing.event.ChangeListener(  )
+            {
+                public void stateChanged( javax.swing.event.ChangeEvent evt )
+                {
+                    spnRotationStateChanged( evt );
+                }
+            } );
+
+        jLabel13.setText( i18n.msg( "rotation" ) + ":" );
+
+        chkAllRepresentations.setText( i18n.msg( this, "apply_changes_all_representations" ) );
+        chkAllRepresentations.addActionListener( new java.awt.event.ActionListener(  )
+            {
+                public void actionPerformed( java.awt.event.ActionEvent evt )
+                {
+                    chkAllRepresentationsActionPerformed( evt );
+                }
+            } );
+
+        btnChangeImage.setText( i18n.msg( "change_X",
+                                          new Object[] { i18n.msg( "image" ) } ) );
+        btnChangeImage.addActionListener( new java.awt.event.ActionListener(  )
+            {
+                public void actionPerformed( java.awt.event.ActionEvent evt )
+                {
+                    btnChangeImageActionPerformed( evt );
+                }
+            } );
+
+        spnScaleWidth.addChangeListener( new javax.swing.event.ChangeListener(  )
+            {
+                public void stateChanged( javax.swing.event.ChangeEvent evt )
+                {
+                    spnScaleWidthStateChanged( evt );
+                }
+            } );
 
         jLabel4.setText(i18n.msg("width")+":");
 
@@ -580,14 +661,13 @@ public class ObjectEditor extends javax.swing.JFrame {
         });
         pnlFrameButtons.add(btnCancel);
 
-        jPanel1.add(pnlFrameButtons);
+        getContentPane(  ).add( jPanel1, java.awt.BorderLayout.CENTER );
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        pack(  );
+    } // </editor-fold>//GEN-END:initComponents
 
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
+    private void btnOkActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnOkActionPerformed
 
-    private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
         if ((!txtProtocol.getSelectedItem().toString().equals(""))
                 && (!txtAddress.getText().equals(""))) {
             EnvObject pojo = object.getPojo();
@@ -600,13 +680,16 @@ public class ObjectEditor extends javax.swing.JFrame {
             if (!(oldName.equals(txtName.getText().trim()))) {
                 object.rename(txtName.getText().trim());
             }
+
             if (btnVirtual.isSelected()) {
                 pojo.setActAs("virtual");
             } else {
                 pojo.setActAs("");
             }
+
             //object.setChanged(true);
             saveRepresentationChanges();
+
             if (reactionsPanel != null) {
                 for (Component component : reactionsPanel.getPanel().getComponents()) {
                     if (component instanceof ReactionEditor) {
@@ -620,67 +703,81 @@ public class ObjectEditor extends javax.swing.JFrame {
                 object.setEnv(selEnv);
                 object.setChanged(true);
             }
+
             this.dispose();
         }
-}//GEN-LAST:event_btnOkActionPerformed
+    }//GEN-LAST:event_btnOkActionPerformed
 
-    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnCancelActionPerformed
         this.dispose();
-}//GEN-LAST:event_btnCancelActionPerformed
+    }//GEN-LAST:event_btnCancelActionPerformed
 
-    private void btnChangeImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeImageActionPerformed
+    private void btnChangeImageActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnChangeImageActionPerformed
+
         JFileChooser fc = new JFileChooser();
         fc.setCurrentDirectory(new File(Info.getResourcesPath()));
+
         int returnVal = fc.showDialog(this, "Use as object icon");
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             object.getPojo().getCurrentRepresentation().setIcon(file.getName());
         }
-}//GEN-LAST:event_btnChangeImageActionPerformed
+    }//GEN-LAST:event_btnChangeImageActionPerformed
 
-    private void chkAllRepresentationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAllRepresentationsActionPerformed
-}//GEN-LAST:event_chkAllRepresentationsActionPerformed
+    private void chkAllRepresentationsActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_chkAllRepresentationsActionPerformed
+    }//GEN-LAST:event_chkAllRepresentationsActionPerformed
 
-    private void spnRotationStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnRotationStateChanged
+    private void spnRotationStateChanged(javax.swing.event.ChangeEvent evt)    {//GEN-FIRST:event_spnRotationStateChanged
         saveRepresentationChanges();
-}//GEN-LAST:event_spnRotationStateChanged
+    }//GEN-LAST:event_spnRotationStateChanged
 
-    private void spnYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnYStateChanged
+    private void spnYStateChanged(javax.swing.event.ChangeEvent evt)    {//GEN-FIRST:event_spnYStateChanged
         saveRepresentationChanges();
-}//GEN-LAST:event_spnYStateChanged
+    }//GEN-LAST:event_spnYStateChanged
 
-    private void spnXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnXStateChanged
+    private void spnXStateChanged(javax.swing.event.ChangeEvent evt)    {//GEN-FIRST:event_spnXStateChanged
         saveRepresentationChanges();
-}//GEN-LAST:event_spnXStateChanged
+    }//GEN-LAST:event_spnXStateChanged
 
-    private void spnScaleWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnScaleWidthStateChanged
+    private void spnScaleWidthStateChanged(javax.swing.event.ChangeEvent evt)    {//GEN-FIRST:event_spnScaleWidthStateChanged
+
         Representation rep = object.getPojo().getCurrentRepresentation();
 //        Shape shape = AWTConverter.convertToAWT(rep.getShape(), 1.5, 1.5);
 //                new Double(spnScaleWidth.getValue().toString()).doubleValue(), 
 //                new Double(spnScaleHeight.getValue().toString()).doubleValue());
         rep.setScaleX(new Double(spnScaleWidth.getValue().toString()).doubleValue());
+
         //rep.setScaleX(new Double(spnScaleWidth.getValue().toString()).doubleValue());
         //object.setChanged(true);
     }//GEN-LAST:event_spnScaleWidthStateChanged
 
-    private void spnScaleHeightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnScaleHeightStateChanged
+    private void spnScaleHeightStateChanged(javax.swing.event.ChangeEvent evt)    {//GEN-FIRST:event_spnScaleHeightStateChanged
         saveRepresentationChanges();
     }//GEN-LAST:event_spnScaleHeightStateChanged
 
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {
+//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
     }//GEN-LAST:event_formWindowClosed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int result = JOptionPane.showConfirmDialog(null, i18n.msg("confirm_object_delete"), i18n.msg("configm_deletion_title"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnDeleteActionPerformed
+
+        int result =
+                JOptionPane.showConfirmDialog(null,
+                i18n.msg("confirm_object_delete"),
+                i18n.msg("configm_deletion_title"),
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
         if (result == JOptionPane.OK_OPTION) {
             EnvObjectPersistence.remove(object);
             this.dispose();
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void btnCreateObjectCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateObjectCopyActionPerformed
+    private void btnCreateObjectCopyActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnCreateObjectCopyActionPerformed
         //        EnvObject pojoCopy = null;
         //
         //        pojoCopy = SerialClone.clone(object.getPojo());
@@ -698,13 +795,13 @@ public class ObjectEditor extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnCreateObjectCopyActionPerformed
 
-    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_txtNameActionPerformed
         // TODO addAndRegister your handling code here:
     }//GEN-LAST:event_txtNameActionPerformed
 
-    private void btnVirtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVirtualActionPerformed
+    private void btnVirtualActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnVirtualActionPerformed
         checkIfVirtual();
-
     }//GEN-LAST:event_btnVirtualActionPerformed
 
     private void txtTagsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTagsActionPerformed
@@ -735,6 +832,7 @@ public class ObjectEditor extends javax.swing.JFrame {
             int rotation = (Integer) spnRotation.getValue();
             b.setOffset(x, y);
             b.setRotation(rotation);
+
             //object.setChanged(true);
         } catch (NumberFormatException numberFormatException) {
         }
@@ -757,6 +855,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 b.setOffset(x, y);
                 b.setRotation(rotation);
             }
+
             //object.setChanged(true);
         } catch (NumberFormatException numberFormatException) {
         }
@@ -803,6 +902,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private javax.swing.JTextField txtTags;
     // End of variables declaration//GEN-END:variables
 
+    // End of variables declaration//GEN-END:variables
     private void populateCommandsTab() {
         //addAndRegister a properties panel
         commandsControlPanel = new PropertiesPanel_1(0, 2);
@@ -811,22 +911,28 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         //creates an array of mapping behavior to hardware command
         int row = 0;
+
         for (final String action : object.getPojo().getActions().stringPropertyNames()) {
             //addAndRegister a combo box with the list of alla available commands
             DefaultComboBoxModel allHardwareCommands = new DefaultComboBoxModel();
+
             for (Command command : CommandPersistence.getHardwareCommands()) {
                 allHardwareCommands.addElement(command);
             }
+
             final JComboBox cmbCommand = new JComboBox();
             cmbCommand.setModel(allHardwareCommands);
+
             EnvObjectLogic objLogic = (EnvObjectLogic) object;
             Command relatedCommand = objLogic.getHardwareCommand(action);
+
             if (relatedCommand != null) {
                 //related harware command is already defined
                 cmbCommand.setSelectedItem(relatedCommand);
             } else {
                 cmbCommand.setSelectedIndex(-1); //no mapping
             }
+
             cmbCommand.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -835,12 +941,14 @@ public class ObjectEditor extends javax.swing.JFrame {
                 }
             });
             commandsControlPanel.addRow();
+
             JLabel lblAction = new JLabel(action + ": ");
             commandsControlPanel.addElement(lblAction, row, 0);
             commandsControlPanel.addElement(cmbCommand, row, 1);
             //lblAction.setPreferredSize(new Dimension(350, 30));
             row++;
         }
+
         commandsControlPanel.layoutPanel();
     }
 
@@ -852,26 +960,33 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         //creates an array of mapping behavior to hardware trigger
         int row = 0;
+
         for (final Behavior behavior : object.getPojo().getBehaviors()) {
             //addAndRegister a combo box with the list of all available hardware triggers
             DefaultComboBoxModel model = new DefaultComboBoxModel();
+
             for (Trigger trigger : TriggerPersistence.getTriggers()) {
                 if (trigger.isHardwareLevel()) {
                     model.addElement(trigger);
                 }
             }
+
             final JComboBox comboSelectTrigger = new JComboBox();
             comboSelectTrigger.setModel(model);
+
             //check if the object has already defined a mapping trigger -> behavior
             //if true select it
             String relatedTriggerName = "";
+
             for (Entry e : object.getPojo().getTriggers().entrySet()) {
                 if (e.getValue().equals(behavior.getName())) {
                     //it has already a mapping
                     relatedTriggerName = (String) e.getKey();
                 }
             }
+
             Trigger relatedTrigger = TriggerPersistence.getTrigger(relatedTriggerName);
+
             //if related harware trigger is already defined
             if (relatedTrigger != null) {
                 comboSelectTrigger.setSelectedItem(relatedTrigger);
@@ -879,11 +994,13 @@ public class ObjectEditor extends javax.swing.JFrame {
                 //no selection
                 comboSelectTrigger.setSelectedIndex(-1);
             }
+
             //addAndRegister a listener on trigger combobox item selection
             comboSelectTrigger.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    object.addTriggerMapping((Trigger) comboSelectTrigger.getSelectedItem(), behavior.getName());
+                    object.addTriggerMapping((Trigger) comboSelectTrigger.getSelectedItem(),
+                            behavior.getName());
                     tabTriggersConfig.removeAll();
                     pnlTriggers = null;
                     populateTriggersTab();
@@ -897,6 +1014,7 @@ public class ObjectEditor extends javax.swing.JFrame {
             //comboSelectTrigger.setPreferredSize(new Dimension(350, 30));
             row++;
         }
+
         pnlTriggers.layoutPanel();
     }
 
@@ -910,11 +1028,14 @@ public class ObjectEditor extends javax.swing.JFrame {
 
     private void populateProtocol() {
         txtProtocol.addItem("unknown");
-        for (Client client : Freedomotic.clients.getClients("Plugin")) {
+
+        for (Client client : clients.getClients("Plugin")) {
             Plugin plugin = (Plugin) client;
             String protocol = plugin.getConfiguration().getStringProperty("protocol.name", "");
+
             if (!protocol.isEmpty()) {
                 txtProtocol.addItem(protocol);
+
                 //set the current protocol value
                 if (object.getPojo().getProtocol().equalsIgnoreCase(protocol)) {
                     txtProtocol.setSelectedItem(protocol);
@@ -927,6 +1048,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
             environmentComboBox.addItem(env);
         }
+
         environmentComboBox.setSelectedItem(object.getEnv());
     }
 
@@ -940,19 +1062,23 @@ public class ObjectEditor extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (!newItem.getText().isEmpty()) {
                     refreshMultiselectionList(lb, list);
+
                     Config params = new Config();
-                    params.setProperty("item", newItem.getText());
+                    params.setProperty("item",
+                            newItem.getText());
                     params.setProperty("value", "add");
                     lb.filterParams(params, true);
                 }
             }
         });
+
         JButton btnRemove = new JButton(i18n.msg("remove"));
         btnRemove.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!newItem.getText().isEmpty()) {
                     Config params = new Config();
-                    params.setProperty("item", newItem.getText());
+                    params.setProperty("item",
+                            newItem.getText());
                     params.setProperty("value", "remove");
                     lb.filterParams(params, true);
                     refreshMultiselectionList(lb, list);
@@ -970,14 +1096,18 @@ public class ObjectEditor extends javax.swing.JFrame {
 
     private void refreshMultiselectionList(final TaxonomyBehaviorLogic source, CheckBoxList list) {
         final DefaultListModel model = new DefaultListModel();
+
         for (String item : source.getList()) {
             final JCheckBox box = new JCheckBox(item);
+
             if (!model.contains(box)) { //no duplicates allowed
                 box.addChangeListener(new ChangeListener() {
                     public void stateChanged(ChangeEvent e) {
                         Config params = new Config();
-                        params.setProperty("item", box.getText());
-                        params.setProperty("value", new Boolean(box.isSelected()).toString());
+                        params.setProperty("item",
+                                box.getText());
+                        params.setProperty("value",
+                                new Boolean(box.isSelected()).toString());
                         source.filterParams(params, true);
                     }
                 });
@@ -985,6 +1115,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 model.addElement(box);
             }
         }
+
         list.setModel(model);
         tabControls.validate();
     }

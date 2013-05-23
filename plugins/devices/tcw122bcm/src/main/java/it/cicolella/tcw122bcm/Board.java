@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.tcw122bcm;
 
 public class Board {
@@ -162,7 +161,7 @@ public class Board {
     public void setHumidity2(String humidity2) {
         this.humidity2 = humidity2;
     }
-    
+
     public String getRelayObjectTemplate() {
         return relayObjectTemplate;
     }
@@ -170,21 +169,20 @@ public class Board {
     public void setRelayObjectTemplate(String relayObjectTemplate) {
         this.relayObjectTemplate = relayObjectTemplate;
     }
-    
-     public String getTemperatureObjectTemplate() {
+
+    public String getTemperatureObjectTemplate() {
         return temperatureObjectTemplate;
     }
 
     public void setTemperatureObjectTemplate(String temperatureObjectTemplate) {
         this.temperatureObjectTemplate = temperatureObjectTemplate;
     }
-    
-     public String getHumidityObjectTemplate() {
+
+    public String getHumidityObjectTemplate() {
         return humidityObjectTemplate;
     }
 
     public void setHumidityObjectTemplate(String humidityObjectTemplate) {
         this.humidityObjectTemplate = humidityObjectTemplate;
     }
-    
 }

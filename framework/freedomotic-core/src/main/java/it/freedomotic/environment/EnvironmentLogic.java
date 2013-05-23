@@ -22,9 +22,11 @@
 package it.freedomotic.environment;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.environment.Zone;
 import it.freedomotic.model.geometry.FreedomPolygon;
+
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.objects.impl.Gate;
@@ -64,9 +66,10 @@ public final class EnvironmentLogic {
 
     @RequiresPermissions("environments:update")
     public void setPojo(Environment pojo) {
-        if (pojo.getUUID() == null || pojo.getUUID().isEmpty()) {
+        if ((pojo.getUUID() == null) || pojo.getUUID().isEmpty()) {
             pojo.setUUID(UUID.randomUUID().toString());
         }
+
         this.pojo = pojo;
     }
 
@@ -78,11 +81,13 @@ public final class EnvironmentLogic {
     @RequiresPermissions("environments:read")
     public List<Room> getRooms() {
         List<Room> rooms = new ArrayList<Room>();
+
         for (ZoneLogic zone : getZones()) {
             if (zone instanceof Room) {
                 rooms.add((Room) zone);
             }
         }
+
         return rooms;
     }
 
@@ -95,16 +100,17 @@ public final class EnvironmentLogic {
 
         if (zones.contains(zone)) {
             Freedomotic.logger.warning("Attempt to add a null or already existent room");
+
             return;
         }
 
         //check for vaild name
-
         if ((zone.getPojo().getName() == null) || (zone.getPojo().getName().isEmpty())) {
             zone.getPojo().setName("Unamed Zone " + UidGenerator.getNextStringUid());
         }
 
         zone.getPojo().setDescription("");
+
         //check for valid shape
         if (zone.getPojo().getShape() == null) {
             //a default shape
@@ -115,8 +121,8 @@ public final class EnvironmentLogic {
             p.append(0, 200);
             zone.getPojo().setShape(p);
         }
-        //append to list and initilize
 
+        //append to list and initilize
         getPojo().getZones().add(zone.getPojo());
         zones.add(zone);
 
@@ -134,6 +140,7 @@ public final class EnvironmentLogic {
                     gate.evaluateGate();
                 }
             }
+
             room.setChanged();
         } else {
             zone.setChanged();
@@ -168,16 +175,20 @@ public final class EnvironmentLogic {
     @RequiresPermissions("environments:read")
     public void init() {
         graph = new Graph(); //the graph data structure that describes how rooms are connected through gates
+
         if (zones == null) {
             zones = new ArrayList<ZoneLogic>();
         }
+
         for (Zone z : getPojo().getZones()) {
             z.init();
+
             //null and duplicate check
             if (z != null) {
                 if (z.isRoom()) {
                     Room room = new Room(z);
                     room.init(this);
+
                     if (!zones.contains(room)) {
                         Freedomotic.logger.info("Adding room " + room);
                         this.zones.add(room);
@@ -187,6 +198,7 @@ public final class EnvironmentLogic {
                 } else {
                     ZoneLogic zoneLogic = new ZoneLogic(z);
                     zoneLogic.init(this);
+
                     if (!zones.contains(zoneLogic)) {
                         Freedomotic.logger.info("Adding zone " + zoneLogic);
                         this.zones.add(zoneLogic);
@@ -211,6 +223,7 @@ public final class EnvironmentLogic {
                 return zone;
             }
         }
+
         return null;
     }
 

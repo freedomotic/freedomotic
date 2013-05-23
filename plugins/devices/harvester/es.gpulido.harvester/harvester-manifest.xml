@@ -39,11 +39,11 @@
         
         <!-- SQLSERVER EXAMPLE -->
          
-            <property name="driver" value="sqlserver"/>
-            <property name="dbpath" value="localhost"/>
-            <property name="dbname" value="harvester"/> -
-            <property name="dbuser" value="sa"/>
-            <property name="dbpassword" value=""/>
+        <property name="driver" value="sqlserver"/>
+        <property name="dbpath" value="localhost"/>
+        <property name="dbname" value="harvester"/> -
+        <property name="dbuser" value="sa"/>
+        <property name="dbpassword" value=""/>
         
         
     </properties>

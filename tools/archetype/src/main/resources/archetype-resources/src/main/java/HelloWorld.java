@@ -1,7 +1,9 @@
-#set( $symbol_pound = '#' )
+ #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
-package ${package};
+package $
+
+{package};
 
 import ${groupId}.api.EventTemplate;
 import ${groupId}.api.Protocol;

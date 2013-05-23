@@ -14,10 +14,10 @@
         <property name="p6-oid" value="1.2.3"/>
         <property name="p3-status-oid" value="1.2.1.33.0"/>
         <property name="p5-status-oid" value="1.2.2.33.0"/>
-     </properties>
+    </properties>
     <tuples>
         <!-- DEVICES CONFIGURATION -->
-         <tuple>
+        <tuple>
             <property name="alias" value="board1"/>
             <property name="ip-address" value="172.16.100.2"/>
             <property name="snmp-port" value="161"/>

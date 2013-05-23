@@ -29,6 +29,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,11 +45,13 @@ public class EnvObjectTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass()
+            throws Exception {
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public static void tearDownClass()
+            throws Exception {
     }
 
     @Before
@@ -420,6 +424,7 @@ public class EnvObjectTest {
     @Test
     public void testEquals() {
         System.out.println("equals");
+
         EnvObject instanceA = new EnvObject();
         EnvObject instanceB = new EnvObject();
         System.out.println("Different object names and different address, expected false");
@@ -429,6 +434,7 @@ public class EnvObjectTest {
         instanceB.setName("instanceB");
         instanceB.setPhisicalAddress("addressB");
         instanceB.setProtocol("protocolB");
+
         boolean expResult = false;
         boolean result = instanceA.equals(instanceB);
         assertEquals(expResult, result);

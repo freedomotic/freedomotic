@@ -56,12 +56,12 @@ public class ApplicationServer extends Protocol {
             webapp.setContextPath(WEBAPP_CTX);
             webapp.setWar(dir + "/" + war_file);
             server.setHandler(webapp);
-            
+
             //print the URL to visit as plugin description
             InetAddress addr = InetAddress.getLocalHost();
             String hostname = addr.getHostName();
             //strip away the '.war' extension and put all togheter
-            URL url = new URL("http://"+hostname+":"+port+"/"+war_file.substring(0, war_file.lastIndexOf(".")));
+            URL url = new URL("http://" + hostname + ":" + port + "/" + war_file.substring(0, war_file.lastIndexOf(".")));
             setDescription("Visit " + url.toString());
 
 
@@ -85,7 +85,7 @@ public class ApplicationServer extends Protocol {
 
     @Override
     protected void onRun() {
-       // throw new UnsupportedOperationException("Not supported yet.");
+        // throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

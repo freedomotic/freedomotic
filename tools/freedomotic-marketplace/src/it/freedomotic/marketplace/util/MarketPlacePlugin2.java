@@ -44,7 +44,7 @@ public class MarketPlacePlugin2 implements IPluginPackage {
 
     @Override
     public String getURI() {
-        return "http://www.freedomotic.com/node/"+nid;
+        return "http://www.freedomotic.com/node/" + nid;
     }
 
     @Override

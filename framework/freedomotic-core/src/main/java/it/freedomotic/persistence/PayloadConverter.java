@@ -41,7 +41,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
  *
  * @author Enrico
  */
-public class PayloadConverter implements Converter {
+public class PayloadConverter
+        implements Converter {
 
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
@@ -65,6 +66,7 @@ public class PayloadConverter implements Converter {
             writer.endNode(); //</value>
             writer.endNode(); //</it.freedomotic.reactions.Statement>
         }
+
         writer.endNode(); //</payload>
     }
 
@@ -72,23 +74,28 @@ public class PayloadConverter implements Converter {
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
         Payload payload = new Payload();
         reader.moveDown(); //goes down to <payload>
+
         while (reader.hasMoreChildren()) { //<statements> are the childs of payload
             reader.moveDown();
+
             ArrayList<String> statementValues = new ArrayList<String>();
+
             while (reader.hasMoreChildren()) { //childs of statement (logical, attribute, ...)
                 reader.moveDown();
                 statementValues.add(reader.getValue());
                 reader.moveUp();
             }
-            payload.addStatement(
-                    statementValues.get(0),
+
+            payload.addStatement(statementValues.get(0),
                     statementValues.get(1),
                     statementValues.get(2),
                     statementValues.get(3));
             reader.moveUp(); //next <statement>
         } //no more <statements> (childs of payload)
+
         reader.moveUp(); //goes up to the next <payload>
         reader.moveUp(); //goes up to the next <payload>
+
         return payload;
     }
 

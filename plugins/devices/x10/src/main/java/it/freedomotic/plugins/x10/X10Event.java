@@ -63,9 +63,9 @@ public class X10Event {
         setAddress("");
         setFunction("");
     }
-    
+
     @Override
-    public String toString(){
-        return getAddress()+getFunction();
+    public String toString() {
+        return getAddress() + getFunction();
     }
 }

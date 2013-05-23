@@ -9,7 +9,5 @@ package it.freedomotic.restapi.server.interfaces;
  *
  * @author gpt
  */
-public interface CommandsResource extends FreedomoticResource{
-   
-        
+public interface CommandsResource extends FreedomoticResource {
 }

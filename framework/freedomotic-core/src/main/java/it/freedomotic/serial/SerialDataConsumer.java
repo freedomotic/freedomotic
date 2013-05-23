@@ -26,6 +26,6 @@ package it.freedomotic.serial;
  * @author enrico
  */
 public interface SerialDataConsumer {
-   void onDataAvailable(String data);
 
+    void onDataAvailable(String data);
 }

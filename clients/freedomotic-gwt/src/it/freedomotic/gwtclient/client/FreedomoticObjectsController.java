@@ -15,95 +15,93 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 
-
 public class FreedomoticObjectsController {
 
-	public static final int STOMP_ERROR = 0;
-	public static final int REST_ERROR = 1;
-	public static final int CONNECTED= 2;
-	public static final String ROOT_URL= "/gwt_client/v2"; 
-	
-	private static FreedomoticObjectsController INSTANCE=null;  //Singleton reference
-	//private Client stompClient;
-	private static ObjectsResourceProxy objectsResource;		
-	private List<EnvObject> freedomObjects = new ArrayList<EnvObject>();	
-	private HashMap<String,String> freedomObjectsDictionary;
-	
-	
-	/**
-	   * The provider that holds the list of contacts in the database.
-	   */
-	private ListDataProvider<EnvObject> dataProvider = new ListDataProvider<EnvObject>();
-	  
-	 // Private constructor suppresses 
-    private FreedomoticObjectsController() {    		
+    public static final int STOMP_ERROR = 0;
+    public static final int REST_ERROR = 1;
+    public static final int CONNECTED = 2;
+    public static final String ROOT_URL = "/gwt_client/v2";
+    private static FreedomoticObjectsController INSTANCE = null;  //Singleton reference
+    //private Client stompClient;
+    private static ObjectsResourceProxy objectsResource;
+    private List<EnvObject> freedomObjects = new ArrayList<EnvObject>();
+    private HashMap<String, String> freedomObjectsDictionary;
+    /**
+     * The provider that holds the list of contacts in the database.
+     */
+    private ListDataProvider<EnvObject> dataProvider = new ListDataProvider<EnvObject>();
+
+    // Private constructor suppresses 
+    private FreedomoticObjectsController() {
     }
- 
+
     // Sync creator to avoid multi-thread problems
     private static void createInstance() {
-        if (INSTANCE == null) { 
+        if (INSTANCE == null) {
             INSTANCE = new FreedomoticObjectsController();
         }
     }
- 
+
     public static FreedomoticObjectsController getInstance() {
-        if (INSTANCE == null) createInstance();
+        if (INSTANCE == null) {
+            createInstance();
+        }
         return INSTANCE;
     }
-    
-    public int init()
-    {
+
+    public int init() {
 //    	if (!initStompClient())
 //    		return STOMP_ERROR;
-    	if(!prepareRestResource())
-    		return REST_ERROR;
-    	return CONNECTED;
+        if (!prepareRestResource()) {
+            return REST_ERROR;
+        }
+        return CONNECTED;
     }
-    
+
     //TODO: create a generic client to retrieve all resources. See restlet project.
-    public static boolean prepareRestResource()
-    {
-    	objectsResource = GWT.create(ObjectsResourceProxy.class);
-		// Set up the contact resource
-		objectsResource.getClientResource().setReference("v2/objects/");    	   
+    public static boolean prepareRestResource() {
+        objectsResource = GWT.create(ObjectsResourceProxy.class);
+        // Set up the contact resource
+        objectsResource.getClientResource().setReference("v2/objects/");
         //TODO: Find how to check the configuration
-        return true; 
+        return true;
     }
-    
-    public void retrieve() 
-	{		
-    	// Retrieve the contact
-		objectsResource.retrieve(new Result<List<EnvObject>>() {
-		    public void onFailure(Throwable caught) {
-		        //TODO: Handle the error
-		    }		   
-			@Override
-			public void onSuccess(List<EnvObject> result) {
-				freedomObjects = result;				
-				List<EnvObject> list = dataProvider.getList();
-				list.clear();
-				list.addAll(result);
-			}
-		});						
-	}
-     
-    public ListDataProvider<EnvObject> getDataProvider()
-    {
-    	return dataProvider;
-    	
+
+    public void retrieve() {
+        // Retrieve the contact
+        objectsResource.retrieve(new Result<List<EnvObject>>() {
+            public void onFailure(Throwable caught) {
+                //TODO: Handle the error
+            }
+
+            @Override
+            public void onSuccess(List<EnvObject> result) {
+                freedomObjects = result;
+                List<EnvObject> list = dataProvider.getList();
+                list.clear();
+                list.addAll(result);
+            }
+        });
     }
-	public void addDataDisplay(HasData<EnvObject> display) {
-		dataProvider.addDataDisplay(display);		
-	}	
-	 /**
-	   * Refresh all displays.
-	   */
-	public void refreshDisplays() {
-	    dataProvider.refresh();
-	}
-	
-   	public static void message(String message) {    		
-		Payload payload = FreedomoticStompHelper.parseMessage(message);
+
+    public ListDataProvider<EnvObject> getDataProvider() {
+        return dataProvider;
+
+    }
+
+    public void addDataDisplay(HasData<EnvObject> display) {
+        dataProvider.addDataDisplay(display);
+    }
+
+    /**
+     * Refresh all displays.
+     */
+    public void refreshDisplays() {
+        dataProvider.refresh();
+    }
+
+    public static void message(String message) {
+        Payload payload = FreedomoticStompHelper.parseMessage(message);
 //		EnvObject obj = FloorPlanWidget.environmentEnvironmentController.getInstance().getObject(payload.getStatements("object.name").get(0).getValue());    				 
 //		EnvObject obj = 
 //		Iterator it = payload.iterator();
@@ -152,6 +150,5 @@ public class FreedomoticObjectsController {
 //		{
 //			notifyObservers();
 //		}
-	}
-
+    }
 }

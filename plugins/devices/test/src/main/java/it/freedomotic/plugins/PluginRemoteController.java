@@ -4,20 +4,29 @@
  */
 package it.freedomotic.plugins;
 
+import com.google.inject.Inject;
+
 import it.freedomotic.api.Actuator;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
+
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.exceptions.UnableToExecuteException;
-import it.freedomotic.plugins.AddonLoader;
+
 import it.freedomotic.reactions.Command;
+
 import java.io.IOException;
 
 /**
  *
  * @author Enrico
  */
-public class PluginRemoteController extends Actuator {
+public class PluginRemoteController
+        extends Actuator {
+
+    @Inject
+    private ClientStorage clients;
 
     public PluginRemoteController() {
         super("Plugins Remote Controller", "/it.nicoletti.test/plugins-remote-controller.xml");
@@ -25,13 +34,16 @@ public class PluginRemoteController extends Actuator {
     }
 
     @Override
-    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        Client plugin = Freedomotic.clients.get(c.getProperty("plugin"));
+    protected void onCommand(Command c)
+            throws IOException, UnableToExecuteException {
+        Client plugin = clients.get(c.getProperty("plugin"));
         String action = c.getProperty("action");
+
         if (plugin != null) {
             if (action.equalsIgnoreCase("SHOW")) {
                 plugin.showGui();
             }
+
             if (action.equalsIgnoreCase("HIDE")) {
                 plugin.hideGui();
             }

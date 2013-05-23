@@ -11,7 +11,7 @@
         <property name="get-status-url" value="status.xml"/>
     </properties>
     <tuples>
-         <tuple>
+        <tuple>
             <property name="object.class" value="Light"/>
             <property name="powered" value="Devantech Eth-Rly board reads a relay state change"/>
             <property name="turn on" value="Turn on relay on Devantech Eth-Rly board"/>

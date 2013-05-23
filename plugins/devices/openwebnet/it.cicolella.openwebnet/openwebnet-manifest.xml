@@ -6,11 +6,11 @@
         <property name="required" value="5.2.0"/>  
         <property name="category" value="protocol"/>
         <property name="short-name" value="openwebnet"/>
-	<property name="host" value="127.0.0.1"/>
+        <property name="host" value="127.0.0.1"/>
         <property name="port" value="20000"/>
         <property name="startup-time"   value="on load"/>
     </properties>
-<tuples>
+    <tuples>
         <tuple>
             <property name="object.class" value="Light"/>
             <property name="powered" value="OWN protocol reads a light power change"/>
@@ -19,6 +19,6 @@
             <property name="turn off" value="Turn off OWN light"/>
             <property name="set brightness" value="Dim OWN light"/>
         </tuple>
-</tuples>
+    </tuples>
 
 </config>

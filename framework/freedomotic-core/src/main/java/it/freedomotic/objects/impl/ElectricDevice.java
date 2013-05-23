@@ -26,7 +26,9 @@
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.events.ObjectReceiveClick;
+
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.objects.BooleanBehaviorLogic;
@@ -40,7 +42,8 @@ import it.freedomotic.reactions.TriggerPersistence;
  *
  * @author enrico
  */
-public class ElectricDevice extends EnvObjectLogic {
+public class ElectricDevice
+        extends EnvObjectLogic {
 
     protected BooleanBehaviorLogic powered;
     protected final static String BEHAVIOR_POWERED = "powered";
@@ -85,6 +88,7 @@ public class ElectricDevice extends EnvObjectLogic {
      */
     public void executePowerOn(Config params) {
         boolean executed = executeCommand(ACTION_TURN_ON, params);
+
         if (executed) {
             setOn();
         }
@@ -99,13 +103,15 @@ public class ElectricDevice extends EnvObjectLogic {
      */
     public void executePowerOff(Config params) {
         boolean executed = executeCommand(ACTION_TURN_OFF, params);
+
         if (executed) {
             setOff();
         }
     }
 
     private void setOn() {
-        Freedomotic.logger.info("Setting behavior 'powered' of object '" + getPojo().getName() + "' to true");
+        Freedomotic.logger.config("Setting behavior 'powered' of object '" + getPojo().getName() + "' to true");
+
         //if not already on
         if (powered.getValue() != true) {
             //setting the object as powered
@@ -117,7 +123,8 @@ public class ElectricDevice extends EnvObjectLogic {
     }
 
     private void setOff() {
-        Freedomotic.logger.info("Setting behavior 'powered' of object '" + getPojo().getName() + "' to false");
+        Freedomotic.logger.config("Setting behavior 'powered' of object '" + getPojo().getName() + "' to false");
+
         //if not already off
         if (powered.getValue() != false) {
             powered.setValue(false);
@@ -135,7 +142,8 @@ public class ElectricDevice extends EnvObjectLogic {
         setOn.setName("Turn on " + getPojo().getName());
         setOn.setDescription(getPojo().getName() + " turns on");
         setOn.setReceiver("app.events.sensors.behavior.request.objects");
-        setOn.setProperty("object", getPojo().getName());
+        setOn.setProperty("object",
+                getPojo().getName());
         setOn.setProperty("behavior", BEHAVIOR_POWERED);
         setOn.setProperty("value", BooleanBehavior.VALUE_TRUE);
 
@@ -143,7 +151,8 @@ public class ElectricDevice extends EnvObjectLogic {
         setOff.setName("Turn off " + getPojo().getName());
         setOff.setDescription(getPojo().getName() + " turns off");
         setOff.setReceiver("app.events.sensors.behavior.request.objects");
-        setOff.setProperty("object", getPojo().getName());
+        setOff.setProperty("object",
+                getPojo().getName());
         setOff.setProperty("behavior", BEHAVIOR_POWERED);
         setOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
 
@@ -151,10 +160,10 @@ public class ElectricDevice extends EnvObjectLogic {
         switchPower.setName("Switch " + getPojo().getName() + " power");
         switchPower.setDescription("switches the power of " + getPojo().getName());
         switchPower.setReceiver("app.events.sensors.behavior.request.objects");
-        switchPower.setProperty("object", getPojo().getName());
+        switchPower.setProperty("object",
+                getPojo().getName());
         switchPower.setProperty("behavior", BEHAVIOR_POWERED);
         switchPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
-
 
         Command setItOn = new Command();
         setItOn.setName("Turn it on");
@@ -193,23 +202,26 @@ public class ElectricDevice extends EnvObjectLogic {
         Trigger clicked = new Trigger();
         clicked.setName("When " + this.getPojo().getName() + " is clicked");
         clicked.setChannel("app.event.sensor.object.behavior.clicked");
-        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
+        clicked.getPayload().addStatement("object.name",
+                this.getPojo().getName());
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
-        
+
         Trigger turnsOn = new Trigger();
         turnsOn.setName(this.getPojo().getName() + " turns on");
         turnsOn.setChannel("app.event.sensor.object.behavior.change");
-        turnsOn.getPayload().addStatement("object.name", this.getPojo().getName());
-        turnsOn.getPayload().addStatement("object.behavior."+BEHAVIOR_POWERED, BooleanBehavior.VALUE_TRUE);
+        turnsOn.getPayload().addStatement("object.name",
+                this.getPojo().getName());
+        turnsOn.getPayload().addStatement("object.behavior." + BEHAVIOR_POWERED, BooleanBehavior.VALUE_TRUE);
+
 //        XStream stream = FreedomXStream.getXstream();
 //        System.out.println(stream.toXML(turnsOn));
-        
         Trigger turnsOff = new Trigger();
         turnsOff.setName(this.getPojo().getName() + " turns off");
         turnsOff.setChannel("app.event.sensor.object.behavior.change");
-        turnsOff.getPayload().addStatement("object.name", this.getPojo().getName());
-        turnsOff.getPayload().addStatement("object.behavior."+BEHAVIOR_POWERED, BooleanBehavior.VALUE_FALSE);
+        turnsOff.getPayload().addStatement("object.name",
+                this.getPojo().getName());
+        turnsOff.getPayload().addStatement("object.behavior." + BEHAVIOR_POWERED, BooleanBehavior.VALUE_FALSE);
 
         TriggerPersistence.add(clicked);
         TriggerPersistence.add(turnsOn);

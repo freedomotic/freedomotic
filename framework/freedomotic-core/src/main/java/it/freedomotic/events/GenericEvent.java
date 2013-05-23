@@ -24,8 +24,10 @@ package it.freedomotic.events;
 import it.freedomotic.api.EventTemplate;
 
 /**
- * All purpose event. Use only if no more specific events are present in this list.
- * You can generate your own events extending the {@link EventTemplate} class.
+ * All purpose event. Use only if no more specific events are present in this
+ * list. You can generate your own events extending the {@link EventTemplate}
+ * class.
+ *
  * @author enrico
  */
 public class GenericEvent extends EventTemplate {
@@ -38,10 +40,8 @@ public class GenericEvent extends EventTemplate {
         this.setSender(source);
     }
 
-
     @Override
     protected void generateEventPayload() {
-
     }
 
     @Override
@@ -49,7 +49,7 @@ public class GenericEvent extends EventTemplate {
         return destination;
     }
 
-    public void setDestination(String destination){
+    public void setDestination(String destination) {
         this.destination = destination;
     }
 }

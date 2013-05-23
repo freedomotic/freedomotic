@@ -1,90 +1,90 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <project name="ImageViewer" default="all" basedir="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic">
-	<description>
-		This is build file for GWT module 'it.freedomotic.gwtclient.Freedomotic' deployment.
-		GWT Designer generates it each time when you initiate deployment.
+    <description>
+        This is build file for GWT module 'it.freedomotic.gwtclient.Freedomotic' deployment.
+        GWT Designer generates it each time when you initiate deployment.
 		
-		You can use this file later for manual deployment, but keep in mind, that
-		classpath is hardcoded in it, so after changes in classpath you should
-		regenerate build file.
-	</description>
+        You can use this file later for manual deployment, but keep in mind, that
+        classpath is hardcoded in it, so after changes in classpath you should
+        regenerate build file.
+    </description>
 
-	<property name="gwt.home" value="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0" />
-	<property name="gwt.module.id" value="it.freedomotic.gwtclient.Freedomotic" />
-	<property name="war.name" value="Freedomotic.war" />
+    <property name="gwt.home" value="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0" />
+    <property name="gwt.module.id" value="it.freedomotic.gwtclient.Freedomotic" />
+    <property name="war.name" value="Freedomotic.war" />
 
-	<target name="jars" description="Package up the module project and required projects as jars">
-		<mkdir dir="war/WEB-INF/lib" />
-		<!--=== freedomotic ===-->
-		<jar destfile='war/WEB-INF/lib/freedomotic.jar'>
-			<fileset dir="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/src">
-				<include name="**"/>
-			</fileset>
-			<fileset dir="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/test">
-				<include name="**"/>
-			</fileset>
-			<fileset dir="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/war/WEB-INF/classes">
-				<include name="**/*.class"/>
-			</fileset>
-			<fileset dir="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/test-classes">
-				<include name="**/*.class"/>
-			</fileset>
-		</jar>
-		<copy todir='war/WEB-INF/lib'>
-			<fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/test-classes"/>
-			<fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/war/WEB-INF/classes"/>
-			<fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/gwt-awt-0.0.1-SNAPSHOT.jar"/>
-			<fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet-gwt-2.1rc5.jar"/>
-			<fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.ext.gwt.jar"/>
-			<fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.ext.servlet.jar"/>
-			<fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.jar"/>
-			<fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/gwt-slider-bar-1.0.jar"/>
-			<fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/lib-gwt-svg-0.5.6.jar"/>
-			<fileset file="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/gwt-dev.jar"/>
-			<fileset file="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA.jar"/>
-			<fileset file="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar"/>
-			<fileset file="/home/gpt/Desarrollo/freedomotic_test/freedomotic/lib/freedomotic-model.jar"/>
-			<fileset file="/home/gpt/Desarrollo/freedomotic_test/freedomotic/plugins/devices/es.gpulido.restapi/lib/RestApiInterfaces.jar"/>
-		</copy>		
-	</target>
+    <target name="jars" description="Package up the module project and required projects as jars">
+        <mkdir dir="war/WEB-INF/lib" />
+        <!--=== freedomotic ===-->
+        <jar destfile='war/WEB-INF/lib/freedomotic.jar'>
+            <fileset dir="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/src">
+                <include name="**"/>
+            </fileset>
+            <fileset dir="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/test">
+                <include name="**"/>
+            </fileset>
+            <fileset dir="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/war/WEB-INF/classes">
+                <include name="**/*.class"/>
+            </fileset>
+            <fileset dir="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/test-classes">
+                <include name="**/*.class"/>
+            </fileset>
+        </jar>
+        <copy todir='war/WEB-INF/lib'>
+            <fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/test-classes"/>
+            <fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/war/WEB-INF/classes"/>
+            <fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/gwt-awt-0.0.1-SNAPSHOT.jar"/>
+            <fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet-gwt-2.1rc5.jar"/>
+            <fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.ext.gwt.jar"/>
+            <fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.ext.servlet.jar"/>
+            <fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.jar"/>
+            <fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/gwt-slider-bar-1.0.jar"/>
+            <fileset file="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/lib-gwt-svg-0.5.6.jar"/>
+            <fileset file="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/gwt-dev.jar"/>
+            <fileset file="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA.jar"/>
+            <fileset file="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar"/>
+            <fileset file="/home/gpt/Desarrollo/freedomotic_test/freedomotic/lib/freedomotic-model.jar"/>
+            <fileset file="/home/gpt/Desarrollo/freedomotic_test/freedomotic/plugins/devices/es.gpulido.restapi/lib/RestApiInterfaces.jar"/>
+        </copy>		
+    </target>
 
-	<target name="gwt-compile" description="Compile to JavaScript">
-		<java classname="com.google.gwt.dev.Compiler" fork="yes" failonerror="true" maxmemory="256m">
-			<classpath>
-				<pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/src" />
-				<pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/test" />
-				<pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/test-classes" />
-				<pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/war/WEB-INF/classes" />
-				<pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/gwt-awt-0.0.1-SNAPSHOT.jar" />
-				<pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet-gwt-2.1rc5.jar" />
-				<pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.ext.gwt.jar" />
-				<pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.ext.servlet.jar" />
-				<pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.jar" />
-				<pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/gwt-slider-bar-1.0.jar" />
-				<pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/lib-gwt-svg-0.5.6.jar" />
-				<pathelement location="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/gwt-user.jar" />
-				<pathelement location="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/gwt-dev.jar" />
-				<pathelement location="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA.jar" />
-				<pathelement location="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar" />
-				<pathelement location="/home/gpt/Desarrollo/freedomotic_test/freedomotic/lib/freedomotic-model.jar" />
-				<pathelement location="/home/gpt/Desarrollo/freedomotic_test/freedomotic/plugins/devices/es.gpulido.restapi/lib/RestApiInterfaces.jar" />
-				<pathelement location="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/gwt-dev.jar" />
-			</classpath>
-			<arg value="-style"/>
-			<arg value="DETAILED"/>
-			<arg value="${gwt.module.id}" />
-		</java>
-	</target>
+    <target name="gwt-compile" description="Compile to JavaScript">
+        <java classname="com.google.gwt.dev.Compiler" fork="yes" failonerror="true" maxmemory="256m">
+            <classpath>
+                <pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/src" />
+                <pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/test" />
+                <pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/test-classes" />
+                <pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/war/WEB-INF/classes" />
+                <pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/gwt-awt-0.0.1-SNAPSHOT.jar" />
+                <pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet-gwt-2.1rc5.jar" />
+                <pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.ext.gwt.jar" />
+                <pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.ext.servlet.jar" />
+                <pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/org.restlet.jar" />
+                <pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/gwt-slider-bar-1.0.jar" />
+                <pathelement location="/home/gpt/Desarrollo/GWT/freedomotic-gwt/freedomotic/lib/lib-gwt-svg-0.5.6.jar" />
+                <pathelement location="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/gwt-user.jar" />
+                <pathelement location="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/gwt-dev.jar" />
+                <pathelement location="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA.jar" />
+                <pathelement location="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar" />
+                <pathelement location="/home/gpt/Desarrollo/freedomotic_test/freedomotic/lib/freedomotic-model.jar" />
+                <pathelement location="/home/gpt/Desarrollo/freedomotic_test/freedomotic/plugins/devices/es.gpulido.restapi/lib/RestApiInterfaces.jar" />
+                <pathelement location="/home/gpt/Apps/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r37/gwt-2.4.0/gwt-dev.jar" />
+            </classpath>
+            <arg value="-style"/>
+            <arg value="DETAILED"/>
+            <arg value="${gwt.module.id}" />
+        </java>
+    </target>
 
-	<target name="war" depends="gwt-compile, jars">
-		<delete file="${war.name}" />
-		<jar destfile="${war.name}" basedir="war" duplicate="preserve" />
-	</target>
+    <target name="war" depends="gwt-compile, jars">
+        <delete file="${war.name}" />
+        <jar destfile="${war.name}" basedir="war" duplicate="preserve" />
+    </target>
 	
-	<target name="deploy" depends="war">
-		<move file="${war.name}" todir="/home/gpt/Desarrollo/freedomotic_test/freedomotic/plugins/devices/es.gpulido.webserver/data/webapps/gwt_client" />
-	</target>
+    <target name="deploy" depends="war">
+        <move file="${war.name}" todir="/home/gpt/Desarrollo/freedomotic_test/freedomotic/plugins/devices/es.gpulido.webserver/data/webapps/gwt_client" />
+    </target>
 
-	<target name="all" depends="deploy" />
+    <target name="all" depends="deploy" />
 
 </project>

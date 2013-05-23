@@ -16,48 +16,48 @@ public class Board {
     private int analogInputNumber;
     private int digitalInputNumber;
     private int startingValue;
-    private boolean [] digitalInput; 
-    private int [] analogInput;
-    
+    private boolean[] digitalInput;
+    private int[] analogInput;
 
     public Board(String deviceToQuery, int digitalOutputNumber, int analogOutputNumber, int analogInputNumber,
             int digitalInputNumber, int startingValue) {
-            int i;
-        
-            setDeviceToQuery(deviceToQuery);
-            setDigitalOutputNumber(digitalOutputNumber);
-            setAnalogOutputNumber(analogOutputNumber);
-            setAnalogInputNumber(analogInputNumber);
-            setDigitalInputNumber(digitalInputNumber);
-            setStartingValue(startingValue);
-            digitalInput=new boolean[digitalInputNumber];
-            analogInput=new int[analogInputNumber];
-            //Initialize array that store input status
-            for (i=0;i<digitalInputNumber;i++)
-                digitalInput[i]=false;
-            for (i=0;i<analogInputNumber;i++)
-                analogInput[i]=0;
-                
-            
+        int i;
+
+        setDeviceToQuery(deviceToQuery);
+        setDigitalOutputNumber(digitalOutputNumber);
+        setAnalogOutputNumber(analogOutputNumber);
+        setAnalogInputNumber(analogInputNumber);
+        setDigitalInputNumber(digitalInputNumber);
+        setStartingValue(startingValue);
+        digitalInput = new boolean[digitalInputNumber];
+        analogInput = new int[analogInputNumber];
+        //Initialize array that store input status
+        for (i = 0; i < digitalInputNumber; i++) {
+            digitalInput[i] = false;
+        }
+        for (i = 0; i < analogInputNumber; i++) {
+            analogInput[i] = 0;
+        }
+
+
     }
-  
 
     public String getDeviceToQuery() {
         return deviceToQuery;
     }
-    
+
     public void setDeviceToQuery(String deviceToQuery) {
         this.deviceToQuery = deviceToQuery;
     }
 
-     public int getDigitalOutputNumber() {
+    public int getDigitalOutputNumber() {
         return digitalOutputNumber;
     }
 
     public void setDigitalOutputNumber(int digitalOutputNumber) {
         this.digitalOutputNumber = digitalOutputNumber;
     }
-    
+
     public int getAnalogOutputNumber() {
         return analogOutputNumber;
     }
@@ -73,8 +73,8 @@ public class Board {
     public void setAnalogInputNumber(int analogInputNumber) {
         this.analogInputNumber = analogInputNumber;
     }
-    
-     public int getDigitalInputNumber() {
+
+    public int getDigitalInputNumber() {
         return digitalInputNumber;
     }
 
@@ -89,7 +89,7 @@ public class Board {
     public void setStartingValue(int startingValue) {
         this.startingValue = startingValue;
     }
-    
+
     public int getAnalogValue(int index) {
         return analogInput[index];
     }
@@ -97,7 +97,7 @@ public class Board {
     public void setAnalogValue(int index, int value) {
         this.analogInput[index] = value;
     }
-    
+
     public boolean getDigitalValue(int index) {
         return digitalInput[index];
     }

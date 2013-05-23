@@ -22,7 +22,7 @@
         <property name="http-authentication" value="true"/>
         <property name="username" value="admin"/>
         <property name="password" value="admin"/>
-     </properties>
+    </properties>
     <tuples>
         <!-- DEVICES CONFIGURATION -->
         <tuple>

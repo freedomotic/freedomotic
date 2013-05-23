@@ -13,35 +13,33 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class TEstBinder extends Composite implements HasText {
 
-	private static TEstBinderUiBinder uiBinder = GWT
-			.create(TEstBinderUiBinder.class);
+    private static TEstBinderUiBinder uiBinder = GWT
+            .create(TEstBinderUiBinder.class);
 
-	interface TEstBinderUiBinder extends UiBinder<Widget, TEstBinder> {
-	}
+    interface TEstBinderUiBinder extends UiBinder<Widget, TEstBinder> {
+    }
 
-	public TEstBinder() {
-		initWidget(uiBinder.createAndBindUi(this));
-	}
+    public TEstBinder() {
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+    @UiField
+    Button button;
 
-	@UiField
-	Button button;
+    public TEstBinder(String firstName) {
+        initWidget(uiBinder.createAndBindUi(this));
+        button.setText(firstName);
+    }
 
-	public TEstBinder(String firstName) {
-		initWidget(uiBinder.createAndBindUi(this));
-		button.setText(firstName);
-	}
+    @UiHandler("button")
+    void onClick(ClickEvent e) {
+        Window.alert("Hello!");
+    }
 
-	@UiHandler("button")
-	void onClick(ClickEvent e) {
-		Window.alert("Hello!");
-	}
+    public void setText(String text) {
+        button.setText(text);
+    }
 
-	public void setText(String text) {
-		button.setText(text);
-	}
-
-	public String getText() {
-		return button.getText();
-	}
-
+    public String getText() {
+        return button.getText();
+    }
 }

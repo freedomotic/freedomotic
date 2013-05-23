@@ -23,27 +23,22 @@ package it.freedomotic.bus;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.app.Profiler;
+import static it.freedomotic.bus.AbstractBusConnector.sendSession;
+
 import it.freedomotic.reactions.Command;
+
+import org.apache.activemq.command.ActiveMQDestination;
+import org.apache.activemq.command.ActiveMQQueue;
 
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
-import javax.jms.Queue;
-import javax.jms.TextMessage;
+import javax.jms.*;
 
-import org.apache.activemq.command.ActiveMQDestination;
-import org.apache.activemq.command.ActiveMQQueue;
-
-public class CommandChannel extends AbstractBusConnector implements MessageListener {
+public final class CommandChannel
+        extends AbstractBusConnector
+        implements MessageListener {
 
     private BusConsumer handler;
     private MessageProducer producer;
@@ -53,6 +48,16 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
 
     public CommandChannel() {
         super();
+        buildChannel();
+    }
+
+    public CommandChannel(String CHANNEL_URL) {
+        super();
+        buildChannel();
+        consumeFrom(CHANNEL_URL);
+    }
+
+    private void buildChannel() {
         //executor = Executors.newCachedThreadPool();
         try {
             producer = sendSession.createProducer(null);
@@ -71,7 +76,8 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
                 this.channelName = channelName;
                 consumer = receiveSession.createConsumer(queue);
                 consumer.setMessageListener(this);
-                Freedomotic.logger.info(getHandler().getClass().getSimpleName() + " listen on " + queue.toString());
+                Freedomotic.logger.config(getHandler().getClass().getSimpleName() + " listen on "
+                        + queue.toString());
             } catch (javax.jms.JMSException jmse) {
                 Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jmse));
             }
@@ -97,34 +103,44 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
         try {
             ObjectMessage msg = sendSession.createObjectMessage();
             msg.setObject(command);
+
             Queue destination = new ActiveMQQueue(command.getReceiver());
+
             if (command.getReplyTimeout() > 0) {
                 //we have to wait an execution reply for an hardware device or an external client
                 producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+
                 ActiveMQDestination temporaryQueue = (ActiveMQDestination) unlistenedSession.createTemporaryQueue();
                 msg.setJMSReplyTo(temporaryQueue);
+
                 //a temporary consumer on a temporary queue
                 MessageConsumer responseConsumer = unlistenedSession.createConsumer(temporaryQueue);
                 producer.send(destination, msg);
                 Profiler.incrementSentCommands();
                 //the receive() call is blocking so we execute it in a thread
-                Freedomotic.logger.info("Send and await reply to command '" + command.getName()
-                        + "' for " + command.getReplyTimeout() + "ms");
+                Freedomotic.logger.config("Send and await reply to command '" + command.getName() + "' for "
+                        + command.getReplyTimeout() + "ms");
+
                 Message jmsResponse = responseConsumer.receive(command.getReplyTimeout());
+
                 if (jmsResponse != null) {
                     ObjectMessage objMessage = (ObjectMessage) jmsResponse;
+
                     //a command is sent, we expect a command as reply
                     Command reply = (Command) objMessage.getObject();
-                    Freedomotic.logger.info("Reply to command '" + command.getName()
-                            + "' received. Result is " + reply.getProperty("result"));
+                    Freedomotic.logger.config("Reply to command '" + command.getName() + "' received. Result is "
+                            + reply.getProperty("result"));
                     Profiler.incrementReceivedReplies();
+
                     return reply;
                 } else {
-                    Freedomotic.logger.info("Command '" + command.getName()
-                            + "' timed out after " + command.getReplyTimeout() + "ms");
+                    Freedomotic.logger.config("Command '" + command.getName() + "' timed out after "
+                            + command.getReplyTimeout() + "ms");
                     Profiler.incrementTimeoutedReplies();
                 }
+
                 command.setExecuted(false); //mark as failed
+
                 return command; //returns back the original inaltered command
             } else {
                 //send the message immediately without creating temporary queues and consumers on it
@@ -132,11 +148,13 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
                 producer.send(destination, msg);
                 Profiler.incrementSentCommands();
                 command.setExecuted(true);
+
                 return command; //always say it is executed (it's not sure but the caller is not interested: best effort)
             }
         } catch (JMSException ex) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
             command.setExecuted(false);
+
             return command;
         }
     }
@@ -159,20 +177,21 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
     @Override
     public final void onMessage(final Message aMessage) {
         Profiler.incrementReceivedCommands();
+
         if (handler != null) {
             if (aMessage instanceof ObjectMessage) {
                 getHandler().onMessage((ObjectMessage) aMessage);
             } else {
                 Freedomotic.logger.severe("A message is received by " + channelName
-                        + " but it is not an object message is a " + aMessage.getClass().getCanonicalName());
+                        + " but it is not an object message is a "
+                        + aMessage.getClass().getCanonicalName());
+
                 TextMessage text = (TextMessage) aMessage;
+
                 try {
                     System.out.println(text.getText());
-
-
                 } catch (JMSException ex) {
-                    Logger.getLogger(CommandChannel.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CommandChannel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         } else {
@@ -183,6 +202,7 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
     private String createRandomString() {
         Random random = new Random(System.currentTimeMillis());
         long randomLong = random.nextLong();
+
         return Long.toHexString(randomLong);
     }
 

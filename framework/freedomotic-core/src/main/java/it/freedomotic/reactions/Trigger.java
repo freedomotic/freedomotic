@@ -21,11 +21,17 @@
  */
 package it.freedomotic.reactions;
 
+import com.google.inject.Inject;
+
 import it.freedomotic.api.EventTemplate;
+
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.app.Profiler;
+
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.EventChannel;
+
+import it.freedomotic.core.Resolver;
 import it.freedomotic.core.TriggerCheck;
 
 import java.text.DateFormat;
@@ -42,7 +48,9 @@ import javax.jms.ObjectMessage;
  *
  * @author enrico
  */
-public final class Trigger implements BusConsumer, Cloneable {
+public final class Trigger
+        implements BusConsumer,
+        Cloneable {
 
     private String name;
     private String description;
@@ -62,6 +70,9 @@ public final class Trigger implements BusConsumer, Cloneable {
     private long numberOfExecutions;
     private long suspensionStart;
     private EventChannel busChannel;
+    //dependencies
+    @Inject
+    private TriggerCheck checker;
 
     public Trigger() {
     }
@@ -73,6 +84,7 @@ public final class Trigger implements BusConsumer, Cloneable {
         busChannel.consumeFrom(channel);
         numberOfExecutions = 0;
         suspensionStart = System.currentTimeMillis();
+        Freedomotic.INJECTOR.injectMembers(this);
     }
 
     public void setName(String name) {
@@ -111,6 +123,7 @@ public final class Trigger implements BusConsumer, Cloneable {
         if (maxExecutions <= 0) {
             maxExecutions = -1; //unlimited
         }
+
         return maxExecutions;
     }
 
@@ -145,22 +158,29 @@ public final class Trigger implements BusConsumer, Cloneable {
     public boolean canFire() {
         //num of executions < max executions
         if (getMaxExecutions() > -1) { //not unlimited
+
             if (getNumberOfExecutions() >= getMaxExecutions()) {
                 return false;
             }
         }
+
         if (getNumberOfExecutions() > 0) { //if is not the first time it executes
+
             long wakeup = suspensionStart + getSuspensionTime();
             long now = System.currentTimeMillis();
+
             if (now < wakeup) {
                 DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy kk:mm:ss.SSS");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(wakeup);
-                Freedomotic.logger.info("Trigger " + getName() + " is suspended until " + formatter.format(calendar.getTime()));
+                Freedomotic.logger.config("Trigger " + getName() + " is suspended until "
+                        + formatter.format(calendar.getTime()));
+
                 //it is currently suspended
                 return false;
             }
         }
+
         //can fire
         return true;
     }
@@ -190,6 +210,7 @@ public final class Trigger implements BusConsumer, Cloneable {
         if ((description == null) || (description.isEmpty())) {
             description = name;
         }
+
         return description;
     }
 
@@ -215,40 +236,49 @@ public final class Trigger implements BusConsumer, Cloneable {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final Trigger other = (Trigger) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equalsIgnoreCase(other.name)) {
+
+        if ((this.name == null) ? (other.name != null) : (!this.name.equalsIgnoreCase(other.name))) {
             return false;
         }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = (53 * hash) + ((this.name != null) ? this.name.hashCode() : 0);
+
         return hash;
     }
 
-    @Override
     /*
      * Performs the Trigger check comparing the received event with itself (this
      * trigger)
      */
+    @Override
     public void onMessage(ObjectMessage message) {
         long start = System.currentTimeMillis();
         Object payload = null;
+
         try {
             payload = message.getObject();
         } catch (JMSException ex) {
             Logger.getLogger(Trigger.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         if (payload instanceof EventTemplate) {
             EventTemplate event = (EventTemplate) payload;
-            Freedomotic.logger.fine("Trigger '" + this.getName() + "' filters event '" + event.getEventName() + "' on channel " + this.getChannel());
-            TriggerCheck.check(event, this);
+            Freedomotic.logger.fine("Trigger '" + this.getName() + "' filters event '" + event.getEventName()
+                    + "' on channel " + this.getChannel());
+
+            boolean testPassed = checker.check(event, this);
             long end = System.currentTimeMillis();
             Profiler.appendTriggerCheckingTime(end - start);
         }
@@ -259,12 +289,18 @@ public final class Trigger implements BusConsumer, Cloneable {
         Trigger clone = new Trigger();
         clone.setName(getName());
         clone.setDescription(getDescription());
+
         Payload clonePayload = new Payload();
-        Iterator<Statement> it = getPayload().iterator();
+        Iterator it = getPayload().iterator();
+
         while (it.hasNext()) {
-            Statement original = it.next();
-            clonePayload.addStatement(original.getLogical(), original.getAttribute(), original.getOperand(), original.getValue());
+            Statement original = (Statement) it.next();
+            clonePayload.addStatement(original.getLogical(),
+                    original.getAttribute(),
+                    original.getOperand(),
+                    original.getValue());
         }
+
         clone.setPayload(clonePayload);
         clone.setIsHardwareLevel(isHardwareLevel());
         clone.setMaxExecutions(getMaxExecutions());
@@ -272,6 +308,7 @@ public final class Trigger implements BusConsumer, Cloneable {
         clone.setSuspensionTime(getSuspensionTime());
         clone.suspensionStart = this.suspensionStart;
         clone.setPriority(0);
+
         return clone;
     }
 
@@ -295,5 +332,10 @@ public final class Trigger implements BusConsumer, Cloneable {
 
     public boolean isToPersist() {
         return persistence;
+    }
+
+    @Inject
+    private void setTriggerCheck(TriggerCheck checker) {
+        this.checker = checker;
     }
 }

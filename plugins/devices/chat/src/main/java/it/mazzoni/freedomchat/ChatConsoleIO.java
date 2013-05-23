@@ -23,23 +23,24 @@ import org.jivesoftware.smack.packet.Message;
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public class ChatConsoleIO implements Input,Output, ShellManageable{
+public class ChatConsoleIO implements Input, Output, ShellManageable {
 
     private Chat chat;
     private String outputMessage = "";
-    public ChatConsoleIO(Chat chat){
+
+    public ChatConsoleIO(Chat chat) {
         this.chat = chat;
-    }
-    
-    @Override
-    public String readCommand(List<String> list) {
-        
-        return Strings.joinStrings(list, true, '/');
-        
     }
 
     @Override
-       public void output(Object obj, OutputConversionEngine oce) {
+    public String readCommand(List<String> list) {
+
+        return Strings.joinStrings(list, true, '/');
+
+    }
+
+    @Override
+    public void output(Object obj, OutputConversionEngine oce) {
         if (obj == null) {
             return;
         } else {
@@ -52,7 +53,7 @@ public class ChatConsoleIO implements Input,Output, ShellManageable{
                 output(Array.get(obj, i), 0, oce);
             }
         } else if (obj instanceof Collection) {
-            for (Object elem : (Collection)obj) {
+            for (Object elem : (Collection) obj) {
                 output(elem, 0, oce);
             }
         } else {
@@ -85,12 +86,12 @@ public class ChatConsoleIO implements Input,Output, ShellManageable{
             }
         } else if (obj instanceof Collection) {
             println("Collection");
-            for (Object elem : (Collection)obj) {
+            for (Object elem : (Collection) obj) {
                 output(elem, indent + 1, oce);
             }
         } else if (obj instanceof Throwable) {
             println(obj); // class and its message
-            ((Throwable)obj).printStackTrace();
+            ((Throwable) obj).printStackTrace();
         } else {
             println(obj);
         }
@@ -104,27 +105,26 @@ public class ChatConsoleIO implements Input,Output, ShellManageable{
     }
 
     private void print(Object x) {
-       outputMessage =outputMessage.concat(x.toString());     
+        outputMessage = outputMessage.concat(x.toString());
     }
 
     private void println(Object x) {
         try {
             chat.sendMessage(outputMessage.concat(x.toString()));
-            outputMessage="";
+            outputMessage = "";
         } catch (XMPPException ex) {
             Logger.getLogger(ChatConsoleIO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-
-   private void printErr(Object x) {
-       outputMessage =outputMessage.concat(x.toString());     
+    private void printErr(Object x) {
+        outputMessage = outputMessage.concat(x.toString());
     }
 
     private void printlnErr(Object x) {
-      try {
+        try {
             chat.sendMessage(outputMessage.concat(x.toString()));
-            outputMessage="";
+            outputMessage = "";
         } catch (XMPPException ex) {
             Logger.getLogger(ChatConsoleIO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -153,12 +153,9 @@ public class ChatConsoleIO implements Input,Output, ShellManageable{
 
     @Override
     public void cliEnterLoop() {
-       
     }
 
     @Override
     public void cliLeaveLoop() {
-       
     }
-    
 }

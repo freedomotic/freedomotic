@@ -7,10 +7,9 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 public class EnvObjectProperties extends DecoratedPopupPanel {
 
-	public EnvObjectProperties(EnvObject obj) {
-		super(true);
-		
-		setWidget(new EnvObjectWidget(obj));		
-	}	
+    public EnvObjectProperties(EnvObject obj) {
+        super(true);
 
+        setWidget(new EnvObjectWidget(obj));
+    }
 }

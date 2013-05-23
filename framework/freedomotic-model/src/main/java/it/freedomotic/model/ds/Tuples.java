@@ -33,11 +33,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * A data structure to collect blocks of data in {@link HashMap} style
- * This are used for instance in plugin configuration file to define plugin level variables
+ * A data structure to collect blocks of data in {@link HashMap} style This are
+ * used for instance in plugin configuration file to define plugin level
+ * variables
+ *
  * @author Enrico
  */
-public class Tuples implements Serializable {
+public class Tuples
+        implements Serializable {
 
     private static final long serialVersionUID = 3113993714552615957L;
 
@@ -73,6 +76,7 @@ public class Tuples implements Serializable {
 
     public String getStringProperty(int tupleIndex, String key, String defaultValue) {
         String result = getProperty(tupleIndex, key);
+
         if (result != null) {
             return result;
         } else {
@@ -84,6 +88,7 @@ public class Tuples implements Serializable {
     public int getIntProperty(int tupleIndex, String key, int defaultValue) {
         try {
             Integer result = Integer.parseInt(getProperty(tupleIndex, key));
+
             if (result != null) {
                 return result;
             } else {
@@ -99,6 +104,7 @@ public class Tuples implements Serializable {
     public boolean getBooleanProperty(int tupleIndex, String key, boolean defaultValue) {
         try {
             Boolean result = Boolean.parseBoolean(getProperty(tupleIndex, key));
+
             if (result != null) {
                 return result;
             } else {
@@ -113,11 +119,14 @@ public class Tuples implements Serializable {
 
     public double getDoubleProperty(int tupleIndex, String key, double defaultValue) {
         Double result = null;
+
         try {
             String value = getProperty(tupleIndex, key);
+
             if (value != null) {
                 result = Double.parseDouble(value);
             }
+
             if (result != null) {
                 return result;
             } else {

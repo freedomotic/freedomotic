@@ -7,18 +7,25 @@ package it.freedomotic.plugins;
 import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
+
 import it.freedomotic.app.Profiler;
+
 import it.freedomotic.exceptions.UnableToExecuteException;
+
 import it.freedomotic.plugins.gui.ClockForm;
+
 import it.freedomotic.reactions.Command;
+
 import java.io.IOException;
+
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author Enrico
  */
-public class Performances extends Protocol {
+public class Performances
+        extends Protocol {
 
     public Performances() {
         super("Performances Report", "/it.nicoletti.test/performances.xml");
@@ -37,7 +44,8 @@ public class Performances extends Protocol {
     }
 
     @Override
-    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
+    protected void onCommand(Command c)
+            throws IOException, UnableToExecuteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

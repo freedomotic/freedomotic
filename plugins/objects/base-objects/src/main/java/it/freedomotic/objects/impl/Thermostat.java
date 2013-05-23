@@ -5,19 +5,24 @@
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.events.ObjectReceiveClick;
+
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
+
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
-import it.freedomotic.reactions.TriggerPersistence;
+
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.reactions.TriggerPersistence;
 
 /**
  *
  * @author enrico
  */
-public class Thermostat extends EnvObjectLogic {
+public class Thermostat
+        extends EnvObjectLogic {
 
     private RangedIntBehaviorLogic temperature;
 
@@ -26,7 +31,6 @@ public class Thermostat extends EnvObjectLogic {
         //linking this property with the behavior defined in the XML
         temperature = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(0));
         temperature.addListener(new RangedIntBehaviorLogic.Listener() {
-
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //there is an hardware read error
@@ -41,7 +45,7 @@ public class Thermostat extends EnvObjectLogic {
             public void onRangeValue(int rangeValue, Config params, boolean fireCommand) {
                 if (fireCommand) {
                     executeSetTemperature(rangeValue, params);
-                } else { 
+                } else {
                     setTemperature(rangeValue);
                 }
             }
@@ -53,18 +57,20 @@ public class Thermostat extends EnvObjectLogic {
 
     public void executeSetTemperature(int rangeValue, Config params) {
         boolean executed = executeCommand("set temperature", params);
+
         if (executed) {
             temperature.setValue(rangeValue);
             getPojo().setCurrentRepresentation(0);
-                setChanged(true);
+            setChanged(true);
         }
     }
 
     private void setTemperature(int value) {
-        Freedomotic.logger.info("Setting behavior 'temperature' of object '" + getPojo().getName() + "' to " + value);
+        Freedomotic.logger.config("Setting behavior 'temperature' of object '" + getPojo().getName() + "' to "
+                + value);
         temperature.setValue(value);
         getPojo().setCurrentRepresentation(0);
-                setChanged(true);
+        setChanged(true);
     }
 
     /**
@@ -72,17 +78,15 @@ public class Thermostat extends EnvObjectLogic {
      */
     @Override
     protected void createCommands() {
-
-
     }
 
     @Override
     protected void createTriggers() {
-        
         Trigger clicked = new Trigger();
         clicked.setName("When " + this.getPojo().getName() + " is clicked");
         clicked.setChannel("app.event.sensor.object.behavior.clicked");
-        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
+        clicked.getPayload().addStatement("object.name",
+                this.getPojo().getName());
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
 

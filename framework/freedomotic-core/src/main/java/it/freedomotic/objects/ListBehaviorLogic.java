@@ -34,7 +34,8 @@ import java.util.ArrayList;
  *
  * @author Enrico
  */
-public class ListBehaviorLogic implements BehaviorLogic {
+public class ListBehaviorLogic
+        implements BehaviorLogic {
 
     private ListBehavior data;
     private Listener listener;
@@ -58,6 +59,7 @@ public class ListBehaviorLogic implements BehaviorLogic {
         if (parsed.equalsIgnoreCase("next")) {
             next(params, fireCommand);
         }
+
         if (parsed.equalsIgnoreCase("previous")) {
             previous(params, fireCommand);
         }
@@ -72,17 +74,21 @@ public class ListBehaviorLogic implements BehaviorLogic {
 
     private void next(Config params, boolean fireCommand) {
         int index = (data.indexOfSelection() + 1) % data.getItemsNumber();
-        params.setProperty("value", data.get(index));
+        params.setProperty("value",
+                data.get(index));
         listener.selectedChanged(params, fireCommand);
     }
 
     private void previous(Config params, boolean fireCommand) {
         int index = data.indexOfSelection() - 1;
+
         if (index < 0) {
             //index is negative for sure so we have to add it not substract
             index = data.getItemsNumber() + index;
         }
-        params.setProperty("value", data.get(index));
+
+        params.setProperty("value",
+                data.get(index));
         listener.selectedChanged(params, fireCommand);
     }
 
@@ -114,12 +120,11 @@ public class ListBehaviorLogic implements BehaviorLogic {
     public boolean isActive() {
         return data.isActive();
     }
-    
+
     @Override
     public boolean isReadOnly() {
         return data.isReadOnly();
     }
-
 
     @Override
     public String getValueAsString() {

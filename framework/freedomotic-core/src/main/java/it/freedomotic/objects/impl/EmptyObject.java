@@ -31,6 +31,6 @@ import it.freedomotic.objects.EnvObjectLogic;
  *
  * @author enrico
  */
-public class EmptyObject extends EnvObjectLogic{
-    
+public class EmptyObject
+        extends EnvObjectLogic {
 }

@@ -30,25 +30,25 @@ public class ModbusTestMain {
 
         Config config = new Config();
         config.setProperty("ModbusProtocol", "TCP");
-        
+
         //Serial test
         config.setProperty("port", "/dev/ttyUSB0");
         config.setProperty("baudrate", String.valueOf(19200));
         config.setProperty("data-bits", String.valueOf(SerialPort.DATABITS_8));
         config.setProperty("parity", String.valueOf(SerialPort.PARITY_EVEN));
         config.setProperty("stop-bits", String.valueOf(SerialPort.STOPBITS_1));
-        
+
         //TCP Test
         config.setProperty("host", "192.168.1.9");
         config.setProperty("tcpport", String.valueOf(502));
-        
+
 
 
 
         ModbusMaster master = ModbusMasterGateway.getInstance(config);
         try {
-            master.init();            
-            NumericLocator bl = new NumericLocator(1, RegisterRange.HOLDING_REGISTER, 266,DataType.TWO_BYTE_INT_UNSIGNED);
+            master.init();
+            NumericLocator bl = new NumericLocator(1, RegisterRange.HOLDING_REGISTER, 266, DataType.TWO_BYTE_INT_UNSIGNED);
             System.out.println("readed value: " + master.getValue(bl));
             master.setValue(bl, 1);
 

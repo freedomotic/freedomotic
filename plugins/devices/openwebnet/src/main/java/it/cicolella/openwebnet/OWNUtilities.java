@@ -140,7 +140,7 @@ public class OWNUtilities {
     // create the frame to send to the own gateway
     public static String createFrame(Command c) {
         String frame = null;
-        String address [] = null;
+        String address[] = null;
         String who = null;
         String what = null;
         String where = null;

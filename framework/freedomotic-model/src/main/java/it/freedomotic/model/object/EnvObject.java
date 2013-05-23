@@ -22,6 +22,7 @@
 package it.freedomotic.model.object;
 
 import it.freedomotic.model.geometry.FreedomShape;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,6 +71,7 @@ public class EnvObject implements Serializable {
         if (triggers == null) {
             triggers = new Properties();
         }
+
         return triggers;
     }
 
@@ -130,6 +132,7 @@ public class EnvObject implements Serializable {
         if ((protocol == null) || (protocol.isEmpty())) {
             protocol = "unknown";
         }
+
         return protocol;
     }
 
@@ -146,6 +149,7 @@ public class EnvObject implements Serializable {
                 activeBehaviors.add(behavior);
             }
         }
+
         return activeBehaviors;
     }
 
@@ -161,6 +165,7 @@ public class EnvObject implements Serializable {
                 return b;
             }
         }
+
         //Freedomotic.logger.warning("Searching for behavior named '" + behavior + "' but it doesen't exists for object '" + getName() + "'.");
         return null; //this behaviors doesn't exists for this object
     }
@@ -200,6 +205,7 @@ public class EnvObject implements Serializable {
         if ((phisicalAddress == null) || (phisicalAddress.isEmpty())) {
             phisicalAddress = "unknown";
         }
+
         return phisicalAddress.trim();
     }
 
@@ -240,8 +246,7 @@ public class EnvObject implements Serializable {
     public String getSimpleType() {
         //get the part of the string after the last dot characher
         //eg: 'EnvObject.ElectricDevice.Light' -> returns 'light'
-        return getType().substring(
-                getType().lastIndexOf(".") + 1).trim().toLowerCase();
+        return getType().substring(getType().lastIndexOf(".") + 1).trim().toLowerCase();
     }
 
     @Override
@@ -250,11 +255,12 @@ public class EnvObject implements Serializable {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final EnvObject other = (EnvObject) obj;
 
+        final EnvObject other = (EnvObject) obj;
 
         if (!this.name.equalsIgnoreCase(other.name)) {
             //if they have different names they cannot have same address/protocol
@@ -271,6 +277,7 @@ public class EnvObject implements Serializable {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -278,7 +285,8 @@ public class EnvObject implements Serializable {
     @RequiresPermissions("objects:read")
     public int hashCode() {
         int hash = 5;
-        hash = 89 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = (89 * hash) + ((this.name != null) ? this.name.hashCode() : 0);
+
         return hash;
     }
 

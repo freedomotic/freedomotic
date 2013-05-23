@@ -21,31 +21,29 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
  *
  * @author gpt
  */
-public class TriggersServerResource extends ServerResource implements TriggersResource{
+public class TriggersServerResource extends ServerResource implements TriggersResource {
 
-    private static volatile ArrayList<Trigger> triggers;  
-        
+    private static volatile ArrayList<Trigger> triggers;
+
     @Override
-    protected void doInit() throws ResourceException{        
-        triggers =  TriggerPersistence.getTriggers();            
+    protected void doInit() throws ResourceException {
+        triggers = TriggerPersistence.getTriggers();
     }
-        
+
     @Override
-    public String retrieveXml() {   
+    public String retrieveXml() {
         String ret = "";
-        XStream xstream =FreedomXStream.getXstream(); 
+        XStream xstream = FreedomXStream.getXstream();
         ret = xstream.toXML(triggers);
-        return ret;                
-    }
-    
-        @Override
-    public String retrieveJson() {        
-        String ret = "";
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
-        xstream.setMode(XStream.NO_REFERENCES);                
-        ret = xstream.toXML(triggers);        
         return ret;
     }
 
-  
+    @Override
+    public String retrieveJson() {
+        String ret = "";
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
+        xstream.setMode(XStream.NO_REFERENCES);
+        ret = xstream.toXML(triggers);
+        return ret;
+    }
 }

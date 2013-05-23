@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.freedomotic.arduinousb;
 
 import it.freedomotic.api.EventTemplate;
@@ -47,8 +46,8 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
             //the right port using an hello message and an expected reply
             //the hello message will be broadcasted to all usb connected devices
             //serial.setAutodiscover(
-              //      configuration.getStringProperty("serial.hello", "hello"), 
-                //    configuration.getStringProperty("serial.hello-reply", "hello-reply"));
+            //      configuration.getStringProperty("serial.hello", "hello"), 
+            //    configuration.getStringProperty("serial.hello-reply", "hello-reply"));
             //connection parameters
             serial.setPortName(configuration.getStringProperty("serial.port", "/dev/usb0"));
             serial.setPortBaudrate(configuration.getIntProperty("serial.baudrate", 9600));

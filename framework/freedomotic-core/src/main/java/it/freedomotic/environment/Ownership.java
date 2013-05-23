@@ -37,16 +37,18 @@
 //You should have received a copy of the GNU General Public License
 //along with EventEngine; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
 package it.freedomotic.environment;
 
 
 /**
- *Interfaccia che definisce il metodo <code>decideOwner()</code>
- * che sarà implementato diversamente per ogni politica di ownership.
+ * Interfaccia che definisce il metodo
+ * <code>decideOwner()</code> che sarà implementato diversamente per ogni
+ * politica di ownership.
  */
 public interface Ownership {
-   //public abstract boolean decideOwnwer(Zone z, int mode);
-   abstract boolean canTriggerReactionsOnEnter(ZoneLogic z);
-   abstract boolean canTriggerReactionsOnExit(ZoneLogic z);
+    //public abstract boolean decideOwnwer(Zone z, int mode);
+
+    abstract boolean canTriggerReactionsOnEnter(ZoneLogic z);
+
+    abstract boolean canTriggerReactionsOnExit(ZoneLogic z);
 }

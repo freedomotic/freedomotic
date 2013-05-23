@@ -15,7 +15,7 @@
             <property name="port-to-query" value="80"/>
             <property name="status-to-query" value="http://dimaiofamily.no-ip.org:80/status"/>
         </tuple>
-     </tuples>
+    </tuples>
 </config>
 
                 

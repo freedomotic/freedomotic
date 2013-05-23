@@ -22,9 +22,11 @@
 package it.freedomotic.app;
 
 /**
+ * Deprecated: switch to AOP instead
  *
  * @author Enrico
  */
+@Deprecated
 public class Profiler {
 
     private static final double STARTUP_TIME = System.currentTimeMillis();
@@ -61,19 +63,21 @@ public class Profiler {
     }
 
     static void appendCommandLatency(long ms) {
-        if (ms >= 0 && ms < 999) {
+        if ((ms >= 0) && (ms < 999)) {
             scores[(int) ms][0] += 1;
         }
+
         if (ms > maxCommandsLatency) {
             maxCommandsLatency = ms;
         }
+
         double temp = (averageCommandsLatency * numReportedLatency) + ms;
         numReportedLatency++;
         averageCommandsLatency = temp / (double) numReportedLatency;
     }
 
     static void appendTotalExecutionTime(long ms) {
-                if (ms >= 0 && ms < 999) {
+        if ((ms >= 0) && (ms < 999)) {
             scores[(int) ms][3] += 1;
         }
     }
@@ -110,29 +114,34 @@ public class Profiler {
         double messages = sentEvents + sentCommands + sentReplies + receivedReplies;
         double runtime = System.currentTimeMillis() - STARTUP_TIME;
         double troughtput = -1.0;
+
         try {
             troughtput = (double) (messages * 1000) / (double) runtime; //messages on the bus per second
         } catch (Exception e) {
         }
+
         return troughtput;
     }
 
     public static void appendExecutionTime(long ms) {
-        if (ms >= 0 && ms < 999) {
+        if ((ms >= 0) && (ms < 999)) {
             scores[(int) ms][1] += 1;
         }
+
         double temp = (averageExecutionTime * numExecutions) + ms;
         numExecutions++;
         averageExecutionTime = temp / (double) numExecutions;
+
         if (ms > maxExecutionTime) {
             maxExecutionTime = ms;
         }
     }
 
     public static void appendTriggerCheckingTime(long ms) {
-         if (ms >= 0 && ms < 999) {
+        if ((ms >= 0) && (ms < 999)) {
             scores[(int) ms][2] += 1;
         }
+
         double temp = (averageTriggerCheckingTime * numCheckedTriggers) + ms;
         numCheckedTriggers++;
         averageTriggerCheckingTime = temp / (double) numCheckedTriggers;
@@ -140,22 +149,40 @@ public class Profiler {
 
     public static String print() {
         StringBuilder buff = null;
+
         try {
             buff = new StringBuilder();
-            buff.append("Sensors have sent ").append(sentEvents).append(" events. This results in ").append(receivedEvents).append(" trigger checkings. "
-                    + "Trigger checking process takes an average of ").append(averageTriggerCheckingTime).append("ms per check (").append(receivedEvents * averageTriggerCheckingTime).append("ms in total).\n");
-            buff.append("Freedomotic have sent ").append(sentCommands).append(" commands (user level + hardware level). ").append(receivedCommands).append(" of them are arrived to destination (non arrived commands have reached TTL, lost on the bus network or have wrong receiver address).\n "
-                    + "Commands execution takes an average time of ").append(averageExecutionTime).append("ms and a max of ").append(maxExecutionTime).append("ms. Commands average latency is ").append(averageCommandsLatency).append("ms. Max commands latency is ").append(maxCommandsLatency).append("ms.\n");
-            buff.append("Actuators and BehaviorManager have sent ").append(sentReplies).append(" commands execution replies of which ").
-                    append(receivedReplies).append(" are received by Freedomotic. ").append(timeoutedReplies).append(" replies have timed out for a non responding actuator.\n");
-            buff.append("Average Bus troughtput (messages/sec): ").append(computeBusTroughtput()).append(". \n").append("Enqueued Reactions: ").append(enqueuedReactions).append(" Dequeued Reactions: ").append(dequeuedReactions).append(" of which ").append(missedDeadlines).append(" missed its deadline (").append((missedDeadlines * 100) / dequeuedReactions).append("%).\n");
-            buff.append("Average reactions executed per second ").append(dequeuedReactions / ((System.currentTimeMillis() - STARTUP_TIME) / 1000)).append(" (an average of ").append(receivedCommands / dequeuedReactions).append(" commands in every executed reaction).\n");
+            buff.append("Sensors have sent ").append(sentEvents).append(" events. This results in ")
+                    .append(receivedEvents)
+                    .append(" trigger checkings. " + "Trigger checking process takes an average of ")
+                    .append(averageTriggerCheckingTime).append("ms per check (")
+                    .append(receivedEvents * averageTriggerCheckingTime).append("ms in total).\n");
+            buff.append("Freedomotic have sent ").append(sentCommands)
+                    .append(" commands (user level + hardware level). ").append(receivedCommands)
+                    .append(" of them are arrived to destination (non arrived commands have reached TTL, lost on the bus network or have wrong receiver address).\n "
+                    + "Commands execution takes an average time of ").append(averageExecutionTime)
+                    .append("ms and a max of ").append(maxExecutionTime).append("ms. Commands average latency is ")
+                    .append(averageCommandsLatency).append("ms. Max commands latency is ").append(maxCommandsLatency)
+                    .append("ms.\n");
+            buff.append("Actuators and BehaviorManager have sent ").append(sentReplies)
+                    .append(" commands execution replies of which ").append(receivedReplies)
+                    .append(" are received by Freedomotic. ").append(timeoutedReplies)
+                    .append(" replies have timed out for a non responding actuator.\n");
+            buff.append("Average Bus troughtput (messages/sec): ").append(computeBusTroughtput()).append(". \n")
+                    .append("Enqueued Reactions: ").append(enqueuedReactions).append(" Dequeued Reactions: ")
+                    .append(dequeuedReactions).append(" of which ").append(missedDeadlines)
+                    .append(" missed its deadline (").append((missedDeadlines * 100) / dequeuedReactions)
+                    .append("%).\n");
+            buff.append("Average reactions executed per second ")
+                    .append(dequeuedReactions / ((System.currentTimeMillis() - STARTUP_TIME) / 1000))
+                    .append(" (an average of ").append(receivedCommands / dequeuedReactions)
+                    .append(" commands in every executed reaction).\n");
             buff.append("System runs for (ms): ").append(System.currentTimeMillis() - STARTUP_TIME).append("\n");
-
 
             return buff.toString();
         } catch (Exception e) {
         }
+
         return "";
     }
 

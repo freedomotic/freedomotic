@@ -22,12 +22,16 @@
 package it.freedomotic.api;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.bus.EventChannel;
+
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
+
 import it.freedomotic.exceptions.UnableToExecuteException;
+
 import it.freedomotic.reactions.Command;
 
 import it.freedomotic.security.Auth;
@@ -47,7 +51,9 @@ import javax.jms.ObjectMessage;
  * @author Enrico Nicoletti
  */
 @Deprecated
-public abstract class Actuator extends Plugin implements BusConsumer {
+public abstract class Actuator
+        extends Plugin
+        implements BusConsumer {
 
     private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
     private CommandChannel channel;
@@ -62,6 +68,7 @@ public abstract class Actuator extends Plugin implements BusConsumer {
 //            executor = Executors.newCachedThreadPool();
 //        } else {
         executor = Executors.newSingleThreadExecutor();
+
 //        }
     }
 
@@ -84,15 +91,18 @@ public abstract class Actuator extends Plugin implements BusConsumer {
     public String listenMessagesOn() {
         String defaultQueue = ACTUATORS_QUEUE_DOMAIN + category + "." + shortName;
         String customizedQueue = ACTUATORS_QUEUE_DOMAIN + listenOn;
+
         if (listenOn.equalsIgnoreCase("undefined")) {
             listenOn = defaultQueue + ".in";
+
             return listenOn;
         } else {
             return customizedQueue;
         }
     }
 
-    protected abstract void onCommand(Command c) throws IOException, UnableToExecuteException;
+    protected abstract void onCommand(Command c)
+            throws IOException, UnableToExecuteException;
 
     protected abstract boolean canExecute(Command c);
 
@@ -137,11 +147,14 @@ public abstract class Actuator extends Plugin implements BusConsumer {
     @Override
     public void onMessage(final ObjectMessage message) {
         if (!isRunning) {
-            Freedomotic.logger.info("Actuator '" + getName() + "' receives a Command while is not running. Plugin try to turn on itself...");
+            Freedomotic.logger.config("Actuator '" + getName()
+                    + "' receives a Command while is not running. Plugin try to turn on itself...");
             start();
         }
+
         try {
             Object payload = message.getObject();
+
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
                 Freedomotic.logger.info(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");

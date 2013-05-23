@@ -43,7 +43,7 @@ public class Gateway {
     public void setPortNumber(int portNumber) {
         this.portNumber = portNumber;
     }
-    
+
     public int getPasswordOpen() {
         return passwordOpen;
     }
@@ -82,6 +82,6 @@ public class Gateway {
 
     // inserire riferimento ad alias
     public void SetGestSocketMonitor(OpenWebNet freedomoticSensor, String alias) {
-       // this.gestSocketMonitor = new BTicinoSocketReadManager(freedomoticSensor, alias);
+        // this.gestSocketMonitor = new BTicinoSocketReadManager(freedomoticSensor, alias);
     }
 }

@@ -31,7 +31,8 @@ import java.io.Serializable;
  *
  * @author Enrico
  */
-public abstract class Behavior implements Serializable {
+public abstract class Behavior
+        implements Serializable {
 
     private static final long serialVersionUID = -4973746059396782383L;
 	
@@ -40,7 +41,6 @@ public abstract class Behavior implements Serializable {
     private boolean active;
     private int priority;
     private boolean readOnly;
-    
     public final static String VALUE_OPPOSITE = "opposite";
     public final static String VALUE_NEXT = "next";
     public final static String VALUE_PREVIOUS = "previous";
@@ -48,7 +48,7 @@ public abstract class Behavior implements Serializable {
     public boolean isActive() {
         return active;
     }
-    
+
     public void setActive(boolean active) {
         this.active = active;
     }
@@ -64,11 +64,11 @@ public abstract class Behavior implements Serializable {
     public boolean isReadOnly() {
         return readOnly;
     }
-    
+
     public void setReadonly(boolean readOnly) {
         this.readOnly = readOnly;
     }
-    
+
     public void setDescription(String desc) {
         this.description = desc;
     }
@@ -90,20 +90,25 @@ public abstract class Behavior implements Serializable {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final Behavior other = (Behavior) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+
+        if ((this.name == null) ? (other.name != null) : (!this.name.equals(other.name))) {
             return false;
         }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 11 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = (11 * hash) + ((this.name != null) ? this.name.hashCode() : 0);
+
         return hash;
     }
 }

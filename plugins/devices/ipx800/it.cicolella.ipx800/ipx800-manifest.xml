@@ -11,9 +11,9 @@
         <property name="change-state-relay-url" value="leds.cgi?led="/>
         <property name="send-pulse-relay-url" value="rlyfs.cgi?rlyf="/>
         <property name="get-status-url" value="status.xml"/>
-     </properties>
+    </properties>
     <tuples>
-    <!-- DEVICES CONFIGURATION -->
+        <!-- DEVICES CONFIGURATION -->
         <tuple>
             <property name="alias" value="default"/>
             <property name="ip-to-query" value="ipx.dyndns.org"/>

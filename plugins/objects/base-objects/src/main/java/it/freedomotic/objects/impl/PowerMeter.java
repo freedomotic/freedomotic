@@ -16,16 +16,17 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
+
 import it.freedomotic.objects.RangedIntBehaviorLogic;
 
-
-public class PowerMeter extends ElectricDevice {
+public class PowerMeter
+        extends ElectricDevice {
 
     private RangedIntBehaviorLogic current;
     private RangedIntBehaviorLogic voltage;
@@ -107,7 +108,7 @@ public class PowerMeter extends ElectricDevice {
         });
         //register this behavior to the superclass to make it visible to it
         registerBehavior(power);
-        
+
         powerFactor = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior("power-factor"));
         powerFactor.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
@@ -161,6 +162,7 @@ public class PowerMeter extends ElectricDevice {
 
     public void executeSetCurrent(int rangeValue, Config params) {
         boolean executed = executeCommand("set current", params);
+
         if (executed) {
             current.setValue(rangeValue);
             getPojo().setCurrentRepresentation(0);
@@ -169,14 +171,16 @@ public class PowerMeter extends ElectricDevice {
     }
 
     private void setCurrent(int value) {
-        Freedomotic.logger.info("Setting behavior 'current' of object '" + getPojo().getName() + "' to " + value);
+        Freedomotic.logger.config("Setting behavior 'current' of object '" + getPojo().getName() + "' to "
+                + value);
         current.setValue(value);
         getPojo().setCurrentRepresentation(0);
-            setChanged(true);
+        setChanged(true);
     }
 
     public void executeSetVoltage(int rangeValue, Config params) {
         boolean executed = executeCommand("set voltage", params);
+
         if (executed) {
             voltage.setValue(rangeValue);
             getPojo().setCurrentRepresentation(0);
@@ -185,7 +189,8 @@ public class PowerMeter extends ElectricDevice {
     }
 
     private void setVoltage(int value) {
-        Freedomotic.logger.info("Setting behavior 'voltage' of object '" + getPojo().getName() + "' to " + value);
+        Freedomotic.logger.config("Setting behavior 'voltage' of object '" + getPojo().getName() + "' to "
+                + value);
         voltage.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
@@ -193,6 +198,7 @@ public class PowerMeter extends ElectricDevice {
 
     public void executeSetPower(int rangeValue, Config params) {
         boolean executed = executeCommand("set power", params);
+
         if (executed) {
             power.setValue(rangeValue);
             getPojo().setCurrentRepresentation(0);
@@ -206,9 +212,10 @@ public class PowerMeter extends ElectricDevice {
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
     }
-    
+
     public void executeSetPowerFactor(int rangeValue, Config params) {
         boolean executed = executeCommand("set power-factor", params);
+
         if (executed) {
             powerFactor.setValue(rangeValue);
             getPojo().setCurrentRepresentation(0);
@@ -217,7 +224,8 @@ public class PowerMeter extends ElectricDevice {
     }
 
     private void setPowerFactor(int value) {
-        Freedomotic.logger.info("Setting behavior 'power-factor' of object '" + getPojo().getName() + "' to " + value);
+        Freedomotic.logger.config("Setting behavior 'power-factor' of object '" + getPojo().getName() + "' to "
+                + value);
         powerFactor.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
@@ -225,6 +233,7 @@ public class PowerMeter extends ElectricDevice {
 
     public void executeSetEnergy(int rangeValue, Config params) {
         boolean executed = executeCommand("set energy", params);
+
         if (executed) {
             energy.setValue(rangeValue);
             getPojo().setCurrentRepresentation(0);

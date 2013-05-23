@@ -21,8 +21,14 @@
  */
 package it.freedomotic.reactions;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.thoughtworks.xstream.XStream;
+
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.persistence.FreedomXStream;
+
 import it.freedomotic.util.DOMValidateDTD;
 import it.freedomotic.util.Info;
 
@@ -46,28 +52,36 @@ public class TriggerPersistence {
 
     public static void saveTriggers(File folder) {
         if (list.isEmpty()) {
-            Freedomotic.logger.warning("There are no triggers to persist, " + folder.getAbsolutePath() + " will not be altered.");
+            Freedomotic.logger.warning("There are no triggers to persist, " + folder.getAbsolutePath()
+                    + " will not be altered.");
             return;
         }
+
         if (!folder.isDirectory()) {
             Freedomotic.logger.warning(folder.getAbsoluteFile() + " is not a valid trigger folder. Skipped");
             return;
         }
+
         XStream xstream = FreedomXStream.getXstream();
         deleteTriggerFiles(folder);
+
         try {
-            Freedomotic.logger.info("Saving triggers to file in " + folder.getAbsolutePath());
+            Freedomotic.logger.config("Saving triggers to file in " + folder.getAbsolutePath());
+
             for (Trigger trigger : list) {
                 if (trigger.isToPersist()) {
                     String uuid = trigger.getUUID();
-                    if (uuid == null || uuid.isEmpty()) {
+
+                    if ((uuid == null) || uuid.isEmpty()) {
                         trigger.setUUID(UUID.randomUUID().toString());
                     }
+
                     String fileName = trigger.getUUID() + ".xtrg";
                     FileWriter fstream = new FileWriter(folder + "/" + fileName);
                     BufferedWriter out = new BufferedWriter(fstream);
                     out.write(xstream.toXML(trigger)); //persist only the data not the logic
                     //Close the output stream
+
                     out.close();
                     fstream.close();
                 }
@@ -81,16 +95,16 @@ public class TriggerPersistence {
     private static void deleteTriggerFiles(File folder) {
         File[] files = folder.listFiles();
         // This filter only returns object files
-        FileFilter objectFileFileter = new FileFilter() {
-
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xtrg")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+        FileFilter objectFileFileter =
+                new FileFilter() {
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xtrg")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
         files = folder.listFiles(objectFileFileter);
         for (File file : files) {
             file.delete();
@@ -101,32 +115,35 @@ public class TriggerPersistence {
         return list;
     }
 
-    private TriggerPersistence() {
-    }
-
     public synchronized static void loadTriggers(File folder) {
         XStream xstream = FreedomXStream.getXstream();
-        // This filter only returns object files
-        FileFilter objectFileFileter = new FileFilter() {
 
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xtrg")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+        // This filter only returns object files
+        FileFilter objectFileFileter =
+                new FileFilter() {
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xtrg")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
+
         File[] files = folder.listFiles(objectFileFileter);
+
         try {
             StringBuilder summary = new StringBuilder();
             //print an header for the index.txt file
             summary.append("#Filename \t\t #TriggerName \t\t\t #ListenedChannel").append("\n");
+
             if (files != null) {
                 for (File file : files) {
                     //validate the object against a predefined DTD
-                    String xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/trigger.dtd");
+                    String xml =
+                            DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/trigger.dtd");
                     Trigger trigger = (Trigger) xstream.fromXML(xml);
+
                     //addAndRegister trigger to the list if it is not a duplicate
                     if (!list.contains(trigger)) {
                         if (trigger.isHardwareLevel()) {
@@ -138,13 +155,17 @@ public class TriggerPersistence {
                             } else {
                                 trigger.setPersistence(true); //not hardware trigger and not plugin related
                             }
+
                             list.add(trigger); //only in the list not registred. I will be registred only if used in mapping
                         }
                     } else {
                         Freedomotic.logger.warning("Trigger '" + trigger.getName() + "' is already in the list");
                     }
-                    summary.append(trigger.getUUID()).append("\t\t").append(trigger.getName()).append("\t\t\t").append(trigger.getChannel()).append("\n");
+
+                    summary.append(trigger.getUUID()).append("\t\t").append(trigger.getName()).append("\t\t\t")
+                            .append(trigger.getChannel()).append("\n");
                 }
+
                 //writing a summary .txt file with the list of commands in this folder
                 FileWriter fstream = new FileWriter(folder + "/index.txt");
                 BufferedWriter indexfile = new BufferedWriter(fstream);
@@ -161,6 +182,7 @@ public class TriggerPersistence {
 
     public static synchronized void addAndRegister(Trigger t) {
         int preSize = TriggerPersistence.size();
+
         if (!list.contains(t)) {
             list.add(t);
             t.register();
@@ -171,14 +193,17 @@ public class TriggerPersistence {
             list.set(old, t);
             t.register();
         }
+
         int postSize = TriggerPersistence.size();
-        if (!(postSize == preSize + 1)) {
+
+        if (!(postSize == (preSize + 1))) {
             Freedomotic.logger.severe("Error while while adding and registering trigger '" + t.getName() + "'");
         }
     }
 
     public static synchronized void add(Trigger t) {
         int preSize = TriggerPersistence.size();
+
         if (!list.contains(t)) {
             list.add(t);
         } else {
@@ -187,22 +212,27 @@ public class TriggerPersistence {
             list.get(old).unregister();
             list.set(old, t);
         }
+
         int postSize = TriggerPersistence.size();
-        if (!(postSize == preSize + 1)) {
+
+        if (!(postSize == (preSize + 1))) {
             Freedomotic.logger.severe("Error while while adding trigger '" + t.getName() + "'");
         }
     }
 
     public static synchronized void remove(Trigger t) {
         int preSize = TriggerPersistence.size();
+
         try {
             t.unregister();
             list.remove(t);
         } catch (Exception e) {
             Freedomotic.logger.severe("Error while while unregistering the trigger '" + t.getName() + "'");
         }
+
         int postSize = TriggerPersistence.size();
-        if (!(postSize == preSize - 1)) {
+
+        if (!(postSize == (preSize - 1))) {
             Freedomotic.logger.severe("Error while while removing trigger '" + t.getName() + "'");
         }
     }
@@ -218,25 +248,31 @@ public class TriggerPersistence {
         if ((name == null) || (name.isEmpty())) {
             return null;
         }
-        for (Iterator<Trigger> it = list.iterator(); it.hasNext();) {
-            Trigger trigger = it.next();
+
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            Trigger trigger = (Trigger) it.next();
+
             if (trigger.getName().equalsIgnoreCase(name)) {
                 return trigger;
             }
         }
+
         Freedomotic.logger.warning("Searching for a trigger named '" + name + "' but it doesen't exist.");
+
         return null;
     }
 
     public static Trigger getTrigger(Trigger input) {
         if (input != null) {
-            for (Iterator<Trigger> it = list.iterator(); it.hasNext();) {
-                Trigger trigger = it.next();
+            for (Iterator it = list.iterator(); it.hasNext();) {
+                Trigger trigger = (Trigger) it.next();
+
                 if (trigger.equals(input)) {
                     return trigger;
                 }
             }
         }
+
         return null;
     }
 

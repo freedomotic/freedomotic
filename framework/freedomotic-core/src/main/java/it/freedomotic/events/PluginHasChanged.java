@@ -28,13 +28,13 @@ package it.freedomotic.events;
 import it.freedomotic.api.EventTemplate;
 
 /**
- * Channel <b>app.event.sensor.plugin.change</b> informs about plugin related 
- * events like plugin started, stopped, description
- * changes, and so on.
- * 
+ * Channel <b>app.event.sensor.plugin.change</b> informs about plugin related
+ * events like plugin started, stopped, description changes, and so on.
+ *
  * @author Enrico
  */
-public class PluginHasChanged extends EventTemplate {
+public class PluginHasChanged
+        extends EventTemplate {
 
     private static final long serialVersionUID = 5203339184820441643L;
 
@@ -46,12 +46,10 @@ public class PluginHasChanged extends EventTemplate {
         ENQUEUE, DEQUEUE
    };
 
-
     public PluginHasChanged(Object source, String pluginName, PluginActions action) {
-
         payload.addStatement("plugin", pluginName);
-        payload.addStatement("action", action.toString());
-
+        payload.addStatement("action",
+                action.toString());
     }
 
     @Override

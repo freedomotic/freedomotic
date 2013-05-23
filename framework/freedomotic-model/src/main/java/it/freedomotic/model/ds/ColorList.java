@@ -42,17 +42,20 @@ public class ColorList {
 
     public static Color getRandom() {
         Random rand = new Random();
+
         return (new Color(rand.nextInt(256),
                 rand.nextInt(256),
                 rand.nextInt(256)));
     }
 
     public static Color getNext() {
-            if (last >= colors.size()) {
-                last = 0;
-            }
-            Color c = colors.get(last);
-            last++;
-            return c;
+        if (last >= colors.size()) {
+            last = 0;
+        }
+
+        Color c = colors.get(last);
+        last++;
+
+        return c;
     }
 }

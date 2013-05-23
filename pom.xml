@@ -34,7 +34,7 @@
                 <module>plugins/devices/test</module>
                 <module>plugins/devices/hello-world</module>
                 <module>tools/RestApiInterfaces</module>
-                <module>plugins/devices/restapi</module>
+                <!--<module>plugins/devices/restapi</module>-->
             </modules>
         </profile>
     </profiles>
@@ -126,20 +126,43 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ftp</artifactId>
-                <version>1.0-alpha-6</version>
+                <version>1.0</version>
             </extension>
         </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>2.5.1</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
             </plugin>
-        </plugins>
+            <!-- format source code at build time -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jalopy-maven-plugin</artifactId>
+                <version>1.0-alpha-1</version>
+            </plugin>
+            <!-- copy plugins dependencies when a plugin is installed -->
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <!-- exclude dependencies already specified in freedomotic-core -->
+                            <excludeScope>provided</excludeScope>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>   
         <!-- executes only on childs (if the child have specified it in its pom)-->
         <pluginManagement>
 

@@ -90,7 +90,6 @@ public class i2c extends Protocol {
                 PinPullResistance.PULL_DOWN); // PIN RESISTANCE (optional)   
         // create and register gpio pin listener
         i2c_int.addListener(new GpioPinListenerDigital() {
-
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 // display pin state on console
@@ -104,7 +103,7 @@ public class i2c extends Protocol {
                         for (int i = 0; i < 8; i++) {
                             val = (globVal >> i) & 0x0001; //extract i-pos bit of byte
                             if (board.setLineStatus(i, val)) {
-                                String EVaddress = board.getAddress() + ":" + i ;
+                                String EVaddress = board.getAddress() + ":" + i;
                                 notifyChangeEvent(EVaddress, val);
                             }
                         }
@@ -173,7 +172,7 @@ public class i2c extends Protocol {
 
     }
 
-      private void notifyChangeEvent(String device_address, int val) {
+    private void notifyChangeEvent(String device_address, int val) {
 
         Freedomotic.logger.log(Level.INFO, "Sending I2C protocol read event for object address ''{0}''. It''s readed status is {1}", new Object[]{device_address, val});
         //building the event
@@ -192,6 +191,7 @@ public class i2c extends Protocol {
         //publish the event on the messaging bus
         this.notifyEvent(event);
     }
+
     @Override
     protected boolean canExecute(Command c) {
         //don't mind this method for now

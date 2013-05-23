@@ -231,17 +231,17 @@ public class RoomEvents extends Protocol {
         boolean found = false;
         for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
             for (Room z : env.getRooms()) {
-                    for (EnvObject obj : z.getPojo().getObjects()) {
-                        if (obj.getName().equalsIgnoreCase(objName)) {
-                            found = true;
-                            break;
-                        }
+                for (EnvObject obj : z.getPojo().getObjects()) {
+                    if (obj.getName().equalsIgnoreCase(objName)) {
+                        found = true;
+                        break;
+                    }
                 }
                 if (found) {
                     notifyRoomStatus(z);
                     break;
                 }
             }
-        }  
+        }
     }
 }

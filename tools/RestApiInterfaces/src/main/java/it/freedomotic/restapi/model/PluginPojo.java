@@ -9,17 +9,15 @@ package it.freedomotic.restapi.model;
  * @author gpt
  */
 public class PluginPojo {
-    
+
     private String name;
     private boolean isRunning;
 
-  
-    public PluginPojo(String name, boolean isRunning)
-    {
+    public PluginPojo(String name, boolean isRunning) {
         this.setName(name);
-        this.setIsRunning(isRunning);    
+        this.setIsRunning(isRunning);
     }
-    
+
     /**
      * @return the name
      */
@@ -47,6 +45,4 @@ public class PluginPojo {
     public void setIsRunning(boolean isRunning) {
         this.isRunning = isRunning;
     }
-    
-    
 }

@@ -14,7 +14,9 @@ import java.util.logging.Logger;
  * @author mauro
  */
 public class OWNFrame extends javax.swing.JFrame {
-     OpenWebNet plugin;
+
+    OpenWebNet plugin;
+
     /**
      * Creates new form OWNFrame
      */
@@ -130,8 +132,6 @@ public class OWNFrame extends javax.swing.JFrame {
     private void jTextOwnFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextOwnFrameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextOwnFrameActionPerformed
-
-            
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton SendFrameButton;
     private javax.swing.JLabel jLabel1;

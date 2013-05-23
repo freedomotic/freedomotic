@@ -28,7 +28,6 @@ import java.awt.Point;
  */
 public class Callout {
 
-
     private String text;
     private Point position;
     private int duration;
@@ -36,38 +35,45 @@ public class Callout {
     private long timestamp;
     private String relatedTo;
     private String group;
-    private Color color=Color.black;
+    private Color color = Color.black;
 
     public Callout(String relatedObject, String group, String text, int x, int y, float angle, int duration) {
         this.text = text;
         this.position = new Point(x, y);
+
         if (duration <= 0) { //autodetect the durantion based on string length
             this.duration = 45 * text.length();
         } else {
             this.duration = duration;
         }
+
         this.rotation = angle;
         timestamp = System.currentTimeMillis();
-        this.relatedTo=relatedObject;
-        this.group=group;
+        this.relatedTo = relatedObject;
+        this.group = group;
     }
-    
+
     public Callout(String text, int duration, Color color) {
         this.text = text;
         this.position = new Point(50, 50);
+
         if (duration <= 0) { //autodetect the durantion based on string length
             this.duration = 45 * text.length();
         } else {
             this.duration = duration;
         }
+
         this.rotation = 0.0f;
         timestamp = System.currentTimeMillis();
-        this.color=color;
-        this.group="info";
+        this.color = color;
+        this.group = "info";
     }
-  
+
     private String format(String text) {
-        text = text + "\n" + text.substring(text.length() / 2, text.length());
+        text =
+                text + "\n" + text.substring(text.length() / 2,
+                text.length());
+
         return text;
     }
 
@@ -126,9 +132,9 @@ public class Callout {
     public long getTimestamp() {
         return timestamp;
     }
-    
-    public void setColor(Color color){
-        this.color=color;
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public Color getColor() {

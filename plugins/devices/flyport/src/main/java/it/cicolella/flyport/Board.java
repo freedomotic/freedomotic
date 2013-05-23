@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.flyport;
 
 public class Board {
@@ -31,14 +30,14 @@ public class Board {
 
     public Board(String ipAddress, int port, int potNumber, int ledNumber,
             int btnNumber, String lineToMonitorize, int startingValue) {
-            setIpAddress(ipAddress);
-            setPort(port);
-            setPotNumber(potNumber);
-            setLedNumber(ledNumber);
-            setBtnNumber(btnNumber);
-            setLineToMonitorize(lineToMonitorize);
-            setStartingValue(startingValue);
-            
+        setIpAddress(ipAddress);
+        setPort(port);
+        setPotNumber(potNumber);
+        setLedNumber(ledNumber);
+        setBtnNumber(btnNumber);
+        setLineToMonitorize(lineToMonitorize);
+        setStartingValue(startingValue);
+
     }
 
     public int getPotNumber() {

@@ -16,7 +16,7 @@
         <property name="sensor-sn-request" value="1.3.1.6"/>
         <property name="sensor-unit-request" value="1.3.1.7"/>
         <property name="sensor-id-request" value="1.3.1.8"/>
-     </properties>
+    </properties>
     <tuples>
         <tuple>
             <property name="object.class" value="Thermostat"/>

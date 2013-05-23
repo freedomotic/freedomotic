@@ -9,8 +9,5 @@ package it.freedomotic.restapi.server.interfaces;
  *
  * @author gpt
  */
-public interface TriggersResource extends FreedomoticResource{
-    
-
-        
+public interface TriggersResource extends FreedomoticResource {
 }

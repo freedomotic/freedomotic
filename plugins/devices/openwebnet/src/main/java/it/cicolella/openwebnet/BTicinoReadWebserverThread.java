@@ -1,37 +1,32 @@
 package it.cicolella.openwebnet;
 
-/*****************************************************************
- * BTicinoReadWebServerThread.java                               *
- * Original code:			          -              *
- * date          : Sep 8, 2004                                   *
- * copyright     : (C) 2005 by Bticino S.p.A. Erba (CO) - Italy  *
- *                     Embedded Software Development Laboratory  *
- * license       : GPL                                           *
- * email         : 		             		         *
- * web site      : www.bticino.it; www.myhome-bticino.it         *
- *                                                               *
- * Modified and adapted for Freedomotic project by:              *
- * Mauro Cicolella - Enrico Nicoletti                            *            *
- * date          : 24/11/2011                                    *
- * web site      : www.freedomotic.com                           *
- *****************************************************************/
-/***************************************************************************
+/**
+ * ***************************************************************
+ * BTicinoReadWebServerThread.java * Original code:	- * date : Sep 8, 2004 *
+ * copyright : (C) 2005 by Bticino S.p.A. Erba (CO) - Italy * Embedded Software
+ * Development Laboratory * license : GPL * email : * web site : www.bticino.it;
+ * www.myhome-bticino.it * * Modified and adapted for Freedomotic project by: *
+ * Mauro Cicolella - Enrico Nicoletti * * date : 24/11/2011 * web site :
+ * www.freedomotic.com *
+ * ***************************************************************
+ */
+/**
+ * *************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ * This program is free software; you can redistribute it and/or modify * it
+ * under the terms of the GNU General Public License as published by * the Free
+ * Software Foundation; either version 2 of the License, or * (at your option)
+ * any later version. * *
+ * *************************************************************************
+ */
 import it.freedomotic.app.Freedomotic;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Description:
- * Manage by thread received string from WebServer
- * 
+ * Description: Manage by thread received string from WebServer
+ *
  */
 public class BTicinoReadWebserverThread extends Thread {
 
@@ -48,9 +43,9 @@ public class BTicinoReadWebserverThread extends Thread {
 
     /**
      * Constructor
-     * 
+     *
      * @param sock Socket to analyze
-     * @param inp Character-input stream  
+     * @param inp Character-input stream
      * @param numSocket Socket type, 0=command, 1=monitor
      */
     public BTicinoReadWebserverThread(Socket sock, BufferedReader inp, int numSocket) {

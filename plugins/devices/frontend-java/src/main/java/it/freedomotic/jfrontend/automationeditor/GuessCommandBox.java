@@ -1,16 +1,22 @@
 package it.freedomotic.jfrontend.automationeditor;
 
-import it.freedomotic.jfrontend.automationeditor.ReactionEditor;
 import it.freedomotic.app.Freedomotic;
+
 import it.freedomotic.core.NaturalLanguageProcessor;
-import it.freedomotic.reactions.CommandPersistence;
+
+import it.freedomotic.jfrontend.automationeditor.ReactionEditor;
+
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.CommandPersistence;
+
 import it.freedomotic.util.i18n;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.*;
 import java.util.List;
+
 import javax.swing.*;
 
 /*
@@ -21,13 +27,14 @@ import javax.swing.*;
  *
  * @author enrico
  */
-public class GuessCommandBox extends JTextField {
+public class GuessCommandBox
+        extends JTextField {
 
     private Command command = null;
     private ReactionEditor editor;
     private static NaturalLanguageProcessor nlp = new NaturalLanguageProcessor();
     private final JButton btnAdd = new JButton();
-    private final JButton btnCustomize = new JButton(i18n.msg(this,"edit"));
+    private final JButton btnCustomize = new JButton(i18n.msg(this, "edit"));
     private final GuessCommandBox me = this;
     private static String ERROR_MESSAGE;
     private static String INFO_MESSAGE;
@@ -35,11 +42,10 @@ public class GuessCommandBox extends JTextField {
     public GuessCommandBox(ReactionEditor editor) {
         super();
         this.editor = editor;
-        ERROR_MESSAGE = i18n.msg(this,"this_command_not_exists");
-        INFO_MESSAGE = i18n.msg(this,"write_here_command");
+        ERROR_MESSAGE = i18n.msg(this, "this_command_not_exists");
+        INFO_MESSAGE = i18n.msg(this, "write_here_command");
         init();
     }
-
 
     public GuessCommandBox(ReactionEditor editor, Command command) {
         super();
@@ -52,8 +58,8 @@ public class GuessCommandBox extends JTextField {
     private void init() {
         listen();
     }
-    
-    public Command getCommand(){
+
+    public Command getCommand() {
         return command;
     }
 
@@ -63,57 +69,63 @@ public class GuessCommandBox extends JTextField {
         } else {
             setText(INFO_MESSAGE);
         }
+
         this.setPreferredSize(new Dimension(300, 30));
-        KeyListener keyListener = new KeyAdapter() {
 
-            @Override
-            public void keyTyped(KeyEvent evt) {
-                command = null;
-                setForeground(Color.black);
-                //for (String line : lines) {
-                List<NaturalLanguageProcessor.Rank> mostSimilar = nlp.getMostSimilarCommand(getText(), 10);
-                //Command command = mostSimilar.get(0).getCommand();
-                //txtInput.setText(txtInput.getText().replace(line, command.getName()));
+        KeyListener keyListener =
+                new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent evt) {
+                        command = null;
+                        setForeground(Color.black);
 
-                JPopupMenu menu = new JPopupMenu();
+                        //for (String line : lines) {
+                        List<NaturalLanguageProcessor.Rank> mostSimilar = nlp.getMostSimilarCommand(getText(),
+                                10);
 
-                //command = mostSimilar.get(0).getCommand();
-                for (final NaturalLanguageProcessor.Rank rank : mostSimilar) {
-                    JMenuItem menuItem = new JMenuItem(rank.getCommand().toString());
-                    menuItem.addActionListener(new ActionListener() {
+                        //Command command = mostSimilar.get(0).getCommand();
+                        //txtInput.setText(txtInput.getText().replace(line, command.getName()));
+                        JPopupMenu menu = new JPopupMenu();
 
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            command = rank.getCommand();
-                            setText(command.getName());
+                        //command = mostSimilar.get(0).getCommand();
+                        for (final NaturalLanguageProcessor.Rank rank : mostSimilar) {
+                            JMenuItem menuItem = new JMenuItem(rank.getCommand().toString());
+                            menuItem.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    command = rank.getCommand();
+                                    setText(command.getName());
+                                }
+                            });
+                            menu.add(menuItem);
                         }
-                    });
-                    menu.add(menuItem);
-                }
-                menu.show(evt.getComponent(),
-                        evt.getComponent().getX() + getText().length() * 10,
-                        evt.getComponent().getY());
-                requestFocus();
-                JComboBox box = new JComboBox();
-            }
-        };
+
+                        menu.show(evt.getComponent(),
+                                evt.getComponent().getX() + (getText().length() * 10),
+                                evt.getComponent().getY());
+                        requestFocus();
+
+                        JComboBox box = new JComboBox();
+                    }
+                };
+
         this.addKeyListener(keyListener);
 
-
         if (command == null) {
-            btnAdd.setText(i18n.msg(this,"confirm"));
-            setToolTipText(i18n.msg(this,"cmd_box_msg"));
+            btnAdd.setText(i18n.msg(this, "confirm"));
+            setToolTipText(i18n.msg(this, "cmd_box_msg"));
         } else {
             btnAdd.setText(i18n.msg("remove"));
             setToolTipText(command.getDescription());
         }
+
         this.add(btnAdd);
         btnAdd.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (isEnabled()) {
                     command = CommandPersistence.getCommand(getText());
+
                     if (command != null) {
                         setEnabled(false);
                         btnAdd.setText(i18n.msg("remove"));
@@ -124,7 +136,7 @@ public class GuessCommandBox extends JTextField {
                     }
                 } else {
                     setEnabled(true);
-                    btnAdd.setText(i18n.msg(this,"confirm"));
+                    btnAdd.setText(i18n.msg(this, "confirm"));
                     editor.onCommandCleared(me);
                     command = null;
                     setText(INFO_MESSAGE);
@@ -134,7 +146,6 @@ public class GuessCommandBox extends JTextField {
 
         this.add(btnCustomize);
         btnCustomize.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (command != null) {
@@ -142,7 +153,8 @@ public class GuessCommandBox extends JTextField {
                     c.setName("Edit a command");
                     c.setReceiver("app.actuators.nlautomationseditor.nlautomationseditor.in");
                     c.setProperty("editor", "command");
-                    c.setProperty("editable", command.getName()); //the default choice
+                    c.setProperty("editable",
+                            command.getName()); //the default choice
                     Freedomotic.sendCommand(c);
                     command = null;
                     setText(INFO_MESSAGE);
@@ -155,7 +167,8 @@ public class GuessCommandBox extends JTextField {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         btnAdd.setBounds(getWidth() - 80, (getHeight() / 2) - 10, 70, 20);
-        if (command != null && isEnabled()) {
+
+        if ((command != null) && isEnabled()) {
             btnCustomize.setVisible(true);
             btnCustomize.setEnabled(true);
             btnCustomize.setBounds(getWidth() - 160, (getHeight() / 2) - 10, 70, 20);

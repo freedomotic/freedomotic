@@ -14,9 +14,8 @@ import org.restlet.resource.Get;
  *
  * @author gpt
  */
-public interface ZonesResource extends FreedomoticResource{
-        
-    @Get("object|gwt_object") 
+public interface ZonesResource extends FreedomoticResource {
+
+    @Get("object|gwt_object")
     public ArrayList<Zone> retrieveZones();
-   
 }
