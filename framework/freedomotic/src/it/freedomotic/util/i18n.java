@@ -6,12 +6,17 @@ package it.freedomotic.util;
 
 import it.freedomotic.app.Freedomotic;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 /**
@@ -22,6 +27,7 @@ public class i18n {
 
     public static Locale currentLocale;
     public static HashMap<String, ResourceBundle> messages = new HashMap<String, ResourceBundle>();
+    private static UTF8control RB_Control = new UTF8control();
 
     private i18n() {
     }
@@ -75,8 +81,8 @@ public class i18n {
                     String fileName = bundleName;
                     int lastSize = bundleName.split("\\.").length;
                    fileName = bundleName.split("\\.")[lastSize - 1];
-                        
-                    messages.put(bundleName, ResourceBundle.getBundle(fileName, loc, loader));
+                   
+                    messages.put(bundleName, ResourceBundle.getBundle(fileName, loc, loader, RB_Control));
                     Freedomotic.logger.info("Adding resoulceBundle: package=" + bundleName + ", locale=" + loc.getLanguage() + "_" + loc.getCountry() + ". pointing at " + folder.getAbsolutePath());
                 } catch (MalformedURLException ex) {
                     Freedomotic.logger.severe("Cannot load resourceBundle for package" + bundleName);
@@ -114,6 +120,46 @@ public class i18n {
             return msg((String) obj, key);
         } else {
             return msg(obj, key, null);
+        }
+    }
+    
+    /**
+     *
+     */
+    protected static class UTF8control extends ResourceBundle.Control {
+        protected static final String BUNDLE_EXTENSION = "properties";
+    
+        @Override
+        public ResourceBundle newBundle
+            (String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
+                throws IllegalAccessException, InstantiationException, IOException
+        {
+            // The below code is copied from default Control#newBundle() implementation.
+            // Only the PropertyResourceBundle line is changed to read the file as UTF-8.
+            String bundleName = toBundleName(baseName, locale);
+            String resourceName = toResourceName(bundleName, BUNDLE_EXTENSION);
+            ResourceBundle bundle = null;
+            InputStream stream = null;
+            if (reload) {
+                URL url = loader.getResource(resourceName);
+                if (url != null) {
+                    URLConnection connection = url.openConnection();
+                    if (connection != null) {
+                        connection.setUseCaches(false);
+                        stream = connection.getInputStream();
+                    }
+                }
+            } else {
+                stream = loader.getResourceAsStream(resourceName);
+            }
+            if (stream != null) {
+                try {
+                    bundle = new PropertyResourceBundle(new InputStreamReader(stream, "UTF-8"));
+                } finally {
+                    stream.close();
+                }
+            }
+            return bundle;
         }
     }
 }
