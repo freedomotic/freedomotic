@@ -33,12 +33,16 @@ public class RestApi extends Actuator {
 
     public RestApi() {
         super("RestApi", "/es.gpulido.restapi/restapi-manifest.xml");
+        //Avoid The reset of the logging.
+        //see Issue Core-132 http://freedomotic.myjetbrains.com/youtrack/issue/Core-132
+        String setProperty = System.setProperty("java.util.logging.config.file", "none");
+                
     }
 
     @Override
     public void onStart() {
         try {
-            super.onStart();
+            super.onStart();            
             component = new Component();
             component.getClients().add(Protocol.FILE);
             //TODO: To test with the restlet 2.1 Maybe the maxTotalConnections could be avoided
