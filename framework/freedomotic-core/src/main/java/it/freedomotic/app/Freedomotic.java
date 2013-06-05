@@ -85,6 +85,7 @@ public class Freedomotic {
     private static CommandChannel commandChannel;
     public static ArrayList<IPluginCategory> onlinePluginCategories;
     private static ExecutorService executor = Executors.newCachedThreadPool();
+    private static FileHandler handler;
 
     public Freedomotic() {
         /**
@@ -119,7 +120,7 @@ public class Freedomotic {
                 logdir.mkdir();
                 File logfile = new File(logdir + "/freedomotic.html");
                 logfile.createNewFile();
-                FileHandler handler = new FileHandler(logfile.getAbsolutePath(), false);
+                handler = new FileHandler(logfile.getAbsolutePath(), false);
                 handler.setFormatter(new LogFormatter());
                 logger.setLevel(Level.ALL);
                 logger.addHandler(handler);
