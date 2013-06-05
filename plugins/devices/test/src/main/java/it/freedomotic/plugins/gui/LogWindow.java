@@ -4,6 +4,7 @@
  */
 package it.freedomotic.plugins.gui;
 
+import it.freedomotic.util.i18n;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -19,7 +20,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 public class LogWindow extends JFrame {
-
+    
+    int MAX_TABLE_ROWS = 100;
     DefaultTableModel model = new DefaultTableModel();
     String[] levels = {
         "ALL",
@@ -43,10 +45,10 @@ public class LogWindow extends JFrame {
         setSize(600, 400);
         this.setLayout(new BorderLayout());
         areaDetail.setContentType("text/html");
-        model.addColumn("Level");
+        model.addColumn(i18n.msg("log_level"));
         //model.addColumn("Class");
         //model.addColumn("Method");
-        model.addColumn("Message");
+        model.addColumn(i18n.msg("message"));
         table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         table.setDefaultRenderer(Object.class, new CustomRenderer());
         ListSelectionModel selectionModel = table.getSelectionModel();
@@ -69,7 +71,7 @@ public class LogWindow extends JFrame {
                 handler.setLevel(Level.parse(cmbLevel.getSelectedItem().toString()));
             }
         });
-        add(new JLabel("Level: "), BorderLayout.NORTH);
+        add(new JLabel(i18n.msg("log_level") +": "), BorderLayout.NORTH);
         cmbLevel.setEditable(false);
         add(cmbLevel, BorderLayout.NORTH);
         //add(btnStop, BorderLayout.PAGE_START);
@@ -81,12 +83,12 @@ public class LogWindow extends JFrame {
         add(scroll, BorderLayout.SOUTH);
     }
 
-    public void append(Object[] row) {
-        if (table.getSelectedRow() == 100) {
+    public synchronized void append(Object[] row) {
+        if (table.getSelectedRow() == MAX_TABLE_ROWS) {
             table.clearSelection();
         }
         model.insertRow(0, row);
-        if (model.getRowCount() > 100 && !btnStop.isSelected()) {
+        if (model.getRowCount() > MAX_TABLE_ROWS && !btnStop.isSelected()) {
             model.removeRow(model.getRowCount() - 1);
         }
     }
