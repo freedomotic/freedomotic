@@ -1,0 +1,20 @@
+<config>
+  <properties>
+    <property name="KEY_ENABLE_PLUGINS_DOWNLOAD" value="true"/>
+    <property name="KEY_ENABLE_I18N" value="false"/>
+    <property name="KEY_COLORED_PEOPLE" value="false"/>
+    <property name="KEY_ROOM_XML_PATH" value="/default/default.xenv"/>
+    <property name="CACHE_MARKETPLACE_ON_STARTUP" value="false"/>
+    <property name="KEY_DISCARD_INVALID_DESTINATIONS" value="true"/>
+    <property name="KEY_JAVACOM_LIB" value="../ext"/>
+    <property name="KEY_SHOW_WEBSITE_ON_STARTUP" value="false"/>
+    <property name="KEY_BROKER_URL" value="vm://localhost?persistent=false"/>
+    <property name="KEY_OVERRIDE_OBJECTS_ON_EXIT" value="true"/>
+    <property name="KEY_LOGGER_POPUP" value="false"/>
+    <property name="KEY_SAVE_LOG_TO_FILE" value="false"/>
+    <property name="KEY_RESOURCES_PATH" value="/data/resources/"/>
+    <property name="KEY_MESSAGES_TTL" value="5000"/>
+    <property name="KEY_OVERRIDE_REACTIONS_ON_EXIT" value="true"/>
+  </properties>
+  <tuples/>
+</config>

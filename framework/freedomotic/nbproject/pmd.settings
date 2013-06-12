@@ -1,6 +1,0 @@
-MethodArgumentCouldBeFinal
-CyclomaticComplexity
-SignatureDeclareThrowsException
-DataflowAnomalyAnalysis
-LocalVariableCouldBeFinal
-SimplifyBooleanExpressions
