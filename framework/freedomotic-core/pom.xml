@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>it.freedomotic</groupId>
+        <artifactId>freedomotic</artifactId>
+        <version>5.5-SNAPSHOT</version>
+        <relativePath>../../</relativePath>
+    </parent>    
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>freedomotic-core</artifactId>
+    <name>freedomotic-core</name>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>freedomotic-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>5.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.aggregate</groupId>
+            <artifactId>jetty-all-server</artifactId>
+            <version>7.6.10.v20130312</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rxtx</groupId>
+            <artifactId>rxtx</artifactId>
+            <version>2.1.7</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.nationalarchives.thirdparty.netbeans</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>7.2</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+</project>

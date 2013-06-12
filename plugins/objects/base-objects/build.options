@@ -1,20 +1,13 @@
-#Sun, 19 May 2013 12:15:18 +0200
-
-package.type=object
-package.name=com.freedomotic.baseobj
-package.nodeid=902
+#Sat Jun 08 12:37:34 CEST 2013
+package.vendor.nation=com
 package.license=GNU GPL2
 package.vendor.name=Freedomotic
+package.name=com.freedomotic.baseobj
+framework.required.minor=5
 package.vendor.surname=Building Automation
 package.vendor.contact=info@freedomotic.com
+package.nodeid=902
 package.vendor.company=freedomotic
-package.vendor.nation=com
 framework.required.major=5
-framework.required.minor=5
 framework.required.build=x
-build.major=2
-build.number=2
-build.create.dist.market=true
-build.create.dist.framework=true
-build.synch.dist=true
-build.synch.dist.path=../../../framework/freedomotic/plugins/
+package.type=object
