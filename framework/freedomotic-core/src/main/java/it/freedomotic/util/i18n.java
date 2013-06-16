@@ -85,7 +85,9 @@ public class i18n {
                     messages.put(bundleName, ResourceBundle.getBundle(fileName, loc, loader, RB_Control));
                     Freedomotic.logger.info("Adding resoulceBundle: package=" + bundleName + ", locale=" + loc.getLanguage() + "_" + loc.getCountry() + ". pointing at " + folder.getAbsolutePath());
                 } catch (MalformedURLException ex) {
-                    Freedomotic.logger.severe("Cannot load resourceBundle for package" + bundleName);
+                    Freedomotic.logger.severe("Cannot find folderwhile loading resourceBundle for package" + bundleName);
+                } catch (MissingResourceException ex){
+                    Freedomotic.logger.severe("Cannot find resourceBundle files inside folder for package" + bundleName);
                 }
             } else {
                 bundleName = superBundleName;
@@ -97,7 +99,7 @@ public class i18n {
                     return java.text.MessageFormat.format(messages.get(bundleName).getString(key), fields) + " ";
                 }
             } catch (MissingResourceException ex) {
-                Freedomotic.logger.severe("Cannot find resourceBundle for package " + bundleName);
+                Freedomotic.logger.severe("Cannot find resourceBundle files inside folder for package" + bundleName);
             }
         }
         return "@@@";
