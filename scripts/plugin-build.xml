@@ -82,7 +82,7 @@
         </if>
         <!--clean up the folder-->
         <delete>
-            <fileset dir="${plugin-dist}" excludes="data/**, *.xml"/>
+            <fileset dir="${plugin-dist}" excludes="data/**, *.xml, i18n/**"/>
         </delete>
         <!--copy jar file -->
         <copy todir="${plugin-dist}">
