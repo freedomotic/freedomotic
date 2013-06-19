@@ -3,6 +3,7 @@ package it.freedomotic.plugins;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.util.JarFilter;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;

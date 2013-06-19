@@ -23,6 +23,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.util.UidGenerator;
+
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

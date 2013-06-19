@@ -19,11 +19,6 @@
  */
 package it.freedomotic.app;
 
-import it.freedomotic.reactions.CommandPersistence;
-import it.freedomotic.reactions.ReactionPersistence;
-import it.freedomotic.reactions.TriggerPersistence;
-import it.freedomotic.environment.EnvironmentPersistence;
-import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.bus.CommandChannel;
@@ -31,37 +26,36 @@ import it.freedomotic.bus.EventChannel;
 import it.freedomotic.core.BehaviorManager;
 import it.freedomotic.core.JoinDevice;
 import it.freedomotic.core.JoinPlugin;
-import it.freedomotic.environment.EnvironmentLogic;
+import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
-import java.io.File;
-import java.io.IOException;
-
-
-
-
-import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.model.ds.ColorList;
 import it.freedomotic.model.ds.Config;
-
+import it.freedomotic.objects.EnvObjectPersistence;
+import it.freedomotic.plugins.AddonLoader;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.reactions.Command;
-import it.freedomotic.service.ClassPathUpdater;
-import it.freedomotic.util.Info;
-import it.freedomotic.util.LogFormatter;
+import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.reactions.ReactionPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.serial.SerialConnectionProvider;
+import it.freedomotic.service.ClassPathUpdater;
 import it.freedomotic.service.IPluginCategory;
 import it.freedomotic.service.MarketPlaceService;
+import it.freedomotic.util.Info;
+import it.freedomotic.util.LogFormatter;
 import it.freedomotic.util.i18n;
+
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.FileHandler;

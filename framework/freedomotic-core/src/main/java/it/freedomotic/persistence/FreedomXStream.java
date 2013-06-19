@@ -1,7 +1,5 @@
 package it.freedomotic.persistence;
 
-import it.freedomotic.reactions.ReactionConverter;
-import com.thoughtworks.xstream.XStream;
 import it.freedomotic.environment.Room;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.environment.Environment;
@@ -12,7 +10,10 @@ import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.geometry.FreedomShape;
 import it.freedomotic.model.object.Representation;
 import it.freedomotic.reactions.Payload;
+import it.freedomotic.reactions.ReactionConverter;
 import it.freedomotic.reactions.Trigger;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  *

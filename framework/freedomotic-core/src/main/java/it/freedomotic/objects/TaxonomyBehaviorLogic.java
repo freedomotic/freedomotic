@@ -2,7 +2,7 @@ package it.freedomotic.objects;
 
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.MultiselectionListBehavior;
-import java.util.ArrayList;
+
 import java.util.List;
 
 /**

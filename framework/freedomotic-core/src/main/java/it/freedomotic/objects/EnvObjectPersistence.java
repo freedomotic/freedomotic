@@ -1,21 +1,27 @@
 package it.freedomotic.objects;
 
-import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.model.object.EnvObject;
-import it.freedomotic.model.object.Representation;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.util.DOMValidateDTD;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.SerialClone;
 import it.freedomotic.util.UidGenerator;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  *

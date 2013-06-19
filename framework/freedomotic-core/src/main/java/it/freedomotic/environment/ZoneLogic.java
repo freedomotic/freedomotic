@@ -22,6 +22,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ZoneHasChanged;
 import it.freedomotic.model.environment.Zone;
 import it.freedomotic.objects.impl.Person;
+
 import java.util.ArrayList;
 import java.util.List;
 

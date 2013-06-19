@@ -2,6 +2,7 @@ package it.freedomotic.plugins;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.util.JarFilter;
+
 import java.io.File;
 import java.util.List;
 

@@ -19,16 +19,20 @@
  */
 package it.freedomotic.api;
 
+import it.freedomotic.app.ConfigPersistence;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.app.ConfigPersistence;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.util.EqualsUtil;
 import it.freedomotic.util.Info;
-import java.io.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
+
 import javax.swing.JFrame;
 
 public class Plugin implements Client {

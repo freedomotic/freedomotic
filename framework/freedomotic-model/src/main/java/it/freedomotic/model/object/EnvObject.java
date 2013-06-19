@@ -2,6 +2,7 @@ package it.freedomotic.model.object;
 
 
 import it.freedomotic.model.geometry.FreedomShape;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

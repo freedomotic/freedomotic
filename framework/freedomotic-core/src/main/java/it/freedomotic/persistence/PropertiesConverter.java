@@ -4,13 +4,15 @@
  */
 package it.freedomotic.persistence;
 
+import it.freedomotic.model.object.Properties;
+
+import java.util.HashMap;
+
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import it.freedomotic.model.object.Properties;
-import java.util.HashMap;
 
 /**
  *

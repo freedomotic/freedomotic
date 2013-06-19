@@ -18,8 +18,6 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.freedomotic.plugins;
 
-import it.freedomotic.api.Client;
-import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.ReactionPersistence;
@@ -27,7 +25,14 @@ import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.util.FetchHttpFiles;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.Unzip;
-import java.io.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;

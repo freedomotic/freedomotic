@@ -1,19 +1,25 @@
 package it.freedomotic.reactions;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.util.DOMValidateDTD;
 import it.freedomotic.util.Info;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 
 /**
  *

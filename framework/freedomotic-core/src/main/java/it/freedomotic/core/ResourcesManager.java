@@ -6,12 +6,14 @@ package it.freedomotic.core;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.util.Info;
+
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+
 import javax.imageio.ImageIO;
 
 /**

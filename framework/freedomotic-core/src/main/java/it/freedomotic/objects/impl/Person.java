@@ -10,8 +10,8 @@ import it.freedomotic.objects.BooleanBehaviorLogic;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.ListBehaviorLogic;
 import it.freedomotic.objects.PropertiesBehaviorLogic;
-import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.reactions.TriggerPersistence;
 
 /**
  *

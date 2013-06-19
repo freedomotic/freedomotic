@@ -1,7 +1,11 @@
 package it.freedomotic.util;
 
-import it.freedomotic.app.Freedomotic;
-import it.freedomotic.model.geometry.*;
+import it.freedomotic.model.geometry.FreedomColor;
+import it.freedomotic.model.geometry.FreedomEllipse;
+import it.freedomotic.model.geometry.FreedomPoint;
+import it.freedomotic.model.geometry.FreedomPolygon;
+import it.freedomotic.model.geometry.FreedomShape;
+
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Polygon;

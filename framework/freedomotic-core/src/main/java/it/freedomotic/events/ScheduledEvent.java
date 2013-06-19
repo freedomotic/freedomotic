@@ -20,7 +20,6 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
-import java.util.Date;
 
 /**
  *

@@ -4,18 +4,15 @@
  */
 package it.freedomotic.util;
 
-import it.freedomotic.model.geometry.FreedomColor;
+import static org.junit.Assert.assertEquals;
 import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.model.geometry.FreedomPolygon;
-import it.freedomotic.model.geometry.FreedomShape;
-import java.awt.Color;
-import java.awt.Shape;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

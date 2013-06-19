@@ -23,10 +23,12 @@ import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.app.Profiler;
 import it.freedomotic.util.UidGenerator;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
 import javax.jms.Message;

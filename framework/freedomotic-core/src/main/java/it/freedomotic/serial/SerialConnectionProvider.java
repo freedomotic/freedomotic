@@ -14,13 +14,13 @@ import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.util.Info;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;

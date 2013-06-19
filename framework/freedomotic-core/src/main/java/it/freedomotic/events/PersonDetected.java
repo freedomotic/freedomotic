@@ -20,6 +20,7 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
+
 import java.awt.Point;
 
 /**

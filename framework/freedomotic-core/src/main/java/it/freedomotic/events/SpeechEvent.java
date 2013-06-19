@@ -9,6 +9,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.NaturalLanguageProcessor;
 import it.freedomotic.core.Resolver;
 import it.freedomotic.reactions.Command;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

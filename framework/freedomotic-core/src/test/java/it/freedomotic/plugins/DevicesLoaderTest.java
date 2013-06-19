@@ -4,12 +4,9 @@
  */
 package it.freedomotic.plugins;
 
-import it.freedomotic.util.Info;
-import java.io.File;
 import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *

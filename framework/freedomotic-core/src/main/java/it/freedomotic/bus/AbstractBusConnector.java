@@ -21,10 +21,14 @@ package it.freedomotic.bus;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.util.Info;
-import java.net.BindException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jms.*;
+
+import javax.jms.Connection;
+import javax.jms.JMSException;
+import javax.jms.Session;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 

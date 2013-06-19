@@ -4,14 +4,15 @@
  */
 package it.freedomotic.util;
 
-import com.thoughtworks.xstream.XStream;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.reactions.Trigger;
-import java.io.File;
 import junit.framework.Assert;
+
 import org.junit.AfterClass;
-import org.junit.Test;
 import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  *

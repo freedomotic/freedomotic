@@ -21,6 +21,7 @@ package it.freedomotic.model.environment;
 
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.object.EnvObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 

@@ -4,27 +4,26 @@
  */
 package it.freedomotic.core;
 
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.api.Client;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.model.object.Behavior;
-import it.freedomotic.model.object.Representation;
+import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.plugins.ClientStorage;
-import it.freedomotic.reactions.CommandPersistence;
-import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.plugins.ObjectPlugin;
 import it.freedomotic.reactions.Command;
-import it.freedomotic.util.UidGenerator;
+import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 

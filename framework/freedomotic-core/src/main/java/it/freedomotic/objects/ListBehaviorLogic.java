@@ -2,6 +2,7 @@ package it.freedomotic.objects;
 
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.ListBehavior;
+
 import java.util.ArrayList;
 
 /**

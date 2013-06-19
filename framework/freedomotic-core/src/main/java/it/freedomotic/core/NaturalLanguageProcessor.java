@@ -4,11 +4,15 @@
  */
 package it.freedomotic.core;
 
-import it.freedomotic.app.Freedomotic;
-import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.util.DamerauLevenshtein;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  *

@@ -4,15 +4,17 @@
  */
 package it.freedomotic.persistence;
 
+import it.freedomotic.reactions.Payload;
+import it.freedomotic.reactions.Statement;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import it.freedomotic.reactions.Payload;
-import it.freedomotic.reactions.Statement;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  *

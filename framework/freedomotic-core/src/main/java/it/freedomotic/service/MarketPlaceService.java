@@ -1,8 +1,10 @@
 package it.freedomotic.service;
 
 import it.freedomotic.app.Freedomotic;
+
 import java.util.ArrayList;
 import java.util.Collection;
+
 import org.openide.util.Lookup;
 import org.openide.util.Lookup.Result;
 import org.openide.util.Lookup.Template;

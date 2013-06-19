@@ -4,15 +4,16 @@
  */
 package it.freedomotic.core;
 
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.MessageEvent;
+import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Trigger;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;

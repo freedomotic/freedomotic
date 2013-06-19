@@ -19,16 +19,25 @@
  */
 package it.freedomotic.bus;
 
-import it.freedomotic.api.EventTemplate;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.app.Profiler;
 import it.freedomotic.reactions.Command;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jms.*;
+
+import javax.jms.DeliveryMode;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.Queue;
+import javax.jms.TextMessage;
+
 import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQQueue;
 

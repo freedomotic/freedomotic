@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
