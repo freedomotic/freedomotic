@@ -1,7 +1,8 @@
 package it.freedomotic.model.object;
 
-import it.freedomotic.model.geometry.FreedomShape;
 import it.freedomotic.model.geometry.FreedomPoint;
+import it.freedomotic.model.geometry.FreedomShape;
+
 import java.io.Serializable;
 
 /**

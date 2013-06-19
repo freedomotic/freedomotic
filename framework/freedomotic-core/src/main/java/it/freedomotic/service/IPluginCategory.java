@@ -4,7 +4,6 @@
  */
 package it.freedomotic.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

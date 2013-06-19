@@ -1,6 +1,5 @@
 package it.freedomotic.environment;
 
-import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.environment.Zone;
@@ -11,12 +10,19 @@ import it.freedomotic.util.DOMValidateDTD;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.SerialClone;
 import it.freedomotic.util.UidGenerator;
-import java.io.*;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  *

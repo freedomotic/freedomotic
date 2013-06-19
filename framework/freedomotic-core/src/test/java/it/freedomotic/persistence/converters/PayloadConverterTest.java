@@ -4,13 +4,15 @@
  */
 package it.freedomotic.persistence.converters;
 
-import it.freedomotic.persistence.PayloadConverter;
-import com.thoughtworks.xstream.XStream;
-import it.freedomotic.reactions.Payload;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import it.freedomotic.persistence.PayloadConverter;
+import it.freedomotic.reactions.Payload;
+
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  *

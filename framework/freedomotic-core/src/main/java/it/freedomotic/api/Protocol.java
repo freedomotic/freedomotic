@@ -7,10 +7,12 @@ import it.freedomotic.bus.EventChannel;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;

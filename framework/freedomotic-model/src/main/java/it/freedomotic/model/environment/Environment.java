@@ -20,6 +20,7 @@ package it.freedomotic.model.environment;
 
 import it.freedomotic.model.geometry.FreedomColor;
 import it.freedomotic.model.geometry.FreedomPolygon;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 

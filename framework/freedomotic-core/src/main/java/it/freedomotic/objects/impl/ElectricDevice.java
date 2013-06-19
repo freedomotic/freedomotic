@@ -4,18 +4,16 @@
  */
 package it.freedomotic.objects.impl;
 
-import com.thoughtworks.xstream.XStream;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.BooleanBehavior;
-import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.BooleanBehaviorLogic;
-import it.freedomotic.persistence.FreedomXStream;
-import it.freedomotic.reactions.CommandPersistence;
-import it.freedomotic.reactions.TriggerPersistence;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.reactions.TriggerPersistence;
 
 /**
  *

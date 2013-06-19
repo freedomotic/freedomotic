@@ -4,14 +4,11 @@
  */
 package it.freedomotic.bus;
 
-import com.thoughtworks.xstream.XStream;
-import it.freedomotic.app.Freedomotic;
-import it.freedomotic.events.GenericEvent;
-import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.reactions.Command;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jms.Destination;
+
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 

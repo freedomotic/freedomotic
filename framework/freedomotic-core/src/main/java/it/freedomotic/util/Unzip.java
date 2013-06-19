@@ -5,9 +5,15 @@ package it.freedomotic.util;
  * http://stackoverflow.com/questions/981578/how-to-unzip-files-recursively-in-java
  * all credits to respective authors
  */
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 public class Unzip {
 

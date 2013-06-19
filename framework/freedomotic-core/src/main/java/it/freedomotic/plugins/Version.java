@@ -6,7 +6,7 @@ package it.freedomotic.plugins;
 
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
-import it.freedomotic.util.Info;
+
 import java.util.Properties;
 
 /**

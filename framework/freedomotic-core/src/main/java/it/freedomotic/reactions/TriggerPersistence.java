@@ -1,15 +1,10 @@
 package it.freedomotic.reactions;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.persistence.FilePersistenceStrategy;
-import com.thoughtworks.xstream.persistence.PersistenceStrategy;
-import com.thoughtworks.xstream.persistence.XmlArrayList;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.persistence.FreedomXStream;
-import it.freedomotic.reactions.Reaction;
-import it.freedomotic.reactions.Trigger;
 import it.freedomotic.util.DOMValidateDTD;
 import it.freedomotic.util.Info;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
@@ -17,6 +12,8 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  *

@@ -20,6 +20,7 @@ package it.freedomotic.reactions;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.ds.Config;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;

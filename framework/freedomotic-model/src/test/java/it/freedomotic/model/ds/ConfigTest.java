@@ -5,9 +5,10 @@
 package it.freedomotic.model.ds;
 
 import junit.framework.Assert;
+
 import org.junit.AfterClass;
-import org.junit.Test;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *

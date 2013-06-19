@@ -24,6 +24,7 @@ import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;

@@ -23,7 +23,9 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.EventChannel;
 import it.freedomotic.exceptions.UnableToExecuteException;
+
 import java.io.IOException;
+
 import javax.jms.ObjectMessage;
 
 /**

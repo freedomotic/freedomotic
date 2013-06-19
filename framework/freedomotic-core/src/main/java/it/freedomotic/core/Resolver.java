@@ -21,21 +21,20 @@ package it.freedomotic.core;
 
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.reactions.Payload;
-import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Reaction;
+import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.script.ScriptContext;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;

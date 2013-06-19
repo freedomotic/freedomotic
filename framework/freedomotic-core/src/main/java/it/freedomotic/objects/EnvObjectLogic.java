@@ -11,14 +11,15 @@ import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.geometry.FreedomShape;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
-import it.freedomotic.reactions.CommandPersistence;
-import it.freedomotic.reactions.ReactionPersistence;
-import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Reaction;
+import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.util.TopologyUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;

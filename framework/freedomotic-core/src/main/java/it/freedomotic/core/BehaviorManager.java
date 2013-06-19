@@ -1,21 +1,21 @@
 package it.freedomotic.core;
 
-import com.thoughtworks.xstream.XStream;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.objects.BehaviorLogic;
+import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
-import java.lang.String;
+
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 

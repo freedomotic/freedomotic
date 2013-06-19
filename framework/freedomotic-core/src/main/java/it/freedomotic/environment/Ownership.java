@@ -19,7 +19,6 @@
 
 package it.freedomotic.environment;
 
-import it.freedomotic.model.environment.Zone;
 
 /**
  *Interfaccia che definisce il metodo <code>decideOwner()</code>

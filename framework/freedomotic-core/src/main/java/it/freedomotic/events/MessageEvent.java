@@ -5,7 +5,6 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
-import java.util.Date;
 
 /**
  * Channel <b>app.event.sensor.messages.MESSAGE_TYPE</b> informs that freedomotic

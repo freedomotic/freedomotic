@@ -9,6 +9,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.model.ds.Config;
+
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 

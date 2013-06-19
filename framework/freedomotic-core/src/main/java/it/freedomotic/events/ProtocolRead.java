@@ -4,7 +4,6 @@
  */
 package it.freedomotic.events;
 
-import com.thoughtworks.xstream.XStream;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.core.TriggerCheck;
 import it.freedomotic.reactions.Trigger;

@@ -3,25 +3,21 @@ package it.freedomotic.objects.impl;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.EnvironmentPersistence;
-import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.model.object.RangedIntBehavior;
 import it.freedomotic.model.object.Representation;
-import it.freedomotic.objects.BehaviorLogic;
 import it.freedomotic.objects.BooleanBehaviorLogic;
+import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
-import it.freedomotic.reactions.CommandPersistence;
-import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
+import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.util.TopologyUtils;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *

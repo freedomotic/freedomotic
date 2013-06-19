@@ -8,6 +8,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.model.environment.Zone;
 import it.freedomotic.objects.impl.Gate;
 import it.freedomotic.util.Edge;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;

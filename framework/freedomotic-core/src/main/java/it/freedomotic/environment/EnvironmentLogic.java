@@ -5,10 +5,11 @@ import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.environment.Zone;
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.impl.Gate;
 import it.freedomotic.objects.EnvObjectPersistence;
+import it.freedomotic.objects.impl.Gate;
 import it.freedomotic.util.Graph;
 import it.freedomotic.util.UidGenerator;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
