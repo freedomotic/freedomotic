@@ -19,8 +19,8 @@ import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.util.TopologyUtils;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -199,6 +199,7 @@ public class EnvObjectLogic {
         if (pojo == null) {
             throw new IllegalStateException("An object must have a valid pojo before initialization");
         }
+        pojo.initTags();
         createCommands();
         createTriggers();
         commandsMapping = new HashMap<String, Command>();
@@ -441,4 +442,12 @@ public class EnvObjectLogic {
             getPojo().setEnvID(selEnv.getPojo().getUUID());
         }
     }
+    
+    @RequiresPermissions("objects:update")
+    public void addTags(String tagList){
+        String[] tags = tagList.toLowerCase().split(",");
+        getPojo().getTagsList().addAll(Arrays.asList(tags));
+    }
+    
+ 
 }

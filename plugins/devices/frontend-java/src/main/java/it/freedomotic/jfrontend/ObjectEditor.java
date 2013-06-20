@@ -72,6 +72,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         checkIfVirtual();
         txtName.setText(pojo.getName());
         txtDescription.setText(pojo.getDescription());
+        txtTags.setText(pojo.getTagsString());
         populateProtocol();
         populateEnvironment();
         txtAddress.setText(pojo.getPhisicalAddress());
@@ -266,6 +267,8 @@ public class ObjectEditor extends javax.swing.JFrame {
         btnDelete = new javax.swing.JButton();
         txtProtocol = new javax.swing.JComboBox();
         btnVirtual = new javax.swing.JCheckBox();
+        jLabel8 = new javax.swing.JLabel();
+        txtTags = new javax.swing.JTextField();
         tabTriggersConfig = new javax.swing.JPanel();
         tabCommandsConfig = new javax.swing.JPanel();
         tabRepresentation = new javax.swing.JPanel();
@@ -342,6 +345,15 @@ public class ObjectEditor extends javax.swing.JFrame {
             }
         });
 
+        jLabel8.setText("Tags");
+
+        txtTags.setText("txtTags");
+        txtTags.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTagsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout tabPropertiesLayout = new javax.swing.GroupLayout(tabProperties);
         tabProperties.setLayout(tabPropertiesLayout);
         tabPropertiesLayout.setHorizontalGroup(
@@ -352,28 +364,28 @@ public class ObjectEditor extends javax.swing.JFrame {
                     .addGroup(tabPropertiesLayout.createSequentialGroup()
                         .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel15)
-                            .addComponent(jLabel14)
-                            .addGroup(tabPropertiesLayout.createSequentialGroup()
-                                .addGap(4, 4, 4)
-                                .addComponent(jLabel2)))
-                        .addGap(18, 18, 18)
+                            .addComponent(jLabel14))
+                        .addGap(22, 22, 22)
                         .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(txtDescription, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
                             .addComponent(txtName, javax.swing.GroupLayout.Alignment.LEADING)))
-                    .addGroup(tabPropertiesLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(38, 38, 38)
-                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(txtAddress, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtProtocol, javax.swing.GroupLayout.Alignment.LEADING, 0, 311, Short.MAX_VALUE))))
+                    .addComponent(btnVirtual)
                     .addGroup(tabPropertiesLayout.createSequentialGroup()
                         .addComponent(btnCreateObjectCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnVirtual))
-                .addContainerGap(2160, Short.MAX_VALUE))
+                    .addGroup(tabPropertiesLayout.createSequentialGroup()
+                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel8))
+                        .addGap(38, 38, 38)
+                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3)
+                            .addComponent(txtAddress)
+                            .addComponent(txtProtocol, 0, 311, Short.MAX_VALUE)
+                            .addComponent(txtTags))))
+                .addContainerGap(2156, Short.MAX_VALUE))
         );
         tabPropertiesLayout.setVerticalGroup(
             tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -396,9 +408,13 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtTags, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 157, Short.MAX_VALUE)
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCreateObjectCopy)
                     .addComponent(btnDelete))
@@ -481,7 +497,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addGap(18, 18, 18))
                     .addGroup(tabRepresentationLayout.createSequentialGroup()
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(tabRepresentationLayout.createSequentialGroup()
                                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel11)
@@ -494,13 +510,13 @@ public class ObjectEditor extends javax.swing.JFrame {
                         .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(tabRepresentationLayout.createSequentialGroup()
                                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+                                    .addComponent(spnRotation, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(spnScaleHeight, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(spnScaleWidth, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(spnY)
                                     .addComponent(spnX, javax.swing.GroupLayout.Alignment.LEADING))
                                 .addGap(18, 18, 18)
-                                .addComponent(btnChangeImage, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
+                                .addComponent(btnChangeImage, javax.swing.GroupLayout.PREFERRED_SIZE, 93, Short.MAX_VALUE))
                             .addComponent(environmentComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(2343, 2343, 2343))))
         );
@@ -535,7 +551,7 @@ public class ObjectEditor extends javax.swing.JFrame {
                 .addGroup(tabRepresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(environmentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
-                .addContainerGap(211, Short.MAX_VALUE))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
 
         tabObjectEditor.addTab(i18n.msg("appearance"), tabRepresentation);
@@ -578,6 +594,9 @@ public class ObjectEditor extends javax.swing.JFrame {
             pojo.setProtocol(txtProtocol.getSelectedItem().toString());
             pojo.setPhisicalAddress(txtAddress.getText());
             pojo.setDescription(txtDescription.getText());
+            pojo.getTagsList().clear();
+            object.addTags(txtTags.getText());
+            txtTags.setText(pojo.getTagsString());
             if (!(oldName.equals(txtName.getText().trim()))) {
                 object.rename(txtName.getText().trim());
             }
@@ -688,6 +707,10 @@ public class ObjectEditor extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnVirtualActionPerformed
 
+    private void txtTagsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTagsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTagsActionPerformed
+
     private void checkIfVirtual() {
         if (btnVirtual.isSelected()) {
             tabObjectEditor.remove(tabTriggersConfig);
@@ -758,6 +781,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel pnlFrameButtons;
     private javax.swing.JSpinner spnRotation;
@@ -776,6 +800,7 @@ public class ObjectEditor extends javax.swing.JFrame {
     private javax.swing.JTextField txtDescription;
     private javax.swing.JTextField txtName;
     private javax.swing.JComboBox txtProtocol;
+    private javax.swing.JTextField txtTags;
     // End of variables declaration//GEN-END:variables
 
     private void populateCommandsTab() {

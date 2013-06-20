@@ -1,17 +1,14 @@
 package it.freedomotic.model.object;
 
 import it.freedomotic.model.geometry.FreedomShape;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
-/**
- *
- * @author enrico
- */
 public class EnvObject implements Serializable {
 
     private static final long serialVersionUID = -7253889516478184321L;
@@ -25,7 +22,8 @@ public class EnvObject implements Serializable {
     private String protocol;
     private String phisicalAddress;
     private List<Behavior> behaviors;
-    private List<Representation> representation = new ArrayList<Representation>();
+    private List<Representation> representation ; //= new ArrayList<Representation>();
+    private Set<String> tags;
     private Properties actions;
     private Properties triggers;
     private int currentRepresentation;
@@ -208,6 +206,7 @@ public class EnvObject implements Serializable {
         result.put("object.address", getPhisicalAddress());
         result.put("object.protocol", getProtocol());
         result.put("object.type", getType());
+        result.put("object.tags", getTagsString());
         return result;
     }
 
@@ -267,4 +266,32 @@ public class EnvObject implements Serializable {
     public String toString() {
         return getName();
     }
+    
+    @RequiresPermissions("objects:read")
+    public Set<String> getTagsList(){
+        return this.tags;
+    }
+    
+    @RequiresPermissions("objects:read")       
+    public String getTagsString(){
+        String tagString = "";
+        Boolean morethanone = false;
+        for (String tag : getTagsList()){
+            if (tag.trim() != ""){
+            if (morethanone){
+                tagString+=",";
+            }
+            tagString+=tag.trim();
+            morethanone = true;
+            }
+        }
+        return tagString;
+    }
+       
+    public void initTags(){
+        if (this.tags == null){
+            this.tags = new HashSet();
+        }
+    }
+    
 }
