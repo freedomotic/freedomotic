@@ -22,7 +22,6 @@ package it.freedomotic.events;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.objects.BehaviorLogic;
 import it.freedomotic.objects.EnvObjectLogic;
-
 import java.util.Iterator;
 import java.util.Map.Entry;
 
