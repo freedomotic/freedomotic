@@ -4,6 +4,7 @@
  */
 package it.freedomotic.util;
 
+import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +59,8 @@ public class i18n {
                         //int lastSize = bundleName.split("\\.").length;
                         //bundleName = bundleName.split("\\.")[lastSize - 1];
                         //Plugin plug = (Plugin) obj;
-                        folder = new File(Info.getApplicationPath() + File.separator + "plugins" + File.separator + "devices" + File.separator + bundleName + File.separator + "i18n");
+                        
+                        folder = new File(Info.getApplicationPath() + File.separator + "plugins" + File.separator + "devices" + File.separator + bundleName + File.separator + "data" + File.separator + "i18n");
                     } else {
                         folder = new File(Info.getApplicationPath() + File.separator + "i18n");
                     }
