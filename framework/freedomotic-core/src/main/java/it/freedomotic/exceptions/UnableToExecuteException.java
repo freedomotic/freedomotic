@@ -11,4 +11,6 @@ package it.freedomotic.exceptions;
  */
 public class UnableToExecuteException extends Exception {
 
+	private static final long serialVersionUID = 8791599031825647880L;
+
 }

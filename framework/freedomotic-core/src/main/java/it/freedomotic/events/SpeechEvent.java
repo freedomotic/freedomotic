@@ -22,7 +22,9 @@ import java.util.logging.Logger;
  */
 public class SpeechEvent extends EventTemplate {
 
-    public SpeechEvent(Object source, String phrase) {
+    private static final long serialVersionUID = -3856465031783898046L;
+
+	public SpeechEvent(Object source, String phrase) {
         this.setSender(source);
         NaturalLanguageProcessor nlp = new NaturalLanguageProcessor();
         List<NaturalLanguageProcessor.Rank> mostSimilar = nlp.getMostSimilarCommand(phrase, 10);

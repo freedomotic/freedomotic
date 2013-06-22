@@ -9,6 +9,8 @@ import java.util.ArrayList;
  */
 public class FreedomPolygon implements FreedomShape, Serializable {
 
+    private static final long serialVersionUID = -3740479951903880574L;
+	
     private ArrayList<FreedomPoint> points = new ArrayList<FreedomPoint>();
 
     public FreedomPolygon() {

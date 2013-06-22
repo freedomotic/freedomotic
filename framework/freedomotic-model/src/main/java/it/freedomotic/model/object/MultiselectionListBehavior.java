@@ -9,7 +9,9 @@ import java.util.List;
  */
 public class MultiselectionListBehavior extends Behavior {
 
-    private final ArrayList<String> list = new ArrayList<String>();
+    private static final long serialVersionUID = -7839150128393354068L;
+	
+	private final ArrayList<String> list = new ArrayList<String>();
     private final List<String> selected = new ArrayList<String>();
 
     public void add(String key) {

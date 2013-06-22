@@ -8,7 +8,9 @@ import java.util.ArrayList;
  */
 public class ListBehavior extends Behavior {
 
-    private int selected;
+    private static final long serialVersionUID = 8375501744412227268L;
+	
+	private int selected;
     private ArrayList<String> list = new ArrayList<String>();
 
     public void add(String key) {

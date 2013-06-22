@@ -8,7 +8,9 @@ import java.io.Serializable;
  */
 public class FreedomEllipse implements FreedomShape, Serializable {
 
-    private FreedomPoint center;
+    private static final long serialVersionUID = -2776037977467820777L;
+	
+	private FreedomPoint center;
     private int xRadius;
     private int yRadius;
 

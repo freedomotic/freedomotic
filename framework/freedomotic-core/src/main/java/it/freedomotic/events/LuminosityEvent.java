@@ -10,7 +10,9 @@ import it.freedomotic.model.environment.Zone;
  */
 public class LuminosityEvent extends EventTemplate {
 
-    int luminosity;
+    private static final long serialVersionUID = 1605869382477368794L;
+	
+	int luminosity;
     String zone;
 
     public LuminosityEvent(Object source, int temperature, Zone z) {

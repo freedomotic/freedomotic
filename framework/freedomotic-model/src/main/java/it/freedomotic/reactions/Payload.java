@@ -18,7 +18,9 @@ import java.util.regex.Pattern;
  */
 public final class Payload implements Serializable {
 
-    List<Statement> payload = new CopyOnWriteArrayList<Statement>();
+    private static final long serialVersionUID = -5799483105084939108L;
+	
+	List<Statement> payload = new CopyOnWriteArrayList<Statement>();
 
     public void addStatement(String logical,
             String attribute,

@@ -27,7 +27,10 @@ import it.freedomotic.api.EventTemplate;
  * @author enrico
  */
 public class GenericEvent extends EventTemplate {
-    private String destination = "app.event.sensor";
+    
+	private static final long serialVersionUID = 6029054631809171990L;
+	
+	private String destination = "app.event.sensor";
 
     public GenericEvent(Object source) {
         this.setSender(source);

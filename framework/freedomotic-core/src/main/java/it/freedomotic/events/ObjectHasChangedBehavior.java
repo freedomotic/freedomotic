@@ -40,7 +40,9 @@ import java.util.Map;
  */
 public class ObjectHasChangedBehavior extends EventTemplate {
 
-    //private EnvObject obj;
+    private static final long serialVersionUID = 6892968576173017195L;
+
+	//private EnvObject obj;
     public ObjectHasChangedBehavior(Object source, EnvObjectLogic obj) {
         super(source);
         //add default object properties

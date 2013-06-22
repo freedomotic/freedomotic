@@ -12,7 +12,9 @@ import java.io.Serializable;
  */
 public class Statement implements Serializable {
 
-    public static final String EQUALS = "EQUALS";
+    private static final long serialVersionUID = -6983128779561551125L;
+	
+	public static final String EQUALS = "EQUALS";
     public static final String GREATER_THEN = "GREATER_THEN";
     public static final String LESS_THEN = "LESS_THEN";
     public static final String GREATER_EQUAL_THEN = "GREATER_EQUAL_THEN";

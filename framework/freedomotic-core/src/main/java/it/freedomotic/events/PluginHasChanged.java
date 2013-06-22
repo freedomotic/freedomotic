@@ -15,7 +15,9 @@ import it.freedomotic.api.EventTemplate;
  */
 public class PluginHasChanged extends EventTemplate {
 
-    public enum PluginActions {
+    private static final long serialVersionUID = 5203339184820441643L;
+
+	public enum PluginActions {
         SHOW, HIDE, 
         DESCRIPTION,
         START, STOP, DISPOSE, 

@@ -9,7 +9,9 @@ import it.freedomotic.model.environment.Zone;
  */
 public class TemperatureEvent extends EventTemplate {
 
-    private int temperature;
+    private static final long serialVersionUID = 2965942901211451802L;
+	
+	private int temperature;
     private String zone;
 
     public TemperatureEvent(Object source, int temperature, Zone z) {

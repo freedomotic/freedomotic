@@ -18,6 +18,8 @@ import java.util.Set;
  */
 public class Tuples implements Serializable {
 
+    private static final long serialVersionUID = 3113993714552615957L;
+
     private ArrayList<HashMap> tuples = new ArrayList<HashMap>();
 
     public HashMap getTuple(int i) {

@@ -27,7 +27,9 @@ import it.freedomotic.api.EventTemplate;
  */
 public class ScheduledEvent extends EventTemplate {
 
-    public ScheduledEvent(Object source) {
+    private static final long serialVersionUID = 7508683624189475354L;
+
+	public ScheduledEvent(Object source) {
         payload.addStatement("sender", source.getClass().getCanonicalName());
     }
 

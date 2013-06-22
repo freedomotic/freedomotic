@@ -31,7 +31,9 @@ import java.awt.Point;
  */
 public class PersonDetected extends EventTemplate {
 
-    int id;
+    private static final long serialVersionUID = 180422544433345304L;
+	
+	int id;
     int x;
     int y;
 

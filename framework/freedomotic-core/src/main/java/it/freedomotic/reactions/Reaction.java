@@ -28,7 +28,9 @@ import java.util.Iterator;
  */
 public final class Reaction implements Serializable {
 
-    private Trigger trigger = new Trigger();
+    private static final long serialVersionUID = -5474545571527398625L;
+	
+	private Trigger trigger = new Trigger();
     private String uuid;
     private ArrayList<Command> commands = new ArrayList<Command>();
     private String description;
