@@ -28,7 +28,7 @@ public final class EnvObjectFactory {
     public static EnvObjectLogic create(EnvObject pojo) {
         URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
         try {
-            Class clazz = classLoader.loadClass(pojo.getHierarchy()); //eg: it.freedomotic.objects.impl.ElectricDevice
+            Class<?> clazz = classLoader.loadClass(pojo.getHierarchy()); //eg: it.freedomotic.objects.impl.ElectricDevice
 
             EnvObjectLogic logic = (EnvObjectLogic) clazz.newInstance();
             logic.setPojo(pojo);

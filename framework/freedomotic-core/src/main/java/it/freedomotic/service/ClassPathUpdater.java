@@ -17,11 +17,11 @@ public class ClassPathUpdater {
     /**
      * Used to find the method signature.
      */
-    private static final Class[] PARAMETERS = new Class[]{URL.class};
+    private static final Class<?>[] PARAMETERS = new Class<?>[]{URL.class};
     /**
      * Class containing the private addURL method.
      */
-    private static final Class<?> CLASS_LOADER = URLClassLoader.class;
+    private static final Class<? extends ClassLoader> CLASS_LOADER = URLClassLoader.class;
 
     /**
      * Adds a new path to the classloader. If the given string points to a file,

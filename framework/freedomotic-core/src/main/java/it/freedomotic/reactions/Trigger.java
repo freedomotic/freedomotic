@@ -258,9 +258,9 @@ public final class Trigger implements BusConsumer, Cloneable {
         clone.setName(getName());
         clone.setDescription(getDescription());
         Payload clonePayload = new Payload();
-        Iterator it = getPayload().iterator();
+        Iterator<Statement> it = getPayload().iterator();
         while (it.hasNext()) {
-            Statement original = (Statement) it.next();
+            Statement original = it.next();
             clonePayload.addStatement(original.getLogical(), original.getAttribute(), original.getOperand(), original.getValue());
         }
         clone.setPayload(clonePayload);

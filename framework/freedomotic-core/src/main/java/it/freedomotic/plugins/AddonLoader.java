@@ -50,7 +50,7 @@ import java.util.logging.Logger;
 public final class AddonLoader {
 
     // Parameters
-    private static final Class[] PARAMETERS = new Class[]{URL.class};
+    private static final Class<?>[] PARAMETERS = new Class<?>[]{URL.class};
 
     private AddonLoader() {
     }
@@ -117,10 +117,10 @@ public final class AddonLoader {
         return classes;
     }
 
-    protected static Class getClass(File file, String name) throws Exception {
+    protected static Class<?> getClass(File file, String name) throws Exception {
         addURL(file.toURL());
         URLClassLoader clazzLoader;
-        Class clazz;
+        Class<?> clazz;
         String filePath = file.getAbsolutePath();
         filePath = "jar:file://" + filePath + "!/";
         URL url = new File(filePath).toURL();
@@ -137,7 +137,7 @@ public final class AddonLoader {
                 return;
             }
         }
-        Class sysclass = URLClassLoader.class;
+        Class<URLClassLoader> sysclass = URLClassLoader.class;
         try {
             Method method = sysclass.getDeclaredMethod("addURL", PARAMETERS);
             method.setAccessible(true);

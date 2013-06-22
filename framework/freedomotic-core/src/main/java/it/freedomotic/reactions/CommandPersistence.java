@@ -51,7 +51,7 @@ public class CommandPersistence {
         return userCommands.size();
     }
 
-    public static Iterator iterator() {
+    public static Iterator<Command> iterator() {
         return userCommands.values().iterator();
     }
 

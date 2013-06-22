@@ -72,13 +72,13 @@ public class EnvObjectLogic {
      *
      * @return a set of key/values of object properties
      */
-    public Map getExposedProperties() {
-        HashMap result = pojo.getExposedProperties();
+    public Map<String, String> getExposedProperties() {
+    	HashMap<String, String> result = pojo.getExposedProperties();
         return result;
     }
 
-    public Map getExposedBehaviors() {
-        Map result = new HashMap();
+    public Map<String, String> getExposedBehaviors() {
+        Map<String, String> result = new HashMap<String, String>();
         for (BehaviorLogic behavior : getBehaviors()) {
             result.put("object.behavior." + behavior.getName(), behavior.getValueAsString());
         }
@@ -120,10 +120,10 @@ public class EnvObjectLogic {
             throw new IllegalArgumentException("behavior name and trigger cannot be null");
         }
         //parameters in input are ok, continue...
-        Iterator it = pojo.getTriggers().entrySet().iterator();
+        Iterator<Entry<String,String>> it = pojo.getTriggers().entrySet().iterator();
         //remove old references if any
         while (it.hasNext()) {
-            Entry e = (Entry) it.next();
+        	Entry<String,String> e = it.next();
             if (e.getValue().equals(behaviorName)) {
                 it.remove(); //remove the old value that had to be updated
             }
@@ -367,9 +367,9 @@ public class EnvObjectLogic {
                 t.setName(t.getName().replace(oldName, newName));
                 Freedomotic.logger.warning("trigger name renamed to " + t.getName());
             }
-            Iterator it = t.getPayload().iterator();
+            Iterator<Statement> it = t.getPayload().iterator();
             while (it.hasNext()) {
-                Statement statement = (Statement) it.next();
+                Statement statement = it.next();
                 if (statement.getValue().contains(oldName)) {
                     statement.setValue(statement.getValue().replace(oldName, newName));
                     Freedomotic.logger.warning("Trigger value in payload renamed to " + statement.getValue());

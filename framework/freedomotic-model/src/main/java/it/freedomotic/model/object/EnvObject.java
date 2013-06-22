@@ -104,7 +104,7 @@ public class EnvObject implements Serializable {
     }
 
     public ArrayList<Behavior> getActiveBehaviors() {
-        ArrayList<Behavior> activeBehaviors = new ArrayList();
+        ArrayList<Behavior> activeBehaviors = new ArrayList<Behavior>();
         for (Behavior behavior : behaviors) {
             if (behavior.isActive()) {
                 activeBehaviors.add(behavior);
@@ -173,8 +173,8 @@ public class EnvObject implements Serializable {
      *
      * @return a set of key/values of object properties
      */
-    public HashMap getExposedProperties() {
-        HashMap result = new HashMap();
+    public HashMap<String, String> getExposedProperties() {
+        HashMap<String, String> result = new HashMap<String, String>();
         result.put("object.name", getName());
         result.put("object.address", getPhisicalAddress());
         result.put("object.protocol", getProtocol());

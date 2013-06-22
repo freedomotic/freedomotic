@@ -52,7 +52,7 @@ public final class Payload implements Serializable {
         boolean payloadConsistence = true;
         if (obj instanceof Payload) {
             Payload eventPayload = (Payload) obj;
-            Iterator it = payload.iterator();
+            Iterator<Statement> it = payload.iterator();
             final boolean precedingCheckResult = true;
             //check all statement for consistency
             while (it.hasNext()) {
@@ -209,7 +209,7 @@ public final class Payload implements Serializable {
         return "";
     }
 
-    public Iterator iterator() {
+    public Iterator<Statement> iterator() {
         return payload.iterator();
     }
 
@@ -220,7 +220,7 @@ public final class Payload implements Serializable {
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        Iterator it = payload.iterator();
+        Iterator<Statement> it = payload.iterator();
         while (it.hasNext()) {
             Statement s = (Statement) it.next();
             buffer.append("\n").append(s.toString());

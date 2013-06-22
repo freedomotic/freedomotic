@@ -26,11 +26,12 @@ public class TupleConverter implements Converter {
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
         Tuples t = (Tuples) o;
         for (int i = 0; i < t.size(); i++) {
-            HashMap properties = t.getTuple(i);
-            Set<Map.Entry> entrySet = properties.entrySet();
+            HashMap<String, String> properties = t.getTuple(i);
+            Set<Map.Entry<String, String>> entrySet = properties.entrySet();
             writer.startNode("tuple");
-            for (Map.Entry entry : entrySet) {
+            for (Map.Entry<String, String> entry : entrySet) {
                 writer.startNode("property");
+                // TODO unnecessary explicit .toString() invocation
                 writer.addAttribute("name", entry.getKey().toString());
                 writer.addAttribute("value", entry.getValue().toString());
                 writer.endNode();
@@ -45,7 +46,7 @@ public class TupleConverter implements Converter {
         //starts from root <tuples>
         while (reader.hasMoreChildren()) {
             reader.moveDown(); //goes down to <tuple>
-            HashMap map = new HashMap();
+            HashMap<String, String> map = new HashMap<String, String>();
             //reads properties on the same level
             while (reader.hasMoreChildren()) {
                 reader.moveDown();

@@ -149,7 +149,7 @@ public class ReactionPersistence {
         }
     }
 
-    public static Iterator iterator() {
+    public static Iterator<Reaction> iterator() {
         return list.iterator();
     }
 
@@ -163,8 +163,8 @@ public class ReactionPersistence {
 
     public static boolean exists(Reaction input) {
         if (input != null) {
-            for (Iterator it = list.iterator(); it.hasNext();) {
-                Reaction reaction = (Reaction) it.next();
+            for (Iterator<Reaction> it = list.iterator(); it.hasNext();) {
+                Reaction reaction = it.next();
                 if (input.equals(reaction)) {
                     return true;
                 }

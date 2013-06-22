@@ -168,11 +168,11 @@ public class Config implements Serializable {
 
     @Override
     public String toString() {
-        Set entries = entrySet();
-        Iterator it = entries.iterator();
+        Set<Entry<Object, Object>> entries = entrySet();
+        Iterator<Entry<Object, Object>> it = entries.iterator();
         StringBuilder string = new StringBuilder();
         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
+        	Entry<Object, Object> entry = it.next();
             String key = (String) entry.getKey();
             String value = (String) entry.getValue();
             string.append(key + "=" + value + "; ");

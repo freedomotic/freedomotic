@@ -26,9 +26,9 @@ public class PayloadConverter implements Converter {
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
         Payload payload = (Payload) o;
         writer.startNode("payload");
-        Iterator it = payload.iterator();
+        Iterator<Statement> it = payload.iterator();
         while (it.hasNext()) {
-            Statement statement = (Statement) it.next();
+            Statement statement = it.next();
             writer.startNode("it.freedomotic.reactions.Statement");
             writer.startNode("logical");
             writer.setValue(statement.getLogical());

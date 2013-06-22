@@ -162,7 +162,7 @@ public class EnvObjectPersistence {
         return objectLogic;
     }
 
-    public static Iterator iterator() {
+    public static Iterator<EnvObjectLogic> iterator() {
         return objectList.values().iterator();
     }
 
@@ -173,8 +173,8 @@ public class EnvObjectPersistence {
      * @return
      */
     public static EnvObjectLogic getObjectByName(String name) {
-        for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
-            EnvObjectLogic object = (EnvObjectLogic) it.next();
+        for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
+            EnvObjectLogic object = it.next();
             if (object.getPojo().getName().equalsIgnoreCase(name)) {
                 return object;
             }
@@ -188,8 +188,8 @@ public class EnvObjectPersistence {
      * @return
      */
     public static EnvObjectLogic getObjectByUUID(String uuid) {
-        for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
-            EnvObjectLogic object = (EnvObjectLogic) it.next();
+        for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
+            EnvObjectLogic object = it.next();
             if (object.getPojo().getUUID().equalsIgnoreCase(uuid)) {
                 return object;
             }
@@ -214,8 +214,8 @@ public class EnvObjectPersistence {
             throw new IllegalArgumentException();
         }
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
-        for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
-            EnvObjectLogic object = (EnvObjectLogic) it.next();
+        for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
+            EnvObjectLogic object = it.next();
             if ((object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()))
                     && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(address.trim()))) {
                 //Freedomotic.logger.info("Found object " + object.getPojo().getName() + " {protocol = " + object.getPojo().getProtocol() + "; address = " + object.getPojo().getPhisicalAddress() + "}");
@@ -236,8 +236,8 @@ public class EnvObjectPersistence {
      */
     public static ArrayList<EnvObjectLogic> getObjectByProtocol(String protocol) {
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
-        for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
-            EnvObjectLogic object = (EnvObjectLogic) it.next();
+        for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
+            EnvObjectLogic object = it.next();
             if ((object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()))) {
                 list.add(object);
             }
@@ -252,8 +252,8 @@ public class EnvObjectPersistence {
      */
     public static ArrayList<EnvObjectLogic> getObjectByEnvironment(String uuid) {
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
-        for (Iterator it = EnvObjectPersistence.iterator(); it.hasNext();) {
-            EnvObjectLogic object = (EnvObjectLogic) it.next();
+        for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
+            EnvObjectLogic object = it.next();
             if ((object.getPojo().getEnvironmentID().equalsIgnoreCase(uuid))) {
                 list.add(object);
             }

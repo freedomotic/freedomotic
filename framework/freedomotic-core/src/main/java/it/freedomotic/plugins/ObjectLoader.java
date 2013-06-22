@@ -41,13 +41,13 @@ public final class ObjectLoader {
                     }
                     for (String className : classNames) {
                         String name = className.substring(0, className.length() - 6);
-                        Class clazz = null;
+                        Class<?> clazz = null;
                         try {
                             clazz = AddonLoader.getClass(jar, name);
                         } catch (Exception ex) {
                             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
                         }
-                        Class superclass = clazz.getSuperclass();
+                        Class<?> superclass = clazz.getSuperclass();
                         if (superclass != null) { //null if class is Object
                             try {
                                 //check if this is a subclass of EnvObjectLogic

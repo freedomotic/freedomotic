@@ -106,9 +106,9 @@ public final class Reaction implements Serializable {
         b.append(trigger);
         b.append("] THEN ");
 
-        Iterator commandIterator = getCommands().iterator();
+        Iterator<Command> commandIterator = getCommands().iterator();
         while (commandIterator.hasNext()) {
-            Command c = (Command) commandIterator.next();
+            Command c = commandIterator.next();
             if (c != null) {
                 b.append("(").append(c.getName()).append(")");
             }
@@ -125,9 +125,9 @@ public final class Reaction implements Serializable {
             b.append(TriggerPersistence.getTrigger(trigger).getDescription());
         }
         b.append(" then ");
-        Iterator it = getCommands().iterator();
+        Iterator<Command> it = getCommands().iterator();
         while (it.hasNext()) {
-            Command c = (Command) it.next();
+            Command c = it.next();
             if (c != null) {
                 b.append(c.getDescription());
             }
