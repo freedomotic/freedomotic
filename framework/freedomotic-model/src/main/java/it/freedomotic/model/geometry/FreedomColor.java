@@ -8,7 +8,10 @@ import java.io.Serializable;
  * @author Enrico
  */
 public class FreedomColor implements Serializable{
-    private int red;
+    
+	private static final long serialVersionUID = 5934085311849971561L;
+	
+	private int red;
     private int green;
     private int blue;
     private int alpha;

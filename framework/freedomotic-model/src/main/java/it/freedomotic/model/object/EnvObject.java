@@ -14,7 +14,9 @@ import java.util.List;
  */
 public class EnvObject implements Serializable {
 
-    private String name;
+    private static final long serialVersionUID = -7253889516478184321L;
+	
+	private String name;
     private String description;
     private String actAs;
     private String type;

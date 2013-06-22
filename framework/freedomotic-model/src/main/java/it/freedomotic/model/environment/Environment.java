@@ -30,7 +30,9 @@ import java.util.ArrayList;
  */
 public class Environment implements Serializable {
 
-    private String name;
+    private static final long serialVersionUID = 2461804483322891608L;
+	
+	private String name;
     private int width;
     private int height;
     private String renderer;

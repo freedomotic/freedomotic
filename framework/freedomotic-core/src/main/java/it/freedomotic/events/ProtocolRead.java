@@ -16,7 +16,9 @@ import it.freedomotic.reactions.Trigger;
  */
 public class ProtocolRead extends EventTemplate {
 
-    String protocol;
+    private static final long serialVersionUID = -5568720131236449299L;
+	
+	String protocol;
 
     public ProtocolRead(Object source, String protocol, String address) {
         this.setSender(source);

@@ -14,7 +14,10 @@ import java.util.Set;
  * @author gpt
  */
 public class Properties implements Serializable {
-    HashMap<String,String> propertyList;
+    
+	private static final long serialVersionUID = 1L;
+	
+	HashMap<String,String> propertyList;
             
     public Properties()
     {

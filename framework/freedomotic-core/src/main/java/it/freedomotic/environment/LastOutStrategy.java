@@ -13,7 +13,9 @@ import java.io.Serializable;
 public class LastOutStrategy implements Ownership, Serializable {
 
 
-    @Override
+    private static final long serialVersionUID = -4839776027684778640L;
+
+	@Override
     public boolean canTriggerReactionsOnEnter(ZoneLogic z) {
         return true;
     }

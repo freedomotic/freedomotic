@@ -40,7 +40,9 @@ import java.util.logging.Logger;
  */
 public class Config implements Serializable {
 
-    private Properties properties = new Properties();
+    private static final long serialVersionUID = 1380975976029008480L;
+	
+	private Properties properties = new Properties();
     private String xmlFile = "";
     private Tuples tuples = new Tuples();
 

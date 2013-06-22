@@ -13,7 +13,9 @@ package it.freedomotic.model.object;
  */
 public class PropertiesBehavior extends Behavior {
 
-    private Properties properties = new Properties();
+    private static final long serialVersionUID = 6808299643143488536L;
+	
+	private Properties properties = new Properties();
 
     public String getProperty(String key) {
         return properties.getProperty(key);

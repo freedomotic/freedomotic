@@ -12,7 +12,9 @@ import java.io.Serializable;
  */
 public abstract class Behavior implements Serializable {
 
-    private String name;
+    private static final long serialVersionUID = -4973746059396782383L;
+	
+	private String name;
     private String description;
     private boolean active;
     private int priority;

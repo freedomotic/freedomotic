@@ -11,7 +11,9 @@ import java.io.Serializable;
  */
 public class Representation implements Serializable {
 
-    private boolean tangible;
+    private static final long serialVersionUID = 5024359210563760316L;
+	
+	private boolean tangible;
     private boolean intersecable;
     private FreedomPoint offset;
     private double rotation;

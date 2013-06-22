@@ -19,7 +19,9 @@ import java.util.Map.Entry;
  */
 public class ObjectReceiveClick extends EventTemplate {
 
-    public static final String SINGLE_CLICK = "SINGLE_CLICK";
+    private static final long serialVersionUID = 8985824879207319982L;
+	
+	public static final String SINGLE_CLICK = "SINGLE_CLICK";
     public static final String DOUBLE_CLICK = "DOUBLE_CLICK";
     public static final String RIGHT_CLICK = "RIGHT_CLICK";
 

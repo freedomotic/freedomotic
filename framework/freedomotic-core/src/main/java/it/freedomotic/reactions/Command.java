@@ -34,7 +34,9 @@ import java.util.Map.Entry;
  */
 public final class Command implements Serializable, Cloneable {
 
-    // Nome del comando
+    private static final long serialVersionUID = -7287958816826580426L;
+	
+	// Nome del comando
     private String name;
     // Coda alla quale inviare il comando
     private String receiver;

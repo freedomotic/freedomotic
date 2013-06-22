@@ -8,7 +8,8 @@ import java.io.Serializable;
  */
 public class FreedomPoint implements Serializable {
    
-    private int x;
+    private static final long serialVersionUID = -54024055228629609L;
+	private int x;
     private int y;
 
     public FreedomPoint(int x, int y) {

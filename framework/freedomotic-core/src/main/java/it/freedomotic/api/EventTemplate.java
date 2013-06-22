@@ -37,7 +37,9 @@ import java.util.Locale;
  */
 public class EventTemplate implements Serializable {
 
-    protected String eventName;
+    private static final long serialVersionUID = -6726283450243677665L;
+	
+	protected String eventName;
     protected String sender;
     protected Payload payload = new Payload();
     protected boolean isValid;

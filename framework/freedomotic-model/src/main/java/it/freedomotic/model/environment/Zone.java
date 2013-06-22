@@ -31,7 +31,9 @@ import java.util.ArrayList;
  */
 public class Zone implements Serializable {
 
-    private String name;
+    private static final long serialVersionUID = 4668625650384850879L;
+	
+	private String name;
     private String description;
     private boolean room;
     private FreedomPolygon shape;

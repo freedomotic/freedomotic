@@ -11,7 +11,9 @@ import it.freedomotic.model.environment.Zone;
  */
 public class ZoneHasChanged extends EventTemplate {
 
-    public ZoneHasChanged(Object source, Zone zone) {
+    private static final long serialVersionUID = -2676123835322299252L;
+
+	public ZoneHasChanged(Object source, Zone zone) {
         this.setSender(source);
         payload.addStatement("zone.name", zone.getName());
         payload.addStatement("zone.description", zone.getDescription());

@@ -24,7 +24,9 @@ import it.freedomotic.api.EventTemplate;
  */
 public class MessageEvent extends EventTemplate {
 
-    public MessageEvent(Object source, String message) {
+    private static final long serialVersionUID = 4733356918386875096L;
+
+	public MessageEvent(Object source, String message) {
         super(source);
         this.getPayload().addStatement("message.text", message);
         //set a default message type

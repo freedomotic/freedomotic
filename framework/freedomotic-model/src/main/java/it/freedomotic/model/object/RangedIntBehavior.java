@@ -7,7 +7,9 @@ package it.freedomotic.model.object;
 
 public class RangedIntBehavior extends Behavior {
 
-    private int value;
+    private static final long serialVersionUID = 6390384029652176632L;
+	
+	private int value;
     private int max;
     private int min;
     private int scale;
