@@ -28,9 +28,9 @@ public class ObjectReceiveClick extends EventTemplate {
     public ObjectReceiveClick(Object source, EnvObjectLogic obj, String click) {
         this.setSender(source);
         payload.addStatement("click", click.toString());
-        Iterator it = obj.getExposedProperties().entrySet().iterator();
+        Iterator<Entry<String,String>> it = obj.getExposedProperties().entrySet().iterator();
         while (it.hasNext()) {
-            Entry entry = (Entry) it.next();
+        	Entry<String,String> entry = it.next();
             payload.addStatement(entry.getKey().toString(), entry.getValue().toString());
         }
     }

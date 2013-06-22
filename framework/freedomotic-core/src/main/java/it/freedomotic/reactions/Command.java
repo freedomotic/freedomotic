@@ -236,9 +236,9 @@ public final class Command implements Serializable, Cloneable {
         clonedCmd.setDelay(getDelay());
         clonedCmd.setReplyTimeout(getReplyTimeout());
         clonedCmd.setExecuted(executed);
-        Iterator it = getProperties().entrySet().iterator();
+        Iterator<Entry<Object,Object>> it = getProperties().entrySet().iterator();
         while (it.hasNext()) {
-            Entry e = (Entry) it.next();
+        	Entry<Object,Object> e = it.next();
             clonedCmd.setProperty(e.getKey().toString(), e.getValue().toString()); //adding the original command properties to its clone
         }
         clonedCmd.properties.setXmlFile(this.getName());

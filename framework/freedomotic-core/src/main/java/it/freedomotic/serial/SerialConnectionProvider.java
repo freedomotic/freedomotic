@@ -254,7 +254,7 @@ public class SerialConnectionProvider implements SerialPortEventListener {
 
     private static void updateJavaLibraryPath(String pathToAdd) throws NoSuchFieldException, IllegalAccessException {
         // Resetto il salvataggio della variabile nella classe ClassLoader
-        Class loaderClass = ClassLoader.class;
+        Class<ClassLoader> loaderClass = ClassLoader.class;
         Field userPaths = loaderClass.getDeclaredField("sys_paths");
 
         userPaths.setAccessible(true);

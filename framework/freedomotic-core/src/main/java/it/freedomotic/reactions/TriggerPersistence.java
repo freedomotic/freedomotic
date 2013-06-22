@@ -197,8 +197,8 @@ public class TriggerPersistence {
         if ((name == null) || (name.isEmpty())) {
             return null;
         }
-        for (Iterator it = list.iterator(); it.hasNext();) {
-            Trigger trigger = (Trigger) it.next();
+        for (Iterator<Trigger> it = list.iterator(); it.hasNext();) {
+            Trigger trigger = it.next();
             if (trigger.getName().equalsIgnoreCase(name)) {
                 return trigger;
             }
@@ -209,8 +209,8 @@ public class TriggerPersistence {
 
     public static Trigger getTrigger(Trigger input) {
         if (input != null) {
-            for (Iterator it = list.iterator(); it.hasNext();) {
-                Trigger trigger = (Trigger) it.next();
+            for (Iterator<Trigger> it = list.iterator(); it.hasNext();) {
+                Trigger trigger = it.next();
                 if (trigger.equals(input)) {
                     return trigger;
                 }
@@ -223,7 +223,7 @@ public class TriggerPersistence {
         return list.get(i);
     }
 
-    public static Iterator iterator() {
+    public static Iterator<Trigger> iterator() {
         return list.iterator();
     }
 

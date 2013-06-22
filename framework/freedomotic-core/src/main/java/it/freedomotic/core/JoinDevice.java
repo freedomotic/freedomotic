@@ -78,19 +78,19 @@ public final class JoinDevice implements BusConsumer {
             Client addon = Freedomotic.clients.getClientByProtocol(protocol);
             if (addon != null) {
                 for (int i = 0; i < addon.getConfiguration().getTuples().size(); i++) {
-                    Map tuple = addon.getConfiguration().getTuples().getTuple(i);
-                    String regex = (String) tuple.get("object.class");
+                    Map<String,String> tuple = addon.getConfiguration().getTuples().getTuple(i);
+                    String regex = tuple.get("object.class");
                     if (regex != null && clazz.matches(regex)) {
                         //map object behaviors to hardware triggers
                         for (Behavior behavior : loaded.getPojo().getBehaviors()) {
-                            String triggerName = (String) tuple.get(behavior.getName());
+                            String triggerName =  tuple.get(behavior.getName());
                             loaded.addTriggerMapping(TriggerPersistence.getTrigger(triggerName), behavior.getName());
                         }
                         //map object actions to hardware commands
-                        Iterator it = loaded.getPojo().getActions().stringPropertyNames().iterator();
+                        Iterator<String> it = loaded.getPojo().getActions().stringPropertyNames().iterator();
                         while (it.hasNext()) {
-                            String action = (String) it.next();
-                            String commandName = (String) tuple.get(action);
+                            String action = it.next();
+                            String commandName =  tuple.get(action);
                             if (commandName != null) {
                                 loaded.setAction(action, CommandPersistence.getHardwareCommand(commandName));
                             }

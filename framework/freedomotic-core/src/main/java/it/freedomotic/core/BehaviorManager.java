@@ -140,10 +140,10 @@ public final class BehaviorManager implements BusConsumer {
         Config param = null;
         //gets a reference to an EnvObject using the key 'object' in the user level command
         String objectClass = userLevelCommand.getProperty("object.class");
-        Iterator it = EnvObjectPersistence.iterator();
+        Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator();
         String regex = "^" + objectClass.replace(".", "\\.") + ".*";
         while (it.hasNext()) {
-            EnvObjectLogic object = (EnvObjectLogic) it.next();
+            EnvObjectLogic object = it.next();
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(object.getPojo().getType());
             if (matcher.matches()) {
@@ -158,10 +158,10 @@ public final class BehaviorManager implements BusConsumer {
         Config param = null;
         //gets a reference to an EnvObject using the key 'object' in the user level command
         String objectClass = userLevelCommand.getProperty("object.class");
-        Iterator it = EnvObjectPersistence.iterator();
+        Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator();
         String regex = "^" + objectClass.replace(".", "\\.") + ".*";
         while (it.hasNext()) {
-            EnvObjectLogic object = (EnvObjectLogic) it.next();
+            EnvObjectLogic object = it.next();
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(object.getPojo().getType());
             if (matcher.matches()) {

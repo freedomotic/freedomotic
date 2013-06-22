@@ -27,7 +27,7 @@ public class Unzip {
 //simulates the unzip here feature
         newPath = newPath.substring(0, newPath.lastIndexOf(File.separator));
 
-        Enumeration zipFileEntries = zip.entries();
+        Enumeration<? extends ZipEntry> zipFileEntries = zip.entries();
 
         // Process each entry
         while (zipFileEntries.hasMoreElements()) {

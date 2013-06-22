@@ -22,8 +22,9 @@ package it.freedomotic.events;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.objects.BehaviorLogic;
 import it.freedomotic.objects.EnvObjectLogic;
+
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Channel <b>app.event.sensor.object.behavior.change</b> informs that an object 
@@ -46,9 +47,9 @@ public class ObjectHasChangedBehavior extends EventTemplate {
     public ObjectHasChangedBehavior(Object source, EnvObjectLogic obj) {
         super(source);
         //add default object properties
-        Iterator it = obj.getExposedProperties().entrySet().iterator();
+        Iterator<Entry<String,String>> it = obj.getExposedProperties().entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
+            Entry<String,String> entry = it.next();
             payload.addStatement(entry.getKey().toString(), entry.getValue().toString());
         }
         //add the list of changed behaviors

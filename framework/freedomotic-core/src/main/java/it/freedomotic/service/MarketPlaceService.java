@@ -20,8 +20,8 @@ public class MarketPlaceService {
     private static MarketPlaceService service;
     private Lookup marketPlaceLookup;
     private Collection<? extends IMarketPlace> marketPlaces;
-    private Template marketPlaceTemplate;
-    private Result marketPlaceResults;
+    private Template<IMarketPlace> marketPlaceTemplate;
+    private Result<IMarketPlace> marketPlaceResults;
 
     /**
      * Creates a new instance of DictionaryService
@@ -29,7 +29,7 @@ public class MarketPlaceService {
     private MarketPlaceService() {
         try {
         marketPlaceLookup = Lookup.getDefault();
-        marketPlaceTemplate = new Template(IMarketPlace.class);
+        marketPlaceTemplate = new Template<IMarketPlace>(IMarketPlace.class);
         marketPlaceResults = marketPlaceLookup.lookup(marketPlaceTemplate);
         marketPlaces = marketPlaceResults.allInstances();
         marketPlaceResults.addLookupListener(new LookupListener() {

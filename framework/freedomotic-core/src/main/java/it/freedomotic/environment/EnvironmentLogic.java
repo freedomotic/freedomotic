@@ -93,10 +93,10 @@ public final class EnvironmentLogic {
         if (zone.getPojo().isRoom()) {
             Room room = (Room) zone;
             room.init(this);
-            Iterator it = EnvObjectPersistence.iterator();
+            Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator();
             //check if this rooms has gates
             while (it.hasNext()) {
-                EnvObjectLogic obj = (EnvObjectLogic) it.next();
+                EnvObjectLogic obj = it.next();
                 if (obj instanceof Gate) {
                     Gate gate = (Gate) obj;
                     gate.evaluateGate();

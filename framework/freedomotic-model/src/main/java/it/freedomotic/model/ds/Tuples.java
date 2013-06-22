@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -20,9 +20,9 @@ public class Tuples implements Serializable {
 
     private static final long serialVersionUID = 3113993714552615957L;
 
-    private ArrayList<HashMap> tuples = new ArrayList<HashMap>();
+    private ArrayList<HashMap<String, String>> tuples = new ArrayList<HashMap<String, String>>();
 
-    public HashMap getTuple(int i) {
+    public HashMap<String, String> getTuple(int i) {
         return tuples.get(i);
     }
 
@@ -30,7 +30,7 @@ public class Tuples implements Serializable {
         return (String) tuples.get(tupleIndex).get(key);
     }
 
-    public Iterator getPropertiesIterator(int tupleIndex) {
+    public Iterator<Entry<String,String>> getPropertiesIterator(int tupleIndex) {
         return tuples.get(tupleIndex).entrySet().iterator();
     }
 
@@ -38,11 +38,11 @@ public class Tuples implements Serializable {
         return tuples.get(tupleIndex).entrySet().size();
     }
 
-    public Set<Map.Entry> getProperties(int tupleIndex) {
+    public Set<Entry<String,String>> getProperties(int tupleIndex) {
         return tuples.get(tupleIndex).entrySet();
     }
 
-    public void add(HashMap map) {
+    public void add(HashMap<String, String> map) {
         tuples.add(map);
     }
 

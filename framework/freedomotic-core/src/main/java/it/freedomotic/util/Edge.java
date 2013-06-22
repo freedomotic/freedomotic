@@ -13,7 +13,7 @@ package it.freedomotic.util;
  /**
   * La classe arco serve per rappresentare un arco del grafo
   */
-public class Edge implements Comparable {
+public class Edge implements Comparable<Edge> {
 
   Object x, y;
   Object value;
@@ -57,12 +57,12 @@ public class Edge implements Comparable {
   }
 
     @Override
-  public int compareTo(Object a) {
-    int i = ((Comparable) value).compareTo(((Edge)a).value);
+  public int compareTo(Edge a) {
+    int i = ((Comparable<Object>) value).compareTo(a.value);
     if (i==0) {
-      int j = ((Comparable) x).compareTo(((Edge)a).x);
+      int j = ((Comparable<Object>) x).compareTo(a.x);
       if (j == 0)
-        return ((Comparable) y).compareTo(((Edge)a).y);
+        return ((Comparable<Object>) y).compareTo(a.y);
       else
         return j;
     } else {

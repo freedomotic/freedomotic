@@ -32,10 +32,10 @@ public final class EventLoader {
                         classNames = AddonLoader.getClassNames(jar.getAbsolutePath());
                         for (String className : classNames) {
                             String name = className.substring(0, className.length() - 6);
-                            Class clazz = null;
+                            Class<?> clazz = null;
 
                             clazz = AddonLoader.getClass(jar, name);
-                            Class superclass = clazz.getSuperclass();
+                            Class<?> superclass = clazz.getSuperclass();
                             try {
                                 clazz.newInstance();
                             } catch (Exception exception) {

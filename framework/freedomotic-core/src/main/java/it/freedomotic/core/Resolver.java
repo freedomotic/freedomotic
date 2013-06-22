@@ -158,9 +158,9 @@ public final class Resolver {
      * @param command
      */
     private void performSubstitutionInCommand(Command command) {
-        Iterator it = command.getProperties().entrySet().iterator();
+        Iterator<Entry<Object, Object>> it = command.getProperties().entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry aProperty = (Map.Entry) it.next();
+            Entry<Object, Object> aProperty =  it.next();
             String key = (String) aProperty.getKey();
             String propertyValue = (String) aProperty.getValue();
             for (final String PREFIX : prefixes) {
@@ -237,9 +237,9 @@ public final class Resolver {
      * @param trigger
      */
     private void performSubstitutionInTrigger(Trigger trigger) {
-        Iterator it = trigger.getPayload().iterator();
+        Iterator<Statement> it = trigger.getPayload().iterator();
         while (it.hasNext()) {
-            Statement statement = (Statement) it.next();
+            Statement statement = it.next();
             String key = (String) statement.getAttribute();
             String propertyValue = (String) statement.getValue();
             for (final String PREFIX : prefixes) {
@@ -305,9 +305,9 @@ public final class Resolver {
 
     private void mergeContextParamsIntoCommand(Command c) {
         //adding  parameters to command parameters with a  prefix
-        Iterator it = context.iterator();
+        Iterator<Statement> it = context.iterator();
         while (it.hasNext()) {
-            Statement statement = (Statement) it.next();
+            Statement statement = it.next();
             c.setProperty(statement.getAttribute(), statement.getValue());
         }
     }
@@ -325,11 +325,11 @@ public final class Resolver {
         if (!prefixes.contains(PREFIX)) {
             prefixes.add(PREFIX);
         }
-        Set entries = aContext.getProperties().entrySet();
-        Iterator it = entries.iterator();
+        Set<Entry<Object,Object>> entries = aContext.getProperties().entrySet();
+        Iterator<Entry<Object,Object>> it = entries.iterator();
         while (it.hasNext()) {
             String key;
-            Map.Entry entry = (Map.Entry) it.next();
+            Entry<Object,Object> entry = it.next();
             //removing the prefix of the properties if already exists
             //to avoid dublicate prefixes like @event.event.object.name
             if (entry.getKey().toString().startsWith(PREFIX)) {
@@ -342,7 +342,7 @@ public final class Resolver {
         }
     }
 
-    public void addContext(final String PREFIX, final Map aContext) {
+    public void addContext(final String PREFIX, final Map<String,String> aContext) {
         if (context == null) {
             context = new Payload();
         }
@@ -350,10 +350,10 @@ public final class Resolver {
         if (!prefixes.contains(PREFIX)) {
             prefixes.add(PREFIX);
         }
-        Iterator it = aContext.entrySet().iterator();
+        Iterator<Entry<String,String>> it = aContext.entrySet().iterator();
         while (it.hasNext()) {
             String key;
-            Entry entry = (Entry) it.next();
+            Entry<String,String> entry = it.next();
             //removing the prefix of the properties if already exists
             //to avoid duplicate prefixes like @event.event.object.name
             if (entry.getKey().toString().startsWith(PREFIX)) {
@@ -374,10 +374,10 @@ public final class Resolver {
         if (!prefixes.contains(PREFIX)) {
             prefixes.add(PREFIX);
         }
-        Iterator it = aContext.iterator();
+        Iterator<Statement> it = aContext.iterator();
         while (it.hasNext()) {
             String key;
-            Statement statement = (Statement) it.next();
+            Statement statement = it.next();
             //removing the prefix of the properties if already exists
             //to avoid dublicate prefixes like @event.event.object.name
             if (statement.getAttribute().startsWith(PREFIX)) {

@@ -118,11 +118,11 @@ public final class TriggerCheck {
         Runnable automation = new Runnable() {
             @Override
             public void run() {
-                Iterator it = ReactionPersistence.iterator();
+                Iterator<Reaction> it = ReactionPersistence.iterator();
                 //Searching for reactions using this trigger
                 boolean found = false;
                 while (it.hasNext()) {
-                    Reaction reaction = (Reaction) it.next();
+                    Reaction reaction = it.next();
                     Trigger reactionTrigger = reaction.getTrigger();
                     //found a related reaction. This must be executed
                     if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {

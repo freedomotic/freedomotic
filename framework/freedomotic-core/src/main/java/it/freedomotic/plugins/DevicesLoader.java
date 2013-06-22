@@ -42,13 +42,13 @@ public final class DevicesLoader {
                 }
                 for (String className : classNames) {
                     String name = className.substring(0, className.length() - 6);
-                    Class clazz = null;
+                    Class<?> clazz = null;
                     try {
                         clazz = AddonLoader.getClass(jar, name);
                     } catch (Exception ex) {
                         Logger.getLogger(DevicesLoader.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    Class superclass = clazz.getSuperclass();
+                    Class<?> superclass = clazz.getSuperclass();
                     if (superclass != null) { //null if class is Object
                         try {
                             //we allow the dynamic loading only to ADDONS of this classes
