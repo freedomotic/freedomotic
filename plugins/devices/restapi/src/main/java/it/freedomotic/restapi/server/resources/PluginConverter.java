@@ -5,6 +5,7 @@
 package it.freedomotic.restapi.server.resources;
 
 import it.freedomotic.restapi.model.PluginPojo;
+
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;

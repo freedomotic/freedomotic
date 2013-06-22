@@ -4,15 +4,18 @@
  */
 package it.freedomotic.restapi.server.resources;
 
-import it.freedomotic.restapi.model.PluginPojo;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import it.freedomotic.api.Client;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.restapi.model.PluginPojo;
 import it.freedomotic.restapi.server.interfaces.PluginsResource;
+
 import java.util.ArrayList;
+
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 /**
  *

@@ -5,11 +5,11 @@
         <groupId>it.freedomotic</groupId>
         <artifactId>freedomotic</artifactId>
         <version>5.5-SNAPSHOT</version>
-        <relativePath>../../</relativePath>
+        <relativePath>../../../</relativePath>
     </parent>    
-    <artifactId>restapi</artifactId>
+    <artifactId>restapi-interfaces</artifactId>
     <packaging>jar</packaging>
-    <name>restapi</name>
+    <name>restapi-interfaces</name>
     <version>3.0</version>
 
     <properties>
@@ -23,17 +23,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>freedomotic-core</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>restapi-interfaces</artifactId>
-            <version>${project.version}</version>
         </dependency>
 		<dependency>
 			<groupId>org.restlet.jse</groupId>
@@ -56,7 +45,6 @@
 			<version>${org.restlet.version}</version>
 		</dependency>
     </dependencies>
-
 	<repositories>
 		<repository>
 			<id>maven-restlet</id>
@@ -64,7 +52,7 @@
 			<url>http://maven.restlet.org</url>
 		</repository>
 	</repositories>  
-	
+
     <build>
         <plugins>
             <!-- read the build.option file -->

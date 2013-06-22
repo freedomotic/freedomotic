@@ -9,9 +9,11 @@ import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.restapi.server.FreedomRestServer;
 import it.freedomotic.util.Info;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;

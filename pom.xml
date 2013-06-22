@@ -33,6 +33,9 @@
                 <module>plugins/devices/frontend-java</module>
                 <module>plugins/devices/test</module>
                 <module>plugins/devices/hello-world</module>
+                <module>plugins/devices/restapi</module>
+                <module>tools/RestApiInterfaces</module>
+                <module>tools/RestTestClient</module>
             </modules>
         </profile>
     </profiles>

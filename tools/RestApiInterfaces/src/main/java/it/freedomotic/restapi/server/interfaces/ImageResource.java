@@ -10,7 +10,8 @@ import org.restlet.resource.Get;
  *
  * @author gpt
  */
-public interface CommandsResource extends FreedomoticResource{
-   
-        
+public interface ImageResource {
+    
+    @Get
+    public String getImagePath();
 }

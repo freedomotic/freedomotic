@@ -4,20 +4,18 @@
  */
 package it.freedomotic.restapi.server.interfaces;
 
+import it.freedomotic.model.environment.Environment;
 
-import it.freedomotic.model.object.EnvObject;
 import java.util.ArrayList;
+
 import org.restlet.resource.Get;
 
 /**
  *
  * @author gpt
  */
-public interface ObjectsResource extends FreedomoticResource{
-
-    @Get("object|gwt_object")
-    public ArrayList<EnvObject> retrieveObjects();
-   
+public interface EnvironmentsResource extends FreedomoticResource{
+    
+    @Get("object|gwt_object") 
+    public ArrayList<Environment> retrieveEnvironments();
 }
-
-
