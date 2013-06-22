@@ -2,16 +2,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package resttestclient;
+package it.freedomotic.resttestclient;
 
-import com.google.gson.stream.JsonReader;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.JSONObject;
+
 import org.restlet.Client;
 import org.restlet.Context;
 import org.restlet.Response;
@@ -22,6 +23,8 @@ import org.restlet.engine.util.Base64;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+
+import com.google.gson.stream.JsonReader;
 
 /**
  *

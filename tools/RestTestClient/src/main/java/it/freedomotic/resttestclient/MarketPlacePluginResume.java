@@ -2,14 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package resttestclient;
+package it.freedomotic.resttestclient;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 

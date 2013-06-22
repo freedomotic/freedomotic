@@ -4,7 +4,18 @@
  */
 package it.freedomotic.restapi.server;
 
-import it.freedomotic.restapi.server.resources.*;
+import it.freedomotic.restapi.server.resources.EnvironmentServerResource;
+import it.freedomotic.restapi.server.resources.EnvironmentsServerResource;
+import it.freedomotic.restapi.server.resources.HardwareCommandsServerResource;
+import it.freedomotic.restapi.server.resources.ImageResourceServerResource;
+import it.freedomotic.restapi.server.resources.ObjectServerResource;
+import it.freedomotic.restapi.server.resources.ObjectsServerResource;
+import it.freedomotic.restapi.server.resources.PluginsServerResource;
+import it.freedomotic.restapi.server.resources.TriggersServerResource;
+import it.freedomotic.restapi.server.resources.UserCommandsServerResource;
+import it.freedomotic.restapi.server.resources.ZoneServerResource;
+import it.freedomotic.restapi.server.resources.ZonesServerResource;
+
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;

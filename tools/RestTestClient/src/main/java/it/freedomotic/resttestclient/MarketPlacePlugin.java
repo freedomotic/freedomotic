@@ -2,13 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package resttestclient;
+package it.freedomotic.resttestclient;
 
-import com.google.gson.stream.JsonReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+
+import com.google.gson.stream.JsonReader;
 
 /**
  *  POJO class that represents all information available from the Drupal arketPlace that is

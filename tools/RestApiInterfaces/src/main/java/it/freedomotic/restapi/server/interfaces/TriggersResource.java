@@ -4,7 +4,6 @@
  */
 package it.freedomotic.restapi.server.interfaces;
 
-import org.restlet.resource.Get;
 
 /**
  *

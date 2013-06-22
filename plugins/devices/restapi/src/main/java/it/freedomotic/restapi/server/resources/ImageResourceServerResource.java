@@ -9,7 +9,9 @@ import it.freedomotic.core.ResourcesManager;
 import it.freedomotic.restapi.server.FreedomRestServer;
 import it.freedomotic.restapi.server.interfaces.ImageResource;
 import it.freedomotic.util.Info;
+
 import java.io.File;
+
 import org.restlet.resource.ServerResource;
 
 

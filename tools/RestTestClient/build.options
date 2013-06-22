@@ -1,0 +1,13 @@
+#Sat Jun 22 13:25:16 CEST 2013
+package.vendor.nation=es
+package.license=GNU GPL2
+package.vendor.name=Gabriel
+package.name=es.gpulido.resttestclient
+framework.required.minor=5
+package.vendor.surname=Pulido
+package.vendor.contact=gabriel@freedomotic.com
+package.nodeid=702
+package.vendor.company=freedomotic
+framework.required.major=5
+framework.required.build=x
+package.type=tools

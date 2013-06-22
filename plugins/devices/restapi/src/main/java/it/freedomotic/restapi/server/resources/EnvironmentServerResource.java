@@ -4,14 +4,15 @@
  */
 package it.freedomotic.restapi.server.resources;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.persistence.FreedomXStream;
 import it.freedomotic.restapi.server.interfaces.EnvironmentResource;
+
 import org.restlet.resource.ServerResource;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 /**
  *

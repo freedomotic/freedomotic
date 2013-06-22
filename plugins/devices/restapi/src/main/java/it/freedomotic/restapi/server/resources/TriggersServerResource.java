@@ -4,18 +4,18 @@
  */
 package it.freedomotic.restapi.server.resources;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.persistence.FreedomXStream;
-import it.freedomotic.reactions.TriggerPersistence;
-import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.restapi.server.interfaces.TriggersResource;
+
 import java.util.ArrayList;
-import java.util.Iterator;
+
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 /**
  *
