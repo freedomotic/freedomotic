@@ -51,6 +51,8 @@ public final class TriggerCheck {
                 if (resolved.isConsistentWith(event)) {
                     buff.append("[CONSISTENT] hardware level trigger '").append(resolved.getName()).append("' ").append(resolved.getPayload().toString()).append("'\nconsistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
                     applySensorNotification(resolved, event);
+                    Freedomotic.logger.config(buff.toString());
+                    return true;
                 }
             } else {
                 if (trigger.canFire()) {
@@ -58,6 +60,8 @@ public final class TriggerCheck {
                     if (resolved.isConsistentWith(event)) {
                         buff.append("[CONSISTENT] registred trigger '").append(resolved.getName()).append("' ").append(resolved.getPayload().toString()).append("'\nconsistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
                         executeTriggeredAutomations(resolved, event);
+                        Freedomotic.logger.config(buff.toString());
+                        return true;
                     }
                 }
             }
