@@ -5,24 +5,20 @@
 package it.freedomotic.jfrontend.automationeditor;
 
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
+import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JSeparator;
 
 /**
  *

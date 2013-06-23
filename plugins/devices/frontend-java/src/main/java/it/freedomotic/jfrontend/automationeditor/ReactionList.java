@@ -10,14 +10,13 @@
  */
 package it.freedomotic.jfrontend.automationeditor;
 
-import it.freedomotic.reactions.ReactionPersistence;
-import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
+import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Trigger;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.util.i18n;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -107,13 +106,13 @@ public final class ReactionList extends javax.swing.JFrame {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Current Automations");
+        setTitle(i18n.msg(this,"current_automations"));
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowActivated(java.awt.event.WindowEvent evt) {
-                formWindowActivated(evt);
-            }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
+            }
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
             }
         });
 

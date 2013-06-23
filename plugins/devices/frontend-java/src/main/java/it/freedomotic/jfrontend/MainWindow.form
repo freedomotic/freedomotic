@@ -162,7 +162,9 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="F3"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Select Area/Floor"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="i18n.msg(this,&quot;select_X&quot;,new Object[]{i18n.msg(&quot;area_floor&quot;)})" type="code"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuSelectEnvironmentActionPerformed"/>
@@ -170,7 +172,9 @@
             </MenuItem>
             <Menu class="javax.swing.JMenu" name="jMenu4">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Area/Floor"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="i18n.msg(&quot;area_floor&quot;)" type="code"/>
+                </Property>
               </Properties>
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="mnuRenameEnvironment">
@@ -273,7 +277,9 @@
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="mnuRoomBackground">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Change Background"/>
+                    <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="i18n.msg(&quot;change_X&quot;,new Object[]{i18n.msg(&quot;background&quot;)})" type="code"/>
+                    </Property>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuRoomBackgroundActionPerformed"/>
@@ -439,7 +445,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="mnuTutorial">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Tutorial"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="i18n.msg(this,&quot;tutorial&quot;)" type="code"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuTutorialActionPerformed"/>
@@ -450,7 +458,9 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="F1"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="About"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="i18n.msg(this,&quot;about&quot;)" type="code"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="submnuHelpActionPerformed"/>

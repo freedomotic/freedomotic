@@ -11,24 +11,19 @@
  */
 package it.freedomotic.jfrontend.automationeditor;
 
-import it.freedomotic.api.Actuator;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.jfrontend.utils.PropertiesPanel_1;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.util.i18n;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 
 /**
  *

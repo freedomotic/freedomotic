@@ -3,16 +3,16 @@ package it.freedomotic.jfrontend;
 import it.freedomotic.api.Client;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.ResourcesManager;
+import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.plugins.ObjectPlugin;
 import it.freedomotic.util.Info;
+import it.freedomotic.util.i18n;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.*;
 
@@ -79,10 +79,10 @@ public final class PluginJList extends JList {
                 JPopupMenu menu = new JPopupMenu();
                 JMenuItem mnuConfigure = null;
                 if (client.getType().equalsIgnoreCase("plugin")) {
-                    mnuConfigure = new JMenuItem("Configure " + client.getName());
+                    mnuConfigure = new JMenuItem(i18n.msg(this, "configure_X",new Object[]{client.getName()}));
                 } else {
                     if (client.getType().equalsIgnoreCase("object")) {
-                        mnuConfigure = new JMenuItem("Add " + client.getName() + " Object");
+                        mnuConfigure = new JMenuItem(i18n.msg(this, "add_X_object",new Object[]{ client.getName()}));
                     } else {
                         mnuConfigure = new JMenuItem("Placeholder menu");
                     }
@@ -126,9 +126,7 @@ public final class PluginJList extends JList {
             ImageIcon defaultIconStopped = new ImageIcon(ResourcesManager.getResource("plugin-stopped.png", 64, 64));//new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
 
             Vector vector = new Vector();
-            Iterator it = Freedomotic.clients.getClients().iterator();
-            while (it.hasNext()) {
-                Client addon = (Client) it.next();
+            for (Client addon : ClientStorage.getClients()){
                 if (addon.getType().equalsIgnoreCase(getFilter())) {
                     boolean isRunning = addon.isRunning();
                     JPanel jp = new JPanel();
