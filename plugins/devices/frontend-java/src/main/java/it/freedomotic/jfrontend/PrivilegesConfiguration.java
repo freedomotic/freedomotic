@@ -104,14 +104,14 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Save");
+        jButton1.setText(i18n.msg("save"));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Cancel");
+        jButton2.setText(i18n.msg("cancel"));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);

@@ -564,7 +564,7 @@ public class ObjectEditor extends javax.swing.JFrame {
 
         jPanel1.add(tabObjectEditor);
 
-        btnOk.setText("OK");
+        btnOk.setText(i18n.msg("ok"));
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOkActionPerformed(evt);
@@ -572,7 +572,7 @@ public class ObjectEditor extends javax.swing.JFrame {
         });
         pnlFrameButtons.add(btnOk);
 
-        btnCancel.setText("Cancel");
+        btnCancel.setText(i18n.msg("cancel"));
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelActionPerformed(evt);

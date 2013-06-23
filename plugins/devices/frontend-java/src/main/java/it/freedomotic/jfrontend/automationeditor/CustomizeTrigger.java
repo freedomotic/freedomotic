@@ -40,7 +40,7 @@ public class CustomizeTrigger extends javax.swing.JFrame {
         initComponents();
         this.main = main;
         original = t;
-        this.setTitle(i18n.msg(this,"trigger_X_editor", new Object[]{t.getName()}));
+        setTitle(i18n.msg(this,"trigger_X_editor", new Object[]{t.getName()}));
         txtName.setText(t.getName());
         txtDescription.setText(t.getDescription());
         txtChannel.setText(t.getChannel());
@@ -92,12 +92,13 @@ public class CustomizeTrigger extends javax.swing.JFrame {
                     break;
                 }
             }  
-            if (saveCurrent) payload.addStatement(
+            if (saveCurrent) {
+                payload.addStatement(
                     model.getValueAt(r, 0).toString(),
                     model.getValueAt(r, 1).toString(),
                     model.getValueAt(r, 2).toString(),
                     model.getValueAt(r, 3).toString());
-
+            }
         }
         t.setName(txtName.getText());
         t.setDescription(txtDescription.getText());
@@ -333,16 +334,16 @@ public class CustomizeTrigger extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private int getOperatorIndex(String operand) {
-        if (operand.equalsIgnoreCase("EQUALS")) {
+        if (operand.equalsIgnoreCase(Statement.EQUALS)) {
             return 0;
         }
-        if (operand.equalsIgnoreCase("GREATER_THEN")) {
+        if (operand.equalsIgnoreCase(Statement.GREATER_THEN)) {
             return 1;
         }
-        if (operand.equalsIgnoreCase("LESS_THEN")) {
+        if (operand.equalsIgnoreCase(Statement.LESS_THEN)) {
             return 2;
         }
-        if (operand.equalsIgnoreCase("REGEX")) {
+        if (operand.equalsIgnoreCase(Statement.REGEX)) {
             return 3;
         }
         return -1;
@@ -350,18 +351,18 @@ public class CustomizeTrigger extends javax.swing.JFrame {
 
     private String getOperatorName(int index) {
         if (index == 0) {
-            return "EQUALS";
+            return Statement.EQUALS;
         }
         if (index == 1) {
-            return "GREATER_THEN";
+            return Statement.GREATER_THEN;
 
         }
         if (index == 2) {
-            return "LESS_THEN";
+            return Statement.LESS_THEN;
 
         }
         if (index == 3) {
-            return "REGEX";
+            return Statement.REGEX;
         }
         return "";
     }

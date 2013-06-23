@@ -24,7 +24,6 @@ import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
-import it.freedomotic.jfrontend.Renderer;
 import it.freedomotic.jfrontend.utils.OpenDialogFileFilter;
 import it.freedomotic.jfrontend.utils.TipOfTheDay;
 import it.freedomotic.model.environment.Zone;
@@ -536,7 +535,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuEditMode.setText(i18n.msg("environment"));
 
         mnuSelectEnvironment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
-        mnuSelectEnvironment.setText("Select Area/Floor");
+        mnuSelectEnvironment.setText(i18n.msg(this,"select_X",new Object[]{i18n.msg("area_floor")}));
         mnuSelectEnvironment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuSelectEnvironmentActionPerformed(evt);
@@ -544,7 +543,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mnuEditMode.add(mnuSelectEnvironment);
 
-        jMenu4.setText("Area/Floor");
+        jMenu4.setText(i18n.msg("area_floor"));
 
         mnuRenameEnvironment.setText(i18n.msg("rename"));
         mnuRenameEnvironment.addActionListener(new java.awt.event.ActionListener() {
@@ -617,7 +616,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(mnuAddRoom);
 
-        mnuRoomBackground.setText("Change Background");
+        mnuRoomBackground.setText(i18n.msg("change_X",new Object[]{i18n.msg("background")}));
         mnuRoomBackground.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuRoomBackgroundActionPerformed(evt);
@@ -723,7 +722,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         mnuHelp.setText(i18n.msg("help"));
 
-        mnuTutorial.setText("Tutorial");
+        mnuTutorial.setText(i18n.msg(this,"tutorial"));
         mnuTutorial.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuTutorialActionPerformed(evt);
@@ -732,7 +731,7 @@ public class MainWindow extends javax.swing.JFrame {
         mnuHelp.add(mnuTutorial);
 
         submnuHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        submnuHelp.setText("About");
+        submnuHelp.setText(i18n.msg(this,"about"));
         submnuHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 submnuHelpActionPerformed(evt);

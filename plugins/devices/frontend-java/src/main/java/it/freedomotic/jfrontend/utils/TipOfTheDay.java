@@ -4,6 +4,7 @@
  */
 package it.freedomotic.jfrontend.utils;
 
+import it.freedomotic.app.Freedomotic;
 import it.freedomotic.jfrontend.MainWindow;
 import java.awt.Dimension;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class TipOfTheDay extends javax.swing.JFrame {
                         try {
                             browser.setPage(e.getURL());
                         } catch (IOException e1) {
-                            e1.printStackTrace();
+                            Freedomotic.logger.warning("Cannot open " + browser.getPage().toString() + " for reason: " + e1.getLocalizedMessage());
                         }
                     }
 
@@ -50,7 +51,7 @@ public class TipOfTheDay extends javax.swing.JFrame {
             pack();
             setVisible(true);
         } catch (IOException ex) {
-            Logger.getLogger(TipOfTheDay.class.getName()).log(Level.SEVERE, null, ex);
+            Freedomotic.logger.warning("Cannot open " + browser.getPage().toString() + " for reason: " + ex.getLocalizedMessage());
         }
     }
 

@@ -10,12 +10,10 @@
  */
 package it.freedomotic.jfrontend;
 
-import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.jfrontend.utils.SpringUtilities;
 import it.freedomotic.plugins.AddonLoader;
-import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.service.IPluginCategory;
 import it.freedomotic.service.IPluginPackage;
 import it.freedomotic.service.MarketPlaceService;
@@ -41,7 +39,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SpringLayout;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -133,7 +130,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                                 JButton btnAction = null;
                                 String freedomoticVersion = Info.getMajor() + "." + Info.getMinor();
                                 if (pp.getFilePath(freedomoticVersion) != null
-                                        && pp.getFilePath(freedomoticVersion) != ""
+                                        && !pp.getFilePath(freedomoticVersion).isEmpty()
                                         && pp.getTitle() != null) {
                                     String version = extractVersion(new File(pp.getFilePath(freedomoticVersion)).getName().toString());
                                     int result = Plugin.compareVersions(pp.getTitle(), version);
@@ -270,8 +267,8 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         if (!java.awt.Desktop.isDesktopSupported()) {
             JOptionPane.showInputDialog(
                     null,
-                    "Please point your web browser to",
-                    "Message",
+                    i18n.msg(this,"info_point_browser_to"),
+                    i18n.msg("info"),
                     JOptionPane.PLAIN_MESSAGE, null, null,
                     uri.toString());
         } else {
@@ -315,7 +312,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         pnlMain = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Freedomotic Official Online Marketplace");
+        setTitle(i18n.msg(this,"title_marketplace"));
         setMinimumSize(new java.awt.Dimension(521, 370));
 
         txtInfo.setText(i18n.msg(this,"connecting_online_repo"));

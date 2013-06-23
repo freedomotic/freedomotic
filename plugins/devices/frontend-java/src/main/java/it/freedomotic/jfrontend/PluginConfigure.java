@@ -226,9 +226,7 @@ public class PluginConfigure extends javax.swing.JFrame {
                 AddonLoader.load(item.getFile().getParentFile());
                 ClientStorage.get(name).start();
                 JOptionPane.showMessageDialog(this,
-                        "Your changes have corrupted the configuration.\n"
-                        + "Freedomotic has already restored the last working configuration\n"
-                        + "Read the log to know more.");
+                        i18n.msg(this,"warn_reset_old_config"));
             } else {
                 this.dispose();
             }
