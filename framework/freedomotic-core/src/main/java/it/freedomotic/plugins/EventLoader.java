@@ -35,7 +35,7 @@ public final class EventLoader {
                             Class<?> clazz = null;
 
                             clazz = AddonLoader.getClass(jar, name);
-                            Class<?> superclass = clazz.getSuperclass();
+                            // Class<?> superclass = clazz.getSuperclass();
                             try {
                                 clazz.newInstance();
                             } catch (Exception exception) {

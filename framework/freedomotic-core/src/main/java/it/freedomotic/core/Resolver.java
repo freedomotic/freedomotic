@@ -59,7 +59,7 @@ import javax.script.ScriptException;
  */
 public final class Resolver {
 
-    private static final String REFERENCE_DELIMITER = "@";
+    // private static final String REFERENCE_DELIMITER = "@";
     private ArrayList<String> prefixes = new ArrayList<String>();
     private Payload context;
     private Reaction reaction;

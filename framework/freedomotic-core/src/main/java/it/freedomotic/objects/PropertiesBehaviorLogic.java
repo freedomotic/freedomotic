@@ -24,10 +24,11 @@ public class PropertiesBehaviorLogic implements BehaviorLogic {
 
     @Override
     public synchronized final void filterParams(final Config params, boolean fireCommand) {
-        String[] parsed = params.getProperty("value").trim().split("=");
-        String key = parsed[0].trim();
-        String value = parsed[1].trim();
-
+    	
+//        String[] parsed = params.getProperty("value").trim().split("=");
+//        String key = parsed[0].trim();
+//        String value = parsed[1].trim();
+//
 //        if (key != null && value != null && !key.isEmpty() && !value.isEmpty()) {
 //            String currentValue = data.getProperty(key);
 //            if (currentValue != null) {

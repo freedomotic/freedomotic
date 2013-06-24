@@ -38,7 +38,7 @@ public class EnvObjectLogic {
 
     private EnvObject pojo;
     private boolean changed;
-    private String message;
+    // private String message;
     private HashMap<String, Command> commandsMapping; //mapping between action name -> hardware command instance
     private List<BehaviorLogic> behaviors = new ArrayList<BehaviorLogic>();
     private EnvironmentLogic env;
