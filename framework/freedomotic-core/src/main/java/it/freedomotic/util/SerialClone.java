@@ -42,6 +42,7 @@ public class SerialClone {
 
 	@SuppressWarnings("unchecked")  // thanks to Bas de Bakker for the tip!
 	T clone = (T) cin.readObject();
+	cin.close();
 	return clone;
     }
 

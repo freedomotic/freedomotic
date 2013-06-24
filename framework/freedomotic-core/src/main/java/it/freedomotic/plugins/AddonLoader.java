@@ -114,6 +114,7 @@ public final class AddonLoader {
                 classes.add(jarEntry.getName().replaceAll("/", "\\."));
             }
         }
+        jarFile.close();
         return classes;
     }
 
