@@ -1,7 +1,7 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
-import it.freedomotic.environment.Room;
+// import it.freedomotic.environment.Room;
 import it.freedomotic.model.environment.Zone;
 
 /**
@@ -17,13 +17,17 @@ public class ZoneHasChanged extends EventTemplate {
         this.setSender(source);
         payload.addStatement("zone.name", zone.getName());
         payload.addStatement("zone.description", zone.getDescription());
-        Room room = null; //TODO: just a reminder for this property
-        if (room != null) {
-            payload.addStatement("zone.type", "room");
-        } else {
+
+        //TODO: just a reminder for this property
+		//    Room room = null; 
+		//    if (room != null) {
+		//        payload.addStatement("zone.type", "room");
+		//    } else {
+        
             payload.addStatement("zone.type", "zone");
+            
+        //    }
         }
-    }
 
     @Override
     protected void generateEventPayload() {

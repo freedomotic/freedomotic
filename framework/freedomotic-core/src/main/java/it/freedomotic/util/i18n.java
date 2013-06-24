@@ -75,10 +75,10 @@ public class i18n {
                     } else {
                         loc = new Locale(enableLocalization.substring(0, 2), enableLocalization.substring(3, 5));
 
-                        if (loc == null) {
-                            Freedomotic.logger.severe("Cannot set locale " + enableLocalization + " falling back to default locale");
-                            loc = Locale.getDefault();
-                        }
+						//    if (loc == null) {
+						//        Freedomotic.logger.severe("Cannot set locale " + enableLocalization + " falling back to default locale");
+						//        loc = Locale.getDefault();
+						//    }
 
                     }
                     String fileName = bundleName;
