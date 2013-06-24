@@ -246,7 +246,7 @@ public final class Trigger implements BusConsumer, Cloneable {
         if (payload instanceof EventTemplate) {
             EventTemplate event = (EventTemplate) payload;
             Freedomotic.logger.fine("Trigger '" + this.getName() + "' filters event '" + event.getEventName() + "' on channel " + this.getChannel());
-            boolean testPassed = TriggerCheck.check(event, this);
+            TriggerCheck.check(event, this);
             long end = System.currentTimeMillis();
             Profiler.appendTriggerCheckingTime(end - start);
         }

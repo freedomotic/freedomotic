@@ -31,7 +31,7 @@ public class Version {
     public Version(String version) {
         String[] components = version.split("-");
         if (components.length == 2) { //required + version
-            String[] required = components[0].split(".");
+//             String[] required = components[0].split(".");
 //            requiredMajor = Integer.parseInt(required[0], "999999"));
 //            requiredMinor = required[1];
 //            requiredBUild = required[2];

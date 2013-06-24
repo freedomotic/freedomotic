@@ -22,7 +22,7 @@ package it.freedomotic.api;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Statement;
-import it.freedomotic.util.UidGenerator;
+// import it.freedomotic.util.UidGenerator;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -43,11 +43,12 @@ public class EventTemplate implements Serializable {
     protected String sender;
     protected Payload payload = new Payload();
     protected boolean isValid;
-    private int uid;
-    private boolean executed;
-    private boolean isExecutable;
+    // private int uid;
+    // private boolean executed;
+    // private boolean isExecutable;
     private long creation;
-    private int priority;
+    //private int priority;
+    
     //TODO: change destination to simple String
     //private Destination replyTo = null;
 
@@ -90,16 +91,16 @@ public class EventTemplate implements Serializable {
         }
     }
 
-    private void setUid() {
-        uid = UidGenerator.getNextUid();
-    }
+//    private void setUid() {
+//        uid = UidGenerator.getNextUid();
+//    }
 
     private void init() {
         eventName = this.getClass().getSimpleName();
         isValid = true;
-        setUid();
-        executed = true; //an event starts as executed as default value if an actuator don't deny it
-        isExecutable = true;
+        // setUid();
+        //executed = true; //an event starts as executed as default value if an actuator don't deny it
+        // isExecutable = true;
         creation = System.currentTimeMillis();
     }
 

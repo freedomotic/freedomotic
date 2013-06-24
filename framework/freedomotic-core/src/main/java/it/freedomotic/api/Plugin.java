@@ -47,7 +47,8 @@ public class Plugin implements Client {
     private String type = "Plugin";
     public Config configuration;
     protected JFrame gui;
-    private static final String SEPARATOR = "-";
+    // private static final String SEPARATOR = "-";
+    
     //config file parameters
     protected String description;
     protected String version;

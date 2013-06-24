@@ -3,8 +3,8 @@ package it.freedomotic.core;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
-import it.freedomotic.model.ds.Config;
-import it.freedomotic.model.object.Behavior;
+// import it.freedomotic.model.ds.Config;
+// import it.freedomotic.model.object.Behavior;
 import it.freedomotic.objects.BehaviorLogic;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
@@ -111,7 +111,7 @@ public final class BehaviorManager implements BusConsumer {
     private static void applyToSingleObject(Command userLevelCommand) {
 //        RelativeBehavior relative = null;
         BehaviorLogic behavior = null;
-        Config param = null;
+        // Config param = null;
         //gets the behavior name in the user level command
         String behaviorName = userLevelCommand.getProperty("behavior");
         //gets a reference to an EnvObject using the key 'object' in the user level command
@@ -136,8 +136,8 @@ public final class BehaviorManager implements BusConsumer {
     }
 
     private static void applyToCategory(Command userLevelCommand) {
-        Behavior behavior = null;
-        Config param = null;
+        // Behavior behavior = null;
+        // Config param = null;
         //gets a reference to an EnvObject using the key 'object' in the user level command
         String objectClass = userLevelCommand.getProperty("object.class");
         Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator();
@@ -154,8 +154,10 @@ public final class BehaviorManager implements BusConsumer {
     }
 
     private static void applyToZone(Command userLevelCommand) {
-        Behavior behavior = null;
-        Config param = null;
+        
+		//	Behavior behavior = null;
+		//	Config param = null;
+        
         //gets a reference to an EnvObject using the key 'object' in the user level command
         String objectClass = userLevelCommand.getProperty("object.class");
         Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator();
@@ -165,9 +167,11 @@ public final class BehaviorManager implements BusConsumer {
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(object.getPojo().getType());
             if (matcher.matches()) {
-                //TODO: and is in the zone
+
+            	//TODO: and is in the zone
                 //add another if
-                String zone = userLevelCommand.getProperty("zone");
+                // String zone = userLevelCommand.getProperty("zone");
+                
                 userLevelCommand.setProperty("object", object.getPojo().getName());
                 applyToSingleObject(userLevelCommand);
             }

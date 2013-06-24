@@ -63,8 +63,8 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+// import java.util.concurrent.ExecutorService;
+// import java.util.concurrent.Executors;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,7 +85,7 @@ public class Freedomotic {
     private static EventChannel eventChannel;
     private static CommandChannel commandChannel;
     public static ArrayList<IPluginCategory> onlinePluginCategories;
-    private static ExecutorService executor = Executors.newCachedThreadPool();
+//     private static ExecutorService executor = Executors.newCachedThreadPool();
 
     public Freedomotic() {
         /**

@@ -430,8 +430,8 @@ public class SerialConnectionProvider implements SerialPortEventListener {
         }
 
         // opening streams
-        InputStream inStream = null;
-        OutputStream outStream = null;
+		//	InputStream inStream = null;
+		//	OutputStream outStream = null;
         try {
             this.in = serialPort.getInputStream();
             this.out = serialPort.getOutputStream();
