@@ -80,3 +80,5 @@ target/
 #######################################
 !/scripts/shared/*.txt
 !/scripts/shared/*.TXT
+!copying.txt
+!LICENSE_HEADER.txt
