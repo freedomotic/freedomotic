@@ -5,7 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>it.freedomotic</groupId>
     <artifactId>freedomotic</artifactId>
-    <name>freedomotic</name>
+    <name>Freedomotic</name>
+    <description>Distributed Building and Home Automation Framework</description>
     <url>http://freedomotic.com</url>
     <version>5.5-SNAPSHOT</version>
     <inceptionYear>2009</inceptionYear>
@@ -132,16 +133,75 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.5</source>
+                    <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
             </plugin>
         </plugins>
-        
-        
         <!-- executes only on childs (if the child have specified it in its pom)-->
         <pluginManagement>
+
             <plugins>
+                <!-- copy plugins dependencies when a plugin is installed -->
+                <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>copy-dependencies</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                <!-- exclude dependencies already specified in freedomotic-core -->
+                                <excludeScope>provided</excludeScope>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--license management -->
+                <plugin>
+                    <groupId>com.mycila.maven-license-plugin</groupId>
+                    <artifactId>maven-license-plugin</artifactId>
+                    <version>1.10.b1</version>
+                    <configuration>
+                        <header>LICENSE_HEADER.txt</header>
+                        <properties>
+                            <name>${project.name}</name>
+                            <inceptionyear>${project.inceptionYear}</inceptionyear>
+                            <!-- TODO: use current year -->
+                            <year>2013</year>
+                            <holder>Freedomotic team</holder>
+                            <contact>info@freedomotic.com</contact>
+                        </properties>
+                        <excludes>
+                            <exclude>**/*.xml</exclude>
+                            <exclude>**/*.properties</exclude>
+                            <exclude>**/*.xtrg</exclude>
+                            <exclude>**/*.xcmd</exclude>
+                            <exclude>**/*.xrea</exclude>
+                            <exclude>**/*.xobj</exclude>
+                            <exclude>**/*.png</exclude>
+                            <exclude>**/*.jpg</exclude>
+                            <exclude>**/*.PNG</exclude>
+                            <exclude>**/*.options</exclude>
+                        </excludes>
+                        <includes>
+                            <include>**/freedomotic-core/**</include>
+                            <include>**/freedomotic-model/**</include>
+                        </includes>
+                        <strictCheck>true</strictCheck>
+                        <aggregate>true</aggregate>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>format</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
                 <!-- read/write the build.option file -->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
