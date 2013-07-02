@@ -9,7 +9,9 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.ResourcesManager;
 import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.EnvironmentPersistence;
+import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
+import it.freedomotic.model.environment.Zone;
 import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
@@ -23,6 +25,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
@@ -55,10 +58,11 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     private double CANVAS_HEIGHT = ENVIRONMENT_HEIGHT + (BORDER_Y * 2);
     protected static Color BACKGROUND_COLOR = TopologyUtils.convertColorToAWT(EnvironmentPersistence.getEnvironments().get(0).getPojo().getBackgroundColor());
     private EnvObjectLogic selectedObject;
-    private ArrayList<Shape> indicators = new ArrayList<Shape>();
+    private ArrayList<Indicator> indicators = new ArrayList<Indicator>();
     private HashMap<String, Shape> cachedShapes = new HashMap<String, Shape>();
     private boolean inDrag;
     private boolean roomEditMode = false;
+    private FreedomPoint originalHandleLocation = null;
     private ArrayList<Handle> handles = new ArrayList<Handle>();
     private ZoneLogic selectedZone;
     protected CalloutsUpdater callouts;
@@ -105,8 +109,12 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         return selectedObject;
     }
     
+    protected void addIndicator(Shape shape, Color color) {
+        indicators.add(new Indicator(shape, color));
+    }
+
     protected void addIndicator(Shape shape) {
-        indicators.add(shape);
+        indicators.add(new Indicator(shape));
     }
     
     protected void removeIndicators() {
@@ -172,11 +180,12 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     }
     
     private void renderIndicators() {
-        Color color = new Color(0, 0, 255, 50);
-        getContext().setColor(color);
-        for (Shape s : indicators) {
-            if (s instanceof Polygon) {
-                getContext().fillPolygon((Polygon) s);
+        for (Indicator i : indicators) {
+            if (i.getShape() instanceof Polygon) {
+                getContext().setColor(i.getColor().darker());
+                getContext().drawPolygon((Polygon) i.getShape());
+                getContext().setColor(i.getColor());
+                getContext().fillPolygon((Polygon) i.getShape());
             }
         }
         
@@ -602,7 +611,8 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                     selectedZone = zone;
                     createHandles(zone);
                 } else {
-                    createHandles(null);
+                    handles.clear();
+                    // createHandles(null);
                 }
             }
             setNeedRepaint(true);
@@ -630,7 +640,12 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     @Override
     public void mouseReleased(MouseEvent e) {
         if (inDrag) {
+            Handle currHandle = null;
             for (Handle handle : handles) {
+                if (handle.isSelected())
+                {
+                    currHandle = handle;
+                }
                 handle.setSelected(false);
             }
             //stop dragging an object
@@ -640,24 +655,38 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                         (int) (coords.getX() - dragDiff.getWidth()),
                         (int) (coords.getY() - (int) dragDiff.getHeight()));
             }
+            //check if rooms overlap
+            //selectedZone = handle.getZone();
+            if (roomEditMode && (selectedZone) != null)
+            {
+                Area currentZoneArea = new Area(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
+                for (Room r : currEnv.getRooms())
+                {
+                    if (!r.equals(selectedZone))
+                    {
+                        Shape testZoneShape = TopologyUtils.convertToAWT(r.getPojo().getShape());
+                        Area testArea = new Area(testZoneShape);
+                        testArea.intersect(currentZoneArea);
+                        if (!testArea.isEmpty())
+                        {
+                            currHandle.move(originalHandleLocation.getX(), originalHandleLocation.getY());
+                            removeIndicators();
+                            addIndicator(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
+                            break;
+                        }
+                    }
+                }
+            }
         }
         inDrag = false;
         dragDiff = null;
         selectedObject = null;
-        removeIndicators();
+        originalHandleLocation = null;
+        //removeIndicators();
         rebuildShapesCache();
-        //check for room intersections DON'T WORK YET
-//        for (Room i : Freedomotic.environment.getRooms()) {
-//            Shape iShape = AWTConverter.convertToAWT(i.getPojo().getShape());
-//            for (Room j : Freedomotic.environment.getRooms()) {
-//                Shape jShape = AWTConverter.convertToAWT(j.getPojo().getShape());
-//                if (jShape.intersects(iShape.getBounds2D())) {
-//                    addIndicator(jShape);
-//                }
-//            }
-//        }
+        setNeedRepaint(true);
     }
-    
+
     @Override
     public void mouseEntered(MouseEvent e) {
     }
@@ -692,10 +721,28 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 for (Handle handle : handles) {
                     //move the zone point
                     if (handle.isSelected()) {
+                        if (null == originalHandleLocation)
+                        {
+                            originalHandleLocation = new FreedomPoint(handle.getPoint().getX(), handle.getPoint().getY());
+                        }
                         handle.move(xSnapped, ySnapped);
-                        removeIndicators();
-                        addIndicator(TopologyUtils.convertToAWT(handle.getZone().getPojo().getShape()));
+                        addIndicator(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
+                        // add indicators for overlapping zones
                         selectedZone = handle.getZone();
+                        Area currentZoneArea = new Area(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
+                        for (Room r : currEnv.getRooms())
+                        {
+                            if (!r.equals(selectedZone))
+                            {
+                                Shape testZoneShape = TopologyUtils.convertToAWT(r.getPojo().getShape());
+                                Area testArea = new Area(testZoneShape);
+                                testArea.intersect(currentZoneArea);
+                                if (!testArea.isEmpty())
+                                {
+                                    addIndicator(testZoneShape, new Color(255, 0, 0, 50));
+                                }
+                            }
+                        }
                     }
                 }
                 setNeedRepaint(true);
