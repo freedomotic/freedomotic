@@ -1,7 +1,8 @@
-#Sat Jun 08 12:37:34 CEST 2013
+#Wed Jul 03 20:18:14 CEST 2013
 package.vendor.nation=com
 package.license=GNU GPL2
 package.vendor.name=Freedomotic
+package.version=3.0
 package.name=com.freedomotic.baseobj
 framework.required.minor=5
 package.vendor.surname=Building Automation

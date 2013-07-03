@@ -1,7 +1,8 @@
-#Sat Jun 08 12:37:35 CEST 2013
+#Wed Jul 03 20:18:33 CEST 2013
 package.vendor.nation=it
 package.license=GNU GPL2
 package.vendor.name=Enrico
+package.version=3.0
 package.name=it.freedomotic.jfrontend
 framework.required.minor=5
 package.vendor.surname=Nicoletti

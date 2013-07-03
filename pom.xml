@@ -35,7 +35,7 @@
             </modules>
         </profile>
     </profiles>
-    
+      
     <organization>
         <name>Freedomotic</name>
         <url>http://www.freedomotic.com</url>
@@ -63,49 +63,49 @@
                 <scope>test</scope>
             </dependency>
 
-	        <!-- remove the real commons-logging from classpath -->
-			<!-- declare as provided or exclude from spring jars -->
-			<dependency>
-				<artifactId>commons-logging</artifactId>
-				<groupId>commons-logging</groupId>
-				<version>1.0</version>
-				<scope>provided</scope>
-			</dependency>
+            <!-- remove the real commons-logging from classpath -->
+            <!-- declare as provided or exclude from spring jars -->
+            <dependency>
+                <artifactId>commons-logging</artifactId>
+                <groupId>commons-logging</groupId>
+                <version>1.0</version>
+                <scope>provided</scope>
+            </dependency>
 	
-			<!-- add slf4j interfaces to classpath -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>1.6.4</version>
-				<scope>compile</scope>
-			</dependency>
+            <!-- add slf4j interfaces to classpath -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.6.4</version>
+                <scope>compile</scope>
+            </dependency>
 	
-			<!-- add commons logging to slf4j bridge to classpath -->
-			<!-- acts as jcl but routes commons-logging calls to slf4j -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>jcl-over-slf4j</artifactId>
-				<version>1.6.4</version>
-				<scope>runtime</scope>
-			</dependency>
+            <!-- add commons logging to slf4j bridge to classpath -->
+            <!-- acts as jcl but routes commons-logging calls to slf4j -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>1.6.4</version>
+                <scope>runtime</scope>
+            </dependency>
 	
-			<!-- add log4j binding to classpath -->
-			<!-- routes slf4j calls to log4j -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.6.4</version>
-				<scope>runtime</scope>
-			</dependency>
+            <!-- add log4j binding to classpath -->
+            <!-- routes slf4j calls to log4j -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.6.4</version>
+                <scope>runtime</scope>
+            </dependency>
 	
-			<!-- add log4j to classpath -->
-			<!-- does the logging -->
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.16</version>
-			</dependency>
-		</dependencies>
+            <!-- add log4j to classpath -->
+            <!-- does the logging -->
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.16</version>
+            </dependency>
+        </dependencies>
 		
     </dependencyManagement>
     
@@ -116,8 +116,7 @@
             <url>ftp://maven.freedomotic.com</url>
         </repository>
     </distributionManagement>
-
-    
+        
     <!-- Build Configuration -->
     <build>
         <extensions>
@@ -137,24 +136,9 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-            <!-- copy plugins dependencies when a plugin is installed -->
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <!-- exclude dependencies already specified in freedomotic-core -->
-                            <excludeScope>provided</excludeScope>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>   
+        </plugins>
+        
+        
         <!-- executes only on childs (if the child have specified it in its pom)-->
         <pluginManagement>
             <plugins>
@@ -194,7 +178,9 @@
                         </dependency>
                     </dependencies>
                     <executions>
+                        <!-- Creates the freedomotic installable package -->
                         <execution>
+                            <id>create-plugin-archive</id>
                             <phase>install</phase>
                             <configuration>
                                 <tasks>
@@ -208,28 +194,50 @@
                                 <goal>run</goal>
                             </goals>
                         </execution>
+                        <!-- Creates the plugin marketplace package -->
                         <execution>
-                            <id>buildoptions</id>
+                            <id>create-marketplace-archive</id>
+                            <phase>deploy</phase>
+                            <configuration>
+                                <tasks>
+                                    <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+                                    <ant antfile = "${freedomotic.basedir}/scripts/create-marketplace-archive.xml"/>
+                                </tasks>
+                            </configuration>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                        </execution>
+                        <!-- Creates the plugin build.options file -->
+                        <execution>
+                            <id>create-build-options</id>
                             <phase>install</phase>
                             <configuration>
                                 <tasks>
+                                    <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
                                     <!-- just to save a fresh copy of this file with no unused old properties -->
-                                    <delete file="build.options"/>
-                                    <!-- save the new build.options -->
-                                    <propertyfile file="build.options">
-                                        <entry  key="package.nodeid" value="${package.nodeid}"/>
-                                        <entry  key="package.vendor.name" value="${package.vendor.name}"/>
-                                        <entry  key="package.vendor.surname" value="${package.vendor.surname}"/>
-                                        <entry  key="package.vendor.company" value="${package.vendor.company}"/>
-                                        <entry  key="package.vendor.nation" value="${package.vendor.nation}"/>
-                                        <entry  key="package.vendor.contact" value="${package.vendor.contact}"/>
-                                        <entry  key="package.name" value="${package.name}"/>
-                                        <entry  key="package.type" value="${package.type}"/>
-                                        <entry  key="package.license" value="${package.license}"/>
-                                        <entry  key="framework.required.major" value="${framework.required.major}"/>
-                                        <entry  key="framework.required.minor" value="${framework.required.minor}"/>
-                                        <entry  key="framework.required.build" value="${framework.required.build}"/>
-                                    </propertyfile>
+                                    <if>
+                                        <available file="build.options"/>
+                                        <then>
+                                            <delete file="build.options"/>
+                                            <!-- save the new build.options -->
+                                            <propertyfile file="build.options">
+                                                <entry  key="package.nodeid" value="${package.nodeid}"/>
+                                                <entry  key="package.vendor.name" value="${package.vendor.name}"/>
+                                                <entry  key="package.vendor.surname" value="${package.vendor.surname}"/>
+                                                <entry  key="package.vendor.company" value="${package.vendor.company}"/>
+                                                <entry  key="package.vendor.nation" value="${package.vendor.nation}"/>
+                                                <entry  key="package.vendor.contact" value="${package.vendor.contact}"/>
+                                                <entry  key="package.name" value="${package.name}"/>
+                                                <entry  key="package.type" value="${package.type}"/>
+                                                <entry  key="package.license" value="${package.license}"/>
+                                                <entry  key="package.version" value="${project.version}"/>
+                                                <entry  key="framework.required.major" value="${framework.required.major}"/>
+                                                <entry  key="framework.required.minor" value="${framework.required.minor}"/>
+                                                <entry  key="framework.required.build" value="${framework.required.build}"/>
+                                            </propertyfile>
+                                        </then>
+                                    </if>
                                 </tasks>
                             </configuration>
                             <goals>
