@@ -13,14 +13,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<<<<<<< HEAD
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
-=======
 		<org.restlet.version>2.1.2</org.restlet.version>
 		<restapi.version>3.0</restapi.version>
->>>>>>> Core.289Mavenize RestAPI. Include restapi-interfaces dependence on
     </properties>
-    
     <build>
         <finalName>freedomotic</finalName> 
         <plugins>
@@ -92,7 +88,6 @@
         </plugins>
     </build>
 
-    
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -136,11 +131,4 @@
             <version>1.2.2</version>
         </dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>maven-restlet</id>
-			<name>Public online Restlet repository</name>
-			<url>http://maven.restlet.org</url>
-		</repository>
-	</repositories>
 </project>
