@@ -67,6 +67,11 @@
 			<artifactId>org.restlet.ext.json</artifactId>
 			<version>${org.restlet.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>restapi-interfaces</artifactId>
+            <version>3.0</version>
+        </dependency>
 	</dependencies>
 	<repositories>
 		<repository>

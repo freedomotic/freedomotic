@@ -44,6 +44,12 @@
 			<artifactId>org.restlet.ext.gwt</artifactId>
 			<version>${org.restlet.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>freedomotic-model</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 	<repositories>
 		<repository>

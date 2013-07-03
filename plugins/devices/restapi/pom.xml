@@ -5,7 +5,7 @@
         <groupId>it.freedomotic</groupId>
         <artifactId>freedomotic</artifactId>
         <version>5.5-SNAPSHOT</version>
-        <relativePath>../../</relativePath>
+        <relativePath>../../../pom.xml</relativePath>
     </parent>    
     <artifactId>restapi</artifactId>
     <packaging>jar</packaging>
@@ -55,6 +55,11 @@
 			<artifactId>org.restlet.ext.gwt</artifactId>
 			<version>${org.restlet.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>restapi-interfaces</artifactId>
+            <version>3.0</version>
+        </dependency>
     </dependencies>
 
 	<repositories>

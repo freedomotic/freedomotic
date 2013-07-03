@@ -1,7 +1,8 @@
-#Sat Jun 22 13:25:14 CEST 2013
+#Wed Jul 03 21:29:35 CEST 2013
 package.vendor.nation=es
 package.license=GNU GPL2
 package.vendor.name=Gabriel
+package.version=3.0
 package.name=es.gpulido.restapi-interfaces
 framework.required.minor=5
 package.vendor.surname=Pulido
