@@ -2,27 +2,41 @@
 
 <project name="plugin-builder" default="default" basedir=".">
     <description>Builds, tests, and runs a freedomotic plugin.</description>
+    
+    <!-- if not a plugin folder skip -->
     <target name="default">
+      <echo>${basedir}</echo>
+        <if>
+            <matches pattern="/plugins/" string="${basedir}"/>
+            <then>
+                <antcall target="execute"/>
+            </then>
+            <else>
+                <antcall target="exit"/>
+            </else>
+        </if>
+    </target>
+    
+    <!-- exit message as separate target -->
+    <target name="exit">
+        <echo message="This is not a plugin, skip this ant target" />
+    </target>
+    
+    
+    <target name="execute">
+        <echo>Create the executable archive for this plugin</echo>
         <!-- init the lib for contrib conditional if then else ant task
         remember the path is considerd from the plugin folder in which this script
         is called not from freedomotic/scripts/plugin-build.xml-->
         <property name="workspace-base" value="../../../"/>
 
-        
-        <!-- if not a plugin folder skip -->
-        <echo>${basedir}</echo>
-        <if>
-            <matches pattern="/plugins/" string="${basedir}"/>
-        <then>
-        
-        
         <!-- fail if build.option is not available -->
         <if>
             <not>
                 <available file="build.options"/>
             </not>
             <then>
-                <echo>build.options file don't exists. Created a default one. Remember to edit its properties.</echo>
+                <echo>build.options file does not exists.</echo>
                  <fail message="No build.option file found in this project main folder ${basedir}"/>
             </then>
         </if>
@@ -33,7 +47,6 @@
         </loadproperties>
         
         <!-- create redistributable output folders if not already exists -->
-        <echo>Creating folders structure for the freedomotic package.</echo>
         <property name="plugin-dist" value="${package.name}"/>
         <property name="market-dist" value="${plugin-dist}/market-dist"/>
         <property name="build.install.path" value="${workspace-base}/framework/freedomotic-core/plugins/"/>
@@ -173,49 +186,6 @@ For any problem you can contact the author at ${package.vendor.contact}
             <else>
                 <echo>This plugin doesn't require external libs. 0 jars copied</echo>
              </else>
-        </if>
-      
-        
-        <!-- CREATE MARKETPLACE ARCHIVE -->
-        <if>
-            <equals arg1="${build.create.dist.market}" arg2="true" />
-            <then>
-                <echo>Creating the marketplace redestributable archive in ${market-dist}</echo>
-                <!-- create a temp folder in which construct the archive the compress it-->
-                <delete dir="${market-dist}"/>
-                <mkdir dir="${market-dist}/${package.name}"/>
-                <copy todir="${market-dist}/${package.name}" includeEmptyDirs="false">
-                    <fileset dir="${plugin-dist}">
-                    </fileset>
-                </copy>
-                <zip destfile="${market-dist}/${package.name}-${framework.required.major}.${framework.required.minor}.${framework.required.build}-${build.major}.${build.number}.${package.type}" basedir="${market-dist}" />
-
-                <!-- create a README file with usefull informations for developer -->
-                <echo file="${market-dist}/README.TXT" append="false">
-This package is part of Freedomotic building automation framework.
-This package is released under the terms of ${package.license} license by ${package.vendor.name} ${package.vendor.surname}.
-
-PLEASE UPDATE this info in plugin manifest XML files if they are not correct, otherwise the plugins may be not loaded at framework startup!
-
-You can create a plugin page on our marketplace and upload the compressed file ${package.name}.zip as it is.
-
-For more detailed instructions see the related project wiki page
-http://code.google.com/p/freedomotic/wiki/PostOnMarket
-
-For any problem you can contact freedomotic staff on the project developers mailing list
-https://groups.google.com/forum/?hl=en#!forum/freedom-domotics
-                </echo>
-                <delete dir="${market-dist}/${package.name}"/>
-            </then>
-        </if>
-
-        <!-- increment the buildnumber and save it to properties file (uses ant xmltask library -->
-<!--        <propertyfile file="build.options">
-            <entry  key="build.number" default="0" type="int" operation="+" value="1" />
-        </propertyfile>-->
-        
-        <echo>Done... Read README files in ${market-dist} and ${plugin-dist} folder to get help.</echo>
-                </then>
         </if>
     </target>
     

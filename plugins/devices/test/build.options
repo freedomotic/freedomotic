@@ -1,7 +1,8 @@
-#Sat Jun 08 12:37:36 CEST 2013
+#Wed Jul 03 20:18:55 CEST 2013
 package.vendor.nation=it
 package.license=GNU GPL2
 package.vendor.name=Enrico
+package.version=3.0
 package.name=it.nicoletti.test
 framework.required.minor=4
 package.vendor.surname=Nicoletti
