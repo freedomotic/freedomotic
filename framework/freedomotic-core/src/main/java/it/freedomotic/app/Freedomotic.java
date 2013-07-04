@@ -136,7 +136,7 @@ public class Freedomotic {
                     handler.setFormatter(new LogFormatter());
                     logger.setLevel(Level.ALL);
                     logger.addHandler(handler);
-                    logger.config(i18n.msg("INIT_MESSAGE"));
+                    logger.info(i18n.msg("INIT_MESSAGE"));
                     if ((Freedomotic.config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
                             && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
                         java.awt.Desktop.getDesktop().browse(new File(Info.getApplicationPath() + "/log/freedomotic.html").toURI());
@@ -282,7 +282,7 @@ public class Freedomotic {
              * Updating zone object list
              * *****************************************************************
              */
-//        Freedomotic.logger.config("---- Checking zones topology ----");
+//        Freedomotic.logger.info("---- Checking zones topology ----");
 //        for (ZoneLogic z : environment.getZones()) {
 //            z.checkTopology();
 //        }
@@ -314,7 +314,7 @@ public class Freedomotic {
             double MB = 1024 * 1024;
             Runtime runtime = Runtime.getRuntime();
             double memory = ((runtime.totalMemory() - runtime.freeMemory()) / MB);
-            logger.config("Freedomotic + data uses " + memory + "MB");
+            logger.info("Freedomotic + data uses " + memory + "MB");
             for (final Client plugin : ClientStorage.getClients()) {
                 String startupTime = plugin.getConfiguration().getStringProperty("startup-time", "undefined");
                 if (startupTime.equalsIgnoreCase("on load")) {
@@ -322,12 +322,12 @@ public class Freedomotic {
                     PluginHasChanged event = new PluginHasChanged(this, plugin.getName(), PluginActions.DESCRIPTION);
                     sendEvent(event);
                     double snapshot = (((runtime.totalMemory() - runtime.freeMemory()) / MB) - memory);
-                    logger.config(plugin.getName() + " uses " + snapshot + "MB of memory");
+                    logger.info(plugin.getName() + " uses " + snapshot + "MB of memory");
                     memory += snapshot;
                 }
             }
 
-            logger.config("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / MB);
+            logger.info("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / MB);
         } finally {
             //           threadState.clear();
         }

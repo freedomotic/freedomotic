@@ -249,7 +249,7 @@ public final class AddonLoader {
                 }
             }
         } catch (FileNotFoundException foundEx) {
-            Freedomotic.logger.config("No file to copy in " + source);
+            Freedomotic.logger.info("No file to copy in " + source);
         } catch (IOException ex) {
             Logger.getLogger(AddonLoader.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

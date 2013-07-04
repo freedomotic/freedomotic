@@ -61,7 +61,7 @@ public class GenericSensor extends EnvObjectLogic {
     }
 
     private void setReadValue(int value) {
-        Freedomotic.logger.config("Setting behavior 'readValue' of object '" + getPojo().getName() + "' to " + value);
+        Freedomotic.logger.info("Setting behavior 'readValue' of object '" + getPojo().getName() + "' to " + value);
         readValue.setValue(value);
         getPojo().setCurrentRepresentation(0);
                 setChanged(true);

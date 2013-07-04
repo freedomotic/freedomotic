@@ -56,7 +56,7 @@ public class TriggerPersistence {
         XStream xstream = FreedomXStream.getXstream();
         deleteTriggerFiles(folder);
         try {
-            Freedomotic.logger.config("Saving triggers to file in " + folder.getAbsolutePath());
+            Freedomotic.logger.info("Saving triggers to file in " + folder.getAbsolutePath());
             for (Trigger trigger : list) {
                 if (trigger.isToPersist()) {
                     String uuid = trigger.getUUID();
@@ -152,7 +152,7 @@ public class TriggerPersistence {
                 //Close the output stream
                 indexfile.close();
             } else {
-                Freedomotic.logger.config("No triggers to load from this folder " + folder.toString());
+                Freedomotic.logger.info("No triggers to load from this folder " + folder.toString());
             }
         } catch (Exception e) {
             Freedomotic.logger.severe("Exception while loading this trigger.\n" + Freedomotic.getStackTraceInfo(e));

@@ -156,7 +156,7 @@ public class EnvObjectLogic {
             }
         }
         pojo.getTriggers().setProperty(trigger.getName(), behaviorName);
-        Freedomotic.logger.config("Trigger mapping in object " + this.getPojo().getName()
+        Freedomotic.logger.info("Trigger mapping in object " + this.getPojo().getName()
                 + ": behavior '" + behaviorName + "' is now associated to trigger named '" + trigger.getName() + "'");
     }
 
@@ -171,7 +171,7 @@ public class EnvObjectLogic {
             this.changed = true;
             ObjectHasChangedBehavior objectEvent = new ObjectHasChangedBehavior(this, this);
             //send multicast because an event must be received by all triggers registred on the destination channel
-            Freedomotic.logger.config("Object " + this.getPojo().getName() + " changes something in its status (eg: a behavior value)");
+            Freedomotic.logger.info("Object " + this.getPojo().getName() + " changes something in its status (eg: a behavior value)");
             Freedomotic.sendEvent(objectEvent);
         } else {
             changed = false;
@@ -312,7 +312,7 @@ public class EnvObjectLogic {
                     //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
                     //add to the zones this object belongs
                     zone.getPojo().getObjects().add(this.getPojo());
-                    Freedomotic.logger.config("Object " + getPojo().getName() + " is in zone " + zone.getPojo().getName());
+                    Freedomotic.logger.info("Object " + getPojo().getName() + " is in zone " + zone.getPojo().getName());
                 } else {
                     //DEBUG: System.out.println("object " + getPojo().getName() + " NOT intersects zone " + zone.getPojo().getName());
                 }
@@ -336,7 +336,7 @@ public class EnvObjectLogic {
             Freedomotic.logger.warning("No value in hardware trigger '" + t.getName() + "' to apply to object action '" + behavior + "' of object " + getPojo().getName());
             return false;
         }
-        Freedomotic.logger.config("Sensors notification '" + t.getName() + "' has changed '" + getPojo().getName() + "' behavior '" + behavior + "' to " + valueStatement.getValue());
+        Freedomotic.logger.info("Sensors notification '" + t.getName() + "' has changed '" + getPojo().getName() + "' behavior '" + behavior + "' to " + valueStatement.getValue());
         Config params = new Config();
         params.setProperty("value", valueStatement.getValue());
         getBehavior(behavior).filterParams(params, false); //false means not fire commands, only change behavior value
@@ -359,7 +359,7 @@ public class EnvObjectLogic {
         Freedomotic.logger.fine("Executing action '" + action + "' of object '" + getPojo().getName() + "'");
         if (getPojo().getActAs().equalsIgnoreCase("virtual")) {
             //it's a virtual object like a button, not needed real execution of a command
-            Freedomotic.logger.config("The object '" + getPojo().getName() + "' act as virtual device, so its hardware commands are not executed.");
+            Freedomotic.logger.info("The object '" + getPojo().getName() + "' act as virtual device, so its hardware commands are not executed.");
             return true;
         }
         final Command command = getHardwareCommand(action.trim());
@@ -446,11 +446,11 @@ public class EnvObjectLogic {
             String commandName = pojo.getActions().getProperty(action);
             Command command = CommandPersistence.getHardwareCommand(commandName);
             if (command != null) {
-                Freedomotic.logger.config("Caching the command '" + command.getName()
+                Freedomotic.logger.info("Caching the command '" + command.getName()
                         + "' as related to action '" + action + "' ");
                 setAction(action, command);
             } else {
-                Freedomotic.logger.config("Don't exist a command called '" + commandName
+                Freedomotic.logger.info("Don't exist a command called '" + commandName
                         + "' is not possible to bound this command to action '" + action + "' of " + this.getPojo().getName());
             }
         }

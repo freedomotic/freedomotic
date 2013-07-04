@@ -220,7 +220,7 @@ public class EnvironmentPersistence {
         FileWriter fstream;
         BufferedWriter out = null;
         try {
-            Freedomotic.logger.config("Serializing environment to " + file);
+            Freedomotic.logger.info("Serializing environment to " + file);
             fstream = new FileWriter(file);
             out = new BufferedWriter(fstream);
             out.write(xml);
@@ -235,7 +235,7 @@ public class EnvironmentPersistence {
     
     @RequiresPermissions("environments:save")
     public static void saveAs(EnvironmentLogic env, File folder) throws IOException {
-        Freedomotic.logger.config("Serializing new environment to " + folder);
+        Freedomotic.logger.info("Serializing new environment to " + folder);
         String fileName = folder.getName();
         if (!folder.exists()) {
             folder.mkdir();

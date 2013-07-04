@@ -108,7 +108,7 @@ public abstract class Actuator extends Plugin implements BusConsumer {
                 @Override
                 public void run() {
                     onStart();
-                    Freedomotic.logger.config("Actuator " + getName() + " started.");
+                    Freedomotic.logger.info("Actuator " + getName() + " started.");
                     PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.START);
                     Freedomotic.sendEvent(change);
                 }
@@ -125,7 +125,7 @@ public abstract class Actuator extends Plugin implements BusConsumer {
                 @Override
                 public void run() {
                     onStop();
-                    Freedomotic.logger.config("Actuator " + getName() + " stopped.");
+                    Freedomotic.logger.info("Actuator " + getName() + " stopped.");
                     PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.STOP);
                     Freedomotic.sendEvent(change);
                 }
@@ -137,14 +137,14 @@ public abstract class Actuator extends Plugin implements BusConsumer {
     @Override
     public void onMessage(final ObjectMessage message) {
         if (!isRunning) {
-            Freedomotic.logger.config("Actuator '" + getName() + "' receives a Command while is not running. Plugin try to turn on itself...");
+            Freedomotic.logger.info("Actuator '" + getName() + "' receives a Command while is not running. Plugin try to turn on itself...");
             start();
         }
         try {
             Object payload = message.getObject();
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
-                Freedomotic.logger.config(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
+                Freedomotic.logger.info(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
                 Runnable executorThread = new Runnable() {
                     @Override
                     public void run() {

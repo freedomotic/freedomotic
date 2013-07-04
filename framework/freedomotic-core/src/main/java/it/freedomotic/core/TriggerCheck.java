@@ -72,7 +72,7 @@ public final class TriggerCheck {
                 if (resolved.isConsistentWith(event)) {
                     buff.append("[CONSISTENT] hardware level trigger '").append(resolved.getName()).append("' ").append(resolved.getPayload().toString()).append("'\nconsistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
                     applySensorNotification(resolved, event);
-                    Freedomotic.logger.config(buff.toString());
+                    Freedomotic.logger.info(buff.toString());
                     return true;
                 }
             } else {
@@ -81,14 +81,14 @@ public final class TriggerCheck {
                     if (resolved.isConsistentWith(event)) {
                         buff.append("[CONSISTENT] registred trigger '").append(resolved.getName()).append("' ").append(resolved.getPayload().toString()).append("'\nconsistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
                         executeTriggeredAutomations(resolved, event);
-                        Freedomotic.logger.config(buff.toString());
+                        Freedomotic.logger.info(buff.toString());
                         return true;
                     }
                 }
             }
             //if we are here the trigger is not consistent
             buff.append("[NOT CONSISTENT] registred trigger '").append(trigger.getName()).append("' ").append(trigger.getPayload().toString()).append("'\nnot consistent with received event '").append(event.getEventName()).append("' ").append(event.getPayload().toString());
-            Freedomotic.logger.config(buff.toString());
+            Freedomotic.logger.info(buff.toString());
             return false;
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
@@ -205,7 +205,7 @@ public final class TriggerCheck {
                     }
                 }
                 if (!found) {
-                    Freedomotic.logger.config("No valid reaction bound to trigger '" + trigger.getName() + "'");
+                    Freedomotic.logger.info("No valid reaction bound to trigger '" + trigger.getName() + "'");
                 }
 
             }
