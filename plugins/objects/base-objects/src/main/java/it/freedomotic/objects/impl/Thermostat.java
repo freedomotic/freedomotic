@@ -61,7 +61,7 @@ public class Thermostat extends EnvObjectLogic {
     }
 
     private void setTemperature(int value) {
-        Freedomotic.logger.config("Setting behavior 'temperature' of object '" + getPojo().getName() + "' to " + value);
+        Freedomotic.logger.info("Setting behavior 'temperature' of object '" + getPojo().getName() + "' to " + value);
         temperature.setValue(value);
         getPojo().setCurrentRepresentation(0);
                 setChanged(true);

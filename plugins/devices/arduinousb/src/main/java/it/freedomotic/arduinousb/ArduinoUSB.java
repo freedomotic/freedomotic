@@ -76,7 +76,7 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
             //written in setPollingWait() method [you can found it in Massabus constructor]
             String message = "A_STRING_MESSAGE";
             String reply = serial.send(message);
-            Freedomotic.logger.config("Arduino USB replies " + reply + " to message " + message);
+            Freedomotic.logger.info("Arduino USB replies " + reply + " to message " + message);
         } catch (IOException ex) {
             setDescription("Stopped for IOException in onRun"); //write here a better error message for the user
             stop();
@@ -95,7 +95,7 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
             setDescription("Stopped for IOException in onCommand"); //write here a better error message for the user
             stop();
         }
-        Freedomotic.logger.config("Arduino USB replies " + reply + " after executing command " + c.getName());
+        Freedomotic.logger.info("Arduino USB replies " + reply + " after executing command " + c.getName());
     }
 
     @Override
@@ -111,6 +111,6 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
     @Override
     public void onDataAvailable(String data) {
         //called when something is readed from the serial port
-        Freedomotic.logger.config("Arduino USB reads '" + data + "'");
+        Freedomotic.logger.info("Arduino USB reads '" + data + "'");
     }
 }

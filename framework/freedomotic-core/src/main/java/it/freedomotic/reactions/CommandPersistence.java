@@ -57,7 +57,7 @@ public class CommandPersistence {
                 userCommands.put(c.getName(), c);
                 Freedomotic.logger.fine("Added command '" + c.getName() + "' to the list of user commands");
             } else {
-                Freedomotic.logger.config("Command '" + c.getName() + "' already in the list of user commands. Skipped");
+                Freedomotic.logger.info("Command '" + c.getName() + "' already in the list of user commands. Skipped");
             }
         } else {
             Freedomotic.logger.warning("Attempt to add a null user command to the list. Skipped");
@@ -157,7 +157,7 @@ public class CommandPersistence {
                 }
             }
         } else {
-            Freedomotic.logger.config("No commands to load from this folder " + folder.toString());
+            Freedomotic.logger.info("No commands to load from this folder " + folder.toString());
         }
     }
 

@@ -189,7 +189,7 @@ public class EnvObjectPersistence {
 
         }
         EnvObjectLogic objectLogic = EnvObjectFactory.create(pojo);
-        Freedomotic.logger.config("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
+        Freedomotic.logger.info("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
         //add(objectLogic);
         return objectLogic;
     }

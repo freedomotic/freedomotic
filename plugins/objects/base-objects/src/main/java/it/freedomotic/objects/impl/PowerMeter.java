@@ -169,7 +169,7 @@ public class PowerMeter extends ElectricDevice {
     }
 
     private void setCurrent(int value) {
-        Freedomotic.logger.config("Setting behavior 'current' of object '" + getPojo().getName() + "' to " + value);
+        Freedomotic.logger.info("Setting behavior 'current' of object '" + getPojo().getName() + "' to " + value);
         current.setValue(value);
         getPojo().setCurrentRepresentation(0);
             setChanged(true);
@@ -185,7 +185,7 @@ public class PowerMeter extends ElectricDevice {
     }
 
     private void setVoltage(int value) {
-        Freedomotic.logger.config("Setting behavior 'voltage' of object '" + getPojo().getName() + "' to " + value);
+        Freedomotic.logger.info("Setting behavior 'voltage' of object '" + getPojo().getName() + "' to " + value);
         voltage.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
@@ -201,7 +201,7 @@ public class PowerMeter extends ElectricDevice {
     }
 
     private void setPower(int value) {
-        Freedomotic.logger.config("Setting behavior 'power' of object '" + getPojo().getName() + "' to " + value);
+        Freedomotic.logger.info("Setting behavior 'power' of object '" + getPojo().getName() + "' to " + value);
         power.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
@@ -217,7 +217,7 @@ public class PowerMeter extends ElectricDevice {
     }
 
     private void setPowerFactor(int value) {
-        Freedomotic.logger.config("Setting behavior 'power-factor' of object '" + getPojo().getName() + "' to " + value);
+        Freedomotic.logger.info("Setting behavior 'power-factor' of object '" + getPojo().getName() + "' to " + value);
         powerFactor.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
@@ -233,7 +233,7 @@ public class PowerMeter extends ElectricDevice {
     }
 
     private void setEnergy(int value) {
-        Freedomotic.logger.config("Setting behavior 'energy' of object '" + getPojo().getName() + "' to " + value);
+        Freedomotic.logger.info("Setting behavior 'energy' of object '" + getPojo().getName() + "' to " + value);
         energy.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);

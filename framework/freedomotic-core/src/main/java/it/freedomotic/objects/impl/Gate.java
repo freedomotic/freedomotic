@@ -240,7 +240,7 @@ public class Gate extends EnvObjectLogic {
             }
         }
         //notify if the passage connect two rooms
-        Freedomotic.logger.config("The gate '" + getPojo().getName() + "' connects " + from + " to " + to);
+        Freedomotic.logger.info("The gate '" + getPojo().getName() + "' connects " + from + " to " + to);
     }
 
     @Override

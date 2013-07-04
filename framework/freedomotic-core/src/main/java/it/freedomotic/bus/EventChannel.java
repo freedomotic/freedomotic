@@ -63,7 +63,7 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
                 virtualTopic = receiveSession.createQueue("Consumer." + UidGenerator.getNextStringUid() + ".VirtualTopic." + topicName);
                 javax.jms.MessageConsumer subscriber = receiveSession.createConsumer(virtualTopic);
                 subscriber.setMessageListener(this);
-                Freedomotic.logger.config(getHandler().getClass().getSimpleName() + " listen on " + virtualTopic.toString());
+                Freedomotic.logger.info(getHandler().getClass().getSimpleName() + " listen on " + virtualTopic.toString());
             } catch (javax.jms.JMSException jmse) {
                 Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jmse));
             }
@@ -95,7 +95,7 @@ public class EventChannel extends AbstractBusConnector implements MessageListene
                         }
                     }
                 });
-                Freedomotic.logger.config(getHandler().getClass().getSimpleName() + " listen on " + virtualTopic.toString());
+                Freedomotic.logger.info(getHandler().getClass().getSimpleName() + " listen on " + virtualTopic.toString());
             } catch (javax.jms.JMSException jmse) {
                 Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jmse));
             }

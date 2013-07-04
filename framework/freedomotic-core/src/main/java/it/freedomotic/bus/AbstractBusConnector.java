@@ -57,7 +57,7 @@ public class AbstractBusConnector {
         //create a connection
         if (connection == null) { //not already connected to the bus
             try {
-                Freedomotic.logger.config("Creating new messaging broker");
+                Freedomotic.logger.info("Creating new messaging broker");
                 //create an embedded messaging broker
                 //BROKER.setBrokerName("freedomotic");
                 //use always 0.0.0.0 not localhost. localhost allows connections 

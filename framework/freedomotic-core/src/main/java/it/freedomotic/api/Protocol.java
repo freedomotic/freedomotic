@@ -165,7 +165,7 @@ public abstract class Protocol extends Plugin implements BusConsumer {
     @Override
     public final void onMessage(final ObjectMessage message) {
         if (!isRunning) {
-            Freedomotic.logger.config("Protocol '" + getName() + "' receives a command while is not running. Plugin tries to turn on itself...");
+            Freedomotic.logger.info("Protocol '" + getName() + "' receives a command while is not running. Plugin tries to turn on itself...");
             start();
         }
         Object payload = null;
@@ -173,7 +173,7 @@ public abstract class Protocol extends Plugin implements BusConsumer {
             payload = message.getObject();
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
-                Freedomotic.logger.config(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
+                Freedomotic.logger.info(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
                 Protocol.ActuatorPerforms task;
                 lastDestination = message.getJMSReplyTo();
                 task = new Protocol.ActuatorPerforms(command, message.getJMSReplyTo(), message.getJMSCorrelationID());

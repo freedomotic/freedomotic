@@ -68,7 +68,7 @@ public class ConfigPersistence {
     }
 
     public static Config deserialize(File file) throws IOException, ConversionException {
-        Freedomotic.logger.config("Deserializing configuration from " + file.getAbsolutePath());
+        Freedomotic.logger.info("Deserializing configuration from " + file.getAbsolutePath());
         XStream xstream = FreedomXStream.getXstream();
         xstream.autodetectAnnotations(true);
         String line;

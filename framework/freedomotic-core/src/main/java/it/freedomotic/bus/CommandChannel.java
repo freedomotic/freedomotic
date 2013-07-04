@@ -71,7 +71,7 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
                 this.channelName = channelName;
                 consumer = receiveSession.createConsumer(queue);
                 consumer.setMessageListener(this);
-                Freedomotic.logger.config(getHandler().getClass().getSimpleName() + " listen on " + queue.toString());
+                Freedomotic.logger.info(getHandler().getClass().getSimpleName() + " listen on " + queue.toString());
             } catch (javax.jms.JMSException jmse) {
                 Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jmse));
             }
@@ -108,19 +108,19 @@ public class CommandChannel extends AbstractBusConnector implements MessageListe
                 producer.send(destination, msg);
                 Profiler.incrementSentCommands();
                 //the receive() call is blocking so we execute it in a thread
-                Freedomotic.logger.config("Send and await reply to command '" + command.getName()
+                Freedomotic.logger.info("Send and await reply to command '" + command.getName()
                         + "' for " + command.getReplyTimeout() + "ms");
                 Message jmsResponse = responseConsumer.receive(command.getReplyTimeout());
                 if (jmsResponse != null) {
                     ObjectMessage objMessage = (ObjectMessage) jmsResponse;
                     //a command is sent, we expect a command as reply
                     Command reply = (Command) objMessage.getObject();
-                    Freedomotic.logger.config("Reply to command '" + command.getName()
+                    Freedomotic.logger.info("Reply to command '" + command.getName()
                             + "' received. Result is " + reply.getProperty("result"));
                     Profiler.incrementReceivedReplies();
                     return reply;
                 } else {
-                    Freedomotic.logger.config("Command '" + command.getName()
+                    Freedomotic.logger.info("Command '" + command.getName()
                             + "' timed out after " + command.getReplyTimeout() + "ms");
                     Profiler.incrementTimeoutedReplies();
                 }

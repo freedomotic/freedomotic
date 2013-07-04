@@ -62,7 +62,7 @@ public class ReactionPersistence {
         XStream xstream = FreedomXStream.getXstream();
         deleteReactionFiles(folder);
         try {
-            Freedomotic.logger.config("Saving reactions to file in " + folder.getAbsolutePath());
+            Freedomotic.logger.info("Saving reactions to file in " + folder.getAbsolutePath());
             for (Reaction reaction : list) {
                 String uuid = reaction.getUUID();
                 if (uuid == null || uuid.isEmpty()) {
@@ -141,7 +141,7 @@ public class ReactionPersistence {
                 //Close the output stream
                 indexfile.close();
             } else {
-                Freedomotic.logger.config("No reactions to load from this folder " + folder.toString());
+                Freedomotic.logger.info("No reactions to load from this folder " + folder.toString());
             }
         } catch (Exception e) {
             Freedomotic.logger.severe("Exception while loading reaction in " + folder.getAbsolutePath() + ".\n" + Freedomotic.getStackTraceInfo(e));
@@ -153,16 +153,16 @@ public class ReactionPersistence {
             r.getTrigger().register(); //trigger starts to listen on its channel
             list.add(r);
             r.setChanged();
-            Freedomotic.logger.config("Added new reaction " + r.getDescription());
+            Freedomotic.logger.info("Added new reaction " + r.getDescription());
         } else {
-            Freedomotic.logger.config("The reaction '" + r.getDescription() + "' is already loaded so its skipped.");
+            Freedomotic.logger.info("The reaction '" + r.getDescription() + "' is already loaded so its skipped.");
         }
     }
 
     public static void remove(Reaction input) {
         if (input != null) {
             boolean removed = list.remove(input);
-            Freedomotic.logger.config("Removed reaction " + input.getDescription());
+            Freedomotic.logger.info("Removed reaction " + input.getDescription());
             input.getTrigger().unregister();
             if ((!removed) && (list.contains(input))) {
                 Freedomotic.logger.warning("Error while removing Reaction " + input.getDescription() + " from the list");
