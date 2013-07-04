@@ -142,12 +142,18 @@ public final class AddonLoader {
     protected static Class<?> getClass(File file, String name) throws Exception {
         addURL(file.toURL());
         URLClassLoader clazzLoader;
-        Class<?> clazz;
+        Class<?> clazz =null;
         String filePath = file.getAbsolutePath();
         filePath = "jar:file://" + filePath + "!/";
         URL url = new File(filePath).toURL();
         clazzLoader = new URLClassLoader(new URL[]{url});
+        try {
         clazz = clazzLoader.loadClass(name);
+        }
+        catch (NoClassDefFoundError e){
+            Freedomotic.logger.severe(e.getMessage());
+            e.printStackTrace();
+        }
         return clazz;
     }
 

@@ -96,6 +96,7 @@ public class Freedomotic {
          * *****************************************************************
          */
         loadAppConfig();
+        i18n.setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
         Auth.initBaseRealm();
         if (Auth.realmInited) {
             PrincipalCollection principals = new SimplePrincipalCollection("system", "it.freedomotic.security");

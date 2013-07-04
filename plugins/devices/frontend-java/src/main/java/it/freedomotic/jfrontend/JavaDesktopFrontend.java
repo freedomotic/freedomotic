@@ -2,12 +2,8 @@ package it.freedomotic.jfrontend;
 
 import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
-import it.freedomotic.api.ListenEventsOn;
-import it.freedomotic.api.Plugin;
-import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.EnvironmentLogic;
-import it.freedomotic.events.MessageEvent;
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.ZoneHasChanged;
 import it.freedomotic.exceptions.UnableToExecuteException;
@@ -30,7 +26,13 @@ public class JavaDesktopFrontend extends Actuator {
     public JavaDesktopFrontend() {
         super("Desktop Frontend", "/it.freedomotic.jfrontend/desktop-frontend.xml");
     }
-
+    @Override
+    public void onStop() {
+        window = null;
+        listDrawer = null;
+        drawer = null;
+    }
+    
     @Override
     public void onStart() {
         try {
@@ -167,4 +169,6 @@ public class JavaDesktopFrontend extends Actuator {
     protected boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    
 }

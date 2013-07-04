@@ -257,7 +257,8 @@ public class MainWindow extends javax.swing.JFrame {
         JPasswordField jpf = new JPasswordField();
         boolean loginSuccessfull = false;
         while (!loginSuccessfull) {
-            int result = JOptionPane.showConfirmDialog(null,
+            int result = JOptionPane.showConfirmDialog(
+                    null,
                     new Object[]{nameLbl, jnf, label, jpf},
                     i18n.msg(this, "enter_credentials"),
                     JOptionPane.OK_CANCEL_OPTION);
@@ -686,6 +687,11 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu5.setText(i18n.msg("settings"));
 
         mnuLanguage.setText(i18n.msg("language"));
+        mnuLanguage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuLanguageActionPerformed(evt);
+            }
+        });
         jMenu5.add(mnuLanguage);
 
         mnuPrivileges.setText(i18n.msg("privileges"));
@@ -1089,6 +1095,70 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         // TODO add your handling code here:
         new PrivilegesConfiguration();
     }//GEN-LAST:event_mnuPrivilegesActionPerformed
+
+    private void mnuLanguageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLanguageActionPerformed
+        JComboBox<i18n.ComboLanguage> combo = new JComboBox<i18n.ComboLanguage>(i18n.getAvailableLocales());
+        for (i18n.ComboLanguage cmb : i18n.getAvailableLocales()){
+            if (cmb.getValue().equals(i18n.getDefaultLocale())){
+                combo.setSelectedItem(cmb);
+                break;
+            }
+        }
+        JLabel lbl = new JLabel(i18n.msg("language"));
+        int result = JOptionPane.showConfirmDialog(
+                    this,
+                    new Object[]{lbl, combo},
+                    i18n.msg("language"),
+                    JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION){
+            i18n.ComboLanguage selected = (i18n.ComboLanguage) combo.getSelectedItem();
+            i18n.setDefaultLocale(selected.getValue());
+            updateStrings();
+        }
+    }//GEN-LAST:event_mnuLanguageActionPerformed
+ 
+    private void updateStrings(){
+        mnuOpenNew.setText(i18n.msg("file"));
+        mnuNewEnvironment.setText(i18n.msg("new") + i18n.msg("environment"));
+        mnuOpenEnvironment.setText(i18n.msg("open") + i18n.msg("environment"));
+        mnuSave.setText(i18n.msg("save") + i18n.msg("environment"));
+        mnuSaveAs.setText(i18n.msg("save_X_as",new Object[]{i18n.msg("environment")}));
+        mnuSwitchUser.setText(i18n.msg(this,"change_user"));
+        mnuExit.setText(i18n.msg("exit"));
+        mnuEditMode.setText(i18n.msg("environment"));
+        mnuSelectEnvironment.setText(i18n.msg(this,"select_X",new Object[]{i18n.msg("area_floor")}));
+        jMenu4.setText(i18n.msg("area_floor"));
+        mnuRenameEnvironment.setText(i18n.msg("rename"));
+        mnuAddDuplicateEnvironment.setText(i18n.msg("add")+"/"+i18n.msg("duplicate"));
+        mnuChangeRenderer.setText(i18n.msg("change_X",new Object[]{i18n.msg("renderer")}));
+        mnuBackground.setText(i18n.msg("change_X",new Object[]{i18n.msg("background")}));
+        mnuDelete.setText(i18n.msg("delete"));
+        mnuRoomEditMode.setText(i18n.msg(this,"X_edit_mode",new Object[]{i18n.msg("rooms")}));
+        jMenu3.setText(i18n.msg("rooms"));
+        mnuRenameRoom.setText(i18n.msg("rename") + i18n.msg("room"));
+        mnuAddRoom.setText(i18n.msg("add") + i18n.msg("room"));
+        mnuRoomBackground.setText(i18n.msg("change_X",new Object[]{i18n.msg("background")}));
+        mnuRemoveRoom.setText(i18n.msg("remove") + i18n.msg("room"));
+        mnuObjects.setText(i18n.msg("objects"));
+        mnuObjectEditMode.setText(i18n.msg(this,"X_edit_mode",new Object[]{i18n.msg("objects")}));
+        jMenu2.setText(i18n.msg("automations"));
+        mnuAutomations.setText(i18n.msg("manage") + i18n.msg("automations"));
+        jCheckBoxMarket.setText(i18n.msg(this,"install_from_marketplace"));
+        mnuPluginConfigure.setText(i18n.msg("configure"));
+        jMenu5.setText(i18n.msg("settings"));
+        mnuLanguage.setText(i18n.msg("language"));
+        mnuPrivileges.setText(i18n.msg("privileges"));
+        mnuWindow.setText(i18n.msg(this,"window"));
+        mnuPluginList.setText(i18n.msg("X_list",new Object[]{i18n.msg("plugins")}));
+        jMenuItem3.setText(i18n.msg(this,"fullscreen"));
+        mnuHelp.setText(i18n.msg("help"));
+        mnuTutorial.setText(i18n.msg(this,"tutorial"));
+        submnuHelp.setText(i18n.msg(this,"about"));
+        frameClient.setTitle(i18n.msg("loaded_plugins"));
+        setMapTitle(drawer.getCurrEnv().getPojo().getName());
+        
+        // frameMap
+ }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMarket;
     private javax.swing.JMenu jMenu1;
