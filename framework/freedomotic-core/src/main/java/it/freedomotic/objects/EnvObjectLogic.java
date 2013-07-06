@@ -39,6 +39,7 @@ import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
+import it.freedomotic.security.Auth;
 import it.freedomotic.util.TopologyUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -241,7 +242,10 @@ public class EnvObjectLogic {
 
     @RequiresPermissions("objects:read")
     public EnvObject getPojo() {
-        return pojo;
+        if (pojo.getUUID() == null || Auth.isPermitted("objects:read:"+ pojo.getUUID().substring(0, 5))){
+            return pojo;
+        }
+        return null;
     }
 
     @RequiresPermissions("objects:delete")

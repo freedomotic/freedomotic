@@ -17,43 +17,43 @@ import org.restlet.resource.ServerResource;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import it.freedomotic.security.Auth;
 
 /**
  *
  * @author gpt
  */
-public class EnvironmentsServerResource extends ServerResource implements EnvironmentsResource { 
+public class EnvironmentsServerResource extends ServerResource implements EnvironmentsResource {
 
-    private static volatile ArrayList<Environment> environments;  
-        
+    private static volatile ArrayList<Environment> environments;
+
     @Override
-    protected void doInit() throws ResourceException{
-        
+    protected void doInit() throws ResourceException {
+
         environments = new ArrayList<Environment>();
-        for(EnvironmentLogic env: EnvironmentPersistence.getEnvironments())            
-        {
-            environments.add(env.getPojo());  
-        }        
-                     
+        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+            environments.add(env.getPojo());
+        }
+
     }
-        
+
     @Override
-    public String retrieveXml() {   
+    public String retrieveXml() {
         String ret = "";
-        XStream xstream =FreedomXStream.getXstream(); 
+        XStream xstream = FreedomXStream.getXstream();
         ret = xstream.toXML(environments);
-        return ret;                
-    }
-    
-       @Override
-    public String retrieveJson() {        
-        String ret = "";
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
-        xstream.setMode(XStream.NO_REFERENCES);                
-        ret = xstream.toXML(environments);        
         return ret;
     }
-    
+
+    @Override
+    public String retrieveJson() {
+        String ret = "";
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
+        xstream.setMode(XStream.NO_REFERENCES);
+        ret = xstream.toXML(environments);
+        return ret;
+    }
+
     @Override
     public ArrayList<Environment> retrieveEnvironments() {
         return environments;

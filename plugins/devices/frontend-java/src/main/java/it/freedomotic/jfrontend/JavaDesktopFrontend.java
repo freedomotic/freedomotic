@@ -146,7 +146,9 @@ public class JavaDesktopFrontend extends Actuator {
                     drawer.createCallout(callout);
                     drawer.setNeedRepaint(true);
                 } else {
+                    if (window.getPluginJList() != null){
                     window.getPluginJList().update();
+                    }
                 }
             }
         }

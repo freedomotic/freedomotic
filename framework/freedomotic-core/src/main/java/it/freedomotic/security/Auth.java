@@ -30,6 +30,8 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.util.Info;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -41,23 +43,27 @@ import org.apache.shiro.realm.text.PropertiesRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.subject.support.SubjectThreadState;
+import org.apache.shiro.util.ThreadState;
 
 /**
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
 public class Auth {
-
+    
+    private static String BASEREALMNAME = "it.freedomotic.security";
+    private static String PLUGINREALMNAME = "it.freedomotic.plugins.security";
     public static boolean realmInited = false;
     private static PropertiesRealm baseRealm = new PropertiesRealm();
-    private static SimpleAccountRealm pluginRealm = new SimpleAccountRealm("it.freedomotic.plugins.security");
+    private static SimpleAccountRealm pluginRealm = new SimpleAccountRealm(PLUGINREALMNAME);
     private static String DEFAULT_PERMISSION = "*";
     private static ArrayList<Realm> realmCollection = new ArrayList<Realm>();
-
+    
     public static void initBaseRealm() {
         DefaultSecurityManager securityManager = null;
         if (!realmInited && Freedomotic.config.getBooleanProperty("KEY_SECURITY_ENABLE", true)) {
-            baseRealm.setName("it.freedomotic.security");
+            baseRealm.setName(BASEREALMNAME);
             baseRealm.setResourcePath(Info.getApplicationPath() + File.separator + "config" + File.separator + "security.properties");
             baseRealm.init();
 
@@ -171,5 +177,15 @@ public class Auth {
         }
     }
     
-    
+    @RequiresPermissions("auth:fakeUser")
+    public static boolean bindFakeUser(String userName){
+        if (baseRealm.accountExists(userName)) {
+            PrincipalCollection principals = new SimplePrincipalCollection(userName, BASEREALMNAME);
+            Subject subj = new Subject.Builder().principals(principals).buildSubject();
+            ThreadState threadState = new SubjectThreadState(subj);
+            threadState.bind();
+            return true;
+        }
+        return false;
+    }
 }
