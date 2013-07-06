@@ -21,27 +21,21 @@ package it.freedomotic.jfrontend;
 
 import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
-import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.environment.EnvironmentLogic;
-
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.ZoneHasChanged;
-
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.jfrontend.extras.GraphPanel;
+import it.freedomotic.jfrontend.utils.SplashLogin;
 import it.freedomotic.objects.EnvObjectLogic;
-
 import it.freedomotic.reactions.Command;
-
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.swing.JOptionPane;
 
 
@@ -56,20 +50,26 @@ public class JavaDesktopFrontend
     private Drawer drawer;
     private Map<String, GraphPanel> graphs = new HashMap<String, GraphPanel>();
 
+    private SplashLogin sl;
+    private static final Logger LOG = Logger.getLogger(JavaDesktopFrontend.class.getName());
+    private boolean init = false;
+
     public JavaDesktopFrontend() {
         super("Desktop Frontend", "/frontend-java/desktop-frontend.xml");
     }
 
     @Override
     public void onStop() {
+        window.setVisible(false);
         window.dispose();
         window = null;
         //listDrawer = null;
         drawer = null;
-        for (GraphPanel pg : graphs.values()){
+        for (GraphPanel pg : graphs.values()) {
             pg.dispose();
         }
         graphs.clear();
+        sl = null;
     }
 
     @Override
@@ -82,22 +82,39 @@ public class JavaDesktopFrontend
             //addEventListener("app.event.sensor.messages.callout");
             //onCommand stuff
             //addComandListener("app.actuators.plugins.controller.in");
-            createMainWindow(); //creates the main frame
+          //  createMainWindow(); //creates the main frame
             //listDrawer = new ListDrawer(this);
             //listDrawer.setVisible(true);
+            addCommandListener("app.actuators.plugins.controller.in");
+            if (getApi().getAuth().isInited()) {
+                sl = new SplashLogin(this);
+                if (!init) {
+                    sl.trySSO();
+                }
+            }
+            init = true;
         } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
     public void createMainWindow() {
-        if (window != null) {
-            window.setVisible(false);
-            window.dispose();
+        /*     if (window != null) {
+         window.setVisible(false);
+         window.dispose();
+         }
+         */
+        if (sl != null) {
+            sl.setVisible(false);
+            sl.dispose();
+            sl = null;
         }
 
-        window = new MainWindow(this);
+        if (window == null) {
+            window = new MainWindow(this);
+        }
         window.setVisible(true);
+        LOG.info("JFrontend running as user: " + getApi().getAuth().getPrincipal());
     }
 
     public MainWindow getMainWindow() {
@@ -160,7 +177,7 @@ public class JavaDesktopFrontend
                         graphs.put(obj.getPojo().getUUID(), gw);
                     }
                 }
-                
+
                 //sendBack(c);
             }
         } else {
@@ -203,6 +220,10 @@ public class JavaDesktopFrontend
                 for (GraphPanel gp : graphs.values()) {
                     gp.reDraw();
                 }
+                if (drawer != null) {
+                    drawer.setNeedRepaint(true);
+
+                }
             } else {
                 if (event instanceof ZoneHasChanged) {
                     //writing the string on the screen
@@ -211,14 +232,15 @@ public class JavaDesktopFrontend
                     drawer.createCallout(callout);
                     drawer.setNeedRepaint(true);
                 } else {
-					// TODO check why a NPE was raised sometimes
-					if (null != window) {
-						final PluginJList pluginJList = window.getPluginJList();
-						if (null != pluginJList) {
-							pluginJList.update();
-						}
-					}
-				}
+                    // TODO check why a NPE was raised sometimes
+                    if (null != window) {
+                        final PluginJList pluginJList = window.getPluginJList();
+                        if (null != pluginJList) {
+                            pluginJList.update();
+                        }
+                    }
+                }
+
             }
         }
     }

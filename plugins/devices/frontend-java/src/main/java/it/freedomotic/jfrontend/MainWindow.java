@@ -20,26 +20,23 @@
 package it.freedomotic.jfrontend;
 
 import it.freedomotic.api.Plugin;
-
 import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.core.ResourcesManager;
-
 import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.environment.Room;
 import it.freedomotic.environment.ZoneLogic;
 import it.freedomotic.events.GenericEvent;
 import it.freedomotic.exceptions.DaoLayerException;
+import it.freedomotic.jfrontend.Renderer;
 import it.freedomotic.jfrontend.utils.OpenDialogFileFilter;
 import it.freedomotic.jfrontend.utils.TipOfTheDay;
 import it.freedomotic.model.environment.Zone;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.security.Auth;
 import it.freedomotic.util.I18n.ComboLanguage;
-import it.freedomotic.util.Info;
 import it.freedomotic.util.I18n.I18n;
-
+import it.freedomotic.util.Info;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -48,7 +45,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.*;
 
 /**
@@ -59,7 +55,7 @@ public class MainWindow
         extends javax.swing.JFrame {
 
     private Drawer drawer;
-    private float referenceRatio;
+    //private float referenceRatio;
     private static boolean isFullscreen = false;
     private JavaDesktopFrontend master;
     JDesktopPane desktopPane;
@@ -70,6 +66,8 @@ public class MainWindow
     boolean editMode;
     private final Auth Auth;
     private final I18n I18n;
+    boolean isAuthenticated = false;
+    private static final Logger LOG = Logger.getLogger(JavaDesktopFrontend.class.getName());
 
     public Drawer getDrawer() {
         return drawer;
@@ -84,9 +82,6 @@ public class MainWindow
         this.Auth = master.getApi().getAuth();
         ObjectEditor.setAPI(master.getApi());
 
-        if (Auth.isInited()) {
-            logUser(true);
-        }
         setWindowedMode();
         updateMenusPermissions();
 
@@ -116,6 +111,7 @@ public class MainWindow
         mnuPluginList.setEnabled(Auth.isPermitted("plugins:read"));
         frameClient.setVisible(Auth.isPermitted("plugins:read"));
         mnuPrivileges.setEnabled(Auth.isPermitted("auth:privileges:read") || Auth.isPermitted("auth:privileges:update"));
+        mnuSelectEnvironment.setEnabled(master.getApi().getEnvironments().size() > 1);
     }
 
     private void setEnvironment(EnvironmentLogic input) {
@@ -124,7 +120,7 @@ public class MainWindow
 
         master.getApi().getConfig().setProperty("KEY_ROOM_XML_PATH",
                 input.getSource().toString().replace(
-                new File(Info.PATH_DATA_FOLDER+ "/furn").toString(),""));
+                new File(Info.PATH_DATA_FOLDER + "/furn").toString(), ""));
     }
 
 //    public void showTipsOnStartup(boolean show) {
@@ -181,13 +177,13 @@ public class MainWindow
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
-            Freedomotic.logger.severe("Cannot find system look&feel\n" + ex.toString());
+            LOG.severe("Cannot find system look&feel\n" + ex.toString());
         } catch (InstantiationException ex) {
-            Freedomotic.logger.severe("Cannot instantiate system look&feel\n" + ex.toString());
+            LOG.severe("Cannot instantiate system look&feel\n" + ex.toString());
         } catch (IllegalAccessException ex) {
-            Freedomotic.logger.severe("Illegal access to system look&feel\n" + ex.toString());
+            LOG.severe("Illegal access to system look&feel\n" + ex.toString());
         } catch (UnsupportedLookAndFeelException ex) {
-            Freedomotic.logger.severe("Unsupported system look&feel\n" + ex.toString());
+            LOG.severe("Unsupported system look&feel\n" + ex.toString());
         }
 
         setDefaultLookAndFeelDecorated(true);
@@ -217,7 +213,7 @@ public class MainWindow
         try {
             frameClient.setSelected(true);
         } catch (PropertyVetoException ex) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         }
 
         EnvironmentLogic previousEnv = EnvironmentPersistence.getEnvironments().get(0);
@@ -233,7 +229,7 @@ public class MainWindow
             setDrawer(drawer);
             ResourcesManager.clear();
         } else {
-            Freedomotic.logger.severe("Unable to create a drawer to render the environment on the desktop frontend");
+            LOG.severe("Unable to create a drawer to render the environment on the desktop frontend");
         }
 
         this.setTitle("Freedomotic " + Info.getLicense() + " - www.freedomotic.com");
@@ -277,7 +273,7 @@ public class MainWindow
             if (drawer != null) {
                 setDrawer(drawer);
             } else {
-                Freedomotic.logger.severe("Unable to create a drawer to render the environment on the desktop frontend in fullscreen mode");
+                LOG.severe("Unable to create a drawer to render the environment on the desktop frontend in fullscreen mode");
             }
 
             gd.setFullScreenWindow(this);
@@ -292,39 +288,15 @@ public class MainWindow
         }
     }
 
-    private void logUser(boolean init) {
-        if (frameClient != null) {
-            frameClient.setVisible(false);
-        }
-        if (frameMap != null) {
-            frameMap.setVisible(false);
-        }
-        JLabel nameLbl = new JLabel(I18n.msg("enter_username"));
-        JTextField jnf = new JTextField();
-        JLabel label = new JLabel(I18n.msg("enter_password"));
-        JPasswordField jpf = new JPasswordField();
-        boolean loginSuccessfull = false;
-        if (init && master.getApi().getConfig().getBooleanProperty("KEY_ENABLE_SSO", false)) {
-            loginSuccessfull = Auth.bindFakeUser(System.getProperty("user.name"));
-        }
-        while (!loginSuccessfull) {
-            int result = JOptionPane.showConfirmDialog(
-                    null,
-                    new Object[]{nameLbl, jnf, label, jpf},
-                    I18n.msg("enter_credentials"),
-                    JOptionPane.OK_CANCEL_OPTION);
-            if (result == JOptionPane.OK_OPTION) {
-                loginSuccessfull = Auth.login(jnf.getText(), jpf.getPassword());
-            } else {
-                loginSuccessfull = true;
-            }
-        }
-        if (!init) {
-            mnuSelectEnvironmentActionPerformed(null);
-            updateMenusPermissions();
-        }
-        Freedomotic.logger.info("JFrontend running as user: " + Auth.getPrincipal());
+    private void logUser() {
+        // send command to restart java frontend
+        Command c = new Command();
+        c.setName("Restart Java frontend");
+        c.setReceiver("app.actuators.plugins.controller.in");
+        c.setProperty("plugin", master.getName());
+        c.setProperty("action", "restart"); //the default choice
 
+        Freedomotic.sendCommand(c);
     }
 
     private void changeRenderer(String renderer) {
@@ -386,7 +358,7 @@ public class MainWindow
         frameMap.setResizable(true);
         setMapTitle(I18n.msg("not_inited") + I18n.msg("inited"));
         desktopPane.add(frameMap, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        referenceRatio = new Float(prevEnv.getPojo().getWidth() / new Float(prevEnv.getPojo().getWidth()));
+//        referenceRatio = new Float(prevEnv.getPojo().getWidth() / new Float(prevEnv.getPojo().getWidth()));
 
     }
 
@@ -406,6 +378,7 @@ public class MainWindow
             //do nothing, this is not important
         }
         frameMap.setTitle(I18n.msg("environment") + ": " + envName + name);
+
     }
 
     class StringListModel
@@ -870,7 +843,7 @@ public class MainWindow
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             file = fc.getSelectedFile();
-            Freedomotic.logger.info("Opening " + file.getAbsolutePath());
+            LOG.info("Opening " + file.getAbsolutePath());
 
             try {
                 boolean loaded = EnvironmentPersistence.loadEnvironmentsFromDir(file.getParentFile(),
@@ -880,12 +853,12 @@ public class MainWindow
                     mnuSelectEnvironmentActionPerformed(null);
                 }
             } catch (Exception e) {
-                Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+                LOG.severe(Freedomotic.getStackTraceInfo(e));
             }
 
             setWindowedMode();
         } else {
-            Freedomotic.logger.info(I18n.msg("canceled_by_user"));
+            LOG.info(I18n.msg("canceled_by_user"));
         }
     }//GEN-LAST:event_mnuOpenEnvironmentActionPerformed
 
@@ -981,11 +954,14 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
             try {
                 EnvironmentPersistence.saveEnvironmentsToFolder(folder);
+
+
             } catch (Exception ex) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainWindow.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            Freedomotic.logger.info(I18n.msg("canceled_by_user"));
+            LOG.info(I18n.msg("canceled_by_user"));
         }
     }//GEN-LAST:event_mnuSaveAsActionPerformed
 
@@ -1054,7 +1030,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             //This is where a real application would open the file.
-            Freedomotic.logger.info("Opening " + file.getAbsolutePath());
+            LOG.info("Opening " + file.getAbsolutePath());
             drawer.getCurrEnv().getPojo().setBackgroundImage(file.getName());
             drawer.setNeedRepaint(true);
             frameMap.validate();
@@ -1083,7 +1059,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 //This is where a real application would open the file.
-                Freedomotic.logger.info("Opening " + file.getAbsolutePath());
+                LOG.info("Opening " + file.getAbsolutePath());
                 zone.getPojo().setTexture(file.getName());
                 drawer.setNeedRepaint(true);
                 frameMap.validate();
@@ -1099,7 +1075,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         //creates a new environment coping it from a template
         File template =
                 new File(Info.getApplicationPath() + "/data/furn/templates/template-square/template-square.xenv");
-        Freedomotic.logger.info("Opening " + template.getAbsolutePath());
+        LOG.info("Opening " + template.getAbsolutePath());
         drawer.setCurrEnv(0);
 
         try {
@@ -1132,7 +1108,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 }
             }
         } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
 
         setWindowedMode();
@@ -1162,7 +1138,11 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuSelectEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSelectEnvironmentActionPerformed
         if (Auth.isPermitted("environments:read")) {
-            if (EnvironmentPersistence.getEnvironments().size() > 1) {
+
+            if (master.getApi().getEnvironments().size() == 1) {
+                drawer.setCurrEnv(0);
+                setMapTitle(master.getApi().getEnvironments().get(0).getPojo().getName());
+            } else {
                 Object[] possibilities = EnvironmentPersistence.getEnvironments().toArray();
                 EnvironmentLogic input = (EnvironmentLogic) JOptionPane.showInputDialog(
                         this,
@@ -1176,20 +1156,20 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 //If a string was returned
                 if (input != null) {
                     setEnvironment(input);
+                } else {
+                    setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
                 }
-            } else {
-                setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
             }
         }
     }//GEN-LAST:event_mnuSelectEnvironmentActionPerformed
 
     private void mnuAddDuplicateEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAddDuplicateEnvironmentActionPerformed
-            EnvironmentLogic newEnv = EnvironmentPersistence.add(drawer.getCurrEnv(), true);
-            String input = JOptionPane.showInputDialog(I18n.msg("enter_new_name_for_env") + newEnv.getPojo().getName());
-            newEnv.getPojo().setName(input.trim());
-            newEnv.setSource(new File(drawer.getCurrEnv().getSource().getParentFile() +"/"+ newEnv.getPojo().getUUID() + ".xenv"));
-            setEnvironment(EnvironmentPersistence.getEnvByUUID(newEnv.getPojo().getUUID()));
-            checkDeletableEnvironments();
+        EnvironmentLogic newEnv = EnvironmentPersistence.add(drawer.getCurrEnv(), true);
+        String input = JOptionPane.showInputDialog(I18n.msg("enter_new_name_for_env") + newEnv.getPojo().getName());
+        newEnv.getPojo().setName(input.trim());
+        newEnv.setSource(new File(drawer.getCurrEnv().getSource().getParentFile() + "/" + newEnv.getPojo().getUUID() + ".xenv"));
+        setEnvironment(EnvironmentPersistence.getEnvByUUID(newEnv.getPojo().getUUID()));
+        checkDeletableEnvironments();
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
     private void mnuRenameEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameEnvironmentActionPerformed
@@ -1220,7 +1200,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         }
     }//GEN-LAST:event_mnuDeleteActionPerformed
     private void mnuSwitchUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSwitchUserActionPerformed
-        logUser(false);
+        logUser();
     }//GEN-LAST:event_mnuSwitchUserActionPerformed
 
     private void mnuPrivilegesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPrivilegesActionPerformed
