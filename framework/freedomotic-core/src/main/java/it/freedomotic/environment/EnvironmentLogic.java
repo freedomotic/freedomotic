@@ -28,6 +28,7 @@ import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.objects.impl.Gate;
+import it.freedomotic.security.Auth;
 import it.freedomotic.util.Graph;
 import it.freedomotic.util.UidGenerator;
 
@@ -55,7 +56,10 @@ public final class EnvironmentLogic {
 
     @RequiresPermissions("environments:read")
     public Environment getPojo() {
-        return pojo;
+        if (Auth.isPermitted("environments:read:" + pojo.getUUID().substring(0, 5))){
+            return pojo;
+        }
+        return null;
     }
 
     @RequiresPermissions("environments:update")

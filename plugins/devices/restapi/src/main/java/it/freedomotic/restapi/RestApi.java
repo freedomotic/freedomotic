@@ -8,19 +8,22 @@ import it.freedomotic.api.Actuator;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.restapi.server.FreedomRestServer;
+import it.freedomotic.security.Auth;
 import it.freedomotic.util.Info;
-
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
 import org.restlet.Server;
+import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Protocol;
 import org.restlet.engine.Engine;
 import org.restlet.ext.simple.HttpServerHelper;
+import org.restlet.security.ChallengeAuthenticator;
+import org.restlet.security.SecretVerifier;
+
 
 /**
  *
@@ -50,10 +53,28 @@ public class RestApi extends Actuator {
             component.getServers().add(server);
             server.getContext().getParameters().add("maxTotalConnections", "50");
             //end TODO
+            
+            // Guard the restlet with BASIC authentication.
+            ChallengeAuthenticator guard = new ChallengeAuthenticator(null, ChallengeScheme.HTTP_BASIC, "testRealm");
+            // Instantiates a Verifier of identifier/secret couples based on a simple Map.
+            guard.setVerifier(new SecretVerifier(){
+                
+                    @Override
+                    public int verify(String identifier, char[] secret) {
+                        if (Auth.login(identifier, secret)){
+                        return RESULT_VALID;
+                    } 
+                    return RESULT_INVALID;
+                }
+            });
+            
+            guard.setNext(new FreedomRestServer(Info.getResourcesPath()));
+            
             Engine.getInstance().getRegisteredServers().clear();
             Engine.getInstance().getRegisteredServers().add(new HttpServerHelper(server));
             component.getClients().add(Protocol.FILE);
-            component.getDefaultHost().attach(new FreedomRestServer(Info.getResourcesPath()));
+            component.getDefaultHost().attachDefault(guard);
+            //component.getDefaultHost().attach(new FreedomRestServer(Info.getResourcesPath()));
             component.start();
         } catch (Exception ex) {
             Logger.getLogger(RestApi.class.getName()).log(Level.SEVERE, null, ex);

@@ -13,9 +13,9 @@ import it.freedomotic.restapi.server.resources.ObjectsServerResource;
 import it.freedomotic.restapi.server.resources.PluginsServerResource;
 import it.freedomotic.restapi.server.resources.TriggersServerResource;
 import it.freedomotic.restapi.server.resources.UserCommandsServerResource;
+import it.freedomotic.restapi.server.resources.UserServerResource;
 import it.freedomotic.restapi.server.resources.ZoneServerResource;
 import it.freedomotic.restapi.server.resources.ZonesServerResource;
-
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
@@ -38,6 +38,8 @@ public class FreedomRestServer extends Application{
     public static final String FREEDOMOTIC_PATH = "/v2";
     public static final String ENVIRONMENT_PATH = "/v2/environments";
     public static final String RESOURCES_PATH = "/v2/resources";
+    public static final String USER_PATH = "/v2/user";
+            
     public FreedomRestServer() 
     {
         setName("Freedomotic API WebServer");
@@ -45,7 +47,7 @@ public class FreedomRestServer extends Application{
         setOwner("freedomotic");
         setAuthor("Freedomotic dev team");
         getMetadataService().addExtension("object", MediaType.APPLICATION_JAVA_OBJECT);
-         getMetadataService().addExtension("gwt_object", MediaType.APPLICATION_JAVA_OBJECT_GWT);
+        getMetadataService().addExtension("gwt_object", MediaType.APPLICATION_JAVA_OBJECT_GWT);
         this.resourcesPath = resourcesPath+"/";
     }
     public FreedomRestServer(String resourcesPath)
@@ -71,7 +73,8 @@ public class FreedomRestServer extends Application{
         router.attach(FREEDOMOTIC_PATH+"/commands/hardware/", HardwareCommandsServerResource.class);
         router.attach(FREEDOMOTIC_PATH+"/commands/user/", UserCommandsServerResource.class);
         router.attach(FREEDOMOTIC_PATH+"/triggers/", TriggersServerResource.class);
-        router.attach(FREEDOMOTIC_PATH+"/resources/{filename}", ImageResourceServerResource.class);                
+        router.attach(FREEDOMOTIC_PATH+"/resources/{filename}", ImageResourceServerResource.class);    
+        router.attach(USER_PATH + "/{useraction}", UserServerResource.class);
         //Expose the resources dir as static server
         Directory dir = new Directory(getContext(), FILE_AND_SLASHES+resourcesPath);
         dir.setListingAllowed(true);
@@ -96,12 +99,5 @@ public class FreedomRestServer extends Application{
             component.getClients().add(Protocol.FILE);                
             component.getDefaultHost().attach(new FreedomRestServer());
             component.start();
-        
-        
-        
-    }
-    
-    
-    
-    
+    }    
 }

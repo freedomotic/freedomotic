@@ -298,7 +298,7 @@ public class EnvObjectPersistence {
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getEnvironmentID().equalsIgnoreCase(uuid)
-                    && Auth.isPermitted("objects:read:" + object.getPojo().getUUID())) {
+                    && Auth.isPermitted("objects:read:" + object.getPojo().getUUID().substring(0, 5))) {
                 list.add(object);
             }
         }

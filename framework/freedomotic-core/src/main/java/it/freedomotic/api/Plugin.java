@@ -30,16 +30,11 @@ import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.security.Auth;
 import it.freedomotic.util.EqualsUtil;
 import it.freedomotic.util.Info;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
-
 import javax.swing.JFrame;
-import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.apache.shiro.subject.Subject;
 
 public class Plugin implements Client {
 

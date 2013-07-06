@@ -84,17 +84,17 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void updateMenusPermissions() {
-        mnuSwitchUser.setEnabled(       Auth.realmInited);
-        mnuNewEnvironment.setEnabled(   Auth.isPermitted("environments:create"));
-        mnuOpenEnvironment.setEnabled(  Auth.isPermitted("environments:load"));
-        frameMap.setVisible(            Auth.isPermitted("environments:read"));
-        mnuSave.setEnabled(             Auth.isPermitted("environments:save"));
-        mnuSaveAs.setEnabled(           Auth.isPermitted("environments:save"));
+        mnuSwitchUser.setEnabled(Auth.realmInited);
+        mnuNewEnvironment.setEnabled(Auth.isPermitted("environments:create"));
+        mnuOpenEnvironment.setEnabled(Auth.isPermitted("environments:load"));
+        frameMap.setVisible(Auth.isPermitted("environments:read"));
+        mnuSave.setEnabled(Auth.isPermitted("environments:save"));
+        mnuSaveAs.setEnabled(Auth.isPermitted("environments:save"));
         mnuRenameEnvironment.setEnabled(Auth.isPermitted("environments:update"));
-        mnuPluginConfigure.setEnabled(  Auth.isPermitted("sys:plugins:update"));
-        mnuPluginList.setEnabled(       Auth.isPermitted("sys:plugins:read"));
-        frameClient.setVisible(         Auth.isPermitted("sys:plugins:read"));
-        mnuPrivileges.setEnabled(       Auth.isPermitted("auth:privileges:read") || Auth.isPermitted("auth:privileges:update"));
+        mnuPluginConfigure.setEnabled(Auth.isPermitted("plugins:update"));
+        mnuPluginList.setEnabled(Auth.isPermitted("plugins:read"));
+        frameClient.setVisible(Auth.isPermitted("plugins:read"));
+        mnuPrivileges.setEnabled(Auth.isPermitted("auth:privileges:read") || Auth.isPermitted("auth:privileges:update"));
     }
 
 //    public void showTipsOnStartup(boolean show) {
@@ -174,7 +174,7 @@ public class MainWindow extends javax.swing.JFrame {
         desktopPane.add(frameMap);
         desktopPane.add(frameClient);
         frameClient.moveToFront();
-        frameClient.setVisible(Auth.isPermitted("sys:plugins:read"));
+        frameClient.setVisible(Auth.isPermitted("plugins:read"));
         desktopPane.moveToFront(this);
         this.getContentPane().add(desktopPane);
         try {
@@ -202,8 +202,8 @@ public class MainWindow extends javax.swing.JFrame {
         optimizeFramesDimension();
         drawer.repaint();
         lstClients.update();
-        frameClient.setVisible(Auth.isPermitted("sys:plugins:read"));
-        frameMap.setVisible(true);
+        frameClient.setVisible(Auth.isPermitted("plugins:read"));
+        frameMap.setVisible(Auth.isPermitted("environments:read"));
         setEditMode(false);
         this.setVisible(true);
         isFullscreen = false;
@@ -217,7 +217,7 @@ public class MainWindow extends javax.swing.JFrame {
             frameMap.setVisible(false);
             menuBar.setVisible(false);
             frameMap.dispose();
-            if (Auth.isPermitted("sys:plugins:read")) {
+            if (Auth.isPermitted("plugins:read")) {
                 frameClient.setVisible(false);
                 frameClient.dispose();
             }
@@ -259,6 +259,9 @@ public class MainWindow extends javax.swing.JFrame {
         JLabel label = new JLabel(i18n.msg(this, "enter_password"));
         JPasswordField jpf = new JPasswordField();
         boolean loginSuccessfull = false;
+        if (init && Freedomotic.config.getBooleanProperty("KEY_ENABLE_SSO", false)) {
+            loginSuccessfull = Auth.bindFakeUser(System.getProperty("user.name"));
+        }
         while (!loginSuccessfull) {
             int result = JOptionPane.showConfirmDialog(
                     null,
@@ -770,10 +773,10 @@ public class MainWindow extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, ""
                 + i18n.msg(this, "running_as_user") + ": " + Auth.getPrincipal() + "\n"
                 + i18n.msg("author") + ": " + Info.getAuthor() + "\n"
-                + i18n.msg(this,"email") + ": " + Info.getAuthorMail() + "\n"
-                + i18n.msg(this,"release") + ": " + Info.getReleaseDate() + ". " + Info.getVersionCodeName() + " - v" + Info.getVersion() + "\n"
-                + i18n.msg(this,"licence") + ": " + Info.getLicense() + "\n\n"
-                + i18n.msg(this,"find_support_msg") + ":\n"
+                + i18n.msg(this, "email") + ": " + Info.getAuthorMail() + "\n"
+                + i18n.msg(this, "release") + ": " + Info.getReleaseDate() + ". " + Info.getVersionCodeName() + " - v" + Info.getVersion() + "\n"
+                + i18n.msg(this, "licence") + ": " + Info.getLicense() + "\n\n"
+                + i18n.msg(this, "find_support_msg") + ":\n"
                 + "http://code.google.com/p/freedomotic/" + "\n"
                 + "http://freedomotic.com/");
 }//GEN-LAST:event_submnuHelpActionPerformed
@@ -1043,20 +1046,22 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuTutorialActionPerformed
 
     private void mnuSelectEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSelectEnvironmentActionPerformed
-        Object[] possibilities = EnvironmentPersistence.getEnvironments().toArray();
-        EnvironmentLogic input = (EnvironmentLogic) JOptionPane.showInputDialog(
-                this,
-                i18n.msg(this, "select_env"),
-                i18n.msg(this, "select_env_title"),
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                possibilities,
-                drawer.getCurrEnv());
+        if (Auth.isPermitted("environments:read")) {
+            Object[] possibilities = EnvironmentPersistence.getEnvironments().toArray();
+            EnvironmentLogic input = (EnvironmentLogic) JOptionPane.showInputDialog(
+                    this,
+                    i18n.msg(this, "select_env"),
+                    i18n.msg(this, "select_env_title"),
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    possibilities,
+                    drawer.getCurrEnv());
 
-        //If a string was returned
-        if (input != null) {
-            drawer.setCurrEnv(input);
-            setMapTitle(input.getPojo().getName());
+            //If a string was returned
+            if (input != null) {
+                drawer.setCurrEnv(input);
+                setMapTitle(input.getPojo().getName());
+            }
         }
     }//GEN-LAST:event_mnuSelectEnvironmentActionPerformed
 
@@ -1101,67 +1106,67 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuLanguageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLanguageActionPerformed
         JComboBox<i18n.ComboLanguage> combo = new JComboBox<i18n.ComboLanguage>(i18n.getAvailableLocales());
-        for (i18n.ComboLanguage cmb : i18n.getAvailableLocales()){
-            if (cmb.getValue().equals(i18n.getDefaultLocale())){
+        for (i18n.ComboLanguage cmb : i18n.getAvailableLocales()) {
+            if (cmb.getValue().equals(i18n.getDefaultLocale())) {
                 combo.setSelectedItem(cmb);
                 break;
             }
         }
         JLabel lbl = new JLabel(i18n.msg("language"));
         int result = JOptionPane.showConfirmDialog(
-                    this,
-                    new Object[]{lbl, combo},
-                    i18n.msg("language"),
-                    JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION){
+                this,
+                new Object[]{lbl, combo},
+                i18n.msg("language"),
+                JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
             i18n.ComboLanguage selected = (i18n.ComboLanguage) combo.getSelectedItem();
             i18n.setDefaultLocale(selected.getValue());
             updateStrings();
         }
     }//GEN-LAST:event_mnuLanguageActionPerformed
- 
-    private void updateStrings(){
+
+    private void updateStrings() {
         mnuOpenNew.setText(i18n.msg("file"));
         mnuNewEnvironment.setText(i18n.msg("new") + i18n.msg("environment"));
         mnuOpenEnvironment.setText(i18n.msg("open") + i18n.msg("environment"));
         mnuSave.setText(i18n.msg("save") + i18n.msg("environment"));
-        mnuSaveAs.setText(i18n.msg("save_X_as",new Object[]{i18n.msg("environment")}));
-        mnuSwitchUser.setText(i18n.msg(this,"change_user"));
+        mnuSaveAs.setText(i18n.msg("save_X_as", new Object[]{i18n.msg("environment")}));
+        mnuSwitchUser.setText(i18n.msg(this, "change_user"));
         mnuExit.setText(i18n.msg("exit"));
         mnuEditMode.setText(i18n.msg("environment"));
-        mnuSelectEnvironment.setText(i18n.msg(this,"select_X",new Object[]{i18n.msg("area_floor")}));
+        mnuSelectEnvironment.setText(i18n.msg(this, "select_X", new Object[]{i18n.msg("area_floor")}));
         jMenu4.setText(i18n.msg("area_floor"));
         mnuRenameEnvironment.setText(i18n.msg("rename"));
-        mnuAddDuplicateEnvironment.setText(i18n.msg("add")+"/"+i18n.msg("duplicate"));
-        mnuChangeRenderer.setText(i18n.msg("change_X",new Object[]{i18n.msg("renderer")}));
-        mnuBackground.setText(i18n.msg("change_X",new Object[]{i18n.msg("background")}));
+        mnuAddDuplicateEnvironment.setText(i18n.msg("add") + "/" + i18n.msg("duplicate"));
+        mnuChangeRenderer.setText(i18n.msg("change_X", new Object[]{i18n.msg("renderer")}));
+        mnuBackground.setText(i18n.msg("change_X", new Object[]{i18n.msg("background")}));
         mnuDelete.setText(i18n.msg("delete"));
-        mnuRoomEditMode.setText(i18n.msg(this,"X_edit_mode",new Object[]{i18n.msg("rooms")}));
+        mnuRoomEditMode.setText(i18n.msg(this, "X_edit_mode", new Object[]{i18n.msg("rooms")}));
         jMenu3.setText(i18n.msg("rooms"));
         mnuRenameRoom.setText(i18n.msg("rename") + i18n.msg("room"));
         mnuAddRoom.setText(i18n.msg("add") + i18n.msg("room"));
-        mnuRoomBackground.setText(i18n.msg("change_X",new Object[]{i18n.msg("background")}));
+        mnuRoomBackground.setText(i18n.msg("change_X", new Object[]{i18n.msg("background")}));
         mnuRemoveRoom.setText(i18n.msg("remove") + i18n.msg("room"));
         mnuObjects.setText(i18n.msg("objects"));
-        mnuObjectEditMode.setText(i18n.msg(this,"X_edit_mode",new Object[]{i18n.msg("objects")}));
+        mnuObjectEditMode.setText(i18n.msg(this, "X_edit_mode", new Object[]{i18n.msg("objects")}));
         jMenu2.setText(i18n.msg("automations"));
         mnuAutomations.setText(i18n.msg("manage") + i18n.msg("automations"));
-        jCheckBoxMarket.setText(i18n.msg(this,"install_from_marketplace"));
+        jCheckBoxMarket.setText(i18n.msg(this, "install_from_marketplace"));
         mnuPluginConfigure.setText(i18n.msg("configure"));
         jMenu5.setText(i18n.msg("settings"));
         mnuLanguage.setText(i18n.msg("language"));
         mnuPrivileges.setText(i18n.msg("privileges"));
-        mnuWindow.setText(i18n.msg(this,"window"));
-        mnuPluginList.setText(i18n.msg("X_list",new Object[]{i18n.msg("plugins")}));
-        jMenuItem3.setText(i18n.msg(this,"fullscreen"));
+        mnuWindow.setText(i18n.msg(this, "window"));
+        mnuPluginList.setText(i18n.msg("X_list", new Object[]{i18n.msg("plugins")}));
+        jMenuItem3.setText(i18n.msg(this, "fullscreen"));
         mnuHelp.setText(i18n.msg("help"));
-        mnuTutorial.setText(i18n.msg(this,"tutorial"));
-        submnuHelp.setText(i18n.msg(this,"about"));
+        mnuTutorial.setText(i18n.msg(this, "tutorial"));
+        submnuHelp.setText(i18n.msg(this, "about"));
         frameClient.setTitle(i18n.msg("loaded_plugins"));
         setMapTitle(drawer.getCurrEnv().getPojo().getName());
-        
+
         // frameMap
- }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMarket;
     private javax.swing.JMenu jMenu1;

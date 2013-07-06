@@ -9,8 +9,6 @@ import it.freedomotic.jfrontend.MainWindow;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ToolTipManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -22,7 +20,7 @@ import javax.swing.event.HyperlinkListener;
 public class TipOfTheDay extends javax.swing.JFrame {
 
     private MainWindow main;
-
+    private static String PAGE = "http://www.freedomotic.com/help/index.html";
     /**
      * Creates new form TipOfTheDay
      */
@@ -30,7 +28,7 @@ public class TipOfTheDay extends javax.swing.JFrame {
         initComponents();
         this.main = main;
         try {
-            browser.setPage(new URL("http://www.freedomotic.com/help/index.html"));
+            browser.setPage(new URL(PAGE));
             browser.setEditable(false);
             ToolTipManager.sharedInstance().registerComponent(browser);
             browser.addHyperlinkListener(new HyperlinkListener() {
@@ -40,7 +38,7 @@ public class TipOfTheDay extends javax.swing.JFrame {
                         try {
                             browser.setPage(e.getURL());
                         } catch (IOException e1) {
-                            Freedomotic.logger.warning("Cannot open " + browser.getPage().toString() + " for reason: " + e1.getLocalizedMessage());
+                            Freedomotic.logger.warning("Cannot open " + PAGE + " for reason: " + e1.getLocalizedMessage());
                         }
                     }
 
@@ -51,7 +49,7 @@ public class TipOfTheDay extends javax.swing.JFrame {
             pack();
             setVisible(true);
         } catch (IOException ex) {
-            Freedomotic.logger.warning("Cannot open " + browser.getPage().toString() + " for reason: " + ex.getLocalizedMessage());
+            Freedomotic.logger.warning("Cannot open " + PAGE + " for reason: " + ex.getLocalizedMessage());
         }
     }
 
