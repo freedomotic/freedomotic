@@ -20,6 +20,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>freedomotic-model</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -44,12 +50,6 @@
 			<artifactId>org.restlet.ext.gwt</artifactId>
 			<version>${org.restlet.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>freedomotic-model</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 	<repositories>
 		<repository>
@@ -57,19 +57,5 @@
 			<name>Public online Restlet repository</name>
 			<url>http://maven.restlet.org</url>
 		</repository>
-	</repositories>  
-
-    <build>
-        <plugins>
-            <!-- read the build.option file -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-            </plugin>
-            <!-- write the build.option file with new data -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+	</repositories>
  </project>
