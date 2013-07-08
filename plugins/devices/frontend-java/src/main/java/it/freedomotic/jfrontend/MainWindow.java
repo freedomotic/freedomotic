@@ -63,6 +63,9 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     public MainWindow(final JavaDesktopFrontend master) {
+        UIManager.put("OptionPane.yesButtonText", i18n.msg("yes"));
+        UIManager.put("OptionPane.noButtonText", i18n.msg("no"));
+        UIManager.put("OptionPane.cancelButtonText", i18n.msg("cancel"));
         this.master = master;
 
         if (Auth.realmInited) {
@@ -765,12 +768,12 @@ public class MainWindow extends javax.swing.JFrame {
     private void submnuHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submnuHelpActionPerformed
 
         JOptionPane.showMessageDialog(this, ""
-                + "Running User: " + Auth.getPrincipal() + "\n"
+                + i18n.msg(this, "running_as_user") + ": " + Auth.getPrincipal() + "\n"
                 + i18n.msg("author") + ": " + Info.getAuthor() + "\n"
-                + "E-mail: " + Info.getAuthorMail() + "\n"
-                + "Release: " + Info.getReleaseDate() + ". " + Info.getVersionCodeName() + " - v" + Info.getVersion() + "\n"
-                + "Licence: " + Info.getLicense() + "\n\n"
-                + "You can find support on:\n"
+                + i18n.msg(this,"email") + ": " + Info.getAuthorMail() + "\n"
+                + i18n.msg(this,"release") + ": " + Info.getReleaseDate() + ". " + Info.getVersionCodeName() + " - v" + Info.getVersion() + "\n"
+                + i18n.msg(this,"licence") + ": " + Info.getLicense() + "\n\n"
+                + i18n.msg(this,"find_support_msg") + ":\n"
                 + "http://code.google.com/p/freedomotic/" + "\n"
                 + "http://freedomotic.com/");
 }//GEN-LAST:event_submnuHelpActionPerformed
