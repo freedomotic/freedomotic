@@ -1,135 +1,123 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package es.gpulido.harvester;
 
+import es.gpulido.harvester.persistence.DataFrame;
+import es.gpulido.harvester.persistence.DataToPersist;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.exceptions.UnableToExecuteException;
+import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
-import it.freedomotic.util.Info;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.Timestamp;
-import java.sql.SQLException;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+import org.apache.openjpa.persistence.ArgumentException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  *
  * @author gpt
  */
-public class HarvesterProtocol extends Protocol {
+public final class HarvesterProtocol extends Protocol {
 
-    Connection connection;
-    PreparedStatement prep;
-    String createTable = "CREATE TABLE fdEVENTS"
-            + " (ID int auto_increment, DATE dateTime, OBJECT VARCHAR(200),PROTOCOL VARCHAR(200), ADDRESS VARCHAR(200), BEHAVIOR VARCHAR(200), VALUE VARCHAR(20), "
-            + "PRIMARY KEY (ID))";
-    String createMSSQLTable = "CREATE TABLE fdEVENTS"
-            + " (ID int identity, DATE dateTime, OBJECT VARCHAR(200),PROTOCOL VARCHAR(200), ADDRESS  VARCHAR(200), BEHAVIOR VARCHAR(200), VALUE VARCHAR(20), "
-            + "PRIMARY KEY (ID));";
-    String insertStatement = "INSERT INTO fdEVENTS"
-            + " (DATE, OBJECT, PROTOCOL,ADDRESS,BEHAVIOR,VALUE) "
-            + "VALUES (?,?,?,?,?,?)";
+    //Connection connection;
+    //PreparedStatement prep;
+    EntityManagerFactory factory;
+    EntityManager em;
+    Properties props;
+    String dbType;
+    private final static Logger LOG = Logger.getLogger(HarvesterProtocol.class.getName());
 
     public HarvesterProtocol() {
-        super("HarvesterProtocol", "/es.gpulido.harvester/harvester-manifest.xml");
+        super("HarvesterProtocol", "/harvester/harvester-manifest.xml");
         this.setName("Harvester");
         setPollingWait(-1); // disable polling
+        onStart();
     }
 
     @Override
     protected void onRun() {
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().commit();
+        } 
+        //em.getTransaction().begin();
     }
 
     @Override
     public void onStart() {
-        setDescription("Starting...");
-        String dbType = configuration.getStringProperty("driver", "h2");
-        String dbUser = configuration.getStringProperty("dbuser", "sa");
-        String dbPassword = configuration.getStringProperty("dbpassword", "");
-        String dbName = configuration.getStringProperty("dbname", "harvester");
-        String driverClass = "";
-        String dbBasePath, dbConnString = "jdbc:", dbPath = null;
+        setDescription("Starting...");        
         try {
-            char shortDBType = 'z';
-            if ("h2".equals(dbType)) {
-                shortDBType = 'h';
-            }
-            if ("mysql".equals(dbType)) {
-                shortDBType = 'm';
-            }
-            if ("sqlserver".equals(dbType)) {
-                shortDBType = 's';
-            }
+            dbType = configuration.getStringProperty("driver", "h2");
 
-            switch (shortDBType) {
-                case ('h'):
-                    dbBasePath = configuration.getStringProperty("dbpath", Info.getDevicesPath() + File.separator + "/es.gpulido.harvester/data");
-                    dbPath = dbBasePath;
-                    driverClass = "org.h2.Driver";
-                    dbConnString += dbType + ":" + dbPath + "/" + dbName + ";user=" + dbUser + ";password=" + dbPassword + ";";
-                    break;
-                case ('m'):
-                    dbBasePath = configuration.getStringProperty("dbpath", "localhost");
-                    dbPath = "//" + dbBasePath;
-                    driverClass = "com.mysql.jdbc.Driver";
-                    dbConnString += dbType + ":" + dbPath + "/" + dbName + "?user=" + dbUser + "&password=" + dbPassword;
-                    break;
-                case ('s'):
-                    dbBasePath = configuration.getStringProperty("dbpath", "localhost");
-                    dbPath = "//" + dbBasePath;
-                    driverClass = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-                    dbConnString += dbType + ":" + dbPath + ";databaseName=" + dbName + ";user=" + dbUser + ";password=" + dbPassword + ";";
-                    break;
-                default:
-                    dbPath = "";
-            }
-            Class.forName(driverClass);
-            connection = DriverManager.getConnection(dbConnString);
-            // due to incompatible "if table not exists" statement, that's a general way of sorting the problem
-            ResultSet tables = connection.getMetaData().getTables(null, null, "fdEVENTS", null);
-            if (tables.next()) { // Table exists: DO NOTHING 
-                //  Freedomotic.logger.warning(tables.getString(1) + ":" + tables.getString(2) + ":" +tables.getString(3));
-            } else { // Table does not exist: CREATE IT
-                Statement stat = connection.createStatement();
-                if (shortDBType == 's') {
-                    stat.execute(createMSSQLTable);
-                } else {
-                    stat.execute(createTable);
-                }
-            }
-            this.setDescription("Connected to jdbc:" + dbConnString + " as user:" + dbUser);
-        } catch (SQLException ex) {
-            Freedomotic.logger.severe("Connecting to jdbc:" + dbConnString + " as user:" + dbUser);
-            Freedomotic.logger.severe(ex.getLocalizedMessage());
-            ex.printStackTrace();
-            stop();
-        } catch (ClassNotFoundException ex) {
-            Freedomotic.logger.severe("Cannot load class: " + ex.getLocalizedMessage());
-            this.setDescription("The " + driverClass + " Driver is not loaded");
+            props = new Properties();
+            props.loadFromXML(new FileInputStream(this.getFile().getParent() + File.separator + dbType + ".xml"));
+            props.put("openjpa.MetaDataFactory", "org.apache.openjpa.persistence.jdbc.PersistenceMappingFactory(Types="+ DataToPersist.class.getCanonicalName() +";)");
+            props.put("openjpa.TransactionMode", "local");
+            props.put("openjpa.jdbc.SynchronizeMappings", "buildSchema");
+            props.put("openjpa.Log", configuration.getStringProperty("log.options", "DefaultLevel=WARN, Runtime=INFO, Tool=INFO"));
+
+            factory = Persistence.createEntityManagerFactory(null, props);
+            em = factory.createEntityManager();
+            setDescription("Saving data to: " + em.getProperties().get("openjpa.ConnectionURL"));
+            setPollingWait(2000);
+        } catch (FileNotFoundException e) {
+            LOG.log(Level.SEVERE, "Unable to find configuration file for harvester of type: {0}", dbType);
+        } catch (ArgumentException e) {
+            LOG.warning(e.getLocalizedMessage());
+        } catch (Exception e) {
+           LOG.severe(e.getLocalizedMessage());
             stop();
         }
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
+
         try {
-            connection.close();
-        } catch (SQLException ex) {
-            Freedomotic.logger.severe(ex.getLocalizedMessage());
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().commit();
+            }
+            em.close();
+            factory.close();
+        } catch (Exception e) {
         }
         this.setDescription("Disconnected");
         setPollingWait(-1); // disable polling
@@ -137,43 +125,12 @@ public class HarvesterProtocol extends Protocol {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        if (connection != null) {
-            try {
-
-                prep = connection.prepareStatement(insertStatement);
-                //System.out.println("Harvester: year: " + c.getProperty("event.date.year"));
-                Timestamp ts = new java.sql.Timestamp(
-                        Integer.parseInt(c.getProperty("event.date.year")) - 1900,
-                        Integer.parseInt(c.getProperty("event.date.month")) - 1,
-                        Integer.parseInt(c.getProperty("event.date.day")),
-                        Integer.parseInt(c.getProperty("event.time.hour")),
-                        Integer.parseInt(c.getProperty("event.time.minute")),
-                        Integer.parseInt(c.getProperty("event.time.second")),
-                        0);
-
-                //Timestamp nts = new java.sql.Timestamp(System.currentTimeMillis());
-
-                prep.setTimestamp(1, ts);
-                prep.setString(2, c.getProperty("event.object.name"));
-                prep.setString(3, c.getProperty("event.object.protocol"));
-                prep.setString(4, c.getProperty("event.object.address"));
-
-                //search for all objects behaviors changes    
-                Pattern pat = Pattern.compile("^current\\.object\\.behavior\\.(.*)");
-                for (Entry<Object, Object> entry : c.getProperties().entrySet()) {
-                    String key = (String) entry.getKey();
-                    Matcher fits = pat.matcher(key);
-                    if (fits.find()) {
-                        prep.setString(5, fits.group(1));
-                        prep.setString(6, (String) entry.getValue());
-                        prep.execute();
-                    }
-                }
-
-            } catch (SQLException ex) {
-                Freedomotic.logger.severe(ex.getLocalizedMessage());
-            }
-        }
+        if (c.getProperty("command") == null || c.getProperty("command").isEmpty() || c.getProperty("command").equalsIgnoreCase("SAVE-DATA")) {
+            saveData(c);
+        } else if (c.getProperty("command").equals("EXTRACT-DATA")) { //extract data
+            DataFrame data = extractData(c);
+            sendPoints(data, c);
+        } 
     }
 
     @Override
@@ -184,5 +141,117 @@ public class HarvesterProtocol extends Protocol {
     @Override
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private DataFrame extractData(Command c) {
+        String[] searchParam = c.getProperty("QueryAddress").split(":");
+        Query q = null;
+        
+        
+        if (searchParam[0].equals("object") || searchParam[0].equals("obj")) {
+            // extract data for an object 
+            q = em.createNamedQuery("powered");
+            
+            String date = c.getProperty("startDate");
+            if (date == null ||  date.isEmpty() || date.equals("CURRENT_DATE")){
+                q.setParameter("startDate", new Date(0));
+            } else {
+                q.setParameter("startDate", new Date(Long.parseLong(date)));
+            }
+            
+            date = c.getProperty("stopDate");
+            if ( date == null || date.equals("CURRENT_DATE") || date.equals("CURRENT_DATE") ) {                
+                q.setParameter("stopDate", new Date());
+            } else {
+                q.setParameter("stopDate", new Date(Long.parseLong(date)));
+            }
+            
+            q.setParameter("address","%");
+            q.setParameter("uuid",searchParam[1].trim());
+            q.setParameter("protocol","%");
+
+        } else if (searchParam[0].equals("tag")) {
+            Collection<EnvObjectLogic> objs = getApi().getObjectByTag(searchParam[1]);
+            
+        } else if (searchParam[0].equals("protocol")) {
+            Collection<EnvObjectLogic> objs = getApi().getObjectByProtocol(searchParam[1]);
+            
+        } else if (searchParam[0].equals("room")) {
+            // to be implemented
+            
+        } else if (searchParam[0].equals("environment")) {
+            Collection<EnvObjectLogic> objs = getApi().getObjectByEnvironment(searchParam[1]);
+            
+        }
+        
+        DataFrame df = new DataFrame(DataFrame.FULL_UPDATE,q.getResultList());
+        LOG.info(df.toString());
+        return df;
+    }
+
+    private void sendPoints(DataFrame df, Command c) {
+        // find command sender (in order to reply)
+        // create response, filling data from List
+         ProtocolRead ev = new ProtocolRead(this, "harvester", c.getProperty("QueryAddress"));
+        //EventTemplate ev = new EventTemplate(c);
+        ObjectMapper om = new ObjectMapper();
+        //om.setVisibility(JsonMethod.FIELD, Visibility.ANY);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            om.writeValue(os, df);
+            ev.addProperty("behaviorValue", os.toString());
+            
+            Freedomotic.sendEvent(ev);
+        } catch (Exception ex) {
+            LOG.severe(ex.getLocalizedMessage());
+        }
+
+    }
+
+    @Override
+    protected void onShowGui() {
+    }
+
+    private void saveData(Command c) {
+        try {
+            DataToPersist item = new DataToPersist();
+
+            Timestamp ts = new java.sql.Timestamp(
+                    Integer.parseInt(c.getProperty("event.date.year")) - 1900,
+                    Integer.parseInt(c.getProperty("event.date.month")) - 1,
+                    Integer.parseInt(c.getProperty("event.date.day")),
+                    Integer.parseInt(c.getProperty("event.time.hour")),
+                    Integer.parseInt(c.getProperty("event.time.minute")),
+                    Integer.parseInt(c.getProperty("event.time.second")),
+                    0);
+
+            item.setDateTime(ts);
+            item.setObjName(c.getProperty("event.object.name"));
+            item.setObjProtocol(c.getProperty("event.object.protocol"));
+            item.setObjAddress(c.getProperty("event.object.address"));
+            item.setUuid(c.getProperty("event.object.uuid"));
+
+            //search for all objects behaviors changes    
+            Pattern pat = Pattern.compile("^current\\.object\\.behavior\\.(.*)");
+            for (Entry<Object, Object> entry : c.getProperties().entrySet()) {
+                String key = (String) entry.getKey();
+                Matcher fits = pat.matcher(key);
+                if (fits.find() && !fits.group(1).equals("data")) { //exclude unwanted behaviors
+                    DataToPersist item2 = item.clone();
+                    item2.setObjBehavior(fits.group(1));
+                    item2.setObjValue((String) entry.getValue());
+
+                    if (isRunning) {
+                        if (!em.getTransaction().isActive()) {
+                            em.getTransaction().begin();
+                        }
+                        em.persist(item2);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            LOG.severe(ex.getLocalizedMessage());
+            ex.printStackTrace();
+        }
     }
 }

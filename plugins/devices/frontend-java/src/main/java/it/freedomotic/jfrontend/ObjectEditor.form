@@ -68,17 +68,6 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabel15" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel14" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="txtDescription" alignment="0" pref="311" max="32767" attributes="1"/>
-                                      <Component id="txtName" alignment="0" max="32767" attributes="1"/>
-                                  </Group>
-                              </Group>
                               <Component id="btnVirtual" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="btnCreateObjectCopy" min="-2" pref="166" max="-2" attributes="1"/>
@@ -99,6 +88,19 @@
                                       <Component id="txtTags" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel15" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel14" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="UUIDlbl" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="txtDescription" alignment="0" pref="311" max="32767" attributes="1"/>
+                                      <Component id="txtName" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="UUIDtxt" alignment="0" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
                           </Group>
                           <EmptySpace pref="2172" max="32767" attributes="0"/>
                       </Group>
@@ -107,6 +109,10 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="UUIDlbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="UUIDtxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -242,6 +248,20 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtTagsActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="UUIDlbl">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="UUID"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="UUIDtxt">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                    <Property name="text" type="java.lang.String" value="&lt;UUID&gt;"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="UUIDtxtActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>

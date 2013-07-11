@@ -1,0 +1,18 @@
+<it.freedomotic.reactions.Command>
+    <name>Ask data from the harvester</name>
+    <receiver>app.actuators.protocol.harvester.in</receiver>
+    <description>Asks some data from the harvester</description>
+    <delay>0</delay>
+    <timeout>10000</timeout>
+    <properties>
+        <properties>
+            <property name="command" value="EXTRACT-DATA"/>
+            <property name="startDate" value="CURRENT_DATE"/>
+            <property name="stopDate" value="CURRENT_DATE"/>
+            <property name="QueryBehavior" value="powered"/>
+            <property name="QueryValue" value="%"/>
+            <property name="QueryAddress" value="@event.object.address"/>
+            <property name="ResultType" value="full"/>
+	</properties>
+    </properties>
+</it.freedomotic.reactions.Command>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">  
+<properties>
+    <entry key="openjpa.ConnectionDriverName">net.sourceforge.jtds.jdbc.Driver</entry> 
+    <entry key="openjpa.ConnectionURL">jdbc:jtds:sqlserver://192.168.128.201:1433/freedomotic</entry> 
+    <!-- <entry key="openjpa.ConnectionDriverName">com.microsoft.sqlserver.jdbc.SQLServerDriver</entry> -->
+    <!-- <entry key="openjpa.ConnectionURL">jdbc:sqlserver://hellocar-pc:1433;DatabaseName=freedomotic;sendStringParametersAsUnicode=false</entry> -->
+    <entry key="openjpa.ConnectionUserName">freedomotic</entry>
+    <entry key="openjpa.ConnectionPassword">freedomotic</entry>  
+</properties>

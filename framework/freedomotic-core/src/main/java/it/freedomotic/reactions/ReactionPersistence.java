@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.thoughtworks.xstream.XStream;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -47,7 +48,7 @@ import java.util.logging.Logger;
  */
 public class ReactionPersistence {
 
-    private static List<Reaction> list = new ArrayList<Reaction>(); //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
+    private static List<Reaction> list = new CopyOnWriteArrayList<Reaction>(); //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
 
     private ReactionPersistence() {
         //avoid instance creation

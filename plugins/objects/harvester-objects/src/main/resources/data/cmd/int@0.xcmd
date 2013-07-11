@@ -1,0 +1,13 @@
+<it.freedomotic.reactions.Command>
+    <name>JFrontend Graph Data Charts</name>
+    <receiver>app.actuators.frontend.javadesktop.in</receiver>
+    <description>Create or update graph related to a harvester object</description>
+    <delay>0</delay>
+    <timeout>-1</timeout>
+    <properties>
+        <properties>
+            <property name="command" value="GRAPH-DATA"/>
+            <property name="address" value="@owner.object.address"/>
+	</properties>
+    </properties>
+</it.freedomotic.reactions.Command>

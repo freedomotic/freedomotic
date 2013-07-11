@@ -78,7 +78,7 @@ class BoundleLoaderObjects
                                         + " in " + path);
                             }
                         } catch (Exception ex) {
-                            Logger.getLogger(BoundleLoaderObjects.class.getName()).log(Level.SEVERE, null, ex);
+                            LOG.log(Level.SEVERE, null, ex);
                         }
                     }
                 }

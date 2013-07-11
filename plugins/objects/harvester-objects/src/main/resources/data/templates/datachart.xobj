@@ -1,0 +1,44 @@
+<it.freedomotic.model.object.EnvObject>
+  <name>Data Chart</name>
+  <description>Shows Data Previously Collected by Harvester</description>
+  <actAs>unimplemented</actAs>
+  <type>EnvObject.DataChart</type>
+  <hierarchy>it.freedomotic.objects.impl.DataChart</hierarchy>
+  <protocol>unknown</protocol>
+  <phisicalAddress>unknown</phisicalAddress>
+  <behaviors>
+  <it.mazzoni.harvester.object.DataBehavior>
+      <name>data</name>
+      <description>Some Data</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <readOnly>true</readOnly>
+      <JSON>null</JSON>
+      <startdate>2013-01-01 00:00:00.0 UTC</startdate>
+      <enddate>2013-09-30 00:00:00.0 +0200</enddate>
+      <searchtype>object</searchtype>
+      <searchfilter>%</searchfilter>
+    </it.mazzoni.harvester.object.DataBehavior>
+  </behaviors>
+  <representation>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>diagramma_a_torta.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+  </representation>
+  <actions/>
+  <triggers/>
+  <currentRepresentation>0</currentRepresentation>
+</it.freedomotic.model.object.EnvObject>

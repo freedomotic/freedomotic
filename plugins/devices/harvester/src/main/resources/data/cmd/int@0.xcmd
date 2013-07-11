@@ -1,7 +1,7 @@
 
 <it.freedomotic.reactions.Command>
   <name>Save data on the harvester</name>
-  <receiver>app.actuators.logging.harvester.in</receiver>
+  <receiver>app.actuators.protocol.harvester.in</receiver>
   <description>The harvester has register a new log entry</description>
   <delay>0</delay>
   <timeout>10000</timeout>

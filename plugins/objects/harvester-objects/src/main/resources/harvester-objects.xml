@@ -1,0 +1,12 @@
+<config>
+    <properties>
+        <property name="name" value="harvester-objects"/>
+        <property name="description" value="It is a graph-objects"/>
+        <property name="version" value="1.0.0"/>
+        <property name="required" value="5.1.0"/>
+        <property name="category" value="category"/>
+        <property name="short-name" value="shortname"/>
+    </properties>
+</config>
+
+                

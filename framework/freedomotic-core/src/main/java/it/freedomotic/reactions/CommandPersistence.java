@@ -81,7 +81,7 @@ public class CommandPersistence {
     }
 
     public static Command getCommand(String name) {
-        Command command = userCommands.get(name);
+        Command command = userCommands.get(name.trim());
 
         if (command != null) {
             return command;

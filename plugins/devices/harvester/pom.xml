@@ -5,18 +5,56 @@
         <groupId>it.freedomotic</groupId>
         <artifactId>freedomotic</artifactId>
         <version>5.5-SNAPSHOT</version>
-        <relativePath>../../../</relativePath>
+        <relativePath>../../../pom.xml</relativePath>
     </parent>    
     <artifactId>harvester</artifactId>
     <packaging>jar</packaging>
     <name>harvester</name>
     <version>3.0</version>
-
+    <developers> 
+        <developer>
+            <id>gabriel</id>
+            <name>Gabriel</name>
+            <email>gabriel@freedomotic.com</email>
+            <organization>Freedomotic</organization>
+            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <properties>
+                <nation>es</nation>
+            </properties>
+            <timezone>-1</timezone>
+        </developer>
+        <developer>
+            <id>matteo</id>
+            <name>Matteo</name>
+            <email>matteo@freedomotic.com</email>
+            <organization>Freedomotic</organization>
+            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <properties>
+                <nation>it</nation>
+            </properties>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
+        <freedomotic.package.type>device</freedomotic.package.type>
+        <freedomotic.nodeid>9992</freedomotic.nodeid>
+        <freedomotic.package.license>GNU GPL2</freedomotic.package.license>
+        <freedomotic.package.vendor.name>Gabriel</freedomotic.package.vendor.name>
+        <freedomotic.package.vendor.surname>Pulido</freedomotic.package.vendor.surname>
+        <freedomotic.package.vendor.contact>Pulido</freedomotic.package.vendor.contact>
+        <freedomotic.package.vendor.company>Freedomotic</freedomotic.package.vendor.company>
+        <freedomotic.package.vendor.nation>es</freedomotic.package.vendor.nation>
+        <freedomotic.framework.required.major>5</freedomotic.framework.required.major>
+        <freedomotic.framework.required.minor>5</freedomotic.framework.required.minor>
+        <freedomotic.framework.required.build>x</freedomotic.framework.required.build>
+        <!--don't like this but works for the moment --> 	
+        <freedomotic.synch.dist.path>../../../framework/freedomotic-core/plugins/</freedomotic.synch.dist.path>
+        <freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${version}.${freedomotic.package.type}</freedomotic.marketplace.file>
+        <freedomotic.marketplace.username></freedomotic.marketplace.username>
+        <freedomotic.marketplace.password></freedomotic.marketplace.password>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -24,23 +62,126 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.3.172</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.25</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.openjpa</groupId>
+            <artifactId>openjpa-all</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.openjpa</groupId>
+            <artifactId>openjpa</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>freedomotic-core</artifactId>
             <version>${project.parent.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>harvester-objects</artifactId>
+            <version>3.0</version>
+        </dependency>
     </dependencies>
 
-    <build>
+    <build>        <resources>
+            <!-- regular resource processsing for everything except data.xml, README and PACKAGE -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>data/**</exclude>
+                    <exclude>*.xml</exclude>
+                    <exclude>README</exclude>
+                    <exclude>PACKAGE</exclude>
+                </excludes>
+            </resource>
+            <!-- resource processsing with a different output directory
+                 for everything except data.xml, README and PACKAGE -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>data/**</include>
+                    <include>*.xml</include>
+                </includes>
+                <!-- relative to target/classes
+                     i.e. ${project.build.outputDirectory} -->
+                <targetPath>../${project.artifactId}</targetPath>
+            </resource>
+            <resource>
+                <directory>../../resources</directory>
+                <includes>
+                    <include>README</include>
+                    <include>PACKAGE</include>
+                </includes>
+                <filtering>true</filtering>
+                <!-- relative to target/classes
+                     i.e. ${project.build.outputDirectory} -->
+                <targetPath>../${project.artifactId}</targetPath>
+            </resource>
+        </resources>
         <plugins>
-            <!-- read the build.option file -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
+                <artifactId>maven-resources-plugin</artifactId>
             </plugin>
-            <!-- write the build.option file with new data -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+            </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.openjpa</groupId>
+                <artifactId>openjpa-maven-plugin</artifactId>
+                <version>2.2.2</version>
+                <configuration>
+                    <persistenceXmlFile>enhancement.xml</persistenceXmlFile>
+                    <includes>**/DataToPersist.class</includes> -->
+                    <!--    <excludes>**/entities/XML*.class</excludes> -->
+                    <addDefaultConstructor>true</addDefaultConstructor>               
+                    <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>enhancer</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.openjpa</groupId>
+                        <artifactId>openjpa</artifactId>
+                        <!-- set the version to be the same as the level in your runtime -->
+                        <version>2.2.2</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

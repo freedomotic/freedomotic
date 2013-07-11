@@ -47,6 +47,7 @@ import com.google.inject.Singleton;
 public class JoinPlugin
         implements BusConsumer {
 
+
     private static final Logger LOG = Logger.getLogger(JoinPlugin.class.getName());
 
     private static final String MESSAGING_CHANNEL ="app.objects.create";
@@ -54,6 +55,7 @@ public class JoinPlugin
 	private static BusMessagesListener listener;
 	
 	//dependency
+
     private ClientStorage clientStorage;
 
     static String getMessagingChannel() {
