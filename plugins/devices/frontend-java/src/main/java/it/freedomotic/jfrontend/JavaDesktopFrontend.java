@@ -1,3 +1,22 @@
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
 package it.freedomotic.jfrontend;
 
 import it.freedomotic.api.Actuator;
@@ -10,12 +29,17 @@ import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.events.ZoneHasChanged;
 
 import it.freedomotic.exceptions.UnableToExecuteException;
+import it.freedomotic.jfrontend.extras.GraphPanel;
+import it.freedomotic.model.object.EnvObject;
+import it.freedomotic.objects.EnvObjectLogic;
 
 import it.freedomotic.reactions.Command;
 
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -28,6 +52,7 @@ public class JavaDesktopFrontend
 
     private MainWindow window;
     private Drawer drawer;
+    private Map<String, GraphPanel> graphs = new HashMap<String, GraphPanel>();
     //private ListDrawer listDrawer;
 
     public JavaDesktopFrontend() {
@@ -36,9 +61,14 @@ public class JavaDesktopFrontend
 
     @Override
     public void onStop() {
+        window.dispose();
         window = null;
         //listDrawer = null;
         drawer = null;
+        for (GraphPanel pg : graphs.values()){
+            pg.dispose();
+        }
+        graphs.clear();
     }
 
     @Override
@@ -50,7 +80,7 @@ public class JavaDesktopFrontend
             addEventListener("app.event.sensor.plugin.change");
             //addEventListener("app.event.sensor.messages.callout");
             //onCommand stuff
-            addCommandListener("app.actuators.plugins.controller.in");
+            //addComandListener("app.actuators.plugins.controller.in");
             createMainWindow(); //creates the main frame
             //listDrawer = new ListDrawer(this);
             //listDrawer.setVisible(true);
@@ -115,6 +145,23 @@ public class JavaDesktopFrontend
                     0,
                     0);
             drawer.createCallout(callout1);
+        } else if (c.getProperty("command").equals("GRAPH-DATA")) { // show GUI
+            // get related object from address
+            EnvObjectLogic obj = (EnvObjectLogic) getApi().getObjectByAddress("harvester", c.getProperty("event.object.address")).toArray()[0];
+            // open GraphWindow related to the object
+            if (obj.getBehavior("data") != null) { // has a 'data' behavior
+                if (!obj.getBehavior("data").getValueAsString().isEmpty()) {
+                    GraphPanel gw = graphs.get(obj.getPojo().getUUID());
+                    if (gw != null) {
+                        gw.reDraw();
+                    } else {
+                        gw = new GraphPanel(this, obj);
+                        graphs.put(obj.getPojo().getUUID(), gw);
+                    }
+                }
+                
+                //sendBack(c);
+            }
         } else {
             EventQueue.invokeLater(new Runnable() {
                 @Override
@@ -152,6 +199,9 @@ public class JavaDesktopFrontend
         if (isRunning()) {
             if (event instanceof ObjectHasChangedBehavior) {
                 drawer.setNeedRepaint(true);
+                for (GraphPanel gp : graphs.values()) {
+                    gp.reDraw();
+                }
             } else {
                 if (event instanceof ZoneHasChanged) {
                     //writing the string on the screen

@@ -21,6 +21,7 @@
  */
 package it.freedomotic.objects;
 
+import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.DaoLayerException;
 
 import it.freedomotic.model.object.EnvObject;
@@ -55,14 +56,15 @@ public final class EnvObjectFactory {
             URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
             Class<?> clazz = classLoader.loadClass(pojo.getHierarchy()); //eg: it.freedomotic.objects.impl.ElectricDevice
 
-            EnvObjectLogic logic = (EnvObjectLogic) clazz.newInstance();
+            EnvObjectLogic logic = (EnvObjectLogic) Freedomotic.INJECTOR.getInstance(clazz);
+            //EnvObjectLogic logic = (EnvObjectLogic) clazz.newInstance();
             logic.setPojo(pojo);
 
             return logic;
-        } catch (InstantiationException ex) {
-            throw new DaoLayerException(ex);
-        } catch (IllegalAccessException ex) {
-            throw new DaoLayerException(ex);
+       // } catch (InstantiationException ex) {
+       //     throw new DaoLayerException(ex);
+       // } catch (IllegalAccessException ex) {
+       //     throw new DaoLayerException(ex);
         } catch (ClassNotFoundException ex) {
             throw new DaoLayerException("Class '" + pojo.getHierarchy() + "' not found. "
                     + "The related object plugin is not "

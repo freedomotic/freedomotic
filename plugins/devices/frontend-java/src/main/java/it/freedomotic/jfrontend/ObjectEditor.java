@@ -44,6 +44,8 @@ import it.freedomotic.util.I18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -93,7 +95,8 @@ public class ObjectEditor
         if (obj.getPojo().getActAs().equalsIgnoreCase("virtual")) {
             btnVirtual.setSelected(true);
         }
-
+        
+        UUIDtxt.setText(object.getPojo().getUUID());
         checkIfVirtual();
         txtName.setText(pojo.getName());
         txtDescription.setText(pojo.getDescription());
@@ -305,6 +308,8 @@ public class ObjectEditor
         btnVirtual = new javax.swing.JCheckBox();
         jLabel8 = new javax.swing.JLabel();
         txtTags = new javax.swing.JTextField();
+        UUIDlbl = new javax.swing.JLabel();
+        UUIDtxt = new javax.swing.JTextField();
         tabTriggersConfig = new javax.swing.JPanel();
         tabCommandsConfig = new javax.swing.JPanel();
         tabRepresentation = new javax.swing.JPanel();
@@ -390,6 +395,16 @@ public class ObjectEditor
             }
         });
 
+        UUIDlbl.setText("UUID");
+
+        UUIDtxt.setEditable(false);
+        UUIDtxt.setText("<UUID>");
+        UUIDtxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UUIDtxtActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout tabPropertiesLayout = new javax.swing.GroupLayout(tabProperties);
         tabProperties.setLayout(tabPropertiesLayout);
         tabPropertiesLayout.setHorizontalGroup(
@@ -397,14 +412,6 @@ public class ObjectEditor
             .addGroup(tabPropertiesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(tabPropertiesLayout.createSequentialGroup()
-                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel15)
-                            .addComponent(jLabel14))
-                        .addGap(22, 22, 22)
-                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtDescription, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
-                            .addComponent(txtName, javax.swing.GroupLayout.Alignment.LEADING)))
                     .addComponent(btnVirtual)
                     .addGroup(tabPropertiesLayout.createSequentialGroup()
                         .addComponent(btnCreateObjectCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -420,13 +427,26 @@ public class ObjectEditor
                             .addComponent(jLabel3)
                             .addComponent(txtAddress)
                             .addComponent(txtProtocol, 0, 311, Short.MAX_VALUE)
-                            .addComponent(txtTags))))
+                            .addComponent(txtTags)))
+                    .addGroup(tabPropertiesLayout.createSequentialGroup()
+                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel15)
+                            .addComponent(jLabel14)
+                            .addComponent(UUIDlbl))
+                        .addGap(22, 22, 22)
+                        .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+                            .addComponent(txtName)
+                            .addComponent(UUIDtxt))))
                 .addContainerGap(2172, Short.MAX_VALUE))
         );
         tabPropertiesLayout.setVerticalGroup(
             tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tabPropertiesLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(UUIDlbl)
+                    .addComponent(UUIDtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
                     .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -450,7 +470,7 @@ public class ObjectEditor
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(txtTags, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 173, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
                 .addGroup(tabPropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCreateObjectCopy)
                     .addComponent(btnDelete))
@@ -765,6 +785,10 @@ public class ObjectEditor
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTagsActionPerformed
 
+    private void UUIDtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UUIDtxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_UUIDtxtActionPerformed
+
     private void checkIfVirtual() {
         if (btnVirtual.isSelected()) {
             tabObjectEditor.remove(tabTriggersConfig);
@@ -818,6 +842,8 @@ public class ObjectEditor
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel UUIDlbl;
+    private javax.swing.JTextField UUIDtxt;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnChangeImage;
     private javax.swing.JButton btnCreateObjectCopy;

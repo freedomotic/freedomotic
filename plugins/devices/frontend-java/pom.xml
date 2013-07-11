@@ -63,6 +63,21 @@
             <version>3.0</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.15</version>
+        </dependency>   
+                <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jcommon</artifactId>
+            <version>1.0.17</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>harvester</artifactId>
+            <version>3.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -78,7 +93,7 @@
                 </excludes>
             </resource>
             <!-- resource processsing with a different output directory
-                 for everything except data.xml, README and PACKAGE -->
+            for everything except data.xml, README and PACKAGE -->
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
@@ -86,7 +101,7 @@
                     <include>*.xml</include>
                 </includes>
                 <!-- relative to target/classes
-                     i.e. ${project.build.outputDirectory} -->
+                i.e. ${project.build.outputDirectory} -->
                 <targetPath>../${project.artifactId}</targetPath>
             </resource>
             <resource>
@@ -97,7 +112,7 @@
                 </includes>
                 <filtering>true</filtering>
                 <!-- relative to target/classes
-                     i.e. ${project.build.outputDirectory} -->
+                i.e. ${project.build.outputDirectory} -->
                 <targetPath>../${project.artifactId}</targetPath>
             </resource>
         </resources>
@@ -118,4 +133,4 @@
             </plugin>
         </plugins>
     </build>
- </project>
+</project>

@@ -262,7 +262,18 @@ public class Freedomotic implements BusConsumer {
                     "Cannot load event plugin {0}. {1}",
                     new Object[]{ex.getPluginName(), ex.getMessage()});
         }
-
+        /* ******************************************************************
+         * Loads sensors and actuators This must be loaded before object
+         * deserialization because objects can user hardware level commands and
+         * trigger that are loaded at this stage
+         * *****************************************************************
+         */
+        try {
+            pluginsManager.loadAllPlugins(PluginsManager.TYPE_DEVICE);
+        } catch (PluginLoadingException ex) {
+            LOG.warning("Cannot load device plugin " + ex.getPluginName() + ": " + ex.getMessage());
+            ex.printStackTrace();
+        }
         /**
          * ******************************************************************
          * Dynamically load objects jar files in /plugin/objects folder
@@ -319,18 +330,7 @@ public class Freedomotic implements BusConsumer {
          * *****************************************************************
          */
         /**
-         * ******************************************************************
-         * Loads sensors and actuators This must be loaded before object
-         * deserialization because objects can user hardware level commands and
-         * trigger that are loaded at this stage
-         * *****************************************************************
-         */
-        try {
-            pluginsManager.loadAllPlugins(PluginsManager.TYPE_DEVICE);
-        } catch (PluginLoadingException ex) {
-            LOG.warning("Cannot load device plugin " + ex.getPluginName() + ": " + ex.getMessage());
-            ex.printStackTrace();
-        }
+
 
         /**
          * ******************************************************************

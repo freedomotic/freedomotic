@@ -163,4 +163,9 @@ public class APIStandardImpl
     public PluginsManager getPluginManager() {
         return plugManager;
     }
+
+    @Override
+    public Collection<EnvObjectLogic> getObjectByTag(String tag) {
+        return object.getObjectByTags(tag);
+    }
 }

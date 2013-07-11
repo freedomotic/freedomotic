@@ -75,6 +75,7 @@ public abstract class Actuator extends Plugin implements BusConsumer {
 		listener.consumeCommandFrom(listenMessagesOn());
 	}
 
+
     public void addEventListener(String listento) {
     	listener.consumeEventFrom(listento);
     }

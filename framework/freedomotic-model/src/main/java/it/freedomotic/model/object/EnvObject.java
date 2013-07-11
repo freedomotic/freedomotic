@@ -234,6 +234,7 @@ public class EnvObject implements Serializable {
         result.put("object.protocol", getProtocol());
         result.put("object.type", getType());
         result.put("object.tags", getTagsString());
+        result.put("object.uuid", getUUID());
         return result;
     }
 

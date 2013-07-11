@@ -44,7 +44,7 @@ public interface API {
     EnvObjectLogic getObjectByName(String name);
 
     EnvObjectLogic getObjectByUUID(String uuid);
-
+    Collection<EnvObjectLogic> getObjectByTag(String tag);
     Collection<EnvObjectLogic> getObjectByAddress(String protocol, String address);
 
     Collection<EnvObjectLogic> getObjectByProtocol(String protocol);

@@ -1,0 +1,8 @@
+
+The package it.mazzoni.harvester.objects version is part of Freedomotic building automation framework.
+This package is released under the terms of GNU GPL2 license by Matteo Mazzoni.
+
+To add this to your current framework you have to copy the folder containing this file in folder FRAMEWORK_ROOT/plugins/objects
+Please be sure this plugin is compatible with your current framework version.
+For any problem you can contact the author at matteo@bestmazzo.it
+        

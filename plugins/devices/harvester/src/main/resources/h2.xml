@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="openjpa.ConnectionDriverName">org.h2.Driver</entry>
+    <entry key="openjpa.ConnectionURL">jdbc:h2:~/harvester</entry>
+    <entry key="openjpa.ConnectionUserName">sa</entry>
+    <entry key="openjpa.ConnectionPassword"></entry> 
+    <entry key="openjpa.Multithreaded">true</entry>
+</properties>

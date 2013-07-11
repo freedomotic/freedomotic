@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 /*
@@ -25,6 +23,8 @@
  */
 package it.freedomotic.objects.impl;
 
+import com.google.inject.Inject;
+import it.freedomotic.api.API;
 import it.freedomotic.app.Freedomotic;
 
 import it.freedomotic.events.ObjectReceiveClick;
@@ -37,6 +37,8 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
+import it.freedomotic.util.I18n.I18n;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -50,6 +52,8 @@ public class ElectricDevice
     protected final static String BEHAVIOR_POWERED = "powered";
     protected final static String ACTION_TURN_ON = "turn on";
     protected final static String ACTION_TURN_OFF = "turn off";
+    @Inject
+    private I18n I18n;
 
     @Override
     public void init() {
@@ -111,7 +115,7 @@ public class ElectricDevice
     }
 
     private void setOn() {
-        LOG.config("Setting behavior 'powered' of object '" + getPojo().getName() + "' to true");
+        LOG.log(Level.CONFIG, "Setting behavior ''powered'' of object ''{0}'' to true", getPojo().getName());
 
         //if not already on
         if (powered.getValue() != true) {
@@ -124,7 +128,7 @@ public class ElectricDevice
     }
 
     private void setOff() {
-        LOG.config("Setting behavior 'powered' of object '" + getPojo().getName() + "' to false");
+        LOG.log(Level.CONFIG, "Setting behavior ''powered'' of object ''{0}'' to false", getPojo().getName());
 
         //if not already off
         if (powered.getValue() != false) {
@@ -140,7 +144,7 @@ public class ElectricDevice
     @Override
     protected void createCommands() {
         Command setOn = new Command();
-        setOn.setName("Turn on " + getPojo().getName());
+        setOn.setName(I18n.msg("turn_on_X", new Object[]{this.getPojo().getName()}));
         setOn.setDescription(getPojo().getName() + " turns on");
         setOn.setReceiver("app.events.sensors.behavior.request.objects");
         setOn.setProperty("object",
@@ -149,7 +153,7 @@ public class ElectricDevice
         setOn.setProperty("value", BooleanBehavior.VALUE_TRUE);
 
         Command setOff = new Command();
-        setOff.setName("Turn off " + getPojo().getName());
+        setOff.setName(I18n.msg("turn_off_X", new Object[]{this.getPojo().getName()}));
         setOff.setDescription(getPojo().getName() + " turns off");
         setOff.setReceiver("app.events.sensors.behavior.request.objects");
         setOff.setProperty("object",
@@ -158,7 +162,7 @@ public class ElectricDevice
         setOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
 
         Command switchPower = new Command();
-        switchPower.setName("Switch " + getPojo().getName() + " power");
+        switchPower.setName(I18n.msg("switch_X_power", new Object[]{this.getPojo().getName()}));
         switchPower.setDescription("switches the power of " + getPojo().getName());
         switchPower.setReceiver("app.events.sensors.behavior.request.objects");
         switchPower.setProperty("object",
@@ -166,42 +170,48 @@ public class ElectricDevice
         switchPower.setProperty("behavior", BEHAVIOR_POWERED);
         switchPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
 
-        Command setItOn = new Command();
-        setItOn.setName("Turn it on");
-        setItOn.setDescription(getPojo().getName() + " turns on");
-        setItOn.setReceiver("app.events.sensors.behavior.request.objects");
-        setItOn.setProperty("object", "@event.object.name");
-        setItOn.setProperty("behavior", BEHAVIOR_POWERED);
-        setItOn.setProperty("value", "true");
-
-        Command setItOff = new Command();
-        setItOff.setName("Turn it off");
-        setItOff.setDescription(getPojo().getName() + " turns off");
-        setItOff.setReceiver("app.events.sensors.behavior.request.objects");
-        setItOff.setProperty("object", "@event.object.name");
-        setItOff.setProperty("behavior", BEHAVIOR_POWERED);
-        setItOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
-
-        Command switchItsPower = new Command();
-        switchItsPower.setName("Switch its power");
-        switchItsPower.setDescription(getPojo().getName() + " switches its power");
-        switchItsPower.setReceiver("app.events.sensors.behavior.request.objects");
-        switchItsPower.setProperty("object", "@event.object.name");
-        switchItsPower.setProperty("behavior", BEHAVIOR_POWERED);
-        switchItsPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
-
+        if (CommandPersistence.getCommand(I18n.msg("turn_it_on")) == null) {
+            Command setItOn = new Command();
+            setItOn.setName(I18n.msg("turn_it_on"));
+            setItOn.setDescription("Object turns on");
+            setItOn.setReceiver("app.events.sensors.behavior.request.objects");
+            setItOn.setProperty("object", "@event.object.name");
+            setItOn.setProperty("behavior", BEHAVIOR_POWERED);
+            setItOn.setProperty("value", "true");
+            CommandPersistence.add(setItOn);
+        }
+        
+        if (CommandPersistence.getCommand(I18n.msg("turn_it_off")) == null) {
+            Command setItOff = new Command();
+            setItOff.setName(I18n.msg("turn_it_off"));
+            setItOff.setDescription("Object turns off");
+            setItOff.setReceiver("app.events.sensors.behavior.request.objects");
+            setItOff.setProperty("object", "@event.object.name");
+            setItOff.setProperty("behavior", BEHAVIOR_POWERED);
+            setItOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
+            CommandPersistence.add(setItOff);
+        }
+        
+        if (CommandPersistence.getCommand(I18n.msg("switch_its_power")) == null) {
+            Command switchItsPower = new Command();
+            switchItsPower.setName(I18n.msg("switch_its_power"));
+            switchItsPower.setDescription("Object switches its power");
+            switchItsPower.setReceiver("app.events.sensors.behavior.request.objects");
+            switchItsPower.setProperty("object", "@event.object.name");
+            switchItsPower.setProperty("behavior", BEHAVIOR_POWERED);
+            switchItsPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
+            CommandPersistence.add(switchItsPower);
+        }
+        
         CommandPersistence.add(setOff);
         CommandPersistence.add(setOn);
         CommandPersistence.add(switchPower);
-        CommandPersistence.add(setItOff);
-        CommandPersistence.add(setItOn);
-        CommandPersistence.add(switchItsPower);
     }
 
     @Override
     protected void createTriggers() {
         Trigger clicked = new Trigger();
-        clicked.setName("When " + this.getPojo().getName() + " is clicked");
+        clicked.setName(I18n.msg("when_X_is_clicked", new Object[]{this.getPojo().getName()}));
         clicked.setChannel("app.event.sensor.object.behavior.clicked");
         clicked.getPayload().addStatement("object.name",
                 this.getPojo().getName());
@@ -209,7 +219,7 @@ public class ElectricDevice
         clicked.setPersistence(false);
 
         Trigger turnsOn = new Trigger();
-        turnsOn.setName(this.getPojo().getName() + " turns on");
+        turnsOn.setName(I18n.msg("when_X_turns_on", new Object[]{this.getPojo().getName()}));
         turnsOn.setChannel("app.event.sensor.object.behavior.change");
         turnsOn.getPayload().addStatement("object.name",
                 this.getPojo().getName());
@@ -218,7 +228,7 @@ public class ElectricDevice
 //        XStream stream = FreedomXStream.getXstream();
 //        System.out.println(stream.toXML(turnsOn));
         Trigger turnsOff = new Trigger();
-        turnsOff.setName(this.getPojo().getName() + " turns off");
+        turnsOff.setName(I18n.msg("when_X_turns_off", new Object[]{this.getPojo().getName()}));
         turnsOff.setChannel("app.event.sensor.object.behavior.change");
         turnsOff.getPayload().addStatement("object.name",
                 this.getPojo().getName());

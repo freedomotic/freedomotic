@@ -1,26 +1,23 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.objects;
-
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
@@ -41,12 +38,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-
 
 /**
  *
@@ -68,7 +66,7 @@ public class EnvObjectPersistence {
     }
 
     @RequiresPermissions("objects:save")
-    public static void saveObjects(File folder) throws DaoLayerException  {
+    public static void saveObjects(File folder) throws DaoLayerException {
         if (objectList.isEmpty()) {
             throw new DaoLayerException("There are no object to persist, " + folder.getAbsolutePath()
                     + " will not be altered.");
@@ -166,7 +164,7 @@ public class EnvObjectPersistence {
     public synchronized static void loadObjects(File folder, final boolean makeUnique)
             throws DaoLayerException {
         objectList.clear();
-        System.out.println("DEBUG: loading objects from " +folder.getAbsolutePath());
+        System.out.println("DEBUG: loading objects from " + folder.getAbsolutePath());
 
         File[] files = folder.listFiles();
 
@@ -191,13 +189,13 @@ public class EnvObjectPersistence {
 
                 if (loaded != null) {
                     EnvironmentLogic env = EnvironmentPersistence.getEnvByUUID(loaded.getPojo().getEnvironmentID());
-                    if (env !=null){
-                    loaded.setEnvironment(env);
-                    }else{
+                    if (env != null) {
+                        loaded.setEnvironment(env);
+                    } else {
                         loaded.setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
-                       LOG.warning("Reset environment UUID of object " + loaded.getPojo().getName()
-                               + " to the default environment. This is because the environment UUID " + 
-                               loaded.getPojo().getEnvironmentID() + " does not exists.");
+                        LOG.warning("Reset environment UUID of object " + loaded.getPojo().getName()
+                                + " to the default environment. This is because the environment UUID "
+                                + loaded.getPojo().getEnvironmentID() + " does not exists.");
                     }
                     add(loaded, makeUnique);
                 }
@@ -258,14 +256,37 @@ public class EnvObjectPersistence {
     public static EnvObjectLogic getObjectByName(String name) {
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
-            if (object.getPojo().getName().equalsIgnoreCase(name)
-                    //&& auth.isPermitted("objects:read:" + object.getPojo().getUUID())
+            if (object.getPojo().getName().equalsIgnoreCase(name) //&& auth.isPermitted("objects:read:" + object.getPojo().getUUID())
                     ) {
                 return object;
             }
         }
 
         return null;
+    }
+
+    @RequiresPermissions("objects:read")
+    public static ArrayList<EnvObjectLogic> getObjectByTags(String tags) {
+        ArrayList<EnvObjectLogic> results = new ArrayList<EnvObjectLogic>();
+        // split tags string
+        String[] tagList = tags.split(",");
+
+        // search every object for at least one tag 
+        for (EnvObjectLogic obj : objectList.values()) {
+            Set<String> tagSet = new HashSet<String>();
+
+            for (String tag : tagList) {
+                if (!tag.trim().isEmpty()) {
+                    tagSet.add(tag.trim());
+                }
+            }
+            int prevCount = tagSet.size();
+            tagSet.removeAll(obj.getPojo().getTagsList());
+            if (prevCount > tagSet.size()) {
+                results.add(obj);
+            }
+        }
+        return results;
     }
 
     /**
@@ -308,8 +329,7 @@ public class EnvObjectPersistence {
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if ((object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()))
-                    && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(address.trim()))
-         //           && auth.isPermitted("objects:read:" + object.getPojo().getUUID())
+                    && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(address.trim())) //           && auth.isPermitted("objects:read:" + object.getPojo().getUUID())
                     ) {
                 list.add(object);
             }
@@ -334,8 +354,7 @@ public class EnvObjectPersistence {
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
-            if (object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim())
-                    // && auth.isPermitted("objects:read:" + object.getPojo().getUUID())
+            if (object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()) // && auth.isPermitted("objects:read:" + object.getPojo().getUUID())
                     ) {
                 list.add(object);
             }
@@ -347,7 +366,7 @@ public class EnvObjectPersistence {
     /**
      * Gets the object by its environment
      *
-     * @param  uuid
+     * @param uuid
      * @return
      */
     @RequiresPermissions("objects:read")
@@ -355,8 +374,7 @@ public class EnvObjectPersistence {
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
-            if (object.getPojo().getEnvironmentID().equalsIgnoreCase(uuid)
-                    //&& auth.isPermitted("objects:read:" + object.getPojo().getUUID().substring(0, 7))
+            if (object.getPojo().getEnvironmentID().equalsIgnoreCase(uuid) //&& auth.isPermitted("objects:read:" + object.getPojo().getUUID().substring(0, 7))
                     ) {
                 list.add(object);
             }
