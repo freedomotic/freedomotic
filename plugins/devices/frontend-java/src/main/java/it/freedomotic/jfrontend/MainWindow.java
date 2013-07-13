@@ -1105,7 +1105,9 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuPrivilegesActionPerformed
 
     private void mnuLanguageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLanguageActionPerformed
-        JComboBox<i18n.ComboLanguage> combo = new JComboBox<i18n.ComboLanguage>(i18n.getAvailableLocales());
+        //JDK 1,7 version: JComboBox<i18n.ComboLanguage> combo = new JComboBox<i18n.ComboLanguage>(i18n.getAvailableLocales());
+        //JDK 1.6 version: next line
+        JComboBox combo = new JComboBox(i18n.getAvailableLocales());
         for (i18n.ComboLanguage cmb : i18n.getAvailableLocales()) {
             if (cmb.getValue().equals(i18n.getDefaultLocale())) {
                 combo.setSelectedItem(cmb);
