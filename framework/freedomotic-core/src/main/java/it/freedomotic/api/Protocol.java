@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.api;
@@ -111,13 +109,13 @@ public abstract class Protocol extends Plugin implements BusConsumer {
     @Override
     public void start() {
         if (!isRunning) {
-            isRunning = true;
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
                     onStart();
                     sensorThread = new Protocol.SensorThread();
                     sensorThread.start();
+                    isRunning = true;
                     PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
                     Freedomotic.sendEvent(event);
                 }
@@ -128,18 +126,18 @@ public abstract class Protocol extends Plugin implements BusConsumer {
 
     @Override
     public void stop() {
-        Runnable action = new Runnable() {
-            @Override
-            public synchronized void run() {
-                onStop();
-                sensorThread = null;
-                notify();
-                PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
-                Freedomotic.sendEvent(event);
-            }
-        };
         if (isRunning) {
-            isRunning = false;
+            Runnable action = new Runnable() {
+                @Override
+                public synchronized void run() {
+                    isRunning = false;
+                    onStop();
+                    sensorThread = null;
+                    notify();
+                    PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
+                    Freedomotic.sendEvent(event);
+                }
+            };
             Auth.pluginExecutePrivileged(this, action);
         }
     }
