@@ -160,10 +160,14 @@ public class JavaDesktopFrontend
                     drawer.createCallout(callout);
                     drawer.setNeedRepaint(true);
                 } else {
-                    if (window.getPluginJList() != null) {
-                        window.getPluginJList().update();
-                    }
-                }
+					// TODO check why a NPE was raised sometimes
+					if (null != window) {
+						final PluginJList pluginJList = window.getPluginJList();
+						if (null != pluginJList) {
+							pluginJList.update();
+						}
+					}
+				}
             }
         }
     }
