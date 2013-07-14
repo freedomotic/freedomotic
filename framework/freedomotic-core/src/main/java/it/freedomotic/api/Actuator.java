@@ -103,11 +103,11 @@ public abstract class Actuator extends Plugin implements BusConsumer {
     @Override
     public void start() {
         if (!isRunning) {
-            isRunning = true;
             Runnable action = new Runnable() {
                 @Override
                 public void run() {
                     onStart();
+                    isRunning = true;
                     Freedomotic.logger.info("Actuator " + getName() + " started.");
                     PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.START);
                     Freedomotic.sendEvent(change);
@@ -120,10 +120,10 @@ public abstract class Actuator extends Plugin implements BusConsumer {
     @Override
     public void stop() {
         if (isRunning) {
-            isRunning = false;
             Runnable action = new Runnable() {
                 @Override
                 public void run() {
+                    isRunning = false;
                     onStop();
                     Freedomotic.logger.info("Actuator " + getName() + " stopped.");
                     PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.STOP);
