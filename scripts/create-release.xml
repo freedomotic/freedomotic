@@ -63,6 +63,11 @@
         <copy todir="${release-folder}/data">
             <fileset dir="${workspace-base}/data-example" includes="**/*" />
         </copy>
+
+        <echo>  Add i18n</echo>
+        <copy todir="${release-folder}/i18n">
+            <fileset dir="${base}/i18n" includes="**/*" />
+        </copy>
        
         <!--<echo>Append changes to CHANGELOG file</echo>      
         <antcall target="-create-changelog" />-->        
