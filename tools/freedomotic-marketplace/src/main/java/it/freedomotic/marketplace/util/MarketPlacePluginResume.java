@@ -4,9 +4,7 @@
  */
 package it.freedomotic.marketplace.util;
 
-import it.freedomotic.service.IPluginPackage;
-import java.util.ArrayList;
-import java.util.List;
+import it.freedomotic.marketplace.IPluginPackage;
 
 /**
  * POJO class that represents a plugin resume page from the Drupal Marketplace

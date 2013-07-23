@@ -4,8 +4,8 @@
  */
 package it.freedomotic.marketplace.util;
 
-import it.freedomotic.service.IPluginCategory;
-import it.freedomotic.service.IPluginPackage;
+import it.freedomotic.marketplace.IPluginCategory;
+import it.freedomotic.marketplace.IPluginPackage;
 import java.util.ArrayList;
 import java.util.List;
 
