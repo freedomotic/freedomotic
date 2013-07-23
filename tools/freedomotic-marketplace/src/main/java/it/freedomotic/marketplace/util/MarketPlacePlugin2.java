@@ -4,11 +4,11 @@
  */
 package it.freedomotic.marketplace.util;
 
-import it.freedomotic.service.IPluginPackage;
-import java.net.URL;
+import it.freedomotic.marketplace.IPluginPackage;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import javax.swing.ImageIcon;
 
 /**
  *

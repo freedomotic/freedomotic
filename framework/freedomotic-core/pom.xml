@@ -139,7 +139,7 @@
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-assistedinject</artifactId>
-            <version>3.0-rc3</version>
+            <version>3.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

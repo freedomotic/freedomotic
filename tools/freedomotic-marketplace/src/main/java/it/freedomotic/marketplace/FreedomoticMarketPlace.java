@@ -5,12 +5,10 @@
 package it.freedomotic.marketplace;
 
 import it.freedomotic.marketplace.util.DrupalRestHelper;
-import it.freedomotic.service.IMarketPlace;
-import it.freedomotic.service.IPluginCategory;
-import it.freedomotic.service.IPluginPackage;
+import org.openide.util.lookup.ServiceProvider;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
