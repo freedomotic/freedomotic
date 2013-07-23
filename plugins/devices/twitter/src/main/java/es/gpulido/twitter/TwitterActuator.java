@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package es.gpulido.twitter;
 
 import es.gpulido.twitter.gateways.TwitterGateway;
@@ -23,13 +24,12 @@ public class TwitterActuator extends Actuator {
 
     // private ModbusMaster master;
     private Twitter twitter;
-
-    public TwitterActuator() {
-        super("TwitterActuator", "/es.gpulido.twitter/twitter-actuator.xml");
+    public TwitterActuator(){
+        super("TwitterActuator", "/twitter4f/twitter-actuator.xml");
         twitter = TwitterGateway.getInstance(configuration);
         start(); //or set the property startup-time at value "on load" in the config file
     }
-
+  
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
         try {
@@ -47,4 +47,6 @@ public class TwitterActuator extends Actuator {
     protected boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+
 }

@@ -264,14 +264,14 @@
                         </dependency>
                     </dependencies>
                     <executions>
-                        <!-- Creates the freedomotic installable package -->
+                       <!-- &lt;!&ndash; Creates the freedomotic installable package &ndash;&gt;
                         <execution>
                             <id>create-plugin-archive</id>
                             <phase>install</phase>
                             <configuration>
                                 <tasks>
-                                    <!-- add the ant tasks from ant-contrib -->
-                                    <!-- if not a plugin folder skip -->
+                                    &lt;!&ndash; add the ant tasks from ant-contrib &ndash;&gt;
+                                    &lt;!&ndash; if not a plugin folder skip &ndash;&gt;
                                     <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
                                     <ant antfile = "${freedomotic.basedir}/scripts/plugin-build.xml"/>
                                 </tasks>
@@ -280,7 +280,7 @@
                                 <goal>run</goal>
                             </goals>
                         </execution>
-                        <!-- Creates the plugin marketplace package -->
+                        &lt;!&ndash; Creates the plugin marketplace package &ndash;&gt;
                         <execution>
                             <id>create-marketplace-archive</id>
                             <phase>deploy</phase>
@@ -293,20 +293,20 @@
                             <goals>
                                 <goal>run</goal>
                             </goals>
-                        </execution>
+                        </execution>-->
                         <!-- Creates the plugin build.options file -->
-                        <execution>
+                      <!--  <execution>
                             <id>create-build-options</id>
                             <phase>install</phase>
                             <configuration>
                                 <tasks>
                                     <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
-                                    <!-- just to save a fresh copy of this file with no unused old properties -->
+                                    &lt;!&ndash; just to save a fresh copy of this file with no unused old properties &ndash;&gt;
                                     <if>
                                         <available file="build.options"/>
                                         <then>
                                             <delete file="build.options"/>
-                                            <!-- save the new build.options -->
+                                            &lt;!&ndash; save the new build.options &ndash;&gt;
                                             <propertyfile file="build.options">
                                                 <entry  key="package.nodeid" value="${package.nodeid}"/>
                                                 <entry  key="package.vendor.name" value="${package.vendor.name}"/>
@@ -329,7 +329,7 @@
                             <goals>
                                 <goal>run</goal>
                             </goals>
-                        </execution>
+                        </execution>-->
                     </executions>
                 </plugin>
             </plugins>
