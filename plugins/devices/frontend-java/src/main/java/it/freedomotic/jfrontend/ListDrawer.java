@@ -110,22 +110,19 @@ public class ListDrawer
             });
             panel.add(icon);
 
-            StringBuilder description = new StringBuilder();
-
-
-                JTextArea lblName = new JTextArea(objPojo.getName() + "\n\n" + getCompleteDescription(obj));
-                lblName.setBackground(getBackground());
-                panel.add(lblName);
-                //a configuration button with a listener
-                JButton btnConfig = new JButton("Configure");
-                btnConfig.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        ObjectEditor objectEditor = new ObjectEditor(obj);
-                        objectEditor.setVisible(true);
-                    }
-                });
-                panel.add(btnConfig);
-                row++;
+            JTextArea lblName = new JTextArea(objPojo.getName() + "\n\n" + getCompleteDescription(obj));
+            lblName.setBackground(getBackground());
+            panel.add(lblName);
+            //a configuration button with a listener
+            JButton btnConfig = new JButton("Configure");
+            btnConfig.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    ObjectEditor objectEditor = new ObjectEditor(obj);
+                    objectEditor.setVisible(true);
+                }
+            });
+            panel.add(btnConfig);
+            row++;
         }
         SpringUtilities.makeCompactGrid(panel,
                 row, 3, //rows, cols

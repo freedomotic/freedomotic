@@ -4,7 +4,7 @@
  */
 package it.freedomotic.plugins.gui;
 
-import it.freedomotic.util.i18n;
+import it.freedomotic.util.I18n;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -45,10 +45,10 @@ public class LogWindow extends JFrame {
         setSize(600, 400);
         this.setLayout(new BorderLayout());
         areaDetail.setContentType("text/html");
-        model.addColumn(i18n.msg("log_level"));
+        model.addColumn(I18n.msg("log_level"));
         //model.addColumn("Class");
         //model.addColumn("Method");
-        model.addColumn(i18n.msg("message"));
+        model.addColumn(I18n.msg("message"));
         table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         table.setDefaultRenderer(Object.class, new CustomRenderer());
         ListSelectionModel selectionModel = table.getSelectionModel();
@@ -71,7 +71,7 @@ public class LogWindow extends JFrame {
                 handler.setLevel(Level.parse(cmbLevel.getSelectedItem().toString()));
             }
         });
-        add(new JLabel(i18n.msg("log_level") +": "), BorderLayout.NORTH);
+        add(new JLabel(I18n.msg("log_level") +": "), BorderLayout.NORTH);
         cmbLevel.setEditable(false);
         add(cmbLevel, BorderLayout.NORTH);
         //add(btnStop, BorderLayout.PAGE_START);

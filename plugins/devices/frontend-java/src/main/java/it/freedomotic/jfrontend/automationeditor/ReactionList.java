@@ -15,7 +15,7 @@ import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
-import it.freedomotic.util.i18n;
+import it.freedomotic.util.I18n;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -51,7 +51,7 @@ public final class ReactionList
         setPreferredSize(new Dimension(800, 600));
         add(scrollPane, BorderLayout.CENTER);
 
-        JButton ok = new JButton(i18n.msg("ok"));
+        JButton ok = new JButton(I18n.msg("ok"));
         ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (Component component : panel.getComponents()) {
@@ -118,7 +118,7 @@ public final class ReactionList
     {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(i18n.msg(this,"current_automations"));
+        setTitle(I18n.msg(this,"current_automations"));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);

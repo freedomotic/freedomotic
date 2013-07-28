@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import org.apache.log4j.Logger;
 
 /**
  * Creates the instances of <code>PluginDao</code> used to load plugins from
@@ -46,7 +47,7 @@ class PluginDaoFactory {
      * @param type The type of the plugin (DEVICE, OBJECT, EVENT)
      * @return a list of object to trigger the loading of the plugin jar package
      */
-    protected List<PluginDao> getInstances(int type) {
+    protected List<PluginDao> getDao(int type) {
         List results = new ArrayList<PluginDao>();
         File directory;
 
@@ -74,7 +75,7 @@ class PluginDaoFactory {
             //search in subfolder. Go down a level starting from /plugins/TYPE/. Is not real recursive
             for (File subfolder : directory.listFiles()) {
                 if (subfolder.isDirectory()) {
-                    results.add(getInstance(subfolder));
+                    results.add(getDao(subfolder));
                 }
             }
         }
@@ -91,7 +92,7 @@ class PluginDaoFactory {
      * (DEVICES, OBJECTS, EVENTS)
      * @return
      */
-    protected PluginDao getInstance(File directory) {
+    protected PluginDao getDao(File directory) {
         System.out.println(directory);
 
         //intantiate the right loader based on the directory passed to the searchIn method
@@ -122,16 +123,22 @@ class PluginDaoFactory {
         JarInputStream jarFile = new JarInputStream(new FileInputStream(jarName));
         JarEntry jarEntry;
 
-        while (true) {
-            jarEntry = jarFile.getNextJarEntry();
-
-            if (jarEntry == null) {
-                break;
+        try {
+            while (true) {
+                jarEntry = jarFile.getNextJarEntry();
+                
+                if (jarEntry == null) {
+                    break;
+                }
+                
+                if (jarEntry.getName().endsWith(".class")) {
+                    classes.add(jarEntry.getName().replaceAll("/", "\\."));
+                }
             }
-
-            if (jarEntry.getName().endsWith(".class")) {
-                classes.add(jarEntry.getName().replaceAll("/", "\\."));
-            }
+        } catch (IOException ex) {
+            Logger.getLogger(PluginDaoFactory.class).warn(ex.getMessage());
+        } finally {
+            jarFile.close();
         }
 
         return classes;

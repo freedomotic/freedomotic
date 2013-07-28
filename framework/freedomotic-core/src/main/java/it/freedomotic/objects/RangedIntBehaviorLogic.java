@@ -124,7 +124,7 @@ public class RangedIntBehaviorLogic
             } else {
                 if (tmpValue >= getMax()) {
                     params.setProperty("value",
-                            new Integer(getMax()).toString());
+                            String.valueOf(getMax()));
                     listener.onUpperBoundValue(params, fireCommand);
                 } else {
                     listener.onRangeValue(tmpValue, params, fireCommand);

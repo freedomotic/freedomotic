@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.environment;
@@ -58,7 +56,7 @@ public final class EnvironmentLogic {
 
     @RequiresPermissions("environments:read")
     public Environment getPojo() {
-        if (Auth.isPermitted("environments:read:" + pojo.getUUID().substring(0, 5))){
+        if (Auth.isPermitted("environments:read:" + pojo.getUUID().substring(0, 5))) {
             return pojo;
         }
         return null;
@@ -182,29 +180,25 @@ public final class EnvironmentLogic {
 
         for (Zone z : getPojo().getZones()) {
             z.init();
+            if (z.isRoom()) {
+                Room room = new Room(z);
+                room.init(this);
 
-            //null and duplicate check
-            if (z != null) {
-                if (z.isRoom()) {
-                    Room room = new Room(z);
-                    room.init(this);
-
-                    if (!zones.contains(room)) {
-                        Freedomotic.logger.info("Adding room " + room);
-                        this.zones.add(room);
-                    } else {
-                        Freedomotic.logger.warning("Attempt to add a null or an already existent room " + room);
-                    }
+                if (!zones.contains(room)) {
+                    Freedomotic.logger.info("Adding room " + room);
+                    this.zones.add(room);
                 } else {
-                    ZoneLogic zoneLogic = new ZoneLogic(z);
-                    zoneLogic.init(this);
+                    Freedomotic.logger.warning("Attempt to add a null or an already existent room " + room);
+                }
+            } else {
+                ZoneLogic zoneLogic = new ZoneLogic(z);
+                zoneLogic.init(this);
 
-                    if (!zones.contains(zoneLogic)) {
-                        Freedomotic.logger.info("Adding zone " + zoneLogic);
-                        this.zones.add(zoneLogic);
-                    } else {
-                        Freedomotic.logger.warning("Attempt to add a null or an already existent zone " + zoneLogic);
-                    }
+                if (!zones.contains(zoneLogic)) {
+                    Freedomotic.logger.info("Adding zone " + zoneLogic);
+                    this.zones.add(zoneLogic);
+                } else {
+                    Freedomotic.logger.warning("Attempt to add a null or an already existent zone " + zoneLogic);
                 }
             }
         }

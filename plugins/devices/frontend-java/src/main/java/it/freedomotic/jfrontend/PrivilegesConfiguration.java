@@ -6,7 +6,7 @@ package it.freedomotic.jfrontend;
 
 import it.freedomotic.security.Auth;
 import it.freedomotic.util.Info;
-import it.freedomotic.util.i18n;
+import it.freedomotic.util.I18n;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -97,21 +97,21 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
         txtArea = new javax.swing.JEditorPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(i18n.msg(this, "privilege_management"));
+        setTitle(I18n.msg(this, "privilege_management"));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
             }
         });
 
-        jButton1.setText(i18n.msg("save"));
+        jButton1.setText(I18n.msg("save"));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText(i18n.msg("cancel"));
+        jButton2.setText(I18n.msg("cancel"));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);

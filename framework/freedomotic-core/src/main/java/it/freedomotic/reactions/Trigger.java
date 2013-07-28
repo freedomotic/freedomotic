@@ -278,7 +278,7 @@ public final class Trigger
             Freedomotic.logger.fine("Trigger '" + this.getName() + "' filters event '" + event.getEventName()
                     + "' on channel " + this.getChannel());
 
-            boolean testPassed = checker.check(event, this);
+            checker.check(event, this);
             long end = System.currentTimeMillis();
             Profiler.appendTriggerCheckingTime(end - start);
         }

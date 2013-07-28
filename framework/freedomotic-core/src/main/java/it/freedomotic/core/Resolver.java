@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.core;
@@ -33,6 +31,7 @@ import it.freedomotic.reactions.Trigger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -147,10 +146,10 @@ public final class Resolver {
      * is: device = @event.device it becomes: device = P01 translating
      * @event.device to the name of the device which has generated the event
      */
-    private ArrayList<Command> performSubstitutionInCommands(ArrayList<Command> commands) {
+    private List<Command> performSubstitutionInCommands(List<Command> commands) {
         //clone reaction to not affect the original commands with temporary values
         //construct a cloned reaction
-        ArrayList<Command> tmp = new ArrayList<Command>();
+        List<Command> tmp = new ArrayList<Command>();
 
         try {
             for (Command originalCommand : commands) {
@@ -178,8 +177,8 @@ public final class Resolver {
             String key = (String) aProperty.getKey();
             String propertyValue = (String) aProperty.getValue();
 
-            for (final String PREFIX : prefixes) {
-                String regex = "@" + PREFIX + "[.A-Za-z0-9_-]*\\b(#)?";
+            for (final String prefix : prefixes) {
+                String regex = "@" + prefix + "[.A-Za-z0-9_-]*\\b(#)?";
                 Pattern pattern = Pattern.compile(regex);
                 Matcher matcher = pattern.matcher(propertyValue);
 
@@ -188,20 +187,19 @@ public final class Resolver {
                     //re-read the property each loop because is possible the previous loop has already replaced something
                     propertyValue = (String) aProperty.getValue();
 
-                    //System.out.println("La proprieta '" + key + " = " + propertyValue + "' contiene: '" + occurrence + "'");
                     String referenceToResolve = occurrence;
 
                     if (occurrence.endsWith("#")) {
-                        referenceToResolve = referenceToResolve.substring(0, referenceToResolve.length() - 1); //cutting out the optional last '#'
+                        //cutting out the optional last '#'
+                        referenceToResolve = referenceToResolve.substring(0, referenceToResolve.length() - 1);
                     }
 
+                    //cutting out the first char '@'
                     referenceToResolve =
                             referenceToResolve.substring(1,
-                            referenceToResolve.length()); //cutting out the first char '@'
+                            referenceToResolve.length());
 
                     String replacer = command.getProperty(referenceToResolve);
-
-                    //Freedomotic.logger.severe("Event variable name '" + eventVarName + "' is substituted with its value '" + replacer + "'");
                     if (((replacer != null) && !replacer.isEmpty())) {
                         String propertyValueResolved = propertyValue.replaceFirst(occurrence, replacer);
                         aProperty.setValue(propertyValueResolved);
@@ -228,17 +226,12 @@ public final class Resolver {
                         Freedomotic.logger.severe("Cannot instatiate a JavaScript engine");
                     }
 
-//                    ScriptContext cont = js.getContext();
-//                    cont.setAttribute("name", "JavaScript",
-//                            ScriptContext.ENGINE_SCOPE);
                     try {
                         js.eval(script);
                     } catch (ScriptException scriptException) {
                         Freedomotic.logger.severe(scriptException.getMessage());
                     }
 
-//                    Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to: '" + script + "' the complete value is '" + possibleScript);
-//                    Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
                     if (js.get(key) == null) {
                         Freedomotic.logger.severe("Script evaluation has returned a null value, maybe the key '"
                                 + key + "' is not evaluated properly.");
@@ -285,23 +278,23 @@ public final class Resolver {
                     String tokenKey = matcher.group();
 
                     if (tokenKey.endsWith("#")) {
-                        tokenKey = tokenKey.substring(0, tokenKey.length() - 1); //cutting out the optional last '#'
+                        //cutting out the optional last '#'
+                        tokenKey = tokenKey.substring(0, tokenKey.length() - 1);
                     }
 
+                    //cutting out the first char '@'
                     tokenKey =
                             tokenKey.substring(1,
-                            tokenKey.length()); //cutting out the first char '@'
+                            tokenKey.length());
 
                     String tokenValue = trigger.getPayload().getStatementValue(tokenKey);
 
-                    if (tokenValue == null) {
-                        Freedomotic.logger.severe("Variable '" + tokenValue + "' cannot be resolved in trigger '"
-                                + trigger.getName() + "'.\n" + "Availabe tokens are: "
-                                + context.toString());
-                    }
+
+                    Freedomotic.logger.severe("Variable '" + tokenValue + "' cannot be resolved in trigger '"
+                            + trigger.getName() + "'.\n" + "Availabe tokens are: "
+                            + context.toString());
 
                     //replace an @token.property with its real value
-                    System.out.println("Replace all " + tokenKey + " with " + tokenValue + " in " + propertyValue);
                     result.append(tokenValue);
                 }
 
@@ -318,7 +311,8 @@ public final class Resolver {
                 try {
                     ScriptEngineManager mgr = new ScriptEngineManager();
                     ScriptEngine js = mgr.getEngineByName("JavaScript");
-                    String script = possibleScript.substring(1); //removing equal sign on the head
+                    //removing equal sign on the head
+                    String script = possibleScript.substring(1); 
 
                     if (js == null) {
                         Freedomotic.logger.severe("Cannot instatiate a JavaScript engine");
@@ -330,8 +324,6 @@ public final class Resolver {
                         Freedomotic.logger.severe(scriptException.getMessage());
                     }
 
-                    //Freedomotic.logger.warning("EXPERIMENTAL: Apply javascript evaluation to trigger value: '" + script + "' the complete value is '" + possibleScript);
-                    //Freedomotic.logger.warning("EXPERIMENTAL: " + key + " is: '" + js.get(key) + "'");
                     if (js.get(key) == null) {
                         Freedomotic.logger.severe("Script evaluation in trigger '" + trigger.getName()
                                 + "' has returned a null value, maybe the key '" + key
@@ -347,7 +339,8 @@ public final class Resolver {
             }
 
             if (!success) {
-                statement.setValue(possibleScript); //fall back to the value before scripting evaluation
+                //fall back to the value before scripting evaluation
+                statement.setValue(possibleScript); 
             }
         }
     }
@@ -397,7 +390,7 @@ public final class Resolver {
         }
     }
 
-    public void addContext(final String PREFIX, final Map<String,String> aContext) {
+    public void addContext(final String PREFIX, final Map<String, String> aContext) {
         if (context == null) {
             context = new Payload();
         }

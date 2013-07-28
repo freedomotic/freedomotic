@@ -45,6 +45,7 @@ import it.freedomotic.events.PluginHasChanged.PluginActions;
 import it.freedomotic.exceptions.DaoLayerException;
 import it.freedomotic.exceptions.FreedomoticException;
 import it.freedomotic.exceptions.PluginLoadingException;
+import it.freedomotic.marketplace.ClassPathUpdater;
 import it.freedomotic.marketplace.IPluginCategory;
 import it.freedomotic.marketplace.MarketPlaceService;
 
@@ -63,11 +64,10 @@ import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.TriggerPersistence;
 
 import it.freedomotic.serial.SerialConnectionProvider;
-import it.freedomotic.service.ClassPathUpdater;
 
 import it.freedomotic.util.Info;
 import it.freedomotic.util.LogFormatter;
-import it.freedomotic.util.i18n;
+import it.freedomotic.util.I18n;
 
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -93,8 +93,9 @@ public class Freedomotic {
     public static Config config;
     private static String INSTANCE_ID;
     public static final Logger logger = Logger.getLogger("app.log");
-    private static EventChannel eventChannel;
-    private static CommandChannel commandChannel;
+    //TODO: remove this, any plugin should have access to his own bus instance
+    private static EventChannel eventChannel = new EventChannel();
+    private static CommandChannel commandChannel = new CommandChannel();
     public static ArrayList<IPluginCategory> onlinePluginCategories;
     /**
      * Should NOT be used. Reserved for una tantum internal freedomotic core use
@@ -132,16 +133,13 @@ public class Freedomotic {
         String resourcesPath =
                 new File(Info.getApplicationPath()
                 + Freedomotic.config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
-        logger.info("\nOS: " + System.getProperty("os.name") + "\n" + i18n.msg("architecture") + ": "
+        logger.info("\nOS: " + System.getProperty("os.name") + "\n" + I18n.msg("architecture") + ": "
                 + System.getProperty("os.arch") + "\n" + "OS Version: " + System.getProperty("os.version")
-                + "\n" + i18n.msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
+                + "\n" + I18n.msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
                 + System.getProperty("java.home") + "\n" + "Java Library Path: {"
                 + System.getProperty("java.library.path") + "}\n" + "Program path: "
                 + System.getProperty("user.dir") + "\n" + "Java Version: " + System.getProperty("java.version")
                 + "\n" + "Resources Path: " + resourcesPath);
-
-        eventChannel = new EventChannel();
-        commandChannel = new CommandChannel();
         new ColorList(); //initialize an ordered list of colors used for various purposes, eg: people colors
 
         /**
@@ -162,7 +160,7 @@ public class Freedomotic {
                 handler.setFormatter(new LogFormatter());
                 logger.setLevel(Level.ALL);
                 logger.addHandler(handler);
-                logger.config(i18n.msg("INIT_MESSAGE"));
+                logger.config(I18n.msg("INIT_MESSAGE"));
 
                 if ((Freedomotic.config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
                         && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
@@ -434,13 +432,6 @@ public class Freedomotic {
             Freedomotic freedomotic = INJECTOR.getInstance(Freedomotic.class);
             //start freedomotic
             freedomotic.start();
-
-            //build additional services
-            JoinDevice joinDevice = INJECTOR.getInstance(JoinDevice.class);
-            JoinPlugin joinPlugin = INJECTOR.getInstance(JoinPlugin.class);
-            TriggerCheck triggerCheck = INJECTOR.getInstance(TriggerCheck.class);
-            EnvironmentPersistence environmentPersistence = INJECTOR.getInstance(EnvironmentPersistence.class);
-            ;
         } catch (FreedomoticException ex) {
             Freedomotic.logger.severe(ex.getMessage());
             System.exit(1);

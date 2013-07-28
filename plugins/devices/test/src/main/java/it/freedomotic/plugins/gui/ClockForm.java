@@ -13,13 +13,13 @@ import it.freedomotic.plugins.Scheduler;
 public class ClockForm
         extends javax.swing.JFrame {
 
-    private static Scheduler plugin;
+    private Scheduler plugin;
 
     /**
      * Creates new form ClockForm
      */
     public ClockForm(Scheduler plugin) {
-        ClockForm.plugin = plugin;
+        this.plugin = plugin;
         initComponents();
         spnResolution.setValue(plugin.getResolution());
     }

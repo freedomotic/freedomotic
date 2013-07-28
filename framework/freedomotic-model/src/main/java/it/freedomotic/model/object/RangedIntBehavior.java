@@ -39,7 +39,7 @@ public class RangedIntBehavior
     @Override
     public String toString() {
         if (scale == 1) {
-            return new Integer(value).toString();
+            return String.valueOf(value);
         }
 
         return new Double((double) value / (double) getScale()).toString();

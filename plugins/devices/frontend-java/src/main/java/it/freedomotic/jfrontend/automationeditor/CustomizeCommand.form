@@ -102,7 +102,7 @@
     <Component class="javax.swing.JButton" name="btnSave">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="i18n.msg(&quot;save_as_new&quot;)" type="code"/>
+          <Connection code="it.freedomotic.util.I18n.msg(&quot;save_as_new&quot;)" type="code"/>
         </Property>
       </Properties>
       <Events>
@@ -112,7 +112,7 @@
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="i18n.msg(&quot;name&quot;)+&quot;:&quot;" type="code"/>
+          <Connection code="it.freedomotic.util.I18n.msg(&quot;name&quot;)+&quot;:&quot;" type="code"/>
         </Property>
       </Properties>
     </Component>
@@ -121,7 +121,7 @@
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="i18n.msg(&quot;description&quot;)+&quot;:&quot;" type="code"/>
+          <Connection code="it.freedomotic.util.I18n.msg(&quot;description&quot;)+&quot;:&quot;" type="code"/>
         </Property>
       </Properties>
     </Component>
@@ -130,7 +130,7 @@
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="i18n.msg(&quot;parameters&quot;)+&quot;:&quot;" type="code"/>
+          <Connection code="it.freedomotic.util.I18n.msg(&quot;parameters&quot;)+&quot;:&quot;" type="code"/>
         </Property>
       </Properties>
       <AccessibilityProperties>
@@ -140,7 +140,7 @@
     <Component class="javax.swing.JButton" name="btnEdit">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="i18n.msg(&quot;save_changes&quot;)" type="code"/>
+          <Connection code="it.freedomotic.util.I18n.msg(&quot;save_changes&quot;)" type="code"/>
         </Property>
       </Properties>
       <Events>
@@ -158,7 +158,7 @@
     <Component class="javax.swing.JLabel" name="txtReceiver">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="i18n.msg(this, &quot;performed_by&quot;)" type="code"/>
+          <Connection code="it.freedomotic.util.I18n.msg(this, &quot;performed_by&quot;)" type="code"/>
         </Property>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
@@ -166,7 +166,7 @@
     <Component class="javax.swing.JButton" name="btnChangeReceiver">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="i18n.msg(&quot;change&quot;)" type="code"/>
+          <Connection code="it.freedomotic.util.I18n.msg(&quot;change&quot;)" type="code"/>
         </Property>
       </Properties>
       <Events>
@@ -176,7 +176,7 @@
     <Component class="javax.swing.JButton" name="btnDelete">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="i18n.msg(&quot;delete_X&quot;,new Object[]{i18n.msg(&quot;command&quot;)})" type="code"/>
+          <Connection code="it.freedomotic.util.I18n.msg(&quot;delete_X&quot;,new Object[]{it.freedomotic.util.I18n.msg(&quot;command&quot;)})" type="code"/>
         </Property>
       </Properties>
       <Events>
@@ -199,7 +199,7 @@
     <Component class="javax.swing.JButton" name="txtAddRow">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="i18n.msg(&quot;add_X&quot;,new Object[]{i18n.msg(&quot;parameter&quot;)})" type="code"/>
+          <Connection code="it.freedomotic.util.I18n.msg(&quot;add_X&quot;,new Object[]{it.freedomotic.util.I18n.msg(&quot;parameter&quot;)})" type="code"/>
         </Property>
       </Properties>
       <Events>

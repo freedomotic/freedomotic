@@ -39,7 +39,7 @@ import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.security.Auth;
 import it.freedomotic.util.Info;
-import it.freedomotic.util.i18n;
+import it.freedomotic.util.I18n;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -106,10 +106,6 @@ public class ObjectEditor
                 -100, //min
                 (int) obj.getEnv().getPojo().getWidth() + 100, //max
                 1); //step
-        SpinnerModel modelRotation = new SpinnerNumberModel(0, //initial value
-                0, //min
-                360, //max
-                10); //step
         spnX.setModel(modelX);
         spnY.setModel(modelY);
         spnX.setValue((Integer) x);
@@ -168,9 +164,9 @@ public class ObjectEditor
                 final JToggleButton button;
 
                 if (bb.getValue()) {
-                    button = new JToggleButton(i18n.msg(this, "set_PROPERTY_VALUE", new Object[]{bb.getName(), i18n.msg("false")}));
+                    button = new JToggleButton(I18n.msg(this, "set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("false")}));
                 } else {
-                    button = new JToggleButton(i18n.msg(this, "set_PROPERTY_VALUE", new Object[]{bb.getName(), i18n.msg("true")}));
+                    button = new JToggleButton(I18n.msg(this, "set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("true")}));
                 }
 
                 JLabel label = new JLabel(b.getName() + ":");
@@ -189,9 +185,9 @@ public class ObjectEditor
                         bb.filterParams(params, true);
 
                         if (bb.getValue()) {
-                            button.setText(i18n.msg(this, "set_PROPERTY_VALUE", new Object[]{bb.getName(), i18n.msg("false")}));
+                            button.setText(I18n.msg(this, "set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("false")}));
                         } else {
-                            button.setText(i18n.msg(this, "set_PROPERTY_VALUE", new Object[]{bb.getName(), i18n.msg("true")}));
+                            button.setText(I18n.msg(this, "set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("true")}));
                         }
                     }
                 });
@@ -225,7 +221,7 @@ public class ObjectEditor
                         if (!slider.getValueIsAdjusting()) {
                             Config params = new Config();
                             params.setProperty("value",
-                                    new Integer(slider.getValue()).toString());
+                                    String.valueOf(slider.getValue()));
                             System.out.println("Slider value: " + slider.getValue());
                             rb.filterParams(params, true);
                         }
@@ -338,7 +334,7 @@ public class ObjectEditor
         tabObjectEditor.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         tabObjectEditor.setPreferredSize(new java.awt.Dimension(500, 457));
 
-        jLabel14.setText(i18n.msg("name")+":");
+        jLabel14.setText(I18n.msg("name")+":");
 
         txtName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -346,7 +342,7 @@ public class ObjectEditor
             }
         });
 
-        jLabel15.setText(i18n.msg("description")+":");
+        jLabel15.setText(I18n.msg("description")+":");
 
         jPanel1.setLayout( new javax.swing.BoxLayout( jPanel1, javax.swing.BoxLayout.PAGE_AXIS ) );
 
@@ -354,7 +350,7 @@ public class ObjectEditor
         tabObjectEditor.setTabPlacement( javax.swing.JTabbedPane.LEFT );
         tabObjectEditor.setPreferredSize( new java.awt.Dimension( 500, 457 ) );
 
-        jLabel14.setText( i18n.msg( "name" ) + ":" );
+        jLabel14.setText( I18n.msg( "name" ) + ":" );
 
         txtName.addActionListener( new java.awt.event.ActionListener(  )
             {
@@ -364,9 +360,9 @@ public class ObjectEditor
                 }
             } );
 
-        jLabel15.setText( i18n.msg( "description" ) + ":" );
+        jLabel15.setText( I18n.msg( "description" ) + ":" );
 
-        jLabel1.setText( i18n.msg( "protocol" ) + ":" );
+        jLabel1.setText( I18n.msg( "protocol" ) + ":" );
 
         jLabel8.setText("Tags");
 
@@ -444,15 +440,15 @@ public class ObjectEditor
                 .addContainerGap())
         );
 
-        tabObjectEditor.addTab(i18n.msg("properties"), tabProperties);
+        tabObjectEditor.addTab(I18n.msg("properties"), tabProperties);
 
         tabTriggersConfig.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab(i18n.msg(this,"data_sources"), tabTriggersConfig);
+        tabObjectEditor.addTab(I18n.msg(this,"data_sources"), tabTriggersConfig);
 
         tabCommandsConfig.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab(i18n.msg("actions"), tabCommandsConfig);
+        tabObjectEditor.addTab(I18n.msg("actions"), tabCommandsConfig);
 
-        jLabel11.setText(i18n.msg("position_X",new Object[]{"X"})+":");
+        jLabel11.setText(I18n.msg("position_X",new Object[]{"X"})+":");
 
         spnX.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -461,9 +457,9 @@ public class ObjectEditor
         });
 
         jLabel3.setForeground( new java.awt.Color( 121, 121, 121 ) );
-        jLabel3.setText( i18n.msg( this, "plugins_more_info" ) );
+        jLabel3.setText( I18n.msg( this, "plugins_more_info" ) );
 
-        btnCreateObjectCopy.setText( i18n.msg( "create_a_copy" ) );
+        btnCreateObjectCopy.setText( I18n.msg( "create_a_copy" ) );
         btnCreateObjectCopy.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -472,7 +468,7 @@ public class ObjectEditor
                 }
             } );
 
-        btnDelete.setText( i18n.msg( "delete" ) + i18n.msg( "object" ) );
+        btnDelete.setText( I18n.msg( "delete" ) + I18n.msg( "object" ) );
         btnDelete.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -481,7 +477,7 @@ public class ObjectEditor
                 }
             } );
 
-        btnVirtual.setText( i18n.msg( this, "is_virtual_object" ) );
+        btnVirtual.setText( I18n.msg( this, "is_virtual_object" ) );
         btnVirtual.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -490,18 +486,18 @@ public class ObjectEditor
                 }
             } );
 
-        tabObjectEditor.addTab( i18n.msg( "properties" ),
+        tabObjectEditor.addTab( I18n.msg( "properties" ),
                                 tabProperties );
 
         tabTriggersConfig.setLayout( new java.awt.BorderLayout(  ) );
-        tabObjectEditor.addTab( i18n.msg( this, "data_sources" ),
+        tabObjectEditor.addTab( I18n.msg( this, "data_sources" ),
                                 tabTriggersConfig );
 
         tabCommandsConfig.setLayout( new java.awt.BorderLayout(  ) );
-        tabObjectEditor.addTab( i18n.msg( "actions" ),
+        tabObjectEditor.addTab( I18n.msg( "actions" ),
                                 tabCommandsConfig );
 
-        jLabel11.setText( i18n.msg( "position_X",
+        jLabel11.setText( I18n.msg( "position_X",
                                     new Object[] { "X" } ) + ":" );
 
         spnX.addChangeListener( new javax.swing.event.ChangeListener(  )
@@ -512,7 +508,7 @@ public class ObjectEditor
                 }
             } );
 
-        jLabel12.setText( i18n.msg( "position_X",
+        jLabel12.setText( I18n.msg( "position_X",
                                     new Object[] { "Y" } ) + ":" );
 
         spnY.addChangeListener( new javax.swing.event.ChangeListener(  )
@@ -531,9 +527,9 @@ public class ObjectEditor
                 }
             } );
 
-        jLabel13.setText( i18n.msg( "rotation" ) + ":" );
+        jLabel13.setText( I18n.msg( "rotation" ) + ":" );
 
-        chkAllRepresentations.setText( i18n.msg( this, "apply_changes_all_representations" ) );
+        chkAllRepresentations.setText( I18n.msg( this, "apply_changes_all_representations" ) );
         chkAllRepresentations.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -542,8 +538,8 @@ public class ObjectEditor
                 }
             } );
 
-        btnChangeImage.setText( i18n.msg( "change_X",
-                                          new Object[] { i18n.msg( "image" ) } ) );
+        btnChangeImage.setText( I18n.msg( "change_X",
+                                          new Object[] { I18n.msg( "image" ) } ) );
         btnChangeImage.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -560,11 +556,11 @@ public class ObjectEditor
                 }
             } );
 
-        jLabel4.setText(i18n.msg("width")+":");
+        jLabel4.setText(I18n.msg("width")+":");
 
-        jLabel5.setText(i18n.msg("height")+":");
+        jLabel5.setText(I18n.msg("height")+":");
 
-        jLabel6.setText(i18n.msg("environment") + ":");
+        jLabel6.setText(I18n.msg("environment") + ":");
 
         javax.swing.GroupLayout tabRepresentationLayout = new javax.swing.GroupLayout(tabRepresentation);
         tabRepresentation.setLayout(tabRepresentationLayout);
@@ -635,17 +631,17 @@ public class ObjectEditor
                 .addContainerGap(197, Short.MAX_VALUE))
         );
 
-        tabObjectEditor.addTab(i18n.msg("appearance"), tabRepresentation);
+        tabObjectEditor.addTab(I18n.msg("appearance"), tabRepresentation);
 
         tabControls.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab(i18n.msg(this,"control_panel"), tabControls);
+        tabObjectEditor.addTab(I18n.msg(this,"control_panel"), tabControls);
 
         tabAutomations.setLayout(new java.awt.BorderLayout());
-        tabObjectEditor.addTab(i18n.msg("automations"), tabAutomations);
+        tabObjectEditor.addTab(I18n.msg("automations"), tabAutomations);
 
         jPanel1.add(tabObjectEditor);
 
-        btnOk.setText(i18n.msg("ok"));
+        btnOk.setText(I18n.msg("ok"));
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOkActionPerformed(evt);
@@ -653,7 +649,7 @@ public class ObjectEditor
         });
         pnlFrameButtons.add(btnOk);
 
-        btnCancel.setText(i18n.msg("cancel"));
+        btnCancel.setText(I18n.msg("cancel"));
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelActionPerformed(evt);
@@ -766,8 +762,8 @@ public class ObjectEditor
 
         int result =
                 JOptionPane.showConfirmDialog(null,
-                i18n.msg("confirm_object_delete"),
-                i18n.msg("configm_deletion_title"),
+                I18n.msg("confirm_object_delete"),
+                I18n.msg("configm_deletion_title"),
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
@@ -900,13 +896,13 @@ public class ObjectEditor
     private javax.swing.JTextField txtName;
     private javax.swing.JComboBox txtProtocol;
     private javax.swing.JTextField txtTags;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 
     // End of variables declaration//GEN-END:variables
     private void populateCommandsTab() {
         //addAndRegister a properties panel
         commandsControlPanel = new PropertiesPanel_1(0, 2);
-        tabCommandsConfig.setName(i18n.msg("actions"));
+        tabCommandsConfig.setName(I18n.msg("actions"));
         tabCommandsConfig.add(commandsControlPanel);
 
         //creates an array of mapping behavior to hardware command
@@ -955,7 +951,7 @@ public class ObjectEditor
     private void populateTriggersTab() {
         //addAndRegister a properties panel
         pnlTriggers = new PropertiesPanel_1(0, 2);
-        tabTriggersConfig.setName(i18n.msg(this, "data_sources"));
+        tabTriggersConfig.setName(I18n.msg(this, "data_sources"));
         tabTriggersConfig.add(pnlTriggers);
 
         //creates an array of mapping behavior to hardware trigger
@@ -1056,8 +1052,8 @@ public class ObjectEditor
         final TaxonomyBehaviorLogic lb = (TaxonomyBehaviorLogic) b;
         JLabel label = new JLabel(b.getName() + ":");
         final CheckBoxList list = new CheckBoxList();
-        final JTextField newItem = new JTextField(i18n.msg(this, "add_new_item"));
-        JButton btnAdd = new JButton(i18n.msg("add"));
+        final JTextField newItem = new JTextField(I18n.msg(this, "add_new_item"));
+        JButton btnAdd = new JButton(I18n.msg("add"));
         btnAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!newItem.getText().isEmpty()) {
@@ -1072,7 +1068,7 @@ public class ObjectEditor
             }
         });
 
-        JButton btnRemove = new JButton(i18n.msg("remove"));
+        JButton btnRemove = new JButton(I18n.msg("remove"));
         btnRemove.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!newItem.getText().isEmpty()) {

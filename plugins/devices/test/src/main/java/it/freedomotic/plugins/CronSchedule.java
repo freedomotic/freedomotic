@@ -142,26 +142,27 @@ public class CronSchedule {
      */
     public String get(int type) {
         AbstractTimeValue[] values = getValues(type);
-        String rc = "";
+        StringBuilder buff = new StringBuilder();
 
         for (int i = 0; i < values.length; i++) {
-            rc += ("," + values[i].toString());
+            buff.append(",").append(values[i].toString());
         }
 
-        return rc.substring(1);
+        return buff.substring(1);
     }
 
     /**
      * Returns the cron-like definition of the schedule.
      */
+    @Override
     public String toString() {
-        String rc = "";
+        StringBuilder buff = new StringBuilder();
 
         for (int i = 0; i < TYPES.length; i++) {
-            rc += (" " + get(getType(i)));
+            buff.append(" ").append(get(getType(i)));
         }
 
-        return rc.trim();
+        return buff.toString().trim();
     }
 
     /**

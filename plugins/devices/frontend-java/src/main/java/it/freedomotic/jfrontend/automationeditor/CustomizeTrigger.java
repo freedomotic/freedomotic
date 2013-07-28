@@ -17,7 +17,7 @@ import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
 
-import it.freedomotic.util.i18n;
+import it.freedomotic.util.I18n;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,7 +45,7 @@ public class CustomizeTrigger
         initComponents();
         this.main = main;
         original = t;
-        this.setTitle(i18n.msg(this,
+        this.setTitle(I18n.msg(this,
                 "trigger_X_editor",
                 new Object[]{t.getName()}));
         txtName.setText(t.getName());
@@ -54,7 +54,7 @@ public class CustomizeTrigger
         txtSuspTime.setText(Long.toString(t.getSuspensionTime()));
         txtDelay.setText(Integer.toString(t.getDelay()));
         txtMaxExTimes.setText(Long.toString(t.getMaxExecutions()));
-        lblExplanation.setText(i18n.msg(this, "fire_trigger_msg") + ":");
+        lblExplanation.setText(I18n.msg(this, "fire_trigger_msg") + ":");
 
         if (t.isHardwareLevel() || !t.isToPersist()) {
             btnEdit.setEnabled(false);
@@ -62,10 +62,10 @@ public class CustomizeTrigger
 
         lblTemplateWarning.setVisible(!t.isToPersist());
 
-        model.addColumn(i18n.msg("logical"));
-        model.addColumn(i18n.msg("attribute"));
-        model.addColumn(i18n.msg("operand"));
-        model.addColumn(i18n.msg("value"));
+        model.addColumn(I18n.msg("logical"));
+        model.addColumn(I18n.msg("attribute"));
+        model.addColumn(I18n.msg("operand"));
+        model.addColumn(I18n.msg("value"));
         table = new JTable(model);
         pnlParam.add(table);
 
@@ -158,7 +158,7 @@ public class CustomizeTrigger
 
         setDefaultCloseOperation( javax.swing.WindowConstants.DISPOSE_ON_CLOSE );
 
-        btnSave.setText( i18n.msg( "save_as_new" ) + i18n.msg( "trigger" ) );
+        btnSave.setText( I18n.msg( "save_as_new" ) + I18n.msg( "trigger" ) );
         btnSave.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -167,13 +167,13 @@ public class CustomizeTrigger
                 }
             } );
 
-        jLabel1.setText( i18n.msg( "name" ) + ":" );
+        jLabel1.setText( I18n.msg( "name" ) + ":" );
 
-        jLabel2.setText( i18n.msg( "description" ) + ":" );
+        jLabel2.setText( I18n.msg( "description" ) + ":" );
 
-        lblExplanation.setText( i18n.msg( this, "fire_trigger_if_event_msg" ) + ":" );
+        lblExplanation.setText( I18n.msg( this, "fire_trigger_if_event_msg" ) + ":" );
 
-        btnEdit.setText( i18n.msg( "save" ) );
+        btnEdit.setText( I18n.msg( "save" ) );
         btnEdit.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -182,7 +182,7 @@ public class CustomizeTrigger
                 }
             } );
 
-        btnDelete.setText( i18n.msg( "delete" ) + i18n.msg( "trigger" ) );
+        btnDelete.setText( I18n.msg( "delete" ) + I18n.msg( "trigger" ) );
         btnDelete.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -196,8 +196,8 @@ public class CustomizeTrigger
         pnlParam.setLayout( new java.awt.BorderLayout(  ) );
         jScrollPane1.setViewportView( pnlParam );
 
-        btnAddRow.setText( i18n.msg( "add_X",
-                                     new Object[] { i18n.msg( "statement" ) } ) );
+        btnAddRow.setText( I18n.msg( "add_X",
+                                     new Object[] { I18n.msg( "statement" ) } ) );
         btnAddRow.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -206,15 +206,15 @@ public class CustomizeTrigger
                 }
             } );
 
-        lblTemplateWarning.setText( i18n.msg( this, "trigger_is_template_msg" ) );
+        lblTemplateWarning.setText( I18n.msg( this, "trigger_is_template_msg" ) );
 
-        jLabel3.setText( i18n.msg( "channel" ) + ":" );
+        jLabel3.setText( I18n.msg( "channel" ) + ":" );
 
-        jLabel4.setText( i18n.msg( "suspension_time" ) + ":" );
+        jLabel4.setText( I18n.msg( "suspension_time" ) + ":" );
 
-        jLabel5.setText( i18n.msg( "delay" ) + ":" );
+        jLabel5.setText( I18n.msg( "delay" ) + ":" );
 
-        jLabel6.setText( i18n.msg( "max_executions" ) + ":" );
+        jLabel6.setText( I18n.msg( "max_executions" ) + ":" );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout( getContentPane(  ) );
         getContentPane(  ).setLayout( layout );

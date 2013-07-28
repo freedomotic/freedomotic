@@ -41,7 +41,7 @@ public class TrackingReadFile
 
     @Override
     public void onStart() {
-        NUM_MOTE = new Integer(Freedomotic.config.getIntProperty("KEY_SIMULATED_PERSON_COUNT", 3));
+        NUM_MOTE = Integer.valueOf(Freedomotic.config.getIntProperty("KEY_SIMULATED_PERSON_COUNT", 3));
 
         for (int i = 0; i < NUM_MOTE; i++) {
             readMoteFile(i);
@@ -53,7 +53,7 @@ public class TrackingReadFile
     }
 
     private void readMoteFile(int n) {
-        FileReader fr;
+        FileReader fr = null;
         ArrayList<Coordinate> coord = new ArrayList<Coordinate>();
 
         try {
@@ -85,6 +85,12 @@ public class TrackingReadFile
             System.out.println("Coordinates file not found for mote " + n);
         } catch (IOException ex) {
             Logger.getLogger(TrackingReadFile.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                fr.close();
+            } catch (IOException ex) {
+                Logger.getLogger(TrackingReadFile.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
