@@ -5,7 +5,6 @@
 package it.freedomotic.plugins.filesystem;
 
 import com.google.inject.Inject;
-import com.sun.istack.internal.logging.Logger;
 
 import it.freedomotic.api.Client;
 
@@ -35,6 +34,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An helper class that uses an internal DAO pattern to load plugins of
@@ -291,7 +292,7 @@ public class PluginLoaderFilesystem {
             packageFile.load(fis);
             fis.close();
         } catch (IOException ex) {
-            Logger.getLogger(PluginLoaderFilesystem.class).warning(ex.getMessage());
+            Logger.getLogger(PluginLoaderFilesystem.class.getName()).log(Level.WARNING, null, ex);
         } finally{
             fis.close();
         }

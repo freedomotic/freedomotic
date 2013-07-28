@@ -24,31 +24,32 @@ package it.freedomotic.util;
  * http://stackoverflow.com/questions/981578/how-to-unzip-files-recursively-in-java
  * all credits to respective authors
  */
-import com.sun.istack.internal.logging.Logger;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 public class Unzip {
-    
+
     static public void unzip(String zipFile) throws ZipException, IOException {
-        
+
         int BUFFER = 2048;
         File file = new File(zipFile);
-        
+
         ZipFile zip = new ZipFile(file);
         String newPath = zipFile.substring(0, zipFile.length() - 4);
 //simulates the unzip here feature
         newPath =
                 newPath.substring(0,
                 newPath.lastIndexOf(File.separator));
-        
+
         Enumeration<? extends ZipEntry> zipFileEntries = zip.entries();
 
         // Process each entry
@@ -79,11 +80,11 @@ public class Unzip {
                     while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
                         dest.write(data, 0, currentByte);
                     }
-                    
-                    
+
+
                 }
             } catch (IOException ex) {
-                Logger.getLogger(Unzip.class).warning(ex.getMessage());
+                Logger.getLogger(Unzip.class.getName()).log(Level.WARNING, null, ex);
             } finally {
                 if (dest != null) {
                     dest.flush();
@@ -93,14 +94,14 @@ public class Unzip {
                     is.close();
                 }
             }
-            
+
             if (currentEntry.endsWith(".zip")) {
                 // found a zip file, try to open
                 unzip(destFile.getAbsolutePath());
             }
         }
     }
-    
+
     private Unzip() {
     }
 }
