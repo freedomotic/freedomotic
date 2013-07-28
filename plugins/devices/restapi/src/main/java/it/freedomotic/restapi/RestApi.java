@@ -4,6 +4,7 @@
  */
 package it.freedomotic.restapi;
 
+import it.freedomotic.api.API;
 import it.freedomotic.api.Actuator;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
@@ -35,11 +36,21 @@ public class RestApi extends Actuator {
     Component component;
     Restlet rest;
     Application app;
+    private static API freedomoticApi;
 
     public RestApi() {
         super("RestApi", "/es.gpulido.restapi/restapi-manifest.xml");
+        freedomoticApi = getApi();
     }
-
+    
+    /**
+     * Expose Freedomotic APIs as a static reference for restapi internal use
+     * @return the Freedomotic APIs reference
+     */
+    public static API getFreedomoticApi(){
+        return freedomoticApi;
+    }
+    
     @Override
     public void onStart() {
         try {

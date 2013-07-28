@@ -34,7 +34,7 @@
                 <module>plugins/devices/test</module>
                 <module>plugins/devices/hello-world</module>
                 <module>tools/RestApiInterfaces</module>
-                <!--<module>plugins/devices/restapi</module>-->
+                <module>plugins/devices/restapi</module>
             </modules>
         </profile>
     </profiles>
