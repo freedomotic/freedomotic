@@ -7,7 +7,7 @@ package it.freedomotic.restapi.server.resources;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import it.freedomotic.api.Client;
-import it.freedomotic.app.Freedomotic;
+import it.freedomotic.restapi.RestApi;
 import it.freedomotic.restapi.model.PluginPojo;
 import it.freedomotic.restapi.server.interfaces.PluginsResource;
 import java.util.ArrayList;
@@ -25,12 +25,9 @@ public class PluginsServerResource extends ServerResource implements PluginsReso
     @Override
     protected void doInit() throws ResourceException {
         plugins = new ArrayList<PluginPojo>();
-        for (Client c : Freedomotic.clients.getClients()) {
-            if (c.getType().equalsIgnoreCase("plugin")) {
+        for (Client c : RestApi.getFreedomoticApi().getClients("plugin")) {
                 plugins.add(new PluginPojo(c.getName(), c.isRunning()));
-            }
         }
-
     }
 
     @Override
