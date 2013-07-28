@@ -20,12 +20,7 @@ public class LogWindowHandler
     private static LogWindowHandler handler = null;
 
     private LogWindowHandler() {
-        LogManager manager = LogManager.getLogManager();
-//        String className = this.getClass().getName();
-//        String level = manager.getProperty(className + ".level");
-//        String filter = manager.getProperty(className + ".filter");
         setLevel(Level.ALL);
-
         if (window == null) {
             window = new LogWindow(this);
         }

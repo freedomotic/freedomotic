@@ -57,7 +57,7 @@ public class ReactionConverter
 
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
-        Trigger t = new Trigger();
+        Trigger t;
         ArrayList<Command> list = new ArrayList<Command>();
 
         reader.moveDown(); //goes down to <trigger>

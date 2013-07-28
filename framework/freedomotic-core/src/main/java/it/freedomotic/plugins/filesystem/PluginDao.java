@@ -20,8 +20,7 @@ interface PluginDao {
      * Loads all plugins. The concrete
      * factories will have to implement these methods.
      */
-    List<Client> loadAll()
-            throws PluginLoadingException;
+    List<Client> loadAll() throws PluginLoadingException;
 
     /**
      * Returns the root path in which the plugin is deployed on local

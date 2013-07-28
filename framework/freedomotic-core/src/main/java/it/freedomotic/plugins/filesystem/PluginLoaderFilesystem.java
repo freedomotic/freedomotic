@@ -5,6 +5,7 @@
 package it.freedomotic.plugins.filesystem;
 
 import com.google.inject.Inject;
+import com.sun.istack.internal.logging.Logger;
 
 import it.freedomotic.api.Client;
 
@@ -62,7 +63,7 @@ public class PluginLoaderFilesystem {
      * @param TYPE
      */
     public void loadPlugins(int TYPE) throws PluginLoadingException {
-        List<PluginDao> factories = new PluginDaoFactory().getInstances(TYPE);
+        List<PluginDao> factories = new PluginDaoFactory().getDao(TYPE);
 
         for (PluginDao pluginPackageDao : factories) {
             loadSinglePackage(pluginPackageDao);
@@ -70,15 +71,16 @@ public class PluginLoaderFilesystem {
     }
 
     /**
-     * Loads all plugins from filesystem regardless thir type
+     * Loads all plugins from filesystem regardless their type
      *
      * @param TYPE
      */
     public void loadPlugins() throws PluginLoadingException {
         List<PluginDao> factories = new ArrayList<PluginDao>();
-        factories.addAll(new PluginDaoFactory().getInstances(PLUGIN_TYPE_DEVICE));
-        factories.addAll(new PluginDaoFactory().getInstances(PLUGIN_TYPE_OBJECT));
-        factories.addAll(new PluginDaoFactory().getInstances(PLUGIN_TYPE_EVENT));
+        PluginDaoFactory pluginDaoFactory = new PluginDaoFactory();
+        factories.addAll(pluginDaoFactory.getDao(PLUGIN_TYPE_DEVICE));
+        factories.addAll(pluginDaoFactory.getDao(PLUGIN_TYPE_OBJECT));
+        factories.addAll(pluginDaoFactory.getDao(PLUGIN_TYPE_EVENT));
 
         for (PluginDao pluginPackageDao : factories) {
             loadSinglePackage(pluginPackageDao);
@@ -94,7 +96,7 @@ public class PluginLoaderFilesystem {
      * @throws PluginLoadingException
      */
     public void loadPlugin(File directory) throws PluginLoadingException {
-        PluginDao pluginPackageDao = new PluginDaoFactory().getInstance(directory);
+        PluginDao pluginPackageDao = new PluginDaoFactory().getDao(directory);
         loadSinglePackage(pluginPackageDao);
     }
 
@@ -283,7 +285,16 @@ public class PluginLoaderFilesystem {
             throws IOException {
         //seach for a file called PACKAGE
         Properties packageFile = new Properties();
-        packageFile.load(new FileInputStream(new File(pluginFolder + "/PACKAGE")));
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(new File(pluginFolder + "/PACKAGE"));
+            packageFile.load(fis);
+            fis.close();
+        } catch (IOException ex) {
+            Logger.getLogger(PluginLoaderFilesystem.class).warning(ex.getMessage());
+        } finally{
+            fis.close();
+        }
         //merges data found in file PACKGE to the the configuration of every single plugin in this package
         client.getConfiguration().setProperty("package.name",
                 packageFile.getProperty("package.name"));

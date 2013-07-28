@@ -41,7 +41,7 @@ public class PlainDrawer
     private int PERIMETRAL_WALLS_TICKNESS = 15;
     private int INTERNAL_WALLS_TICKNESS = 3;
     private int ENVIRONMENT_SHADOW_OFFSET = 10;
-    private Color ENVIRONMENT_SHADOW_COLOR = Renderer.BACKGROUND_COLOR.darker();
+    private Color ENVIRONMENT_SHADOW_COLOR = backgroundColor.darker();
 
     public PlainDrawer(JavaDesktopFrontend master) {
         super(master);

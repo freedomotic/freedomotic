@@ -13,7 +13,7 @@ import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
 
-import it.freedomotic.util.i18n;
+import it.freedomotic.util.I18n;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -61,13 +61,13 @@ public class AutomationsEditor
     @Override
     public void onShowGui() {
         final JFrame frame = new JFrame();
-        frame.setTitle(i18n.msg("manage") + i18n.msg("automations"));
+        frame.setTitle(I18n.msg("manage") + I18n.msg("automations"));
         frame.setPreferredSize(new Dimension(700, 600));
 
         final ReactionsPanel panel = new ReactionsPanel(this);
         frame.setContentPane(panel);
 
-        JButton ok = new JButton(i18n.msg("ok"));
+        JButton ok = new JButton(I18n.msg("ok"));
         ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (Component component : panel.getPanel().getComponents()) {

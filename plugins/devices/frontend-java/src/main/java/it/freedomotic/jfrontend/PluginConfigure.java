@@ -9,7 +9,7 @@ import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.plugins.filesystem.PluginLoaderFilesystem;
-import it.freedomotic.util.i18n;
+import it.freedomotic.util.I18n;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -150,9 +150,9 @@ public class PluginConfigure
         btnDefault = new javax.swing.JButton(  );
 
         setDefaultCloseOperation( javax.swing.WindowConstants.DISPOSE_ON_CLOSE );
-        setTitle( i18n.msg( this, "plugins_configuration_editor" ) );
+        setTitle( I18n.msg( this, "plugins_configuration_editor" ) );
 
-        btnSave.setText( i18n.msg( "save" ) );
+        btnSave.setText( I18n.msg( "save" ) );
         btnSave.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -161,7 +161,7 @@ public class PluginConfigure
                 }
             } );
 
-        btnCancel.setText( i18n.msg( "cancel" ) );
+        btnCancel.setText( I18n.msg( "cancel" ) );
         btnCancel.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -172,7 +172,7 @@ public class PluginConfigure
 
         jScrollPane2.setViewportView( txtArea );
 
-        btnDefault.setText( i18n.msg( "restore_default" ) );
+        btnDefault.setText( I18n.msg( "restore_default" ) );
         btnDefault.setEnabled( false );
         btnDefault.addActionListener( new java.awt.event.ActionListener(  )
             {
@@ -248,7 +248,7 @@ public class PluginConfigure
                 pluginsLoader.loadPlugin(item.getFile().getParentFile());
                 clients.get(name).start();
                 JOptionPane.showMessageDialog(this,
-                        i18n.msg(this,"warn_reset_old_config"));
+                        I18n.msg(this,"warn_reset_old_config"));
             } else {
                 this.dispose();
             }

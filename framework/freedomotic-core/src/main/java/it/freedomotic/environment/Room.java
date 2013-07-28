@@ -131,8 +131,6 @@ public class Room
                                 //Freedomotic.logger.info("From " + node.getPojo().getName() + " you can reach " + x.getPojo().getName());
                             }
                         }
-                    } else {
-                        //Freedomotic.logger.info("    This arch is visited)");
                     }
                 }
             }

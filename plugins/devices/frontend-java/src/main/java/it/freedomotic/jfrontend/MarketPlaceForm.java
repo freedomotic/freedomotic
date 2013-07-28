@@ -26,7 +26,7 @@ import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.plugins.filesystem.PluginLoaderFilesystem;
 
 import it.freedomotic.util.Info;
-import it.freedomotic.util.i18n;
+import it.freedomotic.util.I18n;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -140,12 +140,6 @@ public class MarketPlaceForm
                             ImageIcon iconPlugin =
                                     new ImageIcon(path + File.separatorChar
                                     + "plug.png", "Icon");
-                            ImageIcon iconCoolPlugin =
-                                    new ImageIcon(path + File.separatorChar
-                                    + "plug-cool.png", "Icon");
-                            ImageIcon iconClient =
-                                    new ImageIcon(path + File.separatorChar
-                                    + "clientIcon1.png", "Icon");
                             int row = 0;
 
                             for (final IPluginPackage pp : category.getPlugins()) {
@@ -168,16 +162,16 @@ public class MarketPlaceForm
                                     //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
                                     if (result == -1) { //older version
                                         //btnAction = new JButton(pp.getTitle() + " (Install version " + version + ")");
-                                        btnAction = new JButton(i18n.msg(this, "install"));
+                                        btnAction = new JButton(I18n.msg(this, "install"));
                                     } else {
                                         if (result == 1) { //newer version
                                             //btnAction = new JButton(pp.getTitle() + " (Update from " + version + " to " + version + ")");
-                                            btnAction = new JButton(i18n.msg(this, "update"));
+                                            btnAction = new JButton(I18n.msg(this, "update"));
                                         }
                                     }
                                 } else {
                                     lblName =
-                                            new JLabel(i18n.msg(
+                                            new JLabel(I18n.msg(
                                             this,
                                             "X_unavailable",
                                             new Object[]{
@@ -195,7 +189,7 @@ public class MarketPlaceForm
                                     });
                                 }
 
-                                JButton btnMore = new JButton(i18n.msg("more_info"));
+                                JButton btnMore = new JButton(I18n.msg("more_info"));
                                 //btnMore.setEnabled(false);
                                 btnMore.addActionListener(new ActionListener() {
                                     public void actionPerformed(ActionEvent e) {
@@ -218,7 +212,7 @@ public class MarketPlaceForm
                                 if (btnAction != null) {
                                     pnlMain.add(btnAction);
                                 } else {
-                                    JButton disabled = new JButton(i18n.msg(this, "install"));
+                                    JButton disabled = new JButton(I18n.msg(this, "install"));
                                     disabled.setEnabled(false);
                                     pnlMain.add(disabled);
                                 }
@@ -263,7 +257,7 @@ public class MarketPlaceForm
 
         if (pp.getFilePath(freedomoticVersion) == null) {
             JOptionPane.showMessageDialog(this,
-                    i18n.msg(this,
+                    I18n.msg(this,
                     "warn_plugin_X_unavailable",
                     new Object[]{pp.getTitle(), pp.getURI()}));
 
@@ -271,13 +265,13 @@ public class MarketPlaceForm
         }
 
         //Custom button text
-        Object[] options = {i18n.msg("yes_please"), i18n.msg("no_thanks")};
+        Object[] options = {I18n.msg("yes_please"), I18n.msg("no_thanks")};
         int n =
                 JOptionPane.showOptionDialog(null,
-                i18n.msg(this,
+                I18n.msg(this,
                 "confirm_package_X_download",
                 new Object[]{pp.getTitle()}),
-                i18n.msg(this, "title_install_package"),
+                I18n.msg(this, "title_install_package"),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
@@ -289,8 +283,8 @@ public class MarketPlaceForm
         }
 
         JOptionPane.showMessageDialog(null,
-                i18n.msg(this, "info_download_started"),
-                i18n.msg(this, "title_download_started"),
+                I18n.msg(this, "info_download_started"),
+                I18n.msg(this, "title_download_started"),
                 JOptionPane.INFORMATION_MESSAGE);
 
         Runnable task;
@@ -311,13 +305,13 @@ public class MarketPlaceForm
 
                         if (!done) {
                             JOptionPane.showMessageDialog(null,
-                                    i18n.msg(this, "info_download_failed"),
-                                    i18n.msg(this, "title_download_failed"),
+                                    I18n.msg(this, "info_download_failed"),
+                                    I18n.msg(this, "title_download_failed"),
                                     JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             JOptionPane.showMessageDialog(null,
-                                    i18n.msg(this, "info_package_install_completed"),
-                                    i18n.msg(this, "title_install_completed"),
+                                    I18n.msg(this, "info_package_install_completed"),
+                                    I18n.msg(this, "title_install_completed"),
                                     JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
@@ -329,8 +323,8 @@ public class MarketPlaceForm
         if (!java.awt.Desktop.isDesktopSupported()) {
             JOptionPane.showInputDialog(
                     null,
-                    i18n.msg(this,"info_point_browser_to"),
-                    i18n.msg("info"),
+                    I18n.msg(this,"info_point_browser_to"),
+                    I18n.msg("info"),
                     JOptionPane.PLAIN_MESSAGE, null, null,
                     uri.toString());
         } else {
@@ -376,10 +370,10 @@ public class MarketPlaceForm
         pnlMain = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(i18n.msg(this,"title_marketplace"));
+        setTitle(I18n.msg(this,"title_marketplace"));
         setMinimumSize(new java.awt.Dimension(521, 370));
 
-        txtInfo.setText(i18n.msg(this,"connecting_online_repo"));
+        txtInfo.setText(I18n.msg(this,"connecting_online_repo"));
 
         jProgressBar1.setIndeterminate(true);
 

@@ -42,6 +42,7 @@ package it.freedomotic.reactions;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -54,19 +55,19 @@ public final class Reaction
 	
 	private Trigger trigger = new Trigger();
     private String uuid;
-    private ArrayList<Command> commands = new ArrayList<Command>();
+    private List<Command> commands = new ArrayList<Command>();
     private String description;
     private String shortDescription;
 
     public Reaction() {
     }
 
-    public Reaction(String trigger, ArrayList<Command> commands) {
+    public Reaction(String trigger, List<Command> commands) {
         Trigger t = TriggerPersistence.getTrigger(trigger);
         create(t, commands);
     }
 
-    public Reaction(Trigger trigger, ArrayList<Command> commands) {
+    public Reaction(Trigger trigger, List<Command> commands) {
         create(trigger, commands);
     }
 
@@ -98,7 +99,7 @@ public final class Reaction
 //        }
 //        create(trigger, tmpSequences);
 //    }
-    private void create(Trigger trigger, ArrayList<Command> commands) {
+    private void create(Trigger trigger, List<Command> commands) {
         if ((trigger != null) && (commands != null)) {
             this.trigger = trigger;
             this.commands = commands;
@@ -110,7 +111,7 @@ public final class Reaction
         return trigger;
     }
 
-    public ArrayList<Command> getCommands() {
+    public List<Command> getCommands() {
         if (commands == null) {
             commands = new ArrayList<Command>();
         }

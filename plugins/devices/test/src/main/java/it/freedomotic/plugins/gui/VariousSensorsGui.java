@@ -331,7 +331,7 @@ public class VariousSensorsGui
         c.setProperty("plugin", "Automations Editor");
         c.setProperty("action", "show"); //the default choice
 
-        Command reply = Freedomotic.sendCommand(c);
+        Freedomotic.sendCommand(c);
         txtResult.setText("Command sent, the GUI should be visible now.");
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -345,7 +345,7 @@ public class VariousSensorsGui
         c.setProperty("object.protocol", "test");
         c.setProperty("object.address", "test");
 
-        Command reply = Freedomotic.sendCommand(c);
+        Freedomotic.sendCommand(c);
         txtResult.setText("Command sent, the new object should be on the map");
     }//GEN-LAST:event_btnJoinDeviceActionPerformed
 

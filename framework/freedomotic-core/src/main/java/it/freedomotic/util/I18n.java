@@ -46,14 +46,14 @@ import java.util.Vector;
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public class i18n {
+public class I18n {
 
     private static Locale currentLocale = Locale.getDefault();
     private static HashMap<String, ResourceBundle> messages = new HashMap<String, ResourceBundle>();
     private static UTF8control RB_Control = new UTF8control();
     private static Vector<ComboLanguage> languages = new Vector<ComboLanguage>();
     
-    private i18n() {
+    private I18n() {
     }
 
     /*

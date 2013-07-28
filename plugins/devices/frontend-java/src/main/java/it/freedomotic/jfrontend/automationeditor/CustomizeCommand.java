@@ -22,7 +22,7 @@ import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 
-import it.freedomotic.util.i18n;
+import it.freedomotic.util.I18n;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +56,8 @@ public class CustomizeCommand
         txtName.setText(original.getName());
         txtDescription.setText(original.getDescription());
 
-        model.addColumn(i18n.msg("property"));
-        model.addColumn(i18n.msg("value"));
+        model.addColumn(I18n.msg("property"));
+        model.addColumn(I18n.msg("value"));
         table = new JTable(model);
         pnlParam.add(table);
 
@@ -140,7 +140,7 @@ public class CustomizeCommand
 
         setDefaultCloseOperation( javax.swing.WindowConstants.DISPOSE_ON_CLOSE );
 
-        btnSave.setText( i18n.msg( "save_as_new" ) );
+        btnSave.setText( I18n.msg( "save_as_new" ) );
         btnSave.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -149,13 +149,13 @@ public class CustomizeCommand
                 }
             } );
 
-        jLabel1.setText( i18n.msg( "name" ) + ":" );
+        jLabel1.setText( I18n.msg( "name" ) + ":" );
 
-        jLabel2.setText( i18n.msg( "description" ) + ":" );
+        jLabel2.setText( I18n.msg( "description" ) + ":" );
 
-        jLabel3.setText( i18n.msg( "parameters" ) + ":" );
+        jLabel3.setText( I18n.msg( "parameters" ) + ":" );
 
-        btnEdit.setText( i18n.msg( "save_changes" ) );
+        btnEdit.setText( I18n.msg( "save_changes" ) );
         btnEdit.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -166,10 +166,10 @@ public class CustomizeCommand
 
         cmbReceiver.setEnabled( false );
 
-        txtReceiver.setText( i18n.msg( this, "performed_by" ) );
+        txtReceiver.setText( I18n.msg( this, "performed_by" ) );
         txtReceiver.setEnabled( false );
 
-        btnChangeReceiver.setText( i18n.msg( "change" ) );
+        btnChangeReceiver.setText( I18n.msg( "change" ) );
         btnChangeReceiver.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -178,8 +178,8 @@ public class CustomizeCommand
                 }
             } );
 
-        btnDelete.setText( i18n.msg( "delete_X",
-                                     new Object[] { i18n.msg( "command" ) } ) );
+        btnDelete.setText( I18n.msg( "delete_X",
+                                     new Object[] { I18n.msg( "command" ) } ) );
         btnDelete.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )
@@ -193,8 +193,8 @@ public class CustomizeCommand
         pnlParam.setLayout( new java.awt.BorderLayout(  ) );
         jScrollPane1.setViewportView( pnlParam );
 
-        txtAddRow.setText( i18n.msg( "add_X",
-                                     new Object[] { i18n.msg( "parameter" ) } ) );
+        txtAddRow.setText( I18n.msg( "add_X",
+                                     new Object[] { I18n.msg( "parameter" ) } ) );
         txtAddRow.addActionListener( new java.awt.event.ActionListener(  )
             {
                 public void actionPerformed( java.awt.event.ActionEvent evt )

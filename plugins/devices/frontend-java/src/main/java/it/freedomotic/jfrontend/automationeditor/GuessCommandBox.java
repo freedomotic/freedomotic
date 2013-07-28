@@ -9,7 +9,7 @@ import it.freedomotic.jfrontend.automationeditor.ReactionEditor;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 
-import it.freedomotic.util.i18n;
+import it.freedomotic.util.I18n;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,16 +34,14 @@ public class GuessCommandBox
     private ReactionEditor editor;
     private static NaturalLanguageProcessor nlp = new NaturalLanguageProcessor();
     private final JButton btnAdd = new JButton();
-    private final JButton btnCustomize = new JButton(i18n.msg(this, "edit"));
+    private final JButton btnCustomize = new JButton(I18n.msg(this, "edit"));
     private final GuessCommandBox me = this;
-    private static String ERROR_MESSAGE;
-    private static String INFO_MESSAGE;
+    private static final String ERROR_MESSAGE = I18n.msg("this_command_not_exists");
+    private static final String INFO_MESSAGE = I18n.msg("write_here_command");
 
     public GuessCommandBox(ReactionEditor editor) {
         super();
         this.editor = editor;
-        ERROR_MESSAGE = i18n.msg(this, "this_command_not_exists");
-        INFO_MESSAGE = i18n.msg(this, "write_here_command");
         init();
     }
 
@@ -105,17 +103,17 @@ public class GuessCommandBox
                                 evt.getComponent().getY());
                         requestFocus();
 
-                        JComboBox box = new JComboBox();
+                        new JComboBox();
                     }
                 };
 
         this.addKeyListener(keyListener);
 
         if (command == null) {
-            btnAdd.setText(i18n.msg(this, "confirm"));
-            setToolTipText(i18n.msg(this, "cmd_box_msg"));
+            btnAdd.setText(I18n.msg(this, "confirm"));
+            setToolTipText(I18n.msg(this, "cmd_box_msg"));
         } else {
-            btnAdd.setText(i18n.msg("remove"));
+            btnAdd.setText(I18n.msg("remove"));
             setToolTipText(command.getDescription());
         }
 
@@ -128,7 +126,7 @@ public class GuessCommandBox
 
                     if (command != null) {
                         setEnabled(false);
-                        btnAdd.setText(i18n.msg("remove"));
+                        btnAdd.setText(I18n.msg("remove"));
                         editor.onCommandConfirmed(me);
                     } else {
                         setForeground(Color.red);
@@ -136,7 +134,7 @@ public class GuessCommandBox
                     }
                 } else {
                     setEnabled(true);
-                    btnAdd.setText(i18n.msg(this, "confirm"));
+                    btnAdd.setText(I18n.msg(this, "confirm"));
                     editor.onCommandCleared(me);
                     command = null;
                     setText(INFO_MESSAGE);

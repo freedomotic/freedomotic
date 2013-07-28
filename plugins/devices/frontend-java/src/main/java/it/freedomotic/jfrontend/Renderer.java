@@ -58,15 +58,15 @@ public class Renderer
     private double widthRescale = 1.0;
     private double heightRescale = 1.0;
     private boolean backgroundChanged = true;
-    private static int ENVIRONMENT_WIDTH =
+    private int environmentWidth =
             (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth();
-    private static int ENVIRONMENT_HEIGHT =
+    private int environmentHeight =
             (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight();
     private static int BORDER_X = 10; //the empty space around the map
     private static int BORDER_Y = 10; //the empty space around the map
-    private double CANVAS_WIDTH = ENVIRONMENT_WIDTH + (BORDER_X * 2);
-    private double CANVAS_HEIGHT = ENVIRONMENT_HEIGHT + (BORDER_Y * 2);
-    protected static Color BACKGROUND_COLOR =
+    private double CANVAS_WIDTH = environmentWidth + (BORDER_X * 2);
+    private double CANVAS_HEIGHT = environmentHeight + (BORDER_Y * 2);
+    protected Color backgroundColor =
             TopologyUtils.convertColorToAWT(EnvironmentPersistence.getEnvironments().get(0).getPojo()
             .getBackgroundColor());
     private EnvObjectLogic selectedObject;
@@ -113,15 +113,15 @@ public class Renderer
     }
 
     public void updateEnvRelatedVars() {
-        ENVIRONMENT_WIDTH = currEnv.getPojo().getWidth();
-        ENVIRONMENT_HEIGHT = currEnv.getPojo().getHeight();
-        BACKGROUND_COLOR = TopologyUtils.convertColorToAWT(currEnv.getPojo().getBackgroundColor());
+        environmentWidth = currEnv.getPojo().getWidth();
+        environmentHeight = currEnv.getPojo().getHeight();
+        backgroundColor = TopologyUtils.convertColorToAWT(currEnv.getPojo().getBackgroundColor());
     }
 
     protected EnvObjectLogic getSelectedObject() {
         return selectedObject;
     }
-    
+
     protected void addIndicator(Shape shape, Color color) {
         indicators.add(new Indicator(shape, color));
     }
@@ -150,7 +150,7 @@ public class Renderer
         clear();
         addCustomMouseListener();
         addCustomMouseMotionListener();
-        setBackground(BACKGROUND_COLOR);
+        setBackground(backgroundColor);
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -229,7 +229,7 @@ public class Renderer
         setContext(g); //painting on an image, not rendered directly on jpanel
         graph2D = (Graphics2D) getContext();
         //painting uniform background
-        getContext().setColor(Renderer.BACKGROUND_COLOR);
+        getContext().setColor(backgroundColor);
         getContext().fillRect(0,
                 0,
                 this.getWidth(),
@@ -653,7 +653,7 @@ public class Renderer
             removeIndicators();
             CalloutsUpdater.clearAll();
 
-            Point mouse = toRealCoords(e.getPoint());
+            toRealCoords(e.getPoint());
 
             //click on an handle in edit mode
             Handle clickedHandle = mouseOnHandle(e.getPoint());
@@ -717,8 +717,7 @@ public class Renderer
         if (inDrag) {
             Handle currHandle = null;
             for (Handle handle : handles) {
-                if (handle.isSelected())
-                {
+                if (handle.isSelected()) {
                     currHandle = handle;
                 }
                 handle.setSelected(false);
@@ -732,18 +731,14 @@ public class Renderer
             }
             //check if rooms overlap
             //selectedZone = handle.getZone();
-            if (roomEditMode && (selectedZone) != null)
-            {
+            if (roomEditMode && (selectedZone) != null) {
                 Area currentZoneArea = new Area(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
-                for (Room r : currEnv.getRooms())
-                {
-                    if (!r.equals(selectedZone))
-                    {
+                for (Room r : currEnv.getRooms()) {
+                    if (!r.equals(selectedZone)) {
                         Shape testZoneShape = TopologyUtils.convertToAWT(r.getPojo().getShape());
                         Area testArea = new Area(testZoneShape);
                         testArea.intersect(currentZoneArea);
-                        if (!testArea.isEmpty())
-                        {
+                        if (!testArea.isEmpty()) {
                             currHandle.move(originalHandleLocation.getX(), originalHandleLocation.getY());
                             removeIndicators();
                             addIndicator(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
@@ -809,8 +804,7 @@ public class Renderer
                 for (Handle handle : handles) {
                     //move the zone point
                     if (handle.isSelected()) {
-                        if (null == originalHandleLocation)
-                        {
+                        if (null == originalHandleLocation) {
                             originalHandleLocation = new FreedomPoint(handle.getPoint().getX(), handle.getPoint().getY());
                         }
                         handle.move(xSnapped, ySnapped);
@@ -818,15 +812,12 @@ public class Renderer
                         // add indicators for overlapping zones
                         selectedZone = handle.getZone();
                         Area currentZoneArea = new Area(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
-                        for (Room r : currEnv.getRooms())
-                        {
-                            if (!r.equals(selectedZone))
-                            {
+                        for (Room r : currEnv.getRooms()) {
+                            if (!r.equals(selectedZone)) {
                                 Shape testZoneShape = TopologyUtils.convertToAWT(r.getPojo().getShape());
                                 Area testArea = new Area(testZoneShape);
                                 testArea.intersect(currentZoneArea);
-                                if (!testArea.isEmpty())
-                                {
+                                if (!testArea.isEmpty()) {
                                     addIndicator(testZoneShape, new Color(255, 0, 0, 50));
                                 }
                             }
@@ -946,10 +937,12 @@ public class Renderer
         setNeedRepaint(true);
     }
 
+    @Override
     public boolean getRoomEditMode() {
         return roomEditMode;
     }
 
+    @Override
     public boolean getObjectEditMode() {
         return objectEditMode;
     }
@@ -962,7 +955,12 @@ public class Renderer
         }
     }
 
+    @Override
     void setObjectEditMode(boolean state) {
         objectEditMode = state;
+    }
+
+    public Color getBackgroundColor() {
+        return backgroundColor;
     }
 }

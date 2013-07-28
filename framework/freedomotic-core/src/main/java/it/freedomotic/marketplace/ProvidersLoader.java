@@ -19,7 +19,7 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package it.freedomotic.service;
+package it.freedomotic.marketplace;
 
 /**
  *

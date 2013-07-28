@@ -17,12 +17,10 @@ import java.util.TimerTask;
 public class CalloutsUpdater {
 
     private static HashMap<Object, Callout> callouts = new HashMap<Object, Callout>();
-    private static Timer timer;
-    private static Renderer drawer;
+    private Timer timer;
 
     public CalloutsUpdater(final Renderer drawer, int milliseconds) {
         timer = new Timer();
-        CalloutsUpdater.drawer = drawer;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {

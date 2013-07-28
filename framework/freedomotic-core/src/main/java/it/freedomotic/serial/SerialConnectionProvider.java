@@ -516,9 +516,7 @@ public class SerialConnectionProvider implements SerialPortEventListener {
 
     private synchronized String read() {
         // Create a StringBuffer and int to receive input data.
-        StringBuilder inputBuffer = new StringBuilder();
         byte[] readBuffer = new byte[400];
-        int newData = 0;
         try {
             int availableBytes = in.available();
             if (availableBytes > 0) {

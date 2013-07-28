@@ -4,7 +4,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="title" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-      <Connection code="i18n.msg(this,&quot;current_automations&quot;)" type="code"/>
+      <Connection code="it.freedomotic.util.I18n.msg(this,&quot;current_automations&quot;)" type="code"/>
     </Property>
   </Properties>
   <SyntheticProperties>

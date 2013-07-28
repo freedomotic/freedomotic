@@ -303,18 +303,18 @@ public class EnvObject implements Serializable {
     
     @RequiresPermissions("objects:read")       
     public String getTagsString(){
-        String tagString = "";
+        StringBuilder tagString = new StringBuilder();
         Boolean morethanone = false;
         for (String tag : getTagsList()){
             if (tag.trim() != ""){
             if (morethanone){
-                tagString+=",";
+                tagString.append(",");
             }
-            tagString+=tag.trim();
+            tagString.append(tag.trim());
             morethanone = true;
             }
         }
-        return tagString;
+        return tagString.toString();
     }
        
     public void initTags(){
