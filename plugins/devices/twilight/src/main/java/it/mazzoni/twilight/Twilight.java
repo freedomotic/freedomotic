@@ -48,7 +48,7 @@ public class Twilight extends Protocol {
 
     public Twilight() {
         //every plugin needs a name and a manifest XML file
-        super("Twilight", "/it.mazzoni.twilight/twilight-manifest.xml");
+        super("Twilight", "/twilight/twilight-manifest.xml");
         //read a property from the manifest file below which is in
         //FREEDOMOTIC_FOLDER/plugins/devices/it.freedomotic.hello/hello-world.xml
         POLLING_WAIT = configuration.getIntProperty("time-between-reads", 10000);
