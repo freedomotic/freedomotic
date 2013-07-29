@@ -17,8 +17,8 @@
  */
 package it.mazzoni.roomevents;
 
+import it.freedomotic.annotations.ListenEventsOn;
 import it.freedomotic.api.EventTemplate;
-import it.freedomotic.api.ListenEventsOn;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.EnvironmentLogic;
@@ -44,7 +44,7 @@ public class RoomEvents extends Protocol {
 
     public RoomEvents() {
         //every plugin needs a name and a manifest XML file
-        super("RoomEvents", "/it.mazzoni.roomevents/room-events-manifest.xml");
+        super("RoomEvents", "/roomevents/room-events-manifest.xml");
         POLLING_WAIT = configuration.getIntProperty("time-between-reads", -1);
         //default value if the property does not exist in the manifest
         setPollingWait(POLLING_WAIT); //millisecs interval between hardware device status reads
