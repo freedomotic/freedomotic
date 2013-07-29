@@ -62,6 +62,7 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.TriggerPersistence;
+import it.freedomotic.security.Auth;
 
 import it.freedomotic.serial.SerialConnectionProvider;
 
@@ -82,6 +83,12 @@ import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.subject.support.SubjectThreadState;
+import org.apache.shiro.util.ThreadState;
 
 /**
  * This is the starting class of the project
@@ -129,7 +136,20 @@ public class Freedomotic {
          * *****************************************************************
          */
         loadAppConfig();
-
+        
+        // init localization
+        I18n.setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
+        
+        // init auth* framework
+        Auth.initBaseRealm();
+        if (Auth.realmInited) {
+            PrincipalCollection principals = new SimplePrincipalCollection("system", "it.freedomotic.security");
+            Subject SysSubject = new Subject.Builder().principals(principals).buildSubject();
+            ThreadState threadState = new SubjectThreadState(SysSubject);
+            threadState.bind();
+            logger.info("Booting as user:" + SecurityUtils.getSubject().getPrincipal());
+        }
+        
         String resourcesPath =
                 new File(Info.getApplicationPath()
                 + Freedomotic.config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
