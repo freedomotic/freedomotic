@@ -25,11 +25,13 @@ import it.freedomotic.plugins.ClientStorageInMemory;
 
 import it.freedomotic.plugins.filesystem.PluginLoaderFilesystem;
 import it.freedomotic.reactions.TriggerPersistence;
+import org.junit.Ignore;
 
 /**
  *
  * @author enrico
  */
+@Ignore
 public class TestsInjector
         extends AbstractModule {
 
