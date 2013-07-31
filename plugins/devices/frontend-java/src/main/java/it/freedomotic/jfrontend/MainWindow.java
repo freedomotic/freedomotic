@@ -507,9 +507,8 @@ public class MainWindow
                 formMouseMoved(evt);
             }
         });
-        getContentPane().add(jSeparator2, java.awt.BorderLayout.CENTER);
 
-        mnuOpenNew.setText(I18n.msg("file"));
+        mnuOpenNew.setText(it.freedomotic.util.I18n.msg("file"));
         mnuOpenNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuOpenNewActionPerformed(evt);
@@ -517,7 +516,7 @@ public class MainWindow
         });
 
         mnuNewEnvironment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
-        mnuNewEnvironment.setText(I18n.msg("new") + I18n.msg("environment"));
+        mnuNewEnvironment.setText(it.freedomotic.util.I18n.msg("new") + it.freedomotic.util.I18n.msg("environment"));
         mnuNewEnvironment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuNewEnvironmentActionPerformed(evt);
@@ -526,7 +525,7 @@ public class MainWindow
         mnuOpenNew.add(mnuNewEnvironment);
 
         mnuOpenEnvironment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        mnuOpenEnvironment.setText(I18n.msg("open") + I18n.msg("environment"));
+        mnuOpenEnvironment.setText(it.freedomotic.util.I18n.msg("open") + it.freedomotic.util.I18n.msg("environment"));
         mnuOpenEnvironment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuOpenEnvironmentActionPerformed(evt);
@@ -535,7 +534,7 @@ public class MainWindow
         mnuOpenNew.add(mnuOpenEnvironment);
 
         mnuSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        mnuSave.setText(I18n.msg("save") + I18n.msg("environment"));
+        mnuSave.setText(it.freedomotic.util.I18n.msg("save") + it.freedomotic.util.I18n.msg("environment"));
         mnuSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuSaveActionPerformed(evt);
@@ -544,7 +543,7 @@ public class MainWindow
         mnuOpenNew.add(mnuSave);
 
         mnuSaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        mnuSaveAs.setText(I18n.msg("save_X_as",new Object[]{I18n.msg("environment")}));
+        mnuSaveAs.setText(it.freedomotic.util.I18n.msg("save_X_as",new Object[]{it.freedomotic.util.I18n.msg("environment")}));
         mnuSaveAs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuSaveAsActionPerformed(evt);
@@ -553,7 +552,7 @@ public class MainWindow
         mnuOpenNew.add(mnuSaveAs);
         mnuOpenNew.add(jSeparator1);
 
-        mnuSwitchUser.setText(I18n.msg(this,"change_user"));
+        mnuSwitchUser.setText(it.freedomotic.util.I18n.msg(this,"change_user"));
         mnuSwitchUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuSwitchUserActionPerformed(evt);
@@ -561,7 +560,7 @@ public class MainWindow
         });
         mnuOpenNew.add(mnuSwitchUser);
 
-        mnuExit.setText(I18n.msg("exit"));
+        mnuExit.setText(it.freedomotic.util.I18n.msg("exit"));
         mnuExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuExitActionPerformed(evt);
@@ -571,10 +570,10 @@ public class MainWindow
 
         menuBar.add(mnuOpenNew);
 
-        mnuEditMode.setText(I18n.msg("environment"));
+        mnuEditMode.setText(it.freedomotic.util.I18n.msg("environment"));
 
         mnuSelectEnvironment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
-        mnuSelectEnvironment.setText(I18n.msg(this,"select_X",new Object[]{I18n.msg("area_floor")}));
+        mnuSelectEnvironment.setText(it.freedomotic.util.I18n.msg(this,"select_X",new Object[]{it.freedomotic.util.I18n.msg("area_floor")}));
         mnuSelectEnvironment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuSelectEnvironmentActionPerformed(evt);
@@ -582,9 +581,9 @@ public class MainWindow
         });
         mnuEditMode.add(mnuSelectEnvironment);
 
-        jMenu4.setText(I18n.msg("area_floor"));
+        jMenu4.setText(it.freedomotic.util.I18n.msg("area_floor"));
 
-        mnuRenameEnvironment.setText(I18n.msg("rename"));
+        mnuRenameEnvironment.setText(it.freedomotic.util.I18n.msg("rename"));
         mnuRenameEnvironment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuRenameEnvironmentActionPerformed(evt);
@@ -592,7 +591,7 @@ public class MainWindow
         });
         jMenu4.add(mnuRenameEnvironment);
 
-        mnuAddDuplicateEnvironment.setText(I18n.msg("add")+"/"+I18n.msg("duplicate"));
+        mnuAddDuplicateEnvironment.setText(it.freedomotic.util.I18n.msg("add")+"/"+it.freedomotic.util.I18n.msg("duplicate"));
         mnuAddDuplicateEnvironment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuAddDuplicateEnvironmentActionPerformed(evt);
@@ -600,7 +599,7 @@ public class MainWindow
         });
         jMenu4.add(mnuAddDuplicateEnvironment);
 
-        mnuChangeRenderer.setText(I18n.msg("change_X",new Object[]{I18n.msg("renderer")}));
+        mnuChangeRenderer.setText(it.freedomotic.util.I18n.msg("change_X",new Object[]{it.freedomotic.util.I18n.msg("renderer")}));
         mnuChangeRenderer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuChangeRendererActionPerformed(evt);
@@ -608,7 +607,7 @@ public class MainWindow
         });
         jMenu4.add(mnuChangeRenderer);
 
-        mnuBackground.setText(I18n.msg("change_X",new Object[]{I18n.msg("background")}));
+        mnuBackground.setText(it.freedomotic.util.I18n.msg("change_X",new Object[]{it.freedomotic.util.I18n.msg("background")}));
         mnuBackground.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuBackgroundActionPerformed(evt);
@@ -616,7 +615,7 @@ public class MainWindow
         });
         jMenu4.add(mnuBackground);
 
-        mnuDelete.setText(I18n.msg("delete"));
+        mnuDelete.setText(it.freedomotic.util.I18n.msg("delete"));
         mnuDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuDeleteActionPerformed(evt);
@@ -627,7 +626,7 @@ public class MainWindow
         mnuEditMode.add(jMenu4);
 
         mnuRoomEditMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        mnuRoomEditMode.setText(I18n.msg(this,"X_edit_mode",new Object[]{I18n.msg("rooms")}));
+        mnuRoomEditMode.setText(it.freedomotic.util.I18n.msg(this,"X_edit_mode",new Object[]{it.freedomotic.util.I18n.msg("rooms")}));
         mnuRoomEditMode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuRoomEditModeActionPerformed(evt);
@@ -635,11 +634,27 @@ public class MainWindow
         });
         mnuEditMode.add(mnuRoomEditMode);
 
-        menuBar.add( mnuOpenNew );
+        jMenu3.setText(it.freedomotic.util.I18n.msg("rooms"));
 
-        mnuEditMode.setText( I18n.msg( "environment" ) );
+        mnuRenameRoom.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
+        mnuRenameRoom.setText(it.freedomotic.util.I18n.msg("rename") + it.freedomotic.util.I18n.msg("room"));
+        mnuRenameRoom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuRenameRoomActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnuRenameRoom);
 
-        mnuRoomBackground.setText(I18n.msg("change_X",new Object[]{I18n.msg("background")}));
+        mnuAddRoom.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        mnuAddRoom.setText(it.freedomotic.util.I18n.msg("add") + it.freedomotic.util.I18n.msg("room"));
+        mnuAddRoom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuAddRoomActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnuAddRoom);
+
+        mnuRoomBackground.setText(it.freedomotic.util.I18n.msg("change_X",new Object[]{it.freedomotic.util.I18n.msg("background")}));
         mnuRoomBackground.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuRoomBackgroundActionPerformed(evt);
@@ -647,159 +662,48 @@ public class MainWindow
         });
         jMenu3.add(mnuRoomBackground);
 
-        jMenu4.setText( "Area/Floor" );
+        mnuRemoveRoom.setText(it.freedomotic.util.I18n.msg("remove") + it.freedomotic.util.I18n.msg("room"));
+        mnuRemoveRoom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuRemoveRoomActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnuRemoveRoom);
 
-        mnuRenameEnvironment.setText( I18n.msg( "rename" ) );
-        mnuRenameEnvironment.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuRenameEnvironmentActionPerformed( evt );
-                }
-            } );
-        jMenu4.add( mnuRenameEnvironment );
+        mnuEditMode.add(jMenu3);
 
-        mnuAddDuplicateEnvironment.setText( I18n.msg( "add" ) + "/" + I18n.msg( "duplicate" ) );
-        mnuAddDuplicateEnvironment.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuAddDuplicateEnvironmentActionPerformed( evt );
-                }
-            } );
-        jMenu4.add( mnuAddDuplicateEnvironment );
+        menuBar.add(mnuEditMode);
 
-        mnuChangeRenderer.setText( I18n.msg( "change_X",
-                                             new Object[] { I18n.msg( "renderer" ) } ) );
-        mnuChangeRenderer.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuChangeRendererActionPerformed( evt );
-                }
-            } );
-        jMenu4.add( mnuChangeRenderer );
+        mnuObjects.setText(it.freedomotic.util.I18n.msg("objects"));
 
-        mnuBackground.setText( I18n.msg( "change_X",
-                                         new Object[] { I18n.msg( "background" ) } ) );
-        mnuBackground.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuBackgroundActionPerformed( evt );
-                }
-            } );
-        jMenu4.add( mnuBackground );
+        mnuObjectEditMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
+        mnuObjectEditMode.setText(it.freedomotic.util.I18n.msg(this,"X_edit_mode",new Object[]{it.freedomotic.util.I18n.msg("objects")}));
+        mnuObjectEditMode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuObjectEditModeActionPerformed(evt);
+            }
+        });
+        mnuObjects.add(mnuObjectEditMode);
 
-        mnuDelete.setText( I18n.msg( "delete" ) );
-        mnuDelete.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuDeleteActionPerformed( evt );
-                }
-            } );
-        jMenu4.add( mnuDelete );
+        menuBar.add(mnuObjects);
 
-        mnuEditMode.add( jMenu4 );
+        jMenu2.setText(it.freedomotic.util.I18n.msg("automations"));
 
-        mnuRoomEditMode.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F5, 0 ) );
-        mnuRoomEditMode.setText( I18n.msg( this,
-                                           "X_edit_mode",
-                                           new Object[] { I18n.msg( "rooms" ) } ) );
-        mnuRoomEditMode.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuRoomEditModeActionPerformed( evt );
-                }
-            } );
-        mnuEditMode.add( mnuRoomEditMode );
+        mnuAutomations.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, 0));
+        mnuAutomations.setText(it.freedomotic.util.I18n.msg("manage") + it.freedomotic.util.I18n.msg("automations"));
+        mnuAutomations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuAutomationsActionPerformed(evt);
+            }
+        });
+        jMenu2.add(mnuAutomations);
 
-        jMenu3.setText( I18n.msg( "rooms" ) );
+        menuBar.add(jMenu2);
 
-        mnuRenameRoom.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_R,
-                                                                          java.awt.event.InputEvent.CTRL_MASK ) );
-        mnuRenameRoom.setText( I18n.msg( "rename" ) + I18n.msg( "room" ) );
-        mnuRenameRoom.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuRenameRoomActionPerformed( evt );
-                }
-            } );
-        jMenu3.add( mnuRenameRoom );
-
-        mnuAddRoom.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_A,
-                                                                       java.awt.event.InputEvent.CTRL_MASK ) );
-        mnuAddRoom.setText( I18n.msg( "add" ) + I18n.msg( "room" ) );
-        mnuAddRoom.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuAddRoomActionPerformed( evt );
-                }
-            } );
-        jMenu3.add( mnuAddRoom );
-
-        mnuRoomBackground.setText( "Change Background" );
-        mnuRoomBackground.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuRoomBackgroundActionPerformed( evt );
-                }
-            } );
-        jMenu3.add( mnuRoomBackground );
-
-        mnuRemoveRoom.setText( I18n.msg( "remove" ) + I18n.msg( "room" ) );
-        mnuRemoveRoom.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuRemoveRoomActionPerformed( evt );
-                }
-            } );
-        jMenu3.add( mnuRemoveRoom );
-
-        mnuEditMode.add( jMenu3 );
-
-        menuBar.add( mnuEditMode );
-
-        mnuObjects.setText( I18n.msg( "objects" ) );
-
-        mnuObjectEditMode.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F6, 0 ) );
-        mnuObjectEditMode.setText( I18n.msg( this,
-                                             "X_edit_mode",
-                                             new Object[] { I18n.msg( "objects" ) } ) );
-        mnuObjectEditMode.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuObjectEditModeActionPerformed( evt );
-                }
-            } );
-        mnuObjects.add( mnuObjectEditMode );
-
-        menuBar.add( mnuObjects );
-
-        jMenu2.setText( I18n.msg( "automations" ) );
-
-        mnuAutomations.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F7, 0 ) );
-        mnuAutomations.setText( I18n.msg( "manage" ) + I18n.msg( "automations" ) );
-        mnuAutomations.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuAutomationsActionPerformed( evt );
-                }
-            } );
-        jMenu2.add( mnuAutomations );
-
-        menuBar.add( jMenu2 );
+        jMenu1.setText(it.freedomotic.util.I18n.msg("plugins"));
 
         jCheckBoxMarket.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, 0));
-        jCheckBoxMarket.setText(I18n.msg(this,"install_from_marketplace"));
+        jCheckBoxMarket.setText(it.freedomotic.util.I18n.msg(this,"install_from_marketplace"));
         jCheckBoxMarket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBoxMarketActionPerformed(evt);
@@ -807,21 +711,19 @@ public class MainWindow
         });
         jMenu1.add(jCheckBoxMarket);
 
-        mnuPluginConfigure.setText( I18n.msg( "configure" ) );
-        mnuPluginConfigure.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    mnuPluginConfigureActionPerformed( evt );
-                }
-            } );
-        jMenu1.add( mnuPluginConfigure );
+        mnuPluginConfigure.setText(it.freedomotic.util.I18n.msg("configure"));
+        mnuPluginConfigure.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuPluginConfigureActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mnuPluginConfigure);
 
-        menuBar.add( jMenu1 );
+        menuBar.add(jMenu1);
 
-        jMenu5.setText(I18n.msg("settings"));
+        jMenu5.setText(it.freedomotic.util.I18n.msg("settings"));
 
-        mnuLanguage.setText(I18n.msg("language"));
+        mnuLanguage.setText(it.freedomotic.util.I18n.msg("language"));
         mnuLanguage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuLanguageActionPerformed(evt);
@@ -829,7 +731,7 @@ public class MainWindow
         });
         jMenu5.add(mnuLanguage);
 
-        mnuPrivileges.setText(I18n.msg("privileges"));
+        mnuPrivileges.setText(it.freedomotic.util.I18n.msg("privileges"));
         mnuPrivileges.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuPrivilegesActionPerformed(evt);
@@ -839,10 +741,10 @@ public class MainWindow
 
         menuBar.add(jMenu5);
 
-        mnuWindow.setText(I18n.msg(this,"window"));
+        mnuWindow.setText(it.freedomotic.util.I18n.msg(this,"window"));
 
         mnuPluginList.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
-        mnuPluginList.setText(I18n.msg("X_list",new Object[]{I18n.msg("plugins")}));
+        mnuPluginList.setText(it.freedomotic.util.I18n.msg("X_list",new Object[]{it.freedomotic.util.I18n.msg("plugins")}));
         mnuPluginList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuPluginListActionPerformed(evt);
@@ -851,7 +753,7 @@ public class MainWindow
         mnuWindow.add(mnuPluginList);
 
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, 0));
-        jMenuItem3.setText(I18n.msg(this,"fullscreen"));
+        jMenuItem3.setText(it.freedomotic.util.I18n.msg(this,"fullscreen"));
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem3ActionPerformed(evt);
@@ -859,11 +761,11 @@ public class MainWindow
         });
         mnuWindow.add(jMenuItem3);
 
-        menuBar.add( mnuWindow );
+        menuBar.add(mnuWindow);
 
-        mnuHelp.setText( I18n.msg( "help" ) );
+        mnuHelp.setText(it.freedomotic.util.I18n.msg("help"));
 
-        mnuTutorial.setText(I18n.msg(this,"tutorial"));
+        mnuTutorial.setText(it.freedomotic.util.I18n.msg(this,"tutorial"));
         mnuTutorial.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuTutorialActionPerformed(evt);
@@ -872,7 +774,7 @@ public class MainWindow
         mnuHelp.add(mnuTutorial);
 
         submnuHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        submnuHelp.setText(I18n.msg(this,"about"));
+        submnuHelp.setText(it.freedomotic.util.I18n.msg(this,"about"));
         submnuHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 submnuHelpActionPerformed(evt);
@@ -880,22 +782,20 @@ public class MainWindow
         });
         mnuHelp.add(submnuHelp);
 
-        menuBar.add( mnuHelp );
+        menuBar.add(mnuHelp);
 
-        setJMenuBar( menuBar );
+        setJMenuBar(menuBar);
 
-        pack(  );
-    } // </editor-fold>//GEN-END:initComponents
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
 
-    private void formMouseClicked(java.awt.event.MouseEvent evt) {
-//GEN-FIRST:event_formMouseClicked
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
     }//GEN-LAST:event_formMouseClicked
 
-    private void formMouseMoved(java.awt.event.MouseEvent evt) {
-//GEN-FIRST:event_formMouseMoved
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
     }//GEN-LAST:event_formMouseMoved
 
-    private void formWindowClosing(java.awt.event.WindowEvent evt)    {//GEN-FIRST:event_formWindowClosing
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         Freedomotic.onExit();
     }//GEN-LAST:event_formWindowClosing
 
@@ -915,7 +815,7 @@ public class MainWindow
     private void mnuExitActionPerformed(java.awt.event.ActionEvent evt) {
         Freedomotic.onExit();
     }
-
+        
     public Plugin getPlugin() {
         return master;
     }
@@ -1404,6 +1304,5 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JMenuItem submnuHelp;
     private javax.swing.JTextArea txtOut1;
     private javax.swing.JTextArea txtOut2;
-
     // End of variables declaration//GEN-END:variables
 }
