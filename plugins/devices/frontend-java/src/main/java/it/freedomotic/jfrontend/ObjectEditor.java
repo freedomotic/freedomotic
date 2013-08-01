@@ -11,6 +11,7 @@
 package it.freedomotic.jfrontend;
 
 import com.google.inject.Inject;
+import it.freedomotic.api.API;
 
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
@@ -65,12 +66,18 @@ public class ObjectEditor
     private PropertiesPanel_1 pnlTriggers;
     //private PropertiesPanel_1 controlPanel;
     ReactionsPanel reactionsPanel;
-    @Inject
-    private ClientStorage clients;
+
+    
+    private static API api=null;
+    
 
     /**
      * Creates new form ObjectEditor
      */
+    static void setAPI(API apiL){
+        api = apiL;
+    }
+    
     public ObjectEditor(final EnvObjectLogic obj) {
         this.object = obj;
         oldName = object.getPojo().getName();
@@ -1025,7 +1032,8 @@ public class ObjectEditor
     private void populateProtocol() {
         txtProtocol.addItem("unknown");
 
-        for (Client client : clients.getClients("Plugin")) {
+
+        for (Client client : api.getClients("plugin")) {
             Plugin plugin = (Plugin) client;
             String protocol = plugin.getConfiguration().getStringProperty("protocol.name", "");
 

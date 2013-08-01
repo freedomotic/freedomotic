@@ -5,6 +5,7 @@
 package it.freedomotic.jfrontend;
 
 import com.google.inject.Inject;
+import it.freedomotic.api.API;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.plugins.ClientStorage;
@@ -21,7 +22,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -33,8 +36,9 @@ import javax.swing.JOptionPane;
 public class PluginConfigure
         extends javax.swing.JFrame {
 
-    @Inject
-    private ClientStorage clients;
+    private ClientStorage clients; 
+    private API api;
+    
     @Inject
     private PluginLoaderFilesystem pluginsLoader;
     private static HashMap<Plugin, String> predefined = new HashMap<Plugin, String>();
@@ -42,7 +46,9 @@ public class PluginConfigure
     /**
      * Creates new form PluginConfigure
      */
-    public PluginConfigure() {
+    public PluginConfigure(API api) {
+        this.api=api;
+        this.clients = api.getClientStorage();
         initComponents();
         populatePluginsList();
         //add listener to category selection changes
@@ -67,7 +73,7 @@ public class PluginConfigure
     private void populatePluginsList() {
         cmbPlugin.removeAllItems();
 
-        for (Client client : clients.getClients("plugin")) {
+        for (Client client : api.getClients("plugin")) {
             if (client instanceof Plugin) {
                 Plugin plugin = (Plugin) client;
                 cmbPlugin.addItem(plugin);

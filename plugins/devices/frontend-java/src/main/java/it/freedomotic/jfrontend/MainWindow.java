@@ -75,6 +75,7 @@ public class MainWindow
         UIManager.put("OptionPane.noButtonText", I18n.msg("no"));
         UIManager.put("OptionPane.cancelButtonText", I18n.msg("cancel"));
         this.master = master;
+        ObjectEditor.setAPI(master.getApi());
 
         if (Auth.realmInited) {
             logUser(true);
@@ -873,7 +874,7 @@ private void mnuPluginListActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 }//GEN-LAST:event_mnuPluginListActionPerformed
 
 private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMarketActionPerformed
-    MarketPlaceForm marketPlace = new MarketPlaceForm();
+    MarketPlaceForm marketPlace = new MarketPlaceForm(master.getApi());
     marketPlace.setVisible(true);
 }//GEN-LAST:event_jCheckBoxMarketActionPerformed
 
@@ -1125,7 +1126,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuSaveActionPerformed
 
     private void mnuPluginConfigureActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuPluginConfigureActionPerformed
-        new PluginConfigure();
+        new PluginConfigure(master.getApi());
     }//GEN-LAST:event_mnuPluginConfigureActionPerformed
 
     private void mnuTutorialActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuTutorialActionPerformed

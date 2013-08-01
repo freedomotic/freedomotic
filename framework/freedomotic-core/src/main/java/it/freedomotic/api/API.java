@@ -9,6 +9,7 @@ import it.freedomotic.core.ResourcesManager;
 import it.freedomotic.environment.EnvironmentLogic;
 
 import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.plugins.ClientStorage;
 
 import java.awt.image.BufferedImage;
 import java.util.Collection;
@@ -23,7 +24,8 @@ public interface API {
     //create
 
     EnvObjectLogic addObject(final EnvObjectLogic obj, final boolean MAKE_UNIQUE);
-
+    
+    ClientStorage getClientStorage();
     //read
     Collection<EnvObjectLogic> getObjectList();
 
