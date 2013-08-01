@@ -113,4 +113,9 @@ public class APIStandardImpl
     public BufferedImage getResource(String resourceIdentifier) {
         return ResourcesManager.getResource(resourceIdentifier);
     }
+
+    @Override
+    public ClientStorage getClientStorage() {
+        return clientStorage;
+    }
 }

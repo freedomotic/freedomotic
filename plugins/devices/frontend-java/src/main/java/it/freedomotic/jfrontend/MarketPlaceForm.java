@@ -11,6 +11,7 @@
 package it.freedomotic.jfrontend;
 
 import com.google.inject.Inject;
+import it.freedomotic.api.API;
 
 import it.freedomotic.api.Plugin;
 
@@ -61,15 +62,17 @@ public class MarketPlaceForm
     ArrayList<IPluginCategory> pluginCategoryList;
     private static final IPlugCatComparator CatComp = new IPlugCatComparator();
     private static final IPlugPackComparator PackComp = new IPlugPackComparator();
-    @Inject
+    
     private ClientStorage clients;
+   
     @Inject
     private PluginLoaderFilesystem pluginsLoader;
 
     /**
      * Creates new form MarketPlaceForm
      */
-    public MarketPlaceForm() {
+    public MarketPlaceForm(API api) {
+        this.clients = api.getClientStorage();
         initComponents();
         cmbCategory.setEnabled(false);
         EventQueue.invokeLater(new Runnable() {
