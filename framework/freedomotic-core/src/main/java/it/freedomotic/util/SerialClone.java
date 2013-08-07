@@ -42,6 +42,7 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.logging.Logger;
 
 public class SerialClone {
 
@@ -128,4 +129,5 @@ public class SerialClone {
 
     private SerialClone() {
     }
+    private static final Logger LOG = Logger.getLogger(SerialClone.class.getName());
 }

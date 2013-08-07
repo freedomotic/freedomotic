@@ -23,6 +23,7 @@ import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.plugins.ClientStorageInMemory;
 import it.freedomotic.plugins.filesystem.PluginLoaderFilesystem;
+import java.util.logging.Logger;
 
 /**
  *
@@ -43,4 +44,5 @@ public class FreedomoticDI
         bind(API.class).to(APIStandardImpl.class).in(Singleton.class);
         bind(ProtocolRead.class);
     }
+    private static final Logger LOG = Logger.getLogger(FreedomoticDI.class.getName());
 }

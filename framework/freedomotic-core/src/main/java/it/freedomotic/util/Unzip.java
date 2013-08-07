@@ -104,4 +104,5 @@ public class Unzip {
 
     private Unzip() {
     }
+    private static final Logger LOG = Logger.getLogger(Unzip.class.getName());
 }

@@ -79,19 +79,19 @@ public class DOMValidateDTD {
                 public void fatalError(SAXParseException fatal)
                         throws SAXException {
                     //enable when validator feature is fully implemented
-                    //Freedomotic.logger.warning(fatal.getMessage());
+                    //LOG.warning(fatal.getMessage());
                 }
 
                 public void error(SAXParseException e)
                         throws SAXParseException {
                     //enable when validator feature is fully implemented
-                    //Freedomotic.logger.warning("Error at line " + e.getLineNumber() + ". " + e.getMessage());
+                    //LOG.warning("Error at line " + e.getLineNumber() + ". " + e.getMessage());
                 }
 
                 public void warning(SAXParseException err)
                         throws SAXParseException {
                     //enable when validator feature is fully implemented
-                    //Freedomotic.logger.warning("Warning at line " + err.getLineNumber() + ". " + err.getMessage());
+                    //LOG.warning("Warning at line " + err.getLineNumber() + ". " + err.getMessage());
                 }
             });
             //finally parse the result. 
@@ -112,4 +112,5 @@ public class DOMValidateDTD {
 
     private DOMValidateDTD() {
     }
+    private static final Logger LOG = Logger.getLogger(DOMValidateDTD.class.getName());
 }

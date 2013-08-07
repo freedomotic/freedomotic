@@ -25,6 +25,7 @@ import it.freedomotic.app.Freedomotic;
 
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
+import java.util.logging.Logger;
 
 /**
  *
@@ -96,7 +97,7 @@ public class RangedIntBehaviorLogic
                 }
             }
         } catch (NumberFormatException numberFormatException) {
-            Freedomotic.logger.warning("Paramenter 'value = " + params.getProperty("value").trim() + "' in "
+            LOG.warning("Paramenter 'value = " + params.getProperty("value").trim() + "' in "
                     + this.getName() + " behavior is not an integer.");
         }
 
@@ -196,4 +197,5 @@ public class RangedIntBehaviorLogic
     public void setChanged(boolean value) {
         changed = value;
     }
+    private static final Logger LOG = Logger.getLogger(RangedIntBehaviorLogic.class.getName());
 }

@@ -24,6 +24,7 @@ package it.freedomotic.events;
 import it.freedomotic.api.EventTemplate;
 // import it.freedomotic.environment.Room;
 import it.freedomotic.model.environment.Zone;
+import java.util.logging.Logger;
 
 /**
  * Channel <b>app.event.sensor.environment.zone.change</b> informs that a zone
@@ -61,4 +62,5 @@ public class ZoneHasChanged
     public String getDefaultDestination() {
         return "app.event.sensor.environment.zone.change";
     }
+    private static final Logger LOG = Logger.getLogger(ZoneHasChanged.class.getName());
 }

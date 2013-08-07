@@ -36,6 +36,7 @@ import it.freedomotic.objects.ListBehaviorLogic;
 import it.freedomotic.objects.PropertiesBehaviorLogic;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
+import java.util.logging.Logger;
 
 /**
  *
@@ -71,7 +72,7 @@ public class Person
                 String oldActivity = activity.getSelected();
                 //in "value" property is stored the name of the new selection. It is a value from the list for sure and it is not the current one, already checked.
                 activity.setSelected(params.getProperty("value"));
-                Freedomotic.logger.severe("Person '" + getPojo().getName()
+                LOG.severe("Person '" + getPojo().getName()
                         + "' has changed its activity from " + oldActivity + " to "
                         + activity.getSelected());
                 setChanged(true);
@@ -84,7 +85,7 @@ public class Person
             public void propertyChanged(String key, String newValue, Config params, boolean fireCommand) {
                 //in "value" property is stored the name of the new selection. It is a value from the list for sure and it is not the current one, already checked.
                 // properties.setProperty(key, newValue);
-                Freedomotic.logger.severe("Person '" + getPojo().getName()
+                LOG.severe("Person '" + getPojo().getName()
                         + "' has changed its property from " + params.getProperty(key) + " to "
                         + newValue);
                 setChanged(true);
@@ -127,4 +128,5 @@ public class Person
 
         TriggerPersistence.add(clicked);
     }
+    private static final Logger LOG = Logger.getLogger(Person.class.getName());
 }

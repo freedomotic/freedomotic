@@ -29,6 +29,7 @@ import it.freedomotic.bus.EventChannel;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.security.Auth;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.jms.ObjectMessage;
 
@@ -43,6 +44,7 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
     private static final String SENSORS_QUEUE_DOMAIN = "app.sensor.";
     private boolean isPollingSensor = true;
     private EventChannel channel;
+    private static final Logger LOG = Logger.getLogger(Sensor.class.getName());
     
     protected abstract void onInformationRequest(/*TODO: define parameters*/) throws IOException, UnableToExecuteException;
     
@@ -81,7 +83,7 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
     
     public void notifyEvent(EventTemplate ev, String destination) {
         if (isRunning) {
-            Freedomotic.logger.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":"
+            LOG.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":"
                     + ev.getPayload().toString());
             channel.send(ev, destination);
         }
@@ -145,7 +147,7 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
     
     @Override
     public void onMessage(ObjectMessage ev) {
-        Freedomotic.logger.severe("Sensor class have received a message");
+        LOG.severe("Sensor class have received a message");
 
 //        if (isRunning) {
 //            if (ev instanceof QueryResult) {

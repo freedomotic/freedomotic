@@ -79,4 +79,5 @@ public class SpeechEvent
     public String getDefaultDestination() {
         return "app.event.sensor.speech";
     }
+    private static final Logger LOG = Logger.getLogger(SpeechEvent.class.getName());
 }

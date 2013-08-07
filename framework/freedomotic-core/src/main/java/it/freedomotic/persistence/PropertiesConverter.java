@@ -34,6 +34,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.util.logging.Logger;
 
 /**
  *
@@ -77,4 +78,5 @@ public class PropertiesConverter
 
         return false;
     }
+    private static final Logger LOG = Logger.getLogger(PropertiesConverter.class.getName());
 }

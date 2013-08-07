@@ -88,4 +88,5 @@ public final class JoinDevice
             Logger.getLogger(JoinDevice.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    private static final Logger LOG = Logger.getLogger(JoinDevice.class.getName());
 }

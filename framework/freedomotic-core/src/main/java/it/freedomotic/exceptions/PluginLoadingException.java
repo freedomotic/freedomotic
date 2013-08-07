@@ -4,6 +4,8 @@
  */
 package it.freedomotic.exceptions;
 
+import java.util.logging.Logger;
+
 /**
  *
  * @author enrico
@@ -45,4 +47,5 @@ public class PluginLoadingException
     public PluginLoadingException(Throwable cause) {
         super(cause);
     }
+    private static final Logger LOG = Logger.getLogger(PluginLoadingException.class.getName());
 }

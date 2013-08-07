@@ -21,6 +21,8 @@
  */
 package it.freedomotic.app;
 
+import java.util.logging.Logger;
+
 /**
  * Deprecated: switch to AOP instead
  *
@@ -207,4 +209,5 @@ public class Profiler {
 
     private Profiler() {
     }
+    private static final Logger LOG = Logger.getLogger(Profiler.class.getName());
 }

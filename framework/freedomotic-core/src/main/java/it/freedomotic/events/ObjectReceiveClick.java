@@ -31,6 +31,7 @@ import it.freedomotic.objects.EnvObjectLogic;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 /**
  * Channel <b>app.event.sensor.object.behavior.clicked</b> informs that an
@@ -66,4 +67,5 @@ public class ObjectReceiveClick
     public String getDefaultDestination() {
         return "app.event.sensor.object.behavior.clicked";
     }
+    private static final Logger LOG = Logger.getLogger(ObjectReceiveClick.class.getName());
 }

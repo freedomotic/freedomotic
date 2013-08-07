@@ -11,6 +11,7 @@ import it.freedomotic.exceptions.PluginLoadingException;
 import it.freedomotic.plugins.filesystem.PluginLoaderFilesystem;
 import it.freedomotic.testutils.GuiceJUnitRunner;
 import it.freedomotic.testutils.GuiceJUnitRunner.GuiceInjectors;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -69,6 +70,7 @@ public class PluginLoaderFilesystemTestNORUN {
             fail("Cannot load plugin " + ex.getPluginName() + " due to " + ex.getCause());
         }
     }
+    private static final Logger LOG = Logger.getLogger(PluginLoaderFilesystemTestNORUN.class.getName());
     /**
      * Test of installPlugin method, of class PluginLoaderFilesystem.
      */

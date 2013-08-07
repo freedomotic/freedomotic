@@ -179,8 +179,9 @@ class PluginDaoFactory {
             method.invoke(sysLoader,
                     new Object[]{u});
         } catch (Throwable t) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(t));
+            LOG.severe(Freedomotic.getStackTraceInfo(t));
             throw new IOException("Error, could not add URL to system classloader");
         }
     }
+    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(PluginDaoFactory.class.getName());
 }

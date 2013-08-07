@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 class PluginDaoDevices
         implements PluginDao {
 
-    private static final Logger log = Freedomotic.logger;
+        private static final Logger LOG = Logger.getLogger(PluginDaoDevices.class.getName());
     private File path;
 
     PluginDaoDevices(File path) {
@@ -82,7 +82,7 @@ class PluginDaoDevices
                         }
                     }
                 } catch (Exception ex) {
-                    Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(ex).toString());
+                    LOG.warning(Freedomotic.getStackTraceInfo(ex).toString());
                 }
             }
         }

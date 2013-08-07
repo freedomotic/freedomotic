@@ -34,6 +34,7 @@ import org.openide.util.LookupListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 /**
  *
@@ -60,11 +61,11 @@ public class MarketPlaceService {
 
             @Override
             public void resultChanged(LookupEvent e) {
-                Freedomotic.logger.severe("Lookup has changed");
+                LOG.severe("Lookup has changed");
             }
         });
         }catch (Exception e) {
-            Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+            LOG.warning(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -86,7 +87,7 @@ public class MarketPlaceService {
                 packageList.addAll(market.getAvailablePackages());
             }
         } catch (Exception e) {
-            Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+            LOG.warning(Freedomotic.getStackTraceInfo(e));
         }
 
         return packageList;
@@ -102,7 +103,7 @@ public class MarketPlaceService {
                 packageList.addAll(market.getAvailablePackages(category));
             }
         } catch (Exception e) {
-            Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+            LOG.warning(Freedomotic.getStackTraceInfo(e));
         }
 
         return packageList;
@@ -118,9 +119,10 @@ public class MarketPlaceService {
                 categoryList.addAll(market.getAvailableCategories());
             }
         } catch (Exception e) {
-            Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+            LOG.warning(Freedomotic.getStackTraceInfo(e));
         }
 
         return categoryList;
     }
+    private static final Logger LOG = Logger.getLogger(MarketPlaceService.class.getName());
 }

@@ -99,7 +99,10 @@ public class Freedomotic {
 
     public static Config config;
     private static String INSTANCE_ID;
+    @Deprecated
     public static final Logger logger = Logger.getLogger("app.log");
+    //this should replace Freedomotic.logger reference
+    private static final Logger LOG = Logger.getLogger(Freedomotic.class.getName());
     //TODO: remove this, any plugin should have access to his own bus instance
     private static EventChannel eventChannel = new EventChannel();
     private static CommandChannel commandChannel = new CommandChannel();
@@ -227,7 +230,7 @@ public class Freedomotic {
         try {
             pluginsLoader.loadPlugins(PluginLoaderFilesystem.PLUGIN_TYPE_EVENT);
         } catch (PluginLoadingException ex) {
-            Freedomotic.logger.log(Level.WARNING,
+            LOG.log(Level.WARNING,
                     "Cannot load event plugin {0}. {1}",
                     new Object[]{ex.getPluginName(), ex.getMessage()});
         }
@@ -240,7 +243,7 @@ public class Freedomotic {
         try {
             pluginsLoader.loadPlugins(PluginLoaderFilesystem.PLUGIN_TYPE_OBJECT);
         } catch (PluginLoadingException ex) {
-            Freedomotic.logger.log(Level.WARNING,
+            LOG.log(Level.WARNING,
                     "Cannot load object plugin {0}. {1}",
                     new Object[]{ex.getPluginName(), ex.getMessage()});
         }
@@ -269,7 +272,7 @@ public class Freedomotic {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                Freedomotic.logger.info("Starting marketplace service");
+                                LOG.info("Starting marketplace service");
 
                                 MarketPlaceService mps = MarketPlaceService.getInstance();
                                 onlinePluginCategories = mps.getCategoryList();
@@ -278,8 +281,8 @@ public class Freedomotic {
                     }
                 });
             } catch (Exception e) {
-                Freedomotic.logger.warning("Unable to cache plugins package from marketplace");
-                Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+                LOG.warning("Unable to cache plugins package from marketplace");
+                LOG.warning(Freedomotic.getStackTraceInfo(e));
             }
         }
 
@@ -298,7 +301,7 @@ public class Freedomotic {
         try {
             pluginsLoader.loadPlugins(PluginLoaderFilesystem.PLUGIN_TYPE_DEVICE);
         } catch (PluginLoadingException ex) {
-            Freedomotic.logger.warning("Cannot load device plugin " + ex.getPluginName() + ": " + ex.getMessage());
+            LOG.warning("Cannot load device plugin " + ex.getPluginName() + ": " + ex.getMessage());
         }
 
         /**
@@ -326,7 +329,7 @@ public class Freedomotic {
          * Updating zone object list
          * *****************************************************************
          */
-//        Freedomotic.logger.config("---- Checking zones topology ----");
+//        LOG.config("---- Checking zones topology ----");
 //        for (ZoneLogic z : environment.getZones()) {
 //            z.checkTopology();
 //        }
@@ -419,7 +422,7 @@ public class Freedomotic {
             Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        Freedomotic.logger.info(config.toString());
+        LOG.info(config.toString());
     }
 
     public static void sendEvent(EventTemplate event) {
@@ -446,21 +449,21 @@ public class Freedomotic {
             INSTANCE_ID = "A";
         }
 
-        Freedomotic.logger.info("Freedomotic instance ID: " + INSTANCE_ID);
+        LOG.info("Freedomotic instance ID: " + INSTANCE_ID);
 
         try {
             Freedomotic freedomotic = INJECTOR.getInstance(Freedomotic.class);
             //start freedomotic
             freedomotic.start();
         } catch (FreedomoticException ex) {
-            Freedomotic.logger.severe(ex.getMessage());
+            LOG.severe(ex.getMessage());
             System.exit(1);
         }
     }
 
     public static void onExit() {
-        Freedomotic.logger.info("Exiting application...");
-        //Freedomotic.logger.info("Sending the exit signal (TODO: not yet implemented)");
+        LOG.info("Exiting application...");
+        //LOG.info("Sending the exit signal (TODO: not yet implemented)");
         //...send the signal on a topic channel
         //TODO: regression, enable it again
 //        for (Client plugin : clientStorage.getClients()) {
@@ -476,7 +479,7 @@ public class Freedomotic {
             try {
                 EnvObjectPersistence.saveObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder());
             } catch (DaoLayerException ex) {
-                Freedomotic.logger.severe("Cannot save objects in "
+                LOG.severe("Cannot save objects in "
                         + EnvironmentPersistence.getEnvironments().get(0).getObjectFolder());
             }
         }
@@ -502,10 +505,10 @@ public class Freedomotic {
             folder = new File(environmentFilePath).getParentFile();
             EnvironmentPersistence.saveEnvironmentsToFolder(folder);
         } catch (DaoLayerException ex) {
-            Freedomotic.logger.severe("Cannot save environment to folder " + folder);
+            LOG.severe("Cannot save environment to folder " + folder);
         }
 
-        Freedomotic.logger.info(Profiler.print());
+        LOG.info(Profiler.print());
         Profiler.saveToFile();
         System.exit(0);
     }

@@ -26,6 +26,7 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
+import java.util.logging.Logger;
 
 /**
  * Channel <b>app.event.sensor.plugin.change</b> informs about plugin related
@@ -60,4 +61,5 @@ public class PluginHasChanged
     public String getDefaultDestination() {
         return "app.event.sensor.plugin.change";
     }
+    private static final Logger LOG = Logger.getLogger(PluginHasChanged.class.getName());
 }

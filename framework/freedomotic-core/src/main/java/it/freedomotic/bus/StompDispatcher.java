@@ -73,4 +73,5 @@ public class StompDispatcher implements BusConsumer {
             Logger.getLogger(StompDispatcher.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    private static final Logger LOG = Logger.getLogger(StompDispatcher.class.getName());
 }

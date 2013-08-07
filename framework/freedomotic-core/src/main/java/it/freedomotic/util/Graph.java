@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Title: Graph Description: Prova di implementazione di un struttura dati per
@@ -191,4 +192,5 @@ public class Graph {
 
         return out.toString();
     }
+    private static final Logger LOG = Logger.getLogger(Graph.class.getName());
 }

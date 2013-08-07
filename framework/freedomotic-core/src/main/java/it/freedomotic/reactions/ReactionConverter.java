@@ -28,6 +28,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.util.logging.Logger;
 
 /**
  *
@@ -92,4 +93,5 @@ public class ReactionConverter
 
         return false;
     }
+    private static final Logger LOG = Logger.getLogger(ReactionConverter.class.getName());
 }

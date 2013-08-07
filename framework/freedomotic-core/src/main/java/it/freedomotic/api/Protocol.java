@@ -59,6 +59,7 @@ public abstract class Protocol
     private EventChannel eventsChannel; //one to many messaging pattern
     private Protocol.SensorThread sensorThread;
     private volatile Destination lastDestination;
+    private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
 
     protected abstract void onRun();
 
@@ -115,7 +116,7 @@ public abstract class Protocol
 
     public void notifyEvent(EventTemplate ev, String destination) {
         if (isRunning) {
-            Freedomotic.logger.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":"
+            LOG.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":"
                     + ev.getPayload().toString());
             eventsChannel.send(ev, destination);
         }
@@ -178,7 +179,7 @@ public abstract class Protocol
     @Override
     public final void onMessage(final ObjectMessage message) {
         if (!isRunning) {
-            Freedomotic.logger.config("Protocol '" + getName()
+            LOG.config("Protocol '" + getName()
                     + "' receives a command while is not running. Plugin tries to turn on itself...");
             start();
         }
@@ -190,7 +191,7 @@ public abstract class Protocol
 
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
-                Freedomotic.logger.config(this.getName() + " receives command " + command.getName()
+                LOG.config(this.getName() + " receives command " + command.getName()
                         + " with parametes {" + command.getProperties() + "}");
 
                 Protocol.ActuatorPerforms task;

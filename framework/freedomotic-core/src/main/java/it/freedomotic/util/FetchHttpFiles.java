@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Logger;
 
 /**
  *
@@ -46,15 +47,15 @@ public class FetchHttpFiles {
 //            ApacheURLLister lister = new ApacheURLLister();
 //            // this list of URLs objects
 //            List files = lister.listAll(httpUrl);
-//            Freedomotic.logger.info("list file is complete.." + files);
+//            LOG.info("list file is complete.." + files);
 //            for (Iterator iter = files.iterator(); iter.hasNext();) {
 //                URL fileUrl = (URL) iter.next();
-//                Freedomotic.logger.info("file: " + fileUrl);
+//                LOG.info("file: " + fileUrl);
 //                download(fileUrl, destFolder);
 //            }
-//            Freedomotic.logger.info("download is complete..");
+//            LOG.info("download is complete..");
 //        } catch (Exception e) {
-//            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+//            LOG.severe(Freedomotic.getStackTraceInfo(e));
 //        }
 //    }
 
@@ -63,9 +64,9 @@ public class FetchHttpFiles {
         //File sourceFile = new File(url.getPath());
         //File destinationFile = new File(destFolder.getPath() + "/" + sourceFile.getName());
         File destinationFile = new File(destFolder.getPath() + "/" + filename);
-        Freedomotic.logger.config("  Download started");
-        Freedomotic.logger.config("    Source folder:      " + url);
-        Freedomotic.logger.config("    Destination folder: " + destinationFile);
+        LOG.config("  Download started");
+        LOG.config("    Source folder:      " + url);
+        LOG.config("    Destination folder: " + destinationFile);
 
         //destination.getParentFile().mkdirs();
         BufferedInputStream bis = null;
@@ -87,7 +88,7 @@ public class FetchHttpFiles {
                 try {
                     bis.close();
                 } catch (IOException ioe) {
-                    Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ioe));
+                    LOG.severe(Freedomotic.getStackTraceInfo(ioe));
 
                     return false;
                 }
@@ -97,14 +98,14 @@ public class FetchHttpFiles {
                 try {
                     bos.close();
                 } catch (IOException ioe) {
-                    Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ioe));
+                    LOG.severe(Freedomotic.getStackTraceInfo(ioe));
 
                     return false;
                 }
             }
         }
 
-        Freedomotic.logger.info("  Download completed");
+        LOG.info("  Download completed");
 
         return true;
     }
@@ -118,13 +119,13 @@ public class FetchHttpFiles {
 //        int remoteVersion = server.getIntProperty(name + "-last-version", -1);
 //
 //        if ((version < remoteVersion) && (remoteVersion > 0)) {
-//            Freedomotic.logger.info("Checking plugin " + name + " for update\n"
+//            LOG.info("Checking plugin " + name + " for update\n"
 //                    + "  local version: " + version);
-//            Freedomotic.logger.info("  server version: " + remoteVersion);
+//            LOG.info("  server version: " + remoteVersion);
 //            //plugin needs update
 //            if (Info.getIntVersion() >= server.getIntProperty(name + "-required", 0)) {
-//                Freedomotic.logger.info("  freedomotic required: " + server.getIntProperty(name + "-required", 0));
-//                Freedomotic.logger.info("  freedomotic version: " + Info.getIntVersion());
+//                LOG.info("  freedomotic required: " + server.getIntProperty(name + "-required", 0));
+//                LOG.info("  freedomotic version: " + Info.getIntVersion());
 //                //can be updated
 //                ArrayList<String> urls = server.getPathListProperty(name + "-download-url");
 //                ArrayList<String> file = server.getPathListProperty(name + "-destination-folder");
@@ -139,10 +140,10 @@ public class FetchHttpFiles {
 //                                download(new URL(Info.getRemoteRepository() + url.toString()), path);
 //                                updated = true;
 //                            } catch (Exception exception) {
-//                                Freedomotic.logger.warning("Download error missing file on server or server unreachable");
+//                                LOG.warning("Download error missing file on server or server unreachable");
 //                            }
 //                        } catch (Exception e) {
-//                            Freedomotic.logger.warning("Missing destination folder for updated plugins.");
+//                            LOG.warning("Missing destination folder for updated plugins.");
 //                        }
 //                    } catch (Exception ex) {
 //                        Logger.getLogger(FetchHttpFiles.class.getName()).log(Level.SEVERE, null, ex);
@@ -180,4 +181,5 @@ public class FetchHttpFiles {
 //    }
     private FetchHttpFiles() {
     }
+    private static final Logger LOG = Logger.getLogger(FetchHttpFiles.class.getName());
 }

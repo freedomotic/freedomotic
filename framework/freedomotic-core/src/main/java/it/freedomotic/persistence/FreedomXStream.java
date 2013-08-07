@@ -37,6 +37,7 @@ import it.freedomotic.reactions.ReactionConverter;
 import it.freedomotic.reactions.Trigger;
 
 import com.thoughtworks.xstream.XStream;
+import java.util.logging.Logger;
 
 /**
  *
@@ -138,4 +139,5 @@ public class FreedomXStream /*implements FrameTranslator*/ {
 
         return environmentXstream;
     }
+    private static final Logger LOG = Logger.getLogger(FreedomXStream.class.getName());
 }

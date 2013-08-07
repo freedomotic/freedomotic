@@ -54,6 +54,7 @@ import java.util.UUID;
 import com.thoughtworks.xstream.XStream;
 
 import java.util.*;
+import java.util.logging.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 
@@ -224,12 +225,12 @@ public class EnvObjectPersistence {
 
             try {
                 objectLogic = EnvObjectFactory.create(pojo);
-                Freedomotic.logger.config("Created a new logic for " + objectLogic.getPojo().getName()
+                LOG.config("Created a new logic for " + objectLogic.getPojo().getName()
                         + " of type " + objectLogic.getClass().getCanonicalName().toString());
 
                 return objectLogic;
             } catch (DaoLayerException daoLayerException) {
-                Freedomotic.logger.warning(daoLayerException.getMessage());
+                LOG.warning(daoLayerException.getMessage());
             }
         } catch (IOException ex) {
             throw new DaoLayerException(ex.getMessage(), ex);
@@ -237,7 +238,7 @@ public class EnvObjectPersistence {
             throw new DaoLayerException(e.getMessage(), e);
         }
         //EnvObjectLogic objectLogic = EnvObjectFactory.create(pojo);
-        //Freedomotic.logger.info("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
+        //LOG.info("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
         //add(objectLogic);
         return null;
     }
@@ -313,7 +314,7 @@ public class EnvObjectPersistence {
         }
 
         if (list.isEmpty()) {
-            Freedomotic.logger.warning("Don't exist an object with protocol '" + protocol + "' and address '"
+            LOG.warning("Don't exist an object with protocol '" + protocol + "' and address '"
                     + address + "'");
         }
 
@@ -401,7 +402,7 @@ public class EnvObjectPersistence {
             try {
                 envObjectLogic = EnvObjectFactory.create(pojoCopy);
             } catch (DaoLayerException ex) {
-                Freedomotic.logger.warning(ex.getMessage());
+                LOG.warning(ex.getMessage());
             }
         }
 
@@ -432,4 +433,5 @@ public class EnvObjectPersistence {
         } catch (Exception e) {
         }
     }
+    private static final Logger LOG = Logger.getLogger(EnvObjectPersistence.class.getName());
 }

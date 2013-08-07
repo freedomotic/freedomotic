@@ -105,7 +105,7 @@ public final class BehaviorManager
                             message.getJMSCorrelationID());
                 }
             } catch (JMSException ex) {
-                Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+                LOG.severe(Freedomotic.getStackTraceInfo(ex));
             }
         }
     }
@@ -157,7 +157,7 @@ public final class BehaviorManager
             behavior = obj.getBehavior(behaviorName);
 
             if (behavior != null) { //if this behavior exists in object obj
-                Freedomotic.logger.config("User level command '" + userLevelCommand.getName()
+                LOG.config("User level command '" + userLevelCommand.getName()
                         + "' request changing behavior " + behavior.getName() + " of object '"
                         + obj.getPojo().getName() + "' from value '"
                         + behavior.getValueAsString() + "' to value '"
@@ -165,13 +165,13 @@ public final class BehaviorManager
                 behavior.filterParams(userLevelCommand.getProperties(),
                         true); //true means a command must be fired
             } else {
-                Freedomotic.logger.warning("Behavior '" + behaviorName + "' is not a valid behavior for object '"
+                LOG.warning("Behavior '" + behaviorName + "' is not a valid behavior for object '"
                         + obj.getPojo().getName()
                         + "'. Please check 'behavior' parameter spelling in command "
                         + userLevelCommand.getName());
             }
         } else {
-            Freedomotic.logger.warning("Object '" + userLevelCommand.getProperty("object")
+            LOG.warning("Object '" + userLevelCommand.getProperty("object")
                     + "' don't exist in this environment. "
                     + "Please check 'object' parameter spelling in command "
                     + userLevelCommand.getName());
@@ -225,4 +225,5 @@ public final class BehaviorManager
             }
         }
     }
+    private static final Logger LOG = Logger.getLogger(BehaviorManager.class.getName());
 }

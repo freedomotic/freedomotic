@@ -28,6 +28,7 @@ package it.freedomotic.util;
 import static org.junit.Assert.assertEquals;
 import it.freedomotic.model.geometry.FreedomPoint;
 import it.freedomotic.model.geometry.FreedomPolygon;
+import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -238,4 +239,5 @@ public class TopologyUtilsTest {
         assertEquals(false,
                 TopologyUtils.contains(source, outside));
     }
+    private static final Logger LOG = Logger.getLogger(TopologyUtilsTest.class.getName());
 }

@@ -28,6 +28,7 @@ import it.freedomotic.objects.EnvObjectLogic;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 /**
  * Channel <b>app.event.sensor.object.behavior.change</b> informs that an object
@@ -78,4 +79,5 @@ public class ObjectHasChangedBehavior extends EventTemplate {
     public String getDefaultDestination() {
         return "app.event.sensor.object.behavior.change";
     }
+    private static final Logger LOG = Logger.getLogger(ObjectHasChangedBehavior.class.getName());
 }

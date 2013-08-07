@@ -34,6 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
+import java.util.logging.Logger;
 
 /**
  *
@@ -92,4 +93,5 @@ public class PayloadConverterTest {
     @Test
     public void testCanConvert() {
     }
+    private static final Logger LOG = Logger.getLogger(PayloadConverterTest.class.getName());
 }

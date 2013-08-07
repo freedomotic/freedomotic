@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -92,7 +93,7 @@ public class Auth {
             currentUser.login(token);
             return true;
         } catch (Exception e) {
-            Freedomotic.logger.warning(e.getLocalizedMessage());
+            LOG.warning(e.getLocalizedMessage());
             return false;
         }
     }
@@ -133,7 +134,7 @@ public class Auth {
 
     private static void executePrivileged(String classname, Runnable action) {
         if (Auth.realmInited) {
-            //Freedomotic.logger.info("Executing privileged for plugin: " + classname);
+            //LOG.info("Executing privileged for plugin: " + classname);
             PrincipalCollection plugPrincipals = new SimplePrincipalCollection(classname, pluginRealm.getName());
             Subject plugSubject = new Subject.Builder().principals(plugPrincipals).buildSubject();
             plugSubject.execute(action);
@@ -146,14 +147,14 @@ public class Auth {
         if (!pluginRealm.accountExists(plugin.getClassName())) {
             // check whether declared permissions correspond the ones requested at runtime
             if (plugin.getConfiguration().getStringProperty("permissions", getPluginDefaultPermission()).equals(permissions)){
-            Freedomotic.logger.info("Setting permissions for plugin " + plugin.getClassName() + ": " + permissions);
+            LOG.info("Setting permissions for plugin " + plugin.getClassName() + ": " + permissions);
             String plugrole = UUID.randomUUID().toString();
             
             pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
             pluginRealm.addRole(plugrole + "=" + permissions);
 
             } else {
-                Freedomotic.logger.severe("Plugin "+plugin.getName() +" tried to request incorrect privileges" );
+                LOG.severe("Plugin "+plugin.getName() +" tried to request incorrect privileges" );
             }
         }
     }
@@ -188,4 +189,5 @@ public class Auth {
         }
         return false;
     }
+    private static final Logger LOG = Logger.getLogger(Auth.class.getName());
 }

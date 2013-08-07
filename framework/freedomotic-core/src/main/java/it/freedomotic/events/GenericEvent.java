@@ -22,6 +22,7 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
+import java.util.logging.Logger;
 
 /**
  * All purpose event. Use only if no more specific events are present in this
@@ -52,4 +53,5 @@ public class GenericEvent extends EventTemplate {
     public void setDestination(String destination) {
         this.destination = destination;
     }
+    private static final Logger LOG = Logger.getLogger(GenericEvent.class.getName());
 }

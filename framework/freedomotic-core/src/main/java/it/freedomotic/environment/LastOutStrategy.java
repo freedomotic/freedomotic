@@ -26,6 +26,7 @@
 package it.freedomotic.environment;
 
 import java.io.Serializable;
+import java.util.logging.Logger;
 
 /**
  *
@@ -51,4 +52,5 @@ public class LastOutStrategy
             return false;
         }
     }
+    private static final Logger LOG = Logger.getLogger(LastOutStrategy.class.getName());
 }

@@ -38,6 +38,7 @@ import java.io.*;
 
 import javax.swing.JFrame;
 import it.freedomotic.security.Auth;
+import java.util.logging.Logger;
 
 public class Plugin
         implements Client {
@@ -157,7 +158,7 @@ public class Plugin
         if (gui != null) {
             gui.setVisible(true);
         } else {
-            Freedomotic.logger.warning("ERROR: plugin gui is null");
+            LOG.warning("ERROR: plugin gui is null");
         }
     }
 
@@ -240,7 +241,7 @@ public class Plugin
         try {
             configuration = ConfigPersistence.deserialize(manifest);
         } catch (IOException ex) {
-            Freedomotic.logger.severe("Missing manifest " + manifest.toString() + " for plugin " + getName());
+            LOG.severe("Missing manifest " + manifest.toString() + " for plugin " + getName());
             setDescription("Missing manifest file " + manifest.toString());
         }
 
@@ -287,4 +288,5 @@ public class Plugin
     protected void loadPermissionsFromManifest() {
         Auth.setPluginPrivileges(this, configuration.getStringProperty("permissions", Auth.getPluginDefaultPermission()));
     }
+    private static final Logger LOG = Logger.getLogger(Plugin.class.getName());
 }

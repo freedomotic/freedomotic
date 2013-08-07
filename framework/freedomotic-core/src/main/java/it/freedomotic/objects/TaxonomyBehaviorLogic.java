@@ -26,6 +26,7 @@ import it.freedomotic.model.object.MultiselectionListBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * This behavior accepts a string which is an element of the list or "next" or
@@ -156,4 +157,5 @@ public class TaxonomyBehaviorLogic
     public void setChanged(boolean value) {
         changed = value;
     }
+    private static final Logger LOG = Logger.getLogger(TaxonomyBehaviorLogic.class.getName());
 }

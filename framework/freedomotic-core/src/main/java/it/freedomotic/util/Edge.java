@@ -21,6 +21,8 @@
  */
 package it.freedomotic.util;
 
+import java.util.logging.Logger;
+
 /**
  * Title: Graph Description: Prova di implementazione di un struttura dati per
  * rappresentare un grafo. Copyright: Copyright (c) 2000 Company: Università
@@ -98,4 +100,5 @@ public class Edge implements Comparable<Edge> {
             return i;
         }
     }
+    private static final Logger LOG = Logger.getLogger(Edge.class.getName());
 }

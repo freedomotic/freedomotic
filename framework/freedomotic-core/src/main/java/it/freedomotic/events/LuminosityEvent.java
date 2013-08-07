@@ -24,6 +24,7 @@ package it.freedomotic.events;
 import it.freedomotic.api.EventTemplate;
 
 import it.freedomotic.model.environment.Zone;
+import java.util.logging.Logger;
 
 /**
  *
@@ -58,4 +59,5 @@ public class LuminosityEvent
     public String getDefaultDestination() {
         return "app.event.sensor.luminosity";
     }
+    private static final Logger LOG = Logger.getLogger(LuminosityEvent.class.getName());
 }

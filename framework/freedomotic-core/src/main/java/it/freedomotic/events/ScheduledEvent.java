@@ -22,6 +22,7 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
+import java.util.logging.Logger;
 
 /**
  *
@@ -49,4 +50,5 @@ public class ScheduledEvent
     public String getDefaultDestination() {
         return "app.event.sensor.calendar.event.schedule";
     }
+    private static final Logger LOG = Logger.getLogger(ScheduledEvent.class.getName());
 }

@@ -28,6 +28,7 @@ package it.freedomotic.events;
 import it.freedomotic.api.EventTemplate;
 
 import java.util.Date;
+import java.util.logging.Logger;
 
 /**
  * Channel <b>app.event.sensor.messages.MESSAGE_TYPE</b> informs that
@@ -121,4 +122,5 @@ public class MessageEvent
 
         return "app.event.sensor.messages" + type;
     }
+    private static final Logger LOG = Logger.getLogger(MessageEvent.class.getName());
 }

@@ -27,6 +27,7 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 /**
  *
@@ -116,4 +117,5 @@ public class LogFormatter
     public String getTail(Handler h) {
         return ("</table>\n</font>\n</body>\n</html>");
     }
+    private static final Logger LOG = Logger.getLogger(LogFormatter.class.getName());
 }

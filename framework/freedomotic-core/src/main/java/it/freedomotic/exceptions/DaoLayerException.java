@@ -4,6 +4,8 @@
  */
 package it.freedomotic.exceptions;
 
+import java.util.logging.Logger;
+
 /**
  *
  * @author enrico
@@ -35,4 +37,5 @@ public class DaoLayerException
     public DaoLayerException(Throwable cause) {
         super(cause);
     }
+    private static final Logger LOG = Logger.getLogger(DaoLayerException.class.getName());
 }

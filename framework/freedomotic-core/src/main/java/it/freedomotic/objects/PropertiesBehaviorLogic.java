@@ -23,6 +23,7 @@ package it.freedomotic.objects;
 
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.PropertiesBehavior;
+import java.util.logging.Logger;
 
 /**
  *
@@ -103,4 +104,5 @@ public class PropertiesBehaviorLogic
     public void setChanged(boolean value) {
         changed = value;
     }
+    private static final Logger LOG = Logger.getLogger(PropertiesBehaviorLogic.class.getName());
 }

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 class PluginDaoObjects
         implements PluginDao {
 
-    static final Logger log = Freedomotic.logger;
+    private static final Logger LOG = Logger.getLogger(PluginDaoObjects.class.getName());;
     private File path;
 
     PluginDaoObjects(File path) {
@@ -61,7 +61,7 @@ class PluginDaoObjects
                     try {
                         classNames = PluginDaoFactory.getClassesInside(jar.getAbsolutePath());
                     } catch (IOException ex) {
-                        log.severe(Freedomotic.getStackTraceInfo(ex));
+                        LOG.severe(Freedomotic.getStackTraceInfo(ex));
                     }
 
                     for (String className : classNames) {
@@ -73,7 +73,7 @@ class PluginDaoObjects
 
                             if (clazz.getName().startsWith("it.freedomotic.objects.")
                                     && !clazz.getName().contains("$")) {
-                                Freedomotic.logger.log(Level.INFO,
+                                LOG.log(Level.INFO,
                                         "Found object plugin " + clazz.getSimpleName().toString()
                                         + " in " + path);
                             }
@@ -84,7 +84,7 @@ class PluginDaoObjects
                 }
             }
         } else {
-            log.warning("No object can be found in folder " + pluginFolder.getAbsolutePath());
+            LOG.warning("No object can be found in folder " + pluginFolder.getAbsolutePath());
         }
 
         return results;

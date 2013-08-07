@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.thoughtworks.xstream.XStream;
+import java.util.logging.Logger;
 
 /**
  *
@@ -54,14 +55,14 @@ public class ReactionPersistence {
 
     public static void saveReactions(File folder) {
         if (list.isEmpty()) {
-            Freedomotic.logger.warning("There are no reactions to persist, " + folder.getAbsolutePath()
+            LOG.warning("There are no reactions to persist, " + folder.getAbsolutePath()
                     + " will not be altered.");
 
             return;
         }
 
         if (!folder.isDirectory()) {
-            Freedomotic.logger.warning(folder.getAbsoluteFile() + " is not a valid reaction folder. Skipped");
+            LOG.warning(folder.getAbsoluteFile() + " is not a valid reaction folder. Skipped");
 
             return;
         }
@@ -70,7 +71,7 @@ public class ReactionPersistence {
         deleteReactionFiles(folder);
 
         try {
-            Freedomotic.logger.config("Saving reactions to file in " + folder.getAbsolutePath());
+            LOG.config("Saving reactions to file in " + folder.getAbsolutePath());
 
             for (Reaction reaction : list) {
                 String uuid = reaction.getUUID();
@@ -89,8 +90,8 @@ public class ReactionPersistence {
                 fstream.close();
             }
         } catch (Exception e) {
-            Freedomotic.logger.info(e.getLocalizedMessage());
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.info(e.getLocalizedMessage());
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -148,13 +149,13 @@ public class ReactionPersistence {
                     try {
                         reaction = (Reaction) xstream.fromXML(xml);
                     } catch (Exception e) {
-                        Freedomotic.logger.severe("Reaction file is not well formatted");
+                        LOG.severe("Reaction file is not well formatted");
 
                         continue;
                     }
 
                     if (reaction.getCommands().size() == 0) {
-                        Freedomotic.logger.severe("Reaction " + reaction.toString()
+                        LOG.severe("Reaction " + reaction.toString()
                                 + " has no valid commands. Maybe related objects are missing or not configured properly.");
                     }
 
@@ -170,10 +171,10 @@ public class ReactionPersistence {
                 //Close the output stream
                 indexfile.close();
             } else {
-                Freedomotic.logger.info("No reactions to load from this folder " + folder.toString());
+                LOG.info("No reactions to load from this folder " + folder.toString());
             }
         } catch (Exception e) {
-            Freedomotic.logger.severe("Exception while loading reaction in " + folder.getAbsolutePath() + ".\n"
+            LOG.severe("Exception while loading reaction in " + folder.getAbsolutePath() + ".\n"
                     + Freedomotic.getStackTraceInfo(e));
         }
     }
@@ -183,20 +184,20 @@ public class ReactionPersistence {
             r.getTrigger().register(); //trigger starts to listen on its channel
             list.add(r);
             r.setChanged();
-            Freedomotic.logger.info("Added new reaction " + r.getDescription());
+            LOG.info("Added new reaction " + r.getDescription());
         } else {
-            Freedomotic.logger.info("The reaction '" + r.getDescription() + "' is already loaded so its skipped.");
+            LOG.info("The reaction '" + r.getDescription() + "' is already loaded so its skipped.");
         }
     }
 
     public static void remove(Reaction input) {
         if (input != null) {
             boolean removed = list.remove(input);
-            Freedomotic.logger.info("Removed reaction " + input.getDescription());
+            LOG.info("Removed reaction " + input.getDescription());
             input.getTrigger().unregister();
 
             if ((!removed) && (list.contains(input))) {
-                Freedomotic.logger.warning("Error while removing Reaction " + input.getDescription()
+                LOG.warning("Error while removing Reaction " + input.getDescription()
                         + " from the list");
             }
         }
@@ -226,4 +227,5 @@ public class ReactionPersistence {
 
         return false;
     }
+    private static final Logger LOG = Logger.getLogger(ReactionPersistence.class.getName());
 }

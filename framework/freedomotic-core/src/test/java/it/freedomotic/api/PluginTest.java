@@ -25,6 +25,7 @@
  */
 package it.freedomotic.api;
 
+import java.util.logging.Logger;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
@@ -77,4 +78,5 @@ public class PluginTest {
 //        assertEquals(Plugin.LAST_IS_OLDER, Plugin.getOldestVersion("5.2.x", "5.1.0"));
 //        assertEquals(Plugin.LAST_IS_OLDER, Plugin.getOldestVersion("5.2.1", "5.2.0"));
     }
+    private static final Logger LOG = Logger.getLogger(PluginTest.class.getName());
 }
