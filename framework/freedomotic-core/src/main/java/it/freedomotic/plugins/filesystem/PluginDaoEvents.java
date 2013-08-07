@@ -31,6 +31,7 @@ import it.freedomotic.util.JarFilter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
@@ -76,12 +77,12 @@ class PluginDaoEvents implements PluginDao {
                                 Client plugin = (Client) clazz.newInstance();
                                 results.add(plugin);
                             } catch (Exception exception) {
-                                Freedomotic.logger.info("Exception raised while loading this event. Skip it.");
-                                Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(exception));
+                                LOG.info("Exception raised while loading this event. Skip it.");
+                                LOG.severe(Freedomotic.getStackTraceInfo(exception));
                             }
                         }
                     } catch (Exception ex) {
-                        Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+                        LOG.severe(Freedomotic.getStackTraceInfo(ex));
                     }
                 }
             }
@@ -94,4 +95,5 @@ class PluginDaoEvents implements PluginDao {
     public File getPath() {
         return path;
     }
+    private static final Logger LOG = Logger.getLogger(PluginDaoEvents.class.getName());
 }

@@ -49,6 +49,7 @@ import it.freedomotic.objects.impl.Person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
@@ -85,7 +86,7 @@ public class ZoneLogic {
                 return false;
             }
         } catch (Exception e) {
-            Freedomotic.logger.info("This zone have no occupiers or null reference in occupiers of Zone class");
+            LOG.info("This zone have no occupiers or null reference in occupiers of Zone class");
 
             return false;
         }
@@ -183,4 +184,5 @@ public class ZoneLogic {
 
         return hash;
     }
+    private static final Logger LOG = Logger.getLogger(ZoneLogic.class.getName());
 }

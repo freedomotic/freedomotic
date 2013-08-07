@@ -23,6 +23,7 @@ package it.freedomotic.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.logging.Logger;
 
 /**
  *
@@ -35,4 +36,5 @@ public class JarFilter
     public boolean accept(File dir, String name) {
         return (name.endsWith(".jar"));
     }
+    private static final Logger LOG = Logger.getLogger(JarFilter.class.getName());
 }

@@ -43,6 +43,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
@@ -225,4 +226,5 @@ public final class Reaction
 
         return false;
     }
+    private static final Logger LOG = Logger.getLogger(Reaction.class.getName());
 }

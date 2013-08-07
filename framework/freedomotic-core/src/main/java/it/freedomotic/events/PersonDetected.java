@@ -24,6 +24,7 @@ package it.freedomotic.events;
 import it.freedomotic.api.EventTemplate;
 
 import java.awt.Point;
+import java.util.logging.Logger;
 
 /**
  * A person is detected in a position with coordinates x,y of the environment.
@@ -84,4 +85,5 @@ public class PersonDetected
     public String getDefaultDestination() {
         return "app.event.sensor.person.movement.detected";
     }
+    private static final Logger LOG = Logger.getLogger(PersonDetected.class.getName());
 }

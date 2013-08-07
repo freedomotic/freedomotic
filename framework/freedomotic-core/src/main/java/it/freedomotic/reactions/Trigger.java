@@ -80,7 +80,7 @@ public final class Trigger
     public void register() {
         busChannel = new EventChannel();
         busChannel.setHandler(this);
-        Freedomotic.logger.info("Registering the trigger named '" + getName() + "'");
+        LOG.config("Registering the trigger named '" + getName() + "'");
         busChannel.consumeFrom(channel);
         numberOfExecutions = 0;
         suspensionStart = System.currentTimeMillis();
@@ -173,7 +173,7 @@ public final class Trigger
                 DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy kk:mm:ss.SSS");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(wakeup);
-                Freedomotic.logger.config("Trigger " + getName() + " is suspended until "
+                LOG.config("Trigger " + getName() + " is suspended until "
                         + formatter.format(calendar.getTime()));
 
                 //it is currently suspended
@@ -275,7 +275,7 @@ public final class Trigger
 
         if (payload instanceof EventTemplate) {
             EventTemplate event = (EventTemplate) payload;
-            Freedomotic.logger.fine("Trigger '" + this.getName() + "' filters event '" + event.getEventName()
+            LOG.fine("Trigger '" + this.getName() + "' filters event '" + event.getEventName()
                     + "' on channel " + this.getChannel());
 
             checker.check(event, this);
@@ -338,4 +338,5 @@ public final class Trigger
     private void setTriggerCheck(TriggerCheck checker) {
         this.checker = checker;
     }
+    private static final Logger LOG = Logger.getLogger(Trigger.class.getName());
 }

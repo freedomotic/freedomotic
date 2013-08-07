@@ -34,6 +34,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  *
@@ -304,4 +305,5 @@ public class TopologyUtils {
 
         return oddNodes;
     }
+    private static final Logger LOG = Logger.getLogger(TopologyUtils.class.getName());
 }

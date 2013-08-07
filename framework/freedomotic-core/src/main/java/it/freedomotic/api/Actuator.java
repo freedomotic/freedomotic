@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.api;
@@ -60,6 +58,7 @@ public abstract class Actuator
     private EventChannel eventChannel;
     private volatile Destination lastDestination;
     private ExecutorService executor;
+    private static final Logger LOG = Logger.getLogger(Actuator.class.getName());
 
     public Actuator(String pluginName, String manifest) {
         super(pluginName, manifest);
@@ -118,7 +117,7 @@ public abstract class Actuator
                 public void run() {
                     onStart();
                     isRunning = true;
-                    Freedomotic.logger.info("Actuator " + getName() + " started.");
+                    LOG.info("Actuator " + getName() + " started.");
                     PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.START);
                     Freedomotic.sendEvent(change);
                 }
@@ -135,7 +134,7 @@ public abstract class Actuator
                 public void run() {
                     isRunning = false;
                     onStop();
-                    Freedomotic.logger.info("Actuator " + getName() + " stopped.");
+                    LOG.info("Actuator " + getName() + " stopped.");
                     PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.STOP);
                     Freedomotic.sendEvent(change);
                 }
@@ -147,7 +146,7 @@ public abstract class Actuator
     @Override
     public void onMessage(final ObjectMessage message) {
         if (!isRunning) {
-            Freedomotic.logger.config("Actuator '" + getName()
+            LOG.config("Actuator '" + getName()
                     + "' receives a Command while is not running. Plugin try to turn on itself...");
             start();
         }
@@ -157,7 +156,7 @@ public abstract class Actuator
 
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
-                Freedomotic.logger.info(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
+                LOG.info(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
                 Runnable executorThread = new Runnable() {
                     @Override
                     public void run() {

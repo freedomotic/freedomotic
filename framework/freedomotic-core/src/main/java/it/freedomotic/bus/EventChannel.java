@@ -68,10 +68,10 @@ public class EventChannel
 
                 javax.jms.MessageConsumer subscriber = receiveSession.createConsumer(virtualTopic);
                 subscriber.setMessageListener(this);
-                Freedomotic.logger.config(getHandler().getClass().getSimpleName() + " listen on "
+                LOG.config(getHandler().getClass().getSimpleName() + " listen on "
                         + virtualTopic.toString());
             } catch (javax.jms.JMSException jmse) {
-                Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jmse));
+                LOG.severe(Freedomotic.getStackTraceInfo(jmse));
             }
         }
     }
@@ -99,15 +99,15 @@ public class EventChannel
                             } catch (InvocationTargetException ex) {
                                 Logger.getLogger(EventChannel.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (Exception e) {
-                                Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+                                LOG.severe(Freedomotic.getStackTraceInfo(e));
                             }
                         }
                     }
                 });
-                Freedomotic.logger.config(getHandler().getClass().getSimpleName() + " listen on "
+                LOG.config(getHandler().getClass().getSimpleName() + " listen on "
                         + virtualTopic.toString());
             } catch (javax.jms.JMSException jmse) {
-                Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jmse));
+                LOG.severe(Freedomotic.getStackTraceInfo(jmse));
             }
         }
     }
@@ -165,9 +165,10 @@ public class EventChannel
             consumer.close();
             receiveSession.unsubscribe(virtualTopic.toString());
         } catch (JMSException ex) {
-            Freedomotic.logger.severe("Unable to unsubscribe from event channel " + virtualTopic.toString());
+            LOG.severe("Unable to unsubscribe from event channel " + virtualTopic.toString());
         } catch (Exception e) {
-            Freedomotic.logger.warning(e.getMessage());
+            LOG.warning(e.getMessage());
         }
     }
+    private static final Logger LOG = Logger.getLogger(EventChannel.class.getName());
 }

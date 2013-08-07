@@ -23,6 +23,7 @@ package it.freedomotic.objects;
 
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.BooleanBehavior;
+import java.util.logging.Logger;
 
 /**
  *
@@ -159,4 +160,5 @@ public class BooleanBehaviorLogic
     public void setChanged(boolean value) {
         changed = value;
     }
+    private static final Logger LOG = Logger.getLogger(BooleanBehaviorLogic.class.getName());
 }

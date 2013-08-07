@@ -34,6 +34,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -56,7 +57,7 @@ public final class ResourcesManager {
                 //loads image from disk searching it recursively in folder
                 img = fetchFromHDD(new File(Info.getResourcesPath()), imageName);
             } catch (IOException e) {
-                Freedomotic.logger.warning("No image " + imageName + " found recursively in " + new File(Info.getResourcesPath()).getPath());
+                LOG.warning("No image " + imageName + " found recursively in " + new File(Info.getResourcesPath()).getPath());
             }
             if (img != null) {
                 //img loaded from disk. Now it is cached resized
@@ -77,7 +78,7 @@ public final class ResourcesManager {
                 //loads image from disk searching it recursively in folder
                 img = fetchFromHDD(new File(Info.getResourcesPath()), imageName);
             } catch (IOException e) {
-                Freedomotic.logger.warning("No image " + imageName + " found recursively in " + new File(Info.getResourcesPath()).getPath());
+                LOG.warning("No image " + imageName + " found recursively in " + new File(Info.getResourcesPath()).getPath());
             }
             if (img != null) {
                 //img succesfully loaded from disk. Now it is cached
@@ -154,4 +155,5 @@ public final class ResourcesManager {
 
     private ResourcesManager() {
     }
+    private static final Logger LOG = Logger.getLogger(ResourcesManager.class.getName());
 }

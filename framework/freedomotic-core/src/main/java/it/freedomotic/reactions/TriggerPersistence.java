@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import com.thoughtworks.xstream.XStream;
+import java.util.logging.Logger;
 
 /**
  *
@@ -52,13 +53,13 @@ public class TriggerPersistence {
 
     public static void saveTriggers(File folder) {
         if (list.isEmpty()) {
-            Freedomotic.logger.warning("There are no triggers to persist, " + folder.getAbsolutePath()
+            LOG.warning("There are no triggers to persist, " + folder.getAbsolutePath()
                     + " will not be altered.");
             return;
         }
 
         if (!folder.isDirectory()) {
-            Freedomotic.logger.warning(folder.getAbsoluteFile() + " is not a valid trigger folder. Skipped");
+            LOG.warning(folder.getAbsoluteFile() + " is not a valid trigger folder. Skipped");
             return;
         }
 
@@ -66,7 +67,7 @@ public class TriggerPersistence {
         deleteTriggerFiles(folder);
 
         try {
-            Freedomotic.logger.config("Saving triggers to file in " + folder.getAbsolutePath());
+            LOG.config("Saving triggers to file in " + folder.getAbsolutePath());
 
             for (Trigger trigger : list) {
                 if (trigger.isToPersist()) {
@@ -87,8 +88,8 @@ public class TriggerPersistence {
                 }
             }
         } catch (Exception e) {
-            Freedomotic.logger.info(e.getLocalizedMessage());
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.info(e.getLocalizedMessage());
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -159,7 +160,7 @@ public class TriggerPersistence {
                             list.add(trigger); //only in the list not registred. I will be registred only if used in mapping
                         }
                     } else {
-                        Freedomotic.logger.warning("Trigger '" + trigger.getName() + "' is already in the list");
+                        LOG.warning("Trigger '" + trigger.getName() + "' is already in the list");
                     }
 
                     summary.append(trigger.getUUID()).append("\t\t").append(trigger.getName()).append("\t\t\t")
@@ -173,10 +174,10 @@ public class TriggerPersistence {
                 //Close the output stream
                 indexfile.close();
             } else {
-                Freedomotic.logger.info("No triggers to load from this folder " + folder.toString());
+                LOG.info("No triggers to load from this folder " + folder.toString());
             }
         } catch (Exception e) {
-            Freedomotic.logger.severe("Exception while loading this trigger.\n" + Freedomotic.getStackTraceInfo(e));
+            LOG.severe("Exception while loading this trigger.\n" + Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -197,7 +198,7 @@ public class TriggerPersistence {
         int postSize = TriggerPersistence.size();
 
         if (!(postSize == (preSize + 1))) {
-            Freedomotic.logger.severe("Error while while adding and registering trigger '" + t.getName() + "'");
+            LOG.severe("Error while while adding and registering trigger '" + t.getName() + "'");
         }
     }
 
@@ -216,7 +217,7 @@ public class TriggerPersistence {
         int postSize = TriggerPersistence.size();
 
         if (!(postSize == (preSize + 1))) {
-            Freedomotic.logger.severe("Error while while adding trigger '" + t.getName() + "'");
+            LOG.severe("Error while while adding trigger '" + t.getName() + "'");
         }
     }
 
@@ -227,13 +228,13 @@ public class TriggerPersistence {
             t.unregister();
             list.remove(t);
         } catch (Exception e) {
-            Freedomotic.logger.severe("Error while while unregistering the trigger '" + t.getName() + "'");
+            LOG.severe("Error while while unregistering the trigger '" + t.getName() + "'");
         }
 
         int postSize = TriggerPersistence.size();
 
         if (!(postSize == (preSize - 1))) {
-            Freedomotic.logger.severe("Error while while removing trigger '" + t.getName() + "'");
+            LOG.severe("Error while while removing trigger '" + t.getName() + "'");
         }
     }
 
@@ -257,7 +258,7 @@ public class TriggerPersistence {
             }
         }
 
-        Freedomotic.logger.warning("Searching for a trigger named '" + name + "' but it doesen't exist.");
+        LOG.warning("Searching for a trigger named '" + name + "' but it doesen't exist.");
 
         return null;
     }
@@ -287,4 +288,5 @@ public class TriggerPersistence {
     public static int size() {
         return list.size();
     }
+    private static final Logger LOG = Logger.getLogger(TriggerPersistence.class.getName());
 }

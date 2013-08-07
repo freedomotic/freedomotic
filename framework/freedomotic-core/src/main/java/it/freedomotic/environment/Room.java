@@ -36,6 +36,7 @@ import it.freedomotic.util.Edge;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
@@ -60,7 +61,7 @@ public class Room
                     gate.getTo(),
                     gate);
         } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -100,15 +101,15 @@ public class Room
             // operazione di dequeue
             Room node = queue.poll();
 
-            //Freedomotic.logger.info("Evaluating node " + node.getPojo().getName());
+            //LOG.info("Evaluating node " + node.getPojo().getName());
             if (getEnv().getGraph().getEdgeSet(node) != null) { //if this room (the node) has adiacent rooms
 
                 for (Object object : getEnv().getGraph().getEdgeSet(node)) {
                     Edge adiacent = (Edge) object;
 
-                    //Freedomotic.logger.info("  " + node.getPojo().getName() + " is linked with arch " + adiacent.toString());
+                    //LOG.info("  " + node.getPojo().getName() + " is linked with arch " + adiacent.toString());
                     if (!visited.contains(adiacent)) {
-                        //Freedomotic.logger.info("    This arch is not visited ");
+                        //LOG.info("    This arch is not visited ");
                         visited.add(adiacent);
 
                         //operazione di enqueue coda
@@ -122,13 +123,13 @@ public class Room
                                 queue.offer(y);
                                 addLink(node); //from node
                                 addLink(y); //to y
-                                //Freedomotic.logger.info("From " + node.getPojo().getName() + " you can reach " + y.getPojo().getName());
+                                //LOG.info("From " + node.getPojo().getName() + " you can reach " + y.getPojo().getName());
                             } else {
                                 queue.offer(x);
                                 addLink(node);
                                 addLink(x);
 
-                                //Freedomotic.logger.info("From " + node.getPojo().getName() + " you can reach " + x.getPojo().getName());
+                                //LOG.info("From " + node.getPojo().getName() + " you can reach " + x.getPojo().getName());
                             }
                         }
                     }
@@ -177,4 +178,5 @@ public class Room
 
         return hash;
     }
+    private static final Logger LOG = Logger.getLogger(Room.class.getName());
 }

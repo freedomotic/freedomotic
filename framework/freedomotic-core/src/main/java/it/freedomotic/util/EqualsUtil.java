@@ -21,6 +21,8 @@
  */
 package it.freedomotic.util;
 
+import java.util.logging.Logger;
+
 /**
  * Collected methods which allow easy implementation of
  * <code>equals</code>.
@@ -46,12 +48,12 @@ package it.freedomotic.util;
 public class EqualsUtil {
 
     static public boolean areEqual(boolean aThis, boolean aThat) {
-        //Freedomotic.logger.info("boolean");
+        //LOG.info("boolean");
         return aThis == aThat;
     }
 
     static public boolean areEqual(char aThis, char aThat) {
-        //Freedomotic.logger.info("char");
+        //LOG.info("char");
         return aThis == aThat;
     }
 
@@ -62,17 +64,17 @@ public class EqualsUtil {
          * implicit conversion.
          */
 
-        //Freedomotic.logger.info("long");
+        //LOG.info("long");
         return aThis == aThat;
     }
 
     static public boolean areEqual(float aThis, float aThat) {
-        //Freedomotic.logger.info("float");
+        //LOG.info("float");
         return Float.floatToIntBits(aThis) == Float.floatToIntBits(aThat);
     }
 
     static public boolean areEqual(double aThis, double aThat) {
-        //Freedomotic.logger.info("double");
+        //LOG.info("double");
         return Double.doubleToLongBits(aThis) == Double.doubleToLongBits(aThat);
     }
 
@@ -83,10 +85,11 @@ public class EqualsUtil {
      * arrays. See class comment.
      */
     static public boolean areEqual(Object aThis, Object aThat) {
-        //Freedomotic.logger.info("Object");
+        //LOG.info("Object");
         return (aThis == null) ? (aThat == null) : aThis.equals(aThat);
     }
 
     private EqualsUtil() {
     }
+    private static final Logger LOG = Logger.getLogger(EqualsUtil.class.getName());
 }

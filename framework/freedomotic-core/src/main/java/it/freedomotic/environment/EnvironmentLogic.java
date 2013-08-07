@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
@@ -186,6 +187,7 @@ public final class EnvironmentLogic {
 
                 if (!zones.contains(room)) {
                     Freedomotic.logger.info("Adding room " + room);
+                    
                     this.zones.add(room);
                 } else {
                     Freedomotic.logger.warning("Attempt to add a null or an already existent room " + room);
@@ -240,4 +242,6 @@ public final class EnvironmentLogic {
     public String toString() {
         return this.getPojo().getName();
     }
+    private static final Logger LOG = Logger.getLogger(EnvironmentLogic.class.getName());
+    
 }

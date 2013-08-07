@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
@@ -107,4 +108,5 @@ public class NaturalLanguageProcessor {
             return ob2.getSimilarity() - ob1.getSimilarity(); //descending order of similarity
         }
     }
+    private static final Logger LOG = Logger.getLogger(NaturalLanguageProcessor.class.getName());
 }

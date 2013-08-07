@@ -58,7 +58,7 @@ public class ConfigPersistence {
             //Close the output stream
             out.close();
 
-            //Freedomotic.logger.info("  configuration succesfully serialized");
+            //LOG.info("  configuration succesfully serialized");
         } catch (IOException ex) {
             Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -66,7 +66,7 @@ public class ConfigPersistence {
 
     public static Config deserialize(File file)
             throws IOException, ConversionException {
-        Freedomotic.logger.config("Deserializing configuration from " + file.getAbsolutePath());
+        LOG.config("Deserializing configuration from " + file.getAbsolutePath());
 
         XStream xstream = FreedomXStream.getXstream();
         xstream.autodetectAnnotations(true);
@@ -92,7 +92,7 @@ public class ConfigPersistence {
 
             return c;
         } catch (FileNotFoundException fileNotFoundException) {
-            Freedomotic.logger.warning(fileNotFoundException.getLocalizedMessage());
+            LOG.warning(fileNotFoundException.getLocalizedMessage());
         } finally {
             if (myInput != null) {
                 myInput.close();
@@ -104,4 +104,5 @@ public class ConfigPersistence {
 
     private ConfigPersistence() {
     }
+    private static final Logger LOG = Logger.getLogger(ConfigPersistence.class.getName());
 }

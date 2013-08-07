@@ -26,6 +26,7 @@
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.objects.EnvObjectLogic;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,4 +34,5 @@ import it.freedomotic.objects.EnvObjectLogic;
  */
 public class EmptyObject
         extends EnvObjectLogic {
+    private static final Logger LOG = Logger.getLogger(EmptyObject.class.getName());
 }

@@ -79,7 +79,7 @@ public final class EnvironmentPersistence {
     @RequiresPermissions("environments:save")
     public static void saveEnvironmentsToFolder(File folder) throws DaoLayerException {
         if (environments.isEmpty()) {
-            Freedomotic.logger.warning("There is no environment to persist, " + folder.getAbsolutePath() + " will not be altered.");
+            LOG.warning("There is no environment to persist, " + folder.getAbsolutePath() + " will not be altered.");
             return;
         }
 
@@ -240,7 +240,7 @@ public final class EnvironmentPersistence {
         ObjectPluginPlaceholder objectPlugin = (ObjectPluginPlaceholder) clientStorage.get(clazz);
 
         if (objectPlugin == null) {
-            Freedomotic.logger.warning("Doesen't exist an object class called " + clazz);
+            LOG.warning("Doesen't exist an object class called " + clazz);
 
             return null;
         }
@@ -250,7 +250,7 @@ public final class EnvironmentPersistence {
         try {
             loaded = EnvObjectPersistence.loadObject(templateFile);
         } catch (DaoLayerException ex) {
-            Freedomotic.logger.severe("Cannot join an object taken from template file " + templateFile);
+            LOG.severe("Cannot join an object taken from template file " + templateFile);
         }
 
         //changing the name and other properties invalidates related trigger and commands
@@ -331,12 +331,12 @@ public final class EnvironmentPersistence {
         BufferedWriter out = null;
 
         try {
-            Freedomotic.logger.info("Serializing environment to " + file);
+            LOG.info("Serializing environment to " + file);
             fstream = new FileWriter(file);
             out = new BufferedWriter(fstream);
             out.write(xml);
             //Close the output stream
-            Freedomotic.logger.info("Application environment " + env.getPojo().getName()
+            LOG.info("Application environment " + env.getPojo().getName()
                     + " succesfully serialized");
         } catch (IOException ex) {
             Logger.getLogger(Environment.class.getName()).log(Level.SEVERE, null, ex);
@@ -347,7 +347,7 @@ public final class EnvironmentPersistence {
 
     @RequiresPermissions("environments:save")
     public static void saveAs(EnvironmentLogic env, File folder) throws IOException {
-        Freedomotic.logger.config("Serializing new environment to " + folder);
+        LOG.config("Serializing new environment to " + folder);
 
         String fileName = folder.getName();
 
@@ -418,4 +418,5 @@ public final class EnvironmentPersistence {
         }
         return null;
     }
+    private static final Logger LOG = Logger.getLogger(EnvironmentPersistence.class.getName());
 }

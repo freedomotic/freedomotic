@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.logging.Logger;
 
 /**
  * Allows programs to modify the classpath during runtime.
@@ -104,4 +105,5 @@ public class ClassPathUpdater {
 
     private ClassPathUpdater() {
     }
+    private static final Logger LOG = Logger.getLogger(ClassPathUpdater.class.getName());
 }

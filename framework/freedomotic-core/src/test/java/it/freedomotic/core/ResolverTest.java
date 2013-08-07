@@ -142,4 +142,5 @@ public class ResolverTest {
         assertEquals("15", result.getPayload().getStatements("nine").get(0).getValue());
          assertEquals("it's hot", result.getPayload().getStatements("behaviorValue").get(0).getValue());
     }
+    private static final Logger LOG = Logger.getLogger(ResolverTest.class.getName());
 }

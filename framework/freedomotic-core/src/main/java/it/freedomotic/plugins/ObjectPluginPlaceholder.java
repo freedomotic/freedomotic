@@ -37,6 +37,7 @@ import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.security.Auth;
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  *
@@ -128,6 +129,7 @@ public class ObjectPluginPlaceholder
         EnvObjectLogic obj = EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
         obj.setEnv(env);
     }
+    private static final Logger LOG = Logger.getLogger(ObjectPluginPlaceholder.class.getName());
 
 
 }

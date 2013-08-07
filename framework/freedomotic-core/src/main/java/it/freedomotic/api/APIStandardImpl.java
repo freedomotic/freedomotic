@@ -20,6 +20,7 @@ import it.freedomotic.plugins.ClientStorage;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Implements the standard freedomotic APIs available to plugins. This class
@@ -118,4 +119,5 @@ public class APIStandardImpl
     public ClientStorage getClientStorage() {
         return clientStorage;
     }
+    private static final Logger LOG = Logger.getLogger(APIStandardImpl.class.getName());
 }

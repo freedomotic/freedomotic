@@ -58,13 +58,13 @@ public class CommandPersistence {
             if (!userCommands.containsKey(c.getName().trim().toLowerCase())) {
                 userCommands.put(c.getName(),
                         c);
-                Freedomotic.logger.fine("Added command '" + c.getName() + "' to the list of user commands");
+                LOG.fine("Added command '" + c.getName() + "' to the list of user commands");
             } else {
-                Freedomotic.logger.config("Command '" + c.getName()
+                LOG.config("Command '" + c.getName()
                         + "' already in the list of user commands. Skipped");
             }
         } else {
-            Freedomotic.logger.warning("Attempt to add a null user command to the list. Skipped");
+            LOG.warning("Attempt to add a null user command to the list. Skipped");
         }
     }
 
@@ -104,7 +104,7 @@ public class CommandPersistence {
         Command command = hardwareCommands.get(name);
 
         if (command == null) {
-            Freedomotic.logger.severe("Missing command '" + name + "'. "
+            LOG.severe("Missing command '" + name + "'. "
                     + "Maybe the related plugin is not installed or cannot be loaded");
         }
 
@@ -160,7 +160,7 @@ public class CommandPersistence {
                         summary.append(file.getName()).append("\t\t").append(command.getName())
                                 .append("\t\t\t").append(command.getReceiver()).append("\n");
                     } catch (CannotResolveClassException e) {
-                        Freedomotic.logger.severe("Cannot unserialize command due to unrecognized class '"
+                        LOG.severe("Cannot unserialize command due to unrecognized class '"
                                 + e.getMessage() + "' in \n" + xml);
                     }
                 }
@@ -181,21 +181,21 @@ public class CommandPersistence {
                 }
             }
         } else {
-            Freedomotic.logger.info("No commands to load from this folder " + folder.toString());
+            LOG.info("No commands to load from this folder " + folder.toString());
         }
     }
 
     public static void saveCommands(File folder) {
         try {
             if (userCommands.isEmpty()) {
-                Freedomotic.logger.warning("There are no commands to persist, " + folder.getAbsolutePath()
+                LOG.warning("There are no commands to persist, " + folder.getAbsolutePath()
                         + " will not be altered.");
 
                 return;
             }
 
             if (!folder.isDirectory()) {
-                Freedomotic.logger.warning(folder.getAbsoluteFile() + " is not a valid command folder. Skipped");
+                LOG.warning(folder.getAbsoluteFile() + " is not a valid command folder. Skipped");
 
                 return;
             }
@@ -220,8 +220,8 @@ public class CommandPersistence {
                 }
             }
         } catch (Exception e) {
-            Freedomotic.logger.info(e.getLocalizedMessage());
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.info(e.getLocalizedMessage());
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -249,4 +249,5 @@ public class CommandPersistence {
 
     private CommandPersistence() {
     }
+    private static final Logger LOG = Logger.getLogger(CommandPersistence.class.getName());
 }

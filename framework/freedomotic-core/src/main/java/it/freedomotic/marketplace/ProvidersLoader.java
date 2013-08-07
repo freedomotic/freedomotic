@@ -43,6 +43,6 @@ public interface ProvidersLoader {
 //        //the list of files in the jar
 //        for (File jar : jarList) {
 //            if (jar.isFile()) {
-//                Freedomotic.logger.info(SEPARATOR);
+//                LOG.info(SEPARATOR);
 //                log.info("Searching for Plugins in " + jar.getName()); 
 }

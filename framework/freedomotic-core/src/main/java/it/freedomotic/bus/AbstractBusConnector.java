@@ -58,7 +58,7 @@ public class AbstractBusConnector {
         if (connection == null) { //not already connected to the bus
 
             try {
-                Freedomotic.logger.config("Creating new messaging broker");
+                LOG.config("Creating new messaging broker");
 
                 //create an embedded messaging broker
                 //BROKER.setBrokerName("freedomotic");
@@ -69,7 +69,7 @@ public class AbstractBusConnector {
 //                //websocket connector for javascript apps
                     BROKER.addConnector(Info.BROKER_WEBSOCKET);
                 } catch (Exception exception) {
-                    Freedomotic.logger.warning("Broker connector not started due to "
+                    LOG.warning("Broker connector not started due to "
                             + exception.getLocalizedMessage());
                 }
 
@@ -94,7 +94,7 @@ public class AbstractBusConnector {
                 new StompDispatcher(); //just for testing, don't mind it
                 connection.start();
             } catch (JMSException jMSException) {
-                Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jMSException));
+                LOG.severe(Freedomotic.getStackTraceInfo(jMSException));
             } catch (Exception ex) {
                 Logger.getLogger(AbstractBusConnector.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -108,4 +108,5 @@ public class AbstractBusConnector {
             Logger.getLogger(AbstractBusConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    private static final Logger LOG = Logger.getLogger(AbstractBusConnector.class.getName());
 }

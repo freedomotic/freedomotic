@@ -33,6 +33,7 @@ import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.plugins.ClientStorage;
+import java.util.logging.Logger;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
@@ -74,9 +75,10 @@ public class JoinPlugin
             Plugin plugin = new Plugin(manifest.getProperty("name"),
                     manifest);
             clientStorage.add(plugin);
-            Freedomotic.logger.info("Enqueued remote plugin " + plugin.getName());
+            LOG.info("Enqueued remote plugin " + plugin.getName());
         } catch (JMSException ex) {
-            Freedomotic.logger.severe("Join Plugin receives a not valid plugin manifest");
+            LOG.severe("Join Plugin receives a not valid plugin manifest");
         }
     }
+    private static final Logger LOG = Logger.getLogger(JoinPlugin.class.getName());
 }

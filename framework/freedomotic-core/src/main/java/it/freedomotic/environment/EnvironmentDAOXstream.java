@@ -191,12 +191,12 @@ public class EnvironmentDAOXstream
         BufferedWriter out = null;
 
         try {
-            Freedomotic.logger.config("Serializing environment to " + file);
+            LOG.config("Serializing environment to " + file);
             fstream = new FileWriter(file);
             out = new BufferedWriter(fstream);
             out.write(xml);
             //Close the output stream
-            Freedomotic.logger.info("Application environment " + env.getName() + " succesfully serialized");
+            LOG.info("Application environment " + env.getName() + " succesfully serialized");
         } catch (IOException ex) {
             Logger.getLogger(Environment.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -237,4 +237,5 @@ public class EnvironmentDAOXstream
 //        //envLogic.init();
 //        add(envLogic, false);
     }
+    private static final Logger LOG = Logger.getLogger(EnvironmentDAOXstream.class.getName());
 }

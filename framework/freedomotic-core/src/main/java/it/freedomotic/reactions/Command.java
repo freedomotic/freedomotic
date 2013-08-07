@@ -49,6 +49,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 /**
  *
@@ -143,7 +144,7 @@ public final class Command implements Serializable, Cloneable {
         if (properties.getProperty("behavior") != null) {
             return properties.getProperty("behavior");
         } else {
-            Freedomotic.logger.warning("Undefined property 'behavior' in command '" + this.getName() + "'");
+            LOG.warning("Undefined property 'behavior' in command '" + this.getName() + "'");
 
             return "undefined-behavior";
         }
@@ -303,4 +304,5 @@ public final class Command implements Serializable, Cloneable {
     public void setReplyTimeout(int timeout) {
         this.timeout = timeout;
     }
+    private static final Logger LOG = Logger.getLogger(Command.class.getName());
 }

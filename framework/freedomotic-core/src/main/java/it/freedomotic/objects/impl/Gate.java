@@ -41,6 +41,7 @@ import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.util.TopologyUtils;
+import java.util.logging.Logger;
 
 /**
  *
@@ -234,7 +235,7 @@ public class Gate
                 }
             }
         } else {
-            Freedomotic.logger.severe("The gate '" + getPojo().getName()
+            LOG.severe("The gate '" + getPojo().getName()
                     + "' is not linked to any any environment");
         }
 
@@ -245,14 +246,14 @@ public class Gate
         } else {
             //the gate interects two equals zones
             if (from != null) {
-                Freedomotic.logger.warning("The gate '" + getPojo().getName() + "' connects the same zones ["
+                LOG.warning("The gate '" + getPojo().getName() + "' connects the same zones ["
                         + from.getPojo().getName() + "; " + to.getPojo().getName()
                         + "]. This is not possible.");
             }
         }
 
         //notify if the passage connect two rooms
-        Freedomotic.logger.info("The gate '" + getPojo().getName() + "' connects " + from + " to " + to);
+        LOG.info("The gate '" + getPojo().getName() + "' connects " + from + " to " + to);
     }
 
     @Override
@@ -409,4 +410,5 @@ public class Gate
         TriggerPersistence.add(turnsOpen);
         TriggerPersistence.add(turnsClosed);
     }
+    private static final Logger LOG = Logger.getLogger(Gate.class.getName());
 }

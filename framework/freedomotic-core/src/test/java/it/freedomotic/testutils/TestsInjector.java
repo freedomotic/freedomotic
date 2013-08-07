@@ -25,6 +25,7 @@ import it.freedomotic.plugins.ClientStorageInMemory;
 
 import it.freedomotic.plugins.filesystem.PluginLoaderFilesystem;
 import it.freedomotic.reactions.TriggerPersistence;
+import java.util.logging.Logger;
 import org.junit.Ignore;
 
 /**
@@ -49,4 +50,5 @@ public class TestsInjector
         bind(API.class).to(APIStandardImpl.class).in(Singleton.class);
         bind(ProtocolRead.class);
     }
+    private static final Logger LOG = Logger.getLogger(TestsInjector.class.getName());
 }

@@ -152,11 +152,11 @@ public class PluginLoaderFilesystem {
                     unzipAndDelete(zipFile);
                     loadPlugin(new File(Info.PATH_OBJECTS_FOLDER + "/" + pluginName));
                 } else {
-                    Freedomotic.logger.warning("No installable Freedomotic plugins at URL " + fromURL);
+                    LOG.warning("No installable Freedomotic plugins at URL " + fromURL);
                 }
             }
         } catch (Exception ex) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
 
             return false; //not done
         }
@@ -165,12 +165,12 @@ public class PluginLoaderFilesystem {
     }
 
     private boolean unzipAndDelete(File zipFile) {
-        Freedomotic.logger.info("Uncompressing plugin archive " + zipFile);
+        LOG.info("Uncompressing plugin archive " + zipFile);
 
         try {
             Unzip.unzip(zipFile.toString());
         } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
 
             return false;
         }
@@ -179,7 +179,7 @@ public class PluginLoaderFilesystem {
         try {
             zipFile.delete();
         } catch (Exception e) {
-            Freedomotic.logger.info("Unable to delete compressed file " + zipFile.toString());
+            LOG.info("Unable to delete compressed file " + zipFile.toString());
         }
 
         return true; //done
@@ -264,9 +264,9 @@ public class PluginLoaderFilesystem {
                 }
             }
         } catch (FileNotFoundException foundEx) {
-            Freedomotic.logger.config("No file to copy in " + source);
+            LOG.config("No file to copy in " + source);
         } catch (IOException ex) {
-            Freedomotic.logger.warning(ex.getMessage());
+            LOG.warning(ex.getMessage());
         } finally {
             try {
                 if (input != null) {
@@ -316,4 +316,5 @@ public class PluginLoaderFilesystem {
         //TODO: add also the other properties
         return client;
     }
+    private static final Logger LOG = Logger.getLogger(PluginLoaderFilesystem.class.getName());
 }

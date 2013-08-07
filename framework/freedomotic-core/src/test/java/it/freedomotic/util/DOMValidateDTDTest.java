@@ -34,6 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
+import java.util.logging.Logger;
 
 /**
  *
@@ -102,4 +103,5 @@ public class DOMValidateDTDTest {
         Assert.assertEquals("Suspension time", 1000, trigger.getSuspensionTime());
         Assert.assertEquals("Suspension time", 1000, trigger2.getSuspensionTime());
     }
+    private static final Logger LOG = Logger.getLogger(DOMValidateDTDTest.class.getName());
 }

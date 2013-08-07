@@ -37,6 +37,7 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
+import java.util.logging.Logger;
 
 /**
  *
@@ -110,7 +111,7 @@ public class ElectricDevice
     }
 
     private void setOn() {
-        Freedomotic.logger.config("Setting behavior 'powered' of object '" + getPojo().getName() + "' to true");
+        LOG.config("Setting behavior 'powered' of object '" + getPojo().getName() + "' to true");
 
         //if not already on
         if (powered.getValue() != true) {
@@ -123,7 +124,7 @@ public class ElectricDevice
     }
 
     private void setOff() {
-        Freedomotic.logger.config("Setting behavior 'powered' of object '" + getPojo().getName() + "' to false");
+        LOG.config("Setting behavior 'powered' of object '" + getPojo().getName() + "' to false");
 
         //if not already off
         if (powered.getValue() != false) {
@@ -227,4 +228,5 @@ public class ElectricDevice
         TriggerPersistence.add(turnsOn);
         TriggerPersistence.add(turnsOff);
     }
+    private static final Logger LOG = Logger.getLogger(ElectricDevice.class.getName());
 }

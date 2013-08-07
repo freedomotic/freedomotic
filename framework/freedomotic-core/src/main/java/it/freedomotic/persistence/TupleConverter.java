@@ -36,6 +36,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.util.logging.Logger;
 
 /**
  *
@@ -91,4 +92,5 @@ public class TupleConverter
     public boolean canConvert(Class clazz) {
         return clazz.equals(Tuples.class);
     }
+    private static final Logger LOG = Logger.getLogger(TupleConverter.class.getName());
 }

@@ -25,6 +25,8 @@
  */
 package it.freedomotic.util;
 
+import java.util.logging.Logger;
+
 public class DamerauLevenshtein {
 
     private String compOne;
@@ -118,4 +120,5 @@ public class DamerauLevenshtein {
 
         return m;
     }
+    private static final Logger LOG = Logger.getLogger(DamerauLevenshtein.class.getName());
 }

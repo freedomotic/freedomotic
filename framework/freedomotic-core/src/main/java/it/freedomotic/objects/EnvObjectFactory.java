@@ -25,6 +25,7 @@ import it.freedomotic.exceptions.DaoLayerException;
 
 import it.freedomotic.model.object.EnvObject;
 import java.net.URLClassLoader;
+import java.util.logging.Logger;
 
 /**
  *
@@ -71,4 +72,5 @@ public final class EnvObjectFactory {
                     + "like it.freedomotic.objects.impl.Light not it.freedomotic.objects.impl.ElectricDevice.Light");
         }
     }
+    private static final Logger LOG = Logger.getLogger(EnvObjectFactory.class.getName());
 }

@@ -33,6 +33,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A storage of loaded plugins and connected clients
@@ -58,7 +59,7 @@ public final class ClientStorageInMemory implements ClientStorage {
                         "Plugin",
                         "Not compatible with this framework version");
                 clients.add(client);
-                Freedomotic.logger.warning("Plugin " + c.getName()
+                LOG.warning("Plugin " + c.getName()
                         + " is not compatible with this framework version.");
             }
 
@@ -66,7 +67,7 @@ public final class ClientStorageInMemory implements ClientStorage {
                     new PluginHasChanged(ClientStorageInMemory.class,
                     c.getName(), PluginActions.ENQUEUE);
             Freedomotic.sendEvent(event);
-            Freedomotic.logger.log(Level.CONFIG,
+            LOG.log(Level.CONFIG,
                     "{0} added to plugins list.",
                     c.getName());
         }
@@ -308,4 +309,5 @@ public final class ClientStorageInMemory implements ClientStorage {
             return m1.getName().compareTo(m2.getName());
         }
     }
+    private static final Logger LOG = Logger.getLogger(ClientStorageInMemory.class.getName());
 }

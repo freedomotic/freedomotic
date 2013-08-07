@@ -12,6 +12,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.logging.Logger;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 
@@ -67,4 +68,5 @@ public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
         }
         return annotation.value();
     }
+    private static final Logger LOG = Logger.getLogger(GuiceJUnitRunner.class.getName());
 }

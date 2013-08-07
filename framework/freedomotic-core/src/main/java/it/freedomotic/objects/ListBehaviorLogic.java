@@ -25,6 +25,7 @@ import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.ListBehavior;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * This behavior accepts a string which is an element of the list or "next" or
@@ -140,4 +141,5 @@ public class ListBehaviorLogic
     public void setChanged(boolean value) {
         changed = value;
     }
+    private static final Logger LOG = Logger.getLogger(ListBehaviorLogic.class.getName());
 }

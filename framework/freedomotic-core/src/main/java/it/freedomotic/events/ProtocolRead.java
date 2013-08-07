@@ -34,6 +34,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.TriggerCheck;
 
 import it.freedomotic.reactions.Trigger;
+import java.util.logging.Logger;
 
 /**
  * Channel <b>app.event.sensor.protocol.read.PROTOCOL_NAME</b> informs about
@@ -93,4 +94,5 @@ public final class ProtocolRead
             return "app.event.sensor.protocol.read." + protocol.trim().toLowerCase();
         }
     }
+    private static final Logger LOG = Logger.getLogger(ProtocolRead.class.getName());
 }

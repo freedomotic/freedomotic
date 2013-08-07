@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 /**
  *
@@ -142,7 +143,7 @@ public class EventTemplate
             payload.addStatement("sender",
                     getSender());
         } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -169,4 +170,5 @@ public class EventTemplate
     public Payload getPayload() {
         return payload;
     }
+    private static final Logger LOG = Logger.getLogger(EventTemplate.class.getName());
 }

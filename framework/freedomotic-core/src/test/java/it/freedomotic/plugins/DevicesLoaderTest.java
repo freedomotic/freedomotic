@@ -25,6 +25,7 @@
  */
 package it.freedomotic.plugins;
 
+import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,4 +57,5 @@ public class DevicesLoaderTest {
 //         loader.recursiveSearchIn(folder);
 //         Assert.assertTrue("At least one plugin is loaded succesfully", loader.ADDONS.size() > 0);
     }
+    private static final Logger LOG = Logger.getLogger(DevicesLoaderTest.class.getName());
 }

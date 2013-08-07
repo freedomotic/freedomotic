@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -158,7 +159,7 @@ public final class Resolver {
                 tmp.add(clonedCmd);
             }
         } catch (Exception e) {
-            Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+            LOG.warning(Freedomotic.getStackTraceInfo(e));
         }
 
         return tmp;
@@ -204,7 +205,7 @@ public final class Resolver {
                         String propertyValueResolved = propertyValue.replaceFirst(occurrence, replacer);
                         aProperty.setValue(propertyValueResolved);
                     } else {
-                        Freedomotic.logger.severe("Variable '" + referenceToResolve
+                        LOG.severe("Variable '" + referenceToResolve
                                 + "' cannot be resolved in command '" + command.getName() + "'.\n"
                                 + "Availabe tokens are: " + context.toString());
                     }
@@ -223,17 +224,17 @@ public final class Resolver {
                     String script = possibleScript.substring(1); //removing equal sign on the head
 
                     if (js == null) {
-                        Freedomotic.logger.severe("Cannot instatiate a JavaScript engine");
+                        LOG.severe("Cannot instatiate a JavaScript engine");
                     }
 
                     try {
                         js.eval(script);
                     } catch (ScriptException scriptException) {
-                        Freedomotic.logger.severe(scriptException.getMessage());
+                        LOG.severe(scriptException.getMessage());
                     }
 
                     if (js.get(key) == null) {
-                        Freedomotic.logger.severe("Script evaluation has returned a null value, maybe the key '"
+                        LOG.severe("Script evaluation has returned a null value, maybe the key '"
                                 + key + "' is not evaluated properly.");
                     }
 
@@ -241,7 +242,7 @@ public final class Resolver {
                     success = true;
                 } catch (Exception ex) {
                     success = false;
-                    Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+                    LOG.severe(Freedomotic.getStackTraceInfo(ex));
                 }
             }
 
@@ -290,7 +291,7 @@ public final class Resolver {
                     String tokenValue = trigger.getPayload().getStatementValue(tokenKey);
 
 
-                    Freedomotic.logger.severe("Variable '" + tokenValue + "' cannot be resolved in trigger '"
+                    LOG.severe("Variable '" + tokenValue + "' cannot be resolved in trigger '"
                             + trigger.getName() + "'.\n" + "Availabe tokens are: "
                             + context.toString());
 
@@ -315,17 +316,17 @@ public final class Resolver {
                     String script = possibleScript.substring(1); 
 
                     if (js == null) {
-                        Freedomotic.logger.severe("Cannot instatiate a JavaScript engine");
+                        LOG.severe("Cannot instatiate a JavaScript engine");
                     }
 
                     try {
                         js.eval(script);
                     } catch (ScriptException scriptException) {
-                        Freedomotic.logger.severe(scriptException.getMessage());
+                        LOG.severe(scriptException.getMessage());
                     }
 
                     if (js.get(key) == null) {
-                        Freedomotic.logger.severe("Script evaluation in trigger '" + trigger.getName()
+                        LOG.severe("Script evaluation in trigger '" + trigger.getName()
                                 + "' has returned a null value, maybe the key '" + key
                                 + "' is not evaluated properly.");
                     }
@@ -334,7 +335,7 @@ public final class Resolver {
                     success = true;
                 } catch (Exception ex) {
                     success = false;
-                    Freedomotic.logger.severe(ex.getMessage());
+                    LOG.severe(ex.getMessage());
                 }
             }
 
@@ -456,4 +457,5 @@ public final class Resolver {
         command = null;
         trigger = null;
     }
+    private static final Logger LOG = Logger.getLogger(Resolver.class.getName());
 }

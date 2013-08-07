@@ -25,6 +25,8 @@
  */
 package it.freedomotic.util;
 
+import java.util.logging.Logger;
+
 /**
  * Generates an unique ID as a progressive int. Used to mark events and command
  * with a numeric unique value
@@ -49,4 +51,5 @@ public class UidGenerator {
 
     private UidGenerator() {
     }
+    private static final Logger LOG = Logger.getLogger(UidGenerator.class.getName());
 }

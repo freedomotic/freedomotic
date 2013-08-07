@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 /**
  *
@@ -89,7 +90,7 @@ public final class TriggerCheck {
                             .append(resolved.getPayload().toString()).append("'\nconsistent with received event '")
                             .append(event.getEventName()).append("' ").append(event.getPayload().toString());
                     applySensorNotification(resolved, event);
-                    Freedomotic.logger.info(buff.toString());
+                    LOG.info(buff.toString());
                     return true;
                 }
             } else {
@@ -101,7 +102,7 @@ public final class TriggerCheck {
                                 .append(resolved.getPayload().toString()).append("'\nconsistent with received event '")
                                 .append(event.getEventName()).append("' ").append(event.getPayload().toString());
                         executeTriggeredAutomations(resolved, event);
-                        Freedomotic.logger.info(buff.toString());
+                        LOG.info(buff.toString());
                         return true;
                     }
                 }
@@ -111,11 +112,11 @@ public final class TriggerCheck {
             buff.append("[NOT CONSISTENT] registred trigger '").append(trigger.getName()).append("' ")
                     .append(trigger.getPayload().toString()).append("'\nnot consistent with received event '")
                     .append(event.getEventName()).append("' ").append(event.getPayload().toString());
-            Freedomotic.logger.config(buff.toString());
+            LOG.config(buff.toString());
 
             return false;
         } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
 
             return false;
         }
@@ -164,13 +165,13 @@ public final class TriggerCheck {
                 done = true;
 
                 long elapsedTime = System.currentTimeMillis() - event.getCreation();
-                Freedomotic.logger.info("Sensor notification '" + resolved.getName() + "' applied to object '"
+                LOG.info("Sensor notification '" + resolved.getName() + "' applied to object '"
                         + object.getPojo().getName() + "' in " + elapsedTime + "ms.");
             }
         }
 
         if (!done) {
-            Freedomotic.logger.warning("Hardware trigger " + resolved.getName()
+            LOG.warning("Hardware trigger " + resolved.getName()
                     + " is not associated to any object.");
         }
     }
@@ -193,7 +194,7 @@ public final class TriggerCheck {
                             if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {
                                 reactionTrigger.setExecuted();
                                 found = true;
-                                Freedomotic.logger.fine("Try to execute reaction " + reaction.toString());
+                                LOG.fine("Try to execute reaction " + reaction.toString());
 
                                 try {
                                     //executes the commands in sequence (only the first sequence is used) 
@@ -233,22 +234,22 @@ public final class TriggerCheck {
                                             Command reply = Freedomotic.sendCommand(resolvedCommand); //blocking wait until executed
 
                                             if (reply == null) {
-                                                Freedomotic.logger.warning("Unreceived reply within given time ("
+                                                LOG.warning("Unreceived reply within given time ("
                                                         + command.getReplyTimeout()
                                                         + "ms) for command " + command.getName());
                                             } else {
                                                 if (reply.isExecuted()) {
-                                                    Freedomotic.logger.fine("Executed succesfully " + command.getName());
+                                                    LOG.fine("Executed succesfully " + command.getName());
                                                 } else {
-                                                    Freedomotic.logger.warning("Unable to execute command"
+                                                    LOG.warning("Unable to execute command"
                                                             + command.getName());
                                                 }
                                             }
                                         }
                                     }
                                 } catch (Exception e) {
-                                    Freedomotic.logger.severe("Exception while merging event parameters into reaction.\n");
-                                    Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+                                    LOG.severe("Exception while merging event parameters into reaction.\n");
+                                    LOG.severe(Freedomotic.getStackTraceInfo(e));
 
                                     return;
                                 }
@@ -256,7 +257,7 @@ public final class TriggerCheck {
                                 String info =
                                         "Executing automation '" + reaction.toString() + "' takes "
                                         + (System.currentTimeMillis() - event.getCreation()) + "ms.";
-                                Freedomotic.logger.info(info);
+                                LOG.info(info);
 
                                 MessageEvent message = new MessageEvent(null, info);
                                 message.setType("callout"); //display as callout on frontends
@@ -265,11 +266,12 @@ public final class TriggerCheck {
                         }
 
                         if (!found) {
-                            Freedomotic.logger.config("No valid reaction bound to trigger '" + trigger.getName() + "'");
+                            LOG.config("No valid reaction bound to trigger '" + trigger.getName() + "'");
                         }
                     }
                 };
 
         EXECUTOR.execute(automation);
     }
+    private static final Logger LOG = Logger.getLogger(TriggerCheck.class.getName());
 }

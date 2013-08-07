@@ -76,13 +76,13 @@ public final class CommandChannel
                 this.channelName = channelName;
                 consumer = receiveSession.createConsumer(queue);
                 consumer.setMessageListener(this);
-                Freedomotic.logger.config(getHandler().getClass().getSimpleName() + " listen on "
+                LOG.config(getHandler().getClass().getSimpleName() + " listen on "
                         + queue.toString());
             } catch (javax.jms.JMSException jmse) {
-                Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jmse));
+                LOG.severe(Freedomotic.getStackTraceInfo(jmse));
             }
         } else {
-            Freedomotic.logger.severe("No handler for command channel " + channelName);
+            LOG.severe("No handler for command channel " + channelName);
         }
     }
 
@@ -95,7 +95,7 @@ public final class CommandChannel
             Profiler.incrementSentReplies();
             producer.send(channel, msg);
         } catch (JMSException jmse) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(jmse));
+            LOG.severe(Freedomotic.getStackTraceInfo(jmse));
         }
     }
 
@@ -118,7 +118,7 @@ public final class CommandChannel
                 producer.send(destination, msg);
                 Profiler.incrementSentCommands();
                 //the receive() call is blocking so we execute it in a thread
-                Freedomotic.logger.config("Send and await reply to command '" + command.getName() + "' for "
+                LOG.config("Send and await reply to command '" + command.getName() + "' for "
                         + command.getReplyTimeout() + "ms");
 
                 Message jmsResponse = responseConsumer.receive(command.getReplyTimeout());
@@ -128,13 +128,13 @@ public final class CommandChannel
 
                     //a command is sent, we expect a command as reply
                     Command reply = (Command) objMessage.getObject();
-                    Freedomotic.logger.config("Reply to command '" + command.getName() + "' received. Result is "
+                    LOG.config("Reply to command '" + command.getName() + "' received. Result is "
                             + reply.getProperty("result"));
                     Profiler.incrementReceivedReplies();
 
                     return reply;
                 } else {
-                    Freedomotic.logger.config("Command '" + command.getName() + "' timed out after "
+                    LOG.config("Command '" + command.getName() + "' timed out after "
                             + command.getReplyTimeout() + "ms");
                     Profiler.incrementTimeoutedReplies();
                 }
@@ -152,7 +152,7 @@ public final class CommandChannel
                 return command; //always say it is executed (it's not sure but the caller is not interested: best effort)
             }
         } catch (JMSException ex) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
             command.setExecuted(false);
 
             return command;
@@ -182,7 +182,7 @@ public final class CommandChannel
             if (aMessage instanceof ObjectMessage) {
                 getHandler().onMessage((ObjectMessage) aMessage);
             } else {
-                Freedomotic.logger.severe("A message is received by " + channelName
+                LOG.severe("A message is received by " + channelName
                         + " but it is not an object message is a "
                         + aMessage.getClass().getCanonicalName());
 
@@ -195,7 +195,7 @@ public final class CommandChannel
                 }
             }
         } else {
-            Freedomotic.logger.warning("No handler specified for this command channel");
+            LOG.warning("No handler specified for this command channel");
         }
     }
 
@@ -211,7 +211,8 @@ public final class CommandChannel
             producer.close();
             consumer.close();
         } catch (JMSException ex) {
-            Freedomotic.logger.severe("Unable to unsubscribe from channel " + channelName);
+            LOG.severe("Unable to unsubscribe from channel " + channelName);
         }
     }
+    private static final Logger LOG = Logger.getLogger(CommandChannel.class.getName());
 }

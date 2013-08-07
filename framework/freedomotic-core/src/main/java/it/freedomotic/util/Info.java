@@ -198,4 +198,5 @@ public class Info {
 
     private Info() {
     }
+    private static final Logger LOG = Logger.getLogger(Info.class.getName());
 }
