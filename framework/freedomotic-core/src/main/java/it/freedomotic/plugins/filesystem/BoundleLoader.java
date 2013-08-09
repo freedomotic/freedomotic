@@ -10,17 +10,17 @@ import java.io.File;
 import java.util.List;
 
 /**
- * DAO pattern for loading plugin types deployed on local filesystem
+ * Loader service for loading plugin types deployed on local filesystem
  *
  * @author enrico
  */
-interface PluginDao {
+interface BoundleLoader {
 
     /**
      * Loads all plugins. The concrete
      * factories will have to implement these methods.
      */
-    List<Client> loadAll() throws PluginLoadingException;
+    List<Client> loadBoundle() throws PluginLoadingException;
 
     /**
      * Returns the root path in which the plugin is deployed on local

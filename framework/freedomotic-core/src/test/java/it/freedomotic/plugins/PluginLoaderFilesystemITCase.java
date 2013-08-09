@@ -4,17 +4,16 @@
  */
 package it.freedomotic.plugins;
 
-import it.freedomotic.testutils.TestsInjector;
+import it.freedomotic.testutils.FreedomoticTestsInjector;
 import com.google.inject.Inject;
+import it.freedomotic.api.Client;
 import it.freedomotic.bus.AbstractBusConnector;
-import it.freedomotic.exceptions.PluginLoadingException;
-import it.freedomotic.plugins.filesystem.PluginLoaderFilesystem;
+import it.freedomotic.plugins.filesystem.PluginsManager;
 import it.freedomotic.testutils.GuiceJUnitRunner;
 import it.freedomotic.testutils.GuiceJUnitRunner.GuiceInjectors;
-import java.util.logging.Logger;
+import java.io.File;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,21 +24,27 @@ import org.junit.runner.RunWith;
  * @author enrico
  */
 @RunWith(GuiceJUnitRunner.class)
-@GuiceInjectors({TestsInjector.class})
-public class PluginLoaderFilesystemTestNORUN {
+@GuiceInjectors({FreedomoticTestsInjector.class})
+public class PluginLoaderFilesystemITCase {
 
     //saves the loaded plugins in memory
-    @Inject ClientStorage storage;
+    @Inject
+    ClientStorage storage;
     //loads plugin from local filesystem
-    @Inject PluginLoaderFilesystem loader;
+    @Inject
+    PluginsManager loader;
     //creates a messaging bus on which publish the events generated while loading plugins
-    @Inject AbstractBusConnector bus;
+    @Inject
+    AbstractBusConnector bus;
+    private static File boundlePath;
 
-    public PluginLoaderFilesystemTestNORUN() {
+    public PluginLoaderFilesystemITCase() {
     }
 
     @BeforeClass
     public static void setUpClass() {
+        String boundlePathString = System.getProperty("boundlePath");
+        PluginLoaderFilesystemITCase.boundlePath = new File(boundlePathString);
     }
 
     @AfterClass
@@ -55,31 +60,28 @@ public class PluginLoaderFilesystemTestNORUN {
     }
 
     /**
-     * Test of loadPlugin method, of class PluginLoaderFilesystem.
+     * Test of loadSingleBoundle method, of class PluginsManager.
      */
     @Test
     public void testLoadPlugins() throws Exception {
-        System.out.println("Load Devices Plugins");
+        System.out.println("Load plugins");
 
-        int DEVICES = 1;
-
-        try {
-            loader.loadPlugins(DEVICES);
-            System.out.println("Loaded " + storage.getClients().size() + " plugins");
-        } catch (PluginLoadingException ex) {
-            fail("Cannot load plugin " + ex.getPluginName() + " due to " + ex.getCause());
+        loader.loadSingleBoundle(boundlePath);
+        System.out.println("Loaded " + storage.getClients().size() + " plugins");
+        for (Client client : storage.getClients()) {
+            System.out.println("Starting " + client.getName());
+            client.start();
         }
     }
-    private static final Logger LOG = Logger.getLogger(PluginLoaderFilesystemTestNORUN.class.getName());
     /**
-     * Test of installPlugin method, of class PluginLoaderFilesystem.
+     * Test of installBoundle method, of class PluginsManager.
      */
 //    @Test
 //    public void testInstallPlugin() {
-//        System.out.println("installPlugin");
+//        System.out.println("installBoundle");
 //        URL fromURL = null;
 //        boolean expResult = false;
-//        boolean result = loader.installPlugin(fromURL);
+//        boolean result = loader.installBoundle(fromURL);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");

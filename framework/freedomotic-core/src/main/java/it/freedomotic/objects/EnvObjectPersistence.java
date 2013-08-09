@@ -237,7 +237,7 @@ public class EnvObjectPersistence {
         } catch (XStreamException e) {
             throw new DaoLayerException(e.getMessage(), e);
         }
-        //EnvObjectLogic objectLogic = EnvObjectFactory.create(pojo);
+        //EnvObjectLogic objectLogic = EnvObjectFactory.save(pojo);
         //LOG.info("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
         //add(objectLogic);
         return null;
@@ -368,7 +368,7 @@ public class EnvObjectPersistence {
 
     /**
      * Add an object to the environment. You can use
-     * EnvObjectPersistnce.MAKE_UNIQUE to create an object that will surely be
+     * EnvObjectPersistnce.MAKE_UNIQUE to save an object that will surely be
      * unique. Beware this means it is created with defensive copy of the object
      * in input and name, protocol, address and UUID are reset to a default
      * value.

@@ -90,7 +90,7 @@ public final class TriggerCheck {
                             .append(resolved.getPayload().toString()).append("'\nconsistent with received event '")
                             .append(event.getEventName()).append("' ").append(event.getPayload().toString());
                     applySensorNotification(resolved, event);
-                    LOG.info(buff.toString());
+                    LOG.config(buff.toString());
                     return true;
                 }
             } else {
@@ -102,7 +102,7 @@ public final class TriggerCheck {
                                 .append(resolved.getPayload().toString()).append("'\nconsistent with received event '")
                                 .append(event.getEventName()).append("' ").append(event.getPayload().toString());
                         executeTriggeredAutomations(resolved, event);
-                        LOG.info(buff.toString());
+                        LOG.config(buff.toString());
                         return true;
                     }
                 }

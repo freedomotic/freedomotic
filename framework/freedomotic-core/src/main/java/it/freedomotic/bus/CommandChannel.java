@@ -1,27 +1,27 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.bus;
 
+import com.google.inject.Inject;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.app.AppConfig;
 import it.freedomotic.app.Profiler;
 import static it.freedomotic.bus.AbstractBusConnector.sendSession;
 
@@ -45,6 +45,8 @@ public final class CommandChannel
     private MessageConsumer consumer;
     //private static ExecutorService executor;
     private String channelName;
+    @Inject
+    AppConfig config;
 
     public CommandChannel() {
         super();
@@ -91,7 +93,7 @@ public final class CommandChannel
             ObjectMessage msg = sendSession.createObjectMessage();
             msg.setObject(command);
             msg.setJMSCorrelationID(correlationID);
-            producer.setTimeToLive(Freedomotic.config.getIntProperty("KEY_MESSAGES_TTL", 1000));
+            producer.setTimeToLive(config.getIntProperty("KEY_MESSAGES_TTL", 1000));
             Profiler.incrementSentReplies();
             producer.send(channel, msg);
         } catch (JMSException jmse) {

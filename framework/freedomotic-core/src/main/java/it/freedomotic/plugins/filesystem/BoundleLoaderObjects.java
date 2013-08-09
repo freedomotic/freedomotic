@@ -24,13 +24,13 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-class PluginDaoObjects
-        implements PluginDao {
+class BoundleLoaderObjects
+        implements BoundleLoader {
 
-    private static final Logger LOG = Logger.getLogger(PluginDaoObjects.class.getName());;
+    private static final Logger LOG = Logger.getLogger(BoundleLoaderObjects.class.getName());;
     private File path;
 
-    PluginDaoObjects(File path) {
+    BoundleLoaderObjects(File path) {
         this.path = path;
     }
 
@@ -39,7 +39,7 @@ class PluginDaoObjects
      * empty list of object as the
      */
     @Override
-    public List<Client> loadAll()
+    public List<Client> loadBoundle()
             throws PluginLoadingException {
         File pluginFolder = new File(path.getAbsolutePath());
         List<Client> results = new ArrayList<Client>();
@@ -59,7 +59,7 @@ class PluginDaoObjects
                     List<String> classNames = null;
 
                     try {
-                        classNames = PluginDaoFactory.getClassesInside(jar.getAbsolutePath());
+                        classNames = BoundleLoaderFactory.getClassesInside(jar.getAbsolutePath());
                     } catch (IOException ex) {
                         LOG.severe(Freedomotic.getStackTraceInfo(ex));
                     }
@@ -69,7 +69,7 @@ class PluginDaoObjects
                         Class clazz;
 
                         try {
-                            clazz = PluginDaoFactory.getClass(jar, name);
+                            clazz = BoundleLoaderFactory.getClass(jar, name);
 
                             if (clazz.getName().startsWith("it.freedomotic.objects.")
                                     && !clazz.getName().contains("$")) {
@@ -78,7 +78,7 @@ class PluginDaoObjects
                                         + " in " + path);
                             }
                         } catch (Exception ex) {
-                            Logger.getLogger(PluginDaoObjects.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(BoundleLoaderObjects.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }

@@ -6,6 +6,7 @@ package it.freedomotic.api;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import it.freedomotic.app.AppConfig;
 
 import it.freedomotic.core.ResourcesManager;
 
@@ -38,12 +39,23 @@ public class APIStandardImpl
     private final EnvironmentPersistence environment;
     private final EnvObjectPersistence object;
     private final ClientStorage clientStorage;
+    private final AppConfig config;
 
     @Inject
-    public APIStandardImpl(EnvironmentPersistence environment, EnvObjectPersistence object, ClientStorage clientStorage) {
+    public APIStandardImpl(
+            EnvironmentPersistence environment,
+            EnvObjectPersistence object,
+            ClientStorage clientStorage,
+            AppConfig config) {
         this.environment = environment;
         this.object = object;
         this.clientStorage = clientStorage;
+        this.config = config;
+    }
+
+    @Override
+    public AppConfig getConfig() {
+        return config;
     }
 
     @Override
@@ -119,5 +131,4 @@ public class APIStandardImpl
     public ClientStorage getClientStorage() {
         return clientStorage;
     }
-    private static final Logger LOG = Logger.getLogger(APIStandardImpl.class.getName());
 }

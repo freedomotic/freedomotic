@@ -28,7 +28,7 @@ public class TrackingReadSocket
     OutputStream out;
     boolean connected = false;
     final int SLEEP_TIME = 1000;
-    final int NUM_MOTE = Integer.valueOf(Freedomotic.config.getIntProperty("KEY_SIMULATED_PERSON_COUNT", 3));
+    final int NUM_MOTE = 3;
     private static int PORT = 1111; //illimited
     private static int maxConnections = -1; //illimited
 

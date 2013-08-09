@@ -16,12 +16,9 @@ import java.io.File;
  */
 public interface EnvironmentDAO {
 
-    void save(Environment environment)
-            throws DaoLayerException;
+    void save(Environment environment) throws DaoLayerException;
 
-    void delete(Environment environment)
-            throws DaoLayerException;
+    void delete(Environment environment) throws DaoLayerException;
 
-    Environment load()
-            throws DaoLayerException;
+    Environment load() throws DaoLayerException;
 }

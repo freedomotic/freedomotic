@@ -791,7 +791,7 @@ public class ObjectEditor
         //        for (Representation view : pojoCopy.getRepresentations()) {
         //            view.setOffset(0, 0);
         //        }
-        //        EnvObjectLogic envObjectLogic = EnvObjectFactory.create(pojoCopy);
+        //        EnvObjectLogic envObjectLogic = EnvObjectFactory.save(pojoCopy);
         //        envObjectLogic.getPojo().setUUID("");
         EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
         //object.setChanged(true);
