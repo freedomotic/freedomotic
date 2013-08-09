@@ -41,7 +41,7 @@ public class TrackingReadFile
 
     @Override
     public void onStart() {
-        NUM_MOTE = Integer.valueOf(Freedomotic.config.getIntProperty("KEY_SIMULATED_PERSON_COUNT", 3));
+        NUM_MOTE = Integer.valueOf(getApi().getConfig().getIntProperty("KEY_SIMULATED_PERSON_COUNT", 3));
 
         for (int i = 0; i < NUM_MOTE; i++) {
             readMoteFile(i);

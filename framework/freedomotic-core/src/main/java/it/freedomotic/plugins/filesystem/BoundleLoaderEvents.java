@@ -37,16 +37,16 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-class PluginDaoEvents implements PluginDao {
+class BoundleLoaderEvents implements BoundleLoader {
 
     private File path;
 
-    PluginDaoEvents(File path) {
+    BoundleLoaderEvents(File path) {
         this.path = path;
     }
 
     @Override
-    public List<Client> loadAll()
+    public List<Client> loadBoundle()
             throws PluginLoadingException {
         File dir = new File(path.getAbsolutePath());
         List<Client> results = new ArrayList<Client>();
@@ -66,11 +66,11 @@ class PluginDaoEvents implements PluginDao {
                     List<String> classNames = null;
 
                     try {
-                        classNames = PluginDaoFactory.getClassesInside(jar.getAbsolutePath());
+                        classNames = BoundleLoaderFactory.getClassesInside(jar.getAbsolutePath());
 
                         for (String className : classNames) {
                             String name = className.substring(0, className.length() - 6);
-                            Class clazz = PluginDaoFactory.getClass(jar, name);
+                            Class clazz = BoundleLoaderFactory.getClass(jar, name);
                             Class superclass = clazz.getSuperclass();
 
                             try {
@@ -95,5 +95,5 @@ class PluginDaoEvents implements PluginDao {
     public File getPath() {
         return path;
     }
-    private static final Logger LOG = Logger.getLogger(PluginDaoEvents.class.getName());
+    private static final Logger LOG = Logger.getLogger(BoundleLoaderEvents.class.getName());
 }

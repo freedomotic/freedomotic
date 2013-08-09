@@ -38,7 +38,6 @@ public interface ClientStorage {
      * Checks if a plugin is already installed, if is an obsolete or newer
      * version
      */
-
     int compareVersions(String name, String version);
 
     Client createObjectPlaceholder(final File template)

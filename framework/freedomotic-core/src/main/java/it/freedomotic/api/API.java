@@ -4,6 +4,7 @@
  */
 package it.freedomotic.api;
 
+import it.freedomotic.app.AppConfig;
 import it.freedomotic.core.ResourcesManager;
 
 import it.freedomotic.environment.EnvironmentLogic;
@@ -20,13 +21,17 @@ import java.util.List;
  * @author enrico
  */
 public interface API {
+    //Configuration APi
+
+    AppConfig getConfig();
+
     //Object API
     //create
-
     EnvObjectLogic addObject(final EnvObjectLogic obj, final boolean MAKE_UNIQUE);
-    
+
     ClientStorage getClientStorage();
     //read
+
     Collection<EnvObjectLogic> getObjectList();
 
     EnvObjectLogic getObjectByName(String name);

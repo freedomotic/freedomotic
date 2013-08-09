@@ -68,5 +68,4 @@ public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
         }
         return annotation.value();
     }
-    private static final Logger LOG = Logger.getLogger(GuiceJUnitRunner.class.getName());
 }

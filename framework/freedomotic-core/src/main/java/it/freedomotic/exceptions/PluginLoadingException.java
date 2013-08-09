@@ -10,8 +10,7 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-public class PluginLoadingException
-        extends FreedomoticException {
+public class PluginLoadingException extends FreedomoticException {
 
     String pluginName;
 
@@ -26,7 +25,7 @@ public class PluginLoadingException
         return pluginName;
     }
 
-    public void setPluginName(String pluginName) {
+    public final void setPluginName(String pluginName) {
         this.pluginName = pluginName;
     }
 
@@ -43,9 +42,13 @@ public class PluginLoadingException
     public PluginLoadingException(String message, Throwable cause) {
         super(message, cause);
     }
+    
+    public PluginLoadingException(String message, String pluginName, Throwable cause) {
+        super(message, cause);
+        setPluginName(pluginName);
+    }
 
     public PluginLoadingException(Throwable cause) {
         super(cause);
     }
-    private static final Logger LOG = Logger.getLogger(PluginLoadingException.class.getName());
 }

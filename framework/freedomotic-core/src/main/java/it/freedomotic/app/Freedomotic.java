@@ -22,9 +22,11 @@ package it.freedomotic.app;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import it.freedomotic.annotations.ListenEventsOn;
 
 import it.freedomotic.api.Client;
 import it.freedomotic.api.EventTemplate;
+import it.freedomotic.bus.BusConsumer;
 
 import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.bus.EventChannel;
@@ -56,7 +58,7 @@ import it.freedomotic.model.environment.Environment;
 import it.freedomotic.objects.EnvObjectPersistence;
 
 import it.freedomotic.plugins.ClientStorage;
-import it.freedomotic.plugins.filesystem.PluginLoaderFilesystem;
+import it.freedomotic.plugins.filesystem.PluginsManager;
 
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
@@ -77,12 +79,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.jms.ObjectMessage;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
@@ -95,9 +99,8 @@ import org.apache.shiro.util.ThreadState;
  *
  * @author Enrico Nicoletti
  */
-public class Freedomotic {
+public class Freedomotic implements BusConsumer{
 
-    public static Config config;
     private static String INSTANCE_ID;
     @Deprecated
     public static final Logger logger = Logger.getLogger("app.log");
@@ -111,11 +114,12 @@ public class Freedomotic {
      * Should NOT be used. Reserved for una tantum internal freedomotic core use
      * only!!
      */
-    public static final Injector INJECTOR = Guice.createInjector(new FreedomoticDI());
+    public static final Injector INJECTOR = Guice.createInjector(new DependenciesInjector());
     //dependencies
     private final EnvironmentDAOFactory environmentDaoFactory;
     private final ClientStorage clientStorage;
-    private final PluginLoaderFilesystem pluginsLoader;
+    private final PluginsManager pluginsManager;
+    private AppConfig config;
 
     /**
      *
@@ -124,11 +128,15 @@ public class Freedomotic {
      * @param joinPlugin
      */
     @Inject
-    public Freedomotic(PluginLoaderFilesystem pluginsLoader, EnvironmentDAOFactory environmentDaoFactory,
-            ClientStorage clientStorage) {
-        this.pluginsLoader = pluginsLoader;
+    public Freedomotic(
+            PluginsManager pluginsLoader,
+            EnvironmentDAOFactory environmentDaoFactory,
+            ClientStorage clientStorage,
+            AppConfig config) {
+        this.pluginsManager = pluginsLoader;
         this.environmentDaoFactory = environmentDaoFactory;
         this.clientStorage = clientStorage;
+        this.config = config;
     }
 
     public void start()
@@ -139,10 +147,10 @@ public class Freedomotic {
          * *****************************************************************
          */
         loadAppConfig();
-        
+
         // init localization
         I18n.setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
-        
+
         // init auth* framework
         Auth.initBaseRealm();
         if (Auth.realmInited) {
@@ -152,10 +160,10 @@ public class Freedomotic {
             threadState.bind();
             logger.info("Booting as user:" + SecurityUtils.getSubject().getPrincipal());
         }
-        
+
         String resourcesPath =
                 new File(Info.getApplicationPath()
-                + Freedomotic.config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
+                + config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
         logger.info("\nOS: " + System.getProperty("os.name") + "\n" + I18n.msg("architecture") + ": "
                 + System.getProperty("os.arch") + "\n" + "OS Version: " + System.getProperty("os.version")
                 + "\n" + I18n.msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
@@ -170,7 +178,7 @@ public class Freedomotic {
          * Starting the logger and popup it in the browser
          * *****************************************************************
          */
-        if (Freedomotic.config.getBooleanProperty("KEY_SAVE_LOG_TO_FILE", false)) {
+        if (config.getBooleanProperty("KEY_SAVE_LOG_TO_FILE", false)) {
             try {
                 File logdir = new File(Info.getApplicationPath() + "/log/");
                 logdir.mkdir();
@@ -185,7 +193,7 @@ public class Freedomotic {
                 logger.addHandler(handler);
                 logger.config(I18n.msg("INIT_MESSAGE"));
 
-                if ((Freedomotic.config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
+                if ((config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
                         && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
                     java.awt.Desktop.getDesktop()
                             .browse(new File(Info.getApplicationPath() + "/log/freedomotic.html").toURI());
@@ -200,11 +208,11 @@ public class Freedomotic {
          * Create data backup folder (FEATURE DISABLED!!!)
          * *****************************************************************
          */
-//        if (Freedomotic.config.getBooleanProperty("KEY_BACKUP_DATA_BEFORE_START", true) == true) {
+//        if (getConfig().getBooleanProperty("KEY_BACKUP_DATA_BEFORE_START", true) == true) {
 //            try {
 //                CopyFile.copy(new File(Info.getDatafilePath()), new File(Info.getApplicationPath() + "/backup"));
 //            } catch (Exception ex) {
-//                logger.warning("unable to create a backup copy of application data " + getStackTraceInfo(ex));
+//                logger.warning("unable to save a backup copy of application data " + getStackTraceInfo(ex));
 //            }
 //        }
         /**
@@ -212,7 +220,7 @@ public class Freedomotic {
          * Shows the freedomotic website if stated in the config file
          * *****************************************************************
          */
-        if (Freedomotic.config.getBooleanProperty("KEY_SHOW_WEBSITE_ON_STARTUP", false)) {
+        if (config.getBooleanProperty("KEY_SHOW_WEBSITE_ON_STARTUP", false)) {
             try {
                 java.awt.Desktop.getDesktop().browse(new URI("www.freedomotic.com"));
             } catch (URISyntaxException ex) {
@@ -228,7 +236,7 @@ public class Freedomotic {
          * *****************************************************************
          */
         try {
-            pluginsLoader.loadPlugins(PluginLoaderFilesystem.PLUGIN_TYPE_EVENT);
+            pluginsManager.loadAllPlugins(PluginsManager.TYPE_EVENT);
         } catch (PluginLoadingException ex) {
             LOG.log(Level.WARNING,
                     "Cannot load event plugin {0}. {1}",
@@ -241,7 +249,7 @@ public class Freedomotic {
          * *****************************************************************
          */
         try {
-            pluginsLoader.loadPlugins(PluginLoaderFilesystem.PLUGIN_TYPE_OBJECT);
+            pluginsManager.loadAllPlugins(PluginsManager.TYPE_OBJECT);
         } catch (PluginLoadingException ex) {
             LOG.log(Level.WARNING,
                     "Cannot load object plugin {0}. {1}",
@@ -264,7 +272,7 @@ public class Freedomotic {
          * Cache online plugins
          * *****************************************************************
          */
-        if (Freedomotic.config.getBooleanProperty("CACHE_MARKETPLACE_ON_STARTUP", false)) {
+        if (config.getBooleanProperty("CACHE_MARKETPLACE_ON_STARTUP", false)) {
             try {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
@@ -282,7 +290,6 @@ public class Freedomotic {
                 });
             } catch (Exception e) {
                 LOG.warning("Unable to cache plugins package from marketplace");
-                LOG.warning(Freedomotic.getStackTraceInfo(e));
             }
         }
 
@@ -299,7 +306,7 @@ public class Freedomotic {
          * *****************************************************************
          */
         try {
-            pluginsLoader.loadPlugins(PluginLoaderFilesystem.PLUGIN_TYPE_DEVICE);
+            pluginsManager.loadAllPlugins(PluginsManager.TYPE_DEVICE);
         } catch (PluginLoadingException ex) {
             LOG.warning("Cannot load device plugin " + ex.getPluginName() + ": " + ex.getMessage());
         }
@@ -376,6 +383,16 @@ public class Freedomotic {
         }
 
         logger.config("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
+        
+        //listen for exit signal (an event) and call onExit method if received
+        for (Method method : Freedomotic.class.getDeclaredMethods()) {
+            System.out.println(method.getName());
+            if ("onExit".equals(method.getName())) {
+                System.out.println("  EQUAL");
+                eventChannel.setHandler(this);
+                eventChannel.consumeFrom("app.event.system.exit", method);
+            }
+        }
         logger.info("FREEDOMOTIC IS STARTED AND READY");
     }
 
@@ -415,13 +432,13 @@ public class Freedomotic {
         new ColorList();
     }
 
-    private void loadAppConfig() {
-        try {
-            config = ConfigPersistence.deserialize(new File(Info.getApplicationPath() + "/config/config.xml"));
-        } catch (IOException ex) {
-            Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    @Override
+    public void onMessage(ObjectMessage message) {
+        //do nothing
+    }
 
+    private void loadAppConfig() {
+        config = config.load();
         LOG.info(config.toString());
     }
 
@@ -461,8 +478,9 @@ public class Freedomotic {
         }
     }
 
-    public static void onExit() {
-        LOG.info("Exiting application...");
+    @ListenEventsOn(channel = "app.event.system.exit")
+    public void onExit(EventTemplate event) {
+        LOG.info("Received exit signal...");
         //LOG.info("Sending the exit signal (TODO: not yet implemented)");
         //...send the signal on a topic channel
         //TODO: regression, enable it again
@@ -470,12 +488,11 @@ public class Freedomotic {
 //            plugin.stop();
 //        }
         //AbstractBusConnector.disconnect();
-        ConfigPersistence.serialize(config,
-                new File(Info.getApplicationPath() + "/config/config.xml"));
+        config.save();
 
         //save changes to object in the default test environment
         //on error there is a copy (manually created) of original test environment in the data/furn folder
-        if (Freedomotic.config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
+        if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
             try {
                 EnvObjectPersistence.saveObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder());
             } catch (DaoLayerException ex) {
@@ -486,7 +503,7 @@ public class Freedomotic {
 
         String savedDataRoot;
 
-        if (Freedomotic.config.getBooleanProperty("KEY_OVERRIDE_REACTIONS_ON_EXIT", false) == true) {
+        if (config.getBooleanProperty("KEY_OVERRIDE_REACTIONS_ON_EXIT", false) == true) {
             savedDataRoot = Info.getApplicationPath() + "/data";
         } else {
             savedDataRoot = Info.getApplicationPath() + "/testSave/data";
@@ -498,7 +515,7 @@ public class Freedomotic {
 
         //save the environment
         String environmentFilePath =
-                Info.getApplicationPath() + "/data/furn/" + Freedomotic.config.getProperty("KEY_ROOM_XML_PATH");
+                Info.getApplicationPath() + "/data/furn/" + config.getProperty("KEY_ROOM_XML_PATH");
         File folder = null;
 
         try {

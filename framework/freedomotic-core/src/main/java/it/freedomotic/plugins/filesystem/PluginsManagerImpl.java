@@ -38,21 +38,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * An helper class that uses an internal DAO pattern to load plugins of
+ * An helper class that uses an internal DAO pattern to loadBoundle plugins of
  * different types from local filesystem
  *
  * @author enrico
  */
-public class PluginLoaderFilesystem {
-    public static final int PLUGIN_TYPE_DEVICE = 0;
-    public static final int PLUGIN_TYPE_OBJECT = 1;
-    public static final int PLUGIN_TYPE_EVENT = 2;
+public class PluginsManagerImpl implements PluginsManager {
     //depedencies
+
     private ClientStorage clientStorage;
     private TriggerPersistence triggers;
 
     @Inject
-    PluginLoaderFilesystem(ClientStorage clientStorage, TriggerPersistence triggers) {
+    PluginsManagerImpl(ClientStorage clientStorage, TriggerPersistence triggers) {
         this.clientStorage = clientStorage;
         this.triggers = triggers;
     }
@@ -63,11 +61,13 @@ public class PluginLoaderFilesystem {
      *
      * @param TYPE
      */
-    public void loadPlugins(int TYPE) throws PluginLoadingException {
-        List<PluginDao> factories = new PluginDaoFactory().getDao(TYPE);
+    @Override
+    public void loadAllPlugins(int TYPE) throws PluginLoadingException {
+        List<BoundleLoader> boundleLoaders = new BoundleLoaderFactory().getBoundleLoaders(TYPE);
 
-        for (PluginDao pluginPackageDao : factories) {
-            loadSinglePackage(pluginPackageDao);
+        for (BoundleLoader boundleLoader : boundleLoaders) {
+            //a jar package can contain more that one plugin
+            loadSingleBundle(boundleLoader);
         }
     }
 
@@ -76,42 +76,41 @@ public class PluginLoaderFilesystem {
      *
      * @param TYPE
      */
-    public void loadPlugins() throws PluginLoadingException {
-        List<PluginDao> factories = new ArrayList<PluginDao>();
-        PluginDaoFactory pluginDaoFactory = new PluginDaoFactory();
-        factories.addAll(pluginDaoFactory.getDao(PLUGIN_TYPE_DEVICE));
-        factories.addAll(pluginDaoFactory.getDao(PLUGIN_TYPE_OBJECT));
-        factories.addAll(pluginDaoFactory.getDao(PLUGIN_TYPE_EVENT));
+    @Override
+    public void loadAllPlugins() throws PluginLoadingException {
+        List<BoundleLoader> boundleLoaders = new ArrayList<BoundleLoader>();
+        BoundleLoaderFactory boundleLoaderFactory = new BoundleLoaderFactory();
+        boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_DEVICE));
+        boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_OBJECT));
+        boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_EVENT));
 
-        for (PluginDao pluginPackageDao : factories) {
-            loadSinglePackage(pluginPackageDao);
+        for (BoundleLoader boundleLoader : boundleLoaders) {
+            loadSingleBundle(boundleLoader);
         }
     }
 
     /**
-     * Load a single plugin from a given directory. This directory should be the
-     * root path of the plugin package, not a directory containing more than one
-     * plugin package.
+     * Load a single plugin package from a given directory. This directory
+     * should be the root path of the plugin package, not a directory containing
+     * more than one plugin package.
      *
      * @param directory
      * @throws PluginLoadingException
      */
-    public void loadPlugin(File directory) throws PluginLoadingException {
-        PluginDao pluginPackageDao = new PluginDaoFactory().getDao(directory);
-        loadSinglePackage(pluginPackageDao);
+    @Override
+    public void loadSingleBoundle(File directory) throws PluginLoadingException {
+        BoundleLoader pluginPackageDao = new BoundleLoaderFactory().getSingleBoundleLoader(directory);
+        loadSingleBundle(pluginPackageDao);
     }
 
-    private void loadSinglePackage(PluginDao pluginPackage)
-            throws PluginLoadingException {
-        List<Client> loaded = pluginPackage.loadAll();
+    private void loadSingleBundle(BoundleLoader loader) throws PluginLoadingException {
+        List<Client> loaded = loader.loadBoundle();
         //load the package resources or create plugin templates if it's on object plugin
-        loadPluginResources(pluginPackage.getPath());
+        loadPluginResources(loader.getPath());
 
         for (Client client : loaded) {
             try {
-                client =
-                        mergePackageConfiguration(client,
-                        pluginPackage.getPath());
+                client = mergePackageConfiguration(client, loader.getPath());
             } catch (IOException ex) {
                 throw new PluginLoadingException("Missing PACKAGE info file " + ex.getMessage(), ex);
             }
@@ -120,7 +119,8 @@ public class PluginLoaderFilesystem {
         }
     }
 
-    public boolean installPlugin(URL fromURL) {
+    @Override
+    public boolean installBoundle(URL fromURL) {
         try {
             String url = fromURL.toString();
 
@@ -141,7 +141,7 @@ public class PluginLoaderFilesystem {
                 File zipFile = new File(Info.PATH_DEVICES_FOLDER + filename);
                 FetchHttpFiles.download(fromURL, Info.PATH_DEVICES_FOLDER, filename);
                 unzipAndDelete(zipFile);
-                loadPlugin(new File(Info.PATH_DEVICES_FOLDER + "/" + pluginName));
+                loadSingleBoundle(new File(Info.PATH_DEVICES_FOLDER + "/" + pluginName));
             } else {
                 if (filename.endsWith(".object")) {
                     FetchHttpFiles.download(fromURL,
@@ -150,7 +150,7 @@ public class PluginLoaderFilesystem {
 
                     File zipFile = new File(Info.PATH_PLUGINS_FOLDER + "/objects/" + filename);
                     unzipAndDelete(zipFile);
-                    loadPlugin(new File(Info.PATH_OBJECTS_FOLDER + "/" + pluginName));
+                    loadSingleBoundle(new File(Info.PATH_OBJECTS_FOLDER + "/" + pluginName));
                 } else {
                     LOG.warning("No installable Freedomotic plugins at URL " + fromURL);
                 }
@@ -193,7 +193,7 @@ public class PluginLoaderFilesystem {
      */
     private void loadPluginResources(File directory)
             throws PluginLoadingException {
-        //now loadAll data for this jar (can contain more than one plugin)
+        //now loadBoundle data for this jar (can contain more than one plugin)
         //resources are mergend in the default resources folder
         CommandPersistence.loadCommands(new File(directory + "/data/cmd"));
         triggers.loadTriggers(new File(directory + "/data/trg"));
@@ -291,10 +291,10 @@ public class PluginLoaderFilesystem {
             fis = new FileInputStream(new File(pluginFolder + "/PACKAGE"));
             packageFile.load(fis);
             fis.close();
-        } catch (IOException ex) {
-            Logger.getLogger(PluginLoaderFilesystem.class.getName()).log(Level.WARNING, null, ex);
-        } finally{
-            fis.close();
+        } finally {
+            if (fis != null) {
+                fis.close();
+            }
         }
         //merges data found in file PACKGE to the the configuration of every single plugin in this package
         client.getConfiguration().setProperty("package.name",
@@ -316,5 +316,5 @@ public class PluginLoaderFilesystem {
         //TODO: add also the other properties
         return client;
     }
-    private static final Logger LOG = Logger.getLogger(PluginLoaderFilesystem.class.getName());
+    private static final Logger LOG = Logger.getLogger(PluginsManager.class.getName());
 }

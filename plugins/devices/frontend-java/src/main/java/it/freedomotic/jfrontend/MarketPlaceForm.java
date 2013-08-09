@@ -24,7 +24,7 @@ import it.freedomotic.marketplace.IPluginPackage;
 import it.freedomotic.marketplace.MarketPlaceService;
 
 import it.freedomotic.plugins.ClientStorage;
-import it.freedomotic.plugins.filesystem.PluginLoaderFilesystem;
+import it.freedomotic.plugins.filesystem.PluginsManager;
 
 import it.freedomotic.util.Info;
 import it.freedomotic.util.I18n;
@@ -66,7 +66,7 @@ public class MarketPlaceForm
     private ClientStorage clients;
    
     @Inject
-    private PluginLoaderFilesystem pluginsLoader;
+    private PluginsManager pluginsManager;
 
     /**
      * Creates new form MarketPlaceForm
@@ -300,7 +300,7 @@ public class MarketPlaceForm
                     @Override
                     public void run() {
                         try {
-                            done = pluginsLoader.installPlugin(new URL(string));
+                            done = pluginsManager.installBoundle(new URL(string));
                         } catch (MalformedURLException ex) {
                             done = false;
                             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);

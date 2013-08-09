@@ -4,7 +4,6 @@
  */
 package it.freedomotic.plugins.filesystem;
 
-
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
@@ -16,22 +15,20 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * @author enrico
  */
-class PluginDaoDevices
-        implements PluginDao {
+class BoundleLoaderDevices implements BoundleLoader {
 
-        private static final Logger LOG = Logger.getLogger(PluginDaoDevices.class.getName());
+    private static final Logger LOG = Logger.getLogger(BoundleLoaderDevices.class.getName());
     private File path;
 
-    PluginDaoDevices(File path) {
+    BoundleLoaderDevices(File path) {
         this.path = path;
     }
 
     @Override
-    public List<Client> loadAll()
-            throws PluginLoadingException {
+    public List<Client> loadBoundle() throws PluginLoadingException {
         File pluginRootFolder = new File(path.getAbsolutePath());
         List<Client> results = new ArrayList<Client>();
 
@@ -46,12 +43,12 @@ class PluginDaoDevices
         for (File pluginJar : jarFiles) {
             if (pluginJar.isFile()) {
                 try {
-                    List<String> classNames = PluginDaoFactory.getClassesInside(pluginJar.getAbsolutePath());
+                    List<String> classNames = BoundleLoaderFactory.getClassesInside(pluginJar.getAbsolutePath());
 
                     for (String className : classNames) {
                         //remove the .class at the end of file
                         String name = className.substring(0, className.length() - 6);
-                        Class clazz = PluginDaoFactory.getClass(pluginJar, name);
+                        Class clazz = BoundleLoaderFactory.getClass(pluginJar, name);
                         Class superclass = clazz.getSuperclass();
                         Plugin plugin;
 
@@ -82,7 +79,8 @@ class PluginDaoDevices
                         }
                     }
                 } catch (Exception ex) {
-                    LOG.warning(Freedomotic.getStackTraceInfo(ex).toString());
+                    throw new PluginLoadingException("Generic error while loading boundle "
+                            + pluginJar.getAbsolutePath(), ex);
                 }
             }
         }

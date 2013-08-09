@@ -8,7 +8,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import it.freedomotic.app.Freedomotic;
 
-import it.freedomotic.app.FreedomoticDI;
+import it.freedomotic.app.DependenciesInjector;
 
 import it.freedomotic.util.Info;
 
@@ -25,44 +25,44 @@ import java.util.jar.JarInputStream;
 import org.apache.log4j.Logger;
 
 /**
- * Creates the instances of <code>PluginDao</code> used to load plugins from
+ * Creates the instances of <code>BoundleLoader</code> used to loadBoundle plugins from
  * filesystem.
  * @author enrico
  */
-class PluginDaoFactory {
+class BoundleLoaderFactory {
     // Parameters
 
     private static final Class[] PARAMETERS = new Class[]{URL.class};
     //This is the second INJECTOR of freedomotic. It is needed to inject
     //the plugins loaded using the classloader, so we have to force injection
     //it's package protected to not make it visible from outside
-    protected static final Injector injector = Guice.createInjector(new FreedomoticDI());
+    protected static final Injector injector = Guice.createInjector(new DependenciesInjector());
 
-    PluginDaoFactory() {
+    BoundleLoaderFactory() {
     }
 
     /**
      * Takes in input the type of the plugins and from this creates a pointer to the right 
-     * filesystem folder, used later to load all plugins at this path.
+     * filesystem folder, used later to loadBoundle all plugins at this path.
      * @param type The type of the plugin (DEVICE, OBJECT, EVENT)
      * @return a list of object to trigger the loading of the plugin jar package
      */
-    protected List<PluginDao> getDao(int type) {
-        List results = new ArrayList<PluginDao>();
+    protected List<BoundleLoader> getBoundleLoaders(int type) {
+        List results = new ArrayList<BoundleLoader>();
         File directory;
 
         switch (type) {
-            case PluginLoaderFilesystem.PLUGIN_TYPE_DEVICE:
+            case PluginsManager.TYPE_DEVICE:
                 directory = Info.PATH_DEVICES_FOLDER;
 
                 break;
 
-            case PluginLoaderFilesystem.PLUGIN_TYPE_EVENT:
+            case PluginsManager.TYPE_EVENT:
                 directory = Info.PATH_EVENTS_FOLDER;
 
                 break;
 
-            case PluginLoaderFilesystem.PLUGIN_TYPE_OBJECT:
+            case PluginsManager.TYPE_OBJECT:
                 directory = Info.PATH_OBJECTS_FOLDER;
 
                 break;
@@ -75,7 +75,7 @@ class PluginDaoFactory {
             //search in subfolder. Go down a level starting from /plugins/TYPE/. Is not real recursive
             for (File subfolder : directory.listFiles()) {
                 if (subfolder.isDirectory()) {
-                    results.add(getDao(subfolder));
+                    results.add(getSingleBoundleLoader(subfolder));
                 }
             }
         }
@@ -84,34 +84,34 @@ class PluginDaoFactory {
     }
 
     /**
-     * Returns a single plugin package factory that can be used to load all the
+     * Returns a single plugin package factory that can be used to loadBoundle all the
      * plugins it has inside
      *
-     * @param directory The filesystem folder from which load the plugins. This
+     * @param directory The filesystem folder from which loadBoundle the plugins. This
      * folder can have other subfolder that contains specific plugin types
      * (DEVICES, OBJECTS, EVENTS)
      * @return
      */
-    protected PluginDao getDao(File directory) {
+    protected BoundleLoader getSingleBoundleLoader(File directory) {
         System.out.println(directory);
 
         //intantiate the right loader based on the directory passed to the searchIn method
         String devicesPath = new File(Info.PATH_PLUGINS_FOLDER + "/devices/").toString();
 
         if (directory.toString().startsWith(devicesPath)) {
-            return new PluginDaoDevices(directory);
+            return new BoundleLoaderDevices(directory);
         }
 
         String objectsPath = new File(Info.PATH_PLUGINS_FOLDER + "/objects/").toString();
 
         if (directory.toString().startsWith(objectsPath)) {
-            return new PluginDaoObjects(directory);
+            return new BoundleLoaderObjects(directory);
         }
 
         String eventsPath = new File(Info.PATH_PLUGINS_FOLDER + "/events/").toString();
 
         if (directory.toString().startsWith(eventsPath)) {
-            return new PluginDaoEvents(directory);
+            return new BoundleLoaderEvents(directory);
         }
 
         return null;
@@ -136,7 +136,7 @@ class PluginDaoFactory {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(PluginDaoFactory.class).warn(ex.getMessage());
+            Logger.getLogger(BoundleLoaderFactory.class).warn(ex.getMessage());
         } finally {
             jarFile.close();
         }
@@ -183,5 +183,5 @@ class PluginDaoFactory {
             throw new IOException("Error, could not add URL to system classloader");
         }
     }
-    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(PluginDaoFactory.class.getName());
+    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(BoundleLoaderFactory.class.getName());
 }

@@ -25,13 +25,12 @@
  */
 package it.freedomotic.security;
 
+import com.google.inject.Inject;
 import it.freedomotic.api.Plugin;
-import it.freedomotic.app.Freedomotic;
+import it.freedomotic.app.AppConfig;
 import it.freedomotic.util.Info;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -60,10 +59,11 @@ public class Auth {
     private static SimpleAccountRealm pluginRealm = new SimpleAccountRealm(PLUGINREALMNAME);
     private static String DEFAULT_PERMISSION = "*";
     private static ArrayList<Realm> realmCollection = new ArrayList<Realm>();
+    @Inject static AppConfig config;
     
     public static void initBaseRealm() {
         DefaultSecurityManager securityManager = null;
-        if (!realmInited && Freedomotic.config.getBooleanProperty("KEY_SECURITY_ENABLE", true)) {
+        if (!realmInited && config.getBooleanProperty("KEY_SECURITY_ENABLE", true)) {
             baseRealm.setName(BASEREALMNAME);
             baseRealm.setResourcePath(Info.getApplicationPath() + File.separator + "config" + File.separator + "security.properties");
             baseRealm.init();
@@ -147,7 +147,7 @@ public class Auth {
         if (!pluginRealm.accountExists(plugin.getClassName())) {
             // check whether declared permissions correspond the ones requested at runtime
             if (plugin.getConfiguration().getStringProperty("permissions", getPluginDefaultPermission()).equals(permissions)){
-            LOG.info("Setting permissions for plugin " + plugin.getClassName() + ": " + permissions);
+            LOG.config("Setting permissions for plugin " + plugin.getClassName() + ": " + permissions);
             String plugrole = UUID.randomUUID().toString();
             
             pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);

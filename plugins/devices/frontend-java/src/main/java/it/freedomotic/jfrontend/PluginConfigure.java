@@ -9,7 +9,7 @@ import it.freedomotic.api.API;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.plugins.ClientStorage;
-import it.freedomotic.plugins.filesystem.PluginLoaderFilesystem;
+import it.freedomotic.plugins.filesystem.PluginsManager;
 import it.freedomotic.util.I18n;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -40,7 +40,7 @@ public class PluginConfigure
     private API api;
     
     @Inject
-    private PluginLoaderFilesystem pluginsLoader;
+    private PluginsManager pluginsManager;
     private static HashMap<Plugin, String> predefined = new HashMap<Plugin, String>();
 
     /**
@@ -243,7 +243,7 @@ public class PluginConfigure
             clients.remove(item);
             //reload it with the new configuration
             System.out.println(item.getFile().getParentFile().toString());
-            pluginsLoader.loadPlugin(item.getFile().getParentFile());
+            pluginsManager.loadSingleBoundle(item.getFile().getParentFile());
 
             //if not loaded sucessfully reset to old configuration
             if (clients.get(name) == null) {
@@ -251,7 +251,7 @@ public class PluginConfigure
                 rollbackConfiguration();
                 saveConfiguration(item.getFile(),
                         txtArea.getText());
-                pluginsLoader.loadPlugin(item.getFile().getParentFile());
+                pluginsManager.loadSingleBoundle(item.getFile().getParentFile());
                 clients.get(name).start();
                 JOptionPane.showMessageDialog(this,
                         I18n.msg(this,"warn_reset_old_config"));

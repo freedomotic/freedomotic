@@ -1,22 +1,18 @@
-<config>
-  <properties>
-    <property name="KEY_ENABLE_PLUGINS_DOWNLOAD" value="true"/>
-    <property name="KEY_SECURITY_ENABLE" value="true"/>
-    <property name="KEY_ENABLE_I18N" value="auto"/>
-    <property name="KEY_COLORED_PEOPLE" value="false"/>
-    <property name="KEY_ROOM_XML_PATH" value="/default/default.xenv"/>
-    <property name="CACHE_MARKETPLACE_ON_STARTUP" value="false"/>
-    <property name="KEY_DISCARD_INVALID_DESTINATIONS" value="true"/>
-    <property name="KEY_JAVACOM_LIB" value="../ext"/>
-    <property name="KEY_SHOW_WEBSITE_ON_STARTUP" value="false"/>
-    <property name="KEY_BROKER_URL" value="vm://localhost?persistent=false"/>
-    <property name="KEY_OVERRIDE_OBJECTS_ON_EXIT" value="true"/>
-    <property name="KEY_LOGGER_POPUP" value="false"/>
-    <property name="KEY_SAVE_LOG_TO_FILE" value="false"/>
-    <property name="KEY_RESOURCES_PATH" value="/data/resources/"/>
-    <property name="KEY_MESSAGES_TTL" value="5000"/>
-    <property name="KEY_ENABLE_SSO" value="false"/>
-    <property name="KEY_OVERRIDE_REACTIONS_ON_EXIT" value="true"/>
-  </properties>
-  <tuples/>
-</config>
+#Fri Aug 09 19:21:02 CEST 2013
+KEY_ENABLE_PLUGINS_DOWNLOAD=true
+KEY_SECURITY_ENABLE=true
+KEY_ENABLE_I18N=auto
+KEY_COLORED_PEOPLE=false
+KEY_ROOM_XML_PATH=/default/default.xenv
+CACHE_MARKETPLACE_ON_STARTUP=false
+KEY_DISCARD_INVALID_DESTINATIONS=true
+KEY_JAVACOM_LIB=../ext
+KEY_SHOW_WEBSITE_ON_STARTUP=false
+KEY_BROKER_URL=vm\://localhost?persistent\=false
+KEY_SAVE_LOG_TO_FILE=false
+KEY_LOGGER_POPUP=false
+KEY_OVERRIDE_OBJECTS_ON_EXIT=true
+KEY_RESOURCES_PATH=/data/resources/
+KEY_ENABLE_SSO=false
+KEY_MESSAGES_TTL=5000
+KEY_OVERRIDE_REACTIONS_ON_EXIT=true
