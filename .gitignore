@@ -1,6 +1,6 @@
 # NetBeans specific #
 #####################
-nbproject/private/
+nbproject/
 build/
 nbbuild/
 dist/
@@ -67,6 +67,7 @@ market-dist/
 /framework/freedomotic-core/log/
 nbproject/
 log/
+/data/
 
 # Maven #
 #########

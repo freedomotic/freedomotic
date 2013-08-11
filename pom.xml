@@ -33,7 +33,7 @@
                 <module>plugins/devices/frontend-java</module>
                 <module>plugins/devices/test</module>
                 <module>plugins/devices/hello-world</module>
-                <module>tools/RestApiInterfaces</module>
+                <module>tools/freedomotic-restapi-interfaces</module>
                 <module>tools/freedomotic-marketplace</module>
                 <module>plugins/devices/restapi</module>
             </modules>

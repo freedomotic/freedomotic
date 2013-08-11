@@ -26,6 +26,7 @@ import it.freedomotic.annotations.ListenEventsOn;
 
 import it.freedomotic.api.Client;
 import it.freedomotic.api.EventTemplate;
+import it.freedomotic.bus.AbstractBusConnector;
 import it.freedomotic.bus.BusConsumer;
 
 import it.freedomotic.bus.CommandChannel;
@@ -99,7 +100,7 @@ import org.apache.shiro.util.ThreadState;
  *
  * @author Enrico Nicoletti
  */
-public class Freedomotic implements BusConsumer{
+public class Freedomotic implements BusConsumer {
 
     private static String INSTANCE_ID;
     @Deprecated
@@ -383,17 +384,15 @@ public class Freedomotic implements BusConsumer{
         }
 
         logger.config("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
-        
+
         //listen for exit signal (an event) and call onExit method if received
         for (Method method : Freedomotic.class.getDeclaredMethods()) {
-            System.out.println(method.getName());
             if ("onExit".equals(method.getName())) {
-                System.out.println("  EQUAL");
                 eventChannel.setHandler(this);
                 eventChannel.consumeFrom("app.event.system.exit", method);
             }
         }
-        logger.info("FREEDOMOTIC IS STARTED AND READY");
+        logger.info("Freedomotic startup completed");
     }
 
     public void loadDefaultEnvironment()
@@ -403,7 +402,10 @@ public class Freedomotic implements BusConsumer{
         File folder = envFile.getParentFile();
 
         if ((folder == null) || !folder.exists() || !folder.isDirectory()) {
-            throw new FreedomoticException("Environment data folder (furn) is missing in " + Info.PATH_DATA_FOLDER);
+            throw new FreedomoticException(
+                    "Default environment " + envFile.getAbsolutePath().toString()
+                    + " specified in config file"
+                    + " cannot be found in " + Info.PATH_DATA_FOLDER);
         }
 
         try {
@@ -419,6 +421,8 @@ public class Freedomotic implements BusConsumer{
             logic.setPojo(loaded);
             logic.setSource(folder);
             EnvironmentPersistence.add(logic, false);
+            //now load related objects
+            EnvObjectPersistence.loadObjects(new File(folder + "/data/obj"), false);
         } catch (DaoLayerException e) {
             throw new FreedomoticException(e.getMessage(), e);
         }
@@ -481,25 +485,12 @@ public class Freedomotic implements BusConsumer{
     @ListenEventsOn(channel = "app.event.system.exit")
     public void onExit(EventTemplate event) {
         LOG.info("Received exit signal...");
-        //LOG.info("Sending the exit signal (TODO: not yet implemented)");
-        //...send the signal on a topic channel
-        //TODO: regression, enable it again
-//        for (Client plugin : clientStorage.getClients()) {
-//            plugin.stop();
-//        }
-        //AbstractBusConnector.disconnect();
-        config.save();
-
-        //save changes to object in the default test environment
-        //on error there is a copy (manually created) of original test environment in the data/furn folder
-        if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
-            try {
-                EnvObjectPersistence.saveObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder());
-            } catch (DaoLayerException ex) {
-                LOG.severe("Cannot save objects in "
-                        + EnvironmentPersistence.getEnvironments().get(0).getObjectFolder());
-            }
+        //stop all plugins
+        for (Client plugin : clientStorage.getClients()) {
+            plugin.stop();
         }
+        AbstractBusConnector.disconnect();
+        config.save();
 
         String savedDataRoot;
 
@@ -521,12 +512,20 @@ public class Freedomotic implements BusConsumer{
         try {
             folder = new File(environmentFilePath).getParentFile();
             EnvironmentPersistence.saveEnvironmentsToFolder(folder);
+            //save related objects
+            if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
+                File saveDir = null;
+                try {
+                    saveDir = new File(folder + "/data/obj");
+                    EnvObjectPersistence.saveObjects(saveDir);
+                } catch (DaoLayerException ex) {
+                    LOG.severe("Cannot save objects in " + saveDir.getAbsolutePath().toString());
+                }
+            }
         } catch (DaoLayerException ex) {
-            LOG.severe("Cannot save environment to folder " + folder);
+            LOG.severe("Cannot save environment to folder " + folder + "due to " + ex.getCause());
         }
 
-        LOG.info(Profiler.print());
-        Profiler.saveToFile();
         System.exit(0);
     }
 

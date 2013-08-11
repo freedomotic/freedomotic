@@ -126,10 +126,10 @@ public class ObjectPluginPlaceholder
     }
 
     public void startOnEnv(EnvironmentLogic env) {
+        if (env==null){
+            throw new IllegalArgumentException("Cannot place an object on a null environment");
+        }
         EnvObjectLogic obj = EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
-        obj.setEnv(env);
+        obj.setEnvironment(env);
     }
-    private static final Logger LOG = Logger.getLogger(ObjectPluginPlaceholder.class.getName());
-
-
 }
