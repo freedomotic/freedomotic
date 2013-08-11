@@ -5,11 +5,11 @@
         <groupId>it.freedomotic</groupId>
         <artifactId>freedomotic</artifactId>
         <version>5.5-SNAPSHOT</version>
-        <relativePath>../../../</relativePath>
+        <relativePath>../../</relativePath>
     </parent>    
-    <artifactId>restapi-interfaces</artifactId>
+    <artifactId>freedomotic-restapi-interfaces</artifactId>
     <packaging>jar</packaging>
-    <name>restapi-interfaces</name>
+    <name>freedomotic-restapi-interfaces</name>
     <version>3.0</version>
 
     <properties>

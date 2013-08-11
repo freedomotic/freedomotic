@@ -7,9 +7,9 @@
 		<version>5.5-SNAPSHOT</version>
 		<relativePath>../../../</relativePath>
 	</parent>
-	<artifactId>resttestclient</artifactId>
+	<artifactId>freedomotic-restapi-test</artifactId>
 	<packaging>jar</packaging>
-	<name>rest-test-client</name>
+	<name>freedomotic-restapi-test</name>
 	<version>3.0</version>
 
 	<properties>

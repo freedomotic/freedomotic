@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.objects;
@@ -69,7 +67,7 @@ public class EnvObjectLogic {
     // private String message;
     private HashMap<String, Command> commandsMapping; //mapping between action name -> hardware command instance
     private List<BehaviorLogic> behaviors = new ArrayList<BehaviorLogic>();
-    private EnvironmentLogic env;
+    private EnvironmentLogic environment;
 
     /**
      * gets the hardware command mapped to the action in input for example:
@@ -109,9 +107,10 @@ public class EnvObjectLogic {
      */
     @RequiresPermissions("objects:read")
     public Map<String, String> getExposedProperties() {
-    	HashMap<String, String> result = pojo.getExposedProperties();
+        HashMap<String, String> result = pojo.getExposedProperties();
         return result;
     }
+
     @RequiresPermissions("objects:read")
     public Map<String, String> getExposedBehaviors() {
         Map<String, String> result = new HashMap<String, String>();
@@ -165,10 +164,10 @@ public class EnvObjectLogic {
         }
 
         //parameters in input are ok, continue...
-        Iterator<Entry<String,String>> it = pojo.getTriggers().entrySet().iterator();
+        Iterator<Entry<String, String>> it = pojo.getTriggers().entrySet().iterator();
         //remove old references if any
         while (it.hasNext()) {
-        	Entry<String,String> e = it.next();
+            Entry<String, String> e = it.next();
             if (e.getValue().equals(behaviorName)) {
                 it.remove(); //remove the old value that had to be updated
             }
@@ -248,7 +247,11 @@ public class EnvObjectLogic {
         createTriggers();
         commandsMapping = new HashMap<String, Command>();
         cacheDeveloperLevelCommand();
+        //assign to an environment
+        pojo.getEnvironmentID();
+        this.setEnvironment(environment);
         checkTopology();
+
     }
 
     @Deprecated
@@ -258,13 +261,13 @@ public class EnvObjectLogic {
     }
 
     @RequiresPermissions("objects:read")
-    public EnvironmentLogic getEnv() {
-        return this.env;
+    public EnvironmentLogic getEnvironment() {
+        return this.environment;
     }
 
     @RequiresPermissions("objects:read")
     public EnvObject getPojo() {
-        if (pojo.getUUID() == null || Auth.isPermitted("objects:read:"+ pojo.getUUID().substring(0, 5))){
+        if (pojo.getUUID() == null || Auth.isPermitted("objects:read:" + pojo.getUUID().substring(0, 5))) {
             return pojo;
         }
         return null;
@@ -347,7 +350,7 @@ public class EnvObjectLogic {
             for (ZoneLogic zone : locEnv.getZones()) {
                 //remove from every zone
                 zone.getPojo().getObjects().remove(this.getPojo());
-                if (this.getEnv() == locEnv && TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
+                if (this.getEnvironment() == locEnv && TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
                     //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
                     //add to the zones this object belongs
                     zone.getPojo().getObjects().add(this.getPojo());
@@ -469,11 +472,11 @@ public class EnvObjectLogic {
     protected void setPojo(EnvObject pojo) {
         if (((pojo.getEnvironmentID() == null) || pojo.getEnvironmentID().isEmpty())
                 && (EnvironmentPersistence.getEnvironments().size() > 0)) {
-            pojo.setEnvID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
+            pojo.setEnvironmentID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
         }
 
         this.pojo = pojo;
-        this.env = EnvironmentPersistence.getEnvByUUID(pojo.getEnvironmentID());
+        this.environment = EnvironmentPersistence.getEnvByUUID(pojo.getEnvironmentID());
     }
 
     @RequiresPermissions({"objects:update", "triggers:update"})
@@ -532,19 +535,19 @@ public class EnvObjectLogic {
     }
 
     @RequiresPermissions("objects:update")
-    public void setEnv(EnvironmentLogic selEnv) {
-        if (selEnv != null) {
-            this.env = selEnv;
-            getPojo().setEnvID(selEnv.getPojo().getUUID());
+    public void setEnvironment(EnvironmentLogic selEnv) {
+        if (selEnv == null) {
+            throw new IllegalArgumentException("Selected environment cannot be "
+                    + "null for object " + getPojo().getName());
         }
+        this.environment = selEnv;
+        getPojo().setEnvironmentID(selEnv.getPojo().getUUID());
     }
-    
+
     @RequiresPermissions("objects:update")
-    public void addTags(String tagList){
+    public void addTags(String tagList) {
         String[] tags = tagList.toLowerCase().split(",");
         getPojo().getTagsList().addAll(Arrays.asList(tags));
     }
     private static final Logger LOG = Logger.getLogger(EnvObjectLogic.class.getName());
-    
- 
 }

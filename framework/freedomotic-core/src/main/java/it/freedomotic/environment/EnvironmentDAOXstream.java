@@ -66,8 +66,7 @@ public class EnvironmentDAOXstream
      * @throws DaoLayerException
      */
     @Override
-    public void save(Environment environment)
-            throws DaoLayerException {
+    public void save(Environment environment) throws DaoLayerException {
         if (!directory.isDirectory()) {
             throw new DaoLayerException(directory.getAbsoluteFile() + " is not a valid environment folder. Skipped");
         }
@@ -169,9 +168,6 @@ public class EnvironmentDAOXstream
 
         for (File file : files) {
             Environment environment = deserialize(file);
-            EnvObjectPersistence.loadObjects(new File(directory + "/data/obj"),
-                    false);
-
             return environment;
         }
 

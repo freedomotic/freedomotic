@@ -52,6 +52,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.thoughtworks.xstream.XStream;
+import it.freedomotic.environment.EnvironmentLogic;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -108,7 +109,7 @@ public class EnvObjectPersistence {
                 if ((envObject.getPojo().getEnvironmentID() == null)
                         || envObject.getPojo().getEnvironmentID().isEmpty()) {
                     envObject.getPojo()
-                            .setEnvID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
+                            .setEnvironmentID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
                 }
 
                 String fileName = envObject.getPojo().getUUID() + ".xobj";
@@ -173,9 +174,10 @@ public class EnvObjectPersistence {
      * @param folder
      * @param makeUnique
      */
-    public synchronized static void loadObjects(File folder, boolean makeUnique)
+    public synchronized static void loadObjects(File folder, final boolean makeUnique)
             throws DaoLayerException {
         objectList.clear();
+        System.out.println("DEBUG: loading objects from " +folder.getAbsolutePath());
 
         File[] files = folder.listFiles();
 
@@ -199,6 +201,15 @@ public class EnvObjectPersistence {
                 EnvObjectLogic loaded = loadObject(file);
 
                 if (loaded != null) {
+                    EnvironmentLogic env = EnvironmentPersistence.getEnvByUUID(loaded.getPojo().getEnvironmentID());
+                    if (env !=null){
+                    loaded.setEnvironment(env);
+                    }else{
+                        loaded.setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
+                       LOG.warning("Reset environment UUID of object " + loaded.getPojo().getName()
+                               + " to the default environment. This is because the environment UUID " + 
+                               loaded.getPojo().getEnvironmentID() + " does not exists.");
+                    }
                     add(loaded, makeUnique);
                 }
             }

@@ -57,7 +57,7 @@ public class EnvObject implements Serializable {
     }
 
     @RequiresPermissions("objects:update")
-    public void setEnvID(String uuid) {
+    public void setEnvironmentID(String uuid) {
         this.envUUID = uuid;
     }
 

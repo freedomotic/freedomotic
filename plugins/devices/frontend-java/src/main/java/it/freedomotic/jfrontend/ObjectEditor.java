@@ -106,12 +106,12 @@ public class ObjectEditor
         SpinnerModel modelX =
                 new SpinnerNumberModel(0, //initial value
                 -100, //min
-                (int) obj.getEnv().getPojo().getWidth() + 100, //max= env dimension + 1 meter
+                (int) obj.getEnvironment().getPojo().getWidth() + 100, //max= env dimension + 1 meter
                 1); //step
         SpinnerModel modelY =
                 new SpinnerNumberModel(0, //initial value
                 -100, //min
-                (int) obj.getEnv().getPojo().getWidth() + 100, //max
+                (int) obj.getEnvironment().getPojo().getWidth() + 100, //max
                 1); //step
         spnX.setModel(modelX);
         spnY.setModel(modelY);
@@ -703,7 +703,7 @@ public class ObjectEditor
             }
             if (environmentComboBox.getSelectedItem() != null) {
                 EnvironmentLogic selEnv = (EnvironmentLogic) environmentComboBox.getSelectedItem();
-                object.setEnv(selEnv);
+                object.setEnvironment(selEnv);
                 object.setChanged(true);
             }
 
@@ -1053,7 +1053,7 @@ public class ObjectEditor
             environmentComboBox.addItem(env);
         }
 
-        environmentComboBox.setSelectedItem(object.getEnv());
+        environmentComboBox.setSelectedItem(object.getEnvironment());
     }
 
     private void populateMultiselectionList(BehaviorLogic b) {

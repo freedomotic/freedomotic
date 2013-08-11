@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.environment;
@@ -128,15 +126,15 @@ public final class EnvironmentPersistence {
         // This filter only returns object files
         FileFilter objectFileFileter =
                 new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xenv")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+            @Override
+            public boolean accept(File file) {
+                if (file.isFile() && file.getName().endsWith(".xenv")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
 
         File[] files = folder.listFiles(objectFileFileter);
 
@@ -168,15 +166,15 @@ public final class EnvironmentPersistence {
         // This filter only returns env files
         FileFilter envFileFilter =
                 new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xenv")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+            @Override
+            public boolean accept(File file) {
+                if (file.isFile() && file.getName().endsWith(".xenv")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
 
         File[] files = folder.listFiles(envFileFilter);
 
@@ -220,8 +218,9 @@ public final class EnvironmentPersistence {
             //defensive copy to not affect the passed object with the changes
             Environment pojoCopy = SerialClone.clone(obj.getPojo());
             pojoCopy.setName(obj.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
+            pojoCopy.setUUID(""); // force to assign a new random and unique UUID
+            //should be the last called after using setters on envLogic.getPojo()
             envLogic.setPojo(pojoCopy);
-            envLogic.getPojo().setUUID("");
         }
 
         envLogic.init();
