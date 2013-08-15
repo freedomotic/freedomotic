@@ -58,6 +58,8 @@ public interface API {
 
     //delete
     void removeEnvironment(EnvironmentLogic input);
+    
+    Collection<Client> getClients();
 
     Collection<Client> getClients(String filter);
 
