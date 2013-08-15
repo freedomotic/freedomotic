@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 //Copyright 2009 Enrico Nicoletti
@@ -39,11 +37,12 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.freedomotic.reactions;
 
+import it.freedomotic.core.Condition;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  *
@@ -53,14 +52,20 @@ public final class Reaction
         implements Serializable {
 
     private static final long serialVersionUID = -5474545571527398625L;
-	
-	private Trigger trigger = new Trigger();
+    private Trigger trigger = new Trigger();
+    //list of optional conditions
+    private List<Condition> conditions = new ArrayList<Condition>();
     private String uuid;
     private List<Command> commands = new ArrayList<Command>();
     private String description;
     private String shortDescription;
 
     public Reaction() {
+    }
+
+    public Reaction(Trigger trigger, List<Condition> conditions, List<Command> commands) {
+        this.conditions = conditions;
+        create(trigger, commands);
     }
 
     public Reaction(String trigger, List<Command> commands) {
@@ -79,8 +84,8 @@ public final class Reaction
     /**
      * creates a single command reaction
      *
-     * @param trigger
-     * @param command
+     * @param trigger the trigger of the new reaction
+     * @param command the command performed when the reaction is triggered
      */
     public Reaction(Trigger trigger, Command command) {
         ArrayList<Command> tmp = new ArrayList<Command>();
@@ -127,9 +132,22 @@ public final class Reaction
 
     private String buildShortDescription() {
         StringBuilder b = new StringBuilder();
-        b.append("IF  [");
+        b.append("WHEN  [");
         b.append(trigger);
-        b.append("] THEN ");
+        b.append("] ");
+
+        if ((conditions != null) && (!conditions.isEmpty())) {
+            for (Condition c : conditions) {
+                b.append(c.getStatement().getLogical())
+                        .append(" [")
+                        .append(c.getTarget()).append(" ")
+                        .append(c.getStatement().getAttribute()).append(" ")
+                        .append(c.getStatement().getOperand()).append(" ")
+                        .append(c.getStatement().getValue()).append("] ");
+            }
+        }
+
+        b.append(" THEN ");
 
         Iterator<Command> commandIterator = getCommands().iterator();
         while (commandIterator.hasNext()) {
@@ -171,6 +189,10 @@ public final class Reaction
 
     public String getDescription() {
         return description;
+    }
+
+    public List<Condition> getConditions() {
+        return conditions;
     }
 
     @Override
@@ -226,5 +248,4 @@ public final class Reaction
 
         return false;
     }
-    private static final Logger LOG = Logger.getLogger(Reaction.class.getName());
 }

@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 /*
@@ -35,6 +33,8 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.EnvironmentPersistence;
 
 import it.freedomotic.events.MessageEvent;
+import it.freedomotic.model.object.Behavior;
+import it.freedomotic.objects.BehaviorLogic;
 
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
@@ -42,10 +42,12 @@ import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.ReactionPersistence;
+import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
@@ -177,99 +179,130 @@ public final class TriggerCheck {
     }
 
     private void executeTriggeredAutomations(final Trigger trigger, final EventTemplate event) {
-        Runnable automation =
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Iterator it = ReactionPersistence.iterator();
+        Runnable automation = new Runnable() {
+            @Override
+            public void run() {
+                Iterator it = ReactionPersistence.iterator();
 
-                        //Searching for reactions using this trigger
-                        boolean found = false;
+                //Searching for reactions using this trigger
+                boolean found = false;
 
-                        while (it.hasNext()) {
-                            Reaction reaction = (Reaction) it.next();
-                            Trigger reactionTrigger = reaction.getTrigger();
+                while (it.hasNext()) {
+                    Reaction reaction = (Reaction) it.next();
+                    Trigger reactionTrigger = reaction.getTrigger();
 
-                            //found a related reaction. This must be executed
-                            if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {
-                                reactionTrigger.setExecuted();
-                                found = true;
-                                LOG.fine("Try to execute reaction " + reaction.toString());
+                    //found a related reaction. This must be executed
+                    if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {
+                        if (!checkAdditionalConditions(reaction)) {
+                            LOG.info("Additional conditions test failed in reaction " + reaction.toString());
+                            return;
+                        }
+                        reactionTrigger.setExecuted();
+                        found = true;
+                        LOG.fine("Try to execute reaction " + reaction.toString());
 
-                                try {
-                                    //executes the commands in sequence (only the first sequence is used) 
-                                    //if more then one sequence is needed it can be done with two reactions with the same trigger
-                                    Resolver commandResolver = new Resolver();
-                                    event.getPayload().addStatement("description",
-                                            trigger.getDescription()); //embedd the trigger description to the event payload
-                                    commandResolver.addContext("event.",
-                                            event.getPayload());
+                        try {
+                            //executes the commands in sequence (only the first sequence is used) 
+                            //if more then one sequence is needed it can be done with two reactions with the same trigger
+                            Resolver commandResolver = new Resolver();
+                            event.getPayload().addStatement("description",
+                                    trigger.getDescription()); //embedd the trigger description to the event payload
+                            commandResolver.addContext("event.",
+                                    event.getPayload());
 
-                                    for (final Command command : reaction.getCommands()) {
-                                        if (command == null) {
-                                            continue; //skip this loop
-                                        }
-
-                                        if (command.getReceiver()
-                                                .equalsIgnoreCase(BehaviorManager.getMessagingChannel())) {
-                                            //this command is for an object so it needs only to know only about event parameters
-                                            Command resolvedCommand = commandResolver.resolve(command);
-                                            //doing so we bypass messaging system gaining better performances
-                                            BehaviorManager.parseCommand(resolvedCommand);
-                                        } else {
-                                            //if the event has a target object we include also object info
-                                            EnvObjectLogic targetObject =
-                                                    EnvObjectPersistence.getObjectByName(event.getProperty("object.name"));
-
-                                            if (targetObject != null) {
-                                                commandResolver.addContext("current.",
-                                                        targetObject.getExposedProperties());
-                                                commandResolver.addContext("current.",
-                                                        targetObject.getExposedBehaviors());
-                                            }
-
-                                            final Command resolvedCommand = commandResolver.resolve(command);
-
-                                            //it's not a user level command for objects (eg: turn it on), it is for another kind of actuator
-                                            Command reply = Freedomotic.sendCommand(resolvedCommand); //blocking wait until executed
-
-                                            if (reply == null) {
-                                                LOG.warning("Unreceived reply within given time ("
-                                                        + command.getReplyTimeout()
-                                                        + "ms) for command " + command.getName());
-                                            } else {
-                                                if (reply.isExecuted()) {
-                                                    LOG.fine("Executed succesfully " + command.getName());
-                                                } else {
-                                                    LOG.warning("Unable to execute command"
-                                                            + command.getName());
-                                                }
-                                            }
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    LOG.severe("Exception while merging event parameters into reaction.\n");
-                                    LOG.severe(Freedomotic.getStackTraceInfo(e));
-
-                                    return;
+                            for (final Command command : reaction.getCommands()) {
+                                if (command == null) {
+                                    continue; //skip this loop
                                 }
 
-                                String info =
-                                        "Executing automation '" + reaction.toString() + "' takes "
-                                        + (System.currentTimeMillis() - event.getCreation()) + "ms.";
-                                LOG.info(info);
+                                if (command.getReceiver()
+                                        .equalsIgnoreCase(BehaviorManager.getMessagingChannel())) {
+                                    //this command is for an object so it needs only to know only about event parameters
+                                    Command resolvedCommand = commandResolver.resolve(command);
+                                    //doing so we bypass messaging system gaining better performances
+                                    BehaviorManager.parseCommand(resolvedCommand);
+                                } else {
+                                    //if the event has a target object we include also object info
+                                    EnvObjectLogic targetObject =
+                                            EnvObjectPersistence.getObjectByName(event.getProperty("object.name"));
 
-                                MessageEvent message = new MessageEvent(null, info);
-                                message.setType("callout"); //display as callout on frontends
-                                Freedomotic.sendEvent(message);
+                                    if (targetObject != null) {
+                                        commandResolver.addContext("current.",
+                                                targetObject.getExposedProperties());
+                                        commandResolver.addContext("current.",
+                                                targetObject.getExposedBehaviors());
+                                    }
+
+                                    final Command resolvedCommand = commandResolver.resolve(command);
+
+                                    //it's not a user level command for objects (eg: turn it on), it is for another kind of actuator
+                                    Command reply = Freedomotic.sendCommand(resolvedCommand); //blocking wait until executed
+
+                                    if (reply == null) {
+                                        LOG.warning("Unreceived reply within given time ("
+                                                + command.getReplyTimeout()
+                                                + "ms) for command " + command.getName());
+                                    } else {
+                                        if (reply.isExecuted()) {
+                                            LOG.fine("Executed succesfully " + command.getName());
+                                        } else {
+                                            LOG.warning("Unable to execute command"
+                                                    + command.getName());
+                                        }
+                                    }
+                                }
                             }
+                        } catch (Exception e) {
+                            LOG.severe("Exception while merging event parameters into reaction.\n");
+                            LOG.severe(Freedomotic.getStackTraceInfo(e));
+
+                            return;
                         }
 
-                        if (!found) {
-                            LOG.config("No valid reaction bound to trigger '" + trigger.getName() + "'");
-                        }
+                        String info =
+                                "Executing automation '" + reaction.toString() + "' takes "
+                                + (System.currentTimeMillis() - event.getCreation()) + "ms.";
+                        LOG.info(info);
+
+                        MessageEvent message = new MessageEvent(null, info);
+                        message.setType("callout"); //display as callout on frontends
+                        Freedomotic.sendEvent(message);
                     }
-                };
+                }
+
+                if (!found) {
+                    LOG.config("No valid reaction bound to trigger '" + trigger.getName() + "'");
+                }
+            }
+
+            /**
+             * Resolves the additional conditions of the reaction in input. Now
+             * it just takes the statement attribute and value and check if they
+             * are equal to the target behavior name and value respectively.
+             * This should be improved to allow also REGEX and other statement
+             * resolution.
+             */
+            private boolean checkAdditionalConditions(Reaction rea) {
+                boolean result = true;
+                for (Condition condition : rea.getConditions()) {
+                    //System.out.println("DEBUG: check condition " + condition.getTarget());
+                    EnvObjectLogic object = EnvObjectPersistence.getObjectByName(condition.getTarget());
+                    Statement statement = condition.getStatement();
+                    BehaviorLogic behavior = object.getBehavior(statement.getAttribute());
+                    //System.out.println("DEBUG: " + object.getPojo().getName() + " "
+                            //+ " behavior: " + behavior.getName() + " " + behavior.getValueAsString());
+                    boolean eval = behavior.getValueAsString().equalsIgnoreCase(statement.getValue());
+                    if (statement.getLogical().equalsIgnoreCase("AND")) {
+                        result = result && eval;
+                        //System.out.println("DEBUG: result and: " + result + "(" + eval +")");
+                    } else {
+                        result = result || eval;
+                        //System.out.println("DEBUG: result or: " + result + "(" + eval +")");
+                    }
+                }
+                return result;
+            }
+        };
 
         EXECUTOR.execute(automation);
     }

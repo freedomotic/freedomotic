@@ -122,6 +122,11 @@ public class APIStandardImpl
     public Collection<Client> getClients(String filter) {
         return clientStorage.getClients(filter);
     }
+    
+    @Override
+    public Collection<Client> getClients() {
+        return clientStorage.getClients();
+    }
 
     public BufferedImage getResource(String resourceIdentifier) {
         return ResourcesManager.getResource(resourceIdentifier);
