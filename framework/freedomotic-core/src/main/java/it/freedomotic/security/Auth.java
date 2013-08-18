@@ -28,6 +28,8 @@ package it.freedomotic.security;
 import com.google.inject.Inject;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.AppConfig;
+import static it.freedomotic.security.Auth.config;
+import static it.freedomotic.security.Auth.realmInited;
 import it.freedomotic.util.Info;
 import java.io.File;
 import java.util.ArrayList;
@@ -52,20 +54,21 @@ import org.apache.shiro.util.ThreadState;
  */
 public class Auth {
     
-    private static String BASEREALMNAME = "it.freedomotic.security";
-    private static String PLUGINREALMNAME = "it.freedomotic.plugins.security";
+    private static final String BASE_REALM_NAME = "it.freedomotic.security";
+    private static final String PLUGIN_REALM_NAME = "it.freedomotic.plugins.security";
     public static boolean realmInited = false;
     private static PropertiesRealm baseRealm = new PropertiesRealm();
-    private static SimpleAccountRealm pluginRealm = new SimpleAccountRealm(PLUGINREALMNAME);
-    private static String DEFAULT_PERMISSION = "*";
+    private static SimpleAccountRealm pluginRealm = new SimpleAccountRealm(PLUGIN_REALM_NAME);
+    private static final String DEFAULT_PERMISSION = "*";
     private static ArrayList<Realm> realmCollection = new ArrayList<Realm>();
     @Inject static AppConfig config;
     
     public static void initBaseRealm() {
         DefaultSecurityManager securityManager = null;
         if (!realmInited && config.getBooleanProperty("KEY_SECURITY_ENABLE", true)) {
-            baseRealm.setName(BASEREALMNAME);
-            baseRealm.setResourcePath(Info.getApplicationPath() + File.separator + "config" + File.separator + "security.properties");
+            baseRealm.setName(BASE_REALM_NAME);
+            File properties = new File(Info.PATH_WORKDIR +"/config/security.properties");
+            baseRealm.setResourcePath(properties.getAbsolutePath());
             baseRealm.init();
 
             pluginRealm.init();
@@ -181,7 +184,7 @@ public class Auth {
     @RequiresPermissions("auth:fakeUser")
     public static boolean bindFakeUser(String userName){
         if (baseRealm.accountExists(userName)) {
-            PrincipalCollection principals = new SimplePrincipalCollection(userName, BASEREALMNAME);
+            PrincipalCollection principals = new SimplePrincipalCollection(userName, BASE_REALM_NAME);
             Subject subj = new Subject.Builder().principals(principals).buildSubject();
             ThreadState threadState = new SubjectThreadState(subj);
             threadState.bind();
