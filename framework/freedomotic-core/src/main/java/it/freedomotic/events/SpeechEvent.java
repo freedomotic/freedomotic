@@ -31,6 +31,7 @@ import it.freedomotic.app.Freedomotic;
 
 import it.freedomotic.core.NaturalLanguageProcessor;
 import it.freedomotic.core.Resolver;
+import it.freedomotic.exceptions.VariableResolutionException;
 
 import it.freedomotic.reactions.Command;
 
@@ -68,6 +69,8 @@ public class SpeechEvent
                 Command resolvedCommand = resolver.resolve(c);
                 Freedomotic.sendCommand(resolvedCommand);
             } catch (CloneNotSupportedException ex) {
+                Logger.getLogger(SpeechEvent.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (VariableResolutionException ex) {
                 Logger.getLogger(SpeechEvent.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {

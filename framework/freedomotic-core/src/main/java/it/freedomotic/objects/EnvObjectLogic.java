@@ -28,6 +28,7 @@ import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.environment.ZoneLogic;
 
 import it.freedomotic.events.ObjectHasChangedBehavior;
+import it.freedomotic.exceptions.VariableResolutionException;
 
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.geometry.FreedomPolygon;
@@ -454,6 +455,8 @@ public class EnvObjectLogic {
                 return true; //succesfully executed
             }
         } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(EnvObjectLogic.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (VariableResolutionException ex) {
             Logger.getLogger(EnvObjectLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
 

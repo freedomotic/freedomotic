@@ -68,7 +68,7 @@ public class TopologyUtilsTest {
      */
     @Test
     public void testTranslate() {
-        System.out.println("translate");
+        System.out.println("Translate a polygon");
 
         FreedomPolygon input = new FreedomPolygon();
         input.append(new FreedomPoint(0, 0));
@@ -85,8 +85,6 @@ public class TopologyUtilsTest {
         expResult.append(new FreedomPoint(50, 150));
 
         FreedomPolygon result = TopologyUtils.translate(input, xoffset, yoffset);
-//        System.out.println(expResult.toString());
-//        System.out.println(result.toString());
         assertEquals(expResult.toString(),
                 result.toString());
     }
@@ -96,7 +94,7 @@ public class TopologyUtilsTest {
      */
     @Test
     public void testRotate() {
-        System.out.println("rotate");
+        System.out.println("Rotate a polygon");
 
         FreedomPolygon input = new FreedomPolygon();
         input.append(new FreedomPoint(0, 0));
@@ -112,8 +110,6 @@ public class TopologyUtilsTest {
         expResult.append(new FreedomPoint(-50, 0));
 
         FreedomPolygon result = TopologyUtils.rotate(input, degrees);
-//        System.out.println(expResult.toString());
-        System.out.println(result.toString());
         assertEquals(expResult.toString(),
                 result.toString());
     }
@@ -123,7 +119,7 @@ public class TopologyUtilsTest {
      */
     @Test
     public void testIntersects() {
-        System.out.println("intersects a copy of itself (expected true)");
+        System.out.println("Intersects a copy of itself (expected true)");
 
         FreedomPolygon source = new FreedomPolygon();
         source.append(new FreedomPoint(0, 0));
@@ -147,7 +143,7 @@ public class TopologyUtilsTest {
      */
     @Test
     public void testIntersects2() {
-        System.out.println("intersects with a rotated copy (90°) of itself (expected true)");
+        System.out.println("Intersects with a rotated copy (90°) of itself (expected true)");
 
         FreedomPolygon source = new FreedomPolygon();
         source.append(new FreedomPoint(0, 0));
@@ -171,7 +167,7 @@ public class TopologyUtilsTest {
      */
     @Test
     public void testIntersects3() {
-        System.out.println("intersects overlapping polygins with no edge collision (expected true)");
+        System.out.println("Intersects overlapping polygins with no edge collision (expected true)");
 
         FreedomPolygon source = new FreedomPolygon();
         source.append(new FreedomPoint(0, 0));
@@ -197,7 +193,7 @@ public class TopologyUtilsTest {
      */
     @Test
     public void testIntersects4() {
-        System.out.println("intersects overlapping polygins with edge collision (expected true)");
+        System.out.println("Intersects overlapping polygins with edge collision (expected true)");
 
         FreedomPolygon source = new FreedomPolygon();
         source.append(new FreedomPoint(0, 0));
@@ -221,7 +217,7 @@ public class TopologyUtilsTest {
      */
     @Test
     public void testContains() {
-        System.out.println("contains");
+        System.out.println("Check if a polygon A contains polygon B");
 
         FreedomPolygon source = new FreedomPolygon();
         source.append(new FreedomPoint(0, 0));
@@ -239,5 +235,4 @@ public class TopologyUtilsTest {
         assertEquals(false,
                 TopologyUtils.contains(source, outside));
     }
-    private static final Logger LOG = Logger.getLogger(TopologyUtilsTest.class.getName());
 }

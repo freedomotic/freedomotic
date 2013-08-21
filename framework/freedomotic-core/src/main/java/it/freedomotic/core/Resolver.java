@@ -20,6 +20,7 @@
 package it.freedomotic.core;
 
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.exceptions.VariableResolutionException;
 
 import it.freedomotic.model.ds.Config;
 
@@ -106,7 +107,7 @@ public final class Resolver {
      * @return
      */
     public Command resolve(Command c)
-            throws CloneNotSupportedException {
+            throws CloneNotSupportedException, VariableResolutionException {
         this.command = c;
 
         if ((context != null) && (command != null)) {
@@ -127,7 +128,7 @@ public final class Resolver {
      * @param trigger
      * @return
      */
-    public Trigger resolve(Trigger t) {
+    public Trigger resolve(Trigger t) throws VariableResolutionException {
         this.trigger = t;
 
         if ((context != null) && (trigger != null)) {
@@ -173,7 +174,7 @@ public final class Resolver {
      *
      * @param command
      */
-    private void performSubstitutionInCommand(Command command) {
+    private void performSubstitutionInCommand(Command command) throws VariableResolutionException {
         for (Map.Entry aProperty : command.getProperties().entrySet()) {
             String key = (String) aProperty.getKey();
             String propertyValue = (String) aProperty.getValue();
@@ -205,7 +206,7 @@ public final class Resolver {
                         String propertyValueResolved = propertyValue.replaceFirst(occurrence, replacer);
                         aProperty.setValue(propertyValueResolved);
                     } else {
-                        LOG.severe("Variable '" + referenceToResolve
+                        throw new VariableResolutionException("Variable '" + referenceToResolve
                                 + "' cannot be resolved in command '" + command.getName() + "'.\n"
                                 + "Availabe tokens are: " + context.toString());
                     }
@@ -260,7 +261,7 @@ public final class Resolver {
      *
      * @param trigger
      */
-    private void performSubstitutionInTrigger(Trigger trigger) {
+    private void performSubstitutionInTrigger(Trigger trigger) throws VariableResolutionException {
         Iterator it = trigger.getPayload().iterator();
 
         while (it.hasNext()) {
@@ -279,23 +280,23 @@ public final class Resolver {
                     String tokenKey = matcher.group();
 
                     if (tokenKey.endsWith("#")) {
-                        //cutting out the optional last '#'
-                        tokenKey = tokenKey.substring(0, tokenKey.length() - 1);
+                        tokenKey = tokenKey.substring(0, tokenKey.length() - 1); //cutting out the optional last '#'
                     }
 
-                    //cutting out the first char '@'
                     tokenKey =
                             tokenKey.substring(1,
-                            tokenKey.length());
+                            tokenKey.length()); //cutting out the first char '@'
 
                     String tokenValue = trigger.getPayload().getStatementValue(tokenKey);
 
-
-                    LOG.severe("Variable '" + tokenValue + "' cannot be resolved in trigger '"
-                            + trigger.getName() + "'.\n" + "Availabe tokens are: "
-                            + context.toString());
+                    if (tokenValue == null) {
+                        throw new VariableResolutionException("Variable '" + tokenValue + "' cannot be resolved in trigger '"
+                                + trigger.getName() + "'.\n" + "Availabe tokens are: "
+                                + context.toString());
+                    }
 
                     //replace an @token.property with its real value
+                    //System.out.println("Replace all " + tokenKey + " with " + tokenValue + " in " + propertyValue);
                     result.append(tokenValue);
                 }
 
@@ -313,7 +314,7 @@ public final class Resolver {
                     ScriptEngineManager mgr = new ScriptEngineManager();
                     ScriptEngine js = mgr.getEngineByName("JavaScript");
                     //removing equal sign on the head
-                    String script = possibleScript.substring(1); 
+                    String script = possibleScript.substring(1);
 
                     if (js == null) {
                         LOG.severe("Cannot instatiate a JavaScript engine");
@@ -341,7 +342,7 @@ public final class Resolver {
 
             if (!success) {
                 //fall back to the value before scripting evaluation
-                statement.setValue(possibleScript); 
+                statement.setValue(possibleScript);
             }
         }
     }

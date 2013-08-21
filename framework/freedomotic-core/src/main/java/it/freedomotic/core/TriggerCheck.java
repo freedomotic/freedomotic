@@ -33,6 +33,7 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.environment.EnvironmentPersistence;
 
 import it.freedomotic.events.MessageEvent;
+import it.freedomotic.exceptions.VariableResolutionException;
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.objects.BehaviorLogic;
 
@@ -124,7 +125,7 @@ public final class TriggerCheck {
         }
     }
 
-    private Trigger resolveTrigger(final EventTemplate event, final Trigger trigger) {
+    private Trigger resolveTrigger(final EventTemplate event, final Trigger trigger) throws VariableResolutionException {
         Resolver resolver = new Resolver();
         resolver.addContext("event.",
                 event.getPayload());
