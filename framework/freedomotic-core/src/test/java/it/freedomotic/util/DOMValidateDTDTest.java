@@ -92,14 +92,12 @@ public class DOMValidateDTDTest {
         Trigger trigger2 = null;
         String tmp = xstream.toXML(trigger);
         Assert.assertEquals("Serialization", file.replaceAll("\n", "").replaceAll(" ", ""), tmp.replaceAll("\n", "").replaceAll(" ", ""));
-        System.out.println(tmp);
         trigger2 = (Trigger) xstream.fromXML(tmp);
 //            System.out.println(xstream.toXML(trigger2));
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
         //Assert.assertEquals("Payload size", 0, trigger.getPayload().size());
-        System.out.println(trigger.getSuspensionTime());
         Assert.assertEquals("Suspension time", 1000, trigger.getSuspensionTime());
         Assert.assertEquals("Suspension time", 1000, trigger2.getSuspensionTime());
     }

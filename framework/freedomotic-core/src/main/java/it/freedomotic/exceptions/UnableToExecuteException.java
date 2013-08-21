@@ -58,5 +58,4 @@ public class UnableToExecuteException
     public UnableToExecuteException(Throwable cause) {
         super(cause);
     }
-    private static final Logger LOG = Logger.getLogger(UnableToExecuteException.class.getName());
 }

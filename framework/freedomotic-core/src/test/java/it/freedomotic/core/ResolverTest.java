@@ -36,6 +36,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
+import it.freedomotic.exceptions.VariableResolutionException;
+import org.junit.Assert;
 
 /**
  *
@@ -89,7 +91,9 @@ public class ResolverTest {
         try {
             result = resolver.resolve(c);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(ResolverTest.class.getName()).log(Level.SEVERE, null, ex);
+            Assert.fail(ex.getMessage());
+        } catch (VariableResolutionException ex) {
+            Assert.fail(ex.getMessage());
         }
         assertEquals("25", result.getProperty("zero"));
         assertEquals("temperature is 25.", result.getProperty("one"));
@@ -126,9 +130,13 @@ public class ResolverTest {
         event.addProperty("object.name", "Indoor Thermometer");
         Resolver resolver = new Resolver();
         resolver.addContext("event.", event.getPayload());
-        Trigger result = resolver.resolve(c);
+        Trigger result = null;
+        try {
+            result = resolver.resolve(c);
+        } catch (VariableResolutionException ex) {
+            Assert.fail(ex.getMessage());
+        }
         XStream x = new XStream();
-        System.out.println(x.toXML(c));
         assertEquals("25", result.getPayload().getStatements("zero").get(0).getValue());
         assertEquals("temperature is 25.", result.getPayload().getStatements("one").get(0).getValue());
         assertEquals("temperature is 25celsius degree.", result.getPayload().getStatements("two").get(0).getValue());
@@ -142,5 +150,4 @@ public class ResolverTest {
         assertEquals("15", result.getPayload().getStatements("nine").get(0).getValue());
          assertEquals("it's hot", result.getPayload().getStatements("behaviorValue").get(0).getValue());
     }
-    private static final Logger LOG = Logger.getLogger(ResolverTest.class.getName());
 }
