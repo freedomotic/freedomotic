@@ -488,7 +488,7 @@ public class MainWindow
 
         jMenuItem4.setText("jMenuItem4");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Freedomotic");
         setBackground(java.awt.SystemColor.window);
         setBounds(new java.awt.Rectangle(50, 20, 0, 0));
@@ -497,6 +497,9 @@ public class MainWindow
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
+            }
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
             }
         });
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -1222,6 +1225,9 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             updateStrings();
         }
     }//GEN-LAST:event_mnuLanguageActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+    }//GEN-LAST:event_formWindowClosed
 
     private void updateStrings() {
         mnuOpenNew.setText(I18n.msg("file"));

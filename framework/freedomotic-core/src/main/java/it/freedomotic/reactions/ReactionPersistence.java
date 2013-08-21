@@ -184,7 +184,7 @@ public class ReactionPersistence {
             r.getTrigger().register(); //trigger starts to listen on its channel
             list.add(r);
             r.setChanged();
-            LOG.info("Added new reaction " + r.getDescription());
+            LOG.config("Added new reaction " + r.getDescription());
         } else {
             LOG.info("The reaction '" + r.getDescription() + "' is already loaded so its skipped.");
         }
