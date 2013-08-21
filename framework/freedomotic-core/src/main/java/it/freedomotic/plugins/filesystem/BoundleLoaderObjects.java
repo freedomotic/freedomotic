@@ -73,7 +73,7 @@ class BoundleLoaderObjects
 
                             if (clazz.getName().startsWith("it.freedomotic.objects.")
                                     && !clazz.getName().contains("$")) {
-                                LOG.log(Level.INFO,
+                                LOG.log(Level.CONFIG,
                                         "Found object plugin " + clazz.getSimpleName().toString()
                                         + " in " + path);
                             }

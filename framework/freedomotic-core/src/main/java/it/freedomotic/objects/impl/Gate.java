@@ -253,7 +253,7 @@ public class Gate
         }
 
         //notify if the passage connect two rooms
-        LOG.info("The gate '" + getPojo().getName() + "' connects " + from + " to " + to);
+        LOG.config("The gate '" + getPojo().getName() + "' connects " + from + " to " + to);
     }
 
     @Override
