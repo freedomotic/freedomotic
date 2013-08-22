@@ -19,6 +19,7 @@
  */
 package it.freedomotic.api;
 
+import com.google.inject.Inject;
 import it.freedomotic.annotations.ListenEventsOn;
 import it.freedomotic.annotations.Schedule;
 
@@ -34,7 +35,6 @@ import it.freedomotic.exceptions.UnableToExecuteException;
 
 import it.freedomotic.reactions.Command;
 
-import it.freedomotic.security.Auth;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -60,7 +60,7 @@ public abstract class Protocol
     private Protocol.SensorThread sensorThread;
     private volatile Destination lastDestination;
     private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
-
+    
     protected abstract void onRun();
 
     protected abstract void onCommand(Command c)
@@ -136,7 +136,7 @@ public abstract class Protocol
                     Freedomotic.sendEvent(event);
                 }
             };
-            Auth.pluginExecutePrivileged(this, action);
+            getApi().getAuth().pluginExecutePrivileged(this, action);
         }
     }
 
@@ -154,7 +154,7 @@ public abstract class Protocol
                     Freedomotic.sendEvent(event);
                 }
             };
-            Auth.pluginExecutePrivileged(this, action);
+            getApi().getAuth().pluginExecutePrivileged(this, action);
         }
     }
 

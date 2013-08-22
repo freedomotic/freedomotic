@@ -35,9 +35,7 @@ import it.freedomotic.model.ds.Config;
 
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
-import it.freedomotic.security.Auth;
 import java.io.File;
-import java.util.logging.Logger;
 
 /**
  *

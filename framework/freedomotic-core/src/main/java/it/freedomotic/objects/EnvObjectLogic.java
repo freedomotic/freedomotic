@@ -19,6 +19,7 @@
  */
 package it.freedomotic.objects;
 
+import com.google.inject.Inject;
 import it.freedomotic.app.Freedomotic;
 
 import it.freedomotic.core.Resolver;
@@ -69,7 +70,7 @@ public class EnvObjectLogic {
     private HashMap<String, Command> commandsMapping; //mapping between action name -> hardware command instance
     private List<BehaviorLogic> behaviors = new ArrayList<BehaviorLogic>();
     private EnvironmentLogic environment;
-
+    
     /**
      * gets the hardware command mapped to the action in input for example:
      * Action -> Hardware Command Turn on -> Turn on light with X10 Actuator
@@ -79,6 +80,7 @@ public class EnvObjectLogic {
      * @return a Command or null if action doesn't exist or the mapping is not
      * valid
      */
+
     @RequiresPermissions("objects:read")
     public final Command getHardwareCommand(String action) {
         if ((action != null) && (!action.trim().isEmpty())) {
@@ -268,10 +270,11 @@ public class EnvObjectLogic {
 
     @RequiresPermissions("objects:read")
     public EnvObject getPojo() {
-        if (pojo.getUUID() == null || Auth.isPermitted("objects:read:" + pojo.getUUID().substring(0, 5))) {
+       // if (pojo.getUUID() == null  || auth.isPermitted("objects:read:" + pojo.getUUID().substring(0, 5))
+       //         ) {
             return pojo;
-        }
-        return null;
+      //  }
+      //  return null;
     }
 
     @RequiresPermissions("objects:delete")

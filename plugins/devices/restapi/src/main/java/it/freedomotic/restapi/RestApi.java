@@ -72,7 +72,7 @@ public class RestApi extends Actuator {
                 
                     @Override
                     public int verify(String identifier, char[] secret) {
-                        if (Auth.login(identifier, secret)){
+                        if (getApi().getAuth().login(identifier, secret)){
                         return RESULT_VALID;
                     } 
                     return RESULT_INVALID;

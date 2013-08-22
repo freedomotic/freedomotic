@@ -21,40 +21,29 @@
  */
 package it.freedomotic.objects;
 
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
-
-import it.freedomotic.app.Freedomotic;
-
+import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.EnvironmentPersistence;
-
 import it.freedomotic.exceptions.DaoLayerException;
-
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.persistence.FreedomXStream;
-import it.freedomotic.security.Auth;
 import it.freedomotic.util.DOMValidateDTD;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.SerialClone;
 import it.freedomotic.util.UidGenerator;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
-
-import com.thoughtworks.xstream.XStream;
-import it.freedomotic.environment.EnvironmentLogic;
-
-import java.util.*;
 import java.util.logging.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
@@ -270,7 +259,8 @@ public class EnvObjectPersistence {
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getName().equalsIgnoreCase(name)
-                    && Auth.isPermitted("objects:read:" + object.getPojo().getUUID())) {
+                    //&& auth.isPermitted("objects:read:" + object.getPojo().getUUID())
+                    ) {
                 return object;
             }
         }
@@ -319,7 +309,8 @@ public class EnvObjectPersistence {
             EnvObjectLogic object = it.next();
             if ((object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()))
                     && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(address.trim()))
-                    && Auth.isPermitted("objects:read:" + object.getPojo().getUUID())) {
+         //           && auth.isPermitted("objects:read:" + object.getPojo().getUUID())
+                    ) {
                 list.add(object);
             }
         }
@@ -344,7 +335,8 @@ public class EnvObjectPersistence {
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim())
-                    && Auth.isPermitted("objects:read:" + object.getPojo().getUUID())) {
+                    // && auth.isPermitted("objects:read:" + object.getPojo().getUUID())
+                    ) {
                 list.add(object);
             }
         }
@@ -364,7 +356,8 @@ public class EnvObjectPersistence {
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getEnvironmentID().equalsIgnoreCase(uuid)
-                    && Auth.isPermitted("objects:read:" + object.getPojo().getUUID().substring(0, 5))) {
+                    //&& auth.isPermitted("objects:read:" + object.getPojo().getUUID().substring(0, 7))
+                    ) {
                 list.add(object);
             }
         }

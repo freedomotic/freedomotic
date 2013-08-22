@@ -17,6 +17,8 @@ import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 
 import it.freedomotic.plugins.ClientStorage;
+import it.freedomotic.security.Auth;
+import it.freedomotic.security.AuthProvider;
 
 import java.awt.image.BufferedImage;
 import java.util.Collection;
@@ -40,17 +42,20 @@ public class APIStandardImpl
     private final EnvObjectPersistence object;
     private final ClientStorage clientStorage;
     private final AppConfig config;
+    private final Auth auth;
 
     @Inject
     public APIStandardImpl(
             EnvironmentPersistence environment,
             EnvObjectPersistence object,
             ClientStorage clientStorage,
-            AppConfig config) {
+            AppConfig config,
+            AuthProvider authProvider) {
         this.environment = environment;
         this.object = object;
         this.clientStorage = clientStorage;
         this.config = config;
+        this.auth = authProvider.create();
     }
 
     @Override
@@ -135,5 +140,10 @@ public class APIStandardImpl
     @Override
     public ClientStorage getClientStorage() {
         return clientStorage;
+    }
+    
+    @Override
+    public Auth getAuth(){
+        return auth;
     }
 }

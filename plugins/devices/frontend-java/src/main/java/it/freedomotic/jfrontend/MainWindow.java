@@ -66,6 +66,7 @@ public class MainWindow
     PluginJList lstClients;
     //JComboBox cmbFilter;
     boolean editMode;
+    private final Auth Auth;
 
     public Drawer getDrawer() {
         return drawer;
@@ -76,9 +77,10 @@ public class MainWindow
         UIManager.put("OptionPane.noButtonText", I18n.msg("no"));
         UIManager.put("OptionPane.cancelButtonText", I18n.msg("cancel"));
         this.master = master;
+        this.Auth = master.getApi().getAuth();
         ObjectEditor.setAPI(master.getApi());
 
-        if (Auth.realmInited) {
+        if (Auth.isInited()) {
             logUser(true);
         }
         setWindowedMode();
@@ -95,7 +97,7 @@ public class MainWindow
     }
 
     private void updateMenusPermissions() {
-        mnuSwitchUser.setEnabled(Auth.realmInited);
+        mnuSwitchUser.setEnabled(Auth.isInited());
         mnuNewEnvironment.setEnabled(Auth.isPermitted("environments:create"));
         mnuOpenEnvironment.setEnabled(Auth.isPermitted("environments:load"));
         frameMap.setVisible(Auth.isPermitted("environments:read"));
@@ -1200,7 +1202,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuPrivilegesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPrivilegesActionPerformed
         // TODO add your handling code here:
-        new PrivilegesConfiguration();
+        new PrivilegesConfiguration(master.getApi());
     }//GEN-LAST:event_mnuPrivilegesActionPerformed
 
     private void mnuLanguageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLanguageActionPerformed
