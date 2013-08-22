@@ -20,30 +20,26 @@
 package it.freedomotic.environment;
 
 import com.google.inject.Inject;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
-
 import it.freedomotic.api.Client;
-
 import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.exceptions.DaoLayerException;
-
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.environment.Zone;
 import it.freedomotic.model.object.Behavior;
-
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
-
 import it.freedomotic.persistence.FreedomXStream;
+import it.freedomotic.plugins.ClientStorage;
+import it.freedomotic.plugins.ObjectPluginPlaceholder;
+import it.freedomotic.reactions.CommandPersistence;
+import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.security.Auth;
 import it.freedomotic.util.DOMValidateDTD;
 import it.freedomotic.util.Info;
 import it.freedomotic.util.SerialClone;
 import it.freedomotic.util.UidGenerator;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,12 +49,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
-import com.thoughtworks.xstream.XStream;
-import it.freedomotic.plugins.ClientStorage;
-import it.freedomotic.plugins.ObjectPluginPlaceholder;
-import it.freedomotic.reactions.CommandPersistence;
-import it.freedomotic.reactions.TriggerPersistence;
-
 /**
  *
  * @author Enrico
@@ -67,11 +57,11 @@ public final class EnvironmentPersistence {
 
     private static List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
     private ClientStorage clientStorage;
-
+    
     @Inject
     public EnvironmentPersistence(ClientStorage clientStorage) {
         //disable instance creation
-        this.clientStorage = clientStorage;
+        this.clientStorage = clientStorage;        
     }
 
     @RequiresPermissions("environments:save")
@@ -213,7 +203,7 @@ public final class EnvironmentPersistence {
         EnvironmentLogic envLogic = obj;
 
         if (MAKE_UNIQUE) {
-            envLogic = new EnvironmentLogic();
+            envLogic = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
 
             //defensive copy to not affect the passed object with the changes
             Environment pojoCopy = SerialClone.clone(obj.getPojo());
@@ -388,7 +378,7 @@ public final class EnvironmentPersistence {
             throw new DaoLayerException("XML parsing error. Readed XML is \n" + xml, e);
         }
 
-        EnvironmentLogic envLogic = new EnvironmentLogic();
+        EnvironmentLogic envLogic = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
 
         if (pojo == null) {
             throw new IllegalStateException("Object data cannot be null at this stage");
@@ -408,13 +398,13 @@ public final class EnvironmentPersistence {
 
     @RequiresPermissions("environments:read")
     public static EnvironmentLogic getEnvByUUID(String UUID) {
-        if (Auth.isPermitted("environments:read:" + UUID)) {
+   //     if (auth.isPermitted("environments:read:" + UUID)) {
             for (EnvironmentLogic env : environments) {
                 if (env.getPojo().getUUID().equals(UUID)) {
                     return env;
                 }
             }
-        }
+     //   }
         return null;
     }
     private static final Logger LOG = Logger.getLogger(EnvironmentPersistence.class.getName());

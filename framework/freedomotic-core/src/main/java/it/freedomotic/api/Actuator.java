@@ -19,6 +19,7 @@
  */
 package it.freedomotic.api;
 
+import com.google.inject.Inject;
 import it.freedomotic.app.Freedomotic;
 
 import it.freedomotic.bus.BusConsumer;
@@ -59,7 +60,8 @@ public abstract class Actuator
     private volatile Destination lastDestination;
     private ExecutorService executor;
     private static final Logger LOG = Logger.getLogger(Actuator.class.getName());
-
+    @Inject
+    private Auth auth;
     public Actuator(String pluginName, String manifest) {
         super(pluginName, manifest);
         register();
@@ -122,7 +124,7 @@ public abstract class Actuator
                     Freedomotic.sendEvent(change);
                 }
             };
-            Auth.pluginExecutePrivileged(this, action);
+            auth.pluginExecutePrivileged(this, action);
         }
     }
 
@@ -139,7 +141,7 @@ public abstract class Actuator
                     Freedomotic.sendEvent(change);
                 }
             };
-            Auth.pluginExecutePrivileged(this, action);
+            auth.pluginExecutePrivileged(this, action);
         }
     }
 

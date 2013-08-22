@@ -10,6 +10,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 import it.freedomotic.api.API;
 import it.freedomotic.api.APIStandardImpl;
+import it.freedomotic.api.Plugin;
 
 import it.freedomotic.core.JoinPlugin;
 import it.freedomotic.core.TriggerCheck;
@@ -17,6 +18,7 @@ import it.freedomotic.core.TriggerCheck;
 import it.freedomotic.environment.EnvironmentDAO;
 import it.freedomotic.environment.EnvironmentDAOFactory;
 import it.freedomotic.environment.EnvironmentDAOXstream;
+import it.freedomotic.environment.EnvironmentLogic;
 
 import it.freedomotic.events.ProtocolRead;
 
@@ -25,6 +27,8 @@ import it.freedomotic.plugins.ClientStorageInMemory;
 import it.freedomotic.plugins.filesystem.PluginsManager;
 import it.freedomotic.plugins.filesystem.PluginsManagerImpl;
 import it.freedomotic.security.Auth;
+import it.freedomotic.security.AuthImpl;
+import it.freedomotic.security.AuthProvider;
 import it.freedomotic.util.I18n;
 
 /**
@@ -48,8 +52,14 @@ public class DependenciesInjector
         
         bind(AppConfig.class).to(AppConfigImpl.class).in(Singleton.class);
 
-        //static injection (used during guice refactoring)
-        requestStaticInjection(Auth.class);
+        install(new FactoryModuleBuilder().implement(Auth.class, AuthImpl.class)
+                .build(AuthProvider.class));
+        
+        //bind(Auth.class).to(AuthImpl.class).in(Singleton.class);
+        
+        // static injection (used during guice refactoring)
+//        requestStaticInjection(Auth.class);
+        
         requestStaticInjection(I18n.class);
     }
 }

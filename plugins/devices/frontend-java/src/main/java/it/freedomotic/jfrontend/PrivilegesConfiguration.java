@@ -4,9 +4,9 @@
  */
 package it.freedomotic.jfrontend;
 
-import it.freedomotic.security.Auth;
-import it.freedomotic.util.Info;
+import it.freedomotic.api.API;
 import it.freedomotic.util.I18n;
+import it.freedomotic.util.Info;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -29,11 +29,11 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
         
      * Creates new form PrivilegesConfiguration
      */
-    public PrivilegesConfiguration() {
+    public PrivilegesConfiguration(API api) {
         initComponents();
         txtArea.setContentType("text/xml");
         txtArea.setText(readConfiguration(write));
-        txtArea.setEnabled(Auth.isPermitted("auth:privileges:update"));
+        txtArea.setEnabled(api.getAuth().isPermitted("auth:privileges:update"));
         pack();
         setVisible(true);
     }

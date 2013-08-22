@@ -11,6 +11,7 @@ import it.freedomotic.environment.EnvironmentLogic;
 
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.plugins.ClientStorage;
+import it.freedomotic.security.Auth;
 
 import java.awt.image.BufferedImage;
 import java.util.Collection;
@@ -24,6 +25,8 @@ public interface API {
     //Configuration APi
 
     AppConfig getConfig();
+    
+    Auth getAuth();
 
     //Object API
     //create

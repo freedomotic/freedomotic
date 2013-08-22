@@ -25,172 +25,39 @@
  */
 package it.freedomotic.security;
 
-import com.google.inject.Inject;
 import it.freedomotic.api.Plugin;
-import it.freedomotic.app.AppConfig;
-import static it.freedomotic.security.Auth.config;
-import static it.freedomotic.security.Auth.realmInited;
-import it.freedomotic.util.Info;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.UUID;
-import java.util.logging.Logger;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.Realm;
-import org.apache.shiro.realm.SimpleAccountRealm;
-import org.apache.shiro.realm.text.PropertiesRealm;
-import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.subject.support.SubjectThreadState;
-import org.apache.shiro.util.ThreadState;
 
 /**
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public class Auth {
-    
-    private static final String BASE_REALM_NAME = "it.freedomotic.security";
-    private static final String PLUGIN_REALM_NAME = "it.freedomotic.plugins.security";
-    public static boolean realmInited = false;
-    private static PropertiesRealm baseRealm = new PropertiesRealm();
-    private static SimpleAccountRealm pluginRealm = new SimpleAccountRealm(PLUGIN_REALM_NAME);
-    private static final String DEFAULT_PERMISSION = "*";
-    private static ArrayList<Realm> realmCollection = new ArrayList<Realm>();
-    @Inject static AppConfig config;
-    
-    public static void initBaseRealm() {
-        DefaultSecurityManager securityManager = null;
-        if (!realmInited && config.getBooleanProperty("KEY_SECURITY_ENABLE", true)) {
-            baseRealm.setName(BASE_REALM_NAME);
-            File properties = new File(Info.PATH_WORKDIR +"/config/security.properties");
-            baseRealm.setResourcePath(properties.getAbsolutePath());
-            baseRealm.init();
+public interface Auth {
 
-            pluginRealm.init();
+    public void initBaseRealm();
 
-            securityManager = new DefaultSecurityManager();
-            realmCollection.add(baseRealm);
-            realmCollection.add(pluginRealm);
-            securityManager.setRealms(realmCollection);
-            
-            realmInited = true;
-        }
-        SecurityUtils.setSecurityManager(securityManager);
-    }
+    public boolean isInited();
 
-    public static boolean login(String subject, char[] password) {
-        String pwdString = String.copyValueOf(password);
-        return login(subject, pwdString);
-    }
+    public boolean isPermitted(String key);
 
-    public static boolean login(String subject, String password) {
-        UsernamePasswordToken token = new UsernamePasswordToken(subject, password);
-        token.setRememberMe(true);
-        Subject currentUser = SecurityUtils.getSubject();
-        try {
-            currentUser.login(token);
-            return true;
-        } catch (Exception e) {
-            LOG.warning(e.getLocalizedMessage());
-            return false;
-        }
-    }
+    public boolean login(String subject, char[] password);
 
-    public void logout() {
-        Subject currentUser = SecurityUtils.getSubject();
-        currentUser.logout();
+    public boolean login(String subject, String password);
 
-    }
+    public void logout();
 
-    public static boolean isPermitted(String permission) {
-        if (realmInited) {
-            return SecurityUtils.getSubject().isPermitted(permission);
-        } else {
-            return true;
-        }
-    }
+    public Subject getSubject();
 
-    public static Subject getSubject() {
-        if (realmInited) {
-            return SecurityUtils.getSubject();
-        } else {
-            return null;
-        }
-    }
+    public Object getPrincipal();
 
-    public static Object getPrincipal() {
-        if (realmInited) {
-            return SecurityUtils.getSubject().getPrincipal();
-        } else {
-            return null;
-        }
-    }
+    public void pluginExecutePrivileged(Plugin plugin, Runnable action);
 
-    public static void pluginExecutePrivileged(Plugin plugin, Runnable action) {
-        executePrivileged(plugin.getClassName(), action);
-    }
+    public void setPluginPrivileges(Plugin plugin, String permissions);
 
-    private static void executePrivileged(String classname, Runnable action) {
-        if (Auth.realmInited) {
-            //LOG.info("Executing privileged for plugin: " + classname);
-            PrincipalCollection plugPrincipals = new SimplePrincipalCollection(classname, pluginRealm.getName());
-            Subject plugSubject = new Subject.Builder().principals(plugPrincipals).buildSubject();
-            plugSubject.execute(action);
-        } else {
-            action.run();
-        }
-    }
+    public String getPluginDefaultPermission();
 
-    public static void setPluginPrivileges(Plugin plugin, String permissions) {
-        if (!pluginRealm.accountExists(plugin.getClassName())) {
-            // check whether declared permissions correspond the ones requested at runtime
-            if (plugin.getConfiguration().getStringProperty("permissions", getPluginDefaultPermission()).equals(permissions)){
-            LOG.config("Setting permissions for plugin " + plugin.getClassName() + ": " + permissions);
-            String plugrole = UUID.randomUUID().toString();
-            
-            pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
-            pluginRealm.addRole(plugrole + "=" + permissions);
+    public void addRealm(Realm rm);
 
-            } else {
-                LOG.severe("Plugin "+plugin.getName() +" tried to request incorrect privileges" );
-            }
-        }
-    }
-    
-    @Deprecated
-    public static String getPluginDefaultPermission(){
-        return DEFAULT_PERMISSION;
-    }
-    
-    @RequiresPermissions("auth:realms:create") 
-    public static void addRealm(Realm rm){
-        if (!realmCollection.contains(rm)){
-            realmCollection.add(rm);
-        }
-    }
-    
-    @RequiresPermissions("auth:realms:delete") 
-    public static void deleteRealm(Realm rm){
-        if (!rm.equals(baseRealm) && !rm.equals(pluginRealm)){
-                realmCollection.remove(rm);
-        }
-    }
-    
-    @RequiresPermissions("auth:fakeUser")
-    public static boolean bindFakeUser(String userName){
-        if (baseRealm.accountExists(userName)) {
-            PrincipalCollection principals = new SimplePrincipalCollection(userName, BASE_REALM_NAME);
-            Subject subj = new Subject.Builder().principals(principals).buildSubject();
-            ThreadState threadState = new SubjectThreadState(subj);
-            threadState.bind();
-            return true;
-        }
-        return false;
-    }
-    private static final Logger LOG = Logger.getLogger(Auth.class.getName());
+    public boolean bindFakeUser(String userName);
 }

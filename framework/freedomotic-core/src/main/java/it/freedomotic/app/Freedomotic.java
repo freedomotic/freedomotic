@@ -23,6 +23,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import it.freedomotic.annotations.ListenEventsOn;
+import it.freedomotic.api.API;
 
 import it.freedomotic.api.Client;
 import it.freedomotic.api.EventTemplate;
@@ -121,7 +122,8 @@ public class Freedomotic implements BusConsumer {
     private final ClientStorage clientStorage;
     private final PluginsManager pluginsManager;
     private AppConfig config;
-
+    private Auth auth;
+    private API api;
     /**
      *
      * @param pluginsLoader
@@ -133,11 +135,14 @@ public class Freedomotic implements BusConsumer {
             PluginsManager pluginsLoader,
             EnvironmentDAOFactory environmentDaoFactory,
             ClientStorage clientStorage,
-            AppConfig config) {
+            AppConfig config,
+            API api) {
         this.pluginsManager = pluginsLoader;
         this.environmentDaoFactory = environmentDaoFactory;
         this.clientStorage = clientStorage;
         this.config = config;
+        this.api = api;
+        this.auth = api.getAuth();
     }
 
     public void start()
@@ -153,8 +158,8 @@ public class Freedomotic implements BusConsumer {
         I18n.setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
 
         // init auth* framework
-        Auth.initBaseRealm();
-        if (Auth.realmInited) {
+        auth.initBaseRealm();
+        if (auth.isInited()) {
             PrincipalCollection principals = new SimplePrincipalCollection("system", "it.freedomotic.security");
             Subject SysSubject = new Subject.Builder().principals(principals).buildSubject();
             ThreadState threadState = new SubjectThreadState(SysSubject);
@@ -310,6 +315,7 @@ public class Freedomotic implements BusConsumer {
             pluginsManager.loadAllPlugins(PluginsManager.TYPE_DEVICE);
         } catch (PluginLoadingException ex) {
             LOG.warning("Cannot load device plugin " + ex.getPluginName() + ": " + ex.getMessage());
+            ex.printStackTrace();
         }
 
         /**
@@ -412,7 +418,7 @@ public class Freedomotic implements BusConsumer {
             //EnvironmentPersistence.loadEnvironmentsFromDir(folder, false);
             EnvironmentDAO loader = environmentDaoFactory.create(folder);
             Environment loaded = loader.load();
-            EnvironmentLogic logic = new EnvironmentLogic();
+            EnvironmentLogic logic = INJECTOR.getInstance(EnvironmentLogic.class);
 
             if (loaded == null) {
                 throw new IllegalStateException("Object data cannot be null at this stage");

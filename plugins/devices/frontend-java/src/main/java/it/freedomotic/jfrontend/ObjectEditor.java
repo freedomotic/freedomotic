@@ -1125,18 +1125,19 @@ public class ObjectEditor
     }
 
     private void enableControls() {
-        txtDescription.setEnabled(Auth.isPermitted("objects:update"));
-        txtName.setEnabled(Auth.isPermitted("objects:update"));
-        txtProtocol.setEnabled(!btnVirtual.isSelected() && Auth.isPermitted("objects:update"));
-        txtAddress.setEnabled(!btnVirtual.isSelected() && Auth.isPermitted("objects:update"));
-        btnVirtual.setEnabled(Auth.isPermitted("objects:update"));
-        btnChangeImage.setEnabled(Auth.isPermitted("objects:update"));
-        spnRotation.setEnabled(Auth.isPermitted("objects:update"));
-        spnScaleHeight.setEnabled(Auth.isPermitted("objects:update"));
-        spnScaleWidth.setEnabled(Auth.isPermitted("objects:update"));
-        spnX.setEnabled(Auth.isPermitted("objects:update"));
-        spnY.setEnabled(Auth.isPermitted("objects:update"));
-        environmentComboBox.setEditable(Auth.isPermitted("objects:update"));
-        btnDelete.setEnabled(Auth.isPermitted("objects:delete"));
+        Auth auth = api.getAuth();
+        txtDescription.setEnabled(auth.isPermitted("objects:update"));
+        txtName.setEnabled(auth.isPermitted("objects:update"));
+        txtProtocol.setEnabled(!btnVirtual.isSelected() && auth.isPermitted("objects:update"));
+        txtAddress.setEnabled(!btnVirtual.isSelected() && auth.isPermitted("objects:update"));
+        btnVirtual.setEnabled(auth.isPermitted("objects:update"));
+        btnChangeImage.setEnabled(auth.isPermitted("objects:update"));
+        spnRotation.setEnabled(auth.isPermitted("objects:update"));
+        spnScaleHeight.setEnabled(auth.isPermitted("objects:update"));
+        spnScaleWidth.setEnabled(auth.isPermitted("objects:update"));
+        spnX.setEnabled(auth.isPermitted("objects:update"));
+        spnY.setEnabled(auth.isPermitted("objects:update"));
+        environmentComboBox.setEditable(auth.isPermitted("objects:update"));
+        btnDelete.setEnabled(auth.isPermitted("objects:delete"));
     }
 }

@@ -19,6 +19,8 @@
  */
 package it.freedomotic.environment;
 
+import com.google.inject.Inject;
+import it.freedomotic.api.API;
 import it.freedomotic.app.Freedomotic;
 
 import it.freedomotic.model.environment.Environment;
@@ -51,13 +53,16 @@ public final class EnvironmentLogic {
     private Environment pojo = null;
     private List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
     private File source = null;
-
-    public EnvironmentLogic() {
+    private final API api;
+    
+    @Inject
+    public EnvironmentLogic(API api) {
+        this.api = api;
     }
 
     @RequiresPermissions("environments:read")
     public Environment getPojo() {
-        if (Auth.isPermitted("environments:read:" + pojo.getUUID().substring(0, 5))) {
+        if (api.getAuth().isPermitted("environments:read:" + pojo.getUUID().substring(0, 5))) {
             return pojo;
         }
         return null;

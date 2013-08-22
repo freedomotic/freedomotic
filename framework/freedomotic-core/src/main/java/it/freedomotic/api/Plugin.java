@@ -89,10 +89,6 @@ public class Plugin
         return api;
     }
 
-    public void setApi(API api) {
-        this.api = api;
-    }
-
     protected void onStart() {
     }
 
@@ -273,7 +269,7 @@ public class Plugin
                 onStart();
             }
         };
-        Auth.pluginExecutePrivileged(this, action);
+        getApi().getAuth().pluginExecutePrivileged(this, action);
     }
 
     @Override
@@ -286,7 +282,7 @@ public class Plugin
     }
 
     protected void loadPermissionsFromManifest() {
-        Auth.setPluginPrivileges(this, configuration.getStringProperty("permissions", Auth.getPluginDefaultPermission()));
+        getApi().getAuth().setPluginPrivileges(this, configuration.getStringProperty("permissions", getApi().getAuth().getPluginDefaultPermission()));
     }
     private static final Logger LOG = Logger.getLogger(Plugin.class.getName());
 }
