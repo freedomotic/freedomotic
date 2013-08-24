@@ -166,21 +166,38 @@
         </plugins>   
         <!-- executes only on childs (if the child have specified it in its pom)-->
         <pluginManagement>
-
-            <plugins>
+           <plugins>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/${project.artifactId}</outputDirectory>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <classpathPrefix>lib/</classpathPrefix>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
                 <!-- copy plugins dependencies when a plugin is installed -->
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.8</version>
                     <executions>
                         <execution>
-                            <phase>install</phase>
+                            <id>copy-dependencies</id>
+                            <phase>package</phase>
                             <goals>
                                 <goal>copy-dependencies</goal>
                             </goals>
                             <configuration>
-                                <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                                <!-- exclude dependencies already specified in freedomotic-core -->
+                                <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
+                                <excludeTransitive>true</excludeTransitive>
                                 <excludeScope>provided</excludeScope>
+                                <overWriteReleases>false</overWriteReleases>
+                                <overWriteSnapshots>false</overWriteSnapshots>
+                                <overWriteIfNewer>true</overWriteIfNewer>
                             </configuration>
                         </execution>
                     </executions>
@@ -227,109 +244,59 @@
                         </execution>
                     </executions>
                 </plugin>
-
-                <!-- read/write the build.option file -->
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>properties-maven-plugin</artifactId>
-                    <version>1.0-alpha-2</version>
-                    <executions>
-                        <execution>
-                            <id>read-build-options</id>
-                            <phase>initialize</phase>
-                            <goals>
-                                <goal>read-project-properties</goal>
-                            </goals>
-                            <configuration>
-                                <files>
-                                    <file>${basedir}/build.options</file>
-                                </files>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
                 <plugin>
                     <artifactId>maven-antrun-plugin</artifactId>
-                    <version>1.3</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>ant-contrib</groupId>
-                            <artifactId>ant-contrib</artifactId>
-                            <version>20020829</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>ant</groupId>
-                            <artifactId>ant-nodeps</artifactId>
-                            <version>1.6.5</version>
-                        </dependency>
-                    </dependencies>
                     <executions>
-                       <!-- &lt;!&ndash; Creates the freedomotic installable package &ndash;&gt;
                         <execution>
-                            <id>create-plugin-archive</id>
+                            <id>id.install</id>
                             <phase>install</phase>
-                            <configuration>
-                                <tasks>
-                                    &lt;!&ndash; add the ant tasks from ant-contrib &ndash;&gt;
-                                    &lt;!&ndash; if not a plugin folder skip &ndash;&gt;
-                                    <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
-                                    <ant antfile = "${freedomotic.basedir}/scripts/plugin-build.xml"/>
-                                </tasks>
-                            </configuration>
                             <goals>
                                 <goal>run</goal>
                             </goals>
+                            <configuration>
+                                <target>
+                                    <echo>Phase install goal run</echo>
+                                    <!--clean up the installation folder-->
+                                    <delete quiet="true">
+                                        <fileset dir="${freedomotic.synch.dist.path}/${freedomotic.package.type}s/${project.artifactId}"/>
+                                    </delete>
+                                    <!--copy the plugin-->
+                                    <copydir src ="target/${project.artifactId}"
+                                             dest="${freedomotic.synch.dist.path}/${freedomotic.package.type}s/${project.artifactId}">
+                                    </copydir>
+                                </target>
+                            </configuration>
                         </execution>
-                        &lt;!&ndash; Creates the plugin marketplace package &ndash;&gt;
                         <execution>
-                            <id>create-marketplace-archive</id>
-                            <phase>deploy</phase>
-                            <configuration>
-                                <tasks>
-                                    <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
-                                    <ant antfile = "${freedomotic.basedir}/scripts/create-marketplace-archive.xml"/>
-                                </tasks>
-                            </configuration>
+                            <id>id.site</id>
+                            <phase>site</phase>
                             <goals>
                                 <goal>run</goal>
                             </goals>
-                        </execution>-->
-                        <!-- Creates the plugin build.options file -->
-                      <!--  <execution>
-                            <id>create-build-options</id>
-                            <phase>install</phase>
                             <configuration>
-                                <tasks>
-                                    <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
-                                    &lt;!&ndash; just to save a fresh copy of this file with no unused old properties &ndash;&gt;
-                                    <if>
-                                        <available file="build.options"/>
-                                        <then>
-                                            <delete file="build.options"/>
-                                            &lt;!&ndash; save the new build.options &ndash;&gt;
-                                            <propertyfile file="build.options">
-                                                <entry  key="package.nodeid" value="${package.nodeid}"/>
-                                                <entry  key="package.vendor.name" value="${package.vendor.name}"/>
-                                                <entry  key="package.vendor.surname" value="${package.vendor.surname}"/>
-                                                <entry  key="package.vendor.company" value="${package.vendor.company}"/>
-                                                <entry  key="package.vendor.nation" value="${package.vendor.nation}"/>
-                                                <entry  key="package.vendor.contact" value="${package.vendor.contact}"/>
-                                                <entry  key="package.name" value="${package.name}"/>
-                                                <entry  key="package.type" value="${package.type}"/>
-                                                <entry  key="package.license" value="${package.license}"/>
-                                                <entry  key="package.version" value="${project.version}"/>
-                                                <entry  key="framework.required.major" value="${framework.required.major}"/>
-                                                <entry  key="framework.required.minor" value="${framework.required.minor}"/>
-                                                <entry  key="framework.required.build" value="${framework.required.build}"/>
-                                            </propertyfile>
-                                        </then>
-                                    </if>
-                                </tasks>
+                                <target>
+                                    <echo>Phase site goal run</echo>
+                                    <zip destfile="target/market-dist/${freedomotic.marketplace.file}"
+                                         basedir="target/${artifactId}" />
+                                    <property name="workspace-base" value="../../../"/>
+                                    <taskdef
+                                            name="marketplace"
+                                            classname="it.freedomotic.marketplace.AntUploader" >
+                                        <classpath>
+                                            <pathelement location="../../../tools/freedomotic-marketplace/target/freedomotic-marketplace-3.0-jar-with-dependencies.jar"/>
+                                            <pathelement location="../../../framework/freedomotic-core/target/freedomotic.jar"/>-->
+                                        </classpath>
+                                    </taskdef>
+                                    <!-- If the username or the password are not passed as parameters, ask for them -->
+                                    <marketplace
+                                            username="${freedomotic.marketplace.username}"
+                                            password="${freedomotic.marketplace.password}"
+                                            nodeid="${freedomotic.nodeid}"
+                                            attachment="target/market-dist/"
+                                            />
+                                </target>
                             </configuration>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                        </execution>-->
+                        </execution>
                     </executions>
                 </plugin>
             </plugins>
