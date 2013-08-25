@@ -33,7 +33,7 @@ public class AutomationsEditor
         extends Protocol {
 
     public AutomationsEditor() {
-        super("Automations Editor", "/it.freedomotic.jfrontend/automations-editor.xml");
+        super("Automations Editor", "/jfrontend/automations-editor.xml");
     }
 
     @Override

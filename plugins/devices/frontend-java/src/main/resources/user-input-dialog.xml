@@ -1,0 +1,9 @@
+<config>
+    <properties>
+        <property name="description"                       value="User Input Dialog"/>
+        <property name="version"                       value="40"/>
+        <property name="required"                       value="40"/>
+        <property name="category"                       value="user"/>
+        <property name="short-name"                       value="input"/>
+    </properties>
+</config>
