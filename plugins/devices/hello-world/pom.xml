@@ -9,12 +9,40 @@
     </parent>    
     <artifactId>hello-world</artifactId>
     <packaging>jar</packaging>
-    <name>hello-world</name>
+    <name>hello-world example device</name>
     <version>3.0</version>
-
+    <developers>
+        <developer>
+            <id>enrico</id>
+            <name>Enrico</name>
+            <email>info@freedomotic.com</email>
+            <organization>Freedomotic</organization>
+            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <properties>
+                <nation>it</nation>
+            </properties>
+            <timezone>-1</timezone>
+        </developer>
+    </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
+        <freedomotic.package.type>device</freedomotic.package.type>
+        <freedomotic.nodeid></freedomotic.nodeid>
+        <freedomotic.package.license>GNU GPL2</freedomotic.package.license>
+        <freedomotic.package.vendor.name>freedomotic</freedomotic.package.vendor.name>
+        <freedomotic.package.vendor.surname></freedomotic.package.vendor.surname>
+        <freedomotic.package.vendor.contact></freedomotic.package.vendor.contact>
+        <freedomotic.package.vendor.company>Freedomotic</freedomotic.package.vendor.company>
+        <freedomotic.package.vendor.nation>net</freedomotic.package.vendor.nation>
+        <freedomotic.framework.required.major>5</freedomotic.framework.required.major>
+        <freedomotic.framework.required.minor>5</freedomotic.framework.required.minor>
+        <freedomotic.framework.required.build>x</freedomotic.framework.required.build>
+        <!--don't like this but works for the moment -->
+        <freedomotic.synch.dist.path>../../../framework/freedomotic-core/plugins/</freedomotic.synch.dist.path>
+        <freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${version}.${freedomotic.package.type}</freedomotic.marketplace.file>
+        <freedomotic.marketplace.username></freedomotic.marketplace.username>
+        <freedomotic.marketplace.password></freedomotic.marketplace.password>
     </properties>
 
     <dependencies>
@@ -32,13 +60,53 @@
     </dependencies>
 
     <build>
+        <resources>
+            <!-- regular resource processsing for everything except data.xml, README and PACKAGE -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>data/**</exclude>
+                    <exclude>*.xml</exclude>
+                    <exclude>README</exclude>
+                    <exclude>PACKAGE</exclude>
+                </excludes>
+            </resource>
+            <!-- resource processsing with a different output directory
+                 for everything except data.xml, README and PACKAGE -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>data/**</include>
+                    <include>*.xml</include>
+                </includes>
+                <!-- relative to target/classes
+                     i.e. ${project.build.outputDirectory} -->
+                <targetPath>../${project.artifactId}</targetPath>
+            </resource>
+            <resource>
+                <directory>../../resources</directory>
+                <includes>
+                    <include>README</include>
+                    <include>PACKAGE</include>
+                </includes>
+                <filtering>true</filtering>
+                <!-- relative to target/classes
+                     i.e. ${project.build.outputDirectory} -->
+                <targetPath>../${project.artifactId}</targetPath>
+            </resource>
+        </resources>
         <plugins>
-            <!-- read the build.option file -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
+                <artifactId>maven-resources-plugin</artifactId>
             </plugin>
-            <!-- write the build.option file with new data -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+            </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
             </plugin>

@@ -83,4 +83,4 @@ target/
 !/scripts/shared/*.TXT
 !copying.txt
 !LICENSE_HEADER.txt
-!/plugins/*/*/src/main/resources/PACKAGE
+!/plugins/resources/*
