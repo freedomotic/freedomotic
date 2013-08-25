@@ -1,0 +1,15 @@
+
+<it.freedomotic.reactions.Command>
+    <name>Inverse luminosity for Light in the entrance</name>
+    <description>dimms the light as the inverse of indoor luminosity</description>
+    <receiver>app.events.sensors.behavior.request.objects</receiver>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="object" value="Light"/>
+            <property name="behavior" value="brightness"/>
+            <property name="value" value="100 - @event.luminosity"/>
+        </properties>
+    </properties>
+</it.freedomotic.reactions.Command>

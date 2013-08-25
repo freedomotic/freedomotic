@@ -37,7 +37,7 @@ public class Scheduler
      * every TIMER_DELAY seconds
      */
     public Scheduler() {
-        super("Scheduler", "/it.nicoletti.test/scheduler.xml");
+        super("Scheduler", "/test/scheduler.xml");
         setDescription("Timer for scheduled events");
         TIMER_RESOLUTION = configuration.getIntProperty("timer-resolution", 1000);
     }

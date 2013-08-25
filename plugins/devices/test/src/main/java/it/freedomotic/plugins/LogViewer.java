@@ -34,7 +34,7 @@ public class LogViewer
     private Logger logger = null;
 
     public LogViewer() {
-        super("Log Viewer", "/it.nicoletti.test/logviewer-manifest.xml");
+        super("Log Viewer", "/test/logviewer-manifest.xml");
     }
 
     @Override

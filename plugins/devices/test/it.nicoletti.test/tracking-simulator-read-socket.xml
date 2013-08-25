@@ -1,9 +1,0 @@
-<config>
-    <properties>
-        <property name="description"                       value="Simulates Fontana Mote Traking system. Positions from socket"/>
-        <property name="category"                       value="tracking"/>
-        <property name="short-name"                       value="socket"/>
-        <property name="send-on"                       value="tracking.fromsocket.out"/>
-        <property name="listen-on"                       value="tracking.fromsocket.in"/>
-    </properties>
-</config>

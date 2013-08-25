@@ -1,0 +1,7 @@
+<config>
+    <properties>
+        <property name="description"                    value="Environment shape editor"/>
+        <property name="category"                       value="editor"/>
+        <property name="short-name"                     value="env"/>
+    </properties>
+</config>

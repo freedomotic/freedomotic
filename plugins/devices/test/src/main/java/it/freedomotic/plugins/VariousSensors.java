@@ -34,7 +34,7 @@ public class VariousSensors
     Boolean powered = false;
 
     public VariousSensors() {
-        super("Sensors Simulator", "/it.nicoletti.test/sensors-simulator.xml");
+        super("Sensors Simulator", "/test/sensors-simulator.xml");
         setPollingWait(2000);
     }
 

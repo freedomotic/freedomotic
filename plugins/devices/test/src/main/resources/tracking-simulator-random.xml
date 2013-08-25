@@ -1,0 +1,10 @@
+<config>
+    <properties>
+        <property name="description"                       value="Simulates Fontana Mote Traking system. Positions randomly generated"/>
+        <property name="category"                       value="tracking"/>
+        <property name="short-name"                       value="random"/>
+        <property name="send-on"                       value="tracking.random.out"/>
+        <property name="listen-on"                       value="tracking.random.in"/>
+        <property name="people-count"                       value="2"/>
+    </properties>
+</config>

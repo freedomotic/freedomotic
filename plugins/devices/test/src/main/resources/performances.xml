@@ -1,0 +1,8 @@
+
+<config>
+    <properties>
+        <property name="description"                       value="Performance reports"/>
+        <property name="category"                       value="profiler"/>
+        <property name="short-name"                       value="frontend"/>
+    </properties>
+</config>

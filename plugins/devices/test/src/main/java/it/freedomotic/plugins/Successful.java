@@ -28,7 +28,7 @@ public class Successful
     private Boolean powered = true;
 
     public Successful() {
-        super("Successful Test", "/it.nicoletti.test/successful.xml");
+        super("Successful Test", "/test/successful.xml");
     }
 
     @Override

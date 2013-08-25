@@ -33,7 +33,7 @@ public class TrackingRandomPosition
 
     public TrackingRandomPosition() {
         //set plugin name and manufest path
-        super("Tracking Simulator (Random)", "/it.nicoletti.test/tracking-simulator-random.xml");
+        super("Tracking Simulator (Random)", "/test/tracking-simulator-random.xml");
         //set plugin description
         setDescription("It simulates a motes WSN that send information about "
                 + "movable sensors position. Positions are randomly generated");

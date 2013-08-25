@@ -1,0 +1,14 @@
+
+<it.freedomotic.reactions.Command>
+    <name>Execute it successfully</name>
+    <receiver>app.actuators.test.success.in</receiver>
+    <description>execute this command successfully</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="" value=""/>
+        </properties>
+    </properties>
+</it.freedomotic.reactions.Command>

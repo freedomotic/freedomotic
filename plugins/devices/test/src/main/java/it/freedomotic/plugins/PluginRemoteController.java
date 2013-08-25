@@ -29,7 +29,7 @@ public class PluginRemoteController
     private ClientStorage clients;
 
     public PluginRemoteController() {
-        super("Plugins Remote Controller", "/it.nicoletti.test/plugins-remote-controller.xml");
+        super("Plugins Remote Controller", "/test/plugins-remote-controller.xml");
         start();
     }
 
