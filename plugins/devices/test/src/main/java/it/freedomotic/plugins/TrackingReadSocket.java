@@ -33,7 +33,7 @@ public class TrackingReadSocket
     private static int maxConnections = -1; //illimited
 
     public TrackingReadSocket() {
-        super("Tracking Simulator (Read Socket)", "/it.nicoletti.test/tracking-simulator-read-socket.xml");
+        super("Tracking Simulator (Read Socket)", "/test/tracking-simulator-read-socket.xml");
         setDescription("It simulates a motes WSN that send information about movable sensors position, read from a socket (port:"
                 + PORT + ")");
     }

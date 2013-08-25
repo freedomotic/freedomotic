@@ -1,0 +1,10 @@
+
+<config>
+    <properties>
+        <property name="description"                       value="Delayed commands in automations"/>
+        <property name="category"                       value="automation"/>
+        <property name="short-name"                       value="delayer"/>
+        <property name="startup-time"                       value="on load"/>
+        <property name="automatic-reply-to-commands"        value="false"/>
+    </properties>
+</config>

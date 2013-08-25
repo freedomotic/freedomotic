@@ -25,7 +25,7 @@ public class Delayer
         extends Protocol {
 
     public Delayer() {
-        super("Delayer", "/it.nicoletti.test/delayer.xml");
+        super("Delayer", "/test/delayer.xml");
         setDescription("Delayed commands in automations");
     }
 

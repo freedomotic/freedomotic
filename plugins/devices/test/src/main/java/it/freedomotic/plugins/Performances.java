@@ -28,7 +28,7 @@ public class Performances
         extends Protocol {
 
     public Performances() {
-        super("Performances Report", "/it.nicoletti.test/performances.xml");
+        super("Performances Report", "/test/performances.xml");
     }
 
     @Override

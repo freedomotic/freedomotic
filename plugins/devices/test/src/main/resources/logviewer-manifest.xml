@@ -1,0 +1,8 @@
+
+<config>
+    <properties>
+        <property name="description"                       value="Log Viewer"/>
+        <property name="category"                       value="log"/>
+        <property name="short-name"                       value="viewer"/>
+    </properties>
+</config>

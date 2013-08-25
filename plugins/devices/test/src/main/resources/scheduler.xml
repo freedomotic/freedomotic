@@ -1,0 +1,10 @@
+
+<config>
+    <properties>
+        <property name="description"                       value="Freedomotic clock for scheduled events"/>
+        <property name="category"                       value="clock"/>
+        <property name="short-name"                       value="clock"/>
+        <property name="timer-resolution"					value="1000"/>
+        <property name="startup-time"                       value="on load"/>
+    </properties>
+</config>
