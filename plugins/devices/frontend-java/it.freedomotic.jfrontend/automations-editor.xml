@@ -1,9 +1,0 @@
-<config>
-    <properties>
-        <property name="description"                       value="Editor for freedomotic automations"/>
-        <property name="version"                       value="40"/>
-        <property name="required"                       value="40"/>
-        <property name="category"                       value="nlautomationseditor"/>
-        <property name="short-name"                       value="nlautomationseditor"/>
-    </properties>
-</config>
