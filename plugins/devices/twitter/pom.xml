@@ -89,7 +89,7 @@
                 <targetPath>../${project.artifactId}</targetPath>
             </resource>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>../../resources</directory>
                 <includes>
                     <include>README</include>
                     <include>PACKAGE</include>

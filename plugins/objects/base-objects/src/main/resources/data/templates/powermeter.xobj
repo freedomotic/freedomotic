@@ -1,0 +1,118 @@
+<it.freedomotic.model.object.EnvObject>
+  <name>PowerMeter</name>
+  <description>A powermeter</description>
+  <actAs>unimplemented</actAs>
+  <type>EnvObject.ElectricDevice.PowerMeter</type>
+  <hierarchy>it.freedomotic.objects.impl.PowerMeter</hierarchy>
+  <protocol>unknown</protocol>
+  <phisicalAddress>unknown</phisicalAddress>
+  <behaviors>
+    <it.freedomotic.model.object.BooleanBehavior>
+      <name>powered</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>false</value>
+      <readOnly>true</readOnly>
+    </it.freedomotic.model.object.BooleanBehavior>
+    <it.freedomotic.model.object.RangedIntBehavior>
+      <name>current</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <readOnly>true</readOnly>
+      <value>0</value>
+      <max>200</max>
+      <min>0</min>
+      <step>1</step>
+    </it.freedomotic.model.object.RangedIntBehavior>
+    <it.freedomotic.model.object.RangedIntBehavior>
+      <name>energy</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <readOnly>true</readOnly>
+      <value>0</value>
+      <max>10000</max>
+      <min>0</min>
+      <step>1</step>
+    </it.freedomotic.model.object.RangedIntBehavior>
+    <it.freedomotic.model.object.RangedIntBehavior>
+      <name>voltage</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <readOnly>true</readOnly> 
+      <value>0</value>
+      <max>2400</max>
+      <min>0</min>
+      <step>1</step>
+    </it.freedomotic.model.object.RangedIntBehavior>
+    <it.freedomotic.model.object.RangedIntBehavior>
+      <name>power</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <readOnly>true</readOnly>
+      <value>0</value>
+      <max>6000</max>
+      <min>0</min>
+      <step>1</step>
+    </it.freedomotic.model.object.RangedIntBehavior>
+   <it.freedomotic.model.object.RangedIntBehavior>
+        <name>power-factor</name>
+        <description></description>
+        <active>true</active>
+        <priority>-1</priority>
+        <readOnly>true</readOnly>
+        <value>0</value>
+        <max>100</max>
+        <min>0</min>
+        <step>1</step>
+    </it.freedomotic.model.object.RangedIntBehavior>
+  </behaviors>
+  <representation>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="130" y="70"/>
+      <rotation>0.0</rotation>
+      <icon>powermeter-off.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="130" y="70"/>
+      <rotation>0.0</rotation>
+      <icon>powermeter-on.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+  </representation>
+  <actions>
+  </actions>
+  <triggers>
+    <property name="" value="powered"/>
+    <property name="" value="current"/>
+    <property name="" value="voltage"/>
+    <property name="" value="power"/>
+    <property name="" value="energy"/>
+  </triggers>
+  <currentRepresentation>0</currentRepresentation>
+</it.freedomotic.model.object.EnvObject>
