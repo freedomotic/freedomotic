@@ -46,7 +46,7 @@
    
         <echo>  Add jar file and libraries</echo>
         <copy todir="${release-folder}">
-            <fileset dir="${base}/target" includes="**/freedomotic*.jar lib/**/*" />
+            <fileset dir="${base}/target/freedomotic-core" includes="**/freedomotic*.jar lib/**/*" />
         </copy>
        
         <echo>  Add plugins</echo>
