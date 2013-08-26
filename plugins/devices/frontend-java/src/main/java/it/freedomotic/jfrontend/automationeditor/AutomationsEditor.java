@@ -33,7 +33,7 @@ public class AutomationsEditor
         extends Protocol {
 
     public AutomationsEditor() {
-        super("Automations Editor", "/jfrontend/automations-editor.xml");
+        super("Automations Editor", "/frontend-java/automations-editor.xml");
     }
 
     @Override

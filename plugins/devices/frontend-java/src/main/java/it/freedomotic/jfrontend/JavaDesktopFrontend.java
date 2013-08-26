@@ -31,7 +31,7 @@ public class JavaDesktopFrontend
     private ListDrawer listDrawer;
 
     public JavaDesktopFrontend() {
-        super("Desktop Frontend", "/jfrontend/desktop-frontend.xml");
+        super("Desktop Frontend", "/frontend-java/desktop-frontend.xml");
     }
     @Override
     public void onStop() {
