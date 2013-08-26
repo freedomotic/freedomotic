@@ -192,7 +192,7 @@
                                 <goal>copy-dependencies</goal>
                             </goals>
                             <configuration>
-                                <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
+                                <outputDirectory>${project.build.directory}/${project.artifactId}/lib/testttttt</outputDirectory>
                                 <excludeTransitive>true</excludeTransitive>
                                 <excludeScope>provided</excludeScope>
                                 <overWriteReleases>false</overWriteReleases>

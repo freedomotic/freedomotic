@@ -26,6 +26,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
+                    <outputDirectory>${project.build.directory}/${project.artifactId}</outputDirectory>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
@@ -35,19 +36,23 @@
                     </archive>
                 </configuration>
             </plugin>
-            <!-- copy plugins dependencies when a plugin is installed -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
                 <executions>
                     <execution>
-                        <phase>install</phase>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <!-- exclude dependencies already specified in freedomotic-core -->
-                            <excludeScope>provided</excludeScope>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
+                            <!--<excludeTransitive>false</excludeTransitive>-->
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
                         </configuration>
                     </execution>
                 </executions>
