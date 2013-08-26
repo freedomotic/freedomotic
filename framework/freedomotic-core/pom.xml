@@ -49,7 +49,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
-                            <!--<excludeTransitive>false</excludeTransitive>-->
+                            <excludeTransitive>false</excludeTransitive>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
