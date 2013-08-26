@@ -1,0 +1,33 @@
+<trigger>
+    <name>HWg-STE reads kelvin temperature</name>
+    <description>HWg-STE reads kelvin temperature</description>
+    <channel>app.event.sensor.protocol.read.hwgste</channel>
+    <payload>
+        <payload>
+            <it.freedomotic.reactions.Statement>
+                <logical>AND</logical>
+                <attribute>protocol</attribute>
+                <operand>EQUALS</operand>
+                <value>hwgste</value>
+            </it.freedomotic.reactions.Statement>
+            <it.freedomotic.reactions.Statement>
+                <logical>AND</logical>
+                <attribute>@event.sensor.unit</attribute>
+                <operand>EQUALS</operand>
+                <value>K</value>
+            </it.freedomotic.reactions.Statement>
+            <it.freedomotic.reactions.Statement>
+                <logical>SET</logical>
+                <attribute>behaviorValue</attribute>
+                <operand>EQUALS</operand>
+                <value>@event.sensor.value</value>
+            </it.freedomotic.reactions.Statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <priority>0</priority>
+    <maxExecutions>-1</maxExecutions>
+    <numberOfExecutions>0</numberOfExecutions>
+    <suspensionTime>0</suspensionTime>
+</trigger>

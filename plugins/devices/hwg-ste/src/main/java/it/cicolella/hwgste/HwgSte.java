@@ -1,21 +1,25 @@
-/*
- Copyright FILE Mauro Cicolella, 2012-2013
-
- This file is part of FREEDOMOTIC.
-
- FREEDOMOTIC is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- FREEDOMOTIC is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team
+ * http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This Program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Freedomotic; see the file COPYING.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
+
 package it.cicolella.hwgste;
 
 import it.freedomotic.api.EventTemplate;
@@ -28,18 +32,10 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.ConnectException;
 import java.net.Socket;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
 
 public class HwgSte extends Protocol {
 
@@ -65,7 +61,7 @@ public class HwgSte extends Protocol {
      * Initializations
      */
     public HwgSte() {
-        super("HwgSte", "/it.cicolella.hwgste/hwgste-manifest.xml");
+        super("HwgSte", "/hwg-ste/hwgste-manifest.xml");
         setPollingWait(POLLING_TIME);
     }
 
@@ -246,3 +242,4 @@ public class HwgSte extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
+

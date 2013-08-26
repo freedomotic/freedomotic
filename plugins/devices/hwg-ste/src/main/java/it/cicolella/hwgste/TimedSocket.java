@@ -1,21 +1,25 @@
-/*
- Copyright FILE Mauro Cicolella, 2012-2013
-
- This file is part of FREEDOMOTIC.
-
- FREEDOMOTIC is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- FREEDOMOTIC is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team
+ * http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This Program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Freedomotic; see the file COPYING.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
+
 package it.cicolella.hwgste;
 
 import java.net.*;
@@ -31,7 +35,7 @@ import java.io.*;
  * of time allowed for a connection can be specified, along with a host and
  * port.
  *
- * @author	David Reilly
+ * @author      David Reilly
  */
 public class TimedSocket {
 
@@ -39,9 +43,9 @@ public class TimedSocket {
      * Attempts to connect to a service at the specified address and port, for a
      * specified maximum amount of time.
      *
-     * @param	addr	Address of host
-     * @param	port	Port of service
-     * @param	delay	Delay in milliseconds
+     * @param   addr    Address of host
+     * @param   port    Port of service
+     * @param   delay   Delay in milliseconds
      */
     public static Socket getSocket(InetAddress addr, int port, int delay) throws InterruptedIOException, IOException {
         // Create a new socket thread, and start it running
@@ -88,9 +92,9 @@ public class TimedSocket {
      * Attempts to connect to a service at the specified address and port, for a
      * specified maximum amount of time.
      *
-     * @param	host	Hostname of machine
-     * @param	port	Port of service
-     * @param	delay	Delay in milliseconds
+     * @param   host    Hostname of machine
+     * @param   port    Port of service
+     * @param   delay   Delay in milliseconds
      */
     public static Socket getSocket(String host, int port, int delay) throws InterruptedIOException, IOException {
         // Convert host into an InetAddress, and call getSocket method
