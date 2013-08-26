@@ -1,0 +1,27 @@
+<config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
+    <properties>
+        <property name="description"    value="Communicates with Openpicus Grove Nest board"/>
+        <property name="protocol.name"  value="openpicus-grove-system"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="openpicus-grove-system"/>
+        <property name="udp-server-hostname" value="192.168.1.100"/>
+        <property name="udp-server-port" value="7331"/>
+        <property name="delimiter" value=":"/>
+        <property name="startup-time"   value=""/>
+    </properties>
+    <tuples>
+        <tuple>
+            <property name="object.class" value="Thermostat"/>
+            <property name="temperature" value="Openpicus Grove System reads celsius temperature"/>
+        </tuple>
+        <tuple>
+            <property name="object.class" value="Light Sensor"/>
+            <property name="luminosity" value="Openpicus Grove System reads luminosity"/>
+        </tuple>
+    </tuples>
+</config>
+
+
+
+
