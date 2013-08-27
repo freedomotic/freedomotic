@@ -1,25 +1,28 @@
-/*
- Copyright FILE Mauro Cicolella, 2012-2013
-
- This file is part of FREEDOMOTIC.
-
- FREEDOMOTIC is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- FREEDOMOTIC is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team
+ * http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This Program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Freedomotic; see the file COPYING.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
+
 package it.cicolella.daenetip2;
 
-import com.adventnet.snmp.snmp2.SnmpAPI;
-import com.adventnet.snmp.snmp2.SnmpException;
+
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
@@ -30,19 +33,19 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+//import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.net.ConnectException;
+//import java.net.ConnectException;
 import java.net.Socket;
-import java.net.URL;
+//import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
+//import javax.xml.parsers.DocumentBuilderFactory;
+//import javax.xml.parsers.DocumentBuilder;
+//import javax.xml.parsers.ParserConfigurationException;
+//import org.w3c.dom.*;
+//import org.xml.sax.SAXException;
 
 public class DAEnetIP2 extends Protocol {
 
@@ -68,7 +71,7 @@ public class DAEnetIP2 extends Protocol {
      * Initializations
      */
     public DAEnetIP2() {
-        super("DAEnetIP2", "/it.cicolella.daenetip2/daenetip2-manifest.xml");
+        super("DAEnetIP2", "/daenetip2/daenetip2-manifest.xml");
         setPollingWait(POLLING_TIME);
     }
 
@@ -270,7 +273,7 @@ public class DAEnetIP2 extends Protocol {
             status = "0";
         }
         System.out.println("IP " + board.getIpAddress() + " OID " + SNMP_OID + "." + OID_REQUEST + " Status " + status + " pass " + board.getReadWriteCommunity());
-        System.out.println("request risult " + snmpRequest.SNMP_SET(board.getIpAddress(), board.getSnmpPort(), SNMP_OID + "." + OID_REQUEST, SnmpAPI.INTEGER, status, board.getReadWriteCommunity()));
+        snmpRequest.SNMP_SET(board.getIpAddress(), board.getSnmpPort(), SNMP_OID + "." + OID_REQUEST, status, board.getReadWriteCommunity());
     }
 
     @Override

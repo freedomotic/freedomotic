@@ -1,0 +1,32 @@
+<config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
+    <properties>
+        <property name="description"    value="Communicates with DAEnetIP2 board"/>
+        <property name="protocol.name"  value="daenetip2"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="daenetip2"/>
+        <property name="address-delimiter" value=":"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="socket-timeout" value="2000"/>
+        <property name="snmp-oid" value=".1.3.6.1.4.1.19865"/>
+        <property name="p3-oid" value="1.2.1"/>
+        <property name="p5-oid" value="1.2.2"/>
+        <property name="p6-oid" value="1.2.3"/>
+        <property name="p3-status-oid" value="1.2.1.33.0"/>
+        <property name="p5-status-oid" value="1.2.2.33.0"/>
+    </properties>
+    <tuples>
+        <!-- DEVICES CONFIGURATION -->
+        <tuple>
+            <property name="alias" value="board1"/>
+            <property name="ip-address" value="172.16.100.2"/>
+            <property name="snmp-port" value="161"/>
+            <property name="read-only-community" value="000000000000"/>
+            <property name="read-write-community" value="private"/>
+        </tuple>
+    </tuples>
+</config>
+
+
+
+
