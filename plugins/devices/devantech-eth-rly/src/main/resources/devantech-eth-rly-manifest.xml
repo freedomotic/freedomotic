@@ -1,0 +1,32 @@
+<config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
+    <properties>
+        <property name="description"    value="Communicates with Devantech Eth-Rly board"/>
+        <property name="protocol.name"  value="devantech-eth-rly"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="devantech-eth-rly"/>
+        <property name="address-delimiter" value=":"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="change-state-relay-url" value="leds.cgi?led="/>
+        <property name="get-status-url" value="status.xml"/>
+    </properties>
+    <tuples>
+        <tuple>
+            <property name="object.class" value="Light"/>
+            <property name="powered" value="Devantech Eth-Rly board reads a relay state change"/>
+            <property name="turn on" value="Turn on relay on Devantech Eth-Rly board"/>
+            <property name="turn off" value="Turn off relay on Devantech Eth-Rly board"/>
+        </tuple>
+        <!-- DEVICES CONFIGURATION -->
+        <tuple>
+            <property name="alias" value="default"/>
+            <property name="ip-to-query" value="192.168.0.200"/>
+            <property name="port-to-query" value="80"/>
+            <property name="relay-number" value="8"/>
+            <property name="username" value="admin"/>
+            <property name="password" value="password"/> 
+            <property name="http-authentication" value="true"/> 
+            <property name="auto-configuration" value="true"/>
+        </tuple>
+    </tuples>
+</config>
