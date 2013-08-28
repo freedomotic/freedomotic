@@ -1,30 +1,29 @@
-/*Copyright 2009 Enrico Nicoletti
- * eMail: enrico.nicoletti84@gmail.com
+/**
  *
- * This file is part of Freedom.
+ * Copyright (c) 2009-2013 Freedomotic team
+ * http://freedomotic.com
  *
- * Freedom is free software; you can redistribute it and/or modify
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
  *
- * Freedom is distributed in the hope that it will be useful,
+ * This Program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Freedom; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * along with Freedomotic; see the file COPYING.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
+
 package it.freedomotic.plugins.x10;
 
 import java.io.IOException;
 
-/**
- *
- * @author enrico
- */
 public interface X10AbstractGateway {
 
     /**
