@@ -1,20 +1,21 @@
-/*
- Copyright FILE Mauro Cicolella, 2012-2013
-
- This file is part of FREEDOMOTIC.
-
- FREEDOMOTIC is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- FREEDOMOTIC is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package it.cicolella.tcw122bcm;
 
@@ -29,19 +30,8 @@ import java.net.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import snmp.*;
 import org.apache.commons.codec.binary.Base64;
 
-/**
- * A plugin for the TCW122B-CM ethernet controller by teracom.cc Product page
- * http://www.teracom.cc/index.php/products/monitoring-and-control/ethernet-controllers/tcw122b-cm.html
- * Mauro Cicolella - www.emmecilab.net
- *
- * Library snmp.jar
- * http://gicl.cs.drexel.edu/people/sevy/snmp/snmp_package_introduction.html#example_1s
- *
- */
 public class Tcw122bcm extends Protocol {
 
     Map<String, Board> devices = new HashMap<String, Board>();
@@ -53,6 +43,7 @@ public class Tcw122bcm extends Protocol {
     private String[] address = null;
     private int SOCKET_TIMEOUT = configuration.getIntProperty("socket-timeout", 1000);
     private int SNMP_PORT = configuration.getIntProperty("snmp-port", 161);
+    private String SNMP_COMMUNITY = configuration.getStringProperty("snmp-community", "public");
     private String SNMP_OID = configuration.getStringProperty("snmp-oid", "1.3.6.1.4.38783");
     private String D1_VALUE = configuration.getStringProperty("digital-input1-value", "3.1.0");
     private String D2_VALUE = configuration.getStringProperty("digital-input2-value", "3.2.0");
@@ -72,7 +63,7 @@ public class Tcw122bcm extends Protocol {
      * Initializations
      */
     public Tcw122bcm() {
-        super("TCW122B-CM", "/it.cicolella.tcw122bcm/tcw122bcm-manifest.xml");
+        super("TCW122B-CM", "/tcw122bcm/tcw122bcm-manifest.xml");
         setPollingWait(POLLING_TIME);
     }
 
@@ -161,64 +152,65 @@ public class Tcw122bcm extends Protocol {
     //        no value 
     private void evaluateDiff(Board board) {
         //String address = board.getIpAddress() + ":" + board.getPortNumber();
-        String address = board.getAlias();
+        //String address = board.getAlias();
         String value = null;
+        MYSNMP snmpRequest = new MYSNMP();
         //temperature1
-        value = SNMPRequest(board, SNMP_OID + "." + T1_VALUE);
+        value = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, SNMP_OID + "." + T1_VALUE, SNMP_COMMUNITY);
         if (!value.equalsIgnoreCase(board.getTemperature1())) {
             sendEvent(address + ":T1", "sensor.temperature", value, board.getTemperatureObjectTemplate());
             board.setTemperature1(value);
         }
         //temperature2
-        value = SNMPRequest(board, SNMP_OID + "." + T2_VALUE);
+        value = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, SNMP_OID + "." + T2_VALUE, SNMP_COMMUNITY);
         if (!value.equalsIgnoreCase(board.getTemperature2())) {
             sendEvent(address + ":T2", "sensor.temperature", value, board.getTemperatureObjectTemplate());
             board.setTemperature2(value);
         }
         //humidity1
-        value = SNMPRequest(board, SNMP_OID + "." + H1_VALUE);
+        value = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, SNMP_OID + "." + H1_VALUE, SNMP_COMMUNITY);
         if (!value.equalsIgnoreCase(board.getHumidity1())) {
             sendEvent(address + ":H1", "sensor.humidity", value, board.getHumidityObjectTemplate());
             board.setHumidity1(value);
         }
         //humidity2
-        value = SNMPRequest(board, SNMP_OID + "." + H2_VALUE);
+        value = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, SNMP_OID + "." + H2_VALUE, SNMP_COMMUNITY);
         if (!value.equalsIgnoreCase(board.getHumidity2())) {
             sendEvent(address + ":H2", "sensor.humidity", value, board.getHumidityObjectTemplate());
             board.setHumidity2(value);
         }
         //digital input 1
-        value = SNMPRequest(board, SNMP_OID + "." + D1_VALUE);
+        value = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, SNMP_OID + "." + D1_VALUE, SNMP_COMMUNITY);
         if (!value.equalsIgnoreCase(board.getDigitalInput1())) {
             sendEvent(address + ":D1", "digital.input.value", value, "default");
             board.setDigitalInput1(value);
         }
         //digital input 2
-        value = SNMPRequest(board, SNMP_OID + "." + D2_VALUE);
+        value = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, SNMP_OID + "." + D2_VALUE, SNMP_COMMUNITY);
         if (!value.equalsIgnoreCase(board.getDigitalInput2())) {
             sendEvent(address + ":D2", "digital.input.value", value, "default");
             board.setDigitalInput2(value);
         }
         //analog input 1
-        value = SNMPRequest(board, SNMP_OID + "." + A1_VALUE);
+        value = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, SNMP_OID + "." + A1_VALUE, SNMP_COMMUNITY);
         if (!value.equalsIgnoreCase(board.getAnalogInput1())) {
             sendEvent(address + ":A1", "analog.input.value", value, "default");
             board.setAnalogInput1(value);
         }
         //analog input 2
-        value = SNMPRequest(board, SNMP_OID + "." + A2_VALUE);
+        value = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, SNMP_OID + "." + A2_VALUE, SNMP_COMMUNITY);
         if (!value.equalsIgnoreCase(board.getAnalogInput2())) {
             sendEvent(address + ":A2", "analog.input.value", value, "default");
             board.setAnalogInput2(value);
         }
         //relay1 state
-        value = SNMPRequest(board, SNMP_OID + "." + R1_STATE);
+        value = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, SNMP_OID + "." + R1_STATE, SNMP_COMMUNITY);
         if (!value.equalsIgnoreCase(board.getRelay1())) {
             sendEvent(address + ":R1", "relay.state", value, board.getRelayObjectTemplate());
             board.setRelay1(value);
         }
         //relay2 state
-        value = SNMPRequest(board, SNMP_OID + "." + R2_STATE);
+        value = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, SNMP_OID + "." + R2_STATE, SNMP_COMMUNITY);
         if (!value.equalsIgnoreCase(board.getRelay2())) {
             sendEvent(address + ":R2", "relay.state", value, board.getRelayObjectTemplate());
             board.setRelay2(value);
@@ -290,43 +282,6 @@ public class Tcw122bcm extends Protocol {
         } catch (IOException e) {
             Freedomotic.logger.severe("Change relay status IOexception" + e.toString());
         }
-    }
-
-    // This method makes an snmp request
-    // @param board  
-    //        board handle
-    // @param requestOID  
-    //        OID for snmp request
-    // @return
-    //        String with SNMP response 
-    public String SNMPRequest(Board board, String requestOID) {
-        String value = null;
-        try {
-            // create a communications interface to a remote SNMP-capable device;
-            // need to provide the remote host's InetAddress and the community
-            // name for the device; in addition, need to  supply the version number
-            // for the SNMP messages to be sent (the value 0 corresponding to SNMP
-            // version 1)
-            InetAddress hostAddress = InetAddress.getByName(board.getIpAddress());
-            String community = "public";
-            int version = 0;    // SNMPv1
-            SNMPv1CommunicationInterface comInterface = new SNMPv1CommunicationInterface(version, hostAddress, community);
-            String itemID = requestOID;
-            SNMPVarBindList newVars = comInterface.getMIBEntry(itemID);
-            // extract the (OID,value) pair from the SNMPVarBindList; the pair is just a two-element
-            // SNMPSequence
-            SNMPSequence pair = (SNMPSequence) (newVars.getSNMPObjectAt(0));
-            // extract the object identifier from the pair; it's the first element in the sequence
-            SNMPObjectIdentifier snmpOID = (SNMPObjectIdentifier) pair.getSNMPObjectAt(0);
-            // extract the corresponding value from the pair; it's the second element in the sequence
-            SNMPObject snmpValue = pair.getSNMPObjectAt(1);
-            // print out the String representation of the retrieved value
-            //System.out.println("Retrieved value: type " + snmpValue.getClass().getName() + ", value " + snmpValue.toString());
-            value = snmpValue.toString();
-        } catch (Exception e) {
-            Freedomotic.logger.severe("Exception during SNMP operation:  " + e + "\n");
-        }
-        return (value);
     }
 
     @Override
