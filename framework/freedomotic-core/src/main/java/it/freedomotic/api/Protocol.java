@@ -60,7 +60,7 @@ public abstract class Protocol
     private Protocol.SensorThread sensorThread;
     private volatile Destination lastDestination;
     private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
-    
+
     protected abstract void onRun();
 
     protected abstract void onCommand(Command c)
@@ -128,6 +128,7 @@ public abstract class Protocol
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
+                    loadPermissionsFromManifest();
                     onStart();
                     sensorThread = new Protocol.SensorThread();
                     sensorThread.start();

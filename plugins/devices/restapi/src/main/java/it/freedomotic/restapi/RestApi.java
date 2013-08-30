@@ -4,6 +4,7 @@
  */
 package it.freedomotic.restapi;
 
+import com.google.inject.Inject;
 import it.freedomotic.api.API;
 import it.freedomotic.api.Actuator;
 import it.freedomotic.exceptions.UnableToExecuteException;
@@ -40,7 +41,6 @@ public class RestApi extends Actuator {
 
     public RestApi() {
         super("RestApi", "/es.gpulido.restapi/restapi-manifest.xml");
-        freedomoticApi = getApi();
     }
     
     /**
@@ -87,6 +87,7 @@ public class RestApi extends Actuator {
             component.getDefaultHost().attachDefault(guard);
             //component.getDefaultHost().attach(new FreedomRestServer(Info.getResourcesPath()));
             component.start();
+            freedomoticApi = getApi();
         } catch (Exception ex) {
             Logger.getLogger(RestApi.class.getName()).log(Level.SEVERE, null, ex);
         }

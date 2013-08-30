@@ -37,7 +37,6 @@ import it.freedomotic.util.Info;
 import java.io.*;
 
 import javax.swing.JFrame;
-import it.freedomotic.security.Auth;
 import java.util.logging.Logger;
 
 public class Plugin
@@ -251,8 +250,7 @@ public class Plugin
         category = configuration.getStringProperty("category", "undefined");
         shortName = configuration.getStringProperty("short-name", "undefined");
         listenOn = configuration.getStringProperty("listen-on", "undefined");
-        sendOn = configuration.getStringProperty("send-on", "undefined");
-        loadPermissionsFromManifest();
+        sendOn = configuration.getStringProperty("send-on", "undefined");  
     }
 
     protected void onShowGui() {
@@ -266,6 +264,7 @@ public class Plugin
         Runnable action = new Runnable() {
             @Override
             public void run() {
+                loadPermissionsFromManifest();
                 onStart();
             }
         };

@@ -157,10 +157,11 @@
             <version>1.2.2</version>
             <type>jar</type>
         </dependency>
-                <dependency>
+        <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-guice</artifactId>
             <version>1.2.2</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>

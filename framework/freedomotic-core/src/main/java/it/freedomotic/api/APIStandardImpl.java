@@ -18,12 +18,10 @@ import it.freedomotic.objects.EnvObjectPersistence;
 
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.security.Auth;
-import it.freedomotic.security.AuthProvider;
 
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Implements the standard freedomotic APIs available to plugins. This class
@@ -50,12 +48,13 @@ public class APIStandardImpl
             EnvObjectPersistence object,
             ClientStorage clientStorage,
             AppConfig config,
-            AuthProvider authProvider) {
+            Auth auth) {
         this.environment = environment;
         this.object = object;
         this.clientStorage = clientStorage;
         this.config = config;
-        this.auth = authProvider.create();
+        this.auth = auth;
+        System.out.println("auth in apiimpl is " + this.auth);
     }
 
     @Override

@@ -50,7 +50,6 @@ import org.apache.shiro.util.ThreadState;
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-@Singleton
 public class AuthImpl implements Auth{
 
     private final static String BASE_REALM_NAME = "it.freedomotic.security";
