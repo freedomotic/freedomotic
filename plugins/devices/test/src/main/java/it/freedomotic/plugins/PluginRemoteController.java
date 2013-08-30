@@ -8,7 +8,6 @@ import com.google.inject.Inject;
 
 import it.freedomotic.api.Actuator;
 import it.freedomotic.api.Client;
-import it.freedomotic.api.Plugin;
 
 import it.freedomotic.app.Freedomotic;
 
@@ -25,18 +24,14 @@ import java.io.IOException;
 public class PluginRemoteController
         extends Actuator {
 
-    @Inject
-    private ClientStorage clients;
-
     public PluginRemoteController() {
-        super("Plugins Remote Controller", "/test/plugins-remote-controller.xml");
-        start();
+        super("Plugins Remote Controller", "/it.nicoletti.test/plugins-remote-controller.xml");
     }
 
     @Override
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
-        Client plugin = clients.get(c.getProperty("plugin"));
+        Client plugin = getApi().getClientStorage().get(c.getProperty("plugin"));
         String action = c.getProperty("action");
 
         if (plugin != null) {

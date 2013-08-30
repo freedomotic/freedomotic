@@ -60,8 +60,8 @@ public abstract class Actuator
     private volatile Destination lastDestination;
     private ExecutorService executor;
     private static final Logger LOG = Logger.getLogger(Actuator.class.getName());
-    @Inject
-    private Auth auth;
+    
+    
     public Actuator(String pluginName, String manifest) {
         super(pluginName, manifest);
         register();
@@ -69,7 +69,6 @@ public abstract class Actuator
 //            executor = Executors.newCachedThreadPool();
 //        } else {
         executor = Executors.newSingleThreadExecutor();
-
 //        }
     }
 
@@ -117,6 +116,7 @@ public abstract class Actuator
             Runnable action = new Runnable() {
                 @Override
                 public void run() {
+                    loadPermissionsFromManifest();
                     onStart();
                     isRunning = true;
                     LOG.info("Actuator " + getName() + " started.");
@@ -124,7 +124,7 @@ public abstract class Actuator
                     Freedomotic.sendEvent(change);
                 }
             };
-            auth.pluginExecutePrivileged(this, action);
+            getApi().getAuth().pluginExecutePrivileged(this, action);
         }
     }
 
@@ -141,7 +141,7 @@ public abstract class Actuator
                     Freedomotic.sendEvent(change);
                 }
             };
-            auth.pluginExecutePrivileged(this, action);
+            getApi().getAuth().pluginExecutePrivileged(this, action);
         }
     }
 
