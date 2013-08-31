@@ -105,7 +105,7 @@ public class Freedomotic implements BusConsumer {
 
     private static String INSTANCE_ID;
     @Deprecated
-    public static final Logger logger = Logger.getLogger("app.log");
+    public static final Logger logger = Logger.getLogger("it.freedomotic");
     //this should replace Freedomotic.logger reference
     private static final Logger LOG = Logger.getLogger(Freedomotic.class.getName());
     //TODO: remove this, any plugin should have access to his own bus instance

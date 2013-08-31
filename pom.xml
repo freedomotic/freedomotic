@@ -166,7 +166,7 @@
         </plugins>   
         <!-- executes only on childs (if the child have specified it in its pom)-->
         <pluginManagement>
-           <plugins>
+            <plugins>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
                     <configuration>
@@ -280,8 +280,8 @@
                                          basedir="target/${artifactId}" />
                                     <property name="workspace-base" value="../../../"/>
                                     <taskdef
-                                            name="marketplace"
-                                            classname="it.freedomotic.marketplace.AntUploader" >
+                                        name="marketplace"
+                                        classname="it.freedomotic.marketplace.AntUploader" >
                                         <classpath>
                                             <pathelement location="../../../tools/freedomotic-marketplace/target/freedomotic-marketplace-3.0-jar-with-dependencies.jar"/>
                                             <pathelement location="../../../framework/freedomotic-core/target/freedomotic.jar"/>-->
@@ -289,11 +289,11 @@
                                     </taskdef>
                                     <!-- If the username or the password are not passed as parameters, ask for them -->
                                     <marketplace
-                                            username="${freedomotic.marketplace.username}"
-                                            password="${freedomotic.marketplace.password}"
-                                            nodeid="${freedomotic.nodeid}"
-                                            attachment="target/market-dist/"
-                                            />
+                                        username="${freedomotic.marketplace.username}"
+                                        password="${freedomotic.marketplace.password}"
+                                        nodeid="${freedomotic.nodeid}"
+                                        attachment="target/market-dist/"
+                                    />
                                 </target>
                             </configuration>
                         </execution>
