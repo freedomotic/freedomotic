@@ -129,10 +129,10 @@ public abstract class Protocol
                 @Override
                 public synchronized void run() {
                     loadPermissionsFromManifest();
+                    isRunning = true;
                     onStart();
                     sensorThread = new Protocol.SensorThread();
                     sensorThread.start();
-                    isRunning = true;
                     PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
                     Freedomotic.sendEvent(event);
                 }

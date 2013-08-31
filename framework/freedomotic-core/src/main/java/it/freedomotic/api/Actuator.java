@@ -117,8 +117,8 @@ public abstract class Actuator
                 @Override
                 public void run() {
                     loadPermissionsFromManifest();
-                    onStart();
                     isRunning = true;
+                    onStart();
                     LOG.info("Actuator " + getName() + " started.");
                     PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.START);
                     Freedomotic.sendEvent(change);

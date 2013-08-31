@@ -5,18 +5,10 @@
 package it.freedomotic.plugins;
 
 import it.freedomotic.api.Actuator;
-
 import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.exceptions.UnableToExecuteException;
-
-import it.freedomotic.objects.EnvObjectLogic;
-
 import it.freedomotic.plugins.gui.LogWindowHandler;
-
 import it.freedomotic.reactions.Command;
-import it.freedomotic.reactions.CommandPersistence;
-
 import java.io.IOException;
 import java.util.logging.Filter;
 import java.util.logging.Level;
@@ -31,7 +23,8 @@ public class LogViewer
         extends Actuator {
 
     private LogWindowHandler handler = null;
-    private Logger logger = null;
+    //get root logger
+    private static final Logger logger = Logger.getLogger("it.freedomotic");
 
     public LogViewer() {
         super("Log Viewer", "/test/logviewer-manifest.xml");
@@ -39,7 +32,7 @@ public class LogViewer
 
     @Override
     protected void onShowGui() {
-        //nothig special to do here
+        //nothing special to do here
     }
 
     @Override
@@ -51,8 +44,7 @@ public class LogViewer
                 return true;
             }
         });
-        logger = Freedomotic.logger;
-        logger.setLevel(Level.ALL);
+        handler.setLevel(Level.ALL);
         logger.addHandler(handler);
         bindGuiToPlugin(handler.window);
         showGui();
@@ -65,7 +57,6 @@ public class LogViewer
         gui = null;
         logger.removeHandler(handler);
         handler = null;
-        logger = null;
     }
 
     @Override

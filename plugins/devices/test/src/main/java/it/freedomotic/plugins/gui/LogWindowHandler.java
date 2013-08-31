@@ -12,11 +12,9 @@ import java.util.logging.*;
  *
  * @author Enrico
  */
-public class LogWindowHandler
-        extends Handler {
+public class LogWindowHandler extends Handler {
 
     public LogWindow window = null;
-    private Level level = null;
     private static LogWindowHandler handler = null;
 
     private LogWindowHandler() {
@@ -34,6 +32,7 @@ public class LogWindowHandler
         return handler;
     }
 
+    @Override
     public void publish(LogRecord record) {
         String message;
 
@@ -51,9 +50,11 @@ public class LogWindowHandler
                     record.getMessage()});
     }
 
+    @Override
     public void close() {
     }
 
+    @Override
     public void flush() {
     }
 }
