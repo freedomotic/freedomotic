@@ -1,21 +1,25 @@
-/*
- Copyright FILE Mauro Cicolella, 2012-2013
-
- This file is part of FREEDOMOTIC.
-
- FREEDOMOTIC is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- FREEDOMOTIC is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team
+ * http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This Program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Freedomotic; see the file COPYING.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
+
 package it.cicolella.usb4relaybrd;
 
 import it.freedomotic.api.EventTemplate;
@@ -30,9 +34,11 @@ import java.util.List;
 import java.util.Map;
 import com.ftdi.*;
 import it.freedomotic.events.ProtocolRead;
+import java.util.logging.Logger;
 
 public class Usb4RelayBrd extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(Usb4RelayBrd.class.getName()); 
     final int POLLING_WAIT;
     private static Map<String, FTDevice> boards;
     private int relayStatus = 0;
@@ -42,7 +48,7 @@ public class Usb4RelayBrd extends Protocol {
 
     public Usb4RelayBrd() {
         //every plugin needs a name and a manifest XML file
-        super("USB4RelayBrd", "/it.cicolella.usb4relaybrd/usb4relaybrd-manifest.xml");
+        super("USB4RelayBrd", "/usb4relaybrd/usb4relaybrd-manifest.xml");
         POLLING_WAIT = configuration.getIntProperty("time-between-reads", 1000);
         //POLLING_WAIT is the value of the property "time-between-reads" or 2000 millisecs,
         //default value if the property does not exist in the manifest
@@ -125,7 +131,7 @@ public class Usb4RelayBrd extends Protocol {
     @Override
     protected void onStart() {
         loadDevices();
-        Freedomotic.logger.info("Usb4RelayBrd plugin started");
+        LOG.info("Usb4RelayBrd plugin started");
         setDescription("Usb4RelayBrd started");
     }
 
@@ -135,11 +141,11 @@ public class Usb4RelayBrd extends Protocol {
             try {
                 fTDevice.close();
             } catch (FTD2XXException ex) {
-                Freedomotic.logger.severe("Usb4RelayBrd FTD2XX exception " + ex.toString());
+                LOG.severe("Usb4RelayBrd FTD2XX exception " + ex.toString());
             }
             // clear the boards list
             fTDevices = null;
-            Freedomotic.logger.info("Usb4RelayBrd plugin stopped");
+            LOG.info("Usb4RelayBrd plugin stopped");
             setDescription("Usb4RelayBrd stopped");
         }
     }
@@ -232,7 +238,7 @@ public class Usb4RelayBrd extends Protocol {
                 fTDevice.setDataCharacteristics(WordLength.BITS_8, StopBits.STOP_BITS_1, Parity.PARITY_NONE);
             }
         } catch (FTD2XXException ex) {
-            Freedomotic.logger.severe("Usb4RelayBrd FTD2XX exception " + ex.toString());
+            LOG.severe("Usb4RelayBrd FTD2XX exception " + ex.toString());
         }
         if (fTDevices.size() == 0) {
             this.stop();
@@ -260,7 +266,7 @@ public class Usb4RelayBrd extends Protocol {
             usb4Relay.read(received, 0, 1);
             readValue = (int) received[0] & 0xff; //mask the sign bit
         } catch (FTD2XXException ex) {
-            Freedomotic.logger.severe("Usb4RelayBrd FTD2XX exception " + ex.toString());
+            LOG.severe("Usb4RelayBrd FTD2XX exception " + ex.toString());
         }
         return (readValue);
     }
