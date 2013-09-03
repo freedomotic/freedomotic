@@ -1,14 +1,20 @@
-#Tue Jul 23 21:11:16 CEST 2013
-package.vendor.nation=${package.vendor.nation}
-package.license=${package.license}
-package.vendor.name=${package.vendor.name}
-package.version=3.0
-package.name=${package.name}
-framework.required.minor=${framework.required.minor}
-package.vendor.surname=${package.vendor.surname}
-package.vendor.contact=${package.vendor.contact}
-package.nodeid=${package.nodeid}
-package.vendor.company=${package.vendor.company}
-framework.required.major=${framework.required.major}
-framework.required.build=${framework.required.build}
-package.type=${package.type}
+#Fri, 10 May 2013 15:40:36 +0200
+
+package.type=device
+package.name=it.cicolella.hwgste
+package.nodeid=1120
+package.license=GNU GPL2
+package.vendor.name=Mauro
+package.vendor.surname=Cicolella
+package.vendor.contact=info@freedomotic.com
+package.vendor.company=freedomotic
+package.vendor.nation=it
+framework.required.major=5
+framework.required.minor=5
+framework.required.build=x
+build.major=1
+build.number=28
+build.create.dist.market=true
+build.create.dist.framework=true
+build.synch.dist=true
+build.synch.dist.path=../../../framework/freedomotic/plugins/
