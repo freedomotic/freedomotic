@@ -1,33 +1,37 @@
-/*
- Copyright FILE Mauro Cicolella, 2012-2013
-
- This file is part of FREEDOMOTIC.
-
- FREEDOMOTIC is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- FREEDOMOTIC is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team
+ * http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This Program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Freedomotic; see the file COPYING.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
+
 package it.freedomotic.objects.impl;
 
 import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.RangedIntBehavior;
-
 import it.freedomotic.objects.RangedIntBehaviorLogic;
+import java.util.logging.Logger;
 
 public class PowerMeter
         extends ElectricDevice {
 
+    private static final Logger LOG = Logger.getLogger(GenericSensor.class.getName()); 
     private RangedIntBehaviorLogic current;
     private RangedIntBehaviorLogic voltage;
     private RangedIntBehaviorLogic power;
@@ -171,7 +175,7 @@ public class PowerMeter
     }
 
     private void setCurrent(int value) {
-        Freedomotic.logger.config("Setting behavior 'current' of object '" + getPojo().getName() + "' to "
+        LOG.config("Setting behavior 'current' of object '" + getPojo().getName() + "' to "
                 + value);
         current.setValue(value);
         getPojo().setCurrentRepresentation(0);
@@ -189,7 +193,7 @@ public class PowerMeter
     }
 
     private void setVoltage(int value) {
-        Freedomotic.logger.config("Setting behavior 'voltage' of object '" + getPojo().getName() + "' to "
+        LOG.config("Setting behavior 'voltage' of object '" + getPojo().getName() + "' to "
                 + value);
         voltage.setValue(value);
         getPojo().setCurrentRepresentation(0);
@@ -207,7 +211,7 @@ public class PowerMeter
     }
 
     private void setPower(int value) {
-        Freedomotic.logger.info("Setting behavior 'power' of object '" + getPojo().getName() + "' to " + value);
+        LOG.info("Setting behavior 'power' of object '" + getPojo().getName() + "' to " + value);
         power.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
@@ -224,7 +228,7 @@ public class PowerMeter
     }
 
     private void setPowerFactor(int value) {
-        Freedomotic.logger.config("Setting behavior 'power-factor' of object '" + getPojo().getName() + "' to "
+        LOG.config("Setting behavior 'power-factor' of object '" + getPojo().getName() + "' to "
                 + value);
         powerFactor.setValue(value);
         getPojo().setCurrentRepresentation(0);
@@ -242,7 +246,7 @@ public class PowerMeter
     }
 
     private void setEnergy(int value) {
-        Freedomotic.logger.info("Setting behavior 'energy' of object '" + getPojo().getName() + "' to " + value);
+        LOG.info("Setting behavior 'energy' of object '" + getPojo().getName() + "' to " + value);
         energy.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
