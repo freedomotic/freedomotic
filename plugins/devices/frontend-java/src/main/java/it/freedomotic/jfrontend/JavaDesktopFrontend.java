@@ -33,13 +33,14 @@ public class JavaDesktopFrontend
     public JavaDesktopFrontend() {
         super("Desktop Frontend", "/frontend-java/desktop-frontend.xml");
     }
+
     @Override
     public void onStop() {
         window = null;
         listDrawer = null;
         drawer = null;
     }
-    
+
     @Override
     public void onStart() {
         try {
@@ -51,7 +52,7 @@ public class JavaDesktopFrontend
             //onCommand stuff
             addCommandListener("app.actuators.plugins.controller.in");
             createMainWindow(); //creates the main frame
-            listDrawer = new ListDrawer();
+            listDrawer = new ListDrawer(this);
             listDrawer.setVisible(true);
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
@@ -77,19 +78,15 @@ public class JavaDesktopFrontend
             if (env.getPojo().getRenderer().equalsIgnoreCase("photo")) {
                 drawer = new PhotoDrawer(this);
                 drawer.setCurrEnv(env);
+            } else if (env.getPojo().getRenderer().equalsIgnoreCase("image")) {
+                drawer = new ImageDrawer(this);
+                drawer.setCurrEnv(env);
+            } else if (env.getPojo().getRenderer().equalsIgnoreCase("plain")) {
+                drawer = new PlainDrawer(this);
+                drawer.setCurrEnv(env);
             } else {
-                if (env.getPojo().getRenderer().equalsIgnoreCase("image")) {
-                    drawer = new ImageDrawer(this);
-                    drawer.setCurrEnv(env);
-                } else {
-                    if (env.getPojo().getRenderer().equalsIgnoreCase("image")) {
-                        drawer = new PlainDrawer(this);
-                        drawer.setCurrEnv(env);
-                    } else {
-                        drawer = new ListDrawer();
-                        drawer.setCurrEnv(env);
-                    }
-                }
+                drawer = new ListDrawer(this);
+                drawer.setCurrEnv(env);
             }
         } catch (Exception e) {
             System.out.println("Error while initializing a drawer in desktop frontend.");
@@ -163,8 +160,8 @@ public class JavaDesktopFrontend
                     drawer.createCallout(callout);
                     drawer.setNeedRepaint(true);
                 } else {
-                    if (window.getPluginJList() != null){
-                    window.getPluginJList().update();
+                    if (window.getPluginJList() != null) {
+                        window.getPluginJList().update();
                     }
                 }
             }
@@ -188,6 +185,4 @@ public class JavaDesktopFrontend
     protected boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    
 }
