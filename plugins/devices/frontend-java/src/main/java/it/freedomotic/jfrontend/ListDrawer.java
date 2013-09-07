@@ -45,13 +45,14 @@ import javax.swing.SpringLayout;
  * @author enrico
  */
 public class ListDrawer
-        extends Drawer {
+        extends Renderer {
 
     JComboBox cmbZone = new JComboBox();
     JPanel panel = new JPanel();
     EnvironmentLogic currEnv = EnvironmentPersistence.getEnvironments().get(0);
 
-    public ListDrawer() {
+    public ListDrawer(JavaDesktopFrontend master) {
+        super(master);
         cmbZone.removeAllItems();
         cmbZone.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

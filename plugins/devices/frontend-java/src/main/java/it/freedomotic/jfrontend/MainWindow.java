@@ -1017,7 +1017,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 drawer.getCurrEnv().getPojo().getRenderer());
 
         //If a string was returned
-        if ((input != null) && (input.length() > 0)) {
+        if ((input != null) && (!input.isEmpty())) {
             changeRenderer(input);
         }
     }//GEN-LAST:event_mnuChangeRendererActionPerformed
