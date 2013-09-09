@@ -112,6 +112,9 @@ public abstract class Actuator
 
     @Override
     public void start() {
+         if (configuration.getBooleanProperty("enable-i18n", false)){
+            getApi().getI18n().registerPluginBundleDir(this);
+        }
         if (!isRunning) {
             Runnable action = new Runnable() {
                 @Override

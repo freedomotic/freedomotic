@@ -72,7 +72,7 @@ import it.freedomotic.serial.SerialConnectionProvider;
 
 import it.freedomotic.util.Info;
 import it.freedomotic.util.LogFormatter;
-import it.freedomotic.util.I18n;
+import it.freedomotic.util.I18n.I18n;
 
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -155,7 +155,7 @@ public class Freedomotic implements BusConsumer {
         loadAppConfig();
 
         // init localization
-        I18n.setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
+        api.getI18n().setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
 
         // init auth* framework
         auth.initBaseRealm();
@@ -170,9 +170,9 @@ public class Freedomotic implements BusConsumer {
         String resourcesPath =
                 new File(Info.getApplicationPath()
                 + config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
-        logger.info("\nOS: " + System.getProperty("os.name") + "\n" + I18n.msg("architecture") + ": "
+        logger.info("\nOS: " + System.getProperty("os.name") + "\n" + api.getI18n().msg("architecture") + ": "
                 + System.getProperty("os.arch") + "\n" + "OS Version: " + System.getProperty("os.version")
-                + "\n" + I18n.msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
+                + "\n" + api.getI18n().msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
                 + System.getProperty("java.home") + "\n" + "Java Library Path: {"
                 + System.getProperty("java.library.path") + "}\n" + "Program path: "
                 + System.getProperty("user.dir") + "\n" + "Java Version: " + System.getProperty("java.version")
@@ -197,7 +197,7 @@ public class Freedomotic implements BusConsumer {
                 handler.setFormatter(new LogFormatter());
                 logger.setLevel(Level.ALL);
                 logger.addHandler(handler);
-                logger.config(I18n.msg("INIT_MESSAGE"));
+                logger.config(api.getI18n().msg("INIT_MESSAGE"));
 
                 if ((config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
                         && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {

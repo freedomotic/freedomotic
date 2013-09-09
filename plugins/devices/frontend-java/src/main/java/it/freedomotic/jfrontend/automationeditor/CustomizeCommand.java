@@ -22,7 +22,7 @@ import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 
-import it.freedomotic.util.I18n;
+import it.freedomotic.util.I18n.I18n;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,13 +43,15 @@ public class CustomizeCommand
     Command original;
     DefaultTableModel model = new DefaultTableModel();
     JTable table;
+    private final I18n I18n;
     @Inject
     private ClientStorage clients;
 
     /**
      * Creates new form CustomizeEvent
      */
-    public CustomizeCommand(ReactionList main, Command original) {
+    public CustomizeCommand(I18n i18n, ReactionList main, Command original) {
+        this.I18n = i18n;
         initComponents();
         this.main = main;
         this.original = original;
@@ -166,7 +168,7 @@ public class CustomizeCommand
 
         cmbReceiver.setEnabled( false );
 
-        txtReceiver.setText( I18n.msg( this, "performed_by" ) );
+        txtReceiver.setText( I18n.msg( "performed_by" ) );
         txtReceiver.setEnabled( false );
 
         btnChangeReceiver.setText( I18n.msg( "change" ) );

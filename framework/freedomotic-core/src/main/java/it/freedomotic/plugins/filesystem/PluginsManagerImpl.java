@@ -114,7 +114,7 @@ public class PluginsManagerImpl implements PluginsManager {
             } catch (IOException ex) {
                 throw new PluginLoadingException("Missing PACKAGE info file " + ex.getMessage(), ex);
             }
-
+            
             clientStorage.add(client);
         }
     }

@@ -22,6 +22,7 @@
 
 package it.freedomotic.plugins.gui;
 
+import it.freedomotic.util.I18n.I18n;
 import it.freedomotic.util.LogFormatter;
 import java.util.logging.*;
 
@@ -34,16 +35,16 @@ public class LogWindowHandler extends Handler {
     public LogWindow window = null;
     private static LogWindowHandler handler = null;
 
-    private LogWindowHandler() {
+    private LogWindowHandler(I18n i18n) {
         setLevel(Level.ALL);
         if (window == null) {
-            window = new LogWindow(this);
+            window = new LogWindow(i18n, this);
         }
     }
 
-    public static LogWindowHandler getInstance() {
+    public static LogWindowHandler getInstance(I18n i18n) {
         if (handler == null) {
-            handler = new LogWindowHandler();
+            handler = new LogWindowHandler(i18n);
         }
 
         return handler;

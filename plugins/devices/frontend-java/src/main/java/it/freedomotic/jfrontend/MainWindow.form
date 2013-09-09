@@ -69,7 +69,7 @@
         <Menu class="javax.swing.JMenu" name="mnuOpenNew">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="it.freedomotic.util.I18n.msg(&quot;file&quot;)" type="code"/>
+              <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;file&quot;)" type="code"/>
             </Property>
           </Properties>
           <Events>
@@ -82,7 +82,7 @@
                   <KeyStroke key="Ctrl+N"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;new&quot;) + it.freedomotic.util.I18n.msg(&quot;environment&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;new&quot;) + it.freedomotic.util.I18n.I18n.msg(&quot;environment&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -95,7 +95,7 @@
                   <KeyStroke key="Ctrl+O"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;open&quot;) + it.freedomotic.util.I18n.msg(&quot;environment&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;open&quot;) + it.freedomotic.util.I18n.I18n.msg(&quot;environment&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -108,7 +108,7 @@
                   <KeyStroke key="Ctrl+S"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;save&quot;) + it.freedomotic.util.I18n.msg(&quot;environment&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;save&quot;) + it.freedomotic.util.I18n.I18n.msg(&quot;environment&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -121,7 +121,7 @@
                   <KeyStroke key="Shift+Ctrl+S"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;save_X_as&quot;,new Object[]{it.freedomotic.util.I18n.msg(&quot;environment&quot;)})" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;save_X_as&quot;,new Object[]{it.freedomotic.util.I18n.I18n.msg(&quot;environment&quot;)})" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -133,7 +133,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSwitchUser">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(this,&quot;change_user&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(this,&quot;change_user&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -143,7 +143,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuExit">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;exit&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;exit&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -155,7 +155,7 @@
         <Menu class="javax.swing.JMenu" name="mnuEditMode">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="it.freedomotic.util.I18n.msg(&quot;environment&quot;)" type="code"/>
+              <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;environment&quot;)" type="code"/>
             </Property>
           </Properties>
           <SubComponents>
@@ -165,7 +165,7 @@
                   <KeyStroke key="F3"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(this,&quot;select_X&quot;,new Object[]{it.freedomotic.util.I18n.msg(&quot;area_floor&quot;)})" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(this,&quot;select_X&quot;,new Object[]{it.freedomotic.util.I18n.I18n.msg(&quot;area_floor&quot;)})" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -175,14 +175,14 @@
             <Menu class="javax.swing.JMenu" name="jMenu4">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;area_floor&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;area_floor&quot;)" type="code"/>
                 </Property>
               </Properties>
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="mnuRenameEnvironment">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="it.freedomotic.util.I18n.msg(&quot;rename&quot;)" type="code"/>
+                      <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;rename&quot;)" type="code"/>
                     </Property>
                   </Properties>
                   <Events>
@@ -192,7 +192,7 @@
                 <MenuItem class="javax.swing.JMenuItem" name="mnuAddDuplicateEnvironment">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="it.freedomotic.util.I18n.msg(&quot;add&quot;)+&quot;/&quot;+it.freedomotic.util.I18n.msg(&quot;duplicate&quot;)" type="code"/>
+                      <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;add&quot;)+&quot;/&quot;+it.freedomotic.util.I18n.I18n.msg(&quot;duplicate&quot;)" type="code"/>
                     </Property>
                   </Properties>
                   <Events>
@@ -202,7 +202,7 @@
                 <MenuItem class="javax.swing.JMenuItem" name="mnuChangeRenderer">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="it.freedomotic.util.I18n.msg(&quot;change_X&quot;,new Object[]{it.freedomotic.util.I18n.msg(&quot;renderer&quot;)})" type="code"/>
+                      <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;change_X&quot;,new Object[]{it.freedomotic.util.I18n.I18n.msg(&quot;renderer&quot;)})" type="code"/>
                     </Property>
                   </Properties>
                   <Events>
@@ -212,7 +212,7 @@
                 <MenuItem class="javax.swing.JMenuItem" name="mnuBackground">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="it.freedomotic.util.I18n.msg(&quot;change_X&quot;,new Object[]{it.freedomotic.util.I18n.msg(&quot;background&quot;)})" type="code"/>
+                      <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;change_X&quot;,new Object[]{it.freedomotic.util.I18n.I18n.msg(&quot;background&quot;)})" type="code"/>
                     </Property>
                   </Properties>
                   <Events>
@@ -222,7 +222,7 @@
                 <MenuItem class="javax.swing.JMenuItem" name="mnuDelete">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="it.freedomotic.util.I18n.msg(&quot;delete&quot;)" type="code"/>
+                      <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;delete&quot;)" type="code"/>
                     </Property>
                   </Properties>
                   <Events>
@@ -237,7 +237,7 @@
                   <KeyStroke key="F5"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(this,&quot;X_edit_mode&quot;,new Object[]{it.freedomotic.util.I18n.msg(&quot;rooms&quot;)})" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(this,&quot;X_edit_mode&quot;,new Object[]{it.freedomotic.util.I18n.I18n.msg(&quot;rooms&quot;)})" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -247,7 +247,7 @@
             <Menu class="javax.swing.JMenu" name="jMenu3">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;rooms&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;rooms&quot;)" type="code"/>
                 </Property>
               </Properties>
               <SubComponents>
@@ -257,7 +257,7 @@
                       <KeyStroke key="Ctrl+R"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="it.freedomotic.util.I18n.msg(&quot;rename&quot;) + it.freedomotic.util.I18n.msg(&quot;room&quot;)" type="code"/>
+                      <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;rename&quot;) + it.freedomotic.util.I18n.I18n.msg(&quot;room&quot;)" type="code"/>
                     </Property>
                   </Properties>
                   <Events>
@@ -270,7 +270,7 @@
                       <KeyStroke key="Ctrl+A"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="it.freedomotic.util.I18n.msg(&quot;add&quot;) + it.freedomotic.util.I18n.msg(&quot;room&quot;)" type="code"/>
+                      <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;add&quot;) + it.freedomotic.util.I18n.I18n.msg(&quot;room&quot;)" type="code"/>
                     </Property>
                   </Properties>
                   <Events>
@@ -280,7 +280,7 @@
                 <MenuItem class="javax.swing.JMenuItem" name="mnuRoomBackground">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="it.freedomotic.util.I18n.msg(&quot;change_X&quot;,new Object[]{it.freedomotic.util.I18n.msg(&quot;background&quot;)})" type="code"/>
+                      <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;change_X&quot;,new Object[]{it.freedomotic.util.I18n.I18n.msg(&quot;background&quot;)})" type="code"/>
                     </Property>
                   </Properties>
                   <Events>
@@ -290,7 +290,7 @@
                 <MenuItem class="javax.swing.JMenuItem" name="mnuRemoveRoom">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="it.freedomotic.util.I18n.msg(&quot;remove&quot;) + it.freedomotic.util.I18n.msg(&quot;room&quot;)" type="code"/>
+                      <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;remove&quot;) + it.freedomotic.util.I18n.I18n.msg(&quot;room&quot;)" type="code"/>
                     </Property>
                   </Properties>
                   <Events>
@@ -304,7 +304,7 @@
         <Menu class="javax.swing.JMenu" name="mnuObjects">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="it.freedomotic.util.I18n.msg(&quot;objects&quot;)" type="code"/>
+              <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;objects&quot;)" type="code"/>
             </Property>
           </Properties>
           <SubComponents>
@@ -314,7 +314,7 @@
                   <KeyStroke key="F6"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(this,&quot;X_edit_mode&quot;,new Object[]{it.freedomotic.util.I18n.msg(&quot;objects&quot;)})" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(this,&quot;X_edit_mode&quot;,new Object[]{it.freedomotic.util.I18n.I18n.msg(&quot;objects&quot;)})" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -326,7 +326,7 @@
         <Menu class="javax.swing.JMenu" name="jMenu2">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="it.freedomotic.util.I18n.msg(&quot;automations&quot;)" type="code"/>
+              <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;automations&quot;)" type="code"/>
             </Property>
           </Properties>
           <SubComponents>
@@ -336,7 +336,7 @@
                   <KeyStroke key="F7"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;manage&quot;) + it.freedomotic.util.I18n.msg(&quot;automations&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;manage&quot;) + it.freedomotic.util.I18n.I18n.msg(&quot;automations&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -348,7 +348,7 @@
         <Menu class="javax.swing.JMenu" name="jMenu1">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="it.freedomotic.util.I18n.msg(&quot;plugins&quot;)" type="code"/>
+              <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;plugins&quot;)" type="code"/>
             </Property>
           </Properties>
           <SubComponents>
@@ -358,7 +358,7 @@
                   <KeyStroke key="F8"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(this,&quot;install_from_marketplace&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(this,&quot;install_from_marketplace&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -368,7 +368,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuPluginConfigure">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;configure&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;configure&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -380,14 +380,14 @@
         <Menu class="javax.swing.JMenu" name="jMenu5">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="it.freedomotic.util.I18n.msg(&quot;settings&quot;)" type="code"/>
+              <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;settings&quot;)" type="code"/>
             </Property>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="mnuLanguage">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;language&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;language&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -397,7 +397,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuPrivileges">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;privileges&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;privileges&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -409,7 +409,7 @@
         <Menu class="javax.swing.JMenu" name="mnuWindow">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="it.freedomotic.util.I18n.msg(this,&quot;window&quot;)" type="code"/>
+              <Connection code="it.freedomotic.util.I18n.I18n.msg(this,&quot;window&quot;)" type="code"/>
             </Property>
           </Properties>
           <SubComponents>
@@ -419,7 +419,7 @@
                   <KeyStroke key="F9"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(&quot;X_list&quot;,new Object[]{it.freedomotic.util.I18n.msg(&quot;plugins&quot;)})" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;X_list&quot;,new Object[]{it.freedomotic.util.I18n.I18n.msg(&quot;plugins&quot;)})" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -432,7 +432,7 @@
                   <KeyStroke key="F11"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(this,&quot;fullscreen&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(this,&quot;fullscreen&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -444,14 +444,14 @@
         <Menu class="javax.swing.JMenu" name="mnuHelp">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="it.freedomotic.util.I18n.msg(&quot;help&quot;)" type="code"/>
+              <Connection code="it.freedomotic.util.I18n.I18n.msg(&quot;help&quot;)" type="code"/>
             </Property>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="mnuTutorial">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(this,&quot;tutorial&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(this,&quot;tutorial&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -464,7 +464,7 @@
                   <KeyStroke key="F1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="it.freedomotic.util.I18n.msg(this,&quot;about&quot;)" type="code"/>
+                  <Connection code="it.freedomotic.util.I18n.I18n.msg(this,&quot;about&quot;)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -493,7 +493,6 @@
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
-    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <Events>
     <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>

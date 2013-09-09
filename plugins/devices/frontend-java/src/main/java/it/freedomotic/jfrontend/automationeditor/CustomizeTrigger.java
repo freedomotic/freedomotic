@@ -17,7 +17,7 @@ import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
 
-import it.freedomotic.util.I18n;
+import it.freedomotic.util.I18n.I18n;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,15 +37,17 @@ public class CustomizeTrigger
     Trigger original;
     DefaultTableModel model = new DefaultTableModel();
     JTable table;
+    private final I18n I18n;
 
     /**
      * Creates new form CustomizeEvent
      */
-    public CustomizeTrigger(ReactionList main, Trigger t) {
+    public CustomizeTrigger(I18n i18n, ReactionList main, Trigger t) {
+        this.I18n = i18n;
         initComponents();
         this.main = main;
         original = t;
-        this.setTitle(I18n.msg(this,
+        this.setTitle(I18n.msg(
                 "trigger_X_editor",
                 new Object[]{t.getName()}));
         txtName.setText(t.getName());
@@ -54,7 +56,7 @@ public class CustomizeTrigger
         txtSuspTime.setText(Long.toString(t.getSuspensionTime()));
         txtDelay.setText(Integer.toString(t.getDelay()));
         txtMaxExTimes.setText(Long.toString(t.getMaxExecutions()));
-        lblExplanation.setText(I18n.msg(this, "fire_trigger_msg") + ":");
+        lblExplanation.setText(I18n.msg( "fire_trigger_msg") + ":");
 
         if (t.isHardwareLevel() || !t.isToPersist()) {
             btnEdit.setEnabled(false);
@@ -171,7 +173,7 @@ public class CustomizeTrigger
 
         jLabel2.setText( I18n.msg( "description" ) + ":" );
 
-        lblExplanation.setText( I18n.msg( this, "fire_trigger_if_event_msg" ) + ":" );
+        lblExplanation.setText( I18n.msg( "fire_trigger_if_event_msg" ) + ":" );
 
         btnEdit.setText( I18n.msg( "save" ) );
         btnEdit.addActionListener( new java.awt.event.ActionListener(  )
@@ -206,7 +208,7 @@ public class CustomizeTrigger
                 }
             } );
 
-        lblTemplateWarning.setText( I18n.msg( this, "trigger_is_template_msg" ) );
+        lblTemplateWarning.setText( I18n.msg( "trigger_is_template_msg" ) );
 
         jLabel3.setText( I18n.msg( "channel" ) + ":" );
 

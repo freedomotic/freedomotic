@@ -11,6 +11,7 @@ import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
+import it.freedomotic.util.I18n.I18n;
 
 import java.awt.BorderLayout;
 import java.util.Iterator;
@@ -30,16 +31,19 @@ public class ReactionsPanel
     private AutomationsEditor plugin;
     private JPanel panel = new JPanel();
     private JScrollPane scrollPane;
+    private final I18n I18n;
 
     /**
      * Creates new form ReactionList
      */
     public ReactionsPanel(AutomationsEditor plugin) {
         this.plugin = plugin;
+        this.I18n = plugin.getApi().getI18n();
         init(null);
     }
 
-    public ReactionsPanel(EnvObjectLogic obj) {
+    public ReactionsPanel(I18n i18n, EnvObjectLogic obj) {
+        this.I18n = i18n;
         init(obj);
     }
 
@@ -67,7 +71,7 @@ public class ReactionsPanel
 
                 for (Reaction r : ReactionPersistence.getReactions()) {
                     if (r.getTrigger().equals(trigger) && !r.getCommands().isEmpty()) {
-                        ReactionEditor editor = new ReactionEditor(r, this);
+                        ReactionEditor editor = new ReactionEditor(I18n, r, this);
                         panel.add(editor, pos++);
                         found = true;
                     }
@@ -76,7 +80,7 @@ public class ReactionsPanel
                 if (!found) { //add an empty reaction if none
                     pos = panel.getComponentCount();
 
-                    ReactionEditor editor = new ReactionEditor(new Reaction(trigger),
+                    ReactionEditor editor = new ReactionEditor(I18n, new Reaction(trigger),
                             this);
                     panel.add(editor, pos++);
                 }
@@ -117,7 +121,7 @@ public class ReactionsPanel
                     //display already stored reactions related to this objects
                     for (Reaction r : ReactionPersistence.getReactions()) {
                         if (r.getTrigger().equals(trigger)) {
-                            ReactionEditor editor = new ReactionEditor(r, this);
+                            ReactionEditor editor = new ReactionEditor(I18n, r, this);
                             panel.add(editor);
                             alreadyStored = true;
                         }
@@ -125,7 +129,7 @@ public class ReactionsPanel
 
                     if (!alreadyStored) { //add an empty reaction if none
 
-                        ReactionEditor editor = new ReactionEditor(new Reaction(trigger),
+                        ReactionEditor editor = new ReactionEditor(I18n, new Reaction(trigger),
                                 this);
                         panel.add(editor);
                     }

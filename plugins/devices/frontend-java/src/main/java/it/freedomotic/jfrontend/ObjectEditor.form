@@ -190,7 +190,7 @@
                       <Color blue="79" green="79" red="79" type="rgb"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="it.freedomotic.util.I18n.msg(this,&quot;plugins_more_info&quot;)" type="code"/>
+                      <Connection code="it.freedomotic.util.I18n.msg(&quot;plugins_more_info&quot;)" type="code"/>
                     </Property>
                   </Properties>
                 </Component>

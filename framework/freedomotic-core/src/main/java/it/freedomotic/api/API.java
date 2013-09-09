@@ -12,6 +12,7 @@ import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.security.Auth;
+import it.freedomotic.util.I18n.I18n;
 
 import java.awt.image.BufferedImage;
 import java.util.Collection;
@@ -27,6 +28,8 @@ public interface API {
     AppConfig getConfig();
     
     Auth getAuth();
+    
+    I18n getI18n();
 
     //Object API
     //create
