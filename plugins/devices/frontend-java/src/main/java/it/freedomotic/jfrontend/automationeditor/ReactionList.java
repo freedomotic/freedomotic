@@ -15,7 +15,7 @@ import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
-import it.freedomotic.util.I18n;
+import it.freedomotic.util.I18n.I18n;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -38,11 +38,13 @@ public final class ReactionList
 
     private AutomationsEditor plugin;
     private JPanel panel = new JPanel();
+    private final I18n I18n;
 
     /**
      * Creates new form ReactionList
      */
     public ReactionList(AutomationsEditor plugin) {
+        this.I18n = plugin.getApi().getI18n();
         initComponents();
         this.plugin = plugin;
 
@@ -87,7 +89,7 @@ public final class ReactionList
 
                 for (Reaction r : ReactionPersistence.getReactions()) {
                     if (r.getTrigger().equals(trigger)) {
-                        ReactionEditor editor = new ReactionEditor(r, this);
+                        ReactionEditor editor = new ReactionEditor(I18n, r, this);
                         panel.add(editor);
                         found = true;
                     }
@@ -95,7 +97,7 @@ public final class ReactionList
 
                 if (!found) { //add an empty reaction if none
 
-                    ReactionEditor editor = new ReactionEditor(new Reaction(trigger),
+                    ReactionEditor editor = new ReactionEditor(I18n, new Reaction(trigger),
                             this);
                     panel.add(editor);
                 }
@@ -118,7 +120,7 @@ public final class ReactionList
     {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(I18n.msg(this,"current_automations"));
+        setTitle(I18n.msg("current_automations"));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);

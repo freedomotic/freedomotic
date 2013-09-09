@@ -5,7 +5,6 @@
 package it.freedomotic.jfrontend;
 
 import it.freedomotic.api.API;
-import it.freedomotic.util.I18n;
 import it.freedomotic.util.Info;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -25,11 +24,13 @@ import java.util.logging.Logger;
 public class PrivilegesConfiguration extends javax.swing.JFrame {
     
     private File write = new File(Info.getApplicationPath() + File.separator + "config" + File.separator + "security.properties");
+    private final API api;
     /**
         
      * Creates new form PrivilegesConfiguration
      */
     public PrivilegesConfiguration(API api) {
+        this.api = api;
         initComponents();
         txtArea.setContentType("text/xml");
         txtArea.setText(readConfiguration(write));
@@ -97,21 +98,21 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
         txtArea = new javax.swing.JEditorPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(I18n.msg(this, "privilege_management"));
+        setTitle(api.getI18n().msg( "privilege_management"));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
             }
         });
 
-        jButton1.setText(I18n.msg("save"));
+        jButton1.setText(api.getI18n().msg("save"));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText(I18n.msg("cancel"));
+        jButton2.setText(api.getI18n().msg("cancel"));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);

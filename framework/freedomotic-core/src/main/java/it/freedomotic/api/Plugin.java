@@ -30,6 +30,7 @@ import it.freedomotic.events.PluginHasChanged.PluginActions;
 import it.freedomotic.model.ds.Config;
 
 import it.freedomotic.util.EqualsUtil;
+import it.freedomotic.util.I18n.I18n;
 import it.freedomotic.util.Info;
 
 import java.io.*;
@@ -65,7 +66,7 @@ public class Plugin
     public Plugin(String pluginName, String manifestPath) {
         setName(pluginName);
         path = new File(Info.getDevicesPath() + manifestPath);
-        init(path);
+        init(path);        
     }
 
     public Plugin(String pluginName, Config manifest) {
@@ -238,6 +239,7 @@ public class Plugin
         }
 
         init(configuration);
+        
     }
 
     private void init(Config configuration) {
@@ -248,6 +250,7 @@ public class Plugin
         shortName = configuration.getStringProperty("short-name", "undefined");
         listenOn = configuration.getStringProperty("listen-on", "undefined");
         sendOn = configuration.getStringProperty("send-on", "undefined");
+        
     }
 
     protected void onShowGui() {
@@ -270,7 +273,7 @@ public class Plugin
     public String toString() {
         return getName();
     }
-
+    
     protected void loadPermissionsFromManifest() {
         getApi().getAuth().setPluginPrivileges(this, configuration.getStringProperty("permissions", getApi().getAuth().getPluginDefaultPermission()));
     }

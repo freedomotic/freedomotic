@@ -55,7 +55,7 @@ public class LogViewer
 
     @Override
     protected void onStart() {
-        handler = LogWindowHandler.getInstance();
+        handler = LogWindowHandler.getInstance(getApi().getI18n());
         handler.setFilter(new Filter() {
             public boolean isLoggable(LogRecord record) {
                 //logs every message

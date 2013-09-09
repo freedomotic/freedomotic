@@ -26,7 +26,8 @@ import it.freedomotic.plugins.filesystem.PluginsManager;
 import it.freedomotic.plugins.filesystem.PluginsManagerImpl;
 import it.freedomotic.security.Auth;
 import it.freedomotic.security.AuthImpl;
-import it.freedomotic.util.I18n;
+import it.freedomotic.util.I18n.I18n;
+import it.freedomotic.util.I18n.I18nImpl;
 
 /**
  *
@@ -51,6 +52,7 @@ public class DependenciesInjector
         
         bind(Auth.class).to(AuthImpl.class).in(Singleton.class);
         
-        requestStaticInjection(I18n.class);
+        bind(I18n.class).to(I18nImpl.class).in(Singleton.class);
+        //requestStaticInjection(I18n.class);
     }
 }

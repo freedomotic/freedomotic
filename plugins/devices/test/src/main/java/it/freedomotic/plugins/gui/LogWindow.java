@@ -22,7 +22,7 @@
 
 package it.freedomotic.plugins.gui;
 
-import it.freedomotic.util.I18n;
+import it.freedomotic.util.I18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -56,9 +56,11 @@ public class LogWindow extends JFrame {
     JTextPane areaDetail = new JTextPane();
     JToggleButton btnStop = new JToggleButton();
     private final Handler handler;
+    private final I18n I18n;
 
-    public LogWindow(final Handler handler) {
+    public LogWindow(I18n i18n, final Handler handler) {
         super("Log Window");
+        this.I18n = i18n;
         this.handler = handler;
         setSize(600, 400);
         this.setLayout(new BorderLayout());

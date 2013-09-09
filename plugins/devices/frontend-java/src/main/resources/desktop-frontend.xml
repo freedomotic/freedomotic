@@ -9,5 +9,6 @@
         <property name="startup-time"                   value="on load"/>
         <property name="automatic-reply-to-commands"    value="false"/>
         <property name="show.tips"                      value="true"/>
+        <property name="enable-i18n"                    value="true"/>
     </properties>
 </config>

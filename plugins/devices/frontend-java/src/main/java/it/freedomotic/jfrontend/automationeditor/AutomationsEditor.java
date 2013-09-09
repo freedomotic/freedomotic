@@ -13,7 +13,7 @@ import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
 
-import it.freedomotic.util.I18n;
+import it.freedomotic.util.I18n.I18n;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -42,13 +42,13 @@ public class AutomationsEditor
         if (c.getProperty("editor").equalsIgnoreCase("command")) {
             Command command = CommandPersistence.getCommand(c.getProperty("editable"));
             ReactionList reactionList = new ReactionList(this);
-            CustomizeCommand cc = new CustomizeCommand(reactionList, command);
+            CustomizeCommand cc = new CustomizeCommand(getApi().getI18n(), reactionList, command);
             cc.setVisible(true);
         } else {
             if (c.getProperty("editor").equalsIgnoreCase("trigger")) {
                 Trigger trigger = TriggerPersistence.getTrigger(c.getProperty("editable"));
                 ReactionList reactionList = new ReactionList(this);
-                CustomizeTrigger ct = new CustomizeTrigger(reactionList, trigger);
+                CustomizeTrigger ct = new CustomizeTrigger(getApi().getI18n(), reactionList, trigger);
                 ct.setVisible(true);
             }
         }
@@ -61,13 +61,13 @@ public class AutomationsEditor
     @Override
     public void onShowGui() {
         final JFrame frame = new JFrame();
-        frame.setTitle(I18n.msg("manage") + I18n.msg("automations"));
+        frame.setTitle(getApi().getI18n().msg("manage") + getApi().getI18n().msg("automations"));
         frame.setPreferredSize(new Dimension(700, 600));
 
         final ReactionsPanel panel = new ReactionsPanel(this);
         frame.setContentPane(panel);
 
-        JButton ok = new JButton(I18n.msg("ok"));
+        JButton ok = new JButton(getApi().getI18n().msg("ok"));
         ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (Component component : panel.getPanel().getComponents()) {

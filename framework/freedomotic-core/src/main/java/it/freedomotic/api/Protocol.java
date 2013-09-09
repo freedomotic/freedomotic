@@ -34,6 +34,7 @@ import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.exceptions.UnableToExecuteException;
 
 import it.freedomotic.reactions.Command;
+import it.freedomotic.util.I18n.I18n;
 
 
 import java.io.IOException;
@@ -124,6 +125,9 @@ public abstract class Protocol
 
     @Override
     public void start() {
+        if (configuration.getBooleanProperty("enable-i18n", false)){
+            getApi().getI18n().registerPluginBundleDir(this);
+        }
         if (!isRunning) {
             Runnable action = new Runnable() {
                 @Override

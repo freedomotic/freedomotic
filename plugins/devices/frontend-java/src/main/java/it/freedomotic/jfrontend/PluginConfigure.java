@@ -10,7 +10,7 @@ import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.plugins.filesystem.PluginsManager;
-import it.freedomotic.util.I18n;
+import it.freedomotic.util.I18n.I18n;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,7 +37,8 @@ public class PluginConfigure
         extends javax.swing.JFrame {
 
     private ClientStorage clients; 
-    private API api;
+    private final API api;
+    private final I18n I18n;
     
     @Inject
     private PluginsManager pluginsManager;
@@ -48,6 +49,7 @@ public class PluginConfigure
      */
     public PluginConfigure(API api) {
         this.api=api;
+        this.I18n = api.getI18n();
         this.clients = api.getClientStorage();
         initComponents();
         populatePluginsList();
@@ -146,85 +148,77 @@ public class PluginConfigure
      */
     @SuppressWarnings( "unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents(  )
-    {
-        cmbPlugin = new javax.swing.JComboBox(  );
-        btnSave = new javax.swing.JButton(  );
-        btnCancel = new javax.swing.JButton(  );
-        jScrollPane2 = new javax.swing.JScrollPane(  );
-        txtArea = new javax.swing.JEditorPane(  );
-        btnDefault = new javax.swing.JButton(  );
+    private void initComponents() {
 
-        setDefaultCloseOperation( javax.swing.WindowConstants.DISPOSE_ON_CLOSE );
-        setTitle( I18n.msg( this, "plugins_configuration_editor" ) );
+        cmbPlugin = new javax.swing.JComboBox();
+        btnSave = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtArea = new javax.swing.JEditorPane();
+        btnDefault = new javax.swing.JButton();
 
-        btnSave.setText( I18n.msg( "save" ) );
-        btnSave.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnSaveActionPerformed( evt );
-                }
-            } );
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle(api.getI18n().msg("plugins_configuration_editor"));
 
-        btnCancel.setText( I18n.msg( "cancel" ) );
-        btnCancel.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnCancelActionPerformed( evt );
-                }
-            } );
+        btnSave.setText(I18n.msg("save"));
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
-        jScrollPane2.setViewportView( txtArea );
+        btnCancel.setText(I18n.msg("cancel"));
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
 
-        btnDefault.setText( I18n.msg( "restore_default" ) );
-        btnDefault.setEnabled( false );
-        btnDefault.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnDefaultActionPerformed( evt );
-                }
-            } );
+        jScrollPane2.setViewportView(txtArea);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout( getContentPane(  ) );
-        getContentPane(  ).setLayout( layout );
-        layout.setHorizontalGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                                         .addGroup( layout.createSequentialGroup(  ).addContainerGap(  )
-                                                          .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                                                                           .addComponent( cmbPlugin,
-                                                                                          javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                          0,
-                                                                                          javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                          Short.MAX_VALUE )
-                                                                           .addComponent( jScrollPane2 )
-                                                                           .addGroup( layout.createSequentialGroup(  )
-                                                                                            .addComponent( btnSave )
-                                                                                            .addPreferredGap( javax.swing.LayoutStyle.ComponentPlacement.RELATED )
-                                                                                            .addComponent( btnCancel )
-                                                                                            .addPreferredGap( javax.swing.LayoutStyle.ComponentPlacement.RELATED )
-                                                                                            .addComponent( btnDefault )
-                                                                                            .addGap( 0, 0,
-                                                                                                     Short.MAX_VALUE ) ) )
-                                                          .addContainerGap(  ) ) );
-        layout.setVerticalGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                                       .addGroup( layout.createSequentialGroup(  ).addContainerGap(  )
-                                                        .addComponent( cmbPlugin,
-                                                                       javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                       javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                       javax.swing.GroupLayout.PREFERRED_SIZE )
-                                                        .addPreferredGap( javax.swing.LayoutStyle.ComponentPlacement.RELATED )
-                                                        .addComponent( jScrollPane2,
-                                                                       javax.swing.GroupLayout.PREFERRED_SIZE, 390,
-                                                                       javax.swing.GroupLayout.PREFERRED_SIZE )
-                                                        .addGap( 18, 18, 18 )
-                                                        .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.BASELINE )
-                                                                         .addComponent( btnSave ).addComponent( btnCancel )
-                                                                         .addComponent( btnDefault ) ).addContainerGap(  ) ) );
+        btnDefault.setText(I18n.msg("restore_default"));
+        btnDefault.setEnabled(false);
+        btnDefault.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDefaultActionPerformed(evt);
+            }
+        });
 
-        pack(  );
-    } // </editor-fold>//GEN-END:initComponents
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cmbPlugin, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDefault)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(cmbPlugin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSave)
+                    .addComponent(btnCancel)
+                    .addComponent(btnDefault))
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnCancelActionPerformed
         this.dispose();
@@ -254,7 +248,7 @@ public class PluginConfigure
                 pluginsManager.loadSingleBoundle(item.getFile().getParentFile());
                 clients.get(name).start();
                 JOptionPane.showMessageDialog(this,
-                        I18n.msg(this,"warn_reset_old_config"));
+                        I18n.msg("warn_reset_old_config"));
             } else {
                 this.dispose();
             }
@@ -266,14 +260,12 @@ public class PluginConfigure
     private void btnDefaultActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnDefaultActionPerformed
         rollbackConfiguration();
     }//GEN-LAST:event_btnDefaultActionPerformed
-      // Variables declaration - do not modify//GEN-BEGIN:variables
-
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnDefault;
     private javax.swing.JButton btnSave;
     private javax.swing.JComboBox cmbPlugin;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JEditorPane txtArea;
-
     // End of variables declaration//GEN-END:variables
 }

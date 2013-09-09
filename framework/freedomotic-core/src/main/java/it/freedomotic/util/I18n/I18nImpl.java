@@ -17,12 +17,13 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package it.freedomotic.util;
+package it.freedomotic.util.I18n;
 
 import com.google.inject.Inject;
-import it.freedomotic.app.Freedomotic;
+import com.google.inject.Singleton;
+import it.freedomotic.api.Plugin;
 import it.freedomotic.app.AppConfig;
-
+import it.freedomotic.util.Info;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -37,109 +38,138 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public class I18n {
+@Singleton
+public class I18nImpl implements I18n {
 
-    private static Locale currentLocale = Locale.getDefault();
-    private static HashMap<String, ResourceBundle> messages = new HashMap<String, ResourceBundle>();
-    private static UTF8control RB_Control = new UTF8control();
-    private static Vector<ComboLanguage> languages = new Vector<ComboLanguage>();
+    private Locale currentLocale;
+    private HashMap<String, ResourceBundle> messages;
+    private UTF8control RB_Control;
+    private static Vector<ComboLanguage> languages;
+    private final AppConfig config;
+    private HashMap<String, File> packageBundleDir;
+
     @Inject
-    static AppConfig config;
-
-    private I18n() {
+    public I18nImpl(AppConfig config) {
+        this.config = config;
+        currentLocale = Locale.getDefault();
+        messages = new HashMap<String, ResourceBundle>();
+        RB_Control = new UTF8control();
+        languages = new Vector<ComboLanguage>();
+        packageBundleDir = new HashMap<String, File>();
+        // add mapping for base strings
+        packageBundleDir.put("it.freedomotic", new File(Info.getApplicationPath() + "/i18n"));
     }
 
     /*
      * For Freedomotic core: translations are inside /i18n/Freedomotic.properties
      * For Plugin: translations are inside plugins/_plugin_type_/_plugin_package_/i18n/_package_last_part_.properties
      */
-    public static String msg(Object obj, String key, Object[] fields) {
-        String bundleName = "Freedomotic";
+    protected String msg(String packageName, String key, Object[] fields) {
+        // scorri packageNamefino a trovarne uno presente in packageBundleDir
+
         File folder = null;
+        String workingPackage = packageName;
+        while (workingPackage.lastIndexOf('.') != -1) {
+            folder = packageBundleDir.get(workingPackage);
+            if (folder == null) {
+                workingPackage = workingPackage.substring(0, workingPackage.lastIndexOf('.'));
+            } else {
+                // prova ad estrarre la stringa, altrimenti esci dal ciclo e cerca nelle traduzioni base
+                String value = msg(folder, workingPackage, key, fields, true);
+                if (value != null) {
+                    return value;
+                }
+                break;
+            }
+        }
+        if (folder == null) {
+            folder = packageBundleDir.get("it.freedomotic");
+        }
+        return msg(folder, "it.freedomotic", key, fields, false);
+    }
+
+    private String msg(File folder, String packageName, String key, Object[] fields, boolean reThrow) {
+        // estrai locale corrente
+
         if (currentLocale == null) {
             return key;
         }
         String loc = currentLocale.toString(); //currentLocale.getLanguage() + "_" + currentLocale.getCountry();
-        if (obj != null) {
-            bundleName = obj.getClass().getPackage().getName();
-        }
-        if (!messages.containsKey(bundleName + ":" + loc)) {
-            String superBundleName = bundleName.lastIndexOf('.') == -1 ? bundleName : bundleName.substring(0, bundleName.lastIndexOf('.'));
-            if (!messages.containsKey(superBundleName + ":" + loc)) {
-                try {
-                    if (obj != null) {
-                        folder = new File(Info.getApplicationPath() + File.separator + "plugins" + File.separator + "devices" + File.separator + bundleName + File.separator + "data" + File.separator + "i18n");
-                    } else {
-                        folder = new File(Info.getApplicationPath() + File.separator + "i18n");
-                    }
 
-                    ClassLoader loader;
-                    URL[] urls = {folder.toURI().toURL()};
-                    loader = new URLClassLoader(urls);
+        // cerca in messages (ed eventualmente aggiungi) la risorsa per il package e la lingua
 
-                    String fileName = bundleName;
-                    int lastSize = bundleName.split("\\.").length;
-                    fileName = bundleName.split("\\.")[lastSize - 1];
+        if (!messages.containsKey(packageName + ":" + loc)) {
+            try {
 
-                    messages.put(bundleName + ":" + loc, ResourceBundle.getBundle(fileName, currentLocale, loader, RB_Control));
-                    LOG.info("Adding resourceBundle: package=" + bundleName + ", locale=" + loc + ". pointing at " + folder.getAbsolutePath());
-                } catch (MalformedURLException ex) {
-                    LOG.severe("Cannot find folderwhile loading resourceBundle for package" + bundleName);
-                } catch (MissingResourceException ex) {
-                    LOG.severe("Cannot find resourceBundle files inside folder for package" + bundleName);
-                }
-            } else {
-                bundleName = superBundleName;
+                ClassLoader loader;
+                URL[] urls = {folder.toURI().toURL()};
+                loader = new URLClassLoader(urls);
+
+                int lastSize = packageName.split("\\.").length;
+                String baseName = packageName.split("\\.")[lastSize - 1];
+
+                messages.put(packageName + ":" + loc, ResourceBundle.getBundle(baseName, currentLocale, loader, RB_Control));
+                LOG.log(Level.INFO, "Adding resourceBundle: package={0}, locale={1}. pointing at {2}", new Object[]{packageName, loc, folder.getAbsolutePath()});
+            } catch (MalformedURLException ex) {
+                LOG.log(Level.SEVERE, "Cannot find folder while loading resourceBundle for package{0}", packageName);
+            } catch (MissingResourceException ex) {
+                LOG.log(Level.SEVERE, "Cannot find resourceBundle files inside folder {1} for package{0}", new Object[]{packageName, folder.getAbsolutePath()});
             }
         }
-        if (messages.containsKey(bundleName + ":" + loc)) {
+
+        // estrai stringa
+
+        if (messages.containsKey(packageName + ":" + loc)) {
             try {
-                if (messages.get(bundleName + ":" + loc).containsKey(key)) {
-                    return java.text.MessageFormat.format(messages.get(bundleName + ":" + loc).getString(key), fields) + " ";
+                if (messages.get(packageName + ":" + loc).containsKey(key)) {
+                    return java.text.MessageFormat.format(messages.get(packageName + ":" + loc).getString(key), fields) + " ";
+                } else {
+                    if (reThrow) {
+                        return null;
+                    }
                 }
             } catch (MissingResourceException ex) {
-                LOG.severe("Cannot find resourceBundle files inside folder for package" + bundleName);
+                LOG.log(Level.SEVERE, "Cannot find resourceBundle files inside folder {0} for package{1}", new Object[]{folder.getAbsolutePath(), packageName});
             }
         }
-
         return key;
     }
 
-    public static String msg(String key) {
-        return msg(null, key, null);
+    @Override
+    public String msg(String key) {
+        String caller = sun.reflect.Reflection.getCallerClass().getPackage().getName();
+        return msg(caller, key, null);
     }
 
-    public static String msg(String key, Object[] fields) {
-        return msg(null, key, fields);
+    @Override
+    public String msg(String key, Object[] fields) {
+        String caller = sun.reflect.Reflection.getCallerClass().getPackage().getName();
+        return msg(caller, key, fields);
     }
 
-    public static String msg(String key, String field) {
-        return msg(null,
-                key,
-                new Object[]{field});
-    }
-
-    public static String msg(Object obj, String key) {
-        if (obj instanceof String) {
-            return msg((String) obj, key);
-        } else {
-            return msg(obj, key, null);
+    private void registerBundleDir(String packageName, File path) {
+        if (!packageBundleDir.containsKey(packageName)) {
+            packageBundleDir.put(packageName, path);
         }
+    }
+
+    @Override
+    public void registerPluginBundleDir(Plugin plug) {
+        registerBundleDir(plug.getClass().getPackage().getName(), new File(plug.getFile().getParentFile() + "/data/i18n"));
     }
 
     /**
      *
      */
-    protected static class UTF8control
+    protected class UTF8control
             extends ResourceBundle.Control {
 
         protected static final String BUNDLE_EXTENSION = "properties";
@@ -182,7 +212,8 @@ public class I18n {
         }
     }
 
-    public static void setDefaultLocale(String loc) {
+    @Override
+    public void setDefaultLocale(String loc) {
         //if (loc.equals("no") || loc.equals("false")){
         currentLocale = null;
         if (loc == null || loc.isEmpty() || loc.equals("auto") || loc.equals("yes") || loc.equals("true")) {
@@ -196,11 +227,13 @@ public class I18n {
 
     // should be replaced by user specific Locale
     @Deprecated
-    public static String getDefaultLocale() {
+    @Override
+    public String getDefaultLocale() {
         return currentLocale.toString();
     }
 
-    public static Vector<ComboLanguage> getAvailableLocales() {
+    @Override
+    public Vector<ComboLanguage> getAvailableLocales() {
         final String bundlename = "Freedomotic";
         languages.clear();
         File root = new File(Info.getApplicationPath() + File.separator + "i18n");
@@ -222,26 +255,6 @@ public class I18n {
         }
         languages.add(new ComboLanguage("Automatic", "auto"));
         return languages;
-    }
-
-    public static class ComboLanguage {
-
-        private String descr;
-        private String value;
-
-        ComboLanguage(String descr, String value) {
-            this.descr = descr;
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return descr;
-        }
-
-        public String getValue() {
-            return value;
-        }
     }
     private static final Logger LOG = Logger.getLogger(I18n.class.getName());
 }

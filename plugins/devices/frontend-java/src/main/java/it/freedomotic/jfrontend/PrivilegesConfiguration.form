@@ -4,7 +4,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="title" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-      <Connection code="it.freedomotic.util.I18n.msg(this, &quot;privilege_management&quot;)" type="code"/>
+      <Connection code="api.getI18n().msg(this, &quot;privilege_management&quot;)" type="code"/>
     </Property>
   </Properties>
   <SyntheticProperties>
@@ -61,7 +61,7 @@
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="it.freedomotic.util.I18n.msg(&quot;save&quot;)" type="code"/>
+          <Connection code="api.getI18n().msg(&quot;save&quot;)" type="code"/>
         </Property>
       </Properties>
       <Events>
@@ -71,7 +71,7 @@
     <Component class="javax.swing.JButton" name="jButton2">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="it.freedomotic.util.I18n.msg(&quot;cancel&quot;)" type="code"/>
+          <Connection code="api.getI18n().msg(&quot;cancel&quot;)" type="code"/>
         </Property>
       </Properties>
       <Events>

@@ -11,6 +11,7 @@ import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
+import it.freedomotic.util.I18n.I18n;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -35,18 +36,20 @@ public class ReactionEditor
     private ArrayList<GuessCommandBox> list = new ArrayList<GuessCommandBox>();
     private Box cmdBox = Box.createVerticalBox();
     private Component parent = null;
-
+    private final I18n I18n;
     /**
      * Creates new form ReactionEditor
      */
-    public ReactionEditor(Reaction reaction, Component parent) {
+    public ReactionEditor(I18n i18n, Reaction reaction, Component parent) {
+        this.I18n = i18n;
         initComponents();
         this.reaction = reaction;
         this.parent = parent;
         init();
     }
 
-    public ReactionEditor() {
+    public ReactionEditor(I18n i18n) {
+        this.I18n = i18n;
         initComponents();
         this.reaction = new Reaction();
         init();
@@ -92,7 +95,7 @@ public class ReactionEditor
         int i = 0;
 
         for (Command command : reaction.getCommands()) {
-            GuessCommandBox box = new GuessCommandBox(this, command);
+            GuessCommandBox box = new GuessCommandBox(I18n, this, command);
 
             addBox(box);
         }
@@ -102,7 +105,7 @@ public class ReactionEditor
     }
 
     private void addEmptyBox() {
-        GuessCommandBox emptyBox = new GuessCommandBox(this);
+        GuessCommandBox emptyBox = new GuessCommandBox(I18n, this);
         addBox(emptyBox);
         this.validate();
         this.parent.validate();
