@@ -1,7 +1,25 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team
+ * http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This Program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Freedomotic; see the file COPYING.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
+
 package it.bcs33.onewire;
 
 import com.dalsemi.onewire.OneWireAccessProvider;
@@ -17,29 +35,20 @@ import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import java.io.BufferedReader;
-//import java.io.BufferedReader;
-//import java.io.BufferedOutputStream;
-//import java.io.DataOutputStream;
 import java.io.IOException;
-//import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
-
-//import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.w3c.dom.DOMException;
-//import org.w3c.dom.Document;
-//import org.w3c.dom.Node;
-//import org.w3c.dom.NodeList;
 
 /**
  *
  * @author ciro.barbone
  */
-public class onewire extends Protocol {
+
+public class OneWire extends Protocol {
     //private static devices;
 
     private static ArrayList<PortAdapter> portAdapters = null;
@@ -55,9 +64,9 @@ public class onewire extends Protocol {
     private byte[] state;
     //private PortAdapter portAdapter;
 
-    public onewire() {
+    public OneWire() {
         //every plugin needs a name and a manifest XML file
-        super("onewire", "/it.bcs33.onewire/onewire-manifest.xml");
+        super("onewire", "/onewire/onewire-manifest.xml");
         //read a property from the manifest file below which is in
         //FREEDOMOTIC_FOLDER/plugins/devices/it.freedomotic.hello/hello-world.xml
         POLLING_WAIT = configuration.getIntProperty("time-between-reads", 2000);
@@ -170,7 +179,7 @@ public class onewire extends Protocol {
 
     @Override
     protected void onRun() {
-        Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, "onewire onRun ");
+        Logger.getLogger(OneWire.class.getName()).log(Level.SEVERE, null, "onewire onRun ");
         /* try
          {
          portAdattatore.checkDeviceListAndEvaluateDiffs();
@@ -185,7 +194,7 @@ public class onewire extends Protocol {
             //evaluateDiffs(portAdapter); //parses the xml and crosscheck the data with the previous read
             //Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, "dentro adapter onRun ");
             try {
-                Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, "checkDeviceListAndEvaluateDiffs ");
+                Logger.getLogger(OneWire.class.getName()).log(Level.SEVERE, null, "checkDeviceListAndEvaluateDiffs ");
 
                 double value;
                 if (portAdapter != null) {
@@ -212,14 +221,14 @@ public class onewire extends Protocol {
                     }
                 }
             } catch (Exception e) {
-                Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(OneWire.class.getName()).log(Level.SEVERE, null, e);
             }
 
         }
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
-            Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OneWire.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         //at the end of this method the system waits POLLINGTIME 
