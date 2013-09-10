@@ -1,19 +1,36 @@
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
 package it.freedomotic.plugins.devices.hello;
 
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
-
 import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.exceptions.UnableToExecuteException;
-
 import it.freedomotic.reactions.Command;
-
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class HelloWorld
         extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(HelloWorld.class.getName());
     final int POLLING_WAIT;
 
     public HelloWorld() {
@@ -46,7 +63,7 @@ public class HelloWorld
 
     @Override
     protected void onRun() {
-        Freedomotic.logger.info("HelloWorld onRun() logs this message every " + "POLLINGWAIT=" + POLLING_WAIT
+        LOG.info("HelloWorld onRun() logs this message every " + "POLLINGWAIT=" + POLLING_WAIT
                 + "milliseconds");
 
         //at the end of this method the system waits POLLINGTIME 
@@ -56,18 +73,18 @@ public class HelloWorld
 
     @Override
     protected void onStart() {
-        Freedomotic.logger.info("HelloWorld plugin is started");
+        LOG.info("HelloWorld plugin is started");
     }
 
     @Override
     protected void onStop() {
-        Freedomotic.logger.info("HelloWorld plugin is stopped ");
+        LOG.info("HelloWorld plugin is stopped ");
     }
 
     @Override
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
-        Freedomotic.logger.info("HelloWorld plugin receives a command called " + c.getName() + " with parameters "
+        LOG.info("HelloWorld plugin receives a command called " + c.getName() + " with parameters "
                 + c.getProperties().toString());
     }
 
