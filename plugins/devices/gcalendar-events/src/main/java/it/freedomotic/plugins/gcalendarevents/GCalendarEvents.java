@@ -1,26 +1,29 @@
-/*
- Copyright FILE Enrico Nicoletti, 2012-2013
-
- This file is part of FREEDOMOTIC.
-
- FREEDOMOTIC is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- FREEDOMOTIC is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team
+ * http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This Program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Freedomotic; see the file COPYING.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
+
 package it.freedomotic.plugins.gcalendarevents;
 
 import com.google.gdata.client.calendar.*;
 import com.google.gdata.data.DateTime;
-
 import com.google.gdata.data.calendar.*;
 import com.google.gdata.util.*;
 import it.freedomotic.api.EventTemplate;
@@ -44,10 +47,12 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-public class GCalendarEvents extends Protocol {
 
+public class GCalendarEvents extends Protocol {
+    private static final Logger LOG = Logger.getLogger(GCalendarEvents.class.getName()); 
+    
     public GCalendarEvents() {
-        super("Google Calendar UI", "/it.freedomotic.gcalendarevents/gcalendarevents-manifest.xml");
+        super("Google Calendar UI", "/gcalendarevents/gcalendarevents-manifest.xml");
     }
 
     @Override
@@ -60,7 +65,7 @@ public class GCalendarEvents extends Protocol {
         try {
             String calendarID = configuration.getStringProperty("calendar-id", "");
             URL feedUrl = new URL("https://www.google.com/calendar/feeds/" + calendarID + "/public/full");
-            Freedomotic.logger.info("Synch today events from google calendar " + feedUrl.toString());
+            LOG.info("Synch today events from google calendar " + feedUrl.toString());
 
             CalendarQuery myQuery = new CalendarQuery(feedUrl);
             Date startToday = new Date();
@@ -79,7 +84,7 @@ public class GCalendarEvents extends Protocol {
             // Send the request and receive the response:
             CalendarEventFeed resultFeed = gcalendar.query(myQuery, CalendarEventFeed.class);
             for (CalendarEventEntry entry : resultFeed.getEntries()) {
-                Freedomotic.logger.info(
+                LOG.info(
                         "Readed gcalendar event '" + entry.getTitle().getPlainText() + "' @"
                         + entry.getTimes().get(0).getStartTime().toUiString());
                 Trigger t = new Trigger();
