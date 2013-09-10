@@ -1,6 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package it.bcs33.onewire;
 
@@ -17,12 +32,9 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author windows
- */
 public class PortAdapter {
 
+    private static final Logger LOG = Logger.getLogger(PortAdapter.class.getName());
     private static String adapterName = null;
     private static String portName = null;
     //private int indexDevice=0;
@@ -40,7 +52,7 @@ public class PortAdapter {
         try {
             connect();
         } catch (Exception e) {
-            Logger.getLogger(onewire.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(OneWire.class.getName()).log(Level.SEVERE, null, e);
 
         }
     }
@@ -66,22 +78,18 @@ public class PortAdapter {
             isTempContainer = false;   //just to reiterate
         }
         if (isTempContainer) {
-            //Freedomotic.logger.info("= This device is a " + owc.getName());
-            //Freedomotic.logger.info("= Also known as a "  + owc.getAlternateNames());
-            //Freedomotic.logger.info("= It is a Temperature Container");
+            //LOG.info("= This device is a " + owc.getName());
+            //LOG.info("= Also known as a "  + owc.getAlternateNames());
+            //LOG.info("= It is a Temperature Container");
             byte[] state = tc.readDevice();
             tc.doTemperatureConvert(state);
             temperature = tc.getTemperature(state);
-            //Freedomotic.logger.info("= Reported temperature: " + temperature);
+            //LOG.info("= Reported temperature: " + temperature);
         }
-        /*          
-         if (owc.hashCode()!=oneWireContainer.hashCode()){
-         Freedomotic.logger.info("Object  is changed ");
-         changed=true;
-         }
-         else{
-         Freedomotic.logger.info("Object  is not changed ");
-         }
+        /*
+         * if (owc.hashCode()!=oneWireContainer.hashCode()){ LOG.info("Object is
+         * changed "); changed=true; } else{ LOG.info("Object is not changed ");
+         * }
          */
 
         if (devicesOneWire == null) {
@@ -89,14 +97,14 @@ public class PortAdapter {
         }
         for (DeviceOneWire device : devicesOneWire) {
 
-            //Freedomotic.logger.info("--->List elements owc " + device.getAddress() + " Element present " + oneWireContainer.getAddressAsString());
+            //LOG.info("--->List elements owc " + device.getAddress() + " Element present " + oneWireContainer.getAddressAsString());
             strCheck = device.getAddress();
             if (strCheck.compareTo(strFind) == 0) {
-                //Freedomotic.logger.info("find " + oneWireContainer.getAddressAsString() + " in ArrayList");
+                //LOG.info("find " + oneWireContainer.getAddressAsString() + " in ArrayList");
                 // check different
                 if (isTempContainer) {
                     if (temperature != device.getValue()) {
-                        //Freedomotic.logger.warning("Device Changed old value:" + device.getValue() + " new value:" + temperature);
+                        //LOG.warning("Device Changed old value:" + device.getValue() + " new value:" + temperature);
                         device.setValue(temperature);
                         device.setChanged(true);
 
@@ -120,7 +128,7 @@ public class PortAdapter {
             //temp.setAddress(strFind);
 
             devicesOneWire.add(temp);
-            //Freedomotic.logger.warning("Object " + temp.getAddress() + " is add ");
+            //LOG.warning("Object " + temp.getAddress() + " is add ");
             changed = true;
         }
 
@@ -134,27 +142,21 @@ public class PortAdapter {
         try {
             dsDevice = OneWireAccessProvider.getAdapter(adapterName, portName);
         } catch (Exception e) {
-            Freedomotic.logger.severe("That is not a valid adapter/port combination.");
+            LOG.severe("That is not a valid adapter/port combination.");
             Enumeration en = OneWireAccessProvider.enumerateAllAdapters();
-
             while (en.hasMoreElements()) {
                 DSPortAdapter temp = (DSPortAdapter) en.nextElement();
-
                 //System.out.println("Adapter: " + temp.getAdapterName());
-                Freedomotic.logger.info("Adapter: " + temp.getAdapterName());
+                LOG.info("Adapter: " + temp.getAdapterName());
                 Enumeration f = temp.getPortNames();
-
                 while (f.hasMoreElements()) {
                     //System.out.println("   Port name : "                 + (( String ) f.nextElement()));
-                    Freedomotic.logger.info("   Port name : " + ((String) f.nextElement()));
+                    LOG.info("   Port name : " + ((String) f.nextElement()));
                 }
             }
-
             return false;
         }
-
-        Freedomotic.logger.info(" OK connect to OneWire on address name " + adapterName + " : Port name " + portName);
-
+        LOG.info(" OK connect to OneWire on address name " + adapterName + " : Port name " + portName);
         return true;
     }
 
@@ -164,37 +166,28 @@ public class PortAdapter {
         try {
             next = dsDevice.findFirstDevice();
         } catch (Exception e) {
-            Freedomotic.logger.severe("= Could not find First Device...");
+            LOG.severe("= Could not find First Device...");
             return false;
         }
-
         if (!next) {
-            Freedomotic.logger.severe("Could not find any iButtons!");
+            LOG.severe("Could not find any iButtons!");
             return false;
         }
-
         while (next) {
-
             OneWireContainer owc = dsDevice.getDeviceContainer();
-
-
             if (checkOneWireContainer(owc)) {
-                Freedomotic.logger.info("= This container " + owc.getAddressAsString() + " is changed ");
+                LOG.info("= This container " + owc.getAddressAsString() + " is changed ");
             } else {
-                //Freedomotic.logger.info("= This container isn't changed ");
+                //LOG.info("= This container isn't changed ");
             }
             next = dsDevice.findNextDevice();
-
         }
-
         return true;
-
     }
 
     public void getListDevice() {
         for (DeviceOneWire device : devicesOneWire) {
-            Freedomotic.logger.info("-List elements owc " + device.getAddress());
-
+            LOG.info("-List elements owc " + device.getAddress());
         }
     }
 
@@ -225,64 +218,53 @@ public class PortAdapter {
     public void setValue(double value) {
         this.value = value;
     }
-    /*public int getIndexDevice() {
-     return indexDevice;
-     }*/
-
-    /* public void setIndexDevice(int indexDevice) {
-     this.indexDevice = indexDevice;
-     }*/
     /*
-     //System.out.println(
-     //   "====================================================");
-     //System.out.println("= Found One Wire DeviceOneWire: "
-     //                   + owc.getAddressAsString() + "          =");
-     //System.out.println(
-     //   "====================================================");
-     //System.out.println("=");
-     Freedomotic.logger.info("Found One Wire DeviceOneWire: " + owc.getAddressAsString());
-        
-     boolean              isTempContainer = false;
-     TemperatureContainer tc              = null;
-
-     DSPortAdapter
-
-     if (isTempContainer)
-     {
-     Freedomotic.logger.info("= This device is a " + owc.getName());
-     Freedomotic.logger.info("= Also known as a " + owc.getAlternateNames());
-     Freedomotic.logger.info("= It is a Temperature Container");
-
-     double  max       = tc.getMaxTemperature();
-     double  min       = tc.getMinTemperature();
-     boolean hasAlarms = tc.hasTemperatureAlarms();
-
-     Freedomotic.logger.info("= This device " + (hasAlarms ? "has"
-     : "does not have") + " alarms");
-     Freedomotic.logger.info("= Maximum temperature: " + max);
-     Freedomotic.logger.info("= Minimum temperature: " + min);
-
-            
-     double temp= 0.0;
-     try
-     {
-     byte[] state = tc.readDevice();
-     temp = tc.getTemperature(state);
-     //device.setValue(temp);
-                
+     * public int getIndexDevice() { return indexDevice;
      }
-     catch (Exception e)
-     {
-     Freedomotic.logger.severe("= Could not read DeviceOneWire...");
-     }
+     */
 
-     Freedomotic.logger.info("= Reported temperature: " + temp);
+    /*
+     * public void setIndexDevice(int indexDevice) { this.indexDevice =
+     * indexDevice;
      }
-     else
-     {
-     Freedomotic.logger.info("= This device is not a temperature device.");
-            
-     }
-        
+     */
+    /*
+     * //System.out.println( //
+     * "====================================================");
+     * //System.out.println("= Found One Wire DeviceOneWire: " // +
+     * owc.getAddressAsString() + " ="); //System.out.println( //
+     * "====================================================");
+     * //System.out.println("="); Freedomotic.logger.info("Found One Wire
+     * DeviceOneWire: " + owc.getAddressAsString());
+     *
+     * boolean isTempContainer = false; TemperatureContainer tc = null;
+     *
+     * DSPortAdapter
+     *
+     * if (isTempContainer) { Freedomotic.logger.info("= This device is a " +
+     * owc.getName()); Freedomotic.logger.info("= Also known as a " +
+     * owc.getAlternateNames()); Freedomotic.logger.info("= It is a Temperature
+     * Container");
+     *
+     * double max = tc.getMaxTemperature(); double min = tc.getMinTemperature();
+     * boolean hasAlarms = tc.hasTemperatureAlarms();
+     *
+     * Freedomotic.logger.info("= This device " + (hasAlarms ? "has" : "does not
+     * have") + " alarms"); Freedomotic.logger.info("= Maximum temperature: " +
+     * max); Freedomotic.logger.info("= Minimum temperature: " + min);
+     *
+     *
+     * double temp= 0.0; try { byte[] state = tc.readDevice(); temp =
+     * tc.getTemperature(state); //device.setValue(temp);
+     *
+     * }
+     * catch (Exception e) { Freedomotic.logger.severe("= Could not read
+     * DeviceOneWire..."); }
+     *
+     * Freedomotic.logger.info("= Reported temperature: " + temp); } else {
+     * Freedomotic.logger.info("= This device is not a temperature device.");
+     *
+     * }
+     *
      */
 }
