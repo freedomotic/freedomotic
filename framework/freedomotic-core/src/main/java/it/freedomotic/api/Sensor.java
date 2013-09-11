@@ -96,7 +96,6 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
             getApi().getI18n().registerPluginBundleDir(this);
         }
         if (!isRunning) {
-            isRunning = true;
             Runnable action = new Runnable() {
                 @Override
                 public void run() {
@@ -107,6 +106,7 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
                         //enters in run only if is required
                         thread.start();
                     }
+                    isRunning = true;
                 }
             };
             auth.pluginExecutePrivileged(this, action);
@@ -116,10 +116,10 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
     @Override
     public void stop() {
         if (isRunning) {
-            isRunning = false;
             Runnable action = new Runnable() {
                 @Override
                 public void run() {
+                    isRunning = false;
                     onStop();
                 }
             };

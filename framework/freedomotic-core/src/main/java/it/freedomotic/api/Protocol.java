@@ -133,8 +133,8 @@ public abstract class Protocol
                 @Override
                 public synchronized void run() {
                     loadPermissionsFromManifest();
-                    isRunning = true;
                     onStart();
+                    isRunning = true;
                     sensorThread = new Protocol.SensorThread();
                     sensorThread.start();
                     PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
