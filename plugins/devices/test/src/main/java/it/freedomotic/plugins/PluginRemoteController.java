@@ -41,7 +41,7 @@ public class PluginRemoteController
     private static final Logger LOG = Logger.getLogger(PluginRemoteController.class.getName()); 
     
     public PluginRemoteController() {
-        super("Plugins Remote Controller", "/it.nicoletti.test/plugins-remote-controller.xml");
+        super("Plugins Remote Controller", "/test/plugins-remote-controller.xml");
     }
 
     @Override
