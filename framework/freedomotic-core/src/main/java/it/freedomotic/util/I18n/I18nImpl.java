@@ -145,13 +145,13 @@ public class I18nImpl implements I18n {
 
     @Override
     public String msg(String key) {
-        String caller = sun.reflect.Reflection.getCallerClass().getPackage().getName();
+        String caller = sun.reflect.Reflection.getCallerClass(1).getPackage().getName();
         return msg(caller, key, null);
     }
 
     @Override
     public String msg(String key, Object[] fields) {
-        String caller = sun.reflect.Reflection.getCallerClass().getPackage().getName();
+        String caller = sun.reflect.Reflection.getCallerClass(1).getPackage().getName();
         return msg(caller, key, fields);
     }
 
