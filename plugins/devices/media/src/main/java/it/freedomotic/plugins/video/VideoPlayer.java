@@ -1,13 +1,30 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team
+ * http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This Program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Freedomotic; see the file COPYING.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
-package it.freedomotic.plugins;
+
+package it.freedomotic.plugins.video;
 
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.exceptions.UnableToExecuteException;
-import it.freedomotic.plugins.video.VideoPlayerConfig;
 import it.freedomotic.reactions.Command;
 import java.io.File;
 import java.io.IOException;
@@ -21,11 +38,12 @@ import java.util.logging.Logger;
  * @author Enrico Nicoletti
  */
 public class VideoPlayer extends Protocol {
-
+    
+    private static final Logger LOG = Logger.getLogger(VideoPlayer.class.getName());   
     static Process p;
 
     public VideoPlayer() {
-        super("VLC Media Player", "/it.nicoletti.media/vlc-media-player.xml");
+        super("VLC Media Player", "/media/vlc-media-player.xml");
     }
 
     @Override
