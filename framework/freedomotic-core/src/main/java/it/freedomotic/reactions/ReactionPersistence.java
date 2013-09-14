@@ -171,7 +171,7 @@ public class ReactionPersistence {
                 //Close the output stream
                 indexfile.close();
             } else {
-                LOG.info("No reactions to load from this folder " + folder.toString());
+                LOG.config("No reactions to load from this folder " + folder.toString());
             }
         } catch (Exception e) {
             LOG.severe("Exception while loading reaction in " + folder.getAbsolutePath() + ".\n"

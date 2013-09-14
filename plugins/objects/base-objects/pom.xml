@@ -9,7 +9,7 @@
     </parent>    
     <artifactId>base-objects</artifactId>
     <packaging>jar</packaging>
-    <name>freedomotic base objects</name>
+    <name>freedomotic-base-objects</name>
     <version>3.0</version>
     <developers>
         <developer>

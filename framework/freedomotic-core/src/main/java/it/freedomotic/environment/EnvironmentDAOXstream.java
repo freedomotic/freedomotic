@@ -148,7 +148,7 @@ public class EnvironmentDAOXstream
     public Environment load()
             throws DaoLayerException {
         if (directory == null) {
-            throw new DaoLayerException("Cannot");
+            throw new DaoLayerException("Cannot load environments from null directory");
         }
 
         // This filter only returns env files

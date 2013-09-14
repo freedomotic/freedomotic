@@ -1,36 +1,41 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.util;
 
+import it.freedomotic.exceptions.FreedomoticException;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Info {
-    //framework versioning
 
+    private static final Logger LOG = Logger.getLogger(Info.class.getName());
+    //framework versioning
     public static final Integer FRAMEWORK_MAJOR = 5;
     public static final Integer FRAMEWORK_MINOR = 5;
     public static final Integer FRAMEWORK_BUILD = 0;
@@ -40,8 +45,9 @@ public class Info {
     public static final String FRAMEWORK_RELEASE_TYPE = "beta";
     //project info
     public static final String PROJECT_MAIL = "info@freedomotic.com";
-    //framework base paths
-    public static final String PATH_WORKDIR = getWorkdir();
+    //framework base paths   
+    public static final File PATH_WORKDIR = getWorkdir();
+    public static final File PATH_CONFIG_FOLDER = new File(PATH_WORKDIR + "/config/");
     public static final File PATH_DATA_FOLDER = new File(PATH_WORKDIR + "/data/");
     public static final File PATH_RESOURCES_FOLDER = new File(PATH_WORKDIR + "/data/resources/");
     public static final File PATH_PLUGINS_FOLDER = new File(PATH_WORKDIR + "/plugins/");
@@ -72,11 +78,16 @@ public class Info {
 
         try {
             address = InetAddress.getLocalHost().toString();
+
+
         } catch (UnknownHostException ex) {
-            Logger.getLogger(Info.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Info.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
         return address;
+
+
     }
 
     /**
@@ -87,22 +98,30 @@ public class Info {
      * @return a String containing the fixed absolute path to freedomotic-core
      * folder
      */
-    private static String getWorkdir() {
+    private static File getWorkdir() {
+        //This returns an URL like String, not a File like, be aware of the consequences
         String jarFolder = Info.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        System.out.println(jarFolder);
-        if (jarFolder.endsWith("/target/classes/")) {
+        if (jarFolder.endsWith("/target/freedomotic-core/freedomotic.jar")) { //run from commandline
+            jarFolder = jarFolder.substring(0, jarFolder.indexOf("/target/freedomotic-core/freedomotic.jar"));
+        } else if (jarFolder.endsWith("/target/classes/")) { //run from IDE
             jarFolder = jarFolder.substring(0, jarFolder.indexOf("/target/classes/"));
-            System.out.println(jarFolder);
-            return jarFolder;
-        }
-        if (jarFolder.endsWith("freedomotic.jar")) {
+        } else if (jarFolder.endsWith("freedomotic.jar")) { //run from release package
             jarFolder = jarFolder.substring(0, jarFolder.indexOf("freedomotic.jar"));
-            System.out.println(jarFolder);
-
-            return jarFolder;
         }
 
-        return jarFolder;
+        try {
+            //decode the URL to translate it into a File
+            //this hack can work only if freedomotic starts on local filesystem
+            File workdir = new File(URLDecoder.decode(jarFolder, "UTF-8"));
+            LOG.info(workdir.getAbsolutePath().toString());
+            return workdir;
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(Info.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        LOG.severe("Something went wrong when figuring out which is the current workdir. "
+                + "Cannot start freedmotic as a consequence");
+        return null;
     }
 
     public static Integer getMajor() {
@@ -158,7 +177,8 @@ public class Info {
         return str;
     }
 
-    public static String getApplicationPath() {
+    @Deprecated
+    public static File getApplicationPath() {
         return PATH_WORKDIR;
     }
 
@@ -198,5 +218,4 @@ public class Info {
 
     private Info() {
     }
-    private static final Logger LOG = Logger.getLogger(Info.class.getName());
 }

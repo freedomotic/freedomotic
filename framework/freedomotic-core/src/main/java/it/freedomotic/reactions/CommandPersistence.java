@@ -181,7 +181,7 @@ public class CommandPersistence {
                 }
             }
         } else {
-            LOG.info("No commands to load from this folder " + folder.toString());
+            LOG.config("No commands to load from this folder " + folder.toString());
         }
     }
 
