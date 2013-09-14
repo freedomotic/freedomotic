@@ -174,7 +174,7 @@ public class TriggerPersistence {
                 //Close the output stream
                 indexfile.close();
             } else {
-                LOG.info("No triggers to load from this folder " + folder.toString());
+                LOG.config("No triggers to load from this folder " + folder.toString());
             }
         } catch (Exception e) {
             LOG.severe("Exception while loading this trigger.\n" + Freedomotic.getStackTraceInfo(e));

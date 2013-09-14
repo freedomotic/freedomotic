@@ -34,9 +34,6 @@ import it.freedomotic.bus.CommandChannel;
 import it.freedomotic.bus.EventChannel;
 
 import it.freedomotic.core.BehaviorManager;
-import it.freedomotic.core.JoinDevice;
-import it.freedomotic.core.JoinPlugin;
-import it.freedomotic.core.TriggerCheck;
 
 import it.freedomotic.environment.EnvironmentDAO;
 import it.freedomotic.environment.EnvironmentDAOFactory;
@@ -54,7 +51,6 @@ import it.freedomotic.marketplace.IPluginCategory;
 import it.freedomotic.marketplace.MarketPlaceService;
 
 import it.freedomotic.model.ds.ColorList;
-import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.environment.Environment;
 
 import it.freedomotic.objects.EnvObjectPersistence;
@@ -124,6 +120,7 @@ public class Freedomotic implements BusConsumer {
     private AppConfig config;
     private Auth auth;
     private API api;
+
     /**
      *
      * @param pluginsLoader
@@ -145,8 +142,7 @@ public class Freedomotic implements BusConsumer {
         this.auth = api.getAuth();
     }
 
-    public void start()
-            throws FreedomoticException {
+    public void start() throws FreedomoticException {
         /**
          * ******************************************************************
          * First of all the configuration file is loaded into a data structure
@@ -404,14 +400,18 @@ public class Freedomotic implements BusConsumer {
     public void loadDefaultEnvironment()
             throws FreedomoticException {
         String envFilePath = config.getProperty("KEY_ROOM_XML_PATH");
-        File envFile = new File(Info.PATH_DATA_FOLDER + "/furn/" + envFilePath);
+        File envFile = new File(Info.PATH_WORKDIR+ "/data/furn/" + envFilePath);
         File folder = envFile.getParentFile();
-
-        if ((folder == null) || !folder.exists() || !folder.isDirectory()) {
+        
+        if (!folder.exists()) {
             throw new FreedomoticException(
-                    "Default environment " + envFile.getAbsolutePath().toString()
-                    + " specified in config file"
-                    + " cannot be found in " + Info.PATH_DATA_FOLDER);
+                    "Folder " + folder + " do not exists. Cannot load default "
+                    + "environment from " +envFile.getAbsolutePath().toString());
+        } else 
+            if (!folder.isDirectory()) {
+            throw new FreedomoticException(
+                    "Environment folder " + folder.getAbsolutePath()
+                    + " is supposed to be a directory");
         }
 
         try {
