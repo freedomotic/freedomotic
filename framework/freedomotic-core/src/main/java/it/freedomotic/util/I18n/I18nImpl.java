@@ -234,7 +234,7 @@ public class I18nImpl implements I18n {
 
     @Override
     public Vector<ComboLanguage> getAvailableLocales() {
-        final String bundlename = "Freedomotic";
+        final String bundlename = "freedomotic";
         languages.clear();
         File root = new File(Info.getApplicationPath() + File.separator + "i18n");
         File[] files = root.listFiles(new FilenameFilter() {
