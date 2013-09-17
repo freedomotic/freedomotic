@@ -90,9 +90,9 @@ public class I18nImpl implements I18n {
                 break;
             }
         }
-        if (folder == null) {
+//        if (folder == null) {
             folder = packageBundleDir.get("it.freedomotic");
-        }
+//        }
         return msg(folder, "it.freedomotic", key, fields, false);
     }
 
@@ -117,7 +117,7 @@ public class I18nImpl implements I18n {
                 String baseName = packageName.split("\\.")[lastSize - 1];
 
                 messages.put(packageName + ":" + loc, ResourceBundle.getBundle(baseName, currentLocale, loader, RB_Control));
-                LOG.log(Level.INFO, "Adding resourceBundle: package={0}, locale={1}. pointing at {2}", new Object[]{packageName, loc, folder.getAbsolutePath()});
+                LOG.log(Level.INFO, "Adding resourceBundle: package={0}, locale={1} pointing at {2}", new Object[]{packageName, loc, folder.getAbsolutePath()});
             } catch (MalformedURLException ex) {
                 LOG.log(Level.SEVERE, "Cannot find folder while loading resourceBundle for package{0}", packageName);
             } catch (MissingResourceException ex) {
