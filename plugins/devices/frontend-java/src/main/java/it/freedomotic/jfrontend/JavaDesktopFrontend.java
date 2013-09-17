@@ -28,7 +28,7 @@ public class JavaDesktopFrontend
 
     private MainWindow window;
     private Drawer drawer;
-    private ListDrawer listDrawer;
+    //private ListDrawer listDrawer;
 
     public JavaDesktopFrontend() {
         super("Desktop Frontend", "/frontend-java/desktop-frontend.xml");
@@ -37,7 +37,7 @@ public class JavaDesktopFrontend
     @Override
     public void onStop() {
         window = null;
-        listDrawer = null;
+        //listDrawer = null;
         drawer = null;
     }
 
@@ -52,8 +52,8 @@ public class JavaDesktopFrontend
             //onCommand stuff
             addCommandListener("app.actuators.plugins.controller.in");
             createMainWindow(); //creates the main frame
-            listDrawer = new ListDrawer(this);
-            listDrawer.setVisible(true);
+            //listDrawer = new ListDrawer(this);
+            //listDrawer.setVisible(true);
         } catch (Exception e) {
             Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
         }
