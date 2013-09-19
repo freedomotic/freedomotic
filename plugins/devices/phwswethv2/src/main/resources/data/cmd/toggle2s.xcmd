@@ -1,0 +1,15 @@
+<it.freedomotic.reactions.Command>
+    <name>Toggle for 2 seconds the relay on ProgettiHwSw Eth board</name>
+    <receiver>app.actuators.protocol.phwswethv2.in</receiver>
+    <description>toggles for 2 seconds the relay on ProgettiHwSw Eth board</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="command" value="TOGGLE"/>
+            <property name="address" value="@owner.object.address"/>
+	    <property name="time-in-ms" value="2000"/>
+        </properties>
+    </properties>
+</it.freedomotic.reactions.Command>
