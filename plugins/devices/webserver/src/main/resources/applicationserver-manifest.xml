@@ -6,7 +6,7 @@
         <property name="short-name" value="jetty"/>
         <property name="startup-time" value="on load"/>
         <property name="PORT" value="8090"/>
-        <property name="ENABLE_SSL" value="false"/>
+        <property name="ENABLE_SSL" value="true"/>
         <property name="KEYSTORE_FILE" value="keystore"/>
         <property name="KEYSTORE_TYPE" value="JKS"/>
         <property name="KEYSTORE_PASWORD" value="password"/>
