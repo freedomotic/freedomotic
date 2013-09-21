@@ -1,0 +1,103 @@
+<it.freedomotic.model.object.EnvObject>
+  <name>Hue Light</name>
+  <description>A Philips Hue Light</description>
+  <actAs></actAs>
+  <type>EnvObject.Light.HueLight</type>
+  <hierarchy>it.freedomotic.objects.impl.HueLight</hierarchy>
+  <protocol>unknowkn</protocol>
+  <phisicalAddress>unknown</phisicalAddress>
+  <behaviors>
+    <it.freedomotic.model.object.BooleanBehavior>
+      <name>powered</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>false</value>
+    </it.freedomotic.model.object.BooleanBehavior>
+    <it.freedomotic.model.object.RangedIntBehavior>
+      <name>brightness</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>255</max>
+      <min>0</min>
+      <step>5</step>
+    </it.freedomotic.model.object.RangedIntBehavior>
+    <it.freedomotic.model.object.RangedIntBehavior>
+      <name>hue</name>
+      <description>the hue of the light</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>65535</max>
+      <min>0</min>
+      <step>10</step>
+    </it.freedomotic.model.object.RangedIntBehavior>
+    <it.freedomotic.model.object.RangedIntBehavior>
+      <name>saturation</name>
+      <description>the saturation of the light</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>255</max>
+      <min>0</min>
+      <step>5</step>
+    </it.freedomotic.model.object.RangedIntBehavior>
+    <it.freedomotic.model.object.ListBehavior>
+      <name>effect</name>
+      <description>Effect Mode Selected</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <selected>1</selected>
+      <list>
+        <string>colorloop</string>
+        <string>none</string>
+      </list>
+     </it.freedomotic.model.object.ListBehavior>
+  </behaviors>
+  <representation>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>true</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>hue-light-off.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>hue-light-on.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+  </representation>
+  <actions>
+    <property name="set saturation" value="Execute it successfully"/>
+    <property name="set hue" value="Execute it successfully"/>
+    <property name="set effect" value="Execute it successfully"/>
+  </actions>
+  <triggers>
+    <property name="" value="saturation"/>
+    <property name="" value="brightness"/>
+  </triggers>
+  <currentRepresentation>1</currentRepresentation>
+</it.freedomotic.model.object.EnvObject>
