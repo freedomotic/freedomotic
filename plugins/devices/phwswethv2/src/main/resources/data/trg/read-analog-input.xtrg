@@ -1,6 +1,6 @@
 <trigger>
-    <name>ProgettiHwSwEthV2 reads a state change</name>
-    <description>ProgettiHwSwEthV2 reads relay state change</description>
+    <name>ProgettiHwSwEthV2 reads a digital input</name>
+    <description>ProgettiHwSwEthV2 reads a digital input</description>
     <channel>app.event.sensor.protocol.read.phwswethv2</channel>
     <payload>
         <payload>
@@ -14,7 +14,7 @@
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>@event.isOn</value>
+                <value>@event.isOpen</value>
             </it.freedomotic.reactions.Statement>
         </payload>
     </payload>

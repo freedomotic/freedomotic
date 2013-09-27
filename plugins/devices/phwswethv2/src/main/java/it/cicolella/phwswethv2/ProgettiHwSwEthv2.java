@@ -62,7 +62,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
     private int SOCKET_TIMEOUT = configuration.getIntProperty("socket-timeout", 1000);
     private String GET_STATUS_URL = configuration.getStringProperty("get-status-url", "status.xml");
     private String CHANGE_STATE_RELAY_URL = configuration.getStringProperty("change-state-relay-url", "forms.htm?led");
-    private String SEND_PULSE_RELAY_URL = configuration.getStringProperty("send-pulse-relay-url", "rlyfs.cgi?rlyf=");
+    private String TOGGLE_RELAY_URL = configuration.getStringProperty("toggle-relay-url", "toggle.cgi?toggle=");
 
     /**
      * Initializations
@@ -226,7 +226,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
         //parses xml
         if (doc != null && board != null) {
             Node n = doc.getFirstChild();
-            NodeList nl = n.getChildNodes();
+            //NodeList nl = n.getChildNodes();
             valueTag(doc, board, board.getRelayNumber(), board.getLedTag(), 0);
             valueTag(doc, board, board.getDigitalInputNumber(), board.getDigitalInputTag(), 0);
             valueTag(doc, board, board.getAnalogInputNumber(), board.getAnalogInputTag(), 0);
@@ -236,16 +236,16 @@ public class ProgettiHwSwEthv2 extends Protocol {
     private void valueTag(Document doc, Board board, Integer nl, String tag, int startingRelay) {
         for (int i = startingRelay; i < nl; i++) {
             try {
-                String tagName = tag + i;
+                 String tagName = tag + HexIntConverter.convert(i);
                 // control for storing value
-                if (tag.equalsIgnoreCase("led")) {
-                    if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
-                        sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
-                        board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
-                    }
-                }
-
-                // sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                //if (tag.equalsIgnoreCase(board.getLedTag())) {
+                  //  if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
+                   //     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                   //     board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
+                   // }
+                //}
+                //else
+                 sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
             } catch (DOMException dOMException) {
                 //do nothing
             } catch (NumberFormatException numberFormatException) {
@@ -257,15 +257,18 @@ public class ProgettiHwSwEthv2 extends Protocol {
     }
 
     private void sendChanges(int relayLine, Board board, String status, String tag) {
-        relayLine++;
+        // if starting-relay = 0 then increments relayLine to start from 1 not from zero
+        if (board.getStartingRelay() == 0) {
+            relayLine++;
+        }
         //reconstruct freedomotic object address
         //String address = board.getIpAddress() + ":" + board.getPort() + ":" + relayLine + ":" + tag;
         String address = board.getAlias() + ":" + relayLine + ":" + tag;
-        //LOG.info("Sending ProgettiHwSw protocol read event for object address '" + address + "'. It's readed status is " + status);
+        LOG.info("Sending ProgettiHwSw protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "phwswethv2", address); //IP:PORT:RELAYLINE
         // relay lines - status=0 -> off; status=1 -> on
-        if (tag.equalsIgnoreCase("led")) {
+        if (tag.equalsIgnoreCase(board.getLedTag())) {
             if (status.equals("0")) {
                 event.addProperty("isOn", "false");
             } else {
@@ -276,29 +279,29 @@ public class ProgettiHwSwEthv2 extends Protocol {
                     event.addProperty("object.name", address);
                 }
             }
-        } else // digital inputs (btn tag) status = up -> on; status = down -> off
-        if (tag.equalsIgnoreCase("btn")) {
+        } else // digital inputs status = up -> off/open; status = dn -> on/closed
+        if (tag.equalsIgnoreCase(board.getDigitalInputTag())) {
             if (status.equalsIgnoreCase("up")) {
-                event.addProperty("isOn", "true");
-            } else {
                 event.addProperty("isOn", "false");
+                event.addProperty("isOpen", "true");
+            } else {
+                event.addProperty("isOn", "true");
+                event.addProperty("isOpen", "false");
             }
-            event.addProperty("input.value", status);
+            
         } else {
-            // analog inputs (an/analog input) status = 0 -> off; status > 0 -> on
-            if (tag.equalsIgnoreCase("an") || tag.equalsIgnoreCase("analog")) {
+            // analog inputs status = 0 -> off; status > 0 -> on
+            if (tag.equalsIgnoreCase(board.getAnalogInputTag())) {
                 if (status.equalsIgnoreCase("0")) {
                     event.addProperty("isOn", "false");
                 } else {
                     event.addProperty("isOn", "true");
                 }
-                event.addProperty("input.value", status);
+                event.addProperty("analog.input.value", status);
             }
         }
         //adding some optional information to the event
-        event.addProperty("boardIP", board.getIpAddress());
-        event.addProperty("boardPort", new Integer(board.getPort()).toString());
-        event.addProperty("relayLine", new Integer(relayLine).toString());
+        //event.addProperty("relayLine", new Integer(relayLine).toString());
         //publish the event on the messaging bus
         this.notifyEvent(event);
     }
@@ -308,7 +311,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
      */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
-        //get connection paramentes address:port from received freedomotic command
+        //get connection parameters address:port from received freedomotic command
         String delimiter = configuration.getProperty("address-delimiter");
         address = c.getProperty("address").split(delimiter);
         Board board = (Board) devices.get(address[0]);
@@ -367,26 +370,26 @@ public class ProgettiHwSwEthv2 extends Protocol {
     public String createMessage(Command c) {
         String message = null;
         String page = null;
-        Integer relay = 0;
+        String relay = null;
+
+        relay = HexIntConverter.convert(Integer.parseInt(address[1]) - 1);
 
         if (c.getProperty("command").equals("CHANGE-STATE-RELAY")) {
-            //relay = Integer.parseInt(address[2]) - 1;
-            //convert esadecimale
-            relay = Integer.parseInt(address[1]) - 1;
-            page = CHANGE_STATE_RELAY_URL + relay;
+            page = CHANGE_STATE_RELAY_URL + relay + "=" + c.getProperty("behavior");
         }
 
-        if (c.getProperty("command").equals("PULSE-RELAY")) {
-            // mapping relay line -> protocol
-            //relay = Integer.parseInt(address[2]) - 1;
-            relay = Integer.parseInt(address[1]) - 1;
+        if (c.getProperty("command").equals("TOGGLE-RELAY")) {
+            relay = address[1];
+            int time = Integer.parseInt(c.getProperty("time-in-ms"));
+            int seconds = time / 1000;
+            String relayLine = configuration.getProperty("TOGGLE" + seconds + "S" + relay);
             //compose requested link
-            page = SEND_PULSE_RELAY_URL + relay;
+            page = TOGGLE_RELAY_URL + relayLine;
         }
 
         // http request sending to the board
         message = "GET /" + page + " HTTP 1.1\r\n\r\n";
-        //LOG.info("Sending 'GET /" + page + " HTTP 1.1' to relay board");
+        LOG.info("Sending 'GET /" + page + " HTTP 1.1' to relay board");
         return (message);
     }
 

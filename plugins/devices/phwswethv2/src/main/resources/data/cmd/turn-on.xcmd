@@ -7,8 +7,8 @@
     <timeout>0</timeout>
     <properties>
         <properties>
-            <property name="command" value="CHANGE-RELAY-STATUS"/>
-            <property name="behavior" value="on"/>
+            <property name="command" value="CHANGE-STATE-RELAY"/>
+            <property name="behavior" value="1"/>
 	    <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
