@@ -7,7 +7,7 @@
     <timeout>0</timeout>
     <properties>
         <properties>
-            <property name="command" value="TOGGLE"/>
+            <property name="command" value="TOGGLE-RELAY"/>
             <property name="address" value="@owner.object.address"/>
 	    <property name="time-in-ms" value="2000"/>
         </properties>

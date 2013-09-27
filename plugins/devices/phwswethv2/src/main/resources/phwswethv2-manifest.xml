@@ -9,7 +9,7 @@
         <property name="permissions" value="*"/>
         <property name="startup-time"   value="on load"/>
         <property name="change-state-relay-url" value="forms.htm?led"/>
-        <property name="send-pulse-relay-url" value="rlyfs.cgi?rlyf="/>
+        <property name="send-pulse-relay-url" value="toggle.cgi?toggle="/>
         <property name="get-status-url" value="status.xml"/>
         <property name="TOGGLE1S1"  value="A"/>
         <property name="TOGGLE1S2"  value="B"/>
@@ -55,13 +55,13 @@
             <property name="digital-input-number" value="4"/>
             <property name="starting-relay" value="0"/>
             <property name="led-tag" value="led"/>
-            <property name="analog-input-tag" value="analog"/>
+            <property name="analog-input-tag" value="pot"/>
             <property name="digital-input-tag" value="btn"/>
-            <property name="auto-configuration" value="true"/>
+            <property name="auto-configuration" value="false"/>
             <property name="object.class" value="Light"/>
-            <property name="powered" value="ProgettiHwSw Eth board reads a relay state change"/>
-            <property name="turn on" value="Turn on relay on ProgettiHwSw Eth board"/>
-            <property name="turn off" value="Turn off relay on ProgettiHwSw Eth board"/>
+            <property name="powered" value="ProgettiHwSwV2 reads a relay state change"/>
+            <property name="turn on" value="Turn ON relay on ProgettiHwSw Eth board"/>
+            <property name="turn off" value="Turn OFF relay on ProgettiHwSw Eth board"/>
         </tuple>
     </tuples>
 </config>
