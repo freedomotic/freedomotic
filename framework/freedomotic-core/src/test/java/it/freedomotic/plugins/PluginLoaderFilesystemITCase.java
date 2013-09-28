@@ -4,20 +4,22 @@
  */
 package it.freedomotic.plugins;
 
-import it.freedomotic.testutils.FreedomoticTestsInjector;
-import com.google.inject.Inject;
 import it.freedomotic.api.Client;
-import it.freedomotic.bus.AbstractBusConnector;
 import it.freedomotic.plugins.filesystem.PluginsManager;
+import it.freedomotic.testutils.FreedomoticTestsInjector;
 import it.freedomotic.testutils.GuiceJUnitRunner;
 import it.freedomotic.testutils.GuiceJUnitRunner.GuiceInjectors;
+
 import java.io.File;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.google.inject.Inject;
 
 /**
  *
@@ -33,9 +35,7 @@ public class PluginLoaderFilesystemITCase {
     //loads plugin from local filesystem
     @Inject
     PluginsManager loader;
-    //creates a messaging bus on which publish the events generated while loading plugins
-    @Inject
-    AbstractBusConnector bus;
+
     private static File boundlePath;
 
     public PluginLoaderFilesystemITCase() {

@@ -22,10 +22,12 @@ package it.freedomotic.plugins;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.bus.BusService;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
 import it.freedomotic.exceptions.DaoLayerException;
 import it.freedomotic.util.Info;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,13 +37,15 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.inject.Inject;
+
 /**
  * A storage of loaded plugins and connected clients
  */
 public final class ClientStorageInMemory implements ClientStorage {
 
     private final List<Client> clients = new ArrayList<Client>();
-
+    
     public ClientStorageInMemory() {
         //just injected
     }
@@ -66,7 +70,8 @@ public final class ClientStorageInMemory implements ClientStorage {
             PluginHasChanged event =
                     new PluginHasChanged(ClientStorageInMemory.class,
                     c.getName(), PluginActions.ENQUEUE);
-            Freedomotic.sendEvent(event);
+            final BusService busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+            busService.send(event);
             LOG.log(Level.CONFIG,
                     "{0} added to plugins list.",
                     c.getName());
@@ -81,7 +86,8 @@ public final class ClientStorageInMemory implements ClientStorage {
             PluginHasChanged event =
                     new PluginHasChanged(ClientStorageInMemory.class,
                     c.getName(), PluginActions.DEQUEUE);
-            Freedomotic.sendEvent(event);
+            final BusService busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+            busService.send(event);
         }
     }
 

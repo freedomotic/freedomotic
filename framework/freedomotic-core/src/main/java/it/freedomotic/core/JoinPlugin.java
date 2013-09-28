@@ -25,17 +25,19 @@
  */
 package it.freedomotic.core;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import it.freedomotic.api.Plugin;
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
-import it.freedomotic.bus.CommandChannel;
+import it.freedomotic.bus.BusMessagesListener;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.plugins.ClientStorage;
+
 import java.util.logging.Logger;
+
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  *
@@ -45,12 +47,17 @@ import javax.jms.ObjectMessage;
 public class JoinPlugin
         implements BusConsumer {
 
-    private static final CommandChannel channel = new CommandChannel();
-    //dependency
+    private static final Logger LOG = Logger.getLogger(JoinPlugin.class.getName());
+
+    private static final String MESSAGING_CHANNEL ="app.objects.create";
+		
+	private static BusMessagesListener listener;
+	
+	//dependency
     private ClientStorage clientStorage;
 
     static String getMessagingChannel() {
-        return "app.plugin.create";
+        return MESSAGING_CHANNEL;
     }
 
     @Inject
@@ -62,10 +69,9 @@ public class JoinPlugin
     /**
      * Register one or more channels to listen to
      */
-    private void register() {
-        channel.setHandler(this);
-        channel.consumeFrom(getMessagingChannel());
-    }
+	private void register() {
+		listener = new BusMessagesListener(this);
+		listener.consumeCommandFrom(getMessagingChannel());}
 
     @Override
     public void onMessage(ObjectMessage message) {
@@ -80,5 +86,4 @@ public class JoinPlugin
             LOG.severe("Join Plugin receives a not valid plugin manifest");
         }
     }
-    private static final Logger LOG = Logger.getLogger(JoinPlugin.class.getName());
 }

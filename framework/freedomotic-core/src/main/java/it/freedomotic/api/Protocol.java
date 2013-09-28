@@ -19,32 +19,23 @@
  */
 package it.freedomotic.api;
 
-import com.google.inject.Inject;
-import it.freedomotic.annotations.ListenEventsOn;
-import it.freedomotic.annotations.Schedule;
-
 import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.bus.BusConsumer;
-import it.freedomotic.bus.CommandChannel;
-import it.freedomotic.bus.EventChannel;
-
+import it.freedomotic.bus.BusService;
+import it.freedomotic.bus.BusMessagesListener;
 import it.freedomotic.events.PluginHasChanged;
-
 import it.freedomotic.exceptions.UnableToExecuteException;
-
 import it.freedomotic.reactions.Command;
-import it.freedomotic.util.I18n.I18n;
-
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+
+import com.google.inject.Inject;
 
 /**
  * Uses a Template Method pattern which allows subclass to define how to perform
@@ -54,14 +45,16 @@ public abstract class Protocol
         extends Plugin
         implements BusConsumer {
 
-    private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
-    private int POLLING_WAIT_TIME = -1;
-    private CommandChannel commandsChannel; //one to one messaging pattern
-    private EventChannel eventsChannel; //one to many messaging pattern
+	private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
+
+	private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
+    private int pollingWaitTime = -1;
+    private BusMessagesListener listener;
     private Protocol.SensorThread sensorThread;
     private volatile Destination lastDestination;
-    private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
 
+    private BusService busService;
+    
     protected abstract void onRun();
 
     protected abstract void onCommand(Command c)
@@ -71,28 +64,20 @@ public abstract class Protocol
 
     protected abstract void onEvent(EventTemplate event);
 
-    public Protocol(String pluginName, String manifest) {
-        super(pluginName, manifest);
-        POLLING_WAIT_TIME = -1; //just to be sure
-        register();
+	public Protocol(String pluginName, String manifest) {
 
-        try {
-            findAnnotations();
-        } catch (Exception ex) {
-            Logger.getLogger(Protocol.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+		super(pluginName, manifest);
+		this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+		register();
+	}
 
     private void register() {
-        eventsChannel = new EventChannel();
-        eventsChannel.setHandler(this);
-        commandsChannel = new CommandChannel();
-        commandsChannel.setHandler(this);
-        commandsChannel.consumeFrom(getCommandsChannelToListen());
+    	listener = new BusMessagesListener(this);
+    	listener.consumeCommandFrom(getCommandsChannelToListen());
     }
 
     public void addEventListener(String listento) {
-        eventsChannel.consumeFrom(listento);
+        listener.consumeEventFrom(listento);
     }
 
     private String getCommandsChannelToListen() {
@@ -119,7 +104,7 @@ public abstract class Protocol
         if (isRunning) {
             LOG.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":"
                     + ev.getPayload().toString());
-            eventsChannel.send(ev, destination);
+            busService.send(ev, destination);
         }
     }
 
@@ -138,7 +123,7 @@ public abstract class Protocol
                     sensorThread = new Protocol.SensorThread();
                     sensorThread.start();
                     PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
-                    Freedomotic.sendEvent(event);
+                    busService.send(event);
                 }
             };
             getApi().getAuth().pluginExecutePrivileged(this, action);
@@ -156,7 +141,7 @@ public abstract class Protocol
                     sensorThread = null;
                     notify();
                     PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
-                    Freedomotic.sendEvent(event);
+                    busService.send(event);
                 }
             };
             getApi().getAuth().pluginExecutePrivileged(this, action);
@@ -165,16 +150,16 @@ public abstract class Protocol
 
     public final void setPollingWait(int wait) {
         if (wait > 0) {
-            POLLING_WAIT_TIME = wait;
+        	pollingWaitTime = wait;
         }
     }
 
     public int getScheduleRate() {
-        return POLLING_WAIT_TIME;
+        return pollingWaitTime;
     }
 
     private boolean isPollingSensor() {
-        if (POLLING_WAIT_TIME > 0) {
+        if (pollingWaitTime > 0) {
             return true;
         } else {
             return false;
@@ -213,7 +198,7 @@ public abstract class Protocol
                 }
             }
         } catch (JMSException ex) {
-            Logger.getLogger(Actuator.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -237,25 +222,27 @@ public abstract class Protocol
                 command.setExecuted(true);
                 onCommand(command);
             } catch (IOException ex) {
-                Logger.getLogger(Actuator.class.getName()).log(Level.SEVERE, null, ex);
+            	LOG.log(Level.SEVERE, null, ex);
             } catch (UnableToExecuteException ex) {
                 command.setExecuted(false);
             }
 
             if ((getConfiguration().getBooleanProperty("automatic-reply-to-commands", true) == true) //default value is true
-                    && (command.getReplyTimeout() > 0)) {
-                commandsChannel.reply(command, reply, correlationID); //sends back the command marked as executed or not
+					&& (command.getReplyTimeout() > 0)) {
+				busService.reply(command, reply, correlationID); //sends back the command marked as executed or not
             }
         }
     }
 
     protected Command send(Command command) {
-        return commandsChannel.send(command);
+    	return busService.send(command);
     }
 
-    public void reply(Command command) {
-        commandsChannel.reply(command, lastDestination, "-1"); //sends back the command
-    }
+	public void reply(Command command) {
+		// sends back the command
+		final String defaultCorrelationID = "-1";
+		busService.reply(command, lastDestination, defaultCorrelationID);
+	}
 
     private class SensorThread
             extends Thread {
@@ -268,7 +255,7 @@ public abstract class Protocol
 
                 while (sensorThread == thisThread) {
                     try {
-                        sensorThread.sleep(POLLING_WAIT_TIME);
+                        Thread.sleep(pollingWaitTime);
 
                         synchronized (this) {
                             while (!isRunning && (sensorThread == thisThread)) {
@@ -276,6 +263,7 @@ public abstract class Protocol
                             }
                         }
                     } catch (InterruptedException e) {
+                    	// TODO do Log?
                     }
 
                     onRun();
@@ -284,28 +272,6 @@ public abstract class Protocol
                 if (isRunning) {
                     onRun();
                 }
-            }
-        }
-    }
-
-    private void findAnnotations()
-            throws Exception {
-        Class<? extends Protocol> currClass = getClass();
-        Method[] methods = currClass.getDeclaredMethods();
-
-        for (Method method : methods) {
-            if (method.isAnnotationPresent(Schedule.class)) {
-                Schedule schedule = method.getAnnotation(Schedule.class);
-                int rate = schedule.rate();
-                setPollingWait(rate);
-            } else {
-                if (method.isAnnotationPresent(ListenEventsOn.class)) {
-                    ListenEventsOn listen = method.getAnnotation(ListenEventsOn.class);
-                    String channel = listen.channel();
-                    eventsChannel.consumeFrom(channel, method);
-                }
-
-                //TODO: serach for ListenCommandOn annotations
             }
         }
     }

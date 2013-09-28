@@ -23,23 +23,15 @@
  */
 package it.freedomotic.core;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
 import it.freedomotic.api.EventTemplate;
-
 import it.freedomotic.app.Freedomotic;
-
+import it.freedomotic.bus.BusService;
 import it.freedomotic.environment.EnvironmentPersistence;
-
 import it.freedomotic.events.MessageEvent;
 import it.freedomotic.exceptions.VariableResolutionException;
-import it.freedomotic.model.object.Behavior;
 import it.freedomotic.objects.BehaviorLogic;
-
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
-
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Reaction;
 import it.freedomotic.reactions.ReactionPersistence;
@@ -48,10 +40,12 @@ import it.freedomotic.reactions.Trigger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  *
@@ -61,11 +55,14 @@ import java.util.logging.Logger;
 public final class TriggerCheck {
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
-    private final EnvironmentPersistence environmentPersistence;
 
+    private final EnvironmentPersistence environmentPersistence;
+    private final BusService busService;
+    
     @Inject
-    TriggerCheck(EnvironmentPersistence environmentPersistence) {
+    TriggerCheck(EnvironmentPersistence environmentPersistence, BusService busService) {
         this.environmentPersistence = environmentPersistence;
+        this.busService = busService;
     }
 
     /**
@@ -183,13 +180,13 @@ public final class TriggerCheck {
         Runnable automation = new Runnable() {
             @Override
             public void run() {
-                Iterator it = ReactionPersistence.iterator();
+                Iterator<Reaction> it = ReactionPersistence.iterator();
 
                 //Searching for reactions using this trigger
                 boolean found = false;
 
                 while (it.hasNext()) {
-                    Reaction reaction = (Reaction) it.next();
+                    Reaction reaction = it.next();
                     Trigger reactionTrigger = reaction.getTrigger();
 
                     //found a related reaction. This must be executed
@@ -221,7 +218,7 @@ public final class TriggerCheck {
                                     //this command is for an object so it needs only to know only about event parameters
                                     Command resolvedCommand = commandResolver.resolve(command);
                                     //doing so we bypass messaging system gaining better performances
-                                    BehaviorManager.parseCommand(resolvedCommand);
+                                    resolvedCommand.onCommandMessage();
                                 } else {
                                     //if the event has a target object we include also object info
                                     EnvObjectLogic targetObject =
@@ -237,7 +234,7 @@ public final class TriggerCheck {
                                     final Command resolvedCommand = commandResolver.resolve(command);
 
                                     //it's not a user level command for objects (eg: turn it on), it is for another kind of actuator
-                                    Command reply = Freedomotic.sendCommand(resolvedCommand); //blocking wait until executed
+                                    Command reply = busService.send(resolvedCommand); //blocking wait until executed
 
                                     if (reply == null) {
                                         LOG.warning("Unreceived reply within given time ("
@@ -267,7 +264,7 @@ public final class TriggerCheck {
 
                         MessageEvent message = new MessageEvent(null, info);
                         message.setType("callout"); //display as callout on frontends
-                        Freedomotic.sendEvent(message);
+                        busService.send(message);
                     }
                 }
 

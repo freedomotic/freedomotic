@@ -20,23 +20,20 @@
 package it.freedomotic.objects;
 
 import com.google.inject.Inject;
+
 import it.freedomotic.app.Freedomotic;
-
+import it.freedomotic.bus.BusService;
 import it.freedomotic.core.Resolver;
-
 import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.environment.ZoneLogic;
-
 import it.freedomotic.events.ObjectHasChangedBehavior;
 import it.freedomotic.exceptions.VariableResolutionException;
-
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.geometry.FreedomPolygon;
 import it.freedomotic.model.geometry.FreedomShape;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.Representation;
-
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Reaction;
@@ -56,6 +53,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
@@ -64,14 +62,24 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  */
 public class EnvObjectLogic {
 
+	@Inject
+    private BusService busService;
+    
     private EnvObject pojo;
     private boolean changed;
     // private String message;
     private HashMap<String, Command> commandsMapping; //mapping between action name -> hardware command instance
     private List<BehaviorLogic> behaviors = new ArrayList<BehaviorLogic>();
     private EnvironmentLogic environment;
+
     
-    /**
+    
+    public EnvObjectLogic() {
+		super();
+		this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+	}
+
+	/**
      * gets the hardware command mapped to the action in input for example:
      * Action -> Hardware Command Turn on -> Turn on light with X10 Actuator
      * Turn off -> Turn off light with X10 Actuator
@@ -80,7 +88,6 @@ public class EnvObjectLogic {
      * @return a Command or null if action doesn't exist or the mapping is not
      * valid
      */
-
     @RequiresPermissions("objects:read")
     public final Command getHardwareCommand(String action) {
         if ((action != null) && (!action.trim().isEmpty())) {
@@ -196,7 +203,7 @@ public class EnvObjectLogic {
             //send multicast because an event must be received by all triggers registred on the destination channel
             LOG.config("Object " + this.getPojo().getName()
                     + " changes something in its status (eg: a behavior value)");
-            Freedomotic.sendEvent(objectEvent);
+            busService.send(objectEvent);
         } else {
             changed = false;
         }
@@ -452,7 +459,7 @@ public class EnvObjectLogic {
             //            XStream s = FreedomXStream.getXstream();
             //            System.out.println(s.toXML(resolvedCommand));
 
-            Command result = Freedomotic.sendCommand(resolvedCommand); //blocking wait until timeout
+            Command result = busService.send(resolvedCommand); //blocking wait until timeout
 
             if ((result != null) && result.isExecuted()) {
                 return true; //succesfully executed

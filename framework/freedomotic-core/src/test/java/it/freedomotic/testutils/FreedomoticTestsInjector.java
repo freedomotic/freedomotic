@@ -4,30 +4,24 @@
  */
 package it.freedomotic.testutils;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
-
 import it.freedomotic.api.API;
 import it.freedomotic.api.APIStandardImpl;
-import it.freedomotic.bus.AbstractBusConnector;
-
 import it.freedomotic.core.JoinPlugin;
 import it.freedomotic.core.TriggerCheck;
-
 import it.freedomotic.environment.EnvironmentDAO;
 import it.freedomotic.environment.EnvironmentDAOFactory;
 import it.freedomotic.environment.EnvironmentDAOXstream;
-
 import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.plugins.ClientStorageInMemory;
-
 import it.freedomotic.plugins.filesystem.PluginsManager;
 import it.freedomotic.plugins.filesystem.PluginsManagerImpl;
-import it.freedomotic.reactions.TriggerPersistence;
-import java.util.logging.Logger;
+
 import org.junit.Ignore;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 /**
  *

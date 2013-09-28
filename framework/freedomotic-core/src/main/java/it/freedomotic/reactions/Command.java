@@ -39,17 +39,22 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.freedomotic.reactions;
 
-import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.model.ds.Config;
+import it.freedomotic.model.object.EnvObject;
+import it.freedomotic.objects.BehaviorLogic;
+import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectPersistence;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -59,7 +64,21 @@ public final class Command implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -7287958816826580426L;
 	
-	// Nome del comando
+    private static final Logger LOG = Logger.getLogger(Command.class.getName());
+
+    public static final String PROPERTY_BEHAVIOR = "behavior";
+
+	public static final String PROPERTY_OBJECT_CLASS = "object.class";
+
+	public static final String PROPERTY_OBJECT_ADDRESS = "object.address";
+
+	public static final String PROPERTY_OBJECT_NAME = "object.name";
+
+	public static final String PROPERTY_OBJECT_PROTOCOL = "object.protocol";
+
+	public static final String PROPERTY_OBJECT = "object";
+
+    // Nome del comando
     private String name;
     // Coda alla quale inviare il comando
     private String receiver;
@@ -304,5 +323,104 @@ public final class Command implements Serializable, Cloneable {
     public void setReplyTimeout(int timeout) {
         this.timeout = timeout;
     }
-    private static final Logger LOG = Logger.getLogger(Command.class.getName());
+    
+	public void applyToCategory() {
+
+		// gets a reference to an EnvObject using the key 'object' in the user
+		// level command
+		String objectClass = getProperty(Command.PROPERTY_OBJECT_CLASS);
+
+		String regex = "^" + objectClass.replace(".", "\\.") + ".*";
+		Pattern pattern = Pattern.compile(regex);
+
+		// TODO this should be in the collection
+		final Collection<EnvObjectLogic> objectList = EnvObjectPersistence
+				.getObjectList();
+
+		for (EnvObjectLogic object : objectList) {
+
+			final EnvObject pojo = object.getPojo();
+			final Matcher matcher = pattern.matcher(pojo.getType());
+
+			if (matcher.matches()) {
+
+				// TODO Look at this setProperty later
+				setProperty(Command.PROPERTY_OBJECT, pojo.getName());
+				applyToSingleObject();
+			}
+		}
+	}
+
+	public void applyToSingleObject() {
+
+		// gets a reference to an EnvObject using the key 'object' in the user
+		// level command
+		EnvObjectLogic obj = EnvObjectPersistence
+				.getObjectByName(getProperty(Command.PROPERTY_OBJECT));
+
+		// if the object exists
+		if (obj != null) {
+
+			// gets the behavior name in the user level command
+			String behaviorName = getProperty(Command.PROPERTY_BEHAVIOR);
+			BehaviorLogic behavior = obj.getBehavior(behaviorName);
+
+			// if this behavior exists in object obj
+			if (behavior != null) {
+
+				LOG.config("User level command '" + getName()
+						+ "' request changing behavior " + behavior.getName()
+						+ " of object '" + obj.getPojo().getName()
+						+ "' from value '" + behavior.getValueAsString()
+						+ "' to value '" + getProperties().getProperty("value")
+						+ "'");
+
+				behavior.filterParams(getProperties(), true); // true means a
+																// command must
+																// be fired
+
+			} else {
+				LOG.warning("Behavior '"
+								+ behaviorName
+								+ "' is not a valid behavior for object '"
+								+ obj.getPojo().getName()
+								+ "'. Please check 'behavior' parameter spelling in command "
+								+ getName());
+			}
+		} else {
+			LOG.warning("Object '"
+					+ getProperty(Command.PROPERTY_OBJECT)
+					+ "' don't exist in this environment. "
+					+ "Please check 'object' parameter spelling in command "
+					+ getName());
+		}
+	}
+
+	public void onCommandMessage() {
+
+		String object = getProperty(Command.PROPERTY_OBJECT);
+		String objectClass = getProperty(Command.PROPERTY_OBJECT_CLASS);
+		String behavior = getProperty(Command.PROPERTY_BEHAVIOR);
+
+		if (behavior != null) {
+
+			if (object != null) {
+				/*
+				 * if we have the object name and the behavior it means the
+				 * behavior must be applied only to the given object name.
+				 */
+				applyToSingleObject();
+			} else {
+
+				if (objectClass != null) {
+					/*
+					 * if we have the category and the behavior (and not the
+					 * object name) it means the behavior must be applied to all
+					 * object belonging to the given category. eg: all lights on
+					 */
+					applyToCategory();
+				}
+			}
+		}
+	}
 }

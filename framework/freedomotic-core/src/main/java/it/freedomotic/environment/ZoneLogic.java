@@ -40,17 +40,18 @@
 package it.freedomotic.environment;
 
 import it.freedomotic.app.Freedomotic;
-
+import it.freedomotic.bus.BusService;
 import it.freedomotic.events.ZoneHasChanged;
-
 import it.freedomotic.model.environment.Zone;
-
 import it.freedomotic.objects.impl.Person;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+
+import com.google.inject.Inject;
 
 /**
  *
@@ -58,7 +59,9 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  */
 public class ZoneLogic {
 
-    private Zone pojo;
+    private BusService busService;
+  
+	private Zone pojo;
     private Ownership owner = new LastOutStrategy();
     private List<Person> occupiers = new ArrayList<Person>();
     private EnvironmentLogic FatherEnv = null;
@@ -70,7 +73,8 @@ public class ZoneLogic {
 
     public ZoneLogic(final Zone pojo) {
         this.pojo = pojo;
-    }
+		this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+   }
 
     @RequiresPermissions("zones:read")
     public Zone getPojo() {
@@ -148,7 +152,7 @@ public class ZoneLogic {
     public void setChanged() {
         ZoneHasChanged event = new ZoneHasChanged(this,
                 getPojo());
-        Freedomotic.sendEvent(event);
+        busService.send(event);
     }
 
     @RequiresPermissions("zones:read")
