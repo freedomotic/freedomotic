@@ -1,25 +1,22 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.phwswethv2;
 
 public class Board {
@@ -31,6 +28,9 @@ public class Board {
     private String autoConfiguration;
     private String objectClass;
     private String alias = null;
+    private String monitorRelay = null;
+    private String monitorAnalogInput = null;
+    private String monitorDigitalInput = null;
     private int port;
     private int relayNumber;
     private int analogInputNumber;
@@ -41,7 +41,8 @@ public class Board {
     private int[] analogInputValues;
 
     public Board(String ipAddress, int port, String alias, int relayNumber, int analogInputNumber,
-            int digitalInputNumber, int startingRelay, String ledTag, String digitalInputTag, String analogInputTag, String autoConfiguration, String objectClass) {
+            int digitalInputNumber, int startingRelay, String ledTag, String digitalInputTag, String analogInputTag, String autoConfiguration, String objectClass,
+            String monitorRelay, String monitorAnalogInput, String monitorDigitalInput) {
         setIpAddress(ipAddress);
         setPort(port);
         setAlias(alias);
@@ -54,6 +55,9 @@ public class Board {
         setAnalogInputTag(analogInputTag);
         setAutoConfiguration(autoConfiguration);
         setObjectClass(objectClass);
+        setMonitorRelay(monitorRelay);
+        setMonitorAnalogInput(monitorAnalogInput);
+        setMonitorDigitalInput(monitorDigitalInput);
         initializeRelayStatus(relayNumber);
         initializeDigitalInputValues(digitalInputNumber);
         initializeAnalogInputValues(analogInputNumber);
@@ -99,6 +103,22 @@ public class Board {
         this.analogInputTag = analogInputTag;
     }
 
+    public void setMonitorRelay(String monitorRelay) {
+        this.monitorRelay = monitorRelay;
+    }
+
+    public void setAnalogInput(String monitorAnalogInput) {
+        this.monitorAnalogInput = monitorAnalogInput;
+    }
+
+    public void setMonitorDigitalInput(String monitorDigitalInput) {
+        this.monitorDigitalInput = monitorDigitalInput;
+    }
+    
+    public void setMonitorAnalogInput(String monitorAnalogInput) {
+        this.monitorAnalogInput = monitorAnalogInput;
+    }
+
     public String getDigitalInputTag() {
         return digitalInputTag;
     }
@@ -141,6 +161,18 @@ public class Board {
 
     public String getAutoConfiguration() {
         return autoConfiguration;
+    }
+
+    public String getMonitorRelay() {
+        return monitorRelay;
+    }
+
+    public String getMonitorAnalogInput() {
+        return monitorAnalogInput;
+    }
+
+    public String getMonitorDigitalInput() {
+        return monitorDigitalInput;
     }
 
     public void setAutoConfiguration(String autoConfiguration) {
