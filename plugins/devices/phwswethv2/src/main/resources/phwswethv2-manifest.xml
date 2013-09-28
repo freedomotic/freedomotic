@@ -57,6 +57,9 @@
             <property name="led-tag" value="led"/>
             <property name="analog-input-tag" value="pot"/>
             <property name="digital-input-tag" value="btn"/>
+            <property name="monitor-relay" value="true"/>
+            <property name="monitor-analog-input" value="true"/>
+            <property name="monitor-digital-input" value="true"/>
             <property name="auto-configuration" value="false"/>
             <property name="object.class" value="Light"/>
             <property name="powered" value="ProgettiHwSwV2 reads a relay state change"/>

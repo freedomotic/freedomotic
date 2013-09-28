@@ -88,6 +88,9 @@ public class ProgettiHwSwEthv2 extends Protocol {
             String autoConfiguration;
             String objectClass;
             String alias;
+            String monitorRelay;
+            String monitorAnalogInput;
+            String monitorDigitalInput;
             int portToQuery;
             int digitalInputNumber;
             int analogInputNumber;
@@ -102,11 +105,15 @@ public class ProgettiHwSwEthv2 extends Protocol {
             startingRelay = configuration.getTuples().getIntProperty(i, "starting-relay", 0);
             ledTag = configuration.getTuples().getStringProperty(i, "led-tag", "led");
             digitalInputTag = configuration.getTuples().getStringProperty(i, "digital-input-tag", "btn");
-            analogInputTag = configuration.getTuples().getStringProperty(i, "analog-input-tag", "analog");
+            analogInputTag = configuration.getTuples().getStringProperty(i, "analog-input-tag", "pot");
             autoConfiguration = configuration.getTuples().getStringProperty(i, "auto-configuration", "false");
+            monitorRelay = configuration.getTuples().getStringProperty(i, "monitor-relay", "true");
+            monitorAnalogInput = configuration.getTuples().getStringProperty(i, "monitor-analog-input", "true");
+            monitorDigitalInput = configuration.getTuples().getStringProperty(i, "monitor-digital-input", "true");
             objectClass = configuration.getTuples().getStringProperty(i, "object.class", "Light");
             Board board = new Board(ipToQuery, portToQuery, alias, relayNumber, analogInputNumber,
-                    digitalInputNumber, startingRelay, ledTag, digitalInputTag, analogInputTag, autoConfiguration, objectClass);
+                    digitalInputNumber, startingRelay, ledTag, digitalInputTag, analogInputTag, autoConfiguration, objectClass,
+                    monitorRelay, monitorAnalogInput, monitorDigitalInput);
             boards.add(board);
             // add board object and its alias as key for the hashmap
             devices.put(alias, board);
@@ -226,28 +233,34 @@ public class ProgettiHwSwEthv2 extends Protocol {
         //parses xml
         if (doc != null && board != null) {
             Node n = doc.getFirstChild();
-            //NodeList nl = n.getChildNodes();
-            valueTag(doc, board, board.getRelayNumber(), board.getLedTag(), 0);
-            valueTag(doc, board, board.getDigitalInputNumber(), board.getDigitalInputTag(), 0);
-            valueTag(doc, board, board.getAnalogInputNumber(), board.getAnalogInputTag(), 0);
+            if (board.getMonitorRelay().equalsIgnoreCase("true")) {
+                valueTag(doc, board, board.getRelayNumber(), board.getLedTag(), 0);
+            }
+            if (board.getMonitorDigitalInput().equalsIgnoreCase("true")) {
+                valueTag(doc, board, board.getDigitalInputNumber(), board.getDigitalInputTag(), 0);
+            }
+            if (board.getMonitorAnalogInput().equalsIgnoreCase("true")) {
+                valueTag(doc, board, board.getAnalogInputNumber(), board.getAnalogInputTag(), 0);
+            }
         }
     }
 
     private void valueTag(Document doc, Board board, Integer nl, String tag, int startingRelay) {
         for (int i = startingRelay; i < nl; i++) {
             try {
-                 String tagName = tag + HexIntConverter.convert(i);
+                String tagName = tag + HexIntConverter.convert(i);
                 // control for storing value
                 //if (tag.equalsIgnoreCase(board.getLedTag())) {
-                  //  if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
-                   //     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
-                   //     board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
-                   // }
+                //  if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
+                //     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                //     board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
+                // }
                 //}
                 //else
-                 sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
             } catch (DOMException dOMException) {
                 //do nothing
+                LOG.severe("DOMException " + dOMException);
             } catch (NumberFormatException numberFormatException) {
                 //do nothing
             } catch (NullPointerException ex) {
@@ -262,7 +275,6 @@ public class ProgettiHwSwEthv2 extends Protocol {
             relayLine++;
         }
         //reconstruct freedomotic object address
-        //String address = board.getIpAddress() + ":" + board.getPort() + ":" + relayLine + ":" + tag;
         String address = board.getAlias() + ":" + relayLine + ":" + tag;
         LOG.info("Sending ProgettiHwSw protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
@@ -288,7 +300,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
                 event.addProperty("isOn", "true");
                 event.addProperty("isOpen", "false");
             }
-            
+
         } else {
             // analog inputs status = 0 -> off; status > 0 -> on
             if (tag.equalsIgnoreCase(board.getAnalogInputTag())) {
@@ -299,9 +311,8 @@ public class ProgettiHwSwEthv2 extends Protocol {
                 }
                 event.addProperty("analog.input.value", status);
             }
+
         }
-        //adding some optional information to the event
-        //event.addProperty("relayLine", new Integer(relayLine).toString());
         //publish the event on the messaging bus
         this.notifyEvent(event);
     }
