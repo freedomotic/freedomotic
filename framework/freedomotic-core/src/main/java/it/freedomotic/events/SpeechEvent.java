@@ -26,18 +26,18 @@
 package it.freedomotic.events;
 
 import it.freedomotic.api.EventTemplate;
-
 import it.freedomotic.app.Freedomotic;
-
+import it.freedomotic.bus.BusService;
 import it.freedomotic.core.NaturalLanguageProcessor;
 import it.freedomotic.core.Resolver;
 import it.freedomotic.exceptions.VariableResolutionException;
-
 import it.freedomotic.reactions.Command;
 
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.google.inject.Inject;
 
 /**
  * Channel <b>app.event.sensor.speech</b> informs that a speech recognition
@@ -51,6 +51,9 @@ public class SpeechEvent
 
     private static final long serialVersionUID = -3856465031783898046L;
 
+    @Inject
+    private BusService busService;
+    
 	public SpeechEvent(Object source, String phrase) {
         this.setSender(source);
 
@@ -67,7 +70,7 @@ public class SpeechEvent
 
             try {
                 Command resolvedCommand = resolver.resolve(c);
-                Freedomotic.sendCommand(resolvedCommand);
+                busService.send(resolvedCommand);
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(SpeechEvent.class.getName()).log(Level.SEVERE, null, ex);
             } catch (VariableResolutionException ex) {

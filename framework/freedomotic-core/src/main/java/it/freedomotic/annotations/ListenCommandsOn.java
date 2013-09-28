@@ -31,9 +31,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
- * @author enrico
+ * @deprecated Annotations facility disabled in Freedomotic Bender version 
  */
+@Deprecated
 @Target( ElementType.METHOD)
 @Retention( RetentionPolicy.RUNTIME)
 public @interface ListenCommandsOn {

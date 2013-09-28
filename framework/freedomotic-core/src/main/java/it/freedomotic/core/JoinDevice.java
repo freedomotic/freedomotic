@@ -25,17 +25,20 @@
  */
 package it.freedomotic.core;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import it.freedomotic.bus.BusConsumer;
-import it.freedomotic.bus.CommandChannel;
+import it.freedomotic.bus.BusMessagesListener;
 import it.freedomotic.environment.EnvironmentPersistence;
 import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  *
@@ -45,8 +48,10 @@ import javax.jms.ObjectMessage;
 public final class JoinDevice
         implements BusConsumer {
 
-    private static final String CHANNEL_URL = "app.objects.create";
-    private static final CommandChannel channel = new CommandChannel(CHANNEL_URL);
+	private static final String MESSAGING_CHANNEL ="app.objects.create";
+	
+	private static BusMessagesListener listener;
+
     //dependencies
     private final EnvironmentPersistence environmentPersistence;
 
@@ -57,16 +62,16 @@ public final class JoinDevice
     }
 
     static String getMessagingChannel() {
-        return CHANNEL_URL;
+        return MESSAGING_CHANNEL;
     }
 
     /**
      * Register one or more channels to listen to
      */
-    private void register() {
-        channel.setHandler(this);
-        channel.consumeFrom(getMessagingChannel());
-    }
+	private void register() {
+		listener = new BusMessagesListener(this);
+		listener.consumeCommandFrom(getMessagingChannel());
+	}
 
     @Override
     public void onMessage(ObjectMessage message) {

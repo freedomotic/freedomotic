@@ -19,18 +19,19 @@
  */
 package it.freedomotic.api;
 
-import com.google.inject.Inject;
 import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.bus.BusConsumer;
-import it.freedomotic.bus.EventChannel;
-
+import it.freedomotic.bus.BusService;
+import it.freedomotic.bus.BusMessagesListener;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.security.Auth;
+
 import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.jms.ObjectMessage;
+
+import com.google.inject.Inject;
 
 /**
  *
@@ -39,13 +40,20 @@ import javax.jms.ObjectMessage;
 @Deprecated
 public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
 
-    private static final String DEFAULT_QUEUE_PREFIX = "app.sensor.";
+	private static final Logger LOG = Logger.getLogger(Sensor.class.getName());
+
+	private static final String DEFAULT_QUEUE_PREFIX = "app.sensor.";
     private static final String SENSORS_QUEUE_DOMAIN = "app.sensor.";
-    private boolean isPollingSensor = true;
-    private EventChannel channel;
-    private static final Logger LOG = Logger.getLogger(Sensor.class.getName());
+    
     @Inject
     private Auth auth;
+
+    private BusService busService;
+    
+    private boolean isPollingSensor = true;
+    
+    //TODO Check why is initialized
+    private BusMessagesListener listener;
 
     protected abstract void onInformationRequest(/*TODO: define parameters*/) throws IOException, UnableToExecuteException;
 
@@ -53,13 +61,13 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
 
     public Sensor(String pluginName, String manifest) {
         super(pluginName, manifest);
+		this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
         register();
         setAsNotPollingSensor();
     }
 
     private void register() {
-        channel = new EventChannel();
-        channel.setHandler(this);
+    	listener = new BusMessagesListener(this);
     }
 
     public String listenMessagesOn() {
@@ -86,7 +94,7 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
         if (isRunning) {
             LOG.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":"
                     + ev.getPayload().toString());
-            channel.send(ev, destination);
+            busService.send(ev, destination);
         }
     }
 

@@ -19,22 +19,32 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package it.freedomotic.bus;
-
-import javax.jms.ObjectMessage;
+package it.freedomotic.bus.impl;
 
 /**
- * Interface for bus messages consumers implementations
+ * Destination types enumeration
  * 
  * @author Freedomotic Team
- *
+ * 
  */
-public interface BusConsumer {
-	
+public enum DestinationType {
+
+	QUEUE(0), TEMP_QUEUE(1), TOPIC(2);
+
+	private int code;
+
+	private DestinationType(int code) {
+
+		this.code = code;
+	}
+
 	/**
-	 * Passes an {@link ObjectMessage} to the listener
+	 * Getter method for code
 	 * 
-	 * @param message
+	 * @return the code (as int value)
 	 */
-    public void onMessage(ObjectMessage message);
+	public int getCode() {
+
+		return code;
+	}
 }

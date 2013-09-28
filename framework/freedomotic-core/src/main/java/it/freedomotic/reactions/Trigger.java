@@ -21,17 +21,11 @@
  */
 package it.freedomotic.reactions;
 
-import com.google.inject.Inject;
-
 import it.freedomotic.api.EventTemplate;
-
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.app.Profiler;
-
 import it.freedomotic.bus.BusConsumer;
-import it.freedomotic.bus.EventChannel;
-
-import it.freedomotic.core.Resolver;
+import it.freedomotic.bus.BusMessagesListener;
 import it.freedomotic.core.TriggerCheck;
 
 import java.text.DateFormat;
@@ -44,13 +38,13 @@ import java.util.logging.Logger;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
+import com.google.inject.Inject;
+
 /**
  *
  * @author enrico
  */
-public final class Trigger
-        implements BusConsumer,
-        Cloneable {
+public final class Trigger implements BusConsumer, Cloneable {
 
     private String name;
     private String description;
@@ -69,7 +63,7 @@ public final class Trigger
     private long maxExecutions;
     private long numberOfExecutions;
     private long suspensionStart;
-    private EventChannel busChannel;
+    private BusMessagesListener listener;
     //dependencies
     @Inject
     private TriggerCheck checker;
@@ -77,15 +71,15 @@ public final class Trigger
     public Trigger() {
     }
 
-    public void register() {
-        busChannel = new EventChannel();
-        busChannel.setHandler(this);
-        LOG.config("Registering the trigger named '" + getName() + "'");
-        busChannel.consumeFrom(channel);
-        numberOfExecutions = 0;
-        suspensionStart = System.currentTimeMillis();
-        Freedomotic.INJECTOR.injectMembers(this);
-    }
+	public void register() {
+		
+		LOG.info("Registering the trigger named '" + getName() + "'");
+		listener = new BusMessagesListener(this);
+		listener.consumeEventFrom(channel);
+		numberOfExecutions = 0;
+		suspensionStart = System.currentTimeMillis();
+		Freedomotic.INJECTOR.injectMembers(this);
+	}
 
     public void setName(String name) {
         this.name = name;
@@ -291,7 +285,7 @@ public final class Trigger
         clone.setDescription(getDescription());
 
         Payload clonePayload = new Payload();
-        Iterator it = getPayload().iterator();
+        Iterator<Statement> it = getPayload().iterator();
 
         while (it.hasNext()) {
             Statement original = (Statement) it.next();
@@ -312,11 +306,11 @@ public final class Trigger
         return clone;
     }
 
-    public void unregister() {
-        if (busChannel != null) {
-            busChannel.unsubscribe();
-        }
-    }
+	public void unregister() {
+		if (listener != null) {
+			listener.unsubscribe();
+		}
+	}
 
     public String getUUID() {
         return uuid;

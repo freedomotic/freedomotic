@@ -1,74 +1,60 @@
-/*Copyright 2009 Enrico Nicoletti
- eMail: enrico.nicoletti84@gmail.com
-
- This file is part of Freedomotic.
-
- Freedomotic is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- any later version.
-
- Freedomotic is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with EventEngine; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team
+ * http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This Program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Freedomotic; see the file COPYING.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.app;
 
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import it.freedomotic.annotations.ListenEventsOn;
 import it.freedomotic.api.API;
-
 import it.freedomotic.api.Client;
 import it.freedomotic.api.EventTemplate;
-import it.freedomotic.bus.AbstractBusConnector;
+import it.freedomotic.bus.BootStatus;
 import it.freedomotic.bus.BusConsumer;
-
-import it.freedomotic.bus.CommandChannel;
-import it.freedomotic.bus.EventChannel;
-
+import it.freedomotic.bus.BusService;
+import it.freedomotic.bus.BusMessagesListener;
+import it.freedomotic.bus.StompDispatcher;
 import it.freedomotic.core.BehaviorManager;
-
 import it.freedomotic.environment.EnvironmentDAO;
 import it.freedomotic.environment.EnvironmentDAOFactory;
 import it.freedomotic.environment.EnvironmentLogic;
 import it.freedomotic.environment.EnvironmentPersistence;
-
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
-
 import it.freedomotic.exceptions.DaoLayerException;
 import it.freedomotic.exceptions.FreedomoticException;
 import it.freedomotic.exceptions.PluginLoadingException;
 import it.freedomotic.marketplace.ClassPathUpdater;
 import it.freedomotic.marketplace.IPluginCategory;
 import it.freedomotic.marketplace.MarketPlaceService;
-
 import it.freedomotic.model.ds.ColorList;
 import it.freedomotic.model.environment.Environment;
-
 import it.freedomotic.objects.EnvObjectPersistence;
-
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.plugins.filesystem.PluginsManager;
-
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.ReactionPersistence;
 import it.freedomotic.reactions.TriggerPersistence;
 import it.freedomotic.security.Auth;
-
 import it.freedomotic.serial.SerialConnectionProvider;
-
 import it.freedomotic.util.Info;
 import it.freedomotic.util.LogFormatter;
-import it.freedomotic.util.I18n.I18n;
 
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -77,20 +63,26 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.SubjectThreadState;
 import org.apache.shiro.util.ThreadState;
+
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 /**
  * This is the starting class of the project
@@ -99,14 +91,13 @@ import org.apache.shiro.util.ThreadState;
  */
 public class Freedomotic implements BusConsumer {
 
-    private static String INSTANCE_ID;
     @Deprecated
     public static final Logger logger = Logger.getLogger("it.freedomotic");
     //this should replace Freedomotic.logger reference
     private static final Logger LOG = Logger.getLogger(Freedomotic.class.getName());
-    //TODO: remove this, any plugin should have access to his own bus instance
-    private static EventChannel eventChannel = new EventChannel();
-    private static CommandChannel commandChannel = new CommandChannel();
+
+    private static String INSTANCE_ID;
+    
     public static ArrayList<IPluginCategory> onlinePluginCategories;
     /**
      * Should NOT be used. Reserved for una tantum internal freedomotic core use
@@ -120,6 +111,10 @@ public class Freedomotic implements BusConsumer {
     private AppConfig config;
     private Auth auth;
     private API api;
+    private BusMessagesListener listener;
+
+    // TODO remove static modifier once static methods sendEvent & sendCommand are erased.
+    private static BusService busService;
 
     /**
      *
@@ -140,7 +135,7 @@ public class Freedomotic implements BusConsumer {
         this.config = config;
         this.api = api;
         this.auth = api.getAuth();
-    }
+   }
 
     public void start() throws FreedomoticException {
         /**
@@ -160,19 +155,41 @@ public class Freedomotic implements BusConsumer {
             Subject SysSubject = new Subject.Builder().principals(principals).buildSubject();
             ThreadState threadState = new SubjectThreadState(SysSubject);
             threadState.bind();
-            logger.info("Booting as user:" + SecurityUtils.getSubject().getPrincipal());
+            LOG.info("Booting as user:" + SecurityUtils.getSubject().getPrincipal());
         }
 
         String resourcesPath =
                 new File(Info.getApplicationPath()
                 + config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
-        logger.info("\nOS: " + System.getProperty("os.name") + "\n" + api.getI18n().msg("architecture") + ": "
+        LOG.info("\nOS: " + System.getProperty("os.name") + "\n" + api.getI18n().msg("architecture") + ": "
                 + System.getProperty("os.arch") + "\n" + "OS Version: " + System.getProperty("os.version")
                 + "\n" + api.getI18n().msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
                 + System.getProperty("java.home") + "\n" + "Java Library Path: {"
                 + System.getProperty("java.library.path") + "}\n" + "Program path: "
                 + System.getProperty("user.dir") + "\n" + "Java Version: " + System.getProperty("java.version")
                 + "\n" + "Resources Path: " + resourcesPath);
+
+        // Initialize bus here!
+        busService = INJECTOR.getInstance(BusService.class);
+        busService.init();
+
+        // register listener
+    	this.listener = new BusMessagesListener(this);
+        // this class is a BusConsumer too
+    	// listen for exit signal (an event) and call onExit method if received
+        listener.consumeEventFrom("app.event.system.exit");
+     
+        // Stop on initialization error.
+        final BootStatus currentStatus = BootStatus.getCurrentStatus();
+		if (!BootStatus.STARTED.equals(currentStatus)) {
+        	
+        	kill(currentStatus.getCode());
+        }
+        
+		// just for testing, don't mind it
+		new StompDispatcher(); 
+
+		// TODO change this object to an enum and do init in another location.
         new ColorList(); //initialize an ordered list of colors used for various purposes, eg: people colors
 
         /**
@@ -201,7 +218,7 @@ public class Freedomotic implements BusConsumer {
                             .browse(new File(Info.getApplicationPath() + "/log/freedomotic.html").toURI());
                 }
             } catch (IOException ex) {
-                Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
             }
         }
 
@@ -226,9 +243,9 @@ public class Freedomotic implements BusConsumer {
             try {
                 java.awt.Desktop.getDesktop().browse(new URI("www.freedomotic.com"));
             } catch (URISyntaxException ex) {
-                Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
-                Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
             }
         }
 
@@ -266,7 +283,7 @@ public class Freedomotic implements BusConsumer {
         try {
             ClassPathUpdater.add(new File(Info.getApplicationPath() + "/plugins/providers/"));
         } catch (Exception ex) {
-            Logger.getLogger(Freedomotic.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
 
         /**
@@ -366,7 +383,7 @@ public class Freedomotic implements BusConsumer {
         double MB = 1024 * 1024;
         Runtime runtime = Runtime.getRuntime();
         double memory = ((runtime.totalMemory() - runtime.freeMemory()) / MB);
-        logger.config("Freedomotic + data uses " + memory + "MB");
+        LOG.config("Freedomotic + data uses " + memory + "MB");
 
         for (Client plugin : clientStorage.getClients()) {
             String startupTime = plugin.getConfiguration().getStringProperty("startup-time", "undefined");
@@ -377,24 +394,17 @@ public class Freedomotic implements BusConsumer {
                 PluginHasChanged event = new PluginHasChanged(this,
                         plugin.getName(),
                         PluginActions.DESCRIPTION);
-                sendEvent(event);
+                busService.send(event);
 
                 double snapshot = (((runtime.totalMemory() - runtime.freeMemory()) / MB) - memory);
-                logger.config(plugin.getName() + " uses " + snapshot + "MB of memory");
+                LOG.config(plugin.getName() + " uses " + snapshot + "MB of memory");
                 memory += snapshot;
             }
         }
 
-        logger.config("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
+        LOG.config("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
 
-        //listen for exit signal (an event) and call onExit method if received
-        for (Method method : Freedomotic.class.getDeclaredMethods()) {
-            if ("onExit".equals(method.getName())) {
-                eventChannel.setHandler(this);
-                eventChannel.consumeFrom("app.event.system.exit", method);
-            }
-        }
-        logger.info("Freedomotic startup completed");
+        LOG.info("Freedomotic startup completed");
     }
 
     public void loadDefaultEnvironment()
@@ -442,22 +452,19 @@ public class Freedomotic implements BusConsumer {
         new ColorList();
     }
 
-    @Override
-    public void onMessage(ObjectMessage message) {
-        //do nothing
-    }
-
     private void loadAppConfig() {
         config = config.load();
         LOG.info(config.toString());
     }
 
+    // FIXME This shouldn't be done through this method
     public static void sendEvent(EventTemplate event) {
-        eventChannel.send(event);
+        busService.send(event);
     }
 
+    // FIXME This shouldn't be done through this method
     public static Command sendCommand(final Command command) {
-        return commandChannel.send(command);
+        return busService.send(command);
     }
 
     /**
@@ -488,14 +495,31 @@ public class Freedomotic implements BusConsumer {
         }
     }
 
-    @ListenEventsOn(channel = "app.event.system.exit")
+    @Override
+	public void onMessage(ObjectMessage message) {
+
+		Object payload = null;
+
+		try {
+			payload = message.getObject();
+
+			if (payload instanceof EventTemplate) {
+				final EventTemplate event = (EventTemplate) payload;
+				onExit(event);
+			}
+		} catch (JMSException ex) {
+			LOG.log(Level.SEVERE, null, ex);
+		}
+	}
+
     public void onExit(EventTemplate event) {
         LOG.info("Received exit signal...");
         //stop all plugins
         for (Client plugin : clientStorage.getClients()) {
             plugin.stop();
         }
-        AbstractBusConnector.disconnect();
+        BootStatus.setCurrentStatus(BootStatus.STOPPING);
+        busService.destroy();
         config.save();
 
         String savedDataRoot;
@@ -535,9 +559,15 @@ public class Freedomotic implements BusConsumer {
         System.exit(0);
     }
 
-    public static void kill() {
-        System.exit(0);
-    }
+	public static void kill() {
+
+		kill(0);
+	}
+
+	public static void kill(int status) {
+
+		System.exit(status);
+	}
 
     public static String getStackTraceInfo(Throwable t) {
         StringWriter sw = new StringWriter();

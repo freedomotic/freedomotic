@@ -19,12 +19,9 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.freedomotic.bus;
 
+import it.freedomotic.app.Freedomotic;
 import it.freedomotic.reactions.Command;
 
 import java.util.logging.Level;
@@ -41,13 +38,16 @@ import javax.jms.ObjectMessage;
  */
 public class StompDispatcher implements BusConsumer {
 
-    private static CommandChannel channel;
+    private static BusMessagesListener listener;
+
+	private BusService busService;
 
     static String getMessagingChannel() {
         return "app.data.request";
     }
 
     public StompDispatcher() {
+    	this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
         register();
     }
 
@@ -55,9 +55,9 @@ public class StompDispatcher implements BusConsumer {
      * Register one or more channels to listen to
      */
     private void register() {
-        channel = new CommandChannel();
-        channel.setHandler(this);
-        channel.consumeFrom(getMessagingChannel());
+
+    	listener = new BusMessagesListener(this);
+        listener.consumeCommandFrom(getMessagingChannel());
     }
 
     @Override
@@ -68,10 +68,9 @@ public class StompDispatcher implements BusConsumer {
             //XStream xstream = FreedomXStream.getXstream();
             //String xml = xstream.toXML(Freedomotic.environment.getPojo());
             System.out.println("XML Message from STOMP received");
-            channel.reply(command, message.getJMSReplyTo(), message.getJMSCorrelationID());
+            busService.reply(command, message.getJMSReplyTo(), message.getJMSCorrelationID());
         } catch (JMSException ex) {
             Logger.getLogger(StompDispatcher.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    private static final Logger LOG = Logger.getLogger(StompDispatcher.class.getName());
 }

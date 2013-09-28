@@ -4,22 +4,16 @@
  */
 package it.freedomotic.app;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
-
 import it.freedomotic.api.API;
 import it.freedomotic.api.APIStandardImpl;
-
+import it.freedomotic.bus.BusService;
+import it.freedomotic.bus.impl.BusServiceImpl;
 import it.freedomotic.core.JoinPlugin;
 import it.freedomotic.core.TriggerCheck;
-
 import it.freedomotic.environment.EnvironmentDAO;
 import it.freedomotic.environment.EnvironmentDAOFactory;
 import it.freedomotic.environment.EnvironmentDAOXstream;
-
 import it.freedomotic.events.ProtocolRead;
-
 import it.freedomotic.plugins.ClientStorage;
 import it.freedomotic.plugins.ClientStorageInMemory;
 import it.freedomotic.plugins.filesystem.PluginsManager;
@@ -28,6 +22,10 @@ import it.freedomotic.security.Auth;
 import it.freedomotic.security.AuthImpl;
 import it.freedomotic.util.I18n.I18n;
 import it.freedomotic.util.I18n.I18nImpl;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 /**
  *
@@ -54,5 +52,7 @@ public class DependenciesInjector
         
         bind(I18n.class).to(I18nImpl.class).in(Singleton.class);
         //requestStaticInjection(I18n.class);
+        
+        bind(BusService.class).to(BusServiceImpl.class).in(Singleton.class);
     }
 }

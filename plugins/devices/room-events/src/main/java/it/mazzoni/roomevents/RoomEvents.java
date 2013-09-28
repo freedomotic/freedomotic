@@ -17,7 +17,6 @@
  */
 package it.mazzoni.roomevents;
 
-import it.freedomotic.annotations.ListenEventsOn;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
@@ -35,6 +34,7 @@ import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
+
 import java.io.IOException;
 import java.util.HashSet;
 
@@ -59,6 +59,7 @@ public class RoomEvents extends Protocol {
     protected void onStart() {
         Freedomotic.logger.info("RoomEvents plugin is started");
         this.setDescription("Started");
+        addEventListener("app.event.sensor.object.behavior.change");
         addEnvCommands();
         addRoomCommands();
     }
@@ -115,8 +116,27 @@ public class RoomEvents extends Protocol {
 
     @Override
     protected void onEvent(EventTemplate event) {
-        //don't mind this method for now
-        throw new UnsupportedOperationException("Not supported yet.");
+        Freedomotic.logger.info("ROOMEVENT: received event " + event.toString()); 
+        // just to see what properties you are receiving
+        // do here what you have now in onCommand and send your room status event
+        // search related room
+        String objName = event.getProperty("object.name");
+
+        boolean found = false;
+        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+            for (Room z : env.getRooms()) {
+                for (EnvObject obj : z.getPojo().getObjects()) {
+                    if (obj.getName().equalsIgnoreCase(objName)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    notifyRoomStatus(z);
+                    break;
+                }
+            }
+        }
     }
 
     private void notifyRoomStatus(Room z) {
@@ -218,30 +238,6 @@ public class RoomEvents extends Protocol {
             tags.add(env.getPojo().getName());
             c.setTags(tags);
             CommandPersistence.add(c);
-        }
-    }
-
-    @ListenEventsOn(channel = "app.event.sensor.object.behavior.change")
-    public void onObjectStateChanges(EventTemplate event) {
-        Freedomotic.logger.info("ROOMEVENT: received event " + event.toString()); //just to see what properties you are receiving
-        //do here what you have now in onCommand and send your room status event
-        // search related room
-        String objName = event.getProperty("object.name");
-
-        boolean found = false;
-        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
-            for (Room z : env.getRooms()) {
-                for (EnvObject obj : z.getPojo().getObjects()) {
-                    if (obj.getName().equalsIgnoreCase(objName)) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (found) {
-                    notifyRoomStatus(z);
-                    break;
-                }
-            }
         }
     }
 }

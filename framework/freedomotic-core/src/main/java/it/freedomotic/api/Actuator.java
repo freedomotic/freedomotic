@@ -19,21 +19,14 @@
  */
 package it.freedomotic.api;
 
-import com.google.inject.Inject;
 import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.bus.BusConsumer;
-import it.freedomotic.bus.CommandChannel;
-import it.freedomotic.bus.EventChannel;
-
+import it.freedomotic.bus.BusService;
+import it.freedomotic.bus.BusMessagesListener;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
-
 import it.freedomotic.exceptions.UnableToExecuteException;
-
 import it.freedomotic.reactions.Command;
-
-import it.freedomotic.security.Auth;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -45,22 +38,26 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
+import com.google.inject.Inject;
+
 /**
  *
  * @author Enrico Nicoletti
  */
 @Deprecated
-public abstract class Actuator
-        extends Plugin
-        implements BusConsumer {
+public abstract class Actuator extends Plugin implements BusConsumer {
+	
+	private static final Logger LOG = Logger.getLogger(Actuator.class.getName());
 
     private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
-    private CommandChannel channel;
-    private EventChannel eventChannel;
+
     private volatile Destination lastDestination;
-    private ExecutorService executor;
-    private static final Logger LOG = Logger.getLogger(Actuator.class.getName());
     
+    private BusMessagesListener listener;
+    
+    private ExecutorService executor;
+    
+    private BusService busService;
     
     public Actuator(String pluginName, String manifest) {
         super(pluginName, manifest);
@@ -70,22 +67,20 @@ public abstract class Actuator
 //        } else {
         executor = Executors.newSingleThreadExecutor();
 //        }
+		this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
     }
 
-    private void register() {
-        channel = new CommandChannel();
-        eventChannel = new EventChannel();
-        eventChannel.setHandler(this);
-        channel.setHandler(this);
-        channel.consumeFrom(listenMessagesOn());
-    }
+	private void register() {
+		listener = new BusMessagesListener(this);
+		listener.consumeCommandFrom(listenMessagesOn());
+	}
 
     public void addEventListener(String listento) {
-        eventChannel.consumeFrom(listento);
+    	listener.consumeEventFrom(listento);
     }
 
     public void addCommandListener(String listento) {
-        channel.consumeFrom(listento);
+    	listener.consumeCommandFrom(listento);
     }
 
     public String listenMessagesOn() {
@@ -124,7 +119,7 @@ public abstract class Actuator
                     isRunning = true;
                     LOG.info("Actuator " + getName() + " started.");
                     PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.START);
-                    Freedomotic.sendEvent(change);
+                    busService.send(change);
                 }
             };
             getApi().getAuth().pluginExecutePrivileged(this, action);
@@ -141,7 +136,7 @@ public abstract class Actuator
                     onStop();
                     LOG.info("Actuator " + getName() + " stopped.");
                     PluginHasChanged change = new PluginHasChanged(this, getName(), PluginActions.STOP);
-                    Freedomotic.sendEvent(change);
+                    busService.send(change);
                 }
             };
             getApi().getAuth().pluginExecutePrivileged(this, action);
@@ -169,11 +164,11 @@ public abstract class Actuator
                             lastDestination = message.getJMSReplyTo();
                             onCommand(command);
                         } catch (JMSException ex) {
-                            Logger.getLogger(Actuator.class.getName()).log(Level.SEVERE, null, ex);
+                            LOG.log(Level.SEVERE, null, ex);
                         } catch (IOException ex) {
-                            Logger.getLogger(Actuator.class.getName()).log(Level.SEVERE, null, ex);
+                            LOG.log(Level.SEVERE, null, ex);
                         } catch (UnableToExecuteException ex) {
-                            Logger.getLogger(Actuator.class.getName()).log(Level.SEVERE, null, ex);
+                            LOG.log(Level.SEVERE, null, ex);
                         }
                     }
                 };
@@ -185,7 +180,7 @@ public abstract class Actuator
                 }
             }
         } catch (JMSException ex) {
-            Logger.getLogger(Actuator.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -197,7 +192,7 @@ public abstract class Actuator
      */
     public void sendBack(Command command) {
         if (command.getReplyTimeout() > 0) { //a sendBack is expected
-            channel.reply(command, lastDestination, "-1"); //sends back the command
+        	busService.reply(command, lastDestination, "-1"); //sends back the command
         }
     }
 }

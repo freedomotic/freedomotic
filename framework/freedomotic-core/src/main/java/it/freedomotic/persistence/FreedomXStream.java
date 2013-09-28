@@ -108,7 +108,7 @@ public class FreedomXStream /*implements FrameTranslator*/ {
              */
             xstream.alias("trigger", Trigger.class);
             xstream.omitField(Trigger.class, "suspensionStart");
-            xstream.omitField(Trigger.class, "busChannel");
+            xstream.omitField(Trigger.class, "listener");
             xstream.omitField(Trigger.class, "checker");
             //xstream.registerConverter(new PayloadConverter());
             xstream.alias("payload", Payload.class);

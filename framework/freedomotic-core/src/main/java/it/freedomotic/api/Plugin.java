@@ -23,12 +23,10 @@ import com.google.inject.Inject;
 
 import it.freedomotic.app.ConfigPersistence;
 import it.freedomotic.app.Freedomotic;
-
+import it.freedomotic.bus.BusService;
 import it.freedomotic.events.PluginHasChanged;
 import it.freedomotic.events.PluginHasChanged.PluginActions;
-
 import it.freedomotic.model.ds.Config;
-
 import it.freedomotic.util.EqualsUtil;
 import it.freedomotic.util.I18n.I18n;
 import it.freedomotic.util.Info;
@@ -36,6 +34,7 @@ import it.freedomotic.util.Info;
 import java.io.*;
 
 import javax.swing.JFrame;
+
 import java.util.logging.Logger;
 
 public class Plugin
@@ -63,19 +62,22 @@ public class Plugin
     @Inject
     private API api;
 
+    private BusService busService;
+
     public Plugin(String pluginName, String manifestPath) {
-        setName(pluginName);
+        this(pluginName);
         path = new File(Info.getDevicesPath() + manifestPath);
         init(path);        
     }
 
     public Plugin(String pluginName, Config manifest) {
-        setName(pluginName);
+        this(pluginName);
         init(manifest);
     }
 
     public Plugin(String pluginName) {
         setName(pluginName);
+        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
     }
 
     public File getFile() {
@@ -100,7 +102,7 @@ public class Plugin
             PluginHasChanged event = new PluginHasChanged(this,
                     this.getName(),
                     PluginActions.DESCRIPTION);
-            Freedomotic.sendEvent(event);
+            busService.send(event);
         }
     }
 
