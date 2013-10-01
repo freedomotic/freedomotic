@@ -250,14 +250,26 @@ public class ProgettiHwSwEthv2 extends Protocol {
             try {
                 String tagName = tag + HexIntConverter.convert(i);
                 // control for storing value
-                //if (tag.equalsIgnoreCase(board.getLedTag())) {
-                //  if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
-                //     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
-                //     board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
-                // }
-                //}
+                if (tag.equalsIgnoreCase(board.getLedTag())) {
+                  if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
+                     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                     board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
+                 }
+                }
+                if (tag.equalsIgnoreCase(board.getAnalogInputTag())) {
+                  if (!(board.getAnalogInputValue(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
+                     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                     board.setAnalogInputValue(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
+                 }
+                }
+                 if (tag.equalsIgnoreCase(board.getDigitalInputTag())) {
+                  if (!(board.getDigitalInputValue(i) == doc.getElementsByTagName(tagName).item(0).getTextContent())) {
+                     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                     board.setDigitalInputValue(i, doc.getElementsByTagName(tagName).item(0).getTextContent());
+                 }
+                }
                 //else
-                sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                //sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
             } catch (DOMException dOMException) {
                 //do nothing
                 LOG.severe("DOMException " + dOMException);
