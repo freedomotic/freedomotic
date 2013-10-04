@@ -17,6 +17,7 @@ import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.EnvObjectPersistence;
 
 import it.freedomotic.plugins.ClientStorage;
+import it.freedomotic.plugins.filesystem.PluginsManager;
 import it.freedomotic.security.Auth;
 import it.freedomotic.util.I18n.I18n;
 
@@ -43,6 +44,7 @@ public class APIStandardImpl
     private final AppConfig config;
     private final Auth auth;
     private final I18n i18n;
+    private final PluginsManager plugManager;
 
     @Inject
     public APIStandardImpl(
@@ -51,13 +53,15 @@ public class APIStandardImpl
             ClientStorage clientStorage,
             AppConfig config,
             Auth auth,
-            I18n i18n) {
+            I18n i18n,
+            PluginsManager plugManager) {
         this.environment = environment;
         this.object = object;
         this.clientStorage = clientStorage;
         this.config = config;
         this.auth = auth;
         this.i18n = i18n;
+        this.plugManager = plugManager;
         System.out.println("auth in apiimpl is " + this.auth);
     }
 
@@ -153,5 +157,10 @@ public class APIStandardImpl
     @Override
     public I18n getI18n() {
         return i18n;
+    }
+
+    @Override
+    public PluginsManager getPluginManager() {
+        return plugManager;
     }
 }

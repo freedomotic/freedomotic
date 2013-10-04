@@ -39,8 +39,7 @@ public class PluginConfigure
     private ClientStorage clients; 
     private final API api;
     private final I18n I18n;
-    
-    @Inject
+        
     private PluginsManager pluginsManager;
     private static HashMap<Plugin, String> predefined = new HashMap<Plugin, String>();
 
@@ -51,6 +50,7 @@ public class PluginConfigure
         this.api=api;
         this.I18n = api.getI18n();
         this.clients = api.getClientStorage();
+        this.pluginsManager = api.getPluginManager();
         initComponents();
         populatePluginsList();
         //add listener to category selection changes
