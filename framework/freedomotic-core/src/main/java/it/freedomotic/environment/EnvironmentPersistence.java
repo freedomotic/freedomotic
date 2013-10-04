@@ -57,11 +57,11 @@ public final class EnvironmentPersistence {
 
     private static List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
     private ClientStorage clientStorage;
-    
+
     @Inject
     public EnvironmentPersistence(ClientStorage clientStorage) {
         //disable instance creation
-        this.clientStorage = clientStorage;        
+        this.clientStorage = clientStorage;
     }
 
     @RequiresPermissions("environments:save")
@@ -116,15 +116,15 @@ public final class EnvironmentPersistence {
         // This filter only returns object files
         FileFilter objectFileFileter =
                 new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xenv")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+                    @Override
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xenv")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
 
         File[] files = folder.listFiles(objectFileFileter);
 
@@ -156,15 +156,15 @@ public final class EnvironmentPersistence {
         // This filter only returns env files
         FileFilter envFileFilter =
                 new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xenv")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+                    @Override
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xenv")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
 
         File[] files = folder.listFiles(envFileFilter);
 
@@ -229,7 +229,7 @@ public final class EnvironmentPersistence {
         ObjectPluginPlaceholder objectPlugin = (ObjectPluginPlaceholder) clientStorage.get(clazz);
 
         if (objectPlugin == null) {
-            LOG.warning("Doesen't exist an object class called " + clazz);
+            LOG.warning("Doesn't exist an object class called " + clazz);
 
             return null;
         }
@@ -267,8 +267,10 @@ public final class EnvironmentPersistence {
                     //map object behaviors to hardware triggers
                     for (Behavior behavior : loaded.getPojo().getBehaviors()) {
                         String triggerName = (String) tuple.get(behavior.getName());
-                        loaded.addTriggerMapping(TriggerPersistence.getTrigger(triggerName),
-                                behavior.getName());
+                        if (triggerName != null) {
+                            loaded.addTriggerMapping(TriggerPersistence.getTrigger(triggerName),
+                                    behavior.getName());
+                        }
                     }
 
                     for (String action : loaded.getPojo().getActions().stringPropertyNames()) {
@@ -398,13 +400,13 @@ public final class EnvironmentPersistence {
 
     @RequiresPermissions("environments:read")
     public static EnvironmentLogic getEnvByUUID(String UUID) {
-   //     if (auth.isPermitted("environments:read:" + UUID)) {
-            for (EnvironmentLogic env : environments) {
-                if (env.getPojo().getUUID().equals(UUID)) {
-                    return env;
-                }
+        //     if (auth.isPermitted("environments:read:" + UUID)) {
+        for (EnvironmentLogic env : environments) {
+            if (env.getPojo().getUUID().equals(UUID)) {
+                return env;
             }
-     //   }
+        }
+        //   }
         return null;
     }
     private static final Logger LOG = Logger.getLogger(EnvironmentPersistence.class.getName());

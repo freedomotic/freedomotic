@@ -250,6 +250,7 @@ public class PluginConfigure
                 JOptionPane.showMessageDialog(this,
                         I18n.msg("warn_reset_old_config"));
             } else {
+                clients.get(name).start();
                 this.dispose();
             }
         } catch (Exception ex) {

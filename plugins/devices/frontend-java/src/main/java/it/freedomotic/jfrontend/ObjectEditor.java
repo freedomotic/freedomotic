@@ -724,7 +724,7 @@ public class ObjectEditor
         int result =
                 JOptionPane.showConfirmDialog(null,
                 I18n.msg("confirm_object_delete"),
-                I18n.msg("configm_deletion_title"),
+                I18n.msg("confirm_deletion_title"),
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
