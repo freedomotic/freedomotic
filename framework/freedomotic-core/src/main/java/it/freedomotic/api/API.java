@@ -11,6 +11,7 @@ import it.freedomotic.environment.EnvironmentLogic;
 
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.plugins.ClientStorage;
+import it.freedomotic.plugins.filesystem.PluginsManager;
 import it.freedomotic.security.Auth;
 import it.freedomotic.util.I18n.I18n;
 
@@ -68,6 +69,8 @@ public interface API {
     Collection<Client> getClients();
 
     Collection<Client> getClients(String filter);
+    
+    PluginsManager getPluginManager();
 
     //Resources API
     /**
