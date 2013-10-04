@@ -247,7 +247,17 @@ public class Ipx800 extends Protocol {
                         board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
                     }
                 }
-
+                else if (tag.equalsIgnoreCase("btn")) {
+                    
+                }
+                else if (tag.equalsIgnoreCase("an") || tag.equalsIgnoreCase("analog")) {
+                    if (tag.equalsIgnoreCase("an")) tagName = tag + (i+1);
+                    if (board.getanalogInputValue(i) != 
+                            Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()) ){
+                        sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                        board.setAnalogInputValue(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
+                    }
+                }
                 // sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
             } catch (DOMException dOMException) {
                 //do nothing
@@ -296,12 +306,14 @@ public class Ipx800 extends Protocol {
                     event.addProperty("isOn", "true");
                 }
                 event.addProperty("input.value", status);
+                
             }
         }
         //adding some optional information to the event
         event.addProperty("boardIP", board.getIpAddress());
         event.addProperty("boardPort", new Integer(board.getPort()).toString());
         event.addProperty("relayLine", new Integer(relayLine).toString());
+        
         //publish the event on the messaging bus
         this.notifyEvent(event);
     }

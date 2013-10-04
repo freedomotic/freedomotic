@@ -22,7 +22,7 @@
 
 package it.cicolella.ipx800;
 
-public class Board {
+public final class Board {
 
     private String ipAddress = null;
     private String ledTag;
@@ -189,14 +189,14 @@ public class Board {
     private void initializeDigitalInputValues(int digitalInputNumber) {
         digitalInputValues = new int[digitalInputNumber];
         for (int i = 0; i < digitalInputNumber; i++) {
-            digitalInputValues[i] = 0;
+            digitalInputValues[i] = -1;
         }
     }
 
     private void initializeAnalogInputValues(int analogInputNumber) {
         analogInputValues = new int[analogInputNumber];
         for (int i = 0; i < analogInputNumber; i++) {
-            analogInputValues[i] = 0;
+            analogInputValues[i] = -1;
         }
     }
 }
