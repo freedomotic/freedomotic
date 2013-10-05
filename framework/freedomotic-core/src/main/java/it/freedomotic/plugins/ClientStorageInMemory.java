@@ -112,7 +112,10 @@ public final class ClientStorageInMemory implements ClientStorage {
                 tmp.add(client);
             }
         }
-
+        
+        Collections.sort(tmp,
+                new ClientNameComparator());
+        
         return Collections.unmodifiableList(tmp);
     }
 
