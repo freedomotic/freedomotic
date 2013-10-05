@@ -63,7 +63,6 @@ public class MarketPlaceForm
     private final I18n I18n;
     private ClientStorage clients;
    
-    @Inject
     private PluginsManager pluginsManager;
 
     /**
@@ -72,6 +71,7 @@ public class MarketPlaceForm
     public MarketPlaceForm(API api) {
         this.I18n = api.getI18n();
         this.clients = api.getClientStorage();
+        this.pluginsManager = api.getPluginManager();
         initComponents();
         cmbCategory.setEnabled(false);
         EventQueue.invokeLater(new Runnable() {

@@ -55,6 +55,7 @@ public class I18nImpl implements I18n {
     private static Vector<ComboLanguage> languages;
     private final AppConfig config;
     private HashMap<String, File> packageBundleDir;
+    private Locale fallBackLocale = Locale.ENGLISH;
 
     @Inject
     public I18nImpl(AppConfig config) {
@@ -82,8 +83,8 @@ public class I18nImpl implements I18n {
             if (folder == null) {
                 workingPackage = workingPackage.substring(0, workingPackage.lastIndexOf('.'));
             } else {
-                // prova ad estrarre la stringa, altrimenti esci dal ciclo e cerca nelle traduzioni base
-                String value = msg(folder, workingPackage, key, fields, true);
+                // try and get string for current package
+                String value = msg(folder, workingPackage, key, fields, true, currentLocale);
                 if (value != null) {
                     return value;
                 }
@@ -91,18 +92,18 @@ public class I18nImpl implements I18n {
             }
         }
 //        if (folder == null) {
-            folder = packageBundleDir.get("it.freedomotic");
+        folder = packageBundleDir.get("it.freedomotic");
 //        }
-        return msg(folder, "it.freedomotic", key, fields, false);
+        return msg(folder, "it.freedomotic", key, fields, false, currentLocale);
     }
 
-    private String msg(File folder, String packageName, String key, Object[] fields, boolean reThrow) {
+    private String msg(File folder, String packageName, String key, Object[] fields, boolean reThrow, Locale locale) {
         // estrai locale corrente
 
-        if (currentLocale == null) {
-            return key;
+        if (locale == null) {
+            locale = Locale.ENGLISH;
         }
-        String loc = currentLocale.toString(); //currentLocale.getLanguage() + "_" + currentLocale.getCountry();
+        String loc = locale.toString(); //currentLocale.getLanguage() + "_" + currentLocale.getCountry();
 
         // cerca in messages (ed eventualmente aggiungi) la risorsa per il package e la lingua
 
@@ -129,18 +130,24 @@ public class I18nImpl implements I18n {
 
         if (messages.containsKey(packageName + ":" + loc)) {
             try {
+                // try and extract strig for current locale...
                 if (messages.get(packageName + ":" + loc).containsKey(key)) {
                     return java.text.MessageFormat.format(messages.get(packageName + ":" + loc).getString(key), fields) + " ";
-                } else {
-                    if (reThrow) {
-                        return null;
+                } else if (locale != fallBackLocale) {
+                    // ... otherwise search string translation in FALLBACKLOCALE
+                    String searchDefaultTranslation = msg(folder, packageName, key, fields, reThrow, fallBackLocale);
+                    if (searchDefaultTranslation != null) {
+                        return searchDefaultTranslation;
                     }
+                }
+                if (reThrow) {
+                    return null;
                 }
             } catch (MissingResourceException ex) {
                 LOG.log(Level.SEVERE, "Cannot find resourceBundle files inside folder {0} for package{1}", new Object[]{folder.getAbsolutePath(), packageName});
             }
         }
-        return key;
+        return null;
     }
 
     @Override

@@ -23,7 +23,6 @@
 package it.freedomotic.plugins.gui;
 
 import it.freedomotic.util.I18n.I18n;
-import it.freedomotic.util.LogFormatter;
 import java.util.logging.*;
 
 /**

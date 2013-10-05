@@ -23,7 +23,6 @@
 package it.freedomotic.plugins;
 
 import it.freedomotic.api.Actuator;
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.plugins.gui.LogWindowHandler;
 import it.freedomotic.reactions.Command;
@@ -65,7 +64,7 @@ public class LogViewer
         handler.setLevel(Level.ALL);
         logger.addHandler(handler);
         bindGuiToPlugin(handler.window);
-        showGui();
+//        showGui();
     }
 
     @Override
