@@ -118,7 +118,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>restapi-interfaces</artifactId>
+            <artifactId>freedomotic-restapi-interfaces</artifactId>
             <version>3.0</version>
         </dependency>
         <dependency>
