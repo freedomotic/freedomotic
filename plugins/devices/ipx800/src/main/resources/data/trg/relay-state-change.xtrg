@@ -11,6 +11,12 @@
                 <value>ipx800</value>
             </it.freedomotic.reactions.Statement>
             <it.freedomotic.reactions.Statement>
+                <logical>AND</logical>
+                <attribute>address</attribute>
+                <operand>REGEX</operand>
+                <value>^(.*):led$</value>
+            </it.freedomotic.reactions.Statement>
+            <it.freedomotic.reactions.Statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
