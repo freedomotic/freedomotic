@@ -1,0 +1,12 @@
+<config>
+    <properties>
+        <property name="description"  value="A plugin using Google speech services"/>
+        <property name="category"  value="media"/>
+        <property name="short-name" value="google-speech"/>
+        <property name="startup-time" value="on load"/>
+        <property name="language-code" value="en-US"/>
+        <property name="google-syntesiser-url" value="http://translate.google.com/translate_tts?tl="/>
+    </properties>
+</config>
+
+                
