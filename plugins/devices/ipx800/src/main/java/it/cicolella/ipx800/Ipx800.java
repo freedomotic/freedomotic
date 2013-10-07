@@ -1,25 +1,22 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.ipx800;
 
 import it.freedomotic.api.EventTemplate;
@@ -173,21 +170,15 @@ public class Ipx800 extends Protocol {
 
     @Override
     protected void onRun() {
-        //for (Board board : boards) {
-        //  evaluateDiffs(getXMLStatusFile(board), board); //parses the xml and crosscheck the data with the previous read
         // select all boards in the devices hashmap and evaluate the status
-        Set<String> keySet = devices.keySet();
-        for (String key : keySet) {
-            Board board = devices.get(key);
-            evaluateDiffs(getXMLStatusFile(board), board);
+        if (isRunning()) {
+            Set<String> keySet = devices.keySet();
+            for (String key : keySet) {
+                Board board = devices.get(key);
+                evaluateDiffs(getXMLStatusFile(board), board);
+            }
         }
 
-        try {
-            Thread.sleep(POLLING_TIME);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Ipx800.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        //}
     }
 
     private Document getXMLStatusFile(Board board) {
@@ -246,14 +237,13 @@ public class Ipx800 extends Protocol {
                         sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
                         board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
                     }
-                }
-                else if (tag.equalsIgnoreCase("btn")) {
-                    
-                }
-                else if (tag.equalsIgnoreCase("an") || tag.equalsIgnoreCase("analog")) {
-                    if (tag.equalsIgnoreCase("an")) tagName = tag + (i+1);
-                    if (board.getanalogInputValue(i) != 
-                            Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()) ){
+                } else if (tag.equalsIgnoreCase("btn")) {
+                } else if (tag.equalsIgnoreCase("an") || tag.equalsIgnoreCase("analog")) {
+                    if (tag.equalsIgnoreCase("an")) {
+                        tagName = tag + (i + 1);
+                    }
+                    if (board.getanalogInputValue(i)
+                            != Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent())) {
                         sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
                         board.setAnalogInputValue(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
                     }
@@ -306,14 +296,14 @@ public class Ipx800 extends Protocol {
                     event.addProperty("isOn", "true");
                 }
                 event.addProperty("input.value", status);
-                
+
             }
         }
         //adding some optional information to the event
         event.addProperty("boardIP", board.getIpAddress());
         event.addProperty("boardPort", new Integer(board.getPort()).toString());
         event.addProperty("relayLine", new Integer(relayLine).toString());
-        
+
         //publish the event on the messaging bus
         this.notifyEvent(event);
     }

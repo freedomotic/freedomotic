@@ -138,7 +138,7 @@ public class PluginsManagerImpl implements PluginsManager {
 
             //get the zip from the url and copy in plugin/device folder
             if (filename.endsWith(".device")) {
-                File zipFile = new File(Info.PATH_DEVICES_FOLDER + filename);
+                File zipFile = new File(Info.PATH_DEVICES_FOLDER +"/"+ filename);
                 FetchHttpFiles.download(fromURL, Info.PATH_DEVICES_FOLDER, filename);
                 unzipAndDelete(zipFile);
                 loadSingleBoundle(new File(Info.PATH_DEVICES_FOLDER + "/" + pluginName));
