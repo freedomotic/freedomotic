@@ -26,8 +26,8 @@ import it.freedomotic.api.Client;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.bus.BootStatus;
 import it.freedomotic.bus.BusConsumer;
-import it.freedomotic.bus.BusService;
 import it.freedomotic.bus.BusMessagesListener;
+import it.freedomotic.bus.BusService;
 import it.freedomotic.bus.StompDispatcher;
 import it.freedomotic.core.BehaviorManager;
 import it.freedomotic.environment.EnvironmentDAO;
@@ -79,6 +79,7 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.SubjectThreadState;
 import org.apache.shiro.util.ThreadState;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -473,6 +474,9 @@ public class Freedomotic implements BusConsumer {
      * @param args
      */
     public static void main(String[] args) {
+
+    	configureLogging();
+    	
         try {
             INSTANCE_ID = args[0];
         } catch (Exception e) {
@@ -494,6 +498,26 @@ public class Freedomotic implements BusConsumer {
             System.exit(1);
         }
     }
+
+	/**
+	 * Configures java.util.logging (hereafter JUL)
+	 * 
+	 * While Freedomotic is still using JUL, here is configured SLF4J Brigde.
+	 * 
+	 * Thereby now all logging (including third party packages) is done through
+	 * SLF4J.
+	 */
+    private static void configureLogging() {
+
+		// Remove all handlers in jul (java.util.logging) root logger
+    	SLF4JBridgeHandler.removeHandlersForRootLogger();
+    	
+    	// Register slf4j handler to jul root logger 
+    	SLF4JBridgeHandler.install();
+    	
+    	// Set jul root log level to ALL, because default slf4jbridge handler is INFO.
+    	Freedomotic.logger.setLevel(Level.ALL);
+	}
 
     @Override
 	public void onMessage(ObjectMessage message) {
