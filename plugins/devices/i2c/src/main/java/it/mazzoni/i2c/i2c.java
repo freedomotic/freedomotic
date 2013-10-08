@@ -34,7 +34,7 @@ public class i2c extends Protocol {
 
     public i2c() {
         //every plugin needs a name and a manifest XML file
-        super("HelloWorld", "/it.freedomotic.hello/i2c-manifest.xml");
+        super("i2c", "/i2c/i2c-manifest.xml");
         //read a property from the manifest file below which is in
         //FREEDOMOTIC_FOLDER/plugins/devices/it.freedomotic.hello/hello-world.xml
         POLLING_WAIT = configuration.getIntProperty("time-between-reads", 2000);
