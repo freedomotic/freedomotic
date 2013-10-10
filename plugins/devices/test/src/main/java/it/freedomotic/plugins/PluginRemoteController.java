@@ -65,8 +65,13 @@ public class PluginRemoteController
                 }
             }
             if (action.equalsIgnoreCase("RESTART")) {
-                if (plugin != this && getApi().getAuth().isPermitted("sys:plugins:stop,sys:plugins:start")) {
+                if (plugin != this && getApi().getAuth().isPermitted("sys:plugins:stop") && getApi().getAuth().isPermitted("sys:plugins:start")) {
                     plugin.stop();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(PluginRemoteController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     plugin.start();
                 }
             }
