@@ -97,11 +97,6 @@
             <version>${project.parent.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>harvester-objects</artifactId>
-            <version>3.0</version>
-        </dependency>
     </dependencies>
 
     <build>        <resources>
