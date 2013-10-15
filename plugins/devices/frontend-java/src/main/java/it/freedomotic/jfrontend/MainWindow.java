@@ -1,21 +1,23 @@
-//Copyright 2009 Enrico Nicoletti
-//eMail: enrico.nicoletti84@gmail.com
-//
-//This file is part of EventEngine.
-//
-//EventEngine is free software; you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation; either version 2 of the License, or
-//any later version.
-//
-//EventEngine is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with EventEngine; if not, write to the Free Software
-//Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
 package it.freedomotic.jfrontend;
 
 import it.freedomotic.api.Plugin;
@@ -94,9 +96,9 @@ public class MainWindow
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(new MyDispatcher());
 
-//        if (master.configuration.getBooleanProperty("show.tips", true)) {
-//            new TipOfTheDay(this);
-//        }
+        if (master.configuration.getBooleanProperty("show.tips", true)) {
+            new TipOfTheDay(master);
+        }
     }
 
     private void updateMenusPermissions() {
@@ -1145,7 +1147,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuPluginConfigureActionPerformed
 
     private void mnuTutorialActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuTutorialActionPerformed
-        new TipOfTheDay(this);
+        new TipOfTheDay(master);
     }//GEN-LAST:event_mnuTutorialActionPerformed
 
     private void mnuSelectEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSelectEnvironmentActionPerformed
