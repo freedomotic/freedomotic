@@ -1,12 +1,26 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
+
 package it.freedomotic.jfrontend.utils;
 
-import it.freedomotic.app.Freedomotic;
-import it.freedomotic.jfrontend.MainWindow;
-
+import it.freedomotic.api.Plugin;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URL;
@@ -24,12 +38,12 @@ import javax.swing.event.HyperlinkListener;
 public class TipOfTheDay
         extends javax.swing.JFrame {
 
-    private MainWindow main;
+    private Plugin main;
     private static String PAGE = "http://www.freedomotic.com/help/index.html";
     /**
      * Creates new form TipOfTheDay
      */
-    public TipOfTheDay(MainWindow main) {
+    public TipOfTheDay(Plugin main) {
         initComponents();
         this.main = main;
 
@@ -44,7 +58,7 @@ public class TipOfTheDay
                         try {
                             browser.setPage(e.getURL());
                         } catch (IOException e1) {
-                            Freedomotic.logger.warning("Cannot open " + PAGE + " for reason: " + e1.getLocalizedMessage());
+                            LOG.log(Level.WARNING, "Cannot open {0} for reason: {1} {2}", new Object[]{PAGE, e1.getClass().getSimpleName(), e1.getLocalizedMessage()});
                         }
                     }
                 }
@@ -54,7 +68,7 @@ public class TipOfTheDay
             pack();
             setVisible(true);
         } catch (IOException ex) {
-            Freedomotic.logger.warning("Cannot open " + PAGE + " for reason: " + ex.getLocalizedMessage());
+            LOG.log(Level.WARNING, "Cannot open {0} for reason: {1} {2}", new Object[]{PAGE, ex.getClass().getSimpleName(), ex.getLocalizedMessage()});
         }
     }
 
@@ -85,4 +99,5 @@ public class TipOfTheDay
     private javax.swing.JScrollPane jScrollPane1;
 
     // End of variables declaration//GEN-END:variables
+    private static final Logger LOG = Logger.getLogger(TipOfTheDay.class.getName());
 }
