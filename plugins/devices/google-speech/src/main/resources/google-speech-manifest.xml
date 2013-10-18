@@ -5,6 +5,7 @@
         <property name="short-name" value="google-speech"/>
         <property name="startup-time" value="on load"/>
         <property name="language-code" value="en-US"/>
+        <property name="record-time" value="3000"/>
         <property name="google-syntesiser-url" value="http://translate.google.com/translate_tts?tl="/>
     </properties>
 </config>
