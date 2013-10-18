@@ -36,7 +36,8 @@ public class GoogleSpeech
         extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(GoogleSpeech.class.getName());
-    private String LANGUAGE_CODE = configuration.getStringProperty("language-code", "en-US");
+    public String LANGUAGE_CODE = configuration.getStringProperty("language-code", "en-US");
+    public int RECORD_TIME = configuration.getIntProperty("record-time", 3000);
     final int POLLING_WAIT;
 
     public GoogleSpeech() {
@@ -75,8 +76,6 @@ public class GoogleSpeech
 
     @Override
     protected void onRun() {
-        
-        
     }
 
     @Override
@@ -137,17 +136,17 @@ public class GoogleSpeech
                 //InputStreamToMP3File(is);
                 Player player = new Player(is);
                 player.play();
-                
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
     }
-    
+
     void InputStreamToMP3File(InputStream inputStream) {
 
         try {
-            File f = new File(Info.PATH_DATA_FOLDER +"google.mp3");
+            File f = new File(Info.PATH_DATA_FOLDER + "google.mp3");
             System.out.println(f.getAbsolutePath());
             OutputStream out = new FileOutputStream(f);
             byte buf[] = new byte[1024];
@@ -161,5 +160,4 @@ public class GoogleSpeech
         } catch (IOException e) {
         }
     }
-    
 }

@@ -3,14 +3,15 @@ package com.darkprograms.speech.microphone;
 import javax.sound.sampled.*;
 import java.io.File;
 
-/***************************************************************************
+/**
+ * *************************************************************************
  * Microphone class that contains methods to capture audio from microphone
  *
  * @author Luke Kuza, Aaron Gokaslan
- ***************************************************************************/
-
+ * *************************************************************************
+ */
 public class Microphone {
-	
+
     /**
      * TargetDataLine variable to receive data from microphone
      */
@@ -20,19 +21,17 @@ public class Microphone {
      * Enum for current Microphone state
      */
     public enum CaptureState {
+
         PROCESSING_AUDIO, STARTING_CAPTURE, CLOSED
     }
-
     /**
      * Variable for enum
      */
     CaptureState state;
-
     /**
      * Variable for the audios saved file type
      */
     private AudioFileFormat.Type fileType;
-
     /**
      * Variable that holds the saved audio file
      */
@@ -41,9 +40,10 @@ public class Microphone {
     /**
      * Gets the current state of Microphone
      *
-     * @return PROCESSING_AUDIO is returned when the Thread is recording Audio and/or saving it to a file<br>
-     *         STARTING_CAPTURE is returned if the Thread is setting variables<br>
-     *         CLOSED is returned if the Thread is not doing anything/not capturing audio
+     * @return PROCESSING_AUDIO is returned when the Thread is recording Audio
+     * and/or saving it to a file<br> STARTING_CAPTURE is returned if the Thread
+     * is setting variables<br> CLOSED is returned if the Thread is not doing
+     * anything/not capturing audio
      */
     public CaptureState getState() {
         return state;
@@ -81,13 +81,12 @@ public class Microphone {
     public void setTargetDataLine(TargetDataLine targetDataLine) {
         this.targetDataLine = targetDataLine;
     }
-    
-    
+
     /**
      * Constructor
      *
-     * @param fileType File type to save the audio in<br>
-     *                 Example, to save as WAVE use AudioFileFormat.Type.WAVE
+     * @param fileType File type to save the audio in<br> Example, to save as
+     * WAVE use AudioFileFormat.Type.WAVE
      */
     public Microphone(AudioFileFormat.Type fileType) {
         setState(CaptureState.CLOSED);
@@ -98,18 +97,17 @@ public class Microphone {
     /**
      * Initializes the target data line.
      */
-    private void initTargetDataLine(){
+    private void initTargetDataLine() {
         DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, getAudioFormat());
         try {
-			setTargetDataLine((TargetDataLine) AudioSystem.getLine(dataLineInfo));
-		} catch (LineUnavailableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
+            setTargetDataLine((TargetDataLine) AudioSystem.getLine(dataLineInfo));
+        } catch (LineUnavailableException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return;
+        }
 
     }
-
 
     /**
      * Captures audio from the microphone and saves it a file
@@ -120,43 +118,35 @@ public class Microphone {
     public void captureAudioToFile(File audioFile) throws Exception {
         setState(CaptureState.STARTING_CAPTURE);
         setAudioFile(audioFile);
-
         DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, getAudioFormat());
         setTargetDataLine((TargetDataLine) AudioSystem.getLine(dataLineInfo));
-
-
         //Get Audio
         new Thread(new CaptureThread()).start();
-
 
     }
 
     /**
      * Captures audio from the microphone and saves it a file
      *
-     * @param audioFile The fully path (String) to a file you want to save the audio in
+     * @param audioFile The fully path (String) to a file you want to save the
+     * audio in
      * @throws Exception Throws an exception if something went wrong
      */
     public void captureAudioToFile(String audioFile) throws Exception {
         setState(CaptureState.STARTING_CAPTURE);
         File file = new File(audioFile);
         setAudioFile(file);
-
         DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, getAudioFormat());
         setTargetDataLine((TargetDataLine) AudioSystem.getLine(dataLineInfo));
-
-
         //Get Audio
         new Thread(new CaptureThread()).start();
-
-
     }
 
-	
     /**
      * The audio format to save in
      *
-     * @return Returns AudioFormat to be used later when capturing audio from microphone
+     * @return Returns AudioFormat to be used later when capturing audio from
+     * microphone
      */
     public AudioFormat getAudioFormat() {
         float sampleRate = 8000.0F;
@@ -173,30 +163,30 @@ public class Microphone {
     }
 
     /**
-     * Opens the microphone, starting the targetDataLine.
-     * If it's already open, it does nothing.
+     * Opens the microphone, starting the targetDataLine. If it's already open,
+     * it does nothing.
      */
-    public void open(){
-        if(getTargetDataLine()==null){
-        	initTargetDataLine();
+    public void open() {
+        if (getTargetDataLine() == null) {
+            initTargetDataLine();
         }
-    	if(!getTargetDataLine().isOpen()){
-        	try {
+        if (!getTargetDataLine().isOpen()) {
+            try {
                 setState(CaptureState.PROCESSING_AUDIO);
-        		getTargetDataLine().open(getAudioFormat());
-            	getTargetDataLine().start();
-			} catch (LineUnavailableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return;
-			}
+                getTargetDataLine().open(getAudioFormat());
+                getTargetDataLine().start();
+            } catch (LineUnavailableException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return;
+            }
         }
 
     }
 
     /**
-     * Close the microphone capture, saving all processed audio to the specified file.<br>
-     * If already closed, this does nothing
+     * Close the microphone capture, saving all processed audio to the specified
+     * file.<br> If already closed, this does nothing
      */
     public void close() {
         if (getState() == CaptureState.CLOSED) {
@@ -217,6 +207,7 @@ public class Microphone {
          */
         public void run() {
             try {
+                setState(CaptureState.STARTING_CAPTURE);
                 AudioFileFormat.Type fileType = getFileType();
                 File audioFile = getAudioFile();
                 open();
@@ -227,5 +218,4 @@ public class Microphone {
             }
         }
     }
-
 }
