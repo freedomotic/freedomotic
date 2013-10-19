@@ -42,10 +42,12 @@ public class GenericSensor
 
     private static final Logger LOG = Logger.getLogger(GenericSensor.class.getName()); 
     private RangedIntBehaviorLogic readValue;
+    
 
     @Override
     public void init() {
         //linking this property with the behavior defined in the XML
+        // being this a GENERIC object, we cannot foresee the name given to related behavior, so we must address it by index 
         readValue = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(0));
         readValue.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
@@ -83,7 +85,7 @@ public class GenericSensor
     }
 
     private void setReadValue(int value) {
-        LOG.info("Setting behavior 'readValue' of object '" + getPojo().getName() + "' to " + value);
+        LOG.info("Setting behavior '"+ readValue.getName()+"' of object '" + getPojo().getName() + "' to " + value);
         readValue.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);

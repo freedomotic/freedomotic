@@ -51,7 +51,7 @@ public class Light
     @Override
     public void init() {
         //linking this property with the behavior defined in the XML
-        brightness = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(1));
+        brightness = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_BRIGHTNESS));
         brightness.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {

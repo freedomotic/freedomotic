@@ -57,7 +57,7 @@ public class ElectricDevice
 
     @Override
     public void init() {
-        powered = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehaviors().get(0));
+        powered = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior(BEHAVIOR_POWERED));
         //add a listener to values changes
         powered.addListener(new BooleanBehaviorLogic.Listener() {
             @Override

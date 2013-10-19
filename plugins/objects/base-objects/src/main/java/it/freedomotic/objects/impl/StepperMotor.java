@@ -38,13 +38,14 @@ public class StepperMotor
         extends ElectricDevice {
 
     public RangedIntBehaviorLogic position;
+    protected final static String BEHAVIOR_POSITION = "position";
 
     @Override
     public void init() {
         super.init();
 
         //linking this property with the behavior defined in the XML
-        position = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(1));
+        position = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_POSITION));
         position.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
