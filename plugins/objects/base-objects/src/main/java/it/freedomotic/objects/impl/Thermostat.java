@@ -42,11 +42,13 @@ public class Thermostat
 
     private static final Logger LOG = Logger.getLogger(GenericSensor.class.getName()); 
     private RangedIntBehaviorLogic temperature;
+    private static final String BEHAVIOR_TEMPERATURE = "temperature";
+    
 
     @Override
     public void init() {
         //linking this property with the behavior defined in the XML
-        temperature = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(0));
+        temperature = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_TEMPERATURE));
         temperature.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {

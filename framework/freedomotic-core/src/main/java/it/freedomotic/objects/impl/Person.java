@@ -48,10 +48,13 @@ public class Person
     protected BooleanBehaviorLogic present;
     protected ListBehaviorLogic activity;
     protected PropertiesBehaviorLogic properties;
+    private static final String BEHAVIOR_PRESENT = "present";
+    private static final String BEHAVIOR_PROPERTIES = "properties";
+    private static final String BEHAVIOR_ACTIVITY = "activity";
 
     @Override
     public void init() {
-        present = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehaviors().get(0));
+        present = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior(BEHAVIOR_PRESENT));
         //add a listener to values changes
         present.addListener(new BooleanBehaviorLogic.Listener() {
             @Override
@@ -65,7 +68,7 @@ public class Person
             }
         });
 
-        activity = new ListBehaviorLogic((ListBehavior) getPojo().getBehaviors().get(1));
+        activity = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior(BEHAVIOR_ACTIVITY));
         activity.addListener(new ListBehaviorLogic.Listener() {
             @Override
             public void selectedChanged(Config params, boolean fireCommand) {
@@ -79,7 +82,7 @@ public class Person
             }
         });
 
-        properties = new PropertiesBehaviorLogic((PropertiesBehavior) getPojo().getBehaviors().get(2));
+        properties = new PropertiesBehaviorLogic((PropertiesBehavior) getPojo().getBehavior(BEHAVIOR_PROPERTIES));
         properties.addListener(new PropertiesBehaviorLogic.Listener() {
             @Override
             public void propertyChanged(String key, String newValue, Config params, boolean fireCommand) {

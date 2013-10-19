@@ -36,11 +36,12 @@ public class Wishlist
         extends EnvObjectLogic {
 
     private TaxonomyBehaviorLogic list;
+    private static final String BEHAVIOR_TAXONOMY = "taxonomy";
 
     @Override
     public void init() {
-        list = new TaxonomyBehaviorLogic((MultiselectionListBehavior) getPojo().getBehaviors().get(0));
-        System.out.println(getPojo().getBehaviors().get(0));
+        list = new TaxonomyBehaviorLogic((MultiselectionListBehavior) getPojo().getBehavior(BEHAVIOR_TAXONOMY));
+        System.out.println(getPojo().getBehavior(BEHAVIOR_TAXONOMY));
         list.addListener(new TaxonomyBehaviorLogic.Listener() {
             @Override
             public void onSelection(Config params, boolean fireCommand) {

@@ -55,12 +55,14 @@ public class Gate
     private Room to;
     protected RangedIntBehaviorLogic openness;
     protected BooleanBehaviorLogic open;
+    protected final static String BEHAVIOR_OPEN = "open";
+    protected final static String BEHAVIOR_OPENNESS = "openness";
 
     @Override
     public void init() {
         super.init();
         //linking this open property with the open behavior defined in the XML
-        open = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehaviors().get(0));
+        open = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior(BEHAVIOR_OPEN));
 //        open.createCommands(this);
         open.addListener(new BooleanBehaviorLogic.Listener() {
             @Override
@@ -77,7 +79,7 @@ public class Gate
         });
 
         //linking this property with the behavior defined in the XML
-        openness = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(1));
+        openness = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_OPENNESS));
 //        openness.createCommands(this);
         openness.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
@@ -264,7 +266,7 @@ public class Gate
         a.setReceiver("app.events.sensors.behavior.request.objects");
         a.setProperty("object",
                 getPojo().getName());
-        a.setProperty("behavior", "openness");
+        a.setProperty("behavior", BEHAVIOR_OPENNESS);
         a.setProperty("value", "50");
 
         Command b = new Command();
@@ -273,7 +275,7 @@ public class Gate
         b.setReceiver("app.events.sensors.behavior.request.objects");
         b.setProperty("object",
                 getPojo().getName());
-        b.setProperty("behavior", "openness");
+        b.setProperty("behavior", BEHAVIOR_OPENNESS);
         b.setProperty("value", "next");
 
         Command c = new Command();
@@ -282,7 +284,7 @@ public class Gate
         c.setReceiver("app.events.sensors.behavior.request.objects");
         c.setProperty("object",
                 getPojo().getName());
-        c.setProperty("behavior", "openness");
+        c.setProperty("behavior", BEHAVIOR_OPENNESS);
         c.setProperty("value", "previous");
 
         Command d = new Command();
@@ -290,7 +292,7 @@ public class Gate
         d.setDescription("set its openness to 50%");
         d.setReceiver("app.events.sensors.behavior.request.objects");
         d.setProperty("object", "@event.object.name");
-        d.setProperty("behavior", "openness");
+        d.setProperty("behavior", BEHAVIOR_OPENNESS);
         d.setProperty("value", "50");
 
         Command e = new Command();
@@ -298,7 +300,7 @@ public class Gate
         e.setDescription("increases its openness of one step");
         e.setReceiver("app.events.sensors.behavior.request.objects");
         e.setProperty("object", "@event.object.name");
-        e.setProperty("behavior", "openness");
+        e.setProperty("behavior", BEHAVIOR_OPENNESS);
         e.setProperty("value", "next");
 
         Command f = new Command();
@@ -306,7 +308,7 @@ public class Gate
         f.setDescription("decreases its openness of one step");
         f.setReceiver("app.events.sensors.behavior.request.objects");
         f.setProperty("object", "@event.object.name");
-        f.setProperty("behavior", "openness");
+        f.setProperty("behavior", BEHAVIOR_OPENNESS);
         f.setProperty("value", "previous");
 
         Command g = new Command();
@@ -314,7 +316,7 @@ public class Gate
         g.setDescription("set its openness to the value in the event");
         g.setReceiver("app.events.sensors.behavior.request.objects");
         g.setProperty("object", "@event.object.name");
-        g.setProperty("behavior", "openness");
+        g.setProperty("behavior", BEHAVIOR_OPENNESS);
         g.setProperty("value", "@event.value");
 
         Command h = new Command();
@@ -323,7 +325,7 @@ public class Gate
         h.setReceiver("app.events.sensors.behavior.request.objects");
         h.setProperty("object",
                 getPojo().getName());
-        h.setProperty("behavior", "open");
+        h.setProperty("behavior", BEHAVIOR_OPEN);
         h.setProperty("value", "true");
 
         Command i = new Command();
@@ -332,7 +334,7 @@ public class Gate
         i.setReceiver("app.events.sensors.behavior.request.objects");
         i.setProperty("object",
                 getPojo().getName());
-        i.setProperty("behavior", "open");
+        i.setProperty("behavior", BEHAVIOR_OPEN);
         i.setProperty("value", "false");
 
         Command l = new Command();
@@ -341,7 +343,7 @@ public class Gate
         l.setReceiver("app.events.sensors.behavior.request.objects");
         l.setProperty("object",
                 getPojo().getName());
-        l.setProperty("behavior", "open");
+        l.setProperty("behavior", BEHAVIOR_OPEN);
         l.setProperty("value", "opposite");
 
         Command m = new Command();
@@ -349,7 +351,7 @@ public class Gate
         m.setDescription("this gate is opened");
         m.setReceiver("app.events.sensors.behavior.request.objects");
         m.setProperty("object", "@event.object.name");
-        m.setProperty("behavior", "open");
+        m.setProperty("behavior", BEHAVIOR_OPEN);
         m.setProperty("value", "true");
 
         Command n = new Command();
@@ -357,7 +359,7 @@ public class Gate
         n.setDescription("this gate is closed");
         n.setReceiver("app.events.sensors.behavior.request.objects");
         n.setProperty("object", "@event.object.name");
-        n.setProperty("behavior", "open");
+        n.setProperty("behavior",BEHAVIOR_OPEN);
         n.setProperty("value", "false");
 
         Command o = new Command();
@@ -365,7 +367,7 @@ public class Gate
         o.setDescription("opens/closes the gate in the event");
         o.setReceiver("app.events.sensors.behavior.request.objects");
         o.setProperty("object", "@event.object.name");
-        o.setProperty("behavior", "open");
+        o.setProperty("behavior", BEHAVIOR_OPEN);
         o.setProperty("value", "opposite");
 
         CommandPersistence.add(a);
@@ -397,14 +399,14 @@ public class Gate
         turnsOpen.setChannel("app.event.sensor.object.behavior.change");
         turnsOpen.getPayload().addStatement("object.name",
                 this.getPojo().getName());
-        turnsOpen.getPayload().addStatement("object.behavior.open", "true");
+        turnsOpen.getPayload().addStatement("object.behavior."+BEHAVIOR_OPEN, "true");
 
         Trigger turnsClosed = new Trigger();
         turnsClosed.setName(this.getPojo().getName() + " becomes closed");
         turnsClosed.setChannel("app.event.sensor.object.behavior.change");
         turnsClosed.getPayload().addStatement("object.name",
                 this.getPojo().getName());
-        turnsClosed.getPayload().addStatement("object.behavior.open", "false");
+        turnsClosed.getPayload().addStatement("object.behavior."+BEHAVIOR_OPEN, "false");
 
         TriggerPersistence.add(clicked);
         TriggerPersistence.add(turnsOpen);

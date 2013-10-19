@@ -69,7 +69,7 @@ public class EnvObjectLogic {
     private boolean changed;
     // private String message;
     private HashMap<String, Command> commandsMapping; //mapping between action name -> hardware command instance
-    private List<BehaviorLogic> behaviors = new ArrayList<BehaviorLogic>();
+    private HashMap<String,BehaviorLogic> behaviors = new HashMap<String, BehaviorLogic>();
     private EnvironmentLogic environment;
 
     
@@ -222,7 +222,7 @@ public class EnvObjectLogic {
                     + this.getPojo().getName() + " because it is already registed");
         }
 
-        behaviors.add(b);
+        behaviors.put(b.getName(),b);
     }
 
     /**
@@ -233,13 +233,7 @@ public class EnvObjectLogic {
      */
     @RequiresPermissions("objects:read")
     public final BehaviorLogic getBehavior(String name) {
-        for (BehaviorLogic behaviorLogic : behaviors) {
-            if (behaviorLogic.getName().equals(name)) {
-                return behaviorLogic;
-            }
-        }
-
-        return null;
+        return behaviors.get(name);
     }
 
     /**
@@ -324,7 +318,7 @@ public class EnvObjectLogic {
 
     @RequiresPermissions("objects:read")
     public Iterable<BehaviorLogic> getBehaviors() {
-        return behaviors;
+        return behaviors.values();
     }
 
     @RequiresPermissions("objects:create")
