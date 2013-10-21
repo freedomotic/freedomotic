@@ -21,11 +21,48 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-    
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
             <version>1.2.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.openjpa</groupId>
+            <artifactId>openjpa</artifactId>
+            <version>2.2.2</version>
+        </dependency>
     </dependencies>
+    <build>
+        <plugins>     
+            <plugin>
+                <groupId>org.apache.openjpa</groupId>
+                <artifactId>openjpa-maven-plugin</artifactId>
+                <version>2.2.2</version>
+                <configuration>
+                <!--    <persistenceXmlFile>enhancement.xml</persistenceXmlFile> -->
+                    <includes>**/UsageData.class</includes> 
+                    <!--    <excludes>**/entities/XML*.class</excludes> -->
+                    <addDefaultConstructor>true</addDefaultConstructor>               
+                    <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>enhancer</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.openjpa</groupId>
+                        <artifactId>openjpa</artifactId> 
+                        <!-- set the version to be the same as the level in your runtime -->
+                        <version>2.2.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin> 
+        </plugins>
+    </build>
 </project>

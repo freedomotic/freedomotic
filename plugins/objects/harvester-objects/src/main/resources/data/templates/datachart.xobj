@@ -7,18 +7,14 @@
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
-  <it.mazzoni.harvester.object.DataBehavior>
+  <it.freedomotic.model.object.DataBehavior>
       <name>data</name>
       <description>Some Data</description>
       <active>true</active>
       <priority>-1</priority>
-      <readOnly>true</readOnly>
-      <JSON>null</JSON>
-      <startdate>2013-01-01 00:00:00.0 UTC</startdate>
-      <enddate>2013-09-30 00:00:00.0 +0200</enddate>
-      <searchtype>object</searchtype>
-      <searchfilter>%</searchfilter>
-    </it.mazzoni.harvester.object.DataBehavior>
+      <readOnly>true</readOnly>      
+<data/>
+    </it.freedomotic.model.object.DataBehavior>
   </behaviors>
   <representation>
     <view>

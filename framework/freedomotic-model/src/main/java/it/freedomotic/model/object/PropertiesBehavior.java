@@ -47,7 +47,7 @@ public class PropertiesBehavior
     @Override
     public String toString() {
         if (properties.size() < 2) {
-            return properties.size() + " records";
+            return properties.size() + " record";
         } else {
             return properties.size() + " records";
         }

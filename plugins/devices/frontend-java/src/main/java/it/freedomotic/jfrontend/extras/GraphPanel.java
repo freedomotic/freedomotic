@@ -19,11 +19,12 @@
  */
 package it.freedomotic.jfrontend.extras;
 
-import es.gpulido.harvester.persistence.DataFrame;
-import es.gpulido.harvester.persistence.DataToPersist;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
+import it.freedomotic.model.charting.UsageData;
+import it.freedomotic.model.charting.UsageDataFrame;
+import it.freedomotic.objects.DataBehaviorLogic;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.CommandPersistence;
@@ -31,15 +32,10 @@ import java.awt.Color;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ComboBoxModel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerDateModel;
-import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
@@ -66,7 +62,7 @@ import org.jfree.ui.RectangleInsets;
  */
 public class GraphPanel extends javax.swing.JFrame {
 
-    private DataFrame points;
+    private UsageDataFrame points = new UsageDataFrame();
     private EnvObjectLogic obj;
     private TimeSeries series;
     private JFreeChart chart;
@@ -88,20 +84,17 @@ public class GraphPanel extends javax.swing.JFrame {
     }
 
     public final void reDraw() {
-        String JSON = obj.getBehavior("data").getValueAsString();
-
-        // parse data into DataFrame
-        ObjectMapper om = new ObjectMapper();
-        om.setVisibility(JsonMethod.FIELD, JsonAutoDetect.Visibility.ANY);
-        try {
-            this.points = om.readValue(JSON, DataFrame.class);
-        } catch (IOException ex) {
-            Logger.getLogger(GraphPanel.class.getName()).log(Level.SEVERE, null, ex);
+        //  String JSON = obj.getBehavior("data").getValueAsString();
+        DataBehaviorLogic dbl = (DataBehaviorLogic) obj.getBehavior("data");
+        if (dbl.isChanged()) {
+            this.points.setData(dbl.getData());
+            createChart(this.points, title);
+            jRawDatatxt.setText(dbl.getValueAsString());
+            dataTable.setModel(new FreedomoticTableModel());
+            setVisible(true);
         }
-        createChart(this.points, title);
-        jRawDatatxt.setText(JSON);
-        dataTable.setModel(new FreedomoticTableModel());
-        setVisible(true);
+
+
     }
 
     /**
@@ -294,10 +287,10 @@ public class GraphPanel extends javax.swing.JFrame {
     private javax.swing.JScrollPane tabDataPanel;
     // End of variables declaration//GEN-END:variables
 
-    private void createChart(DataFrame points, String title) {
+    private void createChart(UsageDataFrame points, String title) {
         series = new TimeSeries(title);
 
-        for (DataToPersist d : points.getData()) {
+        for (UsageData d : points.getData()) {
             Date resultdate = d.getDateTime();
             Millisecond ms_read = new Millisecond(resultdate);
             int poweredValue = -1;
@@ -362,7 +355,7 @@ public class GraphPanel extends javax.swing.JFrame {
             formatString = "HH:mm:SS";
             dtut = DateTickUnitType.SECOND;
         }
-        
+
         DateFormat formatter = new SimpleDateFormat(formatString);
         DateTickUnit unit = new DateTickUnit(dtut, 1, formatter);
         axis.setTickUnit(unit);
@@ -397,7 +390,7 @@ public class GraphPanel extends javax.swing.JFrame {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            DataToPersist item = points.getData().get(rowIndex);
+            UsageData item = points.getData().get(rowIndex);
             switch (columnIndex) {
                 case 0:
                     return item.getDateTime();

@@ -1,5 +1,3 @@
-package es.gpulido.harvester.persistence;
-
 /**
  *
  * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
@@ -19,35 +17,35 @@ package es.gpulido.harvester.persistence;
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+package it.freedomotic.model.object;
 
-
-import es.gpulido.harvester.persistence.DataToPersist;
-import java.io.Serializable;
+import it.freedomotic.model.charting.UsageData;
+import it.freedomotic.model.object.Behavior;
 import java.util.List;
 
 /**
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public class DataFrame implements Serializable {
+public class DataBehavior extends Behavior{
+    
+    private List<UsageData> data;
 
-    public final static int FULL_UPDATE = 1;
-    public final static int INCREMENTAL_UPDATE = 2;
-    private int frameType;
-    private List<DataToPersist> data;
-
-    public DataFrame(int type, List<DataToPersist> data) {
-        this.frameType = type;
+    public void setData(List<UsageData> data){
         this.data = data;
     }
-    // used by Jackson , do not remove
-    public DataFrame(){ }
     
-    public int getFrameType(){
-        return this.frameType;
+    public void addData(List<UsageData> data){
+        this.data.addAll(data);
     }
     
-    public List<DataToPersist> getData(){
-        return this.data;
+    public List<UsageData> getData(){
+        return data;
     }
+    
+
+    
+    
+    
+    
 }

@@ -1,3 +1,5 @@
+package it.freedomotic.model.charting;
+
 /**
  *
  * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
@@ -17,51 +19,46 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package it.mazzoni.harvester.object;
 
-import es.gpulido.harvester.persistence.DataToPersist;
-import it.freedomotic.model.object.Behavior;
-import java.util.Date;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public class DataBehavior extends Behavior{
-    
-   // private List<DataToPersist> value;
-    private String searchtype;
-    private String searchfilter;
-    private Date startdate;
-    private Date enddate;
-    
-    private volatile String JSON;
-    
-    public String getType(){
-        return searchtype;
+public class UsageDataFrame implements Serializable {
+
+    public final static int FULL_UPDATE = 1;
+    public final static int INCREMENTAL_UPDATE = 2;
+    private int frameType;
+    private List<UsageData> data;
+
+    public UsageDataFrame(int type, List<UsageData> data) {
+        this.frameType = type;
+        this.data = data;
     }
-  /*  public void setData(List <DataToPersist> data){      
-        this.value = data;
-    }
+    // used by Jackson , do not remove
+    public UsageDataFrame(){ }
     
-    public void addData(List<DataToPersist> data){
-        this.value.addAll(data);
+    public int getFrameType(){
+        return this.frameType;
     }
     
-    */
-    @Override
-    public String toString(){
-        return JSON;
+    public List<UsageData> getData(){
+        return this.data;
     }
     
-    public String getJSON(){
-        return JSON;
+    public void setDataFrameType(int type){
+        this.frameType= type;
     }
     
-    public void setJSON(String json){
-        this.JSON = json;
+    public void setData(List<UsageData> data){
+        this.data = data;
     }
     
+    public void addData(List<UsageData> data){
+        this.data.addAll(data);
+    }
     
 }

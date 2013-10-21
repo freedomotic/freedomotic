@@ -87,11 +87,6 @@
             <version>2.2.2</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.openjpa</groupId>
-            <artifactId>openjpa</artifactId>
-            <version>2.2.2</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>freedomotic-core</artifactId>
             <version>${project.parent.version}</version>
@@ -148,35 +143,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.openjpa</groupId>
-                <artifactId>openjpa-maven-plugin</artifactId>
-                <version>2.2.2</version>
-                <configuration>
-                    <persistenceXmlFile>enhancement.xml</persistenceXmlFile>
-                    <includes>**/DataToPersist.class</includes> -->
-                    <!--    <excludes>**/entities/XML*.class</excludes> -->
-                    <addDefaultConstructor>true</addDefaultConstructor>               
-                    <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>enhancer</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>enhance</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.openjpa</groupId>
-                        <artifactId>openjpa</artifactId>
-                        <!-- set the version to be the same as the level in your runtime -->
-                        <version>2.2.2</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
