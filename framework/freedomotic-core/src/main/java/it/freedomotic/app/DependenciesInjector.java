@@ -27,6 +27,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
+
 /**
  *
  * @author enrico
@@ -54,5 +55,6 @@ public class DependenciesInjector
         //requestStaticInjection(I18n.class);
         
         bind(BusService.class).to(BusServiceImpl.class).in(Singleton.class);
+        
     }
 }

@@ -19,15 +19,14 @@
  */
 package es.gpulido.harvester;
 
-import es.gpulido.harvester.persistence.DataFrame;
-import es.gpulido.harvester.persistence.DataToPersist;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.exceptions.UnableToExecuteException;
+import it.freedomotic.model.charting.UsageData;
+import it.freedomotic.model.charting.UsageDataFrame;
 import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -54,6 +53,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  *
  * @author gpt
  */
+
 public final class HarvesterProtocol extends Protocol {
 
     //Connection connection;
@@ -68,26 +68,26 @@ public final class HarvesterProtocol extends Protocol {
         super("HarvesterProtocol", "/harvester/harvester-manifest.xml");
         this.setName("Harvester");
         setPollingWait(-1); // disable polling
-        onStart();
+        //onStart();
     }
 
     @Override
     protected void onRun() {
         if (em.getTransaction().isActive()) {
             em.getTransaction().commit();
-        } 
+        }
         //em.getTransaction().begin();
     }
 
     @Override
     public void onStart() {
-        setDescription("Starting...");        
+        setDescription("Starting...");
         try {
             dbType = configuration.getStringProperty("driver", "h2");
 
             props = new Properties();
             props.loadFromXML(new FileInputStream(this.getFile().getParent() + File.separator + dbType + ".xml"));
-            props.put("openjpa.MetaDataFactory", "org.apache.openjpa.persistence.jdbc.PersistenceMappingFactory(Types="+ DataToPersist.class.getCanonicalName() +";)");
+            props.put("openjpa.MetaDataFactory", "org.apache.openjpa.persistence.jdbc.PersistenceMappingFactory(Types=" + UsageData.class.getCanonicalName() + ";)");
             props.put("openjpa.TransactionMode", "local");
             props.put("openjpa.jdbc.SynchronizeMappings", "buildSchema");
             props.put("openjpa.Log", configuration.getStringProperty("log.options", "DefaultLevel=WARN, Runtime=INFO, Tool=INFO"));
@@ -101,7 +101,7 @@ public final class HarvesterProtocol extends Protocol {
         } catch (ArgumentException e) {
             LOG.warning(e.getLocalizedMessage());
         } catch (Exception e) {
-           LOG.severe(e.getLocalizedMessage());
+            LOG.severe(e.getLocalizedMessage());
             stop();
         }
 
@@ -109,6 +109,7 @@ public final class HarvesterProtocol extends Protocol {
 
     @Override
     public void onStop() {
+        setPollingWait(-1); // disable polling
         super.onStop();
 
         try {
@@ -120,17 +121,19 @@ public final class HarvesterProtocol extends Protocol {
         } catch (Exception e) {
         }
         this.setDescription("Disconnected");
-        setPollingWait(-1); // disable polling
+        
     }
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        if (c.getProperty("command") == null || c.getProperty("command").isEmpty() || c.getProperty("command").equalsIgnoreCase("SAVE-DATA")) {
-            saveData(c);
-        } else if (c.getProperty("command").equals("EXTRACT-DATA")) { //extract data
-            DataFrame data = extractData(c);
-            sendPoints(data, c);
-        } 
+        if (isRunning()) {
+            if (c.getProperty("command") == null || c.getProperty("command").isEmpty() || c.getProperty("command").equalsIgnoreCase("SAVE-DATA")) {
+                saveData(c);
+            } else if (c.getProperty("command").equals("EXTRACT-DATA")) { //extract data
+                UsageDataFrame data = extractData(c);
+                sendPoints(data, c);
+            }
+        }
     }
 
     @Override
@@ -143,56 +146,55 @@ public final class HarvesterProtocol extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private DataFrame extractData(Command c) {
+    private UsageDataFrame extractData(Command c) {
         String[] searchParam = c.getProperty("QueryAddress").split(":");
         Query q = null;
-        
-        
+      
+
         if (searchParam[0].equals("object") || searchParam[0].equals("obj")) {
             // extract data for an object 
             q = em.createNamedQuery("powered");
-            
+
             String date = c.getProperty("startDate");
-            if (date == null ||  date.isEmpty() || date.equals("CURRENT_DATE")){
+            if (date == null || date.isEmpty() || date.equals("CURRENT_DATE")) {
                 q.setParameter("startDate", new Date(0));
             } else {
                 q.setParameter("startDate", new Date(Long.parseLong(date)));
             }
-            
+
             date = c.getProperty("stopDate");
-            if ( date == null || date.equals("CURRENT_DATE") || date.equals("CURRENT_DATE") ) {                
+            if (date == null || date.isEmpty() || date.equals("CURRENT_DATE")) {
                 q.setParameter("stopDate", new Date());
             } else {
                 q.setParameter("stopDate", new Date(Long.parseLong(date)));
             }
-            
-            q.setParameter("address","%");
-            q.setParameter("uuid",searchParam[1].trim());
-            q.setParameter("protocol","%");
+
+            q.setParameter("address", "%");
+            q.setParameter("uuid", searchParam[1].trim());
+            q.setParameter("protocol", "%");
 
         } else if (searchParam[0].equals("tag")) {
             Collection<EnvObjectLogic> objs = getApi().getObjectByTag(searchParam[1]);
-            
+
         } else if (searchParam[0].equals("protocol")) {
             Collection<EnvObjectLogic> objs = getApi().getObjectByProtocol(searchParam[1]);
-            
+
         } else if (searchParam[0].equals("room")) {
             // to be implemented
-            
         } else if (searchParam[0].equals("environment")) {
             Collection<EnvObjectLogic> objs = getApi().getObjectByEnvironment(searchParam[1]);
-            
+
         }
-        
-        DataFrame df = new DataFrame(DataFrame.FULL_UPDATE,q.getResultList());
+
+        UsageDataFrame df = new UsageDataFrame(UsageDataFrame.FULL_UPDATE, q.getResultList());
         LOG.info(df.toString());
         return df;
     }
 
-    private void sendPoints(DataFrame df, Command c) {
+    private void sendPoints(UsageDataFrame df, Command c) {
         // find command sender (in order to reply)
         // create response, filling data from List
-         ProtocolRead ev = new ProtocolRead(this, "harvester", c.getProperty("QueryAddress"));
+        ProtocolRead ev = new ProtocolRead(this, "harvester", c.getProperty("QueryAddress"));
         //EventTemplate ev = new EventTemplate(c);
         ObjectMapper om = new ObjectMapper();
         //om.setVisibility(JsonMethod.FIELD, Visibility.ANY);
@@ -200,7 +202,7 @@ public final class HarvesterProtocol extends Protocol {
         try {
             om.writeValue(os, df);
             ev.addProperty("behaviorValue", os.toString());
-            
+
             Freedomotic.sendEvent(ev);
         } catch (Exception ex) {
             LOG.severe(ex.getLocalizedMessage());
@@ -214,7 +216,7 @@ public final class HarvesterProtocol extends Protocol {
 
     private void saveData(Command c) {
         try {
-            DataToPersist item = new DataToPersist();
+            UsageData item = new UsageData();
 
             Timestamp ts = new java.sql.Timestamp(
                     Integer.parseInt(c.getProperty("event.date.year")) - 1900,
@@ -237,11 +239,11 @@ public final class HarvesterProtocol extends Protocol {
                 String key = (String) entry.getKey();
                 Matcher fits = pat.matcher(key);
                 if (fits.find() && !fits.group(1).equals("data")) { //exclude unwanted behaviors
-                    DataToPersist item2 = item.clone();
+                    UsageData item2 = item.clone();
                     item2.setObjBehavior(fits.group(1));
                     item2.setObjValue((String) entry.getValue());
 
-                    if (isRunning) {
+                    if (isRunning() && em != null) {
                         if (!em.getTransaction().isActive()) {
                             em.getTransaction().begin();
                         }

@@ -84,13 +84,13 @@
                 <scope>compile</scope>
             </dependency>
 	
-			<!-- add util logging to slf4j bridge to classpath -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>jul-to-slf4j</artifactId>
-				<version>1.6.5</version>
- 				<scope>compile</scope>
-			</dependency>
+            <!-- add util logging to slf4j bridge to classpath -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>1.6.5</version>
+                <scope>compile</scope>
+            </dependency>
 	
             <!-- add log4j binding to classpath -->
             <!-- routes slf4j calls to log4j -->
@@ -162,6 +162,7 @@
                     </execution>
                 </executions>
             </plugin>
+           
         </plugins>   
         <!-- executes only on childs (if the child have specified it in its pom)-->
         <pluginManagement>

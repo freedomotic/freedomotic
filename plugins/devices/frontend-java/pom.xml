@@ -73,11 +73,6 @@
             <artifactId>jcommon</artifactId>
             <version>1.0.17</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>harvester</artifactId>
-            <version>3.0</version>
-        </dependency>
     </dependencies>
 
     <build>

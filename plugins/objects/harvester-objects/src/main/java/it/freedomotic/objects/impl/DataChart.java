@@ -20,24 +20,15 @@
 package it.freedomotic.objects.impl;
 
 import com.google.inject.Inject;
-import es.gpulido.harvester.persistence.DataFrame;
-import es.gpulido.harvester.persistence.DataToPersist;
 import it.freedomotic.events.ObjectReceiveClick;
 import it.freedomotic.model.ds.Config;
 import it.freedomotic.model.object.BooleanBehavior;
+import it.freedomotic.model.object.DataBehavior;
+import it.freedomotic.objects.DataBehaviorLogic;
 import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.util.I18n.I18n;
-import it.mazzoni.harvester.object.DataBehavior;
-import it.mazzoni.harvester.object.DataBehaviorLogic;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.POJONode;
 
 /**
  *
@@ -54,7 +45,7 @@ public class DataChart extends EnvObjectLogic {
 
     @Override
     public void init() {       
-        data = new DataBehaviorLogic((DataBehavior) getPojo().getBehaviors().get(0));
+        data = new DataBehaviorLogic((DataBehavior) getPojo().getBehavior(BEHAVIOR_DATA));
         data.addListener(new DataBehaviorLogic.Listener() {
             @Override
             public void onReceiveData(Config params, boolean fireCommand) {
@@ -62,25 +53,6 @@ public class DataChart extends EnvObjectLogic {
                 
                 if (JSONdata != null && !JSONdata.isEmpty()) {
                     data.setData(JSONdata);
-                    /*
-                     * ObjectMapper om = new ObjectMapper();
-                    try {
-                        DataFrame df = om.readValue(JSONdata, DataFrame.class);
-                        switch (df.getType()){
-                            case DataFrame.FULL_UPDATE:
-                                //assocData = df.getData();
-                                data.setData(JSONdata);
-                                break;
-                            case DataFrame.INCREMENTAL_UPDATE:
-                                //assocData.addAll(df.getData());
-                                break;
-                            default:        
-                        }
-                      
-                    } catch (IOException ex) {
-                        Logger.getLogger(DataChart.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    */
                 }
             }
 
@@ -92,10 +64,6 @@ public class DataChart extends EnvObjectLogic {
 
     }
     
-  /*  public List<DataToPersist> getAssocData(){
-        return this.assocData;
-    }
-*/
     @Override
     protected void createTriggers() {
         super.createTriggers();
@@ -119,9 +87,5 @@ public class DataChart extends EnvObjectLogic {
         setOn.setProperty("behavior", BEHAVIOR_DATA);
         setOn.setProperty("value", BooleanBehavior.VALUE_TRUE);
     }
-    
-    
-    
-    
 
 }

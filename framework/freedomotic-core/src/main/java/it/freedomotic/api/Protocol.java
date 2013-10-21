@@ -119,11 +119,11 @@ public abstract class Protocol
                 public synchronized void run() {
                     loadPermissionsFromManifest();
                     onStart();
-                    isRunning = true;
                     sensorThread = new Protocol.SensorThread();
                     sensorThread.start();
                     PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
                     busService.send(event);
+                    isRunning = true;
                 }
             };
             getApi().getAuth().pluginExecutePrivileged(this, action);
