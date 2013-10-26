@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.reactions;
@@ -41,6 +39,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import com.thoughtworks.xstream.XStream;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -140,10 +139,16 @@ public class TriggerPersistence {
 
             if (files != null) {
                 for (File file : files) {
-                    //validate the object against a predefined DTD
-                    String xml =
-                            DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/trigger.dtd");
-                    Trigger trigger = (Trigger) xstream.fromXML(xml);
+                    Trigger trigger = null;
+                    try {
+                        //validate the object against a predefined DTD
+                        String xml =
+                                DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/trigger.dtd");
+                        trigger = (Trigger) xstream.fromXML(xml);
+                    } catch (Exception e) {
+                        LOG.log(Level.SEVERE, "Trigger file {0} is not well formatted: {1}", new Object[]{file.getPath(), e.getLocalizedMessage()});
+                        continue;
+                    }
 
                     //addAndRegister trigger to the list if it is not a duplicate
                     if (!list.contains(trigger)) {
@@ -203,21 +208,23 @@ public class TriggerPersistence {
     }
 
     public static synchronized void add(Trigger t) {
-        int preSize = TriggerPersistence.size();
+        if (t != null) {
+            int preSize = TriggerPersistence.size();
 
-        if (!list.contains(t)) {
-            list.add(t);
-        } else {
-            //this trigger is already in the list
-            int old = list.indexOf(t);
-            list.get(old).unregister();
-            list.set(old, t);
-        }
+            if (!list.contains(t)) {
+                list.add(t);
+            } else {
+                //this trigger is already in the list
+                int old = list.indexOf(t);
+                list.get(old).unregister();
+                list.set(old, t);
+            }
 
-        int postSize = TriggerPersistence.size();
+            int postSize = TriggerPersistence.size();
 
-        if (!(postSize == (preSize + 1))) {
-            LOG.severe("Error while while adding trigger '" + t.getName() + "'");
+            if (!(postSize == (preSize + 1))) {
+                LOG.severe("Error while while adding trigger '" + t.getName() + "'");
+            }
         }
     }
 
@@ -246,19 +253,17 @@ public class TriggerPersistence {
      * input
      */
     public static Trigger getTrigger(String name) {
-        if ((name == null) || (name.isEmpty())) {
+        if ((name == null) || (name.trim().isEmpty())) {
             return null;
         }
 
-        for (Iterator it = list.iterator(); it.hasNext();) {
-            Trigger trigger = (Trigger) it.next();
-
-            if (trigger.getName().equalsIgnoreCase(name)) {
+        for (Trigger trigger : list) {
+            if (trigger.getName().equalsIgnoreCase(name.trim())) {
                 return trigger;
             }
         }
 
-        LOG.warning("Searching for a trigger named '" + name + "' but it doesen't exist.");
+        LOG.log(Level.WARNING, "Searching for a trigger named ''{0}'' but it doesn''t exist.", name);
 
         return null;
     }

@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.reactions;
@@ -32,7 +30,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +37,7 @@ import java.util.UUID;
 
 import com.thoughtworks.xstream.XStream;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -56,14 +54,13 @@ public class ReactionPersistence {
 
     public static void saveReactions(File folder) {
         if (list.isEmpty()) {
-            LOG.warning("There are no reactions to persist, " + folder.getAbsolutePath()
-                    + " will not be altered.");
+            LOG.log(Level.WARNING, "There are no reactions to persist, {0} will not be altered.", folder.getAbsolutePath());
 
             return;
         }
 
         if (!folder.isDirectory()) {
-            LOG.warning(folder.getAbsoluteFile() + " is not a valid reaction folder. Skipped");
+            LOG.log(Level.WARNING, "{0} is not a valid reaction folder. Skipped", folder.getAbsoluteFile());
 
             return;
         }
@@ -72,7 +69,7 @@ public class ReactionPersistence {
         deleteReactionFiles(folder);
 
         try {
-            LOG.config("Saving reactions to file in " + folder.getAbsolutePath());
+            LOG.log(Level.CONFIG, "Saving reactions to file in {0}", folder.getAbsolutePath());
 
             for (Reaction reaction : list) {
                 String uuid = reaction.getUUID();
@@ -142,25 +139,29 @@ public class ReactionPersistence {
 
             if (files != null) {
                 for (File file : files) {
-                    //validate the object against a predefined DTD
-                    String xml =
-                            DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/reaction.dtd");
                     Reaction reaction = null;
-
+                    //validate the object against a predefined DTD
                     try {
+                        String xml =
+                                DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/reaction.dtd");
+
                         reaction = (Reaction) xstream.fromXML(xml);
                     } catch (Exception e) {
-                        LOG.severe("Reaction file is not well formatted. \n" + Freedomotic.getStackTraceInfo(e));
-                       
+                        LOG.log(Level.SEVERE, "Reaction file {0} is not well formatted: {1}", new Object[]{file.getName(), e.getLocalizedMessage()});
                         continue;
                     }
 
-                    if (reaction.getCommands().size() == 0) {
-                        LOG.severe("Reaction " + reaction.toString()
-                                + " has no valid commands. Maybe related objects are missing or not configured properly.");
+                    if (reaction.getTrigger() !=  null && reaction.getTrigger().getName() != null) {
+                        add(reaction);
+                    } else {
+                        LOG.log(Level.SEVERE, "Cannot add reaction {0}: it has empty Trigger", file.getName());
+                        continue;
                     }
-
-                    add(reaction);
+                    
+                    if (reaction.getCommands().isEmpty()) {
+                        LOG.log(Level.WARNING, "Reaction {0} has no valid commands. Maybe related objects are missing or not configured properly.", reaction.toString());
+                    }
+                    
                     summary.append(reaction.getUUID()).append("\t\t\t").append(reaction.toString())
                             .append("\t\t\t").append(reaction.getDescription()).append("\n");
                 }
@@ -172,11 +173,10 @@ public class ReactionPersistence {
                 //Close the output stream
                 indexfile.close();
             } else {
-                LOG.config("No reactions to load from this folder " + folder.toString());
+                LOG.log(Level.CONFIG, "No reactions to load from this folder {0}", folder.toString());
             }
         } catch (Exception e) {
-            LOG.severe("Exception while loading reaction in " + folder.getAbsolutePath() + ".\n"
-                    + Freedomotic.getStackTraceInfo(e));
+            LOG.log(Level.SEVERE, "Exception while loading reaction in {0}.\n{1}", new Object[]{folder.getAbsolutePath(), Freedomotic.getStackTraceInfo(e)});
         }
     }
 
@@ -185,21 +185,21 @@ public class ReactionPersistence {
             r.getTrigger().register(); //trigger starts to listen on its channel
             list.add(r);
             r.setChanged();
-            LOG.config("Added new reaction " + r.getDescription());
+            LOG.log(Level.CONFIG, "Added new reaction {0}", r.getDescription());
+
         } else {
-            LOG.info("The reaction '" + r.getDescription() + "' is already loaded so its skipped.");
+            LOG.log(Level.INFO, "The reaction ''{0}'' is already loaded so it is skipped.", r.getDescription());
         }
     }
 
     public static void remove(Reaction input) {
         if (input != null) {
             boolean removed = list.remove(input);
-            LOG.info("Removed reaction " + input.getDescription());
+            LOG.log(Level.INFO, "Removed reaction {0}", input.getDescription());
             input.getTrigger().unregister();
 
             if ((!removed) && (list.contains(input))) {
-                LOG.warning("Error while removing Reaction " + input.getDescription()
-                        + " from the list");
+                LOG.log(Level.WARNING, "Error while removing Reaction {0} from the list", input.getDescription());
             }
         }
     }
