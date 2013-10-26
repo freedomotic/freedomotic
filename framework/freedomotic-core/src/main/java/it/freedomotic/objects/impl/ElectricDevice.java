@@ -219,7 +219,7 @@ public class ElectricDevice
         clicked.setPersistence(false);
 
         Trigger turnsOn = new Trigger();
-        turnsOn.setName(I18n.msg("when_X_turns_on", new Object[]{this.getPojo().getName()}));
+        turnsOn.setName(I18n.msg("X_turns_on", new Object[]{this.getPojo().getName()}));
         turnsOn.setChannel("app.event.sensor.object.behavior.change");
         turnsOn.getPayload().addStatement("object.name",
                 this.getPojo().getName());
@@ -228,7 +228,7 @@ public class ElectricDevice
 //        XStream stream = FreedomXStream.getXstream();
 //        System.out.println(stream.toXML(turnsOn));
         Trigger turnsOff = new Trigger();
-        turnsOff.setName(I18n.msg("when_X_turns_off", new Object[]{this.getPojo().getName()}));
+        turnsOff.setName(I18n.msg("X_turns_off", new Object[]{this.getPojo().getName()}));
         turnsOff.setChannel("app.event.sensor.object.behavior.change");
         turnsOff.getPayload().addStatement("object.name",
                 this.getPojo().getName());

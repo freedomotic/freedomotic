@@ -58,10 +58,9 @@ public class CommandPersistence {
             if (!userCommands.containsKey(c.getName().trim().toLowerCase())) {
                 userCommands.put(c.getName(),
                         c);
-                LOG.fine("Added command '" + c.getName() + "' to the list of user commands");
+                LOG.log(Level.FINE, "Added command ''{0}'' to the list of user commands", c.getName());
             } else {
-                LOG.config("Command '" + c.getName()
-                        + "' already in the list of user commands. Skipped");
+                LOG.log(Level.CONFIG, "Command ''{0}'' already in the list of user commands. Skipped", c.getName());
             }
         } else {
             LOG.warning("Attempt to add a null user command to the list. Skipped");
@@ -101,11 +100,11 @@ public class CommandPersistence {
     }
 
     public static Command getHardwareCommand(String name) {
-        Command command = hardwareCommands.get(name);
+        Command command = hardwareCommands.get(name.trim());
 
         if (command == null) {
-            LOG.severe("Missing command '" + name + "'. "
-                    + "Maybe the related plugin is not installed or cannot be loaded");
+            LOG.log(Level.SEVERE,"Missing command ''{0}" + "''. "
+                    + "Maybe the related plugin is not installed or cannot be loaded", name);
         }
 
         return command;
@@ -138,10 +137,14 @@ public class CommandPersistence {
                 summary.append("#Filename \t\t #CommandName \t\t\t #Destination").append("\n");
 
                 for (File file : files) {
-                    String xml =
-                            DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/command.dtd");
-                    Command command = null;
-
+                     Command command = null;
+                     String xml = null;
+                    try {
+                        xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/command.dtd");
+                     } catch (Exception e) {
+                        LOG.log(Level.SEVERE, "Reaction file {0} is not well formatted: {1}", new Object[]{file.getPath(), e.getLocalizedMessage()});
+                        continue;
+                    }
                     try {
                         command = (Command) xstream.fromXML(xml);
 
@@ -160,8 +163,7 @@ public class CommandPersistence {
                         summary.append(file.getName()).append("\t\t").append(command.getName())
                                 .append("\t\t\t").append(command.getReceiver()).append("\n");
                     } catch (CannotResolveClassException e) {
-                        LOG.severe("Cannot unserialize command due to unrecognized class '"
-                                + e.getMessage() + "' in \n" + xml);
+                        LOG.log(Level.SEVERE, "Cannot unserialize command due to unrecognized class ''{0}'' in \n{1}", new Object[]{e.getMessage(), xml});
                     }
                 }
 
@@ -181,21 +183,20 @@ public class CommandPersistence {
                 }
             }
         } else {
-            LOG.config("No commands to load from this folder " + folder.toString());
+            LOG.log(Level.CONFIG, "No commands to load from this folder {0}", folder.toString());
         }
     }
 
     public static void saveCommands(File folder) {
         try {
             if (userCommands.isEmpty()) {
-                LOG.warning("There are no commands to persist, " + folder.getAbsolutePath()
-                        + " will not be altered.");
+                LOG.log(Level.WARNING, "There are no commands to persist, {0} will not be altered.", folder.getAbsolutePath());
 
                 return;
             }
 
             if (!folder.isDirectory()) {
-                LOG.warning(folder.getAbsoluteFile() + " is not a valid command folder. Skipped");
+                LOG.log(Level.WARNING, "{0} is not a valid command folder. Skipped", folder.getAbsoluteFile());
 
                 return;
             }
