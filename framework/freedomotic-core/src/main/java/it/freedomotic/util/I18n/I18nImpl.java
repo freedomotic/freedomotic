@@ -138,6 +138,9 @@ public class I18nImpl implements I18n {
                     String searchDefaultTranslation = msg(folder, packageName, key, fields, reThrow, fallBackLocale);
                     if (searchDefaultTranslation != null) {
                         return searchDefaultTranslation;
+                    } else {
+                        //instead of showing nothing we use the key
+                        return key;
                     }
                 }
                 if (reThrow) {
