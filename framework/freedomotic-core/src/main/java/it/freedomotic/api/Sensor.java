@@ -100,9 +100,6 @@ public abstract class Sensor extends Plugin implements Runnable, BusConsumer {
 
     @Override
     public void start() {
-         if (configuration.getBooleanProperty("enable-i18n", false)){
-            getApi().getI18n().registerPluginBundleDir(this);
-        }
         if (!isRunning) {
             Runnable action = new Runnable() {
                 @Override

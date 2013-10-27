@@ -21,6 +21,7 @@ package it.freedomotic.util.I18n;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.AppConfig;
 import it.freedomotic.util.Info;
@@ -138,14 +139,14 @@ public class I18nImpl implements I18n {
                     String searchDefaultTranslation = msg(folder, packageName, key, fields, reThrow, fallBackLocale);
                     if (searchDefaultTranslation != null) {
                         return searchDefaultTranslation;
+                    } else if (reThrow) {
+                        return null;
                     } else {
                         //instead of showing nothing we use the key
                         return key;
                     }
                 }
-                if (reThrow) {
-                    return null;
-                }
+
             } catch (MissingResourceException ex) {
                 LOG.log(Level.SEVERE, "Cannot find resourceBundle files inside folder {0} for package{1}", new Object[]{folder.getAbsolutePath(), packageName});
             }
@@ -172,8 +173,13 @@ public class I18nImpl implements I18n {
     }
 
     @Override
-    public void registerPluginBundleDir(Plugin plug) {
-        registerBundleDir(plug.getClass().getPackage().getName(), new File(plug.getFile().getParentFile() + "/data/i18n"));
+    public void registerPluginBundleDir(Client client) {
+        if (client instanceof Plugin) {
+            Plugin plug = (Plugin) client;
+            if (plug.configuration.getBooleanProperty("enable-i18n", false)) {
+                registerBundleDir(plug.getClass().getPackage().getName(), new File(plug.getFile().getParentFile() + "/data/i18n"));
+            }
+        }
     }
 
     /**
