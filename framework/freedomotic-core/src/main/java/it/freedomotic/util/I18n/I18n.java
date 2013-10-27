@@ -4,7 +4,7 @@
  */
 package it.freedomotic.util.I18n;
 
-import it.freedomotic.api.Plugin;
+import it.freedomotic.api.Client;
 import java.util.Vector;
 
 /**
@@ -31,6 +31,6 @@ public interface I18n {
 
     void setDefaultLocale(String loc);
     
-    void registerPluginBundleDir(Plugin plug);
+    void registerPluginBundleDir(Client client);
     
 }
