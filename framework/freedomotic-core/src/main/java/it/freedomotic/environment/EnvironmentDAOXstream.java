@@ -1,6 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.environment;
 
@@ -31,6 +46,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -145,7 +162,7 @@ public class EnvironmentDAOXstream
      * @throws DaoLayerException
      */
     @Override
-    public Environment load()
+    public Collection<Environment> load()
             throws DaoLayerException {
         if (directory == null) {
             throw new DaoLayerException("Cannot load environments from null directory");
@@ -165,13 +182,16 @@ public class EnvironmentDAOXstream
                 };
 
         File[] files = directory.listFiles(envFileFilter);
-
+        
+        ArrayList<Environment> environments = new ArrayList<Environment>();
         for (File file : files) {
-            Environment environment = deserialize(file);
-            return environment;
+            environments.add(deserialize(file));
+            
         }
-
-        return null;
+        if (environments.isEmpty()) {
+            return null;
+        }
+        return environments;
     }
 
     private void serialize(Environment env, File file)

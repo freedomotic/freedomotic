@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package it.freedomotic.app;
@@ -84,6 +82,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import java.util.Collection;
 
 /**
  * This is the starting class of the project
@@ -96,9 +95,7 @@ public class Freedomotic implements BusConsumer {
     public static final Logger logger = Logger.getLogger("it.freedomotic");
     //this should replace Freedomotic.logger reference
     private static final Logger LOG = Logger.getLogger(Freedomotic.class.getName());
-
     private static String INSTANCE_ID;
-    
     public static ArrayList<IPluginCategory> onlinePluginCategories;
     /**
      * Should NOT be used. Reserved for una tantum internal freedomotic core use
@@ -113,7 +110,6 @@ public class Freedomotic implements BusConsumer {
     private Auth auth;
     private API api;
     private BusMessagesListener listener;
-
     // TODO remove static modifier once static methods sendEvent & sendCommand are erased.
     private static BusService busService;
 
@@ -136,7 +132,7 @@ public class Freedomotic implements BusConsumer {
         this.config = config;
         this.api = api;
         this.auth = api.getAuth();
-   }
+    }
 
     public void start() throws FreedomoticException {
         /**
@@ -175,22 +171,22 @@ public class Freedomotic implements BusConsumer {
         busService.init();
 
         // register listener
-    	this.listener = new BusMessagesListener(this);
+        this.listener = new BusMessagesListener(this);
         // this class is a BusConsumer too
-    	// listen for exit signal (an event) and call onExit method if received
+        // listen for exit signal (an event) and call onExit method if received
         listener.consumeEventFrom("app.event.system.exit");
-     
+
         // Stop on initialization error.
         final BootStatus currentStatus = BootStatus.getCurrentStatus();
-		if (!BootStatus.STARTED.equals(currentStatus)) {
-        	
-        	kill(currentStatus.getCode());
-        }
-        
-		// just for testing, don't mind it
-		new StompDispatcher(); 
+        if (!BootStatus.STARTED.equals(currentStatus)) {
 
-		// TODO change this object to an enum and do init in another location.
+            kill(currentStatus.getCode());
+        }
+
+        // just for testing, don't mind it
+        new StompDispatcher();
+
+        // TODO change this object to an enum and do init in another location.
         new ColorList(); //initialize an ordered list of colors used for various purposes, eg: people colors
 
         /**
@@ -330,9 +326,9 @@ public class Freedomotic implements BusConsumer {
          * *****************************************************************
          */
         /**
-
-
-        /**
+         *
+         *
+         * /**
          * ******************************************************************
          * Deserialize objects from XML
          * *****************************************************************
@@ -411,15 +407,14 @@ public class Freedomotic implements BusConsumer {
     public void loadDefaultEnvironment()
             throws FreedomoticException {
         String envFilePath = config.getProperty("KEY_ROOM_XML_PATH");
-        File envFile = new File(Info.PATH_WORKDIR+ "/data/furn/" + envFilePath);
+        File envFile = new File(Info.PATH_WORKDIR + "/data/furn/" + envFilePath);
         File folder = envFile.getParentFile();
-        
+
         if (!folder.exists()) {
             throw new FreedomoticException(
                     "Folder " + folder + " do not exists. Cannot load default "
-                    + "environment from " +envFile.getAbsolutePath().toString());
-        } else 
-            if (!folder.isDirectory()) {
+                    + "environment from " + envFile.getAbsolutePath().toString());
+        } else if (!folder.isDirectory()) {
             throw new FreedomoticException(
                     "Environment folder " + folder.getAbsolutePath()
                     + " is supposed to be a directory");
@@ -428,16 +423,18 @@ public class Freedomotic implements BusConsumer {
         try {
             //EnvironmentPersistence.loadEnvironmentsFromDir(folder, false);
             EnvironmentDAO loader = environmentDaoFactory.create(folder);
-            Environment loaded = loader.load();
-            EnvironmentLogic logic = INJECTOR.getInstance(EnvironmentLogic.class);
+            Collection<Environment> loaded = loader.load();
 
             if (loaded == null) {
                 throw new IllegalStateException("Object data cannot be null at this stage");
             }
+            for (Environment env : loaded) {
+                EnvironmentLogic logic = INJECTOR.getInstance(EnvironmentLogic.class);
+                logic.setPojo(env);
+                logic.setSource(folder);
+                EnvironmentPersistence.add(logic, false);
+            }
 
-            logic.setPojo(loaded);
-            logic.setSource(folder);
-            EnvironmentPersistence.add(logic, false);
             //now load related objects
             EnvObjectPersistence.loadObjects(new File(folder + "/data/obj"), false);
         } catch (DaoLayerException e) {
@@ -475,8 +472,8 @@ public class Freedomotic implements BusConsumer {
      */
     public static void main(String[] args) {
 
-    	configureLogging();
-    	
+        configureLogging();
+
         try {
             INSTANCE_ID = args[0];
         } catch (Exception e) {
@@ -499,42 +496,42 @@ public class Freedomotic implements BusConsumer {
         }
     }
 
-	/**
-	 * Configures java.util.logging (hereafter JUL)
-	 * 
-	 * While Freedomotic is still using JUL, here is configured SLF4J Brigde.
-	 * 
-	 * Thereby now all logging (including third party packages) is done through
-	 * SLF4J.
-	 */
+    /**
+     * Configures java.util.logging (hereafter JUL)
+     *
+     * While Freedomotic is still using JUL, here is configured SLF4J Brigde.
+     *
+     * Thereby now all logging (including third party packages) is done through
+     * SLF4J.
+     */
     private static void configureLogging() {
 
-		// Remove all handlers in jul (java.util.logging) root logger
-    	SLF4JBridgeHandler.removeHandlersForRootLogger();
-    	
-    	// Register slf4j handler to jul root logger 
-    	SLF4JBridgeHandler.install();
-    	
-    	// Set jul root log level to ALL, because default slf4jbridge handler is INFO.
-    	Freedomotic.logger.setLevel(Level.ALL);
-	}
+        // Remove all handlers in jul (java.util.logging) root logger
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+
+        // Register slf4j handler to jul root logger 
+        SLF4JBridgeHandler.install();
+
+        // Set jul root log level to ALL, because default slf4jbridge handler is INFO.
+        Freedomotic.logger.setLevel(Level.ALL);
+    }
 
     @Override
-	public void onMessage(ObjectMessage message) {
+    public void onMessage(ObjectMessage message) {
 
-		Object payload = null;
+        Object payload = null;
 
-		try {
-			payload = message.getObject();
+        try {
+            payload = message.getObject();
 
-			if (payload instanceof EventTemplate) {
-				final EventTemplate event = (EventTemplate) payload;
-				onExit(event);
-			}
-		} catch (JMSException ex) {
-			LOG.log(Level.SEVERE, null, ex);
-		}
-	}
+            if (payload instanceof EventTemplate) {
+                final EventTemplate event = (EventTemplate) payload;
+                onExit(event);
+            }
+        } catch (JMSException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void onExit(EventTemplate event) {
         LOG.info("Received exit signal...");
@@ -565,8 +562,9 @@ public class Freedomotic implements BusConsumer {
 
         try {
             folder = new File(environmentFilePath).getParentFile();
+            
             EnvironmentPersistence.saveEnvironmentsToFolder(folder);
-            //save related objects
+            
             if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
                 File saveDir = null;
                 try {
@@ -583,15 +581,15 @@ public class Freedomotic implements BusConsumer {
         System.exit(0);
     }
 
-	public static void kill() {
+    public static void kill() {
 
-		kill(0);
-	}
+        kill(0);
+    }
 
-	public static void kill(int status) {
+    public static void kill(int status) {
 
-		System.exit(status);
-	}
+        System.exit(status);
+    }
 
     public static String getStackTraceInfo(Throwable t) {
         StringWriter sw = new StringWriter();

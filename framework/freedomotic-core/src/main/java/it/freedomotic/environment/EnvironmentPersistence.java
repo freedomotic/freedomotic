@@ -142,7 +142,9 @@ public final class EnvironmentPersistence {
      *
      * @param folder
      * @param makeUnique
+     * @deprecated 
      */
+    @Deprecated
     public synchronized static boolean loadEnvironmentsFromDir(File folder, boolean makeUnique)
             throws DaoLayerException {
         if (folder == null) {
@@ -359,6 +361,13 @@ public final class EnvironmentPersistence {
         //  EnvObjectPersistence.saveObjects(new File(folder + "/objects"));
     }
 
+    /**
+     *
+     * @param file
+     * @throws DaoLayerException
+     * @deprecated 
+     */
+    @Deprecated
     public static void loadEnvironmentFromFile(final File file)
             throws DaoLayerException {
         XStream xstream = FreedomXStream.getXstream();
