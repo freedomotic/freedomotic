@@ -24,7 +24,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>freedomotic-core</artifactId>
             <version>${project.parent.version}</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>

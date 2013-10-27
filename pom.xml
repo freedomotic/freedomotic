@@ -38,6 +38,56 @@
                 <module>plugins/devices/restapi</module>
             </modules>
         </profile>
+        <profile>
+            <id>market</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <echo>Uploading file target/market-dist/${freedomotic.marketplace.file} to marketplace</echo>
+                                        <!-- create a temp folder in which constructing the archive, then compress it-->
+                                        <delete dir="target/market-dist/${artifactId}"/>
+                                        <mkdir dir="target/market-dist/${artifactId}/${artifactId}"/>
+                                        <copy todir="target/market-dist/${artifactId}/${artifactId}" includeEmptyDirs="false">
+                                            <fileset dir="target/${artifactId}">
+                                            </fileset>
+                                        </copy>
+                                        <zip destfile="target/market-dist/${freedomotic.marketplace.file}"
+                                             basedir="target/market-dist/${artifactId}" />
+                                        <property name="workspace-base" value="../../../"/>
+                                        <taskdef
+                                            name="marketplace"
+                                            classname="it.freedomotic.marketplace.AntUploader" >
+                                            <classpath>
+                                                <pathelement location="../../../tools/freedomotic-marketplace/target/freedomotic-marketplace-3.0-jar-with-dependencies.jar"/>
+                                                <pathelement location="../../../framework/freedomotic-core/target/freedomotic-core/freedomotic.jar"/>
+                                            </classpath>
+                                        </taskdef>
+                                        <!-- If the username or the password are not passed as parameters, ask for them -->
+                                        <marketplace
+                                            username="${username}"
+                                            password="${password}"
+                                            nodeid="${freedomotic.nodeid}"
+                                            attachment="target/market-dist/"
+                                        />
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
       
     <organization>
@@ -265,36 +315,6 @@
                                     <copydir src ="target/${project.artifactId}"
                                              dest="${freedomotic.synch.dist.path}/${freedomotic.package.type}s/${project.artifactId}">
                                     </copydir>
-                                </target>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>id.site</id>
-                            <phase>site</phase>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                            <configuration>
-                                <target>
-                                    <echo>Phase site goal run</echo>
-                                    <zip destfile="target/market-dist/${freedomotic.marketplace.file}"
-                                         basedir="target/${artifactId}" />
-                                    <property name="workspace-base" value="../../../"/>
-                                    <taskdef
-                                        name="marketplace"
-                                        classname="it.freedomotic.marketplace.AntUploader" >
-                                        <classpath>
-                                            <pathelement location="../../../tools/freedomotic-marketplace/target/freedomotic-marketplace-3.0-jar-with-dependencies.jar"/>
-                                            <pathelement location="../../../framework/freedomotic-core/target/freedomotic.jar"/>-->
-                                        </classpath>
-                                    </taskdef>
-                                    <!-- If the username or the password are not passed as parameters, ask for them -->
-                                    <marketplace
-                                        username="${freedomotic.marketplace.username}"
-                                        password="${freedomotic.marketplace.password}"
-                                        nodeid="${freedomotic.nodeid}"
-                                        attachment="target/market-dist/"
-                                    />
                                 </target>
                             </configuration>
                         </execution>
