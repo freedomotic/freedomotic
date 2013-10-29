@@ -1,6 +1,6 @@
 <trigger>
-    <name>Ipx800 board reads a voltage</name>
-    <description>Ipx800 reads a voltage value</description>
+    <name>Ipx800 board reads a analog value</name>
+    <description>Ipx800 reads a analog value change</description>
     <channel>app.event.sensor.protocol.read.ipx800</channel>
     <payload>
         <payload>
@@ -20,7 +20,7 @@
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>= behaviorValue=Math.round(@event.inputValue*0.00322*10)</value>
+                <value>@event.inputValue</value>
             </it.freedomotic.reactions.Statement>
         </payload>
     </payload>

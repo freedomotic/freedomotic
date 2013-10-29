@@ -62,6 +62,7 @@ public class Ipx800 extends Protocol {
     private String GET_STATUS_URL = configuration.getStringProperty("get-status-url", "status.xml");
     private String CHANGE_STATE_RELAY_URL = configuration.getStringProperty("change-state-relay-url", "leds.cgi?led=");
     private String SEND_PULSE_RELAY_URL = configuration.getStringProperty("send-pulse-relay-url", "rlyfs.cgi?rlyf=");
+    private static final Logger LOG = Logger.getLogger(Ipx800.class.getName());
 
     /**
      * Initializations
@@ -118,7 +119,7 @@ public class Ipx800 extends Protocol {
      */
     private boolean connect(String address, int port) {
 
-        Freedomotic.logger.info("Trying to connect to ipx800 board on address " + address + ':' + port);
+        LOG.log(Level.INFO, "Trying to connect to ipx800 board on address {0}:{1}", new Object[]{address, port});
         try {
             //TimedSocket is a non-blocking socket with timeout on exception
             socket = TimedSocket.getSocket(address, port, SOCKET_TIMEOUT);
@@ -127,7 +128,7 @@ public class Ipx800 extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            Freedomotic.logger.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.log(Level.SEVERE, "Unable to connect to host {0} on port {1}", new Object[]{address, port});
             return false;
         }
     }
@@ -195,7 +196,7 @@ public class Ipx800 extends Protocol {
         try {
             statusFileURL = "http://" + board.getIpAddress() + ":"
                     + Integer.toString(board.getPort()) + "/" + GET_STATUS_URL;
-            Freedomotic.logger.info("Ipx800 gets relay status from file " + statusFileURL);
+            LOG.log(Level.INFO, "Ipx800 gets relay status from file {0}", statusFileURL);
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
         } catch (ConnectException connEx) {
@@ -205,12 +206,12 @@ public class Ipx800 extends Protocol {
         } catch (SAXException ex) {
             disconnect();
             this.stop();
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         } catch (Exception ex) {
             disconnect();
             this.stop();
             setDescription("Unable to connect to " + statusFileURL);
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         }
         return doc;
     }
@@ -268,7 +269,9 @@ public class Ipx800 extends Protocol {
         //building the event
         ProtocolRead event = new ProtocolRead(this, "ipx800", address); //IP:PORT:RELAYLINE
         // relay lines - status=0 -> off; status=1 -> on
+        
         if (tag.equalsIgnoreCase("led")) {
+            event.addProperty("inputValue", "0");
             if (status.equals("0")) {
                 event.addProperty("isOn", "false");
             } else {
@@ -286,7 +289,7 @@ public class Ipx800 extends Protocol {
             } else {
                 event.addProperty("isOn", "false");
             }
-            event.addProperty("input.value", status);
+            event.addProperty("inputValue", status);
         } else {
             // analog inputs (an/analog input) status = 0 -> off; status > 0 -> on
             if (tag.equalsIgnoreCase("an") || tag.equalsIgnoreCase("analog")) {
@@ -295,7 +298,7 @@ public class Ipx800 extends Protocol {
                 } else {
                     event.addProperty("isOn", "true");
                 }
-                event.addProperty("input.value", status);
+                event.addProperty("inputValue", status);
 
             }
         }
@@ -325,10 +328,10 @@ public class Ipx800 extends Protocol {
             //connected = connect(address[0], Integer.parseInt(address[1]));
             connected = connect(ip_board, port_board);
         } catch (ArrayIndexOutOfBoundsException outEx) {
-            Freedomotic.logger.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
+            LOG.log(Level.SEVERE, "The object address ''{0}'' is not properly formatted. Check it!", c.getProperty("address"));
             throw new UnableToExecuteException();
         } catch (NumberFormatException numberFormatException) {
-            Freedomotic.logger.severe(port_board + " is not a valid ethernet port to connect to");
+            LOG.log(Level.SEVERE, "{0} is not a valid ethernet port to connect to", port_board);
             throw new UnableToExecuteException();
         }
 
@@ -342,7 +345,7 @@ public class Ipx800 extends Protocol {
                 }
             } catch (IOException iOException) {
                 setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);
-                Freedomotic.logger.severe("Unable to send the message to host " + address[0] + " on port " + address[1]);
+                LOG.log(Level.SEVERE, "Unable to send the message to host {0} on port {1}", new Object[]{address[0], address[1]});
                 throw new UnableToExecuteException();
             } finally {
                 disconnect();
