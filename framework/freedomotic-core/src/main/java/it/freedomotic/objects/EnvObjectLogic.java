@@ -377,10 +377,11 @@ public class EnvObjectLogic {
     public final boolean executeTrigger(Trigger t) {
         String behavior = getAction(t.getName());
 
-        if (behavior == null) {
+        if (behavior == null ) {
             //LOG.severe("Hardware trigger '" + t.getName() + "' is not bound to any action of object " + this.getPojo().getName());
             //check if the behavior name is written in the trigger
-            behavior = t.getPayload().getStatements("behavior.name").get(0).getValue();
+            
+            behavior = t.getPayload().getStatements("behavior.name").isEmpty() ?  ""  : t.getPayload().getStatements("behavior.name").get(0).getValue();
 
             if (behavior.isEmpty()) {
                 return false;

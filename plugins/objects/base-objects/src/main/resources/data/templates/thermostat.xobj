@@ -15,7 +15,7 @@
       <readOnly>true</readOnly>
       <value>0</value>
       <max>1000</max>
-      <min>-400</min>
+      <min>-600</min>
       <step>1</step>
       <scale>10</scale> 
     </it.freedomotic.model.object.RangedIntBehavior>
