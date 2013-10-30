@@ -13,11 +13,11 @@
       <description></description>
       <active>true</active>
       <priority>-1</priority>
-      <readOnly>false</readOnly>
+      <readOnly>true</readOnly>
       <value>0</value>
-      <max>60</max>
-      <min>-40</min>
-      <scale>1</scale>
+      <max>1000</max>
+      <min>-600</min>
+      <scale>10</scale>
       <step>1</step>
     </it.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
