@@ -30,6 +30,7 @@ import it.freedomotic.objects.EnvObjectLogic;
 import it.freedomotic.objects.RangedIntBehaviorLogic;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -85,7 +86,7 @@ public class GenericSensor
     }
 
     private void setReadValue(int value) {
-        LOG.info("Setting behavior '"+ readValue.getName()+"' of object '" + getPojo().getName() + "' to " + value);
+        LOG.log(Level.INFO, "Setting behavior ''{0}'' of object ''{1}'' to {2}", new Object[]{readValue.getName(), getPojo().getName(), value});
         readValue.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);

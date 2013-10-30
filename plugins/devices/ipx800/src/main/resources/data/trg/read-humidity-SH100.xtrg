@@ -20,7 +20,7 @@
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>= behaviorValue=Math.round((((@event.inputValue*0.323)/3.3)-15.15)/0.0636)</value>
+                <value>= behaviorValue=Math.round(((@event.inputValue*0.9775)-151.5)/0.636)</value>
             </it.freedomotic.reactions.Statement>
         </payload>
     </payload>
