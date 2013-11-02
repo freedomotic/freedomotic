@@ -70,11 +70,11 @@ public final class EnvironmentPersistence {
             LOG.warning("There is no environment to persist, " + folder.getAbsolutePath() + " will not be altered.");
             return;
         }
-
-        if (!folder.isDirectory()) {
+        
+        if (folder.exists() && !folder.isDirectory()) {
             throw new DaoLayerException(folder.getAbsoluteFile() + " is not a valid environment folder. Skipped");
         }
-
+        createFolderStructure(folder);
         deleteEnvFiles(folder);
 
         try {
@@ -142,7 +142,7 @@ public final class EnvironmentPersistence {
      *
      * @param folder
      * @param makeUnique
-     * @deprecated 
+     * @deprecated
      */
     @Deprecated
     public synchronized static boolean loadEnvironmentsFromDir(File folder, boolean makeUnique)
@@ -311,6 +311,18 @@ public final class EnvironmentPersistence {
         return environments.size();
     }
 
+    private static void createFolderStructure(File folder) {
+        if (!folder.exists()) {
+            folder.mkdir();
+            new File(folder + "/data").mkdir();
+            new File(folder + "/data/obj").mkdir();
+            new File(folder + "/data/rea").mkdir();
+            new File(folder + "/data/trg").mkdir();
+            new File(folder + "/data/cmd").mkdir();
+            new File(folder + "/data/resources").mkdir();
+        }
+    }
+
     private static void save(EnvironmentLogic env, File file)
             throws IOException {
         XStream xstream = FreedomXStream.getEnviromentXstream();
@@ -342,20 +354,10 @@ public final class EnvironmentPersistence {
     public static void saveAs(EnvironmentLogic env, File folder) throws IOException {
         LOG.config("Serializing new environment to " + folder);
 
-        String fileName = folder.getName();
-
-        if (!folder.exists()) {
-            folder.mkdir();
-            new File(folder + "/data").mkdir();
-            new File(folder + "/data/obj").mkdir();
-            new File(folder + "/data/rea").mkdir();
-            new File(folder + "/data/trg").mkdir();
-            new File(folder + "/data/cmd").mkdir();
-            new File(folder + "/data/resources").mkdir();
-        }
+        createFolderStructure(folder);
 
         save(env,
-                new File(folder + "/" + fileName + ".xenv"));
+                new File(folder + "/" + env.getPojo().getUUID() + ".xenv"));
 
         //TODO: Freedomotic.environment.getPojo().setObjectsFolder()
         //  EnvObjectPersistence.saveObjects(new File(folder + "/objects"));
@@ -365,7 +367,7 @@ public final class EnvironmentPersistence {
      *
      * @param file
      * @throws DaoLayerException
-     * @deprecated 
+     * @deprecated
      */
     @Deprecated
     public static void loadEnvironmentFromFile(final File file)

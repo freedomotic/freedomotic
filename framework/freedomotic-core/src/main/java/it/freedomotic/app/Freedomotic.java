@@ -431,7 +431,7 @@ public class Freedomotic implements BusConsumer {
             for (Environment env : loaded) {
                 EnvironmentLogic logic = INJECTOR.getInstance(EnvironmentLogic.class);
                 logic.setPojo(env);
-                logic.setSource(folder);
+                logic.setSource(new File(folder + "/" + env.getUUID() + ".xenv"));
                 EnvironmentPersistence.add(logic, false);
             }
 
