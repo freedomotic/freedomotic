@@ -31,6 +31,9 @@ public class Board {
     private String monitorRelay = null;
     private String monitorAnalogInput = null;
     private String monitorDigitalInput = null;
+    private String authentication = null;
+    private String username = null;
+    private String password = null;
     private int port;
     private int relayNumber;
     private int analogInputNumber;
@@ -42,7 +45,8 @@ public class Board {
 
     public Board(String ipAddress, int port, String alias, int relayNumber, int analogInputNumber,
             int digitalInputNumber, int startingRelay, String ledTag, String digitalInputTag, String analogInputTag, String autoConfiguration, String objectClass,
-            String monitorRelay, String monitorAnalogInput, String monitorDigitalInput) {
+            String monitorRelay, String monitorAnalogInput, String monitorDigitalInput, String authentication,
+            String username, String password) {
         setIpAddress(ipAddress);
         setPort(port);
         setAlias(alias);
@@ -50,6 +54,9 @@ public class Board {
         setAnalogInputNumber(analogInputNumber);
         setDigitalInputNumber(digitalInputNumber);
         setStartingRelay(startingRelay);
+        setAuthentication(authentication);
+        setUsername(username);
+        setPassword(password);
         setLedTag(ledTag);
         setDigitalInputTag(digitalInputTag);
         setAnalogInputTag(analogInputTag);
@@ -86,6 +93,30 @@ public class Board {
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
+    
+    public String getAuthentication() {
+        return authentication;
+    }
+
+    public void setAuthentication(String authentication) {
+        this.authentication = authentication;
+    }
+    
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getLedTag() {
         return ledTag;
@@ -114,7 +145,7 @@ public class Board {
     public void setMonitorDigitalInput(String monitorDigitalInput) {
         this.monitorDigitalInput = monitorDigitalInput;
     }
-    
+
     public void setMonitorAnalogInput(String monitorAnalogInput) {
         this.monitorAnalogInput = monitorAnalogInput;
     }

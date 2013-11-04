@@ -61,6 +61,9 @@
             <property name="monitor-analog-input" value="true"/>
             <property name="monitor-digital-input" value="true"/>
             <property name="auto-configuration" value="false"/>
+            <property name="authentication" value="false"/>
+            <property name="username" value="ftp"/>
+            <property name="password" value="2406"/>
             <property name="object.class" value="Light"/>
             <property name="powered" value="ProgettiHwSwV2 reads a relay state change"/>
             <property name="turn on" value="Turn ON relay on ProgettiHwSw Eth board"/>
