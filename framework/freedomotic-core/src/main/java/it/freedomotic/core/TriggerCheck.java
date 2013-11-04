@@ -219,7 +219,7 @@ public final class TriggerCheck {
                                     //this command is for an object so it needs only to know only about event parameters
                                     Command resolvedCommand = commandResolver.resolve(command);
                                     //doing so we bypass messaging system gaining better performances
-                                    resolvedCommand.onCommandMessage();
+                                    BehaviorManager.parseCommand(resolvedCommand);
                                 } else {
                                     //if the event has a target object we include also object info
                                     EnvObjectLogic targetObject =
