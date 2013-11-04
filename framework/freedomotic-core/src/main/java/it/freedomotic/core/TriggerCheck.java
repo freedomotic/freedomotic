@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.logging.Level;
 
 /**
  *
@@ -55,10 +56,9 @@ import com.google.inject.Singleton;
 public final class TriggerCheck {
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
-
     private final EnvironmentPersistence environmentPersistence;
     private final BusService busService;
-    
+
     @Inject
     TriggerCheck(EnvironmentPersistence environmentPersistence, BusService busService) {
         this.environmentPersistence = environmentPersistence;
@@ -177,7 +177,8 @@ public final class TriggerCheck {
     }
 
     private void executeTriggeredAutomations(final Trigger trigger, final EventTemplate event) {
-        Runnable automation = new Runnable() {
+        Runnable automation;
+        automation = new Runnable() {
             @Override
             public void run() {
                 Iterator<Reaction> it = ReactionPersistence.iterator();
@@ -286,16 +287,21 @@ public final class TriggerCheck {
                     //System.out.println("DEBUG: check condition " + condition.getTarget());
                     EnvObjectLogic object = EnvObjectPersistence.getObjectByName(condition.getTarget());
                     Statement statement = condition.getStatement();
-                    BehaviorLogic behavior = object.getBehavior(statement.getAttribute());
-                    //System.out.println("DEBUG: " + object.getPojo().getName() + " "
-                            //+ " behavior: " + behavior.getName() + " " + behavior.getValueAsString());
-                    boolean eval = behavior.getValueAsString().equalsIgnoreCase(statement.getValue());
-                    if (statement.getLogical().equalsIgnoreCase("AND")) {
-                        result = result && eval;
-                        //System.out.println("DEBUG: result and: " + result + "(" + eval +")");
+                    if (object != null) {
+                        BehaviorLogic behavior = object.getBehavior(statement.getAttribute());
+                        //System.out.println("DEBUG: " + object.getPojo().getName() + " "
+                        //+ " behavior: " + behavior.getName() + " " + behavior.getValueAsString());
+                        boolean eval = behavior.getValueAsString().equalsIgnoreCase(statement.getValue());
+                        if (statement.getLogical().equalsIgnoreCase("AND")) {
+                            result = result && eval;
+                            //System.out.println("DEBUG: result and: " + result + "(" + eval +")");
+                        } else {
+                            result = result || eval;
+                            //System.out.println("DEBUG: result or: " + result + "(" + eval +")");
+                        }
                     } else {
-                        result = result || eval;
-                        //System.out.println("DEBUG: result or: " + result + "(" + eval +")");
+                        LOG.log(Level.WARNING, "Cannot test condition on unexistent object: {0}", condition.getTarget());
+                        return false;
                     }
                 }
                 return result;
