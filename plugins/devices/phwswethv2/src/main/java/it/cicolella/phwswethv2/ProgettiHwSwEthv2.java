@@ -25,14 +25,8 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.ConnectException;
-import java.net.Socket;
-import java.net.URL;
+import java.io.*;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +36,7 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -91,6 +86,9 @@ public class ProgettiHwSwEthv2 extends Protocol {
             String monitorRelay;
             String monitorAnalogInput;
             String monitorDigitalInput;
+            String authentication;
+            String username;
+            String password;
             int portToQuery;
             int digitalInputNumber;
             int analogInputNumber;
@@ -103,6 +101,9 @@ public class ProgettiHwSwEthv2 extends Protocol {
             analogInputNumber = configuration.getTuples().getIntProperty(i, "analog-input-number", 4);
             digitalInputNumber = configuration.getTuples().getIntProperty(i, "digital-input-number", 4);
             startingRelay = configuration.getTuples().getIntProperty(i, "starting-relay", 0);
+            authentication = configuration.getTuples().getStringProperty(i, "authentication", "false");
+            username = configuration.getTuples().getStringProperty(i, "username", "ftp");
+            password = configuration.getTuples().getStringProperty(i, "password", "2406");
             ledTag = configuration.getTuples().getStringProperty(i, "led-tag", "led");
             digitalInputTag = configuration.getTuples().getStringProperty(i, "digital-input-tag", "btn");
             analogInputTag = configuration.getTuples().getStringProperty(i, "analog-input-tag", "pot");
@@ -113,7 +114,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
             objectClass = configuration.getTuples().getStringProperty(i, "object.class", "Light");
             Board board = new Board(ipToQuery, portToQuery, alias, relayNumber, analogInputNumber,
                     digitalInputNumber, startingRelay, ledTag, digitalInputTag, analogInputTag, autoConfiguration, objectClass,
-                    monitorRelay, monitorAnalogInput, monitorDigitalInput);
+                    monitorRelay, monitorAnalogInput, monitorDigitalInput, authentication, username, password);
             boards.add(board);
             // add board object and its alias as key for the hashmap
             devices.put(alias, board);
@@ -178,24 +179,22 @@ public class ProgettiHwSwEthv2 extends Protocol {
 
     @Override
     protected void onRun() {
-        //for (Board board : boards) {
-        //  evaluateDiffs(getXMLStatusFile(board), board); //parses the xml and crosscheck the data with the previous read
         // select all boards in the devices hashmap and evaluate the status
         Set<String> keySet = devices.keySet();
         for (String key : keySet) {
             Board board = devices.get(key);
+            //System.out.println("Richiesta per "+board.getAlias());
             evaluateDiffs(getXMLStatusFile(board), board);
         }
-
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
             Logger.getLogger(ProgettiHwSwEthv2.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //}
     }
 
     private Document getXMLStatusFile(Board board) {
+        final Board b = board;
         //get the xml file from the socket connection
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = null;
@@ -207,8 +206,20 @@ public class ProgettiHwSwEthv2 extends Protocol {
         Document doc = null;
         String statusFileURL = null;
         try {
-            statusFileURL = "http://" + board.getIpAddress() + ":"
-                    + Integer.toString(board.getPort()) + "/" + GET_STATUS_URL;
+            if (board.getAuthentication().equalsIgnoreCase("true")) {
+                Authenticator.setDefault(new Authenticator() {
+
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(b.getUsername(), b.getPassword().toCharArray());
+                    }
+                });
+                statusFileURL = "http://" + b.getIpAddress() + ":"
+                        + Integer.toString(b.getPort()) + "/protect/" + GET_STATUS_URL;
+            } else {
+                statusFileURL = "http://" + b.getIpAddress() + ":"
+                        + Integer.toString(b.getPort()) + "/" + GET_STATUS_URL;
+            }
+
             LOG.info("ProgettiHwSwEth gets relay status from file " + statusFileURL);
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
@@ -227,6 +238,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
             LOG.severe(Freedomotic.getStackTraceInfo(ex));
         }
         return doc;
+
     }
 
     private void evaluateDiffs(Document doc, Board board) {
@@ -251,25 +263,23 @@ public class ProgettiHwSwEthv2 extends Protocol {
                 String tagName = tag + HexIntConverter.convert(i);
                 // control for storing value
                 if (tag.equalsIgnoreCase(board.getLedTag())) {
-                  if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
-                     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
-                     board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
-                 }
+                    if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
+                        sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                        board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
+                    }
                 }
                 if (tag.equalsIgnoreCase(board.getAnalogInputTag())) {
-                  if (!(board.getAnalogInputValue(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
-                     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
-                     board.setAnalogInputValue(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
-                 }
+                    if (!(board.getAnalogInputValue(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
+                        sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                        board.setAnalogInputValue(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
+                    }
                 }
-                 if (tag.equalsIgnoreCase(board.getDigitalInputTag())) {
-                  if (!(board.getDigitalInputValue(i) == doc.getElementsByTagName(tagName).item(0).getTextContent())) {
-                     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
-                     board.setDigitalInputValue(i, doc.getElementsByTagName(tagName).item(0).getTextContent());
-                 }
+                if (tag.equalsIgnoreCase(board.getDigitalInputTag())) {
+                    if (!(board.getDigitalInputValue(i) == doc.getElementsByTagName(tagName).item(0).getTextContent())) {
+                        sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                        board.setDigitalInputValue(i, doc.getElementsByTagName(tagName).item(0).getTextContent());
+                    }
                 }
-                //else
-                //sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
             } catch (DOMException dOMException) {
                 //do nothing
                 LOG.severe("DOMException " + dOMException);
@@ -334,86 +344,97 @@ public class ProgettiHwSwEthv2 extends Protocol {
      */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
-        //get connection parameters address:port from received freedomotic command
         String delimiter = configuration.getProperty("address-delimiter");
         address = c.getProperty("address").split(delimiter);
         Board board = (Board) devices.get(address[0]);
-        String ip_board = board.getIpAddress();
-        int port_board = board.getPort();
-        //connect to the ethernet board
-        boolean connected = false;
-        try {
-            //connected = connect(address[0], Integer.parseInt(address[1]));
-            connected = connect(ip_board, port_board);
-        } catch (ArrayIndexOutOfBoundsException outEx) {
-            LOG.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
-            throw new UnableToExecuteException();
-        } catch (NumberFormatException numberFormatException) {
-            LOG.severe(port_board + " is not a valid ethernet port to connect to");
-            throw new UnableToExecuteException();
-        }
-
-        if (connected) {
-            String message = createMessage(c);
-            String expectedReply = c.getProperty("expected-reply");
-            try {
-                String reply = sendToBoard(message);
-                if ((reply != null) && (!reply.equals(expectedReply))) {
-                    //TODO: implement reply check
-                }
-            } catch (IOException iOException) {
-                setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);
-                LOG.severe("Unable to send the message to host " + address[0] + " on port " + address[1]);
-                throw new UnableToExecuteException();
-            } finally {
-                disconnect();
-            }
-        } else {
-            throw new UnableToExecuteException();
-        }
-    }
-
-    private String sendToBoard(String message) throws IOException {
-        String receivedReply = null;
-        if (outputStream != null) {
-            outputStream.writeBytes(message);
-            outputStream.flush();
-            inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            try {
-                receivedReply = inputStream.readLine(); // read device reply
-            } catch (IOException iOException) {
-                throw new IOException();
-            }
-        }
-        return receivedReply;
-    }
-
-    // create message to send to the board
-    // this part must be changed to relect board protocol
-    public String createMessage(Command c) {
-        String message = null;
-        String page = null;
-        String relay = null;
-
-        relay = HexIntConverter.convert(Integer.parseInt(address[1]) - 1);
-
         if (c.getProperty("command").equals("CHANGE-STATE-RELAY")) {
-            page = CHANGE_STATE_RELAY_URL + relay + "=" + c.getProperty("behavior");
+            changeRelayStatus(board, c);
         }
 
         if (c.getProperty("command").equals("TOGGLE-RELAY")) {
-            relay = address[1];
+            toggleRelay(board, c);
+        }
+    }
+
+    private void changeRelayStatus(Board board, Command c) {
+        try {
+            URL url = null;
+            URLConnection urlConnection;
+            String delimiter = configuration.getProperty("address-delimiter");
+            String[] address = c.getProperty("address").split(delimiter);
+            String relayNumber = HexIntConverter.convert(Integer.parseInt(address[1]) - 1);
+
+            // if required set the authentication
+            if (board.getAuthentication().equalsIgnoreCase("true")) {
+                String authString = board.getUsername() + ":" + board.getPassword();
+                byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+                String authStringEnc = new String(authEncBytes);
+                //Create a URL for the desired  page   
+                url = new URL("http://" + board.getIpAddress() + ":" + board.getPort() + "/protect/" + CHANGE_STATE_RELAY_URL + relayNumber + "=" + c.getProperty("behavior"));
+                urlConnection = url.openConnection();
+                urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+            } else {
+                //Create a URL for the desired  page   
+                url = new URL("http://" + board.getIpAddress() + ":" + board.getPort() + "/" + CHANGE_STATE_RELAY_URL + relayNumber + "=" + c.getProperty("behavior"));
+                urlConnection = url.openConnection();
+            }
+            LOG.info("Freedomotic sends the command " + url);
+            InputStream is = urlConnection.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            int numCharsRead;
+            char[] charArray = new char[1024];
+            StringBuffer sb = new StringBuffer();
+            while ((numCharsRead = isr.read(charArray)) > 0) {
+                sb.append(charArray, 0, numCharsRead);
+            }
+            String result = sb.toString();
+        } catch (MalformedURLException e) {
+            LOG.severe("Change relay status malformed URL " + e.toString());
+        } catch (IOException e) {
+            LOG.severe("Change relay status IOexception" + e.toString());
+        }
+    }
+
+    private void toggleRelay(Board board, Command c) {
+        try {
+            URL url = null;
+            URLConnection urlConnection;
+            String delimiter = configuration.getProperty("address-delimiter");
+            String[] address = c.getProperty("address").split(delimiter);
+            String relayNumber = address[1];
             int time = Integer.parseInt(c.getProperty("time-in-ms"));
             int seconds = time / 1000;
-            String relayLine = configuration.getProperty("TOGGLE" + seconds + "S" + relay);
-            //compose requested link
-            page = TOGGLE_RELAY_URL + relayLine;
-        }
+            String relayLine = configuration.getProperty("TOGGLE" + seconds + "S" + relayNumber);
 
-        // http request sending to the board
-        message = "GET /" + page + " HTTP 1.1\r\n\r\n";
-        LOG.info("Sending 'GET /" + page + " HTTP 1.1' to relay board");
-        return (message);
+            // if required set the authentication
+            if (board.getAuthentication().equalsIgnoreCase("true")) {
+                String authString = board.getUsername() + ":" + board.getPassword();
+                byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+                String authStringEnc = new String(authEncBytes);
+                //Create a URL for the desired  page   
+                url = new URL("http://" + board.getIpAddress() + ":" + board.getPort() + "/protect/" + TOGGLE_RELAY_URL + relayLine);
+                urlConnection = url.openConnection();
+                urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+            } else {
+                //Create a URL for the desired  page   
+                url = new URL("http://" + board.getIpAddress() + ":" + board.getPort() + "/" + TOGGLE_RELAY_URL + relayLine);
+                urlConnection = url.openConnection();
+            }
+            LOG.info("Freedomotic sends the command " + url);
+            InputStream is = urlConnection.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            int numCharsRead;
+            char[] charArray = new char[1024];
+            StringBuffer sb = new StringBuffer();
+            while ((numCharsRead = isr.read(charArray)) > 0) {
+                sb.append(charArray, 0, numCharsRead);
+            }
+            String result = sb.toString();
+        } catch (MalformedURLException e) {
+            LOG.severe("Change relay status malformed URL " + e.toString());
+        } catch (IOException e) {
+            LOG.severe("Change relay status IOexception" + e.toString());
+        }
     }
 
     @Override
