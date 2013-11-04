@@ -1109,11 +1109,11 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                     File folder = fc.getSelectedFile();
 
                     if (!folder.getName().isEmpty()) {
-                            EnvironmentLogic newenv = EnvironmentPersistence.getEnvironments().get(0);
-                            newenv.setSource(
-                                    new File(folder + "/" + newenv.getPojo().getUUID() + ".xenv"));
-                            setEnvironment(newenv);
-                            EnvironmentPersistence.saveAs(newenv, folder);
+                        EnvironmentLogic newenv = EnvironmentPersistence.getEnvironments().get(0);
+                        newenv.setSource(
+                                new File(folder + "/" + newenv.getPojo().getUUID() + ".xenv"));
+                        setEnvironment(newenv);
+                        EnvironmentPersistence.saveAs(newenv, folder);
                     }
                 } else {
                     Freedomotic.logger.info("Save command cancelled by user.");
@@ -1154,19 +1154,23 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuSelectEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSelectEnvironmentActionPerformed
         if (Auth.isPermitted("environments:read")) {
-            Object[] possibilities = EnvironmentPersistence.getEnvironments().toArray();
-            EnvironmentLogic input = (EnvironmentLogic) JOptionPane.showInputDialog(
-                    this,
-                    I18n.msg("select_env"),
-                    I18n.msg("select_env_title"),
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    possibilities,
-                    drawer.getCurrEnv());
+            if (EnvironmentPersistence.getEnvironments().size() > 1) {
+                Object[] possibilities = EnvironmentPersistence.getEnvironments().toArray();
+                EnvironmentLogic input = (EnvironmentLogic) JOptionPane.showInputDialog(
+                        this,
+                        I18n.msg("select_env"),
+                        I18n.msg("select_env_title"),
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        possibilities,
+                        drawer.getCurrEnv());
 
-            //If a string was returned
-            if (input != null) {
-                setEnvironment(input);
+                //If a string was returned
+                if (input != null) {
+                    setEnvironment(input);
+                }
+            } else {
+                setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
             }
         }
     }//GEN-LAST:event_mnuSelectEnvironmentActionPerformed
@@ -1175,8 +1179,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         EnvironmentLogic newEnv = EnvironmentPersistence.add(drawer.getCurrEnv(), true);
         String input = JOptionPane.showInputDialog(I18n.msg("enter_new_name_for_env") + newEnv.getPojo().getName());
         newEnv.getPojo().setName(input.trim());
-        drawer.setCurrEnv(newEnv);
-        setMapTitle(newEnv.getPojo().getName());
+        setEnvironment(newEnv);
         checkDeletableEnvironments();
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
@@ -1188,20 +1191,25 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuDeleteActionPerformed
         int result = JOptionPane.showConfirmDialog(null,
-                I18n.msg("confirm_deletion_title"),
                 I18n.msg("confirm_env_delete"),
+                I18n.msg("confirm_deletion_title"),
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
             EnvironmentLogic oldenv = drawer.getCurrEnv();
+
+            if (EnvironmentPersistence.getEnvironments().get(0) != drawer.getCurrEnv()) {
+                setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
+            } else {
+                setEnvironment(EnvironmentPersistence.getEnvironments().get(1));
+            }
+
             EnvironmentPersistence.remove(oldenv);
-            drawer.setCurrEnv(EnvironmentPersistence.getEnvironments().get(0));
-            setMapTitle(EnvironmentPersistence.getEnvironments().get(0).getPojo().getName());
+            setWindowedMode();
             checkDeletableEnvironments();
         }
     }//GEN-LAST:event_mnuDeleteActionPerformed
-
     private void mnuSwitchUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSwitchUserActionPerformed
         logUser(false);
     }//GEN-LAST:event_mnuSwitchUserActionPerformed
