@@ -25,10 +25,17 @@ import it.freedomotic.app.Freedomotic;
 import it.freedomotic.bus.BusConsumer;
 import it.freedomotic.bus.BusService;
 import it.freedomotic.bus.BusMessagesListener;
+import it.freedomotic.model.object.EnvObject;
+import it.freedomotic.objects.BehaviorLogic;
+import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -56,6 +63,18 @@ public final class BehaviorManager
     private static final Logger LOG = Logger.getLogger(BehaviorManager.class.getName());
 
 	private static final String MESSAGING_CHANNEL = "app.events.sensors.behavior.request.objects";
+
+    public static final String PROPERTY_BEHAVIOR = "behavior";
+
+	public static final String PROPERTY_OBJECT_CLASS = "object.class";
+
+	public static final String PROPERTY_OBJECT_ADDRESS = "object.address";
+
+	public static final String PROPERTY_OBJECT_NAME = "object.name";
+
+	public static final String PROPERTY_OBJECT_PROTOCOL = "object.protocol";
+
+	public static final String PROPERTY_OBJECT = "object";
 
 	private static BusMessagesListener listener;
 
@@ -93,7 +112,7 @@ public final class BehaviorManager
 
 			Command command = (Command) jmsObject;
 
-			command.onCommandMessage();
+			parseCommand(command);
 			
 			// reply to the command to notify that is received it can be
 			// something like "turn on light 1"
@@ -101,7 +120,106 @@ public final class BehaviorManager
 		}
     }
 
-    /**
+	private static void applyToCategory(Command userLevelCommand) {
+
+		// gets a reference to an EnvObject using the key 'object' in the user
+		// level command
+		String objectClass = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS);
+
+		String regex = "^" + objectClass.replace(".", "\\.") + ".*";
+		Pattern pattern = Pattern.compile(regex);
+
+		// TODO this should be in the collection
+		final Collection<EnvObjectLogic> objectList = EnvObjectPersistence
+				.getObjectList();
+
+		for (EnvObjectLogic object : objectList) {
+
+			final EnvObject pojo = object.getPojo();
+			final Matcher matcher = pattern.matcher(pojo.getType());
+
+			if (matcher.matches()) {
+
+				// TODO Look at this setProperty later
+				userLevelCommand.setProperty(Command.PROPERTY_OBJECT, pojo.getName());
+				applyToSingleObject(userLevelCommand);
+			}
+		}
+	}
+
+	private static void applyToSingleObject(Command userLevelCommand) {
+
+		// gets a reference to an EnvObject using the key 'object' in the user
+		// level command
+		EnvObjectLogic obj = EnvObjectPersistence
+				.getObjectByName(userLevelCommand.getProperty(Command.PROPERTY_OBJECT));
+
+		// if the object exists
+		if (obj != null) {
+
+			// gets the behavior name in the user level command
+			String behaviorName = userLevelCommand.getProperty(Command.PROPERTY_BEHAVIOR);
+			BehaviorLogic behavior = obj.getBehavior(behaviorName);
+
+			// if this behavior exists in object obj
+			if (behavior != null) {
+
+				LOG.config("User level command '" + userLevelCommand.getName()
+						+ "' request changing behavior " + behavior.getName()
+						+ " of object '" + obj.getPojo().getName()
+						+ "' from value '" + behavior.getValueAsString()
+						+ "' to value '" + userLevelCommand.getProperties().getProperty("value")
+						+ "'");
+
+				// true means a command must be fired
+				behavior.filterParams(userLevelCommand.getProperties(), true);
+
+			} else {
+				LOG.warning("Behavior '"
+								+ behaviorName
+								+ "' is not a valid behavior for object '"
+								+ obj.getPojo().getName()
+								+ "'. Please check 'behavior' parameter spelling in command "
+								+ userLevelCommand.getName());
+			}
+		} else {
+			LOG.warning("Object '"
+					+ userLevelCommand.getProperty(Command.PROPERTY_OBJECT)
+					+ "' don't exist in this environment. "
+					+ "Please check 'object' parameter spelling in command "
+					+ userLevelCommand.getName());
+		}
+	}
+
+	protected static void parseCommand(Command userLevelCommand) {
+
+		String object = userLevelCommand.getProperty(Command.PROPERTY_OBJECT);
+		String objectClass = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS);
+		String behavior = userLevelCommand.getProperty(Command.PROPERTY_BEHAVIOR);
+
+		if (behavior != null) {
+
+			if (object != null) {
+				/*
+				 * if we have the object name and the behavior it means the
+				 * behavior must be applied only to the given object name.
+				 */
+				applyToSingleObject(userLevelCommand);
+			} else {
+
+				if (objectClass != null) {
+					/*
+					 * if we have the category and the behavior (and not the
+					 * object name) it means the behavior must be applied to all
+					 * object belonging to the given category. eg: all lights on
+					 */
+					applyToCategory(userLevelCommand);
+				}
+			}
+		}
+	}
+
+	/**
 	 * @param message
 	 * @param command
 	 */
