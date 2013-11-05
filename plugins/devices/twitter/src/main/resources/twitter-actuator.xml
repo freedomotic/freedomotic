@@ -9,5 +9,7 @@
         <property name="OAuthConsumerSecret"    value="INSERT-VALUE"/>
         <property name="OAuthAccessToken"       value="INSERT-VALUE"/>
         <property name="OAuthAccessTokenSecret" value="INSERT-VALUE"/>
+        <property name="startup-time"           value="on load"/>
+        <property name="permissions" value="*"/>
     </properties>
 </config>
