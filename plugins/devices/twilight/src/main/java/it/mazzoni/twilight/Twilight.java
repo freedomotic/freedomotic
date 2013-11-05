@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URL;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -107,13 +108,13 @@ public class Twilight extends Protocol {
 
     @Override
     protected void onStart() {
-        Freedomotic.logger.info("Twilight plugin is started");
+        LOG.info("Twilight plugin is started");
         updateData();
     }
 
     @Override
     protected void onStop() {
-        Freedomotic.logger.info("Twilight plugin is stopped ");
+        LOG.info("Twilight plugin is stopped ");
     }
 
     @Override
@@ -143,13 +144,13 @@ public class Twilight extends Protocol {
         try {
             dBuilder = dbFactory.newDocumentBuilder();
         } catch (ParserConfigurationException ex) {
-            Freedomotic.logger.severe(Twilight.class.getName() + ex.toString());
+            LOG.severe(Twilight.class.getName() + ex.toString());
         }
         Document doc = null;
         String statusFileURL = null;
         try {
             statusFileURL = "http://www.earthtools.org/sun/" + Latitude + "/" + Longitude + "/" + dom + "/" + moy + "/" + zone + "/" + dst;
-            Freedomotic.logger.info("Getting twilight data from: " + statusFileURL);
+            LOG.info("Getting twilight data from: " + statusFileURL);
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
         } catch (ConnectException connEx) {
@@ -157,11 +158,11 @@ public class Twilight extends Protocol {
             this.setDescription("Connection timed out, no reply from  " + statusFileURL);
         } catch (SAXException ex) {
             this.stop();
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         } catch (Exception ex) {
             this.stop();
             setDescription("Unable to connect to " + statusFileURL);
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         }
         return doc;
     }
@@ -170,7 +171,7 @@ public class Twilight extends Protocol {
         DateTime dt = new DateTime();
         int dst = dt.getZone().isStandardOffset(dt.getMillis()) ? 0 : 1;
         int offset = dt.getZone().getStandardOffset(dt.getMillis()) / 3600000;
-        Freedomotic.logger.log(Level.INFO, "Current TIME: {0}/{1} {2} DST: {3}", new Object[]{dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst});
+        //LOG.log(Level.INFO, "Current TIME: {0}/{1} {2} DST: {3}", new Object[]{dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst});
         Document doc = getXMLStatusFile(dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst);
         //parse xml 
         if (doc != null) {
@@ -183,7 +184,7 @@ public class Twilight extends Protocol {
                     Integer.parseInt(srTime[0]), Integer.parseInt(srTime[1]), Integer.parseInt(srTime[2]));
             sunsetTime = new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
                     Integer.parseInt(ssTime[0]), Integer.parseInt(ssTime[1]), Integer.parseInt(ssTime[2]));
-
+            LOG.info("Sunset at:" + sunsetTime + ", sunrise at: " + sunriseTime);
             toSunset = sunsetTime.isAfter(dt) ? new Duration(dt, sunsetTime) : new Duration(sunsetTime, dt);
             toSunrise = sunriseTime.isAfter(dt) ? new Duration(dt, sunriseTime) : new Duration(sunriseTime, dt);
 
@@ -192,4 +193,6 @@ public class Twilight extends Protocol {
             return false;
         }
     }
+    
+    private static final Logger LOG = Logger.getLogger(Twilight.class.getName());
 }

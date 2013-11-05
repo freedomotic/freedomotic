@@ -24,7 +24,6 @@
 package it.freedomotic.security;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.AppConfig;
 import it.freedomotic.util.Info;
@@ -40,6 +39,12 @@ import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.SimpleAccountRealm;
 import org.apache.shiro.realm.text.PropertiesRealm;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.SessionException;
+import org.apache.shiro.session.mgt.DefaultSessionManager;
+import org.apache.shiro.session.mgt.SessionContext;
+import org.apache.shiro.session.mgt.SessionKey;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -127,7 +132,11 @@ public class AuthImpl implements Auth{
     @Override
     public Subject getSubject() {
         if (isInited()) {
-            return SecurityUtils.getSubject();
+            Subject sub = SecurityUtils.getSubject();
+            if (sub != null){
+                sub.getSession().setTimeout(1000000000);
+            }
+            return sub;
         } else {
             return null;
         }
