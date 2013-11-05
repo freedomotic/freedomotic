@@ -22,13 +22,10 @@
 
 package it.freedomotic.restapi;
 
-import com.google.inject.Inject;
-import it.freedomotic.api.API;
-import it.freedomotic.api.Actuator;
+import it.freedomotic.api.*;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.restapi.server.FreedomRestServer;
-import it.freedomotic.security.Auth;
 import it.freedomotic.util.Info;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -50,7 +47,7 @@ import org.restlet.security.SecretVerifier;
  * @author gpt
  */
 
-public class RestApi extends Actuator {
+public class RestApi extends it.freedomotic.api.Protocol {
 
     int SERVER_PORT = 8111;
     Component component;
@@ -130,6 +127,16 @@ public class RestApi extends Actuator {
 
     @Override
     protected boolean canExecute(Command c) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected void onRun() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
