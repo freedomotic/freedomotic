@@ -28,6 +28,7 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.restapi.server.FreedomRestServer;
 import it.freedomotic.util.Info;
 import java.io.IOException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.restlet.Application;
@@ -57,6 +58,7 @@ public class RestApi extends it.freedomotic.api.Protocol {
 
     public RestApi() {
         super("RestApi", "/restapi/restapi-manifest.xml");
+        setPollingWait(-1);
     }
     
     /**
@@ -122,7 +124,6 @@ public class RestApi extends it.freedomotic.api.Protocol {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -132,11 +133,9 @@ public class RestApi extends it.freedomotic.api.Protocol {
 
     @Override
     protected void onRun() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected void onEvent(EventTemplate event) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
