@@ -7,7 +7,6 @@ package it.freedomotic.marketplace.postplugin;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.marketplace.util.DrupalRestHelper;
 import it.freedomotic.marketplace.util.MarketPlaceFile;
 import it.freedomotic.marketplace.util.MarketPlacePlugin2;
@@ -90,13 +89,7 @@ public class JavaUploader {
     }
 
     /**
-     * Extract the session data from the response obtained after login to the
-     * drupal site. This Cookie must be used on every transaction that is going
-     * to be realized under the same user session
      *
-     * @param username Drupal valid username
-     * @param password Drupal Valid password for the previous username
-     * @return String the drupal Json response
      */
     public static CookieSetting parseCookie(String loginResponse) {
         try {
@@ -208,7 +201,7 @@ public class JavaUploader {
                 }
             }
         } catch (ResourceException resourceException) {
-            Freedomotic.logger.warning(resourceException.toString());
+           // Freedomotic.logger.warning(resourceException.toString());
         }
         return "";
     }

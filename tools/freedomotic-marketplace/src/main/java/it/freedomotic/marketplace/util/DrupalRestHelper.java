@@ -6,7 +6,6 @@ package it.freedomotic.marketplace.util;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.marketplace.IPluginPackage;
 import it.freedomotic.marketplace.postplugin.JavaUploader;
 import org.restlet.representation.Representation;
@@ -123,7 +122,7 @@ public class DrupalRestHelper {
                     newData = false;
                 }
             } catch (Exception e) {
-                Freedomotic.logger.severe(e.getMessage());
+                //Freedomotic.logger.severe(e.getMessage());
             }
         }
         return pluginPackageList;

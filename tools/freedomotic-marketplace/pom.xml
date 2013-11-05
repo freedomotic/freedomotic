@@ -22,7 +22,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>freedomotic-core</artifactId>
+            <artifactId>freedomotic-model</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>

@@ -147,12 +147,6 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>uk.gov.nationalarchives.thirdparty.netbeans</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
-            <version>7.2</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>3.0</version>
