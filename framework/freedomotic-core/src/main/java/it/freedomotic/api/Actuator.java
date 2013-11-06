@@ -46,19 +46,14 @@ import com.google.inject.Inject;
  */
 @Deprecated
 public abstract class Actuator extends Plugin implements BusConsumer {
-	
-	private static final Logger LOG = Logger.getLogger(Actuator.class.getName());
 
+    private static final Logger LOG = Logger.getLogger(Actuator.class.getName());
     private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
-
     private volatile Destination lastDestination;
-    
     private BusMessagesListener listener;
-    
     private ExecutorService executor;
-    
     private BusService busService;
-    
+
     public Actuator(String pluginName, String manifest) {
         super(pluginName, manifest);
         register();
@@ -67,21 +62,20 @@ public abstract class Actuator extends Plugin implements BusConsumer {
 //        } else {
         executor = Executors.newSingleThreadExecutor();
 //        }
-		this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
     }
 
-	private void register() {
-		listener = new BusMessagesListener(this);
-		listener.consumeCommandFrom(listenMessagesOn());
-	}
-
+    private void register() {
+        listener = new BusMessagesListener(this);
+        listener.consumeCommandFrom(listenMessagesOn());
+    }
 
     public void addEventListener(String listento) {
-    	listener.consumeEventFrom(listento);
+        listener.consumeEventFrom(listento);
     }
 
     public void addCommandListener(String listento) {
-    	listener.consumeCommandFrom(listento);
+        listener.consumeCommandFrom(listento);
     }
 
     public String listenMessagesOn() {
@@ -109,10 +103,10 @@ public abstract class Actuator extends Plugin implements BusConsumer {
     @Override
     public void start() {
         if (!isRunning) {
+
             Runnable action = new Runnable() {
                 @Override
                 public void run() {
-                    loadPermissionsFromManifest();
                     onStart();
                     isRunning = true;
                     LOG.info("Actuator " + getName() + " started.");
@@ -190,7 +184,7 @@ public abstract class Actuator extends Plugin implements BusConsumer {
      */
     public void sendBack(Command command) {
         if (command.getReplyTimeout() > 0) { //a sendBack is expected
-        	busService.reply(command, lastDestination, "-1"); //sends back the command
+            busService.reply(command, lastDestination, "-1"); //sends back the command
         }
     }
 }

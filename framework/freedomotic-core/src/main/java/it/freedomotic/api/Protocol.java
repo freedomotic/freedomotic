@@ -45,16 +45,14 @@ public abstract class Protocol
         extends Plugin
         implements BusConsumer {
 
-	private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
-
-	private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
+    private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
+    private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
     private int pollingWaitTime = -1;
     private BusMessagesListener listener;
     private Protocol.SensorThread sensorThread;
     private volatile Destination lastDestination;
-
     private BusService busService;
-    
+
     protected abstract void onRun();
 
     protected abstract void onCommand(Command c)
@@ -64,16 +62,16 @@ public abstract class Protocol
 
     protected abstract void onEvent(EventTemplate event);
 
-	public Protocol(String pluginName, String manifest) {
+    public Protocol(String pluginName, String manifest) {
 
-		super(pluginName, manifest);
-		this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
-		register();
-	}
+        super(pluginName, manifest);
+        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+        register();
+    }
 
     private void register() {
-    	listener = new BusMessagesListener(this);
-    	listener.consumeCommandFrom(getCommandsChannelToListen());
+        listener = new BusMessagesListener(this);
+        listener.consumeCommandFrom(getCommandsChannelToListen());
     }
 
     public void addEventListener(String listento) {
@@ -111,10 +109,10 @@ public abstract class Protocol
     @Override
     public void start() {
         if (!isRunning) {
+
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
-                    loadPermissionsFromManifest();
                     onStart();
                     sensorThread = new Protocol.SensorThread();
                     sensorThread.start();
@@ -123,6 +121,7 @@ public abstract class Protocol
                     isRunning = true;
                 }
             };
+
             getApi().getAuth().pluginExecutePrivileged(this, action);
         }
     }
@@ -147,7 +146,7 @@ public abstract class Protocol
 
     public final void setPollingWait(int wait) {
         if (wait > 0) {
-        	pollingWaitTime = wait;
+            pollingWaitTime = wait;
         }
     }
 
@@ -196,6 +195,8 @@ public abstract class Protocol
             }
         } catch (JMSException ex) {
             LOG.log(Level.SEVERE, null, ex);
+
+
         }
     }
 
@@ -219,27 +220,29 @@ public abstract class Protocol
                 command.setExecuted(true);
                 onCommand(command);
             } catch (IOException ex) {
-            	LOG.log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
             } catch (UnableToExecuteException ex) {
                 command.setExecuted(false);
             }
 
             if ((getConfiguration().getBooleanProperty("automatic-reply-to-commands", true) == true) //default value is true
-					&& (command.getReplyTimeout() > 0)) {
-				busService.reply(command, reply, correlationID); //sends back the command marked as executed or not
+                    && (command.getReplyTimeout() > 0)) {
+                busService.reply(command, reply, correlationID); //sends back the command marked as executed or not
             }
         }
     }
 
     protected Command send(Command command) {
-    	return busService.send(command);
+        return busService.send(command);
     }
 
-	public void reply(Command command) {
-		// sends back the command
-		final String defaultCorrelationID = "-1";
-		busService.reply(command, lastDestination, defaultCorrelationID);
-	}
+    public void reply(Command command) {
+        // sends back the command
+        final String defaultCorrelationID = "-1";
+        busService.reply(command, lastDestination, defaultCorrelationID);
+
+
+    }
 
     private class SensorThread
             extends Thread {
@@ -260,7 +263,7 @@ public abstract class Protocol
                             }
                         }
                     } catch (InterruptedException e) {
-                    	// TODO do Log?
+                        // TODO do Log?
                     }
 
                     onRun();

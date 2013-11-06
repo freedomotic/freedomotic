@@ -61,13 +61,12 @@ public class Plugin
     final static int LAST_IS_OLDER = 1;
     @Inject
     private API api;
-
     private BusService busService;
 
     public Plugin(String pluginName, String manifestPath) {
         this(pluginName);
         path = new File(Info.getDevicesPath() + manifestPath);
-        init(path);        
+        init(path);
     }
 
     public Plugin(String pluginName, Config manifest) {
@@ -241,7 +240,7 @@ public class Plugin
         }
 
         init(configuration);
-        
+
     }
 
     private void init(Config configuration) {
@@ -252,7 +251,6 @@ public class Plugin
         shortName = configuration.getStringProperty("short-name", "undefined");
         listenOn = configuration.getStringProperty("listen-on", "undefined");
         sendOn = configuration.getStringProperty("send-on", "undefined");
-        
     }
 
     protected void onShowGui() {
@@ -275,8 +273,8 @@ public class Plugin
     public String toString() {
         return getName();
     }
-    
-    protected void loadPermissionsFromManifest() {
+
+    public void loadPermissionsFromManifest() {
         getApi().getAuth().setPluginPrivileges(this, configuration.getStringProperty("permissions", getApi().getAuth().getPluginDefaultPermission()));
     }
     private static final Logger LOG = Logger.getLogger(Plugin.class.getName());

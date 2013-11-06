@@ -7,6 +7,7 @@ package it.freedomotic.plugins.filesystem;
 import com.google.inject.Inject;
 
 import it.freedomotic.api.Client;
+import it.freedomotic.api.Plugin;
 
 import it.freedomotic.app.Freedomotic;
 
@@ -114,7 +115,13 @@ public class PluginsManagerImpl implements PluginsManager {
             } catch (IOException ex) {
                 throw new PluginLoadingException("Missing PACKAGE info file " + ex.getMessage(), ex);
             }
-            
+            if (client instanceof Plugin) {
+                Plugin p = (Plugin) client;
+                p.loadPermissionsFromManifest();
+                if (p.getConfiguration().getBooleanProperty("enable-i18n", false)) {
+                    p.getApi().getI18n().registerPluginBundleDir(p);
+                }
+            }
             clientStorage.add(client);
         }
     }
@@ -138,7 +145,7 @@ public class PluginsManagerImpl implements PluginsManager {
 
             //get the zip from the url and copy in plugin/device folder
             if (filename.endsWith(".device")) {
-                File zipFile = new File(Info.PATH_DEVICES_FOLDER +"/"+ filename);
+                File zipFile = new File(Info.PATH_DEVICES_FOLDER + "/" + filename);
                 FetchHttpFiles.download(fromURL, Info.PATH_DEVICES_FOLDER, filename);
                 unzipAndDelete(zipFile);
                 loadSingleBoundle(new File(Info.PATH_DEVICES_FOLDER + "/" + pluginName));
