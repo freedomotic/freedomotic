@@ -106,6 +106,7 @@ public class AuthImpl implements Auth{
         Subject currentUser = SecurityUtils.getSubject();
         try {
             currentUser.login(token);
+            currentUser.getSession().setTimeout(-1);
             return true;
         } catch (Exception e) {
             LOG.warning(e.getLocalizedMessage());
@@ -132,11 +133,7 @@ public class AuthImpl implements Auth{
     @Override
     public Subject getSubject() {
         if (isInited()) {
-            Subject sub = SecurityUtils.getSubject();
-            if (sub != null){
-                sub.getSession().setTimeout(1000000000);
-            }
-            return sub;
+            return SecurityUtils.getSubject();
         } else {
             return null;
         }
@@ -172,7 +169,7 @@ public class AuthImpl implements Auth{
         if (!pluginRealm.accountExists(plugin.getClassName())) {
             // check whether declared permissions correspond the ones requested at runtime
             if (plugin.getConfiguration().getStringProperty("permissions", getPluginDefaultPermission()).equals(permissions)) {
-                LOG.log(Level.CONFIG, "Setting permissions for plugin {0}: {1}", new Object[]{plugin.getClassName(), permissions});
+                LOG.log(Level.INFO, "Setting permissions for plugin {0}: {1}", new Object[]{plugin.getClassName(), permissions});
                 String plugrole = UUID.randomUUID().toString();
 
                 pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
