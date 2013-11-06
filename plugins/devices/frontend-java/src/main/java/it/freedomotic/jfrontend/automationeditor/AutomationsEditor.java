@@ -13,7 +13,6 @@ import it.freedomotic.reactions.CommandPersistence;
 import it.freedomotic.reactions.Trigger;
 import it.freedomotic.reactions.TriggerPersistence;
 
-import it.freedomotic.util.I18n.I18n;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

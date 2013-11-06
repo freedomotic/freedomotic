@@ -19,8 +19,8 @@
  */
 package it.freedomotic.jfrontend;
 
-import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
+import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
 
 import it.freedomotic.environment.EnvironmentLogic;
@@ -30,7 +30,6 @@ import it.freedomotic.events.ZoneHasChanged;
 
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.jfrontend.extras.GraphPanel;
-import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.objects.EnvObjectLogic;
 
 import it.freedomotic.reactions.Command;
@@ -40,20 +39,21 @@ import java.awt.EventQueue;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
+
 
 /**
  *
  * @author Enrico
  */
 public class JavaDesktopFrontend
-        extends Actuator {
+        extends Protocol {
 
     private MainWindow window;
     private Drawer drawer;
     private Map<String, GraphPanel> graphs = new HashMap<String, GraphPanel>();
-    //private ListDrawer listDrawer;
 
     public JavaDesktopFrontend() {
         super("Desktop Frontend", "/frontend-java/desktop-frontend.xml");
@@ -119,7 +119,7 @@ public class JavaDesktopFrontend
                 drawer.setCurrEnv(env);
             }
         } catch (Exception e) {
-            System.out.println("Error while initializing a drawer in desktop frontend.");
+            Logger.getLogger(JavaDesktopFrontend.class.getName()).severe("Error while initializing a drawer in desktop frontend.");
             e.printStackTrace();
         }
 
@@ -238,5 +238,9 @@ public class JavaDesktopFrontend
     @Override
     protected boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected void onRun() {
     }
 }
