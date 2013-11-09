@@ -50,7 +50,16 @@ import java.util.logging.Logger;
 @Singleton
 public class I18nImpl implements I18n {
 
-    private Locale currentLocale;
+	private static class CustomSecurityManager extends SecurityManager {
+
+		public Class<?> getCallerClass() {
+			return getClassContext()[2];
+		}
+	}
+
+	private static CustomSecurityManager customSecurityManager = new CustomSecurityManager();
+
+		private Locale currentLocale;
     private HashMap<String, ResourceBundle> messages;
     private UTF8control RB_Control;
     private static Vector<ComboLanguage> languages;
@@ -156,13 +165,13 @@ public class I18nImpl implements I18n {
 
     @Override
     public String msg(String key) {
-        String caller = sun.reflect.Reflection.getCallerClass(2).getPackage().getName();
+        String caller = customSecurityManager.getCallerClass().getPackage().getName();
         return msg(caller, key, null);
     }
 
     @Override
     public String msg(String key, Object[] fields) {
-        String caller = sun.reflect.Reflection.getCallerClass(2).getPackage().getName();
+        String caller = customSecurityManager.getCallerClass().getPackage().getName();
         return msg(caller, key, fields);
     }
 
