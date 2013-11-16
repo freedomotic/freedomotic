@@ -19,6 +19,7 @@
  */
 package it.freedomotic.jfrontend;
 
+import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
@@ -49,7 +50,7 @@ import javax.swing.JOptionPane;
  * @author Enrico
  */
 public class JavaDesktopFrontend
-        extends Protocol {
+        extends Actuator {
 
     private MainWindow window;
     private Drawer drawer;
@@ -240,7 +241,4 @@ public class JavaDesktopFrontend
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    protected void onRun() {
-    }
 }
