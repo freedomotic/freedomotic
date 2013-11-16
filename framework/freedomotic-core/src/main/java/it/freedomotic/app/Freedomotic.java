@@ -71,7 +71,6 @@ import java.util.logging.Logger;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -150,9 +149,10 @@ public class Freedomotic implements BusConsumer {
         if (auth.isInited()) {
             PrincipalCollection principals = new SimplePrincipalCollection("system", "it.freedomotic.security");
             Subject SysSubject = new Subject.Builder().principals(principals).buildSubject();
+            SysSubject.getSession().setTimeout(-1);
             ThreadState threadState = new SubjectThreadState(SysSubject);
             threadState.bind();
-            LOG.info("Booting as user:" + SecurityUtils.getSubject().getPrincipal());
+            LOG.info("Booting as user:" + auth.getSubject().getPrincipal() +". Session will last:"+auth.getSubject().getSession().getTimeout());
         }
 
         String resourcesPath =
