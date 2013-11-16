@@ -83,7 +83,7 @@ public class AuthImpl implements Auth{
 
              securityManager = new DefaultSecurityManager();
             //securityManager = injector.getInstance(DefaultSecurityManager.class);
-            
+
             realmCollection.add(baseRealm);
             realmCollection.add(pluginRealm);
             securityManager.setRealms(realmCollection);
@@ -158,6 +158,7 @@ public class AuthImpl implements Auth{
             //LOG.info("Executing privileged for plugin: " + classname);
             PrincipalCollection plugPrincipals = new SimplePrincipalCollection(classname, pluginRealm.getName());
             Subject plugSubject = new Subject.Builder().principals(plugPrincipals).buildSubject();
+            plugSubject.getSession().setTimeout(-1);
             plugSubject.execute(action);
         } else {
             action.run();
@@ -174,7 +175,6 @@ public class AuthImpl implements Auth{
 
                 pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
                 pluginRealm.addRole(plugrole + "=" + permissions);
-
             } else {
                 LOG.log(Level.SEVERE, "Plugin {0} tried to request incorrect privileges", plugin.getName());
             }
