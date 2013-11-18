@@ -103,7 +103,7 @@ public class Twilight extends Protocol {
             // prima del tramonto
             ev.addProperty("beforeSunset", Long.toString(toSunset.getStandardMinutes()));
         }
-
+        notifyEvent(ev);
     }
 
     @Override
