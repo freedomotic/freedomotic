@@ -8,13 +8,13 @@
       <it.freedomotic.reactions.Statement>
         <logical>AND</logical>
         <attribute>time.hour</attribute>
-        <operand>GREATER_THEN</operand>
+        <operand>GREATER_THAN</operand>
         <value>13</value>
       </it.freedomotic.reactions.Statement>
       <it.freedomotic.reactions.Statement>
         <logical>AND</logical>
         <attribute>time.hour</attribute>
-        <operand>LESS_THEN</operand>
+        <operand>LESS_THAN</operand>
         <value>19</value>
       </it.freedomotic.reactions.Statement>
     </payload>

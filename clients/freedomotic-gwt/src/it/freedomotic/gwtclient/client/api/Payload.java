@@ -111,7 +111,7 @@ public final class Payload implements Serializable {
      }
 
      //applies only to integer values
-     if (triggerOperand.equals(Statement.GREATER_THEN)) { //event operand="EQUALS", trigger operand="GREATER_THEN"
+     if (triggerOperand.equals(Statement.GREATER_THAN)) { //event operand="EQUALS", trigger operand="GREATER_THAN"
      try {
      Integer intReactionValue = new Integer(triggerValue);
      Integer intEventValue = new Integer(eventValue);
@@ -121,12 +121,12 @@ public final class Payload implements Serializable {
      return false;
      }
      } catch (NumberFormatException numberFormatException) {
-     new RuntimeException(Statement.GREATER_THEN.toString() + " operator can be applied only to integer values");
+     new RuntimeException(Statement.GREATER_THAN.toString() + " operator can be applied only to integer values");
      return false;
      }
 
      }
-     if (triggerOperand.equals(Statement.LESS_THEN)) { //event operand="EQUALS", trigger operand="LESS_THEN"
+     if (triggerOperand.equals(Statement.LESS_THAN)) { //event operand="EQUALS", trigger operand="LESS_THAN"
      try {
      Integer intReactionValue = new Integer(triggerValue);
      Integer intEventValue = new Integer(eventValue);
@@ -137,12 +137,12 @@ public final class Payload implements Serializable {
      }
      } catch (NumberFormatException numberFormatException) {
      //is not a number
-     new RuntimeException(Statement.LESS_THEN.toString() + " operator can be applied only to integer values");
+     new RuntimeException(Statement.LESS_THAN.toString() + " operator can be applied only to integer values");
      return false;
      }
      }
      //applies only to integer values
-     if (triggerOperand.equals(Statement.GREATER_EQUAL_THEN)) { //event operand="EQUALS", trigger operand="GREATER_THEN"
+     if (triggerOperand.equals(Statement.GREATER_EQUAL_THAN)) { //event operand="EQUALS", trigger operand="GREATER_THAN"
      try {
      Integer intReactionValue = new Integer(triggerValue);
      Integer intEventValue = new Integer(eventValue);
@@ -152,12 +152,12 @@ public final class Payload implements Serializable {
      return false;
      }
      } catch (NumberFormatException numberFormatException) {
-     new RuntimeException(Statement.GREATER_EQUAL_THEN.toString() + " operator can be applied only to integer values");
+     new RuntimeException(Statement.GREATER_EQUAL_THAN.toString() + " operator can be applied only to integer values");
      return false;
      }
 
      }
-     if (triggerOperand.equals(Statement.LESS_EQUAL_THEN)) { //event operand="EQUALS", trigger operand="LESS_THEN"
+     if (triggerOperand.equals(Statement.LESS_EQUAL_THAN)) { //event operand="EQUALS", trigger operand="LESS_THAN"
      try {
      Integer intReactionValue = new Integer(triggerValue);
      Integer intEventValue = new Integer(eventValue);
@@ -168,7 +168,7 @@ public final class Payload implements Serializable {
      }
      } catch (NumberFormatException numberFormatException) {
      //is not a number
-     new RuntimeException(Statement.LESS_EQUAL_THEN.toString() + " operator can be applied only to integer values");
+     new RuntimeException(Statement.LESS_EQUAL_THAN.toString() + " operator can be applied only to integer values");
      return false;
      }
      }

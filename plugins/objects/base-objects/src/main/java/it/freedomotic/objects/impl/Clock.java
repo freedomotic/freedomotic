@@ -72,8 +72,8 @@ public class Clock
         morning.setChannel("app.event.sensor.calendar.event.schedule");
         morning.getPayload().addStatement("object.name",
                 getPojo().getName());
-        morning.getPayload().addStatement("AND", "time.hour", "GREATER_THEN", "7");
-        morning.getPayload().addStatement("AND", "time.hour", "LESS_THEN", "13");
+        morning.getPayload().addStatement("AND", "time.hour", "GREATER_THAN", "7");
+        morning.getPayload().addStatement("AND", "time.hour", "LESS_THAN", "13");
         morning.setSuspensionTime(60000);
 
         Trigger clicked = new Trigger();

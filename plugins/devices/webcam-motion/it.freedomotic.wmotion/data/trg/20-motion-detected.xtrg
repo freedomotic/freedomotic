@@ -7,7 +7,7 @@
             <it.freedomotic.reactions.Statement>
                 <logical>AND</logical>
                 <attribute>motion-level</attribute>
-                <operand>GREATER_THEN</operand>
+                <operand>GREATER_THAN</operand>
                 <value>20</value>
             </it.freedomotic.reactions.Statement>
         </payload>
