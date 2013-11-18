@@ -142,17 +142,17 @@ public class PayloadTest {
         //contruct the trigger
         Payload trigger = new Payload();
         trigger.addStatement(Statement.AND, "number", Statement.EQUALS, "1");
-        trigger.addStatement(Statement.AND, "number", Statement.LESS_THEN, "2");
-        trigger.addStatement(Statement.AND, "number", Statement.GREATER_THEN, "0");
+        trigger.addStatement(Statement.AND, "number", Statement.LESS_THAN, "2");
+        trigger.addStatement(Statement.AND, "number", Statement.GREATER_THAN, "0");
         trigger.addStatement(Statement.AND, "number", Statement.EQUALS, Statement.ANY);
 
-//        trigger.addStatement(Statement.AND, "number", Statement.LESS_THEN, Statement.ANY);
-//        trigger.addStatement(Statement.AND, "number", Statement.GREATER_THEN, Statement.ANY);
-//        trigger.addStatement(Statement.AND, "text", Statement.LESS_THEN, "baa");
-//        trigger.addStatement(Statement.AND, "text", Statement.GREATER_THEN, "aaa");
+//        trigger.addStatement(Statement.AND, "number", Statement.LESS_THAN, Statement.ANY);
+//        trigger.addStatement(Statement.AND, "number", Statement.GREATER_THAN, Statement.ANY);
+//        trigger.addStatement(Statement.AND, "text", Statement.LESS_THAN, "baa");
+//        trigger.addStatement(Statement.AND, "text", Statement.GREATER_THAN, "aaa");
 
-//        trigger.addStatement(Statement.AND, "text", Statement.LESS_THEN, Statement.ANY);
-//        trigger.addStatement(Statement.AND, "text", Statement.GREATER_THEN, Statement.ANY);
+//        trigger.addStatement(Statement.AND, "text", Statement.LESS_THAN, Statement.ANY);
+//        trigger.addStatement(Statement.AND, "text", Statement.GREATER_THAN, Statement.ANY);
         boolean expResult = true;
         //compare trigger with events
         boolean result = trigger.equals(event);

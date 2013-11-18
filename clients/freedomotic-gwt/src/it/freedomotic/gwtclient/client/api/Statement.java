@@ -9,10 +9,10 @@ import java.io.Serializable;
 public class Statement implements Serializable {
 
     public static final String EQUALS = "EQUALS";
-    public static final String GREATER_THEN = "GREATER_THEN";
-    public static final String LESS_THEN = "LESS_THEN";
-    public static final String GREATER_EQUAL_THEN = "GREATER_EQUAL_THEN";
-    public static final String LESS_EQUAL_THEN = "LESS_EQUAL_THEN";
+    public static final String GREATER_THAN = "GREATER_THAN";
+    public static final String LESS_THAN = "LESS_THAN";
+    public static final String GREATER_EQUAL_THAN = "GREATER_EQUAL_THAN";
+    public static final String LESS_EQUAL_THAN = "LESS_EQUAL_THAN";
     public static final String REGEX = "REGEX";
     public static final String AND = "AND";
     public static final String OR = "OR";

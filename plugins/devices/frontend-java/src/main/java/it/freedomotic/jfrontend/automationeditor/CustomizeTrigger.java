@@ -418,10 +418,10 @@ public class CustomizeTrigger
         if (operand.equalsIgnoreCase(Statement.EQUALS)) {
             return 0;
         }
-        if (operand.equalsIgnoreCase(Statement.GREATER_THEN)) {
+        if (operand.equalsIgnoreCase(Statement.GREATER_THAN)) {
             return 1;
         }
-        if (operand.equalsIgnoreCase(Statement.LESS_THEN)) {
+        if (operand.equalsIgnoreCase(Statement.LESS_THAN)) {
             return 2;
         }
         if (operand.equalsIgnoreCase(Statement.REGEX)) {
@@ -437,12 +437,12 @@ public class CustomizeTrigger
         }
 
         if (index == 1) {
-            return Statement.GREATER_THEN;
+            return Statement.GREATER_THAN;
 
         }
 
         if (index == 2) {
-            return Statement.LESS_THEN;
+            return Statement.LESS_THAN;
 
         }
 
