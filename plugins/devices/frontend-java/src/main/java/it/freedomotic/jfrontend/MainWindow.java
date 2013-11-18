@@ -509,7 +509,7 @@ public class MainWindow
 
         jMenuItem4.setText("jMenuItem4");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Freedomotic");
         setBackground(java.awt.SystemColor.window);
         setBounds(new java.awt.Rectangle(50, 20, 0, 0));
