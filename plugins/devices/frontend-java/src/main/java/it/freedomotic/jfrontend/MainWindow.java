@@ -124,9 +124,7 @@ public class MainWindow
 
         master.getApi().getConfig().setProperty("KEY_ROOM_XML_PATH",
                 input.getSource().toString().replace(
-                new File(Info.getApplicationPath()
-                + "/data/furn").toString(),
-                ""));
+                new File(Info.PATH_DATA_FOLDER+ "/furn").toString(),""));
     }
 
 //    public void showTipsOnStartup(boolean show) {
