@@ -401,7 +401,13 @@ public class MainWindow
     }
 
     public void setMapTitle(String name) {
-        frameMap.setTitle(I18n.msg("environment") + "- " + name);
+        String envName = "";
+        try {
+            envName = drawer.getCurrEnv().getSource().getParentFile().getName() + "/";
+        } catch (Exception e) {
+            //do nothing, this is not important
+        }
+        frameMap.setTitle(I18n.msg("environment") + ": " + envName + name);
     }
 
     class StringListModel
@@ -1091,6 +1097,8 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
         mnuSaveActionPerformed(null);
         File oldEnv = EnvironmentPersistence.getEnvironments().get(0).getSource();
+
+        //creates a new environment coping it from a template
         File template =
                 new File(Info.getApplicationPath() + "/data/furn/templates/template-square/template-square.xenv");
         Freedomotic.logger.info("Opening " + template.getAbsolutePath());
@@ -1113,10 +1121,12 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                         newenv.setSource(
                                 new File(folder + "/" + newenv.getPojo().getUUID() + ".xenv"));
                         setEnvironment(newenv);
+                        //save the new environment
                         EnvironmentPersistence.saveAs(newenv, folder);
                     }
                 } else {
                     Freedomotic.logger.info("Save command cancelled by user.");
+                    //reload the old file
                     EnvironmentPersistence.loadEnvironmentsFromDir(oldEnv.getParentFile(),
                             false);
 
@@ -1176,11 +1186,11 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuSelectEnvironmentActionPerformed
 
     private void mnuAddDuplicateEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAddDuplicateEnvironmentActionPerformed
-        EnvironmentLogic newEnv = EnvironmentPersistence.add(drawer.getCurrEnv(), true);
-        String input = JOptionPane.showInputDialog(I18n.msg("enter_new_name_for_env") + newEnv.getPojo().getName());
-        newEnv.getPojo().setName(input.trim());
-        setEnvironment(newEnv);
-        checkDeletableEnvironments();
+            EnvironmentLogic newEnv = EnvironmentPersistence.add(drawer.getCurrEnv(), true);
+            String input = JOptionPane.showInputDialog(I18n.msg("enter_new_name_for_env") + newEnv.getPojo().getName());
+            newEnv.getPojo().setName(input.trim());
+            setEnvironment(EnvironmentPersistence.getEnvByUUID(newEnv.getPojo().getUUID()));
+            checkDeletableEnvironments();
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
     private void mnuRenameEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameEnvironmentActionPerformed

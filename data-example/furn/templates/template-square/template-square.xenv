@@ -9,7 +9,7 @@
     <blue>255</blue>
     <alpha>255</alpha>
   </backgroundColor>
-  <backgroundImage>map2.jpg</backgroundImage>
+  <backgroundImage>map2.png</backgroundImage>
   <zones>
     <it.freedomotic.model.environment.Zone>
       <name>Indoor</name>

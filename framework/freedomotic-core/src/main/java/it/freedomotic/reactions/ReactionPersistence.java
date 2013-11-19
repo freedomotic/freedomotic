@@ -99,14 +99,14 @@ public class ReactionPersistence {
         // This filter only returns object files
         FileFilter objectFileFileter =
                 new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xrea")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+            public boolean accept(File file) {
+                if (file.isFile() && file.getName().endsWith(".xrea")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
 
         files = folder.listFiles(objectFileFileter);
 
@@ -121,14 +121,14 @@ public class ReactionPersistence {
         // This filter only returns object files
         FileFilter objectFileFileter =
                 new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xrea")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+            public boolean accept(File file) {
+                if (file.isFile() && file.getName().endsWith(".xrea")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
 
         File[] files = folder.listFiles(objectFileFileter);
 
@@ -151,17 +151,17 @@ public class ReactionPersistence {
                         continue;
                     }
 
-                    if (reaction.getTrigger() !=  null && reaction.getTrigger().getName() != null) {
+                    if (reaction.getTrigger() != null && reaction.getTrigger().getName() != null) {
                         add(reaction);
                     } else {
                         LOG.log(Level.SEVERE, "Cannot add reaction {0}: it has empty Trigger", file.getName());
                         continue;
                     }
-                    
+
                     if (reaction.getCommands().isEmpty()) {
                         LOG.log(Level.WARNING, "Reaction {0} has no valid commands. Maybe related objects are missing or not configured properly.", reaction.toString());
                     }
-                    
+
                     summary.append(reaction.getUUID()).append("\t\t\t").append(reaction.toString())
                             .append("\t\t\t").append(reaction.getDescription()).append("\n");
                 }
@@ -181,12 +181,14 @@ public class ReactionPersistence {
     }
 
     public static void add(Reaction r) {
-        if ((r != null) && !exists(r)) { //if not already loaded
-            r.getTrigger().register(); //trigger starts to listen on its channel
-            list.add(r);
-            r.setChanged();
-            LOG.log(Level.CONFIG, "Added new reaction {0}", r.getDescription());
-
+        if (!exists(r))   { //if not already loaded
+            //if it's a new reaction validate it's commands
+            if (r.getCommands() != null && !r.getCommands().isEmpty()) {
+                r.getTrigger().register(); //trigger starts to listen on its channel
+                list.add(r);
+                r.setChanged();
+                LOG.log(Level.CONFIG, "Added new reaction {0}", r.getDescription());
+            }
         } else {
             LOG.log(Level.INFO, "The reaction ''{0}'' is already loaded so it is skipped.", r.getDescription());
         }

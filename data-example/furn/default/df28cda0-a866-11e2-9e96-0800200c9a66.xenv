@@ -1,5 +1,5 @@
 <it.freedomotic.model.environment.Environment>
-  <name>My Environment</name>
+  <name>Ground Floor</name>
   <width>1500</width>
   <height>1324</height>
   <renderer>photo</renderer>
