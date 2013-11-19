@@ -38,6 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.inject.Inject;
+import it.freedomotic.model.ds.Config;
 
 /**
  * A storage of loaded plugins and connected clients
@@ -45,7 +46,7 @@ import com.google.inject.Inject;
 public final class ClientStorageInMemory implements ClientStorage {
 
     private final List<Client> clients = new ArrayList<Client>();
-    
+
     public ClientStorageInMemory() {
         //just injected
     }
@@ -61,10 +62,10 @@ public final class ClientStorageInMemory implements ClientStorage {
                 Client client =
                         createPluginPlaceholder(c.getName(),
                         "Plugin",
-                        "Not compatible with this framework version");
+                        "Not compatible with this framework version v" + Info.getVersion());
                 clients.add(client);
-                LOG.warning("Plugin " + c.getName()
-                        + " is not compatible with this framework version.");
+                LOG.log(Level.WARNING, "Plugin {0} is not compatible with this framework version v{1}", 
+                        new Object[]{c.getName(), Info.getVersion()});
             }
 
             PluginHasChanged event =
@@ -118,10 +119,10 @@ public final class ClientStorageInMemory implements ClientStorage {
                 tmp.add(client);
             }
         }
-        
+
         Collections.sort(tmp,
                 new ClientNameComparator());
-        
+
         return Collections.unmodifiableList(tmp);
     }
 
@@ -179,9 +180,12 @@ public final class ClientStorageInMemory implements ClientStorage {
 
         //checking framework version compatibility
         //required version must be older (or equal) then current version
-        if ((getOldestVersion(requiredMajor + "." + requiredMinor + "." + requiredBuild,
-                Info.getVersion()) <= 0)) {
-            return true;
+
+        if (requiredMajor == Info.getMajor()) {
+            if ((getOldestVersion(requiredMajor + "." + requiredMinor + "." + requiredBuild,
+                    Info.getVersion()) <= 0)) {
+                return true;
+            }
         }
 
         return false;
@@ -257,48 +261,49 @@ public final class ClientStorageInMemory implements ClientStorage {
     public Plugin createPluginPlaceholder(final String simpleName, final String type, final String description) {
         final Plugin placeholder =
                 new Plugin(simpleName) {
-                    @Override
-                    public String getDescription() {
-                        if (description == null) {
-                            return "Plugin Unavailable. Error on loading";
-                        } else {
-                            return description;
-                        }
-                    }
+            @Override
+            public String getDescription() {
+                if (description == null) {
+                    return "Plugin Unavailable. Error on loading";
+                } else {
+                    return description;
+                }
+            }
 
-                    @Override
-                    public String getName() {
-                        return "Cannot start " + simpleName;
-                    }
+            @Override
+            public String getName() {
+                return "Cannot start " + simpleName;
+            }
 
-                    @Override
-                    public String getType() {
-                        return type;
-                    }
+            @Override
+            public String getType() {
+                return type;
+            }
 
-                    @Override
-                    public void start() {
-                    }
+            @Override
+            public void start() {
+            }
 
-                    @Override
-                    public void stop() {
-                    }
+            @Override
+            public void stop() {
+            }
 
-                    @Override
-                    public boolean isRunning() {
-                        return false;
-                    }
+            @Override
+            public boolean isRunning() {
+                return false;
+            }
 
-                    @Override
-                    public void showGui() {
-                    }
+            @Override
+            public void showGui() {
+            }
 
-                    @Override
-                    public void hideGui() {
-                    }
-                };
+            @Override
+            public void hideGui() {
+            }
+        };
 
         placeholder.setDescription(description);
+        placeholder.configuration = new Config();
 
         return placeholder;
     }
