@@ -8,20 +8,19 @@ import it.freedomotic.exceptions.UnableToExecuteException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import com.myhome.fcrisciani.exception.MalformedCommandOPEN;
 
 /**
  *
  * @author mauro
  */
 public class OWNFrame extends javax.swing.JFrame {
-
-    OpenWebNet plugin;
-
+     OpenWebNet pluginReference;
     /**
      * Creates new form OWNFrame
      */
-    public OWNFrame(OpenWebNet plugin) {
-        this.plugin = plugin;
+    public OWNFrame(OpenWebNet pluginReference) {
+        this.pluginReference = pluginReference;
         initComponents();
     }
 
@@ -119,19 +118,19 @@ public class OWNFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SendFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendFrameButtonActionPerformed
-        OpenWebNet actuator = new OpenWebNet();
+        //OpenWebNet actuator = new OpenWebNet();
         try {
-            actuator.sendFrame((String) jTextOwnFrame.getText());
-        } catch (IOException ex) {
-            Logger.getLogger(OWNFrame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnableToExecuteException ex) {
-            Logger.getLogger(OWNFrame.class.getName()).log(Level.SEVERE, null, ex);
+            pluginReference.myPlant.sendCommandAsync((String) jTextOwnFrame.getText(),1);
+        } catch (MalformedCommandOPEN ex) {
+            Logger.getLogger(OpenWebNet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_SendFrameButtonActionPerformed
 
     private void jTextOwnFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextOwnFrameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextOwnFrameActionPerformed
+
+            
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton SendFrameButton;
     private javax.swing.JLabel jLabel1;
