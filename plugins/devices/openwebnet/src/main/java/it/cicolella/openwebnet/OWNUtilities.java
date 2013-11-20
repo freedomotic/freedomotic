@@ -1,27 +1,26 @@
-/**
- *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
- *
- * This file is part of Freedomotic
- *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
- * <http://www.gnu.org/licenses/>.
+/*
+ Copyright FILE Mauro Cicolella, 2012-2013
+
+ This file is part of FREEDOMOTIC.
+
+ FREEDOMOTIC is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ FREEDOMOTIC is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package it.cicolella.openwebnet;
 
+import it.freedomotic.app.Freedomotic;
+import it.freedomotic.events.ProtocolRead;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import java.text.SimpleDateFormat;
@@ -31,7 +30,7 @@ import java.util.GregorianCalendar;
 public class OWNUtilities {
 
     /**
-     * frame validation
+     * Frame validation
      *
      */
     private static boolean isValidFrame(String frameOpen) {
@@ -154,7 +153,7 @@ public class OWNUtilities {
     // create the frame to send to the own gateway
     public static String createFrame(Command c) {
         String frame = null;
-        String address[] = null;
+        String address [] = null;
         String who = null;
         String what = null;
         String where = null;
@@ -166,10 +165,57 @@ public class OWNUtilities {
         frame = "*" + who + "*" + what + "*" + where + "##";
         return (frame);
     }
-
-    public static String getDateTime() {
-        Calendar calendar = new GregorianCalendar();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        return (sdf.format(calendar.getTime()));
+    
+    public static String convertTemperature(String temperature) {
+        String temp = null;
+        if (!temperature.substring(0).equalsIgnoreCase("0")) {
+            temp = "-";
+        }
+        temp += temperature.substring(1, 2);
+        temp += ".";
+        temp += temperature.substring(3);
+        return (temp);
+    }
+    
+     public static String dayName(String dayNumber) {
+        String dayName = null;
+        switch (new Integer(Integer.parseInt(dayNumber))) {
+            case (0):
+                dayNumber = "Sunday";
+            case (1):
+                dayNumber = "Monday";
+            case (2):
+                dayNumber = "Tuesday";
+            case (3):
+                dayNumber = "Wednesday";
+            case (4):
+                dayNumber = "Thursday";
+            case (5):
+                dayNumber = "Friday";
+            case (6):
+                dayNumber = "Saturday";
+        }
+        return (dayName);
+    }
+     
+     public static String gatewayModel(String modelNumber) {
+        String model = null;
+        switch (new Integer(Integer.parseInt(modelNumber))) {
+            case (2):
+                model = "MHServer";
+            case (4):
+                model = "MH20F0";
+            case (6):
+                model = "F452V";
+            case (11):
+                model = "MHServer2";
+            case (12):
+                model = "F453AV";
+            case (13):
+                model = "H4684";
+            default:
+                model = "Unknown";
+        }
+        return (model);
     }
 }

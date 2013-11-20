@@ -6,7 +6,7 @@
         <property name="required" value="5.2.0"/>  
         <property name="category" value="protocol"/>
         <property name="short-name" value="openwebnet"/>
-        <property name="host" value="127.0.0.1"/>
+        <property name="host" value="192.168.1.35"/>
         <property name="port" value="20000"/>
         <property name="startup-time"   value="on load"/>
     </properties>
