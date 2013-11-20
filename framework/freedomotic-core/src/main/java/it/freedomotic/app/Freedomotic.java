@@ -66,6 +66,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javax.jms.JMSException;
@@ -81,6 +82,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+
 import java.util.Collection;
 
 /**
@@ -513,7 +515,7 @@ public class Freedomotic implements BusConsumer {
         SLF4JBridgeHandler.install();
 
         // Set jul root log level to ALL, because default slf4jbridge handler is INFO.
-        Freedomotic.logger.setLevel(Level.ALL);
+        LogManager.getLogManager().getLogger("").setLevel(Level.ALL);
     }
 
     @Override
