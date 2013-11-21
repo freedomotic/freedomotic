@@ -17,7 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package it.freedomotic.arduinousb;
 
 import it.freedomotic.api.EventTemplate;
@@ -28,9 +27,11 @@ import it.freedomotic.reactions.Command;
 import it.freedomotic.serial.SerialConnectionProvider;
 import it.freedomotic.serial.SerialDataConsumer;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class ArduinoUSB extends Protocol implements SerialDataConsumer {
 
+    private static final Logger LOG = Logger.getLogger(ArduinoUSB.class.getName());
     SerialConnectionProvider serial;
 
     public ArduinoUSB() {
@@ -77,7 +78,7 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
             //written in setPollingWait() method [you can found it in Massabus constructor]
             String message = "A_STRING_MESSAGE";
             String reply = serial.send(message);
-            Freedomotic.logger.info("Arduino USB replies " + reply + " to message " + message);
+            LOG.info("Arduino USB replies " + reply + " to message " + message);
         } catch (IOException ex) {
             setDescription("Stopped for IOException in onRun"); //write here a better error message for the user
             stop();
@@ -96,7 +97,7 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
             setDescription("Stopped for IOException in onCommand"); //write here a better error message for the user
             stop();
         }
-        Freedomotic.logger.info("Arduino USB replies " + reply + " after executing command " + c.getName());
+        LOG.info("Arduino USB replies " + reply + " after executing command " + c.getName());
     }
 
     @Override
@@ -112,6 +113,6 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
     @Override
     public void onDataAvailable(String data) {
         //called when something is readed from the serial port
-        Freedomotic.logger.info("Arduino USB reads '" + data + "'");
+       LOG.info("Arduino USB reads '" + data + "'");
     }
 }
