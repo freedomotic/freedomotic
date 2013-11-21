@@ -1,26 +1,22 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
-
 package it.cicolella.arduinows;
 
 import it.freedomotic.api.EventTemplate;
@@ -42,6 +38,7 @@ import java.util.logging.Logger;
  */
 public class ArduinoWeatherShield extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(ArduinoWeatherShield.class.getName());
     private static int POLLING_TIME = 10000;
     private int SOCKET_TIMEOUT = 10000;
     private static String IP_TO_QUERY;
@@ -118,7 +115,7 @@ public class ArduinoWeatherShield extends Protocol {
 
     private void connect(String address, int port) {
         connected = false;
-        Freedomotic.logger.info("Trying to connect to Arduino WeatherShield on address " + address + ':' + port);
+        LOG.info("Trying to connect to Arduino WeatherShield on address " + address + ':' + port);
         try {
             //TimedSocket is a non-blocking socket with timeout on exception
             socket = TimedSocket.getSocket(address, port, SOCKET_TIMEOUT);
@@ -127,7 +124,7 @@ public class ArduinoWeatherShield extends Protocol {
             outputStream = new DataOutputStream(buffOut);
         } catch (IOException e) {
             connected = false;
-            Freedomotic.logger.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.severe("Unable to connect to host " + address + " on port " + port);
         }
         connected = true;
     }
@@ -150,31 +147,27 @@ public class ArduinoWeatherShield extends Protocol {
         try {
             connect(board.getIpAddress(), board.getPort());
         } catch (ArrayIndexOutOfBoundsException outEx) {
-            Freedomotic.logger.severe("The address '" + board.getIpAddress() + "' is not properly formatted. Check it!");
+            LOG.severe("The address '" + board.getIpAddress() + "' is not properly formatted. Check it!");
             throw new UnableToExecuteException();
         } catch (NumberFormatException numberFormatException) {
-            Freedomotic.logger.severe(board.getIpAddress() + " is not a valid ethernet port to connect to");
+            LOG.severe(board.getIpAddress() + " is not a valid ethernet port to connect to");
             throw new UnableToExecuteException();
         }
 
         if (connected) {
-            //Freedom.logger.severe("CONNECTED"); //FOR DEBUG USE
             // request for sensors values
             String message = "GET / HTTP 1.1\r\n\r\n";
-            //Freedom.logger.severe("Sending message" + message); //FOR DEBUG USE
             if (outputStream != null) {
                 outputStream.writeBytes(message);
                 outputStream.flush();
                 inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 try {
                     parametersValue = inputStream.readLine(); // read device reply
-                    //Freedom.logger.severe("Read string " + parametersValue + ""); // FOR DEBUG USE
                     sendChanges(board, parametersValue);
                 } catch (IOException iOException) {
                     throw new IOException();
                 } finally {
                     disconnect();
-                    //Freedom.logger.severe("DISCONNECTED"); //FOR DEBUG USE
                 }
             } else {
                 throw new UnableToExecuteException();
