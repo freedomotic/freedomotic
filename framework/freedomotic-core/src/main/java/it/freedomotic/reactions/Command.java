@@ -71,11 +71,15 @@ public final class Command implements Serializable, Cloneable {
 	public static final String PROPERTY_OBJECT_CLASS = "object.class";
 
 	public static final String PROPERTY_OBJECT_ADDRESS = "object.address";
-
+        
 	public static final String PROPERTY_OBJECT_NAME = "object.name";
 
 	public static final String PROPERTY_OBJECT_PROTOCOL = "object.protocol";
+        
+        public static final String PROPERTY_OBJECT_INCLUDETAGS = "object.includetags";
 
+        public static final String PROPERTY_OBJECT_EXCLUDETAGS = "object.excludetags";
+        
 	public static final String PROPERTY_OBJECT = "object";
 
     // Nome del comando
