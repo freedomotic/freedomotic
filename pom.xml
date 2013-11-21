@@ -48,7 +48,7 @@
                         <version>1.7</version>
                         <executions>
                             <execution>
-                                <phase>deploy</phase>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
@@ -217,6 +217,59 @@
         <!-- executes only on childs (if the child have specified it in its pom)-->
         <pluginManagement>
             <plugins>
+                <!-- Special resources processing for plugins -->
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                    <executions>
+                        <execution>
+                            <id>copy-resources</id>
+                            <!-- here the phase you need -->
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${basedir}/target/${project.artifactId}</outputDirectory>
+                                <resources>
+                                    <!-- regular resource processsing for everything except data.xml, README and PACKAGE -->
+                                    <resource>
+                                        <directory>src/main/resources</directory>
+                                        <excludes>
+                                            <exclude>data/**</exclude>
+                                            <exclude>*.xml</exclude>
+                                            <exclude>README</exclude>
+                                            <exclude>PACKAGE</exclude>
+                                        </excludes>
+                                    </resource>
+                                    <!-- resource processsing with a different output directory
+                                    for everything except data.xml, README and PACKAGE -->
+                                    <resource>
+                                        <directory>src/main/resources</directory>
+                                        <includes>
+                                            <include>data/**</include>
+                                            <include>*.xml</include>
+                                        </includes>
+                                        <!-- relative to target/classes
+                                        i.e. ${project.build.outputDirectory} -->
+                                        <targetPath>../${project.artifactId}</targetPath>
+                                    </resource>
+                                    <resource>
+                                        <directory>../../resources</directory>
+                                        <includes>
+                                            <include>README</include>
+                                            <include>PACKAGE</include>
+                                        </includes>
+                                        <filtering>true</filtering>
+                                        <!-- relative to target/classes
+                                        i.e. ${project.build.outputDirectory} -->
+                                        <targetPath>../${project.artifactId}</targetPath>
+                                    </resource>
+                                </resources>            
+                            </configuration>            
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
                     <configuration>
