@@ -52,6 +52,7 @@ import org.xml.sax.SAXException;
  */
 public class Flyport extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(Flyport.class.getName());
     private static ArrayList<Board> boards = null;
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
@@ -101,7 +102,7 @@ public class Flyport extends Protocol {
      */
     private boolean connect(String address, int port) {
 
-        Freedomotic.logger.info("Trying to connect to flyport board on address " + address + ':' + port);
+        LOG.info("Trying to connect to flyport board on address " + address + ':' + port);
         try {
             //TimedSocket is a non-blocking socket with timeout on exception
             socket = TimedSocket.getSocket(address, port, SOCKET_TIMEOUT);
@@ -110,7 +111,7 @@ public class Flyport extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            Freedomotic.logger.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.severe("Unable to connect to host " + address + " on port " + port);
             return false;
         }
     }
@@ -175,7 +176,7 @@ public class Flyport extends Protocol {
         try {
             statusFileURL = "http://" + board.getIpAddress() + ":"
                     + Integer.toString(board.getPort()) + "/status.xml";
-            Freedomotic.logger.info("Flyport gets relay status from file " + statusFileURL);
+            LOG.info("Flyport gets relay status from file " + statusFileURL);
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
         } catch (ConnectException connEx) {
@@ -185,12 +186,12 @@ public class Flyport extends Protocol {
         } catch (SAXException ex) {
             disconnect();
             this.stop();
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         } catch (Exception ex) {
             disconnect();
             this.stop();
             setDescription("Unable to connect to " + statusFileURL);
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         }
         return doc;
     }
@@ -210,7 +211,7 @@ public class Flyport extends Protocol {
                 try {
                     // converts i into hexadecimal value (string) and sends the parameters
                     String tagName = board.getLineToMonitorize() + HexIntConverter.convert(i);
-                    Freedomotic.logger.severe("Flyport monitorizes tags " + tagName);
+                    LOG.severe("Flyport monitorizes tags " + tagName);
                     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent());
                 } catch (DOMException dOMException) {
                     //do nothing
@@ -226,7 +227,7 @@ public class Flyport extends Protocol {
     private void sendChanges(int relayLine, Board board, String status) {
         //reconstruct freedomotic object address
         String address = board.getIpAddress() + ":" + board.getPort() + ":" + relayLine;
-        Freedomotic.logger.info("Sending Flyport protocol read event for object address '" + address + "'. It's readed status is " + status);
+        LOG.info("Sending Flyport protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "flyport", address); //IP:PORT:RELAYLINE
         // relay lines - status=0 -> off; status=1 -> on
@@ -272,10 +273,10 @@ public class Flyport extends Protocol {
         try {
             connected = connect(address[0], Integer.parseInt(address[1]));
         } catch (ArrayIndexOutOfBoundsException outEx) {
-            Freedomotic.logger.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
+            LOG.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
             throw new UnableToExecuteException();
         } catch (NumberFormatException numberFormatException) {
-            Freedomotic.logger.severe(address[1] + " is not a valid ethernet port to connect to");
+            LOG.severe(address[1] + " is not a valid ethernet port to connect to");
             throw new UnableToExecuteException();
         }
 
@@ -289,7 +290,7 @@ public class Flyport extends Protocol {
                 }
             } catch (IOException iOException) {
                 setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);
-                Freedomotic.logger.severe("Unable to send the message to host " + address[0] + " on port " + address[1]);
+                LOG.severe("Unable to send the message to host " + address[0] + " on port " + address[1]);
                 throw new UnableToExecuteException();
             } finally {
                 disconnect();
@@ -329,7 +330,7 @@ public class Flyport extends Protocol {
         }
         // http request sending to the board
         message = "GET /" + page + " HTTP 1.1\r\n\r\n";
-        Freedomotic.logger.info("Sending 'GET /" + page + " HTTP 1.1' to Flyport board");
+        LOG.info("Sending 'GET /" + page + " HTTP 1.1' to Flyport board");
         return (message);
     }
 
