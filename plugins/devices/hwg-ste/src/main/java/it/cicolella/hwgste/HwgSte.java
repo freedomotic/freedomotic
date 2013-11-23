@@ -1,25 +1,22 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.hwgste;
 
 import it.freedomotic.api.EventTemplate;
@@ -39,6 +36,7 @@ import java.util.logging.Logger;
 
 public class HwgSte extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(HwgSte.class.getName());
     private static ArrayList<Board> boards = null;
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
@@ -93,7 +91,7 @@ public class HwgSte extends Protocol {
      */
     private boolean connect(String address, int port) {
 
-        Freedomotic.logger.info("Trying to connect to HWg-STE device on address " + address + ':' + port);
+        LOG.info("Trying to connect to HWg-STE device on address " + address + ':' + port);
         try {
             //TimedSocket is a non-blocking socket with timeout on exception
             socket = TimedSocket.getSocket(address, port, SOCKET_TIMEOUT);
@@ -102,7 +100,7 @@ public class HwgSte extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            Freedomotic.logger.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.severe("Unable to connect to host " + address + " on port " + port);
             return false;
         }
     }
@@ -209,7 +207,7 @@ public class HwgSte extends Protocol {
             }
 
             String address = board.getIpAddress() + ":" + sensorID;
-            Freedomotic.logger.info("Sending HWg-STE protocol read event for object address '" + address + "'");
+            LOG.info("Sending HWg-STE protocol read event for object address '" + address + "'");
             //building the event
             ProtocolRead event = new ProtocolRead(this, "hwgste", address);
             //adding some optional information to the event
@@ -242,4 +240,3 @@ public class HwgSte extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
-
