@@ -92,8 +92,16 @@
        
         <echo>Compress the whole release folder</echo>
         <delete dir="${release-dump}" />
-        <zip destfile="${base}/target/freedomotic-${release.version}.zip" basedir="${release-base}"/>
-        <delete dir="${release-folder}" />
+        <!--make this file executable by default-->
+        <chmod file="${release-folder}/freedomotic.sh" perm="ugo+rx"/>
+        <chmod file="${release-folder}/freedomotic.exe" perm="ugo+rx"/>
+        <chmod file="${release-folder}/freedomotic.jar" perm="ugo+rx"/>
+        <!--create the zip setting proper permissions-->
+        <zip destfile="${base}/target/freedomotic-${release.version}.zip" level="9">
+            <zipfileset dir="${release-folder}" excludes="freedomotic.sh freedomotic.exe freedomotic.jar"/>
+            <zipfileset dir="${release-folder}" includes="freedomotic.sh freedomotic.exe freedomotic.jar" filemode="777" />
+        </zip>
+        <!--<delete dir="${release-folder}" />-->
         <echo>FINISH... Release created. Now it is ready to be distributed.</echo>
     </target>
    
