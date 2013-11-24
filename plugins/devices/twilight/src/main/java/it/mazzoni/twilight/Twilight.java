@@ -39,13 +39,11 @@ import org.xml.sax.SAXException;
 
 public class Twilight extends Protocol {
 
-    final int POLLING_WAIT;
+    private int POLLING_WAIT;
     private String Latitude;
     private String Longitude;
-    private DateTime sunriseTime;
-    private DateTime sunsetTime;
-    private Duration toSunset;
-    private Duration toSunrise;
+
+    private TwilightUtils TLU;
 
     public Twilight() {
         //every plugin needs a name and a manifest XML file
@@ -55,6 +53,7 @@ public class Twilight extends Protocol {
         POLLING_WAIT = configuration.getIntProperty("polling-time", 10000);
         Latitude = configuration.getStringProperty("latitude", "0.0");
         Longitude = configuration.getStringProperty("longitude", "0.0");
+        TLU = new TwilightUtils(POLLING_WAIT);
 
         //default value if the property does not exist in the manifest
         setPollingWait(-1); //millisecs interval between hardware device status reads
@@ -79,51 +78,7 @@ public class Twilight extends Protocol {
 
     @Override
     protected void onRun() {
-
-        if (sunsetTime.isBeforeNow() && sunriseTime.isBeforeNow()) {
-            if (sunsetTime.isBefore(sunriseTime)) {
-
-                // dopo il tramonto: aggiorna data prissima alba
-                sunsetTime.plusDays(1);
-            } else {
-
-                // dopo il tramonto: aggiorna data prissima alba
-                sunriseTime.plusDays(1);
-            }
-        }
-
-
-        toSunset = sunsetTime.isAfterNow() ? new Duration(DateTime.now(), sunsetTime) : new Duration(sunsetTime, DateTime.now());
-        toSunrise = sunriseTime.isAfterNow() ? new Duration(DateTime.now(), sunriseTime) : new Duration(sunriseTime, DateTime.now());
-
-        // genera evento: 
-        GenericEvent ev = new GenericEvent(getClass());
-        ev.setDestination("app.event.sensor.calendar.event.twilight");
-
-        if (toSunset.getMillis() < POLLING_WAIT / 2) {
-            // it's sunset
-            ev.addProperty("isSunset", "true");
-        } else if (toSunrise.getMillis() < POLLING_WAIT / 2) {
-            // it's sunrise
-            ev.addProperty("isSunrise", "true");
-        }
-        if (sunriseTime.isAfterNow()) {
-            // prima dell'alba
-            ev.addProperty("beforeSunrise", Long.toString(toSunrise.getStandardMinutes()));
-        }
-        if (sunsetTime.isBeforeNow()) {
-            // dopo il tramonto
-            ev.addProperty("afterSunset", Long.toString(toSunset.getStandardMinutes()));
-        }
-        if (sunriseTime.isBeforeNow()) {
-            // dopo l'alba, 
-            ev.addProperty("afterSunrise", Long.toString(toSunrise.getStandardMinutes()));
-        }
-        if (sunsetTime.isAfterNow()) {
-            // prima del tramonto
-            ev.addProperty("beforeSunset", Long.toString(toSunset.getStandardMinutes()));
-        }
-        notifyEvent(ev);
+        notifyEvent(TLU.prepareEvent(DateTime.now()));
     }
 
     @Override
@@ -202,18 +157,19 @@ public class Twilight extends Protocol {
             // compara con l'ora attuale
             String srTime[] = sunriseNode.getFirstChild().getNodeValue().split(":");
             String ssTime[] = sunsetNode.getFirstChild().getNodeValue().split(":");
-            sunriseTime = new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
-                    Integer.parseInt(srTime[0]), Integer.parseInt(srTime[1]), Integer.parseInt(srTime[2]));
-            sunsetTime = new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
-                    Integer.parseInt(ssTime[0]), Integer.parseInt(ssTime[1]), Integer.parseInt(ssTime[2]));
-            LOG.log(Level.INFO, "Sunrise at: {0} Sunset at:{1}", new Object[]{sunriseTime, sunsetTime});
-            //    toSunset = sunsetTime.isAfter(dt) ? new Duration(dt, sunsetTime) : new Duration(sunsetTime, dt);
-            //    toSunrise = sunriseTime.isAfter(dt) ? new Duration(dt, sunriseTime) : new Duration(sunriseTime, dt);
-
+            TLU.setSunriseTime(new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
+                    Integer.parseInt(srTime[0]), Integer.parseInt(srTime[1]), Integer.parseInt(srTime[2])));
+            TLU.setSunsetTime(new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
+                    Integer.parseInt(ssTime[0]), Integer.parseInt(ssTime[1]), Integer.parseInt(ssTime[2])));
+            LOG.log(Level.INFO, "Sunrise at: {0} Sunset at:{1}", new Object[]{TLU.getSunriseTime(), TLU.getSunsetTime()});
+ 
             return true;
         } else {
             return false;
         }
     }
+
+    
+    
     private static final Logger LOG = Logger.getLogger(Twilight.class.getName());
 }
