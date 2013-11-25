@@ -50,6 +50,7 @@ import org.xml.sax.SAXException;
 
 public class Ipx800 extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(Ipx800.class.getName());
     private static ArrayList<Board> boards = null;
     Map<String, Board> devices = new HashMap<String, Board>();
     private static int BOARD_NUMBER = 1;
@@ -62,8 +63,7 @@ public class Ipx800 extends Protocol {
     private String GET_STATUS_URL = configuration.getStringProperty("get-status-url", "status.xml");
     private String CHANGE_STATE_RELAY_URL = configuration.getStringProperty("change-state-relay-url", "leds.cgi?led=");
     private String SEND_PULSE_RELAY_URL = configuration.getStringProperty("send-pulse-relay-url", "rlyfs.cgi?rlyf=");
-    private static final Logger LOG = Logger.getLogger(Ipx800.class.getName());
-
+   
     /**
      * Initializations
      */
@@ -265,7 +265,7 @@ public class Ipx800 extends Protocol {
         //reconstruct freedomotic object address
         //String address = board.getIpAddress() + ":" + board.getPort() + ":" + relayLine + ":" + tag;
         String address = board.getAlias() + ":" + relayLine + ":" + tag;
-        //Freedomotic.logger.info("Sending Ipx800 protocol read event for object address '" + address + "'. It's readed status is " + status);
+        //LOG.info("Sending Ipx800 protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "ipx800", address); //IP:PORT:RELAYLINE
         // relay lines - status=0 -> off; status=1 -> on
@@ -393,7 +393,7 @@ public class Ipx800 extends Protocol {
 
         // http request sending to the board
         message = "GET /" + page + " HTTP 1.1\r\n\r\n";
-        //Freedomotic.logger.info("Sending 'GET /" + page + " HTTP 1.1' to relay board");
+        //LOG.info("Sending 'GET /" + page + " HTTP 1.1' to relay board");
         return (message);
     }
 
