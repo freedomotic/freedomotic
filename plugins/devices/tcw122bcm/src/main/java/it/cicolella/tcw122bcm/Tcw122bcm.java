@@ -34,6 +34,7 @@ import org.apache.commons.codec.binary.Base64;
 
 public class Tcw122bcm extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(Tcw122bcm.class.getName());
     Map<String, Board> devices = new HashMap<String, Board>();
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
@@ -137,10 +138,6 @@ public class Tcw122bcm extends Protocol {
     private void sendEvent(String objectAddress, String eventProperty, String eventValue, String objectTemplate) {
         ProtocolRead event = new ProtocolRead(this, "tcw122bcm", objectAddress);
         event.addProperty(eventProperty, eventValue);
-        //if (!objectTemplate.equalsIgnoreCase("default")) {
-        //    event.addProperty("object.class", objectTemplate);
-        //}
-        //event.addProperty("object.name", objectAddress);
         //publish the event on the messaging bus
         this.notifyEvent(event);
     }
@@ -262,7 +259,7 @@ public class Tcw122bcm extends Protocol {
             //System.out.println("Base64 encoded auth string: " + authStringEnc); //FOR DEBUG
             //Create a URL for the desired  page 
             URL url = new URL("http://" + hostname + ":" + hostport + "/?" + relayNumber + "=" + control);
-            Freedomotic.logger.info("Freedomotic sends the command " + url);
+            LOG.info("Freedomotic sends the command " + url);
             URLConnection urlConnection = url.openConnection();
             // if required set the authentication
             if (HTTP_AUTHENTICATION.equalsIgnoreCase("true")) {
@@ -278,9 +275,9 @@ public class Tcw122bcm extends Protocol {
             }
             String result = sb.toString();
         } catch (MalformedURLException e) {
-            Freedomotic.logger.severe("Change relay status malformed URL " + e.toString());
+            LOG.severe("Change relay status malformed URL " + e.toString());
         } catch (IOException e) {
-            Freedomotic.logger.severe("Change relay status IOexception" + e.toString());
+            LOG.severe("Change relay status IOexception" + e.toString());
         }
     }
 
