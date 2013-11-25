@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 
 public class GroveSystem extends Protocol {
 
+    public static final Logger LOG = Logger.getLogger(GroveSystem.class.getName());
     private static ArrayList<Board> boards = null;
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
@@ -88,7 +89,7 @@ public class GroveSystem extends Protocol {
             udpServer = new UDPServer(this);
             udpServer.start();
         } catch (IOException iOException) {
-            Freedomotic.logger.severe("Error during UDP server creation " + iOException.toString());
+            LOG.severe("Error during UDP server creation " + iOException.toString());
         }
     }
 

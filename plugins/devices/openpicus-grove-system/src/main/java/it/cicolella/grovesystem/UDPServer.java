@@ -40,7 +40,7 @@ public class UDPServer extends Thread {
         this.plugin = plugin;
         //socket = new DatagramSocket(PORT, InetAddress.getLocalHost());
         socket = new DatagramSocket(plugin.UDP_SERVER_PORT, InetAddress.getByName(plugin.UDP_SERVER_HOSTNAME));
-        Freedomotic.logger.info("ServerUDP listen to " + socket.getLocalSocketAddress());
+        GroveSystem.LOG.info("ServerUDP listen to " + socket.getLocalSocketAddress());
 
     }
 
@@ -55,7 +55,7 @@ public class UDPServer extends Thread {
                     extractData(packet);
                 }
             } catch (Exception ex) {
-                Freedomotic.logger.severe("Reading UDP packet exception " + ex);
+                GroveSystem.LOG.severe("Reading UDP packet exception " + ex);
             }
         }
     }
