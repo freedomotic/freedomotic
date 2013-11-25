@@ -1187,6 +1187,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             EnvironmentLogic newEnv = EnvironmentPersistence.add(drawer.getCurrEnv(), true);
             String input = JOptionPane.showInputDialog(I18n.msg("enter_new_name_for_env") + newEnv.getPojo().getName());
             newEnv.getPojo().setName(input.trim());
+            newEnv.setSource(new File(drawer.getCurrEnv().getSource().getParentFile() +"/"+ newEnv.getPojo().getUUID() + ".xenv"));
             setEnvironment(EnvironmentPersistence.getEnvByUUID(newEnv.getPojo().getUUID()));
             checkDeletableEnvironments();
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
