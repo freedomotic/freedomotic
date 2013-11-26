@@ -19,7 +19,6 @@ package it.mazzoni.freedomchat;
 
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
-import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.NaturalLanguageProcessor;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
@@ -36,11 +35,11 @@ import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 
 public class FreedomChat extends Protocol {
 
@@ -55,7 +54,9 @@ public class FreedomChat extends Protocol {
     public static String IF = "if";
     public static String THEN = "then";
     public static String WHEN = "when";
-    // private ChatNLP nlp = new ChatNLP();
+    public static String HELP = "help";
+    public static String LIST = "list";
+    
 
     public FreedomChat() {
         //every plugin needs a name and a manifest XML file
@@ -71,6 +72,7 @@ public class FreedomChat extends Protocol {
 
     @Override
     protected void onStart() {
+        setDescription("Starting");
         hostname = configuration.getStringProperty("hostname", "jabber.org");
         port = configuration.getIntProperty("port", 5222);
         username = configuration.getStringProperty("username", "");
@@ -78,20 +80,16 @@ public class FreedomChat extends Protocol {
         acceptancePassword = configuration.getStringProperty("acceptance-password", "");
         tls = configuration.getBooleanProperty("use-tls", false);
 
-        ConnectionConfiguration config = new ConnectionConfiguration("jabber.org", 5222);
+        ConnectionConfiguration config = new ConnectionConfiguration(hostname, port);
         config.setCompressionEnabled(true);
         config.setSASLAuthenticationEnabled(tls);
         config.setSelfSignedCertificateEnabled(true);
 
-
+        
         conn = new XMPPConnection(config);
         try {
             conn.connect();
             conn.login(username, password, "Freedomotic");
-        } catch (XMPPException ex) {
-            Logger.getLogger(FreedomChat.class.getName()).log(Level.SEVERE, null, ex);
-            this.stop();
-        }
         // Create a new presence. Pass in false to indicate we're unavailable.
         Presence presence = new Presence(Presence.Type.available);
         presence.setStatus("Ready");
@@ -105,10 +103,11 @@ public class FreedomChat extends Protocol {
             public void chatCreated(Chat chat, boolean createdLocally) {
                 if (!createdLocally) {
                     chat.addMessageListener(new MessageListener() {
+                        @Override
                         public void processMessage(Chat chat, Message message) {
                             try {
                                 // the user is in my list, OK accepc messages
-                                Freedomotic.logger.info(chat.getParticipant());
+                                LOG.info(chat.getParticipant());
                                 String uname[] = chat.getParticipant().split("/");
                                 if (conn.getRoster().getEntry(uname[0]) != null) {
                                     // Send back the same text the other user sent us.
@@ -121,7 +120,7 @@ public class FreedomChat extends Protocol {
                                 }
 
                             } catch (XMPPException ex) {
-                                Logger.getLogger(FreedomChat.class.getName()).log(Level.SEVERE, null, ex);
+                                LOG.log(Level.SEVERE, null, ex);
                             }
                         }
                     });
@@ -129,8 +128,15 @@ public class FreedomChat extends Protocol {
             }
         });
 
-        Freedomotic.logger.info("Chat plugin has started");
-        setDescription("Chat: " + username);
+        LOG.info("Chat plugin has started");
+        setDescription("Registered as: " + username + "\n Acceptance password: " + acceptancePassword);
+        
+        } catch (Exception ex) {
+            
+            LOG.log(Level.SEVERE, "Cannot start Chat plugin. Reason: {0}", ex.getMessage());
+            onStop();
+        }
+        
     }
 
     @Override
@@ -139,15 +145,16 @@ public class FreedomChat extends Protocol {
         if (conn.isConnected()) {
             conn.disconnect();
         }
-        Freedomotic.logger.info("Chat plugin has stopped ");
+        conn = null;
+        setDescription("Chat plugin");
+        LOG.info("Chat plugin has stopped ");
     }
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
         // Assume we've created a Connection name "connection".
 
-        Freedomotic.logger.info("Chat plugin receives a command called " + c.getName()
-                + " with parameters " + c.getProperties().toString());
+        LOG.log(Level.INFO, "Chat plugin receives a command called {0} with parameters {1}", new Object[]{c.getName(), c.getProperties().toString()});
     }
 
     @Override
@@ -171,9 +178,16 @@ public class FreedomChat extends Protocol {
         String tokenMess[] = mess.split(" "); //nlp.getTokenizer().tokenize(sentenceMess[0]);
         String triggername = "";
         int conditionSep = 0;
-        if (tokenMess[0].equals(IF) || tokenMess[0].equals(WHEN)) {
+        if (tokenMess[0].equalsIgnoreCase(HELP)){
+            return help(tokenMess);
+        }
+        if (tokenMess[0].equalsIgnoreCase(LIST)){
+            return list(tokenMess);
+        }
+        
+        if (tokenMess[0].equalsIgnoreCase(IF) || tokenMess[0].equalsIgnoreCase(WHEN)) {
             for (int i = 1; i < tokenMess.length; i++) {
-                if (tokenMess[i].equals(THEN)) {
+                if (tokenMess[i].equalsIgnoreCase(THEN)) {
                     triggername = unsplit(tokenMess, 1, i - 1, " ");
                     conditionSep = i + 1;
                     break;
@@ -183,24 +197,31 @@ public class FreedomChat extends Protocol {
         }
 
         String commandName = unsplit(tokenMess, conditionSep, tokenMess.length - conditionSep, " ");
-        List<NaturalLanguageProcessor.Rank> mostSimilar = nlp2.getMostSimilarCommand(commandName, 3);
-
+        List<NaturalLanguageProcessor.Rank> mostSimilar = nlp2.getMostSimilarCommand(commandName, 10);
+        // user is asking for help
+        if (commandName.contains("*")){
+            String response ="";
+            for (NaturalLanguageProcessor.Rank nlpr : mostSimilar){
+                response += "? " +nlpr.getCommand().getName() + "\n";
+            }
+            return response;
+        }
         if (!mostSimilar.isEmpty() && mostSimilar.get(0).getSimilarity() > 0) {
             c = mostSimilar.get(0).getCommand();
         } else {
             return "No available commands similar to: " + commandName;
         }
-        if (tokenMess[0].equals(IF)) {
+        if (tokenMess[0].equalsIgnoreCase(IF)) {
             Trigger NEWt = t.clone();
             NEWt.setNumberOfExecutions(1);
             r = new Reaction(NEWt, c);
             ReactionPersistence.add(r);
-        } else if (tokenMess[0].equals(WHEN)) {
+        } else if (tokenMess[0].equalsIgnoreCase(WHEN)) {
             // do something
             r = new Reaction(t, c);
             ReactionPersistence.add(r);
         } else {
-            Freedomotic.sendCommand(c);
+            send(c);
             return c.getName() + "\n DONE.";
         }
         return "DONE";
@@ -212,7 +233,7 @@ public class FreedomChat extends Protocol {
                 conn.getRoster().createEntry(chat.getParticipant(), "", null);
                 return "Just wait and see.";
             } catch (XMPPException ex) {
-                Logger.getLogger(FreedomChat.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
             }
         }
         return "";
@@ -244,5 +265,17 @@ public class FreedomChat extends Protocol {
 
     @Override
     protected void onRun() {
+    }
+    private static final Logger LOG = Logger.getLogger(FreedomChat.class.getName());
+
+    private String help(String[] tokenMess) {
+        return "Freedomotic CHAT help:\n"
+                + "- enter a command name to be executed\n"
+                + "- enter a command with '*' in it to get a list of suggestions\n"
+                + "- enter 'LIST [commands|objects|triggers]' to retrieve related list";
+    }
+
+    private String list(String[] tokenMess) {
+        return "Not yet implemented";
     }
 }

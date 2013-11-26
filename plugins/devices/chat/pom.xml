@@ -11,7 +11,12 @@
     <packaging>jar</packaging>
     <name>chat</name>
     <version>3.0</version>
-
+    <repositories>
+        <repository>
+            <id>opencast-public</id>
+            <url>http://repository.opencastproject.org/nexus/content/repositories/public/</url>
+        </repository>
+    </repositories>
     <developers>
         <developer>
             <id>matteo</id>
@@ -61,12 +66,12 @@
         <dependency>
             <groupId>org.igniterealtime.smack</groupId>
             <artifactId>smack</artifactId>
-            <version>3.2.1</version>
+            <version>3.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.igniterealtime.smack</groupId>
             <artifactId>smackx</artifactId>
-            <version>3.2.1</version>
+            <version>3.3.1</version>
         </dependency>
     </dependencies>
 
