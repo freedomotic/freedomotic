@@ -1,0 +1,16 @@
+<config>
+    <properties>
+        <property name="description"    value="Communicates with a remote controller"/>
+        <property name="protocol.name"  value="arduino-remote-controller"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="arduino-remote-controller"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="udp-server-hostname" value="192.168.0.20"/>
+        <property name="udp-server-port" value="8000"/>
+        <property name="delimiter" value=":"/>
+     </properties>
+</config>
+
+
+
+
