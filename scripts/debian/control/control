@@ -7,13 +7,12 @@ Build-Depends: debhelper (>= 8.0.0), ant
 Build-Depends-Indep: default-jdk
 Standards-Version: 3.9.2
 Homepage: http://www.freedomotic.com
-#Vcs-Git: git://git.debian.org/collab-maint/freedomotic.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/freedomotic.git;a=summary
-
 Package: freedomotic
+Version: [[version]]
 Architecture: all
+Maintainer: matteo@freedomotic.com
 Depends: default-jre, librxtx-java, adduser
-Description: Freedomotic - open Source building Automation
+Description: [[description]]
  Freedomotic is an open, flexible, scalable and mashups oriented software 
  that can interact with well known standard building automation protocols
  as long as with "do it yourself" solutions.

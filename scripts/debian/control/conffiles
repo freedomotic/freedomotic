@@ -1,0 +1,10 @@
+/etc/default/freedomotic
+/etc/init.d/freedomotic
+/etc/freedomotic/config.xml
+/etc/freedomotic/privileges.list
+/etc/freedomotic/security.properties
+/etc/freedomotic/validator/command.dtd
+/etc/freedomotic/validator/environment.dtd
+/etc/freedomotic/validator/object.dtd
+/etc/freedomotic/validator/reaction.dtd
+/etc/freedomotic/validator/trigger.dtd
