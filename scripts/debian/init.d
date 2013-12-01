@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/sh -e
 ### BEGIN INIT INFO
 # Provides:          freedomotic
-# Required-Start:    $network $local_fs
-# Required-Stop:
+# Required-Start:    $network $local_fs $remote_fs
+# Required-Stop:     $remote_fs
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: <Enter a short description of the sortware>
@@ -47,11 +47,8 @@ do_start()
 	#   0 if daemon has been started
 	#   1 if daemon was already running
 	#   2 if daemon could not be started
-	start-stop-daemon --start --quiet --user $RUNAS_USER --group $RUNAS_GRP --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
-		|| return 1
-	start-stop-daemon --start --quiet --user $RUNAS_USER --group $RUNAS_GRP --pidfile $PIDFILE --exec $DAEMON -- \
-		$DAEMON_ARGS \
-		|| return 2
+	start-stop-daemon --start --quiet --user $RUNAS_USER --group $RUNAS_GRP --pidfile $PIDFILE --exec $DAEMON --test > /dev/null || return 1
+	start-stop-daemon --start --quiet --user $RUNAS_USER --group $RUNAS_GRP --pidfile $PIDFILE --exec $DAEMON -- $DAEMON_ARGS return 2
 	# Add code here, if necessary, that waits for the process to be ready
 	# to handle requests from services started subsequently which depend
 	# on this one.  As a last resort, sleep for some time.
@@ -96,8 +93,9 @@ do_reload() {
 	return 0
 }
 
-case "$1" in
-  start)
+COMMAND="$1"
+case $1 in
+start)
     [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC " "$NAME"
     do_start
     case "$?" in
@@ -105,7 +103,7 @@ case "$1" in
 		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
 	esac
   ;;
-  stop)
+stop)
 	[ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
 	do_stop
 	case "$?" in
@@ -113,7 +111,7 @@ case "$1" in
 		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
 	esac
 	;;
-  status)
+status)
        status_of_proc "$DAEMON" "$NAME" && exit 0 || exit $?
        ;;
   #reload|force-reload)
@@ -125,7 +123,7 @@ case "$1" in
 	#do_reload
 	#log_end_msg $?
 	#;;
-  restart|force-reload)
+restart|force-reload)
 	#
 	# If the "reload" option is implemented then remove the
 	# 'force-reload' alias
@@ -141,13 +139,13 @@ case "$1" in
 			*) log_end_msg 1 ;; # Failed to start
 		esac
 		;;
-	  *)
+          *)
 	  	# Failed to stop
 		log_end_msg 1
 		;;
-	esac
-	;;
-  *)
+          esac
+          ;;
+ *)
 	#echo "Usage: $SCRIPTNAME {start|stop|restart|reload|force-reload}" >&2
 	echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
 	exit 3
