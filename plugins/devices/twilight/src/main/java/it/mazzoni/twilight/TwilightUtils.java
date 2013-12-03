@@ -45,6 +45,7 @@ public class TwilightUtils {
         // genera evento: 
         GenericEvent ev = new GenericEvent(getClass());
         ev.setDestination("app.event.sensor.calendar.event.twilight");
+        
 
         if (toSunset.getMillis() < POLLING_WAIT / 2) {
             // it's sunset

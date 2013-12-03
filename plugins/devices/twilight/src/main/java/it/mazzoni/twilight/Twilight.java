@@ -20,7 +20,6 @@ package it.mazzoni.twilight;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.app.Freedomotic;
-import it.freedomotic.events.GenericEvent;
 import it.freedomotic.exceptions.UnableToExecuteException;
 import it.freedomotic.reactions.Command;
 import java.io.IOException;
@@ -32,7 +31,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -78,7 +76,9 @@ public class Twilight extends Protocol {
 
     @Override
     protected void onRun() {
-        notifyEvent(TLU.prepareEvent(DateTime.now()));
+        EventTemplate ev = TLU.prepareEvent(DateTime.now());
+        LOG.info(ev.getPayload().toString());
+        notifyEvent(ev);
     }
 
     @Override
