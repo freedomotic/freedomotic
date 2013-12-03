@@ -255,7 +255,7 @@
                                         <targetPath>../${project.artifactId}</targetPath>
                                     </resource>
                                     <resource>
-                                        <directory>../../resources</directory>
+                                        <directory>${freedomotic.basedir}/plugins/resources</directory>
                                         <includes>
                                             <include>README</include>
                                             <include>PACKAGE</include>
