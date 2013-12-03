@@ -40,6 +40,16 @@ public class TwilightTest {
         Assert.assertEquals("", twAtNoon.getProperty("isSunrise"));
         Assert.assertEquals("420", twAtNoon.getProperty("afterSunrise"));
         Assert.assertEquals("", twAtNoon.getProperty("beforeSunrise"));
+        
+        noon = new DateTime(2013, 11, 21, 12, 1);
+        System.out.print(twu.getSunriseTime().toString() +" - "+ twu.getSunsetTime() +" - "+ noon);
+        twAtNoon = twu.prepareEvent(noon);
+        Assert.assertEquals("299", twAtNoon.getProperty("beforeSunset"));
+        Assert.assertEquals("", twAtNoon.getProperty("afterSunset"));
+        Assert.assertEquals("", twAtNoon.getProperty("isSunset"));
+        Assert.assertEquals("", twAtNoon.getProperty("isSunrise"));
+        Assert.assertEquals("421", twAtNoon.getProperty("afterSunrise"));
+        Assert.assertEquals("", twAtNoon.getProperty("beforeSunrise"));
     }
 
     @Test
@@ -70,6 +80,15 @@ public class TwilightTest {
         Assert.assertEquals("", twAtSunrise.getProperty("isSunset"));
         Assert.assertEquals("true", twAtSunrise.getProperty("isSunrise"));
         Assert.assertEquals("", twAtSunrise.getProperty("afterSunrise"));
+        Assert.assertEquals("", twAtSunrise.getProperty("beforeSunrise"));
+        
+        sunrise = new DateTime(2013, 11, 20, 5, 1);
+        twAtSunrise = twu.prepareEvent(sunrise);
+        Assert.assertEquals("719", twAtSunrise.getProperty("beforeSunset"));
+        Assert.assertEquals("", twAtSunrise.getProperty("afterSunset"));
+        Assert.assertEquals("", twAtSunrise.getProperty("isSunset"));
+        Assert.assertEquals("", twAtSunrise.getProperty("isSunrise"));
+        Assert.assertEquals("1", twAtSunrise.getProperty("afterSunrise"));
         Assert.assertEquals("", twAtSunrise.getProperty("beforeSunrise"));
     }
 
