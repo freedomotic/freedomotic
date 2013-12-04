@@ -73,6 +73,11 @@
             <artifactId>smackx</artifactId>
             <version>3.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.taksan</groupId>
+            <artifactId>skype-java-api</artifactId>
+            <version>1.4</version>
+        </dependency>
     </dependencies>
 
     <build>
