@@ -17,7 +17,7 @@
   <executed>false</executed>
   <properties>
     <properties>
-      <property name="object.tags" value="useless"/>
+      <property name="object.includetags" value="useless"/>
       <property name="behavior" value="powered"/>
       <property name="value" value="false"/>
     </properties>
