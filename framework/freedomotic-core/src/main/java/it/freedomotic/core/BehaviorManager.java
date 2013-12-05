@@ -140,8 +140,9 @@ public final class BehaviorManager
 
         String includeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_INCLUDETAGS);
         String excludeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_EXCLUDETAGS);
-        if (includeTags != null && excludeTags != null) {
+        if (includeTags != null || excludeTags != null) {
             // prepare includ set
+            includeTags += "";
             String tags[] = includeTags.split(",");
             Set<String> includeSearch = new HashSet<String>();
             for (String tag : tags) {
@@ -150,6 +151,7 @@ public final class BehaviorManager
                 }
             }
             //prepare exclude set (remove tags listed in include set too)
+            excludeTags += "";
             tags = excludeTags.split(",");
             Set<String> excludeSearch = new HashSet<String>();
             for (String tag : tags) {
