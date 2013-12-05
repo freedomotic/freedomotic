@@ -254,12 +254,17 @@ public final class BehaviorManager
             } else {
 
                 if (objectClass != null || objectincludeTags != null || objectexcludeTags != null) {
-                    /*
-                     * if we have the category and the behavior (and not the
-                     * object name) it means the behavior must be applied to all
-                     * object belonging to the given category. eg: all lights on
-                     */
-                    applyToCategory(userLevelCommand);
+                    try {
+                        /*
+                         * if we have the category and the behavior (and not the
+                         * object name) it means the behavior must be applied to all
+                         * object belonging to the given category. eg: all lights on
+                         */
+                        Command clonedOne = userLevelCommand.clone();
+                        applyToCategory(clonedOne);
+                    } catch (CloneNotSupportedException ex) {
+                        Logger.getLogger(BehaviorManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }
