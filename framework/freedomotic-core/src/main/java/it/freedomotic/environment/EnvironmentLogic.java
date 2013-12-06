@@ -171,7 +171,6 @@ public final class EnvironmentLogic {
             graph = null;
             zones.clear();
             zones = null;
-            EnvObjectPersistence.clear();
         } catch (Exception e) {
         }
     }

@@ -19,6 +19,7 @@
  */
 package it.freedomotic.jfrontend;
 
+import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 import it.freedomotic.app.Freedomotic;
 import it.freedomotic.core.ResourcesManager;
@@ -32,6 +33,9 @@ import it.freedomotic.jfrontend.Renderer;
 import it.freedomotic.jfrontend.utils.OpenDialogFileFilter;
 import it.freedomotic.jfrontend.utils.TipOfTheDay;
 import it.freedomotic.model.environment.Zone;
+import it.freedomotic.objects.EnvObjectLogic;
+import it.freedomotic.objects.EnvObjectPersistence;
+import it.freedomotic.plugins.ObjectPluginPlaceholder;
 import it.freedomotic.reactions.Command;
 import it.freedomotic.security.Auth;
 import it.freedomotic.util.I18n.ComboLanguage;
@@ -43,6 +47,7 @@ import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -1188,13 +1193,40 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         if (result == JOptionPane.OK_OPTION) {
             EnvironmentLogic oldenv = drawer.getCurrEnv();
 
-            if (EnvironmentPersistence.getEnvironments().get(0) != drawer.getCurrEnv()) {
-                setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
-            } else {
-                setEnvironment(EnvironmentPersistence.getEnvironments().get(1));
-            }
+            ArrayList<EnvironmentLogic> possibilities = new ArrayList<EnvironmentLogic>(EnvironmentPersistence.getEnvironments());
+            possibilities.remove(oldenv);
 
+            EnvironmentLogic input = (EnvironmentLogic) JOptionPane.showInputDialog(
+                    this,
+                    I18n.msg("select_env_to_reassing_objects"),
+                    I18n.msg("select_env_title"),
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    possibilities.toArray(),
+                    oldenv);
+
+
+            if (input != null) {
+                // assign objects to new environment
+                for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(oldenv.getPojo().getUUID())) {
+                    obj.setEnvironment(input);
+                }
+                setEnvironment(input);
+            } else {
+                Collection<EnvObjectLogic> pippo = EnvObjectPersistence.getObjectByEnvironment(oldenv.getPojo().getUUID());
+                // automatically select a new environment to show and just let objects be deleted
+                if (EnvironmentPersistence.getEnvironments().get(0) != oldenv) {
+                    setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
+                } else {
+                    setEnvironment(EnvironmentPersistence.getEnvironments().get(1));
+                }
+            }
             EnvironmentPersistence.remove(oldenv);
+            if (EnvObjectPersistence.getObjectList().isEmpty()) {
+                // add a new object placeholder
+                ObjectPluginPlaceholder objp = (ObjectPluginPlaceholder) master.getApi().getClients("object").toArray()[0];
+                objp.startOnEnv(oldenv);
+            }
             setWindowedMode();
             checkDeletableEnvironments();
         }
