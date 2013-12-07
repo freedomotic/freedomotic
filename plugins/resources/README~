@@ -1,5 +1,5 @@
 
-The package ${artifactId} ${version} is part of Freedomotic building automation framework.
+The package ${project.artifactId} ${project.version} is part of Freedomotic building automation framework.
 This package is released under the terms of ${freedomotic.package.license} license by ${freedomotic.package.vendor.name} ${freedomotic.package.vendor.surname}
 
 To add this to your current framework you have to copy the folder containing this file in folder FRAMEWORK_ROOT/plugins/${freedomotic.package.type}s

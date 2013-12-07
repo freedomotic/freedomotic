@@ -1,5 +1,5 @@
 package.type=${freedomotic.package.type}
-package.name=${artifactId}
+package.name=${project.artifactId}
 package.license=${freedomotic.package.license}
 package.nodeid=${freedomotic.nodeid}
 package.vendor.name=${freedomotic.package.vendor.name}
