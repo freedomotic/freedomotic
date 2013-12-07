@@ -56,14 +56,14 @@
                                     <target>
                                         <echo>Uploading file target/market-dist/${freedomotic.marketplace.file} to marketplace</echo>
                                         <!-- create a temp folder in which constructing the archive, then compress it-->
-                                        <delete dir="target/market-dist/${artifactId}"/>
-                                        <mkdir dir="target/market-dist/${artifactId}/${artifactId}"/>
-                                        <copy todir="target/market-dist/${artifactId}/${artifactId}" includeEmptyDirs="false">
-                                            <fileset dir="target/${artifactId}">
+                                        <delete dir="target/market-dist/${project.artifactId}"/>
+                                        <mkdir dir="target/market-dist/${project.artifactId}/${project.artifactId}"/>
+                                        <copy todir="target/market-dist/${project.artifactId}/${project.artifactId}" includeEmptyDirs="false">
+                                            <fileset dir="target/${project.artifactId}">
                                             </fileset>
                                         </copy>
                                         <zip destfile="target/market-dist/${freedomotic.marketplace.file}"
-                                             basedir="target/market-dist/${artifactId}" />
+                                             basedir="target/market-dist/${project.artifactId}" />
                                         <property name="workspace-base" value="../../../"/>
                                         <taskdef
                                             name="marketplace"

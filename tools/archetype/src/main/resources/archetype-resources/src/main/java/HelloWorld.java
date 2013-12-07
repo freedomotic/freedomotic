@@ -18,9 +18,9 @@ public class HelloWorld extends Protocol {
 
     public HelloWorld() {
         //every plugin needs a name and a manifest XML file
-        super("HelloWorld", "/com.freedomotic.hello/${artifactId}-manifest.xml");
+        super("HelloWorld", "/com.freedomotic.hello/${project.artifactId}-manifest.xml");
         //read a property from the manifest file below which is in
-        //FREEDOMOTIC_FOLDER/plugins/devices/${groupId}.hello/${artifactId}.xml
+        //FREEDOMOTIC_FOLDER/plugins/devices/${groupId}.hello/${project.artifactId}.xml
         POLLING_WAIT = configuration.getIntProperty("time-between-reads", 2000);
         //POLLING_WAIT is the value of the property "time-between-reads" or 2000 millisecs,
         //default value if the property does not exist in the manifest
