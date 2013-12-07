@@ -56,6 +56,7 @@ public class LogViewer
     protected void onStart() {
         handler = LogWindowHandler.getInstance(getApi().getI18n());
         handler.setFilter(new Filter() {
+            @Override
             public boolean isLoggable(LogRecord record) {
                 //logs every message
                 return true;
@@ -63,6 +64,8 @@ public class LogViewer
         });
         handler.setLevel(Level.ALL);
         logger.addHandler(handler);
+        //IMPORTANT!!!!
+        logger.setLevel(Level.ALL);
         bindGuiToPlugin(handler.window);
 //        showGui();
     }
