@@ -79,13 +79,6 @@ public class JavaDesktopFrontend
             addEventListener("app.event.sensor.object.behavior.change");
             addEventListener("app.event.sensor.environment.zone.change");
             addEventListener("app.event.sensor.plugin.change");
-            //addEventListener("app.event.sensor.messages.callout");
-            //onCommand stuff
-            //addComandListener("app.actuators.plugins.controller.in");
-          //  createMainWindow(); //creates the main frame
-            //listDrawer = new ListDrawer(this);
-            //listDrawer.setVisible(true);
-            addCommandListener("app.actuators.plugins.controller.in");
             if (getApi().getAuth().isInited()) {
                 sl = new SplashLogin(this);
                 if (!init) {
