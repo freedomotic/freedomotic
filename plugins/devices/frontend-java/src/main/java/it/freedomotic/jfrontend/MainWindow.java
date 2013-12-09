@@ -1184,37 +1184,34 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuRenameEnvironmentActionPerformed
 
     private void mnuDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuDeleteActionPerformed
+        EnvironmentLogic oldenv = drawer.getCurrEnv();
+
+        JLabel confirmLbl = new JLabel(I18n.msg("confirm_env_delete"));
+        JLabel selectLbl = new JLabel(I18n.msg("select_env_to_reassing_objects"));
+        
+        ArrayList<Object> possibilities = new ArrayList<Object>();
+        possibilities.add(I18n.msg("delete_envobj_alongside_environment"));
+        possibilities.addAll(EnvironmentPersistence.getEnvironments());
+        possibilities.remove(oldenv);
+            
+        JComboBox envCombo = new JComboBox(possibilities.toArray());
+        
         int result = JOptionPane.showConfirmDialog(null,
-                I18n.msg("confirm_env_delete"),
+                new Object[]{confirmLbl,selectLbl,envCombo},
                 I18n.msg("confirm_deletion_title"),
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.OK_CANCEL_OPTION
+                );
 
         if (result == JOptionPane.OK_OPTION) {
-            EnvironmentLogic oldenv = drawer.getCurrEnv();
-
-            ArrayList<EnvironmentLogic> possibilities = new ArrayList<EnvironmentLogic>(EnvironmentPersistence.getEnvironments());
-            possibilities.remove(oldenv);
-
-            EnvironmentLogic input = (EnvironmentLogic) JOptionPane.showInputDialog(
-                    this,
-                    I18n.msg("select_env_to_reassing_objects"),
-                    I18n.msg("select_env_title"),
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    possibilities.toArray(),
-                    oldenv);
-
-
-            if (input != null) {
+          if (envCombo.getSelectedItem() instanceof EnvironmentLogic) {
                 // assign objects to new environment
+                EnvironmentLogic env = (EnvironmentLogic) envCombo.getSelectedItem();
                 for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(oldenv.getPojo().getUUID())) {
-                    obj.setEnvironment(input);
+                    obj.setEnvironment(env);
                 }
-                setEnvironment(input);
+                setEnvironment(env);
             } else {
-                Collection<EnvObjectLogic> pippo = EnvObjectPersistence.getObjectByEnvironment(oldenv.getPojo().getUUID());
-                // automatically select a new environment to show and just let objects be deleted
+                // let objects be deleted and automatically select a new environment to show
                 if (EnvironmentPersistence.getEnvironments().get(0) != oldenv) {
                     setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
                 } else {
