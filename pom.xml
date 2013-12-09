@@ -163,6 +163,12 @@
     </dependencyManagement>
     
  
+    <repositories>
+        <repository>
+            <id>maven-ftp-official</id>
+            <url>ftp://maven.freedomotic.com</url>
+        </repository>
+    </repositories>
     <distributionManagement>
         <repository>
             <id>maven-ftp-official</id>
