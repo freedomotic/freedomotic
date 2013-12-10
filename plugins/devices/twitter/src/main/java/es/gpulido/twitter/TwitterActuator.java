@@ -20,7 +20,6 @@
 package es.gpulido.twitter;
 
 import es.gpulido.twitter.gateways.TwitterGateway;
-import it.freedomotic.api.Actuator;
 import it.freedomotic.api.EventTemplate;
 import it.freedomotic.api.Protocol;
 import it.freedomotic.exceptions.UnableToExecuteException;
@@ -38,6 +37,7 @@ import twitter4j.TwitterException;
  */
 public class TwitterActuator extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(TwitterActuator.class.getName());
     private Twitter twitter;
 
     public TwitterActuator() {
@@ -65,7 +65,7 @@ public class TwitterActuator extends Protocol {
     protected void onStart() {
         try {
             twitter = TwitterGateway.getInstance(configuration);
-            setDescription("Connected as "+ twitter.getScreenName());
+            setDescription("Connected as " + twitter.getScreenName());
         } catch (Exception e) {
             LOG.severe("Cannot start TwitterGateway for the followin reason:" + e.getMessage());
             stop();
@@ -90,5 +90,4 @@ public class TwitterActuator extends Protocol {
     @Override
     protected void onEvent(EventTemplate event) {
     }
-    private static final Logger LOG = Logger.getLogger(TwitterActuator.class.getName());
 }
