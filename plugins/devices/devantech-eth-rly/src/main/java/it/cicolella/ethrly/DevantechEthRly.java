@@ -1,25 +1,22 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package it.cicolella.ethrly;
 
 import it.freedomotic.api.EventTemplate;
@@ -55,6 +52,7 @@ import org.apache.commons.codec.binary.Base64;
 
 public class DevantechEthRly extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(DevantechEthRly.class.getName());
     Map<String, Board> devices = new HashMap<String, Board>();
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
@@ -118,7 +116,7 @@ public class DevantechEthRly extends Protocol {
      */
     private boolean connect(String address, int port) {
 
-        Freedomotic.logger.info("Trying to connect to Devantech Eth-Rly board on address " + address + ':' + port);
+        LOG.info("Trying to connect to Devantech Eth-Rly board on address " + address + ':' + port);
         try {
             //TimedSocket is a non-blocking socket with timeout on exception
             socket = TimedSocket.getSocket(address, port, SOCKET_TIMEOUT);
@@ -127,7 +125,7 @@ public class DevantechEthRly extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            Freedomotic.logger.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.severe("Unable to connect to host " + address + " on port " + port);
             return false;
         }
     }
@@ -204,7 +202,7 @@ public class DevantechEthRly extends Protocol {
             if (board.getHttpAuthentication().equalsIgnoreCase("true")) {
                 urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
             }
-            Freedomotic.logger.info("Devantech Eth-Rly gets relay status from file " + url);
+            LOG.info("Devantech Eth-Rly gets relay status from file " + url);
             doc = dBuilder.parse(urlConnection.getInputStream());
             doc.getDocumentElement().normalize();
         } catch (ConnectException connEx) {
@@ -214,12 +212,12 @@ public class DevantechEthRly extends Protocol {
         } catch (SAXException ex) {
             disconnect();
             this.stop();
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         } catch (Exception ex) {
             disconnect();
             this.stop();
             setDescription("Unable to connect to " + url);
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         }
         return doc;
     }
@@ -257,7 +255,7 @@ public class DevantechEthRly extends Protocol {
         relayLine++;
         //reconstruct freedomotic object address
         String address = board.getAlias() + ":" + relayLine;
-        Freedomotic.logger.info("Sending Devantech Eth-Rly protocol read event for object address '" + address + "'. It's readed status is " + status);
+        LOG.info("Sending Devantech Eth-Rly protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "devantech-eth-rly", address); //ALIAS:RELAYLINE
         if (status.equals("0")) {
@@ -294,10 +292,10 @@ public class DevantechEthRly extends Protocol {
         try {
             connected = connect(ip_board, port_board);
         } catch (ArrayIndexOutOfBoundsException outEx) {
-            Freedomotic.logger.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
+            LOG.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
             throw new UnableToExecuteException();
         } catch (NumberFormatException numberFormatException) {
-            Freedomotic.logger.severe(port_board + " is not a valid ethernet port to connect to");
+            LOG.severe(port_board + " is not a valid ethernet port to connect to");
             throw new UnableToExecuteException();
         }
         if (connected) {
@@ -310,7 +308,7 @@ public class DevantechEthRly extends Protocol {
                 }
             } catch (IOException iOException) {
                 setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);
-                Freedomotic.logger.severe("Unable to send the message to host " + ip_board + " on port " + port_board);
+                LOG.severe("Unable to send the message to host " + ip_board + " on port " + port_board);
                 System.err.println(iOException);
                 throw new UnableToExecuteException();
             } finally {
@@ -348,7 +346,7 @@ public class DevantechEthRly extends Protocol {
 
         // http request sending to the board
         message = "GET /" + page + " HTTP 1.1\r\n\r\n";
-        Freedomotic.logger.info("Sending 'GET /" + page + " HTTP 1.1' to relay board");
+        LOG.info("Sending 'GET /" + page + " HTTP 1.1' to relay board");
         return (message);
     }
 
