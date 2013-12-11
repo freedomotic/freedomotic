@@ -19,7 +19,8 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
+/* * This Program is free software; you can redistribute it and/or modify
+
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -36,7 +37,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
+import javax.imageio.ImageIO;import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+
 
 /**
  *
@@ -57,7 +60,8 @@ public final class ResourcesManager {
                 //loads image from disk searching it recursively in folder
                 img = fetchFromHDD(new File(Info.getResourcesPath()), imageName);
             } catch (IOException e) {
-                LOG.warning("No image " + imageName + " found recursively in " + new File(Info.getResourcesPath()).getPath());
+                LOG.log(Level.WARNING, "No image {0} found recursively in {1}", 
+                        new Object[]{imageName, new File(Info.getResourcesPath()).getPath()});
             }
             if (img != null) {
                 //img loaded from disk. Now it is cached resized
@@ -78,7 +82,8 @@ public final class ResourcesManager {
                 //loads image from disk searching it recursively in folder
                 img = fetchFromHDD(new File(Info.getResourcesPath()), imageName);
             } catch (IOException e) {
-                LOG.warning("No image " + imageName + " found recursively in " + new File(Info.getResourcesPath()).getPath());
+                LOG.log(Level.WARNING, "No image {0} found recursively in {1}", 
+                        new Object[]{imageName, new File(Info.getResourcesPath()).getPath()});
             }
             if (img != null) {
                 //img succesfully loaded from disk. Now it is cached

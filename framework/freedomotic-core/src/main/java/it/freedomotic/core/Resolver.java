@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -235,8 +236,9 @@ public final class Resolver {
                     }
 
                     if (js.get(key) == null) {
-                        LOG.severe("Script evaluation has returned a null value, maybe the key '"
-                                + key + "' is not evaluated properly.");
+                        LOG.log(Level.SEVERE, 
+                                "Script evaluation has returned a null value, maybe the key ''{0}'' is not evaluated properly.", 
+                                key);
                     }
 
                     aProperty.setValue(js.get(key).toString());
@@ -327,9 +329,9 @@ public final class Resolver {
                     }
 
                     if (js.get(key) == null) {
-                        LOG.severe("Script evaluation in trigger '" + trigger.getName()
-                                + "' has returned a null value, maybe the key '" + key
-                                + "' is not evaluated properly.");
+                        LOG.log(Level.SEVERE, 
+                                "Script evaluation in trigger ''{0}'' has returned a null value, maybe the key ''{1}'' is not evaluated properly.", 
+                                new Object[]{trigger.getName(), key});
                     }
 
                     statement.setValue(js.get(key).toString());

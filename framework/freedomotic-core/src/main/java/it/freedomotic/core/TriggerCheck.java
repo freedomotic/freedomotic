@@ -165,14 +165,14 @@ public final class TriggerCheck {
                 done = true;
 
                 long elapsedTime = System.currentTimeMillis() - event.getCreation();
-                LOG.info("Sensor notification '" + resolved.getName() + "' applied to object '"
-                        + object.getPojo().getName() + "' in " + elapsedTime + "ms.");
+                LOG.log(Level.INFO, 
+                        "Sensor notification ''{0}'' applied to object ''{1}'' in {2}ms.", 
+                        new Object[]{resolved.getName(), object.getPojo().getName(), elapsedTime});
             }
         }
 
         if (!done) {
-            LOG.warning("Hardware trigger " + resolved.getName()
-                    + " is not associated to any object.");
+            LOG.log(Level.WARNING, "Hardware trigger {0} is not associated to any object.", resolved.getName());
         }
     }
 
@@ -193,12 +193,13 @@ public final class TriggerCheck {
                     //found a related reaction. This must be executed
                     if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {
                         if (!checkAdditionalConditions(reaction)) {
-                            LOG.info("Additional conditions test failed in reaction " + reaction.toString());
+                            LOG.log(Level.INFO, 
+                                    "Additional conditions test failed in reaction {0}", reaction.toString());
                             return;
                         }
                         reactionTrigger.setExecuted();
                         found = true;
-                        LOG.fine("Try to execute reaction " + reaction.toString());
+                        LOG.log(Level.FINE, "Try to execute reaction {0}", reaction.toString());
 
                         try {
                             //executes the commands in sequence (only the first sequence is used) 
@@ -238,15 +239,14 @@ public final class TriggerCheck {
                                     Command reply = busService.send(resolvedCommand); //blocking wait until executed
 
                                     if (reply == null) {
-                                        LOG.warning("Unreceived reply within given time ("
-                                                + command.getReplyTimeout()
-                                                + "ms) for command " + command.getName());
+                                        LOG.log(Level.WARNING, 
+                                                "Unreceived reply within given time ({0}ms) for command {1}", 
+                                                new Object[]{command.getReplyTimeout(), command.getName()});
                                     } else {
                                         if (reply.isExecuted()) {
-                                            LOG.fine("Executed succesfully " + command.getName());
+                                            LOG.log(Level.FINE, "Executed succesfully {0}", command.getName());
                                         } else {
-                                            LOG.warning("Unable to execute command"
-                                                    + command.getName());
+                                            LOG.log(Level.WARNING, "Unable to execute command{0}", command.getName());
                                         }
                                     }
                                 }
@@ -270,7 +270,7 @@ public final class TriggerCheck {
                 }
 
                 if (!found) {
-                    LOG.config("No valid reaction bound to trigger '" + trigger.getName() + "'");
+                    LOG.log(Level.CONFIG, "No valid reaction bound to trigger ''{0}''", trigger.getName());
                 }
             }
 

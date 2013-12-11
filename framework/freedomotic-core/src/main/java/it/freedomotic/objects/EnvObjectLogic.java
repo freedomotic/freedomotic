@@ -96,15 +96,16 @@ public class EnvObjectLogic {
             if (commandToSearch != null) {
                 return commandToSearch;
             } else {
-                LOG.severe("Doesn't exists a valid hardware command associated to action '" + action
-                        + "' of object '" + pojo.getName() + "'. \n"
-                        + "This are the available mappings between action -> command for object '"
-                        + pojo.getName() + "': " + commandsMapping.toString());
+                LOG.log(Level.SEVERE,"Doesn''t exists a valid hardware command associated to action ''{0}'' of object ''{1}" 
+                        + "''. \n" 
+                        + "This are the available mappings between action -> command for object ''{2}'': {3}", 
+                        new Object[]{action, pojo.getName(), pojo.getName(), commandsMapping.toString()});
 
                 return null;
             }
         } else {
-            LOG.severe("The action '" + action + "' is not valid in object '" + pojo.getName() + "'");
+            LOG.log(Level.SEVERE, "The action ''{0}'' is not valid in object ''{1}''", 
+                    new Object[]{action, pojo.getName()});
 
             return null;
         }
@@ -136,7 +137,7 @@ public class EnvObjectLogic {
     public final void rename(String newName) {
         String oldName = this.getPojo().getName();
         newName = newName.trim();
-        LOG.warning("Renaming object '" + oldName + "' in '" + newName + "'");
+        LOG.log(Level.WARNING, "Renaming object ''{0}'' in ''{1}''", new Object[]{oldName, newName});
         //change the object name
         this.getPojo().setName(newName);
 
@@ -185,8 +186,8 @@ public class EnvObjectLogic {
 
         pojo.getTriggers().setProperty(trigger.getName(),
                 behaviorName);
-        LOG.config("Trigger mapping in object " + this.getPojo().getName() + ": behavior '"
-                + behaviorName + "' is now associated to trigger named '" + trigger.getName() + "'");
+        LOG.log(Level.CONFIG, "Trigger mapping in object {0}: behavior ''{1}'' is now associated to trigger named ''{2}''", 
+                new Object[]{this.getPojo().getName(), behaviorName, trigger.getName()});
     }
 
     @RequiresPermissions("objects:read")
@@ -201,8 +202,8 @@ public class EnvObjectLogic {
 
             ObjectHasChangedBehavior objectEvent = new ObjectHasChangedBehavior(this, this);
             //send multicast because an event must be received by all triggers registred on the destination channel
-            LOG.config("Object " + this.getPojo().getName()
-                    + " changes something in its status (eg: a behavior value)");
+            LOG.log(Level.CONFIG, "Object {0} changes something in its status (eg: a behavior value)", 
+                    this.getPojo().getName());
             busService.send(objectEvent);
         } else {
             changed = false;
@@ -359,8 +360,8 @@ public class EnvObjectLogic {
                     //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
                     //add to the zones this object belongs
                     zone.getPojo().getObjects().add(this.getPojo());
-                    LOG.config("Object " + getPojo().getName() + " is in zone "
-                            + zone.getPojo().getName());
+                    LOG.log(Level.CONFIG, "Object {0} is in zone {1}", 
+                            new Object[]{getPojo().getName(), zone.getPojo().getName()});
                 } else {
                     //DEBUG: System.out.println("object " + getPojo().getName() + " NOT intersects zone " + zone.getPojo().getName());
                 }
@@ -385,16 +386,16 @@ public class EnvObjectLogic {
         Statement valueStatement = t.getPayload().getStatements("behaviorValue").get(0);
 
         if (valueStatement == null) {
-            LOG.warning("No value in hardware trigger '" + t.getName()
-                    + "' to apply to object action '" + behavior + "' of object "
-                    + getPojo().getName());
+            LOG.log(Level.WARNING, 
+                    "No value in hardware trigger ''{0}'' to apply to object action ''{1}'' of object {2}", 
+                    new Object[]{t.getName(), behavior, getPojo().getName()});
 
             return false;
         }
 
-        LOG.config("Sensors notification '" + t.getName() + "' has changed '"
-                + getPojo().getName() + "' behavior '" + behavior + "' to "
-                + valueStatement.getValue());
+        LOG.log(Level.CONFIG, 
+                "Sensors notification ''{0}'' has changed ''{1}'' behavior ''{2}'' to {3}", 
+                new Object[]{t.getName(), getPojo().getName(), behavior, valueStatement.getValue()});
 
         Config params = new Config();
         params.setProperty("value",
@@ -417,12 +418,14 @@ public class EnvObjectLogic {
      */
     @RequiresPermissions("objects:read")
     protected final boolean executeCommand(final String action, final Config params) {
-        LOG.fine("Executing action '" + action + "' of object '" + getPojo().getName() + "'");
+        LOG.log(Level.FINE, "Executing action ''{0}'' of object ''{1}''", 
+                new Object[]{action, getPojo().getName()});
 
         if (getPojo().getActAs().equalsIgnoreCase("virtual")) {
             //it's a virtual object like a button, not needed real execution of a command
-            LOG.config("The object '" + getPojo().getName()
-                    + "' act as virtual device, so its hardware commands are not executed.");
+            LOG.log(Level.CONFIG, 
+                    "The object ''{0}'' act as virtual device, so its hardware commands are not executed.", 
+                    getPojo().getName());
 
             return true;
         }
@@ -430,8 +433,9 @@ public class EnvObjectLogic {
         final Command command = getHardwareCommand(action.trim());
 
         if (command == null) {
-            LOG.warning("The hardware level command for action '" + action + "' in object '"
-                    + pojo.getName() + "' doesn't exists or is not setted");
+            LOG.log(Level.WARNING, 
+                    "The hardware level command for action ''{0}'' in object ''{1}'' doesn''t exists or is not setted", 
+                    new Object[]{action, pojo.getName()});
 
             return false; //command not executed
         }
@@ -439,8 +443,9 @@ public class EnvObjectLogic {
         //resolves developer level command parameters like myObjectName = "@event.object.name" -> myObjectName = "Light 1"
         //in this case the parameter in the userLevelCommand are used as basis for the resolution process (the context)
         //along with the parameters getted from the relative behavior (if exists)
-        LOG.fine("Environment object '" + pojo.getName() + "' tries to '" + action
-                + "' itself using hardware command '" + command.getName() + "'");
+        LOG.log(Level.FINE, 
+                "Environment object ''{0}'' tries to ''{1}'' itself using hardware command ''{2}''", 
+                new Object[]{pojo.getName(), action, command.getName()});
 
         Resolver resolver = new Resolver();
         //adding a resolution context for object that owns this hardware level command. 'owner.' is the prefix of this context
@@ -492,14 +497,14 @@ public class EnvObjectLogic {
         if (!t.isHardwareLevel()) {
             if (t.getName().contains(oldName)) {
                 t.setName(t.getName().replace(oldName, newName));
-                LOG.warning("trigger name renamed to " + t.getName());
+                LOG.log(Level.WARNING, "trigger name renamed to {0}", t.getName());
             }
             Iterator<Statement> it = t.getPayload().iterator();
             while (it.hasNext()) {
                 Statement statement = it.next();
                 if (statement.getValue().contains(oldName)) {
                     statement.setValue(statement.getValue().replace(oldName, newName));
-                    LOG.warning("Trigger value in payload renamed to " + statement.getValue());
+                    LOG.log(Level.WARNING, "Trigger value in payload renamed to {0}", statement.getValue());
                 }
             }
         }
@@ -509,14 +514,14 @@ public class EnvObjectLogic {
     private void renameValuesInCommand(Command c, String oldName, String newName) {
         if (c.getName().contains(oldName)) {
             c.setName(c.getName().replace(oldName, newName));
-            LOG.warning("Command name renamed to " + c.getName());
+            LOG.log(Level.WARNING, "Command name renamed to {0}", c.getName());
         }
 
         if (c.getProperty("object") != null) {
             if (c.getProperty("object").contains(oldName)) {
                 c.setProperty("object",
                         c.getProperty("object").replace(oldName, newName));
-                LOG.warning("Property 'object' in command renamed to " + c.getProperty("object"));
+                LOG.log(Level.WARNING, "Property ''object'' in command renamed to {0}", c.getProperty("object"));
             }
         }
     }
@@ -531,13 +536,14 @@ public class EnvObjectLogic {
             Command command = CommandPersistence.getHardwareCommand(commandName);
 
             if (command != null) {
-                LOG.config("Caching the command '" + command.getName() + "' as related to action '"
-                        + action + "' ");
+                LOG.log(Level.CONFIG, 
+                        "Caching the command ''{0}'' as related to action ''{1}'' ", 
+                        new Object[]{command.getName(), action});
                 setAction(action, command);
             } else {
-                LOG.config("Don't exist a command called '" + commandName
-                        + "' is not possible to bound this command to action '" + action + "' of "
-                        + this.getPojo().getName());
+                LOG.log(Level.CONFIG, 
+                        "Don''t exist a command called ''{0}'' is not possible to bound this command to action ''{1}'' of {2}", 
+                        new Object[]{commandName, action, this.getPojo().getName()});
             }
         }
     }
