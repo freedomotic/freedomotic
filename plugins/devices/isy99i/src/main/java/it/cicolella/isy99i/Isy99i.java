@@ -36,6 +36,7 @@ import it.freedomotic.persistence.EnvObjectPersistence;
 import it.freedomotic.reactions.Command;
 import java.io.*;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 /**
  * A sensor for the gateway Isy99i developed by www.universal-devices.com author
@@ -43,6 +44,7 @@ import java.net.Socket;
  */
 public class Isy99i extends Protocol {
 
+    public static final Logger LOG = Logger.getLogger(Isy99i.class.getName());
     public static AuxClass aux = null;
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
@@ -74,19 +76,19 @@ public class Isy99i extends Protocol {
 
     protected UDNode getNode(String address) {
         if (address == null) {
-            Freedomotic.logger.severe("Missing Device/Scene address");
+            LOG.severe("Missing Device/Scene address");
             Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": Missing Device/Scene address");
             return null;
         }
         try {
             UDNode node = myISY.getNodes().get(address);
             if (node == null) {
-                Freedomotic.logger.severe("Address points to a non existing Insteon Device");
+                LOG.severe("Address points to a non existing Insteon Device");
                 return null;
             }
             return node;
         } catch (NoDeviceException e) {
-            Freedomotic.logger.severe("NoDeviceException " + e);
+            LOG.severe("NoDeviceException " + e);
             Isy99iFrame.writeAreaLog(Isy99iUtilities.getDateTime() + ": NoDeviceException " + e);
             return null;
         }
@@ -100,7 +102,7 @@ public class Isy99i extends Protocol {
             return;
         }
         String status = (String) myISY.getISY().getCurrValue(node, InsteonConstants.DEVICE_STATUS);
-        Freedomotic.logger.severe("The current status for " + node.address + "/" + node.name + " is " + status);
+        LOG.severe("The current status for " + node.address + "/" + node.name + " is " + status);
     }
 
     /**
@@ -164,7 +166,7 @@ public class Isy99i extends Protocol {
 
         //try {
         myISY.getISY().changeNodeState(control, action, address);
-        Freedomotic.logger.severe("Sending changeNodeState(" + control + "," + action + "," + address + ")");
+        LOG.severe("Sending changeNodeState(" + control + "," + action + "," + address + ")");
 
         /*
          * try { connected = connect(address[0], Integer.parseInt(address[1]));
