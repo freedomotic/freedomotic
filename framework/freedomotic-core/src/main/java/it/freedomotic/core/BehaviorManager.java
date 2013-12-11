@@ -210,30 +210,25 @@ public final class BehaviorManager
             // if this behavior exists in object obj
             if (behavior != null) {
 
-                LOG.config("User level command '" + userLevelCommand.getName()
-                        + "' request changing behavior " + behavior.getName()
-                        + " of object '" + obj.getPojo().getName()
-                        + "' from value '" + behavior.getValueAsString()
-                        + "' to value '" + userLevelCommand.getProperties().getProperty("value")
-                        + "'");
+                LOG.log(Level.CONFIG, 
+                        "User level command ''{0}'' request changing behavior {1} of object ''{2}'' "
+                        + "from value ''{3}'' to value ''{4}''", 
+                        new Object[]{userLevelCommand.getName(), behavior.getName(), obj.getPojo().getName(), behavior.getValueAsString(), userLevelCommand.getProperties().getProperty("value")});
 
                 // true means a command must be fired
                 behavior.filterParams(userLevelCommand.getProperties(), true);
 
             } else {
-                LOG.warning("Behavior '"
-                        + behaviorName
-                        + "' is not a valid behavior for object '"
-                        + obj.getPojo().getName()
-                        + "'. Please check 'behavior' parameter spelling in command "
-                        + userLevelCommand.getName());
+                LOG.log(Level.WARNING, 
+                        "Behavior ''{0}'' is not a valid behavior for object ''{1}''. "
+                        + "Please check ''behavior'' parameter spelling in command {2}", 
+                        new Object[]{behaviorName, obj.getPojo().getName(), userLevelCommand.getName()});
             }
         } else {
-            LOG.warning("Object '"
-                    + userLevelCommand.getProperty(Command.PROPERTY_OBJECT)
-                    + "' don't exist in this environment. "
-                    + "Please check 'object' parameter spelling in command "
-                    + userLevelCommand.getName());
+            LOG.log(Level.WARNING,"Object ''{0}"
+                    + "'' don''t exist in this environment. "
+                    + "Please check ''object'' parameter spelling in command {1}", 
+                    new Object[]{userLevelCommand.getProperty(Command.PROPERTY_OBJECT), userLevelCommand.getName()});
         }
     }
 
