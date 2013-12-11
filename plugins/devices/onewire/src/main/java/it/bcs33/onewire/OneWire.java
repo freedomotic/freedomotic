@@ -50,7 +50,7 @@ import org.w3c.dom.DOMException;
 
 public class OneWire extends Protocol {
     //private static devices;
-
+    private static final Logger LOG = Logger.getLogger(OneWire.class.getName());
     private static ArrayList<PortAdapter> portAdapters = null;
     //private static DSPortAdapter[] dsDevice;
     private static PortAdapter portAdattatore = null;
@@ -161,7 +161,7 @@ public class OneWire extends Protocol {
      */
     private void disconnect() {
         // close streams and socket
-        Freedomotic.logger.info("OnwWire disconnect");
+        LOG.info("OnwWire disconnect");
 
     }
 
@@ -198,7 +198,7 @@ public class OneWire extends Protocol {
 
                 double value;
                 if (portAdapter != null) {
-                    Freedomotic.logger.info("OneWire onRun() logs this message every "
+                    LOG.info("OneWire onRun() logs this message every "
                             + "POLLINGWAIT=" + "milliseconds");
 
                     if (portAdapter.checkDeviceListAndEvaluateDiffs() == true) { // temp device is changed
@@ -240,7 +240,7 @@ public class OneWire extends Protocol {
 
     private void evaluateDiffs(PortAdapter portAdapter) {
         if (portAdapter != null) {
-            Freedomotic.logger.info("OneWire onRun() logs this message every "
+            LOG.info("OneWire onRun() logs this message every "
                     + "POLLINGWAIT=" + POLLING_WAIT + "milliseconds");
             //boolean statusDigitalInput;
             //int statusAnalogInput;
@@ -299,7 +299,7 @@ public class OneWire extends Protocol {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        Freedomotic.logger.info("onewire plugin receives a command called " + c.getName()
+        LOG.info("onewire plugin receives a command called " + c.getName()
                 + " with parameters " + c.getProperties().toString());
 
     }
