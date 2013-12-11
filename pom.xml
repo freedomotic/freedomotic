@@ -117,11 +117,12 @@
                                                 <prefix>/var/lib/freedomotic</prefix>
                                                 <user>freedomotic</user>
                                                 <group>freedomotic</group>
-                                                <filemode>775</filemode>
+                                                <filemode>664</filemode>
+                                                <dirmode>775</dirmode>
                                             </mapper>
                                         </data>
                                         <data>
-                                            <src>plugins</src>
+                                            <src>framework/freedomotic-core/plugins</src>
                                             <type>directory</type>
                                             <excludes>**/*~</excludes>
                                             <mapper>
@@ -129,21 +130,23 @@
                                                 <prefix>/usr/share/freedomotic/plugins</prefix>
                                                 <user>freedomotic</user>
                                                 <group>freedomotic</group>
-                                                <filemode>775</filemode>
+                                                <filemode>664</filemode>
+                                                <dirmode>775</dirmode>
                                             </mapper>
                                         </data>
                                         <data>
-                                            <src>target/${project.artifactId}/lib</src>
+                                            <src>framework/freedomotic-core/target/freedomotic-core/lib</src>
                                             <type>directory</type>
                                             <mapper>
                                                 <type>perm</type>
                                                 <prefix>/usr/share/freedomotic/lib</prefix>
                                                 <user>freedomotic</user>
                                                 <group>freedomotic</group>
+                                                <filemode>664</filemode>
                                             </mapper>
                                         </data>
                                         <data>
-                                            <src>config</src>
+                                            <src>framework/freedomotic-core/config</src>
                                             <type>directory</type>
                                             <excludes>**/*~,serial/**</excludes>
                                             <mapper>
@@ -155,7 +158,7 @@
                                             </mapper>
                                         </data>
                                         <data>
-                                            <src>i18n</src>
+                                            <src>framework/freedomotic-core/i18n</src>
                                             <type>directory</type>
                                             <excludes>**/*~</excludes>
                                             <mapper>
@@ -163,16 +166,18 @@
                                                 <prefix>/usr/share/freedomotic/i18n</prefix>
                                                 <user>freedomotic</user>
                                                 <group>freedomotic</group>
+                                                <filemode>664</filemode>
                                             </mapper>
                                         </data>
                                         <data>
-                                            <src>target/${project.artifactId}/freedomotic.jar</src>
+                                            <src>framework/freedomotic-core/target/freedomotic-core/freedomotic.jar</src>
                                             <type>file</type>
                                             <mapper>
                                                 <type>perm</type>
                                                 <prefix>/usr/share/freedomotic</prefix>
                                                 <user>freedomotic</user>
                                                 <group>freedomotic</group>
+                                                <filemode>664</filemode>
                                             </mapper>
                                         </data>
                                         <data>
@@ -233,7 +238,7 @@
                                             </mapper>
                                         </data>
                                         <data>
-                                            <src>${freedomotic.basedir}/scripts/debian/changelog</src>
+                                            <src>${freedomotic.basedir}/scripts/debian/changelog.gz</src>
                                             <type>file</type>
                                             <mapper>
                                                 <type>perm</type>
