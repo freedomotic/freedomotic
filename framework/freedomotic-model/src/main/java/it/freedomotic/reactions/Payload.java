@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 /*
@@ -41,8 +39,7 @@ public final class Payload
         implements Serializable {
 
     private static final long serialVersionUID = -5799483105084939108L;
-	
-	List<Statement> payload = new CopyOnWriteArrayList<Statement>();
+    List<Statement> payload = new CopyOnWriteArrayList<Statement>();
 
     public void addStatement(String logical, String attribute, String operand, String value)
             throws NullPointerException {
@@ -83,16 +80,23 @@ public final class Payload
             while (it.hasNext()) {
                 Statement triggerStatement = (Statement) it.next();
 
-                if (triggerStatement.value.equalsIgnoreCase(Statement.ANY)) {
-                    //check if the property exists in the event
-                    List<Statement> statements = eventPayload.getStatements(triggerStatement.attribute);
+                //check if the property exists in the event
+                List<Statement> statements = eventPayload.getStatements(triggerStatement.attribute);
 
-                    if (statements.isEmpty()) {
+                if (statements.isEmpty()) {
+                    
+                    if (triggerStatement.value.equalsIgnoreCase(Statement.ANY)) {
                         return false;
                     }
+                    
+                    if(triggerStatement.getLogical().equalsIgnoreCase("AND")) {
+                        payloadConsistence=payloadConsistence && false;
+                    } else if(triggerStatement.getLogical().equalsIgnoreCase("OR")) {
+                        payloadConsistence=payloadConsistence || false;
+                    } 
                 }
 
-                for (Statement eventStatement : eventPayload.getStatements(triggerStatement.attribute)) {
+                for (Statement eventStatement : statements) {
                     /*
                      * TODO: waring, supports only operand equal in event
                      * compared to equal, morethen, lessthen in triggers.
