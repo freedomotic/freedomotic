@@ -15,8 +15,6 @@ import com.google.inject.Inject;
 import it.freedomotic.api.Client;
 import it.freedomotic.api.Plugin;
 
-import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.plugins.ClientStorage;
 
 import it.freedomotic.reactions.Command;
@@ -27,6 +25,7 @@ import it.freedomotic.util.I18n.I18n;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
@@ -39,7 +38,7 @@ import javax.swing.table.DefaultTableModel;
 public class CustomizeCommand
         extends javax.swing.JFrame {
 
-    ReactionList main;
+    //ReactionList main;
     Command original;
     DefaultTableModel model = new DefaultTableModel();
     JTable table;
@@ -50,10 +49,9 @@ public class CustomizeCommand
     /**
      * Creates new form CustomizeEvent
      */
-    public CustomizeCommand(I18n i18n, ReactionList main, Command original) {
+    public CustomizeCommand(I18n i18n, Command original) {
         this.I18n = i18n;
         initComponents();
-        this.main = main;
         this.original = original;
         txtName.setText(original.getName());
         txtDescription.setText(original.getDescription());
@@ -306,12 +304,12 @@ public class CustomizeCommand
         int postSize = CommandPersistence.size();
 
         if (preSize < postSize) {
-            Freedomotic.logger.info("Command addedd correctly [" + postSize + " commands]");
+            LOG.info("Command addedd correctly [" + postSize + " commands]");
         } else {
-            Freedomotic.logger.severe("Error while adding a command");
+            LOG.severe("Error while adding a command");
         }
 
-        main.setTargetCommand(c);
+//        main.setTargetCommand(c);
         this.dispose();
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -333,19 +331,19 @@ public class CustomizeCommand
         int postSize = CommandPersistence.size();
 
         if (preSize == postSize) {
-            Freedomotic.logger.info("Command edited correctly [" + postSize + " commands]");
+            LOG.info("Command edited correctly [" + postSize + " commands]");
         } else {
-            Freedomotic.logger.severe("Error while edit a command");
+            LOG.severe("Error while edit a command");
         }
 
-        main.setTargetCommand(newCommand);
+//        main.setTargetCommand(newCommand);
         this.dispose();
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnDeleteActionPerformed
-        Freedomotic.logger.info("Trying to remove a commend from the list");
+       LOG.info("Trying to remove a commend from the list");
         CommandPersistence.remove(original);
-        main.updateData();
+//        main.updateData();
         this.dispose();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -370,4 +368,5 @@ public class CustomizeCommand
     private javax.swing.JLabel txtReceiver;
 
     // End of variables declaration//GEN-END:variables
+ private final static Logger LOG = Logger.getLogger(CustomizeCommand.class.getName());
 }

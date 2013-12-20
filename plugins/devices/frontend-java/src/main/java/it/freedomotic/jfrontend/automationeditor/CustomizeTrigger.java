@@ -10,8 +10,6 @@
  */
 package it.freedomotic.jfrontend.automationeditor;
 
-import it.freedomotic.app.Freedomotic;
-
 import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Statement;
 import it.freedomotic.reactions.Trigger;
@@ -22,9 +20,11 @@ import it.freedomotic.util.I18n.I18n;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
@@ -33,7 +33,6 @@ import javax.swing.table.DefaultTableModel;
 public class CustomizeTrigger
         extends javax.swing.JFrame {
 
-    ReactionList main;
     Trigger original;
     DefaultTableModel model = new DefaultTableModel();
     JTable table;
@@ -42,10 +41,9 @@ public class CustomizeTrigger
     /**
      * Creates new form CustomizeEvent
      */
-    public CustomizeTrigger(I18n i18n, ReactionList main, Trigger t) {
-        this.I18n = i18n;
-        initComponents();
-        this.main = main;
+    CustomizeTrigger(I18n i18n, Trigger t) {
+         this.I18n = i18n;
+        initComponents();        
         original = t;
         this.setTitle(I18n.msg(
                 "trigger_X_editor",
@@ -365,25 +363,22 @@ public class CustomizeTrigger
         int postSize = TriggerPersistence.size();
 
         if (preSize < postSize) {
-            Freedomotic.logger.info("Trigger added correctly [" + postSize + " triggers]");
+            LOG.info("Trigger added correctly [" + postSize + " triggers]");
         } else {
-            Freedomotic.logger.warning("Error while addind a trigger in trigger editor");
+            LOG.warning("Error while addind a trigger in trigger editor");
         }
 
         //to be sure it can be saved on hard drive
-        main.setTargetTrigger(trigger);
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnEditActionPerformed
         save(original); //save changes over original trigger
-        main.setTargetTrigger(original);
         this.dispose();
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnDeleteActionPerformed
         System.out.println("Trying to remove a trigger from the list");
         TriggerPersistence.remove(original);
-        main.updateData();
         this.dispose();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -452,4 +447,5 @@ public class CustomizeTrigger
 
         return "";
     }
+    private final static Logger LOG = Logger.getLogger(CustomizeTrigger.class.getName());
 }

@@ -40,14 +40,14 @@ public class AutomationsEditor
             throws IOException, UnableToExecuteException {
         if (c.getProperty("editor").equalsIgnoreCase("command")) {
             Command command = CommandPersistence.getCommand(c.getProperty("editable"));
-            ReactionList reactionList = new ReactionList(this);
-            CustomizeCommand cc = new CustomizeCommand(getApi().getI18n(), reactionList, command);
+//            ReactionList reactionList = new ReactionList(this);
+            CustomizeCommand cc = new CustomizeCommand(getApi().getI18n(), command);
             cc.setVisible(true);
         } else {
             if (c.getProperty("editor").equalsIgnoreCase("trigger")) {
                 Trigger trigger = TriggerPersistence.getTrigger(c.getProperty("editable"));
-                ReactionList reactionList = new ReactionList(this);
-                CustomizeTrigger ct = new CustomizeTrigger(getApi().getI18n(), reactionList, trigger);
+                //ReactionList reactionList = new ReactionList(this);
+                CustomizeTrigger ct = new CustomizeTrigger(getApi().getI18n(), trigger);
                 ct.setVisible(true);
             }
         }
