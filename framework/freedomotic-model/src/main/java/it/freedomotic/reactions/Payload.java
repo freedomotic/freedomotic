@@ -74,29 +74,14 @@ public final class Payload
         if (obj instanceof Payload) {
             Payload eventPayload = (Payload) obj;
             Iterator<Statement> it = payload.iterator();
-            final boolean precedingCheckResult = true;
 
             //check all statement for consistency
             while (it.hasNext()) {
-                Statement triggerStatement = (Statement) it.next();
+                Statement triggerStatement = it.next();
 
-                //check if the property exists in the event
-                List<Statement> statements = eventPayload.getStatements(triggerStatement.attribute);
+                List<Statement> filteredEventStatements = eventPayload.getStatements(triggerStatement.attribute);
 
-                if (statements.isEmpty()) {
-                    
-                    if (triggerStatement.value.equalsIgnoreCase(Statement.ANY)) {
-                        return false;
-                    }
-                    
-                    if(triggerStatement.getLogical().equalsIgnoreCase("AND")) {
-                        payloadConsistence=payloadConsistence && false;
-                    } else if(triggerStatement.getLogical().equalsIgnoreCase("OR")) {
-                        payloadConsistence=payloadConsistence || false;
-                    } 
-                }
-
-                for (Statement eventStatement : statements) {
+                for (Statement eventStatement : filteredEventStatements) {
                     /*
                      * TODO: waring, supports only operand equal in event
                      * compared to equal, morethen, lessthen in triggers.
