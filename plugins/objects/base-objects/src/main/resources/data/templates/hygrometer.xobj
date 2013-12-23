@@ -2,7 +2,7 @@
   <name>Hygrometer</name>
   <description>Collects humidity events</description>
   <actAs>unimplemented</actAs>
-  <type>EnvObject.GenericSensor</type>
+  <type>EnvObject.GenericSensor.Hygrometer</type>
   <hierarchy>it.freedomotic.objects.impl.GenericSensor</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>

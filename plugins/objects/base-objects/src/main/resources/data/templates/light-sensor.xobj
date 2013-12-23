@@ -2,7 +2,7 @@
   <name>Light Sensor</name>
   <description>Collects light events</description>
   <actAs>unimplemented</actAs>
-  <type>EnvObject.GenericSensor</type>
+  <type>EnvObject.GenericSensor.LightSensor</type>
   <hierarchy>it.freedomotic.objects.impl.GenericSensor</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
