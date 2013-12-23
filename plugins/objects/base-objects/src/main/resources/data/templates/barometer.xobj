@@ -2,7 +2,7 @@
   <name>Barometer</name>
   <description>Collects pressure events</description>
   <actAs>unimplemented</actAs>
-  <type>EnvObject.GenericSensor</type>
+  <type>EnvObject.GenericSensor.Barometer</type>
   <hierarchy>it.freedomotic.objects.impl.GenericSensor</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
