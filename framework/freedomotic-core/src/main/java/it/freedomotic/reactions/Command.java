@@ -38,21 +38,14 @@
 package it.freedomotic.reactions;
 
 import it.freedomotic.model.ds.Config;
-import it.freedomotic.model.object.EnvObject;
-import it.freedomotic.objects.BehaviorLogic;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.EnvObjectPersistence;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -246,6 +239,11 @@ public final class Command implements Serializable, Cloneable {
         return executed;
     }
 
+    /**
+     * Two commands are considered equals if they have the same name
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
