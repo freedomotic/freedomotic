@@ -1,0 +1,13 @@
+<config>
+    <properties>
+        <property name="name" value="wifi_id"/>
+        <property name="description" value="Detects Wifi device presence"/>
+	<property name="protocol.name"  value="wifi_id"/>
+        <property name="category" value="protocol"/>
+        <property name="short-name" value="wifi_id"/> 
+	<property name="polling_rate" value="2000"/> 
+	<property name="url" value="http://192.168.0.1/userRpm/AssignedIpAddrListRpm.htm"/> 
+	<property name="url_username" value="admin"/> 
+	<property name="url_password" value="admin"/> 
+    </properties>
+</config>
