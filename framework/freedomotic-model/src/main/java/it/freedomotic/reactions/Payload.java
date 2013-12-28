@@ -80,7 +80,20 @@ public final class Payload
                 Statement triggerStatement = it.next();
 
                 List<Statement> filteredEventStatements = eventPayload.getStatements(triggerStatement.attribute);
-
+                
+                if (filteredEventStatements.isEmpty()) {
+                    // no statement present into event, corresponding filtered trigger statement
+                    if(triggerStatement.value.equalsIgnoreCase(Statement.ANY)) {
+                        // if trigger value = ANY, we expectected at least one matching statement, so test fails.
+                        if (triggerStatement.getLogical().equalsIgnoreCase(Statement.AND)) {
+                                payloadConsistence = false ; // that is = payloadConsistence && false;
+                            } else {
+                                if (triggerStatement.getLogical().equalsIgnoreCase(Statement.OR)) {
+                                    payloadConsistence = payloadConsistence || false;
+                                }
+                            }
+                    }
+                } else {
                 for (Statement eventStatement : filteredEventStatements) {
                     /*
                      * TODO: waring, supports only operand equal in event
@@ -96,16 +109,17 @@ public final class Payload
                                     isStatementConsistent(triggerStatement.operand, triggerStatement.value,
                                     eventStatement.value);
 
-                            if (triggerStatement.getLogical().equalsIgnoreCase("AND")) {
+                            if (triggerStatement.getLogical().equalsIgnoreCase(Statement.AND)) {
                                 payloadConsistence = payloadConsistence && isStatementConsistent; //true AND true; false AND true; false AND false; true AND false
                             } else {
-                                if (triggerStatement.getLogical().equalsIgnoreCase("OR")) {
+                                if (triggerStatement.getLogical().equalsIgnoreCase(Statement.OR)) {
                                     payloadConsistence = payloadConsistence || isStatementConsistent;
                                 }
                             }
                         }
                     }
                 }
+        }
             }
         } else {
             payloadConsistence = false;
