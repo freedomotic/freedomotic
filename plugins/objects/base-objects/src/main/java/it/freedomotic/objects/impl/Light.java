@@ -45,8 +45,8 @@ public class Light
     private RangedIntBehaviorLogic brightness;
     protected final static String BEHAVIOR_BRIGHTNESS = "brightness";
 
-    @Inject
-    private I18n I18n;
+    //@Inject
+   // private I18n I18n;
 
     @Override
     public void init() {
@@ -119,7 +119,8 @@ public class Light
         super.createCommands();
 
         Command a = new Command();
-        a.setName(I18n.msg("set_X_brightness_to_50", new Object[]{this.getPojo().getName()}));
+        // a.setName(I18n.msg("set_X_brightness_to_50", new Object[]{this.getPojo().getName()}));
+        a.setName("Set " + getPojo().getName() + " brightness to 50%");
         a.setDescription("the light " + getPojo().getName() + " changes its brightness");
         a.setReceiver("app.events.sensors.behavior.request.objects");
         a.setProperty("object",
@@ -128,7 +129,8 @@ public class Light
         a.setProperty("value", "50");
 
         Command b = new Command();
-        b.setName(I18n.msg("increase_X_brightness", new Object[]{this.getPojo().getName()}));
+        // b.setName(I18n.msg("increase_X_brightness", new Object[]{this.getPojo().getName()}));
+        b.setName("Increase " + getPojo().getName() + " brightness");
         b.setDescription("increases " + getPojo().getName() + " brigthness of one step");
         b.setReceiver("app.events.sensors.behavior.request.objects");
         b.setProperty("object",
@@ -137,7 +139,8 @@ public class Light
         b.setProperty("value", Behavior.VALUE_NEXT);
 
         Command c = new Command();
-        c.setName(I18n.msg("decrease_X_brightness", new Object[]{this.getPojo().getName()}));
+        // c.setName(I18n.msg("decrease_X_brightness", new Object[]{this.getPojo().getName()}));
+        c.setName("Decrease " + getPojo().getName() + " brightness");
         c.setDescription("decreases " + getPojo().getName() + " brigthness of one step");
         c.setReceiver("app.events.sensors.behavior.request.objects");
         c.setProperty("object",
@@ -146,15 +149,18 @@ public class Light
         c.setProperty("value", Behavior.VALUE_PREVIOUS);
 
         Command d = new Command();
-        d.setName(I18n.msg("set_its_brightness_to_50"));
-        d.setDescription(I18n.msg("set_its_brightness_to_50"));
+        // d.setName(I18n.msg("set_its_brightness_to_50"));
+        d.setName("Set its brightness to 50%");
+        // d.setDescription(I18n.msg("set_its_brightness_to_50"));
+        d.setDescription("Set its brightness to 50%");
         d.setReceiver("app.events.sensors.behavior.request.objects");
         d.setProperty("object", "@event.object.name");
         d.setProperty("behavior", BEHAVIOR_BRIGHTNESS);
         d.setProperty("value", "50");
 
         Command e = new Command();
-        e.setName(I18n.msg("increase_its_brightness"));
+        // e.setName(I18n.msg("increase_its_brightness"));
+        e.setName("Increase its brightness");
         e.setDescription("increases its brigthness of one step");
         e.setReceiver("app.events.sensors.behavior.request.objects");
         e.setProperty("object", "@event.object.name");
@@ -162,7 +168,8 @@ public class Light
         e.setProperty("value", Behavior.VALUE_NEXT);
 
         Command f = new Command();
-        f.setName(I18n.msg("decrease_its_brightness"));
+        // f.setName(I18n.msg("decrease_its_brightness"));
+        f.setName("Decrease its brightness");
         f.setDescription("decreases its brigthness of one step");
         f.setReceiver("app.events.sensors.behavior.request.objects");
         f.setProperty("object", "@event.object.name");
@@ -170,7 +177,8 @@ public class Light
         f.setProperty("value", Behavior.VALUE_PREVIOUS);
 
         Command g = new Command();
-        g.setName(I18n.msg("set_brightness_from_event_value"));
+        // g.setName(I18n.msg("set_brightness_from_event_value"));
+        g.setName("Set its brightness to the value in the event");
         g.setDescription("set its brighness to the value in the event");
         g.setReceiver("app.events.sensors.behavior.request.objects");
         g.setProperty("object", "@event.object.name");
