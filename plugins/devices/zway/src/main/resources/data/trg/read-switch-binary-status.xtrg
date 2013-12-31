@@ -1,0 +1,33 @@
+<trigger>
+    <name>ZWay reads switch binary status</name>
+    <description>ZWay reads switch binary status</description>
+    <channel>app.event.sensor.protocol.read.zway</channel>
+    <payload>
+        <payload>
+            <it.freedomotic.reactions.Statement>
+                <logical>AND</logical>
+                <attribute>protocol</attribute>
+                <operand>EQUALS</operand>
+                <value>zway</value>
+            </it.freedomotic.reactions.Statement>
+            <it.freedomotic.reactions.Statement>
+                <logical>AND</logical>
+                <attribute>@event.object.type</attribute>
+                <operand>EQUALS</operand>
+                <value>switch-binary</value>
+            </it.freedomotic.reactions.Statement>
+            <it.freedomotic.reactions.Statement>
+                <logical>SET</logical>
+                <attribute>behaviorValue</attribute>
+                <operand>EQUALS</operand>
+                <value>= if(Math.round(@event.read.value) == 0)  behaviorValue=false; else behaviorValue=true;</value>
+            </it.freedomotic.reactions.Statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <priority>0</priority>
+    <maxExecutions>-1</maxExecutions>
+    <numberOfExecutions>0</numberOfExecutions>
+    <suspensionTime>0</suspensionTime>
+</trigger>

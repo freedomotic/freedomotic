@@ -1,0 +1,25 @@
+<config>
+    <properties>
+        <property name="description"    value="Communicates with the ZWay protocol"/>
+        <property name="protocol.name"  value="zway"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="zway"/>
+        <property name="address-delimiter" value=":"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="polling-time"   value="200"/>
+        <property name="send-command-url" value="ZWaveAPI/Run"/>
+
+        <property name="switch-binary" value="SwitchBinary.data.level.value"/>  
+        <property name="temperature" value="SensorMultilevel.data[1].val.value"/> 
+        <property name="luminosity" value="SensorMultilevel.data[3].val.value"/> 
+        <property name="humidity" value="SensorMultilevel.data[5].val.value"/> 
+        
+    </properties>
+    <tuples>
+        <tuple>
+            <property name="alias" value="default"/>
+            <property name="ip-to-query" value="192.168.0.130"/>
+            <property name="port-to-query" value="8083"/>
+        </tuple>
+    </tuples>
+</config>
