@@ -178,7 +178,7 @@ public abstract class Protocol
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
                 LOG.config(this.getName() + " receives command " + command.getName()
-                        + " with parametes {" + command.getProperties() + "}");
+                        + " with parametes {{" + command.getProperties() + "}}");
 
                 Protocol.ActuatorPerforms task;
                 lastDestination = message.getJMSReplyTo();

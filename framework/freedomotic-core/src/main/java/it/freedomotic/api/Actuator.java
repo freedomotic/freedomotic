@@ -148,7 +148,7 @@ public abstract class Actuator extends Plugin implements BusConsumer {
 
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
-                LOG.info(this.getName() + " receives command " + command.getName() + " with parametes {" + command.getProperties() + "}");
+                LOG.info(this.getName() + " receives command " + command.getName() + " with parametes {{" + command.getProperties() + "}}");
                 Runnable executorThread = new Runnable() {
                     @Override
                     public void run() {
