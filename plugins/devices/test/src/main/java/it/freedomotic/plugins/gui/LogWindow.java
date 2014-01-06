@@ -1,28 +1,26 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package it.freedomotic.plugins.gui;
 
 import it.freedomotic.util.I18n.I18n;
+import it.freedomotic.util.LogFormatter;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -38,7 +36,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 public class LogWindow extends JFrame {
-    
+
     int MAX_TABLE_ROWS = 100;
     DefaultTableModel model = new DefaultTableModel();
     String[] levels = {
@@ -74,12 +72,14 @@ public class LogWindow extends JFrame {
         ListSelectionModel selectionModel = table.getSelectionModel();
         selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectionModel.addListSelectionListener(new ListSelectionListener() {
+            @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     if (table.getSelectedRow() != -1) {
-                        areaDetail.setText("<html>"
-                                + table.getValueAt(table.getSelectedRow(), 1).toString()
-                                + "</html>");
+                        String text = table.getValueAt(table.getSelectedRow(), 1).toString();
+                        if (text != null && !text.isEmpty()) {
+                            areaDetail.setText("<html>" + LogFormatter.formatTextToHTML(text) + "</html>");
+                        }
                     }
                 }
             }
@@ -87,11 +87,12 @@ public class LogWindow extends JFrame {
         setColumnWidth(table.getColumnModel().getColumn(0), 70);
         cmbLevel.setSelectedItem("ALL");
         cmbLevel.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 handler.setLevel(Level.parse(cmbLevel.getSelectedItem().toString()));
             }
         });
-        add(new JLabel(I18n.msg("log_level") +": "), BorderLayout.NORTH);
+        add(new JLabel(I18n.msg("log_level") + ": "), BorderLayout.NORTH);
         cmbLevel.setEditable(false);
         add(cmbLevel, BorderLayout.NORTH);
         //add(btnStop, BorderLayout.PAGE_START);
@@ -120,6 +121,7 @@ public class LogWindow extends JFrame {
 
     class CustomRenderer extends DefaultTableCellRenderer {
 
+        @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             return c;

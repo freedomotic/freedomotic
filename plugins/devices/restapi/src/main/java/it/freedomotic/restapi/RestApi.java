@@ -59,6 +59,9 @@ public class RestApi extends it.freedomotic.api.Protocol {
     public RestApi() {
         super("RestApi", "/restapi/restapi-manifest.xml");
         setPollingWait(-1);
+	//Avoid The reset of the logging.
+	//see Issue Core-132 http://freedomotic.myjetbrains.com/youtrack/issue/Core-132
+	System.setProperty("java.util.logging.config.file", "none");
     }
     
     /**

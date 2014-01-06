@@ -80,46 +80,46 @@ public final class Payload
                 Statement triggerStatement = it.next();
 
                 List<Statement> filteredEventStatements = eventPayload.getStatements(triggerStatement.attribute);
-                
+
                 if (filteredEventStatements.isEmpty()) {
                     // no statement present into event, corresponding filtered trigger statement
-                    if(triggerStatement.value.equalsIgnoreCase(Statement.ANY)) {
+                    if (triggerStatement.value.equalsIgnoreCase(Statement.ANY)) {
                         // if trigger value = ANY, we expectected at least one matching statement, so test fails.
                         if (triggerStatement.getLogical().equalsIgnoreCase(Statement.AND)) {
-                                payloadConsistence = false ; // that is = payloadConsistence && false;
-                            } else {
-                                if (triggerStatement.getLogical().equalsIgnoreCase(Statement.OR)) {
-                                    payloadConsistence = payloadConsistence || false;
-                                }
+                            payloadConsistence = false; // that is = payloadConsistence && false;
+                        } else {
+                            if (triggerStatement.getLogical().equalsIgnoreCase(Statement.OR)) {
+                                payloadConsistence = payloadConsistence || false;
                             }
+                        }
                     }
                 } else {
-                for (Statement eventStatement : filteredEventStatements) {
-                    /*
-                     * TODO: waring, supports only operand equal in event
-                     * compared to equal, morethen, lessthen in triggers.
-                     * Refacor with a strategy pattern.
-                     */
-                    if (eventStatement != null) {
-                        //is setting a value must be not used to filter
-                        if (triggerStatement.logical.equalsIgnoreCase("SET")) {
-                            return true;
-                        } else {
-                            boolean isStatementConsistent =
-                                    isStatementConsistent(triggerStatement.operand, triggerStatement.value,
-                                    eventStatement.value);
-
-                            if (triggerStatement.getLogical().equalsIgnoreCase(Statement.AND)) {
-                                payloadConsistence = payloadConsistence && isStatementConsistent; //true AND true; false AND true; false AND false; true AND false
+                    for (Statement eventStatement : filteredEventStatements) {
+                        /*
+                         * TODO: waring, supports only operand equal in event
+                         * compared to equal, morethen, lessthen in triggers.
+                         * Refacor with a strategy pattern.
+                         */
+                        if (eventStatement != null) {
+                            //is setting a value must be not used to filter
+                            if (triggerStatement.logical.equalsIgnoreCase("SET")) {
+                                return true;
                             } else {
-                                if (triggerStatement.getLogical().equalsIgnoreCase(Statement.OR)) {
-                                    payloadConsistence = payloadConsistence || isStatementConsistent;
+                                boolean isStatementConsistent
+                                        = isStatementConsistent(triggerStatement.operand, triggerStatement.value,
+                                                eventStatement.value);
+
+                                if (triggerStatement.getLogical().equalsIgnoreCase(Statement.AND)) {
+                                    payloadConsistence = payloadConsistence && isStatementConsistent; //true AND true; false AND true; false AND false; true AND false
+                                } else {
+                                    if (triggerStatement.getLogical().equalsIgnoreCase(Statement.OR)) {
+                                        payloadConsistence = payloadConsistence || isStatementConsistent;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-        }
             }
         } else {
             payloadConsistence = false;
@@ -281,11 +281,18 @@ public final class Payload
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         Iterator<Statement> it = payload.iterator();
+        buffer.append("{{");
+        boolean first = true;
         while (it.hasNext()) {
-            Statement s = (Statement) it.next();
-            buffer.append("\n").append(s.toString());
+            Statement s = it.next();
+            if (first) {
+                buffer.append(s.toString());
+                first = false;
+            } else {
+                buffer.append("; ").append(s.toString());
+            }
         }
-
+        buffer.append("}}");
         return buffer.toString();
     }
 
