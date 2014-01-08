@@ -222,9 +222,10 @@ public class ZWay extends Protocol {
         String deviceInstance = addressComponents[2];
         String objectType = addressComponents[3];
         String type[] = objectType.split(".");
+        
+        // sends an update status request .Get() method
         String path = "http://" + board.getIpAddress() + ":" + board.getPort() + "/" + SEND_COMMAND_URL + "/devices[" + deviceAddress + "].instances[" + deviceInstance + "]."
                 + configuration.getProperty(objectType) + ".Get()";
-
         URL url = new URL(path);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoOutput(true);
@@ -234,6 +235,7 @@ public class ZWay extends Protocol {
         wr.flush();
         wr.close();
 
+        // reads a sensor value
         path = "http://" + board.getIpAddress() + ":" + board.getPort() + "/" + SEND_COMMAND_URL + "/devices[" + deviceAddress + "].instances[" + deviceInstance + "]."
                 + configuration.getProperty(objectType);
         url = new URL(path);
@@ -256,7 +258,7 @@ public class ZWay extends Protocol {
         //adding some optional information to the event
         event.addProperty("read.value", String.valueOf(Float.parseFloat(readValue)));
         event.addProperty("object.type", objectType);
-        //publish the event on the messaging bus
+        //publishes the event on the messaging bus
         this.notifyEvent(event);
 
         connection.disconnect();
@@ -298,7 +300,7 @@ public class ZWay extends Protocol {
         // http request sending to the board
         message = "POST " + page + " HTTP/1.1\r\n\r\n";
         LOG.info("Sending " + message);
-        LOG.info("Unix timestamp " + getUnixTimeStamp() + "\n");
+        //LOG.info("Unix timestamp " + getUnixTimeStamp() + "\n");
         return (message);
     }
 
