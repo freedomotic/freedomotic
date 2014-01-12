@@ -220,6 +220,16 @@
                                             </mapper>
                                         </data>
                                         <data>
+                                            <src>${freedomotic.basedir}/scripts/shared/splash.png</src>
+                                            <type>file</type>
+                                            <mapper>
+                                                <type>perm</type>
+                                                <prefix>/usr/share/freedomotic</prefix>
+                                                <user>freedomotic</user>
+                                                <group>freedomotic</group>
+                                            </mapper>
+                                        </data>
+                                        <data>
                                             <src>${freedomotic.basedir}/scripts/shared/freedomotic.desktop</src>
                                             <type>file</type>
                                             <mapper>

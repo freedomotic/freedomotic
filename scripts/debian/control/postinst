@@ -74,6 +74,11 @@ case "$1" in
 		mkdir -p $ARCHDIR/$DESTDIR
 		ln -sf $RXTXLIB $ARCHDIR/$DESTDIR/
 	fi
+        echo "\n## WARNING ## "
+        echo "## Remember to add users to 'freedomotic' group prior to use Freedomotic"
+        echo "## or you won't be able to save your changes!"
+        echo "## Use 'sudo adduser <username> freedomotic', and let involved user(s) re-login."
+	echo "## WARNING ## \n"
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

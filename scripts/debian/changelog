@@ -1,10 +1,50 @@
-freedomotic (5.5.0-beta1) unstable; urgency=low
+freedomotic (5:5.5.0-550) unstable; urgency=low
 
-  * Changelog to be added
+  Version 5.5 (codename BenderNew) Changelog
+
+  Project management
+  * Mavenization
+  * Guice Dependency Injection
+  * Code refactoring 
+  * A Debian package is now available
+  * First steps adquiring an Agile Development thanks to the use of Youtrack as issue tracker system
+  * Migration to TeamCity as integration server
+  * Framework
+  * Major features
+  * Authentication/Authorization (based on username/password and privileges list)
+  * Internationalization/Localization (about 20 languages supported)
+  * Enhanced Automation management
+  * Objects group commands support
+
+  GUI Frontend
+  * Multienvironment support
+  * Users and Privileges Management
+
+  Docs
+  * Developers Wiki
+  * Video tutorials on Youtube Channel
+
+  Marketplace
+  Freedomotic main goal is to create a great ecosystem of plugins to control almost any aspect of an automated life. 
+  We are very proud off our efforts made to make the development of plugins easy to the developers that want to contribute. 
+  These include:
+  * Complete mavenization of the system and of the plugins build system.
+  * Improved the development documentation. This is a permanent task on our workflow.
+  * Active forums.
+
+  Also, our marketplace continue growing with new great plugins:
+  * Chat
+  * Twilight - sunset and sunrise alerts
+  * Room-based events
+  * Arduino Remote Controller
+  * Google Speech TTS & Recognition API
+  * ZWay/RaZberry
+
+  Now Freedomotic has 45 ready plugins (and many others under development).
 
  -- Matteo Mazzoni <matteo@bestmazzo.it>  Mon, 29 Apr 2013 21:36:08 +0100
  
-freedomotic (5.4.0-480) unstable; urgency=low
+freedomotic (5:5.4.0-480) unstable; urgency=low
 
   * Initial release 
 
@@ -26,15 +66,15 @@ freedomotic (5.4.0-480) unstable; urgency=low
   * Huge set of code refactoring to make it more efficient
 
   Devices
-  *Implemented voice recognition that allows the user to execute commands by voice
-  *Integrated Google Calendars to be used for time based event creation
-  *Improvements on the download plugins screen
-  *You can receive event notifications by mail with Mailer plugin 
-  *The Text to speech feature is now a plugin. 
+  * Implemented voice recognition that allows the user to execute commands by voice
+  * Integrated Google Calendars to be used for time based event creation
+  * Improvements on the download plugins screen
+  * You can receive event notifications by mail with Mailer plugin 
+  * The Text to speech feature is now a plugin. 
 
   Objects
-  *Refinement of the Thermostat object. 
-  *New objects types: Luminosity, Pressure and Humidity sensors.
+  * Refinement of the Thermostat object. 
+  * New objects types: Luminosity, Pressure and Humidity sensors.
 
   GUI Frontend
   * Improvements on the Automations Editor
