@@ -8,7 +8,7 @@
     <name>Freedomotic</name>
     <description>Distributed Building and Home Automation Framework</description>
     <url>http://freedomotic.com</url>
-    <version>5.5-SNAPSHOT</version>
+    <version>5.5.0</version>
     <inceptionYear>2009</inceptionYear>
     <packaging>pom</packaging>
     
