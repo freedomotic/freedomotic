@@ -35,9 +35,9 @@ import java.awt.EventQueue;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-
 
 /**
  *
@@ -49,7 +49,6 @@ public class JavaDesktopFrontend
     private MainWindow window;
     private Drawer drawer;
     private Map<String, GraphPanel> graphs = new HashMap<String, GraphPanel>();
-
     private SplashLogin sl;
     private static final Logger LOG = Logger.getLogger(JavaDesktopFrontend.class.getName());
     private boolean init = false;
@@ -92,22 +91,19 @@ public class JavaDesktopFrontend
     }
 
     public void createMainWindow() {
-        /*     if (window != null) {
-         window.setVisible(false);
-         window.dispose();
-         }
-         */
+
+        if (window == null) {
+            window = new MainWindow(this);
+        }
+        window.setVisible(true);
+        
         if (sl != null) {
             sl.setVisible(false);
             sl.dispose();
             sl = null;
         }
 
-        if (window == null) {
-            window = new MainWindow(this);
-        }
-        window.setVisible(true);
-        LOG.info("JFrontend running as user: " + getApi().getAuth().getPrincipal());
+        LOG.log(Level.INFO, "JFrontend running as user: {0}", getApi().getAuth().getPrincipal());
     }
 
     public MainWindow getMainWindow() {
@@ -255,5 +251,4 @@ public class JavaDesktopFrontend
     protected boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }
