@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.mazzoni.twilight;
-
-;
+package com.freedomotic.plugins.devices.twilight;
 import com.freedomotic.events.GenericEvent;
+import com.freedomotic.plugins.devices.twilight.providersit.mazzoni.twilight.providers.EarthToolsWI;
+import com.freedomotic.plugins.devices.twilight.providersit.mazzoni.twilight.providers.OpenWeatherMapWI;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -20,19 +20,33 @@ import org.junit.Test;
 public class TwilightTest {
 
     private static TwilightUtils twu;
+    private static WeatherInfo provider;
+    private static WeatherInfo provider_alt;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        twu = new TwilightUtils(10000);
+        provider = new OpenWeatherMapWI("43.567", "11.021");
+        provider_alt = new EarthToolsWI("43.567", "11.021");
+        twu = new TwilightUtils(10000, provider);
+        
        }
 
     @Test
+    public void updateTest() throws Exception{
+        provider.updateData();
+        System.out.println(provider.getClass().getCanonicalName() + " Sunrise: " + provider.getNextSunrise().toString() +" - Sunset: "+ provider.getNextSunset() );
+        provider_alt.updateData();
+        System.out.println(provider_alt.getClass().getCanonicalName() + " Sunrise: " + provider_alt.getNextSunrise().toString() +" - Sunset: "+ provider_alt.getNextSunset() );
+        
+    }
+    
+    @Test
     public void NoonTest() {
-        twu.setSunriseTime(new DateTime(2013, 11, 20, 5, 0));
-        twu.setSunsetTime(new DateTime(2013, 11, 20, 17, 0));
+        provider.setNextSunrise(new DateTime(2013, 11, 20, 5, 0));
+        provider.setNextSunset(new DateTime(2013, 11, 20, 17, 0));
         
         DateTime noon = new DateTime(2013, 11, 21, 12, 0);
-        System.out.print(twu.getSunriseTime().toString() +" - "+ twu.getSunsetTime() +" - "+ noon);
+        //System.out.println(provider.getNextSunrise().toString() +" - "+ provider.getNextSunset() +" - "+ noon);
         GenericEvent twAtNoon = twu.prepareEvent(noon);
         Assert.assertEquals("300", twAtNoon.getProperty("beforeSunset"));
         Assert.assertEquals("", twAtNoon.getProperty("afterSunset"));
@@ -42,7 +56,7 @@ public class TwilightTest {
         Assert.assertEquals("", twAtNoon.getProperty("beforeSunrise"));
         
         noon = new DateTime(2013, 11, 21, 12, 1);
-        System.out.print(twu.getSunriseTime().toString() +" - "+ twu.getSunsetTime() +" - "+ noon);
+        // System.out.println(provider.getNextSunrise().toString() +" - "+ provider.getNextSunset() +" - "+ noon);
         twAtNoon = twu.prepareEvent(noon);
         Assert.assertEquals("299", twAtNoon.getProperty("beforeSunset"));
         Assert.assertEquals("", twAtNoon.getProperty("afterSunset"));
@@ -54,8 +68,8 @@ public class TwilightTest {
 
     @Test
     public void MidnightTest() {
-        twu.setSunriseTime(new DateTime(2013, 11, 20, 5, 0));
-        twu.setSunsetTime(new DateTime(2013, 11, 20, 17, 0));
+        provider.setNextSunrise(new DateTime(2013, 11, 20, 5, 0));
+        provider.setNextSunset(new DateTime(2013, 11, 20, 17, 0));
         
         DateTime midnight = new DateTime(2013, 11, 22, 0, 0);
         GenericEvent twAtMidnight = twu.prepareEvent(midnight);
@@ -70,8 +84,8 @@ public class TwilightTest {
 
     @Test
     public void sunriseTest() {
-        twu.setSunriseTime(new DateTime(2013, 11, 20, 5, 0));
-        twu.setSunsetTime(new DateTime(2013, 11, 20, 17, 0));
+        provider.setNextSunrise(new DateTime(2013, 11, 20, 5, 0));
+        provider.setNextSunset(new DateTime(2013, 11, 20, 17, 0));
         
         DateTime sunrise = new DateTime(2013, 11, 20, 5, 0);
         GenericEvent twAtSunrise = twu.prepareEvent(sunrise);
@@ -94,8 +108,8 @@ public class TwilightTest {
 
     @Test
     public void sunsetTest() {
-        twu.setSunriseTime(new DateTime(2013, 11, 20, 5, 0));
-        twu.setSunsetTime(new DateTime(2013, 11, 20, 17, 0));
+        provider.setNextSunrise(new DateTime(2013, 11, 20, 5, 0));
+        provider.setNextSunset(new DateTime(2013, 11, 20, 17, 0));
         
         DateTime sunset = new DateTime(2013,11,23, 17,0);
         GenericEvent twAtSunset = twu.prepareEvent(sunset);
@@ -114,8 +128,5 @@ public class TwilightTest {
         Assert.assertEquals("", twPostSunset.getProperty("isSunrise"));
         Assert.assertEquals("", twPostSunset.getProperty("afterSunrise"));
         Assert.assertEquals("719", twPostSunset.getProperty("beforeSunrise"));
-        
-        
-        
     }
 }

@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.mazzoni.twilight;
+package com.freedomotic.plugins.devices.twilight;
 
+import com.freedomotic.plugins.devices.twilight.WeatherInfo;
 import com.freedomotic.events.GenericEvent;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -14,17 +15,19 @@ import org.joda.time.Duration;
  */
 public class TwilightUtils {
 
-    private DateTime sunriseTime;
-    private DateTime sunsetTime;
-    private Duration toSunset;
-    private Duration toSunrise;
     private int POLLING_WAIT;
+    private WeatherInfo provider;
 
-    public TwilightUtils(int pw) {
+    public TwilightUtils(int pw, WeatherInfo provider) {
         this.POLLING_WAIT = pw;
+        this.provider = provider;
     }
-
+    
     public GenericEvent prepareEvent(DateTime ref) {
+        // DateTime ref = DateTime.now();
+        DateTime sunsetTime = provider.getNextSunset();
+        DateTime sunriseTime = provider.getNextSunrise();
+        
         while (sunsetTime.isBefore(ref) && sunriseTime.isBefore(ref)) {
             if (sunsetTime.isBefore(sunriseTime)) {
 
@@ -39,8 +42,8 @@ public class TwilightUtils {
             }
         }
 
-        toSunset = sunsetTime.isAfter(ref) ? new Duration(ref, sunsetTime) : new Duration(sunsetTime, ref);
-        toSunrise = sunriseTime.isAfter(ref) ? new Duration(ref, sunriseTime) : new Duration(sunriseTime, ref);
+        Duration toSunset = sunsetTime.isAfter(ref) ? new Duration(ref, sunsetTime) : new Duration(sunsetTime, ref);
+        Duration toSunrise = sunriseTime.isAfter(ref) ? new Duration(ref, sunriseTime) : new Duration(sunriseTime, ref);
 
         // genera evento: 
         GenericEvent ev = new GenericEvent(getClass());
@@ -72,19 +75,5 @@ public class TwilightUtils {
         return ev;
     }
 
-    public void setSunriseTime(DateTime ref) {
-        sunriseTime = ref;
-    }
 
-    public void setSunsetTime(DateTime ref) {
-        sunsetTime = ref;
-    }
-
-    public DateTime getSunriseTime() {
-        return sunriseTime;
-    }
-
-    public DateTime getSunsetTime() {
-        return sunsetTime;
-    }
 }
