@@ -4,18 +4,22 @@
  */
 package com.freedomotic.util.I18n;
 
+import java.util.Locale;
+
 /**
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public  class ComboLanguage {
+public  class ComboLanguage implements Comparable{
 
         private String descr;
         private String value;
+        private Locale loc;
 
-        ComboLanguage(String descr, String value) {
+        ComboLanguage(String descr, String value, Locale loc) {
             this.descr = descr;
             this.value = value;
+            this.loc = loc;
         }
 
     /**
@@ -34,4 +38,9 @@ public  class ComboLanguage {
     public String getValue() {
             return value;
         }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.descr.compareTo(o.toString());
+    }
 }

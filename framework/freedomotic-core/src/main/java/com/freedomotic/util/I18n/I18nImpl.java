@@ -19,12 +19,12 @@
  */
 package com.freedomotic.util.I18n;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.util.Info;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -34,6 +34,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -57,20 +58,16 @@ public class I18nImpl implements I18n {
 		}
 	}
 
-	private static CustomSecurityManager customSecurityManager = new CustomSecurityManager();
+	private static final CustomSecurityManager customSecurityManager = new CustomSecurityManager();
 
 		private Locale currentLocale;
-    private HashMap<String, ResourceBundle> messages;
-    private UTF8control RB_Control;
+    private final HashMap<String, ResourceBundle> messages;
+    private final UTF8control RB_Control;
     private static Vector<ComboLanguage> languages;
     private final AppConfig config;
-    private HashMap<String, File> packageBundleDir;
-    private Locale fallBackLocale = Locale.ENGLISH;
+    private final HashMap<String, File> packageBundleDir;
+    private final Locale fallBackLocale = Locale.ENGLISH;
 
-    /**
-     *
-     * @param config
-     */
     @Inject
     public I18nImpl(AppConfig config) {
         this.config = config;
@@ -87,15 +84,6 @@ public class I18nImpl implements I18n {
      * For Freedomotic core: translations are inside /i18n/Freedomotic.properties
      * For Plugin: translations are inside plugins/_plugin_type_/_plugin_package_/i18n/_package_last_part_.properties
      */
-
-    /**
-     *
-     * @param packageName
-     * @param key
-     * @param fields
-     * @return
-     */
-    
     protected String msg(String packageName, String key, Object[] fields) {
         // scorri packageNamefino a trovarne uno presente in packageBundleDir
 
@@ -176,23 +164,12 @@ public class I18nImpl implements I18n {
         return null;
     }
 
-    /**
-     *
-     * @param key
-     * @return
-     */
     @Override
     public String msg(String key) {
         String caller = customSecurityManager.getCallerClass().getPackage().getName();
         return msg(caller, key, null);
     }
 
-    /**
-     *
-     * @param key
-     * @param fields
-     * @return
-     */
     @Override
     public String msg(String key, Object[] fields) {
         String caller = customSecurityManager.getCallerClass().getPackage().getName();
@@ -205,10 +182,6 @@ public class I18nImpl implements I18n {
         }
     }
 
-    /**
-     *
-     * @param client
-     */
     @Override
     public void registerPluginBundleDir(Client client) {
         if (client instanceof Plugin) {
@@ -225,23 +198,8 @@ public class I18nImpl implements I18n {
     protected class UTF8control
             extends ResourceBundle.Control {
 
-        /**
-         *
-         */
         protected static final String BUNDLE_EXTENSION = "properties";
 
-        /**
-         *
-         * @param baseName
-         * @param locale
-         * @param format
-         * @param loader
-         * @param reload
-         * @return
-         * @throws IllegalAccessException
-         * @throws InstantiationException
-         * @throws IOException
-         */
         @Override
         public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader,
                 boolean reload)
@@ -280,10 +238,6 @@ public class I18nImpl implements I18n {
         }
     }
 
-    /**
-     *
-     * @param loc
-     */
     @Override
     public void setDefaultLocale(String loc) {
         //if (loc.equals("no") || loc.equals("false")){
@@ -298,22 +252,12 @@ public class I18nImpl implements I18n {
     }
 
     // should be replaced by user specific Locale
-
-    /**
-     *
-     * @return
-     * @deprecated
-     */
-        @Deprecated
+    @Deprecated
     @Override
     public String getDefaultLocale() {
         return currentLocale.toString();
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public Vector<ComboLanguage> getAvailableLocales() {
         final String bundlename = "freedomotic";
@@ -332,11 +276,13 @@ public class I18nImpl implements I18n {
 
             if (!value.isEmpty()) {
                 Locale loc = new Locale(value.substring(0, 2), value.substring(3, 5));
-                languages.add(new ComboLanguage(loc.getDisplayLanguage(loc), value));
+                languages.add(new ComboLanguage(loc.getDisplayCountry(currentLocale) +" - "+ loc.getDisplayLanguage(loc), value, loc));
             }
         }
-        languages.add(new ComboLanguage("Automatic", "auto"));
+        Collections.sort(languages);
+        languages.add(new ComboLanguage("Automatic", "auto",Locale.ENGLISH));
         return languages;
     }
     private static final Logger LOG = Logger.getLogger(I18n.class.getName());
 }
+
