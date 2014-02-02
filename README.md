@@ -4,9 +4,10 @@ Freedomotic
 Official website is http://freedomotic.com
 
 Freedomotic is a framework for home and building automation which allows to build smart spaces and ambient aware applications. Learn more at http://freedomotic.com
+
 Freedomotic can run also on **Raspberry Pi** and can easily interact with DIY **Arduino** projects.
 
-Starting from 2 Feb 2014, this is the freedomotic mainstream repository . Previous repository was hosted on googlecode http://code.google.com/p/freedomotic
+Starting from 2 Feb 2014, this is the freedomotic mainstream repository. Previous repository was hosted on googlecode http://code.google.com/p/freedomotic
 
 Requirements: 
 - **Java Open JDK** version 6 or 7 or oracle jdk (to install on ubuntu: sudo apt-get install openjdk-7-jdk)
@@ -46,7 +47,7 @@ As an alternative you can start **freedomotic-core** project from your favourite
 If you experience compile or startup errors please refer to http://freedomotic.com/content/faq-troubleshooting#Developers
 
 
-Git reporitory as an SDK
+Git reporitory is an SDK
 ========================
 
 The GIT repository is a complete SDK with all you need to code and test your freedomotic plugins. Once compiled for the first time open the freedomotic-core project with your favourite IDE and start it to try freedomotic.
