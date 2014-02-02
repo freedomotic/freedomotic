@@ -1,30 +1,28 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.plugins;
 
-import com.freedomotic.api.Sensor;
-import com.freedomotic.app.Freedomotic;
+import com.freedomotic.api.EventTemplate;
+import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.UnableToExecuteException;
+import com.freedomotic.reactions.Command;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,20 +30,19 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Enrico
  */
-public class TrackingReadSocket
-        extends Sensor {
-
-    OutputStream out;
-    boolean connected = false;
-    final int SLEEP_TIME = 1000;
-    final int NUM_MOTE = 3;
-    private static int PORT = 1111; //illimited
-    private static int maxConnections = -1; //illimited
+public class TrackingReadSocket extends Protocol {
+    private static final int PORT = 1111;     private static final int maxConnections = -1; 
+    private static final Logger LOG = Logger.getLogger(TrackingReadSocket.class.getName());
+    private OutputStream out;
+    private final boolean connected = false;
+    private final int SLEEP_TIME = 1000;
+    private final int NUM_MOTE = 3;
 
     public TrackingReadSocket() {
         super("Tracking Simulator (Read Socket)", "/test/tracking-simulator-read-socket.xml");
@@ -109,13 +106,23 @@ public class TrackingReadSocket
     }
 
     @Override
-    protected void onInformationRequest()
-            throws IOException, UnableToExecuteException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    protected void onRun() {
+        //do nothing
     }
 
     @Override
-    protected void onRun() {
+    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
+        //do nothing
+    }
+
+    @Override
+    protected boolean canExecute(Command c) {
+        //do nothing
+        return true;
+    }
+
+    @Override
+    protected void onEvent(EventTemplate event) {
         //do nothing
     }
 

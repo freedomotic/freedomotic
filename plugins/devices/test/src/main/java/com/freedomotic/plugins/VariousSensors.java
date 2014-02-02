@@ -24,26 +24,19 @@ package com.freedomotic.plugins;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.api.Sensor;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.plugins.gui.VariousSensorsGui;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Enrico
  */
-public class VariousSensors
-        extends Protocol {
+public class VariousSensors extends Protocol {
 
-    int hour = 0;
-    int month = 1;
-    Boolean powered = false;
+    private Boolean powered = false;
 
     public VariousSensors() {
         super("Sensors Simulator", "/test/sensors-simulator.xml");
