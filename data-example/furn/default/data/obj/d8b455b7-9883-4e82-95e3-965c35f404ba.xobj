@@ -1,21 +1,21 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Lights General Switch</name>
   <description>A Switch</description>
   <actAs>virtual</actAs>
   <type>EnvObject.ElectricDevice</type>
   <uuid>d8b455b7-9883-4e82-95e3-965c35f404ba</uuid>
-  <hierarchy>it.freedomotic.objects.impl.ElectricDevice</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.ElectricDevice</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
-    <it.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
       <name>powered</name>
       <description></description>
       <active>true</active>
       <priority>-1</priority>
       <readOnly>false</readOnly>
       <value>false</value>
-    </it.freedomotic.model.object.BooleanBehavior>
+    </com.freedomotic.model.object.BooleanBehavior>
   </behaviors>
   <representation>
     <view>
@@ -64,4 +64,4 @@
   </triggers>
   <currentRepresentation>0</currentRepresentation>
   <envUUID>df28cda0-a866-11e2-9e96-0800200c9a66</envUUID>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

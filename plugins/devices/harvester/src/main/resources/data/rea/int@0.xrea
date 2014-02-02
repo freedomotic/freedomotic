@@ -1,6 +1,6 @@
-<it.freedomotic.reactions.Reaction>
+<com.freedomotic.reactions.Reaction>
   <trigger>An object has changed</trigger>
   <sequence>
     <command>Save data on the harvester</command>
   </sequence>
-</it.freedomotic.reactions.Reaction>
+</com.freedomotic.reactions.Reaction>

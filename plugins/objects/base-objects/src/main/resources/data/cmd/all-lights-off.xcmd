@@ -1,5 +1,5 @@
 
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
     <name>turn off all lights</name>
     <receiver>app.events.sensors.behavior.request.objects</receiver>
     <description>turn off all lights</description>
@@ -12,4 +12,4 @@
             <property name="value" value="false"/>
         </properties>
     </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

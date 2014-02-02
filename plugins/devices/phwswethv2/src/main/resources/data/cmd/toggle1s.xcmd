@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
     <name>Toggle for 1 second the relay on ProgettiHwSw Eth board</name>
     <receiver>app.actuators.protocol.phwswethv2.in</receiver>
     <description>toggles for 1 second the relay on ProgettiHwSw Eth board</description>
@@ -12,4 +12,4 @@
 	    <property name="time-in-ms" value="1000"/>
         </properties>
     </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
   <name>Say door/window status</name>
   <receiver>app.actuators.media.google-speech.in</receiver>
   <delay>0</delay>
@@ -12,4 +12,4 @@
     </properties>
     <tuples/>
   </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

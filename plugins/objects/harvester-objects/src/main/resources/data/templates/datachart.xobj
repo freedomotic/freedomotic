@@ -1,20 +1,20 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Data Chart</name>
   <description>Shows Data Previously Collected by Harvester</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.DataChart</type>
-  <hierarchy>it.freedomotic.objects.impl.DataChart</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.DataChart</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
-  <it.freedomotic.model.object.DataBehavior>
+  <com.freedomotic.model.object.DataBehavior>
       <name>data</name>
       <description>Some Data</description>
       <active>true</active>
       <priority>-1</priority>
       <readOnly>true</readOnly>      
 <data/>
-    </it.freedomotic.model.object.DataBehavior>
+    </com.freedomotic.model.object.DataBehavior>
   </behaviors>
   <representation>
     <view>
@@ -37,4 +37,4 @@
   <actions/>
   <triggers/>
   <currentRepresentation>0</currentRepresentation>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

@@ -1,21 +1,21 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Door</name>
   <description>A door capable of open and close</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.Gate</type>
-  <hierarchy>it.freedomotic.objects.impl.Gate</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.Gate</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
 <behaviors>
-    <it.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
       <name>open</name>
       <description>asd</description>
       <active>true</active>
       <readOnly>false</readOnly>
       <priority>-1</priority>
       <value>false</value>
-    </it.freedomotic.model.object.BooleanBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>openness</name>
       <description>asd</description>
       <active>true</active>
@@ -25,7 +25,7 @@
       <max>100</max>
       <min>0</min>
       <step>1</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
     <view>
@@ -91,4 +91,4 @@
     <property name="" value="openness"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

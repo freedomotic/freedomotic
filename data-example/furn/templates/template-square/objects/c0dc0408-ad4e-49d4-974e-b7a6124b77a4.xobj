@@ -1,21 +1,21 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Light-58</name>
   <description>A light</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.ElectricDevice.Light</type>
   <uuid>c0dc0408-ad4e-49d4-974e-b7a6124b77a4</uuid>
-  <hierarchy>it.freedomotic.objects.impl.Light</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.Light</hierarchy>
   <protocol>Souliss</protocol>
   <phisicalAddress>dimaiofamily.no-ip.org:80:0:0</phisicalAddress>
   <behaviors>
-    <it.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
       <name>powered</name>
       <description></description>
       <active>true</active>
       <priority>-1</priority>
       <value>false</value>
-    </it.freedomotic.model.object.BooleanBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>brightness</name>
       <description></description>
       <active>true</active>
@@ -24,7 +24,7 @@
       <max>100</max>
       <min>0</min>
       <step>10</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
     <view>
@@ -74,4 +74,4 @@
     <property name="Souliss reads a state change" value="powered"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

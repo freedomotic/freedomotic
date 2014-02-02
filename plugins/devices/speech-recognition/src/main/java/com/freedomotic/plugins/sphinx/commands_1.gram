@@ -1,0 +1,10 @@
+#JSGF V1.0;
+grammar hello;
+  
+  public <basic> = <command>;
+
+  <command> = <action> <where> <object>;
+  <action> = turn on | turn off | open | close;
+  <where> = kitchen | livingroom | bedroom | bathroom;
+  <object> = light | door | window | tv;
+  

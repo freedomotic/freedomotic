@@ -1,20 +1,20 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Hue Light</name>
   <description>A Philips Hue Light</description>
   <actAs></actAs>
   <type>EnvObject.Light.HueLight</type>
-  <hierarchy>it.freedomotic.objects.impl.HueLight</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.HueLight</hierarchy>
   <protocol>unknowkn</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
-    <it.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
       <name>powered</name>
       <description></description>
       <active>true</active>
       <priority>-1</priority>
       <value>false</value>
-    </it.freedomotic.model.object.BooleanBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>brightness</name>
       <description></description>
       <active>true</active>
@@ -23,8 +23,8 @@
       <max>255</max>
       <min>0</min>
       <step>5</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>hue</name>
       <description>the hue of the light</description>
       <active>true</active>
@@ -33,8 +33,8 @@
       <max>65535</max>
       <min>0</min>
       <step>10</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>saturation</name>
       <description>the saturation of the light</description>
       <active>true</active>
@@ -43,8 +43,8 @@
       <max>255</max>
       <min>0</min>
       <step>5</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
-    <it.freedomotic.model.object.ListBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.ListBehavior>
       <name>effect</name>
       <description>Effect Mode Selected</description>
       <active>true</active>
@@ -54,7 +54,7 @@
         <string>colorloop</string>
         <string>none</string>
       </list>
-     </it.freedomotic.model.object.ListBehavior>
+     </com.freedomotic.model.object.ListBehavior>
   </behaviors>
   <representation>
     <view>
@@ -100,4 +100,4 @@
     <property name="" value="brightness"/>
   </triggers>
   <currentRepresentation>1</currentRepresentation>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

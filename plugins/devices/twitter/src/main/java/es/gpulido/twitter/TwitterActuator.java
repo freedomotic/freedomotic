@@ -20,10 +20,10 @@
 package es.gpulido.twitter;
 
 import es.gpulido.twitter.gateways.TwitterGateway;
-import it.freedomotic.api.EventTemplate;
-import it.freedomotic.api.Protocol;
-import it.freedomotic.exceptions.UnableToExecuteException;
-import it.freedomotic.reactions.Command;
+import com.freedomotic.api.EventTemplate;
+import com.freedomotic.api.Protocol;
+import com.freedomotic.exceptions.UnableToExecuteException;
+import com.freedomotic.reactions.Command;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

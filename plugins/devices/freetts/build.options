@@ -1,7 +1,7 @@
 #Tue, 14 May 2013 15:53:01 +0200
 
 package.type=device
-package.name=it.freedomotic.freetts
+package.name=com.freedomotic.freetts
 package.nodeid=348
 package.license=GNU GPL2
 package.vendor.name=Freedomotic

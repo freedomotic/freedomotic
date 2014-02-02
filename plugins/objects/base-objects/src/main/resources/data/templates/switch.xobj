@@ -1,20 +1,20 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Switch</name>
   <description>A Switch</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.ElectricDevice</type>
-  <hierarchy>it.freedomotic.objects.impl.ElectricDevice</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.ElectricDevice</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
-    <it.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
       <name>powered</name>
       <description></description>
       <active>true</active>
       <priority>-1</priority>
       <readOnly>false</readOnly>
       <value>false</value>
-    </it.freedomotic.model.object.BooleanBehavior>
+    </com.freedomotic.model.object.BooleanBehavior>
   </behaviors>
   <representation>
     <view>
@@ -58,4 +58,4 @@
     <property name="" value="powered"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

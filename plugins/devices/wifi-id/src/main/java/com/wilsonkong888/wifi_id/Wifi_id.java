@@ -19,18 +19,18 @@
  */
 package com.wilsonkong888.wifi_id;
 
-import it.freedomotic.api.EventTemplate;
-import it.freedomotic.api.Protocol;
-import it.freedomotic.app.Freedomotic;
-import it.freedomotic.exceptions.UnableToExecuteException;
-import it.freedomotic.reactions.Command;
+import com.freedomotic.api.EventTemplate;
+import com.freedomotic.api.Protocol;
+import com.freedomotic.app.Freedomotic;
+import com.freedomotic.exceptions.UnableToExecuteException;
+import com.freedomotic.reactions.Command;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.*;
 import java.net.*;
-import it.freedomotic.events.ProtocolRead;
-import it.freedomotic.objects.EnvObjectLogic;
-import it.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.events.ProtocolRead;
+import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.objects.EnvObjectPersistence;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

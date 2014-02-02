@@ -1,7 +1,7 @@
 #Fri, 17 Aug 2012 14:12:28 +0200
 
 package.type=device
-package.name=it.freedomotic.wmotion
+package.name=com.freedomotic.wmotion
 package.nodeid=395
 package.license=GNU GPL2
 package.vendor.name=Freedomotic

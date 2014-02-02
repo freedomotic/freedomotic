@@ -1,4 +1,4 @@
-<it.freedomotic.model.environment.Environment>
+<com.freedomotic.model.environment.Environment>
   <name>My Environment</name>
   <width>1100</width>
   <height>1100</height>
@@ -11,7 +11,7 @@
   </backgroundColor>
   <backgroundImage>map2.png</backgroundImage>
   <zones>
-    <it.freedomotic.model.environment.Zone>
+    <com.freedomotic.model.environment.Zone>
       <name>Indoor</name>
       <description></description>
       <room>false</room>
@@ -21,8 +21,8 @@
         <point x="1000" y="1000"/>
         <point x="20" y="1000"/>
       </shape>
-    </it.freedomotic.model.environment.Zone>
-    <it.freedomotic.model.environment.Zone>
+    </com.freedomotic.model.environment.Zone>
+    <com.freedomotic.model.environment.Zone>
       <name>Room One</name>
       <description></description>
       <room>true</room>
@@ -33,8 +33,8 @@
         <point x="20" y="500"/>
       </shape>
       <texture>wood.jpg</texture>
-    </it.freedomotic.model.environment.Zone>
-    <it.freedomotic.model.environment.Zone>
+    </com.freedomotic.model.environment.Zone>
+    <com.freedomotic.model.environment.Zone>
       <name>Room Two</name>
       <description></description>
       <room>true</room>
@@ -45,6 +45,6 @@
         <point x="500" y="1000"/>
       </shape>
       <texture>wood.jpg</texture>
-    </it.freedomotic.model.environment.Zone>
+    </com.freedomotic.model.environment.Zone>
   </zones>
-</it.freedomotic.model.environment.Environment>
+</com.freedomotic.model.environment.Environment>

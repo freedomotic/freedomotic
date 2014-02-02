@@ -1,5 +1,5 @@
 
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
     <name>Show sensors simulator plugin GUI</name>
     <receiver>app.actuators.plugins.controller.in</receiver>
     <description>make a the sensor simulator plugin show its GUI</description>
@@ -11,4 +11,4 @@
             <property name="action" value="show"/>
         </properties>
     </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

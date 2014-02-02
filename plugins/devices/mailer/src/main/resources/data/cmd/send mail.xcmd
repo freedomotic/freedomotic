@@ -1,5 +1,5 @@
 
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
     <name>Notify event by mail</name>
     <receiver>app.actuators.messaging.mail.in</receiver>
     <description>send a mail</description>
@@ -13,4 +13,4 @@
             <property name="message" value="@event.description"/>
         </properties>
     </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

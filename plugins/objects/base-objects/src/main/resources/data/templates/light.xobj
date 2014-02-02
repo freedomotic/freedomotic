@@ -1,20 +1,20 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Light</name>
   <description>A light</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.ElectricDevice.Light</type>
-  <hierarchy>it.freedomotic.objects.impl.Light</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.Light</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
-    <it.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
       <name>powered</name>
       <description></description>
       <active>true</active>
       <priority>-1</priority>
       <value>false</value>
-    </it.freedomotic.model.object.BooleanBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>brightness</name>
       <description></description>
       <active>true</active>
@@ -23,7 +23,7 @@
       <max>100</max>
       <min>0</min>
       <step>10</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
     <view>
@@ -69,4 +69,4 @@
     <property name="" value="brightness"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

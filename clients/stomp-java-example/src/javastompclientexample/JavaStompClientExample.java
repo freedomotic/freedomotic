@@ -27,7 +27,7 @@ public class JavaStompClientExample {
         //create an XML command to send
         String commandDestination = "/queue/app.actuators.frontend.javadesktop.in";
         String command =
-                "<it.freedomotic.reactions.Command>"
+                "<com.freedomotic.reactions.Command>"
                 + "    <name>A message from STOMP</name>"
                 + "    <receiver>app.actuators.frontend.javadesktop.in</receiver>"
                 + "    <description>STOMP is used to ask a question</description>"
@@ -39,39 +39,39 @@ public class JavaStompClientExample {
                 + "		        <property name=\"options\" value=\"Yes;No;I don't know\"/>"
                 + "        </properties>"
                 + "    </properties>"
-                + "</it.freedomotic.reactions.Command>";
+                + "</com.freedomotic.reactions.Command>";
         //create a event to send (simulate object click)
         String eventDestination = "/topic/VirtualTopic.app.event.sensor.object.behavior.clicked";
         String event =
-                "<it.freedomotic.events.ObjectReceiveClick>"
+                "<com.freedomotic.events.ObjectReceiveClick>"
                 + "<eventName>ObjectReceiveClick</eventName>"
                 + "<sender>AndroidFrontend</sender>"
                 + "<payload>"
                 + "  <payload>"
-                + "    <it.freedomotic.reactions.Statement>"
+                + "    <com.freedomotic.reactions.Statement>"
                 + "      <logical>AND</logical>"
                 + "      <attribute>click</attribute>"
                 + "      <operand>EQUALS</operand>"
                 + "      <value>SINGLE_CLICK</value>"
-                + "    </it.freedomotic.reactions.Statement>"
-                + "    <it.freedomotic.reactions.Statement>"
+                + "    </com.freedomotic.reactions.Statement>"
+                + "    <com.freedomotic.reactions.Statement>"
                 + "      <logical>AND</logical>"
                 + "      <attribute>object.type</attribute>"
                 + "      <operand>EQUALS</operand>"
                 + "      <value>EnvObject.ElectricDevice.Light</value>"
-                + "    </it.freedomotic.reactions.Statement>"
-                + "    <it.freedomotic.reactions.Statement>"
+                + "    </com.freedomotic.reactions.Statement>"
+                + "    <com.freedomotic.reactions.Statement>"
                 + "      <logical>AND</logical>"
                 + "      <attribute>object.name</attribute>"
                 + "      <operand>EQUALS</operand>"
                 + "      <value>Living room light</value>"
-                + "    </it.freedomotic.reactions.Statement>"
+                + "    </com.freedomotic.reactions.Statement>"
                 + "  </payload>"
                 + "</payload>"
-                + "</it.freedomotic.events.ObjectReceiveClick>";
+                + "</com.freedomotic.events.ObjectReceiveClick>";
 
         String manifest =
-                "  <it.freedomotic.model.ds.Config>\n"
+                "  <com.freedomotic.model.ds.Config>\n"
                 + "  <properties>\n"
                 + "    <property name=\"startup-time\" value=\"on load\"/>\n"
                 + "    <property name=\"name\" value=\"Remote Plugin\"/>\n"
@@ -80,7 +80,7 @@ public class JavaStompClientExample {
                 + "    <property name=\"short-name\" value=\"shortname\"/>\n"
                 + "  </properties>\n"
                 + "  <xmlFile/>\n"
-                + "</it.freedomotic.model.ds.Config>";
+                + "</com.freedomotic.model.ds.Config>";
 
 
 

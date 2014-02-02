@@ -34,15 +34,15 @@
 
     <?xml version="1.0"?>
 
-    <!DOCTYPE it.freedomotic.model.object.EnvObject SYSTEM "object.dtd">
+    <!DOCTYPE com.freedomotic.model.object.EnvObject SYSTEM "object.dtd">
 
-    <it.freedomotic.model.object.EnvObject>
+    <com.freedomotic.model.object.EnvObject>
     ...
-    </it.freedomotic.model.object.EnvObject>
+    </com.freedomotic.model.object.EnvObject>
 -->
 
 <!--- Put your DTDDoc comment here. -->
-<!ELEMENT it.freedomotic.model.object.Environment (name|width|height|renderer|backgroundImage|backgroundColor|zones)*>
+<!ELEMENT com.freedomotic.model.object.Environment (name|width|height|renderer|backgroundImage|backgroundColor|zones)*>
 
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT name (#PCDATA)>
@@ -75,10 +75,10 @@
 <!ELEMENT alpha (#PCDATA)>
 
 <!--- Put your DTDDoc comment here. -->
-<!ELEMENT zones (it.freedomotic.model.environment.Zone)*>
+<!ELEMENT zones (com.freedomotic.model.environment.Zone)*>
 
 <!--- Put your DTDDoc comment here. -->
-<!ELEMENT it.freedomotic.model.environment.Zone (room|shape|texture|description|name)*>
+<!ELEMENT com.freedomotic.model.environment.Zone (room|shape|texture|description|name)*>
 
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT room (#PCDATA)>

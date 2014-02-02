@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
   <name>Set Channel Up KuroTV object</name>
   <receiver>app.actuators.PioneerKuro.PioneerKuroActuator.in</receiver>
   <description>an KuroTV object will change the channel up</description>
@@ -11,4 +11,4 @@
       <property name="parameters" value="FWD"/>
     </properties>
   </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

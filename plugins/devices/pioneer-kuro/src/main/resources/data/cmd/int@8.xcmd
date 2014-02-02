@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
   <name>Set Volume Down KuroTV object</name>
   <receiver>app.actuators.PioneerKuro.PioneerKuroActuator.in</receiver>
   <description>an KuroTV object will change the volume</description>
@@ -11,4 +11,4 @@
       <property name="parameter" value="DWn"/>
     </properties>
   </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

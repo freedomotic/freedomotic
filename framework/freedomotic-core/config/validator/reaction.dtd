@@ -34,15 +34,15 @@
 
     <?xml version="1.0"?>
 
-    <!DOCTYPE it.freedomotic.reactions.Reaction SYSTEM "reaction.dtd">
+    <!DOCTYPE com.freedomotic.reactions.Reaction SYSTEM "reaction.dtd">
 
-    <it.freedomotic.reactions.Reaction>
+    <com.freedomotic.reactions.Reaction>
     ...
-    </it.freedomotic.reactions.Reaction>
+    </com.freedomotic.reactions.Reaction>
 -->
 
 <!--- Put your DTDDoc comment here. -->
-<!ELEMENT it.freedomotic.reactions.Reaction (sequences|trigger)*>
+<!ELEMENT com.freedomotic.reactions.Reaction (sequences|trigger)*>
 
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT trigger (#PCDATA)>

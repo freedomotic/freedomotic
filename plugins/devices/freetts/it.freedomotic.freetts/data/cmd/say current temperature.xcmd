@@ -1,5 +1,5 @@
 
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
     <name>Say current temperature of the thermometer</name>
     <receiver>app.actuators.media.tts.in</receiver>
     <description>say current temperature of the thermometer object</description>
@@ -10,4 +10,4 @@
             <property name="say" value="@event.object.name temperature is @current.object.behavior.temperature Celsius degrees."/>
         </properties>
     </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

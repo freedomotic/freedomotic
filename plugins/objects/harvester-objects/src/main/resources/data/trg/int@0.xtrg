@@ -4,18 +4,18 @@
    <channel>app.event.sensor.object.behavior.clicked</channel>
   <payload>
     <payload>
-      <it.freedomotic.reactions.Statement>
+      <com.freedomotic.reactions.Statement>
         <logical>AND</logical>
         <attribute>object.type</attribute>
         <operand>EQUALS</operand>
         <value>EnvObject.DataChart</value>
-      </it.freedomotic.reactions.Statement>
-      <it.freedomotic.reactions.Statement>
+      </com.freedomotic.reactions.Statement>
+      <com.freedomotic.reactions.Statement>
         <logical>AND</logical>
         <attribute>click</attribute>
         <operand>EQUALS</operand>
         <value>SINGLE_CLICK</value>
-      </it.freedomotic.reactions.Statement>
+      </com.freedomotic.reactions.Statement>
     </payload>
   </payload>
   <suspensionTime>0</suspensionTime>

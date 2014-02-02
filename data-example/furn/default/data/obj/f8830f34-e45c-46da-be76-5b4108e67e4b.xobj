@@ -1,10 +1,10 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Clock</name>
   <description>A clock for timed automations</description>
   <actAs>virtual</actAs>
   <type>EnvObject.Decoration.Clock</type>
   <uuid>f8830f34-e45c-46da-be76-5b4108e67e4b</uuid>
-  <hierarchy>it.freedomotic.objects.impl.Clock</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.Clock</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors/>
@@ -32,4 +32,4 @@
   <triggers/>
   <currentRepresentation>0</currentRepresentation>
   <envUUID>df28cda0-a866-11e2-9e96-0800200c9a66</envUUID>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

@@ -1,13 +1,13 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Light Sensor</name>
   <description>Collects light events</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.GenericSensor.LightSensor</type>
-  <hierarchy>it.freedomotic.objects.impl.GenericSensor</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.GenericSensor</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>luminosity</name>
       <description></description>
       <active>true</active>
@@ -18,7 +18,7 @@
       <min>0</min>
       <step>1</step>
       <scale>10</scale>
-    </it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
     <view>
@@ -45,4 +45,4 @@
     <property name="" value="luminosity"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

@@ -34,15 +34,15 @@
 
     <?xml version="1.0"?>
 
-    <!DOCTYPE it.freedomotic.reactions.Command SYSTEM "command.dtd">
+    <!DOCTYPE com.freedomotic.reactions.Command SYSTEM "command.dtd">
 
-    <it.freedomotic.reactions.Command>
+    <com.freedomotic.reactions.Command>
     ...
-    </it.freedomotic.reactions.Command>
+    </com.freedomotic.reactions.Command>
 -->
 
 <!--- Put your DTDDoc comment here. -->
-<!ELEMENT it.freedomotic.reactions.Command (properties|executed|persistence|hardwareLevel|tags|description|timeout|delay|receiver|name)*>
+<!ELEMENT com.freedomotic.reactions.Command (properties|executed|persistence|hardwareLevel|tags|description|timeout|delay|receiver|name)*>
 
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT name (#PCDATA)>

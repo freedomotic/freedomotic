@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
   <name>Switch ON KuroTV object</name>
   <receiver>app.actuators.PioneerKuro.PioneerKuroActuator.in</receiver>
   <description>an KuroTV object will turn on</description>
@@ -10,4 +10,4 @@
       <property name="command" value="PON"/>
     </properties>
   </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

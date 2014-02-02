@@ -1,0 +1,5 @@
+#Sat Jul 21 18:00:06 CEST 2012
+war.name=Freedomotic.war
+compiler.style=DETAILED
+server.path=/home/gpt/Desarrollo/freedomotic_test/freedomotic/plugins/devices/es.gpulido.webserver/data/webapps/gwt_client
+compiler.memory.max=256m

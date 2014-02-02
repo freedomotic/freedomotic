@@ -1,6 +1,6 @@
-<it.freedomotic.reactions.Reaction>
+<com.freedomotic.reactions.Reaction>
   <trigger>Kitchen Light turns on</trigger>
   <sequence>
     <command>Say electric device status</command>
   </sequence>
-</it.freedomotic.reactions.Reaction>
+</com.freedomotic.reactions.Reaction>

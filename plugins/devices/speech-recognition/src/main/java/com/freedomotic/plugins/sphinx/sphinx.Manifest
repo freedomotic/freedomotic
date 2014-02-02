@@ -1,0 +1,2 @@
+Main-Class: com.freedomotic.plugins.sphinx.Sphinx
+Class-Path: ../lib/sphinx4.jar ../lib/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar

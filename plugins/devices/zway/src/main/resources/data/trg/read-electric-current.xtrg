@@ -4,24 +4,24 @@
     <channel>app.event.sensor.protocol.read.zway</channel>
     <payload>
         <payload>
-            <it.freedomotic.reactions.Statement>
+            <com.freedomotic.reactions.Statement>
                 <logical>AND</logical>
                 <attribute>protocol</attribute>
                 <operand>EQUALS</operand>
                 <value>zway</value>
-            </it.freedomotic.reactions.Statement>
-            <it.freedomotic.reactions.Statement>
+            </com.freedomotic.reactions.Statement>
+            <com.freedomotic.reactions.Statement>
                 <logical>AND</logical>
                 <attribute>@event.object.type</attribute>
                 <operand>EQUALS</operand>
                 <value>electric-current</value>
-            </it.freedomotic.reactions.Statement>
-            <it.freedomotic.reactions.Statement>
+            </com.freedomotic.reactions.Statement>
+            <com.freedomotic.reactions.Statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
                 <value>= behaviorValue=Math.round(@event.read.value*10)</value>
-            </it.freedomotic.reactions.Statement>
+            </com.freedomotic.reactions.Statement>
         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>

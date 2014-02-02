@@ -4,30 +4,30 @@
     <channel>app.event.sensor.protocol.read</channel>
     <payload>
         <payload>
-            <it.freedomotic.reactions.Statement>
+            <com.freedomotic.reactions.Statement>
                 <logical>AND</logical>
                 <attribute>protocol</attribute>
                 <operand>EQUALS</operand>
                 <value>k8055</value>
-            </it.freedomotic.reactions.Statement>
-            <it.freedomotic.reactions.Statement>
+            </com.freedomotic.reactions.Statement>
+            <com.freedomotic.reactions.Statement>
                 <logical>AND</logical>
                 <attribute>isOn</attribute>
                 <operand>EQUALS</operand>
                 <value>true</value>
-            </it.freedomotic.reactions.Statement>
-	    <it.freedomotic.reactions.Statement>
+            </com.freedomotic.reactions.Statement>
+	    <com.freedomotic.reactions.Statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
                 <value>@event.k8055.isOn</value>
-            </it.freedomotic.reactions.Statement>
-	    <it.freedomotic.reactions.Statement>
+            </com.freedomotic.reactions.Statement>
+	    <com.freedomotic.reactions.Statement>
                 <logical>SET</logical>
                 <attribute>open</attribute>
                 <operand>EQUALS</operand>
                 <value>@event.k8055.isOn</value>
-            </it.freedomotic.reactions.Statement>
+            </com.freedomotic.reactions.Statement>
         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>

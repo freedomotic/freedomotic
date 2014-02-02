@@ -1,20 +1,20 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>TV</name>
   <description>A Pionner 5090H TV</description>
   <actAs>button</actAs>
   <type>EnvObject.ElectricDevice.TV</type>
-  <hierarchy>it.freedomotic.objects.impl.TV</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.TV</hierarchy>
   <protocol>pioneer-kuro</protocol>
   <phisicalAddress>pioneer-kuro</phisicalAddress>
   <behaviors>
-    <it.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
       <name>powered</name>
       <description></description>
       <active>true</active>
       <priority>-1</priority>
       <value>true</value>
-    </it.freedomotic.model.object.BooleanBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>volume</name>
       <description>the volume of the TV</description>
       <active>true</active>
@@ -23,8 +23,8 @@
       <max>60</max>
       <min>0</min>
       <step>1</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>channel</name>
       <description>TV channel</description>
       <active>true</active>
@@ -33,8 +33,8 @@
       <max>999</max>
       <min>0</min>
       <step>1</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
-    <it.freedomotic.model.object.ListBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.ListBehavior>
       <name>input</name>
       <description>TV input selected</description>
       <active>true</active>
@@ -48,15 +48,15 @@
         <string>05</string>
         <string>06</string>
       </list>
-    </it.freedomotic.model.object.ListBehavior>
-    <it.freedomotic.model.object.BooleanBehavior>
+    </com.freedomotic.model.object.ListBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
       <name>muted</name>
       <description></description>
       <active>true</active>
       <priority>-1</priority>
       <value>false</value>
-    </it.freedomotic.model.object.BooleanBehavior>
-    <it.freedomotic.model.object.ListBehavior>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.ListBehavior>
       <name>avselection</name>
       <description>AV Selected</description>
       <active>true</active>
@@ -71,8 +71,8 @@
         <string>06</string>
         <string>07</string>
       </list>
-    </it.freedomotic.model.object.ListBehavior>
-    <it.freedomotic.model.object.ListBehavior>
+    </com.freedomotic.model.object.ListBehavior>
+    <com.freedomotic.model.object.ListBehavior>
       <name>screenmode</name>
       <description>Screen Mode Selected</description>
       <active>true</active>
@@ -88,7 +88,7 @@
         <string>07</string>
         <string>08</string>
       </list>
-    </it.freedomotic.model.object.ListBehavior>
+    </com.freedomotic.model.object.ListBehavior>
   </behaviors>
   <representation>
     <view>
@@ -144,4 +144,4 @@
     <property name="Pioneer Kuro Tv volume changed" value="volume"/>
   </triggers>
   <currentRepresentation>1</currentRepresentation>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

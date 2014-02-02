@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
   <name>Update Status in Twitter</name>
   <receiver>app.actuators.twitter.twitter.in</receiver>
   <description>The twitter account status is updated</description>
@@ -9,4 +9,4 @@
       <property name="status" value="I have changed the status"/>
     </properties>
   </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

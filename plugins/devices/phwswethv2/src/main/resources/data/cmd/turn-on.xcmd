@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
     <name>Turn ON Relay on ProgettiHwSw Eth board</name>
     <receiver>app.actuators.protocol.phwswethv2.in</receiver>
     <description>turns on the relay linked to this object on ProgettiHwSw Eth board</description>
@@ -12,4 +12,4 @@
 	    <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

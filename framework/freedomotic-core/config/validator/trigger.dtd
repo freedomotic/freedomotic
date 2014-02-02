@@ -54,10 +54,10 @@
 <!ELEMENT channel (#PCDATA)>
 
 <!--- Put your DTDDoc comment here. -->
-<!ELEMENT payload (it.freedomotic.reactions.Statement|payload)*>
+<!ELEMENT payload (com.freedomotic.reactions.Statement|payload)*>
 
 <!--- Put your DTDDoc comment here. -->
-<!ELEMENT it.freedomotic.reactions.Statement (value|operand|attribute|logical)*>
+<!ELEMENT com.freedomotic.reactions.Statement (value|operand|attribute|logical)*>
 
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT logical (#PCDATA)>

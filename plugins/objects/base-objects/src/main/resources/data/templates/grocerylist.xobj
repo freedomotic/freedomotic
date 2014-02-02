@@ -1,13 +1,13 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Grocery List</name>
   <description>A list of food and beverages you need</description>
   <actAs>virtual</actAs>
   <type>EnvObject.Wishlist</type>
-  <hierarchy>it.freedomotic.objects.impl.Wishlist</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.Wishlist</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
-    <it.freedomotic.model.object.MultiselectionListBehavior>
+    <com.freedomotic.model.object.MultiselectionListBehavior>
       <name>goods</name>
       <description></description>
       <active>true</active>
@@ -19,7 +19,7 @@
         <string>Meat</string>
       </list> 
       <selected/>
-    </it.freedomotic.model.object.MultiselectionListBehavior>
+    </com.freedomotic.model.object.MultiselectionListBehavior>
   </behaviors>
   <representation>
     <view>
@@ -44,4 +44,4 @@
   <triggers>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

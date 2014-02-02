@@ -1,22 +1,22 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Bedroom door</name>
   <description>Connects SW 1 to Livingroom</description>
   <actAs>virtual</actAs>
   <type>EnvObject.Gate</type>
   <uuid>06e94ceb-7218-4fff-9305-668d94d0fa59</uuid>
-  <hierarchy>it.freedomotic.objects.impl.Gate</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.Gate</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
-    <it.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
       <name>open</name>
       <description>asd</description>
       <active>true</active>
       <priority>-1</priority>
       <readOnly>false</readOnly>
       <value>false</value>
-    </it.freedomotic.model.object.BooleanBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>openness</name>
       <description>asd</description>
       <active>true</active>
@@ -27,7 +27,7 @@
       <min>0</min>
       <scale>1</scale>
       <step>1</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
     <view>
@@ -92,4 +92,4 @@
   </triggers>
   <currentRepresentation>0</currentRepresentation>
   <envUUID>df28cda0-a866-11e2-9e96-0800200c9a66</envUUID>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

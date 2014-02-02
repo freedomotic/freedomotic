@@ -1,6 +1,6 @@
-<it.freedomotic.reactions.Reaction>
+<com.freedomotic.reactions.Reaction>
   <trigger>When Thermostat is clicked</trigger>
   <sequence>
     <command>Say current temperature of the thermometer</command>
   </sequence>
-</it.freedomotic.reactions.Reaction>
+</com.freedomotic.reactions.Reaction>

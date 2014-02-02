@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>it.freedomotic</groupId>
+    <groupId>com.freedomotic</groupId>
     <artifactId>freedomotic</artifactId>
     <name>Freedomotic</name>
     <description>Distributed Building and Home Automation Framework</description>
@@ -67,7 +67,7 @@
                                         <property name="workspace-base" value="../../../"/>
                                         <taskdef
                                             name="marketplace"
-                                            classname="it.freedomotic.marketplace.AntUploader" >
+                                            classname="com.freedomotic.marketplace.AntUploader" >
                                             <classpath>
                                                 <pathelement location="../../../tools/freedomotic-marketplace/target/freedomotic-marketplace-3.0-jar-with-dependencies.jar"/>
                                                 <pathelement location="../../../framework/freedomotic-core/target/freedomotic-core/freedomotic.jar"/>

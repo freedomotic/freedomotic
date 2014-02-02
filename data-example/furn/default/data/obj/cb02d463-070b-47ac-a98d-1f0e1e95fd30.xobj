@@ -1,14 +1,14 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>Thermostat</name>
   <description>Collects temperature events</description>
   <actAs>virtual</actAs>
   <type>EnvObject.Thermostat</type>
   <uuid>cb02d463-070b-47ac-a98d-1f0e1e95fd30</uuid>
-  <hierarchy>it.freedomotic.objects.impl.Thermostat</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.Thermostat</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>temperature</name>
       <description></description>
       <active>true</active>
@@ -19,7 +19,7 @@
       <min>-600</min>
       <scale>10</scale>
       <step>1</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
     <view>
@@ -49,4 +49,4 @@
   </triggers>
   <currentRepresentation>0</currentRepresentation>
   <envUUID>df28cda0-a866-11e2-9e96-0800200c9a66</envUUID>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

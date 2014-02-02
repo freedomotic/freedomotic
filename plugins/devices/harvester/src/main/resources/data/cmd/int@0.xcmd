@@ -1,5 +1,5 @@
 
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
   <name>Save data on the harvester</name>
   <receiver>app.actuators.protocol.harvester.in</receiver>
   <description>The harvester has register a new log entry</description>
@@ -9,4 +9,4 @@
     <properties>        
     </properties>
   </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

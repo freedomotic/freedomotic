@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
   <name>Set Screen Mode KuroTV object</name>
   <receiver>app.actuators.PioneerKuro.PioneerKuroActuator.in</receiver>
   <description>an KuroTV object will change the Screen Mode</description>
@@ -11,4 +11,4 @@
       <property name="parameter" value="@event.value"/>
     </properties>
   </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

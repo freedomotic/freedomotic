@@ -1,21 +1,21 @@
-<it.freedomotic.model.object.EnvObject>
+<com.freedomotic.model.object.EnvObject>
   <name>PowerMeter</name>
   <description>A powermeter</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.ElectricDevice.PowerMeter</type>
-  <hierarchy>it.freedomotic.objects.impl.PowerMeter</hierarchy>
+  <hierarchy>com.freedomotic.objects.impl.PowerMeter</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
-    <it.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
       <name>powered</name>
       <description></description>
       <active>true</active>
       <priority>-1</priority>
       <value>false</value>
       <readOnly>true</readOnly>
-    </it.freedomotic.model.object.BooleanBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>current</name>
       <description></description>
       <active>true</active>
@@ -25,8 +25,8 @@
       <max>200</max>
       <min>0</min>
       <step>1</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>energy</name>
       <description></description>
       <active>true</active>
@@ -36,8 +36,8 @@
       <max>10000</max>
       <min>0</min>
       <step>1</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>voltage</name>
       <description></description>
       <active>true</active>
@@ -47,8 +47,8 @@
       <max>2400</max>
       <min>0</min>
       <step>1</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
-    <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
       <name>power</name>
       <description></description>
       <active>true</active>
@@ -58,8 +58,8 @@
       <max>6000</max>
       <min>0</min>
       <step>1</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
-   <it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
+   <com.freedomotic.model.object.RangedIntBehavior>
         <name>power-factor</name>
         <description></description>
         <active>true</active>
@@ -69,7 +69,7 @@
         <max>100</max>
         <min>0</min>
         <step>1</step>
-    </it.freedomotic.model.object.RangedIntBehavior>
+    </com.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
     <view>
@@ -115,4 +115,4 @@
     <property name="" value="energy"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</it.freedomotic.model.object.EnvObject>
+</com.freedomotic.model.object.EnvObject>

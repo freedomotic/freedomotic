@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
     <name>Say current time</name>
     <receiver>app.actuators.media.google-speech.in</receiver>
     <description>say current time</description>
@@ -9,4 +9,4 @@
             <property name="say" value="It's @event.time.hour and @event.time.minute minutes"/>
         </properties>
     </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

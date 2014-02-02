@@ -69,7 +69,7 @@
 	      <arg value="2"/>
 	      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
 	      <arg line="${gwt.args}"/>
-	      <arg value="it.freedomotic.gwtclient.Freedomotic"/>
+	      <arg value="com.freedomotic.gwtclient.Freedomotic"/>
 	    </java>
     </parallel>
   </target>
@@ -89,7 +89,7 @@
       <arg value="war"/>
       <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
       <arg line="${gwt.args}"/>
-      <arg value="it.freedomotic.gwtclient.Freedomotic"/>
+      <arg value="com.freedomotic.gwtclient.Freedomotic"/>
     </java>
   </target>
 

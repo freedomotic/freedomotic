@@ -16,7 +16,7 @@
         <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
         <init-param>
             <param-name>org.restlet.application</param-name>
-            <param-value>it.freedomotic.gwtclient.server.RestServerRedirector</param-value>				
+            <param-value>com.freedomotic.gwtclient.server.RestServerRedirector</param-value>				
         </init-param>
         <init-param>
             <param-name>org.restlet.clients</param-name>

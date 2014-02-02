@@ -1,5 +1,5 @@
 
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
     <name>switch power of all lights</name>
     <receiver>app.events.sensors.behavior.request.objects</receiver>
     <description>switch power for all lights</description>
@@ -12,4 +12,4 @@
             <property name="value" value="opposite"/>
         </properties>
     </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

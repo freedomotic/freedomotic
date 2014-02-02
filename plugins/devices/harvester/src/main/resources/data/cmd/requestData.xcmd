@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
     <name>Ask data from the harvester</name>
     <receiver>app.actuators.protocol.harvester.in</receiver>
     <description>Asks some data from the harvester</description>
@@ -15,4 +15,4 @@
             <property name="ResultType" value="full"/>
 	</properties>
     </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

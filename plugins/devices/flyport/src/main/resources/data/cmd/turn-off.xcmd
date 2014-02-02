@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
     <name>Turn OFF on Flyport board</name>
     <receiver>app.actuators.protocol.flyport.in</receiver>
     <description>turns off the object linked to this Flyport board</description>
@@ -12,4 +12,4 @@
 	    <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>

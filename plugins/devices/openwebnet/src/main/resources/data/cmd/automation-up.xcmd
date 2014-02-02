@@ -1,4 +1,4 @@
-<it.freedomotic.reactions.Command>
+<com.freedomotic.reactions.Command>
   <name>Move UP OWN automation</name>
   <receiver>app.actuators.protocol.openwebnet.in</receiver>
   <description>An OWN automation moves up</description>
@@ -14,4 +14,4 @@
       <property name="what" value="1"/>
     </properties>
   </properties>
-</it.freedomotic.reactions.Command>
+</com.freedomotic.reactions.Command>
