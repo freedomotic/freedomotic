@@ -1,4 +1,4 @@
-Freedomotic v5.5 codename 'Bender'
+Freedomotic
 =================================
 
 Official website is http://freedomotic.com
