@@ -45,7 +45,7 @@ public class Info {
     /**
      *
      */
-    public static final Integer FRAMEWORK_MINOR = 5;
+    public static final Integer FRAMEWORK_MINOR = 6;
 
     /**
      *
@@ -55,12 +55,12 @@ public class Info {
     /**
      *
      */
-    public static final String FRAMEWORK_VERSION_CODENAME = "Bender";
+    public static final String FRAMEWORK_VERSION_CODENAME = "Commander";
 
     /**
      *
      */
-    public static final String FRAMEWORK_RELEASE_DATE = "January 2014";
+    public static final String FRAMEWORK_RELEASE_DATE = "In Development";
 
     /**
      *
