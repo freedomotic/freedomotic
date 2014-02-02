@@ -32,6 +32,12 @@ import java.util.logging.Logger;
 public class JarFilter
         implements FilenameFilter {
 
+    /**
+     *
+     * @param dir
+     * @param name
+     * @return
+     */
     @Override
     public boolean accept(File dir, String name) {
         return (name.endsWith(".jar"));

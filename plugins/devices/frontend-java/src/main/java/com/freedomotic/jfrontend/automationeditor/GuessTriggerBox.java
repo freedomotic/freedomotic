@@ -4,13 +4,6 @@
  */
 package com.freedomotic.jfrontend.automationeditor;
 
-import com.freedomotic.app.Freedomotic;
-
-import com.freedomotic.reactions.Command;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JComboBox;
 
 /**

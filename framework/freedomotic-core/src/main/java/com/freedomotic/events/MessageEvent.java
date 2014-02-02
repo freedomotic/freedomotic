@@ -26,8 +26,6 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-
-import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -49,7 +47,12 @@ public class MessageEvent
 
     private static final long serialVersionUID = 4733356918386875096L;
 
-	public MessageEvent(Object source, String message) {
+    /**
+     *
+     * @param source
+     * @param message
+     */
+    public MessageEvent(Object source, String message) {
         super(source);
         this.getPayload().addStatement("message.text", message);
         //set a default message type
@@ -98,18 +101,34 @@ public class MessageEvent
         this.getPayload().addStatement("message.to", to);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getFrom() {
         return getPayload().getStatementValue("message.from");
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTo() {
         return getPayload().getStatementValue("message.to");
     }
 
+    /**
+     *
+     * @return
+     */
     public String getText() {
         return getPayload().getStatementValue("message.text");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         //adds the type to channel definition only if is not empty

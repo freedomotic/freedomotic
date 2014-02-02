@@ -22,9 +22,7 @@
 package com.freedomotic.bus.impl;
 
 import com.freedomotic.util.Info;
-
 import java.util.logging.Logger;
-
 import org.apache.activemq.broker.BrokerService;
 
 /**
@@ -55,6 +53,7 @@ public class BusBroker extends LifeCycle {
 
 	/**
 	 * {@inheritDoc}
+     * @throws java.lang.Exception
 	 */
 	protected void start() throws Exception {
 
@@ -70,6 +69,7 @@ public class BusBroker extends LifeCycle {
 
 	/**
 	 * {@inheritDoc}
+     * @throws java.lang.Exception
 	 */
 	protected void stop() throws Exception {
 

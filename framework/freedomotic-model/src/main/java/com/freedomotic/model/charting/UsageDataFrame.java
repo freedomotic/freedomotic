@@ -29,34 +29,70 @@ import java.util.List;
  */
 public class UsageDataFrame implements Serializable {
 
+    /**
+     *
+     */
     public final static int FULL_UPDATE = 1;
+
+    /**
+     *
+     */
     public final static int INCREMENTAL_UPDATE = 2;
     private int frameType;
     private List<UsageData> data;
 
+    /**
+     *
+     * @param type
+     * @param data
+     */
     public UsageDataFrame(int type, List<UsageData> data) {
         this.frameType = type;
         this.data = data;
     }
     // used by Jackson , do not remove
-    public UsageDataFrame(){ }
-    
+
+    /**
+     *
+     */
+        public UsageDataFrame(){ }
+
+    /**
+     *
+     * @return
+     */
     public int getFrameType(){
         return this.frameType;
     }
     
+    /**
+     *
+     * @return
+     */
     public List<UsageData> getData(){
         return this.data;
     }
     
+    /**
+     *
+     * @param type
+     */
     public void setDataFrameType(int type){
         this.frameType= type;
     }
     
+    /**
+     *
+     * @param data
+     */
     public void setData(List<UsageData> data){
         this.data = data;
     }
     
+    /**
+     *
+     * @param data
+     */
     public void addData(List<UsageData> data){
         this.data.addAll(data);
     }

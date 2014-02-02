@@ -20,12 +20,10 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.persistence.FreedomXStream;
-
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
-
+import com.thoughtworks.xstream.XStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
@@ -34,8 +32,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-
-import com.thoughtworks.xstream.XStream;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,6 +48,10 @@ public class ReactionPersistence {
         //avoid instance creation
     }
 
+    /**
+     *
+     * @param folder
+     */
     public static void saveReactions(File folder) {
         if (list.isEmpty()) {
             LOG.log(Level.WARNING, "There are no reactions to persist, {0} will not be altered.", folder.getAbsolutePath());
@@ -115,6 +115,10 @@ public class ReactionPersistence {
         }
     }
 
+    /**
+     *
+     * @param folder
+     */
     public synchronized static void loadReactions(File folder) {
         XStream xstream = FreedomXStream.getXstream();
 
@@ -180,6 +184,10 @@ public class ReactionPersistence {
         }
     }
 
+    /**
+     *
+     * @param r
+     */
     public static void add(Reaction r) {
         if (!exists(r))   { //if not already loaded
             //if it's a new reaction validate it's commands
@@ -194,6 +202,10 @@ public class ReactionPersistence {
         }
     }
 
+    /**
+     *
+     * @param input
+     */
     public static void remove(Reaction input) {
         if (input != null) {
             boolean removed = list.remove(input);
@@ -206,18 +218,35 @@ public class ReactionPersistence {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public static Iterator<Reaction> iterator() {
         return list.iterator();
     }
 
+    /**
+     *
+     * @return
+     */
     public static List<Reaction> getReactions() {
         return Collections.unmodifiableList(list);
     }
 
+    /**
+     *
+     * @return
+     */
     public static int size() {
         return list.size();
     }
 
+    /**
+     *
+     * @param input
+     * @return
+     */
     public static boolean exists(Reaction input) {
         if (input != null) {
             for (Iterator<Reaction> it = list.iterator(); it.hasNext();) {

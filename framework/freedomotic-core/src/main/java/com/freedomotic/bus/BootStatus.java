@@ -22,7 +22,6 @@
 package com.freedomotic.bus;
 
 import com.freedomotic.app.Freedomotic;
-
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,11 +35,30 @@ import java.util.logging.Logger;
  */
 public enum BootStatus {
 
-	STOPPED(0),
-	BOOTING(1),
-	FAILED(2),
-	STARTED(3),
-	STOPPING(4);
+    /**
+     *
+     */
+    STOPPED(0),
+
+    /**
+     *
+     */
+    BOOTING(1),
+
+    /**
+     *
+     */
+    FAILED(2),
+
+    /**
+     *
+     */
+    STARTED(3),
+
+    /**
+     *
+     */
+    STOPPING(4);
 
 	private static final Logger LOG = Logger.getLogger(BootStatus.class.getName());
 	

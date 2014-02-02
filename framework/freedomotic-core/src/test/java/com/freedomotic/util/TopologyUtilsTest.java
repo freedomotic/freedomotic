@@ -25,15 +25,11 @@
  */
 package com.freedomotic.util;
 
-import static org.junit.Assert.assertEquals;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.geometry.FreedomPolygon;
-import java.util.logging.Logger;
-
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,21 +40,36 @@ import org.junit.Test;
  */
 public class TopologyUtilsTest {
 
+    /**
+     *
+     */
     public TopologyUtilsTest() {
     }
 
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass() {
     }
 
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
     }

@@ -20,10 +20,7 @@
 package com.freedomotic.environment;
 
 import com.freedomotic.exceptions.DaoLayerException;
-
 import com.freedomotic.model.environment.Environment;
-
-import java.io.File;
 import java.util.Collection;
 
 /**
@@ -32,9 +29,24 @@ import java.util.Collection;
  */
 public interface EnvironmentDAO {
 
+    /**
+     *
+     * @param environment
+     * @throws DaoLayerException
+     */
     void save(Environment environment) throws DaoLayerException;
 
+    /**
+     *
+     * @param environment
+     * @throws DaoLayerException
+     */
     void delete(Environment environment) throws DaoLayerException;
 
+    /**
+     *
+     * @return
+     * @throws DaoLayerException
+     */
     Collection<Environment> load() throws DaoLayerException;
 }

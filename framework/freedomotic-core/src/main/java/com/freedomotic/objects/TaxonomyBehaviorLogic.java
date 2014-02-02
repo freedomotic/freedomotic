@@ -23,8 +23,6 @@ package com.freedomotic.objects;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.MultiselectionListBehavior;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -43,17 +41,44 @@ public class TaxonomyBehaviorLogic
     private TaxonomyBehaviorLogic.Listener listener;
     private boolean changed;
 
+    /**
+     *
+     */
     public interface Listener {
 
+        /**
+         *
+         * @param params
+         * @param fireCommand
+         */
         public void onSelection(final Config params, boolean fireCommand);
 
+        /**
+         *
+         * @param params
+         * @param fireCommand
+         */
         public void onUnselection(final Config params, boolean fireCommand);
 
+        /**
+         *
+         * @param params
+         * @param fireCommand
+         */
         public void onAdd(final Config params, boolean fireCommand);
 
+        /**
+         *
+         * @param params
+         * @param fireCommand
+         */
         public void onRemove(final Config params, boolean fireCommand);
     }
 
+    /**
+     *
+     * @param pojo
+     */
     public TaxonomyBehaviorLogic(MultiselectionListBehavior pojo) {
         this.data = pojo;
     }
@@ -88,6 +113,10 @@ public class TaxonomyBehaviorLogic
         }
     }
 
+    /**
+     *
+     * @param item
+     */
     protected void addElement(String item) {
         if (!data.contains(item)) {
             data.add(item);
@@ -95,6 +124,10 @@ public class TaxonomyBehaviorLogic
         }
     }
 
+    /**
+     *
+     * @param item
+     */
     protected void removeElement(String item) {
         if (data.contains(item)) {
             data.remove(item);
@@ -102,6 +135,10 @@ public class TaxonomyBehaviorLogic
         }
     }
 
+    /**
+     *
+     * @param item
+     */
     protected void setSelected(String item) {
         if (!data.getSelected().equals(item)) {
             data.setSelected(item);
@@ -109,6 +146,10 @@ public class TaxonomyBehaviorLogic
         }
     }
 
+    /**
+     *
+     * @param item
+     */
     protected void setUnselected(String item) {
         if (data.getSelected().equals(item)) {
             data.setUnselected(item);
@@ -116,43 +157,79 @@ public class TaxonomyBehaviorLogic
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public List<String> getSelected() {
         return data.getSelected();
     }
 
+    /**
+     *
+     * @return
+     */
     public List<String> getList() {
         return data.getList();
     }
 
+    /**
+     *
+     * @param listBehaviorListener
+     */
     public void addListener(TaxonomyBehaviorLogic.Listener listBehaviorListener) {
         listener = listBehaviorListener;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getName() {
         return data.getName();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isActive() {
         return data.isActive();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isReadOnly() {
         return data.isReadOnly();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getValueAsString() {
         return data.toString();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isChanged() {
         return changed;
     }
 
+    /**
+     *
+     * @param value
+     */
     @Override
     public void setChanged(boolean value) {
         changed = value;

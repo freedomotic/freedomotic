@@ -19,7 +19,6 @@
  */
 package com.freedomotic.jfrontend;
 
-import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.ResourcesManager;
@@ -29,7 +28,6 @@ import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.GenericEvent;
 import com.freedomotic.exceptions.DaoLayerException;
-import com.freedomotic.jfrontend.Renderer;
 import com.freedomotic.jfrontend.utils.OpenDialogFileFilter;
 import com.freedomotic.jfrontend.utils.TipOfTheDay;
 import com.freedomotic.model.environment.Zone;
@@ -41,16 +39,30 @@ import com.freedomotic.security.Auth;
 import com.freedomotic.util.I18n.ComboLanguage;
 import com.freedomotic.util.I18n.I18n;
 import com.freedomotic.util.Info;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.*;
+import javax.swing.AbstractListModel;
+import javax.swing.JComboBox;
+import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -74,10 +86,18 @@ public class MainWindow
     boolean isAuthenticated = false;
     private static final Logger LOG = Logger.getLogger(JavaDesktopFrontend.class.getName());
 
+    /**
+     *
+     * @return
+     */
     public Drawer getDrawer() {
         return drawer;
     }
 
+    /**
+     *
+     * @param master
+     */
     public MainWindow(final JavaDesktopFrontend master) {
         this.I18n = master.getApi().getI18n();
         UIManager.put("OptionPane.yesButtonText", I18n.msg("yes"));
@@ -150,6 +170,10 @@ public class MainWindow
         }
     }
 
+    /**
+     *
+     * @param editMode
+     */
     protected void setEditMode(boolean editMode) {
         this.editMode = editMode;
         mnuRenameRoom.setEnabled(editMode);
@@ -309,19 +333,34 @@ public class MainWindow
         master.getMainWindow().setWindowedMode();
     }
 
+    /**
+     *
+     * @return
+     */
     public JInternalFrame getFrameMap() {
         return frameMap;
     }
 
+    /**
+     *
+     * @return
+     */
     public PluginJList getPluginJList() {
         return lstClients;
     }
 
+    /**
+     *
+     * @param frame
+     */
     public static void centerFrame(JFrame frame) {
         frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - frame.getWidth()) / 2,
                 (Toolkit.getDefaultToolkit().getScreenSize().height - frame.getHeight()) / 2);
     }
 
+    /**
+     *
+     */
     public void maximizeMap() {
         try {
             frameMap.setMaximum(true);
@@ -329,11 +368,17 @@ public class MainWindow
         }
     }
 
+    /**
+     *
+     */
     public void setQuarterSize() {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setSize((int) dim.getWidth() / 2, (int) dim.getHeight() / 2);
     }
 
+    /**
+     *
+     */
     public void optimizeFramesDimension() {
         try {
             if (!frameMap.isMaximum() || !frameClient.isIcon()) {
@@ -353,6 +398,10 @@ public class MainWindow
         }
     }
 
+    /**
+     *
+     * @param prevEnv
+     */
     public void initializeRenderer(EnvironmentLogic prevEnv) {
         drawer = null;
         frameMap.dispose();
@@ -367,6 +416,10 @@ public class MainWindow
 
     }
 
+    /**
+     *
+     * @param drawer
+     */
     public void setDrawer(Drawer drawer) {
         frameMap.getContentPane().add(drawer);
         Renderer renderer = (Renderer) drawer;
@@ -375,6 +428,10 @@ public class MainWindow
         setMapTitle(drawer.getCurrEnv().getPojo().getName());
     }
 
+    /**
+     *
+     * @param name
+     */
     public void setMapTitle(String name) {
         String envName = "";
         try {
@@ -830,6 +887,10 @@ public class MainWindow
         Freedomotic.sendEvent(exitSignal);
     }
 
+    /**
+     *
+     * @return
+     */
     public Plugin getPlugin() {
         return master;
     }

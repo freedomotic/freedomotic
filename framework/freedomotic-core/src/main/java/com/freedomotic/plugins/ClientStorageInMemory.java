@@ -26,8 +26,8 @@ import com.freedomotic.bus.BusService;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.PluginHasChanged.PluginActions;
 import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.model.ds.Config;
 import com.freedomotic.util.Info;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,9 +37,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.inject.Inject;
-import com.freedomotic.model.ds.Config;
-
 /**
  * A storage of loaded plugins and connected clients
  */
@@ -47,10 +44,17 @@ public final class ClientStorageInMemory implements ClientStorage {
 
     private final List<Client> clients = new ArrayList<Client>();
 
+    /**
+     *
+     */
     public ClientStorageInMemory() {
         //just injected
     }
 
+    /**
+     *
+     * @param c
+     */
     @Override
     public void add(Client c) {
         if (!clients.contains(c)) {
@@ -79,6 +83,10 @@ public final class ClientStorageInMemory implements ClientStorage {
         }
     }
 
+    /**
+     *
+     * @param c
+     */
     @Override
     public void remove(Client c) {
         if (clients.contains(c)) {
@@ -92,6 +100,10 @@ public final class ClientStorageInMemory implements ClientStorage {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<Client> getClients() {
         Collections.sort(clients,
@@ -100,6 +112,11 @@ public final class ClientStorageInMemory implements ClientStorage {
         return Collections.unmodifiableList(clients);
     }
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     @Override
     public Client get(String name) {
         for (Client client : clients) {
@@ -111,6 +128,11 @@ public final class ClientStorageInMemory implements ClientStorage {
         return null;
     }
 
+    /**
+     *
+     * @param filterType
+     * @return
+     */
     @Override
     public List<Client> getClients(String filterType) {
         List<Client> tmp = new ArrayList<Client>();
@@ -126,6 +148,11 @@ public final class ClientStorageInMemory implements ClientStorage {
         return Collections.unmodifiableList(tmp);
     }
 
+    /**
+     *
+     * @param protocol
+     * @return
+     */
     @Override
     public Client getClientByProtocol(String protocol) {
         for (Client client : clients) {
@@ -137,6 +164,11 @@ public final class ClientStorageInMemory implements ClientStorage {
         return null;
     }
 
+    /**
+     *
+     * @param input
+     * @return
+     */
     @Override
     public boolean isLoaded(Client input) {
         if (input == null) {
@@ -150,6 +182,14 @@ public final class ClientStorageInMemory implements ClientStorage {
      * Checks if a plugin is already installed, if is an obsolete or newer
      * version
      */
+
+    /**
+     *
+     * @param name
+     * @param version
+     * @return
+     */
+    
     @Override
     public int compareVersions(String name, String version) {
         Client client = get(name);
@@ -171,6 +211,11 @@ public final class ClientStorageInMemory implements ClientStorage {
         }
     }
 
+    /**
+     *
+     * @param client
+     * @return
+     */
     protected boolean isCompatible(Client client) {
         //seach for a file called PACKAGE
         Properties config = client.getConfiguration().getProperties();
@@ -308,6 +353,12 @@ public final class ClientStorageInMemory implements ClientStorage {
         return placeholder;
     }
 
+    /**
+     *
+     * @param template
+     * @return
+     * @throws DaoLayerException
+     */
     @Override
     public Client createObjectPlaceholder(final File template)
             throws DaoLayerException {

@@ -22,12 +22,11 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.persistence.FreedomXStream;
-
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
-
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
@@ -41,9 +40,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.mapper.CannotResolveClassException;
-
 /**
  *
  * @author Enrico
@@ -53,6 +49,10 @@ public class CommandPersistence {
     private static Map<String, Command> userCommands = new HashMap<String, Command>();
     private static Map<String, Command> hardwareCommands = new HashMap<String, Command>();
 
+    /**
+     *
+     * @param c
+     */
     public static void add(Command c) {
         if (c != null) {
             if (!userCommands.containsKey(c.getName().trim().toLowerCase())) {
@@ -67,18 +67,35 @@ public class CommandPersistence {
         }
     }
 
+    /**
+     *
+     * @param input
+     */
     public static void remove(Command input) {
         userCommands.remove(input.getName());
     }
 
+    /**
+     *
+     * @return
+     */
     public static int size() {
         return userCommands.size();
     }
 
+    /**
+     *
+     * @return
+     */
     public static Iterator<Command> iterator() {
         return userCommands.values().iterator();
     }
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     public static Command getCommand(String name) {
         Command command = userCommands.get(name.trim());
 
@@ -91,14 +108,27 @@ public class CommandPersistence {
         return hwCommand;
     }
 
+    /**
+     *
+     * @return
+     */
     public static Collection<Command> getHardwareCommands() {
         return hardwareCommands.values();
     }
 
+    /**
+     *
+     * @return
+     */
     public static Collection<Command> getUserCommands() {
         return userCommands.values();
     }
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     public static Command getHardwareCommand(String name) {
         Command command = hardwareCommands.get(name.trim());
 
@@ -110,6 +140,10 @@ public class CommandPersistence {
         return command;
     }
 
+    /**
+     *
+     * @param folder
+     */
     public static void loadCommands(File folder) {
         XStream xstream = FreedomXStream.getXstream();
         File[] files = folder.listFiles();
@@ -187,6 +221,10 @@ public class CommandPersistence {
         }
     }
 
+    /**
+     *
+     * @param folder
+     */
     public static void saveCommands(File folder) {
         try {
             if (userCommands.isEmpty()) {

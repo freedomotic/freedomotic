@@ -22,7 +22,6 @@
 package com.freedomotic.bus;
 
 import com.freedomotic.bus.impl.DestinationType;
-
 import javax.jms.Destination;
 
 /**

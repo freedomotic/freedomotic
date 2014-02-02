@@ -36,26 +36,53 @@ public class MultiselectionListBehavior
 	private final ArrayList<String> list = new ArrayList<String>();
     private final List<String> selected = new ArrayList<String>();
 
+    /**
+     *
+     * @param key
+     */
     public void add(String key) {
         list.add(key);
     }
 
+    /**
+     *
+     * @param key
+     */
     public void remove(String key) {
         list.remove(key);
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public boolean contains(String key) {
         return list.contains(key);
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public boolean isSelected(String key) {
         return selected.contains(key);
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public boolean isEnlisted(String key) {
         return list.contains(key);
     }
 
+    /**
+     *
+     * @return
+     */
     public List<String> getSelected() {
         List<String> tmp = new ArrayList<String>();
 
@@ -69,18 +96,30 @@ public class MultiselectionListBehavior
         return tmp;
     }
 
+    /**
+     *
+     * @param key
+     */
     public void setSelected(String key) {
         if (list.contains(key) && !selected.contains(key)) {
             selected.add(key);
         }
     }
 
+    /**
+     *
+     * @param key
+     */
     public void setUnselected(String key) {
         if (list.contains(key) && selected.contains(key)) {
             selected.remove(key);
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int indexOfSelection() {
         int selection = -1;
 
@@ -91,19 +130,36 @@ public class MultiselectionListBehavior
         return Math.max(0, selection);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getItemsNumber() {
         return list.size();
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public String get(int index) {
         return list.get(index);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return list.size() + " items (" + selected.size() + " selected)";
     }
 
+    /**
+     *
+     * @return
+     */
     public List<String> getList() {
         return list;
     }

@@ -36,6 +36,10 @@ public class RangedIntBehavior
     private int scale;
     private int step;
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         if (scale == 1) {
@@ -45,22 +49,42 @@ public class RangedIntBehavior
         return new Double((double) value / (double) getScale()).toString();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getValue() {
         return value;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getStep() {
         return step;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMax() {
         return max;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMin() {
         return min;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getScale() {
         if (scale <= 0) {
             scale = 1;
@@ -69,6 +93,10 @@ public class RangedIntBehavior
         return scale;
     }
 
+    /**
+     *
+     * @param inputValue
+     */
     public void setValue(int inputValue) {
         //activate this behavior if it was unactivated
         this.setActive(true);

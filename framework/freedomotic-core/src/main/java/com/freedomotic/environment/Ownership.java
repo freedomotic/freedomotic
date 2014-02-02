@@ -48,7 +48,18 @@ package com.freedomotic.environment;
 public interface Ownership {
     //public abstract boolean decideOwnwer(Zone z, int mode);
 
+    /**
+     *
+     * @param z
+     * @return
+     */
+    
     abstract boolean canTriggerReactionsOnEnter(ZoneLogic z);
 
+    /**
+     *
+     * @param z
+     * @return
+     */
     abstract boolean canTriggerReactionsOnExit(ZoneLogic z);
 }

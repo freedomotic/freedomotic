@@ -23,10 +23,8 @@ package com.freedomotic.bus;
 
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.reactions.Command;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
@@ -46,6 +44,9 @@ public class StompDispatcher implements BusConsumer {
         return "app.data.request";
     }
 
+    /**
+     *
+     */
     public StompDispatcher() {
     	this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
         register();

@@ -28,13 +28,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextPane;
+import javax.swing.JToggleButton;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+/**
+ *
+ * @author nicoletti
+ */
 public class LogWindow extends JFrame {
 
     int MAX_TABLE_ROWS = 100;
@@ -56,6 +67,11 @@ public class LogWindow extends JFrame {
     private final Handler handler;
     private final I18n I18n;
 
+    /**
+     *
+     * @param i18n
+     * @param handler
+     */
     public LogWindow(I18n i18n, final Handler handler) {
         super("Log Window");
         this.I18n = i18n;
@@ -104,6 +120,10 @@ public class LogWindow extends JFrame {
         add(scroll, BorderLayout.SOUTH);
     }
 
+    /**
+     *
+     * @param row
+     */
     public synchronized void append(Object[] row) {
         if (table.getSelectedRow() == MAX_TABLE_ROWS) {
             table.clearSelection();

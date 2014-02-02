@@ -4,9 +4,7 @@
  */
 package com.freedomotic.bus;
 
-import com.thoughtworks.xstream.XStream;
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.reactions.Command;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,10 +12,13 @@ import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -27,22 +28,37 @@ public class BusServiceTest {
 
     private BusService bus = Freedomotic.INJECTOR.getInstance(BusService.class);
 
+    /**
+     *
+     */
     public BusServiceTest() {
         bus.init();
     }
 
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass() {
     }
 
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
     }

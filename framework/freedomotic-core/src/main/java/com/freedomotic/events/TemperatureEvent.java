@@ -22,7 +22,6 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-
 import com.freedomotic.model.environment.Zone;
 import java.util.logging.Logger;
 
@@ -38,23 +37,40 @@ public class TemperatureEvent
 	private int temperature;
     private String zone;
 
+    /**
+     *
+     * @param source
+     * @param temperature
+     * @param z
+     */
     public TemperatureEvent(Object source, int temperature, Zone z) {
         this.temperature = temperature;
         zone = z.getName();
         generateEventPayload();
     }
 
+    /**
+     *
+     */
     @Override
     protected void generateEventPayload() {
         payload.addStatement("zone", zone);
         payload.addStatement("temperature", temperature);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return ("Temperature in " + zone + " is " + temperature + "°C");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         return "app.event.sensor.temperature";

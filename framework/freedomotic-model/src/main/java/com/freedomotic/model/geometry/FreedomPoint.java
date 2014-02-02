@@ -33,32 +33,61 @@ public class FreedomPoint implements Serializable {
 	private int x;
     private int y;
 
+    /**
+     *
+     * @param x
+     * @param y
+     */
     public FreedomPoint(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     *
+     */
     public FreedomPoint() {
         this.x = 0;
         this.y = 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     *
+     * @param x
+     */
     public void setX(int x) {
         this.x = x;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getY() {
         return y;
     }
 
+    /**
+     *
+     * @param y
+     */
     public void setY(int y) {
         this.y = y;
     }
 
+    /**
+     *
+     * @param object
+     * @return
+     */
     @Override
     public boolean equals(Object object) {
         if (object instanceof FreedomPoint) {
@@ -74,11 +103,20 @@ public class FreedomPoint implements Serializable {
         return false;
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     */
     public void setLocation(int x, int y) {
         setX(x);
         setY(y);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return this.getX() + "," + this.getY();

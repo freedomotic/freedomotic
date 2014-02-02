@@ -26,19 +26,16 @@
  */
 package com.freedomotic.core;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.util.Info;
-
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;import java.awt.image.BufferedImage;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 
 /**
@@ -49,6 +46,13 @@ public final class ResourcesManager {
 
     private static final HashMap<String, BufferedImage> CACHE = new HashMap<String, BufferedImage>();
 
+    /**
+     *
+     * @param imageName
+     * @param width
+     * @param height
+     * @return
+     */
     public static BufferedImage getResource(String imageName, int width, int height) {
         String resizedImageName = imageName + "_" + width + "x" + height;
         if (!(width > 0) || !(height > 0)) { //not needs resizeing
@@ -75,6 +79,11 @@ public final class ResourcesManager {
         return null; //an error
     }
 
+    /**
+     *
+     * @param imageName
+     * @return
+     */
     public static synchronized BufferedImage getResource(String imageName) {
         BufferedImage img = CACHE.get(imageName.toLowerCase());
         if (img == null) { //img not in cache
@@ -96,12 +105,23 @@ public final class ResourcesManager {
         return null; //not cached and not loaded from hdd
     }
 
+    /**
+     *
+     * @param folder
+     * @param fileName
+     * @return
+     */
     public static File getFile(File folder, String fileName) {
         DirectoryReader dirReader = new DirectoryReader();
         dirReader.find(folder, fileName);
         return dirReader.getFile();
     }
 
+    /**
+     *
+     * @param imageName
+     * @param image
+     */
     public static synchronized void addResource(String imageName, BufferedImage image) {
         CACHE.put(imageName, image);
     }
@@ -130,6 +150,9 @@ public final class ResourcesManager {
         return img;
     }
 
+    /**
+     *
+     */
     public static void clear() {
         CACHE.clear();
     }

@@ -19,21 +19,17 @@
  */
 package com.freedomotic.environment;
 
-import com.google.inject.Inject;
 import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.geometry.FreedomPolygon;
-
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.objects.impl.Gate;
-import com.freedomotic.security.Auth;
 import com.freedomotic.util.Graph;
 import com.freedomotic.util.UidGenerator;
-
+import com.google.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -55,11 +51,19 @@ public final class EnvironmentLogic {
     private File source = null;
     private final API api;
     
+    /**
+     *
+     * @param api
+     */
     @Inject
     public EnvironmentLogic(API api) {
         this.api = api;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("environments:read")
     public Environment getPojo() {
         if (api.getAuth().isPermitted("environments:read:" + pojo.getUUID().substring(0, 5))) {
@@ -68,6 +72,10 @@ public final class EnvironmentLogic {
         return null;
     }
 
+    /**
+     *
+     * @param pojo
+     */
     @RequiresPermissions("environments:update")
     public void setPojo(Environment pojo) {
         if ((pojo.getUUID() == null) || pojo.getUUID().isEmpty()) {
@@ -77,11 +85,19 @@ public final class EnvironmentLogic {
         this.pojo = pojo;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("environments:read")
     public Graph getGraph() {
         return graph;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("environments:read")
     public List<Room> getRooms() {
         List<Room> rooms = new ArrayList<Room>();
@@ -95,6 +111,10 @@ public final class EnvironmentLogic {
         return rooms;
     }
 
+    /**
+     *
+     * @param zone
+     */
     @RequiresPermissions({"environments:update", "zones:create"})
     public void addRoom(ZoneLogic zone) {
         //null and duplicate check
@@ -151,18 +171,30 @@ public final class EnvironmentLogic {
         }
     }
 
+    /**
+     *
+     * @param zone
+     */
     @RequiresPermissions("environments:delete")
     public void removeZone(ZoneLogic zone) {
         getPojo().getZones().remove(zone.getPojo());
         zones.remove(zone);
     }
 
+    /**
+     *
+     * @return
+     * @deprecated
+     */
     @Deprecated
     @RequiresPermissions("environments:read")
     public int getLastObjectIndex() {
         return EnvObjectPersistence.size();
     }
 
+    /**
+     *
+     */
     @RequiresPermissions("environments:delete")
     public void clear() {
         //release resources
@@ -175,6 +207,9 @@ public final class EnvironmentLogic {
         }
     }
 
+    /**
+     *
+     */
     @RequiresPermissions("environments:read")
     public void init() {
         graph = new Graph(); //the graph data structure that describes how rooms are connected through gates
@@ -210,11 +245,20 @@ public final class EnvironmentLogic {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("environments:read")
     public List<ZoneLogic> getZones() {
         return zones;
     }
 
+    /**
+     *
+     * @param zoneName
+     * @return
+     */
     @RequiresPermissions({"environments:read", "zones:read"})
     public ZoneLogic getZone(String zoneName) {
         for (ZoneLogic zone : zones) {
@@ -227,21 +271,37 @@ public final class EnvironmentLogic {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("environments:read")
     public File getSource() {
         return source;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("environments:read")
     public File getObjectFolder() {
         return new File(source.getParent() + "/data/obj/");
     }
 
+    /**
+     *
+     * @param source
+     */
     @RequiresPermissions("environments:update,create")
     public void setSource(File source) {
         this.source = source;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("environments:read")
     public String toString() {
         return this.getPojo().getName();

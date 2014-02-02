@@ -22,19 +22,14 @@
 package com.freedomotic.marketplace;
 
 import com.freedomotic.app.Freedomotic;
-
 import java.util.ArrayList;
 import java.util.Collection;
-
+import java.util.logging.Logger;
 import org.openide.util.Lookup;
 import org.openide.util.Lookup.Result;
 import org.openide.util.Lookup.Template;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.logging.Logger;
 
 /**
  *
@@ -69,6 +64,10 @@ public class MarketPlaceService {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public static synchronized MarketPlaceService getInstance() {
         if (service == null) {
             service = new MarketPlaceService();
@@ -77,6 +76,10 @@ public class MarketPlaceService {
         return service;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<IPluginPackage> getPackageList() {
         ArrayList<IPluginPackage> packageList = null;
 
@@ -93,6 +96,11 @@ public class MarketPlaceService {
         return packageList;
     }
 
+    /**
+     *
+     * @param category
+     * @return
+     */
     public ArrayList<IPluginPackage> getPackageList(IPluginCategory category) {
         ArrayList<IPluginPackage> packageList = null;
 
@@ -109,6 +117,10 @@ public class MarketPlaceService {
         return packageList;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<IPluginCategory> getCategoryList() {
         ArrayList<IPluginCategory> categoryList = null;
 

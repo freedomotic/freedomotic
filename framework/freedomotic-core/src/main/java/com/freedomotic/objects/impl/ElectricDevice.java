@@ -23,12 +23,7 @@
  */
 package com.freedomotic.objects.impl;
 
-import com.google.inject.Inject;
-import com.freedomotic.api.API;
-import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.events.ObjectReceiveClick;
-
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.objects.BooleanBehaviorLogic;
@@ -37,7 +32,6 @@ import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
-import com.freedomotic.util.I18n.I18n;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,9 +42,24 @@ import java.util.logging.Logger;
 public class ElectricDevice
         extends EnvObjectLogic {
 
+    /**
+     *
+     */
     protected BooleanBehaviorLogic powered;
+
+    /**
+     *
+     */
     protected final static String BEHAVIOR_POWERED = "powered";
+
+    /**
+     *
+     */
     protected final static String ACTION_TURN_ON = "turn on";
+
+    /**
+     *
+     */
     protected final static String ACTION_TURN_OFF = "turn off";
     
     // @Inject
@@ -218,6 +227,9 @@ public class ElectricDevice
         CommandPersistence.add(switchPower);
     }
 
+    /**
+     *
+     */
     @Override
     protected void createTriggers() {
         Trigger clicked = new Trigger();

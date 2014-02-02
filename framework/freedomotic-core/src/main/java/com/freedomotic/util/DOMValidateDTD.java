@@ -21,21 +21,11 @@
  */
 package com.freedomotic.util;
 
-import com.freedomotic.app.Freedomotic;
-
-import org.w3c.dom.Document;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -46,9 +36,24 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
+/**
+ *
+ * @author nicoletti
+ */
 public class DOMValidateDTD {
 
+    /**
+     *
+     * @param xmlFile
+     * @param absolutePathToDtd
+     * @return
+     * @throws IOException
+     */
     public static String validate(File xmlFile, String absolutePathToDtd)
             throws IOException {
         try {

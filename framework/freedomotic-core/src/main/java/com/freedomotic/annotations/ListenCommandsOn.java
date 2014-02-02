@@ -38,5 +38,9 @@ import java.lang.annotation.Target;
 @Retention( RetentionPolicy.RUNTIME)
 public @interface ListenCommandsOn {
 
+    /**
+     *
+     * @return
+     */
     String channel();
 }

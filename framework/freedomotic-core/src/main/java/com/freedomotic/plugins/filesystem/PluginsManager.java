@@ -13,12 +13,25 @@ import java.net.URL;
  * @author enrico
  */
 public interface PluginsManager {
+
+    /**
+     *
+     */
     int TYPE_DEVICE = 0;
+
+    /**
+     *
+     */
     int TYPE_EVENT = 2;
+
+    /**
+     *
+     */
     int TYPE_OBJECT = 1;
 
     /**
      * Install a plugins boundle downloading it from remote URL
+     * @return 
      */
     boolean installBoundle(URL fromURL);
 
@@ -27,6 +40,7 @@ public interface PluginsManager {
      * their default folder.
      *
      * @param TYPE
+     * @throws com.freedomotic.exceptions.PluginLoadingException
      */
     void loadAllPlugins(int TYPE) throws PluginLoadingException;
 
@@ -34,6 +48,7 @@ public interface PluginsManager {
      * Loads all plugins from filesystem regardless their type
      *
      * @param TYPE
+     * @throws com.freedomotic.exceptions.PluginLoadingException
      */
     void loadAllPlugins() throws PluginLoadingException;
 

@@ -27,5 +27,9 @@ package com.freedomotic.serial;
  */
 public interface SerialDataConsumer {
 
+    /**
+     *
+     * @param data
+     */
     void onDataAvailable(String data);
 }

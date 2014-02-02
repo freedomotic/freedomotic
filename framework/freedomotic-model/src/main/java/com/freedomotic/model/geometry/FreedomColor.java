@@ -36,37 +36,72 @@ public class FreedomColor implements Serializable{
     private int blue;
     private int alpha;
 
+    /**
+     *
+     */
     public FreedomColor() {
     }
 
+    /**
+     *
+     * @return
+     */
     public int getAlpha() {
         return alpha;
     }
 
+    /**
+     *
+     * @param alpha
+     */
     public void setAlpha(int alpha) {
         this.alpha = alpha;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getBlue() {
         return blue;
     }
 
+    /**
+     *
+     * @param blue
+     */
     public void setBlue(int blue) {
         this.blue = blue;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getGreen() {
         return green;
     }
 
+    /**
+     *
+     * @param green
+     */
     public void setGreen(int green) {
         this.green = green;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getRed() {
         return red;
     }
 
+    /**
+     *
+     * @param red
+     */
     public void setRed(int red) {
         this.red = red;
     }

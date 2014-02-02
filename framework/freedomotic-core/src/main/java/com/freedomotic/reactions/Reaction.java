@@ -38,7 +38,6 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.core.Condition;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,23 +59,46 @@ public final class Reaction
     private String description;
     private String shortDescription;
 
+    /**
+     *
+     */
     public Reaction() {
     }
 
+    /**
+     *
+     * @param trigger
+     * @param conditions
+     * @param commands
+     */
     public Reaction(Trigger trigger, List<Condition> conditions, List<Command> commands) {
         this.conditions = conditions;
         create(trigger, commands);
     }
 
+    /**
+     *
+     * @param trigger
+     * @param commands
+     */
     public Reaction(String trigger, List<Command> commands) {
         Trigger t = TriggerPersistence.getTrigger(trigger);
         create(t, commands);
     }
 
+    /**
+     *
+     * @param trigger
+     * @param commands
+     */
     public Reaction(Trigger trigger, List<Command> commands) {
         create(trigger, commands);
     }
 
+    /**
+     *
+     * @param trigger
+     */
     public Reaction(Trigger trigger) {
         this.trigger = trigger;
     }
@@ -113,10 +135,18 @@ public final class Reaction
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public Trigger getTrigger() {
         return trigger;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Command> getCommands() {
         if (commands == null) {
             commands = new ArrayList<Command>();
@@ -125,6 +155,10 @@ public final class Reaction
         return commands;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return shortDescription;
@@ -187,14 +221,27 @@ public final class Reaction
         return b.toString();
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Condition> getConditions() {
         return conditions;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -215,6 +262,10 @@ public final class Reaction
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -223,24 +274,43 @@ public final class Reaction
         return hash;
     }
 
+    /**
+     *
+     * @param trigger
+     */
     public void setTrigger(Trigger trigger) {
         this.trigger = trigger;
         setChanged();
     }
 
+    /**
+     *
+     */
     public void setChanged() {
         description = buildDescription();
         shortDescription = buildShortDescription();
     }
 
+    /**
+     *
+     * @return
+     */
     public String getUUID() {
         return uuid;
     }
 
+    /**
+     *
+     * @param uuid
+     */
     public void setUUID(String uuid) {
         this.uuid = uuid;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean hasTrigger() {
         if (trigger != null) {
             return true;

@@ -22,7 +22,6 @@
 package com.freedomotic.marketplace;
 
 import com.freedomotic.util.JarFilter;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -53,6 +52,7 @@ public class ClassPathUpdater {
      *
      * @param s The directory to add to the classpath (or a file, which will
      * relegate to its directory).
+     * @throws java.lang.reflect.InvocationTargetException
      */
     public static void add(String s)
             throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -67,6 +67,7 @@ public class ClassPathUpdater {
      *
      * @param f The directory (or enclosing directory if a file) to add to the
      * classpath.
+     * @throws java.lang.reflect.InvocationTargetException
      */
     public static void add(File f)
             throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -90,6 +91,7 @@ public class ClassPathUpdater {
      * not a file.
      *
      * @param url The path to include when searching the classpath.
+     * @throws java.lang.reflect.InvocationTargetException
      */
     public static void add(URL url)
             throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {

@@ -21,27 +21,23 @@ package com.freedomotic.core;
 
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
-import com.freedomotic.bus.BusService;
 import com.freedomotic.bus.BusMessagesListener;
+import com.freedomotic.bus.BusService;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.reactions.Command;
-
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
-
-import com.google.inject.Inject;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Translates a generic request like 'turn on light 1' into a series of hardware
@@ -62,11 +58,35 @@ public final class BehaviorManager
 
     private static final Logger LOG = Logger.getLogger(BehaviorManager.class.getName());
     private static final String MESSAGING_CHANNEL = "app.events.sensors.behavior.request.objects";
+
+    /**
+     *
+     */
     public static final String PROPERTY_BEHAVIOR = "behavior";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_CLASS = "object.class";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_ADDRESS = "object.address";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_NAME = "object.name";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_PROTOCOL = "object.protocol";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT = "object";
     private static BusMessagesListener listener;
     private BusService busService;
@@ -75,6 +95,9 @@ public final class BehaviorManager
         return MESSAGING_CHANNEL;
     }
 
+    /**
+     *
+     */
     public BehaviorManager() {
         this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
         register();
@@ -232,6 +255,10 @@ public final class BehaviorManager
         }
     }
 
+    /**
+     *
+     * @param userLevelCommand
+     */
     protected static void parseCommand(Command userLevelCommand) {
 
         String object = userLevelCommand.getProperty(Command.PROPERTY_OBJECT);

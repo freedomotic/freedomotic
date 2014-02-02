@@ -38,19 +38,34 @@ public class DevicesLoaderTest {
 //    private static AddonManager loader;
 //    private static File folder;
 
+    /**
+     *
+     */
+    
     public DevicesLoaderTest() {
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @BeforeClass
     public static void setUpClass() throws Exception {
 //        loader = new AddonManager();
 //        folder = new File(Info.getPluginsPath() + "/devices/");
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
 
+    /**
+     *
+     */
     @Test
     public void testLoad() {
         //TODO: always fail because Freedomotic instance is not loaded (is null)

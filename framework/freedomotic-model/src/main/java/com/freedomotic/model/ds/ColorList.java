@@ -25,11 +25,18 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ *
+ * @author nicoletti
+ */
 public class ColorList {
 
     static ArrayList<Color> colors = new ArrayList<Color>();
     static int last = 0;
 
+    /**
+     *
+     */
     public ColorList() {
         colors.add(Color.red);
         colors.add(Color.green);
@@ -40,6 +47,10 @@ public class ColorList {
         colors.add(Color.yellow);
     }
 
+    /**
+     *
+     * @return
+     */
     public static Color getRandom() {
         Random rand = new Random();
 
@@ -48,6 +59,10 @@ public class ColorList {
                 rand.nextInt(256)));
     }
 
+    /**
+     *
+     * @return
+     */
     public static Color getNext() {
         if (last >= colors.size()) {
             last = 0;

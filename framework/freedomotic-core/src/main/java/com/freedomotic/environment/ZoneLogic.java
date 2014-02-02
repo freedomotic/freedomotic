@@ -44,14 +44,10 @@ import com.freedomotic.bus.BusService;
 import com.freedomotic.events.ZoneHasChanged;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.objects.impl.Person;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-
-import com.google.inject.Inject;
 
 /**
  *
@@ -66,21 +62,38 @@ public class ZoneLogic {
     private List<Person> occupiers = new ArrayList<Person>();
     private EnvironmentLogic FatherEnv = null;
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public EnvironmentLogic getEnv() {
         return this.FatherEnv;
     }
 
+    /**
+     *
+     * @param pojo
+     */
     public ZoneLogic(final Zone pojo) {
         this.pojo = pojo;
 		this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
    }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public Zone getPojo() {
         return pojo;
     }
 
+    /**
+     *
+     * @param g
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public boolean alreadyTakenBy(Person g) {
         try {
@@ -96,6 +109,10 @@ public class ZoneLogic {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public Ownership getOwnershipStrategy() {
         Ownership os = new LastOutStrategy();
@@ -103,11 +120,20 @@ public class ZoneLogic {
         return os;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public int howManyInside() {
         return occupiers.size();
     }
 
+    /**
+     *
+     * @param g
+     * @return
+     */
     @RequiresPermissions("zones:update")
     public boolean enter(Person g) {
         boolean success = false;
@@ -125,6 +151,11 @@ public class ZoneLogic {
         return success;
     }
 
+    /**
+     *
+     * @param g
+     * @return
+     */
     @RequiresPermissions("zones:update")
     public boolean exit(Person g) {
         boolean success = false;
@@ -142,12 +173,19 @@ public class ZoneLogic {
         return success;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     @RequiresPermissions("zones:read")
     public String toString() {
         return getPojo().getName();
     }
 
+    /**
+     *
+     */
     @RequiresPermissions("zones:update")
     public void setChanged() {
         ZoneHasChanged event = new ZoneHasChanged(this,
@@ -155,11 +193,20 @@ public class ZoneLogic {
         busService.send(event);
     }
 
+    /**
+     *
+     * @param env
+     */
     @RequiresPermissions("zones:read")
     protected void init(EnvironmentLogic env) {
         this.FatherEnv = env;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     @RequiresPermissions("zones:read")
     public boolean equals(Object obj) {
@@ -180,6 +227,10 @@ public class ZoneLogic {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     @RequiresPermissions("zones:read")
     public int hashCode() {

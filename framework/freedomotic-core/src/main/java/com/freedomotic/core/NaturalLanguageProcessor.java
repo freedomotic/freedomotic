@@ -28,7 +28,6 @@ package com.freedomotic.core;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.util.DamerauLevenshtein;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,8 +40,8 @@ import java.util.logging.Logger;
  * @author Enrico
  */
 public class NaturalLanguageProcessor {
-
-    List<Rank> ranking;
+    private static final Logger LOG = Logger.getLogger(NaturalLanguageProcessor.class.getName());
+    private List<Rank> ranking;
 
     private void buildRanking(String input) {
         if (input == null || input.isEmpty()) {
@@ -71,6 +70,12 @@ public class NaturalLanguageProcessor {
         }
     }
 
+    /**
+     *
+     * @param inputTags
+     * @param resultSize
+     * @return
+     */
     public List<Rank> getMostSimilarCommand(String inputTags, int resultSize) {
         ranking = new ArrayList<Rank>();
         buildRanking(inputTags);
@@ -82,20 +87,36 @@ public class NaturalLanguageProcessor {
         }
     }
 
+    /**
+     *
+     */
     public class Rank {
 
         int similarity;
         Command cmd;
 
+        /**
+         *
+         * @param similarity
+         * @param cmd
+         */
         public Rank(int similarity, Command cmd) {
             this.similarity = similarity;
             this.cmd = cmd;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getSimilarity() {
             return similarity;
         }
 
+        /**
+         *
+         * @return
+         */
         public Command getCommand() {
             return cmd;
         }
@@ -108,5 +129,4 @@ public class NaturalLanguageProcessor {
             return ob2.getSimilarity() - ob1.getSimilarity(); //descending order of similarity
         }
     }
-    private static final Logger LOG = Logger.getLogger(NaturalLanguageProcessor.class.getName());
 }

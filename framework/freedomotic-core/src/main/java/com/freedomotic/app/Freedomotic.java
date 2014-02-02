@@ -53,7 +53,9 @@ import com.freedomotic.security.Auth;
 import com.freedomotic.serial.SerialConnectionProvider;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.LogFormatter;
-
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -64,26 +66,19 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
-
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.SubjectThreadState;
 import org.apache.shiro.util.ThreadState;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-
-import java.util.Collection;
 
 /**
  * This is the starting class of the project
@@ -92,11 +87,19 @@ import java.util.Collection;
  */
 public class Freedomotic implements BusConsumer {
 
+    /**
+     *
+     * @deprecated
+     */
     @Deprecated
     public static final Logger logger = Logger.getLogger("com.freedomotic");
     //this should replace Freedomotic.logger reference
     private static final Logger LOG = Logger.getLogger(Freedomotic.class.getName());
     private static String INSTANCE_ID;
+
+    /**
+     *
+     */
     public static ArrayList<IPluginCategory> onlinePluginCategories;
     /**
      * Should NOT be used. Reserved for una tantum internal freedomotic core use
@@ -119,6 +122,7 @@ public class Freedomotic implements BusConsumer {
      * @param pluginsLoader
      * @param joinDevice
      * @param joinPlugin
+     * @param api
      */
     @Inject
     public Freedomotic(
@@ -135,6 +139,10 @@ public class Freedomotic implements BusConsumer {
         this.auth = api.getAuth();
     }
 
+    /**
+     *
+     * @throws FreedomoticException
+     */
     public void start() throws FreedomoticException {
         /**
          * ******************************************************************
@@ -406,6 +414,10 @@ public class Freedomotic implements BusConsumer {
         LOG.info("Freedomotic startup completed");
     }
 
+    /**
+     *
+     * @throws FreedomoticException
+     */
     public void loadDefaultEnvironment()
             throws FreedomoticException {
         String envFilePath = config.getProperty("KEY_ROOM_XML_PATH");
@@ -444,10 +456,18 @@ public class Freedomotic implements BusConsumer {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getInstanceID() {
         return INSTANCE_ID;
     }
 
+    /**
+     *
+     * @param dimension
+     */
     public void loadGraphics(Dimension dimension) {
         new ColorList();
     }
@@ -458,12 +478,23 @@ public class Freedomotic implements BusConsumer {
     }
 
     // FIXME This shouldn't be done through this method
-    public static void sendEvent(EventTemplate event) {
+
+    /**
+     *
+     * @param event
+     */
+        public static void sendEvent(EventTemplate event) {
         busService.send(event);
     }
 
     // FIXME This shouldn't be done through this method
-    public static Command sendCommand(final Command command) {
+
+    /**
+     *
+     * @param command
+     * @return
+     */
+        public static Command sendCommand(final Command command) {
         return busService.send(command);
     }
 
@@ -535,6 +566,10 @@ public class Freedomotic implements BusConsumer {
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     public void onExit(EventTemplate event) {
         LOG.info("Received exit signal...");
         //stop all plugins
@@ -583,16 +618,28 @@ public class Freedomotic implements BusConsumer {
         System.exit(0);
     }
 
+    /**
+     *
+     */
     public static void kill() {
 
         kill(0);
     }
 
+    /**
+     *
+     * @param status
+     */
     public static void kill(int status) {
 
         System.exit(status);
     }
 
+    /**
+     *
+     * @param t
+     * @return
+     */
     public static String getStackTraceInfo(Throwable t) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw, true);

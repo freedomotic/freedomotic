@@ -22,10 +22,8 @@
  package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
-
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
@@ -48,7 +46,13 @@ public class ObjectHasChangedBehavior extends EventTemplate {
     private static final long serialVersionUID = 6892968576173017195L;
 
 	//private EnvObject obj;
-    public ObjectHasChangedBehavior(Object source, EnvObjectLogic obj) {
+
+    /**
+     *
+     * @param source
+     * @param obj
+     */
+        public ObjectHasChangedBehavior(Object source, EnvObjectLogic obj) {
         super(source);
 
         //add default object properties
@@ -71,10 +75,17 @@ public class ObjectHasChangedBehavior extends EventTemplate {
         }
     }
 
+    /**
+     *
+     */
     @Override
     protected void generateEventPayload() {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         return "app.event.sensor.object.behavior.change";

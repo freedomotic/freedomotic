@@ -25,6 +25,7 @@
  */
 package com.freedomotic.serial;
 
+import com.freedomotic.util.Info;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
@@ -33,9 +34,6 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
-import com.freedomotic.app.Freedomotic;
-import com.freedomotic.util.Info;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,14 +74,25 @@ public class SerialConnectionProvider implements SerialPortEventListener {
     private long MAX_WAIT_RESPONSE_TIME;
     private ArrayList<SerialDataConsumer> consumers = new ArrayList<SerialDataConsumer>();
 
+    /**
+     *
+     * @param config
+     */
     public SerialConnectionProvider(Properties config) {
         init(config);
     }
 
+    /**
+     *
+     */
     public SerialConnectionProvider() {
         init(new Properties());
     }
 
+    /**
+     *
+     * @param consumer
+     */
     public void addListener(SerialDataConsumer consumer) {
         this.consumers.add(consumer);
     }
@@ -172,6 +181,10 @@ public class SerialConnectionProvider implements SerialPortEventListener {
         }
     }
 
+    /**
+     *
+     * @param spe
+     */
     @Override
     public synchronized void serialEvent(SerialPortEvent spe) {
         switch (spe.getEventType()) {
@@ -187,10 +200,17 @@ public class SerialConnectionProvider implements SerialPortEventListener {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isConnected() {
         return isConnected;
     }
 
+    /**
+     *
+     */
     public void connect() {
         //is already connected
         if (isConnected) {
@@ -248,7 +268,6 @@ public class SerialConnectionProvider implements SerialPortEventListener {
      * Nel caso non sia colelgato o avvengano errori nella chiusura della porta
      * restituisce false.
      *
-     * @return true se la connessione viene chiusa correttamente.
      */
     public void disconnect() {
         // E' gia disconnesso
@@ -265,6 +284,10 @@ public class SerialConnectionProvider implements SerialPortEventListener {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPortName() {
         if (currentPort != null) {
             return currentPort.getName();
@@ -309,7 +332,14 @@ public class SerialConnectionProvider implements SerialPortEventListener {
     }
 
     //synchronous write to serial device
-    public synchronized String send(String message) throws IOException {
+
+    /**
+     *
+     * @param message
+     * @return
+     * @throws IOException
+     */
+        public synchronized String send(String message) throws IOException {
         // Nessuna porta è stata aperta
         if (currentPort == null) {
             //lazy init of serial connection
@@ -476,40 +506,78 @@ public class SerialConnectionProvider implements SerialPortEventListener {
         }
     }
 
+    /**
+     *
+     * @param DEVICE_NAME
+     */
     public void setDeviceName(String DEVICE_NAME) {
         this.DEVICE_NAME = DEVICE_NAME;
     }
 
+    /**
+     *
+     * @param APP_ID
+     */
     public void setConnectionName(String APP_ID) {
         this.APP_ID = APP_ID;
     }
 
+    /**
+     *
+     * @param HELLO_MESSAGE
+     * @param HELLO_REPLY
+     */
     public void setAutodiscover(String HELLO_MESSAGE, String HELLO_REPLY) {
         this.HELLO_MESSAGE = HELLO_MESSAGE;
         this.HELLO_REPLY = HELLO_REPLY;
     }
 
+    /**
+     *
+     * @param POLLING_MESSAGE
+     * @param POLLING_TIME
+     */
     public void setPollingMode(String POLLING_MESSAGE, int POLLING_TIME) {
         this.POLLING_MESSAGE = POLLING_MESSAGE;
         this.POLLING_TIME = POLLING_TIME;
     }
 
+    /**
+     *
+     * @param PORT_BAUDRATE
+     */
     public void setPortBaudrate(int PORT_BAUDRATE) {
         this.PORT_BAUDRATE = PORT_BAUDRATE;
     }
 
+    /**
+     *
+     * @param PORT_DATABITS
+     */
     public void setPortDatabits(int PORT_DATABITS) {
         this.PORT_DATABITS = PORT_DATABITS;
     }
 
+    /**
+     *
+     * @param PORT_NAME
+     */
     public void setPortName(String PORT_NAME) {
         this.PORT_NAME = PORT_NAME;
     }
 
+    /**
+     *
+     * @param PORT_PARITY
+     */
     public void setPortParity(int PORT_PARITY) {
         this.PORT_PARITY = PORT_PARITY;
     }
 
+    /**
+     *
+     * @param PORT_STOPBITS
+     */
     public void setPortStopbits(int PORT_STOPBITS) {
         this.PORT_STOPBITS = PORT_STOPBITS;
     }

@@ -16,12 +16,10 @@ import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ClientStorageInMemory;
 import com.freedomotic.plugins.filesystem.PluginsManager;
 import com.freedomotic.plugins.filesystem.PluginsManagerImpl;
-
-import org.junit.Ignore;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import org.junit.Ignore;
 
 /**
  *
@@ -31,6 +29,9 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 public class FreedomoticTestsInjector
         extends AbstractModule {
 
+    /**
+     *
+     */
     @Override
     protected void configure() {
         bind(ClientStorage.class).to(ClientStorageInMemory.class).in(Singleton.class);

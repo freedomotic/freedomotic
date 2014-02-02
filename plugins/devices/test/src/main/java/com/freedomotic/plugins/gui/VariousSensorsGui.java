@@ -11,17 +11,12 @@
 package com.freedomotic.plugins.gui;
 
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.environment.EnvironmentPersistence;
-
 import com.freedomotic.events.LuminosityEvent;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.events.TemperatureEvent;
-
 import com.freedomotic.plugins.VariousSensors;
-
 import com.freedomotic.reactions.Command;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -36,6 +31,7 @@ public class VariousSensorsGui
 
     /**
      * Creates new form VariousSensorsForm
+     * @param sensors
      */
     public VariousSensorsGui(VariousSensors sensors) {
         this.sensor = sensors;
@@ -63,6 +59,10 @@ public class VariousSensorsGui
         });
     }
 
+    /**
+     *
+     * @param text
+     */
     public void updateDescription(String text) {
         txtResult.setText(text);
     }

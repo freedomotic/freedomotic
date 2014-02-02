@@ -19,17 +19,11 @@
  */
 package com.freedomotic.reactions;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.thoughtworks.xstream.XStream;
-
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.persistence.FreedomXStream;
-
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
-
+import com.thoughtworks.xstream.XStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
@@ -37,8 +31,6 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
-
-import com.thoughtworks.xstream.XStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,6 +42,10 @@ public class TriggerPersistence {
 
     private static ArrayList<Trigger> list = new ArrayList<Trigger>();
 
+    /**
+     *
+     * @param folder
+     */
     public static void saveTriggers(File folder) {
         if (list.isEmpty()) {
             LOG.warning("There are no triggers to persist, " + folder.getAbsolutePath()
@@ -111,10 +107,18 @@ public class TriggerPersistence {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public static ArrayList<Trigger> getTriggers() {
         return list;
     }
 
+    /**
+     *
+     * @param folder
+     */
     public synchronized static void loadTriggers(File folder) {
         XStream xstream = FreedomXStream.getXstream();
 
@@ -186,6 +190,10 @@ public class TriggerPersistence {
         }
     }
 
+    /**
+     *
+     * @param t
+     */
     public static synchronized void addAndRegister(Trigger t) {
         int preSize = TriggerPersistence.size();
 
@@ -207,6 +215,10 @@ public class TriggerPersistence {
         }
     }
 
+    /**
+     *
+     * @param t
+     */
     public static synchronized void add(Trigger t) {
         if (t != null) {
             int preSize = TriggerPersistence.size();
@@ -228,6 +240,10 @@ public class TriggerPersistence {
         }
     }
 
+    /**
+     *
+     * @param t
+     */
     public static synchronized void remove(Trigger t) {
         int preSize = TriggerPersistence.size();
 
@@ -268,6 +284,11 @@ public class TriggerPersistence {
         return null;
     }
 
+    /**
+     *
+     * @param input
+     * @return
+     */
     public static Trigger getTrigger(Trigger input) {
         if (input != null) {
             for (Iterator it = list.iterator(); it.hasNext();) {
@@ -282,14 +303,27 @@ public class TriggerPersistence {
         return null;
     }
 
+    /**
+     *
+     * @param i
+     * @return
+     */
     public static Trigger getTrigger(int i) {
         return list.get(i);
     }
 
+    /**
+     *
+     * @return
+     */
     public static Iterator<Trigger> iterator() {
         return list.iterator();
     }
 
+    /**
+     *
+     * @return
+     */
     public static int size() {
         return list.size();
     }

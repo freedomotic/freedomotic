@@ -36,18 +36,54 @@ public interface BehaviorLogic {
      */
     public void filterParams(final Config params, boolean fireCommand);
 
+    /**
+     *
+     * @return
+     */
     public String getName();
 
+    /**
+     *
+     * @return
+     */
     public boolean isChanged();
 
+    /**
+     *
+     * @param value
+     */
     public void setChanged(boolean value);
 
+    /**
+     *
+     * @return
+     */
     public boolean isActive();
 
+    /**
+     *
+     * @return
+     */
     public boolean isReadOnly();
 
+    /**
+     *
+     * @return
+     */
     public String getValueAsString();
+
+    /**
+     *
+     */
     public final String VALUE_OPPOSITE = "opposite";
+
+    /**
+     *
+     */
     public final String VALUE_PREVIOUS = "previous";
+
+    /**
+     *
+     */
     public final String VALUE_NEXT = "next";
 }

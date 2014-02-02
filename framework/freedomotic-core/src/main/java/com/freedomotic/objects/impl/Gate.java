@@ -21,13 +21,10 @@
  */
 package com.freedomotic.objects.impl;
 
-import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
-
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.object.BooleanBehavior;
@@ -53,9 +50,25 @@ public class Gate
 
     private Room from;
     private Room to;
+
+    /**
+     *
+     */
     protected RangedIntBehaviorLogic openness;
+
+    /**
+     *
+     */
     protected BooleanBehaviorLogic open;
+
+    /**
+     *
+     */
     protected final static String BEHAVIOR_OPEN = "open";
+
+    /**
+     *
+     */
     protected final static String BEHAVIOR_OPENNESS = "openness";
 
     @Override
@@ -109,6 +122,10 @@ public class Gate
         evaluateGate();
     }
 
+    /**
+     *
+     * @param params
+     */
     protected void setClosed(Config params) {
         boolean executed = executeCommand("close", params); //executes the developer level command associated with 'set brightness' action
 
@@ -122,6 +139,10 @@ public class Gate
         }
     }
 
+    /**
+     *
+     * @param params
+     */
     protected void setOpen(Config params) {
         boolean executed = executeCommand("open", params); //executes the developer level command associated with 'set brightness' action
 
@@ -135,6 +156,11 @@ public class Gate
         }
     }
 
+    /**
+     *
+     * @param rangeValue
+     * @param params
+     */
     protected void setOpeness(int rangeValue, Config params) {
         boolean executed = executeCommand("measured open", params); //executes the developer level command associated with 'set brightness' action
 
@@ -149,6 +175,10 @@ public class Gate
         }
     }
 
+    /**
+     *
+     * @param value
+     */
     @Override
     public final void setChanged(boolean value) {
         //update the room that can be reached
@@ -173,24 +203,44 @@ public class Gate
         super.setChanged(true);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isOpen() {
         return open.getValue();
     }
 
+    /**
+     *
+     * @return
+     */
     public Room getFrom() {
         return from;
     }
 
+    /**
+     *
+     * @return
+     */
     public Room getTo() {
         return to;
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     */
     @Override
     public void setLocation(int x, int y) {
         super.setLocation(x, y);
         evaluateGate();
     }
 
+    /**
+     *
+     */
     public void evaluateGate() {
         //checks the intersection with the first view in the list
         //others views are ignored!!!
@@ -258,6 +308,9 @@ public class Gate
         LOG.config("The gate '" + getPojo().getName() + "' connects " + from + " to " + to);
     }
 
+    /**
+     *
+     */
     @Override
     protected void createCommands() {
         Command a = new Command();
@@ -385,6 +438,9 @@ public class Gate
         CommandPersistence.add(o);
     }
 
+    /**
+     *
+     */
     @Override
     protected void createTriggers() {
         Trigger clicked = new Trigger();

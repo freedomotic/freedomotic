@@ -4,14 +4,11 @@
  */
 package com.freedomotic.plugins.filesystem;
 
+import com.freedomotic.app.DependenciesInjector;
+import com.freedomotic.app.Freedomotic;
+import com.freedomotic.util.Info;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.freedomotic.app.Freedomotic;
-
-import com.freedomotic.app.DependenciesInjector;
-
-import com.freedomotic.util.Info;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

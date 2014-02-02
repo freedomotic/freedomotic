@@ -22,11 +22,8 @@
 package com.freedomotic.api;
 
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.reactions.Payload;
 import com.freedomotic.reactions.Statement;
-// import com.freedomotic.util.UidGenerator;
-
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -43,10 +40,25 @@ public class EventTemplate
         implements Serializable {
 
     private static final long serialVersionUID = -6726283450243677665L;
-	
-	protected String eventName;
+
+    /**
+     *
+     */
+    protected String eventName;
+
+    /**
+     *
+     */
     protected String sender;
+
+    /**
+     *
+     */
     protected Payload payload = new Payload();
+
+    /**
+     *
+     */
     protected boolean isValid;
     // private int uid;
     // private boolean executed;
@@ -56,34 +68,67 @@ public class EventTemplate
     
     //TODO: change destination to simple String
     //private Destination replyTo = null;
-    protected void generateEventPayload() {
+
+    /**
+     *
+     */
+        protected void generateEventPayload() {
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDefaultDestination() {
         return "app.event.sensor";
     }
 
+    /**
+     *
+     */
     public EventTemplate() {
         fillPayloadWithDefaults();
     }
 
+    /**
+     *
+     * @param source
+     */
     public EventTemplate(Object source) {
         setSender(source);
         fillPayloadWithDefaults();
     }
 
+    /**
+     *
+     * @return
+     */
     public String getEventName() {
         return eventName;
     }
 
+    /**
+     *
+     * @return
+     */
     public long getCreation() {
         return creation;
     }
 
+    /**
+     *
+     * @param key
+     * @param value
+     */
     public void addProperty(String key, String value) {
         payload.addStatement(key, value);
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public String getProperty(String key) {
         synchronized (payload) {
             List<Statement> statements = payload.getStatements(key);
@@ -159,6 +204,10 @@ public class EventTemplate
         }
     }
 
+    /**
+     *
+     * @param source
+     */
     protected final void setSender(Object source) {
         if (source != null) {
             sender = source.getClass().getSimpleName();
@@ -167,6 +216,10 @@ public class EventTemplate
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public Payload getPayload() {
         return payload;
     }

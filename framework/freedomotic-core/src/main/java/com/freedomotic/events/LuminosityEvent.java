@@ -22,7 +22,6 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-
 import com.freedomotic.model.environment.Zone;
 import java.util.logging.Logger;
 
@@ -38,23 +37,40 @@ public class LuminosityEvent
 	int luminosity;
     String zone;
 
+    /**
+     *
+     * @param source
+     * @param temperature
+     * @param z
+     */
     public LuminosityEvent(Object source, int temperature, Zone z) {
         this.luminosity = temperature;
         zone = z.getName();
         generateEventPayload();
     }
 
+    /**
+     *
+     */
     @Override
     protected void generateEventPayload() {
         payload.addStatement("zone", zone);
         payload.addStatement("luminosity", luminosity);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return ("Luminosity in " + zone + " is " + luminosity + "%");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         return "app.event.sensor.luminosity";

@@ -29,17 +29,12 @@ import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import java.awt.Color;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -71,6 +66,7 @@ public class GraphPanel extends javax.swing.JFrame {
 
     /**
      * Creates new form GraphWindow
+     * @param obj
      */
     public GraphPanel(Plugin master, EnvObjectLogic obj) {
         this.master = master;
@@ -83,6 +79,9 @@ public class GraphPanel extends javax.swing.JFrame {
 
     }
 
+    /**
+     *
+     */
     public final void reDraw() {
         //  String JSON = obj.getBehavior("data").getValueAsString();
         DataBehaviorLogic dbl = (DataBehaviorLogic) obj.getBehavior("data");
@@ -367,6 +366,10 @@ public class GraphPanel extends javax.swing.JFrame {
 
     }
 
+    /**
+     *
+     * @param ev
+     */
     public void addDataFromEvent(EventTemplate ev) {
         Date d = new Date(ev.getCreation());
         Millisecond ms_read = new Millisecond(d);
@@ -376,18 +379,35 @@ public class GraphPanel extends javax.swing.JFrame {
 
     }
 
+    /**
+     *
+     */
     public class FreedomoticTableModel extends AbstractTableModel {
 
+        /**
+         *
+         * @return
+         */
         @Override
         public int getRowCount() {
             return points.getData().size();
         }
 
+        /**
+         *
+         * @return
+         */
         @Override
         public int getColumnCount() {
             return 6;
         }
 
+        /**
+         *
+         * @param rowIndex
+         * @param columnIndex
+         * @return
+         */
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             UsageData item = points.getData().get(rowIndex);
@@ -408,6 +428,11 @@ public class GraphPanel extends javax.swing.JFrame {
             return null;
         }
 
+        /**
+         *
+         * @param columnIndex
+         * @return
+         */
         @Override
         public Class<?> getColumnClass(int columnIndex) {
             if (columnIndex == 0) {
@@ -418,6 +443,11 @@ public class GraphPanel extends javax.swing.JFrame {
         }
         private final String[] columnNames = {"Datetime", "Name", "Protocol", "Address", "Behavior", "Value"};
 
+        /**
+         *
+         * @param column
+         * @return
+         */
         @Override
         public String getColumnName(int column) {
             return columnNames[column];

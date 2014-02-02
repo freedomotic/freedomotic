@@ -37,19 +37,34 @@ public class GenericEvent extends EventTemplate {
 	
 	private String destination = "app.event.sensor";
 
+    /**
+     *
+     * @param source
+     */
     public GenericEvent(Object source) {
         this.setSender(source);
     }
 
+    /**
+     *
+     */
     @Override
     protected void generateEventPayload() {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         return destination;
     }
 
+    /**
+     *
+     * @param destination
+     */
     public void setDestination(String destination) {
         this.destination = destination;
     }

@@ -39,6 +39,9 @@ public class Successful extends Protocol {
 
     private Boolean powered = true;
 
+    /**
+     *
+     */
     public Successful() {
         super("Successful Test", "/test/successful.xml");
     }

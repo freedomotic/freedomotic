@@ -28,8 +28,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -43,16 +41,32 @@ public class DataBehaviorLogic implements BehaviorLogic{
     private DataBehaviorLogic.Listener listener;
     private static  ObjectMapper om = new ObjectMapper();
 
+    /**
+     *
+     */
     public interface Listener {
-        
-           public void onReceiveData(Config params, boolean fireCommand);
+
+        /**
+         *
+         * @param params
+         * @param fireCommand
+         */
+        public void onReceiveData(Config params, boolean fireCommand);
            
     }
     
+    /**
+     *
+     * @param pojo
+     */
     public DataBehaviorLogic(DataBehavior pojo){
         this.data=pojo;
     }
     
+    /**
+     *
+     * @param dataBehaviorListener
+     */
     public void addListener(DataBehaviorLogic.Listener dataBehaviorListener) {
         this.listener = dataBehaviorListener;
     }
@@ -66,31 +80,55 @@ public class DataBehaviorLogic implements BehaviorLogic{
         //}
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getName() {
         return data.getName();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isChanged() {
         return changed;
     }
 
+    /**
+     *
+     * @param value
+     */
     @Override
     public void setChanged(boolean value) {
         changed = value;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isActive() {
         return data.isActive();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isReadOnly() {
         return data.isReadOnly();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getValueAsString() {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -103,6 +141,10 @@ public class DataBehaviorLogic implements BehaviorLogic{
         return null;
     }
     
+    /**
+     *
+     * @param JSON
+     */
     public void setData(String JSON){
        UsageDataFrame df;
        
@@ -121,6 +163,10 @@ public class DataBehaviorLogic implements BehaviorLogic{
         
     }
     
+    /**
+     *
+     * @return
+     */
     public List<UsageData> getData(){
         return data.getData();
     }

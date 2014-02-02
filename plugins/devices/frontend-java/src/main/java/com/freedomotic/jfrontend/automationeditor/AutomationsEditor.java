@@ -6,21 +6,17 @@ package com.freedomotic.jfrontend.automationeditor;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
-
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -31,6 +27,9 @@ import javax.swing.JFrame;
 public class AutomationsEditor
         extends Protocol {
 
+    /**
+     *
+     */
     public AutomationsEditor() {
         super("Automations Editor", "/frontend-java/automations-editor.xml");
     }
@@ -53,10 +52,16 @@ public class AutomationsEditor
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void onStart() {
     }
 
+    /**
+     *
+     */
     @Override
     public void onShowGui() {
         final JFrame frame = new JFrame();
@@ -84,6 +89,9 @@ public class AutomationsEditor
         bindGuiToPlugin(frame);
     }
 
+    /**
+     *
+     */
     @Override
     public void onStop() {
         //release resources

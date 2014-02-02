@@ -26,13 +26,9 @@
 package com.freedomotic.plugins;
 
 import com.freedomotic.api.Client;
-
 import com.freedomotic.environment.EnvironmentLogic;
-
 import com.freedomotic.exceptions.DaoLayerException;
-
 import com.freedomotic.model.ds.Config;
-
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
 import java.io.File;
@@ -48,6 +44,11 @@ public class ObjectPluginPlaceholder
     private EnvObjectLogic object;
     private Config config;
 
+    /**
+     *
+     * @param example
+     * @throws DaoLayerException
+     */
     public ObjectPluginPlaceholder(File example)
             throws DaoLayerException {
         this.example = example;
@@ -55,44 +56,78 @@ public class ObjectPluginPlaceholder
         config = new Config();
     }
 
+    /**
+     *
+     * @return
+     */
     public EnvObjectLogic getObject() {
         return object;
     }
 
+    /**
+     *
+     * @param name
+     */
     @Override
     public void setName(String name) {
         //no name change allowed. do nothing
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDescription() {
         return object.getPojo().getDescription();
     }
 
+    /**
+     *
+     * @param description
+     */
     @Override
     public void setDescription(String description) {
         //no change allowed
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getName() {
         return object.getPojo().getName();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getType() {
         return "Object";
     }
 
+    /**
+     *
+     */
     @Override
     public void start() {
         EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
     }
 
+    /**
+     *
+     */
     @Override
     public void stop() {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isRunning() {
         //is running if there is already an object of this kind in the map
@@ -106,23 +141,41 @@ public class ObjectPluginPlaceholder
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public File getTemplate() {
         return example;
     }
 
+    /**
+     *
+     */
     @Override
     public void showGui() {
     }
 
+    /**
+     *
+     */
     @Override
     public void hideGui() {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config getConfiguration() {
         return config;
     }
 
+    /**
+     *
+     * @param env
+     */
     public void startOnEnv(EnvironmentLogic env) {
         if (env==null){
             throw new IllegalArgumentException("Cannot place an object on a null environment");

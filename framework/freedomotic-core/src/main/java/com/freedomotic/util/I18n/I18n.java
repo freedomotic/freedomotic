@@ -13,10 +13,20 @@ import java.util.Vector;
  */
 public interface I18n {
 
+    /**
+     *
+     * @return
+     */
     Vector<ComboLanguage> getAvailableLocales();
 
     // should be replaced by user specific Locale
-    @Deprecated
+
+    /**
+     *
+     * @return
+     * @deprecated
+     */
+        @Deprecated
     String getDefaultLocale();
 
     /*
@@ -25,12 +35,32 @@ public interface I18n {
      */
     //String msg(String packageName, String key, Object[] fields);
 
+    /**
+     *
+     * @param key
+     * @return
+     */
+    
     String msg(String key);
 
+    /**
+     *
+     * @param key
+     * @param fields
+     * @return
+     */
     String msg(String key, Object[] fields);
 
+    /**
+     *
+     * @param loc
+     */
     void setDefaultLocale(String loc);
     
+    /**
+     *
+     * @param client
+     */
     void registerPluginBundleDir(Client client);
     
 }

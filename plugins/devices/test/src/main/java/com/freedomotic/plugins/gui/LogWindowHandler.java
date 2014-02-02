@@ -21,7 +21,9 @@ package com.freedomotic.plugins.gui;
 
 import com.freedomotic.util.I18n.I18n;
 import com.freedomotic.util.LogFormatter;
-import java.util.logging.*;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 /**
  *
@@ -29,6 +31,9 @@ import java.util.logging.*;
  */
 public class LogWindowHandler extends Handler {
 
+    /**
+     *
+     */
     public LogWindow window = null;
     private static LogWindowHandler handler = null;
 
@@ -39,6 +44,11 @@ public class LogWindowHandler extends Handler {
         }
     }
 
+    /**
+     *
+     * @param i18n
+     * @return
+     */
     public static LogWindowHandler getInstance(I18n i18n) {
         if (handler == null) {
             handler = new LogWindowHandler(i18n);
@@ -48,6 +58,10 @@ public class LogWindowHandler extends Handler {
         return handler;
     }
 
+    /**
+     *
+     * @param record
+     */
     @Override
     public void publish(LogRecord record) {
 
@@ -59,10 +73,16 @@ public class LogWindowHandler extends Handler {
             handler.getFormatter().formatMessage(record)});
     }
 
+    /**
+     *
+     */
     @Override
     public void close() {
     }
 
+    /**
+     *
+     */
     @Override
     public void flush() {
     }

@@ -5,25 +5,17 @@
 package com.freedomotic.jfrontend;
 
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.environment.ZoneLogic;
-
 import com.freedomotic.events.ObjectReceiveClick;
-
 import com.freedomotic.model.geometry.FreedomPoint;
-import com.freedomotic.model.geometry.FreedomPolygon;
-
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
-
 import com.freedomotic.util.TopologyUtils;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Shape;
-import java.util.Iterator;
 import java.util.Queue;
 
 /**
@@ -43,14 +35,24 @@ public class PlainDrawer
     private int ENVIRONMENT_SHADOW_OFFSET = 10;
     private Color ENVIRONMENT_SHADOW_COLOR = backgroundColor.darker();
 
+    /**
+     *
+     * @param master
+     */
     public PlainDrawer(JavaDesktopFrontend master) {
         super(master);
     }
 
+    /**
+     *
+     */
     @Override
     public void prepareBackground() {
     }
 
+    /**
+     *
+     */
     @Override
     public void prepareForeground() {
         //the line that delimits the internal shape of the environment (walls excuded)
@@ -59,6 +61,9 @@ public class PlainDrawer
 //        getContext().drawPolygon(poly);
     }
 
+    /**
+     *
+     */
     @Override
     public void renderEnvironment() {
         Polygon poly = (Polygon) TopologyUtils.convertToAWT(getCurrEnv().getPojo().getShape());
@@ -103,10 +108,16 @@ public class PlainDrawer
         g2.setStroke(new BasicStroke()); //reset to default stroke
     }
 
+    /**
+     *
+     */
     @Override
     public void renderWalls() {
     }
 
+    /**
+     *
+     */
     @Override
     public void renderObjects() {
         for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
@@ -155,6 +166,9 @@ public class PlainDrawer
         return yPoints;
     }
 
+    /**
+     *
+     */
     @Override
     public void renderZones() {
         for (ZoneLogic zone : getCurrEnv().getZones()) {
@@ -164,6 +178,10 @@ public class PlainDrawer
         }
     }
 
+    /**
+     *
+     * @param poly
+     */
     protected void drawRoomObject(Polygon poly) {
         Graphics2D g2 = (Graphics2D) getContext();
         g2.setColor(Color.green);
@@ -186,6 +204,10 @@ public class PlainDrawer
         g2.setStroke(new BasicStroke()); //reset to default stroke
     }
 
+    /**
+     *
+     * @param obj
+     */
     protected void drawPlainObject(EnvObjectLogic obj) {
         Graphics2D graph2D = (Graphics2D) getContext();
 
@@ -209,26 +231,46 @@ public class PlainDrawer
         }
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void mouseEntersObject(EnvObjectLogic obj) {
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void mouseExitsObject(EnvObjectLogic obj) {
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void mouseClickObject(EnvObjectLogic obj) {
         ObjectReceiveClick event = new ObjectReceiveClick(this, obj, ObjectReceiveClick.SINGLE_CLICK);
         Freedomotic.sendEvent(event);
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void mouseDoubleClickObject(EnvObjectLogic obj) {
         ObjectReceiveClick event = new ObjectReceiveClick(this, obj, ObjectReceiveClick.DOUBLE_CLICK);
         Freedomotic.sendEvent(event);
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void mouseRightClickObject(EnvObjectLogic obj) {
         ObjectReceiveClick event = new ObjectReceiveClick(this, obj, ObjectReceiveClick.RIGHT_CLICK);

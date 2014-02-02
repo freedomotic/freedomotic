@@ -37,12 +37,20 @@ public class UidGenerator {
 
     private static int lastId = 0;
 
+    /**
+     *
+     * @return
+     */
     public static int getNextUid() {
         lastId++;
 
         return lastId;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getNextStringUid() {
         lastId++;
 

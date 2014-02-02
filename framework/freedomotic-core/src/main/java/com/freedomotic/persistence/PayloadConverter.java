@@ -27,15 +27,13 @@ package com.freedomotic.persistence;
 
 import com.freedomotic.reactions.Payload;
 import com.freedomotic.reactions.Statement;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 /**
@@ -45,6 +43,12 @@ import java.util.logging.Logger;
 public class PayloadConverter
         implements Converter {
 
+    /**
+     *
+     * @param o
+     * @param writer
+     * @param mc
+     */
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
         Payload payload = (Payload) o;
@@ -71,6 +75,12 @@ public class PayloadConverter
         writer.endNode(); //</payload>
     }
 
+    /**
+     *
+     * @param reader
+     * @param uc
+     * @return
+     */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
         Payload payload = new Payload();
@@ -100,6 +110,11 @@ public class PayloadConverter
         return payload;
     }
 
+    /**
+     *
+     * @param clazz
+     * @return
+     */
     @Override
     public boolean canConvert(Class clazz) {
         return clazz.equals(Payload.class);

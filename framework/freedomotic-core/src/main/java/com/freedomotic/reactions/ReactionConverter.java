@@ -19,17 +19,14 @@
  */
 package com.freedomotic.reactions;
 
-import java.util.ArrayList;
-
+import com.freedomotic.core.Condition;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.freedomotic.core.Condition;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  *
@@ -38,6 +35,12 @@ import java.util.logging.Logger;
 public class ReactionConverter
         implements Converter {
 
+    /**
+     *
+     * @param o
+     * @param writer
+     * @param mc
+     */
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
         Reaction rea = (Reaction) o;
@@ -96,6 +99,12 @@ public class ReactionConverter
         writer.endNode(); //end sequence
     }
 
+    /**
+     *
+     * @param reader
+     * @param uc
+     * @return
+     */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
         Trigger t;
@@ -151,6 +160,11 @@ public class ReactionConverter
         return new Reaction(t, conditions, list);
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     @Override
     public boolean canConvert(Class type) {
         return (type == Reaction.class);

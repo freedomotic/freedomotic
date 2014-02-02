@@ -36,10 +36,18 @@ public class LogFormatter
 
     SimpleDateFormat date = new SimpleDateFormat("HH:mm  ss,S");
 
+    /**
+     *
+     */
     public LogFormatter() {
         super();
     }
 
+    /**
+     *
+     * @param record
+     * @return
+     */
     @Override
     public String format(LogRecord record) {
         return ("<tr bgcolor=\"" + getColor(record.getLevel().intValue()) + "\"><td>" + date.format(record.getMillis()) + " "
@@ -68,6 +76,11 @@ public class LogFormatter
         return input.replace("\n", "<br>");
     }
 
+    /**
+     *
+     * @param input
+     * @return
+     */
     public static String formatTextToHTML(String input) {
         if (input.startsWith("---- ") && (input.endsWith(" ----"))) {
             //it's a title
@@ -95,6 +108,11 @@ public class LogFormatter
         return convertSpaces(input);
     }
 
+    /**
+     *
+     * @param h
+     * @return
+     */
     @Override
     public String getHead(Handler h) {
         return ("<html>\n  " + "<body>\n" + "<h1>Freedomotic Developers Log - " + new Date().toString() + "</h1>"
@@ -111,6 +129,11 @@ public class LogFormatter
                 + "<tr>" + "    <td>Time</td>" + "    <td>Log Message</td>" + "</tr>\n");
     }
 
+    /**
+     *
+     * @param h
+     * @return
+     */
     @Override
     public String getTail(Handler h) {
         return ("</table>\n</font>\n</body>\n</html>");

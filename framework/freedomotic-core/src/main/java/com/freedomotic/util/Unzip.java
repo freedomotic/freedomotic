@@ -36,8 +36,18 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+/**
+ *
+ * @author nicoletti
+ */
 public class Unzip {
 
+    /**
+     *
+     * @param zipFile
+     * @throws ZipException
+     * @throws IOException
+     */
     static public void unzip(String zipFile) throws ZipException, IOException {
 
         int BUFFER = 2048;

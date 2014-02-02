@@ -26,16 +26,14 @@
 package com.freedomotic.persistence;
 
 import com.freedomotic.model.ds.Tuples;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -45,6 +43,12 @@ import java.util.logging.Logger;
 public class TupleConverter
         implements Converter {
 
+    /**
+     *
+     * @param o
+     * @param writer
+     * @param mc
+     */
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
         Tuples t = (Tuples) o;
@@ -65,6 +69,12 @@ public class TupleConverter
         }
     }
 
+    /**
+     *
+     * @param reader
+     * @param uc
+     * @return
+     */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
         Tuples t = new Tuples();
@@ -88,6 +98,11 @@ public class TupleConverter
         return t;
     }
 
+    /**
+     *
+     * @param clazz
+     * @return
+     */
     @Override
     public boolean canConvert(Class clazz) {
         return clazz.equals(Tuples.class);

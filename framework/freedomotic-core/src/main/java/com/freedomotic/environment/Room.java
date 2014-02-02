@@ -26,13 +26,9 @@
 package com.freedomotic.environment;
 
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.model.environment.Zone;
-
 import com.freedomotic.objects.impl.Gate;
-
 import com.freedomotic.util.Edge;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -49,10 +45,18 @@ public class Room
     private List<Gate> gates;
     private List<Room> reachable;
 
+    /**
+     *
+     * @param pojo
+     */
     public Room(Zone pojo) {
         super(pojo);
     }
 
+    /**
+     *
+     * @param gate
+     */
     @RequiresPermissions("zones:update")    
     public void addGate(Gate gate) {
         try {
@@ -72,6 +76,10 @@ public class Room
         }
     }
 
+    /**
+     *
+     * @param env
+     */
     @Override
     @RequiresPermissions("zones:read")    
     public void init(EnvironmentLogic env) {
@@ -88,6 +96,9 @@ public class Room
         getPojo().setAsRoom(true);
     }
 
+    /**
+     *
+     */
     @RequiresPermissions("zones:read")    
     public void visit() {
         //reset current links
@@ -138,16 +149,27 @@ public class Room
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")    
     public String getDescription() {
         return getPojo().getDescription();
     }
 
+    /**
+     *
+     * @param description
+     */
     @RequiresPermissions("zones:update")    
     public void setDescription(String description) {
         getPojo().setDescription(description);
     }
 
+    /**
+     *
+     */
     @RequiresPermissions("zones:update")    
     public void updateDescription() {
         StringBuilder buff = new StringBuilder();
@@ -165,12 +187,21 @@ public class Room
         this.setChanged();
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     @RequiresPermissions("zones:read")    
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     @RequiresPermissions("zones:read")    
     public int hashCode() {

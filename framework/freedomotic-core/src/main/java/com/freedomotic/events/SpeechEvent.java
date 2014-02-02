@@ -26,18 +26,15 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.core.NaturalLanguageProcessor;
 import com.freedomotic.core.Resolver;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.reactions.Command;
-
+import com.google.inject.Inject;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.google.inject.Inject;
 
 /**
  * Channel <b>app.event.sensor.speech</b> informs that a speech recognition
@@ -53,8 +50,13 @@ public class SpeechEvent
 
     @Inject
     private BusService busService;
-    
-	public SpeechEvent(Object source, String phrase) {
+
+    /**
+     *
+     * @param source
+     * @param phrase
+     */
+    public SpeechEvent(Object source, String phrase) {
         this.setSender(source);
 
         NaturalLanguageProcessor nlp = new NaturalLanguageProcessor();
@@ -81,6 +83,10 @@ public class SpeechEvent
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         return "app.event.sensor.speech";

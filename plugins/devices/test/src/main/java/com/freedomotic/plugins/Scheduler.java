@@ -48,6 +48,11 @@ public class Scheduler
      * sends a scheduled event with the current time every minute retry to send
      * every TIMER_DELAY seconds
      */
+
+    /**
+     *
+     */
+    
     public Scheduler() {
         super("Scheduler", "/test/scheduler.xml");
         setDescription("Timer for scheduled events");
@@ -80,10 +85,18 @@ public class Scheduler
         timer = null;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setResolution(int value) {
         TIMER_RESOLUTION = value;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getResolution() {
         return TIMER_RESOLUTION;
     }

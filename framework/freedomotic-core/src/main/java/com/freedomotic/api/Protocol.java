@@ -21,21 +21,17 @@ package com.freedomotic.api;
 
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
-import com.freedomotic.bus.BusService;
 import com.freedomotic.bus.BusMessagesListener;
+import com.freedomotic.bus.BusService;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
-
-import com.google.inject.Inject;
 
 /**
  * Uses a Template Method pattern which allows subclass to define how to perform
@@ -53,15 +49,38 @@ public abstract class Protocol
     private volatile Destination lastDestination;
     private BusService busService;
 
+    /**
+     *
+     */
     protected abstract void onRun();
 
+    /**
+     *
+     * @param c
+     * @throws IOException
+     * @throws UnableToExecuteException
+     */
     protected abstract void onCommand(Command c)
             throws IOException, UnableToExecuteException;
 
+    /**
+     *
+     * @param c
+     * @return
+     */
     protected abstract boolean canExecute(Command c);
 
+    /**
+     *
+     * @param event
+     */
     protected abstract void onEvent(EventTemplate event);
 
+    /**
+     *
+     * @param pluginName
+     * @param manifest
+     */
     public Protocol(String pluginName, String manifest) {
 
         super(pluginName, manifest);
@@ -74,6 +93,10 @@ public abstract class Protocol
         listener.consumeCommandFrom(getCommandsChannelToListen());
     }
 
+    /**
+     *
+     * @param listento
+     */
     public void addEventListener(String listento) {
         listener.consumeEventFrom(listento);
     }
@@ -91,6 +114,10 @@ public abstract class Protocol
         }
     }
 
+    /**
+     *
+     * @param ev
+     */
     public void notifyEvent(EventTemplate ev) {
         if (isRunning) {
             notifyEvent(ev,
@@ -98,6 +125,11 @@ public abstract class Protocol
         }
     }
 
+    /**
+     *
+     * @param ev
+     * @param destination
+     */
     public void notifyEvent(EventTemplate ev, String destination) {
         if (isRunning) {
             LOG.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":"
@@ -106,6 +138,9 @@ public abstract class Protocol
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void start() {
         if (!isRunning) {
@@ -126,6 +161,9 @@ public abstract class Protocol
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void stop() {
         if (isRunning) {
@@ -144,12 +182,20 @@ public abstract class Protocol
         }
     }
 
+    /**
+     *
+     * @param wait
+     */
     public final void setPollingWait(int wait) {
         if (wait > 0) {
             pollingWaitTime = wait;
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int getScheduleRate() {
         return pollingWaitTime;
     }
@@ -232,10 +278,19 @@ public abstract class Protocol
         }
     }
 
+    /**
+     *
+     * @param command
+     * @return
+     */
     protected Command send(Command command) {
         return busService.send(command);
     }
 
+    /**
+     *
+     * @param command
+     */
     public void reply(Command command) {
         // sends back the command
         final String defaultCorrelationID = "-1";

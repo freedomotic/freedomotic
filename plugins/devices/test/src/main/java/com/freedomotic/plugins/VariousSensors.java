@@ -38,6 +38,9 @@ public class VariousSensors extends Protocol {
 
     private Boolean powered = false;
 
+    /**
+     *
+     */
     public VariousSensors() {
         super("Sensors Simulator", "/test/sensors-simulator.xml");
         setPollingWait(2000);
@@ -48,6 +51,9 @@ public class VariousSensors extends Protocol {
         bindGuiToPlugin(new VariousSensorsGui(this));
     }
 
+    /**
+     *
+     */
     public void askSomething() {
         final Command c = new Command();
         c.setName("Ask something silly to user");

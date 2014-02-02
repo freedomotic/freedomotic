@@ -21,15 +21,11 @@
  */
 package com.freedomotic.objects.impl;
 
-import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.events.ObjectReceiveClick;
-
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.model.object.ListBehavior;
 import com.freedomotic.model.object.PropertiesBehavior;
-
 import com.freedomotic.objects.BooleanBehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.ListBehaviorLogic;
@@ -45,8 +41,19 @@ import java.util.logging.Logger;
 public class Person
         extends EnvObjectLogic {
 
+    /**
+     *
+     */
     protected BooleanBehaviorLogic present;
+
+    /**
+     *
+     */
     protected ListBehaviorLogic activity;
+
+    /**
+     *
+     */
     protected PropertiesBehaviorLogic properties;
     private static final String BEHAVIOR_PRESENT = "present";
     private static final String BEHAVIOR_PROPERTIES = "properties";
@@ -115,10 +122,16 @@ public class Person
         setChanged(true);
     }
 
+    /**
+     *
+     */
     @Override
     protected void createCommands() {
     }
 
+    /**
+     *
+     */
     @Override
     protected void createTriggers() {
         Trigger clicked = new Trigger();

@@ -30,10 +30,19 @@ public class DaoLayerException
         super(msg);
     }
 
+    /**
+     *
+     * @param message
+     * @param cause
+     */
     public DaoLayerException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     *
+     * @param cause
+     */
     public DaoLayerException(Throwable cause) {
         super(cause);
     }

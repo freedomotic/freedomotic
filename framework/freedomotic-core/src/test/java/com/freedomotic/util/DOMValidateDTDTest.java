@@ -27,14 +27,12 @@ package com.freedomotic.util;
 
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.reactions.Trigger;
+import com.thoughtworks.xstream.XStream;
+import java.util.logging.Logger;
 import junit.framework.Assert;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.thoughtworks.xstream.XStream;
-import java.util.logging.Logger;
 
 /**
  *
@@ -68,6 +66,10 @@ public class DOMValidateDTDTest {
             + "</trigger>";
     private static Trigger base = new Trigger();
 
+    /**
+     *
+     * @throws Exception
+     */
     @BeforeClass
     public static void setUpClass() throws Exception {
         xstream = FreedomXStream.getXstream();
@@ -77,10 +79,18 @@ public class DOMValidateDTDTest {
         base.setSuspensionTime(1000);
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @Test
     public void testValidate() throws Exception {
 //        String xml = DOMValidateDTD.validate(

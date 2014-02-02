@@ -1,23 +1,24 @@
 package com.freedomotic.jfrontend.automationeditor;
 
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.core.NaturalLanguageProcessor;
-
-import com.freedomotic.jfrontend.automationeditor.ReactionEditor;
-
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
-
 import com.freedomotic.util.I18n.I18n;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.List;
-
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 
 /*
  * To change this template, choose Tools | Templates and open the template in
@@ -40,6 +41,11 @@ public class GuessCommandBox
     private final String INFO_MESSAGE;
     private final I18n I18n;
     
+    /**
+     *
+     * @param i18n
+     * @param editor
+     */
     public GuessCommandBox(I18n i18n, ReactionEditor editor) {        
         super();
         this.I18n = i18n;
@@ -51,6 +57,12 @@ public class GuessCommandBox
         init();
     }
 
+    /**
+     *
+     * @param i18n
+     * @param editor
+     * @param command
+     */
     public GuessCommandBox(I18n i18n, ReactionEditor editor, Command command) {
         super();
         this.I18n = i18n;
@@ -68,6 +80,10 @@ public class GuessCommandBox
         listen();
     }
 
+    /**
+     *
+     * @return
+     */
     public Command getCommand() {
         return command;
     }
@@ -172,6 +188,10 @@ public class GuessCommandBox
         });
     }
 
+    /**
+     *
+     * @param g
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -187,6 +207,10 @@ public class GuessCommandBox
         }
     }
 
+    /**
+     *
+     * @param command
+     */
     public void setCommand(Command command) {
         this.command = command;
     }

@@ -21,23 +21,18 @@
  */
 package com.freedomotic.core;
 
-import static org.junit.Assert.assertEquals;
 import com.freedomotic.events.GenericEvent;
+import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Trigger;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.thoughtworks.xstream.XStream;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.thoughtworks.xstream.XStream;
-import com.freedomotic.exceptions.VariableResolutionException;
-import org.junit.Assert;
 
 /**
  *
@@ -45,25 +40,45 @@ import org.junit.Assert;
  */
 public class ResolverTest {
 
+    /**
+     *
+     */
     public ResolverTest() {
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testResolve_Command() {
         System.out.println("Commands resolving a set of references mixed with text like 'temperature is @event.temperature'");
@@ -108,6 +123,9 @@ public class ResolverTest {
         //assertEquals("15", result.getProperty("ten"));
     }
 
+    /**
+     *
+     */
     @Test
     public void testResolve_Trigger() {
         System.out.println("Triggers resolving a set of references mixed with text like 'temperature is @event.temperature'");

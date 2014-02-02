@@ -84,30 +84,51 @@ public class Profiler {
         }
     }
 
+    /**
+     *
+     */
     public static void incrementSentReplies() {
         sentReplies++;
     }
 
+    /**
+     *
+     */
     public static void incrementReceivedEvents() {
         receivedEvents++;
     }
 
+    /**
+     *
+     */
     public static void incrementReceivedCommands() {
         receivedCommands++;
     }
 
+    /**
+     *
+     */
     public static void incrementTimeoutedReplies() {
         timeoutedReplies++;
     }
 
+    /**
+     *
+     */
     public static void incrementSentEvents() {
         sentEvents++;
     }
 
+    /**
+     *
+     */
     public static void incrementSentCommands() {
         sentCommands++;
     }
 
+    /**
+     *
+     */
     public static void incrementReceivedReplies() {
         receivedReplies++;
     }
@@ -125,6 +146,10 @@ public class Profiler {
         return troughtput;
     }
 
+    /**
+     *
+     * @param ms
+     */
     public static void appendExecutionTime(long ms) {
         if ((ms >= 0) && (ms < 999)) {
             scores[(int) ms][1] += 1;
@@ -139,6 +164,10 @@ public class Profiler {
         }
     }
 
+    /**
+     *
+     * @param ms
+     */
     public static void appendTriggerCheckingTime(long ms) {
         if ((ms >= 0) && (ms < 999)) {
             scores[(int) ms][2] += 1;
@@ -149,6 +178,10 @@ public class Profiler {
         averageTriggerCheckingTime = temp / (double) numCheckedTriggers;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String print() {
         StringBuilder buff = null;
 
@@ -188,6 +221,9 @@ public class Profiler {
         return "";
     }
 
+    /**
+     *
+     */
     public static void saveToFile() {
 //        StringBuilder buffer = new StringBuilder();
 //        //save latency to file

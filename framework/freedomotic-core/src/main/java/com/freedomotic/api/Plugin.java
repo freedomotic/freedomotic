@@ -19,8 +19,6 @@
  */
 package com.freedomotic.api;
 
-import com.google.inject.Inject;
-
 import com.freedomotic.app.ConfigPersistence;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
@@ -28,32 +26,74 @@ import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.PluginHasChanged.PluginActions;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.util.EqualsUtil;
-import com.freedomotic.util.I18n.I18n;
 import com.freedomotic.util.Info;
-
-import java.io.*;
-
+import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
-import java.util.logging.Logger;
-
+/**
+ *
+ * @author nicoletti
+ */
 public class Plugin
         implements Client {
 //    private boolean isConnected = false;
 
+    /**
+     *
+     */
+    
     protected volatile boolean isRunning;
     private String pluginName;
     private String type = "Plugin";
+
+    /**
+     *
+     */
     public Config configuration;
+
+    /**
+     *
+     */
     protected JFrame gui;
     // private static final String SEPARATOR = "-";
     //config file parameters
-    protected String description;
+
+    /**
+     *
+     */
+        protected String description;
+
+    /**
+     *
+     */
     protected String version;
+
+    /**
+     *
+     */
     protected String requiredVersion;
+
+    /**
+     *
+     */
     protected String category;
+
+    /**
+     *
+     */
     protected String shortName;
+
+    /**
+     *
+     */
     protected String listenOn;
+
+    /**
+     *
+     */
     protected String sendOn;
     private File path;
     final static int SAME_VERSION = 0;
@@ -63,36 +103,68 @@ public class Plugin
     private API api;
     private BusService busService;
 
+    /**
+     *
+     * @param pluginName
+     * @param manifestPath
+     */
     public Plugin(String pluginName, String manifestPath) {
         this(pluginName);
         path = new File(Info.getDevicesPath() + manifestPath);
         init(path);
     }
 
+    /**
+     *
+     * @param pluginName
+     * @param manifest
+     */
     public Plugin(String pluginName, Config manifest) {
         this(pluginName);
         init(manifest);
     }
 
+    /**
+     *
+     * @param pluginName
+     */
     public Plugin(String pluginName) {
         setName(pluginName);
         this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
     }
 
+    /**
+     *
+     * @return
+     */
     public File getFile() {
         return path;
     }
 
+    /**
+     *
+     * @return
+     */
     public API getApi() {
         return api;
     }
 
+    /**
+     *
+     */
     protected void onStart() {
     }
 
+    /**
+     *
+     */
     protected void onStop() {
     }
 
+    /**
+     *
+     * @param description
+     */
     @Override
     public final void setDescription(String description) {
         if (!getDescription().equalsIgnoreCase(description)) {
@@ -105,6 +177,10 @@ public class Plugin
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDescription() {
         if (description == null) {
@@ -114,33 +190,60 @@ public class Plugin
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public final Config getConfiguration() {
         return configuration;
     }
 
+    /**
+     *
+     * @return
+     */
     public final String getReadQueue() {
         return listenOn;
     }
 
+    /**
+     *
+     * @return
+     */
     public final String getCategory() {
         return category;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getRequiredVersion() {
         return requiredVersion;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getVersion() {
         return version;
     }
 
+    /**
+     *
+     * @param window
+     */
     public void bindGuiToPlugin(JFrame window) {
         gui = window;
         gui.setVisible(false);
         gui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
+    /**
+     *
+     */
     @Override
     public void showGui() {
         if (!isRunning()) {
@@ -156,6 +259,9 @@ public class Plugin
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void hideGui() {
         onHideGui();
@@ -165,25 +271,45 @@ public class Plugin
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getName() {
         return pluginName;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getType() {
         return type;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isRunning() {
         return isRunning;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getClassName() {
         return (this.getClass().getSimpleName());
     }
 
+    /**
+     *
+     * @param name
+     */
     @Override
     public final void setName(String name) {
         pluginName = name;
@@ -196,7 +322,13 @@ public class Plugin
 //    public void setConnected() {
 //        isConnected = true;
 //    }
-    @Override
+
+    /**
+     *
+     * @param aThat
+     * @return
+     */
+        @Override
     public boolean equals(Object aThat) {
         //check for self-comparison
         if (this == aThat) {
@@ -223,6 +355,10 @@ public class Plugin
                 that.getName().toLowerCase());
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 5;
@@ -253,27 +389,46 @@ public class Plugin
         sendOn = configuration.getStringProperty("send-on", "undefined");
     }
 
+    /**
+     *
+     */
     protected void onShowGui() {
     }
 
+    /**
+     *
+     */
     protected void onHideGui() {
     }
 
+    /**
+     *
+     */
     @Override
     public void start() {
         //do not add code here
     }
 
+    /**
+     *
+     */
     @Override
     public void stop() {
         //do not add code here
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return getName();
     }
 
+    /**
+     *
+     */
     public void loadPermissionsFromManifest() {
         getApi().getAuth().setPluginPrivileges(this, configuration.getStringProperty("permissions", getApi().getAuth().getPluginDefaultPermission()));
     }

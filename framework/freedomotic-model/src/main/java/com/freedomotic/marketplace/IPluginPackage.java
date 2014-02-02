@@ -51,6 +51,7 @@ public interface IPluginPackage {
     /**
      * Returns the path of the file matching the core version Empty string if it
      * doesn't have any file matching the version
+     * @return 
      */
     public String getFilePath(String version);
 

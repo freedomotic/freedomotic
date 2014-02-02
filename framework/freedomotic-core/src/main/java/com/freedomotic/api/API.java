@@ -5,16 +5,12 @@
 package com.freedomotic.api;
 
 import com.freedomotic.app.AppConfig;
-import com.freedomotic.core.ResourcesManager;
-
 import com.freedomotic.environment.EnvironmentLogic;
-
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.filesystem.PluginsManager;
 import com.freedomotic.security.Auth;
 import com.freedomotic.util.I18n.I18n;
-
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.List;
@@ -26,50 +22,151 @@ import java.util.List;
 public interface API {
     //Configuration APi
 
-    AppConfig getConfig();
+    /**
+     *
+     * @return
+     */
     
+    AppConfig getConfig();
+
+    /**
+     *
+     * @return
+     */
     Auth getAuth();
     
+    /**
+     *
+     * @return
+     */
     I18n getI18n();
 
     //Object API
     //create
-    EnvObjectLogic addObject(final EnvObjectLogic obj, final boolean MAKE_UNIQUE);
 
+    /**
+     *
+     * @param obj
+     * @param MAKE_UNIQUE
+     * @return
+     */
+        EnvObjectLogic addObject(final EnvObjectLogic obj, final boolean MAKE_UNIQUE);
+
+    /**
+     *
+     * @return
+     */
     ClientStorage getClientStorage();
     //read
 
+    /**
+     *
+     * @return
+     */
     Collection<EnvObjectLogic> getObjectList();
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     EnvObjectLogic getObjectByName(String name);
 
+    /**
+     *
+     * @param uuid
+     * @return
+     */
     EnvObjectLogic getObjectByUUID(String uuid);
+
+    /**
+     *
+     * @param tag
+     * @return
+     */
     Collection<EnvObjectLogic> getObjectByTag(String tag);
+
+    /**
+     *
+     * @param protocol
+     * @param address
+     * @return
+     */
     Collection<EnvObjectLogic> getObjectByAddress(String protocol, String address);
 
+    /**
+     *
+     * @param protocol
+     * @return
+     */
     Collection<EnvObjectLogic> getObjectByProtocol(String protocol);
 
+    /**
+     *
+     * @param uuid
+     * @return
+     */
     Collection<EnvObjectLogic> getObjectByEnvironment(String uuid);
 
     //delete
-    void removeObject(EnvObjectLogic input);
+
+    /**
+     *
+     * @param input
+     */
+        void removeObject(EnvObjectLogic input);
 
     //Environment API
     //create
-    EnvironmentLogic addEnvironment(final EnvironmentLogic obj, boolean MAKE_UNIQUE);
+
+    /**
+     *
+     * @param obj
+     * @param MAKE_UNIQUE
+     * @return
+     */
+        EnvironmentLogic addEnvironment(final EnvironmentLogic obj, boolean MAKE_UNIQUE);
 
     //read
-    List<EnvironmentLogic> getEnvironments();
 
+    /**
+     *
+     * @return
+     */
+        List<EnvironmentLogic> getEnvironments();
+
+    /**
+     *
+     * @param UUID
+     * @return
+     */
     EnvironmentLogic getEnvByUUID(String UUID);
 
     //delete
-    void removeEnvironment(EnvironmentLogic input);
-    
+
+    /**
+     *
+     * @param input
+     */
+        void removeEnvironment(EnvironmentLogic input);
+
+    /**
+     *
+     * @return
+     */
     Collection<Client> getClients();
 
+    /**
+     *
+     * @param filter
+     * @return
+     */
     Collection<Client> getClients(String filter);
     
+    /**
+     *
+     * @return
+     */
     PluginsManager getPluginManager();
 
     //Resources API

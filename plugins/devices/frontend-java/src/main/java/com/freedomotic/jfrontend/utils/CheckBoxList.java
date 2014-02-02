@@ -4,17 +4,32 @@
  */
 package com.freedomotic.jfrontend.utils;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JCheckBox;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
-import javax.swing.*;
-import javax.swing.border.*;
-
+/**
+ *
+ * @author nicoletti
+ */
 public class CheckBoxList
         extends JList {
 
+    /**
+     *
+     */
     protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
 
+    /**
+     *
+     */
     public CheckBoxList() {
         setCellRenderer(new CellRenderer());
 
@@ -33,9 +48,21 @@ public class CheckBoxList
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
+    /**
+     *
+     */
     protected class CellRenderer
             implements ListCellRenderer {
 
+        /**
+         *
+         * @param list
+         * @param value
+         * @param index
+         * @param isSelected
+         * @param cellHasFocus
+         * @return
+         */
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
                 boolean cellHasFocus) {
             JCheckBox checkbox = (JCheckBox) value;

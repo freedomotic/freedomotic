@@ -5,17 +5,14 @@
 package com.freedomotic.jfrontend.automationeditor;
 
 import com.freedomotic.objects.EnvObjectLogic;
-
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.util.I18n.I18n;
-
 import java.awt.BorderLayout;
 import java.util.Iterator;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -35,6 +32,7 @@ public class ReactionsPanel
 
     /**
      * Creates new form ReactionList
+     * @param plugin
      */
     public ReactionsPanel(AutomationsEditor plugin) {
         this.plugin = plugin;
@@ -42,6 +40,11 @@ public class ReactionsPanel
         init(null);
     }
 
+    /**
+     *
+     * @param i18n
+     * @param obj
+     */
     public ReactionsPanel(I18n i18n, EnvObjectLogic obj) {
         this.I18n = i18n;
         init(obj);
@@ -140,6 +143,10 @@ public class ReactionsPanel
         validate();
     }
 
+    /**
+     *
+     * @return
+     */
     public JPanel getPanel() {
         return panel;
     }

@@ -29,25 +29,65 @@ import com.freedomotic.model.ds.Config;
  */
 public interface Client {
 
+    /**
+     *
+     * @param name
+     */
     public void setName(String name);
 
+    /**
+     *
+     * @return
+     */
     public String getDescription();
 
+    /**
+     *
+     * @param description
+     */
     public void setDescription(String description);
 
+    /**
+     *
+     * @return
+     */
     public Config getConfiguration();
 
+    /**
+     *
+     * @return
+     */
     public String getName();
 
+    /**
+     *
+     * @return
+     */
     public String getType();
 
+    /**
+     *
+     */
     public void start();
 
+    /**
+     *
+     */
     public void stop();
 
+    /**
+     *
+     * @return
+     */
     public boolean isRunning();
 
+    /**
+     *
+     */
     public void showGui();
 
+    /**
+     *
+     */
     public void hideGui();
 }

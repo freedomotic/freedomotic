@@ -8,7 +8,6 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
-
 import javax.swing.JPanel;
 
 /**
@@ -18,8 +17,16 @@ import javax.swing.JPanel;
 public abstract class Drawer
         extends JPanel {
 
+    /**
+     *
+     * @param callout1
+     */
     public abstract void createCallout(Callout callout1);
 
+    /**
+     *
+     * @param b
+     */
     public abstract void setNeedRepaint(boolean b);
 
     void setObjectEditMode(boolean b) {

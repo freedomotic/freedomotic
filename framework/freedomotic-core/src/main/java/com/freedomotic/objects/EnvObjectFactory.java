@@ -23,7 +23,6 @@ package com.freedomotic.objects;
 
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.DaoLayerException;
-
 import com.freedomotic.model.object.EnvObject;
 import java.net.URLClassLoader;
 import java.util.logging.Logger;
@@ -45,6 +44,7 @@ public final class EnvObjectFactory {
      *
      * @param pojo
      * @return
+     * @throws com.freedomotic.exceptions.DaoLayerException
      */
     public static EnvObjectLogic create(EnvObject pojo)
             throws DaoLayerException {

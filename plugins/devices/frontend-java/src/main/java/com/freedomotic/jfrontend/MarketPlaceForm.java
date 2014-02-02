@@ -10,23 +10,16 @@
  */
 package com.freedomotic.jfrontend;
 
-import com.google.inject.Inject;
 import com.freedomotic.api.API;
-
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.jfrontend.utils.SpringUtilities;
-
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.IPluginPackage;
 import com.freedomotic.marketplace.MarketPlaceService;
-
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.filesystem.PluginsManager;
-
-import com.freedomotic.util.Info;
 import com.freedomotic.util.I18n.I18n;
-
+import com.freedomotic.util.Info;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -42,7 +35,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -67,6 +59,7 @@ public class MarketPlaceForm
 
     /**
      * Creates new form MarketPlaceForm
+     * @param api
      */
     public MarketPlaceForm(API api) {
         this.I18n = api.getI18n();
@@ -88,6 +81,9 @@ public class MarketPlaceForm
         });
     }
 
+    /**
+     *
+     */
     public final void retrieveCategories() {
         cmbCategory.setEnabled(false);
         Collections.sort(pluginCategoryList, CatComp);
@@ -117,6 +113,10 @@ public class MarketPlaceForm
         cmbCategory.setEnabled(!isActive);
     }
 
+    /**
+     *
+     * @param category
+     */
     public final void retrievePlugins(final IPluginCategory category) {
         politeWaitingMessage(true);
         pnlMain.setLayout(new SpringLayout());
@@ -337,18 +337,36 @@ public class MarketPlaceForm
         }
     }
 
+    /**
+     *
+     */
     public static class IPlugCatComparator
             implements Comparator<IPluginCategory> {
 
+        /**
+         *
+         * @param m1
+         * @param m2
+         * @return
+         */
         @Override
         public int compare(IPluginCategory m1, IPluginCategory m2) {
             return m1.getName().compareTo(m2.getName());
         }
     }
 
+    /**
+     *
+     */
     public static class IPlugPackComparator
             implements Comparator<IPluginPackage> {
 
+        /**
+         *
+         * @param m1
+         * @param m2
+         * @return
+         */
         @Override
         public int compare(IPluginPackage m1, IPluginPackage m2) {
             return m1.getTitle().compareTo(m2.getTitle());

@@ -22,7 +22,6 @@
 package com.freedomotic.persistence;
 
 import com.freedomotic.environment.Room;
-
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
@@ -31,11 +30,9 @@ import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.geometry.FreedomShape;
 import com.freedomotic.model.object.Representation;
-
 import com.freedomotic.reactions.Payload;
 import com.freedomotic.reactions.ReactionConverter;
 import com.freedomotic.reactions.Trigger;
-
 import com.thoughtworks.xstream.XStream;
 import java.util.logging.Logger;
 
@@ -51,6 +48,10 @@ public class FreedomXStream /*implements FrameTranslator*/ {
     private FreedomXStream() {
     }
 
+    /**
+     *
+     * @return
+     */
     public static XStream getXstream() {
         if (xstream == null) {
             xstream = new XStream();
@@ -123,6 +124,10 @@ public class FreedomXStream /*implements FrameTranslator*/ {
         return xstream;
     }
 
+    /**
+     *
+     * @return
+     */
     public static XStream getEnviromentXstream() {
         if (environmentXstream == null) { //Enviroment serialization
             environmentXstream = new XStream();

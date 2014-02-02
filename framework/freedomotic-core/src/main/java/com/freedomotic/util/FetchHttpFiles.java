@@ -26,7 +26,6 @@
 package com.freedomotic.util;
 
 import com.freedomotic.app.Freedomotic;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -59,6 +58,15 @@ public class FetchHttpFiles {
 //        }
 //    }
 
+    /**
+     *
+     * @param url
+     * @param destFolder
+     * @param filename
+     * @return
+     * @throws Exception
+     */
+    
     public static boolean download(URL url, File destFolder, String filename)
             throws Exception {
         //File sourceFile = new File(url.getPath());

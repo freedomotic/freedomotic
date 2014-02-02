@@ -26,9 +26,7 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-
 import com.freedomotic.objects.EnvObjectLogic;
-
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
@@ -44,11 +42,28 @@ public class ObjectReceiveClick
         extends EventTemplate {
 
     private static final long serialVersionUID = 8985824879207319982L;
-	
-	public static final String SINGLE_CLICK = "SINGLE_CLICK";
+
+    /**
+     *
+     */
+    public static final String SINGLE_CLICK = "SINGLE_CLICK";
+
+    /**
+     *
+     */
     public static final String DOUBLE_CLICK = "DOUBLE_CLICK";
+
+    /**
+     *
+     */
     public static final String RIGHT_CLICK = "RIGHT_CLICK";
 
+    /**
+     *
+     * @param source
+     * @param obj
+     * @param click
+     */
     public ObjectReceiveClick(Object source, EnvObjectLogic obj, String click) {
         this.setSender(source);
         payload.addStatement("click", click.toString());
@@ -59,10 +74,17 @@ public class ObjectReceiveClick
         }
     }
 
+    /**
+     *
+     */
     @Override
     protected void generateEventPayload() {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         return "app.event.sensor.object.behavior.clicked";

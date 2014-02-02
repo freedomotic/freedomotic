@@ -36,14 +36,28 @@ public class PropertiesBehavior
 	
 	private Properties properties = new Properties();
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
 
+    /**
+     *
+     * @param key
+     * @param value
+     */
     public void setProperty(String key, String value) {
         properties.setProperty(key, value);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         if (properties.size() < 2) {

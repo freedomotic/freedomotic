@@ -23,7 +23,6 @@ package com.freedomotic.objects;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.ListBehavior;
-
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -42,11 +41,23 @@ public class ListBehaviorLogic
     private Listener listener;
     private boolean changed;
 
+    /**
+     *
+     */
     public interface Listener {
 
+        /**
+         *
+         * @param params
+         * @param fireCommand
+         */
         public void selectedChanged(final Config params, boolean fireCommand);
     }
 
+    /**
+     *
+     * @param pojo
+     */
     public ListBehaviorLogic(ListBehavior pojo) {
         this.data = pojo;
     }
@@ -93,19 +104,35 @@ public class ListBehaviorLogic
         listener.selectedChanged(params, fireCommand);
     }
 
+    /**
+     *
+     * @param listBehaviorListener
+     */
     public void addListener(Listener listBehaviorListener) {
         listener = listBehaviorListener;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getName() {
         return data.getName();
     }
 
+    /**
+     *
+     * @return
+     */
     public String getSelected() {
         return data.getSelected();
     }
 
+    /**
+     *
+     * @param key
+     */
     public void setSelected(String key) {
         if (!data.getSelected().equalsIgnoreCase(key)) {
             data.setSelected(key);
@@ -113,30 +140,54 @@ public class ListBehaviorLogic
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getValuesList() {
         return data.getList();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isActive() {
         return data.isActive();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isReadOnly() {
         return data.isReadOnly();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getValueAsString() {
         return data.toString();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isChanged() {
         return changed;
     }
 
+    /**
+     *
+     * @param value
+     */
     @Override
     public void setChanged(boolean value) {
         changed = value;

@@ -39,24 +39,85 @@ public class PluginHasChanged
 
     private static final long serialVersionUID = 5203339184820441643L;
 
-	public enum PluginActions {
-        SHOW, HIDE, 
-        DESCRIPTION,
-        START, STOP, DISPOSE, 
-        MAXIMIZE, MINIMIZE, 
-        ENQUEUE, DEQUEUE
-   };
+    /**
+     *
+     */
+    public enum PluginActions {
 
+        /**
+         *
+         */
+        SHOW,
+
+        /**
+         *
+         */
+        HIDE,
+
+        /**
+         *
+         */
+        DESCRIPTION,
+
+        /**
+         *
+         */
+        START,
+
+        /**
+         *
+         */
+        STOP,
+
+        /**
+         *
+         */
+        DISPOSE,
+
+        /**
+         *
+         */
+        MAXIMIZE,
+
+        /**
+         *
+         */
+        MINIMIZE,
+
+        /**
+         *
+         */
+        ENQUEUE,
+
+        /**
+         *
+         */
+        DEQUEUE
+    };
+
+    /**
+     *
+     * @param source
+     * @param pluginName
+     * @param action
+     */
     public PluginHasChanged(Object source, String pluginName, PluginActions action) {
         payload.addStatement("plugin", pluginName);
         payload.addStatement("action",
                 action.toString());
     }
 
+    /**
+     *
+     */
     @Override
     protected void generateEventPayload() {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         return "app.event.sensor.plugin.change";

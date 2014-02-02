@@ -18,12 +18,20 @@ public  class ComboLanguage {
             this.value = value;
         }
 
-        @Override
+    /**
+     *
+     * @return
+     */
+    @Override
         public String toString() {
             return descr;
         }
 
-        public String getValue() {
+    /**
+     *
+     * @return
+     */
+    public String getValue() {
             return value;
         }
 }

@@ -30,15 +30,12 @@ import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.reactions.Command;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.jms.JMSException;
-import javax.jms.ObjectMessage;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.jms.JMSException;
+import javax.jms.ObjectMessage;
 
 /**
  *

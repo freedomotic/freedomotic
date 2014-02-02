@@ -35,22 +35,85 @@ public class Statement
         implements Serializable {
 
     private static final long serialVersionUID = -6983128779561551125L;
-	
-	public static final String EQUALS = "EQUALS";
+
+    /**
+     *
+     */
+    public static final String EQUALS = "EQUALS";
+
+    /**
+     *
+     */
     public static final String GREATER_THAN = "GREATER_THAN";
+
+    /**
+     *
+     */
     public static final String LESS_THAN = "LESS_THAN";
+
+    /**
+     *
+     */
     public static final String GREATER_EQUAL_THAN = "GREATER_EQUAL_THAN";
+
+    /**
+     *
+     */
     public static final String LESS_EQUAL_THAN = "LESS_EQUAL_THAN";
+
+    /**
+     *
+     */
     public static final String REGEX = "REGEX";
+
+    /**
+     *
+     */
     public static final String AND = "AND";
+
+    /**
+     *
+     */
     public static final String OR = "OR";
+
+    /**
+     *
+     */
     public static final String NOT = "NOT";
+
+    /**
+     *
+     */
     public static final String ANY = "ANY";
+
+    /**
+     *
+     */
     public String logical;
+
+    /**
+     *
+     */
     public String attribute;
+
+    /**
+     *
+     */
     public String operand;
+
+    /**
+     *
+     */
     public String value;
 
+    /**
+     *
+     * @param logical
+     * @param attribute
+     * @param operand
+     * @param value
+     * @return
+     */
     protected Statement create(String logical, String attribute, String operand, String value) {
         if ((attribute != null) && (value != null)) {
             if ((attribute.trim().length() != 0) && (value.trim().length() != 0)) {
@@ -68,10 +131,18 @@ public class Statement
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getAttribute() {
         return attribute;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getValue() {
         if (value != null) {
             return value;
@@ -80,35 +151,68 @@ public class Statement
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getOperand() {
         return operand;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getLogical() {
         return logical;
     }
 
+    /**
+     *
+     * @param attribute
+     */
     public void setAttribute(String attribute) {
         this.attribute = attribute;
     }
 
+    /**
+     *
+     * @param logical
+     */
     public void setLogical(String logical) {
         this.logical = logical;
     }
 
+    /**
+     *
+     * @param operand
+     */
     public void setOperand(String operand) {
         this.operand = operand;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setValue(String value) {
         this.value = value;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return attribute + " " + operand + " " + value;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -140,6 +244,10 @@ public class Statement
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 3;

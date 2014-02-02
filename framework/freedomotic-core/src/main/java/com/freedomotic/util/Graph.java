@@ -52,15 +52,26 @@ public class Graph {
     HashMap nodi;
     int nArchi;
 
+    /**
+     *
+     */
     public Graph() {
         nodi = new HashMap();
         nArchi = 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public int nodesNumber() {
         return nodi.size();
     }
 
+    /**
+     *
+     * @return
+     */
     public int edgesNumber() {
         return nArchi;
     }
@@ -69,6 +80,7 @@ public class Graph {
      * add(x) aggiunge un nodo al grafo con valore x se non esiste, nulla
      * altrimenti L'aggiunta di un nodo significa aggiungere la coppia (x,
      * lista) nella HashMap dove lista è una HashSet nuovo vuoto.
+     * @param x
      */
     public void add(Object x) {
         if (!nodi.containsKey(x)) {
@@ -77,6 +89,10 @@ public class Graph {
         }
     }
 
+    /**
+     *
+     * @param x
+     */
     public void remove(Object x) {
         if (nodi.containsKey(x)) {
             Iterator arcoIncidenteI = ((HashSet) nodi.get(x)).iterator();
@@ -98,6 +114,7 @@ public class Graph {
 
     /**
      * add(x,y,v) aggiunge un arco tra i nodi x e y con peso v
+     * @return 
      */
     public boolean add(Object x, Object y, Object value) {
         boolean flag = false;
@@ -123,16 +140,33 @@ public class Graph {
         return flag;
     }
 
+    /**
+     *
+     * @param a
+     * @return
+     */
     public boolean add(Edge a) {
         return add(a.x, a.y, a.value);
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     * @param value
+     * @return
+     */
     public boolean remove(Object x, Object y, Object value) {
         Edge a = new Edge(x, y, value);
 
         return remove(a);
     }
 
+    /**
+     *
+     * @param a
+     * @return
+     */
     public boolean remove(Edge a) {
         boolean flag = false;
         boolean flag1 = false;
@@ -145,6 +179,10 @@ public class Graph {
         return flag || flag1;
     }
 
+    /**
+     *
+     * @return
+     */
     public Set getEdgeSet() {
         Set setArchi = new HashSet();
         Iterator hashSetI = nodi.values().iterator();
@@ -156,6 +194,11 @@ public class Graph {
         return setArchi;
     }
 
+    /**
+     *
+     * @param nodo
+     * @return
+     */
     public Set getEdgeSet(Object nodo) {
         if (nodi.containsKey(nodo)) //se il nodo è presente nel grafo
         {
@@ -165,10 +208,18 @@ public class Graph {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public Set getNodeSet() {
         return nodi.keySet();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();

@@ -5,9 +5,7 @@
 package com.freedomotic.jfrontend;
 
 import com.freedomotic.core.ResourcesManager;
-
 import com.freedomotic.objects.EnvObjectLogic;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -23,10 +21,18 @@ public class WidgetTest {
 
     private final EnvObjectLogic obj;
 
+    /**
+     *
+     * @param obj
+     */
     public WidgetTest(EnvObjectLogic obj) {
         this.obj = obj;
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized BufferedImage draw() {
         try {
             String name = obj.getPojo().getCurrentRepresentation().getIcon();

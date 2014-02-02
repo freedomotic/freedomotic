@@ -37,16 +37,14 @@ import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
-
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -71,7 +69,6 @@ public final class TriggerCheck {
      * @param event
      * @param trigger
      * @return
-     * @throws TriggerCheckException
      */
     public boolean check(final EventTemplate event, final Trigger trigger) {
         if ((event == null) || (trigger == null)) {

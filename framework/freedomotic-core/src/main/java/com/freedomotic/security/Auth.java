@@ -35,29 +35,87 @@ import org.apache.shiro.subject.Subject;
  */
 public interface Auth {
 
+    /**
+     *
+     */
     public void initBaseRealm();
 
+    /**
+     *
+     * @return
+     */
     public boolean isInited();
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public boolean isPermitted(String key);
 
+    /**
+     *
+     * @param subject
+     * @param password
+     * @return
+     */
     public boolean login(String subject, char[] password);
 
+    /**
+     *
+     * @param subject
+     * @param password
+     * @return
+     */
     public boolean login(String subject, String password);
 
+    /**
+     *
+     */
     public void logout();
 
+    /**
+     *
+     * @return
+     */
     public Subject getSubject();
 
+    /**
+     *
+     * @return
+     */
     public Object getPrincipal();
 
+    /**
+     *
+     * @param plugin
+     * @param action
+     */
     public void pluginExecutePrivileged(Plugin plugin, Runnable action);
 
+    /**
+     *
+     * @param plugin
+     * @param permissions
+     */
     public void setPluginPrivileges(Plugin plugin, String permissions);
 
+    /**
+     *
+     * @return
+     */
     public String getPluginDefaultPermission();
 
+    /**
+     *
+     * @param rm
+     */
     public void addRealm(Realm rm);
 
+    /**
+     *
+     * @param userName
+     * @return
+     */
     public boolean bindFakeUser(String userName);
 }

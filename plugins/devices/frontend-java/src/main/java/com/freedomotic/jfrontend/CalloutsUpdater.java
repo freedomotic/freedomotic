@@ -19,6 +19,11 @@ public class CalloutsUpdater {
     private static HashMap<Object, Callout> callouts = new HashMap<Object, Callout>();
     private Timer timer;
 
+    /**
+     *
+     * @param drawer
+     * @param milliseconds
+     */
     public CalloutsUpdater(final Renderer drawer, int milliseconds) {
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -46,6 +51,10 @@ public class CalloutsUpdater {
                 milliseconds);
     }
 
+    /**
+     *
+     * @param newCallout
+     */
     public void addCallout(Callout newCallout) {
         Iterator it = callouts.values().iterator();
         boolean found = false;
@@ -84,10 +93,17 @@ public class CalloutsUpdater {
         }
     }
 
+    /**
+     *
+     */
     public static void clearAll() {
         callouts.clear();
     }
 
+    /**
+     *
+     * @param group
+     */
     public static void clear(String group) {
         Iterator it = callouts.values().iterator();
 

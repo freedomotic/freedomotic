@@ -44,8 +44,18 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author nicoletti
+ */
 public class SerialClone {
 
+    /**
+     *
+     * @param <T>
+     * @param x
+     * @return
+     */
     public static <T> T clone(T x) {
         try {
             return cloneX(x);

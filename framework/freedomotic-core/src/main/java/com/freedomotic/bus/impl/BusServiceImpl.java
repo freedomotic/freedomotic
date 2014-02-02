@@ -29,9 +29,8 @@ import com.freedomotic.bus.BootStatus;
 import com.freedomotic.bus.BusDestination;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.reactions.Command;
-
+import com.google.inject.Singleton;
 import java.util.logging.Logger;
-
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -42,10 +41,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TemporaryQueue;
-
 import org.apache.activemq.command.ActiveMQQueue;
-
-import com.google.inject.Singleton;
 
 /**
  * Bus services implementation.
@@ -70,10 +66,14 @@ public class BusServiceImpl extends LifeCycle implements BusService {
 	private Session sendSession;
 	private Session unlistenedSession;
 
-	protected MessageProducer messageProducer;
+    /**
+     *
+     */
+    protected MessageProducer messageProducer;
 
 	/**
 	 * {@inheritDoc}
+     * @throws java.lang.Exception
 	 */
 	protected void start() throws Exception {
 
@@ -115,6 +115,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
 
 	/**
 	 * {@inheritDoc}
+     * @throws java.lang.Exception
 	 */
 	protected void stop() throws Exception {
 
@@ -169,6 +170,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
 
 	/**
 	 * {@inheritDoc}
+     * @return 
 	 */
 	public BusDestination registerCommandQueue(String queueName)
 			throws JMSException {
@@ -179,6 +181,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
 
 	/**
 	 * {@inheritDoc}
+     * @return 
 	 */
 	public BusDestination registerEventQueue(String queueName)
 			throws JMSException {
@@ -188,6 +191,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
 
 	/**
 	 * {@inheritDoc}
+     * @return 
 	 */
 	public BusDestination registerTopic(String queueName) throws JMSException {
 
@@ -196,6 +200,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
 
 	/**
 	 * {@inheritDoc}
+     * @return 
 	 */
 	public Session getReceiveSession() {
 		return receiveSession;
@@ -203,6 +208,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
 
 	/**
 	 * {@inheritDoc}
+     * @return 
 	 */
 	public Session getSendSession() {
 		return sendSession;
@@ -210,6 +216,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
 
 	/**
 	 * {@inheritDoc}
+     * @return 
 	 */
 	public Session getUnlistenedSession() {
 		return unlistenedSession;

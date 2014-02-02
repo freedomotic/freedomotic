@@ -19,9 +19,6 @@
  */
 package com.freedomotic.environment;
 
-import com.google.inject.Inject;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
 import com.freedomotic.api.Client;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.DaoLayerException;
@@ -35,12 +32,18 @@ import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
-import com.freedomotic.security.Auth;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.SerialClone;
 import com.freedomotic.util.UidGenerator;
-import java.io.*;
+import com.google.inject.Inject;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,12 +61,21 @@ public final class EnvironmentPersistence {
     private static List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
     private ClientStorage clientStorage;
 
+    /**
+     *
+     * @param clientStorage
+     */
     @Inject
     public EnvironmentPersistence(ClientStorage clientStorage) {
         //disable instance creation
         this.clientStorage = clientStorage;
     }
 
+    /**
+     *
+     * @param folder
+     * @throws DaoLayerException
+     */
     @RequiresPermissions("environments:save")
     public static void saveEnvironmentsToFolder(File folder) throws DaoLayerException {
         if (environments.isEmpty()) {
@@ -142,6 +154,7 @@ public final class EnvironmentPersistence {
      *
      * @param folder
      * @param makeUnique
+     * @return 
      * @deprecated
      */
     @Deprecated
@@ -226,6 +239,14 @@ public final class EnvironmentPersistence {
         return envLogic;
     }
 
+    /**
+     *
+     * @param clazz
+     * @param name
+     * @param protocol
+     * @param address
+     * @return
+     */
     public EnvObjectLogic join(String clazz, String name, String protocol, String address) {
         EnvObjectLogic loaded = null;
         ObjectPluginPlaceholder objectPlugin = (ObjectPluginPlaceholder) clientStorage.get(clazz);
@@ -290,6 +311,10 @@ public final class EnvironmentPersistence {
         return loaded;
     }
 
+    /**
+     *
+     * @param input
+     */
     public static void remove(EnvironmentLogic input) {
         for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(input.getPojo().getUUID())) {
             EnvObjectPersistence.remove(obj);
@@ -299,6 +324,9 @@ public final class EnvironmentPersistence {
         input.clear();
     }
 
+    /**
+     *
+     */
     @RequiresPermissions("environments:delete")
     public static void clear() {
         try {
@@ -307,6 +335,10 @@ public final class EnvironmentPersistence {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public static int size() {
         return environments.size();
     }
@@ -350,6 +382,12 @@ public final class EnvironmentPersistence {
         }
     }
 
+    /**
+     *
+     * @param env
+     * @param folder
+     * @throws IOException
+     */
     @RequiresPermissions("environments:save")
     public static void saveAs(EnvironmentLogic env, File folder) throws IOException {
         LOG.config("Serializing new environment to " + folder);
@@ -404,11 +442,20 @@ public final class EnvironmentPersistence {
         add(envLogic, false);
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("environments:read")
     public static List<EnvironmentLogic> getEnvironments() {
         return environments;
     }
 
+    /**
+     *
+     * @param UUID
+     * @return
+     */
     @RequiresPermissions("environments:read")
     public static EnvironmentLogic getEnvByUUID(String UUID) {
         //     if (auth.isPermitted("environments:read:" + UUID)) {

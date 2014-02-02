@@ -28,6 +28,7 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
     /**
         
      * Creates new form PrivilegesConfiguration
+     * @param api
      */
     public PrivilegesConfiguration(API api) {
         this.api = api;

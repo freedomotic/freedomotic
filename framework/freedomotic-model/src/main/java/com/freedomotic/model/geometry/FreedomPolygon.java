@@ -36,18 +36,35 @@ public class FreedomPolygon
 	
     private ArrayList<FreedomPoint> points = new ArrayList<FreedomPoint>();
 
+    /**
+     *
+     */
     public FreedomPolygon() {
     }
 
+    /**
+     *
+     * @param point
+     */
     public void append(FreedomPoint point) {
         points.add(point);
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     */
     public void append(int x, int y) {
         FreedomPoint point = new FreedomPoint(x, y);
         points.add(point);
     }
 
+    /**
+     *
+     * @param nextTo
+     * @return
+     */
     public FreedomPoint insert(FreedomPoint nextTo) {
         int index = points.indexOf(nextTo);
         FreedomPoint currentPoint = null;
@@ -71,10 +88,18 @@ public class FreedomPolygon
         return null;
     }
 
+    /**
+     *
+     * @param point
+     */
     public void remove(FreedomPoint point) {
         points.remove(point);
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<FreedomPoint> getPoints() {
         if (points != null) {
             return points;
@@ -83,6 +108,10 @@ public class FreedomPolygon
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         StringBuilder buff = new StringBuilder();

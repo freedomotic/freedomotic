@@ -5,14 +5,12 @@
 package com.freedomotic.jfrontend.automationeditor;
 
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.util.I18n.I18n;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -20,7 +18,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 
@@ -39,6 +36,7 @@ public class ReactionEditor
     private final I18n I18n;
     /**
      * Creates new form ReactionEditor
+     * @param parent
      */
     public ReactionEditor(I18n i18n, Reaction reaction, Component parent) {
         this.I18n = i18n;
@@ -48,6 +46,10 @@ public class ReactionEditor
         init();
     }
 
+    /**
+     *
+     * @param i18n
+     */
     public ReactionEditor(I18n i18n) {
         this.I18n = i18n;
         initComponents();
@@ -168,10 +170,17 @@ public class ReactionEditor
         System.out.println("Temporary reaction removed :" + reaction.toString());
     }
 
+    /**
+     *
+     * @return
+     */
     public Reaction getReaction() {
         return reaction;
     }
 
+    /**
+     *
+     */
     public void finalizeEditing() {
         ReactionPersistence.add(reaction);
     }

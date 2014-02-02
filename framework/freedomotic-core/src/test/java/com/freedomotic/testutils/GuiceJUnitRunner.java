@@ -12,7 +12,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.logging.Logger;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 
@@ -24,14 +23,26 @@ public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
 
     private Injector injector;
 
+    /**
+     *
+     */
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
     @Inherited
     public @interface GuiceInjectors {
 
+        /**
+         *
+         * @return
+         */
         Class<?>[] value();
     }
 
+    /**
+     *
+     * @return
+     * @throws Exception
+     */
     @Override
     public Object createTest() throws Exception {
         Object obj = super.createTest();
@@ -39,6 +50,11 @@ public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
         return obj;
     }
 
+    /**
+     *
+     * @param klass
+     * @throws InitializationError
+     */
     public GuiceJUnitRunner(Class<?> klass) throws InitializationError {
         super(klass);
         Class<?>[] classes = getModulesFor(klass);

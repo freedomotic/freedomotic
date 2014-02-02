@@ -7,16 +7,12 @@ package com.freedomotic.jfrontend.utils;
 import com.freedomotic.reactions.Payload;
 import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
-
+import java.util.Iterator;
+import javax.swing.JTextField;
 import junit.framework.Assert;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Iterator;
-
-import javax.swing.JTextField;
 
 /**
  *
@@ -28,9 +24,16 @@ public class PropertiesPanel_1Test {
     static Trigger trigger;
     static Trigger result;
 
+    /**
+     *
+     */
     public PropertiesPanel_1Test() {
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @BeforeClass
     public static void setUpClass()
             throws Exception {
@@ -64,31 +67,53 @@ public class PropertiesPanel_1Test {
         panel.layoutPanel();
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @AfterClass
     public static void tearDownClass()
             throws Exception {
     }
 
+    /**
+     *
+     */
     @Test
     public void testAddElement() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testLayoutPanel() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testAddRow() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testGetRows() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testGetColumns() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testGetComponent() {
         result = new Trigger();

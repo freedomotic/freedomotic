@@ -22,7 +22,6 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-
 import java.awt.Point;
 import java.util.logging.Logger;
 
@@ -42,6 +41,12 @@ public class PersonDetected
     int x;
     int y;
 
+    /**
+     *
+     * @param source
+     * @param id
+     * @param startLocation
+     */
     public PersonDetected(Object source, int id, Point startLocation) {
         this.id = id;
         x = (int) startLocation.getX();
@@ -57,30 +62,54 @@ public class PersonDetected
 //    public int getPersonId() {
 //        return id;
 //    }
-    @Override
+
+    /**
+     *
+     */
+        @Override
     protected void generateEventPayload() {
         payload.addStatement("id", id);
         payload.addStatement("xCord", x);
         payload.addStatement("yCord", y);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getY() {
         return y;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return ("Person " + id + " has been detected in the environment at location " + x + "," + y);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         return "app.event.sensor.person.movement.detected";

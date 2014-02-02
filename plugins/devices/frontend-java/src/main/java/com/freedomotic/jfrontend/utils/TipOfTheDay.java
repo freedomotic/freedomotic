@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.ToolTipManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -42,6 +41,7 @@ public class TipOfTheDay
     private static String PAGE = "http://www.freedomotic.com/help/index.html";
     /**
      * Creates new form TipOfTheDay
+     * @param main
      */
     public TipOfTheDay(Plugin main) {
         initComponents();

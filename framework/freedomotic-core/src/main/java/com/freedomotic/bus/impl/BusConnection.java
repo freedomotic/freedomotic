@@ -22,13 +22,10 @@
 package com.freedomotic.bus.impl;
 
 import com.freedomotic.util.Info;
-
 import java.util.logging.Logger;
-
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.Session;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
@@ -81,6 +78,7 @@ public class BusConnection extends LifeCycle {
 
 	/**
 	 * {@inheritDoc}
+     * @throws java.lang.Exception
 	 */
 	protected void start() throws Exception {
 		
@@ -97,6 +95,7 @@ public class BusConnection extends LifeCycle {
 
 	/**
 	 * {@inheritDoc}
+     * @throws java.lang.Exception
 	 */
 	protected void stop() throws Exception {
 

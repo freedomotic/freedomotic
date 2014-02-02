@@ -33,13 +33,32 @@ import java.util.List;
  */
 public interface IMarketPlace {
 
+    /**
+     *
+     * @return
+     */
     List<IPluginCategory> getAvailableCategories();
 
+    /**
+     *
+     * @return
+     */
     List<IPluginPackage> getAvailablePackages();
 
+    /**
+     *
+     * @param category
+     * @return
+     */
     List<IPluginPackage> getAvailablePackages(IPluginCategory category);
 
+    /**
+     *
+     */
     public void updateAllPackageList();
 
+    /**
+     *
+     */
     public void updateCategoryList();
 }

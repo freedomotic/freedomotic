@@ -4,25 +4,19 @@
  */
 package com.freedomotic.plugins.filesystem;
 
-import com.google.inject.Inject;
-
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
-
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.exceptions.DaoLayerException;
 import com.freedomotic.exceptions.PluginLoadingException;
 import com.freedomotic.plugins.ClientStorage;
-
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
-
 import com.freedomotic.util.FetchHttpFiles;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.Unzip;
-
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,7 +29,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -61,6 +54,7 @@ public class PluginsManagerImpl implements PluginsManager {
      * their default folder.
      *
      * @param TYPE
+     * @throws com.freedomotic.exceptions.PluginLoadingException
      */
     @Override
     public void loadAllPlugins(int TYPE) throws PluginLoadingException {
@@ -76,6 +70,7 @@ public class PluginsManagerImpl implements PluginsManager {
      * Loads all plugins from filesystem regardless their type
      *
      * @param TYPE
+     * @throws com.freedomotic.exceptions.PluginLoadingException
      */
     @Override
     public void loadAllPlugins() throws PluginLoadingException {

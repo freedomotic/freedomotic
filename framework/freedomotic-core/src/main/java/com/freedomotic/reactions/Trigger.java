@@ -27,18 +27,15 @@ import com.freedomotic.app.Profiler;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.core.TriggerCheck;
-
+import com.google.inject.Inject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
-
-import com.google.inject.Inject;
 
 /**
  *
@@ -68,10 +65,16 @@ public final class Trigger implements BusConsumer, Cloneable {
     @Inject
     private TriggerCheck checker;
 
+    /**
+     *
+     */
     public Trigger() {
     }
 
-	public void register() {
+    /**
+     *
+     */
+    public void register() {
 		
 		LOG.info("Registering the trigger named '" + getName() + "'");
 		listener = new BusMessagesListener(this);
@@ -81,30 +84,59 @@ public final class Trigger implements BusConsumer, Cloneable {
 		Freedomotic.INJECTOR.injectMembers(this);
 	}
 
+    /**
+     *
+     * @param name
+     */
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isHardwareLevel() {
         return hardwareLevel;
     }
 
+    /**
+     *
+     * @param hardwareLevel
+     */
     public void setIsHardwareLevel(boolean hardwareLevel) {
         this.hardwareLevel = hardwareLevel;
     }
 
+    /**
+     *
+     * @param sender
+     */
     public void setDescription(String sender) {
         this.description = sender;
     }
 
+    /**
+     *
+     * @param event
+     */
     public void setChannel(EventTemplate event) {
         this.channel = event.getDefaultDestination();
     }
 
+    /**
+     *
+     * @param channel
+     */
     public void setChannel(String channel) {
         this.channel = channel;
     }
 
+    /**
+     *
+     * @param event
+     * @return
+     */
     public boolean isConsistentWith(EventTemplate event) {
         if (getPayload().equals(event.getPayload())) {
             return true;
@@ -113,6 +145,10 @@ public final class Trigger implements BusConsumer, Cloneable {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public long getMaxExecutions() {
         if (maxExecutions <= 0) {
             maxExecutions = -1; //unlimited
@@ -121,18 +157,34 @@ public final class Trigger implements BusConsumer, Cloneable {
         return maxExecutions;
     }
 
+    /**
+     *
+     * @param maxExecutions
+     */
     public void setMaxExecutions(long maxExecutions) {
         this.maxExecutions = maxExecutions;
     }
 
+    /**
+     *
+     * @return
+     */
     public long getNumberOfExecutions() {
         return numberOfExecutions;
     }
 
+    /**
+     *
+     * @param numberOfExecutions
+     */
     public void setNumberOfExecutions(long numberOfExecutions) {
         this.numberOfExecutions = numberOfExecutions;
     }
 
+    /**
+     *
+     * @return
+     */
     public long getSuspensionTime() {
 //        if (suspensionTime <= 0) {
 //            suspensionTime = 100; //a minimal default suspension to control flooding
@@ -140,16 +192,29 @@ public final class Trigger implements BusConsumer, Cloneable {
         return suspensionTime;
     }
 
+    /**
+     *
+     * @param suspensionTime
+     */
     public void setSuspensionTime(long suspensionTime) {
         this.suspensionTime = suspensionTime;
     }
 
+    /**
+     *
+     * @param p
+     */
     public void setPayload(Payload p) {
         this.payload = p;
     }
 
     //can be moved to a stategy pattern
-    public boolean canFire() {
+
+    /**
+     *
+     * @return
+     */
+        public boolean canFire() {
         //num of executions < max executions
         if (getMaxExecutions() > -1) { //not unlimited
 
@@ -179,27 +244,50 @@ public final class Trigger implements BusConsumer, Cloneable {
         return true;
     }
 
+    /**
+     *
+     */
     public synchronized void setExecuted() {
         suspensionStart = System.currentTimeMillis();
         numberOfExecutions++;
     }
 
+    /**
+     *
+     * @param delay
+     */
     public void setDelay(int delay) {
         this.delay = delay;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPriority() {
         return priority;
     }
 
+    /**
+     *
+     * @param priority
+     */
     public void setPriority(int priority) {
         this.priority = priority;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDescription() {
         if ((description == null) || (description.isEmpty())) {
             description = name;
@@ -208,23 +296,44 @@ public final class Trigger implements BusConsumer, Cloneable {
         return description;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getChannel() {
         return channel;
     }
 
+    /**
+     *
+     * @return
+     */
     public Payload getPayload() {
         return payload;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDelay() {
         return delay;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return getName();
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -244,6 +353,10 @@ public final class Trigger implements BusConsumer, Cloneable {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -278,6 +391,10 @@ public final class Trigger implements BusConsumer, Cloneable {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Trigger clone() {
         Trigger clone = new Trigger();
@@ -306,24 +423,43 @@ public final class Trigger implements BusConsumer, Cloneable {
         return clone;
     }
 
-	public void unregister() {
+    /**
+     *
+     */
+    public void unregister() {
 		if (listener != null) {
 			listener.unsubscribe();
 		}
 	}
 
+    /**
+     *
+     * @return
+     */
     public String getUUID() {
         return uuid;
     }
 
+    /**
+     *
+     * @param uuid
+     */
     public void setUUID(String uuid) {
         this.uuid = uuid;
     }
 
+    /**
+     *
+     * @param persist
+     */
     public void setPersistence(boolean persist) {
         this.persistence = persist;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isToPersist() {
         return persistence;
     }

@@ -25,15 +25,11 @@
  */
 package com.freedomotic.events;
 
-import com.google.inject.Inject;
-
 import com.freedomotic.api.EventTemplate;
-
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.core.TriggerCheck;
-
 import com.freedomotic.reactions.Trigger;
+import com.google.inject.Inject;
 import java.util.logging.Logger;
 
 /**
@@ -49,6 +45,12 @@ public final class ProtocolRead
     @Inject
     private TriggerCheck triggerCheck;
 
+    /**
+     *
+     * @param source
+     * @param protocol
+     * @param address
+     */
     @Inject
     public ProtocolRead(Object source, String protocol, String address) {
         this.setSender(source);
@@ -58,12 +60,19 @@ public final class ProtocolRead
         generateEventPayload();
     }
 
+    /**
+     *
+     */
     @Override
     protected void generateEventPayload() {
         //this is not a good idea but it works for now
         Freedomotic.INJECTOR.injectMembers(this);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         /*

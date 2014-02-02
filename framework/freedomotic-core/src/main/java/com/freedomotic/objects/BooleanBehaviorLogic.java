@@ -36,13 +36,30 @@ public class BooleanBehaviorLogic
     private Listener listener;
     private boolean changed;
 
+    /**
+     *
+     */
     public interface Listener {
 
+        /**
+         *
+         * @param params
+         * @param fireCommand
+         */
         public void onTrue(Config params, boolean fireCommand);
 
+        /**
+         *
+         * @param params
+         * @param fireCommand
+         */
         public void onFalse(Config params, boolean fireCommand);
     }
 
+    /**
+     *
+     * @param pojo
+     */
     public BooleanBehaviorLogic(BooleanBehavior pojo) {
         this.data = pojo;
     }
@@ -89,15 +106,27 @@ public class BooleanBehaviorLogic
         }
     }
 
+    /**
+     *
+     * @param booleanBehaviorListener
+     */
     public void addListener(Listener booleanBehaviorListener) {
         listener = booleanBehaviorListener;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getName() {
         return data.getName();
     }
 
+    /**
+     *
+     * @param b
+     */
     public void setValue(boolean b) {
         if (data.getValue() != b) {
             data.setValue(b);
@@ -105,10 +134,19 @@ public class BooleanBehaviorLogic
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getValue() {
         return data.getValue();
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -128,6 +166,10 @@ public class BooleanBehaviorLogic
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 3;
@@ -136,26 +178,46 @@ public class BooleanBehaviorLogic
         return hash;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isActive() {
         return data.isActive();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isReadOnly() {
         return data.isReadOnly();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getValueAsString() {
         return data.toString();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isChanged() {
         return changed;
     }
 
+    /**
+     *
+     * @param value
+     */
     @Override
     public void setChanged(boolean value) {
         changed = value;

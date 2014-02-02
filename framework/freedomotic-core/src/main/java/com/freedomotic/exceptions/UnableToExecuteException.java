@@ -25,8 +25,6 @@
  */
 package com.freedomotic.exceptions;
 
-import java.util.logging.Logger;
-
 /**
  *
  * @author Enrico
@@ -51,10 +49,19 @@ public class UnableToExecuteException
         super(msg);
     }
 
+    /**
+     *
+     * @param message
+     * @param cause
+     */
     public UnableToExecuteException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     *
+     * @param cause
+     */
     public UnableToExecuteException(Throwable cause) {
         super(cause);
     }

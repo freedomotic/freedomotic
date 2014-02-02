@@ -4,7 +4,6 @@
  */
 package com.freedomotic.jfrontend;
 
-import com.google.inject.Inject;
 import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
@@ -22,9 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -45,6 +42,7 @@ public class PluginConfigure
 
     /**
      * Creates new form PluginConfigure
+     * @param api
      */
     public PluginConfigure(API api) {
         this.api=api;

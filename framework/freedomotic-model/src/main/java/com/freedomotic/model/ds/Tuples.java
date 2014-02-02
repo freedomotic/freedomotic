@@ -46,34 +46,75 @@ public class Tuples
 
     private ArrayList<HashMap<String, String>> tuples = new ArrayList<HashMap<String, String>>();
 
+    /**
+     *
+     * @param i
+     * @return
+     */
     public HashMap<String, String> getTuple(int i) {
         return tuples.get(i);
     }
 
+    /**
+     *
+     * @param tupleIndex
+     * @param key
+     * @return
+     */
     public String getProperty(int tupleIndex, String key) {
         return (String) tuples.get(tupleIndex).get(key);
     }
 
+    /**
+     *
+     * @param tupleIndex
+     * @return
+     */
     public Iterator<Entry<String,String>> getPropertiesIterator(int tupleIndex) {
         return tuples.get(tupleIndex).entrySet().iterator();
     }
 
+    /**
+     *
+     * @param tupleIndex
+     * @return
+     */
     public int getPropertiesCount(int tupleIndex) {
         return tuples.get(tupleIndex).entrySet().size();
     }
 
+    /**
+     *
+     * @param tupleIndex
+     * @return
+     */
     public Set<Entry<String,String>> getProperties(int tupleIndex) {
         return tuples.get(tupleIndex).entrySet();
     }
 
+    /**
+     *
+     * @param map
+     */
     public void add(HashMap<String, String> map) {
         tuples.add(map);
     }
 
+    /**
+     *
+     * @return
+     */
     public int size() {
         return tuples.size();
     }
 
+    /**
+     *
+     * @param tupleIndex
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public String getStringProperty(int tupleIndex, String key, String defaultValue) {
         String result = getProperty(tupleIndex, key);
 
@@ -85,6 +126,13 @@ public class Tuples
         }
     }
 
+    /**
+     *
+     * @param tupleIndex
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public int getIntProperty(int tupleIndex, String key, int defaultValue) {
         try {
             Integer result = Integer.parseInt(getProperty(tupleIndex, key));
@@ -101,6 +149,13 @@ public class Tuples
         }
     }
 
+    /**
+     *
+     * @param tupleIndex
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public boolean getBooleanProperty(int tupleIndex, String key, boolean defaultValue) {
         try {
             Boolean result = Boolean.parseBoolean(getProperty(tupleIndex, key));
@@ -117,6 +172,13 @@ public class Tuples
         }
     }
 
+    /**
+     *
+     * @param tupleIndex
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public double getDoubleProperty(int tupleIndex, String key, double defaultValue) {
         Double result = null;
 

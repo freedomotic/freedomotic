@@ -33,19 +33,34 @@ public class ScheduledEvent
 
     private static final long serialVersionUID = 7508683624189475354L;
 
-	public ScheduledEvent(Object source) {
+    /**
+     *
+     * @param source
+     */
+    public ScheduledEvent(Object source) {
         payload.addStatement("sender", source.getClass().getCanonicalName());
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return eventName;
     }
 
+    /**
+     *
+     */
     @Override
     protected void generateEventPayload() {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         return "app.event.sensor.calendar.event.schedule";

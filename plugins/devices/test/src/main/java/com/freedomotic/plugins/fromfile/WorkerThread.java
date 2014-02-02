@@ -37,12 +37,20 @@ public class WorkerThread
     ArrayList<Coordinate> coord;
     TrackingReadFile master;
 
+    /**
+     *
+     * @param master
+     * @param coord
+     */
     public WorkerThread(TrackingReadFile master, ArrayList<Coordinate> coord) {
         this.master = master;
         this.coord = coord;
         setName("MoteTrackingFromFileWT");
     }
 
+    /**
+     *
+     */
     @Override
     public void run() {
         Iterator it = coord.iterator();

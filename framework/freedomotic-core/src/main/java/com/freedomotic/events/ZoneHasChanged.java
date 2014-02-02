@@ -22,7 +22,6 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-// import com.freedomotic.environment.Room;
 import com.freedomotic.model.environment.Zone;
 import java.util.logging.Logger;
 
@@ -38,7 +37,12 @@ public class ZoneHasChanged
 
     private static final long serialVersionUID = -2676123835322299252L;
 
-	public ZoneHasChanged(Object source, Zone zone) {
+    /**
+     *
+     * @param source
+     * @param zone
+     */
+    public ZoneHasChanged(Object source, Zone zone) {
         this.setSender(source);
         payload.addStatement("zone.name", zone.getName());
         payload.addStatement("zone.description", zone.getDescription());
@@ -54,10 +58,17 @@ public class ZoneHasChanged
         //    }
         }
 
+    /**
+     *
+     */
     @Override
     protected void generateEventPayload() {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getDefaultDestination() {
         return "app.event.sensor.environment.zone.change";

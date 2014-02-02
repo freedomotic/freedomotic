@@ -41,6 +41,9 @@ public class LogViewer extends Protocol {
 
     private LogWindowHandler handler = null;
 
+    /**
+     *
+     */
     public LogViewer() {
         super("Log Viewer", "/test/logviewer-manifest.xml");
         setPollingWait(-1); //disable threaded onRun()

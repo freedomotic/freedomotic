@@ -21,8 +21,6 @@
  */
 package com.freedomotic.objects;
 
-import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
 import java.util.logging.Logger;
@@ -38,44 +36,95 @@ public class RangedIntBehaviorLogic
     private Listener listener;
     private boolean changed;
 
+    /**
+     *
+     */
     public interface Listener {
 
+        /**
+         *
+         * @param params
+         * @param fireCommand
+         */
         public void onLowerBoundValue(Config params, boolean fireCommand);
 
+        /**
+         *
+         * @param params
+         * @param fireCommand
+         */
         public void onUpperBoundValue(Config params, boolean fireCommand);
 
+        /**
+         *
+         * @param rangeValue
+         * @param params
+         * @param fireCommand
+         */
         public void onRangeValue(int rangeValue, Config params, boolean fireCommand);
     }
 
+    /**
+     *
+     * @param pojo
+     */
     public RangedIntBehaviorLogic(RangedIntBehavior pojo) {
         this.data = pojo;
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void addListener(Listener listener) {
         this.listener = listener;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return getName() + ": " + getValue();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getValue() {
         return data.getValue();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getStep() {
         return data.getStep();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMax() {
         return data.getMax();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMin() {
         return data.getMin();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getScale() {
         return data.getScale();
     }
@@ -134,6 +183,10 @@ public class RangedIntBehaviorLogic
         }
     }
 
+    /**
+     *
+     * @param inputValue
+     */
     public void setValue(int inputValue) {
         if (data.getValue() != inputValue) {
             data.setValue(inputValue);
@@ -141,11 +194,20 @@ public class RangedIntBehaviorLogic
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getName() {
         return data.getName();
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -165,6 +227,10 @@ public class RangedIntBehaviorLogic
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -173,26 +239,46 @@ public class RangedIntBehaviorLogic
         return hash;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getValueAsString() {
         return data.toString();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isActive() {
         return data.isActive();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isReadOnly() {
         return data.isReadOnly();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isChanged() {
         return changed;
     }
 
+    /**
+     *
+     * @param value
+     */
     @Override
     public void setChanged(boolean value) {
         changed = value;

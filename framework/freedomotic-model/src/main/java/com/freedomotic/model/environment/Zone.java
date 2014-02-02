@@ -41,7 +41,6 @@ package com.freedomotic.model.environment;
 
 import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.object.EnvObject;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -62,26 +61,46 @@ public class Zone
     private ArrayList<EnvObject> objects;
     private String texture;
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public String getName() {
         return this.name;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public FreedomPolygon getShape() {
         return this.shape;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public boolean isRoom() {
         return room;
     }
 
+    /**
+     *
+     * @param room
+     */
     @RequiresPermissions("zones:update")
     public void setAsRoom(boolean room) {
         this.room = room;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public String getDescription() {
         if (description == null) {
@@ -91,31 +110,55 @@ public class Zone
         return description;
     }
 
+    /**
+     *
+     * @param description
+     */
     @RequiresPermissions("zones:update")
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public String getTexture() {
         return texture;
     }
 
+    /**
+     *
+     * @param name
+     */
     @RequiresPermissions("zones:update")
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @param shape
+     */
     @RequiresPermissions("zones:update")
     public void setShape(FreedomPolygon shape) {
         this.shape = shape;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return this.getName();
     }
 
+    /**
+     *
+     * @param file
+     */
     @RequiresPermissions("zones:update")
     public void setTexture(String file) {
 
@@ -124,6 +167,10 @@ public class Zone
         //file.getName();
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public ArrayList<EnvObject> getObjects() {
         if (objects == null) {
@@ -133,17 +180,32 @@ public class Zone
         return objects;
     }
 
+    /**
+     *
+     * @param objects
+     */
     @RequiresPermissions("zones:update")
     public void setObjects(ArrayList<EnvObject> objects) {
         this.objects = objects;
     }
 
+    /**
+     *
+     */
     public void init() {
     }
 
+    /**
+     *
+     */
     public void setChanged() {
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     @RequiresPermissions("zones:read")
     public boolean equals(Object obj) {
@@ -164,6 +226,10 @@ public class Zone
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     @RequiresPermissions("zones:read")
     public int hashCode() {

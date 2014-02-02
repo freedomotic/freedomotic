@@ -37,12 +37,25 @@ public class FreedomEllipse
     private int xRadius;
     private int yRadius;
 
+    /**
+     *
+     * @param center
+     * @param xRadius
+     * @param yRadius
+     */
     public FreedomEllipse(FreedomPoint center, int xRadius, int yRadius) {
         this.center = center;
         this.xRadius = xRadius;
         this.yRadius = yRadius;
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     * @param xRadius
+     * @param yRadius
+     */
     public FreedomEllipse(int x, int y, int xRadius, int yRadius) {
         this.center = new FreedomPoint(x, y);
         this.xRadius = xRadius;

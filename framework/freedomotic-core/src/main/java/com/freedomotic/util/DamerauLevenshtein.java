@@ -27,6 +27,10 @@ package com.freedomotic.util;
 
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author nicoletti
+ */
 public class DamerauLevenshtein {
 
     private String compOne;
@@ -34,6 +38,11 @@ public class DamerauLevenshtein {
     private int[][] matrix;
     private Boolean calculated = false;
 
+    /**
+     *
+     * @param a
+     * @param b
+     */
     public DamerauLevenshtein(String a, String b) {
         if ((a.length() > 0 || !a.isEmpty()) || (b.length() > 0 || !b.isEmpty())) {
             compOne = a;
@@ -41,11 +50,19 @@ public class DamerauLevenshtein {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int[][] getMatrix() {
         setupMatrix();
         return matrix;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getSimilarity() {
         if (!calculated) {
             setupMatrix();

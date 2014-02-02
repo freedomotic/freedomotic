@@ -5,24 +5,28 @@
 package com.freedomotic.jfrontend;
 
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.core.ResourcesManager;
-
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
-
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
-
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
-
 import com.freedomotic.util.TopologyUtils;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.TexturePaint;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
@@ -34,11 +38,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import javax.swing.JPanel;
 
 /**
  *
@@ -66,6 +67,10 @@ public class Renderer
     private static int BORDER_Y = 10; //the empty space around the map
     private double CANVAS_WIDTH = environmentWidth + (BORDER_X * 2);
     private double CANVAS_HEIGHT = environmentHeight + (BORDER_Y * 2);
+
+    /**
+     *
+     */
     protected Color backgroundColor =
             TopologyUtils.convertColorToAWT(EnvironmentPersistence.getEnvironments().get(0).getPojo()
             .getBackgroundColor());
@@ -77,6 +82,10 @@ public class Renderer
     private FreedomPoint originalHandleLocation = null;
     private ArrayList<Handle> handles = new ArrayList<Handle>();
     private ZoneLogic selectedZone;
+
+    /**
+     *
+     */
     protected CalloutsUpdater callouts;
     private boolean objectEditMode = false;
     private Point messageCorner = new Point(50, 50);
@@ -84,6 +93,10 @@ public class Renderer
     private EnvironmentLogic currEnv = EnvironmentPersistence.getEnvironments().get(0);
     private HashMap<EnvObjectLogic, ObjectEditor> objEditorPanels = new HashMap<EnvObjectLogic, ObjectEditor>();
 
+    /**
+     *
+     * @param obj
+     */
     public void openObjEditor(EnvObjectLogic obj) {
         if (objEditorPanels.containsKey(obj)) {
             if (objEditorPanels.get(obj) == null) {
@@ -101,10 +114,18 @@ public class Renderer
         currEditorPanel.toFront();
     }
 
+    /**
+     *
+     * @return
+     */
     public EnvironmentLogic getCurrEnv() {
         return this.currEnv;
     }
 
+    /**
+     *
+     * @param env
+     */
     public void setCurrEnv(EnvironmentLogic env) {
         this.currEnv = env;
         updateEnvRelatedVars();
@@ -112,30 +133,53 @@ public class Renderer
         setNeedRepaint(true);
     }
 
+    /**
+     *
+     */
     public void updateEnvRelatedVars() {
         environmentWidth = currEnv.getPojo().getWidth();
         environmentHeight = currEnv.getPojo().getHeight();
         backgroundColor = TopologyUtils.convertColorToAWT(currEnv.getPojo().getBackgroundColor());
     }
 
+    /**
+     *
+     * @return
+     */
     protected EnvObjectLogic getSelectedObject() {
         return selectedObject;
     }
 
+    /**
+     *
+     * @param shape
+     * @param color
+     */
     protected void addIndicator(Shape shape, Color color) {
         indicators.add(new Indicator(shape, color));
     }
 
+    /**
+     *
+     * @param shape
+     */
     protected void addIndicator(Shape shape) {
         indicators.add(new Indicator(shape));
     }
 
+    /**
+     *
+     */
     protected void removeIndicators() {
         indicators.clear();
         selectedObject = null;
         setNeedRepaint(false);
     }
 
+    /**
+     *
+     * @return
+     */
     public ZoneLogic getSelectedZone() {
         return selectedZone;
     }
@@ -144,6 +188,10 @@ public class Renderer
         this.selectedZone = selectedZone;
     }
 
+    /**
+     *
+     * @param master
+     */
     public Renderer(JavaDesktopFrontend master) {
         this.plugin = master;
         ResourcesManager.clear();
@@ -170,6 +218,10 @@ public class Renderer
         addMouseMotionListener(this);
     }
 
+    /**
+     *
+     * @param repaintBackground
+     */
     public synchronized void setNeedRepaint(boolean repaintBackground) {
         backgroundChanged = repaintBackground;
 
@@ -195,33 +247,66 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     */
     public void prepareBackground() {
     }
 
+    /**
+     *
+     */
     public void renderEnvironment() {
     }
 
+    /**
+     *
+     */
     public void renderWalls() {
     }
 
+    /**
+     *
+     */
     public void prepareForeground() {
     }
 
+    /**
+     *
+     */
     public void renderObjects() {
     }
 
+    /**
+     *
+     */
     public void renderPeople() {
     }
 
+    /**
+     *
+     */
     public void renderZones() {
     }
 
+    /**
+     *
+     * @param obj
+     */
     public void mouseEntersObject(EnvObjectLogic obj) {
     }
 
+    /**
+     *
+     * @param obj
+     */
     public void mouseExitsObject(EnvObjectLogic obj) {
     }
 
+    /**
+     *
+     * @param obj
+     */
     public void mouseClickObject(EnvObjectLogic obj) {
     }
 
@@ -266,6 +351,10 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     * @param g
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -313,6 +402,10 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     * @param callout
+     */
     public void createCallout(Callout callout) {
         callouts.addCallout(callout);
     }
@@ -327,6 +420,10 @@ public class Renderer
         graph2D.setTransform(newRenderingContext);
     }
 
+    /**
+     *
+     * @return
+     */
     protected Graphics getContext() {
         return graph;
     }
@@ -335,10 +432,17 @@ public class Renderer
         this.graph = g;
     }
 
+    /**
+     *
+     * @return
+     */
     protected Graphics2D getRenderingContext() {
         return graph2D;
     }
 
+    /**
+     *
+     */
     protected void restoreTransformContext() {
         try {
             graph2D.setTransform(originalRenderingContext);
@@ -357,6 +461,11 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     protected AffineTransform setTransformContextFor(EnvObject obj) {
         Graphics2D tmpGraph = (Graphics2D) getContext();
         panelTransform = tmpGraph.getTransform();
@@ -372,6 +481,9 @@ public class Renderer
         return newAt;
     }
 
+    /**
+     *
+     */
     protected void invalidateAnyTransform() {
         Graphics2D tmpGraph = (Graphics2D) getContext();
         tmpGraph.setTransform(panelTransform);
@@ -397,6 +509,12 @@ public class Renderer
         return img;
     }
 
+    /**
+     *
+     * @param shape
+     * @param translation
+     * @return
+     */
     public static Shape getTranslatedShape(final Shape shape, Point translation) {
         if (shape == null) {
             throw new IllegalArgumentException("Null 'shape' argument.");
@@ -409,6 +527,12 @@ public class Renderer
         return transform.createTransformedShape(shape);
     }
 
+    /**
+     *
+     * @param shape
+     * @param rotation
+     * @return
+     */
     public static Shape getRotatedShape(Shape shape, double rotation) {
         AffineTransform localAT = null;
         Shape localShape = null;
@@ -421,6 +545,11 @@ public class Renderer
         return localShape;
     }
 
+    /**
+     *
+     * @param textureFile
+     * @param shape
+     */
     protected void paintTexture(String textureFile, Shape shape) {
         BufferedImage img = null;
         Graphics2D g2 = (Graphics2D) getContext();
@@ -440,6 +569,13 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     * @param icon
+     * @param x
+     * @param y
+     * @param dimension
+     */
     protected void paintImageCentredOnCoords(String icon, int x, int y, Dimension dimension) {
         BufferedImage img = null;
         img = ResourcesManager.getResource(icon, (int) dimension.getWidth(), (int) dimension.getHeight());
@@ -449,12 +585,23 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     * @param img
+     * @param x
+     * @param y
+     */
     protected void paintImageCentredOnCoords(BufferedImage img, int x, int y) {
         if (img != null) {
             getContext().drawImage(img, x - (img.getWidth() / 2), y - (img.getHeight() / 2), this);
         }
     }
 
+    /**
+     *
+     * @param obj
+     * @throws RuntimeException
+     */
     protected void paintImage(EnvObject obj)
             throws RuntimeException {
         BufferedImage img = null;
@@ -473,6 +620,10 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     * @param img
+     */
     protected void paintImage(BufferedImage img) {
         getContext().drawImage(img, 0, 0, this);
     }
@@ -531,6 +682,11 @@ public class Renderer
         localGraph.setTransform(origAt);
     }
 
+    /**
+     *
+     * @param clickPoint
+     * @return
+     */
     protected Point toRealCoords(Point clickPoint) {
         int x = (int) (clickPoint.getX() / widthRescale) - BORDER_X;
         int y = (int) (clickPoint.getY() / heightRescale) - BORDER_Y;
@@ -538,6 +694,11 @@ public class Renderer
         return new Point(x, y);
     }
 
+    /**
+     *
+     * @param p
+     * @return
+     */
     protected EnvObjectLogic mouseOnObject(Point p) {
         Point mousePointer = toRealCoords(p);
 
@@ -550,6 +711,11 @@ public class Renderer
         return null;
     }
 
+    /**
+     *
+     * @param p
+     * @return
+     */
     protected ZoneLogic mouseOnZone(Point p) {
         Iterator it = currEnv.getZones().iterator();
         boolean onZone = false;
@@ -572,6 +738,11 @@ public class Renderer
         return null;
     }
 
+    /**
+     *
+     * @param p
+     * @return
+     */
     protected Handle mouseOnHandle(Point p) {
         Point mouse = toRealCoords(p);
 
@@ -613,6 +784,11 @@ public class Renderer
         applyShapeModifiers(obj);
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     protected Shape getCachedShape(EnvObjectLogic obj) {
         if (cachedShapes.containsKey(obj.getPojo().getUUID())) {
             return cachedShapes.get(obj.getPojo().getUUID());
@@ -621,6 +797,10 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         if (!roomEditMode) {
@@ -691,6 +871,10 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mousePressed(MouseEvent e) {
         if (roomEditMode) {
@@ -712,6 +896,10 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
         if (inDrag) {
@@ -758,14 +946,26 @@ public class Renderer
         setNeedRepaint(true);
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseDragged(MouseEvent e) {
         inDrag = true;
@@ -830,12 +1030,24 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     * @param obj
+     */
     public void mouseDoubleClickObject(EnvObjectLogic obj) {
     }
 
+    /**
+     *
+     * @param obj
+     */
     public void mouseRightClickObject(EnvObjectLogic obj) {
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseMoved(MouseEvent e) {
         if (!roomEditMode) {
@@ -876,6 +1088,10 @@ public class Renderer
         this.backgroundChanged = true;
     }
 
+    /**
+     *
+     * @param forZone
+     */
     protected void createHandles(ZoneLogic forZone) {
         handles.clear();
 
@@ -917,6 +1133,10 @@ public class Renderer
         }
     }
 
+    /**
+     *
+     * @param edit
+     */
     public void setRoomEditMode(boolean edit) {
         roomEditMode = edit;
 
@@ -937,16 +1157,27 @@ public class Renderer
         setNeedRepaint(true);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean getRoomEditMode() {
         return roomEditMode;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean getObjectEditMode() {
         return objectEditMode;
     }
 
+    /**
+     *
+     */
     protected void removeSelectedHandles() {
         for (Handle handle : handles) {
             if (handle.isSelected()) {
@@ -960,6 +1191,10 @@ public class Renderer
         objectEditMode = state;
     }
 
+    /**
+     *
+     * @return
+     */
     public Color getBackgroundColor() {
         return backgroundColor;
     }

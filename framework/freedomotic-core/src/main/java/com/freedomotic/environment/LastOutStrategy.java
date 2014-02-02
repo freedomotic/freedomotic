@@ -38,11 +38,21 @@ public class LastOutStrategy
 
     private static final long serialVersionUID = -4839776027684778640L;
 
-	@Override
+    /**
+     *
+     * @param z
+     * @return
+     */
+    @Override
     public boolean canTriggerReactionsOnEnter(ZoneLogic z) {
         return true;
     }
 
+    /**
+     *
+     * @param z
+     * @return
+     */
     @Override
     public boolean canTriggerReactionsOnExit(ZoneLogic z) {
         if (z.howManyInside() <= 1) { //the last person in the zone is exiting from it

@@ -14,14 +14,11 @@ import com.freedomotic.reactions.Payload;
 import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
-
 import com.freedomotic.util.I18n.I18n;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
-
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 

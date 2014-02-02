@@ -25,10 +25,8 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusDestination;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.util.UidGenerator;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
@@ -80,7 +78,10 @@ public class DestinationRegistry {
 
 	private Map<String, BusDestination> consumer = new ConcurrentHashMap<String, BusDestination>();
 
-	public DestinationRegistry() {
+    /**
+     *
+     */
+    public DestinationRegistry() {
 		
 		super();
         
@@ -104,13 +105,25 @@ public class DestinationRegistry {
 		return destination;
 	}
 
-	protected BusDestination registerCommandQueue(String queueName)
+    /**
+     *
+     * @param queueName
+     * @return
+     * @throws JMSException
+     */
+    protected BusDestination registerCommandQueue(String queueName)
 			throws JMSException {
 
 		return registerQueue(queueName);
 	}
 
-	protected BusDestination registerEventQueue(String queueName)
+    /**
+     *
+     * @param queueName
+     * @return
+     * @throws JMSException
+     */
+    protected BusDestination registerEventQueue(String queueName)
 			throws JMSException {
 
 		final String eventQueueName = "Consumer."
@@ -142,7 +155,13 @@ public class DestinationRegistry {
 		return register(command);
 	}
 
-	public BusDestination registerTopic(String queueName) throws JMSException {
+    /**
+     *
+     * @param queueName
+     * @return
+     * @throws JMSException
+     */
+    public BusDestination registerTopic(String queueName) throws JMSException {
 
 		CreateDestinationAction command = new DestinationAction(queueName) {
 

@@ -24,16 +24,11 @@ package com.freedomotic.plugins;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-
 import com.freedomotic.exceptions.UnableToExecuteException;
-
 import com.freedomotic.reactions.Command;
-
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -42,6 +37,9 @@ import java.util.logging.Logger;
 public class Delayer
         extends Protocol {
 
+    /**
+     *
+     */
     public Delayer() {
         super("Delayer", "/test/delayer.xml");
         setDescription("Delayed commands in automations");
@@ -54,6 +52,11 @@ public class Delayer
                 Long.parseLong(c.getProperty("delay")));
     }
 
+    /**
+     *
+     * @param c
+     * @param ms
+     */
     public void reminder(Command c, long ms) {
         Timer timer = new Timer();
         timer.schedule(new RemindTask(c, timer),

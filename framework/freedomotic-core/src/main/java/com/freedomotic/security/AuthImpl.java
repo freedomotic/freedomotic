@@ -23,10 +23,10 @@
  */
 package com.freedomotic.security;
 
-import com.google.inject.Inject;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.util.Info;
+import com.google.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -39,12 +39,6 @@ import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.SimpleAccountRealm;
 import org.apache.shiro.realm.text.PropertiesRealm;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.session.SessionException;
-import org.apache.shiro.session.mgt.DefaultSessionManager;
-import org.apache.shiro.session.mgt.SessionContext;
-import org.apache.shiro.session.mgt.SessionKey;
-import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -66,11 +60,18 @@ public class AuthImpl implements Auth{
     private ArrayList<Realm> realmCollection = new ArrayList<Realm>();
     @Inject AppConfig config;
     
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isInited(){
         return realmInited;
     }
     
+    /**
+     *
+     */
     @Override
     public void initBaseRealm() {
         DefaultSecurityManager securityManager = null;
@@ -93,12 +94,24 @@ public class AuthImpl implements Auth{
         SecurityUtils.setSecurityManager(securityManager);
     }
 
+    /**
+     *
+     * @param subject
+     * @param password
+     * @return
+     */
     @Override
     public boolean login(String subject, char[] password) {
         String pwdString = String.copyValueOf(password);
         return login(subject, pwdString);
     }
 
+    /**
+     *
+     * @param subject
+     * @param password
+     * @return
+     */
     @Override
     public boolean login(String subject, String password) {
         UsernamePasswordToken token = new UsernamePasswordToken(subject, password);
@@ -114,6 +127,9 @@ public class AuthImpl implements Auth{
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void logout() {
         Subject currentUser = SecurityUtils.getSubject();
@@ -121,6 +137,11 @@ public class AuthImpl implements Auth{
 
     }
 
+    /**
+     *
+     * @param permission
+     * @return
+     */
     @Override
     public boolean isPermitted(String permission) {
         if (realmInited) {
@@ -130,6 +151,10 @@ public class AuthImpl implements Auth{
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Subject getSubject() {
         if (isInited()) {
@@ -139,6 +164,10 @@ public class AuthImpl implements Auth{
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Object getPrincipal() {
         if (isInited()) {
@@ -148,6 +177,11 @@ public class AuthImpl implements Auth{
         }
     }
 
+    /**
+     *
+     * @param plugin
+     * @param action
+     */
     @Override
     public void pluginExecutePrivileged(Plugin plugin, Runnable action) {
         executePrivileged(plugin.getClassName(), action);
@@ -165,6 +199,11 @@ public class AuthImpl implements Auth{
         }
     }
 
+    /**
+     *
+     * @param plugin
+     * @param permissions
+     */
     @Override
     public void setPluginPrivileges(Plugin plugin, String permissions) {
         if (!pluginRealm.accountExists(plugin.getClassName())) {
@@ -181,12 +220,21 @@ public class AuthImpl implements Auth{
         }
     }
 
+    /**
+     *
+     * @return
+     * @deprecated
+     */
     @Deprecated
     @Override
     public String getPluginDefaultPermission() {
         return DEFAULT_PERMISSION;
     }
 
+    /**
+     *
+     * @param rm
+     */
     @RequiresPermissions("auth:realms:create")
     @Override
     public void addRealm(Realm rm) {
@@ -195,6 +243,10 @@ public class AuthImpl implements Auth{
         }
     }
 
+    /**
+     *
+     * @param rm
+     */
     @RequiresPermissions("auth:realms:delete")
     public void deleteRealm(Realm rm) {
         if (!rm.equals(baseRealm) && !rm.equals(pluginRealm)) {
@@ -202,6 +254,11 @@ public class AuthImpl implements Auth{
         }
     }
 
+    /**
+     *
+     * @param userName
+     * @return
+     */
     @RequiresPermissions("auth:fakeUser")
     @Override
     public boolean bindFakeUser(String userName) {

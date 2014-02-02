@@ -24,7 +24,6 @@ package com.freedomotic.bus;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.Profiler;
 import java.util.logging.Logger;
-
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;

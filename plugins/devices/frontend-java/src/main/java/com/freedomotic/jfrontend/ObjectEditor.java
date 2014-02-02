@@ -10,48 +10,56 @@
  */
 package com.freedomotic.jfrontend;
 
-import com.google.inject.Inject;
 import com.freedomotic.api.API;
-
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
-
-
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
-
 import com.freedomotic.jfrontend.automationeditor.ReactionEditor;
 import com.freedomotic.jfrontend.automationeditor.ReactionsPanel;
 import com.freedomotic.jfrontend.utils.CheckBoxList;
 import com.freedomotic.jfrontend.utils.PropertiesPanel_1;
-
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
-
-import com.freedomotic.objects.*;
-
-import com.freedomotic.plugins.ClientStorage;
-
+import com.freedomotic.objects.BehaviorLogic;
+import com.freedomotic.objects.BooleanBehaviorLogic;
+import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.objects.ListBehaviorLogic;
+import com.freedomotic.objects.RangedIntBehaviorLogic;
+import com.freedomotic.objects.TaxonomyBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
-import com.freedomotic.util.Info;
 import com.freedomotic.util.I18n.I18n;
+import com.freedomotic.util.Info;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Map.Entry;
-
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -82,6 +90,10 @@ public class ObjectEditor
         I18n = apiL.getI18n();
     }
     
+    /**
+     *
+     * @param obj
+     */
     public ObjectEditor(final EnvObjectLogic obj) {
         this.object = obj;
         oldName = object.getPojo().getName();

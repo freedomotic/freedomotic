@@ -10,14 +10,10 @@
  */
 package com.freedomotic.jfrontend.utils;
 
-import com.freedomotic.app.Freedomotic;
-
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
-
 import javax.swing.JComboBox;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
@@ -35,6 +31,7 @@ public class PropertiesPanel_1
 
     /**
      * Creates new form PropertiesPanel
+     * @param cols
      */
     public PropertiesPanel_1(int rows, int cols) {
         initComponents();
@@ -46,6 +43,12 @@ public class PropertiesPanel_1
         this.setLayout(new SpringLayout());
     }
 
+    /**
+     *
+     * @param component
+     * @param row
+     * @param col
+     */
     public synchronized void addElement(Component component, final int row, final int col) {
         if (component == null) {
             throw new IllegalArgumentException("Cannot add a null component");
@@ -64,6 +67,9 @@ public class PropertiesPanel_1
         add(component);
     }
 
+    /**
+     *
+     */
     public void layoutPanel() {
         //Lay out the panel.
         System.out.println("row:" + rows + " cols:" + cols);
@@ -73,22 +79,44 @@ public class PropertiesPanel_1
         this.validate();
     }
 
+    /**
+     *
+     * @return
+     */
     public int addRow() {
         return rows++;
     }
 
+    /**
+     *
+     * @return
+     */
     public int addColumn() {
         return cols++;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getRows() {
         return rows;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getColumns() {
         return cols;
     }
 
+    /**
+     *
+     * @param row
+     * @param col
+     * @return
+     */
     public String getComponent(int row, int col) {
         Component comp = table.get((row * col) + col);
 
@@ -109,6 +137,9 @@ public class PropertiesPanel_1
         return null;
     }
 
+    /**
+     *
+     */
     @Override
     public void removeAll() {
         super.removeAll();

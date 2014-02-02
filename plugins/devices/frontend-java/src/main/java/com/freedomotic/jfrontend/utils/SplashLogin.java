@@ -21,6 +21,10 @@ public class SplashLogin extends javax.swing.JFrame {
     private I18n I18n;
     private JavaDesktopFrontend master;
 
+    /**
+     *
+     * @param jd
+     */
     public SplashLogin(JavaDesktopFrontend jd) {
         this.master = jd;
         this.api = jd.getApi();
@@ -41,6 +45,9 @@ public class SplashLogin extends javax.swing.JFrame {
         password.setText("admin");
     }
 
+    /**
+     *
+     */
     public void trySSO() {
         username.setEnabled(false);
         password.setEnabled(false);

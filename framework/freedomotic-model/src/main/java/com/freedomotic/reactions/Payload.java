@@ -41,15 +41,33 @@ public final class Payload
     private static final long serialVersionUID = -5799483105084939108L;
     List<Statement> payload = new CopyOnWriteArrayList<Statement>();
 
+    /**
+     *
+     * @param logical
+     * @param attribute
+     * @param operand
+     * @param value
+     * @throws NullPointerException
+     */
     public void addStatement(String logical, String attribute, String operand, String value)
             throws NullPointerException {
         enqueueStatement(new Statement().create(logical, attribute, operand, value));
     }
 
+    /**
+     *
+     * @param attribute
+     * @param value
+     */
     public void addStatement(String attribute, String value) {
         enqueueStatement(new Statement().create(Statement.AND, attribute, Statement.EQUALS, value));
     }
 
+    /**
+     *
+     * @param attribute
+     * @param value
+     */
     public void addStatement(String attribute, int value) {
         enqueueStatement(new Statement().create(Statement.AND,
                 attribute,
@@ -57,16 +75,29 @@ public final class Payload
                 Integer.toString(value)));
     }
 
+    /**
+     *
+     * @param s
+     */
     public void enqueueStatement(Statement s) {
         if ((s != null) && !payload.contains(s)) {
             payload.add(s);
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int size() {
         return payload.size();
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         boolean payloadConsistence = true;
@@ -128,6 +159,10 @@ public final class Payload
         return payloadConsistence;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -239,6 +274,11 @@ public final class Payload
         return false;
     }
 
+    /**
+     *
+     * @param attribute
+     * @return
+     */
     public List<Statement> getStatements(String attribute) {
         ArrayList<Statement> statements = new ArrayList<Statement>();
 
@@ -269,14 +309,26 @@ public final class Payload
         return "";
     }
 
+    /**
+     *
+     * @return
+     */
     public Iterator<Statement> iterator() {
         return payload.iterator();
     }
 
+    /**
+     *
+     * @param anotherPayload
+     */
     public void merge(Payload anotherPayload) {
         payload.addAll(anotherPayload.payload);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
@@ -296,6 +348,9 @@ public final class Payload
         return buffer.toString();
     }
 
+    /**
+     *
+     */
     public void clear() {
         payload.clear();
     }

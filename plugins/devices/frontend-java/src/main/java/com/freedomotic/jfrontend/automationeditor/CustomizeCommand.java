@@ -10,23 +10,17 @@
  */
 package com.freedomotic.jfrontend.automationeditor;
 
-import com.google.inject.Inject;
-
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
-
 import com.freedomotic.plugins.ClientStorage;
-
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
-
 import com.freedomotic.util.I18n.I18n;
-
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -48,6 +42,7 @@ public class CustomizeCommand
 
     /**
      * Creates new form CustomizeEvent
+     * @param original
      */
     public CustomizeCommand(I18n i18n, Command original) {
         this.I18n = i18n;

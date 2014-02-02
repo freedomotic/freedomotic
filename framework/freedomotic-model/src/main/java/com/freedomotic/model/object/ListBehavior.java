@@ -35,26 +35,52 @@ public class ListBehavior
 	private int selected;
     private ArrayList<String> list = new ArrayList<String>();
 
+    /**
+     *
+     * @param key
+     */
     public void add(String key) {
         list.add(key);
     }
 
+    /**
+     *
+     * @param key
+     */
     public void remove(String key) {
         list.remove(key);
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public boolean contains(String key) {
         return list.contains(key);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getSelected() {
         return (String) list.get(selected);
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getList() {
         return list;
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public boolean setSelected(String key) {
         if (list.contains(key)) {
             selected = list.indexOf(key);
@@ -65,22 +91,44 @@ public class ListBehavior
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getItemsNumber() {
         return list.size();
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public int indexOf(String key) {
         return list.indexOf(key);
     }
 
+    /**
+     *
+     * @return
+     */
     public int indexOfSelection() {
         return selected;
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public String get(int index) {
         return list.get(index);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return list.get(selected).toString();

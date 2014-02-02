@@ -5,23 +5,16 @@
 package com.freedomotic.jfrontend;
 
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.core.ResourcesManager;
-
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.ZoneLogic;
-
 import com.freedomotic.events.ObjectReceiveClick;
-
 import com.freedomotic.jfrontend.utils.SpringUtilities;
-
 import com.freedomotic.model.object.EnvObject;
-
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,7 +23,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -51,6 +43,10 @@ public class ListDrawer
     JPanel panel = new JPanel();
     EnvironmentLogic currEnv = EnvironmentPersistence.getEnvironments().get(0);
 
+    /**
+     *
+     * @param master
+     */
     public ListDrawer(JavaDesktopFrontend master) {
         super(master);
         cmbZone.removeAllItems();
@@ -74,10 +70,18 @@ public class ListDrawer
         validate();
     }
 
+    /**
+     *
+     * @param env
+     */
     public void setCurrEnv(EnvironmentLogic env) {
         this.currEnv = env;
     }
 
+    /**
+     *
+     * @return
+     */
     public EnvironmentLogic getCurrEnv() {
         return this.currEnv;
     }
@@ -166,16 +170,28 @@ public class ListDrawer
         return null;
     }
 
+    /**
+     *
+     * @param obj
+     */
     public void mouseClickObject(EnvObjectLogic obj) {
         ObjectReceiveClick event = new ObjectReceiveClick(this, obj, ObjectReceiveClick.SINGLE_CLICK);
         Freedomotic.sendEvent(event);
     }
 
+    /**
+     *
+     * @param callout1
+     */
     @Override
     public void createCallout(Callout callout1) {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param b
+     */
     @Override
     public void setNeedRepaint(boolean b) {
         enlistObjects((ZoneLogic) cmbZone.getSelectedItem());

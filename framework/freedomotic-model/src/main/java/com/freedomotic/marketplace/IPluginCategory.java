@@ -43,5 +43,9 @@ public interface IPluginCategory {
      */
     public String getName();
 
+    /**
+     *
+     * @return
+     */
     public List<IPluginPackage> getPlugins();
 }

@@ -47,16 +47,34 @@ import java.util.logging.Logger;
  */
 public class EqualsUtil {
 
+    /**
+     *
+     * @param aThis
+     * @param aThat
+     * @return
+     */
     static public boolean areEqual(boolean aThis, boolean aThat) {
         //LOG.info("boolean");
         return aThis == aThat;
     }
 
+    /**
+     *
+     * @param aThis
+     * @param aThat
+     * @return
+     */
     static public boolean areEqual(char aThis, char aThat) {
         //LOG.info("char");
         return aThis == aThat;
     }
 
+    /**
+     *
+     * @param aThis
+     * @param aThat
+     * @return
+     */
     static public boolean areEqual(long aThis, long aThat) {
         /*
          * Implementation Note
@@ -68,11 +86,23 @@ public class EqualsUtil {
         return aThis == aThat;
     }
 
+    /**
+     *
+     * @param aThis
+     * @param aThat
+     * @return
+     */
     static public boolean areEqual(float aThis, float aThat) {
         //LOG.info("float");
         return Float.floatToIntBits(aThis) == Float.floatToIntBits(aThat);
     }
 
+    /**
+     *
+     * @param aThis
+     * @param aThat
+     * @return
+     */
     static public boolean areEqual(double aThis, double aThat) {
         //LOG.info("double");
         return Double.doubleToLongBits(aThis) == Double.doubleToLongBits(aThat);
@@ -83,6 +113,7 @@ public class EqualsUtil {
      *
      * Includes type-safe enumerations and collections, but does not include
      * arrays. See class comment.
+     * @return 
      */
     static public boolean areEqual(Object aThis, Object aThat) {
         //LOG.info("Object");

@@ -4,8 +4,6 @@
  */
 package com.freedomotic.app;
 
-import com.freedomotic.model.ds.Tuples;
-import java.io.File;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,16 +17,47 @@ import java.util.Set;
  */
 public interface AppConfig extends Serializable {
 
+    /**
+     *
+     * @return
+     */
     Set<Map.Entry<Object, Object>> entrySet();
 
+    /**
+     *
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     boolean getBooleanProperty(String key, boolean defaultValue);
 
+    /**
+     *
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     double getDoubleProperty(String key, double defaultValue);
 
+    /**
+     *
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     int getIntProperty(String key, int defaultValue);
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     ArrayList<String> getPathListProperty(String key);
 
+    /**
+     *
+     * @return
+     */
     Properties getProperties();
 
     /**
@@ -37,15 +66,44 @@ public interface AppConfig extends Serializable {
      */
     String getProperty(String key);
 
+    /**
+     *
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     String getStringProperty(String key, String defaultValue);
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     ArrayList<URL> getUrlListProperty(String key);
 
+    /**
+     *
+     * @param key
+     * @param value
+     */
     void put(Object key, Object value);
 
+    /**
+     *
+     * @param key
+     * @param value
+     */
     void setProperty(String key, String value);
     
+    /**
+     *
+     * @return
+     */
     AppConfig load();
+
+    /**
+     *
+     */
     void save();
     
 }

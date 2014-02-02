@@ -4,8 +4,6 @@
  */
 package com.freedomotic.exceptions;
 
-import java.util.logging.Logger;
-
 /**
  *
  * @author enrico
@@ -21,10 +19,18 @@ public class PluginLoadingException extends FreedomoticException {
     public PluginLoadingException() {
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPluginName() {
         return pluginName;
     }
 
+    /**
+     *
+     * @param pluginName
+     */
     public final void setPluginName(String pluginName) {
         this.pluginName = pluginName;
     }
@@ -39,15 +45,30 @@ public class PluginLoadingException extends FreedomoticException {
         super(msg);
     }
 
+    /**
+     *
+     * @param message
+     * @param cause
+     */
     public PluginLoadingException(String message, Throwable cause) {
         super(message, cause);
     }
     
+    /**
+     *
+     * @param message
+     * @param pluginName
+     * @param cause
+     */
     public PluginLoadingException(String message, String pluginName, Throwable cause) {
         super(message, cause);
         setPluginName(pluginName);
     }
 
+    /**
+     *
+     * @param cause
+     */
     public PluginLoadingException(Throwable cause) {
         super(cause);
     }

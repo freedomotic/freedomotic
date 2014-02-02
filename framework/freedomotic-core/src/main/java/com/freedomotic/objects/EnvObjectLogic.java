@@ -19,8 +19,6 @@
  */
 package com.freedomotic.objects;
 
-import com.google.inject.Inject;
-
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.core.Resolver;
@@ -41,19 +39,15 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
-import com.freedomotic.security.Auth;
 import com.freedomotic.util.TopologyUtils;
-
-import java.util.ArrayList;
+import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
@@ -72,8 +66,9 @@ public class EnvObjectLogic {
     private HashMap<String,BehaviorLogic> behaviors = new HashMap<String, BehaviorLogic>();
     private EnvironmentLogic environment;
 
-    
-    
+    /**
+     *
+     */
     public EnvObjectLogic() {
 		super();
 		this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
@@ -122,6 +117,10 @@ public class EnvObjectLogic {
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("objects:read")
     public Map<String, String> getExposedBehaviors() {
         Map<String, String> result = new HashMap<String, String>();
@@ -133,6 +132,10 @@ public class EnvObjectLogic {
         return result;
     }
 
+    /**
+     *
+     * @param newName
+     */
     @RequiresPermissions("objects:update")
     public final void rename(String newName) {
         String oldName = this.getPojo().getName();
@@ -157,6 +160,11 @@ public class EnvObjectLogic {
         }
     }
 
+    /**
+     *
+     * @param action
+     * @param command
+     */
     @RequiresPermissions("objects:update")
     public void setAction(String action, Command command) {
         if ((action != null) && !action.isEmpty() && (command != null)) {
@@ -167,6 +175,11 @@ public class EnvObjectLogic {
         }
     }
 
+    /**
+     *
+     * @param trigger
+     * @param behaviorName
+     */
     @RequiresPermissions("objects:update")
     public void addTriggerMapping(Trigger trigger, String behaviorName) {
         //checking input parameters
@@ -190,11 +203,20 @@ public class EnvObjectLogic {
                 new Object[]{this.getPojo().getName(), behaviorName, trigger.getName()});
     }
 
+    /**
+     *
+     * @param t
+     * @return
+     */
     @RequiresPermissions("objects:read")
     public String getAction(String t) {
         return getPojo().getTriggers().getProperty(t);
     }
 
+    /**
+     *
+     * @param value
+     */
     @RequiresPermissions("objects:update")
     public synchronized void setChanged(boolean value) {
         if (value == true) {
@@ -265,11 +287,19 @@ public class EnvObjectLogic {
         return changed;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("objects:read")
     public EnvironmentLogic getEnvironment() {
         return this.environment;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("objects:read")
     public EnvObject getPojo() {
        // if (pojo.getUUID() == null  || auth.isPermitted("objects:read:" + pojo.getUUID().substring(0, 5))
@@ -279,6 +309,9 @@ public class EnvObjectLogic {
       //  return null;
     }
 
+    /**
+     *
+     */
     @RequiresPermissions("objects:delete")
     public final void destroy() {
         pojo = null;
@@ -288,6 +321,11 @@ public class EnvObjectLogic {
         behaviors = null;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     @RequiresPermissions("objects:read")
     public boolean equals(Object obj) {
@@ -308,6 +346,10 @@ public class EnvObjectLogic {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     @RequiresPermissions("objects:read")
     public int hashCode() {
@@ -317,11 +359,18 @@ public class EnvObjectLogic {
         return hash;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("objects:read")
     public Iterable<BehaviorLogic> getBehaviors() {
         return behaviors.values();
     }
 
+    /**
+     *
+     */
     @RequiresPermissions("objects:create")
     public final void setRandomLocation() {
         int randomX =
@@ -333,6 +382,11 @@ public class EnvObjectLogic {
         setLocation(randomX, randomY);
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     */
     @RequiresPermissions("objects:update")
     public void setLocation(int x, int y) {
         for (Representation rep : getPojo().getRepresentations()) {
@@ -369,6 +423,11 @@ public class EnvObjectLogic {
         }
     }
 
+    /**
+     *
+     * @param t
+     * @return
+     */
     public final boolean executeTrigger(Trigger t) {
         String behavior = getAction(t.getName());
 
@@ -473,14 +532,24 @@ public class EnvObjectLogic {
         return false; //command not executed
     }
 
+    /**
+     *
+     */
     protected void createCommands() {
         //default empty implementation
     }
 
+    /**
+     *
+     */
     protected void createTriggers() {
         //default empty implementation
     }
 
+    /**
+     *
+     * @param pojo
+     */
     @RequiresPermissions("objects:update")
     protected void setPojo(EnvObject pojo) {
         if (((pojo.getEnvironmentID() == null) || pojo.getEnvironmentID().isEmpty())
@@ -548,6 +617,10 @@ public class EnvObjectLogic {
         }
     }
 
+    /**
+     *
+     * @param selEnv
+     */
     @RequiresPermissions("objects:update")
     public void setEnvironment(EnvironmentLogic selEnv) {
         if (selEnv == null) {
@@ -558,6 +631,10 @@ public class EnvObjectLogic {
         getPojo().setEnvironmentID(selEnv.getPojo().getUUID());
     }
 
+    /**
+     *
+     * @param tagList
+     */
     @RequiresPermissions("objects:update")
     public void addTags(String tagList) {
         String[] tags = tagList.toLowerCase().split(",");

@@ -20,7 +20,6 @@
 package com.freedomotic.environment;
 
 import com.google.inject.assistedinject.Assisted;
-
 import java.io.File;
 
 /**
@@ -29,5 +28,10 @@ import java.io.File;
  */
 public interface EnvironmentDAOFactory {
 
+    /**
+     *
+     * @param directory
+     * @return
+     */
     public EnvironmentDAO create(@Assisted File directory);
 }

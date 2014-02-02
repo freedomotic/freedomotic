@@ -9,17 +9,14 @@ import com.freedomotic.plugins.filesystem.PluginsManager;
 import com.freedomotic.testutils.FreedomoticTestsInjector;
 import com.freedomotic.testutils.GuiceJUnitRunner;
 import com.freedomotic.testutils.GuiceJUnitRunner.GuiceInjectors;
-
+import com.google.inject.Inject;
 import java.io.File;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.google.inject.Inject;
 
 /**
  *
@@ -38,29 +35,45 @@ public class PluginLoaderFilesystemITCase {
 
     private static File boundlePath;
 
+    /**
+     *
+     */
     public PluginLoaderFilesystemITCase() {
     }
 
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass() {
         String boundlePathString = System.getProperty("boundlePath");
         PluginLoaderFilesystemITCase.boundlePath = new File(boundlePathString);
     }
 
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
     }
 
     /**
      * Test of loadSingleBoundle method, of class PluginsManager.
+     * @throws java.lang.Exception
      */
     @Test
     public void testLoadPlugins() throws Exception {

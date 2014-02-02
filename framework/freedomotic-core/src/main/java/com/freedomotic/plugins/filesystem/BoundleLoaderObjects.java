@@ -5,13 +5,9 @@
 package com.freedomotic.plugins.filesystem;
 
 import com.freedomotic.api.Client;
-
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.exceptions.PluginLoadingException;
-
 import com.freedomotic.util.JarFilter;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

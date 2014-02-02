@@ -48,6 +48,9 @@ public class TrackingReadFile extends Protocol {
     int NUM_MOTE = 3;
     ArrayList<WorkerThread> workers = new ArrayList<WorkerThread>();
 
+    /**
+     *
+     */
     public TrackingReadFile() {
         super("Tracking Simulator (Read file)", "/test/tracking-simulator-read-file.xml");
         setDescription("It simulates a motes WSN that send information about movable sensors position. Positions are read from a text file");

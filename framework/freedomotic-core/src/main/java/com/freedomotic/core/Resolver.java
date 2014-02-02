@@ -21,15 +21,12 @@ package com.freedomotic.core;
 
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.VariableResolutionException;
-
 import com.freedomotic.model.ds.Config;
-
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Payload;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +37,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -106,6 +102,7 @@ public final class Resolver {
      *
      * @param c
      * @return
+     * @throws com.freedomotic.exceptions.VariableResolutionException
      */
     public Command resolve(Command c)
             throws CloneNotSupportedException, VariableResolutionException {
@@ -128,6 +125,7 @@ public final class Resolver {
      *
      * @param trigger
      * @return
+     * @throws com.freedomotic.exceptions.VariableResolutionException
      */
     public Trigger resolve(Trigger t) throws VariableResolutionException {
         this.trigger = t;
@@ -363,6 +361,11 @@ public final class Resolver {
         t.getPayload().merge(context);
     }
 
+    /**
+     *
+     * @param PREFIX
+     * @param aContext
+     */
     public void addContext(final String PREFIX, final Config aContext) {
         if (context == null) {
             context = new Payload();
@@ -394,6 +397,11 @@ public final class Resolver {
         }
     }
 
+    /**
+     *
+     * @param PREFIX
+     * @param aContext
+     */
     public void addContext(final String PREFIX, final Map<String, String> aContext) {
         if (context == null) {
             context = new Payload();
@@ -424,6 +432,11 @@ public final class Resolver {
         }
     }
 
+    /**
+     *
+     * @param PREFIX
+     * @param aContext
+     */
     public void addContext(final String PREFIX, final Payload aContext) {
         if (context == null) {
             context = new Payload();

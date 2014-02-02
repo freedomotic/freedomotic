@@ -22,7 +22,6 @@ import com.freedomotic.security.Auth;
 import com.freedomotic.security.AuthImpl;
 import com.freedomotic.util.I18n.I18n;
 import com.freedomotic.util.I18n.I18nImpl;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -35,6 +34,9 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 public class DependenciesInjector
         extends AbstractModule {
 
+    /**
+     *
+     */
     @Override
     protected void configure() {
         bind(ClientStorage.class).to(ClientStorageInMemory.class).in(Singleton.class);

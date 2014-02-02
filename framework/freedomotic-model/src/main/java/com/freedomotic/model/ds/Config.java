@@ -27,7 +27,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
@@ -49,18 +48,35 @@ public class Config
     private String xmlFile = "";
     private Tuples tuples = new Tuples();
 
+    /**
+     *
+     * @return
+     */
     public String getXmlFile() {
         return xmlFile;
     }
 
+    /**
+     *
+     * @param file
+     */
     public void setXmlFile(File file) {
         this.xmlFile = file.getName();
     }
 
+    /**
+     *
+     * @param name
+     */
     public void setXmlFile(String name) {
         xmlFile = name;
     }
 
+    /**
+     *
+     * @param key
+     * @param value
+     */
     public void setProperty(String key, String value) {
         properties.setProperty(key, value);
     }
@@ -75,18 +91,37 @@ public class Config
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     public Tuples getTuples() {
         return tuples;
     }
 
+    /**
+     *
+     * @return
+     */
     public Set<Entry<Object, Object>> entrySet() {
         return properties.entrySet();
     }
 
+    /**
+     *
+     * @param key
+     * @param value
+     */
     public void put(Object key, Object value) {
         properties.put(key, value);
     }
 
+    /**
+     *
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public String getStringProperty(String key, String defaultValue) {
         String result = properties.getProperty(key);
 
@@ -98,6 +133,12 @@ public class Config
         }
     }
 
+    /**
+     *
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public int getIntProperty(String key, int defaultValue) {
         try {
             Integer result = Integer.parseInt(properties.getProperty(key));
@@ -114,6 +155,12 @@ public class Config
         }
     }
 
+    /**
+     *
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public boolean getBooleanProperty(String key, boolean defaultValue) {
         String result = properties.getProperty(key);
 
@@ -130,6 +177,12 @@ public class Config
         return defaultValue;
     }
 
+    /**
+     *
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public double getDoubleProperty(String key, double defaultValue) {
         Double result = Double.parseDouble(properties.getProperty(key));
 
@@ -141,6 +194,11 @@ public class Config
         }
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public ArrayList<URL> getUrlListProperty(String key) {
         ArrayList<URL> list = new ArrayList<URL>();
         String s = getStringProperty(key, "");
@@ -159,6 +217,11 @@ public class Config
         return list;
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public ArrayList<String> getPathListProperty(String key) {
         ArrayList<String> list = new ArrayList<String>();
         String s = getStringProperty(key, "");
@@ -177,10 +240,18 @@ public class Config
         return list;
     }
 
+    /**
+     *
+     * @return
+     */
     public Properties getProperties() {
         return properties;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         Set<Entry<Object, Object>> entries = entrySet();

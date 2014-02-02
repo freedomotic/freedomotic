@@ -36,11 +36,25 @@ public class PropertiesBehaviorLogic
     private PropertiesBehaviorLogic.Listener listener;
     private boolean changed;
 
+    /**
+     *
+     */
     public interface Listener {
 
+        /**
+         *
+         * @param key
+         * @param value
+         * @param params
+         * @param fireCommand
+         */
         public void propertyChanged(String key, String value, Config params, boolean fireCommand);
     }
 
+    /**
+     *
+     * @param pojo
+     */
     public PropertiesBehaviorLogic(PropertiesBehavior pojo) {
         this.data = pojo;
     }
@@ -64,6 +78,10 @@ public class PropertiesBehaviorLogic
 //        }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getName() {
         return data.getName();
@@ -76,30 +94,55 @@ public class PropertiesBehaviorLogic
 //    public void setProperty(String key, String value) {
 //        data.setProperty(key, value);
 //    }
-    @Override
+
+    /**
+     *
+     * @return
+     */
+        @Override
     public boolean isActive() {
         return data.isActive();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isReadOnly() {
         return data.isReadOnly();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getValueAsString() {
         return data.toString();
     }
 
+    /**
+     *
+     * @param propertiesBehaviorListener
+     */
     public void addListener(PropertiesBehaviorLogic.Listener propertiesBehaviorListener) {
         listener = propertiesBehaviorListener;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isChanged() {
         return changed;
     }
 
+    /**
+     *
+     * @param value
+     */
     @Override
     public void setChanged(boolean value) {
         changed = value;

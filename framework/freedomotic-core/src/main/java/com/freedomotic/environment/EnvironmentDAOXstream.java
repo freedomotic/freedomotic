@@ -19,28 +19,16 @@
  */
 package com.freedomotic.environment;
 
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
-
-import com.freedomotic.app.Freedomotic;
-
-import com.freedomotic.environment.EnvironmentDAO;
-
 import com.freedomotic.exceptions.DaoLayerException;
-
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
-
-import com.freedomotic.objects.EnvObjectPersistence;
-
 import com.freedomotic.persistence.FreedomXStream;
-
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
-
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
@@ -67,10 +55,18 @@ public class EnvironmentDAOXstream
         this.directory = directory;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isSavedAsNewEnvironment() {
         return savedAsNewEnvironment;
     }
 
+    /**
+     *
+     * @param saveAsNewEnvironment
+     */
     public void setSavedAsNewEnvironment(boolean saveAsNewEnvironment) {
         this.savedAsNewEnvironment = saveAsNewEnvironment;
     }
@@ -126,6 +122,11 @@ public class EnvironmentDAOXstream
         }
     }
 
+    /**
+     *
+     * @param env
+     * @throws IOException
+     */
     public void saveAs(Environment env)
             throws IOException {
         String fileName = directory.getName();
@@ -147,6 +148,11 @@ public class EnvironmentDAOXstream
         //  EnvObjectPersistence.saveObjects(new File(folder + "/objects"));
     }
 
+    /**
+     *
+     * @param environment
+     * @throws DaoLayerException
+     */
     @Override
     public void delete(Environment environment)
             throws DaoLayerException {
@@ -220,6 +226,12 @@ public class EnvironmentDAOXstream
         }
     }
 
+    /**
+     *
+     * @param file
+     * @return
+     * @throws DaoLayerException
+     */
     public static Environment deserialize(final File file)
             throws DaoLayerException {
         XStream xstream = FreedomXStream.getXstream();

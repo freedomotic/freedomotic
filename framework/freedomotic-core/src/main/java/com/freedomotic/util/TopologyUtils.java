@@ -26,7 +26,6 @@ import com.freedomotic.model.geometry.FreedomEllipse;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.geometry.FreedomShape;
-
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -64,6 +63,13 @@ public class TopologyUtils {
         }
     }
 
+    /**
+     *
+     * @param input
+     * @param xScale
+     * @param yScale
+     * @return
+     */
     public static Shape convertToAWT(FreedomShape input, double xScale, double yScale) {
         if (input instanceof FreedomPolygon) {
             Shape shape = convertToAWT((FreedomPolygon) input);
@@ -88,6 +94,11 @@ public class TopologyUtils {
         }
     }
 
+    /**
+     *
+     * @param color
+     * @return
+     */
     public static Color convertColorToAWT(FreedomColor color) {
         Color awtColor = new Color(color.getRed(),
                 color.getGreen(),
@@ -118,6 +129,13 @@ public class TopologyUtils {
         return output;
     }
 
+    /**
+     *
+     * @param input
+     * @param xoffset
+     * @param yoffset
+     * @return
+     */
     public static FreedomPolygon translate(FreedomShape input, int xoffset, int yoffset) {
         if (input instanceof FreedomPolygon) {
             return (translate((FreedomPolygon) input, xoffset, yoffset));
@@ -136,6 +154,12 @@ public class TopologyUtils {
         return output;
     }
 
+    /**
+     *
+     * @param input
+     * @param degrees
+     * @return
+     */
     public static FreedomPolygon rotate(FreedomPolygon input, int degrees) {
         FreedomPoint pivot = input.getPoints().get(0); //getRectangleCenter(getBoundingBox(input));
         FreedomPolygon output = new FreedomPolygon();

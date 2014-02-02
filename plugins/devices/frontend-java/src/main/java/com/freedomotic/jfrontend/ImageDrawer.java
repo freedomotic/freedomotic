@@ -4,24 +4,17 @@
  */
 package com.freedomotic.jfrontend;
 
-import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
-
 import com.freedomotic.model.geometry.FreedomPoint;
-
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
-
 import com.freedomotic.util.TopologyUtils;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Polygon;
 import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
 import java.util.Queue;
 
 /**
@@ -31,14 +24,24 @@ import java.util.Queue;
 public class ImageDrawer
         extends PlainDrawer {
 
+    /**
+     *
+     * @param master
+     */
     public ImageDrawer(JavaDesktopFrontend master) {
         super(master);
     }
 
+    /**
+     *
+     */
     @Override
     public void renderWalls() {
     }
 
+    /**
+     *
+     */
     @Override
     public void renderObjects() {
         for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
@@ -46,6 +49,10 @@ public class ImageDrawer
         }
     }
 
+    /**
+     *
+     * @param obj
+     */
     public void renderSingleObject(EnvObjectLogic obj) {
         if (obj != null) {
             setTransformContextFor(obj.getPojo());
@@ -107,6 +114,9 @@ public class ImageDrawer
         return yPoints;
     }
 
+    /**
+     *
+     */
     @Override
     public void renderZones() {
         for (ZoneLogic zone : getCurrEnv().getZones()) {
@@ -123,6 +133,12 @@ public class ImageDrawer
         }
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     * @param icon
+     */
     protected void paintPersonAvatar(int x, int y, String icon) {
         paintImageCentredOnCoords(icon,
                 x,
@@ -130,6 +146,10 @@ public class ImageDrawer
                 new Dimension(60, 60));
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void mouseEntersObject(EnvObjectLogic obj) {
         super.mouseEntersObject(obj);
@@ -166,17 +186,29 @@ public class ImageDrawer
         setNeedRepaint(true);
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void mouseExitsObject(EnvObjectLogic obj) {
         super.mouseExitsObject(obj);
         removeIndicators();
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void mouseClickObject(EnvObjectLogic obj) {
         super.mouseClickObject(obj);
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void mouseRightClickObject(EnvObjectLogic obj) {
         super.mouseRightClickObject(obj);

@@ -19,8 +19,6 @@
  */
 package com.freedomotic.objects;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.exceptions.DaoLayerException;
@@ -30,6 +28,8 @@ import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.SerialClone;
 import com.freedomotic.util.UidGenerator;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
@@ -52,19 +52,38 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  */
 public class EnvObjectPersistence {
 
+    /**
+     *
+     */
     public static final boolean MAKE_UNIQUE = true;
+
+    /**
+     *
+     */
     public static final boolean MAKE_NOT_UNIQUE = false;
     private static Map<String, EnvObjectLogic> objectList = new HashMap<String, EnvObjectLogic>();
 
+    /**
+     *
+     */
     public EnvObjectPersistence() {
         //disable instance creation
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("objects:read")
     public static Collection<EnvObjectLogic> getObjectList() {
         return objectList.values();
     }
 
+    /**
+     *
+     * @param folder
+     * @throws DaoLayerException
+     */
     @RequiresPermissions("objects:save")
     public static void saveObjects(File folder) throws DaoLayerException {
         if (objectList.isEmpty()) {
@@ -160,6 +179,7 @@ public class EnvObjectPersistence {
      *
      * @param folder
      * @param makeUnique
+     * @throws com.freedomotic.exceptions.DaoLayerException
      */
     public synchronized static void loadObjects(File folder, final boolean makeUnique)
             throws DaoLayerException {
@@ -207,6 +227,7 @@ public class EnvObjectPersistence {
      * Loads the object file from file but NOT add the object to the list
      *
      * @param file
+     * @return 
      */
     public static EnvObjectLogic loadObject(File file)
             throws DaoLayerException {
@@ -241,6 +262,10 @@ public class EnvObjectPersistence {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("objects:read")
     public static Iterator<EnvObjectLogic> iterator() {
         return objectList.values().iterator();
@@ -265,6 +290,11 @@ public class EnvObjectPersistence {
         return null;
     }
 
+    /**
+     *
+     * @param tags
+     * @return
+     */
     @RequiresPermissions("objects:read")
     public static ArrayList<EnvObjectLogic> getObjectByTags(String tags) {
         ArrayList<EnvObjectLogic> results = new ArrayList<EnvObjectLogic>();
@@ -383,6 +413,10 @@ public class EnvObjectPersistence {
         return list;
     }
 
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("objects:read")
     public static int size() {
         return objectList.size();
@@ -441,6 +475,10 @@ public class EnvObjectPersistence {
         return envObjectLogic;
     }
 
+    /**
+     *
+     * @param input
+     */
     @RequiresPermissions("objects:delete")
     public static void remove(EnvObjectLogic input) {
         objectList.remove(input.getPojo().getUUID());
@@ -448,6 +486,9 @@ public class EnvObjectPersistence {
         input.destroy(); //free memory
     }
 
+    /**
+     *
+     */
     @RequiresPermissions("objects:delete")
     public static void clear() {
         try {

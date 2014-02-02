@@ -24,7 +24,6 @@ package com.freedomotic.plugins;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.geometry.FreedomPoint;
@@ -42,6 +41,9 @@ import java.util.Random;
 public class TrackingRandomPosition
         extends Protocol {
 
+    /**
+     *
+     */
     public TrackingRandomPosition() {
         //set plugin name and manufest path
         super("Tracking Simulator (Random)", "/test/tracking-simulator-random.xml");

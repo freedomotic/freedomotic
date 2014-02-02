@@ -30,10 +30,19 @@ public class FreedomoticException
         super(msg);
     }
 
+    /**
+     *
+     * @param message
+     * @param cause
+     */
     public FreedomoticException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     *
+     * @param cause
+     */
     public FreedomoticException(Throwable cause) {
         super(cause);
     }

@@ -29,7 +29,20 @@ package com.freedomotic.bus.impl;
  */
 public enum DestinationType {
 
-	QUEUE(0), TEMP_QUEUE(1), TOPIC(2);
+    /**
+     *
+     */
+    QUEUE(0),
+
+    /**
+     *
+     */
+    TEMP_QUEUE(1),
+
+    /**
+     *
+     */
+    TOPIC(2);
 
 	private int code;
 

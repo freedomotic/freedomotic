@@ -41,50 +41,107 @@ public abstract class Behavior
     private boolean active;
     private int priority;
     private boolean readOnly;
+
+    /**
+     *
+     */
     public final static String VALUE_OPPOSITE = "opposite";
+
+    /**
+     *
+     */
     public final static String VALUE_NEXT = "next";
+
+    /**
+     *
+     */
     public final static String VALUE_PREVIOUS = "previous";
 
+    /**
+     *
+     * @return
+     */
     public boolean isActive() {
         return active;
     }
 
+    /**
+     *
+     * @param active
+     */
     public void setActive(boolean active) {
         this.active = active;
     }
 
+    /**
+     *
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isReadOnly() {
         return readOnly;
     }
 
+    /**
+     *
+     * @param readOnly
+     */
     public void setReadonly(boolean readOnly) {
         this.readOnly = readOnly;
     }
 
+    /**
+     *
+     * @param desc
+     */
     public void setDescription(String desc) {
         this.description = desc;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDescriprion() {
         return description;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPriority() {
         return priority;
     }
 
+    /**
+     *
+     * @param priority
+     */
     public void setPriority(int priority) {
         this.priority = priority;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -104,6 +161,10 @@ public abstract class Behavior
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 5;

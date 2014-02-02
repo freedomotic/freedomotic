@@ -23,7 +23,6 @@ package com.freedomotic.bus;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.reactions.Command;
-
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
@@ -69,6 +68,7 @@ public interface BusService {
 	 * Sends an event to the bus on queue 
 	 * 
 	 * @param ev The EventTemplate to send
+     * @param toQueueName
 	 * @param to The queueName used to send
 	 */
 	void send(final EventTemplate ev, final String toQueueName);
@@ -85,31 +85,37 @@ public interface BusService {
 
 	/**
 	 * Convenience method used by {@link BusMessagesListener} 
+     * @return 
 	 */
 	BusDestination registerCommandQueue(String queueName) throws JMSException;
 
 	/**
 	 * Convenience method used by {@link BusMessagesListener} 
+     * @return 
 	 */
 	BusDestination registerEventQueue(String queueName) throws JMSException;
 
 	/**
 	 * Convenience method used by {@link BusMessagesListener} 
+     * @return 
 	 */
 	BusDestination registerTopic(String queueName) throws JMSException;
 
 	/**
 	 * Convenience method used by {@link BusMessagesListener} 
+     * @return 
 	 */
 	Session getReceiveSession();
 
 	/**
 	 * Convenience method used by {@link BusMessagesListener} 
+     * @return 
 	 */
 	Session getSendSession();
 
 	/**
 	 * Convenience method used by {@link BusMessagesListener} 
+     * @return 
 	 */
 	Session getUnlistenedSession();
 }

@@ -2,18 +2,16 @@ package com.freedomotic.jfrontend;
 
 import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
-
 import com.freedomotic.app.Freedomotic;
-
 import com.freedomotic.core.ResourcesManager;
-
-import com.freedomotic.objects.EnvObjectLogic;
-
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
-
 import com.freedomotic.util.Info;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,8 +19,13 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Vector;
-
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.ListCellRenderer;
 
 /*
  * To change this template, choose Tools | Templates and open the template in
@@ -36,10 +39,22 @@ public final class PluginJList
         extends JList {
 
     private String filter;
+
+    /**
+     *
+     */
     public boolean inDrag = false;
+
+    /**
+     *
+     */
     public int dragged = 0;
     private MainWindow parent;
 
+    /**
+     *
+     * @param parent
+     */
     public PluginJList(final MainWindow parent) {
         this.parent = parent;
         setFilter("plugin"); //default value for filterning the list
@@ -130,15 +145,26 @@ public final class PluginJList
         return parent.getPlugin().getApi();
     }
 
+    /**
+     *
+     * @return
+     */
     public String getFilter() {
         return filter;
     }
 
+    /**
+     *
+     * @param filter
+     */
     public void setFilter(String filter) {
         this.filter = filter;
         update();
     }
 
+    /**
+     *
+     */
     public void update() {
         try {
             String path = Info.getResourcesPath();

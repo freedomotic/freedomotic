@@ -35,7 +35,10 @@ import com.freedomotic.bus.BootStatus;
  */
 public abstract class LifeCycle {
 
-	public LifeCycle() {
+    /**
+     *
+     */
+    public LifeCycle() {
 		
 		super();
 	}

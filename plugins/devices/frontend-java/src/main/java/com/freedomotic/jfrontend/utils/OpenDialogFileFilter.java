@@ -42,7 +42,6 @@ package com.freedomotic.jfrontend.utils;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
-
 import javax.swing.filechooser.FileFilter;
 
 /**
@@ -86,6 +85,7 @@ public class OpenDialogFileFilter
      * Creates a file filter that accepts files with the given extension.
      * Example: new OpenDialogFileFilter("jpg");
      *
+     * @param extension
      * @see #addExtension
      */
     public OpenDialogFileFilter(String extension) {
@@ -99,6 +99,7 @@ public class OpenDialogFileFilter
      * Note that the "." before the extension is not needed. If provided, it
      * will be ignored.
      *
+     * @param description
      * @see #addExtension
      */
     public OpenDialogFileFilter(String extension, String description) {
@@ -119,6 +120,7 @@ public class OpenDialogFileFilter
      *
      * Note that the "." before the extension is not needed adn will be ignored.
      *
+     * @param filters
      * @see #addExtension
      */
     public OpenDialogFileFilter(String[] filters) {
@@ -132,6 +134,7 @@ public class OpenDialogFileFilter
      *
      * Note that the "." before the extension is not needed and will be ignored.
      *
+     * @param description
      * @see #addExtension
      */
     public OpenDialogFileFilter(String[] filters, String description) {
@@ -153,6 +156,7 @@ public class OpenDialogFileFilter
      *
      * Files that begin with "." are ignored.
      *
+     * @return 
      * @see #getExtension
      * @see FileFilter#accepts
      */
@@ -176,6 +180,7 @@ public class OpenDialogFileFilter
     /**
      * Return the extension portion of the file's name .
      *
+     * @return 
      * @see #getExtension
      * @see FileFilter#accept
      */
@@ -203,6 +208,7 @@ public class OpenDialogFileFilter
      * filter.addExtension("jpg"); filter.addExtension("tif");
      *
      * Note that the "." before the extension is not needed and will be ignored.
+     * @param extension
      */
     public void addExtension(String extension) {
         if (filters == null) {
@@ -218,6 +224,7 @@ public class OpenDialogFileFilter
      * Returns the human readable description of this filter. For example: "JPEG
      * and GIF Image Files (*.jpg, *.gif)"
      *
+     * @return 
      * @see setDescription
      * @see setExtensionListInDescription
      * @see isExtensionListInDescription
@@ -252,6 +259,7 @@ public class OpenDialogFileFilter
      * Sets the human readable description of this filter. For example:
      * filter.setDescription("Gif and JPG Images");
      *
+     * @param description
      * @see setDescription
      * @see setExtensionListInDescription
      * @see isExtensionListInDescription
@@ -268,6 +276,7 @@ public class OpenDialogFileFilter
      * Only relevent if a description was provided in the constructor or using
      * setDescription();
      *
+     * @param b
      * @see getDescription
      * @see setDescription
      * @see isExtensionListInDescription
@@ -284,6 +293,7 @@ public class OpenDialogFileFilter
      * Only relevent if a description was provided in the constructor or using
      * setDescription();
      *
+     * @return 
      * @see getDescription
      * @see setDescription
      * @see setExtensionListInDescription

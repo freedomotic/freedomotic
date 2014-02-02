@@ -23,9 +23,7 @@ package com.freedomotic.plugins;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
-
 import com.freedomotic.exceptions.DaoLayerException;
-
 import java.io.File;
 import java.util.List;
 
@@ -38,8 +36,22 @@ public interface ClientStorage {
      * Checks if a plugin is already installed, if is an obsolete or newer
      * version
      */
+
+    /**
+     *
+     * @param name
+     * @param version
+     * @return
+     */
+    
     int compareVersions(String name, String version);
 
+    /**
+     *
+     * @param template
+     * @return
+     * @throws DaoLayerException
+     */
     Client createObjectPlaceholder(final File template)
             throws DaoLayerException;
 
@@ -56,17 +68,49 @@ public interface ClientStorage {
      */
     Plugin createPluginPlaceholder(final String simpleName, final String type, final String description);
 
+    /**
+     *
+     * @param c
+     */
     void remove(Client c);
 
+    /**
+     *
+     * @param c
+     */
     void add(Client c);
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     Client get(String name);
 
+    /**
+     *
+     * @param protocol
+     * @return
+     */
     Client getClientByProtocol(String protocol);
 
+    /**
+     *
+     * @return
+     */
     List<Client> getClients();
 
+    /**
+     *
+     * @param filterType
+     * @return
+     */
     List<Client> getClients(String filterType);
 
+    /**
+     *
+     * @param input
+     * @return
+     */
     boolean isLoaded(Client input);
 }

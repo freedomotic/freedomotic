@@ -52,11 +52,17 @@ public class JavaDesktopFrontend extends Protocol {
     private SplashLogin sl;
     private boolean init = false;
 
+    /**
+     *
+     */
     public JavaDesktopFrontend() {
         super("Desktop Frontend", "/frontend-java/desktop-frontend.xml");
         setPollingWait(-1); //disable threaded execution of onRun()
     }
 
+    /**
+     *
+     */
     @Override
     public void onStop() {
         window.setVisible(false);
@@ -71,6 +77,9 @@ public class JavaDesktopFrontend extends Protocol {
         sl = null;
     }
 
+    /**
+     *
+     */
     @Override
     public void onStart() {
         try {
@@ -90,6 +99,9 @@ public class JavaDesktopFrontend extends Protocol {
         }
     }
 
+    /**
+     *
+     */
     public void createMainWindow() {
 
         if (window == null) {
@@ -106,10 +118,19 @@ public class JavaDesktopFrontend extends Protocol {
         LOG.log(Level.INFO, "JFrontend running as user: {0}", getApi().getAuth().getPrincipal());
     }
 
+    /**
+     *
+     * @return
+     */
     public MainWindow getMainWindow() {
         return window;
     }
 
+    /**
+     *
+     * @param env
+     * @return
+     */
     protected Drawer createRenderer(EnvironmentLogic env) {
         try {
             if (env.getPojo().getRenderer().equalsIgnoreCase("photo")) {

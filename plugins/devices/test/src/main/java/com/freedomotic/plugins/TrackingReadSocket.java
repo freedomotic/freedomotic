@@ -44,6 +44,9 @@ public class TrackingReadSocket extends Protocol {
     private final int SLEEP_TIME = 1000;
     private final int NUM_MOTE = 3;
 
+    /**
+     *
+     */
     public TrackingReadSocket() {
         super("Tracking Simulator (Read Socket)", "/test/tracking-simulator-read-socket.xml");
         setDescription("It simulates a motes WSN that send information about movable sensors position, read from a socket (port:"

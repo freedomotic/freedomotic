@@ -38,45 +38,88 @@ public class Edge implements Comparable<Edge> {
 
     Object x, y;
     Object value;
+
+    /**
+     *
+     */
     public boolean visitato;
 
+    /**
+     *
+     */
     public Edge() {
         x = y = null;
         value = null;
     }
 
+    /**
+     *
+     * @param x1
+     * @param y1
+     * @param v
+     */
     public Edge(Object x1, Object y1, Object v) {
         x = x1;
         y = y1;
         value = v;
     }
 
+    /**
+     *
+     * @return
+     */
     public Object getX() {
         return x;
     }
 
+    /**
+     *
+     * @return
+     */
     public Object getY() {
         return y;
     }
 
+    /**
+     *
+     * @return
+     */
     public Object getValue() {
         return value;
     }
 
+    /**
+     *
+     * @param a
+     * @return
+     */
     public boolean equals(Edge a) {
         return (x.equals(a.x) && y.equals(a.y) && value.equals(a.value));
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         return x.hashCode() + y.hashCode() + value.hashCode();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "(" + x.toString() + ", " + y.toString() + ", " + value.toString() + ")";
     }
 
+    /**
+     *
+     * @param x
+     * @return
+     */
     @Override
     public boolean equals(Object x) {
         if (x.getClass() == this.getClass()) {
@@ -86,6 +129,11 @@ public class Edge implements Comparable<Edge> {
         }
     }
 
+    /**
+     *
+     * @param a
+     * @return
+     */
     @Override
     public int compareTo(Edge a) {
         int i = ((Comparable<Object>) value).compareTo(a.value);

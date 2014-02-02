@@ -36,6 +36,9 @@ public class PluginRemoteController extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(PluginRemoteController.class.getName());
 
+    /**
+     *
+     */
     public PluginRemoteController() {
         super("Plugins Remote Controller", "/test/plugins-remote-controller.xml");
         setPollingWait(-1); //disable threaded onRun()

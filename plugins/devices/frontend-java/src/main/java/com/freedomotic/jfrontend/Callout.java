@@ -37,6 +37,16 @@ public class Callout {
     private String group;
     private Color color = Color.black;
 
+    /**
+     *
+     * @param relatedObject
+     * @param group
+     * @param text
+     * @param x
+     * @param y
+     * @param angle
+     * @param duration
+     */
     public Callout(String relatedObject, String group, String text, int x, int y, float angle, int duration) {
         this.text = text;
         this.position = new Point(x, y);
@@ -53,6 +63,12 @@ public class Callout {
         this.group = group;
     }
 
+    /**
+     *
+     * @param text
+     * @param duration
+     * @param color
+     */
     public Callout(String text, int duration, Color color) {
         this.text = text;
         this.position = new Point(50, 50);
@@ -77,66 +93,130 @@ public class Callout {
         return text;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDuration() {
         return duration;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getGroup() {
         return group;
     }
 
+    /**
+     *
+     * @param group
+     */
     public void setGroup(String group) {
         this.group = group;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getRelatedTo() {
         return relatedTo;
     }
 
+    /**
+     *
+     * @param relatedTo
+     */
     public void setRelatedTo(String relatedTo) {
         this.relatedTo = relatedTo;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setDuration(int value) {
         this.duration = value;
     }
 
+    /**
+     *
+     * @return
+     */
     public Point getPosition() {
         return position;
     }
 
+    /**
+     *
+     * @param position
+     */
     public void setPosition(Point position) {
         this.position = position;
     }
 
+    /**
+     *
+     * @return
+     */
     public float getRotation() {
         return rotation;
     }
 
+    /**
+     *
+     * @param rotation
+     */
     public void setRotation(float rotation) {
         this.rotation = rotation;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     *
+     * @param text
+     */
     public void setText(String text) {
         this.text = text;
     }
 
+    /**
+     *
+     * @return
+     */
     public Object getRelated() {
         return relatedTo;
     }
 
+    /**
+     *
+     * @return
+     */
     public long getTimestamp() {
         return timestamp;
     }
 
+    /**
+     *
+     * @param color
+     */
     public void setColor(Color color) {
         this.color = color;
     }
 
+    /**
+     *
+     * @return
+     */
     public Color getColor() {
         return color;
     }

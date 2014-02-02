@@ -30,14 +30,11 @@ import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.plugins.ClientStorage;
-
-import java.util.logging.Logger;
-
-import javax.jms.JMSException;
-import javax.jms.ObjectMessage;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.logging.Logger;
+import javax.jms.JMSException;
+import javax.jms.ObjectMessage;
 
 /**
  *

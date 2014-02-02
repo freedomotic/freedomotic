@@ -38,6 +38,10 @@ public class UsageData implements Cloneable {
     String objvalue;
     String uuid;
 
+    /**
+     *
+     * @return
+     */
     @Override
     public UsageData clone() {
         UsageData cloned = new UsageData();
@@ -49,65 +53,128 @@ public class UsageData implements Cloneable {
         return cloned;
     }
 
+    /**
+     *
+     */
     public UsageData() {
     }
 
+    /**
+     *
+     * @return
+     */
     public String getObjProtocol() {
         return objprotocol;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getObjAddress() {
         return objaddress;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getObjBehavior() {
         return objbehavior;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getObjName() {
         return objname;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getObjValue() {
         return objvalue;
     }
 
+    /**
+     *
+     * @return
+     */
     public Date getDateTime() {
         return datetime;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getID() {
         return id;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getUuid() {
         return uuid;
     }
 
+    /**
+     *
+     * @param datetime
+     */
     public void setDateTime(Date datetime) {
         this.datetime = datetime;
     }
 
+    /**
+     *
+     * @param val
+     */
     public void setObjValue(String val) {
         this.objvalue = val;
     }
 
+    /**
+     *
+     * @param val
+     */
     public void setObjProtocol(String val) {
         this.objprotocol = val;
     }
 
+    /**
+     *
+     * @param val
+     */
     public void setObjName(String val) {
         this.objname = val;
     }
 
+    /**
+     *
+     * @param val
+     */
     public void setObjBehavior(String val) {
         this.objbehavior = val;
     }
 
+    /**
+     *
+     * @param val
+     */
     public void setObjAddress(String val) {
         this.objaddress = val;
     }
 
+    /**
+     *
+     * @param val
+     */
     public void setUuid(String val) {
         this.uuid = val;
     }

@@ -12,7 +12,16 @@ import java.io.Serializable;
  */
 public interface GenericDataIface extends Serializable {
     
+    /**
+     *
+     * @return
+     */
     public GenericDataIface clone();
+
+    /**
+     *
+     * @return
+     */
     public String toJSON();
     
 }

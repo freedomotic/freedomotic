@@ -17,6 +17,7 @@ public class ClockForm
 
     /**
      * Creates new form ClockForm
+     * @param plugin
      */
     public ClockForm(Scheduler plugin) {
         this.plugin = plugin;

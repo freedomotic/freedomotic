@@ -20,7 +20,6 @@
 package com.freedomotic.model.object;
 
 import com.freedomotic.model.charting.UsageData;
-import com.freedomotic.model.object.Behavior;
 import java.util.List;
 
 /**
@@ -31,14 +30,26 @@ public class DataBehavior extends Behavior{
     
     private List<UsageData> data;
 
+    /**
+     *
+     * @param data
+     */
     public void setData(List<UsageData> data){
         this.data = data;
     }
     
+    /**
+     *
+     * @param data
+     */
     public void addData(List<UsageData> data){
         this.data.addAll(data);
     }
     
+    /**
+     *
+     * @return
+     */
     public List<UsageData> getData(){
         return data;
     }

@@ -25,16 +25,14 @@
  */
 package com.freedomotic.persistence.converters;
 
-import static org.junit.Assert.assertEquals;
 import com.freedomotic.persistence.PayloadConverter;
 import com.freedomotic.reactions.Payload;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.thoughtworks.xstream.XStream;
 import java.util.logging.Logger;
+import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -45,9 +43,16 @@ public class PayloadConverterTest {
     private static String xml;
     private static XStream xstream;
 
+    /**
+     *
+     */
     public PayloadConverterTest() {
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @BeforeClass
     public static void setUpClass() throws Exception {
         xml = "<payload><payload><com.freedomotic.reactions.Statement>"
@@ -64,10 +69,17 @@ public class PayloadConverterTest {
         xstream.alias("payload", Payload.class);
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
 
+    /**
+     *
+     */
     @Test
     public void testMarshal() {
         System.out.println("Testing Payload to XML");
@@ -80,6 +92,9 @@ public class PayloadConverterTest {
         assertEquals(marshal, xml);
     }
 
+    /**
+     *
+     */
     @Test
     public void testUnmarshal() {
         System.out.println("Testing XML to Payload");
@@ -90,6 +105,9 @@ public class PayloadConverterTest {
         assertEquals("@event.isOn", payload.getStatements("behaviorValue").get(0).getValue());                  
     }
 
+    /**
+     *
+     */
     @Test
     public void testCanConvert() {
     }

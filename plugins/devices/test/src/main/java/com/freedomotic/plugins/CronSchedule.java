@@ -171,6 +171,7 @@ public class CronSchedule {
 
     /**
      * Returns the cron-like definition of the schedule.
+     * @return 
      */
     @Override
     public String toString() {
@@ -232,6 +233,7 @@ public class CronSchedule {
      * Checks whether given timestamp matches with defined hour schedule. This
      * method can be used when minute definition is not relevant for matching.
      *
+     * @param timeStamp
      * @param timestamp - time in ms since Epoch time
      * @return true when schedule matches
      */
@@ -256,6 +258,7 @@ public class CronSchedule {
      * method can be used when minute and hour definitions are not relevant for
      * matching.
      *
+     * @param timeStamp
      * @param timestamp - time in ms since Epoch time
      * @return true when schedule matches
      */
@@ -364,10 +367,18 @@ public class CronSchedule {
 
         private int value;
 
+        /**
+         *
+         * @param value
+         */
         public SingleTimeValue(int value) {
             setValue(value);
         }
 
+        /**
+         *
+         * @param value
+         */
         public SingleTimeValue(String value) {
             setValue(Integer.parseInt(value));
         }
@@ -398,6 +409,7 @@ public class CronSchedule {
 
         /**
          * Returns cron-like string of this definition.
+         * @return 
          */
         public String toString() {
             return "" + getValue();
@@ -415,11 +427,20 @@ public class CronSchedule {
         private int startValue;
         private int endValue;
 
+        /**
+         *
+         * @param startValue
+         * @param endValue
+         */
         public TimeRange(int startValue, int endValue) {
             setStartValue(startValue);
             setEndValue(endValue);
         }
 
+        /**
+         *
+         * @param range
+         */
         public TimeRange(String range) {
             int dashPos = range.indexOf("-");
             setStartValue(Integer.parseInt(range.substring(0, dashPos)));
@@ -466,6 +487,7 @@ public class CronSchedule {
 
         /**
          * Returns cron-like string of this definition.
+         * @return 
          */
         public String toString() {
             return getStartValue() + "-" + getEndValue();
@@ -483,11 +505,20 @@ public class CronSchedule {
         private AbstractTimeValue range;
         private int steps;
 
+        /**
+         *
+         * @param range
+         * @param steps
+         */
         public TimeSteps(AbstractTimeValue range, int steps) {
             setRange(range);
             setSteps(steps);
         }
 
+        /**
+         *
+         * @param def
+         */
         public TimeSteps(String def) {
             int divPos = def.indexOf("/");
             String r = def.substring(0, divPos);
@@ -549,6 +580,7 @@ public class CronSchedule {
 
         /**
          * Returns cron-like string of this definition.
+         * @return 
          */
         public String toString() {
             return getRange() + "/" + getSteps();
@@ -563,6 +595,9 @@ public class CronSchedule {
     public static class TimeAll
             extends AbstractTimeValue {
 
+        /**
+         *
+         */
         public TimeAll() {
         }
 
@@ -578,6 +613,7 @@ public class CronSchedule {
 
         /**
          * Returns cron-like string of this definition.
+         * @return 
          */
         public String toString() {
             return "*";

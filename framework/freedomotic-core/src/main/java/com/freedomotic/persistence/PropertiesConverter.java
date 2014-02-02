@@ -26,14 +26,12 @@
 package com.freedomotic.persistence;
 
 import com.freedomotic.model.object.Properties;
-
-import java.util.HashMap;
-
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 /**
@@ -43,6 +41,12 @@ import java.util.logging.Logger;
 public class PropertiesConverter
         implements Converter {
 
+    /**
+     *
+     * @param o
+     * @param writer
+     * @param mc
+     */
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
         Properties rea = (Properties) o;
@@ -56,6 +60,12 @@ public class PropertiesConverter
         }
     }
 
+    /**
+     *
+     * @param reader
+     * @param uc
+     * @return
+     */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
         HashMap<String, String> propertiesHashMap = new HashMap<String, String>();
@@ -70,6 +80,11 @@ public class PropertiesConverter
         return new Properties(propertiesHashMap);
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     @Override
     public boolean canConvert(Class type) {
         if (type == Properties.class) {
