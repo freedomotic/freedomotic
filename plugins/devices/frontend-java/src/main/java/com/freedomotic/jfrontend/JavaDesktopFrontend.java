@@ -22,7 +22,10 @@ package com.freedomotic.jfrontend;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.bus.BusConsumer;
+import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.environment.EnvironmentLogic;
+import com.freedomotic.events.MessageEvent;
 import com.freedomotic.events.ObjectHasChangedBehavior;
 import com.freedomotic.events.ZoneHasChanged;
 import com.freedomotic.exceptions.UnableToExecuteException;
@@ -37,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.jms.ObjectMessage;
 import javax.swing.JOptionPane;
 
 /**
@@ -44,6 +48,7 @@ import javax.swing.JOptionPane;
  * @author Enrico
  */
 public class JavaDesktopFrontend extends Protocol {
+
     private static final Logger LOG = Logger.getLogger(JavaDesktopFrontend.class.getName());
 
     private MainWindow window;
@@ -87,6 +92,7 @@ public class JavaDesktopFrontend extends Protocol {
             addEventListener("app.event.sensor.object.behavior.change");
             addEventListener("app.event.sensor.environment.zone.change");
             addEventListener("app.event.sensor.plugin.change");
+            addEventListener("app.event.sensor.messages.callout");
             if (getApi().getAuth().isInited()) {
                 sl = new SplashLogin(this);
                 if (!init) {
@@ -108,7 +114,7 @@ public class JavaDesktopFrontend extends Protocol {
             window = new MainWindow(this);
         }
         window.setVisible(true);
-        
+
         if (sl != null) {
             sl.setVisible(false);
             sl.dispose();
@@ -199,17 +205,17 @@ public class JavaDesktopFrontend extends Protocol {
                             //Custom button text
                             if (c.getProperty("options") != null) {
                                 Object[] options = c.getProperty("options").split(";");
-                                int n =
-                                        JOptionPane.showOptionDialog(window,
-                                        c.getProperty("question"),
-                                        "Please reply within "
-                                        + (int) (c.getReplyTimeout() / 1000)
-                                        + " seconds",
-                                        JOptionPane.YES_NO_CANCEL_OPTION,
-                                        JOptionPane.QUESTION_MESSAGE,
-                                        null,
-                                        options,
-                                        options[2]);
+                                int n
+                                        = JOptionPane.showOptionDialog(window,
+                                                c.getProperty("question"),
+                                                "Please reply within "
+                                                + (int) (c.getReplyTimeout() / 1000)
+                                                + " seconds",
+                                                JOptionPane.YES_NO_CANCEL_OPTION,
+                                                JOptionPane.QUESTION_MESSAGE,
+                                                null,
+                                                options,
+                                                options[2]);
                                 c.setProperty("result",
                                         options[n].toString());
                             }
@@ -224,50 +230,42 @@ public class JavaDesktopFrontend extends Protocol {
 
     @Override
     protected void onEvent(EventTemplate event) {
-        if (isRunning()) {
-            if (event instanceof ObjectHasChangedBehavior) {
+        if (event instanceof ObjectHasChangedBehavior) {
+            drawer.setNeedRepaint(true);
+            for (GraphPanel gp : graphs.values()) {
+                gp.reDraw();
+            }
+            if (drawer != null) {
                 drawer.setNeedRepaint(true);
-                for (GraphPanel gp : graphs.values()) {
-                    gp.reDraw();
-                }
-                if (drawer != null) {
-                    drawer.setNeedRepaint(true);
 
-                }
-            } else {
-                if (event instanceof ZoneHasChanged) {
-                    //writing the string on the screen
-                    String zoneDesc = event.getProperty("zone.description");
-                    Callout callout = new Callout(zoneDesc, 2000, Color.blue);
-                    drawer.createCallout(callout);
-                    drawer.setNeedRepaint(true);
-                } else {
-                    // TODO check why a NPE was raised sometimes
-                    if (null != window) {
-                        final PluginJList pluginJList = window.getPluginJList();
-                        if (null != pluginJList) {
-                            pluginJList.update();
-                        }
-                    }
-                }
-
+            }
+        } else if (event instanceof ZoneHasChanged) {
+            //writing the string on the screen
+            String zoneDesc = event.getProperty("zone.description");
+            Callout callout = new Callout(zoneDesc, 2000, Color.blue);
+            drawer.createCallout(callout);
+            drawer.setNeedRepaint(true);
+        }else if (event instanceof MessageEvent) {
+            printCallout(event.getProperty("message.text"));
+        } else if (null != window) {
+            final PluginJList pluginJList = window.getPluginJList();
+            if (null != pluginJList) {
+                pluginJList.update();
             }
         }
     }
 
 //    //annotation doesen't work because annotation parsing is enabled only in Protocol subclasses
 //    @ListenEventsOn(channel = "app.event.sensor.messages.callout")
-//    public void printCallout(EventTemplate event) {
-//        System.out.println("received event " + event.toString());
-//        MessageEvent message = (MessageEvent) event;
-//        String text = message.getProperty("message.text");
-//        Callout callout = new Callout(
-//                text,
-//                2000,
-//                Color.blue);
-//        drawer.createCallout(callout);
-//        drawer.setNeedRepaint(true);
-//    }
+    public void printCallout(String message) {
+        Callout callout = new Callout(
+                message,
+                2000,
+                Color.blue);
+        drawer.createCallout(callout);
+        drawer.setNeedRepaint(true);
+    }
+
     @Override
     protected boolean canExecute(Command c) {
         //do nothing
