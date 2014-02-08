@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.persistence;
@@ -34,19 +32,15 @@ import com.freedomotic.reactions.Payload;
 import com.freedomotic.reactions.ReactionConverter;
 import com.freedomotic.reactions.Trigger;
 import com.thoughtworks.xstream.XStream;
-import java.util.logging.Logger;
 
 /**
  *
  * @author gpt
  */
-public class FreedomXStream /*implements FrameTranslator*/ {
+public class FreedomXStream {
 
     private static XStream xstream = null;
     private static XStream environmentXstream = null;
-
-    private FreedomXStream() {
-    }
 
     /**
      *
@@ -54,8 +48,12 @@ public class FreedomXStream /*implements FrameTranslator*/ {
      */
     public static XStream getXstream() {
         if (xstream == null) {
+            // Generic configuration
             xstream = new XStream();
+            xstream.setMode(XStream.NO_REFERENCES);
             xstream.autodetectAnnotations(true);
+
+            // Geometry
             xstream.alias("polygon", FreedomPolygon.class);
             xstream.addImplicitCollection(FreedomPolygon.class, "points", "point", FreedomPoint.class);
             xstream.alias("ellipse", FreedomEllipse.class);
@@ -63,59 +61,27 @@ public class FreedomXStream /*implements FrameTranslator*/ {
             xstream.useAttributeFor(FreedomPoint.class, "x");
             xstream.useAttributeFor(FreedomPoint.class, "y");
             xstream.alias("shape", FreedomShape.class);
-
-//            xstream.aliasPackage("Object", "com.freedomotic.objects.impl");
-//            xstream.alias("freedomObject", EnvObject.class);
-//            xstream.omitField(EnvObjectLogic.class,"changed");
-//            xstream.omitField(EnvObjectLogic.class,"commandsMapping");
-//            xstream.omitField(EnvObjectLogic.class, "lastSentCommand");
-
-//            xstream.omitField(Behavior.class, "masterObject");
-//
-//            xstream.alias("BooleanBehavior", BooleanBehavior.class);
-//            xstream.omitField(BooleanBehavior.class, "listener");
-
-//            xstream.omitField(ExclusiveMultivalueBehavior.class, "listener");
-
-//            xstream.alias("RangedIntBehavior", RangedIntBehavior.class);
-//            xstream.omitField(RangedIntBehavior.class, "listener");
             xstream.alias("view", Representation.class);
 
-//            xstream.alias("Object.ElectricDevice", ElectricDevice.class);
-//            xstream.omitField(ElectricDevice.class, "powered");
-//
-//            xstream.alias("Object.Gate", Gate.class);
-//            xstream.omitField(Gate.class, "from");
-//            xstream.omitField(Gate.class, "to");
-//            xstream.omitField(Gate.class, "openess");
-//            xstream.omitField(Gate.class, "open");
-//            xstream.omitField(Gate.class, "visited");
-//
-//            xstream.alias("Object.Light", Light.class);
-//            xstream.omitField(Light.class, "brightness");
-
-            //No Object directly
+            // Commands
             xstream.omitField(Config.class, "xmlFile");
-            xstream.registerLocalConverter(Config.class,
-                    "tuples",
-                    new TupleConverter());
+            xstream.registerLocalConverter(Config.class, "tuples", new TupleConverter());
 
+            // Zones and topology
             xstream.omitField(Zone.class, "occupiers");
             xstream.omitField(Room.class, "gates");
             xstream.omitField(Room.class, "reachable");
+            xstream.omitField(Environment.class, "occupiers");
+            xstream.omitField(Zone.class, "objects");
 
-            /*
-             * Initialization for Triggers
-             */
+            // Triggers and commands
             xstream.alias("trigger", Trigger.class);
             xstream.omitField(Trigger.class, "suspensionStart");
             xstream.omitField(Trigger.class, "listener");
             xstream.omitField(Trigger.class, "checker");
-            //xstream.registerConverter(new PayloadConverter());
             xstream.alias("payload", Payload.class);
 
-//            xstream.omitField(ObjectReceiveClick.class, "obj");
-//            xstream.omitField(ObjectReceiveClick.class, "click");
+            // Register custom converters
             xstream.registerConverter(new ReactionConverter());
             xstream.registerConverter(new PropertiesConverter());
             xstream.registerConverter(new TupleConverter());
@@ -128,12 +94,14 @@ public class FreedomXStream /*implements FrameTranslator*/ {
      *
      * @return
      */
+    @Deprecated
     public static XStream getEnviromentXstream() {
         if (environmentXstream == null) { //Enviroment serialization
             environmentXstream = new XStream();
             environmentXstream.setMode(XStream.NO_REFERENCES);
             environmentXstream.autodetectAnnotations(true);
             environmentXstream.omitField(Environment.class, "occupiers");
+            environmentXstream.omitField(Zone.class, "objects");
             environmentXstream.alias("polygon", FreedomPolygon.class);
             environmentXstream.addImplicitCollection(FreedomPolygon.class, "points", "point", FreedomPoint.class);
             //adding also plain point xstream configuration
@@ -144,5 +112,7 @@ public class FreedomXStream /*implements FrameTranslator*/ {
 
         return environmentXstream;
     }
-    private static final Logger LOG = Logger.getLogger(FreedomXStream.class.getName());
+
+    private FreedomXStream() {
+    }
 }
