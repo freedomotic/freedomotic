@@ -80,7 +80,7 @@ public class FreedomRestServer extends Application {
     @Override
     public Restlet createInboundRoot() {
         Router router = new Router(getContext());
-        router.attach(ENVIRONMENT_PATH+"/", EnvironmentsServerResource.class);
+        router.attach(ENVIRONMENT_PATH, EnvironmentsServerResource.class);
         router.attach(ENVIRONMENT_PATH+"/{number}", EnvironmentServerResource.class);
         router.attach(ENVIRONMENT_PATH+"/{env}/zones/", ZonesServerResource.class);
         router.attach(ENVIRONMENT_PATH+"/{env}/zones/{number}", ZoneServerResource.class);
@@ -97,7 +97,10 @@ public class FreedomRestServer extends Application {
         dir.setListingAllowed(true);
         //System.out.println("FILE_AND_SLASHES+resourcesPath "+  FILE_AND_SLASHES+resourcesPath);
         router.attach(RESOURCES_PATH + "/", dir);
-        return router;
+        OriginFilter originFilter = new OriginFilter(getContext());
+        originFilter.setNext(router);
+     
+        return originFilter;
     }
 
     public static void main(String[] args) throws Exception {
