@@ -83,6 +83,8 @@ public class JavaDesktopFrontend
                 if (!init) {
                     sl.trySSO();
                 }
+            } else {
+                createMainWindow();
             }
             init = true;
         } catch (Exception e) {
