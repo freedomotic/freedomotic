@@ -98,6 +98,8 @@ public class JavaDesktopFrontend extends Protocol {
                 if (!init) {
                     sl.trySSO();
                 }
+            } else {
+                createMainWindow();
             }
             init = true;
         } catch (Exception e) {
