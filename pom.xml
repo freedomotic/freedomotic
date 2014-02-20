@@ -3,15 +3,74 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
     <groupId>com.freedomotic</groupId>
     <artifactId>freedomotic</artifactId>
+    <version>5.6-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
     <name>Freedomotic</name>
     <description>Distributed Building and Home Automation Framework</description>
     <url>http://freedomotic.com</url>
-    <version>5.6-SNAPSHOT</version>
     <inceptionYear>2009</inceptionYear>
-    <packaging>pom</packaging>
-    
+
+    <licenses>
+        <license>
+            <name>GNU GPL2</name>
+            <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</url>
+            <distribution>repo</distribution>
+            <comments>Every project hosted on official freedomotic repository inherits this license</comments>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:freedomotic/freedomotic.git</connection>
+        <url>scm:git:git@github.com:freedomotic/freedomotic.git</url>
+        <developerConnection>scm:git:git@github.com:freedomotic/freedomotic.git</developerConnection>
+    </scm>
+
+    <organization>
+        <name>Freedomotic</name>
+        <url>http://www.freedomotic.com</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>enrico</id>
+            <name>Enrico Nicoletti</name>
+            <email>info@freedomotic.com</email>
+            <url>http://www.freedomotic.com</url>
+            <organization>Freedomotic</organization>
+            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <id>gabriel</id>
+            <name>Gabriel Pulido de Torres</name>
+            <email>gabriel@freedomotic.com</email>
+            <url>http://www.freedomotic.com</url>
+            <organization>Freedomotic</organization>
+            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
+    </developers>
+
+    <properties>
+        <freedomotic.basedir>${project.basedir}</freedomotic.basedir>
+    </properties>
+
     <profiles>
         <profile>
             <id>framework</id>
@@ -297,25 +356,7 @@
             </build>
         </profile>
     </profiles>
-      
-    <organization>
-        <name>Freedomotic</name>
-        <url>http://www.freedomotic.com</url>
-    </organization>
-    
-    <properties>
-        <freedomotic.basedir>${project.basedir}</freedomotic.basedir>
-    </properties>
-       
-    <licenses>
-        <license>
-            <name>GNU GPL2</name>
-            <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</url>
-            <distribution>repo</distribution>
-            <comments>Every project hosted on official freedomotic repository inherits this license</comments>
-        </license>
-    </licenses>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -370,20 +411,7 @@
 		
     </dependencyManagement>
     
- 
-    <repositories>
-        <repository>
-            <id>maven-ftp-official</id>
-            <url>ftp://maven.freedomotic.com</url>
-        </repository>
-    </repositories>
-    <distributionManagement>
-        <repository>
-            <id>maven-ftp-official</id>
-            <url>ftp://maven.freedomotic.com</url>
-        </repository>
-    </distributionManagement>
-        
+
     <!-- Build Configuration -->
     <build>
         <extensions>
