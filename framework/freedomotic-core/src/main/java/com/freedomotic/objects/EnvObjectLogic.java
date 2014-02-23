@@ -477,8 +477,7 @@ public class EnvObjectLogic {
      */
     @RequiresPermissions("objects:read")
     protected final boolean executeCommand(final String action, final Config params) {
-        LOG.log(Level.FINE, "Executing action ''{0}'' of object ''{1}''", 
-                new Object[]{action, getPojo().getName()});
+        LOG.log(Level.FINE, "Executing action ''{0}'' of object ''{1}''",  new Object[]{action, getPojo().getName()});
 
         if (getPojo().getActAs().equalsIgnoreCase("virtual")) {
             //it's a virtual object like a button, not needed real execution of a command
@@ -502,16 +501,14 @@ public class EnvObjectLogic {
         //resolves developer level command parameters like myObjectName = "@event.object.name" -> myObjectName = "Light 1"
         //in this case the parameter in the userLevelCommand are used as basis for the resolution process (the context)
         //along with the parameters getted from the relative behavior (if exists)
-        LOG.log(Level.FINE, 
-                "Environment object ''{0}'' tries to ''{1}'' itself using hardware command ''{2}''", 
+        LOG.log(Level.FINE, "Environment object ''{0}'' tries to ''{1}'' itself using hardware command ''{2}''", 
                 new Object[]{pojo.getName(), action, command.getName()});
 
         Resolver resolver = new Resolver();
         //adding a resolution context for object that owns this hardware level command. 'owner.' is the prefix of this context
-        resolver.addContext("owner.",
-                getExposedProperties());
-        resolver.addContext("owner.",
-                getExposedBehaviors());
+        resolver.addContext("owner.",getExposedProperties());
+        resolver.addContext("owner.",getExposedBehaviors());
+        resolver.addContext("request.", params);
 
         try {
             final Command resolvedCommand = resolver.resolve(command); //eg: turn on an X10 device

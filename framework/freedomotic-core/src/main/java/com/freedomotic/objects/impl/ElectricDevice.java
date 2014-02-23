@@ -39,32 +39,14 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-public class ElectricDevice
-        extends EnvObjectLogic {
+public class ElectricDevice extends EnvObjectLogic {
 
-    /**
-     *
-     */
+
     protected BooleanBehaviorLogic powered;
-
-    /**
-     *
-     */
     protected final static String BEHAVIOR_POWERED = "powered";
-
-    /**
-     *
-     */
     protected final static String ACTION_TURN_ON = "turn on";
-
-    /**
-     *
-     */
     protected final static String ACTION_TURN_OFF = "turn off";
     
-    // @Inject
-    // private I18n I18n;
-
     @Override
     public void init() {
         powered = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior(BEHAVIOR_POWERED));

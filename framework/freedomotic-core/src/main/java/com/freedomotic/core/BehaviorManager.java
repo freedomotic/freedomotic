@@ -59,34 +59,11 @@ public final class BehaviorManager
     private static final Logger LOG = Logger.getLogger(BehaviorManager.class.getName());
     private static final String MESSAGING_CHANNEL = "app.events.sensors.behavior.request.objects";
 
-    /**
-     *
-     */
     public static final String PROPERTY_BEHAVIOR = "behavior";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_CLASS = "object.class";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_ADDRESS = "object.address";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_NAME = "object.name";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_PROTOCOL = "object.protocol";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT = "object";
     private static BusMessagesListener listener;
     private BusService busService;
