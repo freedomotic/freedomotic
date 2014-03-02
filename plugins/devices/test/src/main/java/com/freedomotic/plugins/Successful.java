@@ -47,8 +47,7 @@ public class Successful extends Protocol {
     }
 
     @Override
-    protected void onCommand(Command c)
-            throws IOException, UnableToExecuteException {
+    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
@@ -65,27 +64,27 @@ public class Successful extends Protocol {
 
     @Override
     protected void onRun() {
-        //sends a fake sensor read event. Used for testing
-        ProtocolRead event = new ProtocolRead(this, "test", "test");
-        event.getPayload().addStatement("object.class", "Light");
-        event.getPayload().addStatement("object.name", "myLight");
-        event.getPayload().addStatement("value",
-                powered.toString());
-        //invert the value for the next round
-        notifyEvent(event);
-
-        if (powered) {
-            powered = false;
-        } else {
-            powered = true;
-        }
-
-        //wait two seconds before sending another event
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(VariousSensors.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //DISABLED: sends a fake sensor read event. Used for testing
+//        ProtocolRead event = new ProtocolRead(this, "test", "test");
+//        event.getPayload().addStatement("object.class", "Light");
+//        event.getPayload().addStatement("object.name", "myLight");
+//        event.getPayload().addStatement("value",
+//                powered.toString());
+//        //invert the value for the next round
+//        notifyEvent(event);
+//
+//        if (powered) {
+//            powered = false;
+//        } else {
+//            powered = true;
+//        }
+//
+//        //wait two seconds before sending another event
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(VariousSensors.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     @Override

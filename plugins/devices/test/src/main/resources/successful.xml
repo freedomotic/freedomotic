@@ -3,7 +3,7 @@
     <properties>
         <property name="description"                       value="Execute succesfully a command"/>
         <property name="category"                       value="simulator"/>
-        <property name="short-name"                       value="actuator"/>
+        <property name="short-name"                       value="success"/>
         <property name="protocol.name"                       value="test"/>
     </properties>
     <tuples>

@@ -87,7 +87,7 @@ public final class TriggerCheck {
                             .append(resolved.getPayload().toString()).append("'\nconsistent with received event '")
                             .append(event.getEventName()).append("' ").append(event.getPayload().toString());
                     applySensorNotification(resolved, event);
-                    LOG.config(buff.toString());
+                    LOG.fine(buff.toString());
                     return true;
                 }
             } else {
@@ -99,7 +99,7 @@ public final class TriggerCheck {
                                 .append(resolved.getPayload().toString()).append("'\nconsistent with received event '")
                                 .append(event.getEventName()).append("' ").append(event.getPayload().toString());
                         executeTriggeredAutomations(resolved, event);
-                        LOG.config(buff.toString());
+                        LOG.fine(buff.toString());
                         return true;
                     }
                 }
@@ -109,7 +109,7 @@ public final class TriggerCheck {
             buff.append("[NOT CONSISTENT] registred trigger '").append(trigger.getName()).append("' ")
                     .append(trigger.getPayload().toString()).append("'\nnot consistent with received event '")
                     .append(event.getEventName()).append("' ").append(event.getPayload().toString());
-            LOG.config(buff.toString());
+            LOG.fine(buff.toString());
 
             return false;
         } catch (Exception e) {
@@ -243,7 +243,9 @@ public final class TriggerCheck {
                                         if (reply.isExecuted()) {
                                             LOG.log(Level.FINE, "Executed succesfully {0}", command.getName());
                                         } else {
-                                            LOG.log(Level.WARNING, "Unable to execute command{0}", command.getName());
+                                            LOG.log(Level.WARNING, "Unable to execute command {0}. Skipping the others", command.getName());
+                                            // skip the other commands
+                                            return;
                                         }
                                     }
                                 }
