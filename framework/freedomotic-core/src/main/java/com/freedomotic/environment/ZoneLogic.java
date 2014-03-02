@@ -5,18 +5,17 @@
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 //Copyright 2009 Enrico Nicoletti
@@ -41,6 +40,8 @@ package com.freedomotic.environment;
 
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
+import com.freedomotic.events.PersonEntersZone;
+import com.freedomotic.events.PersonExitsZone;
 import com.freedomotic.events.ZoneHasChanged;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.objects.impl.Person;
@@ -55,21 +56,13 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  */
 public class ZoneLogic {
 
-    private BusService busService;
-  
-	private Zone pojo;
+    private static final Logger LOG = Logger.getLogger(ZoneLogic.class.getName());
+    private final BusService busService;
+    private final Zone pojo;
     private Ownership owner = new LastOutStrategy();
-    private List<Person> occupiers = new ArrayList<Person>();
+    private final List<Person> occupiers = new ArrayList<Person>();
     private EnvironmentLogic FatherEnv = null;
-
-    /**
-     *
-     * @return
-     */
-    @RequiresPermissions("zones:read")
-    public EnvironmentLogic getEnv() {
-        return this.FatherEnv;
-    }
+    private Ownership ownershipStrategy;
 
     /**
      *
@@ -77,8 +70,21 @@ public class ZoneLogic {
      */
     public ZoneLogic(final Zone pojo) {
         this.pojo = pojo;
+        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ZoneLogic(final Zone pojo) {
+        this.pojo = pojo;
 	this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
    }
+    @RequiresPermissions("zones:read")
+    public EnvironmentLogic getEnv() {
+        return this.FatherEnv;
+    }
 
     /**
      *
@@ -95,16 +101,11 @@ public class ZoneLogic {
      * @return
      */
     @RequiresPermissions("zones:read")
-    public boolean alreadyTakenBy(Person g) {
+    public boolean isInside(Person g) {
         try {
-            if (occupiers.contains(g)) {
-                return true;
-            } else {
-                return false;
-            }
+            return occupiers.contains(g);
         } catch (Exception e) {
             LOG.info("This zone have no occupiers or null reference in occupiers of Zone class");
-
             return false;
         }
     }
@@ -115,9 +116,12 @@ public class ZoneLogic {
      */
     @RequiresPermissions("zones:read")
     public Ownership getOwnershipStrategy() {
-        Ownership os = new LastOutStrategy();
+        if (ownershipStrategy == null) {
+            //create default ownership strategy
+            ownershipStrategy = new LastOutStrategy();
+        }
 
-        return os;
+        return ownershipStrategy;
     }
 
     /**
@@ -131,44 +135,42 @@ public class ZoneLogic {
 
     /**
      *
-     * @param g
+     * @param p
      * @return
      */
     @RequiresPermissions("zones:update")
-    public boolean enter(Person g) {
+    public synchronized boolean enter(Person p) {
         boolean success = false;
         owner = getOwnershipStrategy();
 
         if (owner.canTriggerReactionsOnEnter(this)) {
-            //TODO: REIMPLEMENT
-//            PersonEnterZone ev = new PersonEnterZone(this, g, getPojo());
-//            Freedomotic.sendEvent(ev);
-//            success = true;
+            PersonEntersZone ev = new PersonEntersZone(this, p, getPojo());
+            Freedomotic.sendEvent(ev);
+            success = true;
         }
 
-        occupiers.add(g); //this must be AFTER the count
+        occupiers.add(p); //this must be AFTER the howManyInside() count
 
         return success;
     }
 
     /**
      *
-     * @param g
+     * @param p
      * @return
      */
     @RequiresPermissions("zones:update")
-    public boolean exit(Person g) {
+    public synchronized boolean exit(Person p) {
         boolean success = false;
         owner = getOwnershipStrategy();
 
         if (owner.canTriggerReactionsOnExit(this)) {
-            //REIMPLEMENT
-//            PersonExitZone ev = new PersonExitZone(this, g, getPojo());
-//            Freedomotic.sendEvent(ev);
-//            success = true;
+            PersonExitsZone ev = new PersonExitsZone(this, p, getPojo());
+            Freedomotic.sendEvent(ev);
+            success = true;
         }
 
-        occupiers.remove(g); //this must be AFTER the count
+        occupiers.remove(p); //this must be AFTER the howManyInside() count
 
         return success;
     }
@@ -239,5 +241,4 @@ public class ZoneLogic {
 
         return hash;
     }
-    private static final Logger LOG = Logger.getLogger(ZoneLogic.class.getName());
 }

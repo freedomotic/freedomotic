@@ -38,22 +38,10 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class Person
-        extends EnvObjectLogic {
+public class Person extends EnvObjectLogic {
 
-    /**
-     *
-     */
     protected BooleanBehaviorLogic present;
-
-    /**
-     *
-     */
     protected ListBehaviorLogic activity;
-
-    /**
-     *
-     */
     protected PropertiesBehaviorLogic properties;
     private static final String BEHAVIOR_PRESENT = "present";
     private static final String BEHAVIOR_PROPERTIES = "properties";

@@ -26,15 +26,12 @@
 package com.freedomotic.environment;
 
 import java.io.Serializable;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Enrico
  */
-public class LastOutStrategy
-        implements Ownership,
-        Serializable {
+public class LastOutStrategy implements Ownership, Serializable {
 
     private static final long serialVersionUID = -4839776027684778640L;
 
@@ -55,12 +52,7 @@ public class LastOutStrategy
      */
     @Override
     public boolean canTriggerReactionsOnExit(ZoneLogic z) {
-        if (z.howManyInside() <= 1) { //the last person in the zone is exiting from it
-
-            return true;
-        } else {
-            return false;
-        }
+        //the last person in the zone is exiting from it
+        return z.howManyInside() <= 1; 
     }
-    private static final Logger LOG = Logger.getLogger(LastOutStrategy.class.getName());
 }
