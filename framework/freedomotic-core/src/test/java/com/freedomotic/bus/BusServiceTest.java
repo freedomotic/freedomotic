@@ -88,7 +88,7 @@ public class BusServiceTest {
         command.setReplyTimeout(2000); //wait reply for two seconds
         Command result = bus.send(command);
         assertEquals("Timeout reply command is the original command", result, command);
-        assertFalse("Timeout reply marks the original command as not executed", result.isExecuted());
+        assertFalse("When timeout is reached the original command is marked as not executed", result.isExecuted());
     }
 
     /**

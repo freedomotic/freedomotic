@@ -228,10 +228,10 @@ public abstract class Protocol
 
                 Protocol.ActuatorPerforms task;
                 lastDestination = message.getJMSReplyTo();
-                task =
-                        new Protocol.ActuatorPerforms(command,
-                        message.getJMSReplyTo(),
-                        message.getJMSCorrelationID());
+                task
+                        = new Protocol.ActuatorPerforms(command,
+                                message.getJMSReplyTo(),
+                                message.getJMSCorrelationID());
                 task.start();
             } else {
                 if (payload instanceof EventTemplate) {
@@ -241,7 +241,6 @@ public abstract class Protocol
             }
         } catch (JMSException ex) {
             LOG.log(Level.SEVERE, null, ex);
-
 
         }
     }
@@ -257,20 +256,26 @@ public abstract class Protocol
             this.command = c;
             this.reply = reply;
             this.correlationID = correlationID;
-            this.setName("freedom-protocol-executor");
+            this.setName("freedomotic-protocol-executor");
         }
 
         @Override
         public void run() {
             try {
+                // a command is supposed executed if the plugin doesen't say the contrary
                 command.setExecuted(true);
                 onCommand(command);
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, null, ex);
+                command.setExecuted(false);
             } catch (UnableToExecuteException ex) {
                 command.setExecuted(false);
             }
 
+            // automatic-reply-to-command is used when the plugin executes the command in a
+            // separate thread. In this cases the onCommand() returns immediately (as execution is forked in a thread)
+            // and sometimes this is not the intended behavior. Take a look at the Delayer plugin configuration
+            // it has to call reply(...) explicitely
             if ((getConfiguration().getBooleanProperty("automatic-reply-to-commands", true) == true) //default value is true
                     && (command.getReplyTimeout() > 0)) {
                 busService.reply(command, reply, correlationID); //sends back the command marked as executed or not
@@ -295,7 +300,6 @@ public abstract class Protocol
         // sends back the command
         final String defaultCorrelationID = "-1";
         busService.reply(command, lastDestination, defaultCorrelationID);
-
 
     }
 

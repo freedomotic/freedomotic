@@ -418,7 +418,7 @@ public final class Command implements Serializable, Cloneable {
         super.clone();
 
         Command clonedCmd = new Command();
-        clonedCmd.setName(getName() + "[CLONED]");
+        clonedCmd.setName(getName());
         clonedCmd.setDescription(getDescription());
         clonedCmd.setReceiver(getReceiver());
         clonedCmd.setDelay(getDelay());

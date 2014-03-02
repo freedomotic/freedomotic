@@ -77,19 +77,17 @@ public class ObjectEditor
     //private PropertiesPanel_1 controlPanel;
     ReactionsPanel reactionsPanel;
 
-    
-    private static API api=null;
+    private static API api = null;
     private static I18n I18n;
-    
 
     /**
      * Creates new form ObjectEditor
      */
-    static void setAPI(API apiL){
+    static void setAPI(API apiL) {
         api = apiL;
         I18n = apiL.getI18n();
     }
-    
+
     /**
      *
      * @param obj
@@ -107,7 +105,7 @@ public class ObjectEditor
         if (obj.getPojo().getActAs().equalsIgnoreCase("virtual")) {
             btnVirtual.setSelected(true);
         }
-        
+
         UUIDtxt.setText(object.getPojo().getUUID());
         checkIfVirtual();
         txtName.setText(pojo.getName());
@@ -120,33 +118,33 @@ public class ObjectEditor
         Integer x = (int) pojo.getCurrentRepresentation().getOffset().getX();
         Integer y = (int) pojo.getCurrentRepresentation().getOffset().getY();
         Integer rotation = (int) pojo.getCurrentRepresentation().getRotation();
-        SpinnerModel modelX =
-                new SpinnerNumberModel(0, //initial value
-                -100, //min
-                (int) obj.getEnvironment().getPojo().getWidth() + 100, //max= env dimension + 1 meter
-                1); //step
-        SpinnerModel modelY =
-                new SpinnerNumberModel(0, //initial value
-                -100, //min
-                (int) obj.getEnvironment().getPojo().getWidth() + 100, //max
-                1); //step
+        SpinnerModel modelX
+                = new SpinnerNumberModel(0, //initial value
+                        -100, //min
+                        (int) obj.getEnvironment().getPojo().getWidth() + 100, //max= env dimension + 1 meter
+                        1); //step
+        SpinnerModel modelY
+                = new SpinnerNumberModel(0, //initial value
+                        -100, //min
+                        (int) obj.getEnvironment().getPojo().getWidth() + 100, //max
+                        1); //step
         spnX.setModel(modelX);
         spnY.setModel(modelY);
         spnX.setValue((Integer) x);
         spnY.setValue((Integer) y);
 
-        SpinnerModel scaleWidthModel =
-                new SpinnerNumberModel(new Double(pojo.getCurrentRepresentation().getScaleX()), //initial value
-                new Double(0.1), //min
-                new Double(10.0), //max
-                new Double(0.1)); //step
+        SpinnerModel scaleWidthModel
+                = new SpinnerNumberModel(new Double(pojo.getCurrentRepresentation().getScaleX()), //initial value
+                        new Double(0.1), //min
+                        new Double(10.0), //max
+                        new Double(0.1)); //step
         spnScaleWidth.setModel(scaleWidthModel);
 
-        SpinnerModel scaleHeightModel =
-                new SpinnerNumberModel(new Double(pojo.getCurrentRepresentation().getScaleY()), //initial value
-                new Double(0.1), //min
-                new Double(10.0), //max
-                new Double(0.1)); //step
+        SpinnerModel scaleHeightModel
+                = new SpinnerNumberModel(new Double(pojo.getCurrentRepresentation().getScaleY()), //initial value
+                        new Double(0.1), //min
+                        new Double(10.0), //max
+                        new Double(0.1)); //step
         spnScaleHeight.setModel(scaleHeightModel);
         spnRotation.setValue(rotation);
 
@@ -188,9 +186,9 @@ public class ObjectEditor
                 final JToggleButton button;
 
                 if (bb.getValue()) {
-                    button = new JToggleButton(I18n.msg( "set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("false")}));
+                    button = new JToggleButton(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("false")}));
                 } else {
-                    button = new JToggleButton(I18n.msg( "set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("true")}));
+                    button = new JToggleButton(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("true")}));
                 }
 
                 JLabel label = new JLabel(b.getName() + ":");
@@ -209,9 +207,9 @@ public class ObjectEditor
                         bb.filterParams(params, true);
 
                         if (bb.getValue()) {
-                            button.setText(I18n.msg( "set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("false")}));
+                            button.setText(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("false")}));
                         } else {
-                            button.setText(I18n.msg( "set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("true")}));
+                            button.setText(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("true")}));
                         }
                     }
                 });
@@ -272,9 +270,6 @@ public class ObjectEditor
                 comboBox.setSelectedItem(lb.getSelected());
 
                 JLabel label = new JLabel(b.getName() + ":");
-//                controlPanel.addRow();
-//                controlPanel.addElement(label, row, 0);
-//                controlPanel.addElement(comboBox, row, 1);
                 tabControls.add(label);
                 tabControls.add(comboBox);
                 comboBox.addActionListener(new ActionListener() {
@@ -753,12 +748,12 @@ public class ObjectEditor
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnDeleteActionPerformed
 
-        int result =
-                JOptionPane.showConfirmDialog(null,
-                I18n.msg("confirm_object_delete"),
-                I18n.msg("confirm_deletion_title"),
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+        int result
+                = JOptionPane.showConfirmDialog(null,
+                        I18n.msg("confirm_object_delete"),
+                        I18n.msg("confirm_deletion_title"),
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
             EnvObjectPersistence.remove(object);
@@ -948,7 +943,7 @@ public class ObjectEditor
     private void populateTriggersTab() {
         //addAndRegister a properties panel
         pnlTriggers = new PropertiesPanel_1(0, 2);
-        tabTriggersConfig.setName(I18n.msg( "data_sources"));
+        tabTriggersConfig.setName(I18n.msg("data_sources"));
         tabTriggersConfig.add(pnlTriggers);
 
         //creates an array of mapping behavior to hardware trigger
@@ -1022,7 +1017,6 @@ public class ObjectEditor
     private void populateProtocol() {
         txtProtocol.addItem("unknown");
 
-
         for (Client client : api.getClients("plugin")) {
             Plugin plugin = (Plugin) client;
             String protocol = plugin.getConfiguration().getStringProperty("protocol.name", "");
@@ -1050,7 +1044,7 @@ public class ObjectEditor
         final TaxonomyBehaviorLogic lb = (TaxonomyBehaviorLogic) b;
         JLabel label = new JLabel(b.getName() + ":");
         final CheckBoxList list = new CheckBoxList();
-        final JTextField newItem = new JTextField(I18n.msg( "add_new_item"));
+        final JTextField newItem = new JTextField(I18n.msg("add_new_item"));
         JButton btnAdd = new JButton(I18n.msg("add"));
         btnAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
