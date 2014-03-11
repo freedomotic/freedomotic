@@ -38,9 +38,9 @@ public class Info {
     //framework versioning
     public static final Integer FRAMEWORK_MAJOR = 5;
     public static final Integer FRAMEWORK_MINOR = 5;
-    public static final Integer FRAMEWORK_BUILD = 0;
+    public static final Integer FRAMEWORK_BUILD = 1;
     public static final String FRAMEWORK_VERSION_CODENAME = "Bender";
-    public static final String FRAMEWORK_RELEASE_DATE = "January 2014";
+    public static final String FRAMEWORK_RELEASE_DATE = "March 2014";
     public static final String FRAMEWORK_LICENSE = "GNU GPL v2";
     public static final String FRAMEWORK_RELEASE_TYPE = "beta";
     //project info

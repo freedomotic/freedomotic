@@ -816,7 +816,7 @@ public class MainWindow
                 + I18n.msg("release") + ": " + Info.getReleaseDate() + ". " + Info.getVersionCodeName() + " - v" + Info.getVersion() + "\n"
                 + I18n.msg("licence") + ": " + Info.getLicense() + "\n\n"
                 + I18n.msg("find_support_msg") + ":\n"
-                + "http://code.google.com/p/freedomotic/" + "\n"
+                + "https://github.com/freedomotic/freedomotic" + "\n"
                 + "http://freedomotic.com/");
 }//GEN-LAST:event_submnuHelpActionPerformed
 
