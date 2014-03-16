@@ -28,14 +28,14 @@ import javax.jms.ObjectMessage;
  *
  * @author nicoletti
  */
-class TopologyManager implements BusConsumer {
+public class TopologyManager implements BusConsumer {
 
     private static final Logger LOG = Logger.getLogger(TopologyManager.class.getName());
     private static BusMessagesListener listener;
     private static final String LISTEN_CHANNEL = "app.event.sensor.person.movement.detected";
     private final BusService busService;
 
-    TopologyManager() {
+    public TopologyManager() {
         busService = Freedomotic.INJECTOR.getInstance(BusService.class);
         listener = new BusMessagesListener(this);
         listener.consumeCommandFrom(LISTEN_CHANNEL);
@@ -51,8 +51,12 @@ class TopologyManager implements BusConsumer {
         }
 
         if (jmsObject instanceof PersonDetected) {
+            PersonDetected event = (PersonDetected) jmsObject;
+            Person person = (Person) EnvObjectPersistence.getObjectByUUID(event.getUuid());
+            //apply the new position
+            person.setLocation(event.getX(), event.getY());
             //check if this person is entering/exiting an evironment zone
-            fireEnterExitEvents((PersonDetected) jmsObject);
+            fireEnterExitEvents(person, event);
         }
     }
 
@@ -62,21 +66,20 @@ class TopologyManager implements BusConsumer {
      *
      * @param event
      */
-    private void fireEnterExitEvents(PersonDetected event) {
-        Person p = (Person) EnvObjectPersistence.getObjectByUUID(event.getUuid());
+    private void fireEnterExitEvents(Person person, PersonDetected event) {
         for (ZoneLogic zone : EnvironmentPersistence.getEnvironments().get(0).getZones()) {
-            // are the new Person coordinates inside the current zone
+            // are the new Person coordinates inside the current zone?
             boolean isZoneAffected = TopologyUtils.contains(zone.getPojo().getShape(), new FreedomPoint(event.getX(), event.getY()));
             if (isZoneAffected) {
-                if (!zone.isInside(p)) {
-                    // new coordinates are inside this zoe but proviously 
+                if (!zone.isInside(person)) {
+                    // received coordinates are inside this zone but proviously 
                     // the person was not inside this zone
-                    zone.enter(p); //update zone occupiers
+                    zone.enter(person); //update zone occupiers
                 }
             } else {
-                if (zone.isInside(p)) {
-                    //the person is no more inside this previously occupied zone
-                    zone.exit(p); //update zone occupiers
+                if (zone.isInside(person)) {
+                    //this person is no more inside this (previously occupied) zone
+                    zone.exit(person); //update zone occupiers
                 }
             }
         }

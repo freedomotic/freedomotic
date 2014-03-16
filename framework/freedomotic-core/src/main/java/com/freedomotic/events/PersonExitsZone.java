@@ -15,10 +15,34 @@ import com.freedomotic.objects.impl.Person;
  *
  * @author nicoletti
  */
-public class PersonExitsZone extends EventTemplate {
+public final class PersonExitsZone extends EventTemplate {
 
-    public PersonExitsZone(ZoneLogic aThis, Person g, Zone pojo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private final String uuid;
+    private final String zoneName;
+
+    public PersonExitsZone(ZoneLogic aThis, Person p, Zone zone) {
+        this.uuid = p.getPojo().getUUID();
+        this.zoneName = zone.getName();
+        generateEventPayload();
+    }
+
+    @Override
+    protected void generateEventPayload() {
+        payload.addStatement("person.id", uuid);
+        payload.addStatement("zone.name", zoneName);
+    }
+
+    @Override
+    public String getDefaultDestination() {
+        return "app.event.sensor.person.zone.exit";
+    }
+    
+    public String getPersonId() {
+        return uuid;
+    }
+    
+    public String getZoneName() {
+        return zoneName;
     }
     
 }
