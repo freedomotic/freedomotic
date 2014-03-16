@@ -25,6 +25,7 @@ package com.freedomotic.plugins;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.environment.EnvironmentPersistence;
+import com.freedomotic.events.PersonDetected;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.objects.EnvObjectLogic;
@@ -52,7 +53,7 @@ public class TrackingRandomPosition
                 + "movable sensors position. Positions are randomly generated");
         //wait time between events generation
         //onRun() is called every 2000 milliseconds
-        setPollingWait(2000);
+        setPollingWait(200);
     }
 
     private boolean canGo(int destX, int destY) {
@@ -69,8 +70,8 @@ public class TrackingRandomPosition
         while (!validPos) {
             Random rx = new Random();
             Random ry = new Random();
-            x = rx.nextInt(EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth());
-            y = ry.nextInt(EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight());
+            x = rx.nextInt(1000/*EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth()*/);
+            y = ry.nextInt(1000/*EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight()*/);
 
             if (canGo(x, y)) {
                 validPos = true;
@@ -80,14 +81,14 @@ public class TrackingRandomPosition
         return new FreedomPoint(x, y);
     }
 
+    @Override
     protected void onRun() {
         for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
             if (object instanceof com.freedomotic.objects.impl.Person) {
                 Person person = (Person) object;
                 FreedomPoint location = randomLocation();
-                person.getPojo().getCurrentRepresentation()
-                        .setOffset((int) location.getX(), (int) location.getY());
-                person.setChanged(true);
+                PersonDetected event = new PersonDetected(this, person.getPojo().getUUID(), location);
+                notifyEvent(event);
             }
         }
     }
