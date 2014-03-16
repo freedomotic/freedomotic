@@ -28,6 +28,8 @@ import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.bus.StompDispatcher;
 import com.freedomotic.core.BehaviorManager;
+import com.freedomotic.core.SynchManager;
+import com.freedomotic.core.TopologyManager;
 import com.freedomotic.environment.EnvironmentDAO;
 import com.freedomotic.environment.EnvironmentDAOFactory;
 import com.freedomotic.environment.EnvironmentLogic;
@@ -382,6 +384,7 @@ public class Freedomotic implements BusConsumer {
          * A service to add environment objects using XML commands
          */
         new BehaviorManager();
+        new TopologyManager();
         new SerialConnectionProvider();
 
         /**
@@ -414,6 +417,7 @@ public class Freedomotic implements BusConsumer {
         LOG.config("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
 
         LOG.info("Freedomotic startup completed");
+        //new SynchManager();
     }
 
     /**
