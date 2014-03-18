@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.freedomotic.restapi.server;
+package com.freedomotic.restapi.server;
 
 import java.util.Map;
 import org.restlet.Context;
