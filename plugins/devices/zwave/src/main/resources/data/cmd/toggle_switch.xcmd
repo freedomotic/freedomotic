@@ -1,0 +1,16 @@
+<com.freedomotic.reactions.Command>
+    <name>Switch Zwave device</name>
+    <receiver>app.actuators.protocol.zwave.in</receiver>
+    <description>Set temperature setpoint on a temperature device</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="address" value="@owner.object.address"/>
+            <property name="zwave.value" value="@owner.object.behavior.powered"/>
+            <property name="zwave.valueType" value="BOOL"/>
+            <property name="zwave.class" value="40"/>
+        </properties>
+    </properties>
+</com.freedomotic.reactions.Command>
