@@ -14,7 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
-        <org.restlet.version>2.1.2</org.restlet.version>
+        <org.restlet.version>2.1.7</org.restlet.version>
         <restapi.version>3.0</restapi.version>
     </properties>
     <build>
@@ -124,7 +124,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>freedomotic-restapi-interfaces</artifactId>
-            <version>3.0</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.activemq</groupId>
