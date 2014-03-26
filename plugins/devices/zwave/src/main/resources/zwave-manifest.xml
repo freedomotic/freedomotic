@@ -1,11 +1,18 @@
 <config>
     <properties>
-        <property name="description"                       value="Plugin for Zwave devices"/>
-        <property name="category"                       value="protocol"/>
-        <property name="protocol.name"                       value="zwave"/>
-        <property name="short-name"                       value="zwave"/>
-        <property name="controller-port"                       value="/dev/ttyUSB0"/>
-        <property name="startup-time"                       value="on load"/>        
+        <property name="description" value="Plugin for Zwave devices"/>
+        <property name="category"    value="protocol"/>
+        <property name="protocol.name" value="zwave"/>
+        <property name="short-name" value="zwave"/>
+        <property name="controller-port" value="/dev/ttyUSB0"/>
+        <property name="startup-time" value="on load"/>  
+     
+     <!-- Mapping Zwave objects -> Freedomotic objects -->
+        <property name="Temperature" value="Thermostat"/>  
+        <property name="Luminance" value="Light Sensor"/>
+        <property name="Relative Humidity" value="Hygrometer"/>
+
+      
     </properties>
     <tuples>
         <!-- Usage of following tuples: 
@@ -13,13 +20,19 @@
             b) FD creates a new object from suggested object.class and searches following tuples to link command/triggers accordingly
         -->
         <tuple>
-            <property name="auto-configuration" value="true"/>
             <property name="object.class" value="Thermostat"/>
             <property name="temperature" value="Zwave reads a temperature"/>
             <property name="set temperature" value="Set zwave temperature setpoint"/>
         </tuple>
         <tuple>
-            <property name="auto-configuration" value="true"/>
+            <property name="object.class" value="Light Sensor"/>
+            <property name="luminosity" value="Zwave reads luminosity"/>
+        </tuple>
+        <tuple>
+            <property name="object.class" value="Hygrometer"/>
+            <property name="humidity" value="Zwave reads humidity"/>
+        </tuple>
+        <tuple>
             <property name="object.class" value="Switch"/>
             <property name="powered" value="Zwave reads a switch"/>
             <property name="set powered" value="Switch Zwave device"/>

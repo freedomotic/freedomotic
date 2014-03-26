@@ -57,6 +57,7 @@ public class Zwave4FD
     private long homeId;
     private boolean ready;
     private static ControllerCallback GENERIC_COMMAND_CALLBACK = new ControllerCallback() {
+
         @Override
         public void onCallback(ControllerState cs, ControllerError ce, Object o) {
             if (cs.equals(ControllerState.COMPLETED)) {
@@ -139,6 +140,7 @@ public class Zwave4FD
         //  options.addOptionBool("SaveConfiguration", false);
         options.lock();
         watcher = new NotificationWatcher() {
+
             @Override
             public void onNotification(Notification notification, Object obj) {
                 switch (notification.getType()) {
@@ -294,39 +296,47 @@ public class Zwave4FD
         String commandName = c.getProperty("command");
 
         /*
-         if (commandName.equalsIgnoreCase("SET-VALUE")) {
-         String[] address = c.getProperty("address").split(":");
-         short nodeId = Short.parseShort(address[0]);
-         short commandClassId = Short.parseShort(address[1]);
-         short instance = Short.parseShort(address[2]);
-
-         ValueId vID = new ValueId(homeId, nodeId, ValueGenre.USER, commandClassId, instance, (short) 1, ValueType.DECIMAL);
-         manager.setValueAsString(vID, c.getProperty("owner.object.behavior.temperature"));
-            
-          } else if (commandName.equalsIgnoreCase("SWITCH")) {
-            String[] address = c.getProperty("address").split(":");
-            short nodeId = Short.parseShort(address[0]);
-            short instance = Short.parseShort(address[2]);
-
-            ValueId vID = new ValueId(homeId, nodeId, ValueGenre.USER, (short) 37, instance, (short) 0, ValueType.BOOL);
-            manager.setValueAsString(vID, c.getProperty("owner.object.behavior.powered"));
-
-        }
-         else if (commandName.equalsIgnoreCase("TOGGLE")) {
-            String[] address = c.getProperty("address").split(":");
-            short nodeId = Short.parseShort(address[0]);
-            short instance = Short.parseShort(address[2]);
-
-            ValueId vID = new ValueId(homeId, nodeId, ValueGenre.USER, (short) 40, instance, (short) 0, ValueType.BOOL);
-            manager.setValueAsString(vID, c.getProperty("owner.object.behavior.powered"));
-
-        } else */
-            if (commandName != null && commandName.equalsIgnoreCase("INCLUDE-DEVICE")) {
+         * if (commandName.equalsIgnoreCase("SET-VALUE")) { String[] address =
+         * c.getProperty("address").split(":"); short nodeId =
+         * Short.parseShort(address[0]); short commandClassId =
+         * Short.parseShort(address[1]); short instance =
+         * Short.parseShort(address[2]);
+         *
+         * ValueId vID = new ValueId(homeId, nodeId, ValueGenre.USER,
+         * commandClassId, instance, (short) 1, ValueType.DECIMAL);
+         * manager.setValueAsString(vID,
+         * c.getProperty("owner.object.behavior.temperature"));
+         *
+         * } else if (commandName.equalsIgnoreCase("SWITCH")) { String[] address
+         * = c.getProperty("address").split(":"); short nodeId =
+         * Short.parseShort(address[0]); short instance =
+         * Short.parseShort(address[2]);
+         *
+         * ValueId vID = new ValueId(homeId, nodeId, ValueGenre.USER, (short)
+         * 37, instance, (short) 0, ValueType.BOOL);
+         * manager.setValueAsString(vID,
+         * c.getProperty("owner.object.behavior.powered"));
+         *
+         * }
+         * else if (commandName.equalsIgnoreCase("TOGGLE")) { String[] address =
+         * c.getProperty("address").split(":"); short nodeId =
+         * Short.parseShort(address[0]); short instance =
+         * Short.parseShort(address[2]);
+         *
+         * ValueId vID = new ValueId(homeId, nodeId, ValueGenre.USER, (short)
+         * 40, instance, (short) 0, ValueType.BOOL);
+         * manager.setValueAsString(vID,
+         * c.getProperty("owner.object.behavior.powered"));
+         *
+         * } else
+         */
+        if (commandName != null && commandName.equalsIgnoreCase("INCLUDE-DEVICE")) {
             // code to let a Zwave device associate to the master 
             manager.cancelControllerCommand(homeId);
             LOG.info("Started accepting device inclusion request");
             manager.beginControllerCommand(homeId, ControllerCommand.ADD_DEVICE, GENERIC_COMMAND_CALLBACK);
             TimerTask tt = new TimerTask() {
+
                 @Override
                 public void run() {
                     manager.cancelControllerCommand(homeId);
@@ -341,6 +351,7 @@ public class Zwave4FD
 
             manager.beginControllerCommand(homeId, ControllerCommand.REMOVE_DEVICE, GENERIC_COMMAND_CALLBACK);
             TimerTask tt = new TimerTask() {
+
                 @Override
                 public void run() {
                     manager.cancelControllerCommand(homeId);
@@ -349,7 +360,7 @@ public class Zwave4FD
             new Timer().schedule(tt, Long.parseLong(c.getProperty("timeout")));
         } else {
             // generic control command
-              String[] address = c.getProperty("address").split(":");
+            String[] address = c.getProperty("address").split(":");
             short nodeId = Short.parseShort(address[0]);
             if (c.getProperty("zwave.nodeId") != null && !c.getProperty("zwave.nodeIdclass").isEmpty()) {
                 nodeId = Short.parseShort(c.getProperty("zwave.nodeId"));
@@ -368,7 +379,7 @@ public class Zwave4FD
             if (c.getProperty("zwave.index") != null && !c.getProperty("zwave.index").isEmpty()) {
                 index = Short.parseShort(c.getProperty("zwave.index"));
             }
-            
+
             String valueType = "STRING";
             if (c.getProperty("zwave.valueType") != null && !c.getProperty("zwave.valueType").isEmpty()) {
                 valueType = c.getProperty("zwave.valueType");
@@ -392,24 +403,31 @@ public class Zwave4FD
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /*
+     * Notifies event to Freedomotic
+     *
+     * @param ValueId @return noid
+     *
+     */
     private void sendNotification(ValueId id) {
 
-        String address = id.getNodeId() + ":" + id.getCommandClassId() + ":" + id.getInstance();
+        // object address format  nodeID:commadClass:instance:index
+        String address = id.getNodeId() + ":" + id.getCommandClassId() + ":" + id.getInstance() + ":" + id.getIndex();
 
         ProtocolRead event = new ProtocolRead(this, "zwave", address);
         event.addProperty("inputValue", getValue(id) != null ? getValue(id).toString() : "0");
         event.addProperty("zwave.index", new Short(id.getIndex()).toString());
-
-        //String clazz = ZwaveUtils.commandClassToObjectType.get(id.getCommandClassId());
+        event.addProperty("value.label", manager.getValueLabel(id));
+        event.addProperty("value.unit", manager.getValueUnits(id));
         event.addProperty("zwave.command", new Short(id.getCommandClassId()).toString());
         if (configuration.getBooleanProperty("auto-configuration", true)) {
-            //event.addProperty("object.class", clazz);
-            String devName = manager.getNodeManufacturerName(homeId, id.getNodeId()) + " - " + manager.getNodeProductName(homeId, id.getNodeId());
-            event.addProperty("object.name", devName);
+            if (!(configuration.getStringProperty(manager.getValueLabel(id), "") == null)) {
+                event.addProperty("object.class", configuration.getStringProperty(manager.getValueLabel(id), ""));
+                String devName = manager.getNodeManufacturerName(homeId, id.getNodeId()) + " - " + manager.getNodeProductName(homeId, id.getNodeId());
+                event.addProperty("object.name", devName);
+            }
         }
         this.notifyEvent(event);
-
-
 
     }
 }

@@ -17,12 +17,18 @@
                 <value>49</value>
             </com.freedomotic.reactions.Statement>
             <com.freedomotic.reactions.Statement>
-                <logical>SET</logical>
-                <attribute>behaviorValue</attribute>
+                <logical>AND</logical>
+                <attribute>zwave.index</attribute>
                 <operand>EQUALS</operand>
-                <value>= behaviorValue=Math.round(@event.inputValue*10)</value>
+                <value>1</value>
             </com.freedomotic.reactions.Statement>
-        </payload>
+            <com.freedomotic.reactions.Statement>
+                <logical>SET</logical>
+                <attribute>object.class</attribute>
+                <operand>EQUALS</operand>
+                <value>Thermostat</value>
+            </com.freedomotic.reactions.Statement>
+         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>
     <delay>0</delay>

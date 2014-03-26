@@ -1,6 +1,6 @@
 <trigger>
-    <name>Zwave reads a temperature</name>
-    <description>Zwave reads a temperature change </description>
+    <name>Zwave reads humidity</name>
+    <description>Zwave reads an humidity change</description>
     <channel>app.event.sensor.protocol.read.zwave</channel>
     <payload>
         <payload>
@@ -14,7 +14,7 @@
                 <logical>AND</logical>
                 <attribute>@event.value.label</attribute>
                 <operand>EQUALS</operand>
-                <value>Temperature</value>
+                <value>Relative Humidity</value>
             </com.freedomotic.reactions.Statement>
             <com.freedomotic.reactions.Statement>
                 <logical>SET</logical>
