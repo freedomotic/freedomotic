@@ -43,7 +43,7 @@
         <freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${project.version}.${freedomotic.package.type}</freedomotic.marketplace.file>
         <freedomotic.marketplace.username></freedomotic.marketplace.username>
         <freedomotic.marketplace.password></freedomotic.marketplace.password>
-        <org.restlet.version>2.1.2</org.restlet.version>
+        <org.restlet.version>2.1.7</org.restlet.version>
     </properties>
 
     <dependencies>
