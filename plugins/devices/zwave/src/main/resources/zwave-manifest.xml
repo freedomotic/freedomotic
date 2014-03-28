@@ -7,10 +7,13 @@
         <property name="controller-port" value="/dev/ttyUSB0"/>
         <property name="startup-time" value="on load"/>  
      
-     <!-- Mapping Zwave objects -> Freedomotic objects -->
+     <!-- Mapping Zwave value types to Freedomotic objects (only for SensorMultilevel commandClass=49) -->
         <property name="Temperature" value="Thermostat"/>  
         <property name="Luminance" value="Light Sensor"/>
         <property name="Relative Humidity" value="Hygrometer"/>
+
+     <!-- Mapping Zwave command classes to Freedomotic objects (not for SensorMultilevel) -->
+        <property name="128" value="Battery"/>
 
       
     </properties>
