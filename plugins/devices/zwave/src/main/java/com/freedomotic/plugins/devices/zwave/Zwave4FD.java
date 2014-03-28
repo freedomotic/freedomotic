@@ -421,13 +421,20 @@ public class Zwave4FD
         event.addProperty("value.unit", manager.getValueUnits(id));
         event.addProperty("zwave.command", new Short(id.getCommandClassId()).toString());
         if (configuration.getBooleanProperty("auto-configuration", true)) {
-            if (!(configuration.getStringProperty(manager.getValueLabel(id), "") == null)) {
-                event.addProperty("object.class", configuration.getStringProperty(manager.getValueLabel(id), ""));
-                String devName = manager.getNodeManufacturerName(homeId, id.getNodeId()) + " - " + manager.getNodeProductName(homeId, id.getNodeId());
-                event.addProperty("object.name", devName);
+            // for sensorMultilevel the object is mapped to the value type (temperature, luminescence, relative humidity etc)
+            if (id.getCommandClassId() == 49) {
+                if (!(configuration.getStringProperty(manager.getValueLabel(id), "") == null)) {
+                    event.addProperty("object.class", configuration.getStringProperty(manager.getValueLabel(id), ""));
+                }
+                // otherwise to command class 
+            } else {
+                if (!(configuration.getStringProperty(new Short(id.getCommandClassId()).toString(), "") == null)) {
+                    event.addProperty("object.class", configuration.getStringProperty(new Short(id.getCommandClassId()).toString(), ""));
+                }
             }
+            String devName = manager.getNodeManufacturerName(homeId, id.getNodeId()) + " - " + manager.getNodeProductName(homeId, id.getNodeId());
+            event.addProperty("object.name", devName);
         }
         this.notifyEvent(event);
-
     }
 }
