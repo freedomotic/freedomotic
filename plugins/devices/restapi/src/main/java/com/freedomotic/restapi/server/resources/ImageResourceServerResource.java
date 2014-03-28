@@ -42,12 +42,15 @@ public class ImageResourceServerResource extends ServerResource implements Image
     @Override
     public void doInit() {
         String fileName = (String) getRequest().getAttributes().get("filename");
-        imageFilePath = ResourcesManager.getFile(new File(Info.getResourcesPath()), fileName).getPath();
+        imageFilePath = ResourcesManager.getFile(Info.PATH_RESOURCES_FOLDER, fileName).getPath();
+
     }
 
     @Override
     public String getImagePath() {
         String path = imageFilePath;
+         File test;
+
         if (imageFilePath.startsWith(Info.getResourcesPath())) {
             path = imageFilePath.substring(Info.getResourcesPath().length());
             path = path.replace('\\', '/');

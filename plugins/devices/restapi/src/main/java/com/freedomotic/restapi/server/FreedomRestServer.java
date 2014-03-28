@@ -34,6 +34,7 @@ import com.freedomotic.restapi.server.resources.UserCommandsServerResource;
 import com.freedomotic.restapi.server.resources.UserServerResource;
 import com.freedomotic.restapi.server.resources.ZoneServerResource;
 import com.freedomotic.restapi.server.resources.ZonesServerResource;
+import com.freedomotic.util.Info;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
@@ -51,7 +52,7 @@ import org.restlet.routing.Router;
  */
 public class FreedomRestServer extends Application {
 
-    private static final String FILE_AND_SLASHES = "file:///";
+    private static final String FILE_AND_SLASHES = "file://";
     private String resourcesPath = "";
     public static final String FREEDOMOTIC_PATH = "/v2";
     public static final String ENVIRONMENT_PATH = "/v2/environments";
@@ -66,7 +67,7 @@ public class FreedomRestServer extends Application {
         setAuthor("Freedomotic dev team");
         getMetadataService().addExtension("object", MediaType.APPLICATION_JAVA_OBJECT);
         getMetadataService().addExtension("gwt_object", MediaType.APPLICATION_JAVA_OBJECT_GWT);
-        this.resourcesPath = resourcesPath+"/";
+        this.resourcesPath = resourcesPath + "/";
     }
 
     public FreedomRestServer(String resourcesPath) {
@@ -90,13 +91,15 @@ public class FreedomRestServer extends Application {
         router.attach(FREEDOMOTIC_PATH+"/commands/hardware/", HardwareCommandsServerResource.class);
         router.attach(FREEDOMOTIC_PATH+"/commands/user/", UserCommandsServerResource.class);
         router.attach(FREEDOMOTIC_PATH+"/triggers/", TriggersServerResource.class);
-        router.attach(FREEDOMOTIC_PATH+"/resources/{filename}", ImageResourceServerResource.class);    
+        router.attach(FREEDOMOTIC_PATH+"/resources/{filename}", ImageResourceServerResource.class);
         router.attach(USER_PATH + "/{useraction}", UserServerResource.class);
         //Expose the resources dir as static server
-        Directory dir = new Directory(getContext(), FILE_AND_SLASHES + resourcesPath);
+        //Directory dir = new Directory(getContext(), FILE_AND_SLASHES + resourcesPath);
+        Directory dir = new Directory(getContext(), FILE_AND_SLASHES + Info.PATH_RESOURCES_FOLDER);
+        System.out.println("FILE_AND_SLASHES+infoPath "+  FILE_AND_SLASHES+Info.PATH_RESOURCES_FOLDER);
         dir.setListingAllowed(true);
         //System.out.println("FILE_AND_SLASHES+resourcesPath "+  FILE_AND_SLASHES+resourcesPath);
-        router.attach(RESOURCES_PATH + "/", dir);
+        router.attach(RESOURCES_PATH , dir);
         OriginFilter originFilter = new OriginFilter(getContext());
         originFilter.setNext(router);
      
