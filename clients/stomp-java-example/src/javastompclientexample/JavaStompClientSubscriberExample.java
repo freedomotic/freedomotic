@@ -26,7 +26,9 @@ public class JavaStompClientSubscriberExample implements Listener {
 //        }
         String activeMqIp = "localhost"; //i.e "192.168.1.13
         int port = 61666;
-        String channel = "/queue/command.jfrontend.user.callout";
+        //String channel = "/queue/command.jfrontend.user.callout";
+
+        String channel ="/topic/VirtualTopic.app.event.sensor.object.behavior.change";
         Client c;
         try {
             c = new Client(activeMqIp, port, "", "");

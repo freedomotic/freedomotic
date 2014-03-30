@@ -94,9 +94,7 @@ public class FreedomRestServer extends Application {
         router.attach(FREEDOMOTIC_PATH+"/resources/{filename}", ImageResourceServerResource.class);
         router.attach(USER_PATH + "/{useraction}", UserServerResource.class);
         //Expose the resources dir as static server
-        //Directory dir = new Directory(getContext(), FILE_AND_SLASHES + resourcesPath);
         Directory dir = new Directory(getContext(), FILE_AND_SLASHES + Info.PATH_RESOURCES_FOLDER);
-        System.out.println("FILE_AND_SLASHES+infoPath "+  FILE_AND_SLASHES+Info.PATH_RESOURCES_FOLDER);
         dir.setListingAllowed(true);
         //System.out.println("FILE_AND_SLASHES+resourcesPath "+  FILE_AND_SLASHES+resourcesPath);
         router.attach(RESOURCES_PATH , dir);
