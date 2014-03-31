@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.freedomotic</groupId>
         <artifactId>freedomotic</artifactId>
-        <version>5.5-SNAPSHOT</version>
+        <version>5.6-SNAPSHOT</version>
         <relativePath>../../../</relativePath>
     </parent>    
     <artifactId>webserver</artifactId>
@@ -36,14 +36,14 @@
         <freedomotic.package.vendor.company>Freedomotic</freedomotic.package.vendor.company>
         <freedomotic.package.vendor.nation>es</freedomotic.package.vendor.nation>
         <freedomotic.framework.required.major>5</freedomotic.framework.required.major>
-        <freedomotic.framework.required.minor>5</freedomotic.framework.required.minor>
+        <freedomotic.framework.required.minor>6</freedomotic.framework.required.minor>
         <freedomotic.framework.required.build>x</freedomotic.framework.required.build>
         <!--don't like this but works for the moment -->
         <freedomotic.synch.dist.path>../../../framework/freedomotic-core/plugins/</freedomotic.synch.dist.path>
         <freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${project.version}.${freedomotic.package.type}</freedomotic.marketplace.file>
         <freedomotic.marketplace.username></freedomotic.marketplace.username>
         <freedomotic.marketplace.password></freedomotic.marketplace.password>
-        <org.restlet.version>2.1.2</org.restlet.version>
+        <org.restlet.version>2.1.7</org.restlet.version>
     </properties>
 
     <dependencies>
@@ -57,11 +57,6 @@
             <artifactId>freedomotic-core</artifactId>
             <version>${project.parent.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>restapi-interfaces</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <repositories>
