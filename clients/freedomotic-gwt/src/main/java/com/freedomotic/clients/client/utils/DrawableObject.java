@@ -9,8 +9,7 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.user.client.ui.Image;
 import com.levigo.util.gwtawt.client.WebGraphics;
-
-import com.levigo.util.gwtawt.client.WebGraphics;
+import com.google.gwt.canvas.client.Canvas;
 
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -26,11 +25,13 @@ public class DrawableObject extends DrawableElement {
     double rotation = 0;
     double dx = 0;
     double dy = 0;
+    ImageElement ie;
+    Rectangle2D box;
     private Rectangle ghostPath;
-    private Rectangle objectBounds;
-//	private Paint ghostPaint= new Paint();
-    //current scale/rotate matrix of the object
-//	Matrix drawingMatrix = new Matrix();
+
+    private Representation currentRepresentation;
+    private int currentRepresentationIndex;
+
     public static final String OBJECT_PATH = Freedomotic.RESOURCES_URL;
     EnvObjectProperties eop;
 
@@ -43,7 +44,6 @@ public class DrawableObject extends DrawableElement {
                 ImageUtils.queueImage(OBJECT_PATH + rp.getIcon());
             }
         }
-        //eop = new EnvObjectProperties(envObject);
     }
 
     public EnvObject getEnvObject() {
@@ -52,7 +52,7 @@ public class DrawableObject extends DrawableElement {
 
     public void setEnvObject(EnvObject envObject) {
         this.envObject = envObject;
-        //ghostPaint.setColor(indexColor);
+        updateElement();
     }
 
     @Override
@@ -60,97 +60,74 @@ public class DrawableObject extends DrawableElement {
         return getEnvObject().getName();
     }
 
-    @Override
-    public void draw(Context2d context) {
-        String file = getEnvObject().getCurrentRepresentation().getIcon();
-        Path2D objectPath = DrawingUtils.freedomPolygonToPath((FreedomPolygon) getEnvObject().getCurrentRepresentation().getShape());
-        Rectangle2D box = objectPath.getBounds2D();
-        objectBounds = objectPath.getBounds();
 
-        rotation = getEnvObject().getCurrentRepresentation().getRotation();
-        dx = getEnvObject().getCurrentRepresentation().getOffset().getX();
-        dy = getEnvObject().getCurrentRepresentation().getOffset().getY();
-        context.translate(dx, dy);
-        context.rotate(rotation);
-        WebGraphics g = new WebGraphics(context);
+
+    @Override
+    public void updateElement()
+    {
+        currentRepresentation = envObject.getCurrentRepresentation();
+        currentRepresentationIndex = envObject.getCurrentRepresentationIndex();
+        String file = currentRepresentation.getIcon();
+        Path2D objectPath = DrawingUtils.freedomPolygonToPath((FreedomPolygon)currentRepresentation.getShape());
+        box = objectPath.getBounds2D();
+        elementBounds = objectPath.getBounds();
+        rotation = currentRepresentation.getRotation();
+        dx = currentRepresentation.getOffset().getX();
+        dy = currentRepresentation.getOffset().getY();
         if (ImageUtils.CachedImages.containsKey(OBJECT_PATH + file)) {
             Image im = ImageUtils.CachedImages.get(OBJECT_PATH + file);
-            ImageElement ie = ImageElement.as(im.getElement());
-            //ghostPath = new Rectangle(ie.getWidth(),ie.getHeight());
-            ghostPath = objectBounds;
-            context.drawImage(ie, 0, 0, box.getWidth(), box.getHeight());
-
-            //draw box surronding object										
-            //draw the border
-            context.setLineWidth(1);
-            g.setColor(new Color(137, 174, 32));
-            g.draw(box);
-
-
-        } else {
-//        	//TODO: Cache path    		
-//    		Paint paint = new Paint();
-//    		paint.setStyle(Style.FILL);
-//    		
-//    		ghostPath = new Path();
-//    		objectPath.transform(drawingMatrix, ghostPath);
-//    		int fillColor=-1;
-//    		try
-//    		{
-//    			fillColor = Color.parseColor(getEnvObject().getCurrentRepresentation().getFillColor());    			
-//    			paint.setColor(fillColor);
-//    			canvas.drawPath(ghostPath, paint);
-//    		}
-//    		catch(IllegalArgumentException ex)
-//    		{
-//    			System.out.println("ParseColor exception in fill");
-//    		}
-//    		int borderColor=-1;
-//    		try
-//    		{
-//    			borderColor = Color.parseColor(getEnvObject().getCurrentRepresentation().getBorderColor());    			
-//    			paint.setColor(borderColor);
-//    			paint.setStyle(Style.STROKE);
-//    			canvas.drawPath(ghostPath, paint);
-//    		}
-//    		catch(IllegalArgumentException ex)
-//    		{
-//    			System.out.println("ParseColor exception in border");
-//    		}    		
+            ie = ImageElement.as(im.getElement());
         }
-        context.rotate(-rotation);
-        context.translate(-dx, -dy);
+
 
     }
-
     @Override
-    public void drawGhost(Context2d context) {
-        double rotation = getEnvObject().getCurrentRepresentation().getRotation();
-        double dx = getEnvObject().getCurrentRepresentation().getOffset().getX();
-        double dy = getEnvObject().getCurrentRepresentation().getOffset().getY();
+    public void beforeDraw(Context2d context, Context2d indexContext)
+    {
+        if (getEnvObject().getCurrentRepresentationIndex()!= currentRepresentationIndex || ie == null)
+            updateElement();
+
+    }
+    @Override
+    public void paint(Context2d context, Context2d indexContext) {
+
         context.translate(dx, dy);
         context.rotate(rotation);
-        Color c = new Color(getIndexColor());
+
         WebGraphics g = new WebGraphics(context);
-        g.setFillColor(c);
-        g.fill(ghostPath);
+        if (ie!= null)
+            context.drawImage(ie, 0, 0, box.getWidth(), box.getHeight());
+        //draw box surronding object
+        //draw the border
+        context.setLineWidth(1);
+        g.setColor(new Color(137, 174, 32));
+        g.draw(box);
         context.rotate(-rotation);
         context.translate(-dx, -dy);
 
+        //Draw over the ghost
+        indexContext.translate(dx, dy);
+        indexContext.rotate(rotation);
+
+        paintIndex(indexContext);
+
+        indexContext.rotate(-rotation);
+        indexContext.translate(-dx, -dy);
 
     }
 
+
     public int getCurrentWidth() {
-        if (objectBounds != null) {
-            return objectBounds.width;
+        if ((Rectangle)elementBounds != null) {
+            return ((Rectangle)elementBounds).width;
         } else {
             return 0;
         }
     }
 
     public int getCurrentHeight() {
-        if (objectBounds != null) {
-            return objectBounds.height;
+        if ((Rectangle)elementBounds != null) {
+            return ((Rectangle)elementBounds).height;
         } else {
             return 0;
         }
@@ -164,6 +141,40 @@ public class DrawableObject extends DrawableElement {
 
     }
 
+    @Override
+    public void OnMouseOver(Canvas canvas)
+    {
+        if (!isShowingBehavioursPanel()) //to avoid blinking
+        {
+            int left = canvas.getAbsoluteLeft();
+            int top = canvas.getAbsoluteTop();
+            showBehavioursPanel(left, top, mScaleFactor);
+
+        }
+
+    }
+
+    @Override
+    public void OnMouseLeft(Canvas canvas)
+    {
+        if (isShowingBehavioursPanel())
+            hideBehavioursPanel();
+
+    }
+
+
+    @Override
+    public void OnClick(Canvas canvas)
+    {
+        if (!isShowingBehavioursPanel()) //to avoid blinking
+        {
+            int left = canvas.getAbsoluteLeft();// + dobj.getCurrentWidth() / 4;
+            int top =  canvas.getAbsoluteTop();// - dobj.getCurrentHeight() / 2;
+            showBehavioursPanel(left, top, mScaleFactor);
+        }
+
+    }
+
     /**
      * Shows the behaviours panel of the object
      *
@@ -173,12 +184,14 @@ public class DrawableObject extends DrawableElement {
      * the environment
      */
     public void showBehavioursPanel(final int left, final int top, final double scale) {
-        eop = new EnvObjectProperties(envObject);
-        //eop.setWidth("500px");
+        if (eop == null)
+            eop = new EnvObjectProperties(envObject);
+        else
+            eop.refreshObject(envObject);
         eop.setPopupPositionAndShow(new EnvObjectProperties.PositionCallback() {
             @Override
             public void setPosition(int offsetWidth, int offsetHeight) {
-                int newX = (int) ((dx + objectBounds.getWidth()) * scale);
+                int newX = (int) ((dx + ((Rectangle)elementBounds).width) * scale);
                 int newY = (int) (dy * scale);
                 eop.setPopupPosition(newX + left, newY + top);
             }

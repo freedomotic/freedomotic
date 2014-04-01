@@ -1,6 +1,7 @@
 package com.freedomotic.clients.client;
 
 import com.freedomotic.clients.client.api.EnvironmentsController;
+import com.freedomotic.clients.client.utils.EnvironmentWidget;
 import com.freedomotic.clients.client.widgets.ConfigurationDialog;
 import com.freedomotic.clients.client.widgets.EnvListBox;
 import com.freedomotic.clients.client.widgets.FloorPlanWidget;
@@ -69,7 +70,8 @@ public class Freedomotic implements EntryPoint {
 
         DockLayoutPanel myDockLayoutPanel = new DockLayoutPanel(Unit.EM);
         // draw the environment
-        FloorPlanWidget floorPlan = new FloorPlanWidget(myDockLayoutPanel, null);
+        //FloorPlanWidget floorPlan = new FloorPlanWidget(myDockLayoutPanel, null);
+        EnvironmentWidget floorPlan = new EnvironmentWidget(myDockLayoutPanel, null);
         RootLayoutPanel rootPanel = RootLayoutPanel.get();
 
         SimplePanel greenLateralPanel = new SimplePanel();
