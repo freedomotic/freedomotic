@@ -2,6 +2,7 @@ package com.freedomotic.clients.client.utils;
 
 import com.freedomotic.clients.client.Freedomotic;
 import com.freedomotic.model.environment.Zone;
+import com.freedomotic.model.geometry.FreedomPolygon;
 import com.google.gwt.canvas.dom.client.CanvasPattern;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.Repetition;
@@ -17,10 +18,11 @@ import java.awt.geom.Path2D;
 public class DrawableRoom extends DrawableElement {
 
     private Zone roomObject;
-//	private Paint ghostPaint;
-    Path2D drawingPath;
+
     String textureName;
-    private Rectangle2D bounds;
+    private Rectangle2D roomBounds;
+
+
     //TODO: create global CONSTANTS for all restapi paths
     public static final String TEXTURE_PATH = Freedomotic.RESOURCES_URL;
     CanvasPattern cp;
@@ -35,12 +37,7 @@ public class DrawableRoom extends DrawableElement {
         textureName = TEXTURE_PATH + roomObject.getTexture();
         ImageUtils.queueImage(textureName);
 
-//		this.borderPaint = borderPaint;
-//		this.textPaint = textPaint;			
         setDrawingPath(DrawingUtils.freedomPolygonToPath(roomObject.getShape()));
-//		ghostPaint = new Paint();
-//		ghostPaint.setStyle(Paint.Style.FILL);
-//		ghostPaint.setAntiAlias(false);	      		
 
     }
 
@@ -62,14 +59,14 @@ public class DrawableRoom extends DrawableElement {
                 cp = context.createPattern(ie, Repetition.REPEAT);
             }
             context.setFillStyle(cp);
-            g.fill(drawingPath);
+            g.fill(elementBounds);
             context.setFillStyle(fst);
         }
     }
 
     public void setDrawingPath(Path2D drawingPath) {
-        this.drawingPath = drawingPath;
-        bounds = this.drawingPath.getBounds2D();
+        elementBounds = drawingPath;
+        roomBounds = this.elementBounds.getBounds2D();
     }
 
     @Override
@@ -83,10 +80,10 @@ public class DrawableRoom extends DrawableElement {
         //draw the border
         context.setLineWidth(2); // 7 pixel line width.
         g.setColor(Color.DARK_GRAY);
-        g.draw(drawingPath);
+        g.draw(elementBounds);
         //draw the text
         g.setColor(Color.BLACK);
-        context.fillText(roomObject.getName(), bounds.getMinX() + 22, bounds.getMinY() + 22);
+        context.fillText(roomObject.getName(), roomBounds.getMinX() + 22, roomBounds.getMinY() + 22);
     }
 
     @Override
@@ -94,12 +91,38 @@ public class DrawableRoom extends DrawableElement {
         Color c = new Color(getIndexColor());
         WebGraphics g = new WebGraphics(context);
         g.setColor(c);
-        g.fill(drawingPath);
+        g.fill(elementBounds);
+    }
+
+    @Override
+    public void updateElement()
+    {}
+
+    @Override
+    public void paint(Context2d context, Context2d indexContext) {
+
+        WebGraphics g = new WebGraphics(context);
+
+        //draw the fill
+        if (isFillRoom()) {
+            drawFill(context, g);
+        }
+        //draw the border
+        context.setLineWidth(2); // 7 pixel line width.
+        g.setColor(Color.DARK_GRAY);
+        g.draw(elementBounds);
+        //draw the text
+        g.setColor(Color.BLACK);
+        context.fillText(roomObject.getName(), roomBounds.getMinX() + 22, roomBounds.getMinY() + 22);
+
+        //move to a method on the canvas
+        paintIndex(indexContext);
+
     }
 
     @Override
     public String getName() {
-        // TODO Auto-generated method stub
+
         return roomObject.getName();
     }
 

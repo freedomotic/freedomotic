@@ -2,6 +2,7 @@ package com.freedomotic.clients.client.widgets;
 
 
 import com.freedomotic.clients.client.api.EnvironmentsController;
+import com.freedomotic.clients.client.utils.EnvironmentWidget;
 import com.freedomotic.model.environment.Environment;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -10,10 +11,10 @@ import com.google.gwt.user.client.ui.ListBox;
 
 public class EnvListBox extends ListBox {
 
-    private FloorPlanWidget parent;
+    private EnvironmentWidget parent;
     private boolean dataInitialized = false;
 
-    public EnvListBox(final FloorPlanWidget parent) {
+    public EnvListBox(final EnvironmentWidget parent) {
         this.parent = parent;
         // setup timer
         final Timer timer = new Timer() {

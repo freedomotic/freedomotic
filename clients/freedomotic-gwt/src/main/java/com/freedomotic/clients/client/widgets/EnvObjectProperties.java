@@ -10,4 +10,9 @@ public class EnvObjectProperties extends DecoratedPopupPanel {
 
         setWidget(new EnvObjectWidget(obj));
     }
+
+    public void refreshObject(EnvObject obj)
+    {
+        setWidget(new EnvObjectWidget(obj));
+    }
 }
