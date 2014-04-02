@@ -1,17 +1,13 @@
 package com.freedomotic.clients.client.utils;
 
-import com.freedomotic.clients.client.widgets.EnvObjectProperties;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.canvas.dom.client.ImageData;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.*;
 
-import java.awt.Color;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by gpt on 31/03/14.
@@ -20,36 +16,40 @@ public class ExtendedCanvas {
 
     Canvas canvas;
     Context2d ctx;
-    Canvas ghostCanvas;
-    Context2d gctx;
 
-    // Map of objects that are drawed
-    LinkedHashMap<Integer, DrawableElement> objectsIndex = new LinkedHashMap<Integer, DrawableElement>();
+    LinkedHashMap<String, Layer> layers = new LinkedHashMap<>();
+    //we only accept one selected layer at a time.
+    //TODO: Change to a structure that traverse the visible layers from top to bottom
+    Layer selectedLayer = null;
+
     private static int BORDER_X = 10; //the empty space around the map
     private static int BORDER_Y = 10; //the empty space around the map
     private static int CANVAS_WIDTH = 1300 + (BORDER_X * 2);
     private static int CANVAS_HEIGHT = 900 + (BORDER_X * 2);
 
     private double mScaleFactor = 1;
-    private double mPosX;
-    private double mPosY;
+    private double mPosX = 0;
+    private double mPosY = 0;
     //private DockLayoutPanel parent;
-
-
 
     public ExtendedCanvas() {
         canvas = Canvas.createIfSupported();
         ctx = canvas.getContext2d();
-        ghostCanvas = Canvas.createIfSupported();
-        gctx = ghostCanvas.getContext2d();
-        objectsIndex.clear();
-
-
     }
+
+    public static int getCANVAS_WIDTH() {
+        return CANVAS_WIDTH;
+    }
+
+    public static int getCANVAS_HEIGHT() {
+        return CANVAS_HEIGHT;
+    }
+
     void initCanvas()
     {
-        objectsIndex.clear();
+        layers.clear();
     }
+
     void setSize(int width, int height)
     {
         CANVAS_WIDTH = width;
@@ -58,17 +58,18 @@ public class ExtendedCanvas {
         canvas.setHeight(height + "px");
         canvas.setCoordinateSpaceWidth(width);
         canvas.setCoordinateSpaceHeight(height);
-
-        ghostCanvas.setWidth(width + "px");
-        ghostCanvas.setHeight(height + "px");
-        ghostCanvas.setCoordinateSpaceWidth(width);
-        ghostCanvas.setCoordinateSpaceHeight(height);
+        for(Layer layer: layers.values())
+        {
+            layer.setSize(width, height);
+        }
 
     }
-    void addDrawingElement(DrawableElement de)
+
+    void addDrawingElement(DrawableElement de, Layer layer)
     {
-        de.setIndexColor(generateNextValidColor());
-        objectsIndex.put(de.getIndexColor(), de);
+        //TODO: search for the layer and add the element
+        layer.addObjectToLayer(de);
+        de.setParentCanvas(this);
     }
 
     DrawableElement elementUnderMouse;
@@ -77,24 +78,46 @@ public class ExtendedCanvas {
         canvas.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent event) {
-                final DrawableElement de = getElementUnderCoordinates(event.getX(), event.getY());
-                if (de != null ){
-                    de.OnClick(canvas);
+                if (selectedLayer!= null) {
+                    final DrawableElement de = selectedLayer.getElementUnderCoordinates(event.getX(), event.getY());
+                    if (de != null) {
+                        de.OnClick(canvas);
+                    }
                 }
 
+            }
+        });
+
+        canvas.addDoubleClickHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                if (selectedLayer != null) {
+                    final DrawableElement de = selectedLayer.getElementUnderCoordinates(event.getX(), event.getY());
+                    if (de != null) {
+                        de.OnDoubleClick(canvas);
+                        return;
+                    }
+                }
+                //TODO: this is wrong here. The extendedCanvas doesn't have to know about what the doubleclick does
+                //Find where to move this
+                int parentWidth = getCanvas().getParent().getOffsetWidth();
+                int parentHeight = getCanvas().getParent().getOffsetHeight();
+                setSize(parentWidth, parentHeight);
+                fitToScreen(parentWidth, parentHeight, 0, 0);
             }
         });
 
         canvas.addMouseMoveHandler(new MouseMoveHandler() {
             @Override
             public void onMouseMove(final MouseMoveEvent event) {
-                final DrawableElement de =  getElementUnderCoordinates(event.getX(), event.getY());
-                if ((de == null && elementUnderMouse!= null) || (de != null && elementUnderMouse!= null && de != elementUnderMouse))
-                    elementUnderMouse.OnMouseLeft(canvas);
-                if (de != null)
-                {
-                    de.OnMouseOver(canvas);
-                    elementUnderMouse = de;
+                if (selectedLayer != null) {
+                    final DrawableElement de = getElementUnderCoordinates(event.getX(), event.getY());
+                    if ((de == null && elementUnderMouse != null) || (de != null && elementUnderMouse != null && de != elementUnderMouse))
+                        elementUnderMouse.OnMouseLeft(canvas);
+                    if (de != null) {
+                        de.OnMouseOver(canvas);
+                        elementUnderMouse = de;
+                    }
                 }
             }
         });
@@ -102,41 +125,21 @@ public class ExtendedCanvas {
     }
 
 
-   void draw() {
-        ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        gctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-        for (DrawableElement de : objectsIndex.values()) {
-            de.draw(this.getContext(), this.getIndexContext());
-    }
-
+    void draw() {
+        ctx.clearRect(0, 0, getCANVAS_WIDTH(), getCANVAS_HEIGHT());
+        for(Layer layer: layers.values())
+        {
+            layer.draw();
+        }
 
     }
+
     void updateElements()
     {
-        for (DrawableElement de : objectsIndex.values()) {
-            de.setScaleFactor(mScaleFactor);
-            de.updateElement();
+        for(Layer layer: layers.values())
+        {
+            layer.updateElements();
         }
-    }
-
-    public DrawableElement getElementUnderCoordinates(int x, int y) {
-        if (gctx != null) {
-            int posX = 0;
-            int posY = 0;
-            //retrieve the color under the click on the ghost canvas
-            ImageData id = gctx.getImageData(x, y, 1, 1);
-            Color c = new Color(id.getRedAt(posX, posY), id.getGreenAt(posX, posY), id.getBlueAt(posX, posY), id.getAlphaAt(posX, posY));
-            //GWT.log(Integer.toString(c.getRGB()));
-            if (objectsIndex.containsKey(c.getRGB()));
-            {
-                if (objectsIndex.get(c.getRGB()) != null) {
-                    DrawableElement de = objectsIndex.get(c.getRGB());
-                    return de;
-                }
-            }
-        }
-        return null;
     }
 
     public Canvas getCanvas() {
@@ -149,17 +152,12 @@ public class ExtendedCanvas {
         return ctx;
     }
 
-    public Context2d getIndexContext()
-    {
-        return gctx;
-    }
-
 
     //Adapt the "original coordinates" from freedomotic to the canvas size
-    public void fitToScreen(double width, double height) {
+    public void fitToScreen(double width, double height, double posX, double posY) {
 
-        double xSize = CANVAS_WIDTH - BORDER_X;
-        double ySize = CANVAS_HEIGHT - BORDER_Y - 200;
+        double xSize = getCANVAS_WIDTH() - BORDER_X;
+        double ySize = getCANVAS_HEIGHT() - BORDER_Y - 200;
 
         double xPathSize = width;
         double yPathSize = height;
@@ -171,41 +169,71 @@ public class ExtendedCanvas {
         } else {
             mScaleFactor = yScale;
         }
-        mPosX = 0;//MARGIN;
-        mPosY = 0;//MARGIN;
+        mPosX = -posX;//MARGIN;
+        mPosY = -posY;//MARGIN;
         updateElements();
 
     }
 
-    //Handle the objects that are being drawn in the canvas
-
-    private int redValue = 0;
-    private int greenValue = 0;
-    private int blueValue = 0;
-    private int alphaValue = 255;
-
-    public int generateNextValidColor() {
-        int step = 1;
-        redValue += step;
-        if (redValue >= 256) {
-            greenValue += step;
-            redValue = 0;
-            if (greenValue >= 256) {
-                blueValue += step;
-                greenValue = 0;
-                if (blueValue >= 256) {
-                    System.out.println("We have reached the limit of the number of objects!! 255*255*255!!!");
-                }
-            }
-
-        }
-        Color c = new Color(redValue, greenValue, blueValue, alphaValue);
-        return (c.getRGB());
-
-    }
-
-
-    public double getmScaleFactor() {
+    public double getScaleFactor() {
         return mScaleFactor;
     }
+    public double getPosX() {
+        return mPosX;
+    }
+
+    public double getPosY() {
+        return mPosY;
+    }
+
+
+    //region Layers Management
+
+    public Layer addLayer(String objectUUID)
+    {
+        Layer newLayer = new Layer(this, objectUUID);
+        layers.put(objectUUID, newLayer);
+        return newLayer;
+
+    }
+
+    public void changeLayerVisibility(String objectUUID, boolean visibility)
+    {
+        Layer layer = layers.get(objectUUID);
+        if (visibility == true)
+            selectedLayer = layer;
+        layer.setVisible(visibility);
+    }
+
+    public DrawableElement getElementUnderCoordinates(int x, int y)
+    {
+        //TODO: this method should be changed to search from top to bottom in the visible layers
+        /*ListIterator<Layer> iter = (ListIterator<Layer>) layers.values().iterator();
+        while(iter.hasPrevious())
+        {
+            Layer layer = iter.previous();
+            if (layer.isVisible()) {
+                DrawableElement de = layer.getElementUnderCoordinates(x, y);
+                if (de != null) ;
+                {
+                    return de;
+
+                }
+            }
+        }
+        return null;*/
+        return selectedLayer.getElementUnderCoordinates(x, y);
+
+    }
+
+    public List<LayerPojo> getLayers() {
+        ArrayList<LayerPojo> layersPojos = new ArrayList<>();
+        for (Layer layer : layers.values()) {
+            layersPojos.add(layer.getLayer());
+
+        }
+        return layersPojos;
+    }
+
+    //endregion
 }

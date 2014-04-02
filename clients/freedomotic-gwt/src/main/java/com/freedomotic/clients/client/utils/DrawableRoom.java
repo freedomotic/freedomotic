@@ -2,7 +2,7 @@ package com.freedomotic.clients.client.utils;
 
 import com.freedomotic.clients.client.Freedomotic;
 import com.freedomotic.model.environment.Zone;
-import com.freedomotic.model.geometry.FreedomPolygon;
+import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.CanvasPattern;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.Repetition;
@@ -72,6 +72,14 @@ public class DrawableRoom extends DrawableElement {
     @Override
     public void updateElement()
     {}
+
+    @Override
+    public void OnDoubleClick(Canvas canvas)
+    {
+        parentCanvas.fitToScreen(roomBounds.getWidth(), roomBounds.getHeight(), roomBounds.getMinX(), roomBounds.getMinY());
+
+
+    }
 
     @Override
     public void paint(Context2d context, Context2d indexContext) {

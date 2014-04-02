@@ -1,23 +1,16 @@
 package com.freedomotic.clients.client.utils;
 
 import com.freedomotic.clients.client.api.EnvironmentsController;
-import com.freedomotic.clients.client.widgets.EnvObjectProperties;
+import com.freedomotic.clients.client.widgets.LayerList;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.EnvObject;
 import com.google.gwt.canvas.client.Canvas;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-
-import java.util.ArrayList;
 
 /**
  * Created by gpt on 1/04/14.
@@ -25,11 +18,10 @@ import java.util.ArrayList;
 public class EnvironmentWidget {
 
     public static Environment environment = null;
-    ArrayList<DrawableRoom> drawingRooms = new ArrayList<DrawableRoom>();
-    ArrayList<DrawableObject> drawingObjects = new ArrayList<DrawableObject>();
 
     //TODO: add get /set
     boolean dataInitialized = false;
+    boolean layerControllerAttached = false;
     //timer refresh rate, in milliseconds
     static final int refreshRate = 25;
 
@@ -42,10 +34,11 @@ public class EnvironmentWidget {
     private DockLayoutPanel parent;
     private ExtendedCanvas extendedCanvas;
 
-    public EnvironmentWidget(DockLayoutPanel parent, Environment env) {
+    private LayerList mLayerList;
+
+    public EnvironmentWidget(DockLayoutPanel parent) {
 
         this.parent = parent;
-        environment = env;
         initCanvas();
 
         // setup timer
@@ -53,6 +46,11 @@ public class EnvironmentWidget {
             @Override
             public void run() {
                 if (dataInitialized) {
+                    if (!layerControllerAttached && mLayerList!= null) {
+                        mLayerList.populateData(extendedCanvas.getLayers());
+                        layerControllerAttached = true;
+                    }
+
                     extendedCanvas.draw();
                 } else {
                     initializeData();
@@ -68,11 +66,12 @@ public class EnvironmentWidget {
                 int parentHeight = getCanvas().getParent().getOffsetHeight();
                 extendedCanvas.setSize(parentWidth, parentHeight);
                 if (environment == null) {
-                    extendedCanvas.fitToScreen(parentWidth, parentHeight);
+                    extendedCanvas.fitToScreen(parentWidth, parentHeight, 0, 0);
                 }
                 else
                 {
-                    extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight());
+                    //TODO: Maybe we need to center on the environment
+                    extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), 0 ,0);
 
                 }
             }
@@ -88,32 +87,19 @@ public class EnvironmentWidget {
     }
 
     void initializeData() {
+        extendedCanvas.initCanvas();
         //TODO: Refactor to make EnvironmentWidget not be aware of DrawableElements
         if (EnvironmentsController.getInstance().HasData()) {
-            if (environment == null) {
-                environment = EnvironmentsController.getInstance().getEnvironments().get(0);
+            for(Environment environment: EnvironmentsController.getInstance().getEnvironments()) {
+                createEnvironmentLayer(environment);
             }
-            DrawableEnvironment drawableEnvironment = new DrawableEnvironment(environment);
-            extendedCanvas.initCanvas();
-            extendedCanvas.addDrawingElement(drawableEnvironment);
-            drawingRooms.clear();
-            drawingObjects.clear();
+            environment = EnvironmentsController.getInstance().getEnvironments().get(0);
+            extendedCanvas.changeLayerVisibility(environment.getUUID(), true);
+            //TODO: maybe we need to center on the environment coordinates
+            extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), 0 ,0);
 
-            // create all drawingrooms
-            for (Zone r : environment.getZones()) {
-                if (r.isRoom()) {
-                    DrawableRoom dr = new DrawableRoom(r);
-                    drawingRooms.add(dr);
-                    extendedCanvas.addDrawingElement(dr);
-                    // TODO: Take care of the objects not in room
-                    for (EnvObject obj : r.getObjects()) {
-                        DrawableObject dobj = new DrawableObject(obj);
-                        drawingObjects.add(dobj);
-                        extendedCanvas.addDrawingElement(dobj);
-                    }
-                }
-            }
-            extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight());
+            if (mLayerList != null)
+                mLayerList.populateData(extendedCanvas.getLayers());
             //this.parent.addNorth(new EnvListBox(this), 4);
             dataInitialized = true;
 
@@ -121,6 +107,31 @@ public class EnvironmentWidget {
 
 
     }
+
+    void createEnvironmentLayer(Environment environment)
+    {
+        Layer envLayer = extendedCanvas.addLayer(environment.getUUID());
+        envLayer.setName(environment.getName());
+        envLayer.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
+        DrawableEnvironment drawableEnvironment = new DrawableEnvironment(environment);
+        extendedCanvas.addDrawingElement(drawableEnvironment, envLayer);
+
+        // create all drawingrooms
+        for (Zone r : environment.getZones()) {
+            if (r.isRoom()) {
+                DrawableRoom dr = new DrawableRoom(r);
+                extendedCanvas.addDrawingElement(dr, envLayer);
+                // TODO: Take care of the objects not in room
+                for (EnvObject obj : r.getObjects()) {
+                    DrawableObject dobj = new DrawableObject(obj);
+                    extendedCanvas.addDrawingElement(dobj, envLayer);
+                }
+            }
+        }
+
+
+    }
+
 
     public Canvas getCanvas() {
         return extendedCanvas.getCanvas();
@@ -131,10 +142,20 @@ public class EnvironmentWidget {
         for (Environment env : EnvironmentsController.getInstance().getEnvironments()) {
             if (env.getUUID().equals(envUUID)) {
                 environment = env;
-                this.dataInitialized = false;
-                break;
+                extendedCanvas.changeLayerVisibility(env.getUUID(), true);
+                //this.dataInitialized = false;
+            }
+            else
+            {
+                extendedCanvas.changeLayerVisibility(env.getUUID(), false);
             }
         }
+    }
+
+    public void setLayerList(LayerList layerList)
+    {
+        mLayerList = layerList;
+        layerList.setAssociatedEnvironment(this);
     }
 
 }

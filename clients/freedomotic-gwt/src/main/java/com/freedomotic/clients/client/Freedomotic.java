@@ -3,8 +3,7 @@ package com.freedomotic.clients.client;
 import com.freedomotic.clients.client.api.EnvironmentsController;
 import com.freedomotic.clients.client.utils.EnvironmentWidget;
 import com.freedomotic.clients.client.widgets.ConfigurationDialog;
-import com.freedomotic.clients.client.widgets.EnvListBox;
-import com.freedomotic.clients.client.widgets.FloorPlanWidget;
+import com.freedomotic.clients.client.widgets.LayerList;
 import com.freedomotic.clients.client.widgets.OkCancelDialogCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -70,8 +69,7 @@ public class Freedomotic implements EntryPoint {
 
         DockLayoutPanel myDockLayoutPanel = new DockLayoutPanel(Unit.EM);
         // draw the environment
-        //FloorPlanWidget floorPlan = new FloorPlanWidget(myDockLayoutPanel, null);
-        EnvironmentWidget floorPlan = new EnvironmentWidget(myDockLayoutPanel, null);
+        EnvironmentWidget floorPlan = new EnvironmentWidget(myDockLayoutPanel);
         RootLayoutPanel rootPanel = RootLayoutPanel.get();
 
         SimplePanel greenLateralPanel = new SimplePanel();
@@ -99,13 +97,25 @@ public class Freedomotic implements EntryPoint {
         SimplePanel logoPanel = new SimplePanel();
         logoPanel.add(myImage);
         logoPanel.setStyleName("header_panel");
+
         myDockLayoutPanel.addNorth(logoPanel, 10.7);
-        myDockLayoutPanel.addNorth(new EnvListBox(floorPlan), 2);
         SimplePanel footerPanel = new SimplePanel();
         footerPanel.setStyleName("header_panel");
         myDockLayoutPanel.addSouth(footerPanel, 4);
+
+
+        LayerList layerList = new LayerList();
+        floorPlan.setLayerList(layerList);
+
+
+        SimplePanel rightBorderpanel = new SimplePanel();
+        rightBorderpanel.setStyleName("header_panel");
+        myDockLayoutPanel.addEast(rightBorderpanel, 2);
+        myDockLayoutPanel.addEast(layerList, 17);
+
         rootPanel.add(myDockLayoutPanel);
         myDockLayoutPanel.add(floorPlan.getCanvas());
+
 
         //Temporal hack to the configuration until we decide about it	
         brokerIp = com.google.gwt.user.client.Window.Location.getHostName();
