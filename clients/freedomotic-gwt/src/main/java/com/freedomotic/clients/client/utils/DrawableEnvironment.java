@@ -6,7 +6,6 @@ import com.freedomotic.model.geometry.FreedomPolygon;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.user.client.ui.Image;
-import com.levigo.util.gwtawt.client.WebGraphics;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
@@ -22,7 +21,6 @@ public class DrawableEnvironment extends DrawableElement {
     int ENVIRONMENT_HEIGHT;
     ImageElement ie;
     Rectangle2D box;
-    WebGraphics g;
 
     public DrawableEnvironment(Environment environment)
     {
@@ -41,15 +39,6 @@ public class DrawableEnvironment extends DrawableElement {
         return environment.getName();
     }
 
-    @Override
-    public void draw(Context2d context) {
-
-    }
-
-    @Override
-    public void drawGhost(Context2d context) {
-
-    }
 
     @Override
     public void updateElement()

@@ -2,8 +2,10 @@ package com.freedomotic.clients.client.utils;
 
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.levigo.util.gwtawt.client.WebGraphics;
+import com.google.gwt.canvas.client.Canvas;
 
-import java.awt.*;
+import java.awt.Shape;
+import java.awt.Color;
 
 public abstract class DrawableElement {
 
@@ -30,9 +32,16 @@ public abstract class DrawableElement {
         return indexColor;
     }
 
-    public abstract void draw(Context2d context);
+    //mouseEvents
+    public void OnMouseOver(Canvas canvas)
+    {}
 
-    public abstract void drawGhost(Context2d context);
+    public void OnMouseLeft(Canvas canvas)
+    {}
+
+    public void OnClick(Canvas canvas)
+    {}
+
 
     public void beforeDraw(Context2d context, Context2d indexContext){
     }

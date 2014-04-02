@@ -27,8 +27,6 @@ public class EnvironmentWidget {
     public static Environment environment = null;
     ArrayList<DrawableRoom> drawingRooms = new ArrayList<DrawableRoom>();
     ArrayList<DrawableObject> drawingObjects = new ArrayList<DrawableObject>();
-    ArrayList<DrawableObject> objectsShowingBehaviors = new ArrayList<DrawableObject>();
-
 
     //TODO: add get /set
     boolean dataInitialized = false;
@@ -58,8 +56,6 @@ public class EnvironmentWidget {
                     extendedCanvas.draw();
                 } else {
                     initializeData();
-                    //TODO: por aqui
-                    //fitToScreen();
                 }
             }
         };
@@ -79,7 +75,6 @@ public class EnvironmentWidget {
                     extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight());
 
                 }
-
             }
         });
 
@@ -89,52 +84,7 @@ public class EnvironmentWidget {
     void initCanvas() {
         extendedCanvas = new ExtendedCanvas();
         extendedCanvas.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
-        //TODO: Refactor to make EnvironmentWidget not be aware of DrawableElements
-        extendedCanvas.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent event) {
-                final DrawableElement de = extendedCanvas.getElementUnderCoordinates(event.getX(), event.getY());
-                if (de != null && de instanceof DrawableObject){
-                    final DrawableObject dobj = (DrawableObject)de;
-                    final EnvObjectProperties eop = new EnvObjectProperties(dobj.getEnvObject());
-                    if (!dobj.isShowingBehavioursPanel()) //to avoid blinking
-                    {
-                        int left = extendedCanvas.getCanvas().getAbsoluteLeft();// + dobj.getCurrentWidth() / 4;
-                        int top =  extendedCanvas.getCanvas().getAbsoluteTop();// - dobj.getCurrentHeight() / 2;
-                        dobj.showBehavioursPanel(left, top, extendedCanvas.getmScaleFactor());
-                        objectsShowingBehaviors.add(dobj);
-                    }
-                }
-
-            }
-        });
-
-        extendedCanvas.addMouseMoveHandler(new MouseMoveHandler() {
-            //TODO: maybe there is a better way making DrawableObjects implement MouseListener and transforming it on widgets
-            @Override
-            public void onMouseMove(final MouseMoveEvent event) {
-                //TODO: move to the extendedCanvas
-                final DrawableElement de =  extendedCanvas.getElementUnderCoordinates(event.getX(), event.getY());
-                if (de != null && de instanceof DrawableObject){
-                    DrawableObject dobj = (DrawableObject)de;
-                    if (!dobj.isShowingBehavioursPanel()) //to avoid blinking
-                    {
-                        int left = extendedCanvas.getCanvas().getAbsoluteLeft();
-                        int top = extendedCanvas.getCanvas().getAbsoluteTop();
-                        dobj.showBehavioursPanel(left, top, extendedCanvas.getmScaleFactor());
-                        objectsShowingBehaviors.add(dobj);
-
-                    }
-                } else {
-                    for (DrawableObject dobj2 : objectsShowingBehaviors) {
-                        dobj2.hideBehavioursPanel();
-                    }
-                    objectsShowingBehaviors.clear();
-
-                }
-            }
-        });
-
+        extendedCanvas.registerHandlers();
     }
 
     void initializeData() {

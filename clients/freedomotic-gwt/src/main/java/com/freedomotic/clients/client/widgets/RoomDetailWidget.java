@@ -135,8 +135,8 @@ public class RoomDetailWidget {
         // TODO: If we render the environment, the border moves the shape, so we
         // must move the background also
 
-        dr.drawGhost(gctx);
-        dr.draw(ctx);
+        //dr.drawGhost(gctx);
+        //dr.draw(ctx);
 
         renderObjects();
 
@@ -151,8 +151,8 @@ public class RoomDetailWidget {
 
     public void renderObjects() {
         for (DrawableObject dobj : drawingObjects) {
-            dobj.drawGhost(gctx);
-            dobj.draw(ctx);
+           // dobj.drawGhost(gctx);
+           // dobj.draw(ctx);
 
             //objectsIndex.put(dobj.getIndexColor(), dobj);	        		
         }

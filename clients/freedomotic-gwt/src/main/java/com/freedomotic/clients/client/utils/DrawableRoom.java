@@ -70,31 +70,6 @@ public class DrawableRoom extends DrawableElement {
     }
 
     @Override
-    public void draw(Context2d context) {
-        WebGraphics g = new WebGraphics(context);
-
-        //draw the fill				
-        if (isFillRoom()) {
-            drawFill(context, g);
-        }
-        //draw the border
-        context.setLineWidth(2); // 7 pixel line width.
-        g.setColor(Color.DARK_GRAY);
-        g.draw(elementBounds);
-        //draw the text
-        g.setColor(Color.BLACK);
-        context.fillText(roomObject.getName(), roomBounds.getMinX() + 22, roomBounds.getMinY() + 22);
-    }
-
-    @Override
-    public void drawGhost(Context2d context) {
-        Color c = new Color(getIndexColor());
-        WebGraphics g = new WebGraphics(context);
-        g.setColor(c);
-        g.fill(elementBounds);
-    }
-
-    @Override
     public void updateElement()
     {}
 
@@ -130,7 +105,5 @@ public class DrawableRoom extends DrawableElement {
         return fillRoom;
     }
 
-    void setFillRoom(boolean fillRoom) {
-        this.fillRoom = fillRoom;
-    }
+
 }

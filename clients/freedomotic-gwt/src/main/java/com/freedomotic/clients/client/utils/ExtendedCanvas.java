@@ -1,12 +1,15 @@
 package com.freedomotic.clients.client.utils;
 
+import com.freedomotic.clients.client.widgets.EnvObjectProperties;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.ImageData;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -68,16 +71,36 @@ public class ExtendedCanvas {
         objectsIndex.put(de.getIndexColor(), de);
     }
 
-    void addClickHandler(ClickHandler clickHandler)
+    DrawableElement elementUnderMouse;
+    void registerHandlers()
     {
-        canvas.addClickHandler(clickHandler);
+        canvas.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(final ClickEvent event) {
+                final DrawableElement de = getElementUnderCoordinates(event.getX(), event.getY());
+                if (de != null ){
+                    de.OnClick(canvas);
+                }
+
+            }
+        });
+
+        canvas.addMouseMoveHandler(new MouseMoveHandler() {
+            @Override
+            public void onMouseMove(final MouseMoveEvent event) {
+                final DrawableElement de =  getElementUnderCoordinates(event.getX(), event.getY());
+                if ((de == null && elementUnderMouse!= null) || (de != null && elementUnderMouse!= null && de != elementUnderMouse))
+                    elementUnderMouse.OnMouseLeft(canvas);
+                if (de != null)
+                {
+                    de.OnMouseOver(canvas);
+                    elementUnderMouse = de;
+                }
+            }
+        });
 
     }
-    void addMouseMoveHandler(MouseMoveHandler mousemoveHandler)
-    {
-        canvas.addMouseMoveHandler(mousemoveHandler);
 
-    }
 
    void draw() {
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -92,7 +115,7 @@ public class ExtendedCanvas {
     void updateElements()
     {
         for (DrawableElement de : objectsIndex.values()) {
-            de.setScaleFactor(this.getmScaleFactor());
+            de.setScaleFactor(mScaleFactor);
             de.updateElement();
         }
     }
