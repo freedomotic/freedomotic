@@ -95,7 +95,7 @@ public class EnvironmentWidget {
             }
             DrawableEnvironment drawableEnvironment = new DrawableEnvironment(environment);
             extendedCanvas.initCanvas();
-            extendedCanvas.addDrawingElement(drawableEnvironment);
+            extendedCanvas.addDrawingElement(drawableEnvironment, null);
             drawingRooms.clear();
             drawingObjects.clear();
 
@@ -104,12 +104,12 @@ public class EnvironmentWidget {
                 if (r.isRoom()) {
                     DrawableRoom dr = new DrawableRoom(r);
                     drawingRooms.add(dr);
-                    extendedCanvas.addDrawingElement(dr);
+                    extendedCanvas.addDrawingElement(dr, null);
                     // TODO: Take care of the objects not in room
                     for (EnvObject obj : r.getObjects()) {
                         DrawableObject dobj = new DrawableObject(obj);
                         drawingObjects.add(dobj);
-                        extendedCanvas.addDrawingElement(dobj);
+                        extendedCanvas.addDrawingElement(dobj, null);
                     }
                 }
             }

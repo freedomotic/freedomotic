@@ -24,29 +24,5 @@ public class DrawingUtils {
 
         return mP;
     }
-    public static String nextValidColor = "FF000001";
-    private static int redValue = 0;
-    private static int greenValue = 0;
-    private static int blueValue = 0;
-    private static int alphaValue = 255;
 
-    public static int generateNextValidColor() {
-        int step = 1;
-        redValue += step;
-        if (redValue >= 256) {
-            greenValue += step;
-            redValue = 0;
-            if (greenValue >= 256) {
-                blueValue += step;
-                greenValue = 0;
-                if (blueValue >= 256) {
-                    System.out.println("We have reached the limit of the number of objects!! 255*255*255!!!");
-                }
-            }
-
-        }
-        Color c = new Color(redValue, greenValue, blueValue, alphaValue);
-        return (c.getRGB());
-
-    }
 }

@@ -4,7 +4,6 @@ import com.freedomotic.clients.client.api.EnvironmentsController;
 import com.freedomotic.clients.client.utils.EnvironmentWidget;
 import com.freedomotic.clients.client.widgets.ConfigurationDialog;
 import com.freedomotic.clients.client.widgets.EnvListBox;
-import com.freedomotic.clients.client.widgets.FloorPlanWidget;
 import com.freedomotic.clients.client.widgets.OkCancelDialogCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;

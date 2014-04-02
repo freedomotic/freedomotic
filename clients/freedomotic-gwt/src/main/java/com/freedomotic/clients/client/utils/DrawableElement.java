@@ -16,14 +16,11 @@ public abstract class DrawableElement {
     protected Shape elementBounds;
 
     public DrawableElement() {
-        setIndexColor();
+
     }
 
     public abstract String getName();
 
-    public void setIndexColor() {
-        this.indexColor = DrawingUtils.generateNextValidColor();
-    }
     public void setIndexColor(int indexColor) {
         this.indexColor = indexColor;
     }

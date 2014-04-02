@@ -1,17 +1,15 @@
 package com.freedomotic.clients.client.utils;
 
-import com.freedomotic.clients.client.widgets.EnvObjectProperties;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 
 import java.awt.Color;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by gpt on 31/03/14.
@@ -20,11 +18,9 @@ public class ExtendedCanvas {
 
     Canvas canvas;
     Context2d ctx;
-    Canvas ghostCanvas;
-    Context2d gctx;
 
-    // Map of objects that are drawed
-    LinkedHashMap<Integer, DrawableElement> objectsIndex = new LinkedHashMap<Integer, DrawableElement>();
+    List<Layer> layers = new ArrayList<Layer>();
+
     private static int BORDER_X = 10; //the empty space around the map
     private static int BORDER_Y = 10; //the empty space around the map
     private static int CANVAS_WIDTH = 1300 + (BORDER_X * 2);
@@ -36,20 +32,27 @@ public class ExtendedCanvas {
     //private DockLayoutPanel parent;
 
 
-
+    Layer mainLayer;
     public ExtendedCanvas() {
         canvas = Canvas.createIfSupported();
         ctx = canvas.getContext2d();
-        ghostCanvas = Canvas.createIfSupported();
-        gctx = ghostCanvas.getContext2d();
-        objectsIndex.clear();
-
+        mainLayer = new Layer(this);
 
     }
+
+    public static int getCANVAS_WIDTH() {
+        return CANVAS_WIDTH;
+    }
+
+    public static int getCANVAS_HEIGHT() {
+        return CANVAS_HEIGHT;
+    }
+
     void initCanvas()
     {
-        objectsIndex.clear();
+        mainLayer.clearLayer();
     }
+
     void setSize(int width, int height)
     {
         CANVAS_WIDTH = width;
@@ -59,16 +62,14 @@ public class ExtendedCanvas {
         canvas.setCoordinateSpaceWidth(width);
         canvas.setCoordinateSpaceHeight(height);
 
-        ghostCanvas.setWidth(width + "px");
-        ghostCanvas.setHeight(height + "px");
-        ghostCanvas.setCoordinateSpaceWidth(width);
-        ghostCanvas.setCoordinateSpaceHeight(height);
+        mainLayer.setSize(width, height);
+
 
     }
-    void addDrawingElement(DrawableElement de)
+    void addDrawingElement(DrawableElement de, Layer layer)
     {
-        de.setIndexColor(generateNextValidColor());
-        objectsIndex.put(de.getIndexColor(), de);
+        //TODO: search for the layer and add the element
+        mainLayer.addObjectToLayer(de);
     }
 
     DrawableElement elementUnderMouse;
@@ -77,7 +78,7 @@ public class ExtendedCanvas {
         canvas.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent event) {
-                final DrawableElement de = getElementUnderCoordinates(event.getX(), event.getY());
+                final DrawableElement de = mainLayer.getElementUnderCoordinates(event.getX(), event.getY());
                 if (de != null ){
                     de.OnClick(canvas);
                 }
@@ -88,7 +89,7 @@ public class ExtendedCanvas {
         canvas.addMouseMoveHandler(new MouseMoveHandler() {
             @Override
             public void onMouseMove(final MouseMoveEvent event) {
-                final DrawableElement de =  getElementUnderCoordinates(event.getX(), event.getY());
+                final DrawableElement de =  mainLayer.getElementUnderCoordinates(event.getX(), event.getY());
                 if ((de == null && elementUnderMouse!= null) || (de != null && elementUnderMouse!= null && de != elementUnderMouse))
                     elementUnderMouse.OnMouseLeft(canvas);
                 if (de != null)
@@ -103,24 +104,17 @@ public class ExtendedCanvas {
 
 
    void draw() {
-        ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        gctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-        for (DrawableElement de : objectsIndex.values()) {
-            de.draw(this.getContext(), this.getIndexContext());
+        ctx.clearRect(0, 0, getCANVAS_WIDTH(), getCANVAS_HEIGHT());
+        mainLayer.draw();
     }
 
-
-    }
     void updateElements()
     {
-        for (DrawableElement de : objectsIndex.values()) {
-            de.setScaleFactor(mScaleFactor);
-            de.updateElement();
-        }
+        mainLayer.updateElements();
+
     }
 
-    public DrawableElement getElementUnderCoordinates(int x, int y) {
+   /* public DrawableElement getElementUnderCoordinates(int x, int y) {
         if (gctx != null) {
             int posX = 0;
             int posY = 0;
@@ -137,7 +131,7 @@ public class ExtendedCanvas {
             }
         }
         return null;
-    }
+    }*/
 
     public Canvas getCanvas() {
         return canvas;
@@ -149,17 +143,12 @@ public class ExtendedCanvas {
         return ctx;
     }
 
-    public Context2d getIndexContext()
-    {
-        return gctx;
-    }
-
 
     //Adapt the "original coordinates" from freedomotic to the canvas size
     public void fitToScreen(double width, double height) {
 
-        double xSize = CANVAS_WIDTH - BORDER_X;
-        double ySize = CANVAS_HEIGHT - BORDER_Y - 200;
+        double xSize = getCANVAS_WIDTH() - BORDER_X;
+        double ySize = getCANVAS_HEIGHT() - BORDER_Y - 200;
 
         double xPathSize = width;
         double yPathSize = height;
@@ -204,8 +193,7 @@ public class ExtendedCanvas {
 
     }
 
-
-    public double getmScaleFactor() {
+    public double getScaleFactor() {
         return mScaleFactor;
     }
 }
