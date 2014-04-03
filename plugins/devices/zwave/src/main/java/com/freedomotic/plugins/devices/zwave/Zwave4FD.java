@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -17,6 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
 package com.freedomotic.plugins.devices.zwave;
 
 import com.freedomotic.api.EventTemplate;
@@ -423,13 +424,13 @@ public class Zwave4FD
         if (configuration.getBooleanProperty("auto-configuration", true)) {
             // for sensorMultilevel the object is mapped to the value type (temperature, luminescence, relative humidity etc)
             if (id.getCommandClassId() == 49) {
-                if (!(configuration.getStringProperty(manager.getValueLabel(id), "") == null)) {
-                    event.addProperty("object.class", configuration.getStringProperty(manager.getValueLabel(id), ""));
+                if ((configuration.getStringProperty(manager.getValueLabel(id), null) != null)) {
+                    event.addProperty("object.class", configuration.getStringProperty(manager.getValueLabel(id), null));
                 }
                 // otherwise to command class 
             } else {
-                if (!(configuration.getStringProperty(new Short(id.getCommandClassId()).toString(), "") == null)) {
-                    event.addProperty("object.class", configuration.getStringProperty(new Short(id.getCommandClassId()).toString(), ""));
+                if ((configuration.getStringProperty(new Short(id.getCommandClassId()).toString(), null) != null)) {
+                    event.addProperty("object.class", configuration.getStringProperty(new Short(id.getCommandClassId()).toString(), null));
                 }
             }
             String devName = manager.getNodeManufacturerName(homeId, id.getNodeId()) + " - " + manager.getNodeProductName(homeId, id.getNodeId());

@@ -45,14 +45,6 @@
         <freedomotic.marketplace.username></freedomotic.marketplace.username>
         <freedomotic.marketplace.password></freedomotic.marketplace.password>
     </properties>
-    <repositories>
-    <!--other repositories if any-->
-        <repository>
-            <id>project.local</id>
-            <name>project</name>
-            <url>file:${project.basedir}/repo</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -66,9 +58,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>it.mazzoni</groupId>
+            <groupId>com.github.zgmnkv</groupId>
             <artifactId>zwave4j</artifactId>
-            <version>0.686</version>
+            <version>0.2</version>
         </dependency>
     </dependencies>
 

@@ -13,7 +13,7 @@
         <property name="Relative Humidity" value="Hygrometer"/>
 
      <!-- Mapping Zwave command classes to Freedomotic objects (not for SensorMultilevel) -->
-        <property name="128" value="Battery"/>
+        <property name="37" value="Switch"/>
 
       
     </properties>
