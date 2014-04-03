@@ -13,7 +13,8 @@ import java.util.LinkedHashMap;
 public class Layer {
 
     ExtendedCanvas mparentCanvas;
-    String mName;
+    private String mName;
+    private boolean mVisible = false;
 
     Canvas indexCanvas;
     Context2d indexContext;
@@ -42,6 +43,7 @@ public class Layer {
 
     //Handle the objects that are being drawn in the canvas
 
+    //region Index
     private int redValue = 0;
     private int greenValue = 0;
     private int blueValue = 0;
@@ -85,14 +87,18 @@ public class Layer {
         }
         return null;
     }
+    //endregion
+
 
     public void draw()
     {
         indexContext.clearRect(0, 0, mparentCanvas.getCANVAS_WIDTH(),  mparentCanvas.getCANVAS_HEIGHT());
 
-        for (DrawableElement de : objectsInLayer.values()) {
-            de.draw(mparentCanvas.getContext(), indexContext);
+        if (mVisible) {
+            for (DrawableElement de : objectsInLayer.values()) {
+                de.draw(mparentCanvas.getContext(), indexContext);
 
+            }
         }
     }
 
@@ -104,11 +110,26 @@ public class Layer {
         }
     }
 
-
     public void setSize(int width, int height) {
         indexCanvas.setWidth(width + "px");
         indexCanvas.setHeight(height + "px");
         indexCanvas.setCoordinateSpaceWidth(width);
         indexCanvas.setCoordinateSpaceHeight(height);
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        this.mName = name;
+    }
+
+    public boolean isVisible() {
+        return mVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.mVisible = visible;
     }
 }

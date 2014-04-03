@@ -69,8 +69,7 @@ public class Freedomotic implements EntryPoint {
 
         DockLayoutPanel myDockLayoutPanel = new DockLayoutPanel(Unit.EM);
         // draw the environment
-        //FloorPlanWidget floorPlan = new FloorPlanWidget(myDockLayoutPanel, null);
-        EnvironmentWidget floorPlan = new EnvironmentWidget(myDockLayoutPanel, null);
+        EnvironmentWidget floorPlan = new EnvironmentWidget(myDockLayoutPanel);
         RootLayoutPanel rootPanel = RootLayoutPanel.get();
 
         SimplePanel greenLateralPanel = new SimplePanel();

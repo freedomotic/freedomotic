@@ -25,8 +25,6 @@ import java.util.ArrayList;
 public class EnvironmentWidget {
 
     public static Environment environment = null;
-    ArrayList<DrawableRoom> drawingRooms = new ArrayList<DrawableRoom>();
-    ArrayList<DrawableObject> drawingObjects = new ArrayList<DrawableObject>();
 
     //TODO: add get /set
     boolean dataInitialized = false;
@@ -42,10 +40,9 @@ public class EnvironmentWidget {
     private DockLayoutPanel parent;
     private ExtendedCanvas extendedCanvas;
 
-    public EnvironmentWidget(DockLayoutPanel parent, Environment env) {
+    public EnvironmentWidget(DockLayoutPanel parent) {
 
         this.parent = parent;
-        environment = env;
         initCanvas();
 
         // setup timer
@@ -88,32 +85,17 @@ public class EnvironmentWidget {
     }
 
     void initializeData() {
+        extendedCanvas.initCanvas();
         //TODO: Refactor to make EnvironmentWidget not be aware of DrawableElements
         if (EnvironmentsController.getInstance().HasData()) {
-            if (environment == null) {
-                environment = EnvironmentsController.getInstance().getEnvironments().get(0);
+            for(Environment environment: EnvironmentsController.getInstance().getEnvironments()) {
+                createEnvironmentLayer(environment);
             }
-            DrawableEnvironment drawableEnvironment = new DrawableEnvironment(environment);
-            extendedCanvas.initCanvas();
-            extendedCanvas.addDrawingElement(drawableEnvironment, null);
-            drawingRooms.clear();
-            drawingObjects.clear();
-
-            // create all drawingrooms
-            for (Zone r : environment.getZones()) {
-                if (r.isRoom()) {
-                    DrawableRoom dr = new DrawableRoom(r);
-                    drawingRooms.add(dr);
-                    extendedCanvas.addDrawingElement(dr, null);
-                    // TODO: Take care of the objects not in room
-                    for (EnvObject obj : r.getObjects()) {
-                        DrawableObject dobj = new DrawableObject(obj);
-                        drawingObjects.add(dobj);
-                        extendedCanvas.addDrawingElement(dobj, null);
-                    }
-                }
-            }
+            environment = EnvironmentsController.getInstance().getEnvironments().get(0);
+            extendedCanvas.changeLayerVisibility(environment.getUUID(), true);
             extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight());
+
+
             //this.parent.addNorth(new EnvListBox(this), 4);
             dataInitialized = true;
 
@@ -122,17 +104,47 @@ public class EnvironmentWidget {
 
     }
 
+    void createEnvironmentLayer(Environment environment)
+    {
+        Layer envLayer = extendedCanvas.addLayer(environment.getUUID());
+        envLayer.setName(environment.getName());
+        DrawableEnvironment drawableEnvironment = new DrawableEnvironment(environment);
+        extendedCanvas.addDrawingElement(drawableEnvironment, envLayer);
+
+        // create all drawingrooms
+        for (Zone r : environment.getZones()) {
+            if (r.isRoom()) {
+                DrawableRoom dr = new DrawableRoom(r);
+                extendedCanvas.addDrawingElement(dr, envLayer);
+                // TODO: Take care of the objects not in room
+                for (EnvObject obj : r.getObjects()) {
+                    DrawableObject dobj = new DrawableObject(obj);
+                    extendedCanvas.addDrawingElement(dobj, envLayer);
+                }
+            }
+        }
+
+
+    }
+
+
     public Canvas getCanvas() {
         return extendedCanvas.getCanvas();
     }
 
 
     public void setEnvironment(String envUUID) {
+
+
         for (Environment env : EnvironmentsController.getInstance().getEnvironments()) {
             if (env.getUUID().equals(envUUID)) {
                 environment = env;
-                this.dataInitialized = false;
-                break;
+                extendedCanvas.changeLayerVisibility(env.getUUID(), true);
+                //this.dataInitialized = false;
+            }
+            else
+            {
+                extendedCanvas.changeLayerVisibility(env.getUUID(), false);
             }
         }
     }
