@@ -1,4 +1,3 @@
-
 <com.freedomotic.reactions.Command>
     <name>Say current temperature of the thermometer</name>
     <receiver>app.actuators.media.tts.in</receiver>
