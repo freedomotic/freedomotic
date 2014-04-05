@@ -83,6 +83,11 @@
             <artifactId>org.restlet.ext.gwt</artifactId>
             <version>${org.restlet.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.crypto</artifactId>
+            <version>${org.restlet.version}</version>
+        </dependency>
     </dependencies>
 
     <repositories>

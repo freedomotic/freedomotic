@@ -25,6 +25,7 @@ import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.restapi.server.FreedomRestServer;
 import com.freedomotic.util.Info;
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.logging.Level;
@@ -34,11 +35,20 @@ import org.restlet.Component;
 import org.restlet.Restlet;
 import org.restlet.Server;
 import org.restlet.data.ChallengeScheme;
+import org.restlet.data.Parameter;
 import org.restlet.data.Protocol;
 import org.restlet.engine.Engine;
+import org.restlet.ext.crypto.DigestAuthenticator;
+import org.restlet.ext.crypto.DigestVerifier;
+import org.restlet.ext.crypto.internal.HttpDigestVerifier;
 import org.restlet.ext.simple.HttpServerHelper;
 import org.restlet.security.ChallengeAuthenticator;
+import org.restlet.security.LocalVerifier;
 import org.restlet.security.SecretVerifier;
+import org.restlet.security.Verifier;
+import static org.restlet.security.Verifier.RESULT_INVALID;
+import static org.restlet.security.Verifier.RESULT_VALID;
+import org.restlet.util.Series;
 
 /**
  *
@@ -83,17 +93,26 @@ public class RestApi extends com.freedomotic.api.Protocol {
             component.getServers().add(server);
             server.getContext().getParameters().add("maxTotalConnections", "50");
             //end TODO
-
+            
+            // enable SSL 
+            Server SSLserver = new Server(Protocol.HTTPS, configuration.getIntProperty("SSL_PORT", SERVER_PORT + 2 ));
+            component.getServers().add(SSLserver);
+            Series<Parameter> parameters = SSLserver.getContext().getParameters();
+            parameters.add("sslContextFactory", "org.restlet.ext.ssl.PkixSslContextFactory");
+            // Certificate's data is taken from config file
+            parameters.add("keystorePath", new File(this.getFile().getParent() + "/data/" + configuration.getStringProperty("KEYSTORE_FILE", "keystore")).getAbsolutePath());
+            parameters.add("keystorePassword", configuration.getStringProperty("KEYSTORE_PASSWORD", "password"));
+            parameters.add("keyPassword", configuration.getStringProperty("KEYSTORE_PASSWORD", "password"));
+            parameters.add("keystoreType", configuration.getStringProperty("KEYSTORE_TYPE", "JKS")); 
+            // end enable SSL
+            
             Engine.getInstance().getRegisteredServers().clear();
             Engine.getInstance().getRegisteredServers().add(new HttpServerHelper(server));
             component.getClients().add(Protocol.FILE);
 
             if (getApi().getAuth().isInited()) {
-                // Guard the restlet with BASIC authentication.
-                ChallengeAuthenticator guard = new ChallengeAuthenticator(null, ChallengeScheme.HTTP_BASIC, "testRealm");
-                // Instantiates a Verifier of identifier/secret couples based on a simple Map.
-                guard.setVerifier(new SecretVerifier() {
-
+                // Instantiates a Verifier of identifier/secret couples based on Freedomotic Auth
+                Verifier v = new SecretVerifier() {
                     @Override
                     public int verify(String identifier, char[] secret) {
                         if (getApi().getAuth().login(identifier, secret)) {
@@ -101,8 +120,15 @@ public class RestApi extends com.freedomotic.api.Protocol {
                         }
                         return RESULT_INVALID;
                     }
-                });
-
+                };
+                // Guard the restlet with BASIC authentication.
+                ChallengeAuthenticator guard = new ChallengeAuthenticator(null, false, ChallengeScheme.HTTP_BASIC, "testRealm", v);
+                
+                // WIP: Guard the restlet with DIGEST authentication.
+                DigestAuthenticator dguard = new DigestAuthenticator(null, "DigestRealm", configuration.getStringProperty("DIGEST_SECRET", "s3cr3t"));
+                dguard.setOptional(true);
+                // TODO: set proper verifier before enabling DIGEST AUTH.                
+                
                 guard.setNext(new FreedomRestServer(Info.getResourcesPath()));
                 component.getDefaultHost().attachDefault(guard);
 

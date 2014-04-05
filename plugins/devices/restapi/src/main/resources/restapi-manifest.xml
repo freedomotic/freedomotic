@@ -7,7 +7,11 @@
         <property name="category"               value="Api"/>
         <property name="short-name"             value="RestApi"/>
         <property name="startup-time"           value="on load"/>
-        <property name="permissions" value="*"/>
+        <property name="SSL_PORT"               value="8113"/>
+        <property name="KEYSTORE_FILE"          value="keystore"/>
+        <property name="KEYSTORE_TYPE"          value="JKS"/>
+        <property name="KEYSTORE_PASWORD"       value="password"/>
+        <property name="permissions"            value="*"/>
     </properties>
 </config>
 
