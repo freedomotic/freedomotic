@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 /**
  * Created by gpt on 3/04/14.
  */
-public class Layer {
+public class Layer  {
 
     ExtendedCanvas mparentCanvas;
     private String mName;
@@ -19,26 +19,22 @@ public class Layer {
     Canvas indexCanvas;
     Context2d indexContext;
 
+    private LayerPojo layer;
+
     LinkedHashMap<Integer, DrawableElement> objectsInLayer = new LinkedHashMap<Integer, DrawableElement>();
-    public Layer(ExtendedCanvas extCanvas){
+    public Layer(ExtendedCanvas extCanvas, String objectUUID){
 
         mparentCanvas = extCanvas;
         indexCanvas = Canvas.createIfSupported();
         indexContext = indexCanvas.getContext2d();
-
+        layer = new LayerPojo(objectUUID);
     }
-
 
     public int addObjectToLayer(DrawableElement de)
     {
         de.setIndexColor(generateNextValidColor());
         objectsInLayer.put(de.getIndexColor(), de);
         return de.getIndexColor();
-    }
-
-    public void clearLayer()
-    {
-        objectsInLayer.clear();
     }
 
     //Handle the objects that are being drawn in the canvas
@@ -118,11 +114,11 @@ public class Layer {
     }
 
     public String getName() {
-        return mName;
+        return getLayer().getName();
     }
 
     public void setName(String name) {
-        this.mName = name;
+        getLayer().setName(name);
     }
 
     public boolean isVisible() {
@@ -131,5 +127,9 @@ public class Layer {
 
     public void setVisible(boolean visible) {
         this.mVisible = visible;
+    }
+
+    public LayerPojo getLayer() {
+        return layer;
     }
 }

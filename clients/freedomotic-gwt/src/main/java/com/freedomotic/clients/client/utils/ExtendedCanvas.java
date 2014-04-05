@@ -7,7 +7,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -94,7 +93,7 @@ public class ExtendedCanvas {
             @Override
             public void onMouseMove(final MouseMoveEvent event) {
                 if (selectedLayer!= null) {
-                    final DrawableElement de = selectedLayer.getElementUnderCoordinates(event.getX(), event.getY());
+                    final DrawableElement de = getElementUnderCoordinates(event.getX(), event.getY());
                     if ((de == null && elementUnderMouse != null) || (de != null && elementUnderMouse != null && de != elementUnderMouse))
                         elementUnderMouse.OnMouseLeft(canvas);
                     if (de != null) {
@@ -167,7 +166,7 @@ public class ExtendedCanvas {
 
     public Layer addLayer(String objectUUID)
     {
-        Layer newLayer = new Layer(this);
+        Layer newLayer = new Layer(this, objectUUID);
         layers.put(objectUUID, newLayer);
         return newLayer;
 
@@ -179,6 +178,37 @@ public class ExtendedCanvas {
         if (visibility == true)
             selectedLayer = layer;
         layer.setVisible(visibility);
+    }
+
+    public DrawableElement getElementUnderCoordinates(int x, int y)
+    {
+        //TODO: this method should be changed to search from top to bottom in the visible layers
+        //This is the schema, we only need to generate ordererLayers
+//        for(Layer layer: orderedLayers)
+//        {
+//            if (layer.isVisible())
+//            {
+//                DrawableElement de = layer.getElementUnderCoordinates(x,y);
+//                if (de!= null)
+//                {
+//                    return de;
+//                }
+//
+//            }
+//
+//        }
+//        return de;
+        return selectedLayer.getElementUnderCoordinates(x, y);
+
+    }
+
+    public List<LayerPojo> getLayers() {
+        ArrayList<LayerPojo> layersPojos = new ArrayList<>();
+        for (Layer layer : layers.values()) {
+            layersPojos.add(layer.getLayer());
+
+        }
+        return layersPojos;
     }
 
     //endregion

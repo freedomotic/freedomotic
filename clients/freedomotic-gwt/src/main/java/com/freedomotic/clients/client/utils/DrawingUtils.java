@@ -3,7 +3,6 @@ package com.freedomotic.clients.client.utils;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.geometry.FreedomPolygon;
 
-import java.awt.*;
 import java.awt.geom.Path2D;
 
 public class DrawingUtils {

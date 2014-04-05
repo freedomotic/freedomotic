@@ -1,23 +1,16 @@
 package com.freedomotic.clients.client.utils;
 
 import com.freedomotic.clients.client.api.EnvironmentsController;
-import com.freedomotic.clients.client.widgets.EnvObjectProperties;
+import com.freedomotic.clients.client.widgets.LayerList;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.EnvObject;
 import com.google.gwt.canvas.client.Canvas;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-
-import java.util.ArrayList;
 
 /**
  * Created by gpt on 1/04/14.
@@ -28,6 +21,7 @@ public class EnvironmentWidget {
 
     //TODO: add get /set
     boolean dataInitialized = false;
+    boolean layerControllerAttached = false;
     //timer refresh rate, in milliseconds
     static final int refreshRate = 25;
 
@@ -40,6 +34,8 @@ public class EnvironmentWidget {
     private DockLayoutPanel parent;
     private ExtendedCanvas extendedCanvas;
 
+    private LayerList mLayerList;
+
     public EnvironmentWidget(DockLayoutPanel parent) {
 
         this.parent = parent;
@@ -50,6 +46,11 @@ public class EnvironmentWidget {
             @Override
             public void run() {
                 if (dataInitialized) {
+                    if (!layerControllerAttached && mLayerList!= null) {
+                        mLayerList.populateData(extendedCanvas.getLayers());
+                        layerControllerAttached = true;
+                    }
+
                     extendedCanvas.draw();
                 } else {
                     initializeData();
@@ -95,7 +96,8 @@ public class EnvironmentWidget {
             extendedCanvas.changeLayerVisibility(environment.getUUID(), true);
             extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight());
 
-
+            if (mLayerList != null)
+                mLayerList.populateData(extendedCanvas.getLayers());
             //this.parent.addNorth(new EnvListBox(this), 4);
             dataInitialized = true;
 
@@ -134,8 +136,6 @@ public class EnvironmentWidget {
 
 
     public void setEnvironment(String envUUID) {
-
-
         for (Environment env : EnvironmentsController.getInstance().getEnvironments()) {
             if (env.getUUID().equals(envUUID)) {
                 environment = env;
@@ -147,6 +147,12 @@ public class EnvironmentWidget {
                 extendedCanvas.changeLayerVisibility(env.getUUID(), false);
             }
         }
+    }
+
+    public void setLayerList(LayerList layerList)
+    {
+        mLayerList = layerList;
+        layerList.setAssociatedEnvironment(this);
     }
 
 }
