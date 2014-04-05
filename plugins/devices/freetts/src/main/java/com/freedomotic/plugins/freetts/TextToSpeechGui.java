@@ -8,7 +8,7 @@
  *
  * Created on 9-dic-2009, 10.44.26
  */
-package com.freedomotic.plugins.tts;
+package com.freedomotic.plugins.freetts;
 
 /**
  *

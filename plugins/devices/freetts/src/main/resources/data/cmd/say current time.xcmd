@@ -1,4 +1,3 @@
-
 <com.freedomotic.reactions.Command>
     <name>Say current time</name>
     <receiver>app.actuators.media.tts.in</receiver>

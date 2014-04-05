@@ -1,22 +1,23 @@
-/*
- Copyright FILE Enrico Nicoletti, 2012-2013
-
- This file is part of FREEDOMOTIC.
-
- FREEDOMOTIC is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- FREEDOMOTIC is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ *
+ * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ * 
+* This file is part of Freedomotic
+ * 
+* This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ * 
+* This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+* You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins.tts;
+package com.freedomotic.plugins.freetts;
 
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
@@ -30,17 +31,15 @@ import com.freedomotic.util.Info;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.logging.Logger;
 
-/**
- *
- * @author Enrico
- */
 public class TextToSpeech extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(TextToSpeech.class.getName());
     private com.sun.speech.freetts.Voice voice;
 
     public TextToSpeech() {
-        super("Text to Speech", "/com.freedomotic.freetts/text-to-speech.xml");
+        super("Text to Speech", "/freetts/text-to-speech.xml");
     }
 
     @Override
@@ -55,7 +54,7 @@ public class TextToSpeech extends Protocol {
 
     public void loadVoice() {
         try {
-            File mbrola = new File(Info.PATH_DEVICES_FOLDER + "/com.freedomotic.freetts/data/voices/");
+            File mbrola = new File(Info.PATH_DEVICES_FOLDER + "/freetts/data/voices/");
             if ((mbrola.exists())) {
                 System.setProperty("mbrola.base", mbrola.getAbsolutePath().toString());
                 voice = VoiceManager.getInstance().getVoice(configuration.getProperty("mbrola-voice"));
@@ -67,14 +66,14 @@ public class TextToSpeech extends Protocol {
             VoiceManager voiceManager = VoiceManager.getInstance();
             Voice[] voices = voiceManager.getVoices();
             if (voices.length <= 0) {
-                Freedomotic.logger.severe("Cannot use text to speech, no voice found");
+                LOG.severe("Cannot use text to speech, no voice found");
                 setDescription("Cannot use text to speech, no voice found");
                 stop();
             } else {
                 voice.allocate();
             }
         } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -82,7 +81,7 @@ public class TextToSpeech extends Protocol {
         try {
             new TextToSpeech.Speaker(message).start();
         } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
