@@ -66,11 +66,12 @@ public class EnvironmentWidget {
                 int parentHeight = getCanvas().getParent().getOffsetHeight();
                 extendedCanvas.setSize(parentWidth, parentHeight);
                 if (environment == null) {
-                    extendedCanvas.fitToScreen(parentWidth, parentHeight);
+                    extendedCanvas.fitToScreen(parentWidth, parentHeight, 0, 0);
                 }
                 else
                 {
-                    extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight());
+                    //TODO: Maybe we need to center on the environment
+                    extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), 0 ,0);
 
                 }
             }
@@ -94,7 +95,8 @@ public class EnvironmentWidget {
             }
             environment = EnvironmentsController.getInstance().getEnvironments().get(0);
             extendedCanvas.changeLayerVisibility(environment.getUUID(), true);
-            extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight());
+            //TODO: maybe we need to center on the environment coordinates
+            extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), 0 ,0);
 
             if (mLayerList != null)
                 mLayerList.populateData(extendedCanvas.getLayers());
@@ -110,6 +112,7 @@ public class EnvironmentWidget {
     {
         Layer envLayer = extendedCanvas.addLayer(environment.getUUID());
         envLayer.setName(environment.getName());
+        envLayer.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
         DrawableEnvironment drawableEnvironment = new DrawableEnvironment(environment);
         extendedCanvas.addDrawingElement(drawableEnvironment, envLayer);
 

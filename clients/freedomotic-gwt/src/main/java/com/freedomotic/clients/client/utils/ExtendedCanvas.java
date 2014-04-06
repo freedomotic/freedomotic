@@ -2,14 +2,12 @@ package com.freedomotic.clients.client.utils;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.*;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by gpt on 31/03/14.
@@ -30,8 +28,8 @@ public class ExtendedCanvas {
     private static int CANVAS_HEIGHT = 900 + (BORDER_X * 2);
 
     private double mScaleFactor = 1;
-    private double mPosX;
-    private double mPosY;
+    private double mPosX = 0;
+    private double mPosY = 0;
     //private DockLayoutPanel parent;
 
     public ExtendedCanvas() {
@@ -71,6 +69,7 @@ public class ExtendedCanvas {
     {
         //TODO: search for the layer and add the element
         layer.addObjectToLayer(de);
+        de.setParentCanvas(this);
     }
 
     DrawableElement elementUnderMouse;
@@ -89,10 +88,29 @@ public class ExtendedCanvas {
             }
         });
 
+        canvas.addDoubleClickHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                if (selectedLayer != null) {
+                    final DrawableElement de = selectedLayer.getElementUnderCoordinates(event.getX(), event.getY());
+                    if (de != null) {
+                        de.OnDoubleClick(canvas);
+                        return;
+                    }
+                }
+                //TODO: this is wrong here. The extendedCanvas doesn't have to know about what the doubleclick does
+                //Find where to move this
+                int parentWidth = getCanvas().getParent().getOffsetWidth();
+                int parentHeight = getCanvas().getParent().getOffsetHeight();
+                setSize(parentWidth, parentHeight);
+                fitToScreen(parentWidth, parentHeight, 0, 0);
+            }
+        });
+
         canvas.addMouseMoveHandler(new MouseMoveHandler() {
             @Override
             public void onMouseMove(final MouseMoveEvent event) {
-                if (selectedLayer!= null) {
+                if (selectedLayer != null) {
                     final DrawableElement de = getElementUnderCoordinates(event.getX(), event.getY());
                     if ((de == null && elementUnderMouse != null) || (de != null && elementUnderMouse != null && de != elementUnderMouse))
                         elementUnderMouse.OnMouseLeft(canvas);
@@ -136,7 +154,7 @@ public class ExtendedCanvas {
 
 
     //Adapt the "original coordinates" from freedomotic to the canvas size
-    public void fitToScreen(double width, double height) {
+    public void fitToScreen(double width, double height, double posX, double posY) {
 
         double xSize = getCANVAS_WIDTH() - BORDER_X;
         double ySize = getCANVAS_HEIGHT() - BORDER_Y - 200;
@@ -151,14 +169,21 @@ public class ExtendedCanvas {
         } else {
             mScaleFactor = yScale;
         }
-        mPosX = 0;//MARGIN;
-        mPosY = 0;//MARGIN;
+        mPosX = -posX;//MARGIN;
+        mPosY = -posY;//MARGIN;
         updateElements();
 
     }
 
     public double getScaleFactor() {
         return mScaleFactor;
+    }
+    public double getPosX() {
+        return mPosX;
+    }
+
+    public double getPosY() {
+        return mPosY;
     }
 
 
@@ -183,21 +208,20 @@ public class ExtendedCanvas {
     public DrawableElement getElementUnderCoordinates(int x, int y)
     {
         //TODO: this method should be changed to search from top to bottom in the visible layers
-        //This is the schema, we only need to generate ordererLayers
-//        for(Layer layer: orderedLayers)
-//        {
-//            if (layer.isVisible())
-//            {
-//                DrawableElement de = layer.getElementUnderCoordinates(x,y);
-//                if (de!= null)
-//                {
-//                    return de;
-//                }
-//
-//            }
-//
-//        }
-//        return de;
+        /*ListIterator<Layer> iter = (ListIterator<Layer>) layers.values().iterator();
+        while(iter.hasPrevious())
+        {
+            Layer layer = iter.previous();
+            if (layer.isVisible()) {
+                DrawableElement de = layer.getElementUnderCoordinates(x, y);
+                if (de != null) ;
+                {
+                    return de;
+
+                }
+            }
+        }
+        return null;*/
         return selectedLayer.getElementUnderCoordinates(x, y);
 
     }

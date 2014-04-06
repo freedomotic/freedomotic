@@ -1,5 +1,6 @@
 package com.freedomotic.clients.client.widgets;
 
+import com.freedomotic.clients.client.resources.MyCellListResources;
 import com.freedomotic.clients.client.widgets.celltypes.LayerCell;
 import com.freedomotic.clients.client.utils.EnvironmentWidget;
 import com.freedomotic.clients.client.utils.LayerPojo;
@@ -45,8 +46,6 @@ public class LayerList extends Composite {
 
     @UiConstructor
     public LayerList() {
-        layerList =  new CellList<LayerPojo>(new LayerCell());
-
         // Define a key provider for a Contact. We use the unique ID as the key,
         // which allows to maintain selection even if the name changes.
         ProvidesKey keyProvider = new ProvidesKey<LayerPojo>() {
@@ -56,7 +55,13 @@ public class LayerList extends Composite {
             }
         };
 
+        //TODO: The custom style css doesn't work if the selectionmodel is used!!!
+        MyCellListResources.INSTANCE.cellListStyle().ensureInjected();
+        layerList =  new CellList<LayerPojo>(new LayerCell(), MyCellListResources.INSTANCE, keyProvider);
+
+
         selectionModel = new SingleSelectionModel<LayerPojo>(keyProvider);
+
         layerList.setSelectionModel(selectionModel);
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler(){
             @Override

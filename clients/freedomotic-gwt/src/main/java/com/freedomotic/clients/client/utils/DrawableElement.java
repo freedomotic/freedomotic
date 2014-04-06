@@ -11,13 +11,15 @@ public abstract class DrawableElement {
 
     int indexColor;
     protected double mScaleFactor = 1;
-    protected double mPosX;
-    protected double mPosY;
+    protected double mPosX = 0;
+    protected double mPosY = 0;
     protected Shape elementBounds;
+    protected ExtendedCanvas parentCanvas;
 
     public DrawableElement() {
 
     }
+
 
     public abstract String getName();
 
@@ -29,7 +31,7 @@ public abstract class DrawableElement {
         return indexColor;
     }
 
-    //mouseEvents
+    //region mouseEvents
     public void OnMouseOver(Canvas canvas)
     {}
 
@@ -37,7 +39,12 @@ public abstract class DrawableElement {
     {}
 
     public void OnClick(Canvas canvas)
-    {}
+    {
+    }
+    public void OnDoubleClick(Canvas canvas)
+    {
+    }
+    //end region
 
 
     public void beforeDraw(Context2d context, Context2d indexContext){
@@ -54,6 +61,8 @@ public abstract class DrawableElement {
         //context.translate(BORDER_X, BORDER_Y);
         indexContext.scale(mScaleFactor, mScaleFactor);
         //indexContext.translate(BORDER_X, BORDER_Y);
+        context.translate(mPosX,mPosY);
+        indexContext.translate(mPosX,mPosY);
 
         paint(context, indexContext);
 
@@ -82,7 +91,33 @@ public abstract class DrawableElement {
     }
 
 
+    public ExtendedCanvas getParentCanvas() {
+        return parentCanvas;
+    }
+
+    public void setParentCanvas(ExtendedCanvas parentCanvas) {
+        this.parentCanvas = parentCanvas;
+    }
+    public void setPosition(double posX, double posY)
+    {
+        setPosX(posX);
+        setPosY(posY);
+    }
 
 
+    public double getPosX() {
+        return mPosX;
+    }
 
+    public void setPosX(double posX) {
+        this.mPosX = posX;
+    }
+
+    public double getPosY() {
+        return mPosY;
+    }
+
+    public void setPosY(double posY) {
+        this.mPosY = posY;
+    }
 }

@@ -191,8 +191,8 @@ public class DrawableObject extends DrawableElement {
         eop.setPopupPositionAndShow(new EnvObjectProperties.PositionCallback() {
             @Override
             public void setPosition(int offsetWidth, int offsetHeight) {
-                int newX = (int) ((dx + ((Rectangle)elementBounds).width) * scale);
-                int newY = (int) (dy * scale);
+                int newX = (int) ((dx + ((Rectangle)elementBounds).width + mPosX) * scale);
+                int newY = (int) ((dy + mPosY)* scale);
                 eop.setPopupPosition(newX + left, newY + top);
             }
         });
