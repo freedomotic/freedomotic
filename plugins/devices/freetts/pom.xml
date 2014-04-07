@@ -37,7 +37,7 @@
         <freedomotic.package.vendor.company>Freedomotic</freedomotic.package.vendor.company>
         <freedomotic.package.vendor.nation>it</freedomotic.package.vendor.nation>
         <freedomotic.framework.required.major>5</freedomotic.framework.required.major>
-        <freedomotic.framework.required.minor>5</freedomotic.framework.required.minor>
+        <freedomotic.framework.required.minor>6</freedomotic.framework.required.minor>
         <freedomotic.framework.required.build>x</freedomotic.framework.required.build>
         <!--don't like this but works for the moment -->
         <freedomotic.synch.dist.path>../../../framework/freedomotic-core/plugins/</freedomotic.synch.dist.path>
@@ -58,12 +58,53 @@
             <version>${project.parent.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>  
+            <groupId>org.mobicents.external.freetts</groupId>  
+            <artifactId>cmu_us_kal</artifactId>  
+            <version>1.0</version>  
+        </dependency>  
+        <dependency>  
+            <groupId>org.mobicents.external.freetts</groupId>  
+            <artifactId>cmu_time_awb</artifactId>  
+            <version>1.0</version>  
+        </dependency>  
+        <dependency>  
+            <groupId>org.mobicents.external.freetts</groupId>  
+            <artifactId>freetts</artifactId>  
+            <version>1.0</version>  
+        </dependency>  
+        <dependency>  
+            <groupId>org.mobicents.external.freetts</groupId>  
+            <artifactId>en_us</artifactId>  
+            <version>1.0</version>  
+        </dependency>  
+        <dependency>  
+            <groupId>org.mobicents.external.freetts</groupId>  
+            <artifactId>cmulex</artifactId>  
+            <version>1.0</version>  
+        </dependency>  
         <dependency>
             <groupId>org.mobicents.external.freetts</groupId>
-            <artifactId>freetts</artifactId>
+            <artifactId>cmudict04</artifactId>
             <version>1.0</version>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>org.mobicents.external.freetts</groupId>
+            <artifactId>mbrola</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+    </dependencies>  
+    <repositories>  
+        <repository>
+            <id>java.net-m2</id>
+            <name>java.net - Maven 2</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/java.net-m2</url>
+        </repository>
+        <repository>
+            <id>jboss-releases</id>
+            <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>  
     <build>
         <plugins>
             <plugin>
