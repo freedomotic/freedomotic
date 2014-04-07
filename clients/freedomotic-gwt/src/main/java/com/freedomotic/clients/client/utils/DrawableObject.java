@@ -148,7 +148,7 @@ public class DrawableObject extends DrawableElement {
         {
             int left = canvas.getAbsoluteLeft();
             int top = canvas.getAbsoluteTop();
-            showBehavioursPanel(left, top, mScaleFactor);
+            showBehavioursPanel(left, top, parentCanvas.getScaleFactor());
 
         }
 
@@ -170,7 +170,7 @@ public class DrawableObject extends DrawableElement {
         {
             int left = canvas.getAbsoluteLeft();// + dobj.getCurrentWidth() / 4;
             int top =  canvas.getAbsoluteTop();// - dobj.getCurrentHeight() / 2;
-            showBehavioursPanel(left, top, mScaleFactor);
+            showBehavioursPanel(left, top, parentCanvas.getScaleFactor());
         }
 
     }
@@ -191,8 +191,8 @@ public class DrawableObject extends DrawableElement {
         eop.setPopupPositionAndShow(new EnvObjectProperties.PositionCallback() {
             @Override
             public void setPosition(int offsetWidth, int offsetHeight) {
-                int newX = (int) ((dx + ((Rectangle)elementBounds).width + mPosX) * scale);
-                int newY = (int) ((dy + mPosY)* scale);
+                int newX = (int) ((dx + ((Rectangle)elementBounds).width +parentCanvas.getPosX()) * scale);
+                int newY = (int) ((dy + parentCanvas.getPosY())* scale);
                 eop.setPopupPosition(newX + left, newY + top);
             }
         });

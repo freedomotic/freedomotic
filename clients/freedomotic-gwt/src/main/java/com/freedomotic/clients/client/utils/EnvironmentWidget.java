@@ -28,8 +28,8 @@ public class EnvironmentWidget {
     private static final double MARGIN = 50;
     private static int BORDER_X = 10; //the empty space around the map
     private static int BORDER_Y = 10; //the empty space around the map
-    private static int CANVAS_WIDTH = 1300 + (BORDER_X * 2);
-    private static int CANVAS_HEIGHT = 900 + (BORDER_X * 2);
+   // private static int CANVAS_WIDTH = 1300 + (BORDER_X * 2);
+   // private static int CANVAS_HEIGHT = 900 + (BORDER_X * 2);
 
     private DockLayoutPanel parent;
     private ExtendedCanvas extendedCanvas;
@@ -62,11 +62,10 @@ public class EnvironmentWidget {
         Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
-                int parentWidth = getCanvas().getParent().getOffsetWidth();
-                int parentHeight = getCanvas().getParent().getOffsetHeight();
-                extendedCanvas.setSize(parentWidth, parentHeight);
+                extendedCanvas.setSize();
                 if (environment == null) {
-                    extendedCanvas.fitToScreen(parentWidth, parentHeight, 0, 0);
+                    //TODO: move to extended canvas
+                    extendedCanvas.fitToScreen(extendedCanvas.getCanvasWitdh(), extendedCanvas.getCanvasWitdh(), 0, 0);
                 }
                 else
                 {
@@ -78,12 +77,18 @@ public class EnvironmentWidget {
         });
 
 
+
     }
 
     void initCanvas() {
         extendedCanvas = new ExtendedCanvas();
-        extendedCanvas.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
+        //extendedCanvas.setSize();
         extendedCanvas.registerHandlers();
+    }
+
+    public void resizeToFit()
+    {
+        extendedCanvas.setSize();
     }
 
     void initializeData() {
@@ -110,9 +115,8 @@ public class EnvironmentWidget {
 
     void createEnvironmentLayer(Environment environment)
     {
-        Layer envLayer = extendedCanvas.addLayer(environment.getUUID());
-        envLayer.setName(environment.getName());
-        envLayer.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
+        Layer envLayer = extendedCanvas.addLayer(environment.getUUID(), environment.getName());
+
         DrawableEnvironment drawableEnvironment = new DrawableEnvironment(environment);
         extendedCanvas.addDrawingElement(drawableEnvironment, envLayer);
 
@@ -143,6 +147,7 @@ public class EnvironmentWidget {
             if (env.getUUID().equals(envUUID)) {
                 environment = env;
                 extendedCanvas.changeLayerVisibility(env.getUUID(), true);
+                extendedCanvas.fitToScreen(environment.getWidth(),environment.getHeight(), 0, 0);
                 //this.dataInitialized = false;
             }
             else

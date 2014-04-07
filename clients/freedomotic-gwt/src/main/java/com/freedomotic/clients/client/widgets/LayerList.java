@@ -59,7 +59,6 @@ public class LayerList extends Composite {
         MyCellListResources.INSTANCE.cellListStyle().ensureInjected();
         layerList =  new CellList<LayerPojo>(new LayerCell(), MyCellListResources.INSTANCE, keyProvider);
 
-
         selectionModel = new SingleSelectionModel<LayerPojo>(keyProvider);
 
         layerList.setSelectionModel(selectionModel);

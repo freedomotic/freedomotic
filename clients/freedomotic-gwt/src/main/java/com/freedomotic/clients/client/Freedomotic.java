@@ -112,9 +112,10 @@ public class Freedomotic implements EntryPoint {
         rightBorderpanel.setStyleName("header_panel");
         myDockLayoutPanel.addEast(rightBorderpanel, 2);
         myDockLayoutPanel.addEast(layerList, 17);
-
-        rootPanel.add(myDockLayoutPanel);
         myDockLayoutPanel.add(floorPlan.getCanvas());
+        rootPanel.add(myDockLayoutPanel);
+        floorPlan.resizeToFit();
+
 
 
         //Temporal hack to the configuration until we decide about it	

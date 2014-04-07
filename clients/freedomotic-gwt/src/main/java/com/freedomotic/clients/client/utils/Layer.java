@@ -88,7 +88,7 @@ public class Layer  {
 
     public void draw()
     {
-        indexContext.clearRect(0, 0, mparentCanvas.getCANVAS_WIDTH(),  mparentCanvas.getCANVAS_HEIGHT());
+        indexContext.clearRect(0, 0, mparentCanvas.getCanvasWitdh(),  mparentCanvas.getCanvasHeight());
 
         if (mVisible) {
             for (DrawableElement de : objectsInLayer.values()) {
@@ -101,14 +101,13 @@ public class Layer  {
     public void updateElements()
     {
         for (DrawableElement de : objectsInLayer.values()) {
-            de.setScaleFactor(mparentCanvas.getScaleFactor());
-            de.setPosX(mparentCanvas.getPosX());
-            de.setPosY(mparentCanvas.getPosY());
             de.updateElement();
         }
     }
 
-    public void setSize(int width, int height) {
+    public void setSize() {
+        int width = mparentCanvas.getCanvasWitdh();
+        int height = mparentCanvas.getCanvasHeight();
         indexCanvas.setWidth(width + "px");
         indexCanvas.setHeight(height + "px");
         indexCanvas.setCoordinateSpaceWidth(width);

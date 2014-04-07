@@ -10,9 +10,6 @@ import java.awt.Color;
 public abstract class DrawableElement {
 
     int indexColor;
-    protected double mScaleFactor = 1;
-    protected double mPosX = 0;
-    protected double mPosY = 0;
     protected Shape elementBounds;
     protected ExtendedCanvas parentCanvas;
 
@@ -56,13 +53,12 @@ public abstract class DrawableElement {
 
         context.save();
         indexContext.save();
-
-        context.scale(mScaleFactor, mScaleFactor);
-        //context.translate(BORDER_X, BORDER_Y);
-        indexContext.scale(mScaleFactor, mScaleFactor);
-        //indexContext.translate(BORDER_X, BORDER_Y);
-        context.translate(mPosX,mPosY);
-        indexContext.translate(mPosX,mPosY);
+        //TODO: if the scale and the position are linked to the extended canvas, why store on each element? Use the parentCanvasOne
+        //Also, why not just scale and translate the context once for each object?
+        context.scale(parentCanvas.getScaleFactor(), parentCanvas.getScaleFactor());
+        indexContext.scale(parentCanvas.getScaleFactor(), parentCanvas.getScaleFactor());
+        context.translate(parentCanvas.getPosX(),parentCanvas.getPosY());
+        indexContext.translate(parentCanvas.getPosX(),parentCanvas.getPosY());
 
         paint(context, indexContext);
 
@@ -86,10 +82,6 @@ public abstract class DrawableElement {
 
     public abstract void updateElement();
 
-    public void setScaleFactor(double mScaleFactor) {
-        this.mScaleFactor = mScaleFactor;
-    }
-
 
     public ExtendedCanvas getParentCanvas() {
         return parentCanvas;
@@ -98,26 +90,5 @@ public abstract class DrawableElement {
     public void setParentCanvas(ExtendedCanvas parentCanvas) {
         this.parentCanvas = parentCanvas;
     }
-    public void setPosition(double posX, double posY)
-    {
-        setPosX(posX);
-        setPosY(posY);
-    }
 
-
-    public double getPosX() {
-        return mPosX;
-    }
-
-    public void setPosX(double posX) {
-        this.mPosX = posX;
-    }
-
-    public double getPosY() {
-        return mPosY;
-    }
-
-    public void setPosY(double posY) {
-        this.mPosY = posY;
-    }
 }
