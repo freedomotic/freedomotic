@@ -36,14 +36,14 @@ import org.restlet.resource.ServerResource;
 
 public class ImageResourceServerResource extends ServerResource implements ImageResource {
 
-    private static volatile String imageFilePath;
+    private volatile String imageFilePath;
 
     //TODO: this is a first implementation. Use a restlet redirector instead.
     @Override
     public void doInit() {
         String fileName = (String) getRequest().getAttributes().get("filename");
         imageFilePath = ResourcesManager.getFile(Info.PATH_RESOURCES_FOLDER, fileName).getPath();
-
+        System.out.println("RESTAPI path for "+ fileName +": " + imageFilePath);
     }
 
     @Override

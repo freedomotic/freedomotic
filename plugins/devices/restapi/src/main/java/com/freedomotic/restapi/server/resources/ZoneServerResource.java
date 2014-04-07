@@ -37,7 +37,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 public class ZoneServerResource extends ServerResource implements ZoneResource {
 
-    private static volatile Zone zone;
+    private volatile Zone zone;
 
     @Override
     public void doInit() {

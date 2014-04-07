@@ -38,7 +38,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 public class ObjectServerResource extends ServerResource implements ObjectResource {
 
-    private static volatile EnvObject envObject;
+    private volatile EnvObject envObject;
     String name;
 
     @Override
@@ -67,6 +67,6 @@ public class ObjectServerResource extends ServerResource implements ObjectResour
 
     @Override
     public EnvObject retrieveObject() {
-        return ObjectServerResource.envObject;
+        return envObject;
     }
 }
