@@ -37,7 +37,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 public class EnvironmentServerResource extends ServerResource implements EnvironmentResource {
 
-    private static volatile Environment env;
+    private volatile Environment env;
 
     @Override
     public void doInit() {
