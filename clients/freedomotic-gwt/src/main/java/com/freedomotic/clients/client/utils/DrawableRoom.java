@@ -83,13 +83,20 @@ public class DrawableRoom extends DrawableElement {
     @Override
     public void OnMouseOver(Canvas canvas)
     {
-        highlight = true;
+        if (!highlight) {
+            parentCanvas.Invalidate();
+            highlight = true;
+        }
+
     }
 
     @Override
     public void OnMouseLeft(Canvas canvas)
     {
-        highlight = false;
+        if (highlight) {
+            parentCanvas.Invalidate();
+            highlight = false;
+        }
     }
 
     @Override
@@ -112,11 +119,8 @@ public class DrawableRoom extends DrawableElement {
         }
         //draw the text
         g.setFillColor(Color.BLACK);
-        //context.setTextBaseline("top");
         context.setFont("18px Arial");
         g.drawString(roomObject.getName(), (int)(roomBounds.getMinX() + 22), (int)(roomBounds.getMinY() + 22));
-
-        //context.fillText(roomObject.getName(), roomBounds.getMinX() + 22, roomBounds.getMinY() + 22);
 
         //move to a method on the canvas
         paintIndex(indexContext);

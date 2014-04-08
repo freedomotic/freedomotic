@@ -2,7 +2,9 @@ package com.freedomotic.clients.client.utils;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.canvas.dom.client.ImageData;
+import com.google.gwt.core.client.GWT;
 
 import java.awt.*;
 import java.util.LinkedHashMap;
@@ -40,7 +42,7 @@ public class Layer  {
     //Handle the objects that are being drawn in the canvas
 
     //region Index
-    private int redValue = 0;
+    private int redValue = 20;
     private int greenValue = 0;
     private int blueValue = 0;
     private int alphaValue = 255;
@@ -72,7 +74,11 @@ public class Layer  {
             //retrieve the color under the click on the ghost canvas
             ImageData id = indexContext.getImageData(x, y, 1, 1);
             Color c = new Color(id.getRedAt(posX, posY), id.getGreenAt(posX, posY), id.getBlueAt(posX, posY), id.getAlphaAt(posX, posY));
-            //GWT.log(Integer.toString(c.getRGB()));
+            GWT.log(Integer.toString(c.getRGB()));
+            if (c.getRGB() == -16252928)
+            {
+                GWT.log(Integer.toString(c.getRGB()));
+            }
             if (objectsInLayer.containsKey(c.getRGB()));
             {
                 if (objectsInLayer.get(c.getRGB()) != null) {
@@ -88,13 +94,26 @@ public class Layer  {
 
     public void draw()
     {
-        indexContext.clearRect(0, 0, mparentCanvas.getCanvasWitdh(),  mparentCanvas.getCanvasHeight());
-
+        //indexContext.clearRect(0, 0, mparentCanvas.getCanvasWitdh(),  mparentCanvas.getCanvasHeight());
+        CssColor redrawColor = CssColor.make("rgba(255,255,5,255)");
+        //indexContext.setFillStyle(redrawColor);
+        //indexContext.fillRect(0, 0, mparentCanvas.getCanvasWitdh(), mparentCanvas.getCanvasHeight());
         if (mVisible) {
-            for (DrawableElement de : objectsInLayer.values()) {
-                de.draw(mparentCanvas.getContext(), indexContext);
+            Context2d context = mparentCanvas.getContext();
+            context.save();
+            indexContext.save();
+            //TODO: if the scale and the position are linked to the extended canvas, why store on each element? Use the parentCanvasOne
+            //Also, why not just scale and translate the context once for each object?
+            context.scale(mparentCanvas.getScaleFactor(), mparentCanvas.getScaleFactor());
+            indexContext.scale(mparentCanvas.getScaleFactor(), mparentCanvas.getScaleFactor());
+            context.translate(mparentCanvas.getPosX(),mparentCanvas.getPosY());
+            indexContext.translate(mparentCanvas.getPosX(),mparentCanvas.getPosY());
 
+            for (DrawableElement de : objectsInLayer.values()) {
+                de.draw(context, indexContext);
             }
+            indexContext.restore();
+            context.restore();
         }
     }
 

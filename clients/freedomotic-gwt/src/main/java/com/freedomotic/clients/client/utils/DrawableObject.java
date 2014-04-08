@@ -6,6 +6,7 @@ import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
 import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.user.client.ui.Image;
 import com.levigo.util.gwtawt.client.WebGraphics;
@@ -20,8 +21,6 @@ import java.awt.geom.Path2D;
 public class DrawableObject extends DrawableElement {
 
     private EnvObject envObject;
-//	private Bitmap ghostBitmap;
-//	private Image ghostImage;
     double rotation = 0;
     double dx = 0;
     double dy = 0;
@@ -90,28 +89,33 @@ public class DrawableObject extends DrawableElement {
     }
     @Override
     public void paint(Context2d context, Context2d indexContext) {
-
+        double rotation_rad = rotation * (Math.PI/180);
         context.translate(dx, dy);
-        context.rotate(rotation);
+        context.rotate(rotation_rad);
 
         WebGraphics g = new WebGraphics(context);
         if (ie!= null)
             context.drawImage(ie, 0, 0, box.getWidth(), box.getHeight());
         //draw box surronding object
         //draw the border
-        context.setLineWidth(1);
+        context.setLineWidth(5);
         g.setColor(new Color(137, 174, 32));
-        g.draw(box);
-        context.rotate(-rotation);
+        g.draw(elementBounds);
+        //Color c = new Color(getIndexColor());
+        //g.setFillColor(c);
+        //g.fill(elementBounds);
+
+        context.rotate(-rotation_rad);
         context.translate(-dx, -dy);
+
 
         //Draw over the ghost
         indexContext.translate(dx, dy);
-        indexContext.rotate(rotation);
+        indexContext.rotate(rotation_rad);
 
         paintIndex(indexContext);
 
-        indexContext.rotate(-rotation);
+        indexContext.rotate(-rotation_rad);
         indexContext.translate(-dx, -dy);
 
     }

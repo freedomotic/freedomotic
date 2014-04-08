@@ -36,7 +36,6 @@ public class ExtendedCanvas {
     private double mPosY = 0;
     //private DockLayoutPanel parent;
 
-    final CssColor redrawColor = CssColor.make("rgba(255,255,255,0.6)");
     public ExtendedCanvas() {
         canvas = Canvas.createIfSupported();
         backbuffer = Canvas.createIfSupported();
@@ -46,11 +45,11 @@ public class ExtendedCanvas {
 
     public int getCanvasWitdh()
     {
-        return canvas.getParent().getOffsetWidth();
+        return canvas.getParent().getOffsetWidth();// - BORDER_X - 200;
     }
     public int getCanvasHeight()
     {
-        return canvas.getParent().getOffsetHeight();
+        return canvas.getParent().getOffsetHeight();// - BORDER_Y - 200;
     }
 
 
@@ -63,11 +62,6 @@ public class ExtendedCanvas {
     {
         int width = getCanvasWitdh();
         int height = getCanvasHeight();
-
-        if (width == 0) {
-            width = Window.getClientHeight();
-            height = Window.getClientWidth();
-        }
 
         canvas.setWidth(width + "px");
         canvas.setHeight(height + "px");
@@ -139,17 +133,24 @@ public class ExtendedCanvas {
 
     }
 
-
+    boolean invalid = true;
     void draw() {
-        backBufferContext.setFillStyle(redrawColor);
-        backBufferContext.fillRect(0, 0, getCanvasWitdh(), getCanvasHeight());
+        if (invalid) {
+            backBufferContext.clearRect(0, 0, getCanvasWitdh(), getCanvasHeight());
 
-        for(Layer layer: layers.values())
-        {
-            layer.draw();
+            for (Layer layer : layers.values()) {
+                layer.draw();
+            }
+            ctx.clearRect(0, 0, getCanvasWitdh(), getCanvasHeight());
+            invalid = false;
         }
         ctx.clearRect(0, 0, getCanvasWitdh(), getCanvasHeight());
-        ctx.drawImage(backBufferContext.getCanvas(),0,0);
+        ctx.drawImage(backBufferContext.getCanvas(), 0, 0);
+
+    }
+    public void Invalidate()
+    {
+        invalid = true;
 
     }
 
@@ -174,25 +175,32 @@ public class ExtendedCanvas {
 
     //Adapt the "original coordinates" from freedomotic to the canvas size
     public void fitToScreen(double width, double height, double posX, double posY) {
-
-        double xSize = getCanvasWitdh() - BORDER_X;
-        double ySize = getCanvasHeight() - BORDER_Y - 200;
+        //TODO: check for a maximum scale
+        double xSize = getCanvasWitdh();
+        double ySize = getCanvasHeight();
 
         double xScale = xSize / width;
         double yScale = ySize / height;
+        double centerCanvasScaledX = (getCanvasWitdh() / 2);
+        double centerCanvasScaledY = (getCanvasHeight() / 2);
 
+        double scale;
         if (xScale < yScale) {
-            centerAndScale(posX, posY, xScale, true);
-        } else {
-            centerAndScale(posX, posY, yScale, true);
+            scale = xScale;
         }
+        else
+            scale = yScale;
+
+        double centerX = posX -  centerCanvasScaledX / scale;
+        double centerY = posY -  centerCanvasScaledY / scale;
+        centerAndScale(centerX, centerY, scale, true);
         //updateElements();
 
     }
     public void centerAndScale(double posX, double posY, double scale, boolean animation)
     {
-        MoveWithAnimation moveAnimation = new MoveWithAnimation(mPosX, mPosY, -posX, -posY, mScaleFactor,scale);
-        moveAnimation.run(1000);
+        MoveWithAnimation moveAnimation = new MoveWithAnimation(mPosX, mPosY, -posX, -posY, mScaleFactor, scale);
+        moveAnimation.run(100);
 
     }
 
@@ -290,7 +298,7 @@ public class ExtendedCanvas {
             mPosX = extractProportionalValue(progress, startX, endX);
             mPosY = extractProportionalValue(progress, startY, endY);
             mScaleFactor = extractProportionalValue(progress, startScale, endScale);
-
+            invalid = true;
         }
 
         private double extractProportionalValue(double progress, double start, double end) {

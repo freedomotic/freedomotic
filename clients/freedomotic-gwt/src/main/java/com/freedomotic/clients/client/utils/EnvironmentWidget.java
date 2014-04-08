@@ -5,12 +5,16 @@ import com.freedomotic.clients.client.widgets.LayerList;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.EnvObject;
+import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.kiouri.sliderbar.client.solution.gmap.SliderBarGMap;
 
 /**
  * Created by gpt on 1/04/14.
@@ -23,41 +27,37 @@ public class EnvironmentWidget {
     boolean dataInitialized = false;
     boolean layerControllerAttached = false;
     //timer refresh rate, in milliseconds
-    static final int refreshRate = 25;
-
     private static final double MARGIN = 50;
-    private static int BORDER_X = 10; //the empty space around the map
-    private static int BORDER_Y = 10; //the empty space around the map
-   // private static int CANVAS_WIDTH = 1300 + (BORDER_X * 2);
-   // private static int CANVAS_HEIGHT = 900 + (BORDER_X * 2);
 
-    private DockLayoutPanel parent;
+    private Widget parent;
     private ExtendedCanvas extendedCanvas;
 
     private LayerList mLayerList;
-
-    public EnvironmentWidget(DockLayoutPanel parent) {
+    SliderBarGMap sliderBarGMap;
+    public EnvironmentWidget(final Widget parent) {
 
         this.parent = parent;
         initCanvas();
 
-        // setup timer
-        final Timer timer = new Timer() {
-            @Override
-            public void run() {
-                if (dataInitialized) {
-                    if (!layerControllerAttached && mLayerList!= null) {
-                        mLayerList.populateData(extendedCanvas.getLayers());
-                        layerControllerAttached = true;
-                    }
 
-                    extendedCanvas.draw();
-                } else {
-                    initializeData();
-                }
-            }
-        };
-        timer.scheduleRepeating(refreshRate);
+        //Use instead of a timer
+        AnimationScheduler.get().requestAnimationFrame(
+            new AnimationScheduler.AnimationCallback()
+            {
+               @Override
+               public void execute(double v) {
+                   if (dataInitialized) {
+                       if (!layerControllerAttached && mLayerList!= null) {
+                           mLayerList.populateData(extendedCanvas.getLayers());
+                           layerControllerAttached = true;
+                       }
+                        extendedCanvas.draw();
+                   } else {
+                       initializeData();
+                   }
+                   AnimationScheduler.get().requestAnimationFrame(this);
+               }
+            });
 
         Window.addResizeHandler(new ResizeHandler() {
             @Override
@@ -69,14 +69,11 @@ public class EnvironmentWidget {
                 }
                 else
                 {
-                    //TODO: Maybe we need to center on the environment
-                    extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), 0 ,0);
+                    extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), environment.getWidth()/2 ,environment.getHeight()/2);
 
                 }
             }
         });
-
-
 
     }
 
@@ -89,6 +86,8 @@ public class EnvironmentWidget {
     public void resizeToFit()
     {
         extendedCanvas.setSize();
+
+
     }
 
     void initializeData() {
@@ -101,7 +100,7 @@ public class EnvironmentWidget {
             environment = EnvironmentsController.getInstance().getEnvironments().get(0);
             extendedCanvas.changeLayerVisibility(environment.getUUID(), true);
             //TODO: maybe we need to center on the environment coordinates
-            extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), 0 ,0);
+            extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), environment.getWidth()/2 ,environment.getHeight()/2);
 
             if (mLayerList != null)
                 mLayerList.populateData(extendedCanvas.getLayers());
@@ -147,7 +146,7 @@ public class EnvironmentWidget {
             if (env.getUUID().equals(envUUID)) {
                 environment = env;
                 extendedCanvas.changeLayerVisibility(env.getUUID(), true);
-                extendedCanvas.fitToScreen(environment.getWidth(),environment.getHeight(), 0, 0);
+                extendedCanvas.fitToScreen(environment.getWidth(),environment.getHeight(), environment.getWidth()/2 ,environment.getHeight()/2);
                 //this.dataInitialized = false;
             }
             else
