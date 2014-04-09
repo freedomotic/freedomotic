@@ -24,6 +24,7 @@ import com.freedomotic.api.*;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.restapi.server.FreedomRestServer;
+import com.freedomotic.restapi.server.OriginFilter;
 import com.freedomotic.util.Info;
 import java.io.File;
 import java.io.IOException;
@@ -106,10 +107,14 @@ public class RestApi extends com.freedomotic.api.Protocol {
             parameters.add("keystoreType", configuration.getStringProperty("KEYSTORE_TYPE", "JKS")); 
             // end enable SSL
             
-            Engine.getInstance().getRegisteredServers().clear();
-            Engine.getInstance().getRegisteredServers().add(new HttpServerHelper(server));
+            // Engine.getInstance().getRegisteredServers().clear();
+            // Engine.getInstance().getRegisteredServers().add(new HttpServerHelper(server));
+            // Engine.getInstance().getRegisteredServers().add(new HttpServerHelper(SSLserver));
             component.getClients().add(Protocol.FILE);
-
+            
+            OriginFilter originFilter = new OriginFilter(component.getContext().createChildContext(),this);
+            Application FDapp =  new FreedomRestServer(Info.PATH_RESOURCES_FOLDER.getAbsolutePath(), component.getContext().createChildContext());  
+            
             if (getApi().getAuth().isInited()) {
                 // Instantiates a Verifier of identifier/secret couples based on Freedomotic Auth
                 Verifier v = new SecretVerifier() {
@@ -122,21 +127,21 @@ public class RestApi extends com.freedomotic.api.Protocol {
                     }
                 };
                 // Guard the restlet with BASIC authentication.
-                ChallengeAuthenticator guard = new ChallengeAuthenticator(null, false, ChallengeScheme.HTTP_BASIC, "testRealm", v);
+                ChallengeAuthenticator guard = new ChallengeAuthenticator(component.getContext().createChildContext(), false, ChallengeScheme.HTTP_BASIC, "testRealm", v);
                 
                 // WIP: Guard the restlet with DIGEST authentication.
-                DigestAuthenticator dguard = new DigestAuthenticator(null, "DigestRealm", configuration.getStringProperty("DIGEST_SECRET", "s3cr3t"));
+                DigestAuthenticator dguard = new DigestAuthenticator(component.getContext().createChildContext(), "DigestRealm", configuration.getStringProperty("DIGEST_SECRET", "s3cr3t"));
                 dguard.setOptional(true);
                 // TODO: set proper verifier before enabling DIGEST AUTH.                
                 
-                guard.setNext(new FreedomRestServer(Info.getResourcesPath()));
-                component.getDefaultHost().attachDefault(guard);
-
+                originFilter.setNext(guard);
+                guard.setNext(FDapp);
+                
             } else {
-                component.getDefaultHost().attachDefault(new FreedomRestServer(Info.getResourcesPath()));
+                originFilter.setNext(FDapp);
             }
 
-            //component.getDefaultHost().attach(new FreedomRestServer(Info.getResourcesPath()));
+            component.getDefaultHost().attachDefault(originFilter);
             component.start();
             freedomoticApi = getApi();
         } catch (Exception ex) {
