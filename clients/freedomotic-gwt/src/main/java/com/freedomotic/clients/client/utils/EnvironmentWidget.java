@@ -69,7 +69,7 @@ public class EnvironmentWidget {
                 }
                 else
                 {
-                    extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), environment.getWidth()/2 ,environment.getHeight()/2);
+                    extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), 0 ,0);
 
                 }
             }
@@ -100,7 +100,7 @@ public class EnvironmentWidget {
             environment = EnvironmentsController.getInstance().getEnvironments().get(0);
             extendedCanvas.changeLayerVisibility(environment.getUUID(), true);
             //TODO: maybe we need to center on the environment coordinates
-            extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), environment.getWidth()/2 ,environment.getHeight()/2);
+            extendedCanvas.fitToScreen(environment.getWidth(), environment.getHeight(), 0 ,0);
 
             if (mLayerList != null)
                 mLayerList.populateData(extendedCanvas.getLayers());
@@ -146,7 +146,7 @@ public class EnvironmentWidget {
             if (env.getUUID().equals(envUUID)) {
                 environment = env;
                 extendedCanvas.changeLayerVisibility(env.getUUID(), true);
-                extendedCanvas.fitToScreen(environment.getWidth(),environment.getHeight(), environment.getWidth()/2 ,environment.getHeight()/2);
+                extendedCanvas.fitToScreen(environment.getWidth(),environment.getHeight(), 0 ,0);
                 //this.dataInitialized = false;
             }
             else

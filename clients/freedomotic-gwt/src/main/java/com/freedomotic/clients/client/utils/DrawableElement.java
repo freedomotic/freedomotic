@@ -38,8 +38,9 @@ public abstract class DrawableElement {
     public void OnClick(Canvas canvas)
     {
     }
-    public void OnDoubleClick(Canvas canvas)
+    public boolean OnDoubleClick(Canvas canvas)
     {
+        return false;
     }
     //end region
 

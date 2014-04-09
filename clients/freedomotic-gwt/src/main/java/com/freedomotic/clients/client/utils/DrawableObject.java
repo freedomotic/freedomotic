@@ -6,7 +6,6 @@ import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
 import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.user.client.ui.Image;
 import com.levigo.util.gwtawt.client.WebGraphics;
@@ -26,7 +25,6 @@ public class DrawableObject extends DrawableElement {
     double dy = 0;
     ImageElement ie;
     Rectangle2D box;
-    private Rectangle ghostPath;
 
     private Representation currentRepresentation;
     private int currentRepresentationIndex;
@@ -98,7 +96,7 @@ public class DrawableObject extends DrawableElement {
             context.drawImage(ie, 0, 0, box.getWidth(), box.getHeight());
         //draw box surronding object
         //draw the border
-        context.setLineWidth(5);
+        context.setLineWidth(2);
         g.setColor(new Color(137, 174, 32));
         g.draw(elementBounds);
         //Color c = new Color(getIndexColor());
