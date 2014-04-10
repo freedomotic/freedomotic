@@ -10,7 +10,7 @@
     <artifactId>freedomotic-restapi-interfaces</artifactId>
     <packaging>jar</packaging>
     <name>freedomotic-restapi-interfaces</name>
-
+<version>3.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
