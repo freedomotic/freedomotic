@@ -1,4 +1,3 @@
-
 <com.freedomotic.reactions.Command>
     <name>Wait five seconds</name>
     <receiver>app.actuators.automation.delayer.in</receiver>

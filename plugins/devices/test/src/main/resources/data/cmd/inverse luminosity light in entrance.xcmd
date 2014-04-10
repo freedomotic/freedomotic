@@ -1,4 +1,3 @@
-
 <com.freedomotic.reactions.Command>
     <name>Inverse luminosity for Light in the entrance</name>
     <description>dimms the light as the inverse of indoor luminosity</description>
