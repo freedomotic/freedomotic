@@ -1,4 +1,3 @@
-
 <com.freedomotic.reactions.Command>
     <name>Execute it successfully</name>
     <receiver>app.actuators.simulator.success.in</receiver>

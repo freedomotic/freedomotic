@@ -1,4 +1,3 @@
-
 <com.freedomotic.reactions.Command>
     <name>Show sensors simulator plugin GUI</name>
     <receiver>app.actuators.plugins.controller.in</receiver>

@@ -1,4 +1,3 @@
-
 <com.freedomotic.reactions.Command>
     <name>Ask something with dialog</name>
     <receiver>command.jfrontend.user.callout</receiver>
