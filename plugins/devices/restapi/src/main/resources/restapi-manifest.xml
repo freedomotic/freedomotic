@@ -12,6 +12,11 @@
         <property name="KEYSTORE_TYPE"          value="JKS"/>
         <property name="KEYSTORE_PASWORD"       value="password"/>
         <property name="permissions"            value="*"/>
+        <property name="Access-Control-Allow-Origin" value="*"/>
+        <property name="Access-Control-Allow-Methods" value="GET,POST,DELETE,OPTIONS"/>
+        <property name="Access-Control-Allow-Headers" 
+                  value="Accept,Accept-Version,Authorization,Content-Length,Content-MD5,Content-Type,Date,Origin,X-Access-Token,X-Api-Version,X-CSRF-Token,X-File-Name,X-Requested-With"/>
+        
     </properties>
 </config>
 

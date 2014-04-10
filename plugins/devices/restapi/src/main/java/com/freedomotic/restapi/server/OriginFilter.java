@@ -5,6 +5,7 @@
  */
 package com.freedomotic.restapi.server;
 
+import com.freedomotic.api.Plugin;
 import java.util.Map;
 import org.restlet.Context;
 import org.restlet.Request;
@@ -21,9 +22,10 @@ import org.restlet.util.Series;
  * @author matteo
  */
 public class OriginFilter extends Filter {
-
-    public OriginFilter(Context context) {
+    Plugin master;
+    public OriginFilter(Context context, Plugin master) {
         super(context);
+        this.master=master;
     }
 
     @Override
@@ -38,9 +40,14 @@ public class OriginFilter extends Filter {
                 responseHeaders = new Series<Header>(Header.class);
                 response.getAttributes().put("org.restlet.http.headers", responseHeaders);
             }
-            responseHeaders.add("Access-Control-Allow-Origin", "*");
-            // responseHeaders.add("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS");
-            responseHeaders.add("Access-Control-Allow-Headers", "Accept,Accept-Version,Content-Type,Api-Version,Authorization");
+            responseHeaders.add("Access-Control-Allow-Origin", 
+                    master.configuration.getStringProperty("Access-Control-Allow-Origin","*"));
+            responseHeaders.add("Access-Control-Allow-Methods",
+                    master.configuration.getStringProperty("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS"));
+            responseHeaders.add("Access-Control-Allow-Headers", 
+                      master.configuration.getStringProperty("Access-Control-Allow-Headers",
+                              "Accept,Accept-Version,Authorization,Content-Length,Content-MD5,Content-Type,Date,"
+                            + "Origin,X-Access-Token,X-Api-Version,X-CSRF-Token,X-File-Name,X-Requested-With"));
             responseHeaders.add("Access-Control-Allow-Credentials", "true");
             // responseHeaders.add("Access-Control-Max-Age", "60");
             response.setEntity(new EmptyRepresentation());

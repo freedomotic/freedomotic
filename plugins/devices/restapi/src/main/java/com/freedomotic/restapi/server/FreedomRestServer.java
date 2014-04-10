@@ -36,7 +36,9 @@ import com.freedomotic.restapi.server.resources.ZoneServerResource;
 import com.freedomotic.restapi.server.resources.ZonesServerResource;
 import com.freedomotic.util.Info;
 import org.restlet.Application;
+import org.restlet.Client;
 import org.restlet.Component;
+import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.Server;
 import org.restlet.data.MediaType;
@@ -52,7 +54,7 @@ import org.restlet.routing.Router;
  */
 public class FreedomRestServer extends Application {
 
-    private static final String FILE_AND_SLASHES = "file://";
+    private static final String FILE_AND_SLASHES = "file:///";
     private String resourcesPath = "";
     public static final String FREEDOMOTIC_PATH = "/v2";
     public static final String ENVIRONMENT_PATH = "/v2/environments";
@@ -67,12 +69,13 @@ public class FreedomRestServer extends Application {
         setAuthor("Freedomotic dev team");
         getMetadataService().addExtension("object", MediaType.APPLICATION_JAVA_OBJECT);
         getMetadataService().addExtension("gwt_object", MediaType.APPLICATION_JAVA_OBJECT_GWT);
-        this.resourcesPath = resourcesPath + "/";
+
     }
 
-    public FreedomRestServer(String resourcesPath) {
+    public FreedomRestServer(String resourcesPath, Context ctx) {
         this();
-        this.resourcesPath = resourcesPath + "/";
+        this.resourcesPath = resourcesPath ;
+        setContext(ctx);
     }
 
     /**
@@ -94,14 +97,12 @@ public class FreedomRestServer extends Application {
         router.attach(FREEDOMOTIC_PATH+"/resources/{filename}", ImageResourceServerResource.class);
         router.attach(USER_PATH + "/{useraction}", UserServerResource.class);
         //Expose the resources dir as static server
-        Directory dir = new Directory(getContext(), FILE_AND_SLASHES + Info.PATH_RESOURCES_FOLDER);
+        Directory dir = new Directory(getContext(), FILE_AND_SLASHES + resourcesPath);
         dir.setListingAllowed(true);
-        //System.out.println("FILE_AND_SLASHES+resourcesPath "+  FILE_AND_SLASHES+resourcesPath);
+        System.out.println("Restapi resources is serving: " + FILE_AND_SLASHES + resourcesPath);
         router.attach(RESOURCES_PATH , dir);
-        OriginFilter originFilter = new OriginFilter(getContext());
-        originFilter.setNext(router);
-     
-        return originFilter;
+        
+        return router;
     }
 
     public static void main(String[] args) throws Exception {
