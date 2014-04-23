@@ -43,7 +43,6 @@ import com.freedomotic.model.geometry.FreedomColor;
 import com.freedomotic.model.geometry.FreedomPolygon;
 import java.io.Serializable;
 import java.util.ArrayList;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
@@ -73,8 +72,7 @@ public class Environment
      *
      * @return
      */
-    @RequiresPermissions("environments:read")
-    public String getUUID() {
+     public String getUUID() {
         return this.uuid;
     }
 
@@ -82,7 +80,6 @@ public class Environment
      *
      * @param uuid
      */
-    @RequiresPermissions("environments:update")
     public void setUUID(String uuid) {
         this.uuid = uuid;
     }
@@ -91,7 +88,6 @@ public class Environment
      *
      * @return
      */
-    @RequiresPermissions("environments:read")
     public String getRenderer() {
         return renderer;
     }
@@ -100,7 +96,6 @@ public class Environment
      *
      * @param renderer
      */
-    @RequiresPermissions("environments:update")
     public void setRenderer(String renderer) {
         this.renderer = renderer;
     }
@@ -109,7 +104,6 @@ public class Environment
      *
      * @return
      */
-    @RequiresPermissions("environments:read")
     public String getEnvironmentName() {
         return name;
     }
@@ -119,7 +113,6 @@ public class Environment
      * @return
      */
     @Override
-    @RequiresPermissions("environments:read")
     public String toString() {
         return name;
     }
@@ -128,7 +121,6 @@ public class Environment
      *
      * @return
      */
-    @RequiresPermissions("environments:read")
     public FreedomPolygon getShape() {
         //it returns the first zone in the environment. It is considered the Indoor
         return zones.get(0).getShape();
@@ -138,7 +130,6 @@ public class Environment
      *
      * @return
      */
-    @RequiresPermissions("environments:read")
     public FreedomColor getBackgroundColor() {
         return backgroundColor;
     }
@@ -147,7 +138,6 @@ public class Environment
      *
      * @return
      */
-    @RequiresPermissions("environments:read")
     public String getBackgroundImage() {
         if (backgroundImage == null) {
             return "environment-map.png";
@@ -160,7 +150,6 @@ public class Environment
      *
      * @param backgroundImage
      */
-    @RequiresPermissions("environments:update")
     public void setBackgroundImage(String backgroundImage) {
         this.backgroundImage = backgroundImage;
     }
@@ -169,7 +158,6 @@ public class Environment
      *
      * @return
      */
-    @RequiresPermissions("environments:read")
     public String getName() {
         return name;
     }
@@ -178,7 +166,6 @@ public class Environment
      *
      * @param name
      */
-    @RequiresPermissions("environments:update")
     public void setName(String name) {
         this.name = name;
     }
@@ -188,7 +175,6 @@ public class Environment
      * @param index
      * @return
      */
-    @RequiresPermissions("environments:read,zones:read")
     public Zone getZone(int index) {
         return zones.get(index);
     }
@@ -197,7 +183,6 @@ public class Environment
      *
      * @return
      */
-    @RequiresPermissions("environments:read,zones:read")
     public ArrayList<Zone> getZones() {
         return zones;
     }
@@ -206,7 +191,6 @@ public class Environment
      *
      * @return
      */
-    @RequiresPermissions("environments:read,zones:read")
     public int getLastZoneIndex() {
         return zones.size();
     }
@@ -215,7 +199,6 @@ public class Environment
      *
      * @return
      */
-    @RequiresPermissions("environments:read")
     public int getWidth() {
         return width;
     }
@@ -224,7 +207,6 @@ public class Environment
      *
      * @return
      */
-    @RequiresPermissions("environments:read")
     public int getHeight() {
         return height;
     }
@@ -232,7 +214,6 @@ public class Environment
     /**
      *
      */
-    @RequiresPermissions("environments:update")
     public void clear() {
         zones.clear();
         zones = null;

@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
@@ -58,7 +57,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public String getEnvironmentID() {
         return this.envUUID;
     }
@@ -67,7 +65,6 @@ public class EnvObject implements Serializable {
      *
      * @param uuid
      */
-    @RequiresPermissions("objects:update")
     public void setEnvironmentID(String uuid) {
         this.envUUID = uuid;
     }
@@ -76,7 +73,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public Properties getActions() {
         return actions;
     }
@@ -85,7 +81,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public Properties getTriggers() {
         if (triggers == null) {
             triggers = new Properties();
@@ -98,7 +93,6 @@ public class EnvObject implements Serializable {
      *
      * @param name
      */
-    @RequiresPermissions("objects:update")
     public void setName(String name) {
         this.name = name;
     }
@@ -107,7 +101,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public String getName() {
         return this.name;
     }
@@ -116,7 +109,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public String getUUID() {
         return uuid;
     }
@@ -125,7 +117,6 @@ public class EnvObject implements Serializable {
      *
      * @param uuid
      */
-    @RequiresPermissions("objects:update")
     public void setUUID(String uuid) {
         this.uuid = uuid;
     }
@@ -134,7 +125,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public String getHierarchy() {
         return hierarchy;
     }
@@ -143,7 +133,6 @@ public class EnvObject implements Serializable {
      *
      * @param hierarchy
      */
-    @RequiresPermissions("objects:update")
     public void setHierarchy(String hierarchy) {
         this.hierarchy = hierarchy;
     }
@@ -152,7 +141,6 @@ public class EnvObject implements Serializable {
      *
      * @param index
      */
-    @RequiresPermissions("objects:update")
     public void setCurrentRepresentation(int index) {
         if (representation.get(index) != null) {
             currentRepresentation = index;
@@ -163,7 +151,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public Representation getCurrentRepresentation() {
         return representation.get(currentRepresentation);
     }
@@ -172,7 +159,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public int getCurrentRepresentationIndex() {
         return currentRepresentation;
     }
@@ -181,7 +167,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public List<Representation> getRepresentations() {
         return representation;
     }
@@ -190,7 +175,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public String getProtocol() {
         if ((protocol == null) || (protocol.isEmpty())) {
             protocol = "unknown";
@@ -203,7 +187,6 @@ public class EnvObject implements Serializable {
      *
      * @param protocol
      */
-    @RequiresPermissions("objects:update")
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
@@ -212,7 +195,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public ArrayList<Behavior> getActiveBehaviors() {
         ArrayList<Behavior> activeBehaviors = new ArrayList<Behavior>();
         for (Behavior behavior : behaviors) {
@@ -228,7 +210,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public List<Behavior> getBehaviors() {
         return behaviors;
     }
@@ -238,7 +219,6 @@ public class EnvObject implements Serializable {
      * @param behavior
      * @return
      */
-    @RequiresPermissions("objects:read")
     public Behavior getBehavior(String behavior) {
         for (Behavior b : behaviors) {
             if (b.getName().equalsIgnoreCase(behavior)) {
@@ -254,7 +234,6 @@ public class EnvObject implements Serializable {
      *
      * @param actAs
      */
-    @RequiresPermissions("objects:update")
     public void setActAs(String actAs) {
         this.actAs = actAs;
     }
@@ -263,7 +242,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public String getActAs() {
         return this.actAs;
     }
@@ -272,7 +250,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public String getDescription() {
         return description;
     }
@@ -281,7 +258,6 @@ public class EnvObject implements Serializable {
      *
      * @param desc
      */
-    @RequiresPermissions("objects:update")
     public void setDescription(String desc) {
         this.description = desc;
     }
@@ -290,7 +266,6 @@ public class EnvObject implements Serializable {
      *
      * @param type
      */
-    @RequiresPermissions("objects:update")
     public void setType(String type) {
         this.type = type;
     }
@@ -299,7 +274,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public String getType() {
         return this.type;
     }
@@ -308,7 +282,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public String getPhisicalAddress() {
         if ((phisicalAddress == null) || (phisicalAddress.isEmpty())) {
             phisicalAddress = "unknown";
@@ -321,7 +294,6 @@ public class EnvObject implements Serializable {
      *
      * @param address
      */
-    @RequiresPermissions("objects:update")
     public void setPhisicalAddress(String address) {
         phisicalAddress = address;
     }
@@ -330,7 +302,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public FreedomShape getShape() {
         return getCurrentRepresentation().getShape();
     }
@@ -342,7 +313,6 @@ public class EnvObject implements Serializable {
      *
      * @return a set of key/values of object properties
      */
-    @RequiresPermissions("objects:read")
     public HashMap<String, String> getExposedProperties() {
         HashMap<String, String> result = new HashMap<String, String>();
         result.put("object.name", getName());
@@ -359,7 +329,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public String getSimpleType() {
         //get the part of the string after the last dot characher
         //eg: 'EnvObject.ElectricDevice.Light' -> returns 'light'
@@ -372,7 +341,6 @@ public class EnvObject implements Serializable {
      * @return
      */
     @Override
-    @RequiresPermissions("objects:read")
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -408,7 +376,6 @@ public class EnvObject implements Serializable {
      * @return
      */
     @Override
-    @RequiresPermissions("objects:read")
     public int hashCode() {
         int hash = 5;
         hash = (89 * hash) + ((this.name != null) ? this.name.hashCode() : 0);
@@ -421,7 +388,6 @@ public class EnvObject implements Serializable {
      * @return
      */
     @Override
-    @RequiresPermissions("objects:read")
     public String toString() {
         return getName();
     }
@@ -430,7 +396,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")
     public Set<String> getTagsList(){
         return this.tags;
     }
@@ -439,7 +404,6 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    @RequiresPermissions("objects:read")       
     public String getTagsString(){
         StringBuilder tagString = new StringBuilder();
         Boolean morethanone = false;
