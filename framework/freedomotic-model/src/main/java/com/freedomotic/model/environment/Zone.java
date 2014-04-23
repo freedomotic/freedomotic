@@ -43,7 +43,6 @@ import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.object.EnvObject;
 import java.io.Serializable;
 import java.util.ArrayList;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
@@ -65,7 +64,6 @@ public class Zone
      *
      * @return
      */
-    @RequiresPermissions("zones:read")
     public String getName() {
         return this.name;
     }
@@ -74,7 +72,6 @@ public class Zone
      *
      * @return
      */
-    @RequiresPermissions("zones:read")
     public FreedomPolygon getShape() {
         return this.shape;
     }
@@ -83,7 +80,6 @@ public class Zone
      *
      * @return
      */
-    @RequiresPermissions("zones:read")
     public boolean isRoom() {
         return room;
     }
@@ -92,7 +88,6 @@ public class Zone
      *
      * @param room
      */
-    @RequiresPermissions("zones:update")
     public void setAsRoom(boolean room) {
         this.room = room;
     }
@@ -101,7 +96,6 @@ public class Zone
      *
      * @return
      */
-    @RequiresPermissions("zones:read")
     public String getDescription() {
         if (description == null) {
             description = "";
@@ -114,7 +108,6 @@ public class Zone
      *
      * @param description
      */
-    @RequiresPermissions("zones:update")
     public void setDescription(String description) {
         this.description = description;
     }
@@ -123,7 +116,6 @@ public class Zone
      *
      * @return
      */
-    @RequiresPermissions("zones:read")
     public String getTexture() {
         return texture;
     }
@@ -132,7 +124,6 @@ public class Zone
      *
      * @param name
      */
-    @RequiresPermissions("zones:update")
     public void setName(String name) {
         this.name = name;
     }
@@ -141,7 +132,6 @@ public class Zone
      *
      * @param shape
      */
-    @RequiresPermissions("zones:update")
     public void setShape(FreedomPolygon shape) {
         this.shape = shape;
     }
@@ -159,11 +149,8 @@ public class Zone
      *
      * @param file
      */
-    @RequiresPermissions("zones:update")
     public void setTexture(String file) {
-
         this.texture = file;
-
         //file.getName();
     }
 
@@ -171,7 +158,6 @@ public class Zone
      *
      * @return
      */
-    @RequiresPermissions("zones:read")
     public ArrayList<EnvObject> getObjects() {
         if (objects == null) {
             objects = new ArrayList<EnvObject>();
@@ -184,7 +170,6 @@ public class Zone
      *
      * @param objects
      */
-    @RequiresPermissions("zones:update")
     public void setObjects(ArrayList<EnvObject> objects) {
         this.objects = objects;
     }
@@ -207,7 +192,6 @@ public class Zone
      * @return
      */
     @Override
-    @RequiresPermissions("zones:read")
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -231,7 +215,6 @@ public class Zone
      * @return
      */
     @Override
-    @RequiresPermissions("zones:read")
     public int hashCode() {
         int hash = 5;
         hash = (17 * hash) + ((this.name != null) ? this.name.hashCode() : 0);
