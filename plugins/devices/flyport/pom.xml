@@ -5,12 +5,12 @@
     <parent>
         <groupId>com.freedomotic</groupId>
         <artifactId>freedomotic</artifactId>
-        <version>5.5-SNAPSHOT</version>
+        <version>5.6-SNAPSHOT</version>
         <relativePath>../../../</relativePath>
     </parent>    
     <artifactId>flyport</artifactId>
     <packaging>jar</packaging>
-    <name>flyport</name>
+    <name>Openpicus Flyport plugin for Freedomotic</name>
     <version>3.0</version>
     <developers>
         <developer>
@@ -37,7 +37,7 @@
         <freedomotic.package.vendor.company>Freedomotic</freedomotic.package.vendor.company>
         <freedomotic.package.vendor.nation>it</freedomotic.package.vendor.nation>
         <freedomotic.framework.required.major>5</freedomotic.framework.required.major>
-        <freedomotic.framework.required.minor>5</freedomotic.framework.required.minor>
+        <freedomotic.framework.required.minor>6</freedomotic.framework.required.minor>
         <freedomotic.framework.required.build>x</freedomotic.framework.required.build>
         <!--don't like this but works for the moment -->
         <freedomotic.synch.dist.path>../../../framework/freedomotic-core/plugins/</freedomotic.synch.dist.path>

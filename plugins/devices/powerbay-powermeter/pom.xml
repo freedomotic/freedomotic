@@ -4,12 +4,12 @@
     <parent>
         <groupId>com.freedomotic</groupId>
         <artifactId>freedomotic</artifactId>
-        <version>5.5-SNAPSHOT</version>
+        <version>5.6-SNAPSHOT</version>
         <relativePath>../../../</relativePath>
     </parent>    
     <artifactId>powerbay-powermeter</artifactId>
     <packaging>jar</packaging>
-    <name>powerbay-powermeter</name>
+    <name>Powerbay-powermeter plugin for Freedomotic</name>
     <version>3.0</version>
 
     <properties>

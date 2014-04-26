@@ -12,7 +12,7 @@ import java.net.Socket;
 
 import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
 import com.myhome.fcrisciani.connector.MyHomeSocketFactory;
-import it.cicolella.openwebnet.OpenWebNet;
+import com.freedomotic.plugins.devices.openwebnet.OpenWebNet;
 
 /**
  * @author Flavio Crisciani

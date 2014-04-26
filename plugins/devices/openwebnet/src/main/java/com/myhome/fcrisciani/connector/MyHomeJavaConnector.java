@@ -20,7 +20,7 @@ import com.myhome.fcrisciani.datastructure.command.DelayInterval;
 import com.myhome.fcrisciani.exception.MalformedCommandOPEN;
 import com.myhome.fcrisciani.queue.PriorityCommandQueue;
 import com.myhome.fcrisciani.queue.PriorityQueueThread;
-import it.cicolella.openwebnet.OpenWebNet;
+import com.freedomotic.plugins.devices.openwebnet.OpenWebNet;
 
 
 /**
