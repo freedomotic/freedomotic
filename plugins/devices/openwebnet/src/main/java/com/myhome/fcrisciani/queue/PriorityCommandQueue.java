@@ -4,7 +4,7 @@
 
 package com.myhome.fcrisciani.queue;
 
-import it.cicolella.openwebnet.OpenWebNet;
+import com.freedomotic.plugins.devices.openwebnet.OpenWebNet;
 import java.util.Vector;
 import java.util.concurrent.Semaphore;
 
