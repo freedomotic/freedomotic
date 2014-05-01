@@ -29,11 +29,16 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author gpt
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Properties implements Serializable {
     
 	private static final long serialVersionUID = 1L;

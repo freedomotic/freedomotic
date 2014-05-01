@@ -28,11 +28,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author nicoletti
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class EnvObject implements Serializable {
 
     private static final long serialVersionUID = -7253889516478184321L;

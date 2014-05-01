@@ -106,6 +106,23 @@ public class CommandPersistence {
         Command hwCommand = getHardwareCommand(name);
 
         return hwCommand;
+    }    /**
+     *
+     * @param uuid
+     * @return
+     */
+    public static Command getCommandByUUID(String uuid) {
+        for (Command c : userCommands.values()){
+            if (c.getUUID().equalsIgnoreCase(uuid)){
+                return c;
+            }
+        }
+        for (Command c : hardwareCommands.values()){
+            if (c.getUUID().equalsIgnoreCase(uuid)){
+                return c;
+            }
+        }
+        return null;
     }
 
     /**

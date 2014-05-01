@@ -36,7 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
@@ -263,7 +262,7 @@ public final class EnvironmentLogic {
     public ZoneLogic getZone(String zoneName) {
         for (ZoneLogic zone : zones) {
             if (zone.getPojo().getName().equalsIgnoreCase(zoneName)
-                    && SecurityUtils.getSubject().isPermitted("zone:read" + zoneName)) {
+                    && api.getAuth().isPermitted("zone:read" + zoneName)) {
                 return zone;
             }
         }

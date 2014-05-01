@@ -36,11 +36,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author enrico
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public final class Trigger implements BusConsumer, Cloneable {
 
     private String name;

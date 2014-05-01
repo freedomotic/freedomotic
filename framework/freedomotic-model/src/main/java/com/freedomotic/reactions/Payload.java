@@ -30,11 +30,16 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Enrico
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public final class Payload
         implements Serializable {
 

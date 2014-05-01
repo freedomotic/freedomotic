@@ -45,11 +45,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author enrico
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public final class Command implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -7287958816826580426L;
