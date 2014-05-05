@@ -866,15 +866,17 @@ public class MainWindow
 
     private void submnuHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submnuHelpActionPerformed
 
+        String runningUser = ((Auth.getPrincipal() == null) ? "\n" : I18n.msg("running_as_user") + ": " + Auth.getPrincipal() + "\n");
         JOptionPane.showMessageDialog(this, ""
-                + I18n.msg("running_as_user") + ": " + Auth.getPrincipal() + "\n"
+                //+ I18n.msg("running_as_user") + ": " + Auth.getPrincipal() + "\n"
+                + runningUser
                 + I18n.msg("author") + ": " + Info.getAuthor() + "\n"
                 + I18n.msg("email") + ": " + Info.getAuthorMail() + "\n"
                 + I18n.msg("release") + ": " + Info.getReleaseDate() + ". " + Info.getVersionCodeName() + " - v" + Info.getVersion() + "\n"
                 + I18n.msg("licence") + ": " + Info.getLicense() + "\n\n"
                 + I18n.msg("find_support_msg") + ":\n"
-                + "http://code.google.com/p/freedomotic/" + "\n"
-                + "http://freedomotic.com/");
+                + "https://github.com/freedomotic/freedomotic" + "\n"
+                + "http://freedomotic.com/", I18n.msg("info"), JOptionPane.INFORMATION_MESSAGE);
 }//GEN-LAST:event_submnuHelpActionPerformed
 
     private void mnuExitActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1023,8 +1025,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
 
             } catch (Exception ex) {
-                Logger.getLogger(MainWindow.class
-                        .getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             LOG.info(I18n.msg("canceled_by_user"));
@@ -1249,22 +1250,21 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
         JLabel confirmLbl = new JLabel(I18n.msg("confirm_env_delete"));
         JLabel selectLbl = new JLabel(I18n.msg("select_env_to_reassing_objects"));
-        
+
         ArrayList<Object> possibilities = new ArrayList<Object>();
         possibilities.add(I18n.msg("delete_envobj_alongside_environment"));
         possibilities.addAll(EnvironmentPersistence.getEnvironments());
         possibilities.remove(oldenv);
-            
+
         JComboBox envCombo = new JComboBox(possibilities.toArray());
-        
+
         int result = JOptionPane.showConfirmDialog(null,
-                new Object[]{confirmLbl,selectLbl,envCombo},
+                new Object[]{confirmLbl, selectLbl, envCombo},
                 I18n.msg("confirm_deletion_title"),
-                JOptionPane.OK_CANCEL_OPTION
-                );
+                JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
-          if (envCombo.getSelectedItem() instanceof EnvironmentLogic) {
+            if (envCombo.getSelectedItem() instanceof EnvironmentLogic) {
                 // assign objects to new environment
                 EnvironmentLogic env = (EnvironmentLogic) envCombo.getSelectedItem();
                 for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(oldenv.getPojo().getUUID())) {
