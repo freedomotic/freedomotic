@@ -39,7 +39,7 @@ public class TextToSpeech extends Protocol {
     private com.sun.speech.freetts.Voice voice;
 
     public TextToSpeech() {
-        super("Text to Speech", "/freetts/text-to-speech.xml");
+        super("Text to Speech", "/freetts/text-to-speech-manifest.xml");
     }
 
     @Override
@@ -54,24 +54,25 @@ public class TextToSpeech extends Protocol {
 
     public void loadVoice() {
         try {
-            File mbrola = new File(Info.PATH_DEVICES_FOLDER + "/freetts/data/voices/");
-            if ((mbrola.exists())) {
-                System.setProperty("mbrola.base", mbrola.getAbsolutePath().toString());
-                voice = VoiceManager.getInstance().getVoice(configuration.getProperty("mbrola-voice"));
-            } else {
-                //use default basic voices
-                System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-                voice = VoiceManager.getInstance().getVoice(Utilities.getProperty("voice16kName", "kevin16"));
-            }
-            VoiceManager voiceManager = VoiceManager.getInstance();
-            Voice[] voices = voiceManager.getVoices();
-            if (voices.length <= 0) {
-                LOG.severe("Cannot use text to speech, no voice found");
-                setDescription("Cannot use text to speech, no voice found");
-                stop();
-            } else {
-                voice.allocate();
-            }
+            //File mbrola = new File(Info.PATH_DEVICES_FOLDER + "/freetts/data/voices/");
+            //if ((mbrola.exists())) {
+              //System.setProperty("mbrola.base", mbrola.getAbsolutePath().toString());
+              //voice = VoiceManager.getInstance().getVoice(configuration.getProperty("mbrola-voice"));
+            //} else {
+            //use default basic voices
+            // System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
+            // voice = VoiceManager.getInstance().getVoice(Utilities.getProperty("voice16kName", "kevin16"));
+            voice = VoiceManager.getInstance().getVoice("kevin16");
+            //}
+            // VoiceManager voiceManager = VoiceManager.getInstance();
+            // Voice[] voices = voiceManager.getVoices();
+            // if (voices.length <= 0) {
+            //     LOG.severe("Cannot use text to speech, no voice found");
+            //     setDescription("Cannot use text to speech, no voice found");
+            //     stop();
+            // } else {
+            voice.allocate();
+            //}
         } catch (Exception e) {
             LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
