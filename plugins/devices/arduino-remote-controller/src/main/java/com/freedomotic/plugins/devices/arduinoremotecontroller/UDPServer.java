@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Mauro Cicolella
+ * @author Mauro Cicolella <mcicolella@libero.it>
  */
 
 public class UDPServer extends Thread {

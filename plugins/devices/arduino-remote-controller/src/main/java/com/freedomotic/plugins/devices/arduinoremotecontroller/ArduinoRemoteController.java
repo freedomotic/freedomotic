@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
- * @autor Mauro Cicolella
+ * @autor Mauro Cicolella <mcicolella@libero.it>
  */
 
 public class ArduinoRemoteController extends Protocol {
@@ -99,8 +99,7 @@ public class ArduinoRemoteController extends Protocol {
     public void onCommand(Command c) throws UnableToExecuteException {
     }
 
-    // create message to send to the board
-    // this part must be changed to relect board protocol
+
     @Override
     protected boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
