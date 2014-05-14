@@ -23,10 +23,14 @@ package com.freedomotic.plugins.devices.japi.utils;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.reactions.Payload;
+import com.wordnik.swagger.annotations.ApiOperation;
+import javax.ws.rs.GET;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.glassfish.jersey.media.sse.EventOutput;
 import org.glassfish.jersey.media.sse.OutboundEvent;
 import org.glassfish.jersey.media.sse.SseBroadcaster;
+import org.glassfish.jersey.media.sse.SseFeature;
 
 /**
  *
@@ -37,6 +41,9 @@ public abstract class AbstractSseResource implements SseResouceInterface {
     private static final SseBroadcaster BROADCASTER = new SseBroadcaster();
 
     @Override
+    @GET
+    @Produces(SseFeature.SERVER_SENT_EVENTS)
+    @ApiOperation("Listens to a SSE channel")
     public EventOutput getSSE() {
         final EventOutput eventOutput = new EventOutput();
         BROADCASTER.add(eventOutput);

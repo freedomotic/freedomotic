@@ -22,10 +22,12 @@
 package com.freedomotic.plugins.devices.japi.resources;
 
 import com.freedomotic.plugins.devices.japi.utils.AbstractSseResource;
+import com.wordnik.swagger.annotations.Api;
 import javax.ws.rs.Path;
 
 
 @Path("events/zone")
+@Api(value = "notifyZoneChange", description = "SSE for zone change events", position=9)
 public class ZoneChangeResource extends AbstractSseResource{
  
 }

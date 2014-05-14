@@ -19,42 +19,46 @@
  */
 package com.freedomotic.plugins.devices.japi;
 
-import com.freedomotic.plugins.devices.japi.filters.SecurityFilter;
-import com.freedomotic.plugins.devices.japi.filters.AuthenticationExceptionMapper;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.events.ObjectHasChangedBehavior;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.ZoneHasChanged;
-import java.net.URI;
-
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
-
-import org.glassfish.grizzly.http.server.HttpServer;
+import com.freedomotic.plugins.devices.japi.filters.AuthenticationExceptionMapper;
 import com.freedomotic.plugins.devices.japi.filters.CorsFilter;
+import com.freedomotic.plugins.devices.japi.filters.SecurityFilter;
 import com.freedomotic.plugins.devices.japi.resources.ObjectChangeResource;
 import com.freedomotic.plugins.devices.japi.resources.PluginChangeResource;
 import com.freedomotic.plugins.devices.japi.resources.ZoneChangeResource;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.util.Info;
+import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import java.io.File;
+import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.core.UriBuilder;
+import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
 import org.glassfish.grizzly.ssl.SSLContextConfigurator;
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
 import org.glassfish.jersey.filter.LoggingFilter;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.moxy.xml.MoxyXmlFeature;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
 
 public class RestJersey
         extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(RestJersey.class.getName());
+    public static final String RESOURCE_PKG = "com.freedomotic.plugins.devices.japi.resources";
+    private static final String SWAGGER_PKG = "com.wordnik.swagger.jersey.listing";
     final int POLLING_WAIT;
     private HttpServer server;
-    private URI BASE_URI;
+    public static URI BASE_URI;
+    private static URI SWAGGER_URI;
     private static final String API_VERSION = "v3";
 
     public RestJersey() {
@@ -76,32 +80,59 @@ public class RestJersey
 
     @Override
     protected void onStart() {
-        LOG.log(Level.INFO, "Jersey RestAPI plugin is started at {0}", BASE_URI);
 
         String protocol = configuration.getBooleanProperty("enable-ssl", false) ? "https" : "http";
+        String staticDir = configuration.getStringProperty("serve-static", "none");
         int port = configuration.getBooleanProperty("enable-ssl", false) ? configuration.getIntProperty("https-port", 9113) : configuration.getIntProperty("http-port", 9111);
-        BASE_URI = UriBuilder.fromUri(protocol + "://" + configuration.getStringProperty("listen-address", "localhost") + "/").path(API_VERSION).port(port).build();
 
-        // prepare resources (include every resource inside a certain package)
-        final ResourceConfig resourceConfig = new ResourceConfig().packages("com.freedomotic.plugins.devices.japi.resources");
-        // enable json support
+        BASE_URI = UriBuilder.fromUri(protocol + "://" + configuration.getStringProperty("listen-address", "localhost") + "/").path(API_VERSION).port(port).build();
+        SWAGGER_URI = UriBuilder.fromPath(API_VERSION).build();
+
+        LOG.log(Level.INFO, "Jersey RestAPI plugin is started at {0}", BASE_URI);
+
+        final ResourceConfig resourceConfig;
+        
+        if (staticDir.equalsIgnoreCase("swagger")) {
+
+            // prepare resources (include every resource inside a certain package)
+            resourceConfig = new ResourceConfig().packages(RESOURCE_PKG, SWAGGER_PKG);
+
+            // swagger config
+            BeanConfig config = new BeanConfig();
+            config.setResourcePackage(RESOURCE_PKG);
+            config.setVersion(API_VERSION);
+            config.setBasePath(SWAGGER_URI.toString());
+            config.setScan(true);
+            config.setTitle("FD API");
+            config.setDescription("Freedomotic API documentation");
+        } else {
+            resourceConfig = new ResourceConfig().packages(RESOURCE_PKG);
+        }
+        
+        // enable json and xml support
         resourceConfig.registerClasses(JacksonFeature.class);
+        resourceConfig.registerClasses(MoxyXmlFeature.class);
+        
+
         // enable CORS 
         if (configuration.getBooleanProperty("enable-cors", false)) {
             resourceConfig.registerClasses(CorsFilter.class);
         }
+
         // enable log
         if (configuration.getBooleanProperty("debug", false)) {
             LoggingFilter lf = new LoggingFilter(LOG, configuration.getBooleanProperty("debug-entity", false));
             resourceConfig.register(lf);
+            resourceConfig.property(ServerProperties.TRACING, "ALL");
+            resourceConfig.property(ServerProperties.TRACING_THRESHOLD, "TRACE");
         }
+
         // enable auth feature, is FD security is enabled
         if (getApi().getAuth().isInited()) {
-
             resourceConfig.registerClasses(AuthenticationExceptionMapper.class);
             resourceConfig.register(new SecurityFilter(getApi()));
-
         }
+
         if (configuration.getBooleanProperty("enable-ssl", false)) {
             // Grizzly ssl configuration
             SSLContextConfigurator sslContext = new SSLContextConfigurator();
@@ -114,17 +145,17 @@ public class RestJersey
             server = GrizzlyHttpServerFactory.createHttpServer(BASE_URI, resourceConfig);
         }
 
-        if (configuration.getBooleanProperty("serve-static", false)) {
-            // serve static files
-            StaticHttpHandler staticFiles = new StaticHttpHandler(new File(this.getFile().getParent() + "/data/static/").getAbsolutePath());
+        if (!staticDir.equalsIgnoreCase("none")) {
+            // serve static files on directoryspecified in manifest
+            StaticHttpHandler staticFiles = new StaticHttpHandler(new File(this.getFile().getParent() + "/data/" + staticDir + "/").getAbsolutePath());
             server.getServerConfiguration().addHttpHandler(staticFiles);
             LOG.log(Level.INFO, "Serving static files from: {0}", staticFiles.getDefaultDocRoot().getAbsolutePath());
         }
-           StaticHttpHandler resourceFiles = new StaticHttpHandler(Info.PATH_RESOURCES_FOLDER.getAbsolutePath());
-           server.getServerConfiguration().addHttpHandler( resourceFiles);           
-           
-           
-         LOG.log(Level.INFO, "Serving RESOURCE files from: {0}", resourceFiles.getDefaultDocRoot().getAbsolutePath());
+
+        StaticHttpHandler resourceFiles = new StaticHttpHandler(Info.PATH_RESOURCES_FOLDER.getAbsolutePath());
+        server.getServerConfiguration().addHttpHandler(resourceFiles, "/res/");
+        LOG.log(Level.INFO, "Serving RESOURCE files from: {0}", resourceFiles.getDefaultDocRoot().getAbsolutePath());
+
         addEventListener("app.event.sensor.object.behavior.change");
         addEventListener("app.event.sensor.environment.zone.change");
         addEventListener("app.event.sensor.plugin.change");

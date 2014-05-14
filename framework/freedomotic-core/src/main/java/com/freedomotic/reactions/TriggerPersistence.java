@@ -311,7 +311,20 @@ public class TriggerPersistence {
     public static Trigger getTrigger(int i) {
         return list.get(i);
     }
-
+    /**
+     *
+     * @param uuid
+     * @return
+     */
+    public static Trigger getTriggerByUUID(String uuid) {
+        for (Trigger t : list){
+            if (t.getUUID().equalsIgnoreCase(uuid)){
+                return t;
+            }
+        }
+        return null;
+    }
+    
     /**
      *
      * @return

@@ -26,18 +26,21 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.plugins.devices.japi.utils.AbstractResource;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiParam;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.PathParam;
 
 /**
- *
+ * Environment Resource
  * @author matteo
  */
 @Path("environments")
+@Api(value = "environments", description = "Operations on environments", position = 0)
 public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Override
@@ -70,7 +73,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
         EnvironmentLogic el = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
         el.setPojo(eo);
         EnvironmentPersistence.add(el, false);
-        return UriBuilder.fromResource(this.getClass()).path(el.getPojo().getUUID()).build();
+        return createUri(el.getPojo().getUUID());
     }
 
     @Override
@@ -80,6 +83,25 @@ public class EnvironmentResource extends AbstractResource<Environment> {
         EnvironmentPersistence.remove(EnvironmentPersistence.getEnvByUUID(eo.getUUID()));
         EnvironmentPersistence.add(el, false);
         return eo;
+    }
+    
+    @Path("/{id}/rooms")
+    public RoomResource rooms(
+            @ApiParam(value = "Environment to fetch rooms from", required = true)
+            @PathParam("id") String UUID){
+        return new RoomResource(UUID);
+    }
+    
+    @Path("/{id}/objects")
+    public ObjectResource objects(
+            @ApiParam(value = "Environment to fetch objects from", required = true)
+            @PathParam("id") String UUID){
+        return new ObjectResource(UUID);
+    }
+
+    @Override
+    protected URI doCopy(String UUID) {
+        return createUri(EnvironmentPersistence.add(EnvironmentPersistence.getEnvByUUID(UUID), true).getPojo().getUUID());
     }
 
 }

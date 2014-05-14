@@ -22,10 +22,12 @@
 package com.freedomotic.plugins.devices.japi.resources;
 
 import com.freedomotic.plugins.devices.japi.utils.AbstractSseResource;
+import com.wordnik.swagger.annotations.Api;
 import javax.ws.rs.Path;
 
 
 @Path("events/plugin")
+@Api(value = "notifyPluginChange", description = "SSE for plugin change events", position=10)
 public class PluginChangeResource extends AbstractSseResource{
  
 }

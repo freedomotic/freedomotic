@@ -39,6 +39,7 @@ import javax.jms.ObjectMessage;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -65,9 +66,11 @@ public final class Trigger implements BusConsumer, Cloneable {
     private long maxExecutions;
     private long numberOfExecutions;
     private long suspensionStart;
+    @XmlTransient
     private BusMessagesListener listener;
     //dependencies
     @Inject
+    @XmlTransient
     private TriggerCheck checker;
 
     /**

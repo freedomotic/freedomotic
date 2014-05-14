@@ -21,11 +21,7 @@
  */
 package com.freedomotic.plugins.devices.japi.utils;
 
-import com.freedomotic.api.EventTemplate;
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
 import org.glassfish.jersey.media.sse.EventOutput;
-import org.glassfish.jersey.media.sse.SseFeature;
 
 /**
  *
@@ -33,8 +29,6 @@ import org.glassfish.jersey.media.sse.SseFeature;
  */
 public interface SseResouceInterface {
     
-    @GET
-    @Produces(SseFeature.SERVER_SENT_EVENTS)
     public EventOutput getSSE();
     
 }

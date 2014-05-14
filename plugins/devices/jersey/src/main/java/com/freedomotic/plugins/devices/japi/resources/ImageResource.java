@@ -23,13 +23,16 @@
 package com.freedomotic.plugins.devices.japi.resources;
 
 import com.freedomotic.core.ResourcesManager;
-import com.freedomotic.plugins.devices.japi.utils.AbstractResource;
 import com.freedomotic.plugins.devices.japi.utils.ResourceInterface;
 import com.freedomotic.util.Info;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -43,6 +46,7 @@ import javax.ws.rs.core.UriBuilder;
  * @author matteo
  */
 @Path("resources")
+@Api(value = "/resources", description = "Retrieves images and other binary resource", position = 10)
 public class ImageResource implements ResourceInterface<File> {
  
     protected File prepareSingle(String fileName) {
@@ -52,9 +56,15 @@ public class ImageResource implements ResourceInterface<File> {
 
     @Override
     @GET
-    @Path("{id}")
+    @Path("/{id}")
+     @ApiOperation("Get an image or a redirect to it")
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Image not found")
+    })
     @Produces(MediaType.WILDCARD)
-    public Response get(@PathParam("id") String fileName) {
+    public Response get(
+            @ApiParam(value = "name of image file to fetch", required = true)
+            @PathParam("id") String fileName) {
          File imageFile = prepareSingle(fileName);
          String path = null;
          if (imageFile.getPath().startsWith(Info.PATH_RESOURCES_FOLDER.getPath())) {
@@ -63,7 +73,7 @@ public class ImageResource implements ResourceInterface<File> {
             System.out.println("RESTAPI path: " + path);
         }
         if (path != null) {
-        URI newPath = UriBuilder.fromPath(path).build();
+        URI newPath = UriBuilder.fromPath("/res").path(path).build();
         return Response.seeOther(newPath).build();
         }
         else {
@@ -73,7 +83,6 @@ public class ImageResource implements ResourceInterface<File> {
     
 
     @Override
-    @GET
     public Response list() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -91,8 +100,18 @@ public class ImageResource implements ResourceInterface<File> {
     }
 
     @Override
-    public Response update(File s) {
+    public Response update(String UUID, File s) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Response copy(String UUID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Response options() {
+        return Response.ok().build();
     }
  
    

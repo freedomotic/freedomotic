@@ -35,6 +35,7 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -232,6 +233,20 @@ public class ReactionPersistence {
      */
     public static List<Reaction> getReactions() {
         return Collections.unmodifiableList(list);
+    }   
+    
+    /**
+     *
+     * @param uuid
+     * @return
+     */
+    public static Reaction getReaction(String uuid) {
+        for (Reaction r : list){
+            if (r.getUUID().equalsIgnoreCase(uuid)){
+                return r;
+            }
+        }
+        return null;
     }
 
     /**

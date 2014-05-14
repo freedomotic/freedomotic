@@ -22,18 +22,7 @@
 
 package com.freedomotic.plugins.devices.japi.utils;
 
-import com.freedomotic.model.environment.Environment;
-import java.net.URI;
 import java.net.URISyntaxException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -45,12 +34,16 @@ public interface ResourceInterface<T> {
   
     public Response list();
    
-    public Response get(@PathParam("id") String UUID);
+    public Response get(String UUID);
  
-    public Response delete(@PathParam("id") String UUID);
+    public Response delete(String UUID);
+    
+    public Response copy(String UUID);
   
     public Response create(T s) throws URISyntaxException;
   
-    public Response update(T s);
+    public Response update(String UUID, T s);
+    
+    public Response options();
     
 }

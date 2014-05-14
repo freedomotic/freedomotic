@@ -24,9 +24,10 @@ package com.freedomotic.plugins.devices.japi.resources;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.Room;
-import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.plugins.devices.japi.utils.AbstractResource;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiParam;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -34,18 +35,18 @@ import java.util.List;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
 /**
  *
  * @author matteo
  */
-@Path("environments/{envid}/rooms")
+@Path("rooms")
+@Api(value = "/rooms", description = "Operations on rooms", position=1)
 public class RoomResource extends AbstractResource<Zone> {
 
     final private String endUUID;
     final private EnvironmentLogic env;
-    protected RoomResource(@PathParam("envid") String endUUID) {
+    protected RoomResource( String endUUID) {
         this.endUUID = endUUID;
         this.env = EnvironmentPersistence.getEnvByUUID(this.endUUID);  
     }
@@ -90,6 +91,18 @@ public class RoomResource extends AbstractResource<Zone> {
     @Override
     protected Zone prepareSingle(String uuid) {
         return env.getZone(uuid).getPojo();
+    }
+    
+    @Path("/{id}/objects/")
+    public ObjectResource objects(
+            @ApiParam(value = "Room to fetch objects from", required = true)
+            @PathParam("id") String room){
+        return new ObjectResource(endUUID, room);
+    }
+
+    @Override
+    protected URI doCopy(String UUID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

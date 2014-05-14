@@ -26,11 +26,13 @@
 package com.freedomotic.model.object;
 
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
  * @author Enrico
  */
+@XmlType
 public abstract class Behavior
         implements Serializable {
 
