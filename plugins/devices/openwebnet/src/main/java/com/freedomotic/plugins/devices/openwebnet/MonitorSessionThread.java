@@ -1,21 +1,25 @@
-/*
- Copyright FILE Mauro Cicolella, 2012-2013
+/**
+*
+* Copyright (c) 2009-2014 Freedomotic team
+* http://freedomotic.com
+*
+* This file is part of Freedomotic
+*
+* This Program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This Program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with Freedomotic; see the file COPYING. If not, see
+* <http://www.gnu.org/licenses/>.
+*/
 
- This file is part of FREEDOMOTIC.
-
- FREEDOMOTIC is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- FREEDOMOTIC is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Freedomotic.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.freedomotic.plugins.devices.openwebnet;
 
 import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
@@ -65,8 +69,7 @@ public class MonitorSessionThread extends Thread {
         return (sdf.format(calendar.getTime()));
     }
 
-    public static ProtocolRead buildEventFromFrame(String frame) {
-        //OpenWebNet.LOG.info("Received OWN frame '" + frame + "' now translate it to an event.");
+     public static ProtocolRead buildEventFromFrame(String frame) {
         String who = null;
         String what = null;
         String where = null;
@@ -99,11 +102,10 @@ public class MonitorSessionThread extends Thread {
             frameParts = frame.split("\\*"); // * is reserved so it must be escaped 
             who = frameParts[0];
             where = frameParts[1];
+            objectClass = null;
             objectName = who + "*" + where;
             event = new ProtocolRead(pluginReference, "openwebnet", who + "*" + where); // LIGHTING if (who.equalsIgnoreCase("1")) {
             if (who.equalsIgnoreCase("1")) {
-                //objectClass = "Light";
-                //objectName = who + "*" + where;
                 if (frameParts[2].equalsIgnoreCase("1")) {
                     String level = frameParts[3];
                     String speed = frameParts[4];
@@ -361,7 +363,6 @@ public class MonitorSessionThread extends Thread {
             what = frameParts[1];
             where = frameParts[2];
             event = new ProtocolRead(pluginReference, "openwebnet", who + "*" + where);
-            //objectClass = "Light";
             objectName = who + "*" + where;
 
 
@@ -369,7 +370,10 @@ public class MonitorSessionThread extends Thread {
                 //LIGHTING
                 case 1:
                     messageType = "Lighting";
-                    objectClass = "Light";
+                    if ((where.length() > 1) && (!where.substring(1, 1).equalsIgnoreCase("#"))) {
+                        event.addProperty("object.class", objectClass);
+                    }
+
                     switch (Integer.parseInt(what)) {
                         // Light OFF
                         case 0:
@@ -603,19 +607,16 @@ public class MonitorSessionThread extends Thread {
             if (messageDescription != null) {
                 event.addProperty("messageDescription", messageDescription);
             }
-            if (objectClass != null) {
-                event.addProperty("object.class", objectClass);
-            }
+            //  if (objectClass != null) {
+            //      event.addProperty("object.class", objectClass);
+            //  }
             if (objectName != null) {
                 event.addProperty("object.name", objectName);
             }
-
             //Freedomotic.logger.info("Frame " + frame + " " + "is " + messageType + " message. Notify it as Freedomotic event " + messageDescription); // for debug
             OWNFrame.writeAreaLog(getDateTime() + " Rx: " + frame + " " + "(" + messageDescription + ")");
             pluginReference.notifyEvent(event);
         }
-
         return null;
     }
-    
 }
