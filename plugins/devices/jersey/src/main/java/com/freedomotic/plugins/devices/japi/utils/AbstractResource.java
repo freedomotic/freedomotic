@@ -19,6 +19,8 @@
  */
 package com.freedomotic.plugins.devices.japi.utils;
 
+import com.freedomotic.api.API;
+import com.freedomotic.app.Freedomotic;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -26,6 +28,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -47,7 +50,8 @@ import javax.ws.rs.core.UriBuilder;
  */
 public abstract class AbstractResource<T> implements ResourceInterface<T> {
 
-    private static final Logger LOG = Logger.getLogger(AbstractResource.class.getName());
+    public static final Logger LOG = Logger.getLogger(AbstractResource.class.getName());
+    protected static API api = Freedomotic.INJECTOR.getInstance(API.class);
 
     /**
      *
@@ -103,10 +107,18 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
             @PathParam("id") String UUID,
             T s) {
         try {
-            return Response.ok(doUpdate(s)).build();
+            LOG.info("Aquiring modified element");
+            T z = doUpdate(s);
+            if (z != null) {
+                LOG.info("Everything was corerctly computed ");
+                return Response.ok().build();
+            } else {
+                LOG.info("There was a error, so nothing's changed");
+                return Response.notModified().build();
+            }
         } catch (Exception e) {
-            LOG.severe(e.getMessage());
-            return Response.notModified(e.getMessage()).build();
+            LOG.log(Level.SEVERE,"Cannot update a item",e);
+            return Response.notModified().build();
         }
     }
 
@@ -133,8 +145,8 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     public Response create(T s) throws URISyntaxException {
         try {
             return Response.created(doCreate(s)).build();
-        } catch (URISyntaxException e) {
-            LOG.severe(e.getMessage());
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, null, e);
             return Response.serverError().build();
         }
     }

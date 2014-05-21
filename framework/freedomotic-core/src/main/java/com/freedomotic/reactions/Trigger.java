@@ -32,6 +32,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.JMSException;
@@ -77,6 +78,7 @@ public final class Trigger implements BusConsumer, Cloneable {
      *
      */
     public Trigger() {
+        this.uuid = UUID.randomUUID().toString();
     }
 
     /**
@@ -406,7 +408,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     @Override
     public Trigger clone() {
         Trigger clone = new Trigger();
-        clone.setName(getName());
+        clone.setName("Copy of " + getName());
         clone.setDescription(getDescription());
 
         Payload clonePayload = new Payload();

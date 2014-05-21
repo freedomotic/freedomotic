@@ -23,6 +23,7 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.exceptions.DaoLayerException;
 import com.freedomotic.model.object.EnvObject;
+import com.freedomotic.persistence.ContainerInterface;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
@@ -40,9 +41,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
@@ -50,7 +53,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  *
  * @author Enrico
  */
-public class EnvObjectPersistence {
+public class EnvObjectPersistence implements ContainerInterface<EnvObjectLogic> {
 
     /**
      *
@@ -74,6 +77,7 @@ public class EnvObjectPersistence {
      *
      * @return
      */
+    @Deprecated
     @RequiresPermissions("objects:read")
     public static Collection<EnvObjectLogic> getObjectList() {
         return objectList.values();
@@ -90,11 +94,11 @@ public class EnvObjectPersistence {
             throw new DaoLayerException("There are no object to persist, " + folder.getAbsolutePath()
                     + " will not be altered.");
         }
-
+        
         if (!folder.isDirectory()) {
             throw new DaoLayerException(folder.getAbsoluteFile() + " is not a valid object folder. Skipped");
         }
-
+        
         try {
             XStream xstream = FreedomXStream.getXstream();
             deleteObjectFiles(folder);
@@ -104,20 +108,20 @@ public class EnvObjectPersistence {
             //print an header for the index.txt file
             summary.append("#Filename \t\t #EnvObjectName \t\t\t #EnvObjectType \t\t\t #Protocol \t\t\t #Address")
                     .append("\n");
-
+            
             for (EnvObjectLogic envObject : objectList.values()) {
                 String uuid = envObject.getPojo().getUUID();
-
+                
                 if ((uuid == null) || uuid.isEmpty()) {
                     envObject.getPojo().setUUID(UUID.randomUUID().toString());
                 }
-
+                
                 if ((envObject.getPojo().getEnvironmentID() == null)
                         || envObject.getPojo().getEnvironmentID().isEmpty()) {
                     envObject.getPojo()
                             .setEnvironmentID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
                 }
-
+                
                 String fileName = envObject.getPojo().getUUID() + ".xobj";
                 FileWriter fstream = new FileWriter(folder + "/" + fileName);
                 BufferedWriter out = new BufferedWriter(fstream);
@@ -141,18 +145,18 @@ public class EnvObjectPersistence {
             throw new DaoLayerException(ex);
         }
     }
-
+    
     private static void deleteObjectFiles(File folder)
             throws DaoLayerException {
         if ((folder == null) || !folder.isDirectory()) {
             throw new IllegalArgumentException("Unable to delete objects files in a null or not valid folder");
         }
-
+        
         File[] files = folder.listFiles();
 
         // This filter only returns object files
-        FileFilter objectFileFileter =
-                new FileFilter() {
+        FileFilter objectFileFileter
+                = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
                         if (file.isFile() && file.getName().endsWith(".xobj")) {
@@ -162,12 +166,12 @@ public class EnvObjectPersistence {
                         }
                     }
                 };
-
+        
         files = folder.listFiles(objectFileFileter);
-
+        
         for (File file : files) {
             boolean deleted = file.delete();
-
+            
             if (!deleted) {
                 throw new DaoLayerException("Unable to delete file " + file.getAbsoluteFile());
             }
@@ -185,12 +189,12 @@ public class EnvObjectPersistence {
             throws DaoLayerException {
         objectList.clear();
         System.out.println("DEBUG: loading objects from " + folder.getAbsolutePath());
-
+        
         File[] files = folder.listFiles();
 
         // This filter only returns object files
-        FileFilter objectFileFilter =
-                new FileFilter() {
+        FileFilter objectFileFilter
+                = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
                         if (file.isFile() && file.getName().endsWith(".xobj")) {
@@ -200,13 +204,13 @@ public class EnvObjectPersistence {
                         }
                     }
                 };
-
+        
         files = folder.listFiles(objectFileFilter);
-
+        
         if (files != null) {
             for (File file : files) {
                 EnvObjectLogic loaded = loadObject(file);
-
+                
                 if (loaded != null) {
                     EnvironmentLogic env = EnvironmentPersistence.getEnvByUUID(loaded.getPojo().getEnvironmentID());
                     if (env != null) {
@@ -227,7 +231,7 @@ public class EnvObjectPersistence {
      * Loads the object file from file but NOT add the object to the list
      *
      * @param file
-     * @return 
+     * @return
      */
     public static EnvObjectLogic loadObject(File file)
             throws DaoLayerException {
@@ -235,18 +239,18 @@ public class EnvObjectPersistence {
 
         //validate the object against a predefined DTD
         String xml;
-
+        
         try {
             xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/object.dtd");
-
+            
             EnvObject pojo = (EnvObject) xstream.fromXML(xml);
             EnvObjectLogic objectLogic = null;
-
+            
             try {
                 objectLogic = EnvObjectFactory.create(pojo);
                 LOG.config("Created a new logic for " + objectLogic.getPojo().getName()
                         + " of type " + objectLogic.getClass().getCanonicalName().toString());
-
+                
                 return objectLogic;
             } catch (DaoLayerException daoLayerException) {
                 LOG.warning(daoLayerException.getMessage());
@@ -266,6 +270,7 @@ public class EnvObjectPersistence {
      *
      * @return
      */
+    @Deprecated
     @RequiresPermissions("objects:read")
     public static Iterator<EnvObjectLogic> iterator() {
         return objectList.values().iterator();
@@ -286,7 +291,7 @@ public class EnvObjectPersistence {
                 return object;
             }
         }
-
+        
         return null;
     }
 
@@ -304,7 +309,7 @@ public class EnvObjectPersistence {
         // search every object for at least one tag 
         for (EnvObjectLogic obj : objectList.values()) {
             Set<String> tagSet = new HashSet<String>();
-
+            
             for (String tag : tagList) {
                 if (!tag.trim().isEmpty()) {
                     tagSet.add(tag.trim());
@@ -325,6 +330,7 @@ public class EnvObjectPersistence {
      * @param uuid
      * @return
      */
+    @Deprecated
     @RequiresPermissions("objects:read")
     public static EnvObjectLogic getObjectByUUID(String uuid) {
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
@@ -333,7 +339,7 @@ public class EnvObjectPersistence {
                 return object;
             }
         }
-
+        
         return null;
     }
 
@@ -354,7 +360,7 @@ public class EnvObjectPersistence {
                 || address.isEmpty()) {
             throw new IllegalArgumentException();
         }
-
+        
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
         for (Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
@@ -364,12 +370,12 @@ public class EnvObjectPersistence {
                 list.add(object);
             }
         }
-
+        
         if (list.isEmpty()) {
             LOG.warning("Don't exist an object with protocol '" + protocol + "' and address '"
                     + address + "'");
         }
-
+        
         return list;
     }
 
@@ -389,7 +395,7 @@ public class EnvObjectPersistence {
                 list.add(object);
             }
         }
-
+        
         return list;
     }
 
@@ -409,7 +415,7 @@ public class EnvObjectPersistence {
                 list.add(object);
             }
         }
-
+        
         return list;
     }
 
@@ -434,6 +440,7 @@ public class EnvObjectPersistence {
      * reference to the object in input.
      * @return A pointer to the newly created environment object
      */
+    @Deprecated
     @RequiresPermissions("objects:create")
     public static EnvObjectLogic add(final EnvObjectLogic obj, final boolean MAKE_UNIQUE) {
         if ((obj == null)
@@ -442,9 +449,9 @@ public class EnvObjectPersistence {
                 || obj.getPojo().getName().isEmpty()) {
             throw new IllegalArgumentException("This is not a valid object");
         }
-
+        
         EnvObjectLogic envObjectLogic = obj;
-
+        
         if (MAKE_UNIQUE) {
             //defensive copy to not affect the passed object with the changes
             EnvObject pojoCopy = SerialClone.clone(obj.getPojo());
@@ -454,24 +461,28 @@ public class EnvObjectPersistence {
             pojoCopy.getCurrentRepresentation().getOffset().setX(obj.getPojo().getCurrentRepresentation().getOffset().getX() + 30);
             pojoCopy.getCurrentRepresentation().getOffset().setY(obj.getPojo().getCurrentRepresentation().getOffset().getY() + 30);
             pojoCopy.setUUID(UUID.randomUUID().toString());
-
+            
             try {
                 envObjectLogic = EnvObjectFactory.create(pojoCopy);
             } catch (DaoLayerException ex) {
                 LOG.warning(ex.getMessage());
             }
         }
-
+        
         envObjectLogic.init();
-
+        
         if (!objectList.containsValue(envObjectLogic)) {
             objectList.put(envObjectLogic.getPojo().getUUID(),
                     envObjectLogic);
-            envObjectLogic.setChanged(true);
+            try {
+                envObjectLogic.setChanged(true);
+            } catch (Exception e) {
+                LOG.log(Level.WARNING, "Object was created, but cannot set is as Changed", e);
+            }
         } else {
             throw new RuntimeException("Cannot add the same object more than one time");
         }
-
+        
         return envObjectLogic;
     }
 
@@ -479,6 +490,7 @@ public class EnvObjectPersistence {
      *
      * @param input
      */
+    @Deprecated
     @RequiresPermissions("objects:delete")
     public static void remove(EnvObjectLogic input) {
         objectList.remove(input.getPojo().getUUID());
@@ -497,4 +509,93 @@ public class EnvObjectPersistence {
         }
     }
     private static final Logger LOG = Logger.getLogger(EnvObjectPersistence.class.getName());
+    
+    @Override
+    @RequiresPermissions("objects:read")
+    public List<EnvObjectLogic> list() {
+        LOG.info("OBJECT LIST SIZE: " + objectList.size());
+        List<EnvObjectLogic> el = new ArrayList<EnvObjectLogic>();
+        el.addAll(objectList.values());
+        return el;
+    }
+    
+    @Override
+    @RequiresPermissions("objects:read")
+    public List<EnvObjectLogic> getByName(String name) {
+        List<EnvObjectLogic> el = new ArrayList<EnvObjectLogic>();
+        for (EnvObjectLogic e : list()) {
+            if (e.getPojo().getName().equalsIgnoreCase(name)) {
+                el.add(e);
+            }
+        }
+        return el;
+    }
+    
+    @Override
+    @RequiresPermissions("objects:read")
+    public EnvObjectLogic get(String uuid) {
+        return getObjectByUUID(uuid);
+    }
+    
+    @Override
+    @RequiresPermissions("objects:create")
+    public boolean create(EnvObjectLogic item) {
+        try {
+            int preSize = objectList.size();
+            add(item, false);
+            LOG.info("OBJECT LIST SIZE: " + objectList.size());
+            if (preSize + 1 == objectList.size()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Cannot create object", e);
+            return false;
+        }
+    }
+    
+    @Override
+    @RequiresPermissions("objects:delete")
+    public boolean delete(EnvObjectLogic item) {
+        return delete(item.getPojo().getUUID());
+    }
+    
+    @Override
+    @RequiresPermissions("objects:delete")
+    public boolean delete(String uuid) {
+        try {
+            EnvObjectLogic eol = objectList.remove(uuid);
+            try {
+                eol.setChanged(true); //force repainting on frontends clients
+            } catch (Exception e) {
+                LOG.warning("Cannot notify object changes");
+            }
+            eol.destroy();
+            return true;
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Cannot delete object" + uuid, e);
+            return false;
+        }
+        
+    }
+    
+    @Override
+    @RequiresPermissions("objects:update")
+    public EnvObjectLogic modify(String uuid, EnvObjectLogic data) {
+        try {
+            delete(uuid);
+            data.getPojo().setUUID(uuid);
+            create(data);
+            return data;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    @Override
+    @RequiresPermissions("objects:create")
+    public EnvObjectLogic copy(String uuid) {
+        return add(get(uuid), true);
+    }
 }

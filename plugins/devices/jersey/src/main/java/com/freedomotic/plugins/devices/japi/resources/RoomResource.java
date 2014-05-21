@@ -1,29 +1,27 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.plugins.devices.japi.resources;
 
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.Room;
+import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.plugins.devices.japi.utils.AbstractResource;
 import com.wordnik.swagger.annotations.Api;
@@ -34,47 +32,48 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.UriBuilder;
 
 /**
  *
  * @author matteo
  */
 @Path("rooms")
-@Api(value = "/rooms", description = "Operations on rooms", position=1)
+@Api(value = "/rooms", description = "Operations on rooms", position = 1)
 public class RoomResource extends AbstractResource<Zone> {
 
-    final private String endUUID;
+    final private String envUUID;
     final private EnvironmentLogic env;
-    protected RoomResource( String endUUID) {
-        this.endUUID = endUUID;
-        this.env = EnvironmentPersistence.getEnvByUUID(this.endUUID);  
+
+    protected RoomResource(String endUUID) {
+        this.envUUID = endUUID;
+        this.env = api.environments().get(endUUID);
     }
 
     @Override
     protected boolean doDelete(String ID) {
-        boolean found = false;
-        for (Room r : env.getRooms()) {
-            if (r.getPojo().getName().equalsIgnoreCase(ID)) {
-                env.removeZone(r);
-                found = true;
-                break;
-            }
+        try {
+            env.removeZone(env.getZoneByUuid(ID));
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-        return found;
     }
 
     @Override
     protected URI doCreate(Zone z) throws URISyntaxException {
-        Room r = new Room (z);
-        env.addRoom(r);
-        return UriBuilder.fromResource(this.getClass()).path("/" + z.getName()).build(endUUID);
+        Room r = new Room(z);
+        try {
+            env.addRoom(r);
+        } catch (Exception e) {
+
+        }
+        return createUri(envUUID);
     }
 
     @Override
     protected Zone doUpdate(Zone z) {
-        Room  zl = new Room(z);
-        env.removeZone(env.getZone(z.getName()));
+        Room zl = new Room(z);
+        env.removeZone(env.getZoneByUuid(z.getUuid()));
         env.addRoom(zl);
         return z;
     }
@@ -90,19 +89,31 @@ public class RoomResource extends AbstractResource<Zone> {
 
     @Override
     protected Zone prepareSingle(String uuid) {
-        return env.getZone(uuid).getPojo();
+        ZoneLogic zl = env.getZoneByUuid(uuid);
+        if (zl != null) {
+            return zl.getPojo();
+        } else {
+            return null;
+        }
     }
-    
+
     @Path("/{id}/objects/")
     public ObjectResource objects(
             @ApiParam(value = "Room to fetch objects from", required = true)
-            @PathParam("id") String room){
-        return new ObjectResource(endUUID, room);
+            @PathParam("id") String room) {
+        return new ObjectResource(envUUID, room);
     }
 
     @Override
     protected URI doCopy(String UUID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Zone copy = new Zone();
+        Zone orig = env.getZoneByUuid(UUID).getPojo();
+        copy.setName("Copy of " + orig.getName());
+        copy.setAsRoom(orig.isRoom());
+        copy.setShape(orig.getShape());
+        copy.setTexture(orig.getTexture());
+        env.addRoom(new Room(copy));
+        return createUri(copy.getUuid());
     }
 
 }

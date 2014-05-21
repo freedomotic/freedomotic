@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -121,6 +122,7 @@ public final class Command implements Serializable, Cloneable {
      *
      */
     public Command() {
+        this.uuid = UUID.randomUUID().toString();
         if (isHardwareLevel()) { //an hardware level command
             setEditable(false); //it has not to me stored in root/data folder
         }
@@ -423,12 +425,13 @@ public final class Command implements Serializable, Cloneable {
         super.clone();
 
         Command clonedCmd = new Command();
-        clonedCmd.setName(getName());
+        clonedCmd.setName("Copy of " + getName());
         clonedCmd.setDescription(getDescription());
         clonedCmd.setReceiver(getReceiver());
         clonedCmd.setDelay(getDelay());
         clonedCmd.setReplyTimeout(getReplyTimeout());
         clonedCmd.setExecuted(executed);
+        clonedCmd.setHardwareLevel(hardwareLevel);
         Iterator<Entry<Object, Object>> it = getProperties().entrySet().iterator();
         while (it.hasNext()) {
             Entry<Object, Object> e = it.next();

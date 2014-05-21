@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.plugins.devices.japi.resources;
@@ -37,6 +35,7 @@ import javax.ws.rs.PathParam;
 
 /**
  * Environment Resource
+ *
  * @author matteo
  */
 @Path("environments")
@@ -46,7 +45,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
     @Override
     protected List<Environment> prepareList() {
         List<Environment> environments = new ArrayList<Environment>();
-        for (EnvironmentLogic log : EnvironmentPersistence.getEnvironments()) {
+        for (EnvironmentLogic log : api.environments().list()) {
             environments.add(log.getPojo());
         }
         return environments;
@@ -54,15 +53,18 @@ public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Override
     protected Environment prepareSingle(String uuid) {
-        return EnvironmentPersistence.getEnvByUUID(uuid).getPojo();
+        EnvironmentLogic el = api.environments().get(uuid);
+        if (el != null) {
+            return el.getPojo();
+        }
+        return null;
     }
 
     @Override
     protected boolean doDelete(String UUID) {
-        EnvironmentLogic env = EnvironmentPersistence.getEnvByUUID(UUID);
+        EnvironmentLogic env = api.environments().get(UUID);
         if (env != null) {
-            EnvironmentPersistence.remove(EnvironmentPersistence.getEnvByUUID(UUID));
-            return true;
+            return api.environments().delete(UUID);
         } else {
             return false;
         }
@@ -72,7 +74,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
     protected URI doCreate(Environment eo) throws URISyntaxException {
         EnvironmentLogic el = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
         el.setPojo(eo);
-        EnvironmentPersistence.add(el, false);
+        api.environments().create(el);
         return createUri(el.getPojo().getUUID());
     }
 
@@ -80,22 +82,24 @@ public class EnvironmentResource extends AbstractResource<Environment> {
     protected Environment doUpdate(Environment eo) {
         EnvironmentLogic el = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
         el.setPojo(eo);
-        EnvironmentPersistence.remove(EnvironmentPersistence.getEnvByUUID(eo.getUUID()));
-        EnvironmentPersistence.add(el, false);
-        return eo;
+        if (api.environments().modify(eo.getUUID(), el) != null) {
+            return el.getPojo();
+        } else {
+            return null;
+        }
     }
-    
+
     @Path("/{id}/rooms")
     public RoomResource rooms(
             @ApiParam(value = "Environment to fetch rooms from", required = true)
-            @PathParam("id") String UUID){
+            @PathParam("id") String UUID) {
         return new RoomResource(UUID);
     }
-    
+
     @Path("/{id}/objects")
     public ObjectResource objects(
             @ApiParam(value = "Environment to fetch objects from", required = true)
-            @PathParam("id") String UUID){
+            @PathParam("id") String UUID) {
         return new ObjectResource(UUID);
     }
 

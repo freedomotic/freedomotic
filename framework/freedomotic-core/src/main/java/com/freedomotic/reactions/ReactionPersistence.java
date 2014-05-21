@@ -20,6 +20,7 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.persistence.ContainerInterface;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
@@ -28,6 +29,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -41,11 +43,12 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author Enrico
  */
-public class ReactionPersistence {
+public class ReactionPersistence implements ContainerInterface<Reaction>{
 
     private static List<Reaction> list = new CopyOnWriteArrayList<Reaction>(); //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
-
+    
     private ReactionPersistence() {
+        
         //avoid instance creation
     }
 
@@ -189,6 +192,7 @@ public class ReactionPersistence {
      *
      * @param r
      */
+    @Deprecated
     public static void add(Reaction r) {
         if (!exists(r))   { //if not already loaded
             //if it's a new reaction validate it's commands
@@ -207,6 +211,7 @@ public class ReactionPersistence {
      *
      * @param input
      */
+    @Deprecated
     public static void remove(Reaction input) {
         if (input != null) {
             boolean removed = list.remove(input);
@@ -223,6 +228,7 @@ public class ReactionPersistence {
      *
      * @return
      */
+    @Deprecated
     public static Iterator<Reaction> iterator() {
         return list.iterator();
     }
@@ -231,6 +237,7 @@ public class ReactionPersistence {
      *
      * @return
      */
+    @Deprecated
     public static List<Reaction> getReactions() {
         return Collections.unmodifiableList(list);
     }   
@@ -240,6 +247,7 @@ public class ReactionPersistence {
      * @param uuid
      * @return
      */
+    @Deprecated
     public static Reaction getReaction(String uuid) {
         for (Reaction r : list){
             if (r.getUUID().equalsIgnoreCase(uuid)){
@@ -275,4 +283,55 @@ public class ReactionPersistence {
         return false;
     }
     private static final Logger LOG = Logger.getLogger(ReactionPersistence.class.getName());
+
+    @Override
+    public List<Reaction> list() {
+        return getReactions();
+    }
+
+    @Override
+    public List<Reaction> getByName(String name) {
+throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+    }
+
+    @Override
+    public Reaction get(String uuid) {
+        return getReaction(uuid);
+    }
+
+    @Override
+    public boolean create(Reaction item) {
+        try{
+            add(item);
+            return true;
+        } catch (Exception e ){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(Reaction item) {
+        try{
+            remove(item);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(String uuid) {
+        return delete(get(uuid));
+    }
+
+    @Override
+    public Reaction modify(String uuid, Reaction data) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Reaction copy(String uuid) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

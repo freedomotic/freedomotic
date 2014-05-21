@@ -19,7 +19,9 @@
  */
 package com.freedomotic.plugins.devices.japi.resources;
 
+import com.freedomotic.exceptions.DaoLayerException;
 import com.freedomotic.model.object.EnvObject;
+import com.freedomotic.objects.EnvObjectFactory;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.plugins.devices.japi.utils.AbstractResource;
@@ -28,6 +30,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
@@ -36,7 +40,7 @@ import javax.ws.rs.core.Response;
  * @author matteo
  */
 @Path("objects")
-@Api(value = "/objects", description = "Operations on environment objects", position=2)
+@Api(value = "/objects", description = "Operations on environment objects", position = 2)
 public class ObjectResource extends AbstractResource<EnvObject> {
 
     private String envUUID = null;
@@ -48,20 +52,22 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     public ObjectResource(String envUUID) {
         this.envUUID = envUUID;
     }
+
     public ObjectResource(String envUUID, String room) {
         this.envUUID = envUUID;
         this.roomName = room;
     }
+
     @Override
     protected List<EnvObject> prepareList() {
         List<EnvObject> objects = new ArrayList<EnvObject>();
         if (envUUID == null) {
-            for (EnvObjectLogic objLogic : EnvObjectPersistence.getObjectList()) {
+            for (EnvObjectLogic objLogic : api.objects().list()) {
                 objects.add(objLogic.getPojo());
             }
         } else {
-            
-            for (EnvObjectLogic objLogic : EnvObjectPersistence.getObjectByEnvironment(envUUID)) {
+
+            for (EnvObjectLogic objLogic : api.objects().getObjectByEnvironment(envUUID)) {
                 objects.add(objLogic.getPojo());
             }
         }
@@ -70,45 +76,52 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
     @Override
     protected EnvObject prepareSingle(String uuid) {
-        return EnvObjectPersistence.getObjectByUUID(uuid).getPojo();
-    }
-
-    @Override
-    protected boolean doDelete(String UUID) {
-        EnvObjectLogic obj = EnvObjectPersistence.getObjectByUUID(UUID);
-        if (obj != null) {
-            EnvObjectPersistence.remove(EnvObjectPersistence.getObjectByUUID(UUID));
-            return true;
+        EnvObjectLogic el = api.objects().get(uuid);
+        if (el != null) {
+            return el.getPojo();
         } else {
-            return false;
+            return null;
         }
     }
 
     @Override
+    protected boolean doDelete(String UUID) {
+        return api.objects().delete(UUID);
+    }
+
+    @Override
     protected EnvObject doUpdate(EnvObject eo) {
-
-        EnvObjectLogic el = new EnvObjectLogic();
-        // set POJO!!!
-
-        EnvObjectPersistence.add(el, false);
-        return eo;
+        try {
+            EnvObjectLogic el = EnvObjectFactory.create(eo);
+            if (api.objects().modify(eo.getUUID(), el) != null) {
+                return eo;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Cannot modify object " + eo.getName(), e);
+            return null;
+        }
 
     }
 
     @Override
     protected URI doCreate(EnvObject eo) throws URISyntaxException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        EnvObjectLogic el;
+        try {
+            el = EnvObjectFactory.create(eo);
+            api.objects().create(el);
+            return createUri(el.getPojo().getUUID());
+        } catch (DaoLayerException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+        return null;
+
     }
 
     @Override
     protected URI doCopy(String UUID) {
-        return createUri(EnvObjectPersistence.add(EnvObjectPersistence.getObjectByUUID(UUID), true).getPojo().getUUID());
+        return createUri(api.objects().copy(UUID).getPojo().getUUID());
     }
 
-    @Override
-    public Response create(EnvObject s) throws URISyntaxException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    
 }

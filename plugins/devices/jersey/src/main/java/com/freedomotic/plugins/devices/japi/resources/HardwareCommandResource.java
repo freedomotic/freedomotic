@@ -21,16 +21,12 @@ package com.freedomotic.plugins.devices.japi.resources;
 
 import com.freedomotic.plugins.devices.japi.utils.AbstractResource;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
 import com.wordnik.swagger.annotations.Api;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.UriBuilder;
 
 /**
  *
@@ -41,58 +37,37 @@ import javax.ws.rs.core.UriBuilder;
 public class HardwareCommandResource extends AbstractResource<Command> {
 
     @Override
-    protected URI doCreate(Command o) throws URISyntaxException {
-        CommandPersistence.add(o);
-        return createUri(o.getUUID());
+    protected URI doCreate(Command c) throws URISyntaxException {
+        c.setHardwareLevel(true);
+        api.commands().create(c);
+        return createUri(c.getUUID());
     }
 
     @Override
     protected boolean doDelete(String UUID) {
-        Command c = CommandPersistence.getCommandByUUID(UUID);
-        if (c != null) {
-            CommandPersistence.remove(c);
-            return true;
-        }
-        return false;
+        return api.commands().delete(UUID);
     }
 
     @Override
-    protected Command doUpdate(Command o) {
-        Command c = CommandPersistence.getCommandByUUID(o.getUUID());
-        if (c != null) {
-            CommandPersistence.remove(c);
-            CommandPersistence.add(o);
-            return CommandPersistence.getCommandByUUID(o.getUUID());
-        }
-        return null;
-
+    protected Command doUpdate(Command c) {
+        return api.commands().modify(c.getUUID(), c);
     }
 
     @Override
     protected List<Command> prepareList() {
-        return new ArrayList<Command>(CommandPersistence.getHardwareCommands());
+        List<Command> cl = new ArrayList<Command>();
+        cl.addAll(api.commands().getHardwareCommands());
+        return cl;
     }
 
     @Override
     protected Command prepareSingle(String uuid) {
-        Command c = CommandPersistence.getCommand(uuid);
-        if (c == null) {
-            c = CommandPersistence.getCommandByUUID(uuid);
-        }
-        return c;
+        return api.commands().get(uuid);
     }
 
     @Override
-    protected URI doCopy(String name) {
-        Command c;
-        try {
-            c = CommandPersistence.getCommand(name).clone();
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(HardwareCommandResource.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
-        CommandPersistence.add(c);
-        return createUri(c.getName());
+    protected URI doCopy(String uuid) {
+        Command c = api.commands().copy(uuid);
+        return createUri(c.getUUID());
     }
-
 }

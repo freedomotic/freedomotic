@@ -32,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -39,11 +40,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Enrico
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public final class Payload
         implements Serializable {
 
     private static final long serialVersionUID = -5799483105084939108L;
+    @XmlElement
     List<Statement> payload = new CopyOnWriteArrayList<Statement>();
 
     /**

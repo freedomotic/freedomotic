@@ -25,10 +25,13 @@
  */
 package com.freedomotic.model.object;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author enrico
  */
+@XmlRootElement
 public class PropertiesBehavior
         extends Behavior {
 

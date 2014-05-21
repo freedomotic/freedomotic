@@ -22,7 +22,6 @@ package com.freedomotic.plugins.devices.japi.resources;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.devices.japi.utils.AbstractResource;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -30,66 +29,48 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 
 /**
  *
  * @author matteo
  */
 @Path("commands/user")
-@Api(value = "userCommands", description = "Operations on user commands", position=5)
+@Api(value = "userCommands", description = "Operations on user commands", position = 5)
 public class UserCommandResource extends AbstractResource<Command> {
 
     @Override
     protected URI doCreate(Command c) throws URISyntaxException {
-        CommandPersistence.add(c);
-        return UriBuilder.fromResource(this.getClass()).path(c.getUUID()).build();
+        c.setHardwareLevel(false);
+        api.commands().create(c);
+        return createUri(c.getUUID());
     }
 
     @Override
     protected boolean doDelete(String UUID) {
-        Command c = CommandPersistence.getCommand(UUID);
-        if (c != null) {
-            CommandPersistence.remove(c);
-            return true;
-        }
-        return false;
+        return api.commands().delete(UUID);
     }
 
     @Override
     protected Command doUpdate(Command c) {
-        for (Command oldC : CommandPersistence.getUserCommands()) {
-            if (oldC.getUUID().equals(c.getUUID())) {
-                CommandPersistence.remove(oldC);
-                CommandPersistence.add(c);
-                return c;
-            }
-        }
-        return null;
+        return api.commands().modify(c.getUUID(), c);
     }
 
     @Override
     protected List<Command> prepareList() {
-        List<Command> lc = new ArrayList<Command>();
-        lc.addAll(CommandPersistence.getUserCommands());
-        return lc;
+        List<Command> cl = new ArrayList<Command>();
+        cl.addAll(api.commands().getUserCommands());
+        return cl;
     }
 
     @Override
     protected Command prepareSingle(String uuid) {
-        Command c = CommandPersistence.getCommand(uuid);
-        if (c == null) {
-            c = CommandPersistence.getCommandByUUID(uuid);
-        }
-        return c;
+        return api.commands().get(uuid);
     }
 
     @POST
@@ -99,7 +80,7 @@ public class UserCommandResource extends AbstractResource<Command> {
     public Response fire(
             @ApiParam(value = "Name of Command to execute", required = true)
             @PathParam("id") String UUID) {
-        Command c = CommandPersistence.getCommand(UUID);
+        Command c = api.commands().get(UUID);
         if (c != null) {
             Freedomotic.sendCommand(c);
         }
@@ -118,15 +99,8 @@ public class UserCommandResource extends AbstractResource<Command> {
     }
 
     @Override
-    protected URI doCopy(String name) {
-        Command c;
-        try {
-            c = CommandPersistence.getCommand(name).clone();
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(UserCommandResource.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
-        CommandPersistence.add(c);
-        return createUri(c.getName());
+    protected URI doCopy(String uuid) {
+        Command c=  api.commands().copy(uuid);
+        return createUri(c.getUUID());
     }
 }
