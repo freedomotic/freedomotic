@@ -1,7 +1,7 @@
 <com.freedomotic.reactions.Command>
     <name>Switch Zwave device</name>
     <receiver>app.actuators.protocol.zwave.in</receiver>
-    <description>Set temperature setpoint on a temperature device</description>
+    <description>Switch Zwave device</description>
     <hardwareLevel>true</hardwareLevel>
     <delay>0</delay>
     <timeout>0</timeout>
