@@ -36,7 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
@@ -50,7 +49,7 @@ public final class EnvironmentLogic {
     private List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
     private File source = null;
     private final API api;
-    
+
     /**
      *
      * @param api
@@ -164,10 +163,18 @@ public final class EnvironmentLogic {
                     gate.evaluateGate();
                 }
             }
-
-            room.setChanged();
+            try {
+                room.setChanged();
+            } catch (Exception e) {
+                LOG.warning("Cannot notify room changes");
+            }
         } else {
-            zone.setChanged();
+            try {
+                zone.setChanged();
+            } catch (Exception e) {
+                LOG.warning("Cannot notify room changes");
+            }
+
         }
     }
 
@@ -183,8 +190,7 @@ public final class EnvironmentLogic {
 
     /**
      *
-     * @return
-     * @deprecated
+     * @return @deprecated
      */
     @Deprecated
     @RequiresPermissions("environments:read")
@@ -226,7 +232,7 @@ public final class EnvironmentLogic {
 
                 if (!zones.contains(room)) {
                     Freedomotic.logger.config("Adding room " + room);
-                    
+
                     this.zones.add(room);
                 } else {
                     Freedomotic.logger.warning("Attempt to add a null or an already existent room " + room);
@@ -263,11 +269,27 @@ public final class EnvironmentLogic {
     public ZoneLogic getZone(String zoneName) {
         for (ZoneLogic zone : zones) {
             if (zone.getPojo().getName().equalsIgnoreCase(zoneName)
-                    && SecurityUtils.getSubject().isPermitted("zone:read" + zoneName)) {
+                    && api.getAuth().isPermitted("zone:read" + zoneName)) {
                 return zone;
             }
         }
 
+        return null;
+    }
+
+    /**
+     *
+     * @param uuid
+     * @return
+     */
+    @RequiresPermissions({"environments:read", "zones:read"})
+    public ZoneLogic getZoneByUuid(String uuid) {
+        for (ZoneLogic zone : zones) {
+            if (zone.getPojo().getUuid().equalsIgnoreCase(uuid)
+                    && api.getAuth().isPermitted("zone:read" + uuid)) {
+                return zone;
+            }
+        }
         return null;
     }
 
@@ -307,5 +329,5 @@ public final class EnvironmentLogic {
         return this.getPojo().getName();
     }
     private static final Logger LOG = Logger.getLogger(EnvironmentLogic.class.getName());
-    
+
 }

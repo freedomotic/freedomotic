@@ -23,11 +23,13 @@ package com.freedomotic.model.object;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Enrico
  */
+@XmlRootElement
 public class MultiselectionListBehavior
         extends Behavior {
 

@@ -21,10 +21,13 @@
  */
 package com.freedomotic.model.object;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author Enrico
  */
+@XmlRootElement
 public class RangedIntBehavior
         extends Behavior {
 
@@ -87,7 +90,7 @@ public class RangedIntBehavior
      */
     public int getScale() {
         if (scale <= 0) {
-            scale = 1;
+            setScale(1);
         }
 
         return scale;
@@ -101,5 +104,33 @@ public class RangedIntBehavior
         //activate this behavior if it was unactivated
         this.setActive(true);
         value = inputValue;
+    }
+
+    /**
+     * @param max the max to set
+     */
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    /**
+     * @param min the min to set
+     */
+    public void setMin(int min) {
+        this.min = min;
+    }
+
+    /**
+     * @param scale the scale to set
+     */
+    public void setScale(int scale) {
+        this.scale = scale;
+    }
+
+    /**
+     * @param step the step to set
+     */
+    public void setStep(int step) {
+        this.step = step;
     }
 }

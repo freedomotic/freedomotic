@@ -21,11 +21,13 @@ package com.freedomotic.model.object;
 
 import com.freedomotic.model.charting.UsageData;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
+@XmlRootElement
 public class DataBehavior extends Behavior{
     
     private List<UsageData> data;

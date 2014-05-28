@@ -33,12 +33,15 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Expression autor is undefined on line 12, column 14 in
  * Templates/Classes/Class.java.
  */
+@XmlRootElement
 public class Config
         implements Serializable {
 
@@ -60,6 +63,7 @@ public class Config
      *
      * @param file
      */
+    @XmlTransient
     public void setXmlFile(File file) {
         this.xmlFile = file.getName();
     }

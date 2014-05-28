@@ -24,6 +24,7 @@ package com.freedomotic.model.object;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.geometry.FreedomShape;
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -211,6 +212,7 @@ public class Representation
      *
      * @return
      */
+    @XmlTransient
     public boolean isFilled() {
         if (fillColor != null) {
             return true;
@@ -223,6 +225,7 @@ public class Representation
      *
      * @return
      */
+    @XmlTransient
     public boolean isBordered() {
         if (borderColor != null) {
             return true;

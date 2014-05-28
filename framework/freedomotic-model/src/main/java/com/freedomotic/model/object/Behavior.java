@@ -25,12 +25,19 @@
  */
 package com.freedomotic.model.object;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Enrico
  */
+@JsonTypeInfo( use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type" )
+    @JsonSubTypes( { @Type( value = BooleanBehavior.class, name = "boolean" ), @Type( value = RangedIntBehavior.class, name = "rangedint" ) } )
 public abstract class Behavior
         implements Serializable {
 
@@ -102,7 +109,7 @@ public abstract class Behavior
      * @param readOnly
      */
     public void setReadonly(boolean readOnly) {
-        this.readOnly = readOnly;
+        this.setReadOnly(readOnly);
     }
 
     /**
@@ -117,7 +124,7 @@ public abstract class Behavior
      *
      * @return
      */
-    public String getDescriprion() {
+    public String getDescription() {
         return description;
     }
 
@@ -171,5 +178,12 @@ public abstract class Behavior
         hash = (11 * hash) + ((this.name != null) ? this.name.hashCode() : 0);
 
         return hash;
+    }
+
+    /**
+     * @param readOnly the readOnly to set
+     */
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 }
