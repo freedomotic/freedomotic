@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Test SSE</title>
+</head>
+<body>
+<span>SEE CONSOLE LOG</span>
+<script>
+var source = new EventSource('/v3/events');
+source.addEventListener('message', function(e) {
+  console.log(e.data);
+}, false);
+
+source.addEventListener('open', function(e) {
+  // Connection was opened.
+  console.log('CONNECTION opened...');
+}, false);
+
+source.addEventListener('error', function(e) {
+  if (e.readyState == EventSource.CLOSED) {
+    // Connection was closed.
+	console.log('CONNECTION closed...');
+  }
+}, false);
+console.log('HELLO, this script tests sse capability');
+</script>
+</body>
+</html>
