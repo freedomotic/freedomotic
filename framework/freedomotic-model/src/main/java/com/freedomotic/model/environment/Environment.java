@@ -43,11 +43,16 @@ import com.freedomotic.model.geometry.FreedomColor;
 import com.freedomotic.model.geometry.FreedomPolygon;
 import java.io.Serializable;
 import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author enrico
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Environment
         implements Serializable {
 

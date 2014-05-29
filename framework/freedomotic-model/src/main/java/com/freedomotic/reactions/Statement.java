@@ -26,11 +26,13 @@
 package com.freedomotic.reactions;
 
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Enrico
  */
+@XmlRootElement
 public class Statement
         implements Serializable {
 

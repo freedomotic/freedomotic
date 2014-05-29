@@ -1,27 +1,26 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.persistence.ContainerInterface;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
@@ -32,9 +31,11 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -44,23 +45,36 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class CommandPersistence {
+public class CommandPersistence implements ContainerInterface<Command> {
 
-    private static Map<String, Command> userCommands = new HashMap<String, Command>();
-    private static Map<String, Command> hardwareCommands = new HashMap<String, Command>();
+    private static final Map<String, Command> userCommands = new HashMap<String, Command>();
+    private static final Map<String, Command> hardwareCommands = new HashMap<String, Command>();
 
+    public CommandPersistence(){
+    }
     /**
      *
      * @param c
      */
+    @Deprecated
     public static void add(Command c) {
         if (c != null) {
-            if (!userCommands.containsKey(c.getName().trim().toLowerCase())) {
-                userCommands.put(c.getName(),
-                        c);
-                LOG.log(Level.FINE, "Added command ''{0}'' to the list of user commands", c.getName());
+            if (!c.isHardwareLevel()) {
+                if (!userCommands.containsKey(c.getName().trim().toLowerCase())) {
+                    userCommands.put(c.getName(),
+                            c);
+                    LOG.log(Level.FINE, "Added command ''{0}'' to the list of user commands", c.getName());
+                } else {
+                    LOG.log(Level.CONFIG, "Command ''{0}'' already in the list of user commands. Skipped", c.getName());
+                }
             } else {
-                LOG.log(Level.CONFIG, "Command ''{0}'' already in the list of user commands. Skipped", c.getName());
+                if (!hardwareCommands.containsKey(c.getName().trim().toLowerCase())) {
+                    hardwareCommands.put(c.getName(),
+                            c);
+                    LOG.log(Level.FINE, "Added command ''{0}'' to the list of hardware commands", c.getName());
+                } else {
+                    LOG.log(Level.CONFIG, "Command ''{0}'' already in the list of hardware commands. Skipped", c.getName());
+                }
             }
         } else {
             LOG.warning("Attempt to add a null user command to the list. Skipped");
@@ -71,8 +85,13 @@ public class CommandPersistence {
      *
      * @param input
      */
+    @Deprecated
     public static void remove(Command input) {
-        userCommands.remove(input.getName());
+        if (input.isHardwareLevel()) {
+            hardwareCommands.remove(input.getName());
+        } else {
+            userCommands.remove(input.getName());
+        }
     }
 
     /**
@@ -87,6 +106,7 @@ public class CommandPersistence {
      *
      * @return
      */
+    @Deprecated
     public static Iterator<Command> iterator() {
         return userCommands.values().iterator();
     }
@@ -96,6 +116,7 @@ public class CommandPersistence {
      * @param name
      * @return
      */
+    @Deprecated
     public static Command getCommand(String name) {
         Command command = userCommands.get(name.trim());
 
@@ -106,6 +127,26 @@ public class CommandPersistence {
         Command hwCommand = getHardwareCommand(name);
 
         return hwCommand;
+    }
+
+    /**
+     *
+     * @param uuid
+     * @return
+     */
+    @Deprecated
+    public static Command getCommandByUUID(String uuid) {
+        for (Command c : userCommands.values()) {
+            if (c.getUUID().equalsIgnoreCase(uuid)) {
+                return c;
+            }
+        }
+        for (Command c : hardwareCommands.values()) {
+            if (c.getUUID().equalsIgnoreCase(uuid)) {
+                return c;
+            }
+        }
+        return null;
     }
 
     /**
@@ -129,11 +170,12 @@ public class CommandPersistence {
      * @param name
      * @return
      */
+    @Deprecated
     public static Command getHardwareCommand(String name) {
         Command command = hardwareCommands.get(name.trim());
 
         if (command == null) {
-            LOG.log(Level.SEVERE,"Missing command ''{0}" + "''. "
+            LOG.log(Level.SEVERE, "Missing command ''{0}" + "''. "
                     + "Maybe the related plugin is not installed or cannot be loaded", name);
         }
 
@@ -149,8 +191,8 @@ public class CommandPersistence {
         File[] files = folder.listFiles();
 
         // This filter only returns object files
-        FileFilter objectFileFileter =
-                new FileFilter() {
+        FileFilter objectFileFileter
+                = new FileFilter() {
                     public boolean accept(File file) {
                         if (file.isFile() && file.getName().endsWith(".xcmd")) {
                             return true;
@@ -171,11 +213,11 @@ public class CommandPersistence {
                 summary.append("#Filename \t\t #CommandName \t\t\t #Destination").append("\n");
 
                 for (File file : files) {
-                     Command command = null;
-                     String xml = null;
+                    Command command = null;
+                    String xml = null;
                     try {
                         xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/command.dtd");
-                     } catch (Exception e) {
+                    } catch (Exception e) {
                         LOG.log(Level.SEVERE, "Reaction file {0} is not well formatted: {1}", new Object[]{file.getPath(), e.getLocalizedMessage()});
                         continue;
                     }
@@ -268,8 +310,8 @@ public class CommandPersistence {
         File[] files = folder.listFiles();
 
         // This filter only returns object files
-        FileFilter objectFileFileter =
-                new FileFilter() {
+        FileFilter objectFileFileter
+                = new FileFilter() {
                     public boolean accept(File file) {
                         if (file.isFile() && file.getName().endsWith(".xcmd")) {
                             return true;
@@ -286,7 +328,91 @@ public class CommandPersistence {
         }
     }
 
-    private CommandPersistence() {
-    }
     private static final Logger LOG = Logger.getLogger(CommandPersistence.class.getName());
+
+    @Override
+    public List<Command> list() {
+        List<Command> cl = new ArrayList<Command>(userCommands.values());
+        cl.addAll(hardwareCommands.values());
+        return cl;
+        
+    }
+
+    @Override
+    public List<Command> getByName(String name) {
+        List<Command> cl = new ArrayList<Command>();
+        for (Command c: list()){
+            if(c.getName().equalsIgnoreCase(name)){
+                cl.add(c);
+            }
+        }
+        return cl;
+    }
+
+    @Override
+    public Command get(String uuid) {
+        return getCommandByUUID(uuid);
+    }
+
+    @Override
+    public boolean create(Command item) {
+        try{
+            add(item);
+            return true;
+        } catch (Exception e ){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(Command item) {
+        try {
+            remove(item);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(String uuid) {
+        return delete(get(uuid));
+    }
+
+    @Override
+    public Command modify(String uuid, Command data) {
+        try {
+            delete(uuid);
+            data.setUUID(uuid);
+            add(data);
+            return data;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Command copy(String uuid) {
+        try {
+            Command c = get(uuid).clone();
+            add(c);
+            return c;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void clear() {
+        try{
+        for (Command c : list()){
+            delete(c);
+        }
+        } catch (Exception e){
+        } finally {
+            hardwareCommands.clear();
+            userCommands.clear();
+        }
+    }
+    
 }

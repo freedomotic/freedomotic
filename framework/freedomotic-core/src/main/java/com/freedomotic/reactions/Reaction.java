@@ -42,11 +42,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author enrico
  */
+@XmlRootElement
 public final class Reaction
         implements Serializable {
 
@@ -63,6 +66,7 @@ public final class Reaction
      *
      */
     public Reaction() {
+        this.uuid = UUID.randomUUID().toString();
     }
 
     /**
@@ -72,6 +76,7 @@ public final class Reaction
      * @param commands
      */
     public Reaction(Trigger trigger, List<Condition> conditions, List<Command> commands) {
+        this.uuid = UUID.randomUUID().toString();
         this.conditions = conditions;
         create(trigger, commands);
     }
@@ -130,7 +135,7 @@ public final class Reaction
     private void create(Trigger trigger, List<Command> commands) {
         if ((trigger != null) && (commands != null)) {
             this.trigger = trigger;
-            this.commands = commands;
+            this.setCommands(commands);
             setChanged();
         }
     }
@@ -149,7 +154,7 @@ public final class Reaction
      */
     public List<Command> getCommands() {
         if (commands == null) {
-            commands = new ArrayList<Command>();
+            setCommands(new ArrayList<Command>());
         }
 
         return commands;
@@ -161,7 +166,7 @@ public final class Reaction
      */
     @Override
     public String toString() {
-        return shortDescription;
+        return getShortDescription();
     }
 
     private String buildShortDescription() {
@@ -254,8 +259,13 @@ public final class Reaction
 
         final Reaction other = (Reaction) obj;
 
-        if ((this.shortDescription == null) ? (other.shortDescription != null)
+        if ((this.getShortDescription() == null) ? (other.getShortDescription() != null)
                 : (!this.shortDescription.equals(other.shortDescription))) {
+            return false;
+        }
+        
+        if ((this.getUuid() == null) ? (other.getUuid() !=null)
+                : (!this.getUuid().equals(other.getUuid()))){
             return false;
         }
 
@@ -269,7 +279,7 @@ public final class Reaction
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = (73 * hash) + ((this.shortDescription != null) ? this.shortDescription.hashCode() : 0);
+        hash = (73 * hash) + ((this.getShortDescription() != null) ? this.getShortDescription().hashCode() : 0);
 
         return hash;
     }
@@ -287,26 +297,11 @@ public final class Reaction
      *
      */
     public void setChanged() {
-        description = buildDescription();
-        shortDescription = buildShortDescription();
+        setDescription(buildDescription());
+        setShortDescription(buildShortDescription());
     }
 
-    /**
-     *
-     * @return
-     */
-    public String getUUID() {
-        return uuid;
-    }
-
-    /**
-     *
-     * @param uuid
-     */
-    public void setUUID(String uuid) {
-        this.uuid = uuid;
-    }
-
+  
     /**
      *
      * @return
@@ -318,4 +313,73 @@ public final class Reaction
 
         return false;
     }
+
+    /**
+     * @param conditions the conditions to set
+     */
+    public void setConditions(List<Condition> conditions) {
+        this.conditions = conditions;
+    }
+
+    /**
+     * @return the uuid
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * @param uuid the uuid to set
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    /**
+     * @param commands the commands to set
+     */
+    public void setCommands(List<Command> commands) {
+        this.commands = commands;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the shortDescription
+     */
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    /**
+     * @param shortDescription the shortDescription to set
+     */
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        Reaction r = new Reaction();
+        r.setCommands(this.getCommands());
+        //r.setConditions(this.getConditions());
+        r.setTrigger(this.getTrigger());
+        
+        return r;
+    }
+    
+    public boolean addCommand(Command c ){
+        return commands.add(c);
+    }
+    
+    public boolean removeCommand(Command c){
+        return commands.remove(c);
+    }
+    
+    
 }

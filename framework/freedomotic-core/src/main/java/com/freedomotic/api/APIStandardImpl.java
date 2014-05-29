@@ -12,6 +12,9 @@ import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.filesystem.PluginsManager;
+import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.ReactionPersistence;
+import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.util.I18n.I18n;
 import com.google.inject.Inject;
@@ -33,13 +36,16 @@ import java.util.List;
 public class APIStandardImpl
         implements API {
 
-    private final EnvironmentPersistence environment;
-    private final EnvObjectPersistence object;
+    private final EnvironmentPersistence environments;
+    private final EnvObjectPersistence objects;
     private final ClientStorage clientStorage;
     private final AppConfig config;
     private final Auth auth;
     private final I18n i18n;
     private final PluginsManager plugManager;
+    private TriggerPersistence triggers;
+    private CommandPersistence commands;
+    private ReactionPersistence reactions;
 
     /**
      *
@@ -50,6 +56,8 @@ public class APIStandardImpl
      * @param auth
      * @param i18n
      * @param plugManager
+     * @param triggerPersistence
+     * @param commands
      */
     @Inject
     public APIStandardImpl(
@@ -59,14 +67,20 @@ public class APIStandardImpl
             AppConfig config,
             Auth auth,
             I18n i18n,
-            PluginsManager plugManager) {
-        this.environment = environment;
-        this.object = object;
+            PluginsManager plugManager,
+            TriggerPersistence triggerPersistence,
+            CommandPersistence commands,
+            ReactionPersistence reactions) {
+        this.environments = environment;
+        this.objects = object;
         this.clientStorage = clientStorage;
         this.config = config;
         this.auth = auth;
         this.i18n = i18n;
         this.plugManager = plugManager;
+        this.triggers = triggerPersistence;
+        this.commands = commands;
+        this.reactions = reactions;
         System.out.println("auth in apiimpl is " + this.auth);
     }
 
@@ -87,7 +101,7 @@ public class APIStandardImpl
      */
     @Override
     public EnvObjectLogic addObject(EnvObjectLogic obj, boolean MAKE_UNIQUE) {
-        return object.add(obj, MAKE_UNIQUE);
+        return objects.add(obj, MAKE_UNIQUE);
     }
 
     /**
@@ -96,7 +110,8 @@ public class APIStandardImpl
      */
     @Override
     public Collection<EnvObjectLogic> getObjectList() {
-        return /*Collections.unmodifiableList(*/ object.getObjectList(); /*);*/
+        return /*Collections.unmodifiableList(*/ objects.getObjectList(); /*);*/
+
     }
 
     /**
@@ -106,7 +121,7 @@ public class APIStandardImpl
      */
     @Override
     public EnvObjectLogic getObjectByName(String name) {
-        return object.getObjectByName(name);
+        return objects.getObjectByName(name);
     }
 
     /**
@@ -116,7 +131,7 @@ public class APIStandardImpl
      */
     @Override
     public EnvObjectLogic getObjectByUUID(String uuid) {
-        return object.getObjectByUUID(uuid);
+        return objects.getObjectByUUID(uuid);
     }
 
     /**
@@ -127,7 +142,7 @@ public class APIStandardImpl
      */
     @Override
     public Collection<EnvObjectLogic> getObjectByAddress(String protocol, String address) {
-        return object.getObjectByAddress(protocol, address);
+        return objects.getObjectByAddress(protocol, address);
     }
 
     /**
@@ -137,7 +152,7 @@ public class APIStandardImpl
      */
     @Override
     public Collection<EnvObjectLogic> getObjectByProtocol(String protocol) {
-        return object.getObjectByProtocol(protocol);
+        return objects.getObjectByProtocol(protocol);
     }
 
     /**
@@ -147,7 +162,7 @@ public class APIStandardImpl
      */
     @Override
     public Collection<EnvObjectLogic> getObjectByEnvironment(String uuid) {
-        return object.getObjectByEnvironment(uuid);
+        return objects.getObjectByEnvironment(uuid);
     }
 
     /**
@@ -156,7 +171,7 @@ public class APIStandardImpl
      */
     @Override
     public void removeObject(EnvObjectLogic input) {
-        object.remove(input);
+        objects.remove(input);
     }
 
     /**
@@ -167,7 +182,7 @@ public class APIStandardImpl
      */
     @Override
     public EnvironmentLogic addEnvironment(EnvironmentLogic obj, boolean MAKE_UNIQUE) {
-        return environment.add(obj, MAKE_UNIQUE);
+        return environments.add(obj, MAKE_UNIQUE);
     }
 
     /**
@@ -176,7 +191,7 @@ public class APIStandardImpl
      */
     @Override
     public List<EnvironmentLogic> getEnvironments() {
-        return environment.getEnvironments();
+        return environments.getEnvironments();
     }
 
     /**
@@ -186,7 +201,7 @@ public class APIStandardImpl
      */
     @Override
     public EnvironmentLogic getEnvByUUID(String UUID) {
-        return environment.getEnvByUUID(UUID);
+        return environments.getEnvByUUID(UUID);
     }
 
     /**
@@ -195,7 +210,7 @@ public class APIStandardImpl
      */
     @Override
     public void removeEnvironment(EnvironmentLogic input) {
-        environment.remove(input);
+        environments.remove(input);
     }
 
     /**
@@ -207,7 +222,7 @@ public class APIStandardImpl
     public Collection<Client> getClients(String filter) {
         return clientStorage.getClients(filter);
     }
-    
+
     /**
      *
      * @return
@@ -229,13 +244,13 @@ public class APIStandardImpl
     public ClientStorage getClientStorage() {
         return clientStorage;
     }
-    
+
     /**
      *
      * @return
      */
     @Override
-    public Auth getAuth(){
+    public Auth getAuth() {
         return auth;
     }
 
@@ -264,6 +279,33 @@ public class APIStandardImpl
      */
     @Override
     public Collection<EnvObjectLogic> getObjectByTag(String tag) {
-        return object.getObjectByTags(tag);
+        return objects.getObjectByTags(tag);
     }
+
+    @Override
+    public EnvironmentPersistence environments() {
+        return environments;
+    }
+
+    @Override
+    public TriggerPersistence triggers() {
+        return triggers;
+    }
+
+    @Override
+    public EnvObjectPersistence objects() {
+        return objects;
+    }
+
+    @Override
+    public CommandPersistence commands() {
+        return commands;
+    }
+
+    @Override
+    public ReactionPersistence reactions() {
+        return reactions;
+    }
+
+    
 }

@@ -6,9 +6,14 @@ package com.freedomotic.api;
 
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.environment.EnvironmentLogic;
+import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.filesystem.PluginsManager;
+import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.ReactionPersistence;
+import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.util.I18n.I18n;
 import java.awt.image.BufferedImage;
@@ -176,4 +181,10 @@ public interface API {
      * @return
      */
     BufferedImage getResource(String resourceIdentifier);
+    
+    EnvironmentPersistence environments();
+    TriggerPersistence triggers();
+    EnvObjectPersistence objects();
+    CommandPersistence commands();
+    ReactionPersistence reactions();
 }

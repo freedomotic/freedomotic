@@ -77,7 +77,7 @@ public class ZoneLogic {
      */
     public ZoneLogic(final Zone pojo) {
         this.pojo = pojo;
-		this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+	this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
    }
 
     /**

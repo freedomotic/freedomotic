@@ -17,48 +17,33 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.model.object;
+package com.freedomotic.persistence;
 
-import com.freedomotic.model.charting.UsageData;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author matteo
+ * @param <T>
  */
-@XmlRootElement
-public class DataBehavior extends Behavior{
-    
-    private List<UsageData> data;
+public interface ContainerInterface<T> {
 
-    /**
-     *
-     * @param data
-     */
-    public void setData(List<UsageData> data){
-        this.data = data;
-    }
-    
-    /**
-     *
-     * @param data
-     */
-    public void addData(List<UsageData> data){
-        this.data.addAll(data);
-    }
-    
-    /**
-     *
-     * @return
-     */
-    public List<UsageData> getData(){
-        return data;
-    }
-    
+    public List<T> list();
 
+    public List<T> getByName(String name);
+
+    public T get(String uuid);
+
+    public boolean create(T item);
+
+    public boolean delete(T item);
+
+    public boolean delete(String uuid);
+
+    public T modify(String uuid, T data);
     
+    public T copy(String uuid);
     
-    
-    
+    public void clear();
+
 }
