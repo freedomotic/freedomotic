@@ -1,0 +1,20 @@
+<config>
+    <properties>
+        <property name="description"            value="A simple plugin to start coding"/>
+        <property name="category"               value="devel"/>
+        <property name="short-name"             value="jersey"/>
+        <property name="startup-time"           value="on load"/>
+        <property name="debug"                  value="true" />
+        <property name="debug-entity"           value="true" />
+        <property name="http-port"              value="9111" />
+        <property name="https-port"             value="9113" />
+        <property name="listen-address"         value="0.0.0.0" />
+        <property name="enable-ssl"             value="true" />
+        <property name="KEYSTORE_SERVER_FILE"   value="keystore_server" />
+        <property name="KEYSTORE_SERVER_PWD"    value="freedomotic" />
+        <property name="enable-cors"            value="true" />
+        <property name="serve-static"           value="swagger" />
+    </properties>
+</config>
+
+                
