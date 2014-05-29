@@ -31,6 +31,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A data structure to collect blocks of data in {@link HashMap} style This are
@@ -39,6 +42,8 @@ import java.util.Set;
  *
  * @author Enrico
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Tuples
         implements Serializable {
 

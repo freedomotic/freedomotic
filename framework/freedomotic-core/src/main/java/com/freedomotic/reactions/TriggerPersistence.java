@@ -20,6 +20,7 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.persistence.ContainerInterface;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
@@ -30,6 +31,7 @@ import java.io.FileFilter;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +40,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class TriggerPersistence {
+public class TriggerPersistence implements ContainerInterface<Trigger> {
 
     private static ArrayList<Trigger> list = new ArrayList<Trigger>();
 
@@ -91,8 +93,8 @@ public class TriggerPersistence {
     private static void deleteTriggerFiles(File folder) {
         File[] files = folder.listFiles();
         // This filter only returns object files
-        FileFilter objectFileFileter =
-                new FileFilter() {
+        FileFilter objectFileFileter
+                = new FileFilter() {
                     public boolean accept(File file) {
                         if (file.isFile() && file.getName().endsWith(".xtrg")) {
                             return true;
@@ -111,6 +113,7 @@ public class TriggerPersistence {
      *
      * @return
      */
+    @Deprecated
     public static ArrayList<Trigger> getTriggers() {
         return list;
     }
@@ -123,8 +126,8 @@ public class TriggerPersistence {
         XStream xstream = FreedomXStream.getXstream();
 
         // This filter only returns object files
-        FileFilter objectFileFileter =
-                new FileFilter() {
+        FileFilter objectFileFileter
+                = new FileFilter() {
                     public boolean accept(File file) {
                         if (file.isFile() && file.getName().endsWith(".xtrg")) {
                             return true;
@@ -146,8 +149,8 @@ public class TriggerPersistence {
                     Trigger trigger = null;
                     try {
                         //validate the object against a predefined DTD
-                        String xml =
-                                DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/trigger.dtd");
+                        String xml
+                                = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/trigger.dtd");
                         trigger = (Trigger) xstream.fromXML(xml);
                     } catch (Exception e) {
                         LOG.log(Level.SEVERE, "Trigger file {0} is not well formatted: {1}", new Object[]{file.getPath(), e.getLocalizedMessage()});
@@ -200,6 +203,10 @@ public class TriggerPersistence {
         if (!list.contains(t)) {
             list.add(t);
             t.register();
+            int postSize = TriggerPersistence.size();
+            if (!(postSize == (preSize + 1))) {
+                LOG.severe("Error while while adding and registering trigger '" + t.getName() + "'");
+            }
         } else {
             //this trigger is already in the list
             int old = list.indexOf(t);
@@ -208,11 +215,6 @@ public class TriggerPersistence {
             t.register();
         }
 
-        int postSize = TriggerPersistence.size();
-
-        if (!(postSize == (preSize + 1))) {
-            LOG.severe("Error while while adding and registering trigger '" + t.getName() + "'");
-        }
     }
 
     /**
@@ -250,14 +252,13 @@ public class TriggerPersistence {
         try {
             t.unregister();
             list.remove(t);
+            int postSize = TriggerPersistence.size();
+
+            if (!(postSize == (preSize - 1))) {
+                LOG.severe("Error while while removing trigger '" + t.getName() + "'");
+            }
         } catch (Exception e) {
             LOG.severe("Error while while unregistering the trigger '" + t.getName() + "'");
-        }
-
-        int postSize = TriggerPersistence.size();
-
-        if (!(postSize == (preSize - 1))) {
-            LOG.severe("Error while while removing trigger '" + t.getName() + "'");
         }
     }
 
@@ -268,6 +269,7 @@ public class TriggerPersistence {
      * @return a Trigger object with the name (ignore-case) as the String in
      * input
      */
+    @Deprecated
     public static Trigger getTrigger(String name) {
         if ((name == null) || (name.trim().isEmpty())) {
             return null;
@@ -289,6 +291,7 @@ public class TriggerPersistence {
      * @param input
      * @return
      */
+    @Deprecated
     public static Trigger getTrigger(Trigger input) {
         if (input != null) {
             for (Iterator it = list.iterator(); it.hasNext();) {
@@ -308,14 +311,31 @@ public class TriggerPersistence {
      * @param i
      * @return
      */
+    @Deprecated
     public static Trigger getTrigger(int i) {
         return list.get(i);
     }
 
     /**
      *
+     * @param uuid
      * @return
      */
+    @Deprecated
+    public static Trigger getTriggerByUUID(String uuid) {
+        for (Trigger t : list) {
+            if (t.getUUID().equalsIgnoreCase(uuid)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Deprecated
     public static Iterator<Trigger> iterator() {
         return list.iterator();
     }
@@ -327,5 +347,100 @@ public class TriggerPersistence {
     public static int size() {
         return list.size();
     }
+
     private static final Logger LOG = Logger.getLogger(TriggerPersistence.class.getName());
+
+    @Override
+    public List<Trigger> list() {
+        return getTriggers();
+    }
+
+    @Override
+    public List<Trigger> getByName(String name) {
+        List<Trigger> tl = new ArrayList<Trigger>();
+        for (Trigger t : list()) {
+            if (t.getName().equalsIgnoreCase(name)) {
+                tl.add(t);
+            }
+        }
+        return tl;
+    }
+
+    @Override
+    public Trigger get(String uuid) {
+        return getTriggerByUUID(uuid);
+    }
+
+    @Override
+    public boolean create(Trigger item) {
+        try {
+            add(item);
+            return true;
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE,"Cannot add trigger " + item.getName(),e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(Trigger item) {
+        try {
+            remove(item);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(String uuid) {
+        return delete(get(uuid));
+    }
+
+    @Override
+    public Trigger modify(String uuid, Trigger data) {
+        try {
+            if (uuid == null || uuid.isEmpty() || data == null) {
+                LOG.warning("Cannot even start modifying trigger, basic data missing");
+                return null;
+            } else {
+                delete(uuid);
+                data.setUUID(uuid);
+                create(data);
+                try {
+                    data.register();
+                } catch (Exception f) {
+                    LOG.warning("Cannot register trigger " + data.getName());
+                }
+                return data;
+            }
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Error while modifying trigger" + data.getName(), e);
+            return null;
+        }
+    }
+
+    @Override
+    public Trigger copy(String uuid) {
+        try {
+            Trigger t = get(uuid).clone();
+            create(t);
+            return t;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void clear() {
+    try{
+        for (Trigger t : list()){
+            delete(t);
+        }
+        } catch (Exception e){
+        } finally {
+            list.clear();
+        }
+    }
+    
 }

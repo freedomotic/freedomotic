@@ -32,15 +32,22 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author enrico
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public final class Trigger implements BusConsumer, Cloneable {
 
     private String name;
@@ -60,15 +67,18 @@ public final class Trigger implements BusConsumer, Cloneable {
     private long maxExecutions;
     private long numberOfExecutions;
     private long suspensionStart;
+    @XmlTransient
     private BusMessagesListener listener;
     //dependencies
     @Inject
+    @XmlTransient
     private TriggerCheck checker;
 
     /**
      *
      */
     public Trigger() {
+        this.uuid = UUID.randomUUID().toString();
     }
 
     /**
@@ -398,7 +408,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     @Override
     public Trigger clone() {
         Trigger clone = new Trigger();
-        clone.setName(getName());
+        clone.setName("Copy of " + getName());
         clone.setDescription(getDescription());
 
         Payload clonePayload = new Payload();

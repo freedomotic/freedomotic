@@ -32,11 +32,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author nicoletti
  */
+@XmlRootElement
 public class Plugin
         implements Client {
 //    private boolean isConnected = false;
@@ -44,14 +48,17 @@ public class Plugin
     /**
      *
      */
-    
+    @XmlElement
     protected volatile boolean isRunning;
+    @XmlElement
     private String pluginName;
+    @XmlElement
     private String type = "Plugin";
 
     /**
      *
      */
+    @XmlElement
     public Config configuration;
 
     /**
@@ -64,41 +71,50 @@ public class Plugin
     /**
      *
      */
+    @XmlElement
         protected String description;
 
     /**
      *
      */
+    @XmlElement
     protected String version;
 
     /**
      *
      */
+    @XmlElement
     protected String requiredVersion;
 
     /**
      *
      */
+    @XmlElement
     protected String category;
 
     /**
      *
      */
+    @XmlElement
     protected String shortName;
 
     /**
      *
      */
+    @XmlElement
     protected String listenOn;
 
     /**
      *
      */
+    @XmlElement
     protected String sendOn;
+    @XmlElement
     private File path;
     final static int SAME_VERSION = 0;
     final static int FIRST_IS_OLDER = -1;
     final static int LAST_IS_OLDER = 1;
+    
     @Inject
     private API api;
     private BusService busService;
@@ -145,6 +161,7 @@ public class Plugin
      *
      * @return
      */
+    @XmlTransient
     public API getApi() {
         return api;
     }

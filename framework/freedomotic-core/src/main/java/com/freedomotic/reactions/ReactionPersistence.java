@@ -20,6 +20,7 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.persistence.ContainerInterface;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
@@ -40,12 +41,11 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class ReactionPersistence {
+public class ReactionPersistence implements ContainerInterface<Reaction> {
 
-    private static List<Reaction> list = new CopyOnWriteArrayList<Reaction>(); //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
+    private static final List<Reaction> list = new CopyOnWriteArrayList<Reaction>(); //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
 
-    private ReactionPersistence() {
-        //avoid instance creation
+    public ReactionPersistence() {
     }
 
     /**
@@ -72,13 +72,13 @@ public class ReactionPersistence {
             LOG.log(Level.CONFIG, "Saving reactions to file in {0}", folder.getAbsolutePath());
 
             for (Reaction reaction : list) {
-                String uuid = reaction.getUUID();
+                String uuid = reaction.getUuid();
 
                 if ((uuid == null) || uuid.isEmpty()) {
-                    reaction.setUUID(UUID.randomUUID().toString());
+                    reaction.setUuid(UUID.randomUUID().toString());
                 }
 
-                String fileName = reaction.getUUID() + ".xrea";
+                String fileName = reaction.getUuid() + ".xrea";
                 FileWriter fstream = new FileWriter(folder + "/" + fileName);
                 BufferedWriter out = new BufferedWriter(fstream);
                 out.write(xstream.toXML(reaction)); //persist only the data not the logic
@@ -97,16 +97,16 @@ public class ReactionPersistence {
         File[] files = folder.listFiles();
 
         // This filter only returns object files
-        FileFilter objectFileFileter =
-                new FileFilter() {
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xrea")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+        FileFilter objectFileFileter
+                = new FileFilter() {
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xrea")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
 
         files = folder.listFiles(objectFileFileter);
 
@@ -123,16 +123,16 @@ public class ReactionPersistence {
         XStream xstream = FreedomXStream.getXstream();
 
         // This filter only returns object files
-        FileFilter objectFileFileter =
-                new FileFilter() {
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xrea")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+        FileFilter objectFileFileter
+                = new FileFilter() {
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xrea")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
 
         File[] files = folder.listFiles(objectFileFileter);
 
@@ -146,8 +146,8 @@ public class ReactionPersistence {
                     Reaction reaction = null;
                     //validate the object against a predefined DTD
                     try {
-                        String xml =
-                                DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/reaction.dtd");
+                        String xml
+                                = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/reaction.dtd");
 
                         reaction = (Reaction) xstream.fromXML(xml);
                     } catch (Exception e) {
@@ -166,7 +166,7 @@ public class ReactionPersistence {
                         LOG.log(Level.WARNING, "Reaction {0} has no valid commands. Maybe related objects are missing or not configured properly.", reaction.toString());
                     }
 
-                    summary.append(reaction.getUUID()).append("\t\t\t").append(reaction.toString())
+                    summary.append(reaction.getUuid()).append("\t\t\t").append(reaction.toString())
                             .append("\t\t\t").append(reaction.getDescription()).append("\n");
                 }
 
@@ -188,11 +188,16 @@ public class ReactionPersistence {
      *
      * @param r
      */
+    @Deprecated
     public static void add(Reaction r) {
-        if (!exists(r))   { //if not already loaded
+        if (!exists(r)) { //if not already loaded
             //if it's a new reaction validate it's commands
             if (r.getCommands() != null && !r.getCommands().isEmpty()) {
-                r.getTrigger().register(); //trigger starts to listen on its channel
+                try {
+                    r.getTrigger().register(); //trigger starts to listen on its channel
+                } catch (Exception e) {
+                    LOG.warning("Cannot register trigger");
+                }
                 list.add(r);
                 r.setChanged();
                 LOG.log(Level.CONFIG, "Added new reaction {0}", r.getDescription());
@@ -206,11 +211,16 @@ public class ReactionPersistence {
      *
      * @param input
      */
+    @Deprecated
     public static void remove(Reaction input) {
         if (input != null) {
             boolean removed = list.remove(input);
             LOG.log(Level.INFO, "Removed reaction {0}", input.getDescription());
-            input.getTrigger().unregister();
+            try {
+                input.getTrigger().unregister();
+            } catch (Exception e) {
+                LOG.warning("Cannot unregister trigger");
+            }
 
             if ((!removed) && (list.contains(input))) {
                 LOG.log(Level.WARNING, "Error while removing Reaction {0} from the list", input.getDescription());
@@ -222,6 +232,7 @@ public class ReactionPersistence {
      *
      * @return
      */
+    @Deprecated
     public static Iterator<Reaction> iterator() {
         return list.iterator();
     }
@@ -230,8 +241,24 @@ public class ReactionPersistence {
      *
      * @return
      */
+    @Deprecated
     public static List<Reaction> getReactions() {
         return Collections.unmodifiableList(list);
+    }
+
+    /**
+     *
+     * @param uuid
+     * @return
+     */
+    @Deprecated
+    public static Reaction getReaction(String uuid) {
+        for (Reaction r : list) {
+            if (r.getUuid().equalsIgnoreCase(uuid)) {
+                return r;
+            }
+        }
+        return null;
     }
 
     /**
@@ -260,4 +287,89 @@ public class ReactionPersistence {
         return false;
     }
     private static final Logger LOG = Logger.getLogger(ReactionPersistence.class.getName());
+
+    @Override
+    public List<Reaction> list() {
+        return Collections.unmodifiableList(list);
+    }
+
+    @Override
+    public List<Reaction> getByName(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+    }
+
+    @Override
+    public Reaction get(String uuid) {
+        for (Reaction r : list) {
+            if (r.getUuid().equalsIgnoreCase(uuid)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean create(Reaction item) {
+        try {
+            add(item);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(Reaction item) {
+        try {
+            remove(item);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(String uuid) {
+        return delete(get(uuid));
+    }
+
+    @Override
+    public Reaction modify(String uuid, Reaction data) {
+        try {
+            delete(uuid);
+            data.setUuid(uuid);
+            create(data);
+            return data;
+        } catch (Exception e) {
+            LOG.severe("Cannot modify reaction");
+            return null;
+        }
+    }
+
+    @Override
+    public Reaction copy(String uuid) {
+        try {
+            Reaction r = get(uuid);
+            Reaction newOne = (Reaction) r.clone();
+            create(newOne);
+            return newOne;
+        } catch (Exception e) {
+            LOG.severe("Cannot copy reaction");
+            return null;
+        }
+    }
+
+    @Override
+    public void clear() {
+        try {
+            for (Reaction r : list()) {
+                delete(r);
+            }
+        } catch (Exception e) {
+        } finally {
+            list.clear();
+        }
+    }
+
 }

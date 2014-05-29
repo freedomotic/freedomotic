@@ -27,6 +27,7 @@ import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.persistence.ContainerInterface;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
@@ -56,10 +57,10 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  *
  * @author Enrico
  */
-public final class EnvironmentPersistence {
+public final class EnvironmentPersistence implements ContainerInterface<EnvironmentLogic> {
 
-    private static List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
-    private ClientStorage clientStorage;
+    private static final List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
+    private final ClientStorage clientStorage;
 
     /**
      *
@@ -82,7 +83,7 @@ public final class EnvironmentPersistence {
             LOG.warning("There is no environment to persist, " + folder.getAbsolutePath() + " will not be altered.");
             return;
         }
-        
+
         if (folder.exists() && !folder.isDirectory()) {
             throw new DaoLayerException(folder.getAbsoluteFile() + " is not a valid environment folder. Skipped");
         }
@@ -126,8 +127,8 @@ public final class EnvironmentPersistence {
         }
 
         // This filter only returns object files
-        FileFilter objectFileFileter =
-                new FileFilter() {
+        FileFilter objectFileFileter
+                = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
                         if (file.isFile() && file.getName().endsWith(".xenv")) {
@@ -154,7 +155,7 @@ public final class EnvironmentPersistence {
      *
      * @param folder
      * @param makeUnique
-     * @return 
+     * @return
      * @deprecated
      */
     @Deprecated
@@ -169,8 +170,8 @@ public final class EnvironmentPersistence {
         boolean check = true;
 
         // This filter only returns env files
-        FileFilter envFileFilter =
-                new FileFilter() {
+        FileFilter envFileFilter
+                = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
                         if (file.isFile() && file.getName().endsWith(".xenv")) {
@@ -207,6 +208,7 @@ public final class EnvironmentPersistence {
      * @return A pointer to the newly created environment object
      */
     @RequiresPermissions("environments:create")
+    @Deprecated
     public static EnvironmentLogic add(final EnvironmentLogic obj, boolean MAKE_UNIQUE) {
         if ((obj == null)
                 || (obj.getPojo() == null)
@@ -315,6 +317,8 @@ public final class EnvironmentPersistence {
      *
      * @param input
      */
+    @RequiresPermissions("environments:delete")
+    @Deprecated
     public static void remove(EnvironmentLogic input) {
         for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(input.getPojo().getUUID())) {
             EnvObjectPersistence.remove(obj);
@@ -328,10 +332,15 @@ public final class EnvironmentPersistence {
      *
      */
     @RequiresPermissions("environments:delete")
-    public static void clear() {
+    @Override
+    public void clear() {
         try {
-            environments.clear();
+            for (EnvironmentLogic el : environments){
+                delete(el);
+            }
         } catch (Exception e) {
+        } finally {
+            environments.clear();
         }
     }
 
@@ -446,6 +455,7 @@ public final class EnvironmentPersistence {
      *
      * @return
      */
+    @Deprecated
     @RequiresPermissions("environments:read")
     public static List<EnvironmentLogic> getEnvironments() {
         return environments;
@@ -457,6 +467,7 @@ public final class EnvironmentPersistence {
      * @return
      */
     @RequiresPermissions("environments:read")
+    @Deprecated
     public static EnvironmentLogic getEnvByUUID(String UUID) {
         //     if (auth.isPermitted("environments:read:" + UUID)) {
         for (EnvironmentLogic env : environments) {
@@ -468,4 +479,80 @@ public final class EnvironmentPersistence {
         return null;
     }
     private static final Logger LOG = Logger.getLogger(EnvironmentPersistence.class.getName());
+
+    @Override
+    @RequiresPermissions("environments:read")
+    public List<EnvironmentLogic> list() {
+        return getEnvironments();
+    }
+
+    @Override
+    @RequiresPermissions("environments:read")
+    public List<EnvironmentLogic> getByName(String name) {
+        List<EnvironmentLogic> el = new ArrayList<EnvironmentLogic>();
+        for (EnvironmentLogic e : list()) {
+            if (e.getPojo().getName().equalsIgnoreCase(name)) {
+                el.add(e);
+            }
+        }
+        return el;
+    }
+
+    @Override
+    @RequiresPermissions("environments:read")
+    public EnvironmentLogic get(String uuid) {
+        return getEnvByUUID(uuid);
+    }
+
+    @Override
+    @RequiresPermissions("environments:create")
+    public boolean create(EnvironmentLogic item) {
+        try {
+            add(item, false);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @RequiresPermissions("environments:delete")
+    public boolean delete(EnvironmentLogic item) {
+        try {
+            remove(item);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @RequiresPermissions("environments:delete")
+    public boolean delete(String uuid) {
+        return delete(get(uuid));
+    }
+
+    @Override
+    @RequiresPermissions("environments:update")
+    public EnvironmentLogic modify(String uuid, EnvironmentLogic data) {
+        try {
+            delete(uuid);
+            data.getPojo().setUUID(uuid);
+            create(data);
+            return data;
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+    @Override
+    @RequiresPermissions("environments:create")
+    public EnvironmentLogic copy(String uuid) {
+        return add(get(uuid), true);
+    }
+
+    
+    
+    
 }

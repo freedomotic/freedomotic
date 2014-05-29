@@ -21,12 +21,17 @@
  */
 package com.freedomotic.model.geometry;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serializable;
 
 /**
  *
  * @author Enrico
  */
+@JsonTypeInfo( use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type" )
+    @JsonSubTypes( { @Type( value = FreedomPolygon.class, name = "polygon" ), @Type( value = FreedomEllipse.class, name = "ellipse" ) } )
 public interface FreedomShape
         extends Serializable {
 }

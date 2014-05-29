@@ -43,11 +43,16 @@ import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.object.EnvObject;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.UUID;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author enrico
  */
+@XmlRootElement
 public class Zone
         implements Serializable {
 
@@ -59,6 +64,7 @@ public class Zone
     private FreedomPolygon shape;
     private ArrayList<EnvObject> objects;
     private String texture;
+    private String uuid;
 
     /**
      *
@@ -68,6 +74,9 @@ public class Zone
         return this.name;
     }
 
+    public Zone(){
+        this.uuid = UUID.randomUUID().toString();
+    }
     /**
      *
      * @return
@@ -89,7 +98,7 @@ public class Zone
      * @param room
      */
     public void setAsRoom(boolean room) {
-        this.room = room;
+        this.setRoom(room);
     }
 
     /**
@@ -220,5 +229,26 @@ public class Zone
         hash = (17 * hash) + ((this.name != null) ? this.name.hashCode() : 0);
 
         return hash;
+    }
+
+    /**
+     * @param room the room to set
+     */
+    public void setRoom(boolean room) {
+        this.room = room;
+    }
+
+    /**
+     * @return the uuid
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * @param uuid the uuid to set
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

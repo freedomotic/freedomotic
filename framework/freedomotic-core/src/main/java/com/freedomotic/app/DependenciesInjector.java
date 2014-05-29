@@ -13,11 +13,16 @@ import com.freedomotic.core.TriggerCheck;
 import com.freedomotic.environment.EnvironmentDAO;
 import com.freedomotic.environment.EnvironmentDAOFactory;
 import com.freedomotic.environment.EnvironmentDAOXstream;
+import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.events.ProtocolRead;
+import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ClientStorageInMemory;
 import com.freedomotic.plugins.filesystem.PluginsManager;
 import com.freedomotic.plugins.filesystem.PluginsManagerImpl;
+import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.ReactionPersistence;
+import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.security.AuthImpl;
 import com.freedomotic.util.I18n.I18n;
@@ -25,7 +30,6 @@ import com.freedomotic.util.I18n.I18nImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
-
 
 /**
  *
@@ -48,15 +52,20 @@ public class DependenciesInjector
                 .build(EnvironmentDAOFactory.class));
         bind(API.class).to(APIStandardImpl.class).in(Singleton.class);
         bind(ProtocolRead.class);
-        
+
         bind(AppConfig.class).to(AppConfigImpl.class).in(Singleton.class);
-        
+
         bind(Auth.class).to(AuthImpl.class).in(Singleton.class);
-        
+
         bind(I18n.class).to(I18nImpl.class).in(Singleton.class);
-        //requestStaticInjection(I18n.class);
-        
+
         bind(BusService.class).to(BusServiceImpl.class).in(Singleton.class);
-        
+
+        bind(EnvironmentPersistence.class).in(Singleton.class);
+        bind(TriggerPersistence.class).in(Singleton.class);
+        bind(EnvObjectPersistence.class).in(Singleton.class);
+        bind(CommandPersistence.class).in(Singleton.class);
+        bind(ReactionPersistence.class).in(Singleton.class);
+
     }
 }

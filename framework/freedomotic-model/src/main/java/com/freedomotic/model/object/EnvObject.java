@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.model.object;
@@ -28,16 +26,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
  * @author nicoletti
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder={"name", "description", "uuid","protocol","phisicalAddress","type","actAs",
+                "representations", "currentRepresentation", "behaviors","hierarchy","actions","triggers","tags","envUUID"})
 public class EnvObject implements Serializable {
 
     private static final long serialVersionUID = -7253889516478184321L;
-	
-	private String name;
+
+    private String name;
     private String description;
     private String actAs;
     private String type;
@@ -45,11 +51,11 @@ public class EnvObject implements Serializable {
     private String hierarchy;
     private String protocol;
     private String phisicalAddress;
-    private List<Behavior> behaviors;
-    private List<Representation> representation ; //= new ArrayList<Representation>();
+    private List<Behavior> behaviors = new ArrayList<Behavior>();
+    private List<Representation> representation = new ArrayList<Representation>();
     private Set<String> tags;
-    private Properties actions;
-    private Properties triggers;
+    private Properties actions = new Properties();
+    private Properties triggers = new Properties();
     private int currentRepresentation;
     private String envUUID;
 
@@ -391,41 +397,41 @@ public class EnvObject implements Serializable {
     public String toString() {
         return getName();
     }
-    
+
     /**
      *
      * @return
      */
-    public Set<String> getTagsList(){
+    public Set<String> getTagsList() {
         return this.tags;
     }
-    
+
     /**
      *
      * @return
      */
-    public String getTagsString(){
+    public String getTagsString() {
         StringBuilder tagString = new StringBuilder();
         Boolean morethanone = false;
-        for (String tag : getTagsList()){
-            if (tag.trim() != ""){
-            if (morethanone){
-                tagString.append(",");
-            }
-            tagString.append(tag.trim());
-            morethanone = true;
+        for (String tag : getTagsList()) {
+            if (tag.trim() != "") {
+                if (morethanone) {
+                    tagString.append(",");
+                }
+                tagString.append(tag.trim());
+                morethanone = true;
             }
         }
         return tagString.toString();
     }
-       
+
     /**
      *
      */
-    public void initTags(){
-        if (this.tags == null){
+    public void initTags() {
+        if (this.tags == null) {
             this.tags = new HashSet();
         }
     }
-    
+
 }
