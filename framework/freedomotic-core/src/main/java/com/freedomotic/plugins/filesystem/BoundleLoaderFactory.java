@@ -50,17 +50,17 @@ class BoundleLoaderFactory {
 
         switch (type) {
             case PluginsManager.TYPE_DEVICE:
-                directory = Info.PATH_DEVICES_FOLDER;
+                directory = Info.PATHS.PATH_DEVICES_FOLDER;
 
                 break;
 
             case PluginsManager.TYPE_EVENT:
-                directory = Info.PATH_EVENTS_FOLDER;
+                directory = Info.PATHS.PATH_EVENTS_FOLDER;
 
                 break;
 
             case PluginsManager.TYPE_OBJECT:
-                directory = Info.PATH_OBJECTS_FOLDER;
+                directory = Info.PATHS.PATH_OBJECTS_FOLDER;
 
                 break;
 
@@ -93,19 +93,19 @@ class BoundleLoaderFactory {
         System.out.println(directory);
 
         //intantiate the right loader based on the directory passed to the searchIn method
-        String devicesPath = new File(Info.PATH_PLUGINS_FOLDER + "/devices/").toString();
+        String devicesPath = new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/devices/").toString();
 
         if (directory.toString().startsWith(devicesPath)) {
             return new BoundleLoaderDevices(directory);
         }
 
-        String objectsPath = new File(Info.PATH_PLUGINS_FOLDER + "/objects/").toString();
+        String objectsPath = new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/objects/").toString();
 
         if (directory.toString().startsWith(objectsPath)) {
             return new BoundleLoaderObjects(directory);
         }
 
-        String eventsPath = new File(Info.PATH_PLUGINS_FOLDER + "/events/").toString();
+        String eventsPath = new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/events/").toString();
 
         if (directory.toString().startsWith(eventsPath)) {
             return new BoundleLoaderEvents(directory);

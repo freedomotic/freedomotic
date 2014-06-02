@@ -48,7 +48,6 @@ public class ObjectTest extends AbstractTest<EnvObject> {
     
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        container = api.environments();
         e = new Environment();
         e.setName("Test env for zone");
         e.setUUID(uuid);

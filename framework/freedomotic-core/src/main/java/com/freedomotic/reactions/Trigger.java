@@ -408,7 +408,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     @Override
     public Trigger clone() {
         Trigger clone = new Trigger();
-        clone.setName("Copy of " + getName());
+        clone.setName(getName());
         clone.setDescription(getDescription());
 
         Payload clonePayload = new Payload();

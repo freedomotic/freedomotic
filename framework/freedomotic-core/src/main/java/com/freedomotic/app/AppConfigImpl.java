@@ -191,7 +191,7 @@ class AppConfigImpl implements AppConfig {
     @Override
     public AppConfig load() {
         try {
-            properties.load(new FileInputStream(Info.PATH_CONFIG_FOLDER + "/config.xml"));
+            properties.load(new FileInputStream(Info.PATHS.PATH_CONFIG_FOLDER + "/config.xml"));
         } catch (IOException ex) {
             Logger.getLogger(AppConfigImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -201,7 +201,7 @@ class AppConfigImpl implements AppConfig {
     @Override
     public void save() {
         try {
-            properties.store(new FileOutputStream(Info.PATH_CONFIG_FOLDER + "/config.xml"), null);
+            properties.store(new FileOutputStream(Info.PATHS.PATH_CONFIG_FOLDER + "/config.xml"), null);
         } catch (IOException ex) {
             Logger.getLogger(AppConfigImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

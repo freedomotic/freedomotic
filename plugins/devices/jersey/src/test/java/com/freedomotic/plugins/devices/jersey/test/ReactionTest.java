@@ -29,7 +29,6 @@ public class ReactionTest extends AbstractTest<Reaction>{
     
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        container = api.reactions();
         item = new Reaction();
         item.setUuid(uuid);
         Command com = new Command();

@@ -33,7 +33,6 @@ public class EnvironmentTest extends AbstractTest<Environment> {
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
         item = new Environment();
-        container = api.objects();
         item.setName("TestEnv");
         item.setUUID(uuid);
         initPath(EnvironmentResource.class);

@@ -19,20 +19,31 @@
  */
 package com.freedomotic.plugins.devices.japi.resources;
 
+import com.freedomotic.api.Client;
+import com.freedomotic.api.Plugin;
+import com.freedomotic.app.Freedomotic;
+import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.exceptions.DaoLayerException;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.objects.EnvObjectFactory;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.plugins.ClientStorage;
+import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.plugins.devices.japi.utils.AbstractResource;
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 /**
@@ -122,6 +133,54 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     @Override
     protected URI doCopy(String UUID) {
         return createUri(api.objects().copy(UUID).getPojo().getUUID());
+    }
+
+    @POST
+    @Path("/{id}/click")
+    @ApiOperation(value = "Sends a ObjectClickEvent for related object")
+    public Response click(
+            @ApiParam(value = "ID of item to click", required = true)
+            @PathParam("id") String UUID) {
+        try {
+            EnvObjectLogic el = api.objects().get(UUID);
+            ObjectReceiveClick event = new ObjectReceiveClick(this, el, ObjectReceiveClick.SINGLE_CLICK);
+            Freedomotic.sendEvent(event);
+            return Response.accepted().build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+    private static final ClientStorage clientStorage = Freedomotic.INJECTOR.getInstance(ClientStorage.class);
+
+    @GET
+    @Path("/templates")
+    @ApiOperation(value = "Lists available object templates")
+    public Response listTemplates() {
+        List<EnvObject> templates = new ArrayList<EnvObject>();
+        for (Client c : clientStorage.getClients("object")) {
+            ObjectPluginPlaceholder opp = (ObjectPluginPlaceholder) c;
+            templates.add(opp.getObject().getPojo());
+        }
+        return Response.ok(templates).build();
+    }
+
+    @POST
+    @Path("/templates/{name}/instantiate")
+    @ApiOperation(value = "Add a new object, based on selected template.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Template not found"),
+        @ApiResponse(code = 201, message = "Creation started")
+    })
+    public Response instantiateTemplate(
+            @ApiParam(value = "Name of object template", required = true)
+            @PathParam("name") String name) {
+        for (Client c : clientStorage.getClients("object")) {
+            if (c.getName().equalsIgnoreCase(name)) {
+                c.start();
+                return Response.accepted().build();
+            }
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
 }

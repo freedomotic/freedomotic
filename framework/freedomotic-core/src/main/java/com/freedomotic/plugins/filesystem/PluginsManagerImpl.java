@@ -140,19 +140,19 @@ public class PluginsManagerImpl implements PluginsManager {
 
             //get the zip from the url and copy in plugin/device folder
             if (filename.endsWith(".device")) {
-                File zipFile = new File(Info.PATH_DEVICES_FOLDER + "/" + filename);
-                FetchHttpFiles.download(fromURL, Info.PATH_DEVICES_FOLDER, filename);
+                File zipFile = new File(Info.PATHS.PATH_DEVICES_FOLDER + "/" + filename);
+                FetchHttpFiles.download(fromURL, Info.PATHS.PATH_DEVICES_FOLDER, filename);
                 unzipAndDelete(zipFile);
-                loadSingleBoundle(new File(Info.PATH_DEVICES_FOLDER + "/" + pluginName));
+                loadSingleBoundle(new File(Info.PATHS.PATH_DEVICES_FOLDER + "/" + pluginName));
             } else {
                 if (filename.endsWith(".object")) {
                     FetchHttpFiles.download(fromURL,
-                            new File(Info.PATH_PLUGINS_FOLDER + "/objects"),
+                            new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/objects"),
                             filename);
 
-                    File zipFile = new File(Info.PATH_PLUGINS_FOLDER + "/objects/" + filename);
+                    File zipFile = new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/objects/" + filename);
                     unzipAndDelete(zipFile);
-                    loadSingleBoundle(new File(Info.PATH_OBJECTS_FOLDER + "/" + pluginName));
+                    loadSingleBoundle(new File(Info.PATHS.PATH_OBJECTS_FOLDER + "/" + pluginName));
                 } else {
                     LOG.warning("No installable Freedomotic plugins at URL " + fromURL);
                 }
@@ -202,7 +202,7 @@ public class PluginsManagerImpl implements PluginsManager {
         ReactionPersistence.loadReactions(new File(directory + "/data/rea"));
 
         //create ad-hoc subfolders of temp
-        File destination = new File(Info.PATH_RESOURCES_FOLDER + "/temp/" + directory.getName());
+        File destination = new File(Info.PATHS.PATH_RESOURCES_FOLDER + "/temp/" + directory.getName());
         destination.mkdir();
         recursiveCopy(new File(directory + "/data/resources"),
                 destination);

@@ -25,12 +25,12 @@ import com.freedomotic.events.ObjectHasChangedBehavior;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.ZoneHasChanged;
 import com.freedomotic.plugins.devices.japi.filters.AuthenticationExceptionMapper;
-import com.freedomotic.plugins.devices.japi.filters.CorsFilter;
+import com.freedomotic.plugins.devices.japi.filters.CorsRequestFilter;
+import com.freedomotic.plugins.devices.japi.filters.CorsResponseFilter;
 import com.freedomotic.plugins.devices.japi.filters.SecurityFilter;
 import com.freedomotic.plugins.devices.japi.resources.ObjectChangeResource;
 import com.freedomotic.plugins.devices.japi.resources.PluginChangeResource;
 import com.freedomotic.plugins.devices.japi.resources.ZoneChangeResource;
-import com.freedomotic.plugins.devices.japi.utils.FDObjectMapper;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.util.Info;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
@@ -46,7 +46,6 @@ import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
-//import org.glassfish.jersey.moxy.xml.MoxyXmlFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
@@ -113,12 +112,10 @@ public class RestJersey
         // enable json and xml support
         resourceConfig.registerClasses(JacksonFeature.class);
   
-        // resourceConfig.registerClasses(MoxyXmlFeature.class);
-        //resourceConfig.register(FDObjectMapper.class);
-        
         // enable CORS 
         if (configuration.getBooleanProperty("enable-cors", false)) {
-            resourceConfig.registerClasses(CorsFilter.class);
+            resourceConfig.registerClasses(CorsRequestFilter.class);
+            resourceConfig.register(new CorsResponseFilter(this.configuration));
         }
 
         // enable log
@@ -150,11 +147,12 @@ public class RestJersey
         if (!staticDir.equalsIgnoreCase("none")) {
             // serve static files on directoryspecified in manifest
             StaticHttpHandler staticFiles = new StaticHttpHandler(new File(this.getFile().getParent() + "/data/" + staticDir + "/").getAbsolutePath());
+            staticFiles.setFileCacheEnabled(false);
             server.getServerConfiguration().addHttpHandler(staticFiles);
             LOG.log(Level.INFO, "Serving static files from: {0}", staticFiles.getDefaultDocRoot().getAbsolutePath());
         }
 
-        StaticHttpHandler resourceFiles = new StaticHttpHandler(Info.PATH_RESOURCES_FOLDER.getAbsolutePath());
+        StaticHttpHandler resourceFiles = new StaticHttpHandler(Info.PATHS.PATH_RESOURCES_FOLDER.getAbsolutePath());
         server.getServerConfiguration().addHttpHandler(resourceFiles, "/res/");
         LOG.log(Level.INFO, "Serving RESOURCE files from: {0}", resourceFiles.getDefaultDocRoot().getAbsolutePath());
 

@@ -372,9 +372,9 @@ public class Freedomotic implements BusConsumer {
          * Loads the entire Reactions system (Trigger + Commands + Reactions)
          * *****************************************************************
          */
-        TriggerPersistence.loadTriggers(new File(Info.PATH_DATA_FOLDER + "/trg/"));
-        CommandPersistence.loadCommands(new File(Info.PATH_DATA_FOLDER + "/cmd/"));
-        ReactionPersistence.loadReactions(new File(Info.PATH_DATA_FOLDER + "/rea/"));
+        TriggerPersistence.loadTriggers(new File(Info.PATHS.PATH_DATA_FOLDER + "/trg/"));
+        CommandPersistence.loadCommands(new File(Info.PATHS.PATH_DATA_FOLDER + "/cmd/"));
+        ReactionPersistence.loadReactions(new File(Info.PATHS.PATH_DATA_FOLDER + "/rea/"));
 
         /**
          * A service to add environment objects using XML commands
@@ -421,7 +421,7 @@ public class Freedomotic implements BusConsumer {
     public void loadDefaultEnvironment()
             throws FreedomoticException {
         String envFilePath = config.getProperty("KEY_ROOM_XML_PATH");
-        File envFile = new File(Info.PATH_WORKDIR + "/data/furn/" + envFilePath);
+        File envFile = new File(Info.PATHS.PATH_WORKDIR + "/data/furn/" + envFilePath);
         File folder = envFile.getParentFile();
 
         if (!folder.exists()) {

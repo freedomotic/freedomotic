@@ -4,13 +4,14 @@
  */
 package com.freedomotic.marketplace.util;
 
-import com.google.gson.annotations.SerializedName;
-import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author gpt
  */
+@XmlRootElement
 public class MarketPlaceFile {
 
     private String fid;
@@ -39,6 +40,7 @@ public class MarketPlaceFile {
     /**
      * @return the filepath
      */
+    @XmlTransient
     public String getRelativeFilepath() {
         return filepath;
     }

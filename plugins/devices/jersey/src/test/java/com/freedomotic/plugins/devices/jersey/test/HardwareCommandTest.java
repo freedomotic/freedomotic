@@ -35,7 +35,6 @@ public class HardwareCommandTest extends AbstractTest<Command>{
         item = new Command();
         item.setName("TestCmd");
         item.setUUID(uuid);
-        container = api.commands();
         item.setProperty("prop1", "value1");
         item.setReceiver("receiver.channel");
         item.setHardwareLevel(true);
@@ -57,19 +56,19 @@ public class HardwareCommandTest extends AbstractTest<Command>{
 
     @Override
     protected void getAssertions(Command c2) {
-assertEquals("Single test - UUID", item.getUUID(), c2.getUUID());
+assertEquals("Single test - UUID", item.getUuid(), c2.getUuid());
         assertEquals("Single test - NAME", item.getName(), c2.getName());
     }
 
     @Override
     protected void listAssertions(List<Command> cl) {
-       assertEquals("UUID test", item.getUUID(), cl.get(0).getUUID());
+       assertEquals("UUID test", item.getUuid(), cl.get(0).getUuid());
        assertEquals("Name test", item.getName(), cl.get(0).getName());
     }
 
     @Override
     protected String getUuid(Command c) {
-        return c.getUUID();
+        return c.getUuid();
     }
 
     

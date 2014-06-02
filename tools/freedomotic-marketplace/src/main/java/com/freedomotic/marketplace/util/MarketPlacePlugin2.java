@@ -5,15 +5,19 @@
 package com.freedomotic.marketplace.util;
 
 import com.freedomotic.marketplace.IPluginPackage;
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import javax.swing.*;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author gpt New version of the POJO that represents a plugin
  */
+@XmlRootElement
 public class MarketPlacePlugin2 implements IPluginPackage {
 
     private String nid;
@@ -22,11 +26,13 @@ public class MarketPlacePlugin2 implements IPluginPackage {
     private String body;
     private String teaser;
     private ArrayList<MarketPlaceUser> field_developer;
+    @XmlElement
     private ArrayList<MarketPlaceValue> field_status;
     private ArrayList<MarketPlaceValue> field_description;
     private ArrayList<MarketPlaceValue> field_category;
     private ArrayList<MarketPlaceValue> field_plugin_category;
     private ArrayList<MarketPlaceFile> field_icon;
+    @XmlElement
     private ArrayList<MarketPlaceValue> field_os;
     private ArrayList<MarketPlaceFile> field_file;
     private String uri;
@@ -49,6 +55,7 @@ public class MarketPlacePlugin2 implements IPluginPackage {
 
     @Override
     @Deprecated
+    @XmlTransient
     public String getFilePath() {
         if (field_file != null) {
             if (field_file.size() > 0) {
@@ -94,6 +101,7 @@ public class MarketPlacePlugin2 implements IPluginPackage {
         return i + 1;
     }
 
+    @XmlTransient
     public int getFileCount() {
         return field_file.size();
     }
@@ -114,10 +122,11 @@ public class MarketPlacePlugin2 implements IPluginPackage {
 
     @Override
     public String getDescription() {
-        return description;
+        return field_description.get(0).getValue();
     }
 
     @Override
+    @XmlTransient
     public ImageIcon getIcon() {
         if (icon == null) {
             if (field_icon != null
@@ -269,6 +278,15 @@ public class MarketPlacePlugin2 implements IPluginPackage {
             return tokens[1] + "-" + tokens[2];
         } else {
             return filename;
+        }
+    }
+    
+        public ArrayList<MarketPlaceFile> getIcons() {
+        if (field_icon == null) {
+            return new ArrayList<MarketPlaceFile>();
+        } else {
+            field_icon.removeAll(Collections.singleton(null));
+            return field_icon;
         }
     }
 }

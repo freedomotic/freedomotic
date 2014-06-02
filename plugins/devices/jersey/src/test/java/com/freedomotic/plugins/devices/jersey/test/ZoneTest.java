@@ -45,7 +45,6 @@ public class ZoneTest extends AbstractTest<Zone>{
     
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        container = api.environments();
         item = new Zone();
         item.setName("Test Zone");
         item.setAsRoom(true);
