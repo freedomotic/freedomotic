@@ -48,14 +48,15 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author enrico
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public final class Command implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -7287958816826580426L;
@@ -110,12 +111,14 @@ public final class Command implements Serializable, Cloneable {
     private int timeout;
     private String description;
     private String stopIf;
+    @XmlElement
     private HashSet<String> tags;
     //by default a command is userLevel, this means that can be used in reactions.
     //Hardware level commands cannot be used in reactions but only linked to an object action
     private boolean hardwareLevel;
     private boolean editable;
     private boolean executed;
+    @XmlElement
     private Config properties = new Config();
 
     /**
@@ -173,7 +176,10 @@ public final class Command implements Serializable, Cloneable {
      *
      * @return
      */
-    public String getUUID() {
+    public String getUuid() {
+        if (uuid == null || uuid.trim().equals("")){
+            uuid= UUID.randomUUID().toString();
+        }
         return uuid;
     }
 
@@ -237,6 +243,7 @@ public final class Command implements Serializable, Cloneable {
      *
      * @return
      */
+    @XmlTransient
     public String getBehavior() {
         if (properties.getProperty("behavior") != null) {
             return properties.getProperty("behavior");
@@ -290,6 +297,7 @@ public final class Command implements Serializable, Cloneable {
      *
      * @return an ordered ArrayList<String> of command parameter values
      */
+    @XmlTransient
     public ArrayList<String> getParametersAsList() {
         ArrayList<String> output = new ArrayList<String>();
 
@@ -425,7 +433,7 @@ public final class Command implements Serializable, Cloneable {
         super.clone();
 
         Command clonedCmd = new Command();
-        clonedCmd.setName("Copy of " + getName());
+        clonedCmd.setName(getName());
         clonedCmd.setDescription(getDescription());
         clonedCmd.setReceiver(getReceiver());
         clonedCmd.setDelay(getDelay());

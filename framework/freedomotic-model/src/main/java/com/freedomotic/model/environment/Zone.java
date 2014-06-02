@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 //Copyright 2009 Enrico Nicoletti
@@ -57,8 +55,8 @@ public class Zone
         implements Serializable {
 
     private static final long serialVersionUID = 4668625650384850879L;
-	
-	private String name;
+
+    private String name;
     private String description;
     private boolean room;
     private FreedomPolygon shape;
@@ -74,9 +72,10 @@ public class Zone
         return this.name;
     }
 
-    public Zone(){
+    public Zone() {
         this.uuid = UUID.randomUUID().toString();
     }
+
     /**
      *
      * @return
@@ -242,6 +241,9 @@ public class Zone
      * @return the uuid
      */
     public String getUuid() {
+        if (uuid == null || uuid.equals("")) {
+            this.uuid = UUID.randomUUID().toString();
+        }
         return uuid;
     }
 
@@ -249,6 +251,8 @@ public class Zone
      * @param uuid the uuid to set
      */
     public void setUuid(String uuid) {
-        this.uuid = uuid;
+        if (uuid != null && !uuid.equals("")) {
+            this.uuid = uuid;
+        }
     }
 }

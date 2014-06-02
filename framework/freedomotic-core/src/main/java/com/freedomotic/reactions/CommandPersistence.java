@@ -137,12 +137,12 @@ public class CommandPersistence implements ContainerInterface<Command> {
     @Deprecated
     public static Command getCommandByUUID(String uuid) {
         for (Command c : userCommands.values()) {
-            if (c.getUUID().equalsIgnoreCase(uuid)) {
+            if (c.getUuid().equalsIgnoreCase(uuid)) {
                 return c;
             }
         }
         for (Command c : hardwareCommands.values()) {
-            if (c.getUUID().equalsIgnoreCase(uuid)) {
+            if (c.getUuid().equalsIgnoreCase(uuid)) {
                 return c;
             }
         }
@@ -286,13 +286,13 @@ public class CommandPersistence implements ContainerInterface<Command> {
 
             for (Command c : userCommands.values()) {
                 if (c.isEditable()) {
-                    String uuid = c.getUUID();
+                    String uuid = c.getUuid();
 
                     if ((uuid == null) || uuid.isEmpty()) {
                         c.setUUID(UUID.randomUUID().toString());
                     }
 
-                    String fileName = c.getUUID() + ".xcmd";
+                    String fileName = c.getUuid() + ".xcmd";
                     FileWriter fstream = new FileWriter(folder + "/" + fileName);
                     BufferedWriter out = new BufferedWriter(fstream);
                     out.write(xstream.toXML(c));
@@ -395,6 +395,7 @@ public class CommandPersistence implements ContainerInterface<Command> {
     public Command copy(String uuid) {
         try {
             Command c = get(uuid).clone();
+            c.setName("Copy of " + c.getName());
             add(c);
             return c;
         } catch (Exception e) {

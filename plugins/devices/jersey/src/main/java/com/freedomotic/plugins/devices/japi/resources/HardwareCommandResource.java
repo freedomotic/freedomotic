@@ -40,7 +40,7 @@ public class HardwareCommandResource extends AbstractResource<Command> {
     protected URI doCreate(Command c) throws URISyntaxException {
         c.setHardwareLevel(true);
         api.commands().create(c);
-        return createUri(c.getUUID());
+        return createUri(c.getUuid());
     }
 
     @Override
@@ -50,7 +50,7 @@ public class HardwareCommandResource extends AbstractResource<Command> {
 
     @Override
     protected Command doUpdate(Command c) {
-        return api.commands().modify(c.getUUID(), c);
+        return api.commands().modify(c.getUuid(), c);
     }
 
     @Override
@@ -68,6 +68,6 @@ public class HardwareCommandResource extends AbstractResource<Command> {
     @Override
     protected URI doCopy(String uuid) {
         Command c = api.commands().copy(uuid);
-        return createUri(c.getUUID());
+        return createUri(c.getUuid());
     }
 }

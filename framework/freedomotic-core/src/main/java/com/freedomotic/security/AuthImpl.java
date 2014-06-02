@@ -77,7 +77,7 @@ public class AuthImpl implements Auth{
         DefaultSecurityManager securityManager = null;
         if (!realmInited && config.getBooleanProperty("KEY_SECURITY_ENABLE", true)) {
             baseRealm.setName(BASE_REALM_NAME);
-            baseRealm.setResourcePath(new File(Info.PATH_WORKDIR + "/config/security.properties").getAbsolutePath());
+            baseRealm.setResourcePath(new File(Info.PATHS.PATH_WORKDIR + "/config/security.properties").getAbsolutePath());
             baseRealm.init();
 
             pluginRealm.init();

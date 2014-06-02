@@ -129,7 +129,7 @@ public class MarketPlaceForm
                 new Thread(new Runnable() {
                     public void run() {
                         try {
-                            String path = Info.PATH_RESOURCES_FOLDER.toString();
+                            String path = Info.PATHS.PATH_RESOURCES_FOLDER.toString();
 
                             if (category.getPlugins() == null) {
                                 return;

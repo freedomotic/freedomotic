@@ -136,5 +136,12 @@ public class MarketPlaceService {
 
         return categoryList;
     }
+    
+    public ArrayList<IMarketPlace> getProviders(){
+        ArrayList<IMarketPlace> markets = new ArrayList<IMarketPlace>();
+        markets.addAll(marketPlaces);
+        return markets;
+    }
+    
     private static final Logger LOG = Logger.getLogger(MarketPlaceService.class.getName());
 }

@@ -28,6 +28,7 @@ import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.devices.japi.utils.AbstractResource;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 import java.net.URI;
@@ -38,6 +39,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 /**
  *
@@ -81,8 +83,9 @@ public class PluginResource extends AbstractResource<Plugin>{
     @Override
     protected Plugin prepareSingle(String name) {
         for (Client c : clientStorage.getClients("plugin")){
-            if (c.getName().equalsIgnoreCase(name)){
-                return (Plugin) c;
+            Plugin plug = (Plugin) c;
+            if (plug.getClassName().equalsIgnoreCase(name)){
+                return plug;
             }
         }
         return null;
@@ -96,13 +99,15 @@ public class PluginResource extends AbstractResource<Plugin>{
         @ApiResponse(code = 202, message = "Plugin started"),
         @ApiResponse(code = 304, message = "Plugin not started")
     })
-    public Response start(@PathParam("id")String name){
+    public Response start(
+            @PathParam("id")
+            @ApiParam(value = "Classname of plugin", required = true) String name){
         Plugin p = prepareSingle(name);
         if (p !=null){
             p.start();
             return Response.accepted().build();
         }
-        return Response.notModified().build();
+        return Response.status(Status.NOT_FOUND).build();
     }
     
     @POST
@@ -113,13 +118,15 @@ public class PluginResource extends AbstractResource<Plugin>{
         @ApiResponse(code = 202, message = "Plugin stopped"),
         @ApiResponse(code = 304, message = "Plugin not stopped")
     })
-    public Response stop(@PathParam("id")String name){
+    public Response stop(
+            @PathParam("id")
+            @ApiParam(value = "Classname of plugin", required = true) String name){
         Plugin p = prepareSingle(name);
         if (p !=null){
             p.stop();
             return Response.accepted().build();
         }
-        return Response.notModified().build();
+        return Response.status(Status.NOT_FOUND).build();
     }
 
     @Override

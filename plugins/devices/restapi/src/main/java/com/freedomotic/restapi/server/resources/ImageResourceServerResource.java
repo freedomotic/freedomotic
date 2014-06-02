@@ -42,7 +42,7 @@ public class ImageResourceServerResource extends ServerResource implements Image
     @Override
     public void doInit() {
         String fileName = (String) getRequest().getAttributes().get("filename");
-        imageFilePath = ResourcesManager.getFile(Info.PATH_RESOURCES_FOLDER, fileName).getPath();
+        imageFilePath = ResourcesManager.getFile(Info.PATHS.PATH_RESOURCES_FOLDER, fileName).getPath();
         System.out.println("RESTAPI path for "+ fileName +": " + imageFilePath);
     }
 

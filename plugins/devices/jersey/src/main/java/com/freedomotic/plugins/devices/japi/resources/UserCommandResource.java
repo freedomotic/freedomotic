@@ -48,7 +48,7 @@ public class UserCommandResource extends AbstractResource<Command> {
     protected URI doCreate(Command c) throws URISyntaxException {
         c.setHardwareLevel(false);
         api.commands().create(c);
-        return createUri(c.getUUID());
+        return createUri(c.getUuid());
     }
 
     @Override
@@ -58,7 +58,7 @@ public class UserCommandResource extends AbstractResource<Command> {
 
     @Override
     protected Command doUpdate(Command c) {
-        return api.commands().modify(c.getUUID(), c);
+        return api.commands().modify(c.getUuid(), c);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class UserCommandResource extends AbstractResource<Command> {
     @Path("/{id}/run")
     @ApiOperation("Fires a user command")
     public Response fire(
-            @ApiParam(value = "Name of Command to execute", required = true)
+            @ApiParam(value = "ID of Command to execute", required = true)
             @PathParam("id") String UUID) {
         Command c = api.commands().get(UUID);
         if (c != null) {
@@ -101,6 +101,6 @@ public class UserCommandResource extends AbstractResource<Command> {
     @Override
     protected URI doCopy(String uuid) {
         Command c=  api.commands().copy(uuid);
-        return createUri(c.getUUID());
+        return createUri(c.getUuid());
     }
 }

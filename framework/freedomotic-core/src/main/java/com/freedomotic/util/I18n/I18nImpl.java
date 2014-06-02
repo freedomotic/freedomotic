@@ -34,6 +34,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
@@ -63,7 +64,7 @@ public class I18nImpl implements I18n {
 		private Locale currentLocale;
     private final HashMap<String, ResourceBundle> messages;
     private final UTF8control RB_Control;
-    private static Vector<ComboLanguage> languages;
+    private static ArrayList<Locale> locales = new ArrayList<Locale>();
     private final AppConfig config;
     private final HashMap<String, File> packageBundleDir;
     private final Locale fallBackLocale = Locale.ENGLISH;
@@ -74,7 +75,6 @@ public class I18nImpl implements I18n {
         currentLocale = Locale.getDefault();
         messages = new HashMap<String, ResourceBundle>();
         RB_Control = new UTF8control();
-        languages = new Vector<ComboLanguage>();
         packageBundleDir = new HashMap<String, File>();
         // add mapping for base strings
         packageBundleDir.put("com.freedomotic", new File(Info.getApplicationPath() + "/i18n"));
@@ -254,14 +254,14 @@ public class I18nImpl implements I18n {
     // should be replaced by user specific Locale
     @Deprecated
     @Override
-    public String getDefaultLocale() {
-        return currentLocale.toString();
+    public Locale getDefaultLocale() {
+        return currentLocale;
     }
 
     @Override
-    public Vector<ComboLanguage> getAvailableLocales() {
+    public ArrayList<Locale> getAvailableLocales() {
         final String bundlename = "freedomotic";
-        languages.clear();
+        locales.clear();
         File root = new File(Info.getApplicationPath() + File.separator + "i18n");
         File[] files = root.listFiles(new FilenameFilter() {
             @Override
@@ -276,13 +276,13 @@ public class I18nImpl implements I18n {
 
             if (!value.isEmpty()) {
                 Locale loc = new Locale(value.substring(0, 2), value.substring(3, 5));
-                languages.add(new ComboLanguage(loc.getDisplayCountry(currentLocale) +" - "+ loc.getDisplayLanguage(loc), value, loc));
+                locales.add(loc);
+               
             }
         }
-        Collections.sort(languages);
-        languages.add(new ComboLanguage("Automatic", "auto",Locale.ENGLISH));
-        return languages;
+        return locales;
     }
+    
     private static final Logger LOG = Logger.getLogger(I18n.class.getName());
 }
 

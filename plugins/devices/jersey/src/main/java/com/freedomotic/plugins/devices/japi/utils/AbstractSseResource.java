@@ -53,7 +53,7 @@ public abstract class AbstractSseResource implements SseResouceInterface {
     protected static void broadcast(String name, Object data,Class type, String id) {
         OutboundEvent.Builder eventBuilder = new OutboundEvent.Builder();
         OutboundEvent message = eventBuilder
-                .name(name)
+//                .name(name)
                 .mediaType(MediaType.APPLICATION_JSON_TYPE)
                 .data(type, data)
                 .id(id)

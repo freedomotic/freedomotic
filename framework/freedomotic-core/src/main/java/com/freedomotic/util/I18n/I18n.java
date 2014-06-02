@@ -5,6 +5,8 @@
 package com.freedomotic.util.I18n;
 
 import com.freedomotic.api.Client;
+import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Vector;
 
 /**
@@ -17,7 +19,7 @@ public interface I18n {
      *
      * @return
      */
-    Vector<ComboLanguage> getAvailableLocales();
+    ArrayList<Locale> getAvailableLocales();
 
     // should be replaced by user specific Locale
 
@@ -27,7 +29,7 @@ public interface I18n {
      * @deprecated
      */
         @Deprecated
-    String getDefaultLocale();
+    Locale getDefaultLocale();
 
     /*
      * For Freedomotic core: translations are inside /i18n/Freedomotic.properties

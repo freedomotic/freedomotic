@@ -424,6 +424,7 @@ public class TriggerPersistence implements ContainerInterface<Trigger> {
     public Trigger copy(String uuid) {
         try {
             Trigger t = get(uuid).clone();
+            t.setName("Copy of " + t.getName());
             create(t);
             return t;
         } catch (Exception e) {

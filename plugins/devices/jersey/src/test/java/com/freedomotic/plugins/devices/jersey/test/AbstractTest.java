@@ -27,7 +27,6 @@ package com.freedomotic.plugins.devices.jersey.test;
  */
 import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.persistence.ContainerInterface;
 import com.freedomotic.plugins.devices.japi.RestJersey;
 import com.freedomotic.plugins.devices.japi.utils.ThrowableExceptionMapper;
 import java.util.List;
@@ -57,9 +56,7 @@ public abstract class AbstractTest<Z> extends JerseyTest {
     String uuid;
     MediaType representation;
     API api;
-    ContainerInterface container;
-
-
+    
     @Override
     protected Application configure() {
         api = Freedomotic.INJECTOR.getInstance(API.class);
@@ -139,12 +136,6 @@ public abstract class AbstractTest<Z> extends JerseyTest {
 
     abstract protected String getUuid(Z obj);
 
-    protected void cleanUp(){
-        if (container != null){
-            container.clear();
-        }
-    }
-    
     @Override
     @After
     public void tearDown() throws Exception {
@@ -153,8 +144,6 @@ public abstract class AbstractTest<Z> extends JerseyTest {
         api.triggers().clear();
         api.reactions().clear();
         api.objects().clear();
-                
-        cleanUp();
         super.tearDown(); //To change body of generated methods, choose Tools | Templates.
     }
 

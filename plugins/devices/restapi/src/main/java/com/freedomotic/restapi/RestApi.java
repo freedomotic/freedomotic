@@ -113,7 +113,7 @@ public class RestApi extends com.freedomotic.api.Protocol {
             component.getClients().add(Protocol.FILE);
             
             OriginFilter originFilter = new OriginFilter(component.getContext().createChildContext(),this);
-            Application FDapp =  new FreedomRestServer(Info.PATH_RESOURCES_FOLDER.getAbsolutePath(), component.getContext().createChildContext());  
+            Application FDapp =  new FreedomRestServer(Info.PATHS.PATH_RESOURCES_FOLDER.getAbsolutePath(), component.getContext().createChildContext());  
             
             if (getApi().getAuth().isInited()) {
                 // Instantiates a Verifier of identifier/secret couples based on Freedomotic Auth

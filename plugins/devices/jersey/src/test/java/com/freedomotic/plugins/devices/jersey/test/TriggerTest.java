@@ -36,7 +36,6 @@ public class TriggerTest extends AbstractTest<Trigger> {
 
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        container = api.triggers();
         item = new Trigger();
         item.setName("TestTrg");
         item.setUUID(uuid);

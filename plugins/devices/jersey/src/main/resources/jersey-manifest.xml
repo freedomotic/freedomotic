@@ -4,7 +4,7 @@
         <property name="category"               value="devel"/>
         <property name="short-name"             value="jersey"/>
         <property name="startup-time"           value="on load"/>
-        <property name="debug"                  value="true" />
+        <property name="debug"                  value="false" />
         <property name="debug-entity"           value="true" />
         <property name="http-port"              value="9111" />
         <property name="https-port"             value="9113" />
