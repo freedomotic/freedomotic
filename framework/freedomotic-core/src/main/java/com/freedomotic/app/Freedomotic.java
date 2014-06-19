@@ -156,6 +156,7 @@ public class Freedomotic implements BusConsumer {
 
         // init auth* framework
         auth.initBaseRealm();
+        auth.load();
         if (auth.isInited()) {
             PrincipalCollection principals = new SimplePrincipalCollection("system", "com.freedomotic.security");
             Subject SysSubject = new Subject.Builder().principals(principals).buildSubject();
@@ -579,7 +580,8 @@ public class Freedomotic implements BusConsumer {
         BootStatus.setCurrentStatus(BootStatus.STOPPING);
         busService.destroy();
         config.save();
-
+        auth.save();
+        
         String savedDataRoot;
 
         if (config.getBooleanProperty("KEY_OVERRIDE_REACTIONS_ON_EXIT", false) == true) {

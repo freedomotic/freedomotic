@@ -20,6 +20,7 @@ import com.freedomotic.plugins.filesystem.PluginsManager;
 import com.freedomotic.plugins.filesystem.PluginsManagerImpl;
 import com.freedomotic.security.Auth;
 import com.freedomotic.security.AuthImpl;
+import com.freedomotic.security.AuthImpl2;
 import com.freedomotic.util.I18n.I18n;
 import com.freedomotic.util.I18n.I18nImpl;
 import com.google.inject.AbstractModule;
@@ -50,8 +51,8 @@ public class DependenciesInjector
         bind(ProtocolRead.class);
         
         bind(AppConfig.class).to(AppConfigImpl.class).in(Singleton.class);
-        
-        bind(Auth.class).to(AuthImpl.class).in(Singleton.class);
+    
+        bind(Auth.class).to(AuthImpl2.class).in(Singleton.class);
         
         bind(I18n.class).to(I18nImpl.class).in(Singleton.class);
         //requestStaticInjection(I18n.class);

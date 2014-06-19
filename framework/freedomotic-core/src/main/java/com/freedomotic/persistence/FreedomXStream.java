@@ -31,7 +31,9 @@ import com.freedomotic.model.object.Representation;
 import com.freedomotic.reactions.Payload;
 import com.freedomotic.reactions.ReactionConverter;
 import com.freedomotic.reactions.Trigger;
+import com.freedomotic.security.User;
 import com.thoughtworks.xstream.XStream;
+import org.apache.shiro.authz.SimpleRole;
 
 /**
  *
@@ -85,6 +87,12 @@ public class FreedomXStream {
             xstream.registerConverter(new ReactionConverter());
             xstream.registerConverter(new PropertiesConverter());
             xstream.registerConverter(new TupleConverter());
+            xstream.alias("user",User.class);
+            xstream.alias("users", User[].class);
+            xstream.registerConverter(new UserConverter());
+            xstream.alias("role",SimpleRole.class);
+            xstream.alias("roles",SimpleRole[].class);
+            xstream.registerConverter(new RoleConverter());
         }
 
         return xstream;

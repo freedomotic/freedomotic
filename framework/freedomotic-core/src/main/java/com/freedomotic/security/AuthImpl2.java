@@ -17,20 +17,16 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.freedomotic.security;
 
 import com.freedomotic.api.Plugin;
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.util.Info;
 import com.google.inject.Inject;
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -39,8 +35,6 @@ import org.apache.shiro.authz.SimpleRole;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.Realm;
-import org.apache.shiro.realm.SimpleAccountRealm;
-import org.apache.shiro.realm.text.PropertiesRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -51,15 +45,13 @@ import org.apache.shiro.util.ThreadState;
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public class AuthImpl implements Auth{
+public class AuthImpl2 implements Auth{
 
-    private final static String BASE_REALM_NAME = "com.freedomotic.security";
-    private final static String PLUGIN_REALM_NAME = "com.freedomotic.plugins.security";
+    private static final Logger LOG = Logger.getLogger(AuthImpl2.class.getName());
     private boolean realmInited = false;
-    private PropertiesRealm baseRealm = new PropertiesRealm();
-    private SimpleAccountRealm pluginRealm = new SimpleAccountRealm(PLUGIN_REALM_NAME);
-    private String DEFAULT_PERMISSION = "*";
-    private ArrayList<Realm> realmCollection = new ArrayList<Realm>();
+    private final UserRealm baseRealm = new UserRealm();
+    private final PluginRealm pluginRealm = new PluginRealm();
+    private final ArrayList<Realm> realmCollection = new ArrayList<Realm>();
     @Inject AppConfig config;
     
     /**
@@ -78,10 +70,7 @@ public class AuthImpl implements Auth{
     public void initBaseRealm() {
         DefaultSecurityManager securityManager = null;
         if (!realmInited && config.getBooleanProperty("KEY_SECURITY_ENABLE", true)) {
-            baseRealm.setName(BASE_REALM_NAME);
-            baseRealm.setResourcePath(new File(Info.PATH_WORKDIR + "/config/security.properties").getAbsolutePath());
             baseRealm.init();
-
             pluginRealm.init();
 
              securityManager = new DefaultSecurityManager();
@@ -91,9 +80,10 @@ public class AuthImpl implements Auth{
             realmCollection.add(pluginRealm);
             securityManager.setRealms(realmCollection);
 
+            SecurityUtils.setSecurityManager(securityManager);
             realmInited = true;
         }
-        SecurityUtils.setSecurityManager(securityManager);
+        
     }
 
     /**
@@ -136,7 +126,6 @@ public class AuthImpl implements Auth{
     public void logout() {
         Subject currentUser = SecurityUtils.getSubject();
         currentUser.logout();
-
     }
 
     /**
@@ -208,14 +197,15 @@ public class AuthImpl implements Auth{
      */
     @Override
     public void setPluginPrivileges(Plugin plugin, String permissions) {
+        
         if (!pluginRealm.accountExists(plugin.getClassName())) {
             // check whether declared permissions correspond the ones requested at runtime
             if (plugin.getConfiguration().getStringProperty("permissions", getPluginDefaultPermission()).equals(permissions)) {
                 LOG.log(Level.INFO, "Setting permissions for plugin {0}: {1}", new Object[]{plugin.getClassName(), permissions});
-                String plugrole = UUID.randomUUID().toString();
-
-                pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
-                pluginRealm.addRole(plugrole + "=" + permissions);
+                pluginRealm.addPlugin(plugin.getClassName(),permissions);
+                //pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
+                //pluginRealm.addRole(plugrole);
+               
             } else {
                 LOG.log(Level.SEVERE, "Plugin {0} tried to request incorrect privileges", plugin.getName());
             }
@@ -230,7 +220,7 @@ public class AuthImpl implements Auth{
     @Deprecated
     @Override
     public String getPluginDefaultPermission() {
-        return DEFAULT_PERMISSION;
+        return PluginRealm.DEFAULT_PERMISSION;
     }
 
     /**
@@ -265,7 +255,7 @@ public class AuthImpl implements Auth{
     @Override
     public boolean bindFakeUser(String userName) {
         if (baseRealm.accountExists(userName)) {
-            PrincipalCollection principals = new SimplePrincipalCollection(userName, BASE_REALM_NAME);
+            PrincipalCollection principals = new SimplePrincipalCollection(userName, UserRealm.USER_REALM_NAME);
             Subject subj = new Subject.Builder().principals(principals).buildSubject();
             ThreadState threadState = new SubjectThreadState(subj);
             threadState.bind();
@@ -273,56 +263,59 @@ public class AuthImpl implements Auth{
         }
         return false;
     }
-    private static final Logger LOG = Logger.getLogger(AuthImpl.class.getName());
 
     @Override
-    public void load() {
+    public void addUser(String userName, String password, String role){
+        baseRealm.addUser(new User(userName, password, role, this));
     }
-
+    
     @Override
-    public void save() {
+    public void addRole(SimpleRole role){
+        baseRealm.addRole(role);
     }
-
+    
     @Override
-    public void addUser(String userName, String password, String role) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public User getCurrentUser(){
+        return (User) baseRealm.getUser(getSubject().getPrincipal().toString());
     }
-
+    
+    
     @Override
-    public void addRole(SimpleRole role) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Map<String,User> getUsers(){
+        return baseRealm.getUsers();
     }
-
     @Override
-    public User getCurrentUser() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public SimpleRole getRole(String name){
+        return baseRealm.getRole(name);
     }
-
     @Override
-    public Map<String, User> getUsers() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Map<String,SimpleRole> getRoles(){
+        return baseRealm.getRoles();
     }
-
+    
     @Override
-    public SimpleRole getRole(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void save(){
+        try {
+            baseRealm.save(Info.PATH_CONFIG_FOLDER);
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
     }
-
+    
     @Override
-    public Map<String, SimpleRole> getRoles() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void load(){
+        baseRealm.load(Info.PATH_CONFIG_FOLDER);
     }
 
     @Override
     public User getUser(String username) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getUsers().get(username);
     }
 
     @Override
     public void deleteUser(String userName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        baseRealm.removeUser(userName);
     }
-
 
 
 }
