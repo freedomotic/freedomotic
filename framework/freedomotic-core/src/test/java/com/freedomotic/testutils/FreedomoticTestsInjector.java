@@ -6,6 +6,8 @@ package com.freedomotic.testutils;
 
 import com.freedomotic.api.API;
 import com.freedomotic.api.APIStandardImpl;
+import com.freedomotic.app.AppConfig;
+import com.freedomotic.app.AppConfigImpl;
 import com.freedomotic.core.JoinPlugin;
 import com.freedomotic.core.TriggerCheck;
 import com.freedomotic.environment.EnvironmentDAO;
@@ -43,5 +45,6 @@ public class FreedomoticTestsInjector
                 .build(EnvironmentDAOFactory.class));
         bind(API.class).to(APIStandardImpl.class).in(Singleton.class);
         bind(ProtocolRead.class);
+        bind(AppConfig.class).to(AppConfigImpl.class).in(Singleton.class);
     }
 }

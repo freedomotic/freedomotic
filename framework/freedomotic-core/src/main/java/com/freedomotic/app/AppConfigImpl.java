@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  * @author Expression autor is undefined on line 12, column 14 in
  * Templates/Classes/Class.java.
  */
-class AppConfigImpl implements AppConfig {
+public class AppConfigImpl implements AppConfig {
 
     private static final long serialVersionUID = 1380975976029008480L;
     private Properties properties = new Properties();

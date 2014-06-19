@@ -1,0 +1,22 @@
+<roles>
+  <role name="administrators">
+    <permissions>
+      <permission>*</permission>
+    </permissions>
+  </role>
+  <role name="system">
+    <permissions>
+      <permission>*</permission>
+    </permissions>
+  </role>
+  <role name="guests">
+    <permissions>
+      <permission>*:read</permission>
+    </permissions>
+  </role>
+  <role name="managers">
+    <permissions>
+      <permission>*:create,read,update,delete</permission>
+    </permissions>
+  </role>
+</roles>

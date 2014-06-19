@@ -1,0 +1,38 @@
+<users>
+  <user>
+    <principals>
+      <principal realm="com.freedomotic.security" primary="true">system</principal>
+    </principals>
+    <credentials>aeiruhsdfuhsfouher</credentials>
+    <roles>
+      <role name="administrators"/>
+    </roles>
+    <properties>
+      <property name="language" value="auto"/>
+    </properties>
+  </user>
+  <user>
+    <principals>
+      <principal realm="com.freedomotic.security" primary="true">admin</principal>
+    </principals>
+    <credentials>admin</credentials>
+    <roles>
+      <role name="administrators"/>
+    </roles>
+    <properties>
+      <property name="language" value="auto"/>
+    </properties>
+  </user>
+  <user>
+    <principals>
+      <principal realm="com.freedomotic.security" primary="true">guest</principal>
+    </principals>
+    <credentials>guest</credentials>
+    <roles>
+      <role name="guests"/>
+    </roles>
+    <properties>
+      <property name="language" value="auto"/>
+    </properties>
+  </user>
+</users>
