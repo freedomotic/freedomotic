@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.freedomotic</groupId>
         <artifactId>freedomotic</artifactId>
-        <version>5.5-SNAPSHOT</version>
+        <version>5.6-SNAPSHOT</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>    
     <artifactId>harvester</artifactId>
@@ -39,7 +39,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
         <freedomotic.package.type>device</freedomotic.package.type>
-        <freedomotic.nodeid>9992</freedomotic.nodeid>
+        <freedomotic.nodeid>10566</freedomotic.nodeid>
         <freedomotic.package.license>GNU GPL2</freedomotic.package.license>
         <freedomotic.package.vendor.name>Gabriel</freedomotic.package.vendor.name>
         <freedomotic.package.vendor.surname>Pulido</freedomotic.package.vendor.surname>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa-all</artifactId>
-            <version>2.2.2</version>
+            <version>2.3.0</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
