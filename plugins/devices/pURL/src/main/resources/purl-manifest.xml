@@ -1,0 +1,13 @@
+<config>
+    <properties>
+        <property name="name" value="pURL"/>
+        <property name="description" value="Reads URLs HTML content"/>
+	<property name="protocol.name"  value="curl"/>
+        <property name="category" value="scraper"/>
+        <property name="short-name" value="curl"/> 
+	<property name="polling_rate" value="5000"/> 
+	<property name="url" value="http://api.openweathermap.org/data/2.5/weather?q%3DTrento%26mode%3Dxml"/> 
+	<property name="url_username" value="admin"/> 
+	<property name="url_password" value="admin"/> 
+    </properties>
+</config>

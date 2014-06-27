@@ -1,0 +1,22 @@
+<trigger>
+    <name>pURL: read current weather from web</name>
+    <channel>app.event.sensor.url</channel>
+    <payload>
+        <payload>
+            <it.freedomotic.reactions.Statement>
+                <logical>AND</logical>
+                <attribute>url.content</attribute>
+                <operand>XPATH</operand>
+                <value>//current/weather/@value</value>
+            </it.freedomotic.reactions.Statement>
+            <it.freedomotic.reactions.Statement>
+                <logical>SET</logical>
+                <attribute>behaviorValue</attribute>
+                <operand>EQUALS</operand>
+                <value>@event.url.content.xpathresult</value>
+            </it.freedomotic.reactions.Statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <maxExecutions>-1</maxExecutions>
+</trigger>
