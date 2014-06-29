@@ -83,6 +83,7 @@ public abstract class AbstractTest<Z> extends JerseyTest {
         // POST
         final Response resPOST = target(PATH).request().post(cmdEntity);
         assertEquals("POST test", Status.CREATED.getStatusCode(), resPOST.getStatus());
+        System.out.println(resPOST.getLocation().toString());
 
         //GET list
         List<Z> cl = target(PATH).request(representation).get(listType);
