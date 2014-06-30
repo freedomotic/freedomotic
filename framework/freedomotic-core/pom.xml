@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
         <org.restlet.version>2.1.7</org.restlet.version>
-        <restapi.version>3.0</restapi.version>
+        <jersey.version>2.9</jersey.version>
     </properties>
     <build>
         <finalName>freedomotic</finalName> 
@@ -169,6 +169,16 @@
             <artifactId>shiro-guice</artifactId>
             <version>1.2.3</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-lgpl</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-lgpl</artifactId>
+            <version>1.3.0</version>
         </dependency>
     </dependencies>
 </project>
