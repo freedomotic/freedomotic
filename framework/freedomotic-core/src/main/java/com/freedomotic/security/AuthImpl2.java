@@ -296,7 +296,7 @@ public class AuthImpl2 implements Auth{
     @Override
     public void save(){
         try {
-            baseRealm.save(Info.PATH_CONFIG_FOLDER);
+            baseRealm.save(Info.PATHS.PATH_CONFIG_FOLDER);
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
@@ -304,7 +304,7 @@ public class AuthImpl2 implements Auth{
     
     @Override
     public void load(){
-        baseRealm.load(Info.PATH_CONFIG_FOLDER);
+        baseRealm.load(Info.PATHS.PATH_CONFIG_FOLDER);
     }
 
     @Override
