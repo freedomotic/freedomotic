@@ -32,15 +32,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlValue;
 
 /**
  *
  * @author nicoletti
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class Plugin
         implements Client {
 //    private boolean isConnected = false;
@@ -161,7 +165,6 @@ public class Plugin
      *
      * @return
      */
-    @XmlTransient
     public API getApi() {
         return api;
     }
