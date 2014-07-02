@@ -21,6 +21,7 @@ package com.freedomotic.plugins.devices.japi.utils;
 
 import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.plugins.devices.japi.filters.ItemNotFoundException;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -84,7 +85,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
         if (item != null) {
             return Response.ok(item).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        throw new ItemNotFoundException();
     }
 
     /**
@@ -169,7 +170,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
         if (doDelete(UUID)) {
             return Response.ok().build();
         } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new ItemNotFoundException();
         }
     }
 

@@ -7,11 +7,9 @@
 package com.freedomotic.plugins.devices.jersey.test;
 
 import com.freedomotic.marketplace.IMarketPlace;
-import com.freedomotic.plugins.devices.japi.RestJersey;
 import com.freedomotic.plugins.devices.japi.resources.MarketplaceResource;
 import com.freedomotic.plugins.devices.japi.utils.ThrowableExceptionMapper;
 import java.util.ArrayList;
-import java.util.List;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -20,7 +18,6 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**

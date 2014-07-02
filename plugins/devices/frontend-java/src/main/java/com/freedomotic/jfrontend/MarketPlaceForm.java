@@ -89,7 +89,7 @@ public class MarketPlaceForm
         Collections.sort(pluginCategoryList, CatComp);
 
         for (IPluginCategory pc : pluginCategoryList) {
-            cmbCategory.addItem(pc.getName());
+            cmbCategory.addItem(pc.getName() + " ("+pc.getPlugins().size()+")");
         }
 
         //add listener to category selection changes

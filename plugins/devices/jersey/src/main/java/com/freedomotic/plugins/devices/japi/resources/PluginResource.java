@@ -25,6 +25,7 @@ import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.ClientStorage;
+import com.freedomotic.plugins.devices.japi.filters.ItemNotFoundException;
 import com.freedomotic.plugins.devices.japi.utils.AbstractResource;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -107,7 +108,7 @@ public class PluginResource extends AbstractResource<Plugin>{
             p.start();
             return Response.accepted().build();
         }
-        return Response.status(Status.NOT_FOUND).build();
+        throw new ItemNotFoundException();
     }
     
     @POST
@@ -126,7 +127,7 @@ public class PluginResource extends AbstractResource<Plugin>{
             p.stop();
             return Response.accepted().build();
         }
-        return Response.status(Status.NOT_FOUND).build();
+        throw new ItemNotFoundException();
     }
 
     @Override

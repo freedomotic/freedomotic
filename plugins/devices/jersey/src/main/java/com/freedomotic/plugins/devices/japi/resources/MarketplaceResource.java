@@ -9,6 +9,7 @@ import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.MarketPlaceService;
+import com.freedomotic.plugins.devices.japi.filters.ItemNotFoundException;
 import com.freedomotic.plugins.filesystem.PluginsManager;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -65,7 +66,7 @@ public class MarketplaceResource {
                     return Response.ok(category.getPlugins()).build();
                 }
             }
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new ItemNotFoundException();
         }
         return Response.ok(mps.getPackageList()).build();
     }

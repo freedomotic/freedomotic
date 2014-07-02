@@ -33,7 +33,6 @@ import com.freedomotic.plugins.devices.japi.resources.PluginChangeResource;
 import com.freedomotic.plugins.devices.japi.resources.ZoneChangeResource;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.util.Info;
-import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import java.io.File;
 import java.net.URI;
 import java.util.logging.Level;
@@ -80,7 +79,7 @@ public class RestJersey
 
     @Override
     protected void onStart() {
-
+        setDescription("Plugin is starting...");
         String protocol = configuration.getBooleanProperty("enable-ssl", false) ? "https" : "http";
         String staticDir = configuration.getStringProperty("serve-static", "none");
         int port = configuration.getBooleanProperty("enable-ssl", false) ? configuration.getIntProperty("https-port", 9113) : configuration.getIntProperty("http-port", 9111);
@@ -98,13 +97,13 @@ public class RestJersey
             resourceConfig = new ResourceConfig().packages(RESOURCE_PKG, SWAGGER_PKG);
 
             // swagger config
-            BeanConfig config = new BeanConfig();
+            /*BeanConfig config = new BeanConfig();
             config.setResourcePackage(RESOURCE_PKG);
             config.setVersion(API_VERSION);
             config.setBasePath(SWAGGER_URI.toString());
             config.setScan(true);
             config.setTitle("FD API");
-            config.setDescription("Freedomotic API documentation");
+            config.setDescription("Freedomotic API documentation"); */
         } else {
             resourceConfig = new ResourceConfig().packages(RESOURCE_PKG);
         }
@@ -159,12 +158,13 @@ public class RestJersey
         addEventListener("app.event.sensor.object.behavior.change");
         addEventListener("app.event.sensor.environment.zone.change");
         addEventListener("app.event.sensor.plugin.change");
-
+        setDescription("API is available at " +BASE_URI.toString());
     }
 
     @Override
     protected void onStop() {
         LOG.info("Jersey RestAPI plugin is stopped ");
+        setDescription("Plugin stopped");
         try {
             server.shutdownNow();
         } catch (Exception ex) {

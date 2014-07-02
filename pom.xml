@@ -466,7 +466,7 @@
                         <execution>
                             <id>copy-resources</id>
                             <!-- here the phase you need -->
-                            <phase>validate</phase>
+                            <phase>prepare-package</phase>
                             <goals>
                                 <goal>copy-resources</goal>
                             </goals>
@@ -537,7 +537,7 @@
                             </goals>
                             <configuration>
                                 <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
-                               <!-- <excludeTransitive>true</excludeTransitive> -->
+                                <!-- <excludeTransitive>true</excludeTransitive> -->
                                 <excludeScope>provided</excludeScope>
                                 <overWriteReleases>false</overWriteReleases>
                                 <overWriteSnapshots>false</overWriteSnapshots>
