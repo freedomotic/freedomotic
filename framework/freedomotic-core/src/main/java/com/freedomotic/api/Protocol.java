@@ -48,6 +48,20 @@ public abstract class Protocol
     private Protocol.SensorThread sensorThread;
     private volatile Destination lastDestination;
     private BusService busService;
+    
+
+    /**
+     *
+     * @param pluginName
+     * @param manifest
+     */
+    public Protocol(String pluginName, String manifest) {
+        
+        super(pluginName, manifest);
+        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+        this.status = PluginStatus.STOPPED;
+        register();
+    }
 
     /**
      *
@@ -60,8 +74,7 @@ public abstract class Protocol
      * @throws IOException
      * @throws UnableToExecuteException
      */
-    protected abstract void onCommand(Command c)
-            throws IOException, UnableToExecuteException;
+    protected abstract void onCommand(Command c) throws IOException, UnableToExecuteException;
 
     /**
      *
@@ -75,18 +88,6 @@ public abstract class Protocol
      * @param event
      */
     protected abstract void onEvent(EventTemplate event);
-
-    /**
-     *
-     * @param pluginName
-     * @param manifest
-     */
-    public Protocol(String pluginName, String manifest) {
-
-        super(pluginName, manifest);
-        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
-        register();
-    }
 
     private void register() {
         listener = new BusMessagesListener(this);
@@ -119,7 +120,7 @@ public abstract class Protocol
      * @param ev
      */
     public void notifyEvent(EventTemplate ev) {
-        if (isRunning) {
+        if (status.isRunning()) {
             notifyEvent(ev,
                     ev.getDefaultDestination());
         }
@@ -131,7 +132,7 @@ public abstract class Protocol
      * @param destination
      */
     public void notifyEvent(EventTemplate ev, String destination) {
-        if (isRunning) {
+        if (status.isRunning()) {
             LOG.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":"
                     + ev.getPayload().toString());
             busService.send(ev, destination);
@@ -143,7 +144,7 @@ public abstract class Protocol
      */
     @Override
     public void start() {
-        if (!isRunning) {
+        if (status.isAllowedToStart()) {
 
             Runnable action = new Runnable() {
                 @Override
@@ -153,7 +154,7 @@ public abstract class Protocol
                     sensorThread.start();
                     PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
                     busService.send(event);
-                    isRunning = true;
+                    status = PluginStatus.RUNNING;
                 }
             };
 
@@ -166,16 +167,18 @@ public abstract class Protocol
      */
     @Override
     public void stop() {
-        if (isRunning) {
+        if (status.isRunning()) {
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
-                    isRunning = false;
+                    status = PluginStatus.STOPPING;
                     onStop();
                     sensorThread = null;
+                    listener.unsubscribeEvents();
                     notify();
                     PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
                     busService.send(event);
+                    status = PluginStatus.STOPPED;
                 }
             };
             getApi().getAuth().pluginExecutePrivileged(this, action);
@@ -187,9 +190,7 @@ public abstract class Protocol
      * @param wait
      */
     public final void setPollingWait(int wait) {
-        if (wait > 0) {
-            pollingWaitTime = wait;
-        }
+             pollingWaitTime = wait;
     }
 
     /**
@@ -210,7 +211,7 @@ public abstract class Protocol
 
     @Override
     public final void onMessage(final ObjectMessage message) {
-        if (!isRunning) {
+        if (status.isAllowedToStart()) {
             LOG.config("Protocol '" + getName()
                     + "' receives a command while is not running. Plugin tries to turn on itself...");
             start();
@@ -245,9 +246,28 @@ public abstract class Protocol
         }
     }
 
+    /**
+     *
+     * @param command
+     * @return
+     */
+    protected Command send(Command command) {
+        return busService.send(command);
+    }
+
+    /**
+     *
+     * @param command
+     */
+    public void reply(Command command) {
+        // sends back the command
+        final String defaultCorrelationID = "-1";
+        busService.reply(command, lastDestination, defaultCorrelationID);
+
+    }
+
     private class ActuatorPerforms
             extends Thread {
-
         private Command command;
         private Destination reply;
         private String correlationID;
@@ -283,26 +303,6 @@ public abstract class Protocol
         }
     }
 
-    /**
-     *
-     * @param command
-     * @return
-     */
-    protected Command send(Command command) {
-        return busService.send(command);
-    }
-
-    /**
-     *
-     * @param command
-     */
-    public void reply(Command command) {
-        // sends back the command
-        final String defaultCorrelationID = "-1";
-        busService.reply(command, lastDestination, defaultCorrelationID);
-
-    }
-
     private class SensorThread
             extends Thread {
 
@@ -317,7 +317,7 @@ public abstract class Protocol
                         Thread.sleep(pollingWaitTime);
 
                         synchronized (this) {
-                            while (!isRunning && (sensorThread == thisThread)) {
+                            while (!status.isRunning() && (sensorThread == thisThread)) {
                                 wait();
                             }
                         }
@@ -328,7 +328,7 @@ public abstract class Protocol
                     onRun();
                 }
             } else {
-                if (isRunning) {
+                if (status.isRunning()) {
                     onRun();
                 }
             }

@@ -36,8 +36,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlValue;
 
 /**
  *
@@ -45,19 +43,22 @@ import javax.xml.bind.annotation.XmlValue;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class Plugin
-        implements Client {
+public class Plugin implements Client {
+    final static int SAME_VERSION = 0;
+    final static int FIRST_IS_OLDER = -1;
+    final static int LAST_IS_OLDER = 1;
+    private static final Logger LOG = Logger.getLogger(Plugin.class.getName());
 //    private boolean isConnected = false;
 
     /**
      *
      */
     @XmlElement
-    protected volatile boolean isRunning;
-    @XmlElement
     private String pluginName;
     @XmlElement
     private String type = "Plugin";
+    @XmlElement
+    protected volatile PluginStatus status = PluginStatus.STOPPED;
 
     /**
      *
@@ -68,6 +69,7 @@ public class Plugin
     /**
      *
      */
+    @Deprecated
     protected JFrame gui;
     // private static final String SEPARATOR = "-";
     //config file parameters
@@ -115,9 +117,6 @@ public class Plugin
     protected String sendOn;
     @XmlElement
     private File path;
-    final static int SAME_VERSION = 0;
-    final static int FIRST_IS_OLDER = -1;
-    final static int LAST_IS_OLDER = 1;
     
     @Inject
     private API api;
@@ -265,6 +264,7 @@ public class Plugin
      *
      */
     @Override
+    @Deprecated
     public void showGui() {
         if (!isRunning()) {
             start();
@@ -283,6 +283,7 @@ public class Plugin
      *
      */
     @Override
+    @Deprecated
     public void hideGui() {
         onHideGui();
 
@@ -315,7 +316,7 @@ public class Plugin
      */
     @Override
     public boolean isRunning() {
-        return isRunning;
+        return status.equals(PluginStatus.RUNNING);
     }
 
     /**
@@ -412,12 +413,14 @@ public class Plugin
     /**
      *
      */
+    @Deprecated
     protected void onShowGui() {
     }
 
     /**
      *
      */
+    @Deprecated
     protected void onHideGui() {
     }
 
@@ -452,5 +455,4 @@ public class Plugin
     public void loadPermissionsFromManifest() {
         getApi().getAuth().setPluginPrivileges(this, configuration.getStringProperty("permissions", getApi().getAuth().getPluginDefaultPermission()));
     }
-    private static final Logger LOG = Logger.getLogger(Plugin.class.getName());
 }

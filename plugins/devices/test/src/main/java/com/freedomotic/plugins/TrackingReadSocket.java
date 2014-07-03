@@ -66,7 +66,7 @@ public class TrackingReadSocket extends Protocol {
             Socket server;
             System.out.println("\nStart listening on server socket " + listener.getInetAddress());
 
-            while (((i++ < maxConnections) || (maxConnections == -1)) && (isRunning)) {
+            while (((i++ < maxConnections) || (maxConnections == -1)) && (status.isRunning())) {
                 ClientInputReader connection;
                 server = listener.accept();
                 connection = new ClientInputReader(server);
@@ -147,7 +147,7 @@ public class TrackingReadSocket extends Protocol {
                 DataInputStream in = new DataInputStream(server.getInputStream());
                 PrintStream out = new PrintStream(server.getOutputStream());
 
-                while (((line = in.readLine()) != null) && !line.equals(".") && isRunning) {
+                while (((line = in.readLine()) != null) && !line.equals(".") && status.isRunning()) {
                     System.out.println("Readed from socket: " + line);
                     parseInput(line);
                 }

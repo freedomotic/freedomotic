@@ -80,6 +80,7 @@ public class BusConnection extends LifeCycle {
 	 * {@inheritDoc}
      * @throws java.lang.Exception
 	 */
+        @Override
 	protected void start() throws Exception {
 		
 		LOG.info("Creating connection factory");
@@ -97,6 +98,7 @@ public class BusConnection extends LifeCycle {
 	 * {@inheritDoc}
      * @throws java.lang.Exception
 	 */
+        @Override
 	protected void stop() throws Exception {
 
 		LOG.info("Stopping connection");
