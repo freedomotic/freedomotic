@@ -170,8 +170,8 @@
                             <outputTemplate>
                                 https://raw.github.com/kongchen/api-doc-template/master/v2.0/markdown.mustache
                             </outputTemplate>
-                            <outputPath>src/main/resources/data/swagger/apidocs/strapdown.html</outputPath>
-                            <swaggerDirectory>src/main/resources/data/swagger/api-docs</swaggerDirectory>
+                            <outputPath>${basedir}/src/main/resources/data/swagger/apidocs/strapdown.html</outputPath>
+                            <swaggerDirectory>${basedir}/src/main/resources/data/swagger/api-docs</swaggerDirectory>
                             <!--swaggerUIDocBasePath>/api-docs</swaggerUIDocBasePath-->
                             <!--useOutputFlatStructure>false</useOutputFlatStructure-->
                             <!--mustacheFileRoot>${basedir}/src/main/resources/</mustacheFileRoot-->
