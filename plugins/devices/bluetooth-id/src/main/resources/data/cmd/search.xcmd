@@ -1,0 +1,11 @@
+<com.freedomotic.reactions.Command>
+  <name>Search Bluetooth</name>
+  <receiver>app.actuators.protocol.bluetooth-id.in</receiver>
+  <description>Search for bluetooth devices</description>
+  <delay>0</delay>
+  <timeout>0</timeout>
+  <properties>
+    <properties>        
+    </properties>
+  </properties>
+</com.freedomotic.reactions.Command>

@@ -1,0 +1,12 @@
+<config>
+    <properties>
+        <property name="name" value="Bluetooth-id"/>
+        <property name="description" value="Detects Bluetooth devices presence"/>
+	<property name="protocol.name"  value="bluetooth-id"/>
+        <property name="version" value="1.0.0"/>
+        <property name="required" value="5.1.0"/>
+        <property name="category" value="protocol"/>
+        <property name="short-name" value="bluetooth-id"/> 
+	<property name="polling-rate" value="72000000"/> 
+    </properties>
+</config>
