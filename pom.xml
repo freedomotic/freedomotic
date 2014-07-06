@@ -93,7 +93,7 @@
                 <module>plugins/devices/frontend-java</module>
                 <module>plugins/devices/test</module>
                 <module>plugins/devices/hello-world</module>
-                <module>plugins/devices/jersey</module>
+                <module>plugins/devices/restapi-v3</module>
             </modules>
         </profile>
         <profile>
