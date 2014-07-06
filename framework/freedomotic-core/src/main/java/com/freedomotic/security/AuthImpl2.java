@@ -182,7 +182,7 @@ public class AuthImpl2 implements Auth{
         if (isInited()) {
             //LOG.info("Executing privileged for plugin: " + classname);
             PrincipalCollection plugPrincipals = new SimplePrincipalCollection(classname, pluginRealm.getName());
-            Subject plugSubject = new Subject.Builder().principals(plugPrincipals).buildSubject();
+            Subject plugSubject = new Subject.Builder().principals(plugPrincipals).authenticated(true).buildSubject();
             plugSubject.getSession().setTimeout(-1);
             plugSubject.execute(action);
         } else {

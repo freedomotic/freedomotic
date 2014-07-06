@@ -3,6 +3,8 @@
         <property name="description"            value="REST API v3 plugin"/>
         <property name="category"               value="devel"/>
         <property name="short-name"             value="restapi-v3"/>
+        <property name="version" value="1.1.0"/>
+        <property name="required" value="5.5.0"/>
         <property name="startup-time"           value="on load"/>
         <property name="debug"                  value="false" />
         <property name="debug-entity"           value="true" />

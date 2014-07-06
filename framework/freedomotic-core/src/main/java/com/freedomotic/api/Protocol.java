@@ -157,6 +157,7 @@ public abstract class Protocol
                         status = PluginStatus.RUNNING;
                     } catch (Exception e) {
                         status = PluginStatus.FAILED;
+                        setDescription("Plugin start FAILED. see logs for details.");
                         LOG.log(Level.SEVERE, "Error starting " + getName() + ": " + e.getLocalizedMessage(), e);
                     }
 
@@ -187,6 +188,7 @@ public abstract class Protocol
                         status = PluginStatus.STOPPED;
                     } catch (Exception e) {
                         status = PluginStatus.FAILED;
+                        setDescription("Plugin stop FAILED. see logs for details.");
                         LOG.log(Level.SEVERE, "Error stopping " + getName() + ": " + e.getLocalizedMessage(), e);
                     }
                 }

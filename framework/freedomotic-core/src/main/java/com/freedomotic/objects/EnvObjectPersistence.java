@@ -603,4 +603,10 @@ public class EnvObjectPersistence implements ContainerInterface<EnvObjectLogic> 
     public EnvObjectLogic copy(String uuid) {
         return add(get(uuid), true);
     }
+
+    public static Collection<String> getObjNames() {
+        HashSet<String> list = new HashSet<String>();
+        list.addAll(objectList.keySet());
+        return list;
+    }
 }

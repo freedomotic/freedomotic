@@ -65,10 +65,7 @@ public final class EnvironmentLogic {
      */
     @RequiresPermissions("environments:read")
     public Environment getPojo() {
-        if (api.getAuth().isPermitted("environments:read:" + pojo.getUUID().substring(0, 5))) {
-            return pojo;
-        }
-        return null;
+        return pojo;
     }
 
     /**

@@ -19,17 +19,23 @@
  */
 package com.freedomotic.core;
 
+import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
+import com.freedomotic.environment.EnvironmentLogic;
+import com.freedomotic.environment.Room;
+import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.reactions.Command;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +51,8 @@ import javax.jms.ObjectMessage;
  * between abstract action -to-> concrete action defined in every environment
  * object, for lights it can be something like 'turn on' -> 'turn on X10 light'
  *
- * <p> This class is listening on channels:
+ * <p>
+ * This class is listening on channels:
  * app.events.sensors.behavior.request.objects If a command (eg: 'turn on
  * light1' or 'turn on all lights') is received on this channel the requested
  * behavior is applied to the single object or all objects of the same type as
@@ -65,8 +72,9 @@ public final class BehaviorManager
     public static final String PROPERTY_OBJECT_NAME = "object.name";
     public static final String PROPERTY_OBJECT_PROTOCOL = "object.protocol";
     public static final String PROPERTY_OBJECT = "object";
-    private static BusMessagesListener listener;
-    private BusService busService;
+    private BusMessagesListener listener;
+    private final BusService busService;
+    private static API api = Freedomotic.INJECTOR.getInstance(API.class);
 
     static String getMessagingChannel() {
         return MESSAGING_CHANNEL;
@@ -115,32 +123,22 @@ public final class BehaviorManager
 
         // gets a reference to an EnvObject using the key 'object' in the user
         // level command
+        Collection<String> objNames = EnvObjectPersistence.getObjNames();
 
-        String objectClass = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS);
-        if (objectClass != null) {
-            String regex = "^" + objectClass.replace(".", "\\.") + ".*";
-            Pattern pattern = Pattern.compile(regex);
-
-            // TODO this should be in the collection
-            final Collection<EnvObjectLogic> objectList = EnvObjectPersistence
-                    .getObjectList();
-
-            for (EnvObjectLogic object : objectList) {
-
-                final EnvObject pojo = object.getPojo();
-                final Matcher matcher = pattern.matcher(pojo.getType());
-
-                if (matcher.matches()) {
-                    // TODO Look at this setProperty later
-                    userLevelCommand.setProperty(Command.PROPERTY_OBJECT, pojo.getName());
-                    applyToSingleObject(userLevelCommand);
-                }
-            }
+        for (String objName
+                : filterByArea(userLevelCommand,
+                        filterByObjClass(userLevelCommand,
+                                filterByTags(userLevelCommand, objNames)))) {
+            userLevelCommand.setProperty(Command.PROPERTY_OBJECT, objName);
+            applyToSingleObject(userLevelCommand);
         }
+    }
 
+    private static Collection<String> filterByTags(Command userLevelCommand, Collection<String> origList) {
         String includeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_INCLUDETAGS);
         String excludeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_EXCLUDETAGS);
         if (includeTags != null || excludeTags != null) {
+            Collection<String> newList = new HashSet<String>();
             // prepare includ set
             includeTags += "";
             String tags[] = includeTags.split(",");
@@ -163,7 +161,7 @@ public final class BehaviorManager
             Set<String> testSet = new HashSet<String>();
             Set<String> extestSet = new HashSet<String>();
 
-            for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
+            for (EnvObjectLogic object : api.objects().list()) {
                 final EnvObject pojo = object.getPojo();
                 boolean apply;
                 testSet.clear();
@@ -184,13 +182,72 @@ public final class BehaviorManager
                 }
 
                 if (apply) {
-
-                    // TODO Look at this setProperty later
-                    userLevelCommand.setProperty(Command.PROPERTY_OBJECT, pojo.getName());
-                    applyToSingleObject(userLevelCommand);
+                    newList.add(pojo.getName());
                 }
             }
+            origList.retainAll(newList);
         }
+        return origList;
+    }
+
+    private static Collection<String> filterByObjClass(Command userLevelCommand, Collection<String> origList) {
+        String objectClass = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS);
+
+        if (objectClass != null) {
+            Collection<String> newList = new HashSet<String>();
+            String regex = "^" + objectClass.replace(".", "\\.") + ".*";
+            Pattern pattern = Pattern.compile(regex);
+
+            for (EnvObjectLogic object : api.objects().list()) {
+
+                final EnvObject pojo = object.getPojo();
+                final Matcher matcher = pattern.matcher(pojo.getType());
+
+                if (matcher.matches()) {
+                    // TODO Look at this setProperty later
+                    newList.add(pojo.getName());
+                    //userLevelCommand.setProperty(Command.PROPERTY_OBJECT, pojo.getName());
+                    //applyToSingleObject(userLevelCommand);
+                }
+            }
+            origList.retainAll(newList);
+        }
+        return origList;
+    }
+
+    private static Collection<String> filterByArea(Command userLevelCommand, Collection<String> origList) {
+        String objectRoom = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ENVIRONMENT);
+        String objectEnvironment = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ROOM);
+        if (objectRoom != null || objectEnvironment != null) {
+            Collection<String> newList = new HashSet<String>();
+
+            final API api = Freedomotic.INJECTOR.getInstance(API.class);
+
+            List<EnvironmentLogic> el;
+            if (objectEnvironment != null) {
+                el = api.environments().getByName(objectEnvironment);
+            } else {
+                el = api.environments().list();
+            }
+            for (EnvironmentLogic env : el) {
+                if (objectRoom != null) {
+                    ZoneLogic z = env.getZone(objectRoom);
+                    for (EnvObject obj : z.getPojo().getObjects()) {
+                        //userLevelCommand.setProperty(Command.PROPERTY_OBJECT, obj.getName());
+                        //applyToSingleObject(userLevelCommand);
+                        newList.add(obj.getName());
+                    }
+                } else {
+                    for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(env.getPojo().getUUID())) {
+                        //userLevelCommand.setProperty(Command.PROPERTY_OBJECT, obj.getPojo().getName());
+                        //applyToSingleObject(userLevelCommand);
+                        newList.add(obj.getPojo().getName());
+                    }
+                }
+            }
+            origList.retainAll(newList);
+        }
+        return origList;
     }
 
     private static void applyToSingleObject(Command userLevelCommand) {
@@ -210,24 +267,24 @@ public final class BehaviorManager
             // if this behavior exists in object obj
             if (behavior != null) {
 
-                LOG.log(Level.CONFIG, 
+                LOG.log(Level.CONFIG,
                         "User level command ''{0}'' request changing behavior {1} of object ''{2}'' "
-                        + "from value ''{3}'' to value ''{4}''", 
+                        + "from value ''{3}'' to value ''{4}''",
                         new Object[]{userLevelCommand.getName(), behavior.getName(), obj.getPojo().getName(), behavior.getValueAsString(), userLevelCommand.getProperties().getProperty("value")});
 
                 // true means a command must be fired
                 behavior.filterParams(userLevelCommand.getProperties(), true);
 
             } else {
-                LOG.log(Level.WARNING, 
+                LOG.log(Level.WARNING,
                         "Behavior ''{0}'' is not a valid behavior for object ''{1}''. "
-                        + "Please check ''behavior'' parameter spelling in command {2}", 
+                        + "Please check ''behavior'' parameter spelling in command {2}",
                         new Object[]{behaviorName, obj.getPojo().getName(), userLevelCommand.getName()});
             }
         } else {
-            LOG.log(Level.WARNING,"Object ''{0}"
+            LOG.log(Level.WARNING, "Object ''{0}"
                     + "'' don''t exist in this environment. "
-                    + "Please check ''object'' parameter spelling in command {1}", 
+                    + "Please check ''object'' parameter spelling in command {1}",
                     new Object[]{userLevelCommand.getProperty(Command.PROPERTY_OBJECT), userLevelCommand.getName()});
         }
     }
@@ -238,15 +295,9 @@ public final class BehaviorManager
      */
     protected static void parseCommand(Command userLevelCommand) {
 
-        String object = userLevelCommand.getProperty(Command.PROPERTY_OBJECT);
-        String objectClass = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS);
-        String objectincludeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_INCLUDETAGS);
-        String objectexcludeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_EXCLUDETAGS);
-        String behavior = userLevelCommand.getProperty(Command.PROPERTY_BEHAVIOR);
+        if (userLevelCommand.getProperty(Command.PROPERTY_BEHAVIOR) != null) {
 
-        if (behavior != null) {
-
-            if (object != null) {
+            if (userLevelCommand.getProperty(Command.PROPERTY_OBJECT) != null) {
                 /*
                  * if we have the object name and the behavior it means the
                  * behavior must be applied only to the given object name.
@@ -254,7 +305,11 @@ public final class BehaviorManager
                 applyToSingleObject(userLevelCommand);
             } else {
 
-                if (objectClass != null || objectincludeTags != null || objectexcludeTags != null) {
+                if (userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS) != null
+                        || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_INCLUDETAGS) != null
+                        || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_EXCLUDETAGS) != null
+                        || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ENVIRONMENT) != null
+                        || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ROOM) != null) {
                     try {
                         /*
                          * if we have the category and the behavior (and not the
@@ -264,7 +319,7 @@ public final class BehaviorManager
                         Command clonedOne = userLevelCommand.clone();
                         applyToCategory(clonedOne);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(BehaviorManager.class.getName()).log(Level.SEVERE, null, ex);
+                        LOG.log(Level.SEVERE, null, ex);
                     }
                 }
             }

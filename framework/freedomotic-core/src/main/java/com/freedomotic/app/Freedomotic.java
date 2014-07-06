@@ -50,6 +50,7 @@ import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
+import com.freedomotic.security.UserRealm;
 import com.freedomotic.serial.SerialConnectionProvider;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.LogFormatter;
@@ -158,7 +159,7 @@ public class Freedomotic implements BusConsumer {
         auth.initBaseRealm();
         auth.load();
         if (auth.isInited()) {
-            PrincipalCollection principals = new SimplePrincipalCollection("system", "com.freedomotic.security");
+            PrincipalCollection principals = new SimplePrincipalCollection("system", UserRealm.USER_REALM_NAME);
             Subject SysSubject = new Subject.Builder().principals(principals).buildSubject();
             SysSubject.getSession().setTimeout(-1);
             ThreadState threadState = new SubjectThreadState(SysSubject);

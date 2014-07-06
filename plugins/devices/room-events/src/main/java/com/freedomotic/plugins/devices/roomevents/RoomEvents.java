@@ -19,16 +19,12 @@ package com.freedomotic.plugins.devices.roomevents;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.Room;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.EnvObject;
-import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Payload;
@@ -42,6 +38,7 @@ import java.util.logging.Logger;
 public class RoomEvents extends Protocol {
 
     final int POLLING_WAIT;
+    CommandPersistence cp;
 
     public RoomEvents() {
         //every plugin needs a name and a manifest XML file
@@ -59,10 +56,12 @@ public class RoomEvents extends Protocol {
     @Override
     protected void onStart() {
         LOG.info("RoomEvents plugin is started");
-        this.setDescription("Started");
+        this.setDescription("Starting...");
+        this.cp = getApi().commands();
         addEventListener("app.event.sensor.object.behavior.change");
         addEnvCommands();
         addRoomCommands();
+        this.setDescription("Started");
     }
 
     @Override
@@ -73,42 +72,7 @@ public class RoomEvents extends Protocol {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        if (isRunning()) {
-            // extract object
-            String target= c.getProperty("target");
-            String command = c.getProperty("command");
-
-            if (command.equals("Turn off room devices")) {
-                for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
-                    for (Zone z : env.getPojo().getZones()) {
-                        if (z.getName().equals(target)) {
-                            for (EnvObject obj : z.getObjects()) {
-                                if (obj.getType().startsWith(c.getProperty("devType"))) {
-                                    Command c2 = CommandPersistence.getCommand("Turn off " + obj.getName());
-                                    if (c2 != null) {
-                                        send(c2);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-            } else if (command.equals("Turn off area devices")) {
-                for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
-                    if (env.getPojo().getName().equals(target)) {
-                        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(env.getPojo().getUUID())) {
-                            if (obj.getPojo().getType().startsWith(c.getProperty("devType"))) {
-                                Command c2 = CommandPersistence.getCommand("Turn off " + obj.getPojo().getName());
-                                if (c2 != null) {
-                                    send(c2);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+      
     }
 
     @Override
@@ -126,7 +90,7 @@ public class RoomEvents extends Protocol {
         String objName = event.getProperty("object.name");
 
         boolean found = false;
-        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+        for (EnvironmentLogic env : getApi().environments().list()) {
             for (Room z : env.getRooms()) {
                 for (EnvObject obj : z.getPojo().getObjects()) {
                     if (obj.getName().equalsIgnoreCase(objName)) {
@@ -167,14 +131,14 @@ public class RoomEvents extends Protocol {
                 amount = "some";
             }
 
-
             event.addProperty("hasLightsOn", amount);
             event.addProperty("roomName", roomName);
-            this.notifyEvent(event);
+            notifyEvent(event);
             // add and register this 
             String triggerName = "Room " + roomName + " has " + amount + " lights On";
-            Trigger t = TriggerPersistence.getTrigger(triggerName);
-            if (t == null) {
+            Trigger t;
+            
+            if (getApi().triggers().getByName(triggerName).isEmpty()) {
                 t = new Trigger();
                 t.setName(triggerName);
                 t.setChannel(event);
@@ -190,29 +154,28 @@ public class RoomEvents extends Protocol {
 
     private void addRoomCommands() {
         String cmdName;
-        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+        for (EnvironmentLogic env : getApi().environments().list()) {
             for (Zone z : env.getPojo().getZones()) {
                 if (z.isRoom()) {
                     cmdName = "Turn off devices inside room " + z.getName();
-                    Command c = CommandPersistence.getCommand(cmdName);
-                    if (c != null) {
-                        CommandPersistence.remove(c);
+                    for (Command c : cp.getByName(cmdName)) {
+                        cp.delete(c);
                     }
-                    c = new Command();
-                    c.setReceiver("app.actuators.logging.roomevents.in");
+                    Command c = new Command();
+                    c.setReceiver("app.events.sensors.behavior.request.objects");
                     c.setName(cmdName);
                     c.setDescription(cmdName);
-                    c.setProperty("target", z.getName());
-                    c.setProperty("command", "Turn off room devices");
-                    c.setProperty("devType", "EnvObject.ElectricDevice");
-                    HashSet<String> tags = new HashSet<String>();
+                    c.setProperty(Command.PROPERTY_OBJECT_ROOM, z.getName());
+                    c.setProperty(Command.PROPERTY_BEHAVIOR, "powered");
+                    c.setProperty("value", "false");
+                    HashSet<String> tags = new HashSet<>();
                     tags.add("turn");
                     tags.add("off");
                     tags.add("room");
                     tags.add("devices");
                     tags.add(z.getName());
                     c.setTags(tags);
-                    CommandPersistence.add(c);
+                    cp.create(c);
                 }
             }
         }
@@ -220,29 +183,30 @@ public class RoomEvents extends Protocol {
 
     private void addEnvCommands() {
         String cmdName;
-        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+        for (EnvironmentLogic env : getApi().environments().list()) {
             cmdName = "Turn off devices inside area " + env.getPojo().getName();
-            Command c = CommandPersistence.getCommand(cmdName);
-            if (c != null) {
-                CommandPersistence.remove(c);
+            for (Command c : cp.getByName(cmdName)) {
+                if (c != null) {
+                    cp.delete(c);
+                }
             }
-            c = new Command();
-            c.setReceiver("app.actuators.logging.roomevents.in");
+            Command c = new Command();
+            c.setReceiver("app.events.sensors.behavior.request.objects");
             c.setName(cmdName);
             c.setDescription(cmdName);
-            c.setProperty("target", env.getPojo().getName());
-            c.setProperty("command", "Turn off area devices");
-            c.setProperty("devType", "EnvObject.ElectricDevice");
-            HashSet<String> tags = new HashSet<String>();
+            c.setProperty(Command.PROPERTY_OBJECT_ENVIRONMENT, env.getPojo().getName());
+            c.setProperty(Command.PROPERTY_BEHAVIOR, "powered");
+            c.setProperty("value", "false");
+            HashSet<String> tags = new HashSet<>();
             tags.add("turn");
             tags.add("off");
             tags.add("area");
             tags.add("devices");
             tags.add(env.getPojo().getName());
             c.setTags(tags);
-            CommandPersistence.add(c);
+            cp.create(c);
         }
     }
-    
+
     private static final Logger LOG = Logger.getLogger(RoomEvents.class.getName());
 }

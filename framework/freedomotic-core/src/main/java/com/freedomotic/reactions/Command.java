@@ -46,8 +46,6 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Logger;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -96,6 +94,16 @@ public final class Command implements Serializable, Cloneable {
      *
      */
     public static final String PROPERTY_OBJECT_EXCLUDETAGS = "object.excludetags";
+
+    /**
+     *
+     */
+    public static final String PROPERTY_OBJECT_ENVIRONMENT = "object.environment";
+
+    /**
+     *
+     */
+    public static final String PROPERTY_OBJECT_ROOM = "object.room";
 
     /**
      *
