@@ -22,6 +22,7 @@ package com.freedomotic.bus;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.Profiler;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.JMSException;
@@ -54,10 +55,8 @@ public class BusMessagesListener implements MessageListener {
 
     private BusConsumer busConsumer;
 
-    private MessageConsumer messageConsumer;
-
-    private final ArrayList<String> registeredEventQueues;
-    private final ArrayList<String> registeredCommandQueues;
+    private final HashMap<String, MessageConsumer> registeredEventQueues;
+    private final HashMap<String, MessageConsumer> registeredCommandQueues;
 
     /**
      * Constructor
@@ -68,8 +67,8 @@ public class BusMessagesListener implements MessageListener {
 
         this.busConsumer = busConsumer;
         this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
-        this.registeredEventQueues = new ArrayList<String>();
-        this.registeredCommandQueues = new ArrayList<String>();
+        this.registeredEventQueues = new HashMap<>();
+        this.registeredCommandQueues = new HashMap<>();
     }
 
     /**
@@ -122,9 +121,7 @@ public class BusMessagesListener implements MessageListener {
             BusDestination busDestination = busService
                     .registerCommandQueue(queueName);
 
-            registerOnQueue(busDestination);
-            registeredCommandQueues.add(queueName);
-
+            registeredCommandQueues.put(busDestination.getDestinationName(), registerOnQueue(busDestination));
         } catch (JMSException e) {
 
             LOG.severe(Freedomotic.getStackTraceInfo(e));
@@ -143,8 +140,7 @@ public class BusMessagesListener implements MessageListener {
             BusDestination busDestination = busService
                     .registerEventQueue(queueName);
 
-            registerOnQueue(busDestination);
-            registeredEventQueues.add(queueName);
+            registeredEventQueues.put(busDestination.getDestinationName(), registerOnQueue(busDestination));
 
         } catch (JMSException e) {
 
@@ -152,17 +148,16 @@ public class BusMessagesListener implements MessageListener {
         }
     }
 
-    private void registerOnQueue(BusDestination destination)
+    private MessageConsumer registerOnQueue(BusDestination destination)
             throws JMSException {
 
         final Session receiveSession = busService.getReceiveSession();
-        messageConsumer = receiveSession.createConsumer(destination
+        MessageConsumer messageConsumer = receiveSession.createConsumer(destination
                 .getDestination());
         messageConsumer.setMessageListener(this);
-
         LOG.info(busConsumer.getClass().getSimpleName() + " listen on "
                 + destination.getDestinationName());
-
+        return messageConsumer;
     }
 
     /**
@@ -172,20 +167,11 @@ public class BusMessagesListener implements MessageListener {
      */
     public void unsubscribe() {
 
-        try {
-
-            messageConsumer.close();
-
-        } catch (JMSException e) {
-
-            LOG.severe(e.getMessage());
-        } catch (Exception e) {
-            LOG.warning(e.getMessage());
-        }
         unsubscribeCommands();
         unsubscribeEvents();
 
     }
+
     /**
      * Unsubscribes from events queues
      * <br>
@@ -193,16 +179,18 @@ public class BusMessagesListener implements MessageListener {
      */
     public void unsubscribeEvents() {
         final Session receiveSession = busService.getReceiveSession();
-        for (String queueName : registeredEventQueues) {
+        for (String queueName : registeredEventQueues.keySet()) {
             try {
-                receiveSession.unsubscribe(queueName);
-                registeredEventQueues.remove(queueName);
+                MessageConsumer mc = registeredEventQueues.get(queueName);
+                mc.setMessageListener(null);
+                mc.close();
             } catch (JMSException ex) {
-                LOG.severe("Unable to unsubscribe from event channel " + queueName);
+                LOG.severe("Unable to unsubscribe from event channel " + queueName + " for reason: " + ex.getLocalizedMessage());
             }
         }
+        registeredEventQueues.clear();
     }
-    
+
     /**
      * Unsubscribes from commands queues
      * <br>
@@ -210,14 +198,16 @@ public class BusMessagesListener implements MessageListener {
      */
     public void unsubscribeCommands() {
         final Session receiveSession = busService.getReceiveSession();
-        for (String queueName : registeredCommandQueues) {
+        for (String queueName : registeredCommandQueues.keySet()) {
             try {
-                receiveSession.unsubscribe(queueName);
-                registeredCommandQueues.remove(queueName);
+                MessageConsumer mc = registeredCommandQueues.get(queueName);
+                mc.setMessageListener(null);
+                mc.close();
             } catch (JMSException ex) {
-                LOG.severe("Unable to unsubscribe from command channel " + queueName);
+                LOG.severe("Unable to unsubscribe from event channel " + queueName + " for reason: " + ex.getLocalizedMessage());
             }
         }
+        registeredCommandQueues.clear();
     }
 
     /**

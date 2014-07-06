@@ -16,33 +16,42 @@ public enum PluginStatus {
     /**
      *
      */
-    STOPPED(0),
+    LOADED(0),
     /**
      *
      */
-    STARTING(1),
+    INITED(1),
     /**
      *
      */
-    FAILED(2),
+    STOPPED(2),
     /**
      *
      */
-    RUNNING(3),
+    STARTING(3),
     /**
      *
      */
-    STOPPING(4),
+    FAILED(4),
     /**
      *
      */
-    INSTALLING(5),
+    RUNNING(5),
     /**
      *
      */
-    UNINSTALLING(6);
+    STOPPING(6),
+    /**
+     *
+     */
+    INSTALLING(7),
+    /**
+     *
+     */
+    UNINSTALLING(8);
+    private static Throwable throwable;
 
-    private int code;
+    private final int code;
     private static final EnumSet<PluginStatus> allowedToStartStatuses = EnumSet.of(STOPPED);
     private static final EnumSet<PluginStatus> destroyStatuses = EnumSet.of(STOPPED, STOPPING);
 

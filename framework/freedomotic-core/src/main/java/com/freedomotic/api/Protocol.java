@@ -48,7 +48,6 @@ public abstract class Protocol
     private Protocol.SensorThread sensorThread;
     private volatile Destination lastDestination;
     private BusService busService;
-    
 
     /**
      *
@@ -56,7 +55,7 @@ public abstract class Protocol
      * @param manifest
      */
     public Protocol(String pluginName, String manifest) {
-        
+
         super(pluginName, manifest);
         this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
         this.status = PluginStatus.STOPPED;
@@ -149,12 +148,18 @@ public abstract class Protocol
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
-                    onStart();
-                    sensorThread = new Protocol.SensorThread();
-                    sensorThread.start();
-                    PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
-                    busService.send(event);
-                    status = PluginStatus.RUNNING;
+                    try {
+                        onStart();
+                        sensorThread = new Protocol.SensorThread();
+                        sensorThread.start();
+                        PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
+                        busService.send(event);
+                        status = PluginStatus.RUNNING;
+                    } catch (Exception e) {
+                        status = PluginStatus.FAILED;
+                        LOG.log(Level.SEVERE, "Error starting " + getName() + ": " + e.getLocalizedMessage(), e);
+                    }
+
                 }
             };
 
@@ -171,14 +176,19 @@ public abstract class Protocol
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
-                    status = PluginStatus.STOPPING;
-                    onStop();
-                    sensorThread = null;
-                    listener.unsubscribeEvents();
-                    notify();
-                    PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
-                    busService.send(event);
-                    status = PluginStatus.STOPPED;
+                    try {
+                        status = PluginStatus.STOPPING;
+                        onStop();
+                        sensorThread = null;
+                        listener.unsubscribeEvents();
+                        notify();
+                        PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
+                        busService.send(event);
+                        status = PluginStatus.STOPPED;
+                    } catch (Exception e) {
+                        status = PluginStatus.FAILED;
+                        LOG.log(Level.SEVERE, "Error stopping " + getName() + ": " + e.getLocalizedMessage(), e);
+                    }
                 }
             };
             getApi().getAuth().pluginExecutePrivileged(this, action);
@@ -190,7 +200,7 @@ public abstract class Protocol
      * @param wait
      */
     public final void setPollingWait(int wait) {
-             pollingWaitTime = wait;
+        pollingWaitTime = wait;
     }
 
     /**
@@ -268,6 +278,7 @@ public abstract class Protocol
 
     private class ActuatorPerforms
             extends Thread {
+
         private Command command;
         private Destination reply;
         private String correlationID;
