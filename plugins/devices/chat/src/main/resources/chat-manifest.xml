@@ -8,7 +8,7 @@
         <property name="enable-XMPP" value="false"/>
         <property name="hostname" value="jabber.org"/>
         <property name="port" value="5222"/>
-        <property name="use-tls" value="true"/>
+        <property name="accept-all-certificates" value="false"/>
         <property name="username" value="user@jabber.org"/>
         <property name="password" value="password"/>
         <property name="acceptance-password" value="bemyfriend"/>

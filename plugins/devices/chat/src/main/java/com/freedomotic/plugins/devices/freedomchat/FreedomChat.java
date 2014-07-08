@@ -1,5 +1,5 @@
 /*
- Copyright (c) Matteo Mazzoni 2012  
+ Copyright (c) Matteo Mazzoni 2012-2014
    
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -30,18 +30,22 @@ import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
+
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ChatManagerListener;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 
@@ -53,10 +57,10 @@ public class FreedomChat extends Protocol {
     private String username;
     private String password;
     private String acceptancePassword;
-    private boolean tls;
+    private boolean acceptAllCertificates;
     private boolean useSkype;
     private boolean useXMPP;
-    Connection conn;
+    XMPPConnection conn;
     private ChatMessageAdapter chatListener;
     public static String IF = "if";
     public static String THEN = "then";
@@ -242,15 +246,23 @@ public class FreedomChat extends Protocol {
         port = configuration.getIntProperty("port", 5222);
         username = configuration.getStringProperty("username", "");
         password = configuration.getStringProperty("password", "");
-        tls = configuration.getBooleanProperty("use-tls", false);
+        acceptAllCertificates = configuration.getBooleanProperty("accept-all-certificates", false);
 
         ConnectionConfiguration config = new ConnectionConfiguration(hostname, port);
         config.setCompressionEnabled(true);
-        config.setSASLAuthenticationEnabled(tls);
-        config.setSelfSignedCertificateEnabled(true);
+        if (acceptAllCertificates) {
+            try {
+                TLSUtils.acceptAllCertificates(config);
+            } catch (KeyManagementException e) {
+                LOG.log(Level.SEVERE, "Cannot start Chat plugin. Reason: {0}", e.getMessage());
+                return false;
+            } catch (NoSuchAlgorithmException e) {
+                LOG.log(Level.SEVERE, "Cannot start Chat plugin. Reason: {0}", e.getMessage());
+                return false;
+            }
+        }
 
-
-        conn = new XMPPConnection(config);
+        conn = new XMPPTCPConnection(config);
         try {
             conn.connect();
             conn.login(username, password, "Freedomotic");
@@ -261,7 +273,7 @@ public class FreedomChat extends Protocol {
             conn.sendPacket(presence);
 
             // wait for messages
-            ChatManager chatmanager = conn.getChatManager();
+            ChatManager chatmanager = ChatManager.getInstanceFor(conn);
             chatmanager.addChatListener(new ChatManagerListener() {
                 @Override
                 public void chatCreated(Chat chat, boolean createdLocally) {
@@ -282,7 +294,7 @@ public class FreedomChat extends Protocol {
                                         // expect a password in order to add user to friends' list
                                         chat.sendMessage(manageSubscription(chat, message));
                                     }
-                                } catch (XMPPException ex) {
+                                } catch (Exception ex) {
                                     LOG.log(Level.SEVERE, null, ex);
                                 }
                             }
@@ -295,7 +307,7 @@ public class FreedomChat extends Protocol {
                         try {
                             conn.getRoster().createEntry(chat.getParticipant(), "", null);
                             return ACCEPTED;
-                        } catch (XMPPException ex) {
+                        } catch (Exception ex) {
                             LOG.log(Level.SEVERE, null, ex);
                         }
                     }
@@ -353,7 +365,11 @@ public class FreedomChat extends Protocol {
     private void teardownXMPP() {
         // Disconnect from the server
         if (conn != null && conn.isConnected()) {
-            conn.disconnect();
+            try {
+                conn.disconnect();
+            } catch (NotConnectedException e) {
+                // Already disconnected, can ignore
+            }
         }
         conn = null;
     }
