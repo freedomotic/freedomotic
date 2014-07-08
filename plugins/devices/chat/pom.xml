@@ -10,7 +10,7 @@
     <artifactId>chat</artifactId>
     <packaging>jar</packaging>
     <name>Chat plugin for Freedomotic</name>
-    <version>3.0</version>
+    <version>3.1</version>
     <repositories>
         <repository>
             <id>opencast-public</id>

@@ -64,7 +64,8 @@ public class TLSUtils {
 
         @Override
         public X509Certificate[] getAcceptedIssuers() {
-            throw new UnsupportedOperationException();
+//            throw new UnsupportedOperationException();
+		return null;
         }
     }
 }
