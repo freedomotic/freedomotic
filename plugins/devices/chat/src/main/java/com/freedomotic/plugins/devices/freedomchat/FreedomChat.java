@@ -46,6 +46,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 
@@ -60,6 +61,7 @@ public class FreedomChat extends Protocol {
     private boolean acceptAllCertificates;
     private boolean useSkype;
     private boolean useXMPP;
+    private boolean manualHostname;
     XMPPConnection conn;
     private ChatMessageAdapter chatListener;
     public static String IF = "if";
@@ -242,13 +244,21 @@ public class FreedomChat extends Protocol {
     }
 
     private boolean initXMPP() {
-        hostname = configuration.getStringProperty("hostname", "jabber.org");
-        port = configuration.getIntProperty("port", 5222);
+        manualHostname = configuration.getBooleanProperty("manual-hostname", false);
+        if (manualHostname) {
+            hostname = configuration.getStringProperty("hostname", "jabber.org");
+            port = configuration.getIntProperty("port", 5222);
+        }
         username = configuration.getStringProperty("username", "");
         password = configuration.getStringProperty("password", "");
         acceptAllCertificates = configuration.getBooleanProperty("accept-all-certificates", false);
 
-        ConnectionConfiguration config = new ConnectionConfiguration(hostname, port);
+        ConnectionConfiguration config;
+        if (manualHostname) {
+            config = new ConnectionConfiguration(hostname, port);
+        } else {
+            config = new ConnectionConfiguration(StringUtils.parseServer(username));
+        }
         config.setCompressionEnabled(true);
         if (acceptAllCertificates) {
             try {
