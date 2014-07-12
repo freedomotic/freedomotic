@@ -1,0 +1,17 @@
+<com.freedomotic.reactions.Command>
+    <name>Turn OFF message on Mqtt topic</name>
+    <receiver>app.actuators.protocol.mqtt-client.in</receiver>
+    <description>publishes a message OFF a mqtt topic</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="topic" value="testtopic/1"/>
+            <property name="message" value="0"/>
+            <property name="sub-qos" value="0"/>
+            <property name="pub-qos" value="0"/>
+	    <property name="address" value="@owner.object.address"/>
+        </properties>
+    </properties>
+</com.freedomotic.reactions.Command>
