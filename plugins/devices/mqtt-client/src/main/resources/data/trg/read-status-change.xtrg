@@ -1,0 +1,27 @@
+<trigger>
+    <name>Mqtt client reads a state change</name>
+    <description>Mqtt client reads relay state change</description>
+    <channel>app.event.sensor.protocol.read.mqtt-client</channel>
+    <payload>
+        <payload>
+            <com.freedomotic.reactions.Statement>
+                <logical>AND</logical>
+                <attribute>protocol</attribute>
+                <operand>EQUALS</operand>
+                <value>mqtt-client</value>
+            </com.freedomotic.reactions.Statement>
+            <com.freedomotic.reactions.Statement>
+                <logical>SET</logical>
+                <attribute>behaviorValue</attribute>
+                <operand>EQUALS</operand>
+                <value>@event.value</value>
+            </com.freedomotic.reactions.Statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <priority>0</priority>
+    <maxExecutions>-1</maxExecutions>
+    <numberOfExecutions>0</numberOfExecutions>
+    <suspensionTime>0</suspensionTime>
+</trigger>
