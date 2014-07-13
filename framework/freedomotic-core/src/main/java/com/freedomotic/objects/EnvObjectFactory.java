@@ -25,18 +25,12 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.DaoLayerException;
 import com.freedomotic.model.object.EnvObject;
 import java.net.URLClassLoader;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Enrico
  */
-public final class EnvObjectFactory {
-
-    private EnvObjectFactory() {
-        // Suppress default constructor for noninstantiability
-        throw new AssertionError();
-    }
+public class EnvObjectFactory {
 
     /**
      * Instantiate the right logic manager for an object pojo using the pojo
@@ -46,8 +40,7 @@ public final class EnvObjectFactory {
      * @return
      * @throws com.freedomotic.exceptions.DaoLayerException
      */
-    public static EnvObjectLogic create(EnvObject pojo)
-            throws DaoLayerException {
+    public static EnvObjectLogic create(EnvObject pojo) throws DaoLayerException {
         if (pojo == null) {
             throw new IllegalArgumentException("Cannot create an object logic from null object data");
         }
@@ -61,10 +54,10 @@ public final class EnvObjectFactory {
             logic.setPojo(pojo);
 
             return logic;
-       // } catch (InstantiationException ex) {
-       //     throw new DaoLayerException(ex);
-       // } catch (IllegalAccessException ex) {
-       //     throw new DaoLayerException(ex);
+            // } catch (InstantiationException ex) {
+            //     throw new DaoLayerException(ex);
+            // } catch (IllegalAccessException ex) {
+            //     throw new DaoLayerException(ex);
         } catch (ClassNotFoundException ex) {
             throw new DaoLayerException("Class '" + pojo.getHierarchy() + "' not found. "
                     + "The related object plugin is not "
@@ -74,5 +67,9 @@ public final class EnvObjectFactory {
                     + "like com.freedomotic.objects.impl.Light not com.freedomotic.objects.impl.ElectricDevice.Light");
         }
     }
-    private static final Logger LOG = Logger.getLogger(EnvObjectFactory.class.getName());
+
+    private EnvObjectFactory() {
+        // Suppress default constructor for noninstantiability
+        throw new AssertionError();
+    }
 }

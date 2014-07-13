@@ -19,7 +19,7 @@
  */
 package com.freedomotic.jfrontend;
 
-import com.freedomotic.util.I18n.I18n;
+import com.freedomotic.i18n.I18n;
 import com.freedomotic.util.LogFormatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.plugins.filesystem;
+package com.freedomotic.plugins;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.exceptions.PluginLoadingException;

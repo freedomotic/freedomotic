@@ -2,14 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.plugins.filesystem;
+package com.freedomotic.plugins;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.DaoLayerException;
 import com.freedomotic.exceptions.PluginLoadingException;
-import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
@@ -39,7 +38,7 @@ import org.apache.commons.io.FileUtils;
  *
  * @author enrico
  */
-public class PluginsManagerImpl implements PluginsManager {
+class PluginsManagerImpl implements PluginsManager {
     //depedencies
 
     private ClientStorage clientStorage;

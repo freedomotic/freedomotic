@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.plugins.filesystem;
+package com.freedomotic.plugins;
 
-import com.freedomotic.app.DependenciesInjector;
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.util.Info;
 import com.google.inject.Guice;
@@ -33,7 +33,7 @@ class BoundleLoaderFactory {
     //This is the second INJECTOR of freedomotic. It is needed to inject
     //the plugins loaded using the classloader, so we have to force injection
     //it's package protected to not make it visible from outside
-    protected static final Injector injector = Guice.createInjector(new DependenciesInjector());
+    protected static final Injector injector = Guice.createInjector(new FreedomoticInjector());
 
     BoundleLoaderFactory() {
     }

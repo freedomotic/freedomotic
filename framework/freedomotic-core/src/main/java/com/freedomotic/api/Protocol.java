@@ -89,7 +89,7 @@ public abstract class Protocol
     protected abstract void onEvent(EventTemplate event);
 
     private void register() {
-        listener = new BusMessagesListener(this);
+        listener = new BusMessagesListener(this, busService);
         listener.consumeCommandFrom(getCommandsChannelToListen());
     }
 

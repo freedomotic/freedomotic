@@ -17,19 +17,16 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.bus.impl;
+package com.freedomotic.bus;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.Profiler;
-import com.freedomotic.bus.BootStatus;
-import com.freedomotic.bus.BusDestination;
-import com.freedomotic.bus.BusService;
 import com.freedomotic.reactions.Command;
-import com.google.inject.Singleton;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -50,11 +47,11 @@ import org.apache.activemq.command.ActiveMQQueue;
  * @author Freedomotic Team
  *
  */
-@Singleton
-public class BusServiceImpl extends LifeCycle implements BusService {
+class BusServiceImpl extends LifeCycle implements BusService {
 
     private static final Logger LOG = Logger.getLogger(BusServiceImpl.class.getName());
 
+    @Inject
     private AppConfig config;
 
     private BusBroker brokerHolder;
@@ -75,11 +72,12 @@ public class BusServiceImpl extends LifeCycle implements BusService {
      *
      * @throws java.lang.Exception
      */
+    @Override
     protected void start() throws Exception {
 
         BootStatus.setCurrentStatus(BootStatus.BOOTING);
 
-        config = Freedomotic.INJECTOR.getInstance(AppConfig.class);
+        //config = Freedomotic.INJECTOR.getInstance(AppConfig.class);
 
         brokerHolder = new BusBroker();
         brokerHolder.init();
@@ -87,7 +85,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
         connectionHolder = new BusConnection();
         connectionHolder.init();
 
-        destination = new DestinationRegistry();
+        destination = new DestinationRegistry(this);
 
         receiveSession = createSession();
         // an unlistened session
@@ -96,6 +94,10 @@ public class BusServiceImpl extends LifeCycle implements BusService {
         sendSession = createSession();
         // null parameter creates a producer with no specified destination
         messageProducer = createMessageProducer();
+        
+        if (sendSession == null){
+            throw new IllegalStateException("Messaging bus has not yet a valid send session");
+        }
 
         BootStatus.setCurrentStatus(BootStatus.STARTED);
     }
@@ -140,7 +142,6 @@ public class BusServiceImpl extends LifeCycle implements BusService {
     // TODO Freedomotic.java needs this method publicly visible. A whole repackage is needed.  
     @Override
     public void destroy() {
-
         super.destroy();
     }
 
@@ -150,7 +151,6 @@ public class BusServiceImpl extends LifeCycle implements BusService {
     // TODO Freedomotic.java needs this method publicly visible. A whole repackage is needed.  
     @Override
     public void init() {
-
         super.init();
     }
 
@@ -174,6 +174,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
      *
      * @return
      */
+    @Override
     public BusDestination registerCommandQueue(String queueName)
             throws JMSException {
 
@@ -186,6 +187,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
      *
      * @return
      */
+    @Override
     public BusDestination registerEventQueue(String queueName)
             throws JMSException {
 
@@ -197,6 +199,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
      *
      * @return
      */
+    @Override
     public BusDestination registerTopic(String queueName) throws JMSException {
 
         return destination.registerTopic(queueName);
@@ -207,6 +210,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
      *
      * @return
      */
+    @Override
     public Session getReceiveSession() {
         return receiveSession;
     }
@@ -216,6 +220,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
      *
      * @return
      */
+    @Override
     public Session getSendSession() {
         return sendSession;
     }
@@ -225,38 +230,27 @@ public class BusServiceImpl extends LifeCycle implements BusService {
      *
      * @return
      */
+    @Override
     public Session getUnlistenedSession() {
         return unlistenedSession;
     }
 
     private ObjectMessage createObjectMessage() throws JMSException {
-
-        final Session sendSession = this.getSendSession();
-        ObjectMessage msg = sendSession.createObjectMessage();
-
-        return msg;
+        return getSendSession().createObjectMessage();
     }
 
     /**
      * {@inheritDoc}
      */
-    public void reply(Command command, Destination destination,
-            String correlationID) {
-
+    @Override
+    public void reply(Command command, Destination destination, String correlationID) {
         try {
-
             ObjectMessage msg = createObjectMessage();
-
             msg.setObject(command);
             msg.setJMSCorrelationID(correlationID);
-
-            final MessageProducer messageProducer = this.getMessageProducer();
-            messageProducer.send(destination, msg);
-
+            getMessageProducer().send(destination, msg);
             Profiler.incrementSentReplies();
-
         } catch (JMSException jmse) {
-
             LOG.severe(Freedomotic.getStackTraceInfo(jmse));
         }
     }
@@ -264,6 +258,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Command send(final Command command) {
 
         try {
@@ -369,6 +364,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void send(EventTemplate ev) {
 
         send(ev, ev.getDefaultDestination());
@@ -377,6 +373,7 @@ public class BusServiceImpl extends LifeCycle implements BusService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void send(final EventTemplate ev, final String to) {
 
         // TODO should this null check be here?

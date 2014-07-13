@@ -40,14 +40,12 @@ import java.util.logging.Logger;
 /**
  * A storage of added plugins and connected clients
  */
-public final class ClientStorageInMemory implements ClientStorage {
+class ClientStorageInMemory implements ClientStorage {
 
     private final List<Client> clients = new ArrayList<Client>();
 
-    /**
-     *
-     */
-    public ClientStorageInMemory() {
+
+    ClientStorageInMemory() {
         //just injected
     }
 

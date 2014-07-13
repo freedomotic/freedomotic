@@ -51,7 +51,7 @@ import java.util.logging.Logger;
  * @author Enrico
  */
 @Singleton
-public final class TriggerCheck {
+public class TriggerCheck {
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private final EnvironmentPersistence environmentPersistence;

@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.reactions;
@@ -26,6 +24,7 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.Profiler;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
+import com.freedomotic.bus.BusService;
 import com.freedomotic.core.TriggerCheck;
 import com.google.inject.Inject;
 import java.text.DateFormat;
@@ -74,6 +73,9 @@ public final class Trigger implements BusConsumer, Cloneable {
     @XmlTransient
     private TriggerCheck checker;
 
+    @Inject
+    private BusService busService;
+
     /**
      *
      */
@@ -85,14 +87,13 @@ public final class Trigger implements BusConsumer, Cloneable {
      *
      */
     public void register() {
-		
-		LOG.info("Registering the trigger named '" + getName() + "'");
-		listener = new BusMessagesListener(this);
-		listener.consumeEventFrom(channel);
-		numberOfExecutions = 0;
-		suspensionStart = System.currentTimeMillis();
-		Freedomotic.INJECTOR.injectMembers(this);
-	}
+        Freedomotic.INJECTOR.injectMembers(this);
+        LOG.info("Registering the trigger named '" + getName() + "'");
+        listener = new BusMessagesListener(this, busService);
+        listener.consumeEventFrom(channel);
+        numberOfExecutions = 0;
+        suspensionStart = System.currentTimeMillis();
+    }
 
     /**
      *
@@ -219,12 +220,11 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     //can be moved to a stategy pattern
-
     /**
      *
      * @return
      */
-        public boolean canFire() {
+    public boolean canFire() {
         //num of executions < max executions
         if (getMaxExecutions() > -1) { //not unlimited
 
@@ -437,10 +437,10 @@ public final class Trigger implements BusConsumer, Cloneable {
      *
      */
     public void unregister() {
-		if (listener != null) {
-			listener.unsubscribe();
-		}
-	}
+        if (listener != null) {
+            listener.unsubscribe();
+        }
+    }
 
     /**
      *

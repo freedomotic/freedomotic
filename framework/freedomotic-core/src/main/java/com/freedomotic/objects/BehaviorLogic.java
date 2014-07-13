@@ -28,7 +28,7 @@ import com.freedomotic.model.ds.Config;
  * @author Enrico
  */
 public interface BehaviorLogic {
-
+    
     /**
      *
      * @param params

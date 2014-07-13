@@ -4,7 +4,7 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.NaturalLanguageProcessor;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
-import com.freedomotic.util.I18n.I18n;
+import com.freedomotic.i18n.I18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;

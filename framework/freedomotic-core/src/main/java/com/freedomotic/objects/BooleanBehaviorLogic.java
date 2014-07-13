@@ -29,8 +29,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class BooleanBehaviorLogic
-        implements BehaviorLogic {
+public class BooleanBehaviorLogic implements BehaviorLogic {
 
     private final BooleanBehavior data;
     private Listener listener;

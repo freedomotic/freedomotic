@@ -5,7 +5,6 @@
 package com.freedomotic.plugins;
 
 import com.freedomotic.api.Client;
-import com.freedomotic.plugins.filesystem.PluginsManager;
 import com.freedomotic.testutils.FreedomoticTestsInjector;
 import com.freedomotic.testutils.GuiceJUnitRunner;
 import com.freedomotic.testutils.GuiceJUnitRunner.GuiceInjectors;

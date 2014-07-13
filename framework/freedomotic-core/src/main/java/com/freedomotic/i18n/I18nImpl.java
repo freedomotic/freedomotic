@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.util.I18n;
+package com.freedomotic.i18n;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

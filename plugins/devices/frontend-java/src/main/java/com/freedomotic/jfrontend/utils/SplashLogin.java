@@ -7,7 +7,7 @@ package com.freedomotic.jfrontend.utils;
 import com.freedomotic.api.API;
 import com.freedomotic.events.GenericEvent;
 import com.freedomotic.jfrontend.JavaDesktopFrontend;
-import com.freedomotic.util.I18n.I18n;
+import com.freedomotic.i18n.I18n;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;

@@ -22,9 +22,10 @@ package com.freedomotic.bus;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.Profiler;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -48,27 +49,36 @@ import javax.jms.TextMessage;
  */
 public class BusMessagesListener implements MessageListener {
 
-    private static final Logger LOG = Logger
-            .getLogger(BusMessagesListener.class.getName());
+    private static final Logger LOG = Logger.getLogger(BusMessagesListener.class.getName());
 
     private BusService busService;
 
     private BusConsumer busConsumer;
 
-    private final HashMap<String, MessageConsumer> registeredEventQueues;
-    private final HashMap<String, MessageConsumer> registeredCommandQueues;
+    private MessageConsumer messageConsumer;
+
+    private final List<String> registeredEventQueues;
+    private final List<String> registeredCommandQueues;
 
     /**
      * Constructor
      *
      * @param busConsumer
+     * @param busService
      */
-    public BusMessagesListener(BusConsumer busConsumer) {
+    @Inject
+    public BusMessagesListener(BusConsumer busConsumer, BusService busService) {
 
         this.busConsumer = busConsumer;
-        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
-        this.registeredEventQueues = new HashMap<>();
-        this.registeredCommandQueues = new HashMap<>();
+        this.busService = busService;
+        this.registeredEventQueues = new ArrayList<>();
+        this.registeredCommandQueues = new ArrayList<>();
+        if (busService == null) {
+            throw new IllegalStateException("A message listener must have a working bus link");
+        }
+        if (busConsumer == null) {
+            throw new IllegalStateException("A message listener must have an attached consumer");
+        }
     }
 
     /**
@@ -82,28 +92,19 @@ public class BusMessagesListener implements MessageListener {
         Profiler.incrementReceivedEvents();
 
         if (message instanceof ObjectMessage) {
-
             final ObjectMessage objectMessage = (ObjectMessage) message;
-
             busConsumer.onMessage(objectMessage);
-
         } else {
 
             LOG.severe("Message received by " + this.getClass().getSimpleName()
                     + " is not an object message, is a "
                     + message.getClass().getCanonicalName());
-
             if (message instanceof TextMessage) {
-
                 TextMessage text = (TextMessage) message;
-
                 try {
-
                     LOG.severe(text.getText());
-
                 } catch (JMSException ex) {
-
-                    // Do nothing.
+                    LOG.log(Level.SEVERE, "Error while receiving a text message", ex);
                 }
             }
         }

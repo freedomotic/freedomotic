@@ -23,15 +23,12 @@
 
 package com.freedomotic.objects.impl;
 
-import com.google.inject.Inject;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.RangedIntBehavior;
-import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
-import com.freedomotic.util.I18n.I18n;
 
 
 /**

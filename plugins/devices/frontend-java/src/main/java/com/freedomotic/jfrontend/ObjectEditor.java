@@ -35,7 +35,7 @@ import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
-import com.freedomotic.util.I18n.I18n;
+import com.freedomotic.i18n.I18n;
 import com.freedomotic.util.Info;
 import java.awt.BorderLayout;
 import java.awt.Component;

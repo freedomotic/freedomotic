@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.util.I18n;
+package com.freedomotic.i18n;
 
 import com.freedomotic.api.Client;
 import java.util.ArrayList;

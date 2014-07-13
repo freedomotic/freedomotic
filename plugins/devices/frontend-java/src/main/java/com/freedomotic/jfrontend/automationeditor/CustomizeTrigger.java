@@ -14,7 +14,7 @@ import com.freedomotic.reactions.Payload;
 import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
-import com.freedomotic.util.I18n.I18n;
+import com.freedomotic.i18n.I18n;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

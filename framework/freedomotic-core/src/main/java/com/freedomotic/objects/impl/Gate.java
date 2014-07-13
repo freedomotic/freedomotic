@@ -44,8 +44,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class Gate
-        extends EnvObjectLogic {
+public class Gate extends EnvObjectLogic implements GenericGate {
     //suppose from and to are always reflexive from->to; to->from
 
     private Room from;
@@ -207,6 +206,7 @@ public class Gate
      *
      * @return
      */
+    @Override
     public boolean isOpen() {
         return open.getValue();
     }
@@ -215,6 +215,7 @@ public class Gate
      *
      * @return
      */
+    @Override
     public Room getFrom() {
         return from;
     }
@@ -223,6 +224,7 @@ public class Gate
      *
      * @return
      */
+    @Override
     public Room getTo() {
         return to;
     }
@@ -241,6 +243,7 @@ public class Gate
     /**
      *
      */
+    @Override
     public void evaluateGate() {
         //checks the intersection with the first view in the list
         //others views are ignored!!!
@@ -248,27 +251,9 @@ public class Gate
         FreedomPolygon pojoShape = (FreedomPolygon) representation.getShape();
         int xoffset = representation.getOffset().getX();
         int yoffset = representation.getOffset().getY();
-//        double rotation = Math.toRadians(representation.getRotation());
         from = null;
         to = null;
 
-        //now apply offset and rotation to gate the shape
-//        AffineTransform transform = new AffineTransform();
-//        transform.translate(xoffset, yoffset);
-//        transform.rotate(rotation);
-//        Shape gateShape = transform.createTransformedShape(TopologyUtils.convertToAWT(pojoShape));
-//
-//        for (Room room : Freedomotic.environment.getRooms()) {
-//            Shape roomPolygon = TopologyUtils.convertToAWT(room.getPojo().getShape());
-//            if (roomPolygon.intersects(gateShape.getBounds2D())) {
-//                if (from == null) {
-//                    from = (Room) room;
-//                    to = (Room) room;
-//                } else {
-//                    to = (Room) room;
-//                }
-//            }
-//        }
         FreedomPolygon objShape =
                 TopologyUtils.rotate(TopologyUtils.translate(pojoShape, xoffset, yoffset),
                 (int) representation.getRotation());

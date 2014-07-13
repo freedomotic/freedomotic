@@ -19,7 +19,7 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.bus.impl;
+package com.freedomotic.bus;
 
 import com.freedomotic.util.Info;
 import java.util.logging.Logger;
@@ -36,7 +36,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
  * @author Freedomotic Team
  *
  */
-public class BusConnection extends LifeCycle {
+class BusConnection extends LifeCycle {
 
 	private static final Logger LOG = Logger.getLogger(BusConnection.class.getName());
 	

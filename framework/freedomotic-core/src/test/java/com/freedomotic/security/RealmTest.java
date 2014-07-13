@@ -22,7 +22,7 @@
 package com.freedomotic.security;
 
 import com.freedomotic.app.AppConfig;
-import com.freedomotic.app.DependenciesInjector;
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.testutils.GuiceJUnitRunner;
 import com.google.inject.Inject;
 import org.apache.shiro.authz.Permission;
@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
  * @author matteo
  */
 @RunWith(GuiceJUnitRunner.class)
-@GuiceJUnitRunner.GuiceInjectors({DependenciesInjector.class})
+@GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class RealmTest {
 
     @Inject

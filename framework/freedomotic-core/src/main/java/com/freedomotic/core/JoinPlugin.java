@@ -28,6 +28,7 @@ package com.freedomotic.core;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
+import com.freedomotic.bus.BusService;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.plugins.ClientStorage;
 import com.google.inject.Inject;
@@ -54,14 +55,16 @@ public class JoinPlugin
 	//dependency
 
     private ClientStorage clientStorage;
+    private BusService busService;
 
     static String getMessagingChannel() {
         return MESSAGING_CHANNEL;
     }
 
     @Inject
-    private JoinPlugin(ClientStorage clientStorage) {
+    private JoinPlugin(BusService busService, ClientStorage clientStorage) {
         this.clientStorage = clientStorage;
+        this.busService = busService;
         register();
     }
 
@@ -69,7 +72,7 @@ public class JoinPlugin
      * Register one or more channels to listen to
      */
 	private void register() {
-		listener = new BusMessagesListener(this);
+		listener = new BusMessagesListener(this, busService);
 		listener.consumeCommandFrom(getMessagingChannel());}
 
     @Override

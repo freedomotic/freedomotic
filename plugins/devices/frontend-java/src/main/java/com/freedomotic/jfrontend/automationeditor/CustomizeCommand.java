@@ -15,7 +15,7 @@ import com.freedomotic.api.Plugin;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
-import com.freedomotic.util.I18n.I18n;
+import com.freedomotic.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;

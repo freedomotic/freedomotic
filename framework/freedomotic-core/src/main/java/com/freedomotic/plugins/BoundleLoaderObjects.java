@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.plugins.filesystem;
+package com.freedomotic.plugins;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.app.Freedomotic;
@@ -20,8 +20,7 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-class BoundleLoaderObjects
-        implements BoundleLoader {
+class BoundleLoaderObjects implements BoundleLoader {
 
     private static final Logger LOG = Logger.getLogger(BoundleLoaderObjects.class.getName());;
     private File path;

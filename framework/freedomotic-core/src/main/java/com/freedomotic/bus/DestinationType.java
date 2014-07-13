@@ -19,7 +19,7 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.bus.impl;
+package com.freedomotic.bus;
 
 /**
  * Destination types enumeration
@@ -27,7 +27,7 @@ package com.freedomotic.bus.impl;
  * @author Freedomotic Team
  * 
  */
-public enum DestinationType {
+enum DestinationType {
 
     /**
      *

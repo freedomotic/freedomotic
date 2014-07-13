@@ -19,7 +19,7 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins.filesystem;
+package com.freedomotic.plugins;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.app.Freedomotic;
