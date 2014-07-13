@@ -22,6 +22,7 @@ package com.freedomotic.bus;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.Profiler;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,8 +58,8 @@ public class BusMessagesListener implements MessageListener {
 
     private MessageConsumer messageConsumer;
 
-    private final List<String> registeredEventQueues;
-    private final List<String> registeredCommandQueues;
+    private final HashMap<String, MessageConsumer> registeredEventQueues;
+    private final HashMap<String, MessageConsumer> registeredCommandQueues;
 
     /**
      * Constructor
@@ -71,8 +72,8 @@ public class BusMessagesListener implements MessageListener {
 
         this.busConsumer = busConsumer;
         this.busService = busService;
-        this.registeredEventQueues = new ArrayList<>();
-        this.registeredCommandQueues = new ArrayList<>();
+        this.registeredEventQueues = new HashMap<>();
+        this.registeredCommandQueues = new HashMap<>();
         if (busService == null) {
             throw new IllegalStateException("A message listener must have a working bus link");
         }
