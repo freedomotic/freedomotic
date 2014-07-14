@@ -59,9 +59,9 @@ public class PluginResource extends AbstractResource<Plugin>{
 
     @Override
     protected boolean doDelete(String name) {
-        Plugin p =prepareSingle(name);
+        Plugin p = prepareSingle(name);
         if (p!=null) {
-            clientStorage.remove(p);
+            clientStorage.uninstall(p);
             return true;
         }
         return false;

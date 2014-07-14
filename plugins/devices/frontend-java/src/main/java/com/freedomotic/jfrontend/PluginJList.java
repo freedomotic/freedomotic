@@ -2,6 +2,7 @@ package com.freedomotic.jfrontend;
 
 import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
+import com.freedomotic.api.Plugin;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
@@ -118,9 +119,11 @@ public final class PluginJList
                 mnuConfigure.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         if (client.getType().equalsIgnoreCase("plugin")) {
-                            client.start();
-                            client.showGui();
-                            update();
+                            
+                            new PluginConfigure(parent.getPlugin().getApi(), client);
+                            // client.start();
+                            // client.showGui();
+                            // update();
                         }
 
                         if (client.getType().equalsIgnoreCase("object")) {
