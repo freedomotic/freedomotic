@@ -34,7 +34,6 @@ public class MqttClient4FD
         extends Protocol {
 
     public static final Logger LOG = Logger.getLogger(MqttClient4FD.class.getName());
-    final int POLLING_WAIT = configuration.getIntProperty("time-between-reads", 2000);
     private String BROKER_URL = configuration.getStringProperty("broker-url", "tcp://test.mosquitto.org:1883");
     private String CLIENT_ID = configuration.getStringProperty("client-id", "freedomotic");
     private String AUTHENTICATION_ENABLED = configuration.getStringProperty("authentication-enabled", "false");
@@ -44,12 +43,11 @@ public class MqttClient4FD
     private Integer SET_KEEP_ALIVE_INTERVAL = configuration.getIntProperty("set-keep-alive-interval", 600);
     private Boolean connected = false;
     private Mqtt mqttClient = null;
-    
-    
+
     public MqttClient4FD() {
         //every plugin needs a name and a manifest XML file
         super("MQTT Client", "/mqtt-client/mqtt-client-manifest.xml");
-        setPollingWait(POLLING_WAIT); //millisecs interval between hardware device status reads
+        setPollingWait(-1); //onRun() disabled
     }
 
     @Override
@@ -59,9 +57,6 @@ public class MqttClient4FD
 
     @Override
     protected void onHideGui() {
-        //implement here what to do when the this plugin GUI is closed
-        //for example you can change the plugin description
-        setDescription("My GUI is now hidden");
     }
 
     @Override
@@ -72,14 +67,14 @@ public class MqttClient4FD
     protected void onStart() {
         mqttClient = new Mqtt(this);
         connected = mqttClient.startClient(BROKER_URL, CLIENT_ID, SET_CLEAN_SESSION, SET_KEEP_ALIVE_INTERVAL, AUTHENTICATION_ENABLED, USERNAME, PASSWORD);
-        // System.out.println("Connected:" + connected);
         if (connected) {
             setDescription("Connected to " + BROKER_URL);
             mqttClient.subscribeTopic(configuration.getStringProperty("topic", "true"));
             // this message is used in debug mode - please remove
             mqttClient.publish(configuration.getStringProperty("topic", "true"), "obj1:1", 0, 0);
         } else {
-            onStop();
+            // plugin stopped
+            this.stop();
         }
     }
 
