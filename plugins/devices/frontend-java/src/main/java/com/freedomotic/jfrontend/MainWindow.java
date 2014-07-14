@@ -1256,7 +1256,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
         ArrayList<Object> possibilities = new ArrayList<Object>();
         possibilities.add(i18n.msg("delete_envobj_alongside_environment"));
-        possibilities.addAll(EnvironmentPersistence.getEnvironments());
+        possibilities.addAll(master.getApi().environments().list());
         possibilities.remove(oldenv);
 
         JComboBox envCombo = new JComboBox(possibilities.toArray());

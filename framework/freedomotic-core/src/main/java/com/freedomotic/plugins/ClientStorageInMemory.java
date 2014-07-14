@@ -56,25 +56,25 @@ public final class ClientStorageInMemory implements ClientStorage {
      * @param c
      */
     @Override
-    public void add(Client c) {
+    public void load(Client c) {
         if (!clients.contains(c)) {
             if (isCompatible(c)) {
                 //force injection as this class is not built by guice
                 Freedomotic.INJECTOR.injectMembers(c);
                 clients.add(c);
             } else {
-                Client client =
-                        createPluginPlaceholder(c.getName(),
-                        "Plugin",
-                        "Not compatible with this framework version v" + Info.getVersion());
+                Client client
+                        = createPluginPlaceholder(c.getName(),
+                                "Plugin",
+                                "Not compatible with this framework version v" + Info.getVersion());
                 clients.add(client);
-                LOG.log(Level.WARNING, "Plugin {0} is not compatible with this framework version v{1}", 
+                LOG.log(Level.WARNING, "Plugin {0} is not compatible with this framework version v{1}",
                         new Object[]{c.getName(), Info.getVersion()});
             }
 
-            PluginHasChanged event =
-                    new PluginHasChanged(ClientStorageInMemory.class,
-                    c.getName(), PluginActions.ENQUEUE);
+            PluginHasChanged event
+                    = new PluginHasChanged(ClientStorageInMemory.class,
+                            c.getName(), PluginActions.ENQUEUE);
             final BusService busService = Freedomotic.INJECTOR.getInstance(BusService.class);
             busService.send(event);
             LOG.log(Level.CONFIG,
@@ -88,13 +88,13 @@ public final class ClientStorageInMemory implements ClientStorage {
      * @param c
      */
     @Override
-    public void remove(Client c) {
+    public void unload(Client c) {
         if (clients.contains(c)) {
             clients.remove(c);
 
-            PluginHasChanged event =
-                    new PluginHasChanged(ClientStorageInMemory.class,
-                    c.getName(), PluginActions.DEQUEUE);
+            PluginHasChanged event
+                    = new PluginHasChanged(ClientStorageInMemory.class,
+                            c.getName(), PluginActions.DEQUEUE);
             final BusService busService = Freedomotic.INJECTOR.getInstance(BusService.class);
             busService.send(event);
         }
@@ -182,14 +182,12 @@ public final class ClientStorageInMemory implements ClientStorage {
      * Checks if a plugin is already installed, if is an obsolete or newer
      * version
      */
-
     /**
      *
      * @param name
      * @param version
      * @return
      */
-    
     @Override
     public int compareVersions(String name, String version) {
         Client client = get(name);
@@ -225,7 +223,6 @@ public final class ClientStorageInMemory implements ClientStorage {
 
         //checking framework version compatibility
         //required version must be older (or equal) then current version
-
         if (requiredMajor == Info.getMajor()) {
             if ((getOldestVersion(requiredMajor + "." + requiredMinor + "." + requiredBuild,
                     Info.getVersion()) <= 0)) {
@@ -245,10 +242,10 @@ public final class ClientStorageInMemory implements ClientStorage {
             if (properties.getProperty(key).equalsIgnoreCase("x")) {
                 value = 0;
             } else {
-                value =
-                        Integer.parseInt(properties.getProperty(
-                        key,
-                        new Integer(Integer.MAX_VALUE).toString()));
+                value
+                        = Integer.parseInt(properties.getProperty(
+                                        key,
+                                        new Integer(Integer.MAX_VALUE).toString()));
             }
 
             return value;
@@ -304,48 +301,48 @@ public final class ClientStorageInMemory implements ClientStorage {
      */
     @Override
     public Plugin createPluginPlaceholder(final String simpleName, final String type, final String description) {
-        final Plugin placeholder =
-                new Plugin(simpleName) {
-            @Override
-            public String getDescription() {
-                if (description == null) {
-                    return "Plugin Unavailable. Error on loading";
-                } else {
-                    return description;
-                }
-            }
+        final Plugin placeholder
+                = new Plugin(simpleName) {
+                    @Override
+                    public String getDescription() {
+                        if (description == null) {
+                            return "Plugin Unavailable. Error on loading";
+                        } else {
+                            return description;
+                        }
+                    }
 
-            @Override
-            public String getName() {
-                return "Cannot start " + simpleName;
-            }
+                    @Override
+                    public String getName() {
+                        return "Cannot start " + simpleName;
+                    }
 
-            @Override
-            public String getType() {
-                return type;
-            }
+                    @Override
+                    public String getType() {
+                        return type;
+                    }
 
-            @Override
-            public void start() {
-            }
+                    @Override
+                    public void start() {
+                    }
 
-            @Override
-            public void stop() {
-            }
+                    @Override
+                    public void stop() {
+                    }
 
-            @Override
-            public boolean isRunning() {
-                return false;
-            }
+                    @Override
+                    public boolean isRunning() {
+                        return false;
+                    }
 
-            @Override
-            public void showGui() {
-            }
+                    @Override
+                    public void showGui() {
+                    }
 
-            @Override
-            public void hideGui() {
-            }
-        };
+                    @Override
+                    public void hideGui() {
+                    }
+                };
 
         placeholder.setDescription(description);
         placeholder.configuration = new Config();
@@ -363,6 +360,23 @@ public final class ClientStorageInMemory implements ClientStorage {
     public Client createObjectPlaceholder(final File template)
             throws DaoLayerException {
         return new ObjectPluginPlaceholder(template);
+    }
+
+    /**
+     * Removes a plugin and its configuration from filesystem
+     * 
+     * @param c
+     */
+    @Override
+    public void uninstall(Client c) {
+        if (c instanceof Plugin) {
+            if (isLoaded(c)) unload(c);
+            Plugin p = (Plugin) c;
+            LOG.info("Uninstalling plugin " + c.getName() + " from " + p.getFile().getParentFile());
+            p.getFile().getParentFile().delete();
+        } else {
+            LOG.warning("Trying to uninstall a non plugin: " + c.getName());
+        }
     }
 
     class ClientNameComparator

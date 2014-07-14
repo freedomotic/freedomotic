@@ -79,7 +79,7 @@ public class JoinPlugin
             Config manifest = (Config) message.getObject();
             Plugin plugin = new Plugin(manifest.getProperty("name"),
                     manifest);
-            clientStorage.add(plugin);
+            clientStorage.load(plugin);
             LOG.info("Enqueued remote plugin " + plugin.getName());
         } catch (JMSException ex) {
             LOG.severe("Join Plugin receives a not valid plugin manifest");

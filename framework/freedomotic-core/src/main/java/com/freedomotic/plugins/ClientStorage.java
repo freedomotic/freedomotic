@@ -72,13 +72,13 @@ public interface ClientStorage {
      *
      * @param c
      */
-    void remove(Client c);
+    void unload(Client c);
 
     /**
      *
      * @param c
      */
-    void add(Client c);
+    void load(Client c);
 
     /**
      *
@@ -113,4 +113,10 @@ public interface ClientStorage {
      * @return
      */
     boolean isLoaded(Client input);
+    
+    /**
+     * 
+     * @param c 
+     */
+    void uninstall(Client c);
 }
