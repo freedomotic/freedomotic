@@ -59,7 +59,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
      * @return
      */
     @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Get a list of items", position = 10)
     @Override
     public Response list() {
@@ -71,7 +71,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
      * @return
      */
     @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Get a single item", position = 20)
     @Path("/{id}")
     @ApiResponses(value = {
@@ -97,8 +97,8 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     @Override
     @PUT
     @Path("/{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
         @ApiResponse(code = 304, message = "Item not modified")
     })
@@ -136,8 +136,8 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
      * @throws URISyntaxException
      */
     @POST
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Creates a new item", position = 30)
     @ApiResponses(value = {
         @ApiResponse(code = 201, message = "New item created")
@@ -146,7 +146,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     public Response create(T s) throws URISyntaxException {
         try {
             return Response.created(doCreate(s)).build();
-        } catch (Exception e) {
+        } catch (URISyntaxException e) {
             LOG.log(Level.SEVERE, null, e);
             return Response.serverError().build();
         }

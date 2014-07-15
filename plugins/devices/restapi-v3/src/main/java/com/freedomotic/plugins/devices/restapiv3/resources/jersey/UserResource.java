@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins.devices.restapiv3.resources;
+package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.security.User;
@@ -84,7 +84,7 @@ public class UserResource extends AbstractResource<User> {
 
     @GET
     @Path("/_")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Get current user", position = 0)
     public Response getCurrentUser() {
         return Response.seeOther(createUri(api.getAuth().getCurrentUser().getName())).build();
@@ -104,7 +104,7 @@ public class UserResource extends AbstractResource<User> {
         return new RoleResource(userName);
     }
     
-    @Api(value = "users/roles", description = "Manages user's roles", position = 301)
+    @Api(value = "userRoles", description = "Manages user's roles", position = 301)
     public class RoleResource{
         String userName;
         User user;
@@ -142,7 +142,7 @@ public class UserResource extends AbstractResource<User> {
 
     }
 
-    @Api(value = "users/properties", description = "Manages user's properties", position = 302)
+    @Api(value = "userProperties", description = "Manages user's properties", position = 302)
     public class PropertyResource {
 
         String userName;

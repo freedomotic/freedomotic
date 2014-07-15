@@ -204,7 +204,7 @@ function onOAuthComplete(token) {
           }
         });
 
-        window.authorizations.add("key", new ApiKeyAuthorization("Authorization", "Bearer " + b, "header"));
+        window.authorizations.add("oauth2", new ApiKeyAuthorization("Authorization", "Bearer " + b, "header"));
       }
     }
   }

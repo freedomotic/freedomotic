@@ -25,7 +25,7 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
-import com.freedomotic.plugins.devices.restapiv3.resources.EnvironmentResource;
+import com.freedomotic.plugins.devices.restapiv3.resources.jersey.EnvironmentResource;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilder;

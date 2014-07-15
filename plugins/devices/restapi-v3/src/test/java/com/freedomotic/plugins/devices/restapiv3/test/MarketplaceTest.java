@@ -7,7 +7,7 @@
 package com.freedomotic.plugins.devices.restapiv3.test;
 
 import com.freedomotic.marketplace.IMarketPlace;
-import com.freedomotic.plugins.devices.restapiv3.resources.MarketplaceResource;
+import com.freedomotic.plugins.devices.restapiv3.resources.jersey.MarketplaceResource;
 import com.freedomotic.plugins.devices.restapiv3.utils.ThrowableExceptionMapper;
 import java.util.ArrayList;
 import javax.ws.rs.core.Application;

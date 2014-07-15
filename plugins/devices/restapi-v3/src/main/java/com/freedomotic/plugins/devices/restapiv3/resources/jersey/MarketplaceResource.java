@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.plugins.devices.restapiv3.resources;
+package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
