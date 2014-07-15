@@ -21,7 +21,7 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.test;
 
-import com.freedomotic.plugins.devices.restapiv3.resources.UserCommandResource;
+import com.freedomotic.plugins.devices.restapiv3.resources.jersey.UserCommandResource;
 import com.freedomotic.reactions.Command;
 import java.util.List;
 import javax.ws.rs.core.GenericType;

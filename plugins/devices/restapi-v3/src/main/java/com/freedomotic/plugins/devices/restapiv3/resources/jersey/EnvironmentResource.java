@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins.devices.restapiv3.resources;
+package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.environment.EnvironmentLogic;

@@ -29,7 +29,7 @@ import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.model.object.Representation;
-import com.freedomotic.plugins.devices.restapiv3.resources.ObjectResource;
+import com.freedomotic.plugins.devices.restapiv3.resources.jersey.ObjectResource;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilderException;

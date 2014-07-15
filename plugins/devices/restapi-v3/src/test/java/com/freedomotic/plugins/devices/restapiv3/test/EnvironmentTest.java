@@ -22,7 +22,7 @@
 package com.freedomotic.plugins.devices.restapiv3.test;
 
 import com.freedomotic.model.environment.Environment;
-import com.freedomotic.plugins.devices.restapiv3.resources.EnvironmentResource;
+import com.freedomotic.plugins.devices.restapiv3.resources.jersey.EnvironmentResource;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilderException;

@@ -17,57 +17,65 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins.devices.restapiv3.resources;
+package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
-import com.freedomotic.reactions.Command;
+import com.freedomotic.reactions.Trigger;
 import com.wordnik.swagger.annotations.Api;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.ws.rs.Path;
 
 /**
  *
  * @author matteo
  */
-@Path("commands/hardware")
-@Api(value = "hardwareCommands", description = "Operations on hardware commands", position = 6)
-public class HardwareCommandResource extends AbstractResource<Command> {
+@Path("triggers")
+@Api(value = "/triggers", description = "Operations on triggers", position = 4)
+public class TriggerResource extends AbstractResource<Trigger> {
 
     @Override
-    protected URI doCreate(Command c) throws URISyntaxException {
-        c.setHardwareLevel(true);
-        api.commands().create(c);
-        return createUri(c.getUuid());
+    protected URI doCreate(Trigger o) throws URISyntaxException {
+        api.triggers().create(o);
+        try {
+            o.register();
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Cannot register trigger", e);
+        }
+        return createUri(o.getUUID());
     }
 
     @Override
     protected boolean doDelete(String UUID) {
-        return api.commands().delete(UUID);
+        return api.triggers().delete(UUID);
     }
 
     @Override
-    protected Command doUpdate(Command c) {
-        return api.commands().modify(c.getUuid(), c);
+    protected Trigger doUpdate(Trigger o) {
+        return api.triggers().modify(o.getUUID(), o);
     }
 
     @Override
-    protected List<Command> prepareList() {
-        List<Command> cl = new ArrayList<Command>();
-        cl.addAll(api.commands().getHardwareCommands());
-        return cl;
+    protected List<Trigger> prepareList() {
+        return api.triggers().list();
     }
 
     @Override
-    protected Command prepareSingle(String uuid) {
-        return api.commands().get(uuid);
+    protected Trigger prepareSingle(String uuid) {
+        return api.triggers().get(uuid);
     }
 
     @Override
-    protected URI doCopy(String uuid) {
-        Command c = api.commands().copy(uuid);
-        return createUri(c.getUuid());
+    protected URI doCopy(String UUID) {
+        Trigger t = api.triggers().copy(UUID);
+        try {
+            t.register();
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Cannot register trigger ", e);
+        }
+        return createUri(t.getUUID());
     }
+
 }

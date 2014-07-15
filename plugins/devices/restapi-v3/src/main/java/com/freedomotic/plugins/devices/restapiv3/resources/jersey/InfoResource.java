@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.plugins.devices.restapiv3.resources;
+package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
@@ -45,13 +45,6 @@ public class InfoResource {
     @ApiOperation(value = "Show information about configured paths")
     public Response listPathSettings() {
         return Response.ok(Info.PATHS).build();
-    }
-
-    @GET
-    @Path("/users")
-    @ApiOperation(value = "Show information about users and roles")
-    public Response listUsers() {
-        return Response.ok().build();
     }
 
     @GET

@@ -67,7 +67,7 @@ public abstract class AbstractTest<Z> extends JerseyTest {
         enable(TestProperties.LOG_TRAFFIC);
         enable(TestProperties.DUMP_ENTITY);
         
-        ResourceConfig rc = new ResourceConfig().packages(RestAPIv3.RESOURCE_PKG);
+        ResourceConfig rc = new ResourceConfig().packages(RestAPIv3.JERSEY_RESOURCE_PKG);
         rc.registerClasses(JacksonFeature.class);
       //  rc.registerClasses(MoxyXmlFeature.class);
         rc.register(ThrowableExceptionMapper.class);
