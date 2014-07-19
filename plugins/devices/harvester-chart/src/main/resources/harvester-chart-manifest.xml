@@ -3,8 +3,6 @@
     <properties>
         <property name="name" value="harvester-chart"/>
         <property name="description" value="Display chart for Harvester Database"/>
-        <property name="version" value="1.1.0"/>
-        <property name="required" value="5.3.0"/>
         <property name="category" value="logging"/>
         <property name="short-name" value="harvester-chart"/>
         <property name="startup-time"   value="on load"/>
