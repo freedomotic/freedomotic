@@ -19,10 +19,8 @@
  */
 package com.freedomotic.api;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
-import com.freedomotic.bus.BusService;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
@@ -47,7 +45,6 @@ public abstract class Protocol
     private BusMessagesListener listener;
     private Protocol.SensorThread sensorThread;
     private volatile Destination lastDestination;
-    private BusService busService;
 
     /**
      *
@@ -57,7 +54,6 @@ public abstract class Protocol
     public Protocol(String pluginName, String manifest) {
 
         super(pluginName, manifest);
-        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
         this.status = PluginStatus.STOPPED;
         register();
     }
@@ -89,7 +85,7 @@ public abstract class Protocol
     protected abstract void onEvent(EventTemplate event);
 
     private void register() {
-        listener = new BusMessagesListener(this, busService);
+        listener = new BusMessagesListener(this, getBusService());
         listener.consumeCommandFrom(getCommandsChannelToListen());
     }
 
@@ -134,7 +130,7 @@ public abstract class Protocol
         if (status.isRunning()) {
             LOG.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":"
                     + ev.getPayload().toString());
-            busService.send(ev, destination);
+            getBusService().send(ev, destination);
         }
     }
 
@@ -153,7 +149,7 @@ public abstract class Protocol
                         sensorThread = new Protocol.SensorThread();
                         sensorThread.start();
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
-                        busService.send(event);
+                        getBusService().send(event);
                         status = PluginStatus.RUNNING;
                         //onStart() should be called as the last operation, after framework level operations
                         //for example it may require something related with messaging wich should be initialized first
@@ -188,7 +184,7 @@ public abstract class Protocol
                         listener.unsubscribeEvents();
                         //ENRICO: why this is here? ->notify();
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
-                        busService.send(event);
+                        getBusService().send(event);
                         status = PluginStatus.STOPPED;
                     } catch (Exception e) {
                         status = PluginStatus.FAILED;
@@ -268,7 +264,7 @@ public abstract class Protocol
      * @return
      */
     protected Command send(Command command) {
-        return busService.send(command);
+        return getBusService().send(command);
     }
 
     /**
@@ -278,7 +274,7 @@ public abstract class Protocol
     public void reply(Command command) {
         // sends back the command
         final String defaultCorrelationID = "-1";
-        busService.reply(command, lastDestination, defaultCorrelationID);
+        getBusService().reply(command, lastDestination, defaultCorrelationID);
 
     }
 
@@ -315,7 +311,7 @@ public abstract class Protocol
             // it has to call reply(...) explicitely
             if ((getConfiguration().getBooleanProperty("automatic-reply-to-commands", true) == true) //default value is true
                     && (command.getReplyTimeout() > 0)) {
-                busService.reply(command, reply, correlationID); //sends back the command marked as executed or not
+                getBusService().reply(command, reply, correlationID); //sends back the command marked as executed or not
             }
         }
     }

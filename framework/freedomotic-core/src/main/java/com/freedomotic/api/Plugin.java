@@ -45,82 +45,41 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class Plugin implements Client {
+
     final static int SAME_VERSION = 0;
     final static int FIRST_IS_OLDER = -1;
     final static int LAST_IS_OLDER = 1;
     private static final Logger LOG = Logger.getLogger(Plugin.class.getName());
-//    private boolean isConnected = false;
-
-    /**
-     *
-     */
     @XmlElement
     private String pluginName;
     @XmlElement
     private String type = "Plugin";
     @XmlElement
     protected volatile PluginStatus status = PluginStatus.STOPPED;
-
-    /**
-     *
-     */
     @XmlElement
     public Config configuration;
-
-    /**
-     *
-     */
     @Deprecated
     protected JFrame gui;
-    // private static final String SEPARATOR = "-";
-    //config file parameters
-
-    /**
-     *
-     */
     @XmlElement
-        protected String description;
-
-    /**
-     *
-     */
+    protected String description;
     @XmlElement
     protected String version;
-
-    /**
-     *
-     */
     @XmlElement
     protected String requiredVersion;
-
-    /**
-     *
-     */
     @XmlElement
     protected String category;
-
-    /**
-     *
-     */
     @XmlElement
     protected String shortName;
-
-    /**
-     *
-     */
     @XmlElement
     protected String listenOn;
-
-    /**
-     *
-     */
     @XmlElement
     protected String sendOn;
     @XmlElement
     private File path;
-    
+
     @Inject
     private API api;
+    @Inject
     private BusService busService;
 
     /**
@@ -149,8 +108,9 @@ public class Plugin implements Client {
      * @param pluginName
      */
     public Plugin(String pluginName) {
+        //probably this class is not instantiated using DI, we have to force the injection
+        Freedomotic.INJECTOR.injectMembers(this);
         setName(pluginName);
-        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
     }
 
     /**
@@ -344,13 +304,12 @@ public class Plugin implements Client {
 //    public void setConnected() {
 //        isConnected = true;
 //    }
-
     /**
      *
      * @param aThat
      * @return
      */
-        @Override
+    @Override
     public boolean equals(Object aThat) {
         //check for self-comparison
         if (this == aThat) {
@@ -368,7 +327,6 @@ public class Plugin implements Client {
 
         //Alternative to the above line :
         //if ( aThat == null || aThat.getClass() != this.getClass() ) return false;
-
         //cast to native object is now safe
         Plugin that = (Plugin) aThat;
 
@@ -458,4 +416,9 @@ public class Plugin implements Client {
     public void loadPermissionsFromManifest() {
         getApi().getAuth().setPluginPrivileges(this, configuration.getStringProperty("permissions", getApi().getAuth().getPluginDefaultPermission()));
     }
+
+    public BusService getBusService() {
+        return busService;
+    }
+
 }

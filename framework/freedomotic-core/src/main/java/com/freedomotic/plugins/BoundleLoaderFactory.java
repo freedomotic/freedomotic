@@ -45,7 +45,7 @@ class BoundleLoaderFactory {
      * @return a list of object to trigger the loading of the plugin jar package
      */
     protected List<BoundleLoader> getBoundleLoaders(int type) {
-        List results = new ArrayList<BoundleLoader>();
+        List<BoundleLoader> results = new ArrayList<>();
         File directory;
 
         switch (type) {
@@ -90,8 +90,6 @@ class BoundleLoaderFactory {
      * @return
      */
     protected BoundleLoader getSingleBoundleLoader(File directory) {
-        System.out.println(directory);
-
         //intantiate the right loader based on the directory passed to the searchIn method
         String devicesPath = new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/devices/").toString();
 
@@ -141,8 +139,7 @@ class BoundleLoaderFactory {
         return classes;
     }
 
-    protected static Class getClass(File file, String name)
-            throws Exception {
+    protected static Class getClass(File file, String name) throws Exception {
         addURL(file.toURL());
 
         URLClassLoader clazzLoader;
