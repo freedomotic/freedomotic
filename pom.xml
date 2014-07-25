@@ -517,6 +517,7 @@
                         <outputDirectory>${project.build.directory}/${project.artifactId}</outputDirectory>
                         <archive>
                             <manifest>
+                            	<version>2.4</version>
                                 <addClasspath>true</addClasspath>
                                 <useUniqueVersions>false</useUniqueVersions> 
                                 <classpathPrefix>lib/</classpathPrefix>
