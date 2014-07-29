@@ -1,0 +1,84 @@
+<config>
+    <properties>
+        <property name="description"        value="A plugin to send push notifications"/>
+        <property name="category"           value="protocol"/>
+        <property name="short-name"         value="push"/>
+        <property name="permissions"        value="none"/>
+        <property name="startup-time"       value="on load"/>
+        <property name="protocol.name"      value="push"/>
+    </properties>
+     <tuples>
+        <!-- PROVIDERS CONFIGURATION -->
+        <tuple>
+            <property name="provider" value="livenotifier"/>
+            <property name="scheme" value="http"/>
+            <property name="host" value="api.livenotifier.net"/>
+            <property name="path" value="/notify"/>
+            <property name="method" value="GET"/>
+            <property name="param.apikey" value=""/>
+            <property name="param.title" value="Freedomotic ${event.description}"/>
+            <property name="param.message" value="Looks like ${event.object.name} is now POWERED=${event.object.behavior.powered}"/>
+<!-- optional    <property name="param.url" value="_PUT HERE A USEFULL URL_"/> -->
+        </tuple>
+        <tuple>
+            <property name="provider" value="notifymyandroid"/>
+            <property name="scheme" value="https"/>
+            <property name="host" value="www.notifymyandroid.com"/>
+            <property name="path" value="/publicapi/notify"/>
+            <property name="method" value="POST"/>
+            <!-- apikey accepts a comma separated list of keys -->
+            <property name="param.apikey" value=""/>
+            <property name="param.application" value="Freedomotic"/>
+            <property name="param.event" value="_PUT HERE A TITLE_"/>
+            <property name="param.description" value="_PUT HERE A MESSAGE CONTENT_"/>
+<!-- optional    <property name="param.priority" value="0"/> -->
+<!-- optional    <property name="param.url" value="_PUT HERE A USEFULL URL_"/> -->
+        </tuple>
+        <tuple>
+            <property name="provider" value="prowl"/>
+            <property name="scheme" value="https"/>
+            <property name="host" value="api.prowlapp.com"/>
+            <property name="path" value="/publicapi/add"/>
+            <property name="method" value="POST"/>
+            <!-- apikey accepts a comma separated list of keys -->
+            <property name="param.apikey" value=""/>
+            <property name="param.application" value="Freedomotic"/>
+            <property name="param.event" value="_PUT HERE A TITLE_"/>
+            <property name="param.description" value="_PUT HERE A MESSAGE CONTENT_"/>
+<!-- optional    <property name="param.priority" value="0"/> -->
+<!-- optional    <property name="param.url" value="_PUT HERE A USEFULL URL_"/> -->
+        </tuple>
+        <tuple>
+            <property name="provider" value="pushover"/>
+            <property name="scheme" value="https"/>
+            <property name="host" value="api.pushover.net"/>
+            <property name="path" value="/1/messages.json"/>
+            <property name="method" value="POST"/>
+            <property name="param.token" value=""/>
+            <property name="param.user" value=""/>
+<!-- optional --><property name="param.title" value="_PUT HERE A TITLE_"/> 
+            <property name="param.message" value="_PUT HERE A MESSAGE CONTENT_"/>
+<!-- optional    <property name="param.device" value="_PUT HERE A DEVICE NAME_"/> -->
+<!-- optional    <property name="param.priority" value="0"/> -->
+<!-- optional --><property name="param.url" value="http://www.freedomotic.com"/>
+<!-- optional --><property name="param.url_title" value="Freedomotic Rocks!"/>
+        </tuple>
+        <tuple>
+            <!-- http://www.trendoo.it/pdf/API_http.pdf -->
+            <property name="provider" value="trendoo"/>
+            <property name="scheme" value="https"/>
+            <property name="host" value="api.trendoo.it"/>
+            <property name="path" value="/Trend/SENDSMS"/>
+            <property name="method" value="POST"/>
+            <property name="param.login" value=""/>
+            <property name="param.password" value=""/>
+            <property name="param.message_type" value="GP"/> <!-- see API doc -->
+            <property name="param.message" value="_PUT HERE A MESSAGE CONTENT_(max 160 chars)"/>
+            <!-- recipient can contain a comma separated list of internatinal-format telephone numbers -->
+            <property name="param.recipient" value="_TELEPHONE NUMBER(S) IN INTERNATIONAL FORMAT_"/> 
+            <property name="param.sender" value="_SENDER NAME HERE_"/>
+        </tuple>
+     </tuples>
+</config>
+
+                
