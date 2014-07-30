@@ -56,7 +56,7 @@ public class MessageEvent
         super(source);
         this.getPayload().addStatement("message.text", message);
         //set a default message type
-        this.getPayload().addStatement("message.type", "callout");
+        //this.getPayload().addStatement("message.type", "callout");
     }
 
     /**
