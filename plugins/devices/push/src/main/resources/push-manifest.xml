@@ -11,21 +11,27 @@
         <!-- PROVIDERS CONFIGURATION -->
         <tuple>
             <property name="provider" value="livenotifier"/>
+            <property name="category" value="push"/>
+            <property name="active" value="false"/>
             <property name="scheme" value="http"/>
             <property name="host" value="api.livenotifier.net"/>
             <property name="path" value="/notify"/>
             <property name="method" value="GET"/>
+<!--  not set if default          <property name="mapMessageToParam"       value="message"/> -->
             <property name="param.apikey" value=""/>
             <property name="param.title" value="Freedomotic ${event.description}"/>
-            <property name="param.message" value="Looks like ${event.object.name} is now POWERED=${event.object.behavior.powered}"/>
+            <property name="param.message" value="Looks like ${current.object.name} is now POWERED=${current.object.behavior.powered}"/>
 <!-- optional    <property name="param.url" value="_PUT HERE A USEFULL URL_"/> -->
         </tuple>
         <tuple>
             <property name="provider" value="notifymyandroid"/>
+            <property name="category" value="push"/>
+            <property name="active" value="false"/>
             <property name="scheme" value="https"/>
             <property name="host" value="www.notifymyandroid.com"/>
             <property name="path" value="/publicapi/notify"/>
             <property name="method" value="POST"/>
+            <property name="mapMessageToParam"       value="description"/>
             <!-- apikey accepts a comma separated list of keys -->
             <property name="param.apikey" value=""/>
             <property name="param.application" value="Freedomotic"/>
@@ -36,10 +42,13 @@
         </tuple>
         <tuple>
             <property name="provider" value="prowl"/>
+            <property name="category" value="push"/>
+            <property name="active" value="false"/>
             <property name="scheme" value="https"/>
             <property name="host" value="api.prowlapp.com"/>
             <property name="path" value="/publicapi/add"/>
             <property name="method" value="POST"/>
+            <property name="mapMessageToParam"       value="description"/>
             <!-- apikey accepts a comma separated list of keys -->
             <property name="param.apikey" value=""/>
             <property name="param.application" value="Freedomotic"/>
@@ -50,12 +59,15 @@
         </tuple>
         <tuple>
             <property name="provider" value="pushover"/>
+            <property name="category" value="push"/>
+            <property name="active" value="false"/>
             <property name="scheme" value="https"/>
             <property name="host" value="api.pushover.net"/>
             <property name="path" value="/1/messages.json"/>
             <property name="method" value="POST"/>
             <property name="param.token" value=""/>
             <property name="param.user" value=""/>
+<!--  not set if default          <property name="mapMessageToParam"       value="message"/> -->
 <!-- optional --><property name="param.title" value="_PUT HERE A TITLE_"/> 
             <property name="param.message" value="_PUT HERE A MESSAGE CONTENT_"/>
 <!-- optional    <property name="param.device" value="_PUT HERE A DEVICE NAME_"/> -->
@@ -66,10 +78,13 @@
         <tuple>
             <!-- http://www.trendoo.it/pdf/API_http.pdf -->
             <property name="provider" value="trendoo"/>
+            <property name="category" value="sms"/>
+            <property name="active" value="false"/>
             <property name="scheme" value="https"/>
             <property name="host" value="api.trendoo.it"/>
             <property name="path" value="/Trend/SENDSMS"/>
             <property name="method" value="POST"/>
+<!--  not set if default          <property name="mapMessageToParam"       value="message"/> -->
             <property name="param.login" value=""/>
             <property name="param.password" value=""/>
             <property name="param.message_type" value="GP"/> <!-- see API doc -->

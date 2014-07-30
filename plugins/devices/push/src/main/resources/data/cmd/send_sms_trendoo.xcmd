@@ -1,12 +1,14 @@
 <com.freedomotic.reactions.Command>
-    <name>Send push notification</name>
+    <name>Send sms notification through Trendoo</name>
     <receiver>app.actuators.protocol.push.in</receiver>
     <description>Make a call to specified push notification provider</description>
     <delay>0</delay>
     <timeout>0</timeout>
     <properties>
         <properties>
-            <property name="push.provider" value="livenotifier"/>
+            <property name="push.provider" value="trendoo"/>
+            <property name="push.category" value="sms"/>
+            <property name="push.message" value="This message is defined into a command"/>
 	</properties>
     </properties>
 </com.freedomotic.reactions.Command>

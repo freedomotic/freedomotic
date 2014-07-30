@@ -1,0 +1,14 @@
+<com.freedomotic.reactions.Command>
+    <name>Send push notification to LiveNotifier</name>
+    <receiver>app.actuators.protocol.push.in</receiver>
+    <description>Make a call to specified push notification provider</description>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="push.provider" value="livenotifier"/>
+            <property name="push.category" value="push"/>
+            <property name="push.message" value=""/>
+	</properties>
+    </properties>
+</com.freedomotic.reactions.Command>
