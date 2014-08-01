@@ -317,5 +317,10 @@ public class AuthImpl2 implements Auth{
         baseRealm.removeUser(userName);
     }
 
+    @Override
+    public Realm getUserRealm() {
+        return baseRealm;
+    }
+
 
 }

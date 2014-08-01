@@ -134,4 +134,6 @@ public interface Auth {
     public Map<String, SimpleRole> getRoles();
     
     public void deleteUser(String userName);
+    
+    public Realm getUserRealm();
 }
