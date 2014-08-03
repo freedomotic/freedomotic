@@ -5,6 +5,7 @@ build/
 nbbuild/
 dist/
 nbdist/
+api-docs/
 nbactions.xml
 nb-configuration.xml
 findbugs.settings

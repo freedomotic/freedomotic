@@ -98,6 +98,10 @@
         </profile>
         <profile>
             <id>market</id>
+            <properties>
+                <!--skip deployment to remote repository, publish on marketplace only-->
+                <maven.deploy.skip>true</maven.deploy.skip>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
