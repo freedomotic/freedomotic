@@ -25,6 +25,7 @@
  */
 package com.freedomotic.model.object;
 
+import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -55,6 +56,14 @@ public class PropertiesBehavior
      */
     public void setProperty(String key, String value) {
         properties.setProperty(key, value);
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public Set<String> getPropertiesName(){
+        return properties.stringPropertyNames();
     }
 
     /**

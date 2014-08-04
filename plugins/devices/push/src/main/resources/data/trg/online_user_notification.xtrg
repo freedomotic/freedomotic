@@ -1,0 +1,21 @@
+<trigger>
+    <name>A online user receives a notification</name>
+    <description>when a user receives a notification</description>
+    <channel>app.event.sensor.messages.notify.user.*</channel>
+    <payload>
+        <payload>
+            <com.freedomotic.reactions.Statement>
+                <logical>AND</logical>
+                <attribute>user.present</attribute>
+                <operand>EQUALS</operand>
+                <value>true</value>
+            </com.freedomotic.reactions.Statement>
+        </payload>
+    </payload>
+    <hardwareLevel>false</hardwareLevel>
+    <delay>0</delay>
+    <priority>0</priority>
+    <maxExecutions>-1</maxExecutions>
+    <numberOfExecutions>0</numberOfExecutions>
+    <suspensionTime>0</suspensionTime>
+</trigger>

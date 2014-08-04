@@ -1,0 +1,6 @@
+<com.freedomotic.reactions.Reaction>
+  <trigger>A offline user receives a notification</trigger>
+  <sequence>
+    <command>Notify him or her with a sms</command>
+  </sequence>
+</com.freedomotic.reactions.Reaction>

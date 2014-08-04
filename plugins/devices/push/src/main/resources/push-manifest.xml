@@ -91,7 +91,7 @@
             <property name="param.message" value="_PUT HERE A MESSAGE CONTENT_(max 160 chars)"/>
             <!-- recipient can contain a comma separated list of internatinal-format telephone numbers -->
             <property name="param.recipient" value="_TELEPHONE NUMBER(S) IN INTERNATIONAL FORMAT_"/> 
-            <property name="param.sender" value="_SENDER NAME HERE_"/>
+            <property name="param.sender" value="Freedomotic"/>
         </tuple>
      </tuples>
 </config>

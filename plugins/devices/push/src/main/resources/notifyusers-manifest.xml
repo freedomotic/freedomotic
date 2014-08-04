@@ -1,0 +1,15 @@
+<config>
+    <properties>
+        <property name="description"        value="A plugin to help notifying users"/>
+        <property name="category"           value="protocol"/>
+        <property name="short-name"         value="usernotify"/>
+        <property name="permissions"        value="none"/>
+        <property name="startup-time"       value="on load"/>
+        <property name="protocol.name"      value="usernotify"/>
+    </properties>
+     <tuples>
+      
+     </tuples>
+</config>
+
+                

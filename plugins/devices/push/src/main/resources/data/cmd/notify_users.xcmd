@@ -1,0 +1,12 @@
+<com.freedomotic.reactions.Command>
+    <name>Notify users</name>
+    <receiver>app.actuators.protocol.usernotify.in</receiver>
+    <description>Notify userers about something</description>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="notify.users" value="foo"/>
+	</properties>
+    </properties>
+</com.freedomotic.reactions.Command>

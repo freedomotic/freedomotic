@@ -123,6 +123,13 @@ public class PropertiesBehaviorLogic
     }
 
     /**
+     * 
+     * @return 
+     */
+    public PropertiesBehavior getPojo(){
+        return data;
+    }
+    /**
      *
      * @param propertiesBehaviorListener
      */

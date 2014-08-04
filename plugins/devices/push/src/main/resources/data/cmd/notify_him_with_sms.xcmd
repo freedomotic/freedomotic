@@ -1,0 +1,15 @@
+<com.freedomotic.reactions.Command>
+    <name>Notify him or her with a sms</name>
+    <receiver>app.actuators.protocol.push.in</receiver>
+    <description>Make a call to specified push notification provider</description>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="push.provider" value="trendoo"/>
+            <property name="push.category" value="sms"/>
+            <property name="push.message" value="Event '${event.reason.event.description}' was fired on ${event.reason.event.date.day}.${event.reason.event.date.month}.${event.reason.event.date.year} at ${event.reason.event.time.hour}:${event.reason.event.time.minute}:${event.reason.event.time.second} on object '${event.reason.current.object.name}'"/>
+            <property name="param.recipient" value="@event.user.mobile"/>
+	</properties>
+    </properties>
+</com.freedomotic.reactions.Command>
