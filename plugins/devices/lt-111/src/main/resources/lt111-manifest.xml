@@ -1,0 +1,17 @@
+<config>
+    <properties>       
+        <property name="name" value="LT-111"/>
+        <property name="description" value="1-phase power meter"/>
+	<property name="protocol.name"  value="LT111"/>
+        <property name="version" value="1.0.0"/>
+        <property name="required" value="5.4.0"/>
+        <property name="category" value="protocol"/>
+        <property name="short-name" value="LT-111"/>  
+	<property name="polling_rate" value="10000"/>
+	<property name="port" value="8899"/>  
+	<property name="logging_interval_s" value="10"/>
+        <property name="startup-time"   value="on load"/>
+    </properties>
+</config>
+
+                
