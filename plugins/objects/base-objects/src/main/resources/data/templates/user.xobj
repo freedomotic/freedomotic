@@ -36,6 +36,7 @@
       <properties>
             <property name="birthdate" value="01/01/1900"/>
             <property name="email" value="info@freedomotic.com"/>
+            <property name="mobile" value=""/>
       </properties> 
     </com.freedomotic.model.object.PropertiesBehavior>
   </behaviors>
