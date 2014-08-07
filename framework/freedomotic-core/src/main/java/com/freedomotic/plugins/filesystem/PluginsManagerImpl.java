@@ -117,7 +117,7 @@ public class PluginsManagerImpl implements PluginsManager {
                     p.getApi().getI18n().registerPluginBundleDir(p);
                 }
             }
-            clientStorage.add(client);
+            clientStorage.load(client);
         }
     }
 
@@ -225,7 +225,7 @@ public class PluginsManagerImpl implements PluginsManager {
                 try {
                     placeholder = clientStorage.createObjectPlaceholder(template);
                     placeholder = mergePackageConfiguration(placeholder, directory);
-                    clientStorage.add(placeholder);
+                    clientStorage.load(placeholder);
                 } catch (DaoLayerException ex) {
                     throw new PluginLoadingException("Cannot create object plugin " + "placeholder from template "
                             + template.getAbsolutePath(), ex);
