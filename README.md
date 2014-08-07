@@ -22,9 +22,13 @@ Development status:
 Developers Quick Start
 ======================
 
-**1) Clone the GIT repository**
+**1) Fork freedomotic on GitHub**
 
-    git clone https://github.com/freedomotic/freedomotic.git
+Create an account on https://github.com if you don't have one.
+Fork freedomotic following this link: https://github.com/freedomotic/freedomotic/fork
+Create the local clone of your online fork with this command:
+
+    git clone https://github.com/YOUR-GITHUB-USERNAME/freedomotic.git
     
 **2) Enter the new local folder**
 
