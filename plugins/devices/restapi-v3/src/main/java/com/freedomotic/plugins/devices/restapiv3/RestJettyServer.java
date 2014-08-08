@@ -81,13 +81,16 @@ public final class RestJettyServer extends Server {
         ServletHolder atmosphereServletHolder = new ServletHolder(AtmosphereServlet.class);
         atmosphereServletHolder.setInitParameter("jersey.config.server.provider.packages", RestAPIv3.ATMOSPHRE_RESOURCE_PKG);
         atmosphereServletHolder.setInitParameter("org.atmosphere.websocket.messageContentType", "application/json");
+//        atmosphereServletHolder.setInitParameter("org.atmosphere.cpr.broadcasterClass", "org.atmosphere.jersey.JerseyBroadcaster");
         atmosphereServletHolder.setAsyncSupported(true);
         atmosphereServletHolder.setInitParameter("org.atmosphere.useWebSocket", "true");
+        atmosphereServletHolder.setInitOrder(2);
         context.addServlet(atmosphereServletHolder, "/" + API_VERSION + "/ws/*");
 
         // jersey servlet
         ServletHolder jerseyServletHolder = new ServletHolder(ServletContainer.class);
         jerseyServletHolder.setInitParameter("jersey.config.server.provider.packages", JERSEY_RESOURCE_PKG);
+        jerseyServletHolder.setInitOrder(1);
         context.addServlet(jerseyServletHolder, "/" + API_VERSION + "/*");
 
         // cors filter

@@ -43,8 +43,6 @@ import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
 public class AtmosphereObjectChangeResource {
 
     public final static String PATH = "objectchange";
-
-    ;
     
         @POST
     public static void broadcast(EventTemplate message) {
@@ -52,7 +50,7 @@ public class AtmosphereObjectChangeResource {
             BroadcasterFactory
                     .getDefault()
                     .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereObjectChangeResource.PATH)
-                    .broadcast(message.getPayload());
+                    .broadcast(message.getPayload().getStatementValue("object.uuid"));
         } catch (NullPointerException ex) {
 
         }
