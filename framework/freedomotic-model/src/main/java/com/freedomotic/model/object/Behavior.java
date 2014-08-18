@@ -25,32 +25,24 @@
  */
 package com.freedomotic.model.object;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serializable;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Enrico
  */
-@JsonTypeInfo( use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type" )
-@JsonSubTypes( { 
-        @Type( value = BooleanBehavior.class, name = "boolean" ), 
-        @Type( value = RangedIntBehavior.class, name = "rangedint" ) , 
-        @Type( value = PropertiesBehavior.class, name = "properties" ) ,
-        @Type( value = MultiselectionListBehavior.class, name = "multiselectionlist" ) ,
-        @Type( value = DataBehavior.class, name = "data" ) ,
-        @Type( value = ListBehavior.class, name = "list" ) 
-        })
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 public abstract class Behavior
         implements Serializable {
 
     private static final long serialVersionUID = -4973746059396782383L;
-	
-	private String name;
+    private String name;
     private String description;
     private boolean active;
     private int priority;
@@ -117,7 +109,7 @@ public abstract class Behavior
      */
     public void setReadonly(boolean readOnly) {
         this.setReadOnly(readOnly);
-    }
+    }    
 
     /**
      *
