@@ -241,8 +241,10 @@ public class EnvObjectLogic {
     @RequiresPermissions("objects:update")
     public final void registerBehavior(BehaviorLogic b) {
         if (getBehavior(b.getName()) != null) {
-            throw new IllegalArgumentException("Impossible to register behavior " + b.getName() + " in object "
-                    + this.getPojo().getName() + " because it is already registed");
+            behaviors.remove(b.getName());
+            LOG.warning("Re-registering existing behavior " + b.getName() + " in object " + this.getPojo().getName());
+            //throw new IllegalArgumentException("Impossible to register behavior " + b.getName() + " in object "
+            //        + this.getPojo().getName() + " because it is already registed");
         }
 
         behaviors.put(b.getName(), b);

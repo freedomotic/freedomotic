@@ -21,9 +21,21 @@
       <description></description>
       <active>true</active>
       <priority>-1</priority>
-      <readOnly>false</readOnly>
+      <readOnly>true</readOnly>
       <value>0</value>
       <max>100</max>
+      <min>0</min>
+      <scale>1</scale>
+      <step>10</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+ <com.freedomotic.model.object.RangedIntBehavior>
+      <name>power_consumption</name>
+      <description>Power consumed when device is on</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <readOnly>false</readOnly>
+      <value>0</value>
+      <max>3000</max>
       <min>0</min>
       <scale>1</scale>
       <step>10</step>

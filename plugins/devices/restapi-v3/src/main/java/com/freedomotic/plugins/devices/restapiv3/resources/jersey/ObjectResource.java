@@ -20,10 +20,10 @@
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.api.Client;
-import com.freedomotic.api.Plugin;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.objects.EnvObjectFactory;
 import com.freedomotic.objects.EnvObjectLogic;
@@ -150,6 +150,8 @@ public class ObjectResource extends AbstractResource<EnvObject> {
             return Response.serverError().build();
         }
     }
+    
+    
     private static final ClientStorage clientStorage = Freedomotic.INJECTOR.getInstance(ClientStorage.class);
 
     @GET
@@ -183,4 +185,67 @@ public class ObjectResource extends AbstractResource<EnvObject> {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
+    /**
+     *
+     * @param UUID
+     * @return
+     */
+    @Path("/{id}/behaviors")
+    public BehaviorResource behaviors(
+            @ApiParam(value = "Object to fetch behaviors from", required = true)
+            @PathParam("id") String UUID) {
+        return new BehaviorResource(UUID);
+    }
+    
+    @Path("behaviors")
+    @Api(value = "behaviors", description = "Operations on object's behaviors")
+    private class BehaviorResource extends AbstractResource<Behavior> {
+
+        final private String objUUID;
+        final private EnvObjectLogic obj;
+        
+        public BehaviorResource(String objUUID) {
+            this.objUUID = objUUID;
+            this.obj = api.getObjectByUUID(objUUID);
+        }
+        
+
+        @Override
+        protected URI doCopy(String UUID) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        protected URI doCreate(Behavior o) throws URISyntaxException {
+            obj.getPojo().getBehaviors().add(o);
+            obj.init();
+            return createUri(o.getName());
+        }
+
+        @Override
+        protected boolean doDelete(String behName) {
+            obj.getPojo().getBehaviors().remove(obj.getPojo().getBehavior(behName));
+            obj.init();
+            return true;
+        }
+
+        @Override
+        protected Behavior doUpdate(Behavior o) {
+            obj.getPojo().getBehaviors().remove(obj.getPojo().getBehavior(o.getName()));
+            obj.getPojo().getBehaviors().add(o);
+            obj.init();
+            return obj.getPojo().getBehavior(o.getName());
+        }
+
+        @Override
+        protected List<Behavior> prepareList() {
+           return obj.getPojo().getBehaviors();
+        }
+
+        @Override
+        protected Behavior prepareSingle(String name) {
+            return obj.getPojo().getBehavior(name);
+        }
+        
+    }
 }

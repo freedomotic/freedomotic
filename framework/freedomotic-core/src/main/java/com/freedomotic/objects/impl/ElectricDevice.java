@@ -26,8 +26,10 @@ package com.freedomotic.objects.impl;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.BooleanBehavior;
+import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.objects.BooleanBehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.objects.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
@@ -41,12 +43,13 @@ import java.util.logging.Logger;
  */
 public class ElectricDevice extends EnvObjectLogic {
 
-
     protected BooleanBehaviorLogic powered;
+    protected RangedIntBehaviorLogic consumption;
     protected final static String BEHAVIOR_POWERED = "powered";
+    protected final static String BEHAVIOR_POWER_CONSUMPTION = "power_consumption";
     protected final static String ACTION_TURN_ON = "turn on";
     protected final static String ACTION_TURN_OFF = "turn off";
-    
+
     @Override
     public void init() {
         powered = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior(BEHAVIOR_POWERED));
@@ -72,6 +75,14 @@ public class ElectricDevice extends EnvObjectLogic {
         });
         //register this behavior to the superclass to make it visible to it
         registerBehavior(powered);
+
+        //ADD CONSUMPTION BEHAVIOR
+        RangedIntBehavior cons_pojo = (RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_POWER_CONSUMPTION);
+        if (cons_pojo != null) {
+            consumption = new RangedIntBehaviorLogic(cons_pojo);
+            registerBehavior(consumption);
+        }
+
         //caches hardware level commands and builds user command for the Electric Devices
         super.init();
     }
@@ -177,7 +188,7 @@ public class ElectricDevice extends EnvObjectLogic {
             setItOn.setProperty("value", "true");
             CommandPersistence.add(setItOn);
         }
-        
+
         // if (CommandPersistence.getCommand(I18n.msg("turn_it_off")) == null) {
         if (CommandPersistence.getCommand("Turn it off") == null) {
             Command setItOff = new Command();
@@ -190,7 +201,7 @@ public class ElectricDevice extends EnvObjectLogic {
             setItOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
             CommandPersistence.add(setItOff);
         }
-        
+
         // if (CommandPersistence.getCommand(I18n.msg("switch_its_power")) == null) {
         if (CommandPersistence.getCommand("Switch its power") == null) {
             Command switchItsPower = new Command();
@@ -203,7 +214,7 @@ public class ElectricDevice extends EnvObjectLogic {
             switchItsPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
             CommandPersistence.add(switchItsPower);
         }
-        
+
         CommandPersistence.add(setOff);
         CommandPersistence.add(setOn);
         CommandPersistence.add(switchPower);
