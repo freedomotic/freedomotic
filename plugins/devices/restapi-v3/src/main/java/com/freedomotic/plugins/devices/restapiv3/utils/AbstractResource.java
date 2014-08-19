@@ -20,6 +20,7 @@
 package com.freedomotic.plugins.devices.restapiv3.utils;
 
 import com.freedomotic.api.API;
+import com.freedomotic.api.Plugin;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -53,7 +54,6 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
 
     public static final Logger LOG = Logger.getLogger(AbstractResource.class.getName());
     protected static API api = Freedomotic.INJECTOR.getInstance(API.class);
-
     /**
      *
      * @return

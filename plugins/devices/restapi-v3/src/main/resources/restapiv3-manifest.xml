@@ -11,7 +11,7 @@
         <property name="http-port"              value="9111" />
         <property name="https-port"             value="9113" />
         <property name="listen-address"         value="0.0.0.0" />
-        <property name="enable-ssl"             value="true" />
+        <property name="enable-ssl"             value="false" />
         <property name="KEYSTORE_SERVER_FILE"   value="keystore_server" />
         <property name="KEYSTORE_SERVER_PWD"    value="freedomotic" />
         <property name="enable-cors"            value="true" />

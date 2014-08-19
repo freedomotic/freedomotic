@@ -81,10 +81,7 @@ public class UserCommandResource extends AbstractResource<Command> {
             @ApiParam(value = "ID of Command to execute", required = true)
             @PathParam("id") String UUID) {
         Command c = api.commands().get(UUID);
-        if (c != null) {
-            Freedomotic.sendCommand(c);
-        }
-        return Response.accepted(c).build();
+        return fire(c);
     }
 
     @POST
@@ -93,14 +90,18 @@ public class UserCommandResource extends AbstractResource<Command> {
     @ApiOperation("Fires a custom command")
     public Response fire(Command c) {
         if (c != null) {
-            Freedomotic.sendCommand(c);
+            
+            Command reply = Freedomotic.sendCommand(c);
+            if (c.getReplyTimeout() > 0) {
+                return Response.ok(reply).build();
+            }
         }
         return Response.accepted(c).build();
     }
 
     @Override
     protected URI doCopy(String uuid) {
-        Command c=  api.commands().copy(uuid);
+        Command c = api.commands().copy(uuid);
         return createUri(c.getUuid());
     }
 }
