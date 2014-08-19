@@ -19,9 +19,11 @@ package com.freedomotic.model.charting;
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -55,46 +57,68 @@ public class UsageDataFrame implements Serializable {
     /**
      *
      */
-        public UsageDataFrame(){ }
+    public UsageDataFrame() {
+    }
 
     /**
      *
      * @return
      */
-    public int getFrameType(){
+    public int getFrameType() {
         return this.frameType;
     }
-    
+
     /**
      *
      * @return
      */
-    public List<UsageData> getData(){
+    public List<UsageData> getData() {
         return this.data;
     }
-    
+
+    /**
+     *
+     * @return
+     */
+    public List<HashMap<String, String>> getDataAsMap() {
+        List<HashMap<String, String>> lst = new ArrayList<HashMap<String, String>>();
+        for (UsageData dat : data) {
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("address", dat.objaddress);
+            map.put("uuid", dat.uuid);
+            map.put("rowId", String.valueOf(dat.id));
+            map.put("datetime", dat.datetime.toString());
+            map.put("behavior", dat.objbehavior);
+            map.put("name", dat.objname);
+            map.put("protocol", dat.objprotocol);
+            map.put("behaviorValue", dat.objvalue);
+            lst.add(map);
+        }
+        return lst;
+    }
+
     /**
      *
      * @param type
      */
-    public void setDataFrameType(int type){
-        this.frameType= type;
+    public void setDataFrameType(int type) {
+        this.frameType = type;
     }
-    
+
     /**
      *
      * @param data
      */
-    public void setData(List<UsageData> data){
+    public void setData(List<UsageData> data) {
         this.data = data;
     }
-    
+
     /**
      *
      * @param data
      */
-    public void addData(List<UsageData> data){
+    public void addData(List<UsageData> data) {
         this.data.addAll(data);
     }
-    
+
 }

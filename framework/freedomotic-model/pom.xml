@@ -25,7 +25,8 @@
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa</artifactId>
             <version>2.3.0</version>
-        </dependency>
+            <scope>provided</scope>
+        </dependency> 
         <dependency>
             <groupId>uk.gov.nationalarchives.thirdparty.netbeans</groupId>
             <artifactId>org-openide-util-lookup</artifactId>

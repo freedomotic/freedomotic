@@ -47,7 +47,7 @@ public class Config
 
     private static final long serialVersionUID = 1380975976029008480L;
 	
-	private Properties properties = new Properties();
+    private Properties properties = new Properties();
     private String xmlFile = "";
     private Tuples tuples = new Tuples();
 
