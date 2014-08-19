@@ -26,6 +26,7 @@ import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.charting.UsageData;
 import com.freedomotic.model.charting.UsageDataFrame;
+import com.freedomotic.model.ds.Tuples;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
 import java.io.ByteArrayOutputStream;
@@ -36,6 +37,8 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -53,7 +56,6 @@ import org.codehaus.jackson.map.ObjectMapper;
  *
  * @author gpt
  */
-
 public final class HarvesterProtocol extends Protocol {
 
     //Connection connection;
@@ -63,35 +65,36 @@ public final class HarvesterProtocol extends Protocol {
     Properties props;
     String dbType;
     private final static Logger LOG = Logger.getLogger(HarvesterProtocol.class.getName());
-
+    
     public HarvesterProtocol() {
         super("HarvesterProtocol", "/harvester/harvester-manifest.xml");
         this.setName("Harvester");
         setPollingWait(-1); // disable polling
         //onStart();
     }
-
+    
     @Override
     protected void onRun() {
-        if (em.getTransaction().isActive()) {
+        
+        if (em != null && em.getTransaction().isActive()) {
             em.getTransaction().commit();
         }
         //em.getTransaction().begin();
     }
-
+    
     @Override
     public void onStart() {
         setDescription("Starting...");
         try {
             dbType = configuration.getStringProperty("driver", "h2");
-
+            
             props = new Properties();
             props.loadFromXML(new FileInputStream(this.getFile().getParent() + File.separator + dbType + ".xml"));
             props.put("openjpa.MetaDataFactory", "org.apache.openjpa.persistence.jdbc.PersistenceMappingFactory(Types=" + UsageData.class.getCanonicalName() + ";)");
             props.put("openjpa.TransactionMode", "local");
             props.put("openjpa.jdbc.SynchronizeMappings", "buildSchema");
             props.put("openjpa.Log", configuration.getStringProperty("log.options", "DefaultLevel=WARN, Runtime=INFO, Tool=INFO"));
-
+            
             factory = Persistence.createEntityManagerFactory(null, props);
             em = factory.createEntityManager();
             setDescription("Saving data to: " + em.getProperties().get("openjpa.ConnectionURL"));
@@ -104,14 +107,13 @@ public final class HarvesterProtocol extends Protocol {
             LOG.severe(e.getLocalizedMessage());
             stop();
         }
-
+        
     }
-
+    
     @Override
     public void onStop() {
         setPollingWait(-1); // disable polling
-        super.onStop();
-
+        
         try {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().commit();
@@ -119,11 +121,12 @@ public final class HarvesterProtocol extends Protocol {
             em.close();
             factory.close();
         } catch (Exception e) {
+            LOG.severe("Error stopping Harvester: " + e.getLocalizedMessage());
         }
         this.setDescription("Disconnected");
         
     }
-
+    
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
         if (isRunning()) {
@@ -135,89 +138,106 @@ public final class HarvesterProtocol extends Protocol {
             }
         }
     }
-
+    
     @Override
     protected boolean canExecute(Command c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     @Override
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     private UsageDataFrame extractData(Command c) {
-        String[] searchParam = c.getProperty("QueryAddress").split(":");
-        Query q = null;
-      
-
-        if (searchParam[0].equals("object") || searchParam[0].equals("obj")) {
-            // extract data for an object 
-            q = em.createNamedQuery("powered");
-
-            String date = c.getProperty("startDate");
-            if (date == null || date.isEmpty() || date.equals("CURRENT_DATE")) {
-                q.setParameter("startDate", new Date(0));
-            } else {
-                q.setParameter("startDate", new Date(Long.parseLong(date)));
-            }
-
-            date = c.getProperty("stopDate");
-            if (date == null || date.isEmpty() || date.equals("CURRENT_DATE")) {
-                q.setParameter("stopDate", new Date());
-            } else {
-                q.setParameter("stopDate", new Date(Long.parseLong(date)));
-            }
-
-            q.setParameter("address", "%");
-            q.setParameter("uuid", searchParam[1].trim());
-            q.setParameter("protocol", "%");
-
-        } else if (searchParam[0].equals("tag")) {
-            Collection<EnvObjectLogic> objs = getApi().getObjectByTag(searchParam[1]);
-
-        } else if (searchParam[0].equals("protocol")) {
-            Collection<EnvObjectLogic> objs = getApi().getObjectByProtocol(searchParam[1]);
-
-        } else if (searchParam[0].equals("room")) {
-            // to be implemented
-        } else if (searchParam[0].equals("environment")) {
-            Collection<EnvObjectLogic> objs = getApi().getObjectByEnvironment(searchParam[1]);
-
+        String type, id;
+        
+        if (c.getProperty("QueryAddress") != null) {
+            String[] searchParam = c.getProperty("QueryAddress").split(":");
+            type = searchParam[0];
+            id = searchParam[1];
+        } else {
+            type = c.getProperty("FilterType");
+            id = c.getProperty("FilterID");
         }
-
-        UsageDataFrame df = new UsageDataFrame(UsageDataFrame.FULL_UPDATE, q.getResultList());
-        LOG.info(df.toString());
-        return df;
+        if (type != null && id != null) {
+            Query q = null;
+            
+            if (type.startsWith("obj")) {
+                // extract data for an object 
+                q = em.createNamedQuery("powered");
+                
+                String date = c.getProperty("startDate");
+                if (date == null || date.isEmpty() || date.equals("CURRENT_DATE")) {
+                    q.setParameter("startDate", new Date(0));
+                } else {
+                    q.setParameter("startDate", new Date(Long.parseLong(date)));
+                }
+                
+                date = c.getProperty("stopDate");
+                if (date == null || date.isEmpty() || date.equals("CURRENT_DATE")) {
+                    q.setParameter("stopDate", new Date());
+                } else {
+                    q.setParameter("stopDate", new Date(Long.parseLong(date)));
+                }
+                
+                q.setParameter("uuid", id.trim());
+                q.setParameter("protocol", "%");
+                
+            } else if (type.equals("tag")) {
+                Collection<EnvObjectLogic> objs = getApi().getObjectByTag(id);
+                
+            } else if (type.startsWith("prot")) {
+                Collection<EnvObjectLogic> objs = getApi().getObjectByProtocol(id);
+                
+            } else if (type.equals("room")) {
+                // to be implemented
+            } else if (type.startsWith("env")) {
+                Collection<EnvObjectLogic> objs = getApi().getObjectByEnvironment(id);
+                
+            }
+            
+            UsageDataFrame df = new UsageDataFrame(UsageDataFrame.FULL_UPDATE, q.getResultList());
+            LOG.info(df.toString());
+            return df;
+        } else {
+            LOG.warning("Harvester cannot extract data if it misses FilterType or FilterID properties");
+            return null;
+        }
     }
-
+    
     private void sendPoints(UsageDataFrame df, Command c) {
         // find command sender (in order to reply)
         // create response, filling data from List
-        ProtocolRead ev = new ProtocolRead(this, "harvester", c.getProperty("QueryAddress"));
-        //EventTemplate ev = new EventTemplate(c);
-        ObjectMapper om = new ObjectMapper();
-        //om.setVisibility(JsonMethod.FIELD, Visibility.ANY);
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try {
-            om.writeValue(os, df);
+
+        if (c.getProperty("QueryAddress") != null) {
+            ProtocolRead ev = new ProtocolRead(this, "harvester", c.getProperty("QueryAddress"));
+            ObjectMapper om = new ObjectMapper();
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            try {
+                om.writeValue(os, df);
+            } catch (IOException ex) {
+                LOG.severe(ex.getLocalizedMessage());
+            }
             ev.addProperty("behaviorValue", os.toString());
-
             Freedomotic.sendEvent(ev);
-        } catch (Exception ex) {
-            LOG.severe(ex.getLocalizedMessage());
+        } else {
+            for (HashMap<String, String> data : df.getDataAsMap()) {
+                Tuples t  = c.getProperties().getTuples();
+                t.add(data);
+            }
         }
-
+        
     }
-
+    
     @Override
     protected void onShowGui() {
     }
-
+    
     private void saveData(Command c) {
         try {
             UsageData item = new UsageData();
-
+            
             Timestamp ts = new java.sql.Timestamp(
                     Integer.parseInt(c.getProperty("event.date.year")) - 1900,
                     Integer.parseInt(c.getProperty("event.date.month")) - 1,
@@ -226,7 +246,7 @@ public final class HarvesterProtocol extends Protocol {
                     Integer.parseInt(c.getProperty("event.time.minute")),
                     Integer.parseInt(c.getProperty("event.time.second")),
                     0);
-
+            
             item.setDateTime(ts);
             item.setObjName(c.getProperty("event.object.name"));
             item.setObjProtocol(c.getProperty("event.object.protocol"));
@@ -242,7 +262,7 @@ public final class HarvesterProtocol extends Protocol {
                     UsageData item2 = item.clone();
                     item2.setObjBehavior(fits.group(1));
                     item2.setObjValue((String) entry.getValue());
-
+                    
                     if (isRunning() && em != null) {
                         if (!em.getTransaction().isActive()) {
                             em.getTransaction().begin();
