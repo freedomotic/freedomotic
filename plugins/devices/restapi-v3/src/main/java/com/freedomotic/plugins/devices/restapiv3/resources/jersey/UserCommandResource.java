@@ -20,6 +20,7 @@
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.reactions.Command;
 import com.wordnik.swagger.annotations.Api;
@@ -29,6 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -74,23 +76,27 @@ public class UserCommandResource extends AbstractResource<Command> {
     }
 
     @POST
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}/run")
     @ApiOperation("Fires a user command")
     public Response fire(
             @ApiParam(value = "ID of Command to execute", required = true)
             @PathParam("id") String UUID) {
         Command c = api.commands().get(UUID);
-        return fire(c);
+        if (c != null) {
+            return fire(c);
+        }
+        throw new ItemNotFoundException();
     }
 
     @POST
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Path("/runonce")
     @ApiOperation("Fires a custom command")
     public Response fire(Command c) {
         if (c != null) {
-            
+
             Command reply = Freedomotic.sendCommand(c);
             if (c.getReplyTimeout() > 0) {
                 return Response.ok(reply).build();

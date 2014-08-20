@@ -50,8 +50,9 @@ public class CommandPersistence implements ContainerInterface<Command> {
     private static final Map<String, Command> userCommands = new HashMap<String, Command>();
     private static final Map<String, Command> hardwareCommands = new HashMap<String, Command>();
 
-    public CommandPersistence(){
+    public CommandPersistence() {
     }
+
     /**
      *
      * @param c
@@ -268,22 +269,22 @@ public class CommandPersistence implements ContainerInterface<Command> {
      * @param folder
      */
     public static void saveCommands(File folder) {
+
+        if (userCommands.isEmpty()) {
+            LOG.log(Level.WARNING, "There are no commands to persist, {0} will not be altered.", folder.getAbsolutePath());
+            return;
+        }
+
+        if (!folder.isDirectory()) {
+            LOG.log(Level.WARNING, "{0} is not a valid command folder. Skipped", folder.getAbsoluteFile());
+            return;
+        }
+
+        XStream xstream = FreedomXStream.getXstream();
+        deleteCommandFiles(folder);
+
         try {
-            if (userCommands.isEmpty()) {
-                LOG.log(Level.WARNING, "There are no commands to persist, {0} will not be altered.", folder.getAbsolutePath());
-
-                return;
-            }
-
-            if (!folder.isDirectory()) {
-                LOG.log(Level.WARNING, "{0} is not a valid command folder. Skipped", folder.getAbsoluteFile());
-
-                return;
-            }
-
-            XStream xstream = FreedomXStream.getXstream();
-            deleteCommandFiles(folder);
-
+            LOG.info("Saving commands to file in " + folder.getAbsolutePath());
             for (Command c : userCommands.values()) {
                 if (c.isEditable()) {
                     String uuid = c.getUuid();
@@ -335,14 +336,14 @@ public class CommandPersistence implements ContainerInterface<Command> {
         List<Command> cl = new ArrayList<Command>(userCommands.values());
         cl.addAll(hardwareCommands.values());
         return cl;
-        
+
     }
 
     @Override
     public List<Command> getByName(String name) {
         List<Command> cl = new ArrayList<Command>();
-        for (Command c: list()){
-            if(c.getName().equalsIgnoreCase(name)){
+        for (Command c : list()) {
+            if (c.getName().equalsIgnoreCase(name)) {
                 cl.add(c);
             }
         }
@@ -356,10 +357,10 @@ public class CommandPersistence implements ContainerInterface<Command> {
 
     @Override
     public boolean create(Command item) {
-        try{
+        try {
             add(item);
             return true;
-        } catch (Exception e ){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -405,15 +406,15 @@ public class CommandPersistence implements ContainerInterface<Command> {
 
     @Override
     public void clear() {
-        try{
-        for (Command c : list()){
-            delete(c);
-        }
-        } catch (Exception e){
+        try {
+            for (Command c : list()) {
+                delete(c);
+            }
+        } catch (Exception e) {
         } finally {
             hardwareCommands.clear();
             userCommands.clear();
         }
     }
-    
+
 }

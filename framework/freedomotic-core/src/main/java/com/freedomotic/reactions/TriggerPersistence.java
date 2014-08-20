@@ -64,7 +64,7 @@ public class TriggerPersistence implements ContainerInterface<Trigger> {
         deleteTriggerFiles(folder);
 
         try {
-            LOG.config("Saving triggers to file in " + folder.getAbsolutePath());
+            LOG.info("Saving triggers to file in " + folder.getAbsolutePath());
 
             for (Trigger trigger : list) {
                 if (trigger.isToPersist()) {

@@ -24,6 +24,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -42,6 +44,7 @@ public class MarketplaceResource {
     @GET
     @Path("/providers")
     @ApiOperation(value = "Show the list of registered remote marketplace providers")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response listProviders() {
         return Response.ok(mps.getProviders()).build();
     }
@@ -49,6 +52,7 @@ public class MarketplaceResource {
     @GET
     @Path("/categories")
     @ApiOperation(value = "Download a list of plugin categories")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response listCategories() {
         catList = mps.getCategoryList();
         return Response.ok(catList).build();
@@ -57,6 +61,7 @@ public class MarketplaceResource {
     @GET
     @Path("categories/{cat}/plugins")
     @ApiOperation(value = "Download a list of plugin from the speicifed category")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response listPlugins(
              @ApiParam(value = "name of category to fetch", required = true)
             @PathParam("cat") String cat) {
@@ -77,6 +82,7 @@ public class MarketplaceResource {
     @ApiResponses(value = {
         @ApiResponse(code = 201, message = "Plugin installation succeded")
     })
+    @Produces(MediaType.APPLICATION_JSON)
     public Response installPlugin(
             @ApiParam(value = "URL of item to fetch", required = true)
             @PathParam("url") String pluginPath) {

@@ -69,7 +69,7 @@ public class ReactionPersistence implements ContainerInterface<Reaction> {
         deleteReactionFiles(folder);
 
         try {
-            LOG.log(Level.CONFIG, "Saving reactions to file in {0}", folder.getAbsolutePath());
+            LOG.log(Level.INFO, "Saving reactions to file in {0}", folder.getAbsolutePath());
 
             for (Reaction reaction : list) {
                 String uuid = reaction.getUuid();

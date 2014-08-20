@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 /*
@@ -49,7 +47,7 @@ public class Tuples
 
     private static final long serialVersionUID = 3113993714552615957L;
 
-    private ArrayList<HashMap<String, String>> tuples = new ArrayList<HashMap<String, String>>();
+    private final ArrayList<HashMap<String, String>> tuples = new ArrayList<HashMap<String, String>>();
 
     /**
      *
@@ -75,7 +73,7 @@ public class Tuples
      * @param tupleIndex
      * @return
      */
-    public Iterator<Entry<String,String>> getPropertiesIterator(int tupleIndex) {
+    public Iterator<Entry<String, String>> getPropertiesIterator(int tupleIndex) {
         return tuples.get(tupleIndex).entrySet().iterator();
     }
 
@@ -93,7 +91,7 @@ public class Tuples
      * @param tupleIndex
      * @return
      */
-    public Set<Entry<String,String>> getProperties(int tupleIndex) {
+    public Set<Entry<String, String>> getProperties(int tupleIndex) {
         return tuples.get(tupleIndex).entrySet();
     }
 
@@ -141,13 +139,7 @@ public class Tuples
     public int getIntProperty(int tupleIndex, String key, int defaultValue) {
         try {
             Integer result = Integer.parseInt(getProperty(tupleIndex, key));
-
-            if (result != null) {
-                return result;
-            } else {
-                //Freedomotic.logger.warning("Property '" + key + "' in tuple " + tupleIndex + " not found. Using default value '" + defaultValue + "'");
-                return defaultValue;
-            }
+            return result;
         } catch (NumberFormatException e) {
             //Freedomotic.logger.warning("Property '" + key + "' in tuple " + tupleIndex + " is not a valid integer. Using default value '" + defaultValue + "'");
             return defaultValue;
@@ -164,13 +156,7 @@ public class Tuples
     public boolean getBooleanProperty(int tupleIndex, String key, boolean defaultValue) {
         try {
             Boolean result = Boolean.parseBoolean(getProperty(tupleIndex, key));
-
-            if (result != null) {
-                return result;
-            } else {
-                //Freedomotic.logger.warning("Property '" + key + "' in tuple " + tupleIndex + " not found. Using default value '" + defaultValue + "'");
-                return defaultValue;
-            }
+            return result;
         } catch (Exception e) {
             //Freedomotic.logger.warning("Property '" + key + "' in tuple " + tupleIndex + " is not a valid boolean value. Using default value '" + defaultValue + "'");
             return defaultValue;
@@ -205,4 +191,22 @@ public class Tuples
             return defaultValue;
         }
     }
+
+    /**
+     *
+     */
+    public void clear() {
+        tuples.clear();
+
+    }
+
+    /**
+     *
+     * @param i
+     * @return
+     */
+    public boolean remove(int i) {
+        return (tuples.remove(i) != null);
+    }
+
 }
