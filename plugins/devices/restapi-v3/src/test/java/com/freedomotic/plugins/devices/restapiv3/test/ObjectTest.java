@@ -60,8 +60,8 @@ public class ObjectTest extends AbstractTest<EnvObject> {
         item = new EnvObject();
         item.setName("TestObject");
         item.setUUID(uuid);
-        item.setHierarchy("com.freedomotic.objects.impl.Gate");
-        item.setType("EnvObject.Gate");
+        item.setHierarchy("com.freedomotic.objects.impl.ElectricDevice");
+        item.setType("EnvObject.ElectricDevice");
         item.setEnvironmentID(e.getUUID());
         Representation r = new Representation();
         r.setOffset(0, 0);
@@ -74,17 +74,10 @@ public class ObjectTest extends AbstractTest<EnvObject> {
         r.setShape(s);
         item.getRepresentations().add(r);
         item.setCurrentRepresentation(0);
-        RangedIntBehavior ri = new RangedIntBehavior();
-        ri.setName("openness");
-        ri.setMin(0);
-        ri.setMax(100);
-        ri.setScale(1);
-        ri.setStep(1);
         BooleanBehavior b = new BooleanBehavior();
-        b.setName("open");
+        b.setName("powered");
         b.setValue(true);
         item.getBehaviors().add(b);
-        item.getBehaviors().add(ri);
         initPath(ObjectResource.class);
         listType = new GenericType<List<EnvObject>>(){};
         singleType = new GenericType<EnvObject>(){};
@@ -93,12 +86,20 @@ public class ObjectTest extends AbstractTest<EnvObject> {
     @Override
     protected void putModifications(EnvObject orig) {
         orig.setActAs("virtual");
+        RangedIntBehavior ri = new RangedIntBehavior();
+        ri.setName("power_consumption");
+        ri.setMin(0);
+        ri.setMax(100);
+        ri.setScale(1);
+        ri.setStep(1);
+        orig.getBehaviors().add(ri);
     }
 
     @Override
     protected void putAssertions(EnvObject pre, EnvObject post) {
         assertEquals("PUT - name check", pre.getName(), post.getName());
         assertEquals("PUT - ActAs check", pre.getActAs(), post.getActAs());
+        assertEquals("PUT - Consumption", pre.getBehavior("power_consumption").getName(), post.getBehavior("power_consumption").getName());
     }
 
     @Override
