@@ -115,6 +115,9 @@ public class PayloadTest {
         trigger.addStatement(Statement.AND, "number", Statement.GREATER_THAN, "0");
         trigger.addStatement(Statement.AND, "number", Statement.LESS_EQUAL_THAN, "1");
         trigger.addStatement(Statement.AND, "number", Statement.EQUALS, Statement.ANY);
+        //payload eveluation is after resolve step so the trigger has elready the event.* properties in it
+        trigger.addStatement(Statement.AND, "event.number", Statement.EQUALS, "123");
+        trigger.addStatement("SET", "defineANewProperty", Statement.EQUALS, "123");
 
         boolean expResult = true;
         //compare trigger with events
@@ -123,7 +126,8 @@ public class PayloadTest {
     }
 
     /**
-     * Test of equals method, of class Payload.
+     * What if the trigger has a property which is not present in the event?
+     * Expected behavior is the trigger is not consistent with the event
      */
     @Test
     public void testTriggerHasUnexistentAttribute() {
@@ -136,11 +140,15 @@ public class PayloadTest {
 
         //contruct the trigger
         Payload trigger = new Payload();
-        trigger.addStatement(Statement.AND, "unexistent", Statement.EQUALS, "1");
+        trigger.addStatement(Statement.AND, "unexistentPropertyOne", Statement.REGEX, "*");
+        trigger.addStatement(Statement.AND, "unexistentPropertyTwo", Statement.EQUALS, "1");
+        //payload eveluation is after resolve step so the trigger has elready the event.* properties in it
+        trigger.addStatement(Statement.AND, "event.number", Statement.EQUALS, "123");
+        trigger.addStatement("SET", "defineANewProperty", Statement.EQUALS, "123");
 
         //compare trigger with events
         boolean result = trigger.equals(event);
-        assertEquals(true, result);
+        assertEquals(false, result);
     }
 
     /**
