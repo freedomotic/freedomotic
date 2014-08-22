@@ -447,6 +447,9 @@ public final class Trigger implements BusConsumer, Cloneable {
      * @return
      */
     public String getUUID() {
+        if (uuid == null ){
+            uuid = UUID.randomUUID().toString();
+        }
         return uuid;
     }
 

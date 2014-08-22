@@ -33,9 +33,9 @@ import javax.ws.rs.Path;
  *
  * @author matteo
  */
-@Path("reactions")
-@Api(value = "/reactions", description = "Operations on reactions", position=3)
-public class ReactionResource extends AbstractResource<Reaction>{
+@Path("OLDreactions")
+//@Api(value = "/reactions", description = "Operations on reactions", position=3)
+public class OldReactionResource extends AbstractResource<Reaction>{
 
     @Override
     protected URI doCreate(Reaction o) throws URISyntaxException {

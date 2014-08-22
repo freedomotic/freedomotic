@@ -89,7 +89,8 @@ public final class RestJettyServer extends Server {
 
         // jersey servlet
         ServletHolder jerseyServletHolder = new ServletHolder(ServletContainer.class);
-        jerseyServletHolder.setInitParameter("jersey.config.server.provider.packages", JERSEY_RESOURCE_PKG);
+        // jerseyServletHolder.setInitParameter("jersey.config.server.provider.packages", JERSEY_RESOURCE_PKG);
+        jerseyServletHolder.setInitParameter("javax.ws.rs.Application", JerseyApplication.class.getCanonicalName());
         jerseyServletHolder.setInitOrder(1);
         context.addServlet(jerseyServletHolder, "/" + API_VERSION + "/*");
 
@@ -97,7 +98,7 @@ public final class RestJettyServer extends Server {
         if (master.configuration.getBooleanProperty("enable-cors", false)) {
             FilterHolder corsFilterHolder = new FilterHolder(CrossOriginFilter.class);
             corsFilterHolder.setInitParameter("allowedOrigins", master.configuration.getStringProperty("Access-Control-Allow-Origin", "*"));
-            corsFilterHolder.setInitParameter("allowedMethods", master.configuration.getStringProperty("Access-Control-Allow-Methods", "GET,PUT,HEAD,POST,DELETE,OPTIONS"));
+            corsFilterHolder.setInitParameter("allowedMethods", master.configuration.getStringProperty("Access-Control-Allow-Methods", "GET,PUT,HEAD,POST,DELETE"));
             corsFilterHolder.setInitParameter("allowedHeaders",
                     master.configuration.getStringProperty("Access-Control-Allow-Headers",
                             "Accept,Accept-Version,Authorization,Content-Length,Content-MD5,Content-Type,Date,"
