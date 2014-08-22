@@ -115,11 +115,22 @@ public final class Payload
             //check all statement for consistency
             while (it.hasNext()) {
                 Statement triggerStatement = it.next();
+                
+                // at this stage the trigger has already all the event.* properties embedded (shoud be skipped)
+                if (triggerStatement.getAttribute().startsWith("event.")) {
+                    //skip this iteration, and continue with the next statement
+                    continue;
+                }
 
                 List<Statement> filteredEventStatements = eventPayload.getStatements(triggerStatement.attribute);
 
                 if (filteredEventStatements.isEmpty()) {
-                    // no statement present into event, corresponding filtered trigger statement
+                    //if the trigger has a property which is not in the event
+                    if (!triggerStatement.logical.equalsIgnoreCase(Statement.SET)) {
+                        //if it is AND/OR/...
+                        return false;
+                    }
+                    //if the trigger has a property which is not in the event, BUT allowed value is ANY
                     if (triggerStatement.value.equalsIgnoreCase(Statement.ANY)) {
                         // if trigger value = ANY, we expectected at least one matching statement, so test fails.
                         if (triggerStatement.getLogical().equalsIgnoreCase(Statement.AND)) {
