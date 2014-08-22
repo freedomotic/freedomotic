@@ -149,12 +149,14 @@ public abstract class Protocol
                 @Override
                 public synchronized void run() {
                     try {
-                        onStart();
                         sensorThread = new Protocol.SensorThread();
                         sensorThread.start();
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
                         busService.send(event);
                         status = PluginStatus.RUNNING;
+                        //onStart() should be called as the last operation, after framework level operations
+                        //for example it may require something related with messaging wich should be initialized first
+                        onStart();
                     } catch (Exception e) {
                         status = PluginStatus.FAILED;
                         setDescription("Plugin start FAILED. see logs for details.");
