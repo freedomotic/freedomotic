@@ -165,7 +165,7 @@ public class RoomEvents extends Protocol {
                     c.setReceiver("app.events.sensors.behavior.request.objects");
                     c.setName(cmdName);
                     c.setDescription(cmdName);
-                    c.setProperty(Command.PROPERTY_OBJECT_ROOM, z.getName());
+                    c.setProperty(Command.PROPERTY_OBJECT_ZONE, z.getName());
                     c.setProperty(Command.PROPERTY_BEHAVIOR, "powered");
                     c.setProperty("value", "false");
                     HashSet<String> tags = new HashSet<>();
