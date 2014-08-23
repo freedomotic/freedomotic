@@ -25,7 +25,6 @@ import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.objects.BehaviorLogic;
@@ -60,18 +59,10 @@ import javax.jms.ObjectMessage;
  *
  * @author Enrico
  */
-public final class BehaviorManager
-        implements BusConsumer {
+public final class BehaviorManager implements BusConsumer {
 
     private static final Logger LOG = Logger.getLogger(BehaviorManager.class.getName());
     private static final String MESSAGING_CHANNEL = "app.events.sensors.behavior.request.objects";
-
-    public static final String PROPERTY_BEHAVIOR = "behavior";
-    public static final String PROPERTY_OBJECT_CLASS = "object.class";
-    public static final String PROPERTY_OBJECT_ADDRESS = "object.address";
-    public static final String PROPERTY_OBJECT_NAME = "object.name";
-    public static final String PROPERTY_OBJECT_PROTOCOL = "object.protocol";
-    public static final String PROPERTY_OBJECT = "object";
     private BusMessagesListener listener;
     private final BusService busService;
     private static API api = Freedomotic.INJECTOR.getInstance(API.class);
@@ -80,9 +71,6 @@ public final class BehaviorManager
         return MESSAGING_CHANNEL;
     }
 
-    /**
-     *
-     */
     public BehaviorManager() {
         this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
         register();
@@ -123,22 +111,24 @@ public final class BehaviorManager
 
         // gets a reference to an EnvObject using the key 'object' in the user
         // level command
-        Collection<String> objNames = EnvObjectPersistence.getObjNames();
-
-        for (String objName
-                : filterByArea(userLevelCommand,
+        List<String> objNames = EnvObjectPersistence.getObjectsNames();
+        // filter first tags, then class, then zone
+        List<String> affectedObjects
+                = filterByZone(userLevelCommand,
                         filterByObjClass(userLevelCommand,
-                                filterByTags(userLevelCommand, objNames)))) {
+                                filterByTags(userLevelCommand, objNames)));
+        //Execute the command on all affected objects
+        for (String objName : affectedObjects) {
             userLevelCommand.setProperty(Command.PROPERTY_OBJECT, objName);
             applyToSingleObject(userLevelCommand);
         }
     }
 
-    private static Collection<String> filterByTags(Command userLevelCommand, Collection<String> origList) {
+    private static List<String> filterByTags(Command userLevelCommand, List<String> origList) {
         String includeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_INCLUDETAGS);
         String excludeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_EXCLUDETAGS);
         if (includeTags != null || excludeTags != null) {
-            Collection<String> newList = new HashSet<String>();
+            List<String> newList = new ArrayList<String>();
             // prepare includ set
             includeTags += "";
             String tags[] = includeTags.split(",");
@@ -182,19 +172,21 @@ public final class BehaviorManager
                 }
 
                 if (apply) {
+                    LOG.config("Filter by tag affects object " + pojo.getName());
                     newList.add(pojo.getName());
                 }
             }
+            // Filter out the objects wich are not affected
             origList.retainAll(newList);
         }
         return origList;
     }
 
-    private static Collection<String> filterByObjClass(Command userLevelCommand, Collection<String> origList) {
+    private static List<String> filterByObjClass(Command userLevelCommand, List<String> origList) {
         String objectClass = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS);
 
         if (objectClass != null) {
-            Collection<String> newList = new HashSet<String>();
+            List<String> newList = new ArrayList<String>();
             String regex = "^" + objectClass.replace(".", "\\.") + ".*";
             Pattern pattern = Pattern.compile(regex);
 
@@ -204,47 +196,33 @@ public final class BehaviorManager
                 final Matcher matcher = pattern.matcher(pojo.getType());
 
                 if (matcher.matches()) {
-                    // TODO Look at this setProperty later
+                    LOG.config("Filter by class affects object " + pojo.getName());
                     newList.add(pojo.getName());
-                    //userLevelCommand.setProperty(Command.PROPERTY_OBJECT, pojo.getName());
-                    //applyToSingleObject(userLevelCommand);
                 }
             }
+            // Filter out the objects wich are not affected
             origList.retainAll(newList);
         }
         return origList;
     }
 
-    private static Collection<String> filterByArea(Command userLevelCommand, Collection<String> origList) {
-        String objectRoom = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ENVIRONMENT);
-        String objectEnvironment = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ROOM);
-        if (objectRoom != null || objectEnvironment != null) {
-            Collection<String> newList = new HashSet<String>();
+    private static List<String> filterByZone(Command userLevelCommand, List<String> origList) {
+        String zoneName = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ZONE);
 
-            final API api = Freedomotic.INJECTOR.getInstance(API.class);
+        if (zoneName != null) {
+            List<String> newList = new ArrayList<String>();
 
-            List<EnvironmentLogic> el;
-            if (objectEnvironment != null) {
-                el = api.environments().getByName(objectEnvironment);
-            } else {
-                el = api.environments().list();
-            }
-            for (EnvironmentLogic env : el) {
-                if (objectRoom != null) {
-                    ZoneLogic z = env.getZone(objectRoom);
+            //Search for the 'object.zone' name in all environments
+            for (EnvironmentLogic env : api.environments().list()) {
+                if (zoneName != null) {
+                    ZoneLogic z = env.getZone(zoneName);
                     for (EnvObject obj : z.getPojo().getObjects()) {
-                        //userLevelCommand.setProperty(Command.PROPERTY_OBJECT, obj.getName());
-                        //applyToSingleObject(userLevelCommand);
+                        LOG.config("Filter by zone affects object " + obj.getName());
                         newList.add(obj.getName());
-                    }
-                } else {
-                    for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(env.getPojo().getUUID())) {
-                        //userLevelCommand.setProperty(Command.PROPERTY_OBJECT, obj.getPojo().getName());
-                        //applyToSingleObject(userLevelCommand);
-                        newList.add(obj.getPojo().getName());
                     }
                 }
             }
+            // Filter out the objects wich are not affected
             origList.retainAll(newList);
         }
         return origList;
@@ -309,7 +287,7 @@ public final class BehaviorManager
                         || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_INCLUDETAGS) != null
                         || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_EXCLUDETAGS) != null
                         || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ENVIRONMENT) != null
-                        || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ROOM) != null) {
+                        || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ZONE) != null) {
                     try {
                         /*
                          * if we have the category and the behavior (and not the
