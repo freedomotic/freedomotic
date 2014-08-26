@@ -68,7 +68,7 @@ public class MarketplaceResource {
         if (cat != null && !cat.equals("")) {
             for (IPluginCategory category : catList) {
                 if (category.getName().equalsIgnoreCase(cat)) {
-                    return Response.ok(category.getPlugins()).build();
+                    return Response.ok(category.retrievePluginsInfo()).build();
                 }
             }
             throw new ItemNotFoundException();

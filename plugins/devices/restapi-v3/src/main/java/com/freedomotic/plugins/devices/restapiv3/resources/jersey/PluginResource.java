@@ -59,12 +59,7 @@ public class PluginResource extends AbstractResource<Plugin>{
 
     @Override
     protected boolean doDelete(String name) {
-        Plugin p = prepareSingle(name);
-        if (p!=null) {
-            clientStorage.uninstall(p);
-            return true;
-        }
-        return false;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

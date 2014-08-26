@@ -38,7 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A storage of loaded plugins and connected clients
+ * A storage of added plugins and connected clients
  */
 public final class ClientStorageInMemory implements ClientStorage {
 
@@ -56,7 +56,7 @@ public final class ClientStorageInMemory implements ClientStorage {
      * @param c
      */
     @Override
-    public void load(Client c) {
+    public void add(Client c) {
         if (!clients.contains(c)) {
             if (isCompatible(c)) {
                 //force injection as this class is not built by guice
@@ -88,7 +88,7 @@ public final class ClientStorageInMemory implements ClientStorage {
      * @param c
      */
     @Override
-    public void unload(Client c) {
+    public void remove(Client c) {
         if (clients.contains(c)) {
             clients.remove(c);
 
@@ -289,10 +289,10 @@ public final class ClientStorageInMemory implements ClientStorage {
     }
 
     /**
-     * Creates a placeholder plugin and adds it to the list of loaded plugins.
+     * Creates a placeholder plugin and adds it to the list of added plugins.
      * This plugin is just a mock object to inform the user that an object with
-     * complete features is expected here. It can be used for example to list a
-     * fake plugin that informs the user the real plugin cannot be loaded.
+ complete features is expected here. It can be used for example to list a
+ fake plugin that informs the user the real plugin cannot be added.
      *
      * @param simpleName
      * @param type
@@ -362,25 +362,8 @@ public final class ClientStorageInMemory implements ClientStorage {
         return new ObjectPluginPlaceholder(template);
     }
 
-    /**
-     * Removes a plugin and its configuration from filesystem
-     * 
-     * @param c
-     */
-    @Override
-    public void uninstall(Client c) {
-        if (c instanceof Plugin) {
-            if (isLoaded(c)) unload(c);
-            Plugin p = (Plugin) c;
-            LOG.info("Uninstalling plugin " + c.getName() + " from " + p.getFile().getParentFile());
-            p.getFile().getParentFile().delete();
-        } else {
-            LOG.warning("Trying to uninstall a non plugin: " + c.getName());
-        }
-    }
 
-    class ClientNameComparator
-            implements Comparator<Client> {
+    class ClientNameComparator implements Comparator<Client> {
 
         @Override
         public int compare(Client m1, Client m2) {

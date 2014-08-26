@@ -54,11 +54,12 @@ public class MarketPlaceForm
     private static final IPlugPackComparator PackComp = new IPlugPackComparator();
     private final I18n I18n;
     private ClientStorage clients;
-   
+
     private PluginsManager pluginsManager;
 
     /**
      * Creates new form MarketPlaceForm
+     *
      * @param api
      */
     public MarketPlaceForm(API api) {
@@ -89,7 +90,9 @@ public class MarketPlaceForm
         Collections.sort(pluginCategoryList, CatComp);
 
         for (IPluginCategory pc : pluginCategoryList) {
-            cmbCategory.addItem(pc.getName() + " ("+pc.getPlugins().size()+")");
+            //do not use pc.retrievePluginsInfo() here
+            //it forces to download all plugins in all categories!!
+            cmbCategory.addItem(pc.getName());
         }
 
         //add listener to category selection changes
@@ -131,20 +134,20 @@ public class MarketPlaceForm
                         try {
                             String path = Info.PATHS.PATH_RESOURCES_FOLDER.toString();
 
-                            if (category.getPlugins() == null) {
+                            if (category.retrievePluginsInfo() == null) {
                                 return;
                             }
 
-                            Collections.sort(category.getPlugins(),
+                            Collections.sort(category.retrievePluginsInfo(),
                                     PackComp);
 
                             //TODO: use package images.
-                            ImageIcon iconPlugin =
-                                    new ImageIcon(path + File.separatorChar
-                                    + "plug.png", "Icon");
+                            ImageIcon iconPlugin
+                                    = new ImageIcon(path + File.separatorChar
+                                            + "plug.png", "Icon");
                             int row = 0;
 
-                            for (final IPluginPackage pp : category.getPlugins()) {
+                            for (final IPluginPackage pp : category.retrievePluginsInfo()) {
                                 JLabel lblIcon;
 
                                 if (pp.getIcon() != null) {
@@ -162,26 +165,25 @@ public class MarketPlaceForm
                                     String version = extractVersion(new File(pp.getFilePath(freedomoticVersion)).getName().toString());
                                     int result = clients.compareVersions(pp.getTitle(), version);
                                     //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
-                                    if (result == -1) { //older version
+                                    if (result == -1) { //older version 
                                         //btnAction = new JButton(pp.getTitle() + " (Install version " + version + ")");
-                                        btnAction = new JButton(I18n.msg( "install"));
+                                        btnAction = new JButton(I18n.msg("install"));
                                     } else {
                                         if (result == 1) { //newer version
                                             //btnAction = new JButton(pp.getTitle() + " (Update from " + version + " to " + version + ")");
-                                            btnAction = new JButton(I18n.msg( "update"));
+                                            btnAction = new JButton(I18n.msg("update"));
                                         }
                                     }
                                 } else {
-                                    lblName =
-                                            new JLabel(I18n.msg(
-                                            "X_unavailable",
-                                            new Object[]{
-                                                pp.getTitle()
-                                            }));
+                                    lblName
+                                            = new JLabel(I18n.msg(
+                                                            "X_unavailable",
+                                                            new Object[]{
+                                                                pp.getTitle()
+                                                            }));
                                 }
 
-                                JLabel lblDescription = new JLabel(pp.getDescription());
-
+                                //JLabel lblDescription = new JLabel(pp.getDescription());
                                 if (btnAction != null) {
                                     btnAction.addActionListener(new ActionListener() {
                                         public void actionPerformed(ActionEvent e) {
@@ -207,21 +209,21 @@ public class MarketPlaceForm
                                 lblIcon.setMaximumSize(new Dimension(80, 80));
                                 pnlMain.add(lblIcon);
                                 pnlMain.add(lblName);
-                                pnlMain.add(lblDescription);
+                                //pnlMain.add(lblDescription);
                                 pnlMain.add(btnMore);
 
                                 if (btnAction != null) {
                                     pnlMain.add(btnAction);
                                 } else {
-                                    JButton disabled = new JButton(I18n.msg( "install"));
+                                    JButton disabled = new JButton(I18n.msg("install"));
                                     disabled.setEnabled(false);
                                     pnlMain.add(disabled);
                                 }
 
                                 row++;
                             }
-
-                            SpringUtilities.makeCompactGrid(pnlMain, row, 5, //rows, cols
+                            
+                            SpringUtilities.makeCompactGrid(pnlMain, row, 4, //rows, cols
                                     5, 5, //initX, initY
                                     5, 5); //xPad, yPad
                             politeWaitingMessage(false);
@@ -239,9 +241,9 @@ public class MarketPlaceForm
         //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
         //only 5.2.x-1.212 is needed
         //remove extension
-        filename =
-                filename.substring(0,
-                filename.lastIndexOf("."));
+        filename
+                = filename.substring(0,
+                        filename.lastIndexOf("."));
 
         String[] tokens = filename.split("-");
 
@@ -259,40 +261,40 @@ public class MarketPlaceForm
         if (pp.getFilePath(freedomoticVersion) == null) {
             JOptionPane.showMessageDialog(this,
                     I18n.msg(
-                    "warn_plugin_X_unavailable",
-                    new Object[]{pp.getTitle(), pp.getURI()}));
+                            "warn_plugin_X_unavailable",
+                            new Object[]{pp.getTitle(), pp.getURI()}));
 
             return;
         }
 
         //Custom button text
         Object[] options = {I18n.msg("yes_please"), I18n.msg("no_thanks")};
-        int n =
-                JOptionPane.showOptionDialog(null,
-                I18n.msg(
-                "confirm_package_X_download",
-                new Object[]{pp.getTitle()}),
-                I18n.msg( "title_install_package"),
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[1]);
+        int n
+                = JOptionPane.showOptionDialog(null,
+                        I18n.msg(
+                                "confirm_package_X_download",
+                                new Object[]{pp.getTitle()}),
+                        I18n.msg("title_install_package"),
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[1]);
 
         if (n != 0) {
             return;
         }
 
         JOptionPane.showMessageDialog(null,
-                I18n.msg( "info_download_started"),
-                I18n.msg( "title_download_started"),
+                I18n.msg("info_download_started"),
+                I18n.msg("title_download_started"),
                 JOptionPane.INFORMATION_MESSAGE);
 
         Runnable task;
         final String string = pp.getFilePath(freedomoticVersion);
         Freedomotic.logger.finest("Download string:" + string);
-        task =
-                new Runnable() {
+        task
+                = new Runnable() {
                     boolean done = false;
 
                     @Override
@@ -306,13 +308,13 @@ public class MarketPlaceForm
 
                         if (!done) {
                             JOptionPane.showMessageDialog(null,
-                                    I18n.msg( "info_download_failed"),
-                                    I18n.msg( "title_download_failed"),
+                                    I18n.msg("info_download_failed"),
+                                    I18n.msg("title_download_failed"),
                                     JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             JOptionPane.showMessageDialog(null,
-                                    I18n.msg( "info_package_install_completed"),
-                                    I18n.msg( "title_install_completed"),
+                                    I18n.msg("info_package_install_completed"),
+                                    I18n.msg("title_install_completed"),
                                     JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
@@ -378,7 +380,7 @@ public class MarketPlaceForm
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
-    @SuppressWarnings( "unchecked")
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 

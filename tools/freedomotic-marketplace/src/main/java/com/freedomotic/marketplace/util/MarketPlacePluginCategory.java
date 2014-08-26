@@ -53,7 +53,7 @@ public class MarketPlacePluginCategory implements IPluginCategory {
     }
 
     @Override
-    public List<IPluginPackage> getPlugins() {
+    public List<IPluginPackage> retrievePluginsInfo() {
         if (plugins == null) {
             plugins = new ArrayList<IPluginPackage>();
             plugins.addAll(DrupalRestHelper.retrievePluginsByCategory(tid));

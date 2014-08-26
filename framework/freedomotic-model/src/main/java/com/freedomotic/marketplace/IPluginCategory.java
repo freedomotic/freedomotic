@@ -47,5 +47,5 @@ public interface IPluginCategory {
      *
      * @return
      */
-    public List<IPluginPackage> getPlugins();
+    public List<IPluginPackage> retrievePluginsInfo();
 }

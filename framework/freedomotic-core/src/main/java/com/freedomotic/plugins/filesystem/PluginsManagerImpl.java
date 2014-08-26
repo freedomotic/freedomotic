@@ -29,10 +29,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 
 /**
- * An helper class that uses an internal DAO pattern to loadBoundle plugins of
+ * An helper class that uses an internal DAO pattern to addBoundle plugins of
  * different types from local filesystem
  *
  * @author enrico
@@ -117,7 +119,7 @@ public class PluginsManagerImpl implements PluginsManager {
                     p.getApi().getI18n().registerPluginBundleDir(p);
                 }
             }
-            clientStorage.load(client);
+            clientStorage.add(client);
         }
     }
 
@@ -166,6 +168,48 @@ public class PluginsManagerImpl implements PluginsManager {
         return true;
     }
 
+    @Override
+    public boolean uninstallBundle(Client client) {
+        boolean isDeleted = false;
+        if (client instanceof Plugin) {
+            Plugin toBeUninstalled = (Plugin) client;
+            File boundleRootFolder = toBeUninstalled.getFile().getParentFile();
+
+            // Find boundle companions (they also should be stopped and removed)
+            List<Plugin> uninstallCandidates = new ArrayList<Plugin>();
+            for (Client tmp : clientStorage.getClients()) {
+                if (tmp instanceof Plugin) {
+                    Plugin boundleCompanion = (Plugin) tmp;
+                    //if this plugin is in the same plugin boundle of the one
+                    //the user is trying to uninstall it is an uninstallCandidate
+                    if (boundleCompanion.getFile().getParentFile().equals(boundleRootFolder)) {
+                        uninstallCandidates.add(boundleCompanion);
+                    }
+                }
+            }
+
+            // Stop, remove and uninstall all plugins in the same boundle as client
+            for (Plugin plugin : uninstallCandidates) {
+                LOG.info("Uninstalling plugin " + plugin.getName() + " from boundle" + boundleRootFolder.getAbsolutePath());
+                plugin.stop();
+                clientStorage.remove(plugin);
+            }
+
+            // Remove the boundle root folder from filesystem
+            try {
+                FileUtils.deleteDirectory(boundleRootFolder);
+                isDeleted = true;
+            } catch (IOException ex) {
+                LOG.log(Level.SEVERE, "Error while unistalling plugin boundle " + boundleRootFolder.getAbsolutePath(), ex);
+            }
+
+        } else {
+            LOG.warning("Cannot uninstall " + client.getName() + " it is not a filesystem plugin");
+        }
+
+        return isDeleted;
+    }
+
     private boolean unzipAndDelete(File zipFile) {
         LOG.info("Uncompressing plugin archive " + zipFile);
 
@@ -189,8 +233,8 @@ public class PluginsManagerImpl implements PluginsManager {
 
     /**
      * Load the resources linked to a plugin package. Note a plugin package may
-     * be composed of more than one plugin, so resources must be loaded just
-     * once for every package.
+     * be composed of more than one plugin, so resources must be added just once
+     * for every package.
      *
      */
     private void loadPluginResources(File directory)
@@ -211,13 +255,13 @@ public class PluginsManagerImpl implements PluginsManager {
 
         if (templatesFolder.exists()) {
             //for every envobject class a placeholder is created
-            File[] templates =
-                    templatesFolder.listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return (name.endsWith(".xobj"));
-                }
-            });
+            File[] templates
+                    = templatesFolder.listFiles(new FilenameFilter() {
+                        @Override
+                        public boolean accept(File dir, String name) {
+                            return (name.endsWith(".xobj"));
+                        }
+                    });
 
             for (File template : templates) {
                 Client placeholder;
@@ -225,7 +269,7 @@ public class PluginsManagerImpl implements PluginsManager {
                 try {
                     placeholder = clientStorage.createObjectPlaceholder(template);
                     placeholder = mergePackageConfiguration(placeholder, directory);
-                    clientStorage.load(placeholder);
+                    clientStorage.add(placeholder);
                 } catch (DaoLayerException ex) {
                     throw new PluginLoadingException("Cannot create object plugin " + "placeholder from template "
                             + template.getAbsolutePath(), ex);
@@ -305,9 +349,9 @@ public class PluginsManagerImpl implements PluginsManager {
                 packageFile.getProperty("package.nodeid"));
         client.getConfiguration()
                 .setProperty("framework.required.version",
-                packageFile.getProperty("framework.required.major") + "."
-                + packageFile.getProperty("framework.required.minor") + "."
-                + packageFile.getProperty("framework.required.build"));
+                        packageFile.getProperty("framework.required.major") + "."
+                        + packageFile.getProperty("framework.required.minor") + "."
+                        + packageFile.getProperty("framework.required.build"));
         client.getConfiguration().setProperty("framework.required.major",
                 packageFile.getProperty("framework.required.major"));
         client.getConfiguration().setProperty("framework.required.minor",

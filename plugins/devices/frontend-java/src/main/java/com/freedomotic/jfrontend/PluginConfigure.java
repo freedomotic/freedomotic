@@ -20,7 +20,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -251,7 +253,7 @@ public class PluginConfigure
                     txtArea.getText());
             //stopping and unloading the plugin
             item.stop();
-            clients.unload(item);
+            clients.remove(item);
             //reload it with the new configuration
             System.out.println(item.getFile().getParentFile().toString());
             pluginsManager.loadSingleBoundle(item.getFile().getParentFile());
@@ -265,7 +267,7 @@ public class PluginConfigure
                 pluginsManager.loadSingleBoundle(item.getFile().getParentFile());
                 clients.get(name).start();
                 JOptionPane.showMessageDialog(this,
-                       api.getI18n().msg("warn_reset_old_config"));
+                        api.getI18n().msg("warn_reset_old_config"));
             } else {
                 clients.get(name).start();
                 this.dispose();
@@ -280,17 +282,32 @@ public class PluginConfigure
     }//GEN-LAST:event_btnDefaultActionPerformed
 
     private void uninstallButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uninstallButtonActionPerformed
-        
+
         Plugin item = (Plugin) cmbPlugin.getSelectedItem();
-       
+
+        StringBuilder uninstallCandidates = new StringBuilder();
+        File boundleRootFolder = item.getFile().getParentFile();
+        for (Client client : clients.getClients()) {
+            if (client instanceof Plugin) {
+                Plugin plugin = (Plugin) client;
+                //if this plugin is in the same plugin boundle of the one
+                //the user is trying to uninstall
+                if (plugin.getFile().getParentFile().equals(boundleRootFolder)) {
+                    uninstallCandidates.append("'" + plugin.getName() + "' ");
+                }
+            }
+        }
+        String localizedMessage
+                = api.getI18n().msg("confirm_plugin_delete", new Object[]{uninstallCandidates.toString()});
+
         int result = JOptionPane.showConfirmDialog(null,
-                new JLabel(api.getI18n().msg("confirm_plugin_delete",new Object[]{item.getName()})),
+                new JLabel(localizedMessage),
                 api.getI18n().msg("confirm_deletion_title"),
                 JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
-         clients.uninstall(item);
-         dispose();
+            pluginsManager.uninstallBundle(item);
+            dispose();
         }
     }//GEN-LAST:event_uninstallButtonActionPerformed
 

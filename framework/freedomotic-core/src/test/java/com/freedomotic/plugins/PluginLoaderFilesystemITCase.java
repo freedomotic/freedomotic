@@ -72,7 +72,7 @@ public class PluginLoaderFilesystemITCase {
     }
 
     /**
-     * Test of loadSingleBoundle method, of class PluginsManager.
+     * Test of addSingleBoundle method, of class PluginsManager.
      * @throws java.lang.Exception
      */
     @Test

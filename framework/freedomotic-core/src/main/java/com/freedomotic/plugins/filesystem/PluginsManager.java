@@ -4,6 +4,7 @@
  */
 package com.freedomotic.plugins.filesystem;
 
+import com.freedomotic.api.Client;
 import com.freedomotic.exceptions.PluginLoadingException;
 import java.io.File;
 import java.net.URL;
@@ -34,6 +35,8 @@ public interface PluginsManager {
      * @return 
      */
     boolean installBoundle(URL fromURL);
+    
+    boolean uninstallBundle(Client c);
 
     /**
      * Loads all plugins of a given type (device, object, event) taken from

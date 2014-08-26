@@ -345,7 +345,7 @@ public class Freedomotic implements BusConsumer {
          * Deserialize objects from XML
          * *****************************************************************
          */
-        // REMOVED: now it's up to EnvironmentPersistence to load objects.
+        // REMOVED: now it's up to EnvironmentPersistence to add objects.
         // EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
         loadDefaultEnvironment();
 
@@ -451,7 +451,7 @@ public class Freedomotic implements BusConsumer {
                 EnvironmentPersistence.add(logic, false);
             }
 
-            //now load related objects
+            //now add related objects
             EnvObjectPersistence.loadObjects(new File(folder + "/data/obj"), false);
         } catch (DaoLayerException e) {
             throw new FreedomoticException(e.getMessage(), e);
