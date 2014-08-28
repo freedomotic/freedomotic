@@ -36,8 +36,6 @@ public class NewReactionResource extends AbstractResource<ReactionRepresentation
     @Override
     protected URI doCreate(ReactionRepresentation o) throws URISyntaxException {
         Reaction r = new Reaction();
-        r.setDescription(o.getDescription());
-        r.setShortDescription(o.getShortDescription());
         if (o.getUuid() != null && !o.getUuid().isEmpty()) {
             r.setUuid(o.getUuid());
         }
@@ -46,6 +44,8 @@ public class NewReactionResource extends AbstractResource<ReactionRepresentation
             r.getCommands().add(api.commands().get(c.get("uuid")));
         }
         r.setConditions(o.getConditions());
+        r.setChanged();
+        api.reactions().create(r);
         return createUri(r.getUuid());
     }
 
@@ -76,7 +76,11 @@ public class NewReactionResource extends AbstractResource<ReactionRepresentation
 
     @Override
     protected ReactionRepresentation prepareSingle(String uuid) {
-        return new ReactionRepresentation(api.reactions().get(uuid));
+        Reaction r = api.reactions().get(uuid);
+        if (r != null){
+            return new ReactionRepresentation(r);
+        }
+        return null;
     }
 
 }
