@@ -44,20 +44,15 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
         //called when the user starts the plugin from UI
         if (serial == null) {
             serial = new SerialConnectionProvider();
-            //UNCOMMENT IF NEEDED:
-            //instead of specify a port name is also possible to search for 
-            //the right port using an hello message and an expected reply
-            //the hello message will be broadcasted to all usb connected devices
-            //serial.setAutodiscover(
-            //      configuration.getStringProperty("serial.hello", "hello"), 
-            //    configuration.getStringProperty("serial.hello-reply", "hello-reply"));
             //connection parameters
             serial.setPortName(configuration.getStringProperty("serial.port", "/dev/usb0"));
             serial.setPortBaudrate(configuration.getIntProperty("serial.baudrate", 9600));
             serial.setPortDatabits(configuration.getIntProperty("serial.databits", 8));
             serial.setPortParity(configuration.getIntProperty("serial.parity", 0));
             serial.setPortStopbits(configuration.getIntProperty("serial.stopbits", 1));
-
+            // listener for data
+            serial.addListener(this);
+            serial.connect();
         }
     }
 
@@ -71,19 +66,6 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
 
     @Override
     protected void onRun() {
-        //called in a loop while this plugin is running
-        //loops waittime is specified using setPollingWait()
-        try {
-            //sends the string to serialport and waits the amount of time
-            //written in setPollingWait() method [you can found it in Massabus constructor]
-            String message = "A_STRING_MESSAGE";
-            String reply = serial.send(message);
-            LOG.info("Arduino USB replies " + reply + " to message " + message);
-        } catch (IOException ex) {
-            setDescription("Stopped for IOException in onRun"); //write here a better error message for the user
-            stop();
-
-        }
     }
 
     @Override
@@ -113,6 +95,6 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
     @Override
     public void onDataAvailable(String data) {
         //called when something is readed from the serial port
-       LOG.info("Arduino USB reads '" + data + "'");
+        LOG.info("Arduino USB reads '" + data + "'");
     }
 }
