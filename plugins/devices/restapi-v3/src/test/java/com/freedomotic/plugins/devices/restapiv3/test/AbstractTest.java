@@ -74,12 +74,6 @@ public abstract class AbstractTest<Z> extends JerseyTest {
     @Override
     protected Application configure() {
         uuid = UUID.randomUUID().toString();
-        System.out.println("DEBUG: I'm in configure of abstracttest");
-        Injector injector = Guice.createInjector(new FreedomoticInjector());
-        api = injector.getInstance(API.class);
-        //        api = Freedomotic.INJECTOR.getInstance(API.class);
-        System.out.println("DEBUG: Api reference in configure is " + api);
-        init();
         representation = MediaType.APPLICATION_JSON_TYPE;
 
         enable(TestProperties.LOG_TRAFFIC);
@@ -106,6 +100,9 @@ public abstract class AbstractTest<Z> extends JerseyTest {
 
     @Test
     public void test() {
+        //Init should be in test() because the @GuiceInjector injects this
+        //class members just before executing the test
+        init();
         Entity<Z> cmdEntity = Entity.entity(getItem(), getRepresentation());
 
         // POST
