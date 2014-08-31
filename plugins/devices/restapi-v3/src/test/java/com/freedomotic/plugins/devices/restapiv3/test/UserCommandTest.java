@@ -32,14 +32,14 @@ public class UserCommandTest extends AbstractTest<Command>{
 
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        item = new Command();
-        item.setName("TestCmd");
-        item.setUUID(uuid);
-        item.setProperty("prop1", "value1");
-        item.setReceiver("receiver.channel");
+        setItem(new Command());
+        getItem().setName("TestCmd");
+        getItem().setUUID(getUuid());
+        getItem().setProperty("prop1", "value1");
+        getItem().setReceiver("receiver.channel");
         initPath(UserCommandResource.class);
-        listType = new GenericType<List<Command>>(){};
-        singleType = new GenericType<Command>(){};
+        setListType(new GenericType<List<Command>>(){});
+        setSingleType(new GenericType<Command>(){});
 
     }
 
@@ -55,14 +55,14 @@ public class UserCommandTest extends AbstractTest<Command>{
 
     @Override
     protected void getAssertions(Command c2) {
-assertEquals("Single test - UUID", item.getUuid(), c2.getUuid());
-        assertEquals("Single test - NAME", item.getName(), c2.getName());
+assertEquals("Single test - UUID", getItem().getUuid(), c2.getUuid());
+        assertEquals("Single test - NAME", getItem().getName(), c2.getName());
     }
 
     @Override
     protected void listAssertions(List<Command> cl) {
-       assertEquals("UUID test", item.getUuid(), cl.get(0).getUuid());
-        assertEquals("Name test", item.getName(), cl.get(0).getName());
+       assertEquals("UUID test", getItem().getUuid(), cl.get(0).getUuid());
+        assertEquals("Name test", getItem().getName(), cl.get(0).getName());
     }
 
     @Override

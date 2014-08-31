@@ -50,19 +50,19 @@ public class ObjectTest extends AbstractTest<EnvObject> {
     public void init() throws UriBuilderException, IllegalArgumentException {
         e = new Environment();
         e.setName("Test env for zone");
-        e.setUUID(uuid);
+        e.setUUID(getUuid());
         
-        el = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
+        el = new EnvironmentLogic(getApi());
         el.setPojo(e);
         el.init();
-        api.environments().create(el);
+        getApi().environments().create(el);
         
-        item = new EnvObject();
-        item.setName("TestObject");
-        item.setUUID(uuid);
-        item.setHierarchy("com.freedomotic.objects.impl.ElectricDevice");
-        item.setType("EnvObject.ElectricDevice");
-        item.setEnvironmentID(e.getUUID());
+        setItem(new EnvObject());
+        getItem().setName("TestObject");
+        getItem().setUUID(getUuid());
+        getItem().setHierarchy("com.freedomotic.objects.impl.ElectricDevice");
+        getItem().setType("EnvObject.ElectricDevice");
+        getItem().setEnvironmentID(e.getUUID());
         Representation r = new Representation();
         r.setOffset(0, 0);
         r.setTangible(true);
@@ -72,15 +72,15 @@ public class ObjectTest extends AbstractTest<EnvObject> {
         s.append(1,1);
         s.append(1,0);
         r.setShape(s);
-        item.getRepresentations().add(r);
-        item.setCurrentRepresentation(0);
+        getItem().getRepresentations().add(r);
+        getItem().setCurrentRepresentation(0);
         BooleanBehavior b = new BooleanBehavior();
         b.setName("powered");
         b.setValue(true);
-        item.getBehaviors().add(b);
+        getItem().getBehaviors().add(b);
         initPath(ObjectResource.class);
-        listType = new GenericType<List<EnvObject>>(){};
-        singleType = new GenericType<EnvObject>(){};
+        setListType(new GenericType<List<EnvObject>>(){});
+        setSingleType(new GenericType<EnvObject>(){});
     }
 
     @Override
@@ -104,14 +104,14 @@ public class ObjectTest extends AbstractTest<EnvObject> {
 
     @Override
     protected void getAssertions(EnvObject obj) {
-        assertEquals("Single test - UUID", item.getUUID(), obj.getUUID());
-        assertEquals("Single test - NAME", item.getName(), obj.getName());
+        assertEquals("Single test - UUID", getItem().getUUID(), obj.getUUID());
+        assertEquals("Single test - NAME", getItem().getName(), obj.getName());
     }
 
     @Override
     protected void listAssertions(List<EnvObject> list) {
-        assertEquals("UUID test", item.getUUID(), list.get(0).getUUID());
-        assertEquals("Name test", item.getName(), list.get(0).getName());
+        assertEquals("UUID test", getItem().getUUID(), list.get(0).getUUID());
+        assertEquals("Name test", getItem().getName(), list.get(0).getName());
     }
 
     @Override

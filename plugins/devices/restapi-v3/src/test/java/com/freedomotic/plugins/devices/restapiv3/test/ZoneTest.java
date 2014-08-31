@@ -45,22 +45,22 @@ public class ZoneTest extends AbstractTest<Zone>{
     
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        item = new Zone();
-        item.setName("Test Zone");
-        item.setAsRoom(true);
-        item.setDescription("Before editing");
+        setItem(new Zone());
+        getItem().setName("Test Zone");
+        getItem().setAsRoom(true);
+        getItem().setDescription("Before editing");
         e = new Environment();
         e.setName("Test env for zone");
-        e.setUUID(uuid);
-        el = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
+        e.setUUID(getUuid());
+        el = new EnvironmentLogic(getApi());
         el.setPojo(e);
         el.init();
         //EnvironmentPersistence.add(el, false);
-        api.environments().create(el);
+        getApi().environments().create(el);
        
         initPath(UriBuilder.fromResource(EnvironmentResource.class).path(e.getUUID()).path("/rooms").build().toString());
-        listType = new GenericType<List<Zone>>(){};
-        singleType = new GenericType<Zone>(){};        
+        setListType(new GenericType<List<Zone>>(){});
+        setSingleType(new GenericType<Zone>(){});        
     }
 
     @Override
@@ -75,12 +75,12 @@ public class ZoneTest extends AbstractTest<Zone>{
 
     @Override
     protected void getAssertions(Zone obj) {
-        assertEquals("Single test - NAME", item.getName(), obj.getName());
+        assertEquals("Single test - NAME", getItem().getName(), obj.getName());
     }
 
     @Override
     protected void listAssertions(List<Zone> list) {
-         assertEquals("Name test", item.getName(), list.get(0).getName());
+         assertEquals("Name test", getItem().getName(), list.get(0).getName());
     }
 
     @Override

@@ -78,7 +78,6 @@ class APIStandardImpl implements API {
         this.triggers = triggerPersistence;
         this.commands = commands;
         this.reactions = reactions;
-        System.out.println("auth in apiimpl is " + this.auth);
     }
 
     /**

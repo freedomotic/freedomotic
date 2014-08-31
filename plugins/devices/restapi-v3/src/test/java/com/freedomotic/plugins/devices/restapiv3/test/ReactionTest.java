@@ -29,21 +29,21 @@ public class ReactionTest extends AbstractTest<Reaction>{
     
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        item = new Reaction();
-        item.setUuid(uuid);
+        setItem(new Reaction());
+        getItem().setUuid(getUuid());
         Command com = new Command();
         com.setName("Reaction Command");
         com.setHardwareLevel(false);
         Trigger t = new Trigger();
         t.setName("Reaction trigger");
-        api.triggers().create(t);
-        api.commands().create(com);
-        item.setTrigger(t);
+        getApi().triggers().create(t);
+        getApi().commands().create(com);
+        getItem().setTrigger(t);
         
-        item.addCommand(com);
+        getItem().addCommand(com);
         initPath(OldReactionResource.class);
-        listType = new GenericType<List<Reaction>>(){};
-        singleType = new GenericType<Reaction>(){};
+        setListType(new GenericType<List<Reaction>>(){});
+        setSingleType(new GenericType<Reaction>(){});
     }
 
     @Override
@@ -58,12 +58,12 @@ public class ReactionTest extends AbstractTest<Reaction>{
 
     @Override
     protected void getAssertions(Reaction obj) {
-       assertEquals("Single test - UUID", item.getUuid(), obj.getUuid());
+       assertEquals("Single test - UUID", getItem().getUuid(), obj.getUuid());
     }
 
     @Override
     protected void listAssertions(List<Reaction> list) {
-        assertEquals("Single test - UUID", item.getUuid(), list.get(0).getUuid());
+        assertEquals("Single test - UUID", getItem().getUuid(), list.get(0).getUuid());
     }
 
     @Override

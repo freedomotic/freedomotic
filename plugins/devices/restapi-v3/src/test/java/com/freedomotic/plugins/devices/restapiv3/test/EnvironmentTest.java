@@ -32,12 +32,12 @@ public class EnvironmentTest extends AbstractTest<Environment> {
 
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        item = new Environment();
-        item.setName("TestEnv");
-        item.setUUID(uuid);
+        setItem(new Environment());
+        getItem().setName("TestEnv");
+        getItem().setUUID(getUuid());
         initPath(EnvironmentResource.class);
-        listType = new GenericType<List<Environment>>(){};
-        singleType = new GenericType<Environment>(){};
+        setListType(new GenericType<List<Environment>>(){});
+        setSingleType(new GenericType<Environment>(){});
     }
 
     @Override
@@ -52,14 +52,14 @@ public class EnvironmentTest extends AbstractTest<Environment> {
 
     @Override
     protected void getAssertions(Environment c2) {
-        assertEquals("Single test - UUID", item.getUUID(), c2.getUUID());
-        assertEquals("Single test - NAME", item.getName(), c2.getName());
+        assertEquals("Single test - UUID", getItem().getUUID(), c2.getUUID());
+        assertEquals("Single test - NAME", getItem().getName(), c2.getName());
     }
 
     @Override
     protected void listAssertions(List<Environment> cl) {
-        assertEquals("UUID test", item.getUUID(), cl.get(0).getUUID());
-        assertEquals("Name test", item.getName(), cl.get(0).getName());
+        assertEquals("UUID test", getItem().getUUID(), cl.get(0).getUUID());
+        assertEquals("Name test", getItem().getName(), cl.get(0).getName());
     }
 
     @Override

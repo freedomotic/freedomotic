@@ -36,15 +36,15 @@ public class TriggerTest extends AbstractTest<Trigger> {
 
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        item = new Trigger();
-        item.setName("TestTrg");
-        item.setUUID(uuid);
-        item.setChannel("test.trigger.channel");
+        setItem(new Trigger());
+        getItem().setName("TestTrg");
+        getItem().setUUID(getUuid());
+        getItem().setChannel("test.trigger.channel");
         initPath(TriggerResource.class);
-        listType = new GenericType<List<Trigger>>() {
-        };
-        singleType = new GenericType<Trigger>() {
-        };
+        setListType(new GenericType<List<Trigger>>() {
+        });
+        setSingleType(new GenericType<Trigger>() {
+        });
     }
 
     @Override
@@ -59,14 +59,14 @@ public class TriggerTest extends AbstractTest<Trigger> {
 
     @Override
     protected void getAssertions(Trigger c2) {
-        assertEquals("Single test - UUID", item.getUUID(), c2.getUUID());
-        assertEquals("Single test - NAME", item.getName(), c2.getName());
+        assertEquals("Single test - UUID", getItem().getUUID(), c2.getUUID());
+        assertEquals("Single test - NAME", getItem().getName(), c2.getName());
     }
 
     @Override
     protected void listAssertions(List<Trigger> cl) {
-        assertEquals("UUID test", item.getUUID(), cl.get(0).getUUID());
-        assertEquals("Name test", item.getName(), cl.get(0).getName());
+        assertEquals("UUID test", getItem().getUUID(), cl.get(0).getUUID());
+        assertEquals("Name test", getItem().getName(), cl.get(0).getName());
     }
 
     @Override
