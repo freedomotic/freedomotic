@@ -24,15 +24,16 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.serial.SerialConnectionProvider;
-import com.freedomotic.serial.SerialDataConsumer;
+//import com.freedomotic.serial.SerialConnectionProvider;
+//import com.freedomotic.serial.SerialDataConsumer;
 import java.io.IOException;
 import java.util.logging.Logger;
 
 public class ArduinoUSB extends Protocol implements SerialDataConsumer {
 
     private static final Logger LOG = Logger.getLogger(ArduinoUSB.class.getName());
-    SerialConnectionProvider serial;
+    //SerialConnectionProvider serial;
+     SerialConnectionProvider_1 serial;
 
     public ArduinoUSB() {
         super("Arduino USB", "/arduinousb/arduinousb-manifest.xml");
@@ -43,7 +44,8 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
     public void onStart() {
         //called when the user starts the plugin from UI
         if (serial == null) {
-            serial = new SerialConnectionProvider();
+            //serial = new SerialConnectionProvider();
+             serial = new SerialConnectionProvider_1();
             //connection parameters
             serial.setPortName(configuration.getStringProperty("serial.port", "/dev/usb0"));
             serial.setPortBaudrate(configuration.getIntProperty("serial.baudrate", 9600));
@@ -73,12 +75,13 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
         //this method receives freedomotic commands send on channel app.actuators.protocol.arduinousb.in
         String message = c.getProperty("arduinousb.message");
         String reply = null;
-        try {
-            reply = serial.send(message);
-        } catch (IOException iOException) {
-            setDescription("Stopped for IOException in onCommand"); //write here a better error message for the user
-            stop();
-        }
+       // try {
+            //reply = serial.send(message);
+            serial.send(message);
+       // } catch (IOException iOException) {
+         //   setDescription("Stopped for IOException in onCommand"); //write here a better error message for the user
+         //   stop();
+      //  }
         LOG.info("Arduino USB replies " + reply + " after executing command " + c.getName());
     }
 
