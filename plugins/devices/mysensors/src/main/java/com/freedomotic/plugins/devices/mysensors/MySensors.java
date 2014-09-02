@@ -22,6 +22,7 @@ package com.freedomotic.plugins.devices.mysensors;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.serial.SerialConnectionProvider;
@@ -58,7 +59,6 @@ public class MySensors extends Protocol {
 
     @Override
     protected void onRun() {
-        
     }
 
     @Override
@@ -104,31 +104,55 @@ public class MySensors extends Protocol {
         }
     }
 
+    private void sendChanges(String data) {
+        String nodeID;
+        String childSensorID;
+        String messageType;
+        String ack;
+        String subType;
+        String payload;
+        //check if it's a correct message
+        String[] message = data.split(";");
+        nodeID = message[0];
+        childSensorID = message[1];
+        messageType = message[2];
+        ack = message[3];
+        subType = message[4];
+        payload = message[5];
+
+        // 
+        if (messageType == "0" || messageType == "1") {
+            ProtocolRead event = new ProtocolRead(this, "mysensors", nodeID + ":" + childSensorID);
+            String objectClass = configuration.getProperty(subType);
+            if (objectClass != null) {
+                event.addProperty("object.class", objectClass);
+                event.addProperty("object.name", objectClass + " " + nodeID + ":" + childSensorID);
+            }
+            event.addProperty("sensor.value", payload);
+        }
+
+    }
+
     static class SerialPortReader implements SerialPortEventListener {
+
+        StringBuilder message = new StringBuilder();
+
         public void serialEvent(SerialPortEvent event) {
-            int eventValue = event.getEventValue();
-            if (event.isRXCHAR()) {//If data is available
-                if (eventValue >= 15) {// <---- don't check for exact length but also for anything larger
-                //Read data, if 15 bytes or more available
-                    try {
-                        byte buffer[] = serialPort.readBytes(eventValue);
-                        // call sendChanges(String data);
-                        LOG.info("Read data: " + new String(buffer, 0, buffer.length));
-                    } catch (SerialPortException ex) {
-                        System.out.println(ex);
+            if (event.isRXCHAR()) {
+                try {
+                    byte buffer[] = serialPort.readBytes();
+                    for (byte b : buffer) {
+                        if ((b == '\r' || b == '\n') && message.length() > 0) {
+                            String toProcess = message.toString();
+                            // call sendChanges(String data);
+                            System.out.println(toProcess);
+                            message.setLength(0);
+                        } else {
+                            message.append((char) b);
+                        }
                     }
-                } else if (event.isCTS()) {//If CTS line has changed state
-                    if (event.getEventValue() == 1) {//If line is ON
-                        System.out.println("CTS - ON");
-                    } else {
-                        System.out.println("CTS - OFF");
-                    }
-                } else if (event.isDSR()) {///If DSR line has changed state
-                    if (event.getEventValue() == 1) {//If line is ON
-                        System.out.println("DSR - ON");
-                    } else {
-                        System.out.println("DSR - OFF");
-                    }
+                } catch (SerialPortException ex) {
+                    LOG.severe(ex.getMessage());
                 }
             }
         }
