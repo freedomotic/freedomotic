@@ -1,6 +1,6 @@
 <config>
-    <!-- PLUGINS DEFAULT PARAMETERS --> 
-    <properties>
+     <properties>
+       <!-- PLUGINS DEFAULT PARAMETERS -->     
         <property name="name" value="mysensors"/>
         <property name="description" value="MySensors plugin"/>
         <property name="category" value="protocol"/>
@@ -10,7 +10,22 @@
         <property name="serial.databits" value="8"/>
         <property name="serial.parity" value="0"/>
         <property name="serial.stopbits" value="1"/>
-    </properties>
+       <!-- MAPPING SENSORS - FREEDOMOTIC OBJECTS CLASS --> 
+        <property name="6" value="Thermostat"/>
+        <property name="7" value="Hygrometer"/>
+        <property name="16" value="Light Sensor"/>
+
+     </properties>
+     <tuples>
+          <tuple>
+            <property name="object.class" value="Thermostat"/>
+            <property name="temperature" value="MySensors reads celsius temperature"/>
+          </tuple>
+          <tuple>
+            <property name="object.class" value="Light Sensor"/>
+            <property name="luminosity" value="MySensors reads luminosity"/>
+          </tuple>
+      </tuples>
 </config>
 
                 
