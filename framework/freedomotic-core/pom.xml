@@ -131,17 +131,20 @@
             <artifactId>jetty-all-server</artifactId>
             <version>8.1.15.v20140411</version>
         </dependency>
+        <!-- XML serialization library -->
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
             <version>1.4.7</version>
         </dependency>
+        <!-- LEGACY LIBRARY for serial port communication -->
         <dependency>
             <groupId>org.rxtx</groupId>
             <artifactId>rxtx</artifactId>
             <version>2.1.7</version>
             <type>jar</type>
         </dependency>
+        <!-- Dependency injection -->
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
@@ -153,11 +156,7 @@
             <artifactId>guice-assistedinject</artifactId>
             <version>3.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>3.0.2.RELEASE</version>
-        </dependency>
+        <!-- Authentication and authorization -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
@@ -169,6 +168,7 @@
             <artifactId>shiro-web</artifactId>
             <version>1.2.3</version>
         </dependency>
+        <!-- Json serialization -->
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-lgpl</artifactId>
@@ -179,10 +179,24 @@
             <artifactId>jackson-mapper-lgpl</artifactId>
             <version>1.3.0</version>
         </dependency>
+        <!-- Utiliy library to manage files and streams -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-io</artifactId>
             <version>1.3.2</version>
+            <type>jar</type>
+        </dependency>
+        <!-- Serial ports communication -->
+        <dependency>
+            <groupId>org.scream3r</groupId>
+            <artifactId>jssc</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+        <!-- Http GET and POST helpers -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.2</version>
             <type>jar</type>
         </dependency>
     </dependencies>
