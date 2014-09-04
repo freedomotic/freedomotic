@@ -120,10 +120,10 @@ public final class PluginJList
                     public void actionPerformed(ActionEvent e) {
                         if (client.getType().equalsIgnoreCase("plugin")) {
                             
-                            new PluginConfigure(parent.getPlugin().getApi(), client);
-                            // client.start();
-                            // client.showGui();
-                            // update();
+                            //new PluginConfigure(parent.getPlugin().getApi(), client);
+                             client.start();
+                             client.showGui();
+                             update();
                         }
 
                         if (client.getType().equalsIgnoreCase("object")) {
