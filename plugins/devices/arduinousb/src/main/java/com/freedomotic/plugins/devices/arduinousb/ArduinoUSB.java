@@ -23,17 +23,22 @@ import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.UnableToExecuteException;
+import com.freedomotic.helpers.SerialHelper;
+import com.freedomotic.helpers.SerialPortListener;
 import com.freedomotic.reactions.Command;
-//import com.freedomotic.serial.SerialConnectionProvider;
-//import com.freedomotic.serial.SerialDataConsumer;
+import com.freedomotic.serial.SerialDataConsumer;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class ArduinoUSB extends Protocol implements SerialDataConsumer {
+public class ArduinoUSB extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(ArduinoUSB.class.getName());
-    //SerialConnectionProvider serial;
-     SerialConnectionProvider_1 serial;
+    private String PORTNAME = configuration.getStringProperty("serial.port", "/dev/usb0");
+    private Integer BAUDRATE = configuration.getIntProperty("serial.baudrate", 9600);
+    private Integer DATABITS = configuration.getIntProperty("serial.databits", 8);
+    private Integer PARITY = configuration.getIntProperty("serial.parity", 0);
+    private Integer STOPBITS = configuration.getIntProperty("serial.stopbits", 1);
+    private SerialHelper serial;
 
     public ArduinoUSB() {
         super("Arduino USB", "/arduinousb/arduinousb-manifest.xml");
@@ -44,17 +49,13 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
     public void onStart() {
         //called when the user starts the plugin from UI
         if (serial == null) {
-            //serial = new SerialConnectionProvider();
-             serial = new SerialConnectionProvider_1();
-            //connection parameters
-            serial.setPortName(configuration.getStringProperty("serial.port", "/dev/usb0"));
-            serial.setPortBaudrate(configuration.getIntProperty("serial.baudrate", 9600));
-            serial.setPortDatabits(configuration.getIntProperty("serial.databits", 8));
-            serial.setPortParity(configuration.getIntProperty("serial.parity", 0));
-            serial.setPortStopbits(configuration.getIntProperty("serial.stopbits", 1));
-            // listener for data
-            serial.addListener(this);
-            serial.connect();
+            serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, new SerialPortListener() {
+
+                @Override
+                public void onDataAvailable(String data) {
+                    LOG.info("Arduino USB received: " + data);
+                }
+            });
         }
     }
 
@@ -75,13 +76,14 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
         //this method receives freedomotic commands send on channel app.actuators.protocol.arduinousb.in
         String message = c.getProperty("arduinousb.message");
         String reply = null;
-       // try {
-            //reply = serial.send(message);
-            serial.send(message);
-       // } catch (IOException iOException) {
-         //   setDescription("Stopped for IOException in onCommand"); //write here a better error message for the user
-         //   stop();
-      //  }
+        serial.write(message);
+        // try {
+        //reply = serial.send(message);
+        //serial.send(message);
+        // } catch (IOException iOException) {
+        //   setDescription("Stopped for IOException in onCommand"); //write here a better error message for the user
+        //   stop();
+        //  }
         LOG.info("Arduino USB replies " + reply + " after executing command " + c.getName());
     }
 
@@ -93,11 +95,5 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
     @Override
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void onDataAvailable(String data) {
-        //called when something is readed from the serial port
-        LOG.info("Arduino USB reads '" + data + "'");
     }
 }
