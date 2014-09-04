@@ -112,6 +112,7 @@ public class MySensors extends Protocol {
         String subType;
         String payload;
         //check if it's a correct message
+        System.out.println("Read string: " + data);
         String[] message = data.split(";");
         nodeID = message[0];
         childSensorID = message[1];
@@ -121,19 +122,28 @@ public class MySensors extends Protocol {
         payload = message[5];
 
         // 
-        if (messageType == "0" || messageType == "1") {
+        if (messageType.equalsIgnoreCase("0") || messageType.equalsIgnoreCase("1")) {
             ProtocolRead event = new ProtocolRead(this, "mysensors", nodeID + ":" + childSensorID);
             String objectClass = configuration.getProperty(subType);
             if (objectClass != null) {
                 event.addProperty("object.class", objectClass);
                 event.addProperty("object.name", objectClass + " " + nodeID + ":" + childSensorID);
             }
+            // adds isOn property only for lights
+            if ((messageType.equalsIgnoreCase("0") && subType.equalsIgnoreCase("3")) || (messageType.equalsIgnoreCase("1") && subType.equalsIgnoreCase("2"))) {
+                if (payload.equalsIgnoreCase("1")) {
+                    event.addProperty("sensor.isOn", "true");
+                } else {
+                    event.addProperty("sensor.isOn", "false");
+                }
+            }
             event.addProperty("sensor.value", payload);
+            this.notifyEvent(event);
         }
 
     }
 
-    static class SerialPortReader implements SerialPortEventListener {
+    public class SerialPortReader implements SerialPortEventListener {
 
         StringBuilder message = new StringBuilder();
 
@@ -145,7 +155,7 @@ public class MySensors extends Protocol {
                         if ((b == '\r' || b == '\n') && message.length() > 0) {
                             String toProcess = message.toString();
                             // call sendChanges(String data);
-                            System.out.println(toProcess);
+                            sendChanges(toProcess);
                             message.setLength(0);
                         } else {
                             message.append((char) b);
