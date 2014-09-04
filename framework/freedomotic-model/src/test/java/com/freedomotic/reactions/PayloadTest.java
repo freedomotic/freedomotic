@@ -107,22 +107,62 @@ public class PayloadTest {
         Payload event = new Payload();
         event.addStatement(Statement.AND, "number", Statement.EQUALS, "1");
         event.addStatement(Statement.AND, "text", Statement.EQUALS, "abc");
+        event.addStatement(Statement.AND, "testRegex", Statement.EQUALS, "EnvObject.Light");
 
         //contruct the trigger
         Payload trigger = new Payload();
         trigger.addStatement(Statement.AND, "number", Statement.EQUALS, "1");
-        trigger.addStatement(Statement.AND, "number", Statement.LESS_THAN, "2");
-        trigger.addStatement(Statement.AND, "number", Statement.GREATER_THAN, "0");
-        trigger.addStatement(Statement.AND, "number", Statement.LESS_EQUAL_THAN, "1");
         trigger.addStatement(Statement.AND, "number", Statement.EQUALS, Statement.ANY);
         //payload eveluation is after resolve step so the trigger has elready the event.* properties in it
         trigger.addStatement(Statement.AND, "event.number", Statement.EQUALS, "123");
         trigger.addStatement("SET", "defineANewProperty", Statement.EQUALS, "123");
 
+        trigger.addStatement(Statement.AND, "testRegex", Statement.REGEX, "^EnvObject.*");
+
         boolean expResult = true;
         //compare trigger with events
         boolean result = trigger.equals(event);
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testGreaterLess() {
+        //contruct the event
+        Payload event = new Payload();
+        event.addStatement(Statement.AND, "number", Statement.EQUALS, "1");
+        event.addStatement(Statement.AND, "text", Statement.EQUALS, "abc");
+
+        //contruct the trigger
+        Payload trigger = new Payload();
+        trigger.addStatement(Statement.AND, "number", Statement.LESS_THAN, "2");
+        trigger.addStatement(Statement.AND, "number", Statement.GREATER_THAN, "0");
+        trigger.addStatement(Statement.AND, "number", Statement.LESS_EQUAL_THAN, "1");
+
+        //compare trigger with events
+        boolean result = trigger.equals(event);
+        Assert.assertTrue("1 is greater than 0", result);
+    }
+
+    @Test
+    public void testBetweenTime() {
+        LOG.info("Check if a give hour is inside a given hous interval");
+        //contruct the event
+        Payload event = new Payload();
+        event.addStatement(Statement.AND, "morning", Statement.EQUALS, "10:00:00");
+        event.addStatement(Statement.AND, "evening", Statement.EQUALS, "23:00:00");
+        event.addStatement(Statement.AND, "midnight1", Statement.EQUALS, "00:00:00");
+        event.addStatement(Statement.AND, "midnight2", Statement.EQUALS, "24:00:00");
+
+        //contruct the trigger
+        Payload trigger = new Payload();
+        trigger.addStatement(Statement.AND, "morning", Statement.BETWEEN_TIME, "9:00:0-11:00:00");
+        trigger.addStatement(Statement.AND, "evening", Statement.BETWEEN_TIME, "22:00:00-8:00:00");
+        trigger.addStatement(Statement.AND, "midnight1", Statement.BETWEEN_TIME, "23:30:00-0:30:00");
+        trigger.addStatement(Statement.AND, "midnight2", Statement.BETWEEN_TIME, "23:30:00-0:30:00");
+
+        //compare trigger with events
+        boolean result = trigger.equals(event);
+        Assert.assertTrue(result);
     }
 
     /**
