@@ -368,15 +368,6 @@
                 <version>4.11</version>
                 <scope>test</scope>
             </dependency>
-
-            <!-- remove the real commons-logging from classpath -->
-            <!-- declare as provided or exclude from spring jars -->
-            <dependency>
-                <artifactId>commons-logging</artifactId>
-                <groupId>commons-logging</groupId>
-                <version>1.0</version>
-                <scope>provided</scope>
-            </dependency>
 	
             <!-- add slf4j interfaces to classpath -->
             <dependency>

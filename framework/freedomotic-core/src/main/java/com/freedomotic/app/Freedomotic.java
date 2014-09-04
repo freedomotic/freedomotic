@@ -164,12 +164,12 @@ public class Freedomotic implements BusConsumer {
             SysSubject.getSession().setTimeout(-1);
             ThreadState threadState = new SubjectThreadState(SysSubject);
             threadState.bind();
-            LOG.info("Booting as user:" + auth.getSubject().getPrincipal() +". Session will last:"+auth.getSubject().getSession().getTimeout());
+            LOG.info("Booting as user:" + auth.getSubject().getPrincipal() + ". Session will last:" + auth.getSubject().getSession().getTimeout());
         }
 
-        String resourcesPath =
-                new File(Info.getApplicationPath()
-                + config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
+        String resourcesPath
+                = new File(Info.getApplicationPath()
+                        + config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
         LOG.info("\nOS: " + System.getProperty("os.name") + "\n" + api.getI18n().msg("architecture") + ": "
                 + System.getProperty("os.arch") + "\n" + "OS Version: " + System.getProperty("os.version")
                 + "\n" + api.getI18n().msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
@@ -480,23 +480,21 @@ public class Freedomotic implements BusConsumer {
     }
 
     // FIXME This shouldn't be done through this method
-
     /**
      *
      * @param event
      */
-        public static void sendEvent(EventTemplate event) {
+    public static void sendEvent(EventTemplate event) {
         busService.send(event);
     }
 
     // FIXME This shouldn't be done through this method
-
     /**
      *
      * @param command
      * @return
      */
-        public static Command sendCommand(final Command command) {
+    public static Command sendCommand(final Command command) {
         return busService.send(command);
     }
 
@@ -582,7 +580,7 @@ public class Freedomotic implements BusConsumer {
         busService.destroy();
         config.save();
         auth.save();
-        
+
         String savedDataRoot;
 
         if (config.getBooleanProperty("KEY_OVERRIDE_REACTIONS_ON_EXIT", false) == true) {
@@ -602,9 +600,9 @@ public class Freedomotic implements BusConsumer {
 
         try {
             folder = new File(environmentFilePath).getParentFile();
-            
+
             EnvironmentPersistence.saveEnvironmentsToFolder(folder);
-            
+
             if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
                 File saveDir = null;
                 try {
