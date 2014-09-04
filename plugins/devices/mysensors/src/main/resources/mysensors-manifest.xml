@@ -5,18 +5,25 @@
         <property name="description" value="MySensors plugin"/>
         <property name="category" value="protocol"/>
         <property name="short-name" value="mysensors"/>
+        <property name="protocol.name" value="mysensors"/>
+       <!-- SERIAL CONNECTION PARAMETERS -->  
         <property name="serial.port" value="/dev/ttyACM0"/>       
         <property name="serial.baudrate" value="9600"/>
         <property name="serial.databits" value="8"/>
         <property name="serial.parity" value="0"/>
         <property name="serial.stopbits" value="1"/>
        <!-- MAPPING SENSORS - FREEDOMOTIC OBJECTS CLASS --> 
+        <property name="3" value="Light"/>
         <property name="6" value="Thermostat"/>
         <property name="7" value="Hygrometer"/>
         <property name="16" value="Light Sensor"/>
 
      </properties>
      <tuples>
+          <tuple>
+            <property name="object.class" value="Light"/>
+            <property name="powered" value="MySensors reads light status"/>
+          </tuple>
           <tuple>
             <property name="object.class" value="Thermostat"/>
             <property name="temperature" value="MySensors reads celsius temperature"/>
