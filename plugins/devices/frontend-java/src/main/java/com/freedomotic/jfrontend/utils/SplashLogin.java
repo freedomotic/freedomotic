@@ -5,6 +5,7 @@
 package com.freedomotic.jfrontend.utils;
 
 import com.freedomotic.api.API;
+import com.freedomotic.events.GenericEvent;
 import com.freedomotic.jfrontend.JavaDesktopFrontend;
 import com.freedomotic.util.I18n.I18n;
 import java.awt.event.ActionEvent;
@@ -56,8 +57,8 @@ public class SplashLogin extends javax.swing.JFrame {
         ActionListener taskPerformer = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                if (api.getConfig().getBooleanProperty("KEY_ENABLE_SSO", false) &&
-                    api.getAuth().bindFakeUser(System.getProperty("user.name"))) {
+                if (api.getConfig().getBooleanProperty("KEY_ENABLE_SSO", false)
+                        && api.getAuth().bindFakeUser(System.getProperty("user.name"))) {
                     master.createMainWindow();
                 } else {
                     msgBox.setText(api.getI18n().msg("login_disclaimer"));
@@ -81,6 +82,7 @@ public class SplashLogin extends javax.swing.JFrame {
     private void initComponents() {
 
         btnLogin = new javax.swing.JButton();
+        btnExit = new javax.swing.JButton();
         username = new javax.swing.JTextField();
         password = new javax.swing.JPasswordField();
         logo = new javax.swing.JLabel();
@@ -97,6 +99,13 @@ public class SplashLogin extends javax.swing.JFrame {
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoginActionPerformed(evt);
+            }
+        });
+
+        btnExit.setText("Exit");
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitActionPerformed(evt);
             }
         });
 
@@ -138,9 +147,10 @@ public class SplashLogin extends javax.swing.JFrame {
                         .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnLogin)
-                        .addGap(6, 6, 6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnExit))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(logo, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
+                        .addComponent(logo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(56, 56, 56))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(12, 12, 12)
@@ -166,7 +176,8 @@ public class SplashLogin extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLogin))
+                    .addComponent(btnLogin)
+                    .addComponent(btnExit))
                 .addContainerGap())
         );
 
@@ -204,7 +215,15 @@ public class SplashLogin extends javax.swing.JFrame {
     private void usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_usernameActionPerformed
+
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
+        GenericEvent exitSignal = new GenericEvent(this);
+        exitSignal.setDestination("app.event.system.exit");
+        master.notifyEvent(exitSignal);
+    }//GEN-LAST:event_btnExitActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnExit;
     private javax.swing.JButton btnLogin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

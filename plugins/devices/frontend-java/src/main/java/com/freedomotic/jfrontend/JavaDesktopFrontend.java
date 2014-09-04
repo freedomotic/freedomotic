@@ -70,16 +70,18 @@ public class JavaDesktopFrontend extends Protocol {
      */
     @Override
     public void onStop() {
-        window.setVisible(false);
-        window.dispose();
-        window = null;
-        //listDrawer = null;
-        drawer = null;
-        for (GraphPanel pg : graphs.values()) {
-            pg.dispose();
+        if (window != null) {
+            window.setVisible(false);
+            window.dispose();
+            window = null;
+            //listDrawer = null;
+            drawer = null;
+            for (GraphPanel pg : graphs.values()) {
+                pg.dispose();
+            }
+            graphs.clear();
+            sl = null;
         }
-        graphs.clear();
-        sl = null;
     }
 
     /**
@@ -247,7 +249,7 @@ public class JavaDesktopFrontend extends Protocol {
             Callout callout = new Callout(zoneDesc, 2000, Color.blue);
             drawer.createCallout(callout);
             drawer.setNeedRepaint(true);
-        }else if (event instanceof MessageEvent) {
+        } else if (event instanceof MessageEvent) {
             printCallout(event.getProperty("message.text"));
         } else if (null != window) {
             final PluginJList pluginJList = window.getPluginJList();
