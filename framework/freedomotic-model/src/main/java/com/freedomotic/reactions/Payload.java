@@ -115,7 +115,7 @@ public final class Payload
             //check all statement for consistency
             while (it.hasNext()) {
                 Statement triggerStatement = it.next();
-                
+
                 // at this stage the trigger has already all the event.* properties embedded (shoud be skipped)
                 if (triggerStatement.getAttribute().startsWith("event.")) {
                     //skip this iteration, and continue with the next statement
@@ -189,106 +189,11 @@ public final class Payload
     }
 
     private static boolean isStatementConsistent(String triggerOperand, String triggerValue, String eventValue) {
-        if (triggerOperand.equalsIgnoreCase(Statement.EQUALS)) { //event operand="EQUALS", trigger operand="EQUALS"
 
-            if (triggerValue.equalsIgnoreCase(eventValue) || (triggerValue.equals(Statement.ANY))) {
-                return true;
-            }
-        }
+            ExpressionFactory factory = new ExpressionFactory<>();
+            Expression exp = factory.createExpression(eventValue, triggerOperand, triggerValue);
+            return (boolean) exp.evaluate();
 
-        if (triggerOperand.equals(Statement.REGEX)) { //event operand="EQUALS", trigger operand="REGEX"
-
-            Pattern pattern = Pattern.compile(triggerValue);
-            Matcher matcher = pattern.matcher(eventValue);
-
-            if (matcher.matches()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        //applies only to integer values
-        if (triggerOperand.equals(Statement.GREATER_THAN)) { //event operand="EQUALS", trigger operand="GREATER_THAN"
-
-            try {
-                Integer intReactionValue = new Integer(triggerValue);
-                Integer intEventValue = new Integer(eventValue);
-
-                if (intEventValue > intReactionValue) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (NumberFormatException numberFormatException) {
-                new RuntimeException(Statement.GREATER_THAN.toString()
-                        + " operator can be applied only to integer values");
-
-                return false;
-            }
-        }
-
-        if (triggerOperand.equals(Statement.LESS_THAN)) { //event operand="EQUALS", trigger operand="LESS_THAN"
-
-            try {
-                Integer intReactionValue = new Integer(triggerValue);
-                Integer intEventValue = new Integer(eventValue);
-
-                if (intEventValue < intReactionValue) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (NumberFormatException numberFormatException) {
-                //is not a number
-                new RuntimeException(Statement.LESS_THAN.toString()
-                        + " operator can be applied only to integer values");
-
-                return false;
-            }
-        }
-
-        //applies only to integer values
-        if (triggerOperand.equals(Statement.GREATER_EQUAL_THAN)) { //event operand="EQUALS", trigger operand="GREATER_THAN"
-
-            try {
-                Integer intReactionValue = new Integer(triggerValue);
-                Integer intEventValue = new Integer(eventValue);
-
-                if (intEventValue >= intReactionValue) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (NumberFormatException numberFormatException) {
-                new RuntimeException(Statement.GREATER_EQUAL_THAN.toString()
-                        + " operator can be applied only to integer values");
-
-                return false;
-            }
-        }
-
-        if (triggerOperand.equals(Statement.LESS_EQUAL_THAN)) { //event operand="EQUALS", trigger operand="LESS_THAN"
-
-            try {
-                Integer intReactionValue = new Integer(triggerValue);
-                Integer intEventValue = new Integer(eventValue);
-
-                if (intEventValue <= intReactionValue) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (NumberFormatException numberFormatException) {
-                //is not a number
-                new RuntimeException(Statement.LESS_EQUAL_THAN.toString()
-                        + " operator can be applied only to integer values");
-
-                return false;
-            }
-        }
-
-        return false;
     }
 
     /**
