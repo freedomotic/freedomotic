@@ -28,6 +28,7 @@ import com.freedomotic.reactions.Command;
 import com.freedomotic.serial.SerialConnectionProvider;
 import com.freedomotic.serial.SerialDataConsumer;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jssc.*;
 
@@ -76,7 +77,18 @@ public class MySensors extends Protocol {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String address = c.getProperty("address");
+        String IDMessageType = c.getProperty("id-message-type");
+        String ack = c.getProperty("ack");
+        String subType = c.getProperty("sub-type");
+        String payload = c.getProperty("payload");
+        String message = address+";"+IDMessageType+";"+ack+";"+subType+";"+payload+"\n";
+        try {
+            serialPort.writeString(message);
+            LOG.info("MySensors plugin sends "+message);
+        } catch (SerialPortException ex) {
+            LOG.severe(ex.getMessage());
+        }
     }
 
     @Override
@@ -123,7 +135,7 @@ public class MySensors extends Protocol {
 
         // 
         if (messageType.equalsIgnoreCase("0") || messageType.equalsIgnoreCase("1")) {
-            ProtocolRead event = new ProtocolRead(this, "mysensors", nodeID + ":" + childSensorID);
+            ProtocolRead event = new ProtocolRead(this, "mysensors", nodeID + ";" + childSensorID);
             String objectClass = configuration.getProperty(subType);
             if (objectClass != null) {
                 event.addProperty("object.class", objectClass);

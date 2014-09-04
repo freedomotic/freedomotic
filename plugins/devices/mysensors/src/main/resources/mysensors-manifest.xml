@@ -16,6 +16,7 @@
         <property name="3" value="Light"/>
         <property name="6" value="Thermostat"/>
         <property name="7" value="Hygrometer"/>
+        <property name="8" value="Barometer"/>
         <property name="16" value="Light Sensor"/>
 
      </properties>
@@ -23,6 +24,8 @@
           <tuple>
             <property name="object.class" value="Light"/>
             <property name="powered" value="MySensors reads light status"/>
+            <property name="turn on" value="Turn ON MySensors light"/>
+            <property name="turn off" value="Turn OFF MySensors light"/>
           </tuple>
           <tuple>
             <property name="object.class" value="Thermostat"/>
