@@ -19,6 +19,7 @@
  */
 package com.freedomotic.helpers;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jssc.*;
@@ -39,6 +40,9 @@ public class SerialHelper {
     private static final Logger LOG = Logger.getLogger(SerialHelper.class.getName());
     private SerialPort serialPort;
     private String portName;
+    private String readTerminator = "";
+    private int readChunkSize = -1;
+    StringBuilder readBuffer = new StringBuilder();
 
     /**
      * Accept default parameters and change only the port name. The connect()
@@ -61,17 +65,16 @@ public class SerialHelper {
                 @Override
                 public void serialEvent(SerialPortEvent event) {
                     if (event.isRXCHAR()) {
-                        StringBuilder buffer = new StringBuilder();
 
                         if (event.getEventValue() > 0) {
                             try {
-                                buffer.append(new String(serialPort.readBytes()));
+                                readBuffer.append(new String(serialPort.readBytes()));
                             } catch (SerialPortException ex) {
                                 LOG.log(Level.WARNING, null, ex);
                             }
                         }
-                        LOG.log(Level.CONFIG, "Received message ''{0}'' from serial port {1}", new Object[]{buffer.toString(), portName});
-                        consumer.onDataAvailable(buffer.toString());
+                        LOG.log(Level.CONFIG, "Received message ''{0}'' from serial port {1}", new Object[]{readBuffer.toString(), portName});
+                        sendReadData(consumer);
                     }
                 }
             });
@@ -117,4 +120,52 @@ public class SerialHelper {
             return false;
         }
     }
+
+    public void setChunkTerminator(String readTerminator) {
+        this.readTerminator = readTerminator;
+        //disable chunk size splitting
+        this.readChunkSize = -1;
+    }
+
+    public void setChunkSize(int chunkSize) {
+        this.readChunkSize = chunkSize;
+        // disable chunk terminator splitting
+        this.readTerminator = "";
+    }
+
+    public void sendReadData(SerialPortListener consumer) {
+        String bufferContent = readBuffer.toString();
+        // if a terminator is configured
+        if (!readTerminator.isEmpty()) {
+            // consume chunks until terminator string is reached
+            while (bufferContent.contains(readTerminator)) {
+                int endOfTerminator = bufferContent.indexOf(readTerminator) + readTerminator.length();
+                String chunk = bufferContent.substring(0, endOfTerminator);
+                //remove this chunk of data from bufferContent
+                bufferContent = bufferContent.substring(endOfTerminator);
+                consumer.onDataAvailable(chunk);
+            }
+        } else {
+            if (readChunkSize > 0) {
+                // consume chunks of the given size
+                while (readChunkSize > 0 && bufferContent.length() >= readChunkSize) {
+                    String chunk = bufferContent.substring(0, readChunkSize);
+                    //remove this chunk of data from bufferContent
+                    bufferContent = bufferContent.substring(readChunkSize);
+                    consumer.onDataAvailable(chunk);
+
+                }
+            } else {
+                // no splitting, send it just as readed
+                consumer.onDataAvailable(bufferContent);
+                //clear from sent text
+                bufferContent = "";
+            }
+        }
+
+        // Clear the buffer for sent text
+        readBuffer.setLength(0);
+        readBuffer.append(bufferContent);
+    }
+
 }
