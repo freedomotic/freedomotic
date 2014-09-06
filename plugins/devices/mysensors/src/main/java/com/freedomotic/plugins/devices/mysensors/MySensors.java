@@ -27,12 +27,9 @@ import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.helpers.SerialHelper;
 import com.freedomotic.helpers.SerialPortListener;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.serial.SerialConnectionProvider;
-import com.freedomotic.serial.SerialDataConsumer;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jssc.*;
 
 public class MySensors extends Protocol {
 
@@ -42,8 +39,6 @@ public class MySensors extends Protocol {
     private Integer DATABITS = configuration.getIntProperty("serial.databits", 8);
     private Integer PARITY = configuration.getIntProperty("serial.parity", 0);
     private Integer STOPBITS = configuration.getIntProperty("serial.stopbits", 1);
-    //SerialConnectionProvider serial;
-    static SerialPort serialPort;
     private SerialHelper serial;
 
     public MySensors() {
@@ -53,32 +48,16 @@ public class MySensors extends Protocol {
 
     @Override
     public void onStart() {
-        getPortList();
-        if (serial == null) {
-            serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, new SerialPortListener() {
+        serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, new SerialPortListener() {
 
-                @Override
-                public void onDataAvailable(String data) {
-                    LOG.info("MySensors received: " + data);
-                }
-            });
-         
+            @Override
+            public void onDataAvailable(String data) {
+                LOG.info("MySensors received: " + data);
+                sendChanges(data);
+            }
+        });
 
-
-        }
-
-
-        //   getPortList();
-        //   serialPort = new SerialPort(configuration.getStringProperty("serial.port", "/dev/usb0"));
-        //   try {
-        //       serialPort.openPort();
-        //       serialPort.setParams(configuration.getIntProperty("serial.baudrate", 9600), configuration.getIntProperty("serial.databits", 8), configuration.getIntProperty("serial.stopbits", 1), configuration.getIntProperty("serial.parity", 0));
-        //       serialPort.addEventListener(new SerialPortReader());
-        //   } catch (SerialPortException ex) {
-        //       LOG.severe(ex.getMessage());
-        //   }
-
-
+        serial.setChunkTerminator("\n");
     }
 
     @Override
@@ -87,17 +66,12 @@ public class MySensors extends Protocol {
 
     @Override
     public void onStop() {
-        //called when the user stops the plugin from UI
-        //  if (serialPort != null) {
-        //    try {
-        //        serialPort.closePort();
-        //        LOG.info("Disconnected from " + serialPort.getPortName());
-        //    } catch (SerialPortException ex) {
-        //        LOG.severe(ex.getMessage());
-        //    }
-        // }
         if (serial != null) {
-            serial.disconnect();
+            if (serial.disconnect()) {
+                serial = null;
+            } else {
+                LOG.info("Impossible to disconnect from ");
+            }
         }
     }
 
@@ -109,13 +83,7 @@ public class MySensors extends Protocol {
         String subType = c.getProperty("sub-type");
         String payload = c.getProperty("payload");
         String message = address + ";" + IDMessageType + ";" + ack + ";" + subType + ";" + payload + "\n";
-
-        //try {
-        //  serialPort.writeString(message);
-        //  LOG.info("MySensors plugin sends " + message);
-        // } catch (SerialPortException ex) {
-        //   LOG.severe(ex.getMessage());
-        // }
+        write(message);
     }
 
     @Override
@@ -128,19 +96,9 @@ public class MySensors extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void getPortList() {
-        String[] portNames = SerialPortList.getPortNames();
-        for (int i = 0; i < portNames.length; i++) {
-            LOG.info("Found port: " + portNames[i]);
-        }
-    }
-
     public void write(String data) {
-        try {
-            serialPort.writeString(data);
-        } catch (SerialPortException ex) {
-            LOG.severe(ex.getMessage());
-        }
+        LOG.info("MySensors writes '" + data + "' to serial connection");
+        serial.write(data);
     }
 
     private void sendChanges(String data) {
@@ -150,8 +108,6 @@ public class MySensors extends Protocol {
         String ack;
         String subType;
         String payload;
-        //check if it's a correct message
-        System.out.println("Read string: " + data);
         String[] message = data.split(";");
         nodeID = message[0];
         childSensorID = message[1];
@@ -167,6 +123,7 @@ public class MySensors extends Protocol {
             if (objectClass != null) {
                 event.addProperty("object.class", objectClass);
                 event.addProperty("object.name", objectClass + " " + nodeID + ":" + childSensorID);
+                LOG.info("Created object " + objectClass + " with address " + nodeID + ":" + childSensorID);
             }
             // adds isOn property only for lights
             if ((messageType.equalsIgnoreCase("0") && subType.equalsIgnoreCase("3")) || (messageType.equalsIgnoreCase("1") && subType.equalsIgnoreCase("2"))) {
@@ -178,32 +135,8 @@ public class MySensors extends Protocol {
             }
             event.addProperty("sensor.value", payload);
             this.notifyEvent(event);
+
         }
 
-    }
-
-    public class SerialPortReader implements SerialPortEventListener {
-
-        StringBuilder message = new StringBuilder();
-
-        public void serialEvent(SerialPortEvent event) {
-            if (event.isRXCHAR()) {
-                try {
-                    byte buffer[] = serialPort.readBytes();
-                    for (byte b : buffer) {
-                        if ((b == '\r' || b == '\n') && message.length() > 0) {
-                            String toProcess = message.toString();
-                            // call sendChanges(String data);
-                            sendChanges(toProcess);
-                            message.setLength(0);
-                        } else {
-                            message.append((char) b);
-                        }
-                    }
-                } catch (SerialPortException ex) {
-                    LOG.severe(ex.getMessage());
-                }
-            }
-        }
     }
 }
