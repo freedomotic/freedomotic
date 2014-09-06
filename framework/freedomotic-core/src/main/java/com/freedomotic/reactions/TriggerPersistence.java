@@ -20,7 +20,7 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.persistence.ContainerInterface;
+import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class TriggerPersistence implements ContainerInterface<Trigger> {
+public class TriggerPersistence implements Repository<Trigger> {
 
     private static ArrayList<Trigger> list = new ArrayList<Trigger>();
 

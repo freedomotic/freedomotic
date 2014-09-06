@@ -23,7 +23,7 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.exceptions.DaoLayerException;
 import com.freedomotic.model.object.EnvObject;
-import com.freedomotic.persistence.ContainerInterface;
+import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
@@ -53,7 +53,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  *
  * @author Enrico
  */
-public class EnvObjectPersistence implements ContainerInterface<EnvObjectLogic> {
+public class EnvObjectPersistence implements Repository<EnvObjectLogic> {
 
     /**
      *

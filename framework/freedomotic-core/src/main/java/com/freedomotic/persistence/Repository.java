@@ -26,7 +26,7 @@ import java.util.List;
  * @author matteo
  * @param <T>
  */
-public interface ContainerInterface<T> {
+public interface Repository<T> {
 
     public List<T> list();
 

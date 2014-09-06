@@ -143,6 +143,7 @@ public abstract class Protocol
      */
     @Override
     public void start() {
+        super.start();
         if (status.isAllowedToStart()) {
 
             Runnable action = new Runnable() {
@@ -175,6 +176,7 @@ public abstract class Protocol
      */
     @Override
     public void stop() {
+        super.stop();
         if (status.isRunning()) {
             Runnable action = new Runnable() {
                 @Override
@@ -184,7 +186,7 @@ public abstract class Protocol
                         onStop();
                         sensorThread = null;
                         listener.unsubscribeEvents();
-                        notify();
+                        //ENRICO: why this is here? ->notify();
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
                         busService.send(event);
                         status = PluginStatus.STOPPED;

@@ -30,6 +30,7 @@ import com.freedomotic.util.Info;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -429,6 +430,7 @@ public class Plugin implements Client {
      */
     @Override
     public void start() {
+        LOG.log(Level.INFO, "Starting plugin {0}", getName());
         //do not add code here
     }
 
@@ -437,6 +439,7 @@ public class Plugin implements Client {
      */
     @Override
     public void stop() {
+        LOG.log(Level.INFO, "Stopping plugin {0}", getName());
         //do not add code here
     }
 

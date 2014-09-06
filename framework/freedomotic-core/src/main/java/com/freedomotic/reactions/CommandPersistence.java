@@ -20,7 +20,7 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.persistence.ContainerInterface;
+import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class CommandPersistence implements ContainerInterface<Command> {
+public class CommandPersistence implements Repository<Command> {
 
     private static final Map<String, Command> userCommands = new HashMap<String, Command>();
     private static final Map<String, Command> hardwareCommands = new HashMap<String, Command>();

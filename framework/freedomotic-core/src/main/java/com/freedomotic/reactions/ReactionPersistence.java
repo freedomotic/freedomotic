@@ -20,7 +20,7 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.persistence.ContainerInterface;
+import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class ReactionPersistence implements ContainerInterface<Reaction> {
+public class ReactionPersistence implements Repository<Reaction> {
 
     private static final List<Reaction> list = new CopyOnWriteArrayList<Reaction>(); //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
 

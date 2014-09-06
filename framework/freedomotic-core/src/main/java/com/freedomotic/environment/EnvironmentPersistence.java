@@ -27,7 +27,7 @@ import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
-import com.freedomotic.persistence.ContainerInterface;
+import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
@@ -57,7 +57,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  *
  * @author Enrico
  */
-public final class EnvironmentPersistence implements ContainerInterface<EnvironmentLogic> {
+public final class EnvironmentPersistence implements Repository<EnvironmentLogic> {
 
     private static final List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
     private final ClientStorage clientStorage;
