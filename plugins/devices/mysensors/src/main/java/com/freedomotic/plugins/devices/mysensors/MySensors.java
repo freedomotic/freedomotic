@@ -24,6 +24,8 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
+import com.freedomotic.helpers.SerialHelper;
+import com.freedomotic.helpers.SerialPortListener;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.serial.SerialConnectionProvider;
 import com.freedomotic.serial.SerialDataConsumer;
@@ -35,8 +37,14 @@ import jssc.*;
 public class MySensors extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(MySensors.class.getName());
+    private String PORTNAME = configuration.getStringProperty("serial.port", "/dev/ttyACM0");
+    private Integer BAUDRATE = configuration.getIntProperty("serial.baudrate", 9600);
+    private Integer DATABITS = configuration.getIntProperty("serial.databits", 8);
+    private Integer PARITY = configuration.getIntProperty("serial.parity", 0);
+    private Integer STOPBITS = configuration.getIntProperty("serial.stopbits", 1);
     //SerialConnectionProvider serial;
     static SerialPort serialPort;
+    private SerialHelper serial;
 
     public MySensors() {
         super("MySensors", "/mysensors/mysensors-manifest.xml");
@@ -46,14 +54,29 @@ public class MySensors extends Protocol {
     @Override
     public void onStart() {
         getPortList();
-        serialPort = new SerialPort(configuration.getStringProperty("serial.port", "/dev/usb0"));
-        try {
-            serialPort.openPort();
-            serialPort.setParams(configuration.getIntProperty("serial.baudrate", 9600), configuration.getIntProperty("serial.databits", 8), configuration.getIntProperty("serial.stopbits", 1), configuration.getIntProperty("serial.parity", 0));
-            serialPort.addEventListener(new SerialPortReader());
-        } catch (SerialPortException ex) {
-            LOG.severe(ex.getMessage());
+        if (serial == null) {
+            serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, new SerialPortListener() {
+
+                @Override
+                public void onDataAvailable(String data) {
+                    LOG.info("MySensors received: " + data);
+                }
+            });
+         
+
+
         }
+
+
+        //   getPortList();
+        //   serialPort = new SerialPort(configuration.getStringProperty("serial.port", "/dev/usb0"));
+        //   try {
+        //       serialPort.openPort();
+        //       serialPort.setParams(configuration.getIntProperty("serial.baudrate", 9600), configuration.getIntProperty("serial.databits", 8), configuration.getIntProperty("serial.stopbits", 1), configuration.getIntProperty("serial.parity", 0));
+        //       serialPort.addEventListener(new SerialPortReader());
+        //   } catch (SerialPortException ex) {
+        //       LOG.severe(ex.getMessage());
+        //   }
 
 
     }
@@ -65,13 +88,16 @@ public class MySensors extends Protocol {
     @Override
     public void onStop() {
         //called when the user stops the plugin from UI
-        if (serialPort != null) {
-            try {
-                serialPort.closePort();
-                LOG.info("Disconnected from " + serialPort.getPortName());
-            } catch (SerialPortException ex) {
-                LOG.severe(ex.getMessage());
-            }
+        //  if (serialPort != null) {
+        //    try {
+        //        serialPort.closePort();
+        //        LOG.info("Disconnected from " + serialPort.getPortName());
+        //    } catch (SerialPortException ex) {
+        //        LOG.severe(ex.getMessage());
+        //    }
+        // }
+        if (serial != null) {
+            serial.disconnect();
         }
     }
 
@@ -82,13 +108,14 @@ public class MySensors extends Protocol {
         String ack = c.getProperty("ack");
         String subType = c.getProperty("sub-type");
         String payload = c.getProperty("payload");
-        String message = address+";"+IDMessageType+";"+ack+";"+subType+";"+payload+"\n";
-        try {
-            serialPort.writeString(message);
-            LOG.info("MySensors plugin sends "+message);
-        } catch (SerialPortException ex) {
-            LOG.severe(ex.getMessage());
-        }
+        String message = address + ";" + IDMessageType + ";" + ack + ";" + subType + ";" + payload + "\n";
+
+        //try {
+        //  serialPort.writeString(message);
+        //  LOG.info("MySensors plugin sends " + message);
+        // } catch (SerialPortException ex) {
+        //   LOG.severe(ex.getMessage());
+        // }
     }
 
     @Override
