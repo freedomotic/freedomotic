@@ -11,6 +11,8 @@
         <property name="serial.databits" value="8"/>
         <property name="serial.parity" value="0"/>
         <property name="serial.stopbits" value="1"/>
+        <property name="chunk.terminator" value="\n"/>
+        <property name="chunk.size" value="3"/>
     </properties>
 </config>
 

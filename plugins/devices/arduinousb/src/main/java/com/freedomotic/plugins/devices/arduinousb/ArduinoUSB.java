@@ -38,11 +38,14 @@ public class ArduinoUSB extends Protocol {
     private Integer DATABITS = configuration.getIntProperty("serial.databits", 8);
     private Integer PARITY = configuration.getIntProperty("serial.parity", 0);
     private Integer STOPBITS = configuration.getIntProperty("serial.stopbits", 1);
+    private String CHUNK_TERMINATOR = configuration.getStringProperty("chunk.terminator", "\n");
+    private Integer CHUNK_SIZE = configuration.getIntProperty("chunk.size", 5);
+  
     private SerialHelper serial;
 
     public ArduinoUSB() {
         super("Arduino USB", "/arduinousb/arduinousb-manifest.xml");
-        setPollingWait(2000); //waits 2000ms in onRun method before call onRun() again
+        setPollingWait(-1); //waits 2000ms in onRun method before call onRun() again
     }
 
     @Override
@@ -56,6 +59,8 @@ public class ArduinoUSB extends Protocol {
                     LOG.info("Arduino USB received: " + data);
                 }
             });
+            serial.setChunkTerminator(CHUNK_TERMINATOR);
+            serial.setChunkSize(CHUNK_SIZE);
         }
     }
 
