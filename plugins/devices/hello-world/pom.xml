@@ -9,7 +9,7 @@
     </parent>    
     <artifactId>hello-world</artifactId>
     <packaging>jar</packaging>
-    <name>hello-world example device</name>
+    <name>hello-world</name>
     <version>3.0</version>
     <developers>
         <developer>

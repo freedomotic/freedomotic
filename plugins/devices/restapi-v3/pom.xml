@@ -9,7 +9,7 @@
     </parent>    
     <artifactId>restapi-v3</artifactId>
     <packaging>jar</packaging>
-    <name>REST API v3</name>
+    <name>restapi-v3</name>
     <version>3.1</version>
     <developers>
         <developer>

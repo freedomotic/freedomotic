@@ -91,7 +91,8 @@
                 <module>tools/freedomotic-marketplace</module>
                 <module>plugins/objects/base-objects</module>
                 <module>plugins/devices/frontend-java</module>
-                <module>plugins/devices/test</module>
+                <module>plugins/devices/essential</module>
+                <module>plugins/devices/simulation</module>
                 <module>plugins/devices/hello-world</module>
                 <module>plugins/devices/restapi-v3</module>
             </modules>
