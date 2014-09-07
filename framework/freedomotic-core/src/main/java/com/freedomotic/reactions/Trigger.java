@@ -72,8 +72,8 @@ public final class Trigger implements BusConsumer, Cloneable {
     @Inject
     @XmlTransient
     private TriggerCheck checker;
-
     @Inject
+    @XmlTransient
     private BusService busService;
 
     /**

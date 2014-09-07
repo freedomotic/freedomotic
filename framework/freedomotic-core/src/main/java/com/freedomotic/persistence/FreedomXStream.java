@@ -81,17 +81,18 @@ public class FreedomXStream {
             xstream.omitField(Trigger.class, "suspensionStart");
             xstream.omitField(Trigger.class, "listener");
             xstream.omitField(Trigger.class, "checker");
+            xstream.omitField(Trigger.class, "busService");
             xstream.alias("payload", Payload.class);
 
             // Register custom converters
             xstream.registerConverter(new ReactionConverter());
             xstream.registerConverter(new PropertiesConverter());
             xstream.registerConverter(new TupleConverter());
-            xstream.alias("user",User.class);
+            xstream.alias("user", User.class);
             xstream.alias("users", User[].class);
             xstream.registerConverter(new UserConverter());
-            xstream.alias("role",SimpleRole.class);
-            xstream.alias("roles",SimpleRole[].class);
+            xstream.alias("role", SimpleRole.class);
+            xstream.alias("roles", SimpleRole[].class);
             xstream.registerConverter(new RoleConverter());
         }
 

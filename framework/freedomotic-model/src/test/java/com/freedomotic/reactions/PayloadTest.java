@@ -107,7 +107,7 @@ public class PayloadTest {
         Payload event = new Payload();
         event.addStatement(Statement.AND, "number", Statement.EQUALS, "1");
         event.addStatement(Statement.AND, "text", Statement.EQUALS, "abc");
-        event.addStatement(Statement.AND, "testRegex", Statement.EQUALS, "EnvObject.Light");
+        event.addStatement(Statement.AND, "testRegex", Statement.EQUALS, "EnvObject.ElectricDevice.Light");
 
         //contruct the trigger
         Payload trigger = new Payload();
@@ -117,7 +117,7 @@ public class PayloadTest {
         trigger.addStatement(Statement.AND, "event.number", Statement.EQUALS, "123");
         trigger.addStatement("SET", "defineANewProperty", Statement.EQUALS, "123");
 
-        trigger.addStatement(Statement.AND, "testRegex", Statement.REGEX, "^EnvObject.*");
+        trigger.addStatement(Statement.AND, "testRegex", Statement.REGEX, "^EnvObject.ElectricDevice\\.(.*)");
 
         boolean expResult = true;
         //compare trigger with events

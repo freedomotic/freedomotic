@@ -24,14 +24,13 @@ package com.freedomotic.plugins.devices.restapiv3.test;
  * @author matteo
  */
 import com.freedomotic.api.API;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.plugins.devices.restapiv3.utils.ThrowableExceptionMapper;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import com.freedomotic.reactions.Trigger;
 import java.util.List;
 import java.util.UUID;
+import javax.inject.Inject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
@@ -46,8 +45,12 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(GuiceJUnitRunner.class)
+@GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public abstract class AbstractTest<Z> extends JerseyTest {
 
     private String path;
@@ -56,6 +59,7 @@ public abstract class AbstractTest<Z> extends JerseyTest {
     private GenericType<List<Z>> listType;
     private String uuid;
     private MediaType representation;
+    @Inject
     private API api;
 
     // Expect that subclasses implement this methods
@@ -95,7 +99,6 @@ public abstract class AbstractTest<Z> extends JerseyTest {
         getApi().reactions().clear();
         getApi().objects().clear();
         super.tearDown(); //To change body of generated methods, choose Tools | Templates.
-        System.out.println("DEBUG: tear down");
     }
 
     @Test
@@ -103,6 +106,10 @@ public abstract class AbstractTest<Z> extends JerseyTest {
         //Init should be in test() because the @GuiceInjector injects this
         //class members just before executing the test
         init();
+        //JUST FOR DEBUG PURPOSES
+        if (getApi() == null) {
+            throw new IllegalStateException("At this point the api reference should be injected!");
+        }
         Entity<Z> cmdEntity = Entity.entity(getItem(), getRepresentation());
 
         // POST
