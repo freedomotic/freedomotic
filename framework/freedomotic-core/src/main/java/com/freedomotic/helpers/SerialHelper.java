@@ -45,7 +45,7 @@ public class SerialHelper {
     StringBuilder readBuffer = new StringBuilder();
 
     /**
-     * Accept default parameters and change only the port name. The connect()
+     * Accepts default parameters and change only the port name. The connect()
      * method should be called to initialize the serial port connection.
      *
      * @param portName
@@ -85,7 +85,7 @@ public class SerialHelper {
     }
 
     /**
-     * Send a string message to the device
+     * Sends a string message to the device
      *
      * @param message The message to send
      */
@@ -99,7 +99,7 @@ public class SerialHelper {
     }
 
     /**
-     * Send a bytes message to the device
+     * Sends a bytes message to the device
      *
      * @param bytes The message to send
      */
@@ -112,12 +112,54 @@ public class SerialHelper {
         }
     }
 
+    public String[] getPortNames() {
+        String[] serialPortList = SerialPortList.getPortNames();
+        if (serialPortList.length == 0) {
+            LOG.severe("No serial ports found");
+        }
+        return (serialPortList);
+    }
+
+    /**
+     * Returns port name
+     *
+     * @return portName
+     */
+    public String getPortName() {
+        return serialPort.getPortName();
+    }
+
+    /**
+     * Returns port status
+     *
+     * @return isOpened
+     */
+    public boolean isOpened() {
+        return serialPort.isOpened();
+    }
+
     public boolean disconnect() {
         try {
             return serialPort.closePort();
         } catch (SerialPortException ex) {
             LOG.log(Level.WARNING, "Error while closing serial port " + serialPort.getPortName(), ex);
             return false;
+        }
+    }
+
+    public void setDTR(boolean enabled) {
+        try {
+            serialPort.setDTR(enabled);
+        } catch (SerialPortException ex) {
+            LOG.severe(ex.getMessage());
+        }
+    }
+
+    public void setRTS(boolean enabled) {
+        try {
+            serialPort.setRTS(enabled);
+        } catch (SerialPortException ex) {
+            LOG.severe(ex.getMessage());
         }
     }
 
@@ -167,5 +209,4 @@ public class SerialHelper {
         readBuffer.setLength(0);
         readBuffer.append(bufferContent);
     }
-
 }
