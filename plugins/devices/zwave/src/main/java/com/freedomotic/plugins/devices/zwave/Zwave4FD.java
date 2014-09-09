@@ -133,12 +133,17 @@ public class Zwave4FD
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart(){
         LOG.info("Zwave plugin is started");
         controllerPort = configuration.getStringProperty("controller-port", "/dev/ttyS0");
         options = Options.create(new File(getFile().getParentFile() + "/data/config").getAbsolutePath(), "", "");
-        options.addOptionBool("ConsoleOutput", false);
-        //  options.addOptionBool("SaveConfiguration", false);
+        options.addOptionBool("ConsoleOutput", configuration.getBooleanProperty("zw-console-output", false));
+        options.addOptionInt("DriverMaxAttempts", configuration.getIntProperty("zw-driver-max-attempts", 1));
+        options.addOptionBool("SaveConfiguration", configuration.getBooleanProperty("zw-save-configuration", false));
+        options.addOptionBool("Logging", configuration.getBooleanProperty("zw-logging", false));
+        options.addOptionInt("SaveLogLevel", configuration.getIntProperty("zw-save-log-level", 6));
+        //  more options could be picked up from https://code.google.com/p/open-zwave/wiki/Config_Options
+        
         options.lock();
         watcher = new NotificationWatcher() {
 
@@ -147,10 +152,12 @@ public class Zwave4FD
                 switch (notification.getType()) {
                     case DRIVER_READY:
                         homeId = notification.getHomeId();
+                        setDescription("Zwave is using device '" + controllerPort + "'");
                         LOG.info(String.format("Driver ready - home id: %d", homeId));
                         break;
                     case DRIVER_FAILED:
-                        LOG.warning("Driver failed");
+                        LOG.warning("Driver failed - controller port was '" + controllerPort + "'");
+                        stop();
                         break;
                     case DRIVER_RESET:
                         LOG.info("Driver reset");
@@ -275,16 +282,13 @@ public class Zwave4FD
         manager = Manager.create();
         manager.addWatcher(watcher, null);
         manager.addDriver(controllerPort);
+        
     }
 
     @Override
     protected void onStop() {
-        manager.addWatcher(watcher, null);
+        manager.removeWatcher(watcher, null);
         manager.removeDriver(controllerPort);
-        watcher = null;
-        manager = null;
-        options = null;
-        controllerPort = null;
         Manager.destroy();
         Options.destroy();
         LOG.info("Zwave plugin is stopped ");

@@ -4,8 +4,17 @@
         <property name="category"    value="protocol"/>
         <property name="protocol.name" value="zwave"/>
         <property name="short-name" value="zwave"/>
-        <property name="controller-port" value="/dev/ttyUSB0"/>
-        <property name="startup-time" value="on load"/>  
+       <property name="startup-time" value="on load"/>  
+    
+    <!-- below properties are related to openzwave options 
+       see https://code.google.com/p/open-zwave/wiki/Config_Options -->      
+    
+        <property name="zw-controller-port" value="/dev/ttyUSB0"/>
+        <property name="zw-save-configuration" value="true"/>
+        <property name="zw-console-output" value="true"/>
+        <property name="zw-driver-max-attempts" value="1"/>
+        <property name="zw-logging" value="true"/>
+        <property name="zw-save-log-level" value="6"/>
      
      <!-- Mapping Zwave value types to Freedomotic objects (only for SensorMultilevel commandClass=49) -->
         <property name="Temperature" value="Thermostat"/>  
