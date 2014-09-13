@@ -66,6 +66,7 @@ public class MarketPlaceForm
         this.I18n = api.getI18n();
         this.clients = api.getClientStorage();
         this.pluginsManager = api.getPluginManager();
+        this.setPreferredSize(new Dimension(800, 600));
         initComponents();
         cmbCategory.setEnabled(false);
         EventQueue.invokeLater(new Runnable() {
