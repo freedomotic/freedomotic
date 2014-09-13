@@ -78,9 +78,10 @@ public class PluginsManagerImpl implements PluginsManager {
     public void loadAllPlugins() throws PluginLoadingException {
         List<BoundleLoader> boundleLoaders = new ArrayList<BoundleLoader>();
         BoundleLoaderFactory boundleLoaderFactory = new BoundleLoaderFactory();
-        boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_DEVICE));
-        boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_OBJECT));
         boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_EVENT));
+        boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_OBJECT));
+        boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_DEVICE));
+
 
         for (BoundleLoader boundleLoader : boundleLoaders) {
             loadSingleBundle(boundleLoader);
@@ -248,12 +249,12 @@ public class PluginsManagerImpl implements PluginsManager {
         //create ad-hoc subfolders of temp
         File destination = new File(Info.PATHS.PATH_RESOURCES_FOLDER + "/temp/" + directory.getName());
         destination.mkdir();
-        recursiveCopy(new File(directory + "/data/resources"),
-                destination);
+        recursiveCopy(new File(directory + "/data/resources"), destination);
 
         File templatesFolder = new File(directory + "/data/templates/");
 
         if (templatesFolder.exists()) {
+            LOG.log(Level.INFO, "Loading object templates from {0}", templatesFolder.getAbsolutePath());
             //for every envobject class a placeholder is created
             File[] templates
                     = templatesFolder.listFiles(new FilenameFilter() {
@@ -278,6 +279,8 @@ public class PluginsManagerImpl implements PluginsManager {
                             + template.getAbsolutePath(), ex);
                 }
             }
+        } else {
+            LOG.log(Level.INFO, "No object templates to load from {0}", templatesFolder.getAbsolutePath());
         }
     }
 

@@ -64,6 +64,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -257,41 +258,17 @@ public class Freedomotic implements BusConsumer {
 
         /**
          * ******************************************************************
-         * Dynamically load events jar files in /plugin/events folder
+         * Dynamically load all plugins
          * *****************************************************************
          */
         try {
-            pluginsManager.loadAllPlugins(PluginsManager.TYPE_EVENT);
+            pluginsManager.loadAllPlugins();
         } catch (PluginLoadingException ex) {
             LOG.log(Level.WARNING,
                     "Cannot load event plugin {0}. {1}",
                     new Object[]{ex.getPluginName(), ex.getMessage()});
         }
-        /* ******************************************************************
-         * Loads sensors and actuators This must be loaded before object
-         * deserialization because objects can user hardware level commands and
-         * trigger that are loaded at this stage
-         * *****************************************************************
-         */
-        try {
-            pluginsManager.loadAllPlugins(PluginsManager.TYPE_DEVICE);
-        } catch (PluginLoadingException ex) {
-            LOG.warning("Cannot load device plugin " + ex.getPluginName() + ": " + ex.getMessage());
-            ex.printStackTrace();
-        }
-        /**
-         * ******************************************************************
-         * Dynamically load objects jar files in /plugin/objects folder
-         * *****************************************************************
-         */
-        try {
-            pluginsManager.loadAllPlugins(PluginsManager.TYPE_OBJECT);
-        } catch (PluginLoadingException ex) {
-            LOG.log(Level.WARNING,
-                    "Cannot load object plugin {0}. {1}",
-                    new Object[]{ex.getPluginName(), ex.getMessage()});
-        }
-
+       
         /**
          * ******************************************************************
          * Dynamically load jar files in /plugin/providers folder for plugins
@@ -299,7 +276,7 @@ public class Freedomotic implements BusConsumer {
          */
         try {
             ClassPathUpdater.add(new File(Info.getApplicationPath() + "/plugins/providers/"));
-        } catch (Exception ex) {
+        } catch (IOException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
 
