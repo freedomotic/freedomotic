@@ -31,9 +31,9 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public final class PersonDetected extends EventTemplate {
+public final class LocationEvent extends EventTemplate {
 
-    private static final Logger LOG = Logger.getLogger(PersonDetected.class.getName());
+    private static final Logger LOG = Logger.getLogger(LocationEvent.class.getName());
     private final String uuid;
     private final int x;
     private final int y;
@@ -43,12 +43,12 @@ public final class PersonDetected extends EventTemplate {
      *
      * @param source
      * @param uuid
-     * @param startLocation
+     * @param location
      */
-    public PersonDetected(Object source, String uuid, FreedomPoint startLocation) {
+    public LocationEvent(Object source, String uuid, FreedomPoint location) {
         this.uuid = uuid;
-        x = startLocation.getX();
-        y = startLocation.getY();
+        x = location.getX();
+        y = location.getY();
         z = 0;
         generateEventPayload();
     }
@@ -104,7 +104,7 @@ public final class PersonDetected extends EventTemplate {
      */
     @Override
     public String toString() {
-        return ("Person " + uuid + " has been detected in the environment at location " + x + "," + y);
+        return ("Object " + uuid + " has been detected at location " + x + "," + y);
     }
 
     /**

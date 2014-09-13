@@ -12,7 +12,7 @@ import com.freedomotic.bus.BusService;
 import static com.freedomotic.core.BehaviorManager.getMessagingChannel;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.ZoneLogic;
-import com.freedomotic.events.PersonDetected;
+import com.freedomotic.events.LocationEvent;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.objects.impl.Person;
@@ -50,8 +50,8 @@ public class TopologyManager implements BusConsumer {
             LOG.log(Level.SEVERE, null, ex);
         }
 
-        if (jmsObject instanceof PersonDetected) {
-            PersonDetected event = (PersonDetected) jmsObject;
+        if (jmsObject instanceof LocationEvent) {
+            LocationEvent event = (LocationEvent) jmsObject;
             Person person = (Person) EnvObjectPersistence.getObjectByUUID(event.getUuid());
             //apply the new position
             person.setLocation(event.getX(), event.getY());
@@ -66,7 +66,7 @@ public class TopologyManager implements BusConsumer {
      *
      * @param event
      */
-    private void fireEnterExitEvents(Person person, PersonDetected event) {
+    private void fireEnterExitEvents(Person person, LocationEvent event) {
         for (ZoneLogic zone : EnvironmentPersistence.getEnvironments().get(0).getZones()) {
             // are the new Person coordinates inside the current zone?
             boolean isZoneAffected = TopologyUtils.contains(zone.getPojo().getShape(), new FreedomPoint(event.getX(), event.getY()));

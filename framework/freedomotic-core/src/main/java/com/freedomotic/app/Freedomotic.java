@@ -28,7 +28,6 @@ import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.bus.StompDispatcher;
 import com.freedomotic.core.BehaviorManager;
-import com.freedomotic.core.SynchManager;
 import com.freedomotic.core.TopologyManager;
 import com.freedomotic.environment.EnvironmentDAO;
 import com.freedomotic.environment.EnvironmentDAOFactory;

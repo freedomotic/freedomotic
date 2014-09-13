@@ -73,14 +73,7 @@ public class ZoneLogic {
         this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
     }
 
-    /**
-     *
-     * @return
-     */
-    public ZoneLogic(final Zone pojo) {
-        this.pojo = pojo;
-	this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
-   }
+
     @RequiresPermissions("zones:read")
     public EnvironmentLogic getEnv() {
         return this.FatherEnv;
@@ -145,7 +138,7 @@ public class ZoneLogic {
 
         if (owner.canTriggerReactionsOnEnter(this)) {
             PersonEntersZone ev = new PersonEntersZone(this, p, getPojo());
-            Freedomotic.sendEvent(ev);
+            busService.send(ev);
             success = true;
         }
 
@@ -166,7 +159,7 @@ public class ZoneLogic {
 
         if (owner.canTriggerReactionsOnExit(this)) {
             PersonExitsZone ev = new PersonExitsZone(this, p, getPojo());
-            Freedomotic.sendEvent(ev);
+            busService.send(ev);
             success = true;
         }
 

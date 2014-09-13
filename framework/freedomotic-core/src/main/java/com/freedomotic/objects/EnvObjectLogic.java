@@ -396,6 +396,8 @@ public class EnvObjectLogic {
         }
 
         checkTopology();
+        //commit the changes to this object
+        this.setChanged(true);
     }
 
     @RequiresPermissions({"objects:read", "zones.update"})

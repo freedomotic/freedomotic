@@ -24,8 +24,7 @@ package com.freedomotic.plugins;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.environment.EnvironmentPersistence;
-import com.freedomotic.events.PersonDetected;
+import com.freedomotic.events.LocationEvent;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.objects.EnvObjectLogic;
@@ -53,7 +52,7 @@ public class TrackingRandomPosition
                 + "movable sensors position. Positions are randomly generated");
         //wait time between events generation
         //onRun() is called every 2000 milliseconds
-        setPollingWait(200);
+        setPollingWait(2000);
     }
 
     private boolean canGo(int destX, int destY) {
@@ -87,7 +86,7 @@ public class TrackingRandomPosition
             if (object instanceof com.freedomotic.objects.impl.Person) {
                 Person person = (Person) object;
                 FreedomPoint location = randomLocation();
-                PersonDetected event = new PersonDetected(this, person.getPojo().getUUID(), location);
+                LocationEvent event = new LocationEvent(this, person.getPojo().getUUID(), location);
                 notifyEvent(event);
             }
         }
