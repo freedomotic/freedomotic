@@ -41,7 +41,6 @@ import com.freedomotic.exceptions.PluginLoadingException;
 import com.freedomotic.marketplace.ClassPathUpdater;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.MarketPlaceService;
-import com.freedomotic.model.ds.ColorList;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.plugins.ClientStorage;
@@ -198,9 +197,6 @@ public class Freedomotic implements BusConsumer {
 
         // just for testing, don't mind it
         new StompDispatcher();
-
-        // TODO change this object to an enum and do init in another location.
-        new ColorList(); //initialize an ordered list of colors used for various purposes, eg: people colors
 
         /**
          * ******************************************************************
@@ -469,13 +465,6 @@ public class Freedomotic implements BusConsumer {
         return INSTANCE_ID;
     }
 
-    /**
-     *
-     * @param dimension
-     */
-    public void loadGraphics(Dimension dimension) {
-        new ColorList();
-    }
 
     private void loadAppConfig() {
         config = config.load();
