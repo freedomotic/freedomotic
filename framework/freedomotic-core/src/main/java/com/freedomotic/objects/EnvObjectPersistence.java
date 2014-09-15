@@ -372,8 +372,8 @@ public class EnvObjectPersistence implements Repository<EnvObjectLogic> {
         }
 
         if (list.isEmpty()) {
-            LOG.warning("Don't exist an object with protocol '" + protocol + "' and address '"
-                    + address + "'");
+            LOG.warning("An object with protocol '" + protocol + "' and address '"
+                    + address + "' doesn't exist");
         }
 
         return list;
@@ -477,7 +477,7 @@ public class EnvObjectPersistence implements Repository<EnvObjectLogic> {
             try {
                 envObjectLogic.setChanged(true);
             } catch (Exception e) {
-                LOG.log(Level.WARNING, "Object was created, but cannot set is as Changed", e);
+                LOG.log(Level.WARNING, "Object was created, but cannot set it as Changed", e);
             }
         } else {
             throw new RuntimeException("Cannot add the same object more than one time");

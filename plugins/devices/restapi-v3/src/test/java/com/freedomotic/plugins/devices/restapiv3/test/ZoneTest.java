@@ -21,7 +21,7 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.test;
 
-import com.freedomotic.app.Freedomotic;
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
@@ -31,18 +31,19 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriBuilderException;
 import static org.junit.Assert.assertEquals;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author matteo
  */
+@RunWith(GuiceJUnitRunner.class)
+@GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class ZoneTest extends AbstractTest<Zone>{
 
     Environment e ;
     EnvironmentLogic el;
 
-
-    
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
         setItem(new Zone());

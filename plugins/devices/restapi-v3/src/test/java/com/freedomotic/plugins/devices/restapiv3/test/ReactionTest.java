@@ -6,6 +6,7 @@
 
 package com.freedomotic.plugins.devices.restapiv3.test;
 
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.OldReactionResource;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Reaction;
@@ -14,11 +15,14 @@ import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilderException;
 import static org.junit.Assert.assertEquals;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author matteo
  */
+@RunWith(GuiceJUnitRunner.class)
+@GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class ReactionTest extends AbstractTest<Reaction>{
 
     @Override

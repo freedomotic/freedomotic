@@ -7,8 +7,11 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.events.GenericEvent;
 import com.freedomotic.util.Info;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import javax.inject.Singleton;
@@ -28,7 +31,8 @@ import javax.ws.rs.core.Response;
 @Api(value = "system", description = "Manages Freedomotic instance", position = 200)
 public class SystemResource {
 
-    protected static API api = Freedomotic.INJECTOR.getInstance(API.class);
+    protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
+    protected final static API api = INJECTOR.getInstance(API.class);
     
     @GET
     @Path("/info/framework")

@@ -6,11 +6,13 @@
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.api.API;
-import com.freedomotic.app.Freedomotic;
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.MarketPlaceService;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -39,7 +41,8 @@ public class MarketplaceResource {
 
     MarketPlaceService mps = MarketPlaceService.getInstance();
     ArrayList<IPluginCategory> catList;
-    protected static API api = Freedomotic.INJECTOR.getInstance(API.class);
+    protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
+    protected final static API api = INJECTOR.getInstance(API.class);
 
     @GET
     @Path("/providers")

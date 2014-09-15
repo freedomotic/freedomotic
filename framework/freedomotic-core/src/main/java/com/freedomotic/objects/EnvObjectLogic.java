@@ -19,7 +19,7 @@
  */
 package com.freedomotic.objects;
 
-import com.freedomotic.app.Freedomotic;
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.core.Resolver;
 import com.freedomotic.environment.EnvironmentLogic;
@@ -40,6 +40,7 @@ import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.util.TopologyUtils;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,7 +58,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 public class EnvObjectLogic {
 
     @Inject
-    private BusService busService;
+    private final BusService busService;
 
     private EnvObject pojo;
     private boolean changed;
@@ -71,7 +72,7 @@ public class EnvObjectLogic {
      */
     public EnvObjectLogic() {
         super();
-        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+        this.busService = Guice.createInjector(new FreedomoticInjector()).getInstance(BusService.class);
     }
 
     /**

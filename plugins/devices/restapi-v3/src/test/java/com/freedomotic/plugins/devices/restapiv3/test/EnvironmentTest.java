@@ -21,18 +21,26 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.test;
 
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.EnvironmentResource;
+import com.google.inject.Inject;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilderException;
 import static org.junit.Assert.assertEquals;
+import org.junit.runner.RunWith;
 
+@RunWith(GuiceJUnitRunner.class)
+@GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class EnvironmentTest extends AbstractTest<Environment> {
-
+ 
+    @Inject 
+    private Environment env;
+    
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        setItem(new Environment());
+        setItem(env);
         getItem().setName("TestEnv");
         getItem().setUUID(getUuid());
         initPath(EnvironmentResource.class);

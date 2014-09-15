@@ -152,7 +152,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     }
     
     
-    private static final ClientStorage clientStorage = Freedomotic.INJECTOR.getInstance(ClientStorage.class);
+    private static final ClientStorage clientStorage = INJECTOR.getInstance(ClientStorage.class);
 
     @GET
     @Path("/templates")

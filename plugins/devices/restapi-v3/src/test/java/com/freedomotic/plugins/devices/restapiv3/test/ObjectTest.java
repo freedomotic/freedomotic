@@ -21,7 +21,7 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.test;
 
-import com.freedomotic.app.Freedomotic;
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.geometry.FreedomPolygon;
@@ -30,34 +30,42 @@ import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.model.object.Representation;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.ObjectResource;
+import com.google.inject.Inject;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilderException;
 import static org.junit.Assert.assertEquals;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author matteo
  */
+@RunWith(GuiceJUnitRunner.class)
+@GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class ObjectTest extends AbstractTest<EnvObject> {
 
 
+   @Inject 
    Environment e;
+   
+   @Inject
    EnvironmentLogic el;
+   
+   @Inject 
+   EnvObject obj;
 
     
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        e = new Environment();
         e.setName("Test env for zone");
         e.setUUID(getUuid());
         
-        el = new EnvironmentLogic(getApi());
         el.setPojo(e);
         el.init();
         getApi().environments().create(el);
         
-        setItem(new EnvObject());
+        setItem(obj);
         getItem().setName("TestObject");
         getItem().setUUID(getUuid());
         getItem().setHierarchy("com.freedomotic.objects.impl.ElectricDevice");

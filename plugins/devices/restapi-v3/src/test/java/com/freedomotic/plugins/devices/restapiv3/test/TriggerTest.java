@@ -21,17 +21,21 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.test;
 
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.TriggerResource;
 import com.freedomotic.reactions.Trigger;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilderException;
 import static org.junit.Assert.assertEquals;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author matteo
  */
+@RunWith(GuiceJUnitRunner.class)
+@GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class TriggerTest extends AbstractTest<Trigger> {
 
     @Override

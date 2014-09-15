@@ -23,7 +23,6 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.reactions.Reaction;
-import com.wordnik.swagger.annotations.Api;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;

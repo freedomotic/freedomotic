@@ -19,8 +19,10 @@
  */
 package com.freedomotic.environment;
 
+import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
-import com.freedomotic.app.Freedomotic;
+import com.freedomotic.app.FreedomoticInjector;
+//import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.DaoLayerException;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
@@ -37,7 +39,9 @@ import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.SerialClone;
 import com.freedomotic.util.UidGenerator;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import java.io.BufferedWriter;
@@ -61,7 +65,7 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
 
     private static final List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
     private final ClientStorage clientStorage;
-
+    private final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
     /**
      *
      * @param clientStorage
@@ -220,7 +224,8 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
         EnvironmentLogic envLogic = obj;
 
         if (MAKE_UNIQUE) {
-            envLogic = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
+            
+            envLogic = INJECTOR.getInstance(EnvironmentLogic.class);
 
             //defensive copy to not affect the passed object with the changes
             Environment pojoCopy = SerialClone.clone(obj.getPojo());
@@ -437,8 +442,8 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
         } catch (XStreamException e) {
             throw new DaoLayerException("XML parsing error. Readed XML is \n" + xml, e);
         }
-
-        EnvironmentLogic envLogic = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
+        
+        EnvironmentLogic envLogic = INJECTOR.getInstance(EnvironmentLogic.class);
 
         if (pojo == null) {
             throw new IllegalStateException("Object data cannot be null at this stage");

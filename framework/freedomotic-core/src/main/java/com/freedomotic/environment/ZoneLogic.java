@@ -38,13 +38,14 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package com.freedomotic.environment;
 
-import com.freedomotic.app.Freedomotic;
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.events.PersonEntersZone;
 import com.freedomotic.events.PersonExitsZone;
 import com.freedomotic.events.ZoneHasChanged;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.objects.impl.Person;
+import com.google.inject.Guice;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -81,6 +82,7 @@ public class ZoneLogic {
 
     /**
      *
+
      * @return
      */
     @RequiresPermissions("zones:read")

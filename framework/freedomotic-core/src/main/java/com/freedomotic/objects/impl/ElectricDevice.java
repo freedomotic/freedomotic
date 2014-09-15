@@ -50,6 +50,9 @@ public class ElectricDevice extends EnvObjectLogic {
     protected final static String ACTION_TURN_ON = "turn on";
     protected final static String ACTION_TURN_OFF = "turn off";
 
+    public ElectricDevice() {
+    }
+
     @Override
     public void init() {
         powered = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior(BEHAVIOR_POWERED));

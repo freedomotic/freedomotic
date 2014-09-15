@@ -21,13 +21,17 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.test;
 
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.UserCommandResource;
 import com.freedomotic.reactions.Command;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilderException;
 import static org.junit.Assert.assertEquals;
+import org.junit.runner.RunWith;
 
+@RunWith(GuiceJUnitRunner.class)
+@GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class UserCommandTest extends AbstractTest<Command>{
 
     @Override

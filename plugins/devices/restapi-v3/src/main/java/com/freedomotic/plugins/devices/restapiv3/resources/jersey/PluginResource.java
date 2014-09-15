@@ -23,7 +23,6 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
@@ -50,7 +49,7 @@ import javax.ws.rs.core.Response.Status;
 @Api(value = "/plugins", description = "Operations on plugins", position = 7)
 public class PluginResource extends AbstractResource<Plugin>{
 
-    private static final ClientStorage clientStorage =  Freedomotic.INJECTOR.getInstance(ClientStorage.class);
+    private static final ClientStorage clientStorage =  INJECTOR.getInstance(ClientStorage.class);
     
     @Override
     protected URI doCreate(Plugin o) throws URISyntaxException {

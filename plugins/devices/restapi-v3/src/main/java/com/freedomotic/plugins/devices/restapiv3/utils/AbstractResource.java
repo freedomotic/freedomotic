@@ -22,7 +22,10 @@ package com.freedomotic.plugins.devices.restapiv3.utils;
 import com.freedomotic.api.API;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -53,7 +56,8 @@ import javax.ws.rs.core.UriBuilder;
 public abstract class AbstractResource<T> implements ResourceInterface<T> {
 
     public static final Logger LOG = Logger.getLogger(AbstractResource.class.getName());
-    protected static API api = Freedomotic.INJECTOR.getInstance(API.class);
+    protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
+    protected final static API api = INJECTOR.getInstance(API.class);
     /**
      *
      * @return

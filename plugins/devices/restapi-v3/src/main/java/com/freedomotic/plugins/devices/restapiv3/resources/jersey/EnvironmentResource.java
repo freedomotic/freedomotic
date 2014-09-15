@@ -19,7 +19,6 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
@@ -71,7 +70,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Override
     protected URI doCreate(Environment eo) throws URISyntaxException {
-        EnvironmentLogic el = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
+        EnvironmentLogic el = INJECTOR.getInstance(EnvironmentLogic.class);
         el.setPojo(eo);
         api.environments().create(el);
         return createUri(el.getPojo().getUUID());
@@ -79,7 +78,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Override
     protected Environment doUpdate(Environment eo) {
-        EnvironmentLogic el = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
+        EnvironmentLogic el = INJECTOR.getInstance(EnvironmentLogic.class);
         el.setPojo(eo);
         if (api.environments().modify(eo.getUUID(), el) != null) {
             return el.getPojo();
