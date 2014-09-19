@@ -1,7 +1,7 @@
 <com.freedomotic.model.object.EnvObject>
   <name>Switch</name>
   <description>A Switch</description>
-  <actAs>unimplemented</actAs>
+  <actAs>virtual</actAs>
   <type>EnvObject.ElectricDevice</type>
   <hierarchy>com.freedomotic.objects.impl.ElectricDevice</hierarchy>
   <protocol>unknown</protocol>

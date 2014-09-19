@@ -1,7 +1,7 @@
 <com.freedomotic.model.object.EnvObject>
   <name>Light</name>
   <description>A light</description>
-  <actAs>unimplemented</actAs>
+  <actAs>virtual</actAs>
   <type>EnvObject.ElectricDevice.Light</type>
   <hierarchy>com.freedomotic.objects.impl.Light</hierarchy>
   <protocol>unknown</protocol>
