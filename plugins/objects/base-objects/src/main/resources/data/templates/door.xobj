@@ -1,7 +1,7 @@
 <com.freedomotic.model.object.EnvObject>
   <name>Door</name>
   <description>A door capable of open and close</description>
-  <actAs>unimplemented</actAs>
+  <actAs>virtual</actAs>
   <type>EnvObject.Gate</type>
   <hierarchy>com.freedomotic.objects.impl.Gate</hierarchy>
   <protocol>unknown</protocol>

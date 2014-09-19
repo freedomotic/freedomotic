@@ -1,7 +1,7 @@
 <com.freedomotic.model.object.EnvObject>
   <name>Plant</name>
   <description>A decorative green plant</description>
-  <actAs>unimplemented</actAs>
+  <actAs>virtual</actAs>
   <type>EnvObject.Decoration</type>
   <hierarchy>com.freedomotic.objects.impl.EmptyObject</hierarchy>
   <protocol>unknown</protocol>

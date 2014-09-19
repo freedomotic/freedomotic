@@ -1,7 +1,7 @@
 <com.freedomotic.model.object.EnvObject>
   <name>RGB Light</name>
   <description>A Rgb Light</description>
-  <actAs></actAs>
+  <actAs>virtual</actAs>
   <type>EnvObject.ElectricDevice.Light.RGBLight</type>
   <hierarchy>com.freedomotic.objects.impl.RGBLight</hierarchy>
   <protocol>unknowkn</protocol>
@@ -60,7 +60,7 @@
   <representation>
     <view>
       <tangible>true</tangible>
-      <intersecable>true</intersecable>
+      <intersecable>false</intersecable>
       <offset x="0" y="0"/>
       <rotation>0.0</rotation>
       <icon>rgb-light-off.png</icon>

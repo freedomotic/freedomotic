@@ -1,7 +1,7 @@
 <com.freedomotic.model.object.EnvObject>
   <name>PowerMeter</name>
   <description>A powermeter</description>
-  <actAs>unimplemented</actAs>
+  <actAs>virtual</actAs>
   <type>EnvObject.ElectricDevice.PowerMeter</type>
   <hierarchy>com.freedomotic.objects.impl.PowerMeter</hierarchy>
   <protocol>unknown</protocol>
