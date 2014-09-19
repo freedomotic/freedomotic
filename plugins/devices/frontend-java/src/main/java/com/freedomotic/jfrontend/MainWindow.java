@@ -66,6 +66,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -220,6 +221,7 @@ public class MainWindow
 
         setDefaultLookAndFeelDecorated(true);
         initComponents();
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
         desktopPane = new JDesktopPane();
         lstClients = new PluginJList(this);

@@ -21,12 +21,15 @@
  */
 package com.freedomotic.objects;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.exceptions.DaoLayerException;
 import com.freedomotic.model.object.EnvObject;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import java.net.URLClassLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -35,7 +38,6 @@ import java.net.URLClassLoader;
 public class EnvObjectFactory {
 
     
-    protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
     /**
      * Instantiate the right logic manager for an object pojo using the pojo
      * "type" field
@@ -53,8 +55,15 @@ public class EnvObjectFactory {
             URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
             Class<?> clazz = classLoader.loadClass(pojo.getHierarchy()); //eg: com.freedomotic.objects.impl.ElectricDevice
 
-            EnvObjectLogic logic = (EnvObjectLogic) INJECTOR.getInstance(clazz);
-            //EnvObjectLogic logic = (EnvObjectLogic) clazz.newInstance();
+            //EnvObjectLogic logic = (EnvObjectLogic) Freedomotic.INJECTOR.getInstance(clazz);
+            EnvObjectLogic logic = null;
+            try {
+                logic = (EnvObjectLogic) clazz.newInstance();
+            } catch (InstantiationException ex) {
+                Logger.getLogger(EnvObjectFactory.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(EnvObjectFactory.class.getName()).log(Level.SEVERE, null, ex);
+            }
             logic.setPojo(pojo);
 
             return logic;

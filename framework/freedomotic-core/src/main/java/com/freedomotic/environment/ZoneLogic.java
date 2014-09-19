@@ -38,6 +38,7 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package com.freedomotic.environment;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.events.PersonEntersZone;
@@ -57,9 +58,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  */
 public class ZoneLogic {
 
-    private static final Logger LOG = Logger.getLogger(ZoneLogic.class.getName());
-    private final BusService busService;
-    private final Zone pojo;
+    //private BusService busService;
+    private Zone pojo;
     private Ownership owner = new LastOutStrategy();
     private final List<Person> occupiers = new ArrayList<Person>();
     private EnvironmentLogic FatherEnv = null;
@@ -82,6 +82,7 @@ public class ZoneLogic {
 
     /**
      *
+
 
      * @return
      */
@@ -187,7 +188,7 @@ public class ZoneLogic {
     public void setChanged() {
         ZoneHasChanged event = new ZoneHasChanged(this,
                 getPojo());
-        busService.send(event);
+        Freedomotic.sendEvent(event);
     }
 
     /**

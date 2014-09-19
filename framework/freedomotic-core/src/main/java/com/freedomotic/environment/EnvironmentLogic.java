@@ -48,7 +48,7 @@ public final class EnvironmentLogic {
     private Environment pojo = null;
     private List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
     private File source = null;
-    private final API api;
+    //private final API api;
 
     /**
      *
@@ -56,7 +56,7 @@ public final class EnvironmentLogic {
      */
     @Inject
     public EnvironmentLogic(API api) {
-        this.api = api;
+        //this.api = api;
     }
 
     /**
@@ -266,7 +266,7 @@ public final class EnvironmentLogic {
     public ZoneLogic getZone(String zoneName) {
         for (ZoneLogic zone : zones) {
             if (zone.getPojo().getName().equalsIgnoreCase(zoneName)
-                    && api.getAuth().isPermitted("zone:read" + zoneName)) {
+                    /*&& api.getAuth().isPermitted("zone:read" + zoneName)*/) {
                 return zone;
             }
         }
@@ -283,7 +283,7 @@ public final class EnvironmentLogic {
     public ZoneLogic getZoneByUuid(String uuid) {
         for (ZoneLogic zone : zones) {
             if (zone.getPojo().getUuid().equalsIgnoreCase(uuid)
-                    && api.getAuth().isPermitted("zone:read" + uuid)) {
+                    /*&& api.getAuth().isPermitted("zone:read" + uuid)*/) {
                 return zone;
             }
         }

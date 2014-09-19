@@ -19,6 +19,7 @@
  */
 package com.freedomotic.objects;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.core.Resolver;
@@ -57,8 +58,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  */
 public class EnvObjectLogic {
 
-    @Inject
-    private final BusService busService;
+    //@Inject
+    //private BusService busService;
 
     private EnvObject pojo;
     private boolean changed;
@@ -72,7 +73,7 @@ public class EnvObjectLogic {
      */
     public EnvObjectLogic() {
         super();
-        this.busService = Guice.createInjector(new FreedomoticInjector()).getInstance(BusService.class);
+        //this.busService = Guice.createInjector(new FreedomoticInjector()).getInstance(BusService.class);
     }
 
     /**
@@ -227,7 +228,7 @@ public class EnvObjectLogic {
             //send multicast because an event must be received by all triggers registred on the destination channel
             LOG.log(Level.FINE, "Object {0} changes something in its status (eg: a behavior value)",
                     this.getPojo().getName());
-            busService.send(objectEvent);
+            Freedomotic.sendEvent(objectEvent);
         } else {
             changed = false;
         }
@@ -524,14 +525,14 @@ public class EnvObjectLogic {
             if (Boolean.valueOf(command.getProperty("send-and-forget")) == true) {
                 LOG.config("Command '" + resolvedCommand.getName() + "' is 'send-and-forget' no execution result will be catched from plugin's reply");
                 resolvedCommand.setReplyTimeout(-1); //disable reply request
-                busService.send(resolvedCommand);
+                Freedomotic.sendCommand(resolvedCommand);
                 return false;
             } else {
                 //10 seconds is the default timeout if not already set
                 if (resolvedCommand.getReplyTimeout() < 1) {
                     resolvedCommand.setReplyTimeout(10000); //enable reply request
                 }
-                result = busService.send(resolvedCommand); //blocking wait until timeout
+                result = Freedomotic.sendCommand(resolvedCommand); //blocking wait until timeout
             }
 
             if (result == null) {
