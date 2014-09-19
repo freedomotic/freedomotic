@@ -64,6 +64,7 @@ public class ZoneLogic {
     private final List<Person> occupiers = new ArrayList<Person>();
     private EnvironmentLogic FatherEnv = null;
     private Ownership ownershipStrategy;
+    private static final Logger LOG = Logger.getLogger(ZoneLogic.class.getName());
 
     /**
      *
@@ -71,7 +72,7 @@ public class ZoneLogic {
      */
     public ZoneLogic(final Zone pojo) {
         this.pojo = pojo;
-        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+        //this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
     }
 
 
@@ -141,7 +142,7 @@ public class ZoneLogic {
 
         if (owner.canTriggerReactionsOnEnter(this)) {
             PersonEntersZone ev = new PersonEntersZone(this, p, getPojo());
-            busService.send(ev);
+            Freedomotic.sendEvent(ev);
             success = true;
         }
 
@@ -162,7 +163,7 @@ public class ZoneLogic {
 
         if (owner.canTriggerReactionsOnExit(this)) {
             PersonExitsZone ev = new PersonExitsZone(this, p, getPojo());
-            busService.send(ev);
+            Freedomotic.sendEvent(ev);
             success = true;
         }
 

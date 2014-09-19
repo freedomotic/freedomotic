@@ -37,7 +37,7 @@ public class TopologyManager implements BusConsumer {
 
     public TopologyManager() {
         busService = Freedomotic.INJECTOR.getInstance(BusService.class);
-        listener = new BusMessagesListener(this);
+        listener = new BusMessagesListener(this, busService);
         listener.consumeCommandFrom(LISTEN_CHANNEL);
     }
 

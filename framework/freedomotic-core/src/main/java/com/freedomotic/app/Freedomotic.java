@@ -201,9 +201,6 @@ public class Freedomotic implements BusConsumer {
             kill(currentStatus.getCode());
         }
 
-        // just for testing, don't mind it
-        new StompDispatcher();
-
         /**
          * ******************************************************************
          * Starting the logger and popup it in the browser
