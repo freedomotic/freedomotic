@@ -42,7 +42,6 @@ public class RGBLight
 
     private RangedIntBehaviorLogic hue;
     private RangedIntBehaviorLogic saturation;
-    private ListBehaviorLogic effect;
     protected final static String BEHAVIOR_HUE = "hue";
     protected final static String BEHAVIOR_SATURATION = "saturation";
 
@@ -64,7 +63,7 @@ public class RGBLight
 
             @Override
             public void onRangeValue(int rangeValue, Config params, boolean fireCommand) {
-                setHue(rangeValue, params);
+                executeHue(rangeValue, params);
             }
         });
         //register this behavior to the superclass to make it visible to it
@@ -85,7 +84,7 @@ public class RGBLight
 
             @Override
             public void onRangeValue(int rangeValue, Config params, boolean fireCommand) {
-                setSaturation(rangeValue, params);
+                executeSaturation(rangeValue, params);
             }
         });
         //register this behavior to the superclass to make it visible to it
@@ -114,12 +113,11 @@ public class RGBLight
          * setBrightness(100, params) the light recalls the onUpperBoundValue.
          * Only ONE command execution per situation
          */
-        //hue.setValue(100);
         //executeCommand the body of the super implementation
         super.executePowerOn(params);
     }
 
-    public void setHue(int rangeValue, Config params) {
+    public void executeHue(int rangeValue, Config params) {
         boolean executed = executeCommand("set hue", params); //executes the developer level command associated with 'set brightness' action
 
         if (executed) {
@@ -129,7 +127,7 @@ public class RGBLight
         }
     }
 
-    public void setSaturation(int rangeValue, Config params) {
+    public void executeSaturation(int rangeValue, Config params) {
         boolean executed = executeCommand("set saturation", params); //executes the developer level command associated with 'set brightness' action
 
         if (executed) {

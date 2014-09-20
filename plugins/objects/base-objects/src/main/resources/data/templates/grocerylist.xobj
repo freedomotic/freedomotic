@@ -8,7 +8,7 @@
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
     <com.freedomotic.model.object.MultiselectionListBehavior>
-      <name>goods</name>
+      <name>taxonomy</name>
       <description></description>
       <active>true</active>
       <priority>-1</priority>

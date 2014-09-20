@@ -62,7 +62,7 @@ public class Light
 
             @Override
             public void onRangeValue(int rangeValue, Config params, boolean fireCommand) {
-                setBrightness(rangeValue, params);
+                executeBrightness(rangeValue, params);
             }
         });
         //register this behavior to the superclass to make it visible to it
@@ -99,7 +99,7 @@ public class Light
         super.executePowerOn(params);
     }
 
-    public void setBrightness(int rangeValue, Config params) {
+    public void executeBrightness(int rangeValue, Config params) {
         boolean executed = executeCommand("set brightness", params); //executes the developer level command associated with 'set brightness' action
 
         if (executed) {
