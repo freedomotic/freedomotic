@@ -103,5 +103,5 @@
     <property name="" value="hue"/>
     <property name="" value="saturation"/> 
   </triggers>
-  <currentRepresentation>1</currentRepresentation>
+  <currentRepresentation>0</currentRepresentation>
 </com.freedomotic.model.object.EnvObject>
