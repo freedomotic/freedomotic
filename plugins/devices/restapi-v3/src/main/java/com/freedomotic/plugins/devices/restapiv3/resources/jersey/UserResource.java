@@ -98,18 +98,18 @@ public class UserResource extends AbstractResource<User> {
     }
     
     @Path("/{id}/roles")
-    public RoleResource roles(
+    public UserRoleResource roles(
             @ApiParam(value = "User to fetch properties from", required = true)
             @PathParam("id") String userName) {
-        return new RoleResource(userName);
+        return new UserRoleResource(userName);
     }
     
     @Api(value = "userRoles", description = "Manages user's roles", position = 301)
-    public class RoleResource{
+    public class UserRoleResource{
         String userName;
         User user;
 
-        public RoleResource(String userName) {
+        public UserRoleResource(String userName) {
             this.userName = userName;
             this.user = api.getAuth().getUser(userName);
         }
@@ -136,7 +136,7 @@ public class UserResource extends AbstractResource<User> {
                 @ApiParam(value = "Role to delete", required = true)
                 @PathParam("name") String name){
            user.getRoles().remove(name);
-            return Response.accepted().build();
+           return Response.accepted().build();
         }
         
 

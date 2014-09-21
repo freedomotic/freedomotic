@@ -133,6 +133,7 @@ public final class Reaction
 //        create(trigger, tmpSequences);
 //    }
     private void create(Trigger trigger, List<Command> commands) {
+        this.uuid = UUID.randomUUID().toString();
         if ((trigger != null) && (commands != null)) {
             this.trigger = trigger;
             this.setCommands(commands);

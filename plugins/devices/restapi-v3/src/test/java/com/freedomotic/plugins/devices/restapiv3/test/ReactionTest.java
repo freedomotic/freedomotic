@@ -7,10 +7,13 @@
 package com.freedomotic.plugins.devices.restapiv3.test;
 
 import com.freedomotic.app.FreedomoticInjector;
+import com.freedomotic.plugins.devices.restapiv3.representations.ReactionRepresentation;
+import com.freedomotic.plugins.devices.restapiv3.resources.jersey.ReactionResource;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.OldReactionResource;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.Trigger;
+import com.google.inject.Inject;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilderException;
@@ -23,55 +26,58 @@ import org.junit.runner.RunWith;
  */
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
-public class ReactionTest extends AbstractTest<Reaction>{
+public class ReactionTest extends AbstractTest<ReactionRepresentation>{
 
-    @Override
-    public void test() {
-     // skip test (need some more work to be ready for this)
-    }
-
+    @Inject
+    ReactionRepresentation rea;
     
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        setItem(new Reaction());
-        getItem().setUuid(getUuid());
+        
         Command com = new Command();
         com.setName("Reaction Command");
         com.setHardwareLevel(false);
+        
         Trigger t = new Trigger();
         t.setName("Reaction trigger");
-        getApi().triggers().create(t);
-        getApi().commands().create(com);
-        getItem().setTrigger(t);
+        Trigger t2 = new Trigger();
+        t2.setName("Second Trigger");
         
-        getItem().addCommand(com);
-        initPath(OldReactionResource.class);
-        setListType(new GenericType<List<Reaction>>(){});
-        setSingleType(new GenericType<Reaction>(){});
+        getApi().triggers().create(t);
+        getApi().triggers().create(t2);
+        
+        getApi().commands().create(com);
+        
+        Reaction r = new Reaction(t, com);
+        setItem(new ReactionRepresentation(r));
+        
+        initPath(ReactionResource.class);
+        setListType(new GenericType<List<ReactionRepresentation>>(){});
+        setSingleType(new GenericType<ReactionRepresentation>(){});
     }
 
     @Override
-    protected void putModifications(Reaction orig) {
-        orig.getTrigger().setChannel("pippo");
+    protected void putModifications(ReactionRepresentation orig) {
+        orig.setTriggerUuid(getApi().triggers().getByName("Second Trigger").get(0).getUUID());
     }
 
     @Override
-    protected void putAssertions(Reaction pre, Reaction post) {
-        assertEquals("PUT - trigger channel check", pre.getTrigger().getChannel(), post.getTrigger().getChannel());
+    protected void putAssertions(ReactionRepresentation pre, ReactionRepresentation post) {
+        assertEquals("PUT - trigger UUID check", pre.getTriggerUuid(), post.getTriggerUuid());
     }
 
     @Override
-    protected void getAssertions(Reaction obj) {
+    protected void getAssertions(ReactionRepresentation obj) {
        assertEquals("Single test - UUID", getItem().getUuid(), obj.getUuid());
     }
 
     @Override
-    protected void listAssertions(List<Reaction> list) {
+    protected void listAssertions(List<ReactionRepresentation> list) {
         assertEquals("Single test - UUID", getItem().getUuid(), list.get(0).getUuid());
     }
 
     @Override
-    protected String getUuid(Reaction obj) {
+    protected String getUuid(ReactionRepresentation obj) {
         return obj.getUuid();
     }
     

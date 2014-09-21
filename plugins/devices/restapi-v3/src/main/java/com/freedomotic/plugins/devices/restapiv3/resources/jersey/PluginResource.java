@@ -39,14 +39,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 /**
  *
  * @author matteo
  */
 @Path("plugins")
-@Api(value = "/plugins", description = "Operations on plugins", position = 7)
+@Api(value = "plugins", description = "Operations on plugins", position = 7)
 public class PluginResource extends AbstractResource<Plugin>{
 
     private static final ClientStorage clientStorage =  INJECTOR.getInstance(ClientStorage.class);

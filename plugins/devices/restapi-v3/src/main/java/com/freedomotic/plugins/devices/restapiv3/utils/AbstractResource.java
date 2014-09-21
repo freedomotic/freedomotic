@@ -58,6 +58,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     public static final Logger LOG = Logger.getLogger(AbstractResource.class.getName());
     protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
     protected final static API api = INJECTOR.getInstance(API.class);
+
     /**
      *
      * @return
@@ -122,7 +123,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
                 return Response.notModified().build();
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE,"Cannot update a item",e);
+            LOG.log(Level.SEVERE, "Cannot update a item", e);
             return Response.notModified().build();
         }
     }
@@ -188,16 +189,13 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     public Response copy(
             @ApiParam(value = "ID of item to copy", required = true)
             @PathParam("id") String UUID) {
-        try {
-            URI ref = doCopy(UUID);
-            if (ref != null) {
-                return Response.created(ref).build();
-            } else {
-                return Response.serverError().build();
-            }
-        } catch (Exception e) {
-            return Response.serverError().build();
+        URI ref = doCopy(UUID);
+        if (ref != null) {
+            return Response.created(ref).build();
+        } else {
+            throw new ItemNotFoundException("Cannot find item: " + UUID);
         }
+
     }
 
     protected URI createUri(String resId) {

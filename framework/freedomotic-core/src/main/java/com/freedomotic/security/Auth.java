@@ -135,5 +135,7 @@ public interface Auth {
     
     public void deleteUser(String userName);
     
+    public void deleteRole(String roleName);
+    
     public Realm getUserRealm();
 }

@@ -1,5 +1,5 @@
 // swagger-ui.js
-// version 2.0.22
+// version 2.0.23
 $(function() {
 
 	// Helper function for vertically aligning DOM elements
@@ -396,7 +396,7 @@ function program18(depth0,data) {
 function program20(depth0,data) {
   
   
-  return "\n          <div class='sandbox_header'>\n            <input class='submit' name='commit' type='button' value='Try it out!' />\n            <a href='#' class='response_hider' style='display:none'>Hide Response</a>\n            <img alt='Throbber' class='response_throbber' src='images/throbber.gif' style='display:none' />\n          </div>\n          ";
+  return "\n          <div class='sandbox_header'>\n            <input class='submit' name='commit' type='button' value='Try it out!' />\n            <a href='#' class='response_hider' style='display:none'>Hide Response</a>\n            <span class='response_throbber' style='display:none'></span>\n          </div>\n          ";
   }
 
   buffer += "\n  <ul class='operations' >\n    <li class='";
@@ -1081,11 +1081,11 @@ function program1(depth0,data) {
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "' onclick=\"Docs.toggleEndpointListForResource('";
+    + "' class=\"toggleEndpointList\" data-id=\"";
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "');\">";
+    + "\">";
   if (stack1 = helpers.name) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
@@ -1106,19 +1106,19 @@ function program1(depth0,data) {
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "'\n         onclick=\"Docs.toggleEndpointListForResource('";
+    + "' class=\"toggleEndpointList\" data-id=\"";
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "');\">Show/Hide</a>\n    </li>\n    <li>\n      <a href='#' onclick=\"Docs.collapseOperationsForResource('";
+    + "\">Show/Hide</a>\n    </li>\n    <li>\n      <a href='#' class=\"collapseResource\" data-id=\"";
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "'); return false;\">\n        List Operations\n      </a>\n    </li>\n    <li>\n      <a href='#' onclick=\"Docs.expandOperationsForResource('";
+    + "\">\n        List Operations\n      </a>\n    </li>\n    <li>\n      <a href='#' class=\"expandResource\" data-id=";
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "'); return false;\">\n        Expand Operations\n      </a>\n    </li>\n    <li>\n      <a href='";
+    + ">\n        Expand Operations\n      </a>\n    </li>\n    <li>\n      <a href='";
   if (stack1 = helpers.url) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.url; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
@@ -1537,6 +1537,9 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         operation.parentId = this.model.id;
         this.addOperation(operation);
       }
+      $('.toggleEndpointList', this.el).click(this.callDocs.bind(this, 'toggleEndpointListForResource'));
+      $('.collapseResource', this.el).click(this.callDocs.bind(this, 'collapseOperationsForResource'));
+      $('.expandResource', this.el).click(this.callDocs.bind(this, 'expandOperationsForResoruce'));
       return this;
     };
 
@@ -1551,6 +1554,11 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       });
       $('.endpoints', $(this.el)).append(operationView.render().el);
       return this.number++;
+    };
+
+    ResourceView.prototype.callDocs = function(fnName, e) {
+      e.preventDefault();
+      return Docs[fnName](e.currentTarget.getAttribute('data-id'));
     };
 
     return ResourceView;
@@ -1810,7 +1818,8 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         }
       }
       this.invocationUrl = this.model.supportHeaderParams() ? (headerParams = this.model.getHeaderParams(map), this.model.urlify(map, false)) : this.model.urlify(map, true);
-      $(".request_url", $(this.el)).html("<pre>" + this.invocationUrl + "</pre>");
+      $(".request_url", $(this.el)).html("<pre></pre>");
+      $(".request_url pre", $(this.el)).text(this.invocationUrl);
       obj = {
         type: this.model.method,
         url: this.invocationUrl,
@@ -2006,7 +2015,8 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         pre = $('<pre class="json" />').append(code);
       }
       response_body = pre;
-      $(".request_url", $(this.el)).html("<pre>" + url + "</pre>");
+      $(".request_url", $(this.el)).html("<pre></pre>");
+      $(".request_url pre", $(this.el)).text(url);
       $(".response_code", $(this.el)).html("<pre>" + response.status + "</pre>");
       $(".response_body", $(this.el)).html(response_body);
       $(".response_headers", $(this.el)).html("<pre>" + _.escape(JSON.stringify(response.headers, null, "  ")).replace(/\n/g, "<br>") + "</pre>");

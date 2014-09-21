@@ -322,5 +322,10 @@ public class AuthImpl2 implements Auth{
         return baseRealm;
     }
 
+    @Override
+    public void deleteRole(String roleName) {
+        baseRealm.removeRole(roleName);
+    }
+
 
 }

@@ -328,6 +328,11 @@ public class AuthImpl implements Auth{
         return baseRealm;
     }
 
+    @Override
+    public void deleteRole(String roleName) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 
 }

@@ -160,4 +160,17 @@ public class UserRealm extends SimpleAccountRealm {
         u.setLocked(true);
         getUsers().remove(userName);
     }
+    
+    public void removeRole(String roleName){
+        SimpleRole r = getRole(roleName);
+        getRoles().remove(roleName);
+        for (User u : getUsers().values()){
+            u.removeRole(roleName);
+            u.setObjectPermissions(null);
+            for (String rs : u.getRoles()){
+                SimpleRole nr = getRole(rs);
+                u.addObjectPermissions(nr.getPermissions());
+            }
+        }
+    }
 }

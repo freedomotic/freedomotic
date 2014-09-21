@@ -26,6 +26,7 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.EnvironmentResource;
+import com.google.inject.Inject;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilder;
@@ -41,7 +42,10 @@ import org.junit.runner.RunWith;
 @GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class ZoneTest extends AbstractTest<Zone>{
 
+    @Inject
     Environment e ;
+    
+    @Inject
     EnvironmentLogic el;
 
     @Override
@@ -50,13 +54,10 @@ public class ZoneTest extends AbstractTest<Zone>{
         getItem().setName("Test Zone");
         getItem().setAsRoom(true);
         getItem().setDescription("Before editing");
-        e = new Environment();
         e.setName("Test env for zone");
         e.setUUID(getUuid());
-        el = new EnvironmentLogic(getApi());
         el.setPojo(e);
         el.init();
-        //EnvironmentPersistence.add(el, false);
         getApi().environments().create(el);
        
         initPath(UriBuilder.fromResource(EnvironmentResource.class).path(e.getUUID()).path("/rooms").build().toString());

@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.shiro.authc.SimpleAccount;
-import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleRole;
 
 /**

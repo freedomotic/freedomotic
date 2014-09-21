@@ -34,6 +34,7 @@ import javax.ws.rs.Path;
  */
 @Path("OLDreactions")
 //@Api(value = "/reactions", description = "Operations on reactions", position=3)
+@Deprecated
 public class OldReactionResource extends AbstractResource<Reaction>{
 
     @Override
