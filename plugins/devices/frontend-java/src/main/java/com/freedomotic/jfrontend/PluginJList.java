@@ -170,7 +170,6 @@ public final class PluginJList
      */
     public void update() {
         try {
-            String path = Info.getResourcesPath();
             ImageIcon defaultIconRunning =
                     new ImageIcon(ResourcesManager.getResource("plugin-running.png", 64, 64)); //new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
             ImageIcon defaultIconStopped =

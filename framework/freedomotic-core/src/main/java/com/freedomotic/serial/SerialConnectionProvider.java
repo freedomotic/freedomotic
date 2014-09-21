@@ -314,7 +314,7 @@ public class SerialConnectionProvider implements SerialPortEventListener {
             os = "linux";
         }
         String sep = System.getProperty("file.separator");
-        pathToAdd = new File(Info.getApplicationPath() + sep + pathToAdd + sep + os + sep + arch).toString();
+        pathToAdd = new File(Info.PATHS.PATH_WORKDIR + sep + pathToAdd + sep + os + sep + arch).toString();
         // Modifico il valore della variabile a livello d'ambiente
         //LOG.info("Adding to classpath '" + pathToAdd + "'");
         File dynLibraryFile = new File(pathToAdd);
@@ -326,7 +326,7 @@ public class SerialConnectionProvider implements SerialPortEventListener {
                 .concat(System.getProperty("path.separator")
                 + pathToAdd)
                 .concat(System.getProperty("path.separator")
-                + new File(Info.getApplicationPath() + "/config/serial/").toString());
+                + new File(Info.PATHS.PATH_CONFIG_FOLDER + "/serial/").toString());
         System.setProperty("java.library.path", libraryPath);
         //LOG.info("java.library.path: " + libraryPath);
     }

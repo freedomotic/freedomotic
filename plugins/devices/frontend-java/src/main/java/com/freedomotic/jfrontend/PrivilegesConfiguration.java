@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  */
 public class PrivilegesConfiguration extends javax.swing.JFrame {
     
-    private File write = new File(Info.getApplicationPath() + File.separator + "config" + File.separator + "security.properties");
+    private File write = new File(Info.PATHS.PATH_CONFIG_FOLDER + "/security.properties");
     private final API api;
     /**
         

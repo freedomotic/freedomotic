@@ -147,7 +147,7 @@ public class ReactionPersistence implements Repository<Reaction> {
                     //validate the object against a predefined DTD
                     try {
                         String xml
-                                = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/reaction.dtd");
+                                = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/reaction.dtd");
 
                         reaction = (Reaction) xstream.fromXML(xml);
                     } catch (Exception e) {

@@ -699,7 +699,7 @@ public class ObjectEditor
     private void btnChangeImageActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnChangeImageActionPerformed
 
         JFileChooser fc = new JFileChooser();
-        fc.setCurrentDirectory(new File(Info.getResourcesPath()));
+        fc.setCurrentDirectory(Info.PATHS.PATH_RESOURCES_FOLDER);
 
         int returnVal = fc.showDialog(this, "Use as object icon");
 

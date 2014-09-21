@@ -217,7 +217,7 @@ public class CommandPersistence implements Repository<Command> {
                     Command command = null;
                     String xml = null;
                     try {
-                        xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/command.dtd");
+                        xml = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/command.dtd");
                     } catch (Exception e) {
                         LOG.log(Level.SEVERE, "Reaction file {0} is not well formatted: {1}", new Object[]{file.getPath(), e.getLocalizedMessage()});
                         continue;
@@ -230,7 +230,7 @@ public class CommandPersistence implements Repository<Command> {
                                     command);
                         } else { //a user level commmand
 
-                            if (folder.getAbsolutePath().startsWith(Info.getPluginsPath())) {
+                            if (folder.getAbsolutePath().startsWith(Info.PATHS.PATH_PLUGINS_FOLDER.getAbsolutePath())) {
                                 command.setEditable(false);
                             }
 

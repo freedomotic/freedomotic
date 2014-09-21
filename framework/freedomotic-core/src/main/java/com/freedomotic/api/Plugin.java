@@ -89,7 +89,7 @@ public class Plugin implements Client {
      */
     public Plugin(String pluginName, String manifestPath) {
         this(pluginName);
-        path = new File(Info.getDevicesPath() + manifestPath);
+        path = new File(Info.PATHS.PATH_DEVICES_FOLDER + manifestPath);
         init(path);
     }
 

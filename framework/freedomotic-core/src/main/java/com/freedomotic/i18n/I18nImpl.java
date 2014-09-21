@@ -19,12 +19,13 @@
  */
 package com.freedomotic.i18n;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.util.Info;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -35,13 +36,11 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,20 +63,22 @@ public class I18nImpl implements I18n {
 		private Locale currentLocale;
     private final HashMap<String, ResourceBundle> messages;
     private final UTF8control RB_Control;
-    private static ArrayList<Locale> locales = new ArrayList<Locale>();
+    private static final ArrayList<Locale> locales = new ArrayList<Locale>();
     private final AppConfig config;
     private final HashMap<String, File> packageBundleDir;
     private final Locale fallBackLocale = Locale.ENGLISH;
+    private final API api;
 
     @Inject
-    public I18nImpl(AppConfig config) {
+    public I18nImpl(AppConfig config, API api) {
         this.config = config;
+        this.api = api;
         currentLocale = Locale.getDefault();
         messages = new HashMap<String, ResourceBundle>();
         RB_Control = new UTF8control();
         packageBundleDir = new HashMap<String, File>();
         // add mapping for base strings
-        packageBundleDir.put("com.freedomotic", new File(Info.getApplicationPath() + "/i18n"));
+        packageBundleDir.put("com.freedomotic", new File(Info.PATHS.PATH_WORKDIR + "/i18n"));
     }
 
     /*
@@ -262,7 +263,7 @@ public class I18nImpl implements I18n {
     public ArrayList<Locale> getAvailableLocales() {
         final String bundlename = "freedomotic";
         locales.clear();
-        File root = new File(Info.getApplicationPath() + File.separator + "i18n");
+        File root = new File(Info.PATHS.PATH_WORKDIR + "/i18n");
         File[] files = root.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {

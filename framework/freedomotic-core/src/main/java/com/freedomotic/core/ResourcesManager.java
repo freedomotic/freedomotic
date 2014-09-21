@@ -62,10 +62,10 @@ public final class ResourcesManager {
         if (img == null) { //img not in cache
             try {
                 //loads image from disk searching it recursively in folder
-                img = fetchFromHDD(new File(Info.getResourcesPath()), imageName);
+                img = fetchFromHDD(Info.PATHS.PATH_RESOURCES_FOLDER, imageName);
             } catch (IOException e) {
                 LOG.log(Level.WARNING, "No image {0} found recursively in {1}", 
-                        new Object[]{imageName, new File(Info.getResourcesPath()).getPath()});
+                        new Object[]{imageName,Info.PATHS.PATH_RESOURCES_FOLDER.getPath()});
             }
             if (img != null) {
                 //img loaded from disk. Now it is cached resized
@@ -89,10 +89,10 @@ public final class ResourcesManager {
         if (img == null) { //img not in cache
             try {
                 //loads image from disk searching it recursively in folder
-                img = fetchFromHDD(new File(Info.getResourcesPath()), imageName);
+                img = fetchFromHDD(Info.PATHS.PATH_RESOURCES_FOLDER, imageName);
             } catch (IOException e) {
                 LOG.log(Level.WARNING, "No image {0} found recursively in {1}", 
-                        new Object[]{imageName, new File(Info.getResourcesPath()).getPath()});
+                        new Object[]{imageName, Info.PATHS.PATH_RESOURCES_FOLDER.getPath()});
             }
             if (img != null) {
                 //img succesfully loaded from disk. Now it is cached

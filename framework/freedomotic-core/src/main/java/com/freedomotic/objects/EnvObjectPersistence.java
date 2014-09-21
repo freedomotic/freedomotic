@@ -241,7 +241,7 @@ public class EnvObjectPersistence implements Repository<EnvObjectLogic> {
         String xml;
 
         try {
-            xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/object.dtd");
+            xml = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/object.dtd");
 
             EnvObject pojo = (EnvObject) xstream.fromXML(xml);
             EnvObjectLogic objectLogic = null;

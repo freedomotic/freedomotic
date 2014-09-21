@@ -122,8 +122,8 @@ public class LogFormatter
                 + "<div>If you don't know where to start take a look at the <a href=\"http://freedomotic.com/content/use-it\">getting started tutorial</a></div><br>"
                 + "<div>Scroll this page till the end to read the latest log records. Information records have green background, warnings and exceptions are highlighted with red background.</div><br>"
                 + "<div>If the pop-up of this logger annoys you you can disable setting the parameter 'KEY_LOGGER_POPUP = false' in "
-                + Info.getApplicationPath() + "/config/config.xml</div><br>"
-                + "<div>This file can still be opened from " + Info.getApplicationPath()
+                + Info.PATHS.PATH_CONFIG_FOLDER + "/config.xml</div><br>"
+                + "<div>This file can still be opened from " + Info.PATHS.PATH_WORKDIR
                 + "/log/freedomlog.html</div><br>." + "<font face='Verdana' size='5'>\n"
                 + "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\" style='border: 0pt solid #000000; width: 100%; border-Collapse: collapse'>\n"
                 + "<tr>" + "    <td>Time</td>" + "    <td>Log Message</td>" + "</tr>\n");

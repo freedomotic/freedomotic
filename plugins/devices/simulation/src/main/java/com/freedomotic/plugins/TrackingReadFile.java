@@ -74,7 +74,7 @@ public class TrackingReadFile extends Protocol {
         ArrayList<Coordinate> coord = new ArrayList<Coordinate>();
 
         try {
-            File f = new File(Info.getApplicationPath() + "/plugins/mote-" + n + ".txt");
+            File f = new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/mote-" + n + ".txt");
             System.out.println("\nReading coordinates from file " + f.getAbsolutePath());
             fr = new FileReader(f);
 

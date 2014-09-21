@@ -904,7 +904,7 @@ public class MainWindow
 
     private void mnuOpenEnvironmentActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuOpenEnvironmentActionPerformed
         mnuSaveActionPerformed(null);
-        final JFileChooser fc = new JFileChooser(Info.getDatafilePath() + "/furn/");
+        final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + "/furn/");
         File file = null;
         OpenDialogFileFilter filter = new OpenDialogFileFilter();
         filter.addExtension("xenv");
@@ -995,7 +995,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         z.setName(i18n.msg("room") + Math.random());
 
         Room room = new Room(z);
-        room.getPojo().setTexture((new File(Info.getResourcesPath() + "/wood.jpg")).getName());
+        room.getPojo().setTexture((new File(Info.PATHS.PATH_RESOURCES_FOLDER + "/wood.jpg")).getName());
         room.init(drawer.getCurrEnv());
         drawer.getCurrEnv().addRoom(room);
         drawer.createHandles(room);
@@ -1019,7 +1019,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuSaveAsActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuSaveAsActionPerformed
 
-        final JFileChooser fc = new JFileChooser(Info.getDatafilePath() + "/furn/");
+        final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + "/furn/");
         int returnVal = fc.showSaveDialog(this);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -1088,7 +1088,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuBackgroundActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuBackgroundActionPerformed
 
-        final JFileChooser fc = new JFileChooser(Info.getDatafilePath() + "/resources/");
+        final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + "/resources/");
         OpenDialogFileFilter filter = new OpenDialogFileFilter();
         filter.addExtension("png");
         filter.addExtension("jpeg");
@@ -1117,7 +1117,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             JOptionPane.showMessageDialog(this,
                     i18n.msg("select_room_first"));
         } else {
-            final JFileChooser fc = new JFileChooser(Info.getDatafilePath() + "/resources/");
+            final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_RESOURCES_FOLDER);
             OpenDialogFileFilter filter = new OpenDialogFileFilter();
             filter.addExtension("png");
             filter.addExtension("jpeg");
@@ -1146,7 +1146,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
         //creates a new environment coping it from a template
         File template =
-                new File(Info.getApplicationPath() + "/data/furn/templates/template-square/template-square.xenv");
+                new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/templates/template-square/template-square.xenv");
         LOG.info("Opening " + template.getAbsolutePath());
         drawer.setCurrEnv(0);
 
@@ -1156,7 +1156,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
             if (loaded) {
                 //EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
-                final JFileChooser fc = new JFileChooser(Info.getDatafilePath() + "/furn/");
+                final JFileChooser fc = new JFileChooser( Info.PATHS.PATH_DATA_FOLDER + "/furn/");
                 int returnVal = fc.showSaveDialog(this);
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -1189,7 +1189,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     private void mnuSaveActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuSaveActionPerformed
 
         String environmentFilePath =
-                Info.getApplicationPath() + "/data/furn" + master.getApi().getConfig().getProperty("KEY_ROOM_XML_PATH");
+                Info.PATHS.PATH_DATA_FOLDER + "/furn" + master.getApi().getConfig().getProperty("KEY_ROOM_XML_PATH");
 
         try {
             EnvironmentPersistence.saveEnvironmentsToFolder(new File(environmentFilePath).getParentFile());

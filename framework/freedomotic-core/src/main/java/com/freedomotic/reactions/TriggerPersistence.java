@@ -150,7 +150,7 @@ public class TriggerPersistence implements Repository<Trigger> {
                     try {
                         //validate the object against a predefined DTD
                         String xml
-                                = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/trigger.dtd");
+                                = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/trigger.dtd");
                         trigger = (Trigger) xstream.fromXML(xml);
                     } catch (Exception e) {
                         LOG.log(Level.SEVERE, "Trigger file {0} is not well formatted: {1}", new Object[]{file.getPath(), e.getLocalizedMessage()});
@@ -163,7 +163,7 @@ public class TriggerPersistence implements Repository<Trigger> {
                             trigger.setPersistence(false); //it has not to me stored in root/data folder
                             addAndRegister(trigger); //in the list and start listening
                         } else {
-                            if (folder.getAbsolutePath().startsWith(Info.getPluginsPath())) {
+                            if (folder.getAbsolutePath().startsWith(Info.PATHS.PATH_PLUGINS_FOLDER.getAbsolutePath())) {
                                 trigger.setPersistence(false);
                             } else {
                                 trigger.setPersistence(true); //not hardware trigger and not plugin related

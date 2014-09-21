@@ -114,8 +114,8 @@ public class Freedomotic implements BusConsumer {
     private final ClientStorage clientStorage;
     private final PluginsManager pluginsManager;
     private AppConfig config;
-    private Auth auth;
-    private API api;
+    private final Auth auth;
+    private final API api;
     private BusMessagesListener listener;
     // TODO remove static modifier once static methods sendEvent & sendCommand are erased.
     private static BusService busService;
@@ -174,7 +174,7 @@ public class Freedomotic implements BusConsumer {
         }
         
         String resourcesPath
-                = new File(Info.getApplicationPath()
+                = new File(Info.PATHS.PATH_WORKDIR
                         + config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
         LOG.info("\nOS: " + System.getProperty("os.name") + "\n" + api.getI18n().msg("architecture") + ": "
                 + System.getProperty("os.arch") + "\n" + "OS Version: " + System.getProperty("os.version")
@@ -208,7 +208,7 @@ public class Freedomotic implements BusConsumer {
          */
         if (config.getBooleanProperty("KEY_SAVE_LOG_TO_FILE", false)) {
             try {
-                File logdir = new File(Info.getApplicationPath() + "/log/");
+                File logdir = new File(Info.PATHS.PATH_WORKDIR + "/log/");
                 logdir.mkdir();
                 
                 File logfile = new File(logdir + "/freedomotic.html");
@@ -224,7 +224,7 @@ public class Freedomotic implements BusConsumer {
                 if ((config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
                         && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
                     java.awt.Desktop.getDesktop()
-                            .browse(new File(Info.getApplicationPath() + "/log/freedomotic.html").toURI());
+                            .browse(new File(Info.PATHS.PATH_WORKDIR + "/log/freedomotic.html").toURI());
                 }
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, null, ex);
@@ -277,7 +277,7 @@ public class Freedomotic implements BusConsumer {
          * *****************************************************************
          */
         try {
-            ClassPathUpdater.add(new File(Info.getApplicationPath() + "/plugins/providers/"));
+            ClassPathUpdater.add(Info.PATHS.PATH_PROVIDERS_FOLDER);
         } catch (IOException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
@@ -401,7 +401,7 @@ public class Freedomotic implements BusConsumer {
     public void loadDefaultEnvironment()
             throws FreedomoticException {
         String envFilePath = config.getProperty("KEY_ROOM_XML_PATH");
-        File envFile = new File(Info.PATHS.PATH_WORKDIR + "/data/furn/" + envFilePath);
+        File envFile = new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/" + envFilePath);
         File folder = envFile.getParentFile();
         
         if (!folder.exists()) {
@@ -558,9 +558,9 @@ public class Freedomotic implements BusConsumer {
         String savedDataRoot;
         
         if (config.getBooleanProperty("KEY_OVERRIDE_REACTIONS_ON_EXIT", false) == true) {
-            savedDataRoot = Info.getApplicationPath() + "/data";
+            savedDataRoot = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
         } else {
-            savedDataRoot = Info.getApplicationPath() + "/testSave/data";
+            savedDataRoot = Info.PATHS.PATH_WORKDIR + "/testSave/data";
         }
         
         TriggerPersistence.saveTriggers(new File(savedDataRoot + "/trg"));
@@ -568,8 +568,9 @@ public class Freedomotic implements BusConsumer {
         ReactionPersistence.saveReactions(new File(savedDataRoot + "/rea"));
 
         //save the environment
-        String environmentFilePath
-                = Info.getApplicationPath() + "/data/furn/" + config.getProperty("KEY_ROOM_XML_PATH");
+
+        String environmentFilePath =
+                Info.PATHS.PATH_DATA_FOLDER + "/furn/" + config.getProperty("KEY_ROOM_XML_PATH");
         File folder = null;
         
         try {

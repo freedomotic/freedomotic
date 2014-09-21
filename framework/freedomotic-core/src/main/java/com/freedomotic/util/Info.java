@@ -167,7 +167,7 @@ public class Info {
             //decode the URL to translate it into a File
             //this hack can work only if freedomotic starts on local filesystem
             File workdir = new File(URLDecoder.decode(jarFolder, "UTF-8"));
-            LOG.info(workdir.getAbsolutePath().toString());
+            LOG.info(workdir.getAbsolutePath());
             return workdir;
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(Info.class.getName()).log(Level.SEVERE, null, ex);
@@ -274,51 +274,6 @@ public class Info {
                 + "Low Level classpath: " + splitPathString(System.getProperty("java.library.path")) + "\n");
 
         return str;
-    }
-
-    /**
-     *
-     * @return @deprecated
-     */
-    @Deprecated
-    public static File getApplicationPath() {
-        return PATHS.PATH_WORKDIR;
-    }
-
-    /**
-     *
-     * @return @deprecated
-     */
-    @Deprecated
-    public static String getDatafilePath() {
-        return (new File(PATHS.PATH_WORKDIR + "/data/").getAbsolutePath());
-    }
-
-    /**
-     *
-     * @return @deprecated
-     */
-    @Deprecated
-    public static String getResourcesPath() {
-        return (new File(PATHS.PATH_WORKDIR + "/data/resources/").getAbsolutePath());
-    }
-
-    /**
-     *
-     * @return @deprecated
-     */
-    @Deprecated
-    public static String getPluginsPath() {
-        return (new File(PATHS.PATH_WORKDIR + "/plugins/").getAbsolutePath());
-    }
-
-    /**
-     *
-     * @return @deprecated
-     */
-    @Deprecated
-    public static String getDevicesPath() {
-        return (new File(PATHS.PATH_WORKDIR + "/plugins/devices/").getAbsolutePath());
     }
 
     @Deprecated

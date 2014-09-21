@@ -430,7 +430,7 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
         String xml;
 
         try {
-            xml = DOMValidateDTD.validate(file, Info.getApplicationPath() + "/config/validator/environment.dtd");
+            xml = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/environment.dtd");
         } catch (IOException ex) {
             throw new DaoLayerException(ex.getMessage(), ex);
         }
