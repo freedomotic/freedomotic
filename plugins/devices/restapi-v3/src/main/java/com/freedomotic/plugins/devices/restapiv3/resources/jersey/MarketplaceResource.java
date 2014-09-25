@@ -1,7 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
@@ -63,10 +77,10 @@ public class MarketplaceResource {
 
     @GET
     @Path("categories/{cat}/plugins")
-    @ApiOperation(value = "Download a list of plugin from the speicifed category")
+    @ApiOperation(value = "Download a list of plugin from the specified category")
     @Produces(MediaType.APPLICATION_JSON)
     public Response listPlugins(
-             @ApiParam(value = "name of category to fetch", required = true)
+            @ApiParam(value = "Name of plugins category to fetch", required = true)
             @PathParam("cat") String cat) {
         if (cat != null && !cat.equals("")) {
             for (IPluginCategory category : catList) {
@@ -78,7 +92,7 @@ public class MarketplaceResource {
         }
         return Response.ok(mps.getPackageList()).build();
     }
-    
+
     @POST
     @Path("/install/{url}")
     @ApiOperation(value = "Download and install a plugin")
@@ -87,7 +101,7 @@ public class MarketplaceResource {
     })
     @Produces(MediaType.APPLICATION_JSON)
     public Response installPlugin(
-            @ApiParam(value = "URL of item to fetch", required = true)
+            @ApiParam(value = "URL of plugin to download and install", required = true)
             @PathParam("url") String pluginPath) {
         boolean done;
         PluginsManager plugMgr = api.getPluginManager();
@@ -101,5 +115,4 @@ public class MarketplaceResource {
         }
         return Response.serverError().build();
     }
-
 }

@@ -22,11 +22,16 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.reactions.Trigger;
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Level;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -35,6 +40,14 @@ import javax.ws.rs.Path;
 @Path("triggers")
 @Api(value = "/triggers", description = "Operations on triggers", position = 4)
 public class TriggerResource extends AbstractResource<Trigger> {
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "List all triggers", position = 10)
+    @Override
+    public Response list() {
+        return super.list();
+    }
 
     @Override
     protected URI doCreate(Trigger o) throws URISyntaxException {
@@ -77,5 +90,4 @@ public class TriggerResource extends AbstractResource<Trigger> {
         }
         return createUri(t.getUUID());
     }
-
 }

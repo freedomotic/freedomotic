@@ -50,7 +50,7 @@ public class SystemResource {
     
     @GET
     @Path("/info/framework")
-    @ApiOperation(value = "Show information about Freedomotic Framework")
+    @ApiOperation(value = "Show information about Freedomotic framework")
     @Produces(MediaType.APPLICATION_JSON)
     public Response listFrameworkSettings() {
         return Response.ok(Info.FRAMEWORK).build();

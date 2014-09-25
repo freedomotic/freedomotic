@@ -21,11 +21,7 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.reactions.Command;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
+import com.wordnik.swagger.annotations.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -44,7 +40,6 @@ import javax.ws.rs.core.Response;
 @Path("commands/hardware")
 @Api(value = "hardwareCommands", description = "Operations on hardware commands", position = 6)
 public class HardwareCommandResource extends AbstractResource<Command> {
-
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

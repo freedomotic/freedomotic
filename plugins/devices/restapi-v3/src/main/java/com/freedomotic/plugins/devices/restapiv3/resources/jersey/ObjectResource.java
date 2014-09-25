@@ -138,9 +138,9 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
     @POST
     @Path("/{id}/click")
-    @ApiOperation(value = "Sends a ObjectClickEvent for related object")
+    @ApiOperation(value = "Send a ObjectClickEvent for related object")
     public Response click(
-            @ApiParam(value = "ID of item to click", required = true)
+            @ApiParam(value = "UUID of object to click", required = true)
             @PathParam("id") String UUID) {
         try {
             EnvObjectLogic el = api.objects().get(UUID);
@@ -157,7 +157,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
     @GET
     @Path("/templates")
-    @ApiOperation(value = "Lists available object templates")
+    @ApiOperation(value = "List all object templates")
     public Response listTemplates() {
         List<EnvObject> templates = new ArrayList<EnvObject>();
         for (Client c : clientStorage.getClients("object")) {
@@ -169,10 +169,10 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
     @POST
     @Path("/templates/{name}/instantiate")
-    @ApiOperation(value = "Add a new object, based on selected template.")
+    @ApiOperation(value = "Add a new object, based on selected template")
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Template not found"),
-        @ApiResponse(code = 201, message = "Creation started")
+        @ApiResponse(code = 201, message = "Object added")
     })
     public Response instantiateTemplate(
             @ApiParam(value = "Name of object template", required = true)
@@ -193,7 +193,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
      */
     @Path("/{id}/behaviors")
     public BehaviorResource behaviors(
-            @ApiParam(value = "Object to fetch behaviors from", required = true)
+            @ApiParam(value = "UUID of object to fetch behaviors from", required = true)
             @PathParam("id") String UUID) {
         return new BehaviorResource(UUID);
     }
