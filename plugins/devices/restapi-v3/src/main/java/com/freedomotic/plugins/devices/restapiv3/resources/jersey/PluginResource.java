@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
@@ -35,9 +33,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -47,10 +44,10 @@ import javax.ws.rs.core.Response.Status;
  */
 @Path("plugins")
 @Api(value = "/plugins", description = "Operations on plugins", position = 7)
-public class PluginResource extends AbstractResource<Plugin>{
+public class PluginResource extends AbstractResource<Plugin> {
 
-    private static final ClientStorage clientStorage =  INJECTOR.getInstance(ClientStorage.class);
-    
+    private static final ClientStorage clientStorage = INJECTOR.getInstance(ClientStorage.class);
+
     @Override
     protected URI doCreate(Plugin o) throws URISyntaxException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -66,45 +63,53 @@ public class PluginResource extends AbstractResource<Plugin>{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "List all installed plugins", position = 10)
+    @Override
+    public Response list() {
+        return super.list();
+    }
+
     @Override
     protected List<Plugin> prepareList() {
         List<Plugin> plugins = new ArrayList<Plugin>();
-        for (Client c : clientStorage.getClients("plugin")){
-            plugins.add((Plugin)c);
+        for (Client c : clientStorage.getClients("plugin")) {
+            plugins.add((Plugin) c);
         }
         return plugins;
     }
 
     @Override
     protected Plugin prepareSingle(String name) {
-        for (Client c : clientStorage.getClients("plugin")){
+        for (Client c : clientStorage.getClients("plugin")) {
             Plugin plug = (Plugin) c;
-            if (plug.getClassName().equalsIgnoreCase(name)){
+            if (plug.getClassName().equalsIgnoreCase(name)) {
                 return plug;
             }
         }
         return null;
     }
-    
+
     @POST
     @ApiOperation("Start a plugin")
     @Path("/{id}/start")
-        @ApiResponses(value = {
+    @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Plugin not found"),
         @ApiResponse(code = 202, message = "Plugin started"),
         @ApiResponse(code = 304, message = "Plugin not started")
     })
     public Response start(
             @PathParam("id")
-            @ApiParam(value = "Classname of plugin", required = true) String name){
+            @ApiParam(value = "Classname of plugin", required = true) String name) {
         Plugin p = prepareSingle(name);
-        if (p !=null){
+        if (p != null) {
             p.start();
             return Response.accepted().build();
         }
         throw new ItemNotFoundException();
     }
-    
+
     @POST
     @Path("/{id}/stop")
     @ApiOperation("Stop a plugin")
@@ -115,9 +120,9 @@ public class PluginResource extends AbstractResource<Plugin>{
     })
     public Response stop(
             @PathParam("id")
-            @ApiParam(value = "Classname of plugin", required = true) String name){
+            @ApiParam(value = "Classname of plugin", required = true) String name) {
         Plugin p = prepareSingle(name);
-        if (p !=null){
+        if (p != null) {
             p.stop();
             return Response.accepted().build();
         }

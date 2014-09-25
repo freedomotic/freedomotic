@@ -46,9 +46,17 @@ import javax.ws.rs.core.Response;
  * @author matteo
  */
 @Path("users")
-@Api(value = "users", description = "Manages users", position = 300)
+@Api(value = "users", description = "Manage users", position = 300)
 public class UserResource extends AbstractResource<User> {
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "List all users", position = 10)
+    @Override
+    public Response list() {
+        return super.list();
+    }
+    
     @Override
     protected URI doCopy(String UUID) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -96,16 +104,17 @@ public class UserResource extends AbstractResource<User> {
             @PathParam("id") String userName) {
         return new PropertyResource(userName);
     }
-    
+
     @Path("/{id}/roles")
     public RoleResource roles(
             @ApiParam(value = "User to fetch properties from", required = true)
             @PathParam("id") String userName) {
         return new RoleResource(userName);
     }
-    
-    @Api(value = "userRoles", description = "Manages user's roles", position = 301)
-    public class RoleResource{
+
+    @Api(value = "userRoles", description = "Manage user's roles", position = 301)
+    public class RoleResource {
+
         String userName;
         User user;
 
@@ -113,36 +122,34 @@ public class UserResource extends AbstractResource<User> {
             this.userName = userName;
             this.user = api.getAuth().getUser(userName);
         }
-        
+
         @GET
         @ApiOperation(value = "List roles", position = 10)
-        public Response list(){
+        public Response list() {
             return Response.ok(user.getRoles()).build();
         }
-        
+
         @POST
-         @ApiOperation(value = "Add a role", position = 20)
-        public Response add( 
+        @ApiOperation(value = "Add a role", position = 20)
+        public Response add(
                 @ApiParam(value = "Role to add", required = true)
-                @PathParam("name") String roleName){
+                @PathParam("name") String roleName) {
             user.addRole(roleName);
             return Response.accepted().build();
         }
-        
+
         @DELETE
         @Path("/{name}")
         @ApiOperation(value = "Delete a role", position = 30)
-       public Response delete(
+        public Response delete(
                 @ApiParam(value = "Role to delete", required = true)
-                @PathParam("name") String name){
-           user.getRoles().remove(name);
+                @PathParam("name") String name) {
+            user.getRoles().remove(name);
             return Response.accepted().build();
         }
-        
-
     }
 
-    @Api(value = "userProperties", description = "Manages user's properties", position = 302)
+    @Api(value = "userProperties", description = "Manage user's properties", position = 302)
     public class PropertyResource {
 
         String userName;
@@ -163,7 +170,7 @@ public class UserResource extends AbstractResource<User> {
         @Path("/{key}")
         @ApiOperation(value = "Get a single property", position = 20)
         public Response get(
-                @ApiParam(value = "key to retrieve", required = true)
+                @ApiParam(value = "Key to retrieve", required = true)
                 @PathParam("key") String key) {
             return Response.ok(user.getProperty(key)).build();
         }
@@ -182,13 +189,13 @@ public class UserResource extends AbstractResource<User> {
         @Path("/{key}/{value}")
         @ApiOperation(value = "Modify a single property", position = 40)
         @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Trying to moify a non-existent property"),
+            @ApiResponse(code = 404, message = "Trying to modify a non-existent property"),
             @ApiResponse(code = 200, message = "Property modified")
         })
         public Response updateSingle(
-                @ApiParam(value = "key to retrieve", required = true)
+                @ApiParam(value = "Key to retrieve", required = true)
                 @PathParam("key") String key,
-                @ApiParam(value = "value to assign", required = true)
+                @ApiParam(value = "Value to assign", required = true)
                 @PathParam("value") String value) {
             if (user.getProperty(key) != null) {
                 user.setProperty(key, value);
@@ -202,12 +209,12 @@ public class UserResource extends AbstractResource<User> {
         @Path("/{key}/{value}")
         @ApiOperation(value = "Add a property", position = 50)
         @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Trying ad an already exsisting property - use PUT instead")
+            @ApiResponse(code = 400, message = "Trying of adding an already exsisting property - use PUT instead")
         })
         public Response createSingle(
-                @ApiParam(value = "key to retrieve", required = true)
+                @ApiParam(value = "Key to retrieve", required = true)
                 @PathParam("key") String key,
-                @ApiParam(value = "value to assign", required = true)
+                @ApiParam(value = "Value to assign", required = true)
                 @PathParam("value") String value) {
             if (user.getProperty(key) == null) {
                 user.setProperty(key, value);
@@ -216,5 +223,4 @@ public class UserResource extends AbstractResource<User> {
             return Response.notAcceptable(null).build();
         }
     }
-    
 }

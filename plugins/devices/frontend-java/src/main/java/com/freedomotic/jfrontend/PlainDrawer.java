@@ -275,5 +275,6 @@ public class PlainDrawer
     public void mouseRightClickObject(EnvObjectLogic obj) {
         ObjectReceiveClick event = new ObjectReceiveClick(this, obj, ObjectReceiveClick.RIGHT_CLICK);
         Freedomotic.sendEvent(event);
+        openObjEditor(obj);
     }
 }

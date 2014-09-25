@@ -48,7 +48,7 @@ import javax.ws.rs.core.UriBuilder;
  */
 @Path("resources")
 @Singleton
-@Api(value = "/resources", description = "Retrieves images and other binary resource", position = 10)
+@Api(value = "/resources", description = "Retrieve images and other binary resource", position = 10)
 public class ImageResource implements ResourceInterface<File> {
 
     private final Map<String, File> cache = new HashMap<String, File>();
@@ -76,7 +76,7 @@ public class ImageResource implements ResourceInterface<File> {
     })
     @Produces(MediaType.WILDCARD)
     public Response get(
-            @ApiParam(value = "name of image file to fetch", required = true)
+            @ApiParam(value = "Name of image file to fetch", required = true)
             @PathParam("id") String fileName) {
         File imageFile = prepareSingle(fileName);
         if (imageFile == null){
