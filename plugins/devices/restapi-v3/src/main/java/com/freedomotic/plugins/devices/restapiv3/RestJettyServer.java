@@ -1,7 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.plugins.devices.restapiv3;
 
@@ -11,9 +25,10 @@ package com.freedomotic.plugins.devices.restapiv3;
  */
 import com.freedomotic.api.Plugin;
 import static com.freedomotic.plugins.devices.restapiv3.RestAPIv3.API_VERSION;
-import static com.freedomotic.plugins.devices.restapiv3.RestAPIv3.JERSEY_RESOURCE_PKG;
 import com.freedomotic.plugins.devices.restapiv3.auth.ShiroListener;
+import com.freedomotic.plugins.devices.restapiv3.filters.GuiceServletConfig;
 import com.freedomotic.util.Info;
+import com.google.inject.servlet.GuiceFilter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyStore;
@@ -49,7 +64,8 @@ public final class RestJettyServer extends Server {
         LOG.info("Starting RestAPI Server...");
 
         /**
-         * TODO: WHEN MOVING TO JETTY 9 refactor connectors code and add spdy support
+         * TODO WHEN MOVING TO JETTY 9
+         * refactor connectors code and add spdy support
          * http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/SpdyConnector.html
          *
          */
@@ -112,6 +128,10 @@ public final class RestJettyServer extends Server {
             context.addEventListener(new ShiroListener());
             context.addFilter(ShiroFilter.class, "/" + API_VERSION + "/*", null);
         }
+        
+        // giuce filter
+        context.addEventListener(new GuiceServletConfig());
+        context.addFilter(GuiceFilter.class,"/*",null);
         
         //static files handler        
         String staticDir = master.configuration.getStringProperty("serve-static", "swagger");

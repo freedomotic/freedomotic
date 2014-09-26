@@ -26,11 +26,14 @@ import com.freedomotic.reactions.Command;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -45,6 +48,36 @@ import javax.ws.rs.core.Response;
 @Path("commands/user")
 @Api(value = "userCommands", description = "Operations on user commands", position = 5)
 public class UserCommandResource extends AbstractResource<Command> {
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "List all user commands", position = 10)
+    @Override
+    public Response list() {
+        return super.list();
+    }
+
+    /**
+     * @param UUID
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get an user's command", position = 20)
+    @Path("/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "User's command not found")
+    })
+    @Override
+    public Response get(
+            @ApiParam(value = "UUID of user's command to fetch (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.get(UUID);
+    }
+
+    public UserCommandResource() {
+        authContext = "commands";
+    }
 
     @Override
     protected URI doCreate(Command c) throws URISyntaxException {

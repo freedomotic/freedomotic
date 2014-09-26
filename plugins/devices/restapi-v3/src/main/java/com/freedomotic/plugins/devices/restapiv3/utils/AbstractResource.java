@@ -20,9 +20,8 @@
 package com.freedomotic.plugins.devices.restapiv3.utils;
 
 import com.freedomotic.api.API;
-import com.freedomotic.api.Plugin;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.FreedomoticInjector;
+import com.freedomotic.plugins.devices.restapiv3.filters.ForbiddenException;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -58,6 +57,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     public static final Logger LOG = Logger.getLogger(AbstractResource.class.getName());
     protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
     protected final static API api = INJECTOR.getInstance(API.class);
+    protected String authContext = "*";
 
     /**
      *
@@ -68,7 +68,10 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     @ApiOperation(value = "Get a list of items", position = 10)
     @Override
     public Response list() {
-        return Response.ok(prepareList()).build();
+        if (api.getAuth().isPermitted(authContext + ":read")) {
+            return Response.ok(prepareList()).build();
+        }
+        throw new ForbiddenException("user: " + api.getAuth().getSubject().getPrincipal() + " cannot read any" + authContext);
     }
 
     /**
@@ -86,11 +89,14 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     public Response get(
             @ApiParam(value = "ID of item to fetch", required = true)
             @PathParam("id") String UUID) {
-        T item = prepareSingle(UUID);
-        if (item != null) {
-            return Response.ok(item).build();
+        if (api.getAuth().isPermitted(authContext + ":read:" + UUID)) {
+            T item = prepareSingle(UUID);
+            if (item != null) {
+                return Response.ok(item).build();
+            }
+            throw new ItemNotFoundException("Cannot find item: " + UUID);
         }
-        throw new ItemNotFoundException();
+        throw new ForbiddenException("User " + api.getAuth().getSubject().getPrincipal() + " cannot read " + authContext + " " + UUID);
     }
 
     /**
@@ -112,20 +118,23 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
             @ApiParam(value = "ID of item to update", required = true)
             @PathParam("id") String UUID,
             T s) {
-        try {
-            LOG.info("Aquiring modified element");
-            T z = doUpdate(s);
-            if (z != null) {
-                LOG.info("Everything was corerctly computed ");
-                return Response.ok().build();
-            } else {
-                LOG.info("There was a error, so nothing's changed");
+        if (api.getAuth().isPermitted(authContext + ":update:" + UUID)) {
+            try {
+                LOG.info("Aquiring modified element");
+                T z = doUpdate(s);
+                if (z != null) {
+                    LOG.info("Everything was corerctly computed ");
+                    return Response.ok().build();
+                } else {
+                    LOG.info("There was a error, so nothing's changed");
+                    return Response.notModified().build();
+                }
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "Cannot update a item", e);
                 return Response.notModified().build();
             }
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Cannot update a item", e);
-            return Response.notModified().build();
         }
+        throw new ForbiddenException("User " + api.getAuth().getSubject().getPrincipal() + " cannot modify " + authContext + " " + UUID);
     }
 
     @OPTIONS
@@ -149,12 +158,16 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     })
     @Override
     public Response create(T s) throws URISyntaxException {
-        try {
-            return Response.created(doCreate(s)).build();
-        } catch (URISyntaxException e) {
-            LOG.log(Level.SEVERE, null, e);
-            return Response.serverError().build();
+
+        if (api.getAuth().isPermitted(authContext + ":create")) {
+            try {
+                return Response.created(doCreate(s)).build();
+            } catch (URISyntaxException e) {
+                LOG.log(Level.SEVERE, null, e);
+                return Response.serverError().build();
+            }
         }
+        throw new ForbiddenException("User " + api.getAuth().getSubject().getPrincipal() + " cannot create any " + authContext);
     }
 
     /**
@@ -172,11 +185,14 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     public Response delete(
             @ApiParam(value = "ID of item to delete", required = true)
             @PathParam("id") String UUID) {
-        if (doDelete(UUID)) {
-            return Response.ok().build();
-        } else {
-            throw new ItemNotFoundException();
+        if (api.getAuth().isPermitted(authContext + ":create") && api.getAuth().isPermitted(authContext + ":read:" + UUID)) {
+            if (doDelete(UUID)) {
+                return Response.ok().build();
+            } else {
+                throw new ItemNotFoundException("Cannot find item: " + UUID);
+            }
         }
+        throw new ForbiddenException("User " + api.getAuth().getSubject().getPrincipal() + " cannot copy " + authContext + " with UUID " + UUID);
     }
 
     @Override

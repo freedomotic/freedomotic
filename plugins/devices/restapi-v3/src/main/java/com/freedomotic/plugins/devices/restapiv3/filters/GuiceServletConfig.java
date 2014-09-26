@@ -17,19 +17,20 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins.devices.restapiv3;
+package com.freedomotic.plugins.devices.restapiv3.filters;
 
-import static com.freedomotic.plugins.devices.restapiv3.RestAPIv3.JERSEY_RESOURCE_PKG;
-import org.glassfish.jersey.server.ResourceConfig;
+import com.freedomotic.app.Freedomotic;
+import com.google.inject.Injector;
+import com.google.inject.servlet.GuiceServletContextListener;
 
 /**
  *
  * @author matteo
  */
-public class JerseyApplication extends ResourceConfig {
-    
-    public JerseyApplication(){
-        packages(JERSEY_RESOURCE_PKG);
-        // register(DeclarativeLinkingFeature.class);
-    }
+public class GuiceServletConfig extends GuiceServletContextListener {
+
+  @Override
+  protected Injector getInjector() {
+    return Freedomotic.INJECTOR;
+  }
 }

@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  */
 class ClientStorageInMemory implements ClientStorage {
 
-    private final List<Client> clients = new ArrayList<Client>();
+    private static final List<Client> clients = new ArrayList<Client>();
 
 
     ClientStorageInMemory() {

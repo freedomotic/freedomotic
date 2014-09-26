@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.SimpleRole;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -227,7 +226,6 @@ public class AuthImpl2 implements Auth{
      *
      * @param rm
      */
-    @RequiresPermissions("auth:realms:create")
     @Override
     public void addRealm(Realm rm) {
         if (!realmCollection.contains(rm)) {
@@ -239,7 +237,6 @@ public class AuthImpl2 implements Auth{
      *
      * @param rm
      */
-    @RequiresPermissions("auth:realms:delete")
     public void deleteRealm(Realm rm) {
         if (!rm.equals(baseRealm) && !rm.equals(pluginRealm)) {
             realmCollection.remove(rm);
@@ -251,7 +248,6 @@ public class AuthImpl2 implements Auth{
      * @param userName
      * @return
      */
-    @RequiresPermissions("auth:fakeUser")
     @Override
     public boolean bindFakeUser(String userName) {
         if (baseRealm.accountExists(userName)) {

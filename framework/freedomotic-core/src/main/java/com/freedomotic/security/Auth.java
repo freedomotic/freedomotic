@@ -22,6 +22,7 @@ package com.freedomotic.security;
 import com.freedomotic.api.Plugin;
 import java.util.Map;
 import org.apache.shiro.authz.SimpleRole;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.Subject;
 
@@ -106,6 +107,7 @@ public interface Auth {
      *
      * @param rm
      */
+    @RequiresPermissions("auth:realms:create")
     public void addRealm(Realm rm);
 
     /**
@@ -113,28 +115,37 @@ public interface Auth {
      * @param userName
      * @return
      */
+    @RequiresPermissions("auth:fakeUser")
     public boolean bindFakeUser(String userName);
 
     public void load();
 
     public void save();
 
+    @RequiresPermissions("auth:users:create")
     public void addUser(String userName, String password, String role);
 
+    @RequiresPermissions("auth:roles:create")
     public void addRole(SimpleRole role);
 
     public User getCurrentUser();
     
+    @RequiresPermissions("auth:users:read")
     public User getUser(String username);
     
+    @RequiresPermissions("auth:users:read")
     public Map<String, User> getUsers();
 
+    @RequiresPermissions("auth:roles:read")
     public SimpleRole getRole(String name);
 
+    @RequiresPermissions("auth:roles:read")
     public Map<String, SimpleRole> getRoles();
     
+    @RequiresPermissions("auth:users:delete")
     public void deleteUser(String userName);
     
+    @RequiresPermissions("auth:roles:delete")
     public void deleteRole(String roleName);
     
     public Realm getUserRealm();

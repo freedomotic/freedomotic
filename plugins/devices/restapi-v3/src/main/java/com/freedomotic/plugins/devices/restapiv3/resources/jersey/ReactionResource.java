@@ -38,6 +38,10 @@ import javax.ws.rs.Path;
 @Api(value = "reactions", description = "Operations on reactions", position = 3)
 public class ReactionResource extends AbstractResource<ReactionRepresentation> {
 
+    public ReactionResource() {
+        authContext = "reactions";
+    }
+
     @Override
     protected URI doCopy(String UUID) {
         api.reactions().copy(UUID);

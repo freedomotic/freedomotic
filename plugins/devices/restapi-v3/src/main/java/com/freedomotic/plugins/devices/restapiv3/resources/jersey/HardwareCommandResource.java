@@ -22,11 +22,20 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.reactions.Command;
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -35,6 +44,37 @@ import javax.ws.rs.Path;
 @Path("commands/hardware")
 @Api(value = "hardwareCommands", description = "Operations on hardware commands", position = 6)
 public class HardwareCommandResource extends AbstractResource<Command> {
+
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "List all hardware commands", position = 10)
+    @Override
+    public Response list() {
+        return super.list();
+    }
+
+    /**
+     * @param UUID
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get a hardware command", position = 20)
+    @Path("/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Hardware command not found")
+    })
+    @Override
+    public Response get(
+            @ApiParam(value = "UUID of hardware command to fetch (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.get(UUID);
+    }
+
+    public HardwareCommandResource() {
+        authContext = "commands";
+    }
 
     @Override
     protected URI doCreate(Command c) throws URISyntaxException {

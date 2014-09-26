@@ -58,6 +58,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     private String roomName = null;
 
     public ObjectResource() {
+        authContext = "objects";
     }
 
     public ObjectResource(String envUUID) {
