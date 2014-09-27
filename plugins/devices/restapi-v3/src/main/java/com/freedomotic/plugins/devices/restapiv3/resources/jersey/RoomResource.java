@@ -24,14 +24,14 @@ import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -44,11 +44,71 @@ public class RoomResource extends AbstractResource<Zone> {
     final private String envUUID;
     final private EnvironmentLogic env;
 
-    protected RoomResource(String endUUID) {
-        this.envUUID = endUUID;
-        this.env = api.environments().get(endUUID);
+    protected RoomResource(String envUUID) {
+        this.envUUID = envUUID;
+        this.env = api.environments().get(envUUID);
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "List all rooms", position = 10)
+    @Override
+    public Response list() {
+        return super.list();
+    }
+
+    /**
+     * @param UUID
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get a room", position = 20)
+    @Path("/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Room not found")
+    })
+    @Override
+    public Response get(
+            @ApiParam(value = "UUID of room to fetch (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.get(UUID);
+    }
+
+    @Override
+    @DELETE
+    @Path("/{id}")
+    @ApiOperation(value = "Delete a room object", position = 50)
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Room not found")
+    })
+    public Response delete(
+            @ApiParam(value = "UUID of room to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.delete(UUID);
+    }
+
+     /**
+     *
+     * @param UUID
+     * @param s
+     * @return
+     */
+    @Override
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {
+        @ApiResponse(code = 304, message = "Room not modified")
+    })
+    @ApiOperation(value = "Update a room", position = 40)
+    public Response update(
+            @ApiParam(value = "UUID of room to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID, Zone s) {
+        return super.update(UUID, s);
+    }
+    
     @Override
     protected boolean doDelete(String ID) {
         try {
@@ -65,7 +125,6 @@ public class RoomResource extends AbstractResource<Zone> {
         try {
             env.addRoom(r);
         } catch (Exception e) {
-
         }
         return createUri(envUUID);
     }
@@ -99,7 +158,7 @@ public class RoomResource extends AbstractResource<Zone> {
 
     @Path("/{id}/objects/")
     public ObjectResource objects(
-            @ApiParam(value = "Room to fetch objects from", required = true)
+            @ApiParam(value = "UUID of room to fetch objects from", required = true)
             @PathParam("id") String room) {
         return new ObjectResource(envUUID, room);
     }
@@ -115,5 +174,4 @@ public class RoomResource extends AbstractResource<Zone> {
         env.addRoom(new Room(copy));
         return createUri(copy.getUuid());
     }
-
 }

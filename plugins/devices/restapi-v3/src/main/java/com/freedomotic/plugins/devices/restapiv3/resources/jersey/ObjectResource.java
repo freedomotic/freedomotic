@@ -29,6 +29,7 @@ import com.freedomotic.objects.EnvObjectFactory;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
+import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -40,10 +41,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -68,6 +67,66 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     public ObjectResource(String envUUID, String room) {
         this.envUUID = envUUID;
         this.roomName = room;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "List all objects", position = 10)
+    @Override
+    public Response list() {
+        return super.list();
+    }
+
+    /**
+     * @param UUID
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get an object", position = 20)
+    @Path("/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Object not found")
+    })
+    @Override
+    public Response get(
+            @ApiParam(value = "UUID of object to fetch (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.get(UUID);
+    }
+
+    @Override
+    @DELETE
+    @Path("/{id}")
+    @ApiOperation(value = "Delete an object", position = 50)
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Object not found")
+    })
+    public Response delete(
+            @ApiParam(value = "UUID of object to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.delete(UUID);
+    }
+
+    /**
+     *
+     * @param UUID
+     * @param s
+     * @return
+     */
+    @Override
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {
+        @ApiResponse(code = 304, message = "Object not modified")
+    })
+    @ApiOperation(value = "Update an object", position = 40)
+    public Response update(
+            @ApiParam(value = "UUID of object to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID, EnvObject s) {
+        return super.update(UUID, s);
     }
 
     @Override
@@ -151,8 +210,6 @@ public class ObjectResource extends AbstractResource<EnvObject> {
             return Response.serverError().build();
         }
     }
-    
-    
     private static final ClientStorage clientStorage = INJECTOR.getInstance(ClientStorage.class);
 
     @GET
@@ -175,7 +232,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
         @ApiResponse(code = 201, message = "Object added")
     })
     public Response instantiateTemplate(
-            @ApiParam(value = "Name of object template", required = true)
+            @ApiParam(value = "Name of object template (e.g. Light, Thermostat)", required = true)
             @PathParam("name") String name) {
         for (Client c : clientStorage.getClients("object")) {
             if (c.getName().equalsIgnoreCase(name)) {
@@ -197,19 +254,18 @@ public class ObjectResource extends AbstractResource<EnvObject> {
             @PathParam("id") String UUID) {
         return new BehaviorResource(UUID);
     }
-    
+
     @Path("behaviors")
     @Api(value = "behaviors", description = "Operations on object's behaviors")
     private class BehaviorResource extends AbstractResource<Behavior> {
 
         final private String objUUID;
         final private EnvObjectLogic obj;
-        
+
         public BehaviorResource(String objUUID) {
             this.objUUID = objUUID;
             this.obj = api.getObjectByUUID(objUUID);
         }
-        
 
         @Override
         protected URI doCopy(String UUID) {
@@ -240,13 +296,12 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
         @Override
         protected List<Behavior> prepareList() {
-           return obj.getPojo().getBehaviors();
+            return obj.getPojo().getBehaviors();
         }
 
         @Override
         protected Behavior prepareSingle(String name) {
             return obj.getPojo().getBehavior(name);
         }
-        
     }
 }

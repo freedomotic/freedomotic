@@ -22,13 +22,15 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 import com.freedomotic.plugins.devices.restapiv3.representations.ReactionRepresentation;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.reactions.Reaction;
-import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -38,6 +40,66 @@ import javax.ws.rs.Path;
 @Api(value = "reactions", description = "Operations on reactions", position = 3)
 public class ReactionResource extends AbstractResource<ReactionRepresentation> {
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "List all reactions", position = 10)
+    @Override
+    public Response list() {
+        return super.list();
+    }
+
+    /**
+     * @param UUID
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get a reaction", position = 20)
+    @Path("/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Reaction not found")
+    })
+    @Override
+    public Response get(
+            @ApiParam(value = "UUID of reaction to fetch (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.get(UUID);
+    }
+
+    @Override
+    @DELETE
+    @Path("/{id}")
+    @ApiOperation(value = "Delete a reaction", position = 50)
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Reaction not found")
+    })
+    public Response delete(
+            @ApiParam(value = "UUID of reaction to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.delete(UUID);
+    }
+
+     /**
+     *
+     * @param UUID
+     * @param s
+     * @return
+     */
+    @Override
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {
+        @ApiResponse(code = 304, message = "Reaction not modified")
+    })
+    @ApiOperation(value = "Update a reaction", position = 40)
+    public Response update(
+            @ApiParam(value = "UUID of reaction to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID, ReactionRepresentation s) {
+        return super.update(UUID, s);
+    }
+    
     public ReactionResource() {
         authContext = "reactions";
     }
@@ -92,10 +154,9 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
     @Override
     protected ReactionRepresentation prepareSingle(String uuid) {
         Reaction r = api.reactions().get(uuid);
-        if (r != null){
+        if (r != null) {
             return new ReactionRepresentation(r);
         }
         return null;
     }
-
 }
