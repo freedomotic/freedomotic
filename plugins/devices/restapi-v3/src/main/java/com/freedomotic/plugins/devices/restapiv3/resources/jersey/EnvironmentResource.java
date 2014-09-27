@@ -28,10 +28,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import java.util.logging.Level;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -70,10 +68,45 @@ public class EnvironmentResource extends AbstractResource<Environment> {
         return super.get(UUID);
     }
 
+    @Override
+    @DELETE
+    @Path("/{id}")
+    @ApiOperation(value = "Delete an environment", position = 50)
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Environment not found")
+    })
+    public Response delete(
+            @ApiParam(value = "UUID of environment to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.delete(UUID);
+    }
+
     public EnvironmentResource() {
         authContext = "environments";
     }
 
+    /**
+     *
+     * @param UUID
+     * @param s
+     * @return
+     */
+    @Override
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {
+        @ApiResponse(code = 304, message = "Environment not modified")
+    })
+    @ApiOperation(value = "Update an environment", position = 40)
+    public Response update(
+            @ApiParam(value = "UUID of environment to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID, Environment s) {
+        return super.update(UUID, s);
+    }
+
+    
     @Override
     protected List<Environment> prepareList() {
         List<Environment> environments = new ArrayList<Environment>();

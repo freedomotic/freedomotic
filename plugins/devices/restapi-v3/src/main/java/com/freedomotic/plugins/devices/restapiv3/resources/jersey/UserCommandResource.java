@@ -66,6 +66,40 @@ public class UserCommandResource extends AbstractResource<Command> {
         return super.get(UUID);
     }
 
+    @Override
+    @DELETE
+    @Path("/{id}")
+    @ApiOperation(value = "Delete an user's command", position = 50)
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "User's command not found")
+    })
+    public Response delete(
+            @ApiParam(value = "UUID of user's command to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.delete(UUID);
+    }
+
+    /**
+     *
+     * @param UUID
+     * @param s
+     * @return
+     */
+    @Override
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {
+        @ApiResponse(code = 304, message = "User's command not modified")
+    })
+    @ApiOperation(value = "Update an user's command", position = 40)
+    public Response update(
+            @ApiParam(value = "UUID of user's command to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID, Command s) {
+        return super.update(UUID, s);
+    }
+
     public UserCommandResource() {
         authContext = "commands";
     }

@@ -44,6 +44,7 @@ import javax.ws.rs.core.Response;
 @Api(value = "plugins", description = "Operations on plugins", position = 7)
 public class PluginResource extends AbstractResource<Plugin> {
 
+    
     @Override
     protected URI doCreate(Plugin o) throws URISyntaxException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -67,18 +68,36 @@ public class PluginResource extends AbstractResource<Plugin> {
         return super.list();
     }
 
+    /**
+     * @param UUID
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get a plugin", position = 20)
+    @Path("/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Plugin not found")
+    })
+    @Override
+    public Response get(
+            @ApiParam(value = "Classname of plugin to fetch (e.g. LogViewer)", required = true)
+            @PathParam("id") String UUID) {
+        return super.get(UUID);
+    }
+
     @Override
     protected List<Plugin> prepareList() {
         List<Plugin> plugins = new ArrayList<Plugin>();
-        for (Client c : api.getClients("plugin")){
-            plugins.add((Plugin)c);
+        for (Client c : api.getClients("plugin")) {
+            plugins.add((Plugin) c);
         }
         return plugins;
     }
 
     @Override
     protected Plugin prepareSingle(String name) {
-        for (Client c : api.getClients("plugin")){
+        for (Client c : api.getClients("plugin")) {
             Plugin plug = (Plugin) c;
             if (plug.getClassName().equalsIgnoreCase(name)) {
                 return plug;

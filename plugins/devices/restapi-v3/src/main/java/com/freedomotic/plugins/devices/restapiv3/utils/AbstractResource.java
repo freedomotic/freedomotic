@@ -113,7 +113,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     @ApiResponses(value = {
         @ApiResponse(code = 304, message = "Item not modified")
     })
-    @ApiOperation(value = "Updates a item", position = 40)
+    @ApiOperation(value = "Update an item", position = 40)
     public Response update(
             @ApiParam(value = "ID of item to update", required = true)
             @PathParam("id") String UUID,
@@ -123,14 +123,14 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
                 LOG.info("Aquiring modified element");
                 T z = doUpdate(s);
                 if (z != null) {
-                    LOG.info("Everything was corerctly computed ");
+                    LOG.info("Everything was correctly computed");
                     return Response.ok().build();
                 } else {
                     LOG.info("There was a error, so nothing's changed");
                     return Response.notModified().build();
                 }
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, "Cannot update a item", e);
+                LOG.log(Level.SEVERE, "Cannot update an item", e);
                 return Response.notModified().build();
             }
         }
@@ -152,7 +152,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Creates a new item", position = 30)
+    @ApiOperation(value = "Create a new item", position = 30)
     @ApiResponses(value = {
         @ApiResponse(code = 201, message = "New item created")
     })
@@ -178,7 +178,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     @Override
     @DELETE
     @Path("/{id}")
-    @ApiOperation(value = "Deletes a item", position = 50)
+    @ApiOperation(value = "Delete an item", position = 50)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Item not found")
     })
@@ -198,7 +198,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     @Override
     @POST
     @Path("/{id}/copy")
-    @ApiOperation(value = "Copies a item", position = 35)
+    @ApiOperation(value = "Copie an item", position = 35)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Source item not found")
     })

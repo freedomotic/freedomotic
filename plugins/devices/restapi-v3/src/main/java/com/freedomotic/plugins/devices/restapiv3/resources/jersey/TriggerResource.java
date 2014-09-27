@@ -21,15 +21,12 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.reactions.Trigger;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Level;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -48,6 +45,59 @@ public class TriggerResource extends AbstractResource<Trigger> {
     public Response list() {
         return super.list();
     }
+
+    /**
+     * @param UUID
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get a trigger", position = 20)
+    @Path("/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Trigger not found")
+    })
+    @Override
+    public Response get(
+            @ApiParam(value = "UUID of trigger to fetch (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.get(UUID);
+    }
+
+    @Override
+    @DELETE
+    @Path("/{id}")
+    @ApiOperation(value = "Delete a trigger", position = 50)
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "Trigger not found")
+    })
+    public Response delete(
+            @ApiParam(value = "UUID of trigger to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID) {
+        return super.delete(UUID);
+    }
+    
+     /**
+     *
+     * @param UUID
+     * @param s
+     * @return
+     */
+    @Override
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {
+        @ApiResponse(code = 304, message = "Trigger not modified")
+    })
+    @ApiOperation(value = "Update a trigger", position = 40)
+    public Response update(
+            @ApiParam(value = "UUID of trigger to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @PathParam("id") String UUID, Trigger s) {
+        return super.update(UUID, s);
+    }
+    
 
     @Override
     protected URI doCreate(Trigger o) throws URISyntaxException {
