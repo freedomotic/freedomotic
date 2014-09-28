@@ -19,6 +19,7 @@
  */
 package com.freedomotic.persistence;
 
+import com.freedomotic.core.Condition;
 import com.freedomotic.environment.Room;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.environment.Environment;
@@ -27,9 +28,13 @@ import com.freedomotic.model.geometry.FreedomEllipse;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.geometry.FreedomShape;
+import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
+import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Payload;
+import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionConverter;
+import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.security.User;
 import com.thoughtworks.xstream.XStream;
@@ -70,6 +75,9 @@ public class FreedomXStream {
             xstream.registerLocalConverter(Config.class, "tuples", new TupleConverter());
 
             // Zones and topology
+            xstream.alias("object", EnvObject.class);
+            xstream.alias("environment", Environment.class);
+            xstream.alias("zone", Zone.class);
             xstream.omitField(Zone.class, "occupiers");
             xstream.omitField(Room.class, "gates");
             xstream.omitField(Room.class, "reachable");
@@ -78,6 +86,10 @@ public class FreedomXStream {
 
             // Triggers and commands
             xstream.alias("trigger", Trigger.class);
+            xstream.alias("statement", Statement.class);
+            xstream.alias("command", Command.class);
+            xstream.alias("reaction", Reaction.class);
+            xstream.alias("condition", Condition.class);
             xstream.omitField(Trigger.class, "suspensionStart");
             xstream.omitField(Trigger.class, "listener");
             xstream.omitField(Trigger.class, "checker");
