@@ -1,0 +1,18 @@
+<com.freedomotic.reactions.Command>
+    <name>Turn ON MySensors light</name>
+    <receiver>app.actuators.protocol.mysensors.in</receiver>
+    <description>Turn ON MySensors light</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="id-message-type" value="1"/>
+            <property name="ack" value="0"/>
+            <property name="sub-type" value="2"/>
+            <property name="payload" value="1"/>
+            <property name="behavior" value="on"/>
+	    <property name="address" value="@owner.object.address"/>
+        </properties>
+    </properties>
+</com.freedomotic.reactions.Command>
