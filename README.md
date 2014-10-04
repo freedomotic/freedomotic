@@ -24,12 +24,16 @@ Developers Quick Start
 
 **1) Fork freedomotic on GitHub**
 
-Create an account on https://github.com if you don't have one.
-Fork freedomotic following this link: https://github.com/freedomotic/freedomotic/fork
-Create the local clone of your online fork with this command:
+* Create an account on https://github.com if you don't have one.
+* **Fork Freedomotic** [_(What does it mean?)_](https://help.github.com/articles/fork-a-repo) following this link: <https://github.com/freedomotic/freedomotic/fork>. 
+* Create the local clone of your online fork with this command:
 
-    git clone https://github.com/YOUR-GITHUB-USERNAME/freedomotic.git
-    
+```
+git clone https://github.com/YOUR-GITHUB-USERNAME/freedomotic.git
+```
+
+Now the repository is ready to work with.
+
 **2) Enter the new local folder**
 
     cd freedomotic
@@ -42,13 +46,13 @@ Create the local clone of your online fork with this command:
 
     cp -r data-example/ framework/freedomotic-core/data
     
-**5) Run freedomotic**
+**5) Run Freedomotic**
 
     java -jar framework/freedomotic-core/target/freedomotic-core/freedomotic.jar
 
 As an alternative you can start **freedomotic-core** project from your favourite IDE. Here an example with NetBeans IDE http://freedomotic.com/content/faq-troubleshooting#Getting_started_with_netbeans
     
-If you experience compile or startup errors please refer to http://freedomotic.com/content/faq-troubleshooting#Developers
+If you experience compile or startup errors please refer to [Faq & Troubleshooting](https://github.com/freedomotic/freedomotic/wiki/Faq-&-Troubleshooting)
 
 
 Git reporitory is an SDK
