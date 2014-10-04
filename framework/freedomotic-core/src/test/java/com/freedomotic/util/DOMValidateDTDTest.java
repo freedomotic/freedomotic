@@ -29,8 +29,8 @@ import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.reactions.Trigger;
 import com.thoughtworks.xstream.XStream;
 import java.util.logging.Logger;
-import junit.framework.Assert;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -48,12 +48,12 @@ public class DOMValidateDTDTest {
             + "<channel>app.event.sensor.calendar.event.schedule</channel>"
             + "<payload>"
             + "<payload>"
-            + "<com.freedomotic.reactions.Statement>"
+            + "<statement>"
             + "<logical>AND</logical>"
             + "<attribute>anAttribute</attribute>"
             + "<operand>EQUALS</operand>"
             + "<value>ANY</value>"
-            + "</com.freedomotic.reactions.Statement>"
+            + "</statement>"
             + "</payload>"
             + "</payload>"
             + "<suspensionTime>1000</suspensionTime>"
@@ -101,15 +101,15 @@ public class DOMValidateDTDTest {
         //System.out.println(xstream.toXML(trigger));
         Trigger trigger2 = null;
         String tmp = xstream.toXML(trigger);
-        Assert.assertEquals("Serialization", file.replaceAll("\n", "").replaceAll(" ", ""), tmp.replaceAll("\n", "").replaceAll(" ", ""));
+        assertEquals("Serialization", file.replaceAll("\n", "").replaceAll(" ", ""), tmp.replaceAll("\n", "").replaceAll(" ", ""));
         trigger2 = (Trigger) xstream.fromXML(tmp);
 //            System.out.println(xstream.toXML(trigger2));
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
         //Assert.assertEquals("Payload size", 0, trigger.getPayload().size());
-        Assert.assertEquals("Suspension time", 1000, trigger.getSuspensionTime());
-        Assert.assertEquals("Suspension time", 1000, trigger2.getSuspensionTime());
+        assertEquals("Suspension time", 1000, trigger.getSuspensionTime());
+        assertEquals("Suspension time", 1000, trigger2.getSuspensionTime());
     }
     private static final Logger LOG = Logger.getLogger(DOMValidateDTDTest.class.getName());
 }
