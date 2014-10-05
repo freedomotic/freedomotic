@@ -16,6 +16,7 @@ import com.freedomotic.model.object.Representation;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.util.TopologyUtils;
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -59,10 +60,10 @@ public class Renderer
     private double widthRescale = 1.0;
     private double heightRescale = 1.0;
     private boolean backgroundChanged = true;
-    private int environmentWidth =
-            (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth();
-    private int environmentHeight =
-            (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight();
+    private int environmentWidth
+            = (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth();
+    private int environmentHeight
+            = (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight();
     private static int BORDER_X = 10; //the empty space around the map
     private static int BORDER_Y = 10; //the empty space around the map
     private double CANVAS_WIDTH = environmentWidth + (BORDER_X * 2);
@@ -71,9 +72,9 @@ public class Renderer
     /**
      *
      */
-    protected Color backgroundColor =
-            TopologyUtils.convertColorToAWT(EnvironmentPersistence.getEnvironments().get(0).getPojo()
-            .getBackgroundColor());
+    protected Color backgroundColor
+            = TopologyUtils.convertColorToAWT(EnvironmentPersistence.getEnvironments().get(0).getPojo()
+                    .getBackgroundColor());
     private EnvObjectLogic selectedObject;
     private ArrayList<Indicator> indicators = new ArrayList<Indicator>();
     private HashMap<String, Shape> cachedShapes = new HashMap<String, Shape>();
@@ -225,14 +226,6 @@ public class Renderer
     public synchronized void setNeedRepaint(boolean repaintBackground) {
         backgroundChanged = repaintBackground;
 
-        Graphics2D g2 = (Graphics2D) this.getGraphics();
-
-        if (g2 != null) {
-            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        }
-
         this.repaint();
     }
 
@@ -357,7 +350,8 @@ public class Renderer
      */
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        Graphics2D g2 = setRenderingQuality(g);
+        super.paintComponent(g2);
 
         //long start = System.currentTimeMillis();
         if (backgroundChanged) {
@@ -368,14 +362,14 @@ public class Renderer
                     @Override
                     public void run() {
                         BufferedImage background = createDrawableCanvas();
-                        paintEnvironmentLayer(background.getGraphics());
+                        paintEnvironmentLayer(setRenderingQuality(background.createGraphics()));
                         ResourcesManager.addResource("background", background);
                     }
                 }.run();
             }
         }
 
-        setContext(g);
+        setContext(g2);
         getContext().drawImage(ResourcesManager.getResource("background"),
                 0,
                 0,
@@ -387,6 +381,19 @@ public class Renderer
 
         //long end = System.currentTimeMillis();
         //Freedomotic.logger.severe("Repainting process takes " + (end-start) + "ms");
+    }
+
+    private Graphics2D setRenderingQuality(Graphics g) {
+        final Graphics2D g2 = (Graphics2D) g;
+        if (g2 != null) {
+            //g2.setComposite(AlphaComposite.Src);
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        }
+        return g2;
     }
 
     private void renderCalloutsLayer() {
@@ -496,7 +503,6 @@ public class Renderer
 
     private BufferedImage createDrawableCanvas() {
         BufferedImage img = null;
-        Graphics imgGraphics;
 
         try {
             img = new BufferedImage(getWidth(),
@@ -520,9 +526,9 @@ public class Renderer
             throw new IllegalArgumentException("Null 'shape' argument.");
         }
 
-        final AffineTransform transform =
-                AffineTransform.getTranslateInstance(translation.getX(),
-                translation.getY());
+        final AffineTransform transform
+                = AffineTransform.getTranslateInstance(translation.getX(),
+                        translation.getY());
 
         return transform.createTransformedShape(shape);
     }
@@ -536,10 +542,10 @@ public class Renderer
     public static Shape getRotatedShape(Shape shape, double rotation) {
         AffineTransform localAT = null;
         Shape localShape = null;
-        localAT =
-                AffineTransform.getRotateInstance(Math.toRadians(rotation),
-                shape.getBounds().getX(),
-                shape.getBounds().getY());
+        localAT
+                = AffineTransform.getRotateInstance(Math.toRadians(rotation),
+                        shape.getBounds().getX(),
+                        shape.getBounds().getY());
         localShape = localAT.createTransformedShape(shape);
 
         return localShape;
@@ -650,10 +656,10 @@ public class Renderer
         AffineTransform origAt = localGraph.getTransform();
         AffineTransform newAt = (AffineTransform) (origAt.clone());
         Rectangle2D rect = localGraph.getFontMetrics().getStringBounds(lines[longest], localGraph);
-        RoundRectangle2D round =
-                new RoundRectangle2D.Double(rect.getX(),
-                rect.getY(), rect.getWidth() + (BORDER * 2),
-                (rect.getHeight() * lines.length) + (BORDER * 2), 25, 25);
+        RoundRectangle2D round
+                = new RoundRectangle2D.Double(rect.getX(),
+                        rect.getY(), rect.getWidth() + (BORDER * 2),
+                        (rect.getHeight() * lines.length) + (BORDER * 2), 25, 25);
         newAt.rotate(Math.toRadians(angle),
                 x,
                 y);
@@ -725,9 +731,9 @@ public class Renderer
 
             if (zone.getPojo().isRoom()) {
                 Point mouse = toRealCoords(p);
-                onZone =
-                        TopologyUtils.contains(zone.getPojo().getShape(),
-                        new FreedomPoint((int) mouse.getX(), (int) mouse.getY()));
+                onZone
+                        = TopologyUtils.contains(zone.getPojo().getShape(),
+                                new FreedomPoint((int) mouse.getX(), (int) mouse.getY()));
 
                 if (onZone == true) {
                     return zone;
@@ -762,12 +768,12 @@ public class Renderer
         int x = obj.getCurrentRepresentation().getOffset().getX();
         int y = obj.getCurrentRepresentation().getOffset().getY();
         Shape shape = TopologyUtils.convertToAWT(obj.getShape());
-        shape =
-                getTranslatedShape(shape,
-                new Point(x, y));
-        shape =
-                getRotatedShape(shape,
-                obj.getCurrentRepresentation().getRotation());
+        shape
+                = getTranslatedShape(shape,
+                        new Point(x, y));
+        shape
+                = getRotatedShape(shape,
+                        obj.getCurrentRepresentation().getRotation());
         cachedShapes.put(object.getPojo().getUUID(),
                 shape);
 
@@ -977,8 +983,8 @@ public class Renderer
                     - getSelectedObject().getPojo().getCurrentRepresentation()
                     .getOffset().getX()),
                     (int) Math.abs(coords.getY()
-                    - getSelectedObject().getPojo().getCurrentRepresentation()
-                    .getOffset().getY()));
+                            - getSelectedObject().getPojo().getCurrentRepresentation()
+                            .getOffset().getY()));
         }
 
         int xSnapped = (int) coords.getX() - ((int) coords.getX() % 5);
@@ -996,9 +1002,9 @@ public class Renderer
             if (roomEditMode) {
                 removeIndicators();
 
-                Callout callout =
-                        new Callout(this.getClass().getCanonicalName(), "mouse", xSnapped + "cm," + ySnapped + "cm",
-                        (int) coords.getX(), (int) coords.getY(), 0, -1);
+                Callout callout
+                        = new Callout(this.getClass().getCanonicalName(), "mouse", xSnapped + "cm," + ySnapped + "cm",
+                                (int) coords.getX(), (int) coords.getY(), 0, -1);
                 createCallout(callout);
 
                 for (Handle handle : handles) {
@@ -1072,10 +1078,10 @@ public class Renderer
                 Point mouse = toRealCoords(e.getPoint());
 
                 //create a callot which says the coordinates of click
-                Callout callout =
-                        new Callout(this.getClass().getCanonicalName(), "mouse",
-                        (int) mouse.getX() + "cm," + (int) mouse.getY() + "cm", (int) mouse.getX(),
-                        (int) mouse.getY(), 0, -1);
+                Callout callout
+                        = new Callout(this.getClass().getCanonicalName(), "mouse",
+                                (int) mouse.getX() + "cm," + (int) mouse.getY() + "cm", (int) mouse.getX(),
+                                (int) mouse.getY(), 0, -1);
                 createCallout(callout);
                 repaint();
             }
@@ -1127,9 +1133,9 @@ public class Renderer
 
             getContext()
                     .fillRect((int) handle.getHandle().getBounds().getX(),
-                    (int) handle.getHandle().getBounds().getY(),
-                    (int) handle.getHandle().getBounds().getWidth(),
-                    (int) handle.getHandle().getBounds().getHeight());
+                            (int) handle.getHandle().getBounds().getY(),
+                            (int) handle.getHandle().getBounds().getWidth(),
+                            (int) handle.getHandle().getBounds().getHeight());
         }
     }
 
@@ -1141,10 +1147,10 @@ public class Renderer
         roomEditMode = edit;
 
         if (roomEditMode) {
-            Callout callout =
-                    new Callout(this.getClass().getCanonicalName(), "info",
-                    "Double click on an handle to create a now one in the middle of the segment.\n"
-                    + "Right click on an handle to delete it.", 45, -45, 0, -1);
+            Callout callout
+                    = new Callout(this.getClass().getCanonicalName(), "info",
+                            "Double click on an handle to create a now one in the middle of the segment.\n"
+                            + "Right click on an handle to delete it.", 45, -45, 0, -1);
             createCallout(callout);
             createHandles(null);
         } else {
