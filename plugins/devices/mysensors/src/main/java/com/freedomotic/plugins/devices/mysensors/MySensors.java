@@ -23,6 +23,7 @@ import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ProtocolRead;
+import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.helpers.SerialHelper;
 import com.freedomotic.helpers.SerialPortListener;
@@ -30,6 +31,7 @@ import com.freedomotic.reactions.Command;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jssc.SerialPortException;
 
 public class MySensors extends Protocol {
 
@@ -47,17 +49,21 @@ public class MySensors extends Protocol {
     }
 
     @Override
-    public void onStart() {
-        serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, new SerialPortListener() {
+    public void onStart() throws PluginStartupException {
+        try {
+            serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, new SerialPortListener() {
 
-            @Override
-            public void onDataAvailable(String data) {
-                LOG.info("MySensors received: " + data);
-                sendChanges(data);
-            }
-        });
+                @Override
+                public void onDataAvailable(String data) {
+                    LOG.info("MySensors received: " + data);
+                    sendChanges(data);
+                }
+            });
 
-        serial.setChunkTerminator("\n");
+            serial.setChunkTerminator("\n");
+        } catch (SerialPortException ex) {
+            throw new PluginStartupException("Error while creating serial connection. " + ex.getMessage(), ex);
+        }
     }
 
     @Override
@@ -98,7 +104,11 @@ public class MySensors extends Protocol {
 
     public void write(String data) {
         LOG.info("MySensors writes '" + data + "' to serial connection");
-        serial.write(data);
+        try {
+            serial.write(data);
+        } catch (SerialPortException ex) {
+            Logger.getLogger(MySensors.class.getName()).log(Level.WARNING, null, ex);
+        }
     }
 
     private void sendChanges(String data) {

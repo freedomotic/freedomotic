@@ -54,34 +54,31 @@ public class SerialHelper {
      * @param stopBits
      * @param parity
      * @param consumer
+     * @throws jssc.SerialPortException
      */
-    public SerialHelper(final String portName, int baudRate, int dataBits, int stopBits, int parity, final SerialPortListener consumer) {
-        try {
-            this.portName = portName;
-            serialPort = new SerialPort(this.portName);
-            serialPort.openPort();
-            serialPort.addEventListener(new SerialPortEventListener() {
+    public SerialHelper(final String portName, int baudRate, int dataBits, int stopBits, int parity, final SerialPortListener consumer) throws SerialPortException {
+        this.portName = portName;
+        serialPort = new SerialPort(this.portName);
+        boolean isOpen = serialPort.openPort();
+        serialPort.addEventListener(new SerialPortEventListener() {
 
-                @Override
-                public void serialEvent(SerialPortEvent event) {
-                    if (event.isRXCHAR()) {
+            @Override
+            public void serialEvent(SerialPortEvent event) {
+                if (event.isRXCHAR()) {
 
-                        if (event.getEventValue() > 0) {
-                            try {
-                                readBuffer.append(new String(serialPort.readBytes()));
-                            } catch (SerialPortException ex) {
-                                LOG.log(Level.WARNING, null, ex);
-                            }
+                    if (event.getEventValue() > 0) {
+                        try {
+                            readBuffer.append(new String(serialPort.readBytes()));
+                        } catch (SerialPortException ex) {
+                            LOG.log(Level.WARNING, null, ex);
                         }
-                        LOG.log(Level.CONFIG, "Received message ''{0}'' from serial port {1}", new Object[]{readBuffer.toString(), portName});
-                        sendReadData(consumer);
                     }
+                    LOG.log(Level.CONFIG, "Received message ''{0}'' from serial port {1}", new Object[]{readBuffer.toString(), portName});
+                    sendReadData(consumer);
                 }
-            });
-            serialPort.setParams(baudRate, dataBits, stopBits, parity);
-        } catch (SerialPortException ex) {
-            LOG.log(Level.WARNING, "Error while setting serial port " + this.portName, ex);
-        }
+            }
+        });
+        serialPort.setParams(baudRate, dataBits, stopBits, parity);
     }
 
     /**
@@ -89,13 +86,9 @@ public class SerialHelper {
      *
      * @param message The message to send
      */
-    public void write(String message) {
-        try {
-            LOG.log(Level.CONFIG, "Writing {0} to serial port {1}", new Object[]{message, portName});
-            serialPort.writeString(message);
-        } catch (SerialPortException ex) {
-            LOG.log(Level.WARNING, null, ex);
-        }
+    public void write(String message) throws SerialPortException {
+        LOG.log(Level.CONFIG, "Writing {0} to serial port {1}", new Object[]{message, portName});
+        serialPort.writeString(message);
     }
 
     /**
@@ -103,13 +96,11 @@ public class SerialHelper {
      *
      * @param bytes The message to send
      */
-    public void write(byte[] bytes) {
+    public void write(byte[] bytes) throws SerialPortException {
         LOG.log(Level.CONFIG, "Writing bytes '{0}' to serial port {1}", new Object[]{bytes.toString(), portName});
-        try {
-            serialPort.writeBytes(bytes);
-        } catch (SerialPortException ex) {
-            LOG.log(Level.WARNING, null, ex);
-        }
+
+        serialPort.writeBytes(bytes);
+
     }
 
     public String[] getPortNames() {

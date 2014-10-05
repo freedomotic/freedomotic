@@ -19,9 +19,12 @@
  */
 package com.freedomotic.api;
 
+import com.freedomotic.exceptions.PluginRuntimeException;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.events.PluginHasChanged;
+import com.freedomotic.exceptions.PluginShutdownException;
+import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
@@ -38,7 +41,7 @@ import javax.jms.ObjectMessage;
 public abstract class Protocol
         extends Plugin
         implements BusConsumer {
-
+    
     private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
     private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
     private int pollingWaitTime = -1;
@@ -52,7 +55,7 @@ public abstract class Protocol
      * @param manifest
      */
     public Protocol(String pluginName, String manifest) {
-
+        
         super(pluginName, manifest);
         this.status = PluginStatus.STOPPED;
         register();
@@ -60,8 +63,9 @@ public abstract class Protocol
 
     /**
      *
+     * @throws com.freedomotic.api.PluginRuntimeException
      */
-    protected abstract void onRun();
+    protected abstract void onRun() throws PluginRuntimeException;
 
     /**
      *
@@ -83,7 +87,7 @@ public abstract class Protocol
      * @param event
      */
     protected abstract void onEvent(EventTemplate event);
-
+    
     private void register() {
         listener = new BusMessagesListener(this, getBusService());
         listener.consumeCommandFrom(getCommandsChannelToListen());
@@ -96,14 +100,14 @@ public abstract class Protocol
     public void addEventListener(String listento) {
         listener.consumeEventFrom(listento);
     }
-
+    
     private String getCommandsChannelToListen() {
         String defaultQueue = ACTUATORS_QUEUE_DOMAIN + category + "." + shortName;
         String customizedQueue = ACTUATORS_QUEUE_DOMAIN + listenOn;
-
+        
         if (getReadQueue().equalsIgnoreCase("undefined")) {
             listenOn = defaultQueue + ".in";
-
+            
             return listenOn;
         } else {
             return customizedQueue;
@@ -141,7 +145,7 @@ public abstract class Protocol
     public void start() {
         super.start();
         if (status.isAllowedToStart()) {
-
+            
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
@@ -153,16 +157,20 @@ public abstract class Protocol
                         status = PluginStatus.RUNNING;
                         //onStart() should be called as the last operation, after framework level operations
                         //for example it may require something related with messaging wich should be initialized first
-                        onStart();
+                        try {
+                            onStart();
+                        } catch (PluginStartupException startupEx) {
+                            notifyCriticalError(startupEx.getMessage());
+                        }
                     } catch (Exception e) {
                         status = PluginStatus.FAILED;
                         setDescription("Plugin start FAILED. see logs for details.");
                         LOG.log(Level.SEVERE, "Error starting " + getName() + ": " + e.getLocalizedMessage(), e);
                     }
-
+                    
                 }
             };
-
+            
             getApi().getAuth().pluginExecutePrivileged(this, action);
         }
     }
@@ -179,10 +187,13 @@ public abstract class Protocol
                 public synchronized void run() {
                     try {
                         status = PluginStatus.STOPPING;
-                        onStop();
+                        try {
+                            onStop();
+                        } catch (PluginShutdownException shutdownEx) {
+                            notifyError(shutdownEx.getMessage());
+                        }
                         sensorThread = null;
                         listener.unsubscribeEvents();
-                        //ENRICO: why this is here? ->notify();
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
                         getBusService().send(event);
                         status = PluginStatus.STOPPED;
@@ -212,7 +223,7 @@ public abstract class Protocol
     public int getScheduleRate() {
         return pollingWaitTime;
     }
-
+    
     private boolean isPollingSensor() {
         if (pollingWaitTime > 0) {
             return true;
@@ -220,7 +231,7 @@ public abstract class Protocol
             return false;
         }
     }
-
+    
     @Override
     public final void onMessage(final ObjectMessage message) {
         if (status.isAllowedToStart()) {
@@ -228,17 +239,17 @@ public abstract class Protocol
                     + "' receives a command while is not running. Plugin tries to turn on itself...");
             start();
         }
-
+        
         Object payload = null;
-
+        
         try {
             payload = message.getObject();
-
+            
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
                 LOG.config(this.getName() + " receives command " + command.getName()
                         + " with parametes {{" + command.getProperties() + "}}");
-
+                
                 Protocol.ActuatorPerforms task;
                 lastDestination = message.getJMSReplyTo();
                 task
@@ -254,7 +265,7 @@ public abstract class Protocol
             }
         } catch (JMSException ex) {
             LOG.log(Level.SEVERE, null, ex);
-
+            
         }
     }
 
@@ -275,23 +286,23 @@ public abstract class Protocol
         // sends back the command
         final String defaultCorrelationID = "-1";
         getBusService().reply(command, lastDestination, defaultCorrelationID);
-
+        
     }
-
+    
     private class ActuatorPerforms
             extends Thread {
-
+        
         private Command command;
         private Destination reply;
         private String correlationID;
-
+        
         ActuatorPerforms(Command c, Destination reply, String correlationID) {
             this.command = c;
             this.reply = reply;
             this.correlationID = correlationID;
             this.setName("freedomotic-protocol-executor");
         }
-
+        
         @Override
         public void run() {
             try {
@@ -315,20 +326,20 @@ public abstract class Protocol
             }
         }
     }
-
+    
     private class SensorThread
             extends Thread {
-
+        
         @Override
         public void run() {
-
+            
             if (isPollingSensor()) {
                 Thread thisThread = Thread.currentThread();
-
+                
                 while (sensorThread == thisThread) {
                     try {
                         Thread.sleep(pollingWaitTime);
-
+                        
                         synchronized (this) {
                             while (!status.isRunning() && (sensorThread == thisThread)) {
                                 wait();
@@ -337,12 +348,20 @@ public abstract class Protocol
                     } catch (InterruptedException e) {
                         // TODO do Log?
                     }
-
-                    onRun();
+                    
+                    try {
+                        onRun();
+                    } catch (Exception e) {
+                        notifyError(e.getMessage());
+                    }
                 }
             } else {
                 if (status.isRunning()) {
-                    onRun();
+                    try {
+                        onRun();
+                    } catch (Exception e) {
+                        notifyError(e.getMessage());
+                    }
                 }
             }
         }

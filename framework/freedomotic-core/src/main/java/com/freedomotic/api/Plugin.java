@@ -19,9 +19,12 @@
  */
 package com.freedomotic.api;
 
+import com.freedomotic.exceptions.PluginShutdownException;
+import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.app.ConfigPersistence;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
+import com.freedomotic.events.MessageEvent;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.PluginHasChanged.PluginActions;
 import com.freedomotic.model.ds.Config;
@@ -131,14 +134,16 @@ public class Plugin implements Client {
 
     /**
      *
+     * @throws com.freedomotic.api.PluginStartupException
      */
-    protected void onStart() {
+    protected void onStart() throws PluginStartupException {
     }
 
     /**
      *
+     * @throws com.freedomotic.api.PluginShutdownException
      */
-    protected void onStop() {
+    protected void onStop() throws PluginShutdownException {
     }
 
     /**
@@ -155,6 +160,32 @@ public class Plugin implements Client {
                     PluginActions.DESCRIPTION);
             busService.send(event);
         }
+    }
+
+    public void notifyError(String message) {
+        //Log the error on console/logfiles
+        LOG.warning(message);
+        //write something on the GUI
+        MessageEvent callout = new MessageEvent(this, message);
+        callout.setType("callout"); //display as callout on frontends
+        callout.setLevel("warning");
+        callout.setExpiration(10 * 1000);//message lasts 10 seconds
+        busService.send(callout);
+    }
+
+    public void notifyCriticalError(String message) {
+        //Log the error on console/logfiles
+        LOG.warning(message);
+        //change plugin description
+        setDescription(message);
+        //write something on the GUI
+        MessageEvent callout = new MessageEvent(this, message);
+        callout.setType("callout"); //display as callout on frontends
+        callout.setLevel("warning");
+        callout.setExpiration(10 * 1000);//message lasts 10 seconds
+        busService.send(callout);
+        //stop this plugin
+        stop();
     }
 
     /**
