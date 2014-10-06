@@ -64,7 +64,6 @@ public class Scheduler
 
     @Override
     protected void onStart() {
-        super.onStart();
         timer = new Timer("FreedomClock", true);
         awake = new Awake();
         timer.scheduleAtFixedRate(awake, TIMER_RESOLUTION, TIMER_RESOLUTION);
@@ -78,7 +77,6 @@ public class Scheduler
 
     @Override
     protected void onStop() {
-        super.onStop();
         awake.cancel();
         timer.cancel();
         awake = null;
