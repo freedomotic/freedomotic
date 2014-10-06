@@ -9,7 +9,6 @@ package com.freedomotic.plugins.devices.restapiv3.test;
 import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.plugins.devices.restapiv3.representations.ReactionRepresentation;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.ReactionResource;
-import com.freedomotic.plugins.devices.restapiv3.resources.jersey.OldReactionResource;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.Trigger;
@@ -33,7 +32,7 @@ public class ReactionTest extends AbstractTest<ReactionRepresentation>{
     
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
-        
+        testCOPY = false;
         Command com = new Command();
         com.setName("Reaction Command");
         com.setHardwareLevel(false);

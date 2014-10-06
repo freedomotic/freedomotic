@@ -25,6 +25,7 @@ import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.EnvObject;
+import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Payload;
@@ -72,7 +73,7 @@ public class RoomEvents extends Protocol {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-      
+
     }
 
     @Override
@@ -87,21 +88,20 @@ public class RoomEvents extends Protocol {
         // just to see what properties you are receiving
         // do here what you have now in onCommand and send your room status event
         // search related room
-        String objName = event.getProperty("object.name");
+
+        EnvObjectLogic object = getApi().objects().get(event.getProperty("object.uuid"));
 
         boolean found = false;
-        for (EnvironmentLogic env : getApi().environments().list()) {
-            for (Room z : env.getRooms()) {
-                for (EnvObject obj : z.getPojo().getObjects()) {
-                    if (obj.getName().equalsIgnoreCase(objName)) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (found) {
-                    notifyRoomStatus(z);
+        for (Room z : object.getEnvironment().getRooms()) {
+            for (EnvObject obj : z.getPojo().getObjects()) {
+                if (obj.getUUID().equalsIgnoreCase(object.getPojo().getUUID())) {
+                    found = true;
                     break;
                 }
+            }
+            if (found) {
+                notifyRoomStatus(z);
+                break;
             }
         }
     }
@@ -137,7 +137,7 @@ public class RoomEvents extends Protocol {
             // add and register this 
             String triggerName = "Room " + roomName + " has " + amount + " lights On";
             Trigger t;
-            
+
             if (getApi().triggers().getByName(triggerName).isEmpty()) {
                 t = new Trigger();
                 t.setName(triggerName);

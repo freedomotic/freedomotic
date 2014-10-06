@@ -265,11 +265,6 @@ public final class Reaction
             return false;
         }
         
-        if ((this.getUuid() == null) ? (other.getUuid() !=null)
-                : (!this.getUuid().equals(other.getUuid()))){
-            return false;
-        }
-
         return true;
     }
 

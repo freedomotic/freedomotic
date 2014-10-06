@@ -57,6 +57,12 @@ public abstract class AbstractTest<Z> extends JerseyTest {
     private GenericType<List<Z>> listType;
     private String uuid;
     private MediaType representation;
+    protected boolean testPOST = true;
+    protected boolean testPUT = true;
+    protected boolean testCOPY = true;
+    protected boolean testGET = true;
+    protected boolean testDELETE = true;
+
     @Inject
     private API api;
 
@@ -111,41 +117,50 @@ public abstract class AbstractTest<Z> extends JerseyTest {
         Entity<Z> cmdEntity = Entity.entity(getItem(), getRepresentation());
 
         // POST
-        final Response response = target(getPATH()).request().post(cmdEntity);
-        assertEquals("POST response HTTP status code not as expected", Status.CREATED.getStatusCode(), response.getStatus());
-        //System.out.println(resPOST.getLocation().toString());
-
+        if (testPOST) {
+            final Response response = target(getPATH()).request().post(cmdEntity);
+            assertEquals("POST response HTTP status code not as expected", Status.CREATED.getStatusCode(), response.getStatus());
+        }
         //GET list
         List<Z> cl = target(getPATH()).request(getRepresentation()).get(getListType());
-        assertEquals("List size", 1, cl.size());
-        listAssertions(cl);
-
+        if (testGET) {
+            assertEquals("List size", 1, cl.size());
+            listAssertions(cl);
+        }
         //GET single
         Z objPre = target(getPATH()).path(getUuid(getItem())).request(getRepresentation()).get(getSingleType());
-        getAssertions(objPre);
-
+        if (testGET) {
+            getAssertions(objPre);
+        }
         // PUT
-        putModifications(objPre);
-        Entity<Z> envEntityPut = Entity.entity(objPre, getRepresentation());
-        Response resPUT = target(getPATH()).path(getUuid(getItem())).request().put(envEntityPut);
-        assertEquals("PUT test", Status.OK.getStatusCode(), resPUT.getStatus());
-        Z objPost = target(getPATH()).path(getUuid(getItem())).request(getRepresentation()).get(getSingleType());
-        putAssertions(objPre, objPost);
-
+        if (testPUT) {
+            putModifications(objPre);
+            Entity<Z> envEntityPut = Entity.entity(objPre, getRepresentation());
+            Response resPUT = target(getPATH()).path(getUuid(getItem())).request().put(envEntityPut);
+            assertEquals("PUT test", Status.OK.getStatusCode(), resPUT.getStatus());
+            Z objPost = target(getPATH()).path(getUuid(getItem())).request(getRepresentation()).get(getSingleType());
+            putAssertions(objPre, objPost);
+        }
         //COPY
-        final Response resCOPY = target(getPATH()).path(getUuid(getItem())).path("/copy").request(getRepresentation()).post(null);
-        assertEquals("COPY test", Status.CREATED.getStatusCode(), resCOPY.getStatus());
-        cl = target(getPATH()).request().get(getListType());
-        assertEquals("COPY - Size test", 2, cl.size());
-
+        if (testCOPY) {
+            final Response resCOPY = target(getPATH()).path(getUuid(getItem())).path("/copy").request(getRepresentation()).post(null);
+            assertEquals("COPY test", Status.CREATED.getStatusCode(), resCOPY.getStatus());
+            cl = target(getPATH()).request().get(getListType());
+            assertEquals("COPY - Size test", 2, cl.size());
+        }
         //DELETE
-        Response resDELETE = target(getPATH()).path(getUuid(getItem())).request(getRepresentation()).delete();
-        assertEquals("DELETE test", Status.OK.getStatusCode(), resDELETE.getStatus());
-        cl = target(getPATH()).request().get(getListType());
-        assertEquals("DELETE - Size test", 1, cl.size());
-        Response postDELETE = target(getPATH()).path(getUuid(getItem())).request().get();
-        assertEquals("DELETE - error searching deleted item", Status.NOT_FOUND.getStatusCode(), postDELETE.getStatus());
-
+        if (testDELETE) {
+            Response resDELETE = target(getPATH()).path(getUuid(getItem())).request(getRepresentation()).delete();
+            assertEquals("DELETE test", Status.OK.getStatusCode(), resDELETE.getStatus());
+            cl = target(getPATH()).request().get(getListType());
+            if (testCOPY) {
+                assertEquals("DELETE - Size test", 1, cl.size());
+            } else {
+                assertEquals("DELETE - Size test", 0, cl.size());
+            }
+            Response postDELETE = target(getPATH()).path(getUuid(getItem())).request().get();
+            assertEquals("DELETE - error searching deleted item", Status.NOT_FOUND.getStatusCode(), postDELETE.getStatus());
+        }
     }
 
     protected void initPath(Class res) {

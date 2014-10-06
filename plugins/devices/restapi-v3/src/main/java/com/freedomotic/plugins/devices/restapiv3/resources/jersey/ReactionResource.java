@@ -106,8 +106,9 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
 
     @Override
     protected URI doCopy(String UUID) {
-        api.reactions().copy(UUID);
-        return createUri(UUID);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // api.reactions().copy(UUID);
+        // return createUri(UUID);
     }
 
     @Override
