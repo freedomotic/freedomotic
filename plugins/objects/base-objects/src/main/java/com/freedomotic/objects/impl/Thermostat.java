@@ -22,7 +22,6 @@
 
 package com.freedomotic.objects.impl;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
@@ -40,10 +39,11 @@ import java.util.logging.Logger;
 public class Thermostat
         extends EnvObjectLogic {
 
-    private static final Logger LOG = Logger.getLogger(GenericSensor.class.getName()); 
+    private static final Logger LOG = Logger.getLogger(Thermostat.class.getName()); 
     private RangedIntBehaviorLogic temperature;
+    private RangedIntBehaviorLogic setpoint;
     private static final String BEHAVIOR_TEMPERATURE = "temperature";
-    
+    private static final String BEHAVIOR_TEMPERATURE_SETPOINT = "setpoint";
 
     @Override
     public void init() {
@@ -71,6 +71,35 @@ public class Thermostat
         });
         //register this behavior to the superclass to make it visible to it
         registerBehavior(temperature);
+        
+        if ( getPojo().getBehavior(BEHAVIOR_TEMPERATURE_SETPOINT) == null){
+            RangedIntBehavior setpointbeh = new RangedIntBehavior();
+            setpointbeh.setName(BEHAVIOR_TEMPERATURE_SETPOINT);
+            getPojo().getBehaviors().add(setpointbeh);
+        }
+        setpoint = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_TEMPERATURE_SETPOINT));
+        setpoint.addListener(new RangedIntBehaviorLogic.Listener() {
+            @Override
+            public void onLowerBoundValue(Config params, boolean fireCommand) {
+                //there is an hardware read error
+            }
+
+            @Override
+            public void onUpperBoundValue(Config params, boolean fireCommand) {
+                //there is as hardware read error
+            }
+
+            @Override
+            public void onRangeValue(int rangeValue, Config params, boolean fireCommand) {
+                if (fireCommand) {
+                    executeSetTemperatureSetpoint(rangeValue, params);
+                } else {
+                    setTemperatureSetpoint(rangeValue);
+                }
+            }
+        });
+        registerBehavior(setpoint);
+        
         super.init();
     }
 
@@ -88,6 +117,23 @@ public class Thermostat
         LOG.config("Setting behavior 'temperature' of object '" + getPojo().getName() + "' to "
                 + value);
         temperature.setValue(value);
+        getPojo().setCurrentRepresentation(0);
+        setChanged(true);
+    }
+    public void executeSetTemperatureSetpoint(int rangeValue, Config params) {
+        boolean executed = executeCommand("set setpoint", params);
+
+        if (executed) {
+            setpoint.setValue(rangeValue);
+            getPojo().setCurrentRepresentation(0);
+            setChanged(true);
+        }
+    }
+
+    private void setTemperatureSetpoint(int value) {
+        LOG.config("Setting behavior 'setpoint' of object '" + getPojo().getName() + "' to "
+                + value);
+        setpoint.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
     }

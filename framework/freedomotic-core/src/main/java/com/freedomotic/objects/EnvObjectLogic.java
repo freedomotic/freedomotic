@@ -498,7 +498,7 @@ public class EnvObjectLogic {
 
         if (command == null) {
             LOG.log(Level.WARNING,
-                    "The hardware level command for action ''{0}'' in object ''{1}'' doesn''t exists or is not setted",
+                    "The hardware level command for action ''{0}'' in object ''{1}'' doesn''t exists or is not set",
                     new Object[]{action, pojo.getName()});
 
             return false; //command not executed
