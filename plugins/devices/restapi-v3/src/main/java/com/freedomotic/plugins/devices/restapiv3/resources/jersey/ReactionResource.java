@@ -100,6 +100,26 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
         return super.update(UUID, s);
     }
     
+    
+    /**
+     *
+     * @param s
+     * @return
+     * @throws URISyntaxException
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Add a new reaction", position = 30)
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "New reaction added")
+    })
+    @Override
+    public Response create(ReactionRepresentation s) throws URISyntaxException {
+        return super.create(s);
+    }
+    
+    
     public ReactionResource() {
         authContext = "reactions";
     }

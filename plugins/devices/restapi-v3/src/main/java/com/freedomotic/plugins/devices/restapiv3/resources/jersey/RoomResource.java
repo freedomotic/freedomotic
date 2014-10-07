@@ -109,6 +109,25 @@ public class RoomResource extends AbstractResource<Zone> {
         return super.update(UUID, s);
     }
     
+    
+    /**
+     *
+     * @param s
+     * @return
+     * @throws URISyntaxException
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Add a new room", position = 30)
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "New room added")
+    })
+    @Override
+    public Response create(Zone s) throws URISyntaxException {
+        return super.create(s);
+    }
+    
     @Override
     protected boolean doDelete(String ID) {
         try {
