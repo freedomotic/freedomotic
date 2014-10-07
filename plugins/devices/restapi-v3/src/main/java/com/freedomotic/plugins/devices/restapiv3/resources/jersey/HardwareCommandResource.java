@@ -76,6 +76,26 @@ public class HardwareCommandResource extends AbstractResource<Command> {
             @PathParam("id") String UUID) {
         return super.delete(UUID);
     }
+    
+    
+    /**
+     *
+     * @param s
+     * @return
+     * @throws URISyntaxException
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Add a new hardware command", position = 30)
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "New hardware command added")
+    })
+    @Override
+    public Response create(Command s) throws URISyntaxException {
+        return super.create(s);
+    }
+    
 
      /**
      *

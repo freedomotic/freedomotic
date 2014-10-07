@@ -99,6 +99,25 @@ public class TriggerResource extends AbstractResource<Trigger> {
     }
     
 
+    /**
+     *
+     * @param s
+     * @return
+     * @throws URISyntaxException
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Add a new trigger", position = 30)
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "New trigger added")
+    })
+    @Override
+    public Response create(Trigger s) throws URISyntaxException {
+        return super.create(s);
+    }
+    
+    
     @Override
     protected URI doCreate(Trigger o) throws URISyntaxException {
         api.triggers().create(o);

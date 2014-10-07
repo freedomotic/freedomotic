@@ -99,6 +99,25 @@ public class UserCommandResource extends AbstractResource<Command> {
             @PathParam("id") String UUID, Command s) {
         return super.update(UUID, s);
     }
+    
+    /**
+     *
+     * @param s
+     * @return
+     * @throws URISyntaxException
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Add a new user's command", position = 30)
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "New user's command added")
+    })
+    @Override
+    public Response create(Command s) throws URISyntaxException {
+        return super.create(s);
+    }
+    
 
     public UserCommandResource() {
         authContext = "commands";

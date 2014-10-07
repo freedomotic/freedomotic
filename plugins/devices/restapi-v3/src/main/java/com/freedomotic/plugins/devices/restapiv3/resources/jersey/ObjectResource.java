@@ -128,7 +128,26 @@ public class ObjectResource extends AbstractResource<EnvObject> {
             @PathParam("id") String UUID, EnvObject s) {
         return super.update(UUID, s);
     }
+    
+    /**
+     *
+     * @param s
+     * @return
+     * @throws URISyntaxException
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Add a new object", position = 30)
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "New object created")
+    })
+    @Override
+    public Response create(EnvObject s) throws URISyntaxException {
+        return super.create(s);
+    }
 
+    
     @Override
     protected List<EnvObject> prepareList() {
         List<EnvObject> objects = new ArrayList<EnvObject>();

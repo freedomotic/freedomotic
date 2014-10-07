@@ -21,14 +21,12 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.model.environment.Environment;
-import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.wordnik.swagger.annotations.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -106,7 +104,25 @@ public class EnvironmentResource extends AbstractResource<Environment> {
         return super.update(UUID, s);
     }
 
+    /**
+     *
+     * @param s
+     * @return
+     * @throws URISyntaxException
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Add a new environment", position = 30)
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "New environment added")
+    })
+    @Override
+    public Response create(Environment s) throws URISyntaxException {
+        return super.create(s);
+    }
     
+
     @Override
     protected List<Environment> prepareList() {
         List<Environment> environments = new ArrayList<Environment>();
