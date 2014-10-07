@@ -56,7 +56,7 @@ public class Plugin implements Client {
     @XmlElement
     private String pluginName;
     @XmlElement
-    private String type = "Plugin";
+    private final String type = "Plugin";
     @XmlElement
     protected volatile PluginStatus status = PluginStatus.STOPPED;
     @XmlElement
