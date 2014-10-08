@@ -25,7 +25,6 @@ package com.freedomotic.objects.impl;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
-import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
@@ -41,7 +40,6 @@ public class Thermostat
 
     private static final Logger LOG = Logger.getLogger(Thermostat.class.getName()); 
     private RangedIntBehaviorLogic setpoint;
-    private static final String BEHAVIOR_TEMPERATURE = "temperature";
     private static final String BEHAVIOR_TEMPERATURE_SETPOINT = "setpoint";
 
     @Override
