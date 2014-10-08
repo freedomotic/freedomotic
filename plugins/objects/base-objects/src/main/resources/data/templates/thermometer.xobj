@@ -1,9 +1,9 @@
 <com.freedomotic.model.object.EnvObject>
-  <name>Thermostat</name>
-  <description>Senses temperature and defines a setpoint</description>
+  <name>Thermometer</name>
+  <description>Collects temperature events</description>
   <actAs>virtual</actAs>
-  <type>EnvObject.Thermostat</type>
-  <hierarchy>com.freedomotic.objects.impl.Thermostat</hierarchy>
+  <type>EnvObject.Thermometer</type>
+  <hierarchy>com.freedomotic.objects.impl.Thermometer</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
@@ -19,18 +19,6 @@
       <step>1</step>
       <scale>10</scale> 
     </com.freedomotic.model.object.RangedIntBehavior>
-    <com.freedomotic.model.object.RangedIntBehavior>
-      <name>setpoint</name>
-      <description></description>
-      <active>true</active>
-      <priority>-1</priority>
-      <readOnly>false</readOnly>
-      <value>240</value>
-      <max>1000</max>
-      <min>-600</min>
-      <step>1</step>
-      <scale>10</scale> 
-    </com.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
     <view>
@@ -38,7 +26,7 @@
       <intersecable>false</intersecable>
       <offset x="0" y="0"/>
       <rotation>0.0</rotation>
-      <icon>thermostat.png</icon>
+      <icon>thermometer.png</icon>
       <fillColor>#000000</fillColor>
       <textColor>#000000</textColor>
       <borderColor>#000000</borderColor>
@@ -52,11 +40,9 @@
   </representation>
   <actions>
     <property name="set temperature" value="Execute it successfully"/>
-    <property name="set setpoint" value="Execute it successfully"/>
   </actions>
   <triggers>
     <property name="" value="temperature"/>
-    <property name="" value="setpoint"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
 </com.freedomotic.model.object.EnvObject>

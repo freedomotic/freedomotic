@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Thermostat</name>
   <description>Collects temperature events</description>
   <actAs>virtual</actAs>
@@ -19,6 +19,17 @@
       <min>-600</min>
       <scale>10</scale>
       <step>1</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>setpoint</name>
+      <active>false</active>
+      <priority>0</priority>
+      <readOnly>false</readOnly>
+      <value>0</value>
+      <max>0</max>
+      <min>0</min>
+      <scale>1</scale>
+      <step>0</step>
     </com.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
@@ -41,12 +52,17 @@
       </shape>
     </view>
   </representation>
-  <actions>
+  <tags>
+    <string></string>
+  </tags>
+ <actions>
     <property name="set temperature" value="Execute it successfully"/>
+    <property name="set setpoint" value="Execute it successfully"/>
   </actions>
   <triggers>
     <property name="" value="temperature"/>
+    <property name="" value="setpoint"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
   <envUUID>df28cda0-a866-11e2-9e96-0800200c9a66</envUUID>
-</com.freedomotic.model.object.EnvObject>
+</object>
