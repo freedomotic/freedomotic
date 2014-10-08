@@ -37,40 +37,15 @@ import java.util.logging.Logger;
  */
 
 public class Thermostat
-        extends EnvObjectLogic {
+        extends Thermometer {
 
     private static final Logger LOG = Logger.getLogger(Thermostat.class.getName()); 
-    private RangedIntBehaviorLogic temperature;
     private RangedIntBehaviorLogic setpoint;
     private static final String BEHAVIOR_TEMPERATURE = "temperature";
     private static final String BEHAVIOR_TEMPERATURE_SETPOINT = "setpoint";
 
     @Override
     public void init() {
-        //linking this property with the behavior defined in the XML
-        temperature = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_TEMPERATURE));
-        temperature.addListener(new RangedIntBehaviorLogic.Listener() {
-            @Override
-            public void onLowerBoundValue(Config params, boolean fireCommand) {
-                //there is an hardware read error
-            }
-
-            @Override
-            public void onUpperBoundValue(Config params, boolean fireCommand) {
-                //there is as hardware read error
-            }
-
-            @Override
-            public void onRangeValue(int rangeValue, Config params, boolean fireCommand) {
-                if (fireCommand) {
-                    executeSetTemperature(rangeValue, params);
-                } else {
-                    setTemperature(rangeValue);
-                }
-            }
-        });
-        //register this behavior to the superclass to make it visible to it
-        registerBehavior(temperature);
         
         if ( getPojo().getBehavior(BEHAVIOR_TEMPERATURE_SETPOINT) == null){
             RangedIntBehavior setpointbeh = new RangedIntBehavior();
@@ -103,23 +78,6 @@ public class Thermostat
         super.init();
     }
 
-    public void executeSetTemperature(int rangeValue, Config params) {
-        boolean executed = executeCommand("set temperature", params);
-
-        if (executed) {
-            temperature.setValue(rangeValue);
-            getPojo().setCurrentRepresentation(0);
-            setChanged(true);
-        }
-    }
-
-    private void setTemperature(int value) {
-        LOG.config("Setting behavior 'temperature' of object '" + getPojo().getName() + "' to "
-                + value);
-        temperature.setValue(value);
-        getPojo().setCurrentRepresentation(0);
-        setChanged(true);
-    }
     public void executeSetTemperatureSetpoint(int rangeValue, Config params) {
         boolean executed = executeCommand("set setpoint", params);
 
