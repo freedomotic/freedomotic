@@ -651,9 +651,13 @@ public class Renderer
         BufferedImage img = null;
         Shape shape = TopologyUtils.convertToAWT(obj.getCurrentRepresentation().getShape());
         Rectangle box = shape.getBounds();
+//        img = ResourcesManager.getResource(obj.getCurrentRepresentation().getIcon(),
+//                (int) box.getWidth(),
+//                (int) box.getHeight()); //-1 means no resizeing
+        
         img = ResourcesManager.getResource(obj.getCurrentRepresentation().getIcon(),
-                (int) box.getWidth(),
-                (int) box.getHeight()); //-1 means no resizeing
+                -1,
+                -1); //-1 means no resizeing
 
         if (img != null) {
             getContext().drawImage(img, 0, 0, this);

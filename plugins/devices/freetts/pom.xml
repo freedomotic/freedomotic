@@ -10,7 +10,7 @@
     </parent>
     <artifactId>freetts</artifactId>
     <packaging>jar</packaging>
-    <name>Freetts plugin for Freedomotic</name>
+    <name>freetts</name>
     <version>3.0</version>
     <developers>
         <developer>

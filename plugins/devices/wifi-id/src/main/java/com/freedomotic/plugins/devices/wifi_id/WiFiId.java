@@ -29,17 +29,18 @@ import java.io.InputStream;
 import java.io.*;
 import java.net.*;
 import com.freedomotic.events.ProtocolRead;
+import com.freedomotic.exceptions.PluginRuntimeException;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Wifi_id extends Protocol {
+public class WiFiId extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(Wifi_id.class.getName());
+    private static final Logger LOG = Logger.getLogger(WiFiId.class.getName());
 
-    public Wifi_id() {
-        super("Wifi_id", "/wifi-id/wifi_id-manifest.xml");
+    public WiFiId() {
+        super("WiFi Presence", "/wifi-id/wifi_id-manifest.xml");
         setPollingWait(configuration.getIntProperty("polling_rate", 5000)); //waits 2000ms in onRun method before call onRun() again
     }
 
@@ -54,59 +55,51 @@ public class Wifi_id extends Protocol {
     }
 
     @Override
-    protected void onRun() {
-        try {
+    protected void onRun() throws PluginRuntimeException {
             //called in a loop while this plugin is running
-            //loops waittime is specified using setPollingWait()
-            URL url = null;
-            InputStream is = null;
-            BufferedReader br;
-            String line, html = null;
-            ProtocolRead event;
-            Authenticator.setDefault(new MyAuthenticator());
-            //URL url = new URL(configuration.getStringProperty("url", ""));
-            //InputStream ins = url.openConnection().getInputStream();
-            //BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
-            //String str;
-            //while((str = reader.readLine()) != null)
-            //System.out.println(str);
-            try {
-                url = new URL(configuration.getStringProperty("url", ""));
-                is = url.openStream();  // throws an IOException
-                br = new BufferedReader(new InputStreamReader(is));
-                while ((line = br.readLine()) != null) {
-                    html = html + line;
-                }
-            } catch (IOException ioe) {
-                setDescription(ioe.getMessage());
+        //loops waittime is specified using setPollingWait()
+        URL url = null;
+        InputStream is = null;
+        BufferedReader br;
+        String line, html = null;
+        ProtocolRead event;
+        Authenticator.setDefault(new MyAuthenticator());
+
+        try {
+            url = new URL(configuration.getStringProperty("url", ""));
+            is = url.openStream();  // throws an IOException
+            br = new BufferedReader(new InputStreamReader(is));
+            while ((line = br.readLine()) != null) {
+                html = html + line;
             }
-            //Freedomotic.logger.config(html);
-            html = html.toLowerCase();
-            System.out.println("HTML: " + html);
-            for (EnvObjectLogic object : EnvObjectPersistence.getObjectByProtocol("wifi_id")) {
-                String mac_address = object.getPojo().getPhisicalAddress();
-                String name = object.getPojo().getName();
-                //Freedomotic.logger.info(mac_address);
-                //Freedomotic.logger.info(name);
-                if (html.contains(mac_address.toLowerCase())) {
-                    // user exist
-                    event = new ProtocolRead(this, "wifi_id", mac_address);
-                    event.addProperty("wifi_id.present", "true");
-                    Freedomotic.sendEvent(event);
-                } else {
-                    // user not exist
-                    event = new ProtocolRead(this, "wifi_id", mac_address);
-                    event.addProperty("wifi_id.present", "false");
-                    Freedomotic.sendEvent(event);
-                }
+        } catch (IOException ioe) {
+            setDescription(ioe.getMessage());
+        }
+        //Freedomotic.logger.config(html);
+        html = html.toLowerCase();
+        LOG.config("HTML: " + html);
+        for (EnvObjectLogic object : EnvObjectPersistence.getObjectByProtocol("wifi_id")) {
+            String mac_address = object.getPojo().getPhisicalAddress();
+            String name = object.getPojo().getName();
+            if (html.contains(mac_address.toLowerCase())) {
+                // user exist
+                event = new ProtocolRead(this, "wifi_id", mac_address);
+                event.addProperty("wifi_id.present", "true");
+                notifyEvent(event);
+            } else {
+                // user not exist
+                event = new ProtocolRead(this, "wifi_id", mac_address);
+                event.addProperty("wifi_id.present", "false");
+                notifyEvent(event);
             }
+        }
+        try {
             is.close();
+        } catch (IOException iOException) {
+        }
 
             //print the string in the freedomotic log using INFO level
-            //Freedomotic.logger.info(buffer.toString());
-        } catch (IOException ex) {
-            setDescription(ex.getMessage());
-        }
+        //Freedomotic.logger.info(buffer.toString());
     }
 
     @Override

@@ -32,12 +32,8 @@ import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.util.Info;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.bluetooth.*;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -50,12 +46,12 @@ public class BluetoothID extends Protocol {
              */ devicesDiscovered = new Vector();
     String address_list;
     String attachment = "";
-    String capture_path = Info.PATH_PLUGINS_FOLDER + File.separator + "bluetooth-id/capture";
+    String capture_path = Info.PATHS.PATH_PLUGINS_FOLDER + File.separator + "bluetooth-id" + File.separator + "capture";
     short i = 0;
 
     public BluetoothID() {
         super("Bluetooth_id", "/bluetooth-id/bluetooth-id-manifest.xml");
-        setPollingWait(configuration.getIntProperty("polling-rate", 5000)); //waits 2000ms in onRun method before call onRun() again
+        setPollingWait(-1); //disable polling
     }
 
     @Override
@@ -146,7 +142,7 @@ public class BluetoothID extends Protocol {
             for (i = 0; i < 4; i++) {
                 Thread.sleep(1000);
                 date = new Date();
-                path = Info.PATH_DEVICES_FOLDER + File.separator + "bluetooth-id" + File.separator + "capture" + File.separator + ft.format(date) + ".jpg";
+                path = Info.PATHS.PATH_DEVICES_FOLDER + File.separator + "bluetooth-id" + File.separator + "capture" + File.separator + ft.format(date) + ".jpg";
                 attachment = attachment + path + ",";
                 System.out.println("Wilson Debug " + i + ":" + attachment);
                 //rbc = Channels.newChannel(website.openStream());
@@ -158,14 +154,9 @@ public class BluetoothID extends Protocol {
             }
             //System.out.println(attachment);
 
-
-
             //String web="http://192.168.1.106:81/snapshot.cgi?user=admin&pwd=recrgt";
-
             //path = Info.getDevicesPath() + File.separator + "com.wilsonkong888.bluetooth_id"+ File.separator+"capture"+ File.separator+ft.format(date)+".jpg";
             //saveImage(web,path);
-
-
             final Object inquiryCompletedEvent = new Object();
 
             devicesDiscovered.clear();
@@ -190,9 +181,6 @@ public class BluetoothID extends Protocol {
                         }
                         boolean thief = true;
 
-
-
-
                         //System.out.println("Address list :"+address_list);
                         for (EnvObjectLogic object : EnvObjectPersistence.getObjectByProtocol("bluetooth_id")) {
                             String mac_address = object.getPojo().getPhisicalAddress();
@@ -213,8 +201,6 @@ public class BluetoothID extends Protocol {
                                 event = new ProtocolRead(this, "bluetooth-id", mac_address);
                                 event.addProperty("bluetooth-id.present", "false");
                                 Freedomotic.sendEvent(event);
-
-
 
                             }
                         }
@@ -246,7 +232,7 @@ public class BluetoothID extends Protocol {
              * inquiry to complete..."); inquiryCompletedEvent.wait();
              * System.out.println(devicesDiscovered.size() + " device(s)
              * found"); }
-            }
+             }
              */
             boolean started = LocalDevice.getLocalDevice().getDiscoveryAgent().startInquiry(DiscoveryAgent.GIAC, listener);
 
@@ -258,9 +244,6 @@ public class BluetoothID extends Protocol {
 
             //System.out.println("Address list :"+address_list);
             //System.out.println("Address list :");
-
-
-
         } catch (Exception e) {
             //ioe.printStackTrace();
             LOG.config("Bluetooth ID error: " + e.getMessage());

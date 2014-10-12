@@ -10,7 +10,7 @@
     </parent>    
     <artifactId>mailer</artifactId>
     <packaging>jar</packaging>
-    <name>Mailer plugin for Freedomotic</name>
+    <name>mailer</name>
     <version>3.0</version>
     <developers>
         <developer>

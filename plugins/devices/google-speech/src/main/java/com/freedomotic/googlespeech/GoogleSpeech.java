@@ -146,7 +146,7 @@ public class GoogleSpeech
     void InputStreamToMP3File(InputStream inputStream) {
 
         try {
-            File f = new File(Info.PATH_DATA_FOLDER + "google.mp3");
+            File f = new File(Info.PATHS.PATH_DATA_FOLDER + "google.mp3");
             System.out.println(f.getAbsolutePath());
             OutputStream out = new FileOutputStream(f);
             byte buf[] = new byte[1024];
