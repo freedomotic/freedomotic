@@ -57,11 +57,11 @@ If you experience compile or startup errors please refer to [Faq & Troubleshooti
 Tools
 ======
 
-Issue Tracker: http://freedomotic.myjetbrains.com/youtrack/dashboard
-Continuuous Integration: http://teamcity.codebetter.com/project.html?projectId=Freedomotic
-Internationalization: https://www.transifex.com/projects/p/freedomotic-open-source-buildi/
-Wiki: https://github.com/freedomotic/freedomotic/wiki
-Source Code: https://github.com/freedomotic/freedomotic
+- Issue Tracker: http://freedomotic.myjetbrains.com/youtrack/dashboard
+- Continuuous Integration: http://teamcity.codebetter.com/project.html?projectId=Freedomotic
+- Internationalization: https://www.transifex.com/projects/p/freedomotic-open-source-buildi/
+- Wiki: https://github.com/freedomotic/freedomotic/wiki
+- Source Code: https://github.com/freedomotic/freedomotic
 
 
 Git reporitory is an SDK
