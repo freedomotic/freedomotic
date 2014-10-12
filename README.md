@@ -3,16 +3,16 @@ Freedomotic
 
 Official website is http://freedomotic.com
 
-Freedomotic is a framework for home and building automation which allows to build smart spaces and ambient aware applications. Learn more at http://freedomotic.com
+Freedomotic is an open source, flexible, secure Internet of Things (IoT) application framework, useful to build and manage modern smart spaces. It is targeted to private individuals (home automation) as well as business users (smart retail environments, ambient aware marketing, monitoring and analytics, ...). Learn more at http://freedomotic.com
 
 Freedomotic can run also on **Raspberry Pi** and can easily interact with DIY **Arduino** projects.
 
 Starting from 2 Feb 2014, this is the freedomotic mainstream repository. Previous repository was hosted on googlecode http://code.google.com/p/freedomotic
 
 Requirements: 
-- **Java Open JDK** version 6 or 7 or oracle jdk (to install on ubuntu: sudo apt-get install openjdk-7-jdk)
-- **Maven** version 2 or 3 (to install on ubuntu: sudo apt-get install maven)
-- **Any OS** with java support (Linux, Windows, Mac, Solaris ...)
+- **Java Open JDK** version 7 or oracle jdk _(to install on ubuntu: sudo apt-get install openjdk-7-jdk)_
+- **Maven** version 2 or 3 _(to install on ubuntu: sudo apt-get install maven)_
+- **Any OS** with java support _(Linux, Windows, Mac, Solaris ...)_
 
 Development status:
 - **Current released version**: 5.5.0 'Bender' (released on 24 Jan 2014)
