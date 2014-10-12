@@ -21,17 +21,19 @@ package com.freedomotic.jfrontend;
 
 import java.awt.Color;
 import java.awt.Shape;
+import java.util.Random;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Bastiaan Visser
- * Date: 7/2/13
- * Time: 10:54 AM
+ * Created with IntelliJ IDEA. User: Bastiaan Visser Date: 7/2/13 Time: 10:54 AM
  */
-public class Indicator
-{
+public class Indicator {
+
+    //the default opacity
+
+    private static final int OPACITY = Renderer.DEFAULT_OPACITY;
     private Shape shape;
-    private Color color = new Color(0, 0, 255, 50);
+    //the default shape fill color, blue
+    private Color color = new Color(0, 0, 255, OPACITY);
 
     /**
      *
@@ -39,6 +41,7 @@ public class Indicator
      */
     public Indicator(Shape shape) {
         this.shape = shape;
+        //this.color = new Color(rand(0, 255), rand(0, 255), rand(0, 255), OPACITY);
     }
 
     /**

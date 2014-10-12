@@ -998,6 +998,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         room.getPojo().setTexture((new File(Info.PATHS.PATH_RESOURCES_FOLDER + "/wood.jpg")).getName());
         room.init(drawer.getCurrEnv());
         drawer.getCurrEnv().addRoom(room);
+        drawer.setSelectedZone(room);
         drawer.createHandles(room);
     }//GEN-LAST:event_mnuAddRoomActionPerformed
 

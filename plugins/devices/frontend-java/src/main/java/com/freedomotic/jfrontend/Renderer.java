@@ -56,6 +56,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  *
@@ -83,6 +86,11 @@ public class Renderer
     private static int BORDER_Y = 10; //the empty space around the map
     private double CANVAS_WIDTH = environmentWidth + (BORDER_X * 2);
     private double CANVAS_HEIGHT = environmentHeight + (BORDER_Y * 2);
+    private static final int SNAP_TO_GRID = 20; //a grid of 20cm
+    public static final int HIGH_OPACITY = 180;
+    public static final int DEFAULT_OPACITY = 150;
+    public static final int LOW_OPACITY = 120;
+    private static Map<ZoneLogic, Color> zoneColors = new HashMap<ZoneLogic, Color>();
 
     /**
      *
@@ -196,12 +204,27 @@ public class Renderer
      *
      * @return
      */
+    @Override
     public ZoneLogic getSelectedZone() {
         return selectedZone;
     }
 
-    private void setSelectedZone(ZoneLogic selectedZone) {
+    @Override
+    public void setSelectedZone(ZoneLogic selectedZone) {
+        removeIndicators();
+        addIndicator(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
         this.selectedZone = selectedZone;
+        createHandles(selectedZone);
+
+        //highlight the other rooms
+        for (Room room : getCurrEnv().getRooms()) {
+            if (room != selectedZone) {
+                if (zoneColors.get(room) == null) {
+                    zoneColors.put(room, new Color(rand(0, 255), rand(0, 255), rand(0, 255), LOW_OPACITY));
+                }
+                addIndicator(TopologyUtils.convertToAWT(room.getPojo().getShape()), zoneColors.get(room));
+            }
+        }
     }
 
     /**
@@ -533,17 +556,17 @@ public class Renderer
     /**
      *
      * @param shape
-     * @param translation
+     * @param offset
      * @return
      */
-    public static Shape getTranslatedShape(final Shape shape, Point translation) {
+    public static Shape getTranslatedShape(final Shape shape, Point offset) {
         if (shape == null) {
             throw new IllegalArgumentException("Null 'shape' argument.");
         }
 
         final AffineTransform transform
-                = AffineTransform.getTranslateInstance(translation.getX(),
-                        translation.getY());
+                = AffineTransform.getTranslateInstance(offset.getX(),
+                        offset.getY());
 
         return transform.createTransformedShape(shape);
     }
@@ -859,17 +882,20 @@ public class Renderer
             //click on an handle in edit mode
             Handle clickedHandle = mouseOnHandle(e.getPoint());
 
+            //single right click
             if (clickedHandle != null) {
                 if ((e.getClickCount() == 1) && (e.getButton() == MouseEvent.BUTTON1)) {
                     clickedHandle.setSelected(true);
                 } else {
+                    //double right click
                     if ((e.getClickCount() == 2) && (e.getButton() == MouseEvent.BUTTON1)) {
                         clickedHandle.addAdiacent();
-                        createHandles(null);
+                        setSelectedZone(clickedHandle.getZone());
                     } else {
+                        //single left click
                         if ((e.getClickCount() == 1) && (e.getButton() == MouseEvent.BUTTON3)) {
                             clickedHandle.remove();
-                            createHandles(null);
+                            setSelectedZone(clickedHandle.getZone());
                         }
                     }
                 }
@@ -878,10 +904,7 @@ public class Renderer
                 ZoneLogic zone = mouseOnZone(e.getPoint());
 
                 if (zone != null) {
-                    removeIndicators();
-                    addIndicator(TopologyUtils.convertToAWT(zone.getPojo().getShape()));
-                    selectedZone = zone;
-                    createHandles(zone);
+                    setSelectedZone(zone);
                 } else {
                     handles.clear();
                     // createHandles(null);
@@ -939,22 +962,14 @@ public class Renderer
                         (int) (coords.getY() - (int) dragDiff.getHeight()));
             }
             //check if rooms overlap
-            //selectedZone = handle.getZone();
             if (roomEditMode && (selectedZone) != null) {
-                Area currentZoneArea = new Area(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
-                for (Room r : currEnv.getRooms()) {
-                    if (!r.equals(selectedZone)) {
-                        Shape testZoneShape = TopologyUtils.convertToAWT(r.getPojo().getShape());
-                        Area testArea = new Area(testZoneShape);
-                        testArea.intersect(currentZoneArea);
-                        if (!testArea.isEmpty()) {
-                            currHandle.move(originalHandleLocation.getX(), originalHandleLocation.getY());
-                            removeIndicators();
-                            addIndicator(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
-                            break;
-                        }
-                    }
-                }
+                setSelectedZone(selectedZone);
+//                if (!overlappedRooms(selectedZone).isEmpty()) {
+//                    //move the handle back to the original position to undo the editing
+//                    currHandle.move(originalHandleLocation.getX(), originalHandleLocation.getY());
+//                    removeIndicators();
+//                    addIndicator(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
+//                }
             }
         }
 
@@ -965,6 +980,22 @@ public class Renderer
         //removeIndicators();
         rebuildShapesCache();
         setNeedRepaint(true);
+    }
+
+    private List<ZoneLogic> overlappedRooms(ZoneLogic zone) {
+        List<ZoneLogic> overlapped = new ArrayList<ZoneLogic>();
+        Area currentZoneArea = new Area(TopologyUtils.convertToAWT(zone.getPojo().getShape()));
+        for (Room r : currEnv.getRooms()) {
+            if (!r.equals(selectedZone)) {
+                Shape testZoneShape = TopologyUtils.convertToAWT(r.getPojo().getShape());
+                Area testArea = new Area(testZoneShape);
+                testArea.intersect(currentZoneArea);
+                if (!testArea.isEmpty()) {
+                    overlapped.add(r);
+                }
+            }
+        }
+        return overlapped;
     }
 
     /**
@@ -1002,8 +1033,8 @@ public class Renderer
                             .getOffset().getY()));
         }
 
-        int xSnapped = (int) coords.getX() - ((int) coords.getX() % 5);
-        int ySnapped = (int) coords.getY() - ((int) coords.getY() % 5);
+        int xSnapped = (int) coords.getX() - ((int) coords.getX() % SNAP_TO_GRID);
+        int ySnapped = (int) coords.getY() - ((int) coords.getY() % SNAP_TO_GRID);
 
         //in object edit mode
         if (objectEditMode && (getSelectedObject() != null)) {
@@ -1018,8 +1049,9 @@ public class Renderer
                 removeIndicators();
 
                 Callout callout
-                        = new Callout(this.getClass().getCanonicalName(), "mouse", xSnapped + "cm," + ySnapped + "cm",
-                                (int) coords.getX(), (int) coords.getY(), 0, -1);
+                        = new Callout(this.getClass().getCanonicalName(), "mouse", 
+                                selectedZone.getPojo().getName() + ": " +xSnapped + "cm," + ySnapped + "cm",
+                                (int) coords.getX() + 50, (int) coords.getY() + 50, 0, -1);
                 createCallout(callout);
 
                 for (Handle handle : handles) {
@@ -1032,20 +1064,12 @@ public class Renderer
                         addIndicator(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
                         // add indicators for overlapping zones
                         selectedZone = handle.getZone();
-                        Area currentZoneArea = new Area(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
-                        for (Room r : currEnv.getRooms()) {
-                            if (!r.equals(selectedZone)) {
-                                Shape testZoneShape = TopologyUtils.convertToAWT(r.getPojo().getShape());
-                                Area testArea = new Area(testZoneShape);
-                                testArea.intersect(currentZoneArea);
-                                if (!testArea.isEmpty()) {
-                                    addIndicator(testZoneShape, new Color(255, 0, 0, 50));
-                                }
-                            }
+                        for (ZoneLogic overlapped : overlappedRooms(selectedZone)) {
+                            //mark the zone in red if it is overlapped
+                            addIndicator(TopologyUtils.convertToAWT(overlapped.getPojo().getShape()), new Color(255, 0, 0, HIGH_OPACITY));
                         }
                     }
                 }
-
                 setNeedRepaint(true);
             }
         }
@@ -1140,10 +1164,10 @@ public class Renderer
 
     private void renderHandles() {
         for (Handle handle : handles) {
-            getContext().setColor(new Color(0, 0, 255, 50));
+            getContext().setColor(new Color(0, 0, 255, DEFAULT_OPACITY));
 
             if (handle.isSelected()) {
-                getContext().setColor(new Color(255, 0, 0, 50));
+                getContext().setColor(new Color(255, 0, 0, DEFAULT_OPACITY));
             }
 
             getContext()
@@ -1158,16 +1182,26 @@ public class Renderer
      *
      * @param edit
      */
+    @Override
     public void setRoomEditMode(boolean edit) {
         roomEditMode = edit;
 
         if (roomEditMode) {
             Callout callout
                     = new Callout(this.getClass().getCanonicalName(), "info",
-                            "Double click on an handle to create a now one in the middle of the segment.\n"
-                            + "Right click on an handle to delete it.", 45, -45, 0, -1);
+                            "ENVIRONMENT EDITING INSTRUCTIONS:\n"
+                            + "- TO CHANGE ROOMS SHAPE: drag the handles\n"
+                            + "- TO ADD A NEW ROOM: use the environment menu\n"
+                            + "- TO REMOVE A ROOM: use the environment menu\n"
+                            + "- TO CREATE A NEW DRAGGABLE POINT: Double click on an adiacent handle.\n"
+                            + "- TO DELETE A DRAGGABLE POINT: Right click on the point you want to remove.\n", 100, 200, 0, -1);
             createCallout(callout);
             createHandles(null);
+            //find the first room and select it
+            Room selectedRoom = getCurrEnv().getRooms().get(0);
+            if (selectedRoom != null) {
+                setSelectedZone(selectedRoom);
+            }
         } else {
             handles.clear();
             indicators.clear();
@@ -1218,5 +1252,18 @@ public class Renderer
      */
     public Color getBackgroundColor() {
         return backgroundColor;
+    }
+
+    private int rand(int min, int max) {
+
+        // NOTE: Usually this should be a field rather than a method
+        // variable so that it is not re-seeded every call.
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
     }
 }

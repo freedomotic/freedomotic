@@ -77,6 +77,10 @@ public abstract class Drawer
     void setCurrEnv(int id) {
         setCurrEnv(EnvironmentPersistence.getEnvironments().get(id));
     }
+    
+    void setSelectedZone(ZoneLogic selectedZone){
+        //overwritted by subclasses
+    }
 
     abstract EnvironmentLogic getCurrEnv();
 

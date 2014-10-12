@@ -95,12 +95,11 @@ public class Handle {
 //    public void setVisible(boolean visible) {
 //        this.visible = visible;
 //    }
-
     /**
      *
      * @param selected
      */
-        protected void setSelected(boolean selected) {
+    protected void setSelected(boolean selected) {
         this.selected = selected;
     }
 
@@ -145,8 +144,31 @@ public class Handle {
      * @return
      */
     public FreedomPoint addAdiacent() {
-        FreedomPoint added = zone.getPojo().getShape().insert(point);
-
+        //DISABLED AS NOT WORKING
+//        FreedomPoint previous = point;
+//        //finding the point the precedes the current one, if any
+//        for (int i = 0; i < zone.getPojo().getShape().getPoints().size(); i++) {
+//            if (zone.getPojo().getShape().getPoints().get(i) == point) {
+//                try {
+//                    FreedomPoint tmp = zone.getPojo().getShape().getPoints().get(i - 1);
+//                    if (tmp != null) {
+//                        previous = tmp;
+//                    }
+//                } catch (Exception e) {
+//                    //do nothig, best effort
+//                }
+//            }
+//        }
+//
+//        //apply pitagora to find the middle between previous point and current one
+//        FreedomPoint added = zone.getPojo().getShape().insert(midPoint(previous));
+        FreedomPoint added = zone.getPojo().getShape().insert(midPoint(point));
         return added;
+    }
+
+    private FreedomPoint midPoint(FreedomPoint p) {
+        int mx = (p.getX() + point.getX()) / 2;
+        int my = (p.getY() + point.getY()) / 2;
+        return new FreedomPoint(mx, my);
     }
 }
