@@ -22,6 +22,8 @@ Development status:
 Developers Quick Start
 ======================
 
+Follow this instructions if you want to compile freedomotic from source (eg: to develop your own plugins). If you just want to try it, just download the precompiled binaries you can find at the official download page http://freedomotic.com/content/download
+
 **1) Fork freedomotic on GitHub**
 
 * Create an account on https://github.com if you don't have one.
