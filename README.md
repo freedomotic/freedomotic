@@ -71,11 +71,6 @@ The GIT repository is a complete SDK with all you need to code and test your fre
 
 To develop your own plugin you can start from the "hello-world" example project included in GIT_ROOT/plugins/devices/hello-world. Open it in your IDE, make some changes and compile. It will be automatically installed into the freedomotic runtime (freedomotic-core project). Just start freedomotic-core to try your latest changes.
 
-Developers Documentation
-========================
-
-Read more on the official website http://freedomotic.com/content/developers-getting-started
-
 Try it on Raspberry Pi
 ======================
 We have a script to do it automatically, follow this short tutorial http://freedomotic.com/content/install-freedomotic-raspberry-pi
