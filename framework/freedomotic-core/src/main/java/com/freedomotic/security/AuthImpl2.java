@@ -47,10 +47,10 @@ import org.apache.shiro.util.ThreadState;
 public class AuthImpl2 implements Auth{
 
     private static final Logger LOG = Logger.getLogger(AuthImpl2.class.getName());
-    private boolean realmInited = false;
-    private final UserRealm baseRealm = new UserRealm();
-    private final PluginRealm pluginRealm = new PluginRealm();
-    private final ArrayList<Realm> realmCollection = new ArrayList<Realm>();
+    private static boolean realmInited = false;
+    private static final UserRealm baseRealm = new UserRealm();
+    private static final PluginRealm pluginRealm = new PluginRealm();
+    private static final ArrayList<Realm> realmCollection = new ArrayList<Realm>();
     @Inject AppConfig config;
     
     /**
