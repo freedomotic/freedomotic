@@ -22,13 +22,15 @@ package com.freedomotic.plugins.devices.arduinousb;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.events.ProtocolRead;
+import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.helpers.SerialHelper;
 import com.freedomotic.helpers.SerialPortListener;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.serial.SerialDataConsumer;
 import java.io.IOException;
 import java.util.logging.Logger;
+import jssc.SerialPortException;
 
 public class ArduinoUSB extends Protocol {
 
@@ -40,33 +42,34 @@ public class ArduinoUSB extends Protocol {
     private Integer STOPBITS = configuration.getIntProperty("serial.stopbits", 1);
     private String CHUNK_TERMINATOR = configuration.getStringProperty("chunk.terminator", "\n");
     private Integer CHUNK_SIZE = configuration.getIntProperty("chunk.size", 5);
-  
     private SerialHelper serial;
 
     public ArduinoUSB() {
         super("Arduino USB", "/arduinousb/arduinousb-manifest.xml");
-        setPollingWait(-1); //waits 2000ms in onRun method before call onRun() again
+        setPollingWait(-1); // onRun() executes once
     }
 
     @Override
-    public void onStart() {
-        //called when the user starts the plugin from UI
-        if (serial == null) {
+    public void onStart() throws PluginStartupException {
+        try {
             serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, new SerialPortListener() {
 
                 @Override
                 public void onDataAvailable(String data) {
                     LOG.info("Arduino USB received: " + data);
+                    sendChanges(data);
                 }
             });
+            // in this example it reads until terminator
             serial.setChunkTerminator(CHUNK_TERMINATOR);
-            serial.setChunkSize(CHUNK_SIZE);
+            //serial.setChunkSize(CHUNK_SIZE);
+        } catch (SerialPortException ex) {
+            throw new PluginStartupException("Error while creating Arduino serial connection. " + ex.getMessage(), ex);
         }
     }
 
     @Override
     public void onStop() {
-        //called when the user stops the plugin from UI
         if (serial != null) {
             serial.disconnect();
         }
@@ -81,15 +84,11 @@ public class ArduinoUSB extends Protocol {
         //this method receives freedomotic commands send on channel app.actuators.protocol.arduinousb.in
         String message = c.getProperty("arduinousb.message");
         String reply = null;
-        serial.write(message);
-        // try {
-        //reply = serial.send(message);
-        //serial.send(message);
-        // } catch (IOException iOException) {
-        //   setDescription("Stopped for IOException in onCommand"); //write here a better error message for the user
-        //   stop();
-        //  }
-        LOG.info("Arduino USB replies " + reply + " after executing command " + c.getName());
+        try {
+            serial.write(message);
+        } catch (SerialPortException ex) {
+            LOG.severe("Error sending command " + c.getName() + " for " + ex.getMessage());
+        }
     }
 
     @Override
@@ -100,5 +99,24 @@ public class ArduinoUSB extends Protocol {
     @Override
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private void sendChanges(String data) {
+        String[] message = null;
+        String address = null;
+        String status = null;
+
+        // remove '\n' and split data read
+        message = data.substring(0, data.length() - 1).split(";");
+        address = message[0];
+        status = message[1];
+
+        ProtocolRead event = new ProtocolRead(this, "arduinousb", address);
+        if (status.equalsIgnoreCase("on")) {
+            event.addProperty("isOn", "true");
+        } else {
+            event.addProperty("isOn", "false");
+        }
+        this.notifyEvent(event);
     }
 }

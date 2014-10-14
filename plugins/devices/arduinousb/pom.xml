@@ -10,7 +10,7 @@
     </parent>    
     <artifactId>arduinousb</artifactId>
     <packaging>jar</packaging>
-    <name>Arduino Usb Plugin for Freedomotic</name>
+    <name>arduino-usb</name>
     <version>3.0</version>
     <developers>
         <developer>

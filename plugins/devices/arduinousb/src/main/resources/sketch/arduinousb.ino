@@ -17,11 +17,11 @@ void loop (){
     switch (ser) {
         case 'a':
         pinON(13);
-        Serial.print("on");
+        Serial.println("13;on");
         break;
         case 'b':
         pinOFF(13);
-        Serial.print("off");
+        Serial.println("13;off");
         break;
     }
   }
