@@ -25,6 +25,7 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
+import com.freedomotic.i18n.I18n;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
@@ -78,10 +79,8 @@ public class Renderer
     private double widthRescale = 1.0;
     private double heightRescale = 1.0;
     private boolean backgroundChanged = true;
-    private int environmentWidth
-            = (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth();
-    private int environmentHeight
-            = (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight();
+    private int environmentWidth = (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth();
+    private int environmentHeight = (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight();
     private static int BORDER_X = 10; //the empty space around the map
     private static int BORDER_Y = 10; //the empty space around the map
     private double CANVAS_WIDTH = environmentWidth + (BORDER_X * 2);
@@ -91,13 +90,11 @@ public class Renderer
     public static final int DEFAULT_OPACITY = 150;
     public static final int LOW_OPACITY = 120;
     private static Map<ZoneLogic, Color> zoneColors = new HashMap<ZoneLogic, Color>();
-
+    private final I18n I18n;
     /**
      *
      */
-    protected Color backgroundColor
-            = TopologyUtils.convertColorToAWT(EnvironmentPersistence.getEnvironments().get(0).getPojo()
-                    .getBackgroundColor());
+    protected Color backgroundColor = TopologyUtils.convertColorToAWT(EnvironmentPersistence.getEnvironments().get(0).getPojo().getBackgroundColor());
     private EnvObjectLogic selectedObject;
     private ArrayList<Indicator> indicators = new ArrayList<Indicator>();
     private HashMap<String, Shape> cachedShapes = new HashMap<String, Shape>();
@@ -106,7 +103,6 @@ public class Renderer
     private FreedomPoint originalHandleLocation = null;
     private ArrayList<Handle> handles = new ArrayList<Handle>();
     private ZoneLogic selectedZone;
-
     /**
      *
      */
@@ -233,12 +229,14 @@ public class Renderer
      */
     public Renderer(JavaDesktopFrontend master) {
         this.plugin = master;
+        this.I18n = plugin.getApi().getI18n();
         ResourcesManager.clear();
         clear();
         addCustomMouseListener();
         addCustomMouseMotionListener();
         setBackground(backgroundColor);
         addComponentListener(new ComponentAdapter() {
+
             @Override
             public void componentResized(ComponentEvent e) {
                 backgroundChanged = true;
@@ -397,6 +395,7 @@ public class Renderer
 
             synchronized (this) {
                 new Runnable() {
+
                     @Override
                     public void run() {
                         BufferedImage background = createDrawableCanvas();
@@ -564,9 +563,8 @@ public class Renderer
             throw new IllegalArgumentException("Null 'shape' argument.");
         }
 
-        final AffineTransform transform
-                = AffineTransform.getTranslateInstance(offset.getX(),
-                        offset.getY());
+        final AffineTransform transform = AffineTransform.getTranslateInstance(offset.getX(),
+                offset.getY());
 
         return transform.createTransformedShape(shape);
     }
@@ -580,10 +578,9 @@ public class Renderer
     public static Shape getRotatedShape(Shape shape, double rotation) {
         AffineTransform localAT = null;
         Shape localShape = null;
-        localAT
-                = AffineTransform.getRotateInstance(Math.toRadians(rotation),
-                        shape.getBounds().getX(),
-                        shape.getBounds().getY());
+        localAT = AffineTransform.getRotateInstance(Math.toRadians(rotation),
+                shape.getBounds().getX(),
+                shape.getBounds().getY());
         localShape = localAT.createTransformedShape(shape);
 
         return localShape;
@@ -654,7 +651,7 @@ public class Renderer
 //        img = ResourcesManager.getResource(obj.getCurrentRepresentation().getIcon(),
 //                (int) box.getWidth(),
 //                (int) box.getHeight()); //-1 means no resizeing
-        
+
         img = ResourcesManager.getResource(obj.getCurrentRepresentation().getIcon(),
                 -1,
                 -1); //-1 means no resizeing
@@ -698,10 +695,9 @@ public class Renderer
         AffineTransform origAt = localGraph.getTransform();
         AffineTransform newAt = (AffineTransform) (origAt.clone());
         Rectangle2D rect = localGraph.getFontMetrics().getStringBounds(lines[longest], localGraph);
-        RoundRectangle2D round
-                = new RoundRectangle2D.Double(rect.getX(),
-                        rect.getY(), rect.getWidth() + (BORDER * 2),
-                        (rect.getHeight() * lines.length) + (BORDER * 2), 25, 25);
+        RoundRectangle2D round = new RoundRectangle2D.Double(rect.getX(),
+                rect.getY(), rect.getWidth() + (BORDER * 2),
+                (rect.getHeight() * lines.length) + (BORDER * 2), 25, 25);
         newAt.rotate(Math.toRadians(angle),
                 x,
                 y);
@@ -773,9 +769,8 @@ public class Renderer
 
             if (zone.getPojo().isRoom()) {
                 Point mouse = toRealCoords(p);
-                onZone
-                        = TopologyUtils.contains(zone.getPojo().getShape(),
-                                new FreedomPoint((int) mouse.getX(), (int) mouse.getY()));
+                onZone = TopologyUtils.contains(zone.getPojo().getShape(),
+                        new FreedomPoint((int) mouse.getX(), (int) mouse.getY()));
 
                 if (onZone == true) {
                     return zone;
@@ -810,12 +805,10 @@ public class Renderer
         int x = obj.getCurrentRepresentation().getOffset().getX();
         int y = obj.getCurrentRepresentation().getOffset().getY();
         Shape shape = TopologyUtils.convertToAWT(obj.getShape());
-        shape
-                = getTranslatedShape(shape,
-                        new Point(x, y));
-        shape
-                = getRotatedShape(shape,
-                        obj.getCurrentRepresentation().getRotation());
+        shape = getTranslatedShape(shape,
+                new Point(x, y));
+        shape = getRotatedShape(shape,
+                obj.getCurrentRepresentation().getRotation());
         cachedShapes.put(object.getPojo().getUUID(),
                 shape);
 
@@ -1030,11 +1023,9 @@ public class Renderer
 
         if ((dragDiff == null) && (getSelectedObject() != null)) {
             dragDiff = new Dimension((int) Math.abs(coords.getX()
-                    - getSelectedObject().getPojo().getCurrentRepresentation()
-                    .getOffset().getX()),
+                    - getSelectedObject().getPojo().getCurrentRepresentation().getOffset().getX()),
                     (int) Math.abs(coords.getY()
-                            - getSelectedObject().getPojo().getCurrentRepresentation()
-                            .getOffset().getY()));
+                    - getSelectedObject().getPojo().getCurrentRepresentation().getOffset().getY()));
         }
 
         int xSnapped = (int) coords.getX() - ((int) coords.getX() % SNAP_TO_GRID);
@@ -1052,10 +1043,9 @@ public class Renderer
             if (roomEditMode) {
                 removeIndicators();
 
-                Callout callout
-                        = new Callout(this.getClass().getCanonicalName(), "mouse", 
-                                selectedZone.getPojo().getName() + ": " +xSnapped + "cm," + ySnapped + "cm",
-                                (int) coords.getX() + 50, (int) coords.getY() + 50, 0, -1);
+                Callout callout = new Callout(this.getClass().getCanonicalName(), "mouse",
+                        selectedZone.getPojo().getName() + ": " + xSnapped + "cm," + ySnapped + "cm",
+                        (int) coords.getX() + 50, (int) coords.getY() + 50, 0, -1);
                 createCallout(callout);
 
                 for (Handle handle : handles) {
@@ -1121,10 +1111,9 @@ public class Renderer
                 Point mouse = toRealCoords(e.getPoint());
 
                 //create a callot which says the coordinates of click
-                Callout callout
-                        = new Callout(this.getClass().getCanonicalName(), "mouse",
-                                (int) mouse.getX() + "cm," + (int) mouse.getY() + "cm", (int) mouse.getX(),
-                                (int) mouse.getY(), 0, -1);
+                Callout callout = new Callout(this.getClass().getCanonicalName(), "mouse",
+                        (int) mouse.getX() + "cm," + (int) mouse.getY() + "cm", (int) mouse.getX(),
+                        (int) mouse.getY(), 0, -1);
                 createCallout(callout);
                 repaint();
             }
@@ -1174,11 +1163,10 @@ public class Renderer
                 getContext().setColor(new Color(255, 0, 0, DEFAULT_OPACITY));
             }
 
-            getContext()
-                    .fillRect((int) handle.getHandle().getBounds().getX(),
-                            (int) handle.getHandle().getBounds().getY(),
-                            (int) handle.getHandle().getBounds().getWidth(),
-                            (int) handle.getHandle().getBounds().getHeight());
+            getContext().fillRect((int) handle.getHandle().getBounds().getX(),
+                    (int) handle.getHandle().getBounds().getY(),
+                    (int) handle.getHandle().getBounds().getWidth(),
+                    (int) handle.getHandle().getBounds().getHeight());
         }
     }
 
@@ -1191,14 +1179,13 @@ public class Renderer
         roomEditMode = edit;
 
         if (roomEditMode) {
-            Callout callout
-                    = new Callout(this.getClass().getCanonicalName(), "info",
-                            "ENVIRONMENT EDITING INSTRUCTIONS:\n"
-                            + "- TO CHANGE ROOMS SHAPE: drag the handles\n"
-                            + "- TO ADD A NEW ROOM: use the environment menu\n"
-                            + "- TO REMOVE A ROOM: use the environment menu\n"
-                            + "- TO CREATE A NEW DRAGGABLE POINT: Double click on an adiacent handle.\n"
-                            + "- TO DELETE A DRAGGABLE POINT: Right click on the point you want to remove.\n", 100, 200, 0, -1);
+            Callout callout = new Callout(this.getClass().getCanonicalName(), "info",
+                    I18n.msg("environment_editing_instructions") + ":\n"
+                    + "- " + I18n.msg("environment_editing_instructions_add_new_room") + "\n"
+                    + "- " + I18n.msg("environment_editing_instructions_change_room_shape") + "\n"
+                    + "- " + I18n.msg("environment_editing_instructions_remove_room") + "\n"
+                    + "- " + I18n.msg("environment_editing_instructions_create_draggable_point") + "\n"
+                    + "- " + I18n.msg("environment_editing_instructions_delete_draggable_point") + "\n", 100, 200, 0, -1);
             createCallout(callout);
             createHandles(null);
             //find the first room and select it
