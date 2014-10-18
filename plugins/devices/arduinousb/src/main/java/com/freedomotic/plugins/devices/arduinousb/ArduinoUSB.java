@@ -22,48 +22,56 @@ package com.freedomotic.plugins.devices.arduinousb;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.events.ProtocolRead;
+import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
+import com.freedomotic.helpers.SerialHelper;
+import com.freedomotic.helpers.SerialPortListener;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.serial.SerialConnectionProvider;
-import com.freedomotic.serial.SerialDataConsumer;
 import java.io.IOException;
 import java.util.logging.Logger;
+import jssc.SerialPortException;
 
-public class ArduinoUSB extends Protocol implements SerialDataConsumer {
+public class ArduinoUSB extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(ArduinoUSB.class.getName());
-    SerialConnectionProvider serial;
+    private String PORTNAME = configuration.getStringProperty("serial.port", "/dev/usb0");
+    private Integer BAUDRATE = configuration.getIntProperty("serial.baudrate", 9600);
+    private Integer DATABITS = configuration.getIntProperty("serial.databits", 8);
+    private Integer PARITY = configuration.getIntProperty("serial.parity", 0);
+    private Integer STOPBITS = configuration.getIntProperty("serial.stopbits", 1);
+    private String CHUNK_TERMINATOR = configuration.getStringProperty("chunk.terminator", "\n");
+    private Integer CHUNK_SIZE = configuration.getIntProperty("chunk.size", 5);
+    private String DELIMITER = configuration.getStringProperty("delimiter", ";");
+    private SerialHelper serial;
 
     public ArduinoUSB() {
         super("Arduino USB", "/arduinousb/arduinousb-manifest.xml");
-        setPollingWait(2000); //waits 2000ms in onRun method before call onRun() again
+        setPollingWait(-1); // onRun() executes once
     }
 
     @Override
-    public void onStart() {
-        //called when the user starts the plugin from UI
-        if (serial == null) {
-            serial = new SerialConnectionProvider();
-            //UNCOMMENT IF NEEDED:
-            //instead of specify a port name is also possible to search for 
-            //the right port using an hello message and an expected reply
-            //the hello message will be broadcasted to all usb connected devices
-            //serial.setAutodiscover(
-            //      configuration.getStringProperty("serial.hello", "hello"), 
-            //    configuration.getStringProperty("serial.hello-reply", "hello-reply"));
-            //connection parameters
-            serial.setPortName(configuration.getStringProperty("serial.port", "/dev/usb0"));
-            serial.setPortBaudrate(configuration.getIntProperty("serial.baudrate", 9600));
-            serial.setPortDatabits(configuration.getIntProperty("serial.databits", 8));
-            serial.setPortParity(configuration.getIntProperty("serial.parity", 0));
-            serial.setPortStopbits(configuration.getIntProperty("serial.stopbits", 1));
+    public void onStart() throws PluginStartupException {
+        try {
+            serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, new SerialPortListener() {
 
+                @Override
+                public void onDataAvailable(String data) {
+                    LOG.info("Arduino USB received: " + data);
+                    sendChanges(data);
+                }
+            });
+            // in this example it reads until terminator
+            serial.setChunkTerminator(CHUNK_TERMINATOR);
+            //serial.setChunkTerminator("\n");
+            //serial.setChunkSize(CHUNK_SIZE);
+        } catch (SerialPortException ex) {
+            throw new PluginStartupException("Error while creating Arduino serial connection. " + ex.getMessage(), ex);
         }
     }
 
     @Override
     public void onStop() {
-        //called when the user stops the plugin from UI
         if (serial != null) {
             serial.disconnect();
         }
@@ -71,33 +79,18 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
 
     @Override
     protected void onRun() {
-        //called in a loop while this plugin is running
-        //loops waittime is specified using setPollingWait()
-        try {
-            //sends the string to serialport and waits the amount of time
-            //written in setPollingWait() method [you can found it in Massabus constructor]
-            String message = "A_STRING_MESSAGE";
-            String reply = serial.send(message);
-            LOG.info("Arduino USB replies " + reply + " to message " + message);
-        } catch (IOException ex) {
-            setDescription("Stopped for IOException in onRun"); //write here a better error message for the user
-            stop();
-
-        }
     }
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        //this method receives freedomotic commands send on channel app.actuators.protocol.arduinousb.in
+        //this method receives freedomotic commands sent on channel app.actuators.protocol.arduinousb.in
         String message = c.getProperty("arduinousb.message");
         String reply = null;
         try {
-            reply = serial.send(message);
-        } catch (IOException iOException) {
-            setDescription("Stopped for IOException in onCommand"); //write here a better error message for the user
-            stop();
+            serial.write(message);
+        } catch (SerialPortException ex) {
+            LOG.severe("Error sending command " + c.getName() + " for " + ex.getMessage());
         }
-        LOG.info("Arduino USB replies " + reply + " after executing command " + c.getName());
     }
 
     @Override
@@ -110,9 +103,23 @@ public class ArduinoUSB extends Protocol implements SerialDataConsumer {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public void onDataAvailable(String data) {
-        //called when something is readed from the serial port
-       LOG.info("Arduino USB reads '" + data + "'");
+    private void sendChanges(String data) {
+        String[] message = null;
+        String address = null;
+        String status = null;
+
+        // in this example we are using Arduino Serial.println() so
+        // remove '\r' and '\n' at the end of the string and split data read
+        message = data.substring(0, data.length() - 2).split(DELIMITER);
+        address = message[0];
+        status = message[1];
+
+        ProtocolRead event = new ProtocolRead(this, "arduinousb", address);
+        if (status.equalsIgnoreCase("on")) {
+            event.addProperty("isOn", "true");
+        } else {
+            event.addProperty("isOn", "false");
+        }
+        this.notifyEvent(event);
     }
 }
