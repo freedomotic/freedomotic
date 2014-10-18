@@ -315,8 +315,9 @@ public class Plugin implements Client {
      *
      * @return
      */
+    @XmlElement(name="uuid")
     public String getClassName() {
-        return (this.getClass().getSimpleName());
+        return (this.getClass().getSimpleName().toLowerCase());
     }
 
     /**

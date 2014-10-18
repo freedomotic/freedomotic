@@ -2,11 +2,9 @@ package com.freedomotic.jfrontend;
 
 import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
-import com.freedomotic.api.Plugin;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
-import com.freedomotic.util.Info;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
