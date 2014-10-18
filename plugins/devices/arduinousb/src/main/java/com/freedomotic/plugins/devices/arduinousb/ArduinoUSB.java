@@ -42,6 +42,7 @@ public class ArduinoUSB extends Protocol {
     private Integer STOPBITS = configuration.getIntProperty("serial.stopbits", 1);
     private String CHUNK_TERMINATOR = configuration.getStringProperty("chunk.terminator", "\n");
     private Integer CHUNK_SIZE = configuration.getIntProperty("chunk.size", 5);
+    private String DELIMITER = configuration.getStringProperty("delimiter", ";");
     private SerialHelper serial;
 
     public ArduinoUSB() {
@@ -62,6 +63,7 @@ public class ArduinoUSB extends Protocol {
             });
             // in this example it reads until terminator
             serial.setChunkTerminator(CHUNK_TERMINATOR);
+            //serial.setChunkTerminator("\n");
             //serial.setChunkSize(CHUNK_SIZE);
         } catch (SerialPortException ex) {
             throw new PluginStartupException("Error while creating Arduino serial connection. " + ex.getMessage(), ex);
@@ -81,7 +83,7 @@ public class ArduinoUSB extends Protocol {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        //this method receives freedomotic commands send on channel app.actuators.protocol.arduinousb.in
+        //this method receives freedomotic commands sent on channel app.actuators.protocol.arduinousb.in
         String message = c.getProperty("arduinousb.message");
         String reply = null;
         try {
@@ -106,8 +108,9 @@ public class ArduinoUSB extends Protocol {
         String address = null;
         String status = null;
 
-        // remove '\n' and split data read
-        message = data.substring(0, data.length() - 1).split(";");
+        // in this example we are using Arduino Serial.println() so
+        // remove '\r' and '\n' at the end of the string and split data read
+        message = data.substring(0, data.length() - 2).split(DELIMITER);
         address = message[0];
         status = message[1];
 
