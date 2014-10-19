@@ -55,7 +55,7 @@ public class RealmTest {
         auth.initBaseRealm();
         SimpleRole role = new SimpleRole();
         role.setName("administrators");
-        role.add(new WildcardPermission("*"));
+        role.add(new WildcardPermission("sys:*"));
         auth.addRole(role);
         auth.addUser("system", "password", "administrators");
         auth.getUser("system").setProperty("language", "auto");
@@ -81,9 +81,9 @@ public class RealmTest {
     public void TestUserRoles() {
         PrincipalCollection principals = new SimplePrincipalCollection("system", UserRealm.USER_REALM_NAME);
         Subject SysSubject = new Subject.Builder().principals(principals).buildSubject();
-        assertEquals("system", SysSubject.getPrincipal());
-        assertEquals(true, SysSubject.hasRole("administrators"));
-        assertEquals(false, SysSubject.hasRole("admidsfsdfsefr"));
+        assertEquals("user is SYSTEM ", "system", SysSubject.getPrincipal());
+        assertEquals("user has role ADMINISTRATOR ",true, SysSubject.hasRole("administrators"));
+        assertEquals("user doesn't have role ADMINDSFSDFSEFR ",false, SysSubject.hasRole("admidsfsdfsefr"));
     }
 
     @Test
@@ -101,7 +101,9 @@ public class RealmTest {
     public void TestUserRoleToPermissions(){
         auth.logout();
         auth.login("system","password");
-        assertEquals("Checking whether 'system' user is permitted '*'",true, auth.getSubject().isPermitted("*"));
+        assertEquals("Checking whether 'system' user is permitted 'sys:*'",true, auth.getSubject().isPermitted("sys:*"));
+        assertEquals("user is permitted 'sys:*' ",true, auth.getUser("system").isPermitted("sys:*"));
+        assertEquals("user is not permitted '*' ",false, auth.getUser("system").isPermitted("*"));
         auth.logout();
     }
     

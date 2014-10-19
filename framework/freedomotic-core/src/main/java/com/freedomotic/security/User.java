@@ -31,7 +31,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.shiro.authc.SimpleAccount;
+import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleRole;
+import org.apache.shiro.authz.permission.WildcardPermission;
 
 /**
  *
@@ -111,5 +113,14 @@ public final class User extends SimpleAccount {
     public void removeRole(String roleName){
         getRoles().remove(roleName);
         getObjectPermissions().removeAll(auth.getRole(roleName).getPermissions());
+    }
+    
+    public boolean isPermitted(String perm){
+        for (Permission p : this.getObjectPermissions()){
+            if (p.implies(new WildcardPermission(perm))){
+                return true;
+            }
+        }
+        return false;
     }
 }

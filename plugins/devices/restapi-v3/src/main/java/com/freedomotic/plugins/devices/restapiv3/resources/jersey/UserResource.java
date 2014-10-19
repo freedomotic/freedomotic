@@ -117,8 +117,9 @@ public class UserResource extends AbstractResource<User> {
     @ApiOperation(value = "Check user's permissions")
     public Response isPermitted(
             @ApiParam(value = "Action to check user's permission against", required = true)
+            @PathParam("id") String userName,
             @PathParam("action") String action){
-        if (api.getAuth().isPermitted(action)){
+        if (api.getAuth().getUser(userName).isPermitted(action)){
             return Response.ok().build();
         } else {
             return Response.status(Response.Status.FORBIDDEN).build();
