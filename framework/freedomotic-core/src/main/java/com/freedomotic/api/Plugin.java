@@ -58,7 +58,7 @@ public class Plugin implements Client {
     @XmlElement
     private final String type = "Plugin";
     @XmlElement
-    protected volatile PluginStatus status = PluginStatus.STOPPED;
+    protected volatile PluginStatus currentPluginStatus = PluginStatus.STOPPED;
     @XmlElement
     public Config configuration;
     @Deprecated
@@ -186,6 +186,8 @@ public class Plugin implements Client {
         busService.send(callout);
         //stop this plugin
         stop();
+        //plugin is now set as STOPPED, but should be marked as FAILED
+        currentPluginStatus = PluginStatus.FAILED;
     }
 
     /**
@@ -308,7 +310,11 @@ public class Plugin implements Client {
      */
     @Override
     public boolean isRunning() {
-        return status.equals(PluginStatus.RUNNING);
+        return currentPluginStatus.equals(PluginStatus.RUNNING);
+    }
+    
+    public boolean isAllowedToStart() {
+        return PluginStatus.isAllowedToStart(currentPluginStatus);
     }
 
     /**

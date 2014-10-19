@@ -41,7 +41,7 @@ import javax.jms.ObjectMessage;
 public abstract class Protocol
         extends Plugin
         implements BusConsumer {
-    
+
     private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
     private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
     private int pollingWaitTime = -1;
@@ -55,15 +55,15 @@ public abstract class Protocol
      * @param manifest
      */
     public Protocol(String pluginName, String manifest) {
-        
+
         super(pluginName, manifest);
-        this.status = PluginStatus.STOPPED;
+        this.currentPluginStatus = PluginStatus.STOPPED;
         register();
     }
 
     /**
      *
-     * @throws com.freedomotic.api.PluginRuntimeException
+     * @throws com.freedomotic.exceptions.PluginRuntimeException
      */
     protected abstract void onRun() throws PluginRuntimeException;
 
@@ -87,7 +87,7 @@ public abstract class Protocol
      * @param event
      */
     protected abstract void onEvent(EventTemplate event);
-    
+
     private void register() {
         listener = new BusMessagesListener(this, getBusService());
         listener.consumeCommandFrom(getCommandsChannelToListen());
@@ -100,14 +100,14 @@ public abstract class Protocol
     public void addEventListener(String listento) {
         listener.consumeEventFrom(listento);
     }
-    
+
     private String getCommandsChannelToListen() {
         String defaultQueue = ACTUATORS_QUEUE_DOMAIN + category + "." + shortName;
         String customizedQueue = ACTUATORS_QUEUE_DOMAIN + listenOn;
-        
+
         if (getReadQueue().equalsIgnoreCase("undefined")) {
             listenOn = defaultQueue + ".in";
-            
+
             return listenOn;
         } else {
             return customizedQueue;
@@ -119,9 +119,8 @@ public abstract class Protocol
      * @param ev
      */
     public void notifyEvent(EventTemplate ev) {
-        if (status.isRunning()) {
-            notifyEvent(ev,
-                    ev.getDefaultDestination());
+        if (isRunning()) {
+            notifyEvent(ev, ev.getDefaultDestination());
         }
     }
 
@@ -131,9 +130,8 @@ public abstract class Protocol
      * @param destination
      */
     public void notifyEvent(EventTemplate ev, String destination) {
-        if (status.isRunning()) {
-            LOG.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":"
-                    + ev.getPayload().toString());
+        if (isRunning()) {
+            LOG.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":" + ev.getPayload().toString());
             getBusService().send(ev, destination);
         }
     }
@@ -144,8 +142,8 @@ public abstract class Protocol
     @Override
     public void start() {
         super.start();
-        if (status.isAllowedToStart()) {
-            
+        if (isAllowedToStart()) {
+
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
@@ -154,7 +152,7 @@ public abstract class Protocol
                         sensorThread.start();
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
                         getBusService().send(event);
-                        status = PluginStatus.RUNNING;
+                        currentPluginStatus = PluginStatus.RUNNING;
                         //onStart() should be called as the last operation, after framework level operations
                         //for example it may require something related with messaging wich should be initialized first
                         try {
@@ -163,14 +161,14 @@ public abstract class Protocol
                             notifyCriticalError(startupEx.getMessage());
                         }
                     } catch (Exception e) {
-                        status = PluginStatus.FAILED;
+                        currentPluginStatus = PluginStatus.FAILED;
                         setDescription("Plugin start FAILED. see logs for details.");
-                        LOG.log(Level.SEVERE, "Error starting " + getName() + ": " + e.getLocalizedMessage(), e);
+                        LOG.log(Level.SEVERE, "Plugin " + getName() + " start FAILED: " + e.getLocalizedMessage(), e);
                     }
-                    
+
                 }
             };
-            
+
             getApi().getAuth().pluginExecutePrivileged(this, action);
         }
     }
@@ -181,12 +179,12 @@ public abstract class Protocol
     @Override
     public void stop() {
         super.stop();
-        if (status.isRunning()) {
+        if (isRunning()) {
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
                     try {
-                        status = PluginStatus.STOPPING;
+                        currentPluginStatus = PluginStatus.STOPPING;
                         try {
                             onStop();
                         } catch (PluginShutdownException shutdownEx) {
@@ -196,9 +194,9 @@ public abstract class Protocol
                         listener.unsubscribeEvents();
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
                         getBusService().send(event);
-                        status = PluginStatus.STOPPED;
+                        currentPluginStatus = PluginStatus.STOPPED;
                     } catch (Exception e) {
-                        status = PluginStatus.FAILED;
+                        currentPluginStatus = PluginStatus.FAILED;
                         setDescription("Plugin stop FAILED. see logs for details.");
                         LOG.log(Level.SEVERE, "Error stopping " + getName() + ": " + e.getLocalizedMessage(), e);
                     }
@@ -223,7 +221,7 @@ public abstract class Protocol
     public int getScheduleRate() {
         return pollingWaitTime;
     }
-    
+
     private boolean isPollingSensor() {
         if (pollingWaitTime > 0) {
             return true;
@@ -231,25 +229,24 @@ public abstract class Protocol
             return false;
         }
     }
-    
+
     @Override
     public final void onMessage(final ObjectMessage message) {
-        if (status.isAllowedToStart()) {
-            LOG.config("Protocol '" + getName()
-                    + "' receives a command while is not running. Plugin tries to turn on itself...");
-            start();
+        if (!isRunning()) {
+            notifyError(getName() + " receives a command while is not running. Turn on the plugin first");
+            return;
         }
-        
+
         Object payload = null;
-        
+
         try {
             payload = message.getObject();
-            
+
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
                 LOG.config(this.getName() + " receives command " + command.getName()
                         + " with parametes {{" + command.getProperties() + "}}");
-                
+
                 Protocol.ActuatorPerforms task;
                 lastDestination = message.getJMSReplyTo();
                 task
@@ -265,7 +262,7 @@ public abstract class Protocol
             }
         } catch (JMSException ex) {
             LOG.log(Level.SEVERE, null, ex);
-            
+
         }
     }
 
@@ -286,23 +283,22 @@ public abstract class Protocol
         // sends back the command
         final String defaultCorrelationID = "-1";
         getBusService().reply(command, lastDestination, defaultCorrelationID);
-        
+
     }
-    
-    private class ActuatorPerforms
-            extends Thread {
-        
-        private Command command;
-        private Destination reply;
-        private String correlationID;
-        
+
+    private class ActuatorPerforms extends Thread {
+
+        private final Command command;
+        private final Destination reply;
+        private final String correlationID;
+
         ActuatorPerforms(Command c, Destination reply, String correlationID) {
             this.command = c;
             this.reply = reply;
             this.correlationID = correlationID;
             this.setName("freedomotic-protocol-executor");
         }
-        
+
         @Override
         public void run() {
             try {
@@ -314,6 +310,7 @@ public abstract class Protocol
                 command.setExecuted(false);
             } catch (UnableToExecuteException ex) {
                 command.setExecuted(false);
+                LOG.info(getName() + " failed to execute command " + command.getName() + ": " + ex.getMessage());
             }
 
             // automatic-reply-to-command is used when the plugin executes the command in a
@@ -326,43 +323,35 @@ public abstract class Protocol
             }
         }
     }
-    
+
     private class SensorThread
             extends Thread {
-        
+
         @Override
         public void run() {
-            
-            if (isPollingSensor()) {
-                Thread thisThread = Thread.currentThread();
-                
-                while (sensorThread == thisThread) {
-                    try {
-                        Thread.sleep(pollingWaitTime);
-                        
-                        synchronized (this) {
-                            while (!status.isRunning() && (sensorThread == thisThread)) {
-                                wait();
+            try {
+                if (isPollingSensor()) {
+                    Thread thisThread = Thread.currentThread();
+                    while (sensorThread == thisThread) {
+                        try {
+                            Thread.sleep(pollingWaitTime);
+                            synchronized (this) {
+                                while (!isRunning() && (sensorThread == thisThread)) {
+                                    wait();
+                                }
                             }
+                        } catch (InterruptedException e) {
+                            // TODO do Log?
                         }
-                    } catch (InterruptedException e) {
-                        // TODO do Log?
-                    }
-                    
-                    try {
                         onRun();
-                    } catch (Exception e) {
-                        notifyError(e.getMessage());
+                    }
+                } else {
+                    if (isRunning()) {
+                        onRun();
                     }
                 }
-            } else {
-                if (status.isRunning()) {
-                    try {
-                        onRun();
-                    } catch (Exception e) {
-                        notifyError(e.getMessage());
-                    }
-                }
+            } catch (Exception e) {
+                notifyError(e.getMessage());
             }
         }
     }

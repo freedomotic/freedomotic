@@ -131,6 +131,7 @@ public class MarketPlaceForm
             @Override
             public void run() {
                 new Thread(new Runnable() {
+                    @Override
                     public void run() {
                         try {
                             String path = Info.PATHS.PATH_RESOURCES_FOLDER.toString();
@@ -139,91 +140,18 @@ public class MarketPlaceForm
                                 return;
                             }
 
-                            Collections.sort(category.retrievePluginsInfo(),
-                                    PackComp);
+                            Collections.sort(category.retrievePluginsInfo(), PackComp);
 
                             //TODO: use package images.
-                            ImageIcon iconPlugin
-                                    = new ImageIcon(path + File.separatorChar
-                                            + "plug.png", "Icon");
+                            ImageIcon pluginIcon
+                                    = new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
                             int row = 0;
 
                             for (final IPluginPackage pp : category.retrievePluginsInfo()) {
-                                JLabel lblIcon;
-
-                                if (pp.getIcon() != null) {
-                                    lblIcon = new JLabel(pp.getIcon());
-                                } else {
-                                    lblIcon = new JLabel(iconPlugin);
-                                }
-
-                                JLabel lblName = new JLabel(pp.getTitle());
-                                JButton btnAction = null;
-                                String freedomoticVersion = Info.getMajor() + "." + Info.getMinor();
-                                if (pp.getFilePath(freedomoticVersion) != null
-                                        && !pp.getFilePath(freedomoticVersion).isEmpty()
-                                        && pp.getTitle() != null) {
-                                    String version = extractVersion(new File(pp.getFilePath(freedomoticVersion)).getName().toString());
-                                    int result = clients.compareVersions(pp.getTitle(), version);
-                                    //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
-                                    if (result == -1) { //older version 
-                                        //btnAction = new JButton(pp.getTitle() + " (Install version " + version + ")");
-                                        btnAction = new JButton(I18n.msg("install"));
-                                    } else {
-                                        if (result == 1) { //newer version
-                                            //btnAction = new JButton(pp.getTitle() + " (Update from " + version + " to " + version + ")");
-                                            btnAction = new JButton(I18n.msg("update"));
-                                        }
-                                    }
-                                } else {
-                                    lblName
-                                            = new JLabel(I18n.msg(
-                                                            "X_unavailable",
-                                                            new Object[]{
-                                                                pp.getTitle()
-                                                            }));
-                                }
-
-                                //JLabel lblDescription = new JLabel(pp.getDescription());
-                                if (btnAction != null) {
-                                    btnAction.addActionListener(new ActionListener() {
-                                        public void actionPerformed(ActionEvent e) {
-                                            installPackage(pp);
-                                        }
-                                    });
-                                }
-
-                                JButton btnMore = new JButton(I18n.msg("more_info"));
-                                //btnMore.setEnabled(false);
-                                btnMore.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        try {
-                                            browse(new URI(pp.getURI()));
-                                        } catch (URISyntaxException ex) {
-                                            Logger.getLogger(MarketPlaceForm.class.getName())
-                                                    .log(Level.SEVERE, null, ex);
-                                        }
-                                    }
-                                });
-
-                                lblIcon.setPreferredSize(new Dimension(80, 80));
-                                lblIcon.setMaximumSize(new Dimension(80, 80));
-                                pnlMain.add(lblIcon);
-                                pnlMain.add(lblName);
-                                //pnlMain.add(lblDescription);
-                                pnlMain.add(btnMore);
-
-                                if (btnAction != null) {
-                                    pnlMain.add(btnAction);
-                                } else {
-                                    JButton disabled = new JButton(I18n.msg("install"));
-                                    disabled.setEnabled(false);
-                                    pnlMain.add(disabled);
-                                }
-
+                                renderBoundle(pp, pluginIcon);
                                 row++;
                             }
-                            
+
                             SpringUtilities.makeCompactGrid(pnlMain, row, 4, //rows, cols
                                     5, 5, //initX, initY
                                     5, 5); //xPad, yPad
@@ -236,6 +164,79 @@ public class MarketPlaceForm
                 }).start();
             }
         });
+    }
+
+    private void renderBoundle(final IPluginPackage pp, ImageIcon iconPlugin) {
+        JLabel lblIcon;
+
+        if (pp.getIcon() != null) {
+            lblIcon = new JLabel(pp.getIcon());
+        } else {
+            lblIcon = new JLabel(iconPlugin);
+        }
+
+        JLabel lblName = new JLabel(pp.getTitle());
+        JButton btnAction = null;
+        String freedomoticVersion = Info.getMajor() + "." + Info.getMinor();
+        if (pp.getFilePath(freedomoticVersion) != null
+                && !pp.getFilePath(freedomoticVersion).isEmpty()
+                && pp.getTitle() != null) {
+            String version = extractVersion(new File(pp.getFilePath(freedomoticVersion)).getName());
+            int result = clients.compareVersions(pp.getTitle(), version);
+            //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
+            if (result == -1) { //older version or not yet installed
+                //btnAction = new JButton(pp.getTitle() + " (Install version " + version + ")");
+                btnAction = new JButton(I18n.msg("install"));
+            } else {
+                if (result == 1) { //newer version
+                    //btnAction = new JButton(pp.getTitle() + " (Update from " + version + " to " + version + ")");
+                    btnAction = new JButton(I18n.msg("update"));
+                }
+            }
+        } else {
+            lblName
+                    = new JLabel(I18n.msg(
+                                    "X_unavailable",
+                                    new Object[]{
+                                        pp.getTitle()
+                                    }));
+        }
+
+        if (btnAction != null) {
+            btnAction.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    installPackage(pp);
+                }
+            });
+        }
+
+        JButton btnMore = new JButton(I18n.msg("more_info"));
+        btnMore.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    browse(new URI(pp.getURI()));
+                } catch (URISyntaxException ex) {
+                    Logger.getLogger(MarketPlaceForm.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+
+        lblIcon.setPreferredSize(new Dimension(80, 80));
+        lblIcon.setMaximumSize(new Dimension(80, 80));
+        pnlMain.add(lblIcon);
+        pnlMain.add(lblName);
+        pnlMain.add(btnMore);
+
+        if (btnAction != null) {
+            pnlMain.add(btnAction);
+        } else {
+            JButton disabled = new JButton(I18n.msg("install"));
+            disabled.setEnabled(false);
+            pnlMain.add(disabled);
+        }
     }
 
     private String extractVersion(String filename) {
@@ -341,17 +342,10 @@ public class MarketPlaceForm
     }
 
     /**
-     *
+     * Order plugin categories by name
      */
-    public static class IPlugCatComparator
-            implements Comparator<IPluginCategory> {
+    public static class IPlugCatComparator implements Comparator<IPluginCategory> {
 
-        /**
-         *
-         * @param m1
-         * @param m2
-         * @return
-         */
         @Override
         public int compare(IPluginCategory m1, IPluginCategory m2) {
             return m1.getName().compareTo(m2.getName());
@@ -359,17 +353,10 @@ public class MarketPlaceForm
     }
 
     /**
-     *
+     * Order plugin buoudles by name
      */
-    public static class IPlugPackComparator
-            implements Comparator<IPluginPackage> {
+    public static class IPlugPackComparator implements Comparator<IPluginPackage> {
 
-        /**
-         *
-         * @param m1
-         * @param m2
-         * @return
-         */
         @Override
         public int compare(IPluginPackage m1, IPluginPackage m2) {
             return m1.getTitle().compareTo(m2.getTitle());

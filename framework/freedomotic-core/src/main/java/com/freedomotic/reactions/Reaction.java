@@ -193,7 +193,11 @@ public final class Reaction
         while (commandIterator.hasNext()) {
             Command c = commandIterator.next();
             if (c != null) {
-                b.append("(").append(c.getName()).append(")");
+                b.append("(");
+                if (!c.isExecuted()) {
+                    b.append("FAILED: ");
+                }
+                b.append(c.getName()).append(")");
             }
 
             if (commandIterator.hasNext()) {
@@ -264,7 +268,7 @@ public final class Reaction
                 : (!this.shortDescription.equals(other.shortDescription))) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -297,7 +301,6 @@ public final class Reaction
         setShortDescription(buildShortDescription());
     }
 
-  
     /**
      *
      * @return
@@ -349,6 +352,7 @@ public final class Reaction
      * @return the shortDescription
      */
     public String getShortDescription() {
+        shortDescription = buildShortDescription();
         return shortDescription;
     }
 
@@ -365,17 +369,16 @@ public final class Reaction
         r.setCommands(this.getCommands());
         //r.setConditions(this.getConditions());
         r.setTrigger(this.getTrigger());
-        
+
         return r;
     }
-    
-    public boolean addCommand(Command c ){
+
+    public boolean addCommand(Command c) {
         return commands.add(c);
     }
-    
-    public boolean removeCommand(Command c){
+
+    public boolean removeCommand(Command c) {
         return commands.remove(c);
     }
-    
-    
+
 }

@@ -1,15 +1,13 @@
-<com.freedomotic.reactions.Command>
-    <name>Turn OFF Arduino led</name>
+<command>
+    <name>Arduino USB: Turn led OFF</name>
     <receiver>app.actuators.protocol.arduinousb.in</receiver>
-    <description>turns off the led</description>
+    <description>turns off the Arduino USB board led</description>
     <hardwareLevel>true</hardwareLevel>
     <delay>0</delay>
     <timeout>0</timeout>
     <properties>
         <properties>
             <property name="arduinousb.message" value="b"/>
-            <property name="behavior" value="off"/>
-	    <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>

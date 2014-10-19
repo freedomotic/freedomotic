@@ -82,25 +82,27 @@ public class SerialHelper {
     }
 
     /**
-     * Sends a string message to the device
+     * Sends a string message to the device. 
      *
      * @param message The message to send
+     * @return true if executed succesfully, false otherwise
+     * @throws jssc.SerialPortException
      */
-    public void write(String message) throws SerialPortException {
+    public boolean write(String message) throws SerialPortException {
         LOG.log(Level.CONFIG, "Writing {0} to serial port {1}", new Object[]{message, portName});
-        serialPort.writeString(message);
+        return serialPort.writeString(message);
     }
 
     /**
      * Sends a bytes message to the device
      *
      * @param bytes The message to send
+     * @return 
+     * @throws jssc.SerialPortException 
      */
-    public void write(byte[] bytes) throws SerialPortException {
+    public boolean write(byte[] bytes) throws SerialPortException {
         LOG.log(Level.CONFIG, "Writing bytes '{0}' to serial port {1}", new Object[]{bytes.toString(), portName});
-
-        serialPort.writeBytes(bytes);
-
+        return serialPort.writeBytes(bytes);
     }
 
     public String[] getPortNames() {

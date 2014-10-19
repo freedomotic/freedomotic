@@ -199,8 +199,7 @@ class ClientStorageInMemory implements ClientStorage {
                 return -1;
             }
 
-            return getOldestVersion(plugin.getVersion(),
-                    version);
+            return getOldestVersion(plugin.getVersion(),version);
         } else {
             //not installed
             return -1;

@@ -45,6 +45,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -149,7 +150,7 @@ public class MainWindow
 
         master.getApi().getConfig().setProperty("KEY_ROOM_XML_PATH",
                 input.getSource().toString().replace(
-                new File(Info.PATHS.PATH_DATA_FOLDER + "/furn").toString(), ""));
+                        new File(Info.PATHS.PATH_DATA_FOLDER + "/furn").toString(), ""));
     }
 
 //    public void showTipsOnStartup(boolean show) {
@@ -290,36 +291,37 @@ public class MainWindow
             frameMap.setVisible(false);
             menuBar.setVisible(false);
             frameMap.dispose();
-            if (Auth.isPermitted("plugins:read")) {
-                frameClient.setVisible(false);
-                frameClient.dispose();
-            }
+            frameClient.setVisible(false);
+            frameClient.dispose();
             desktopPane.removeAll();
             desktopPane.moveToBack(this);
             setVisible(false);
             dispose();
+
             setUndecorated(true);
             setResizable(false);
             setLayout(new BorderLayout());
-            this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-            drawer = master.createRenderer(drawer.getCurrEnv());
 
+            drawer = master.createRenderer(drawer.getCurrEnv());
             if (drawer != null) {
                 setDrawer(drawer);
             } else {
                 LOG.severe("Unable to create a drawer to render the environment on the desktop frontend in fullscreen mode");
             }
-
-            gd.setFullScreenWindow(this);
             add(drawer);
-            drawer.repaint();
+
+            Rectangle maximumWindowBounds = ge.getMaximumWindowBounds();
+            setBounds(maximumWindowBounds);
+
             drawer.setVisible(true);
+            this.setVisible(true);
+            gd.setFullScreenWindow(this);
+            isFullscreen = true;
             Callout callout = new Callout(this.getClass().getCanonicalName(), "info", i18n.msg("esc_to_exit_fullscreen"), 100, 100, 0, 5000);
             drawer.createCallout(callout);
-            this.repaint();
-            this.setVisible(true);
-            isFullscreen = true;
+
         }
+
     }
 
     private void logUser() {
@@ -1029,7 +1031,6 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             try {
                 EnvironmentPersistence.saveEnvironmentsToFolder(folder);
 
-
             } catch (Exception ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1146,8 +1147,8 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         File oldEnv = EnvironmentPersistence.getEnvironments().get(0).getSource();
 
         //creates a new environment coping it from a template
-        File template =
-                new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/templates/template-square/template-square.xenv");
+        File template
+                = new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/templates/template-square/template-square.xenv");
         LOG.info("Opening " + template.getAbsolutePath());
         drawer.setCurrEnv(0);
 
@@ -1157,7 +1158,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
             if (loaded) {
                 //EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
-                final JFileChooser fc = new JFileChooser( Info.PATHS.PATH_DATA_FOLDER + "/furn/");
+                final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + "/furn/");
                 int returnVal = fc.showSaveDialog(this);
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -1189,8 +1190,8 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuSaveActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuSaveActionPerformed
 
-        String environmentFilePath =
-                Info.PATHS.PATH_DATA_FOLDER + "/furn" + master.getApi().getConfig().getProperty("KEY_ROOM_XML_PATH");
+        String environmentFilePath
+                = Info.PATHS.PATH_DATA_FOLDER + "/furn" + master.getApi().getConfig().getProperty("KEY_ROOM_XML_PATH");
 
         try {
             EnvironmentPersistence.saveEnvironmentsToFolder(new File(environmentFilePath).getParentFile());
@@ -1308,15 +1309,15 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         //JDK 1,7 version: JComboBox<i18n.ComboLanguage> combo = new JComboBox<i18n.ComboLanguage>(I18n.getAvailableLocales());
         //JDK 1.6 version: next line
         Vector<ComboLanguage> languages = new Vector<ComboLanguage>();
-        for (Locale loc : i18n.getAvailableLocales()){
-            languages.add(new ComboLanguage(loc.getDisplayCountry(i18n.getDefaultLocale())+" - "+ loc.getDisplayLanguage(loc), loc.toString(), loc));
+        for (Locale loc : i18n.getAvailableLocales()) {
+            languages.add(new ComboLanguage(loc.getDisplayCountry(i18n.getDefaultLocale()) + " - " + loc.getDisplayLanguage(loc), loc.toString(), loc));
         }
         Collections.sort(languages);
-        languages.add(new ComboLanguage("Automatic", "auto",Locale.ENGLISH));
-        
+        languages.add(new ComboLanguage("Automatic", "auto", Locale.ENGLISH));
+
         JComboBox combo = new JComboBox(languages);
-        
-        for (ComboLanguage cmb : languages ) {
+
+        for (ComboLanguage cmb : languages) {
             if (cmb.getValue().equals(i18n.getDefaultLocale())) {
                 combo.setSelectedItem(cmb);
                 break;

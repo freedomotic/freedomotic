@@ -162,8 +162,8 @@ public class TriggerCheck {
                 done = true;
 
                 long elapsedTime = System.currentTimeMillis() - event.getCreation();
-                LOG.log(Level.INFO, 
-                        "Sensor notification ''{0}'' applied to object ''{1}'' in {2}ms.", 
+                LOG.log(Level.INFO,
+                        "Sensor notification ''{0}'' applied to object ''{1}'' in {2}ms.",
                         new Object[]{resolved.getName(), object.getPojo().getName(), elapsedTime});
             }
         }
@@ -190,7 +190,7 @@ public class TriggerCheck {
                     //found a related reaction. This must be executed
                     if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {
                         if (!checkAdditionalConditions(reaction)) {
-                            LOG.log(Level.INFO, 
+                            LOG.log(Level.INFO,
                                     "Additional conditions test failed in reaction {0}", reaction.toString());
                             return;
                         }
@@ -220,8 +220,8 @@ public class TriggerCheck {
                                     BehaviorManager.parseCommand(resolvedCommand);
                                 } else {
                                     //if the event has a target object we include also object info
-                                    EnvObjectLogic targetObject =
-                                            EnvObjectPersistence.getObjectByName(event.getProperty("object.name"));
+                                    EnvObjectLogic targetObject
+                                            = EnvObjectPersistence.getObjectByName(event.getProperty("object.name"));
 
                                     if (targetObject != null) {
                                         commandResolver.addContext("current.",
@@ -236,14 +236,20 @@ public class TriggerCheck {
                                     Command reply = busService.send(resolvedCommand); //blocking wait until executed
 
                                     if (reply == null) {
-                                        LOG.log(Level.WARNING, 
-                                                "Unreceived reply within given time ({0}ms) for command {1}", 
+                                        command.setExecuted(false);
+                                        LOG.log(Level.WARNING,
+                                                "Unreceived reply within given time ({0}ms) for command {1}",
                                                 new Object[]{command.getReplyTimeout(), command.getName()});
+                                        notifyMessage("Unreceived reply within given time for command " + command.getName());
                                     } else {
                                         if (reply.isExecuted()) {
+                                            //the reply is executed so mark the origial command as executed as well
+                                            command.setExecuted(true);
                                             LOG.log(Level.FINE, "Executed succesfully {0}", command.getName());
                                         } else {
+                                            command.setExecuted(false);
                                             LOG.log(Level.WARNING, "Unable to execute command {0}. Skipping the others", command.getName());
+                                            notifyMessage("Unable to execute command " + command.getName());
                                             // skip the other commands
                                             return;
                                         }
@@ -257,8 +263,8 @@ public class TriggerCheck {
                             return;
                         }
 
-                        String info =
-                                "Executing automation '" + reaction.toString() + "' takes "
+                        String info
+                                = "Executing automation '" + reaction.toString() + "' takes "
                                 + (System.currentTimeMillis() - event.getCreation()) + "ms.";
                         LOG.info(info);
 
@@ -309,5 +315,12 @@ public class TriggerCheck {
 
         EXECUTOR.execute(automation);
     }
+
+    private void notifyMessage(String message) {
+        MessageEvent event = new MessageEvent(this, message);
+        event.setType("callout"); //display as callout on frontends
+        busService.send(event);
+    }
+    
     private static final Logger LOG = Logger.getLogger(TriggerCheck.class.getName());
 }

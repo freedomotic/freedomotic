@@ -1,21 +1,21 @@
 <trigger>
-    <name>ArduinoUSB reads a led state change</name>
-    <description>ArduinoUSB reads a led state change</description>
+    <name>Arduino USB: reads a led state change</name>
+    <description>Arduino USB reads a led status change</description>
     <channel>app.event.sensor.protocol.read.arduinousb</channel>
     <payload>
         <payload>
-            <com.freedomotic.reactions.Statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>protocol</attribute>
                 <operand>EQUALS</operand>
                 <value>arduinousb</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
                 <value>@event.isOn</value>
-            </com.freedomotic.reactions.Statement>
+            </statement>
         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>

@@ -12,58 +12,23 @@ import java.util.EnumSet;
  * @author matteo
  */
 public enum PluginStatus {
-
-    /**
-     *
-     */
-    LOADED(0),
-    /**
-     *
-     */
-    INITED(1),
-    /**
-     *
-     */
-    STOPPED(2),
-    /**
-     *
-     */
-    STARTING(3),
-    /**
-     *
-     */
-    FAILED(4),
-    /**
-     *
-     */
-    RUNNING(5),
-    /**
-     *
-     */
-    STOPPING(6),
-    /**
-     *
-     */
-    INSTALLING(7),
-    /**
-     *
-     */
-    UNINSTALLING(8);
-    private static Throwable throwable;
-
-    private final int code;
+    LOADED,
+    INITED,
+    STOPPED,
+    STARTING,
+    FAILED,
+    RUNNING,
+    STOPPING,
+    INSTALLING,
+    UNINSTALLING;
+    
+    //eg: not allowed to start if it is already RUNNING or FAILED 
     private static final EnumSet<PluginStatus> allowedToStartStatuses = EnumSet.of(STOPPED);
+    //Currently unused
     private static final EnumSet<PluginStatus> destroyStatuses = EnumSet.of(STOPPED, STOPPING);
 
-    private PluginStatus(int code) {
-        this.code = code;
-    }
-
-    public boolean isAllowedToStart() {
-        return allowedToStartStatuses.contains(this);
+    public static boolean isAllowedToStart(PluginStatus currentStatus) {
+        return allowedToStartStatuses.contains(currentStatus);
     }
     
-    public boolean isRunning(){
-        return equals(RUNNING);
-    }
 }
