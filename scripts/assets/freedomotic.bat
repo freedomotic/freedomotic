@@ -1,0 +1,1 @@
+java -splash:splash.png -jar freedomotic.jar

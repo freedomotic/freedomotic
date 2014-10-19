@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Freedomotic
+Exec=freedomotic
+Icon=freedomotic-icon.png
+Categories=Development;Engineering;Electronics
+Type=Application
+Terminal=false
+Comment=Freedomotic
+GenericName[en]=Data mashup building automation framework
+
