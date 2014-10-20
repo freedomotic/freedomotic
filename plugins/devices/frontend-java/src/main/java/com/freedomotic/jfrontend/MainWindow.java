@@ -1260,7 +1260,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
     private void mnuRenameEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameEnvironmentActionPerformed
-        String input = JOptionPane.showInputDialog(i18n.msg("enter_new_name_for_env"), drawer.getCurrEnv().getPojo().getName());
+        String input = JOptionPane.showInputDialog(this, i18n.msg("enter_new_name_for_env_X",new Object[]{ drawer.getCurrEnv().getPojo().getName()}),i18n.msg("environment_rename_popup_title"),JOptionPane.QUESTION_MESSAGE);
         if (input != null) {
             if (!input.isEmpty()) {
                 drawer.getCurrEnv().getPojo().setName(input.trim());
