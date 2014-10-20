@@ -17,7 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.security;
 
 import com.freedomotic.api.Plugin;
@@ -44,24 +43,25 @@ import org.apache.shiro.util.ThreadState;
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public class AuthImpl2 implements Auth{
+public class AuthImpl2 implements Auth {
 
     private static final Logger LOG = Logger.getLogger(AuthImpl2.class.getName());
     private static boolean realmInited = false;
     private static final UserRealm baseRealm = new UserRealm();
     private static final PluginRealm pluginRealm = new PluginRealm();
     private static final ArrayList<Realm> realmCollection = new ArrayList<Realm>();
-    @Inject AppConfig config;
-    
+    @Inject
+    AppConfig config;
+
     /**
      *
      * @return
      */
     @Override
-    public boolean isInited(){
+    public boolean isInited() {
         return realmInited;
     }
-    
+
     /**
      *
      */
@@ -72,7 +72,7 @@ public class AuthImpl2 implements Auth{
             baseRealm.init();
             pluginRealm.init();
 
-             securityManager = new DefaultSecurityManager();
+            securityManager = new DefaultSecurityManager();
             //securityManager = injector.getInstance(DefaultSecurityManager.class);
 
             realmCollection.add(baseRealm);
@@ -82,7 +82,7 @@ public class AuthImpl2 implements Auth{
             SecurityUtils.setSecurityManager(securityManager);
             realmInited = true;
         }
-        
+
     }
 
     /**
@@ -196,15 +196,15 @@ public class AuthImpl2 implements Auth{
      */
     @Override
     public void setPluginPrivileges(Plugin plugin, String permissions) {
-        
+
         if (!pluginRealm.accountExists(plugin.getClassName())) {
             // check whether declared permissions correspond the ones requested at runtime
             if (plugin.getConfiguration().getStringProperty("permissions", getPluginDefaultPermission()).equals(permissions)) {
                 LOG.log(Level.INFO, "Setting permissions for plugin {0}: {1}", new Object[]{plugin.getClassName(), permissions});
-                pluginRealm.addPlugin(plugin.getClassName(),permissions);
+                pluginRealm.addPlugin(plugin.getClassName(), permissions);
                 //pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
                 //pluginRealm.addRole(plugrole);
-               
+
             } else {
                 LOG.log(Level.SEVERE, "Plugin {0} tried to request incorrect privileges", plugin.getName());
             }
@@ -213,8 +213,7 @@ public class AuthImpl2 implements Auth{
 
     /**
      *
-     * @return
-     * @deprecated
+     * @return @deprecated
      */
     @Deprecated
     @Override
@@ -261,45 +260,54 @@ public class AuthImpl2 implements Auth{
     }
 
     @Override
-    public void addUser(String userName, String password, String role){
-        baseRealm.addUser(new User(userName, password, role, this));
+    public boolean addUser(String userName, String password, String role) {
+        if (getUser(userName) == null) {
+            baseRealm.addUser(new User(userName, password, role, this));
+            return true;
+        }
+        return false;
     }
-    
+
     @Override
-    public void addRole(SimpleRole role){
-        baseRealm.addRole(role);
+    public boolean addRole(SimpleRole role) {
+        if (getRole(role.getName()) == null) {
+            baseRealm.addRole(role);
+            return true;
+        }
+        return false;
     }
-    
+
     @Override
-    public User getCurrentUser(){
+    public User getCurrentUser() {
         return (User) baseRealm.getUser(getSubject().getPrincipal().toString());
     }
-    
-    
+
     @Override
-    public Map<String,User> getUsers(){
+    public Map<String, User> getUsers() {
         return baseRealm.getUsers();
     }
+
     @Override
-    public SimpleRole getRole(String name){
+    public SimpleRole getRole(String name) {
         return baseRealm.getRole(name);
     }
+
     @Override
-    public Map<String,SimpleRole> getRoles(){
+    public Map<String, SimpleRole> getRoles() {
         return baseRealm.getRoles();
     }
-    
+
     @Override
-    public void save(){
+    public void save() {
         try {
             baseRealm.save(Info.PATHS.PATH_CONFIG_FOLDER);
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Override
-    public void load(){
+    public void load() {
         baseRealm.load(Info.PATHS.PATH_CONFIG_FOLDER);
     }
 
@@ -309,8 +317,14 @@ public class AuthImpl2 implements Auth{
     }
 
     @Override
-    public void deleteUser(String userName) {
-        baseRealm.removeUser(userName);
+    public boolean deleteUser(String userName) {
+        if (getUser(userName) != null) {
+            baseRealm.removeUser(userName);
+            if (getUser(userName) == null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -319,9 +333,14 @@ public class AuthImpl2 implements Auth{
     }
 
     @Override
-    public void deleteRole(String roleName) {
-        baseRealm.removeRole(roleName);
+    public boolean deleteRole(String roleName) {
+        if (getRole(roleName) != null) {
+            baseRealm.removeRole(roleName);
+            if (getRole(roleName) == null) {
+                return true;
+            }
+        }
+        return false;
     }
-
 
 }

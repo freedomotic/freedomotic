@@ -36,7 +36,6 @@ import java.util.logging.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.SimpleRole;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.SimpleAccountRealm;
@@ -237,7 +236,6 @@ public class AuthImpl implements Auth{
      *
      * @param rm
      */
-    @RequiresPermissions("auth:realms:create")
     @Override
     public void addRealm(Realm rm) {
         if (!realmCollection.contains(rm)) {
@@ -249,7 +247,6 @@ public class AuthImpl implements Auth{
      *
      * @param rm
      */
-    @RequiresPermissions("auth:realms:delete")
     public void deleteRealm(Realm rm) {
         if (!rm.equals(baseRealm) && !rm.equals(pluginRealm)) {
             realmCollection.remove(rm);
@@ -261,7 +258,6 @@ public class AuthImpl implements Auth{
      * @param userName
      * @return
      */
-    @RequiresPermissions("auth:fakeUser")
     @Override
     public boolean bindFakeUser(String userName) {
         if (baseRealm.accountExists(userName)) {
@@ -284,12 +280,12 @@ public class AuthImpl implements Auth{
     }
 
     @Override
-    public void addUser(String userName, String password, String role) {
+    public boolean addUser(String userName, String password, String role) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void addRole(SimpleRole role) {
+    public boolean addRole(SimpleRole role) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -319,7 +315,7 @@ public class AuthImpl implements Auth{
     }
 
     @Override
-    public void deleteUser(String userName) {
+    public boolean deleteUser(String userName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -329,7 +325,7 @@ public class AuthImpl implements Auth{
     }
 
     @Override
-    public void deleteRole(String roleName) {
+    public boolean deleteRole(String roleName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

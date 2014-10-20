@@ -123,10 +123,10 @@ public interface Auth {
     public void save();
 
     @RequiresPermissions("auth:users:create")
-    public void addUser(String userName, String password, String role);
+    public boolean addUser(String userName, String password, String role);
 
     @RequiresPermissions("auth:roles:create")
-    public void addRole(SimpleRole role);
+    public boolean addRole(SimpleRole role);
 
     public User getCurrentUser();
     
@@ -143,10 +143,10 @@ public interface Auth {
     public Map<String, SimpleRole> getRoles();
     
     @RequiresPermissions("auth:users:delete")
-    public void deleteUser(String userName);
+    public boolean deleteUser(String userName);
     
     @RequiresPermissions("auth:roles:delete")
-    public void deleteRole(String roleName);
+    public boolean deleteRole(String roleName);
     
     public Realm getUserRealm();
 }
