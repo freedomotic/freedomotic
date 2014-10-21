@@ -34,9 +34,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -49,7 +51,7 @@ import javax.ws.rs.core.UriBuilder;
 @Path("resources")
 @Singleton
 @Api(value = "/resources", description = "Retrieve images and other binary resource", position = 10)
-public class ImageResource implements ResourceInterface<File> {
+public class ImageResource {
 
     private final Map<String, File> cache = new HashMap<String, File>();
 
@@ -67,7 +69,6 @@ public class ImageResource implements ResourceInterface<File> {
         }
     }
 
-    @Override
     @GET
     @Path("/{id}")
     @ApiOperation("Get an image or a redirect to it")
@@ -75,10 +76,18 @@ public class ImageResource implements ResourceInterface<File> {
         @ApiResponse(code = 404, message = "Image not found")
     })
     @Produces(MediaType.WILDCARD)
-    public Response get(
+    public Response getWithFallback(
             @ApiParam(value = "Name of image file to fetch", required = true)
-            @PathParam("id") String fileName) {
+            @PathParam("id") String fileName,
+            @ApiParam(value = "Name of alternate image file to fetch", required = false)
+            @QueryParam("fbId") String fallbackFilename
+        ) {
         File imageFile = prepareSingle(fileName);
+        if (imageFile == null){
+            if (fallbackFilename != null && !fallbackFilename.isEmpty()) {
+             imageFile = prepareSingle(fallbackFilename);
+         }
+        }
         if (imageFile == null){
             return Response.status(Status.NOT_FOUND).build();
         }
@@ -86,7 +95,7 @@ public class ImageResource implements ResourceInterface<File> {
         if (imageFile.getPath().startsWith(Info.PATHS.PATH_RESOURCES_FOLDER.getPath())) {
             path = imageFile.getPath().substring((Info.PATHS.PATH_RESOURCES_FOLDER.getPath()).length());
             path = path.replace('\\', '/');
-            System.out.println("RESTAPI path: " + path);
+            //System.out.println("RESTAPI path: " + path);
         }
         if (path != null) {
             URI newPath = UriBuilder.fromPath("/res").path(path).build();
@@ -96,32 +105,7 @@ public class ImageResource implements ResourceInterface<File> {
         }
     }
 
-    @Override
-    public Response list() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Response delete(String UUID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Response create(File s) throws URISyntaxException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Response update(String UUID, File s) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Response copy(String UUID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
+    @OPTIONS
     public Response options() {
         return Response.ok().build();
     }
