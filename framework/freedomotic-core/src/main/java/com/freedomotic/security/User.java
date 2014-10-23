@@ -25,11 +25,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleRole;
@@ -39,22 +34,22 @@ import org.apache.shiro.authz.permission.WildcardPermission;
  *
  * @author matteo
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.NONE)
-@XmlType(propOrder = {"name", "roles", "properties"})
 public final class User extends SimpleAccount {
     
     private static final Logger LOG = Logger.getLogger(User.class.getName());
 
-    @XmlElement
     private final Properties properties = new Properties();
     
     private final Auth auth ;
 
     public User(Object principal, Object credentials, String roleName, Auth auth) {
+        this(principal, credentials, auth);
+        addRole(roleName);
+    }
+    
+    public User(Object principal, Object credentials, Auth auth) {
         super(principal, credentials, UserRealm.USER_REALM_NAME);
         this.auth=auth;
-        addRole(roleName);
     }
 
     public String getProperty(String key) {
@@ -69,19 +64,16 @@ public final class User extends SimpleAccount {
         return properties.setProperty(key, value);
     }
 
-    @XmlElement
     public String getName() {
         return getPrincipals().getPrimaryPrincipal().toString();
     }
 
     @Override
-    @XmlElement
     public Collection<String> getRoles() {
         return super.getRoles();
     }
 
     @Override
-    @XmlElement
     public void setRoles(Set<String> roles) {
         for (String roleName : roles) {
             SimpleRole role = auth.getRole(roleName);
@@ -93,7 +85,6 @@ public final class User extends SimpleAccount {
 
     }
 
-    @XmlElement
     public void setPassword(String password) {
         setCredentials(password);
     }

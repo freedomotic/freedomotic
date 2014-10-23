@@ -56,7 +56,7 @@ public class PluginResource extends AbstractResource<Plugin> {
     }
 
     @Override
-    protected Plugin doUpdate(Plugin o) {
+    protected Plugin doUpdate(String uuid, Plugin o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

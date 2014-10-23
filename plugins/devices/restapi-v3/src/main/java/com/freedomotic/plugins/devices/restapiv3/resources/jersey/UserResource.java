@@ -19,8 +19,11 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
+import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
+import com.freedomotic.plugins.devices.restapiv3.representations.UserRepresentation;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.security.User;
+import com.freedomotic.security.UserRealm;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -47,7 +50,7 @@ import javax.ws.rs.core.Response;
  */
 @Path("users")
 @Api(value = "users", description = "Manage users", position = 300)
-public class UserResource extends AbstractResource<User> {
+public class UserResource extends AbstractResource<UserRepresentation> {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -59,12 +62,28 @@ public class UserResource extends AbstractResource<User> {
 
     @Override
     protected URI doCopy(String UUID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        User u = api.getAuth().getUser(UUID);
+        UserRepresentation ur = new UserRepresentation(u);
+        ur.setName("copyOf" + ur.getName());
+        ur.setPassword("");
+        try {
+            return doCreate(ur);
+        } catch (Exception e) {
+
+        }
+        return null;
     }
 
     @Override
-    protected URI doCreate(User o) throws URISyntaxException {
-        if (api.getAuth().addUser(o.getName(), o.getCredentials().toString(), "guests")) {
+    protected URI doCreate(UserRepresentation o) throws URISyntaxException {
+        User u = new User(o.getName(), o.getPassword(), api.getAuth());
+        u.setRoles(o.getRoles());
+        for (Object key : o.getProperties().keySet()){
+            u.setProperty(key.toString(), o.getProperties().getProperty(key.toString()));
+        }
+        UserRealm ur = (UserRealm) api.getAuth().getUserRealm();
+        ur.addUser(u);
+        if (api.getAuth().getUser(o.getName()) != null) {
             return createUri(o.getName());
         }
         return null;
@@ -76,20 +95,30 @@ public class UserResource extends AbstractResource<User> {
     }
 
     @Override
-    protected User doUpdate(User o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected UserRepresentation doUpdate(String uuid, UserRepresentation o) {
+        o.setName(uuid);
+        try {
+            delete(uuid);
+            doCreate(o);
+            return o;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
-    protected List<User> prepareList() {
-        ArrayList<User> ul = new ArrayList<User>();
-        ul.addAll(api.getAuth().getUsers().values());
+    protected List<UserRepresentation> prepareList() {
+        ArrayList<UserRepresentation> ul = new ArrayList<UserRepresentation>();
+        for (User u : api.getAuth().getUsers().values()) {
+            ul.add(new UserRepresentation(u));
+        }
         return ul;
     }
 
     @Override
-    protected User prepareSingle(String uuid) {
-        return api.getAuth().getUser(uuid);
+    protected UserRepresentation prepareSingle(String uuid) {
+        User u = api.getAuth().getUser(uuid);
+        return (u== null)? null : new UserRepresentation(u);
     }
 
     @GET

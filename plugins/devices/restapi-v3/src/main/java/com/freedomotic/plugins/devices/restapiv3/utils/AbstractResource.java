@@ -121,7 +121,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
         if (api.getAuth().isPermitted(authContext + ":update:" + UUID)) {
             try {
                 LOG.info("Aquiring modified element");
-                T z = doUpdate(s);
+                T z = doUpdate(UUID,s);
                 if (z != null) {
                     LOG.info("Everything was correctly computed");
                     return Response.ok().build();
@@ -245,7 +245,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
      * @param o
      * @return
      */
-    abstract protected T doUpdate(T o);
+    abstract protected T doUpdate(String UUID, T o);
 
     /**
      *

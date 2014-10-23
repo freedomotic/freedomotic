@@ -54,8 +54,9 @@ public class OldReactionResource extends AbstractResource<Reaction>{
     }
 
     @Override
-    protected Reaction doUpdate(Reaction o) {
-        return api.reactions().modify(o.getUuid(), o);
+    protected Reaction doUpdate(String uuid, Reaction o) {
+        o.setUuid(uuid);
+        return api.reactions().modify(uuid, o);
     }
 
     @Override

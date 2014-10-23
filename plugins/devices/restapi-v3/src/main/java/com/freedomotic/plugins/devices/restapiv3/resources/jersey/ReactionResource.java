@@ -153,7 +153,8 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
     }
 
     @Override
-    protected ReactionRepresentation doUpdate(ReactionRepresentation o) {
+    protected ReactionRepresentation doUpdate(String uuid, ReactionRepresentation o) {
+        o.setUuid(uuid);
         doDelete(o.getUuid());
         try {
             doCreate(o);

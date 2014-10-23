@@ -149,7 +149,8 @@ public class RoomResource extends AbstractResource<Zone> {
     }
 
     @Override
-    protected Zone doUpdate(Zone z) {
+    protected Zone doUpdate(String uuid, Zone z) {
+        z.setUuid(uuid);
         Room zl = new Room(z);
         env.removeZone(env.getZoneByUuid(z.getUuid()));
         env.addRoom(zl);

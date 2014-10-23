@@ -320,9 +320,7 @@ public class AuthImpl2 implements Auth {
     public boolean deleteUser(String userName) {
         if (getUser(userName) != null) {
             baseRealm.removeUser(userName);
-            if (getUser(userName) == null) {
-                return true;
-            }
+            return true;
         }
         return false;
     }

@@ -160,10 +160,11 @@ public class EnvironmentResource extends AbstractResource<Environment> {
     }
 
     @Override
-    protected Environment doUpdate(Environment eo) {
+    protected Environment doUpdate(String UUID, Environment eo) {
         EnvironmentLogic el = INJECTOR.getInstance(EnvironmentLogic.class);
+        eo.setUUID(UUID);
         el.setPojo(eo);
-        if (api.environments().modify(eo.getUUID(), el) != null) {
+        if (api.environments().modify(UUID, el) != null) {
             return el.getPojo();
         } else {
             return null;

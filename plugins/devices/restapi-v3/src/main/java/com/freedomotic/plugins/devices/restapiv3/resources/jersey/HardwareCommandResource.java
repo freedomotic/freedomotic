@@ -135,8 +135,9 @@ public class HardwareCommandResource extends AbstractResource<Command> {
     }
 
     @Override
-    protected Command doUpdate(Command c) {
-        return api.commands().modify(c.getUuid(), c);
+    protected Command doUpdate(String uuid, Command c) {
+        c.setUUID(uuid);
+        return api.commands().modify(uuid, c);
     }
 
     @Override

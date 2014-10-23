@@ -180,10 +180,11 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     }
 
     @Override
-    protected EnvObject doUpdate(EnvObject eo) {
+    protected EnvObject doUpdate(String uuid, EnvObject eo) {
         try {
+            eo.setUUID(uuid);
             EnvObjectLogic el = EnvObjectFactory.create(eo);
-            if (api.objects().modify(eo.getUUID(), el) != null) {
+            if (api.objects().modify(uuid, el) != null) {
                 return eo;
             } else {
                 return null;
@@ -306,8 +307,9 @@ public class ObjectResource extends AbstractResource<EnvObject> {
         }
 
         @Override
-        protected Behavior doUpdate(Behavior o) {
-            obj.getPojo().getBehaviors().remove(obj.getPojo().getBehavior(o.getName()));
+        protected Behavior doUpdate(String uuid, Behavior o) {
+            obj.getPojo().getBehaviors().remove(obj.getPojo().getBehavior(uuid));
+            o.setName(uuid);
             obj.getPojo().getBehaviors().add(o);
             obj.init();
             return obj.getPojo().getBehavior(o.getName());

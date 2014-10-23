@@ -97,7 +97,7 @@ public class UserConverter implements Converter {
         }
         reader.moveUp(); //end principals
         reader.moveDown(); // credentials
-        user = new User(pc, reader.getValue(), pc.getRealmNames().toArray()[0].toString(), Freedomotic.INJECTOR.getInstance(Auth.class));
+        user = new User(pc, reader.getValue(), Freedomotic.INJECTOR.getInstance(Auth.class));
         reader.moveUp();
         reader.moveDown(); //roles
         while (reader.hasMoreChildren()) {

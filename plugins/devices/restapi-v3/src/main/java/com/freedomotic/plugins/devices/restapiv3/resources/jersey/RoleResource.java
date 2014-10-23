@@ -67,7 +67,8 @@ public class RoleResource extends AbstractResource<RoleRepresentation> {
     }
 
     @Override
-    protected RoleRepresentation doUpdate(RoleRepresentation o) {
+    protected RoleRepresentation doUpdate(String uuid, RoleRepresentation o) {
+        o.setName(uuid);
         SimpleRole sr = api.getAuth().getRole(o.getName());
         if (sr != null) {
             List<User> users = new ArrayList<User>();

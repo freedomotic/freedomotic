@@ -155,10 +155,10 @@ public class UserRealm extends SimpleAccountRealm {
     public void removeUser(String userName){
         User u = getUser(userName);
         u.setObjectPermissions(null);
-        u.setRoles(null);
+        u.getRoles().clear();
         u.setCredentialsExpired(true);
         u.setLocked(true);
-        getUsers().remove(userName);
+        users.remove(userName);
     }
     
     public void removeRole(String roleName){

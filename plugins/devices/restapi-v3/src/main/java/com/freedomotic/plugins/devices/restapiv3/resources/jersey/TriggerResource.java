@@ -135,8 +135,9 @@ public class TriggerResource extends AbstractResource<Trigger> {
     }
 
     @Override
-    protected Trigger doUpdate(Trigger o) {
-        return api.triggers().modify(o.getUUID(), o);
+    protected Trigger doUpdate(String uuid, Trigger o) {
+        o.setUUID(uuid);
+        return api.triggers().modify(uuid, o);
     }
 
     @Override

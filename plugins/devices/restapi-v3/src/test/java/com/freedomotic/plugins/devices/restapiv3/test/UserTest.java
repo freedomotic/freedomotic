@@ -20,6 +20,7 @@
 package com.freedomotic.plugins.devices.restapiv3.test;
 
 import com.freedomotic.app.FreedomoticInjector;
+import com.freedomotic.plugins.devices.restapiv3.representations.UserRepresentation;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.UserResource;
 import com.freedomotic.security.User;
 import java.util.List;
@@ -37,12 +38,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
-public class UserTest extends AbstractTest<User>{
-
-    @Override
-    public void test() {
-    // tests for this class are currently disabled. Remove this method to re-enable them.
-    }
+public class UserTest extends AbstractTest<UserRepresentation>{
 
     
     @Override
@@ -53,35 +49,35 @@ public class UserTest extends AbstractTest<User>{
         getApi().getAuth().addRole(r);
         
         User u = new User("user","password","admin",getApi().getAuth());
-        setItem(u);
+        setItem(new UserRepresentation(u));
         
         initPath(UserResource.class);
-        setListType(new GenericType<List<User>>(){});
-        setSingleType(new GenericType<User>(){});
+        setListType(new GenericType<List<UserRepresentation>>(){});
+        setSingleType(new GenericType<UserRepresentation>(){});
     }
 
     @Override
-    void putModifications(User orig) {
-        orig.setProperty("property", "value");
+    void putModifications(UserRepresentation orig) {
+        orig.getProperties().setProperty("property", "value");
     }
 
     @Override
-    void putAssertions(User pre, User post) {
-        assertEquals("PUT - Check property",pre.getProperty("property"),post.getProperty("property"));
+    void putAssertions(UserRepresentation pre, UserRepresentation post) {
+        assertEquals("PUT - Check property",pre.getProperties().getProperty("property"),post.getProperties().getProperty("property"));
     }
 
     @Override
-    void getAssertions(User obj) {
+    void getAssertions(UserRepresentation obj) {
         assertEquals("GET - Name check", getItem().getName(), obj.getName());
     }
 
     @Override
-    void listAssertions(List<User> list) {
+    void listAssertions(List<UserRepresentation> list) {
         assertEquals("LIST - get Name", list.get(0).getName(), getItem().getName());
     }
 
     @Override
-    String getUuid(User obj) {
+    String getUuid(UserRepresentation obj) {
         return obj.getName();
     }
     
