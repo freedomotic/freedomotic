@@ -34,13 +34,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -69,16 +63,34 @@ public class UserResource extends AbstractResource<UserRepresentation> {
         try {
             return doCreate(ur);
         } catch (Exception e) {
-
         }
         return null;
     }
 
+     /**
+     *
+     * @param s
+     * @return
+     * @throws URISyntaxException
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Add a new user", position = 30)
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "New user added")
+    })
+    @Override
+    public Response create(UserRepresentation s) throws URISyntaxException {
+        return super.create(s);
+    }
+    
+    
     @Override
     protected URI doCreate(UserRepresentation o) throws URISyntaxException {
         User u = new User(o.getName(), o.getPassword(), api.getAuth());
         u.setRoles(o.getRoles());
-        for (Object key : o.getProperties().keySet()){
+        for (Object key : o.getProperties().keySet()) {
             u.setProperty(key.toString(), o.getProperties().getProperty(key.toString()));
         }
         UserRealm ur = (UserRealm) api.getAuth().getUserRealm();
@@ -90,10 +102,46 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     }
 
     @Override
+    @DELETE
+    @Path("/{id}")
+    @ApiOperation(value = "Delete an user", position = 50)
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "User not found")
+    })
+    public Response delete(
+            @ApiParam(value = "User to delete (e.g. admin, guest)", required = true)
+            @PathParam("id") String UUID) {
+        return super.delete(UUID);
+    }
+
+    @Override
     protected boolean doDelete(String UUID) {
         return api.getAuth().deleteUser(UUID);
     }
 
+    
+    /**
+     *
+     * @param UUID
+     * @param s
+     * @return
+     */
+    @Override
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {
+        @ApiResponse(code = 304, message = "User not modified")
+    })
+    @ApiOperation(value = "Update an user", position = 40)
+    public Response update(
+            @ApiParam(value = "User to update (e.g. admin, guest)", required = true)
+            @PathParam("id") String UUID, UserRepresentation s) {
+        return super.update(UUID, s);
+    }
+    
+    
     @Override
     protected UserRepresentation doUpdate(String uuid, UserRepresentation o) {
         o.setName(uuid);
@@ -115,10 +163,28 @@ public class UserResource extends AbstractResource<UserRepresentation> {
         return ul;
     }
 
+    /**
+     * @param UUID
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get an user", position = 20)
+    @Path("/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "User not found")
+    })
+    @Override
+    public Response get(
+            @ApiParam(value = "User to fetch (e.g. admin, guest)", required = true)
+            @PathParam("id") String UUID) {
+        return super.get(UUID);
+    }
+    
     @Override
     protected UserRepresentation prepareSingle(String uuid) {
         User u = api.getAuth().getUser(uuid);
-        return (u== null)? null : new UserRepresentation(u);
+        return (u == null) ? null : new UserRepresentation(u);
     }
 
     @GET
@@ -147,8 +213,9 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     @GET
     @ApiOperation(value = "Check user's permissions")
     public Response isPermitted(
-            @ApiParam(value = "Action to check user's permission against", required = true)
+            @ApiParam(value = "User to check permission from", required = true)
             @PathParam("id") String userName,
+            @ApiParam(value = "Action to check user's permission against", required = true)
             @PathParam("action") String action) {
         if (api.getAuth().getUser(userName).isPermitted(action)) {
             return Response.ok().build();
@@ -186,6 +253,9 @@ public class UserResource extends AbstractResource<UserRepresentation> {
         @DELETE
         @Path("/{name}")
         @ApiOperation(value = "Delete a role", position = 30)
+        @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Role not found")
+        })
         public Response delete(
                 @ApiParam(value = "Role to delete", required = true)
                 @PathParam("name") String name) {

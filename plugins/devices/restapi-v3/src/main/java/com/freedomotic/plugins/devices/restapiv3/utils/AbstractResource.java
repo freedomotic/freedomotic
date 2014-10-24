@@ -120,7 +120,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
             T s) {
         if (api.getAuth().isPermitted(authContext + ":update:" + UUID)) {
             try {
-                LOG.info("Aquiring modified element");
+                LOG.info("Acquiring modified element");
                 T z = doUpdate(UUID,s);
                 if (z != null) {
                     LOG.info("Everything was correctly computed");
@@ -198,7 +198,7 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
     @Override
     @POST
     @Path("/{id}/copy")
-    @ApiOperation(value = "Copie an item", position = 35)
+    @ApiOperation(value = "Copy an item", position = 35)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Source item not found")
     })
