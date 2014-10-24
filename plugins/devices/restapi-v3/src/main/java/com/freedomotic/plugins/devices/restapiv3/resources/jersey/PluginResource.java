@@ -81,7 +81,7 @@ public class PluginResource extends AbstractResource<Plugin> {
     })
     @Override
     public Response get(
-            @ApiParam(value = "Classname of plugin to fetch (e.g. LogViewer)", required = true)
+            @ApiParam(value = "UUID of plugin to fetch (e.g. logviewer, automationseditor)", required = true)
             @PathParam("id") String UUID) {
         return super.get(UUID);
     }
