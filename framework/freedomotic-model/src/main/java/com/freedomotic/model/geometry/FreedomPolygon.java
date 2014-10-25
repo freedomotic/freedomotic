@@ -23,11 +23,13 @@ package com.freedomotic.model.geometry;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Enrico
  */
+@XmlRootElement
 public class FreedomPolygon
         implements FreedomShape,
         Serializable {

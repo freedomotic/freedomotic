@@ -122,16 +122,16 @@ public final class Payload
                     continue;
                 }
 
-                List<Statement> filteredEventStatements = eventPayload.getStatements(triggerStatement.attribute);
+                List<Statement> filteredEventStatements = eventPayload.getStatements(triggerStatement.getAttribute());
 
                 if (filteredEventStatements.isEmpty()) {
                     //if the trigger has a property which is not in the event
-                    if (!triggerStatement.logical.equalsIgnoreCase(Statement.SET)) {
+                    if (!triggerStatement.getLogical().equalsIgnoreCase(Statement.SET)) {
                         //if it is AND/OR/...
                         return false;
                     }
                     //if the trigger has a property which is not in the event, BUT allowed value is ANY
-                    if (triggerStatement.value.equalsIgnoreCase(Statement.ANY)) {
+                    if (triggerStatement.getValue().equalsIgnoreCase(Statement.ANY)) {
                         // if trigger value = ANY, we expectected at least one matching statement, so test fails.
                         if (triggerStatement.getLogical().equalsIgnoreCase(Statement.AND)) {
                             payloadConsistence = false; // that is = payloadConsistence && false;
@@ -150,12 +150,12 @@ public final class Payload
                          */
                         if (eventStatement != null) {
                             //is setting a value must be not used to filter
-                            if (triggerStatement.logical.equalsIgnoreCase("SET")) {
+                            if (triggerStatement.getLogical().equalsIgnoreCase("SET")) {
                                 return true;
                             } else {
                                 boolean isStatementConsistent
-                                        = isStatementConsistent(triggerStatement.operand, triggerStatement.value,
-                                                eventStatement.value);
+                                        = isStatementConsistent(triggerStatement.getOperand(), triggerStatement.getValue(),
+                                                eventStatement.getValue());
 
                                 if (triggerStatement.getLogical().equalsIgnoreCase(Statement.AND)) {
                                     payloadConsistence = payloadConsistence && isStatementConsistent; //true AND true; false AND true; false AND false; true AND false

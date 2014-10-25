@@ -66,7 +66,6 @@ public class RoleRepresentation {
         }
     }
     
-    @XmlTransient
     public SimpleRole asSimpleRole(){
         SimpleRole sr = new SimpleRole(name);
         for (String s : permissions){

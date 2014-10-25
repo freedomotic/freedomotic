@@ -53,22 +53,22 @@ public class Statement
     /**
      *
      */
-    public String logical;
+    private String logical;
 
     /**
      *
      */
-    public String attribute;
+    private String attribute;
 
     /**
      *
      */
-    public String operand;
+    private String operand;
 
     /**
      *
      */
-    public String value;
+    private String value;
 
     /**
      *

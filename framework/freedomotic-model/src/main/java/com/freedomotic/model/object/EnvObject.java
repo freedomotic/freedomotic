@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"name", "description", "uuid","protocol","phisicalAddress","type","actAs",
-                "representations", "currentRepresentation", "behaviors","hierarchy","actions","triggers","tags","envUUID"})
+                "representation", "currentRepresentation", "behaviors","hierarchy","actions","triggers","tags","envUUID"})
 public class EnvObject implements Serializable {
 
     private static final long serialVersionUID = -7253889516478184321L;
@@ -51,10 +51,10 @@ public class EnvObject implements Serializable {
     private String hierarchy;
     private String protocol;
     private String phisicalAddress;
-    private List<Behavior> behaviors = new ArrayList<Behavior>();
-    private List<Representation> representation = new ArrayList<Representation>();
+    private final List<Behavior> behaviors = new ArrayList<Behavior>();
+    private final List<Representation> representation = new ArrayList<Representation>();
     private Set<String> tags;
-    private Properties actions = new Properties();
+    private final Properties actions = new Properties();
     private Properties triggers = new Properties();
     private int currentRepresentation;
     private String envUUID;

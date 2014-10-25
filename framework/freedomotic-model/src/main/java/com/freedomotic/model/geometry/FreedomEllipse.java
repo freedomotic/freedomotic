@@ -22,11 +22,13 @@
 package com.freedomotic.model.geometry;
 
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Enrico
  */
+@XmlRootElement
 public class FreedomEllipse
         implements FreedomShape,
         Serializable {
@@ -60,5 +62,11 @@ public class FreedomEllipse
         this.center = new FreedomPoint(x, y);
         this.xRadius = xRadius;
         this.yRadius = yRadius;
+    }
+    
+    public FreedomEllipse(){
+     this.center=new FreedomPoint(0,0);
+     this.xRadius=0;
+     this.yRadius=0;
     }
 }

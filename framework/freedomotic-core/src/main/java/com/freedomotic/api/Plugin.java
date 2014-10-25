@@ -96,6 +96,10 @@ public class Plugin implements Client {
         init(path);
     }
 
+    public Plugin() {
+        Freedomotic.INJECTOR.injectMembers(this);
+    }
+
     /**
      *
      * @param pluginName

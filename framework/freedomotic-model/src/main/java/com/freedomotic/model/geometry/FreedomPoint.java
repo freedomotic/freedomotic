@@ -22,11 +22,13 @@
 package com.freedomotic.model.geometry;
 
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Enrico
  */
+@XmlRootElement
 public class FreedomPoint implements Serializable {
    
     private static final long serialVersionUID = -54024055228629609L;

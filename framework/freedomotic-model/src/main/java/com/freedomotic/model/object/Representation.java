@@ -24,12 +24,17 @@ package com.freedomotic.model.object;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.geometry.FreedomShape;
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Enrico
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class Representation
         implements Serializable {
 
