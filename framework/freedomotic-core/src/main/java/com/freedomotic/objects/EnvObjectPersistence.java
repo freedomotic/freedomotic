@@ -100,7 +100,6 @@ public class EnvObjectPersistence implements Repository<EnvObjectLogic> {
         }
 
         try {
-            XStream xstream = FreedomXStream.getXstream();
             deleteObjectFiles(folder);
 
             // Create file
@@ -123,24 +122,21 @@ public class EnvObjectPersistence implements Repository<EnvObjectLogic> {
                 }
 
                 String fileName = envObject.getPojo().getUUID() + ".xobj";
-                FileWriter fstream = new FileWriter(folder + "/" + fileName);
-                BufferedWriter out = new BufferedWriter(fstream);
-                out.write(xstream.toXML(envObject.getPojo())); //persist only the data not the logic
+                File file = new File(folder + "/" + fileName);
+                FreedomXStream.toXML(envObject.getPojo(), file);
+
                 summary.append(fileName).append("\t").append(envObject.getPojo().getName()).append("\t")
                         .append(envObject.getPojo().getType()).append("\t")
                         .append(envObject.getPojo().getProtocol()).append("\t")
                         .append(envObject.getPojo().getPhisicalAddress()).append("\n");
-                //Close the output stream
-                out.close();
-                fstream.close();
             }
 
             //writing a summary .txt file with the list of commands in this folder
             FileWriter fstream = new FileWriter(folder + "/index.txt");
-            BufferedWriter indexfile = new BufferedWriter(fstream);
-            indexfile.write(summary.toString());
-            //Close the output stream
-            indexfile.close();
+            try (BufferedWriter indexfile = new BufferedWriter(fstream)) {
+                indexfile.write(summary.toString());
+                //Close the output stream
+            }
         } catch (IOException ex) {
             throw new DaoLayerException(ex);
         }

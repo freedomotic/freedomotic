@@ -5,5 +5,6 @@
         <property name="required"                       value="40"/>
         <property name="category"                       value="nlautomationseditor"/>
         <property name="short-name"                       value="nlautomationseditor"/>
+        <property name="startup-time"                   value="on load"/>
     </properties>
 </config>

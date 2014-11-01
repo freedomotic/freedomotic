@@ -175,8 +175,8 @@ public class EnvironmentDAOXstream
         }
 
         // This filter only returns env files
-        FileFilter envFileFilter =
-                new FileFilter() {
+        FileFilter envFileFilter
+                = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
                         if (file.isFile() && file.getName().endsWith(".xenv")) {
@@ -188,11 +188,11 @@ public class EnvironmentDAOXstream
                 };
 
         File[] files = directory.listFiles(envFileFilter);
-        
+
         ArrayList<Environment> environments = new ArrayList<Environment>();
         for (File file : files) {
             environments.add(deserialize(file));
-            
+
         }
         if (environments.isEmpty()) {
             return null;
@@ -200,30 +200,13 @@ public class EnvironmentDAOXstream
         return environments;
     }
 
-    private void serialize(Environment env, File file)
-            throws IOException {
-        XStream xstream = FreedomXStream.getEnviromentXstream();
-
+    private void serialize(Environment env, File file) throws IOException {
         for (Zone zone : env.getZones()) {
             zone.setObjects(null);
         }
-
-        String xml = xstream.toXML(env);
-        FileWriter fstream;
-        BufferedWriter out = null;
-
-        try {
-            LOG.config("Serializing environment to " + file);
-            fstream = new FileWriter(file);
-            out = new BufferedWriter(fstream);
-            out.write(xml);
-            //Close the output stream
-            LOG.info("Application environment " + env.getName() + " succesfully serialized");
-        } catch (IOException ex) {
-            Logger.getLogger(Environment.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            out.close();
-        }
+        LOG.log(Level.CONFIG, "Serializing environment to {0}", file);
+        FreedomXStream.toXML(env, file);
+        LOG.log(Level.INFO, "Application environment {0} succesfully serialized", env.getName());
     }
 
     /**

@@ -66,6 +66,7 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
     private static final List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
     private final ClientStorage clientStorage;
     private final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
+
     /**
      *
      * @param clientStorage
@@ -224,7 +225,7 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
         EnvironmentLogic envLogic = obj;
 
         if (MAKE_UNIQUE) {
-            
+
             envLogic = INJECTOR.getInstance(EnvironmentLogic.class);
 
             //defensive copy to not affect the passed object with the changes
@@ -340,7 +341,7 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
     @Override
     public void clear() {
         try {
-            for (EnvironmentLogic el : environments){
+            for (EnvironmentLogic el : environments) {
                 delete(el);
             }
         } catch (Exception e) {
@@ -369,31 +370,13 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
         }
     }
 
-    private static void save(EnvironmentLogic env, File file)
-            throws IOException {
-        XStream xstream = FreedomXStream.getEnviromentXstream();
-
+    private static void save(EnvironmentLogic env, File file) throws IOException {
         for (Zone zone : env.getPojo().getZones()) {
             zone.setObjects(null);
         }
-
-        String xml = xstream.toXML(env.getPojo());
-        FileWriter fstream;
-        BufferedWriter out = null;
-
-        try {
-            LOG.info("Serializing environment to " + file);
-            fstream = new FileWriter(file);
-            out = new BufferedWriter(fstream);
-            out.write(xml);
-            //Close the output stream
-            LOG.info("Application environment " + env.getPojo().getName()
-                    + " succesfully serialized");
-        } catch (IOException ex) {
-            Logger.getLogger(Environment.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            out.close();
-        }
+        LOG.log(Level.INFO, "Serializing environment to {0}", file);
+        FreedomXStream.toXML(env.getPojo(), file);
+        LOG.log(Level.INFO, "Application environment {0} succesfully serialized", env.getPojo().getName());
     }
 
     /**
@@ -442,7 +425,7 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
         } catch (XStreamException e) {
             throw new DaoLayerException("XML parsing error. Readed XML is \n" + xml, e);
         }
-        
+
         EnvironmentLogic envLogic = INJECTOR.getInstance(EnvironmentLogic.class);
 
         if (pojo == null) {
@@ -557,7 +540,4 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
         return add(get(uuid), true);
     }
 
-    
-    
-    
 }

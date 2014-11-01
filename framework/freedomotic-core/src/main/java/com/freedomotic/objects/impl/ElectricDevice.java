@@ -245,8 +245,6 @@ public class ElectricDevice extends EnvObjectLogic {
                 this.getPojo().getName());
         turnsOn.getPayload().addStatement("object.behavior." + BEHAVIOR_POWERED, BooleanBehavior.VALUE_TRUE);
 
-//        XStream stream = FreedomXStream.getXstream();
-//        System.out.println(stream.toXML(turnsOn));
         Trigger turnsOff = new Trigger();
         // turnsOff.setName(I18n.msg("X_turns_off", new Object[]{this.getPojo().getName()}));
         turnsOff.setName(this.getPojo().getName() + " turns off");

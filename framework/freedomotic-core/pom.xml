@@ -16,6 +16,7 @@
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
         <org.restlet.version>2.1.7</org.restlet.version>
         <jersey.version>2.9</jersey.version>
+        <xstream.version>1.4.7</xstream.version>
     </properties>
     <build>
         <finalName>freedomotic</finalName> 
@@ -136,7 +137,7 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.7</version>
+            <version>${xstream.version}</version>
         </dependency>
         <!-- LEGACY LIBRARY for serial port communication -->
         <dependency>

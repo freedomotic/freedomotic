@@ -19,6 +19,7 @@
  */
 package com.freedomotic.persistence;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.Condition;
 import com.freedomotic.environment.Room;
 import com.freedomotic.model.ds.Config;
@@ -38,7 +39,18 @@ import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.security.User;
 import com.thoughtworks.xstream.XStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import static java.lang.Math.log;
+import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.SimpleRole;
+import static org.eclipse.jetty.util.IO.close;
 
 /**
  *
@@ -47,9 +59,11 @@ import org.apache.shiro.authz.SimpleRole;
 public class FreedomXStream {
 
     private static XStream xstream = null;
-    private static XStream environmentXstream = null;
+    private static final Logger LOG = Logger.getLogger(FreedomXStream.class.getName());
 
     /**
+     * Creates a new fully configured serialization engine object which can be
+     * used to convert java instances into text (xml, json [not yet supported])
      *
      * @return
      */
@@ -111,29 +125,36 @@ public class FreedomXStream {
         return xstream;
     }
 
+    public static boolean toXML(Object object, File file) {
+        XStream serializer = getXstream();
+        OutputStream outputStream = null;
+        Writer writer = null;
+
+        try {
+            outputStream = new FileOutputStream(file);
+            writer = new OutputStreamWriter(outputStream, Charset.forName("UTF-8"));
+            //writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
+            serializer.toXML(object, outputStream);
+        } catch (Exception exp) {
+            LOG.log(Level.SEVERE, "Error while serializing instance to disk", exp);
+        } finally {
+            IOUtils.closeQuietly(writer);
+            IOUtils.closeQuietly(outputStream);
+        }
+
+        return true;
+    }
+
     /**
      *
      * @return
      */
     @Deprecated
     public static XStream getEnviromentXstream() {
-        if (environmentXstream == null) { //Enviroment serialization
-            environmentXstream = new XStream();
-            environmentXstream.setMode(XStream.NO_REFERENCES);
-            environmentXstream.autodetectAnnotations(true);
-            environmentXstream.omitField(Environment.class, "occupiers");
-            environmentXstream.omitField(Zone.class, "objects");
-            environmentXstream.alias("polygon", FreedomPolygon.class);
-            environmentXstream.addImplicitCollection(FreedomPolygon.class, "points", "point", FreedomPoint.class);
-            //adding also plain point xstream configuration
-            environmentXstream.alias("point", FreedomPoint.class);
-            environmentXstream.useAttributeFor(FreedomPoint.class, "x");
-            environmentXstream.useAttributeFor(FreedomPoint.class, "y");
-        }
-
-        return environmentXstream;
+        return getXstream();
     }
 
     private FreedomXStream() {
+        //disable instantiation
     }
 }

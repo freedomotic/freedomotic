@@ -75,13 +75,8 @@ public class TriggerPersistence implements Repository<Trigger> {
                     }
 
                     String fileName = trigger.getUUID() + ".xtrg";
-                    FileWriter fstream = new FileWriter(folder + "/" + fileName);
-                    BufferedWriter out = new BufferedWriter(fstream);
-                    out.write(xstream.toXML(trigger)); //persist only the data not the logic
-                    //Close the output stream
-
-                    out.close();
-                    fstream.close();
+                    File file = new File(folder + "/" + fileName);
+                    FreedomXStream.toXML(trigger, file);
                 }
             }
         } catch (Exception e) {

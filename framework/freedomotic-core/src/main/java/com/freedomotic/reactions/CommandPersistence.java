@@ -29,8 +29,11 @@ import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -294,11 +297,8 @@ public class CommandPersistence implements Repository<Command> {
                     }
 
                     String fileName = c.getUuid() + ".xcmd";
-                    FileWriter fstream = new FileWriter(folder + "/" + fileName);
-                    BufferedWriter out = new BufferedWriter(fstream);
-                    out.write(xstream.toXML(c));
-                    //Close the output stream
-                    out.close();
+                    File file = new File(folder + "/" + fileName);
+                    FreedomXStream.toXML(c, file);
                 }
             }
         } catch (Exception e) {

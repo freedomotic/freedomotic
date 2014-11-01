@@ -79,13 +79,8 @@ public class ReactionPersistence implements Repository<Reaction> {
                 }
 
                 String fileName = reaction.getUuid() + ".xrea";
-                FileWriter fstream = new FileWriter(folder + "/" + fileName);
-                BufferedWriter out = new BufferedWriter(fstream);
-                out.write(xstream.toXML(reaction)); //persist only the data not the logic
-                //Close the output stream
-
-                out.close();
-                fstream.close();
+                File file= new File(folder + "/" + fileName);
+                FreedomXStream.toXML(reaction, file);
             }
         } catch (Exception e) {
             LOG.info(e.getLocalizedMessage());
