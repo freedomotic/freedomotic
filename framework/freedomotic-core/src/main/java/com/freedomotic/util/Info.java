@@ -40,59 +40,44 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Info {
 
     private static final Logger LOG = Logger.getLogger(Info.class.getName());
-
     public static FrameworkSettings FRAMEWORK = new FrameworkSettings();
-
     public static PathSettings PATHS = new PathSettings();
-
     public static MessagingSettings MESSAGING = new MessagingSettings();
 
     @XmlRootElement
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class FrameworkSettings {
+
         //framework versioning
         public final Integer FRAMEWORK_MAJOR = 5;
-
         public final Integer FRAMEWORK_MINOR = 6;
-
         public final Integer FRAMEWORK_BUILD = 0;
-
         public final String FRAMEWORK_VERSION_CODENAME = "Commander";
-
         public final String FRAMEWORK_RELEASE_DATE = "In Development";
-
         public final String FRAMEWORK_LICENSE = "GNU GPL v2";
-
         public final String FRAMEWORK_RELEASE_TYPE = "beta";
-
         public final String FRAMEWORK_AUTHOR = "Freedomotic Development Team";
-        //project info
         public final String PROJECT_MAIL = "info@freedomotic.com";
     }
 
     @XmlRootElement
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class PathSettings {
-        //framework base paths
 
+        //framework base paths
         public final File PATH_WORKDIR = Info.getWorkdir();
 
         public final File PATH_CONFIG_FOLDER = new File(PATH_WORKDIR + "/config/");
 
-        public final File PATH_DATA_FOLDER = new File(PATH_WORKDIR + "/data/");
-
-        public final File PATH_RESOURCES_FOLDER = new File(PATH_WORKDIR + "/data/resources/");
+        public File PATH_DATA_FOLDER = new File(PATH_WORKDIR + "/data/");
+        public File PATH_RESOURCES_FOLDER = new File(PATH_DATA_FOLDER + "/resources/");
 
         public final File PATH_PLUGINS_FOLDER = new File(PATH_WORKDIR + "/plugins/");
+        public final File PATH_DEVICES_FOLDER = new File(PATH_PLUGINS_FOLDER + "/devices/");
+        public final File PATH_OBJECTS_FOLDER = new File(PATH_PLUGINS_FOLDER + "/objects/");
+        public final File PATH_EVENTS_FOLDER = new File(PATH_PLUGINS_FOLDER + "/events/");
 
-        public final File PATH_DEVICES_FOLDER = new File(PATH_WORKDIR + "/plugins/devices/");
-
-        public final File PATH_OBJECTS_FOLDER = new File(PATH_WORKDIR + "/plugins/objects/");
-
-        public final File PATH_EVENTS_FOLDER = new File(PATH_WORKDIR + "/plugins/events/");
-
-        public final File PATH_PROVIDERS_FOLDER = new File(PATH_WORKDIR + "/plugins/providers/");
-
+        public final File PATH_PROVIDERS_FOLDER = new File(PATH_PLUGINS_FOLDER + "/providers/");
     }
 
     @XmlRootElement
@@ -101,12 +86,12 @@ public class Info {
         //framework API and messaging
 
         public final String BROKER_IP = Info.getLocalHost();
-        
+
         /* http://activemq.apache.org/activemq-3-transport-configurations.html
          * http://marcelojabali.blogspot.it/2011/10/apache-activemq-enhancements-to-jms.html
          * public static final String BROKER_DEFAULT = "vm://freedomotic";
          * info about peer brokers http://fusesource.com/docs/broker/5.2/connectivity_guide/N04F73598.04EE2290.html
-        */
+         */
         public final String BROKER_DEFAULT = "vm://localhost";//"peer://localhost/broker"+UUID.randomUUID();
 
         public final int BROKER_PORT = 61616;
@@ -121,9 +106,8 @@ public class Info {
         public final String CHANNEL_ZONE_OCCUPIERS = "app.event.person.zone";
 
         public final String CHANNEL_PEOPLE_LOCATION = "app.event.sensor.person.movement.*";
-        
-        //behavior proprities
 
+        //behavior proprities
         public final int BEHAVIOR_MAX_PRIORITY = 9;
 
         public final int BEHAVIOR_MIN_PRIORITY = 0;
@@ -176,6 +160,17 @@ public class Info {
         LOG.severe("Something went wrong when figuring out which is the current workdir. "
                 + "Cannot start freedmotic as a consequence");
         return null;
+    }
+
+    public static void relocateDataPath(File path) {
+        if (path == null) {
+            throw new IllegalArgumentException("Base data path should point to a not null file");
+        }
+        if (!path.isDirectory() || !path.canRead()) {
+            throw new IllegalArgumentException("Base data path should point to an existent readable directory and '" + path.getAbsolutePath() + "' it's not.");
+        }
+        Info.PATHS.PATH_DATA_FOLDER = path;
+        Info.PATHS.PATH_RESOURCES_FOLDER = new File(path + "/resources/");
     }
 
     /**
