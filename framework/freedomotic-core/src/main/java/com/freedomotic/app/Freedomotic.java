@@ -157,6 +157,9 @@ public class Freedomotic implements BusConsumer {
          * *****************************************************************
          */
         loadAppConfig();
+        // Relocate base data folder according to configuration (if specified)
+        String defaultPath = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
+        Info.relocateDataPath(new File(config.getStringProperty("KEY_DATA_PATH", defaultPath)));
 
         // init localization
         api.getI18n().setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
@@ -172,7 +175,7 @@ public class Freedomotic implements BusConsumer {
             threadState.bind();
             LOG.info("Booting as user:" + auth.getSubject().getPrincipal() + ". Session will last:" + auth.getSubject().getSession().getTimeout());
         }
-        
+
         String resourcesPath
                 = new File(Info.PATHS.PATH_WORKDIR
                         + config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
@@ -197,7 +200,7 @@ public class Freedomotic implements BusConsumer {
         // Stop on initialization error.
         final BootStatus currentStatus = BootStatus.getCurrentStatus();
         if (!BootStatus.STARTED.equals(currentStatus)) {
-            
+
             kill(currentStatus.getCode());
         }
 
@@ -210,17 +213,17 @@ public class Freedomotic implements BusConsumer {
             try {
                 File logdir = new File(Info.PATHS.PATH_WORKDIR + "/log/");
                 logdir.mkdir();
-                
+
                 File logfile = new File(logdir + "/freedomotic.html");
                 logfile.createNewFile();
-                
+
                 FileHandler handler = new FileHandler(logfile.getAbsolutePath(),
                         false);
                 handler.setFormatter(new LogFormatter());
                 logger.setLevel(Level.ALL);
                 logger.addHandler(handler);
                 logger.config(api.getI18n().msg("INIT_MESSAGE"));
-                
+
                 if ((config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
                         && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
                     java.awt.Desktop.getDesktop()
@@ -270,7 +273,7 @@ public class Freedomotic implements BusConsumer {
                     "Cannot load event plugin {0}. {1}",
                     new Object[]{ex.getPluginName(), ex.getMessage()});
         }
-       
+
         /**
          * ******************************************************************
          * Dynamically load jar files in /plugin/providers folder for plugins
@@ -296,7 +299,7 @@ public class Freedomotic implements BusConsumer {
                             @Override
                             public void run() {
                                 LOG.info("Starting marketplace service");
-                                
+
                                 MarketPlaceService mps = MarketPlaceService.getInstance();
                                 onlinePluginCategories = mps.getCategoryList();
                             }
@@ -370,26 +373,26 @@ public class Freedomotic implements BusConsumer {
         Runtime runtime = Runtime.getRuntime();
         double memory = ((runtime.totalMemory() - runtime.freeMemory()) / MB);
         LOG.config("Freedomotic + data uses " + memory + "MB");
-        
+
         for (Client plugin : clientStorage.getClients()) {
             String startupTime = plugin.getConfiguration().getStringProperty("startup-time", "undefined");
-            
+
             if (startupTime.equalsIgnoreCase("on load")) {
                 plugin.start();
-                
+
                 PluginHasChanged event = new PluginHasChanged(this,
                         plugin.getName(),
                         PluginActions.DESCRIPTION);
                 busService.send(event);
-                
+
                 double snapshot = (((runtime.totalMemory() - runtime.freeMemory()) / MB) - memory);
                 LOG.config(plugin.getName() + " uses " + snapshot + "MB of memory");
                 memory += snapshot;
             }
         }
-        
+
         LOG.config("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
-        
+
         LOG.info("Freedomotic startup completed");
         //new SynchManager();
     }
@@ -403,7 +406,7 @@ public class Freedomotic implements BusConsumer {
         String envFilePath = config.getProperty("KEY_ROOM_XML_PATH");
         File envFile = new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/" + envFilePath);
         File folder = envFile.getParentFile();
-        
+
         if (!folder.exists()) {
             throw new FreedomoticException(
                     "Folder " + folder + " do not exists. Cannot load default "
@@ -413,12 +416,12 @@ public class Freedomotic implements BusConsumer {
                     "Environment folder " + folder.getAbsolutePath()
                     + " is supposed to be a directory");
         }
-        
+
         try {
             //EnvironmentPersistence.loadEnvironmentsFromDir(folder, false);
             EnvironmentDAO loader = environmentDaoFactory.create(folder);
             Collection<Environment> loaded = loader.load();
-            
+
             if (loaded == null) {
                 throw new IllegalStateException("Object data cannot be null at this stage");
             }
@@ -443,7 +446,6 @@ public class Freedomotic implements BusConsumer {
     public static String getInstanceID() {
         return INSTANCE_ID;
     }
-
 
     private void loadAppConfig() {
         config = config.load();
@@ -477,21 +479,21 @@ public class Freedomotic implements BusConsumer {
      * @param args
      */
     public static void main(String[] args) {
-        
+
         configureLogging();
-        
+
         try {
             INSTANCE_ID = args[0];
         } catch (Exception e) {
             INSTANCE_ID = "";
         }
-        
+
         if ((INSTANCE_ID == null) || (INSTANCE_ID.isEmpty())) {
             INSTANCE_ID = "A";
         }
-        
+
         LOG.info("Freedomotic instance ID: " + INSTANCE_ID);
-        
+
         try {
             INJECTOR = Guice.createInjector(new FreedomoticInjector());
             Freedomotic freedomotic = INJECTOR.getInstance(Freedomotic.class);
@@ -522,15 +524,15 @@ public class Freedomotic implements BusConsumer {
         // Set jul root log level to ALL, because default slf4jbridge handler is INFO.
         LogManager.getLogManager().getLogger("").setLevel(Level.ALL);
     }
-    
+
     @Override
     public void onMessage(ObjectMessage message) {
-        
+
         Object payload = null;
-        
+
         try {
             payload = message.getObject();
-            
+
             if (payload instanceof EventTemplate) {
                 final EventTemplate event = (EventTemplate) payload;
                 onExit(event);
@@ -556,23 +558,22 @@ public class Freedomotic implements BusConsumer {
         auth.save();
 
         String savedDataRoot;
-        
+
         if (config.getBooleanProperty("KEY_OVERRIDE_REACTIONS_ON_EXIT", false) == true) {
             savedDataRoot = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
         } else {
             savedDataRoot = Info.PATHS.PATH_WORKDIR + "/testSave/data";
         }
-        
+
         TriggerPersistence.saveTriggers(new File(savedDataRoot + "/trg"));
         CommandPersistence.saveCommands(new File(savedDataRoot + "/cmd"));
         ReactionPersistence.saveReactions(new File(savedDataRoot + "/rea"));
 
         //save the environment
-
-        String environmentFilePath =
-                Info.PATHS.PATH_DATA_FOLDER + "/furn/" + config.getProperty("KEY_ROOM_XML_PATH");
+        String environmentFilePath
+                = Info.PATHS.PATH_DATA_FOLDER + "/furn/" + config.getProperty("KEY_ROOM_XML_PATH");
         File folder = null;
-        
+
         try {
             folder = new File(environmentFilePath).getParentFile();
 
@@ -590,7 +591,7 @@ public class Freedomotic implements BusConsumer {
         } catch (DaoLayerException ex) {
             LOG.severe("Cannot save environment to folder " + folder + "due to " + ex.getCause());
         }
-        
+
         System.exit(0);
     }
 
@@ -598,7 +599,7 @@ public class Freedomotic implements BusConsumer {
      *
      */
     public static void kill() {
-        
+
         kill(0);
     }
 
@@ -607,7 +608,7 @@ public class Freedomotic implements BusConsumer {
      * @param status
      */
     public static void kill(int status) {
-        
+
         System.exit(status);
     }
 
@@ -622,7 +623,7 @@ public class Freedomotic implements BusConsumer {
         t.printStackTrace(pw);
         pw.flush();
         sw.flush();
-        
+
         return sw.toString();
     }
 }

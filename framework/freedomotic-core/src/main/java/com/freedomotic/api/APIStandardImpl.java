@@ -228,6 +228,7 @@ class APIStandardImpl implements API {
         return clientStorage.getClients();
     }
 
+    @Override
     public BufferedImage getResource(String resourceIdentifier) {
         return ResourcesManager.getResource(resourceIdentifier);
     }
