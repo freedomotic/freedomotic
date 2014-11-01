@@ -19,9 +19,13 @@
  */
 package com.freedomotic.jfrontend;
 
-import java.awt.Point;
-import java.util.HashMap;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,7 +35,7 @@ import java.util.TimerTask;
  */
 public class CalloutsUpdater {
 
-    private static HashMap<Object, Callout> callouts = new HashMap<Object, Callout>();
+    private static List<Callout> callouts = new ArrayList<Callout>();
     private Timer timer;
 
     /**
@@ -45,25 +49,23 @@ public class CalloutsUpdater {
             @Override
             public void run() {
                 long now = System.currentTimeMillis();
-                Iterator it = callouts.values().iterator();
-
+                Iterator it = callouts.iterator();
+                boolean removedSomething = false;
                 while (it.hasNext()) {
                     Callout callout = (Callout) it.next();
-                    long elapsed = now - callout.getTimestamp();
-
-                    if ((callout.getDuration() - elapsed) <= 0) {
-                        callout.setDuration(-1);
+                    long elapsedTime = now - callout.getTimestamp();
+                    if (elapsedTime > callout.getDuration()) {
+                        removedSomething = true;
                         it.remove();
                     }
                 }
 
-                if (drawer != null) {
+                if (removedSomething && drawer != null) {
+                    //request a repainting without background repainting (faster)
                     drawer.setNeedRepaint(false);
                 }
             }
-        },
-                0,
-                milliseconds);
+        }, 0, milliseconds);
     }
 
     /**
@@ -71,47 +73,36 @@ public class CalloutsUpdater {
      * @param newCallout
      */
     public void addCallout(Callout newCallout) {
-        Iterator it = callouts.values().iterator();
-        boolean found = false;
-        int line = 0;
-
-        //is an info callout
-        if (newCallout.getGroup().equalsIgnoreCase("info")) {
-            while (it.hasNext()) {
-                Callout callout = (Callout) it.next();
-
-                if (callout.getGroup().equalsIgnoreCase("info")) {
-                    //shift old info callout to the next line
-                    callout.setPosition(new Point((int) callout.getPosition().getX() + 100,
-                            (int) callout.getPosition().getY() + 300));
-                    callout.setDuration(callout.getDuration() + 1000);
-                }
+        if (!newCallout.getText().trim().isEmpty()) {
+            newCallout.setTimestamp();
+            if (newCallout.getDuration() > 5000) {
+                newCallout.setDuration(5000);
             }
-
-            //add the new info callout on top
-            callouts.put(newCallout.getRelated(),
-                    newCallout);
-        } else {
-            //is an object callout
-            if (callouts.containsKey(newCallout.getRelated())) {
-                Callout callout = (Callout) callouts.get(newCallout.getRelated());
-                callout.setText(newCallout.getText());
-                callout.setPosition(newCallout.getPosition());
-                callout.setRotation(newCallout.getRotation());
-                //extend old callout duration
-                callout.setDuration(callout.getDuration() + newCallout.getDuration());
-                found = true;
-            } else {
-                callouts.put(newCallout.getRelated(),
-                        newCallout);
+            //random color for info text
+            if (newCallout.getGroup().equalsIgnoreCase("info")) {
+                newCallout.setColor(new Color(rand(0, 255), rand(0, 255), rand(0, 255), 180));
             }
+            callouts.add(newCallout);
         }
+    }
+
+    private int rand(int min, int max) {
+
+        // NOTE: Usually this should be a field rather than a method
+        // variable so that it is not re-seeded every call.
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
     }
 
     /**
      *
      */
-    public static void clearAll() {
+    public void clearAll() {
         callouts.clear();
     }
 
@@ -119,8 +110,8 @@ public class CalloutsUpdater {
      *
      * @param group
      */
-    public static void clear(String group) {
-        Iterator it = callouts.values().iterator();
+    public void clear(String group) {
+        Iterator it = callouts.iterator();
 
         while (it.hasNext()) {
             Callout callout = (Callout) it.next();
@@ -131,7 +122,8 @@ public class CalloutsUpdater {
         }
     }
 
-    Iterator iterator() {
-        return callouts.values().iterator();
+    Collection<Callout> getPrintableCallouts() {
+        Collections.reverse(callouts);
+        return Collections.unmodifiableCollection(callouts);
     }
 }

@@ -52,7 +52,7 @@ public class Callout {
         this.position = new Point(x, y);
 
         if (duration <= 0) { //autodetect the durantion based on string length
-            this.duration = 45 * text.length();
+            this.duration = 60 * text.length();
         } else {
             this.duration = duration;
         }
@@ -74,7 +74,7 @@ public class Callout {
         this.position = new Point(50, 50);
 
         if (duration <= 0) { //autodetect the durantion based on string length
-            this.duration = 45 * text.length();
+            this.duration = 100 * text.length();
         } else {
             this.duration = duration;
         }

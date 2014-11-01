@@ -142,6 +142,30 @@ public class Renderer
 
     /**
      *
+     * @param master
+     */
+    public Renderer(JavaDesktopFrontend master) {
+        this.plugin = master;
+        this.I18n = plugin.getApi().getI18n();
+        callouts = new CalloutsUpdater(this, 250);
+        ResourcesManager.clear();
+        clear();
+        addCustomMouseListener();
+        addCustomMouseMotionListener();
+        setBackground(backgroundColor);
+        addComponentListener(new ComponentAdapter() {
+
+            @Override
+            public void componentResized(ComponentEvent e) {
+                backgroundChanged = true;
+                findRescaleFactor();
+            }
+        });
+        repaint();
+    }
+
+    /**
+     *
      * @param obj
      */
     public void openObjEditor(EnvObjectLogic obj) {
@@ -263,9 +287,9 @@ public class Renderer
      *
      * @param repaintBackground
      */
+    @Override
     public synchronized void setNeedRepaint(boolean repaintBackground) {
         backgroundChanged = repaintBackground;
-
         this.repaint();
     }
 
@@ -438,15 +462,24 @@ public class Renderer
     }
 
     private void renderCalloutsLayer() {
-        Iterator it = callouts.iterator();
-
-        while (it.hasNext()) {
-            Callout callout = (Callout) it.next();
+        int numOfInfoLines = 0;
+        int offset =0;
+        for (Callout callout : callouts.getPrintableCallouts()) {
+            //display multiple info callouts on different lines
+            System.out.println("CALLOUT: " + callout.getGroup() + " - " + callout.getText());
+            if (callout.getGroup().equalsIgnoreCase("info")) {
+                offset = (numOfInfoLines * 50);
+                numOfInfoLines++;
+            }
             drawString(callout.getText(),
                     (int) callout.getPosition().getX(),
-                    (int) callout.getPosition().getY(),
+                    (int) callout.getPosition().getY() + offset,
                     (float) 0.0,
                     callout.getColor());
+            //limit to the last 10 most recent lines
+            if (numOfInfoLines > 10) {
+                return;
+            }
         }
     }
 
@@ -454,6 +487,7 @@ public class Renderer
      *
      * @param callout
      */
+    @Override
     public void createCallout(Callout callout) {
         callouts.addCallout(callout);
     }
@@ -872,11 +906,11 @@ public class Renderer
                 }
             } else {
                 removeIndicators();
-                CalloutsUpdater.clearAll();
+                callouts.clearAll();
             }
         } else { //if edit mode
             removeIndicators();
-            CalloutsUpdater.clearAll();
+            callouts.clearAll();
 
             toRealCoords(e.getPoint());
 
@@ -1029,7 +1063,7 @@ public class Renderer
             dragDiff = new Dimension((int) Math.abs(coords.getX()
                     - getSelectedObject().getPojo().getCurrentRepresentation().getOffset().getX()),
                     (int) Math.abs(coords.getY()
-                    - getSelectedObject().getPojo().getCurrentRepresentation().getOffset().getY()));
+                            - getSelectedObject().getPojo().getCurrentRepresentation().getOffset().getY()));
         }
 
         int xSnapped = (int) coords.getX() - ((int) coords.getX() % SNAP_TO_GRID);
