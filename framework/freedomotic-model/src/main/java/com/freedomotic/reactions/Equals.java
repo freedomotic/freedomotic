@@ -9,7 +9,7 @@ package com.freedomotic.reactions;
  *
  * @author nicoletti
  */
-public class EqualsExpression extends BooleanExpression {
+public class Equals extends BinaryExpression {
 
     private static final String OPERATOR = Statement.EQUALS;
 
@@ -18,10 +18,14 @@ public class EqualsExpression extends BooleanExpression {
         return OPERATOR;
     }
 
-    public EqualsExpression(String left, String right) {
+    public Equals(String left, String right) {
         super(left, right);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean evaluate() {
         if (getLeft().equalsIgnoreCase(getRight()) 
@@ -30,7 +34,4 @@ public class EqualsExpression extends BooleanExpression {
         }
         return false;
     }
-    
-    
-
 }

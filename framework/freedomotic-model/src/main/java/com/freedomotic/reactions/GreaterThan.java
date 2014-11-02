@@ -11,17 +11,17 @@ import java.util.logging.Logger;
  *
  * @author nicoletti
  */
-public class LessEqualThanExpression extends BooleanExpression {
+public class GreaterThan extends BinaryExpression {
 
-    private static final String OPERATOR = Statement.LESS_EQUAL_THAN;
-    private static final Logger LOG = Logger.getLogger(LessEqualThanExpression.class.getName());
+    private static final String OPERATOR = Statement.GREATER_THAN;
+    private static final Logger LOG = Logger.getLogger(GreaterThan.class.getName());
 
     @Override
     public String getOperand() {
         return OPERATOR;
     }
 
-    public LessEqualThanExpression(String left, String right) {
+    public GreaterThan(String left, String right) {
         super(left, right);
     }
 
@@ -30,10 +30,9 @@ public class LessEqualThanExpression extends BooleanExpression {
         try {
             Integer intRightValue = new Integer(getRight());
             Integer intLeftValue = new Integer(getLeft());
-
-            return intLeftValue <= intRightValue;
+            return intLeftValue > intRightValue;
         } catch (NumberFormatException nfe) {
-            LOG.warning(OPERATOR  + " operator can be applied only to integer values");
+            LOG.warning(Statement.GREATER_THAN  + " operator can be applied only to integer values");
             return false;
         }
     }

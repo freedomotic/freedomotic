@@ -14,25 +14,25 @@ public class ExpressionFactory<T extends Expression> {
 
     public T createExpression(String left, String operand, String right) {
         if (operand.endsWith(Statement.EQUALS)) {
-            return (T) new EqualsExpression(left, right);
+            return (T) new Equals(left, right);
         }
         if (operand.endsWith(Statement.REGEX)) {
-            return (T) new RegexExpression(left, right);
+            return (T) new Regex(left, right);
         }
         if (operand.endsWith(Statement.GREATER_THAN)) {
-            return (T) new GreaterThanExpression(left, right);
+            return (T) new GreaterThan(left, right);
         }
         if (operand.endsWith(Statement.GREATER_EQUAL_THAN)) {
-            return (T) new GreaterEqualThanExpression(left, right);
+            return (T) new GreaterEqualThan(left, right);
         }
         if (operand.endsWith(Statement.LESS_THAN)) {
-            return (T) new LessThanExpression(left, right);
+            return (T) new LessThan(left, right);
         }
         if (operand.endsWith(Statement.LESS_EQUAL_THAN)) {
-            return (T) new LessEqualThanExpression(left, right);
+            return (T) new LessEqualThan(left, right);
         }
         if (operand.endsWith(Statement.BETWEEN_TIME)) {
-            return (T) new BetweenTimeExpression(left, right);
+            return (T) new BetweenTime(left, right);
         }
 
         throw new UnsupportedOperationException("Operand " + operand + " is not a "

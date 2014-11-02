@@ -11,17 +11,17 @@ import java.util.logging.Logger;
  *
  * @author nicoletti
  */
-public class LessThanExpression extends BooleanExpression {
+public class LessThan extends BinaryExpression {
 
     private static final String OPERATOR = Statement.LESS_THAN;
-    private static final Logger LOG = Logger.getLogger(LessThanExpression.class.getName());
+    private static final Logger LOG = Logger.getLogger(LessThan.class.getName());
 
     @Override
     public String getOperand() {
         return OPERATOR;
     }
 
-    public LessThanExpression(String left, String right) {
+    public LessThan(String left, String right) {
         super(left, right);
     }
 

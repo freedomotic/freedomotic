@@ -9,19 +9,15 @@ package com.freedomotic.reactions;
  *
  * @author nicoletti
  */
-public abstract class BooleanExpression implements Expression<Boolean> {
+public abstract class BinaryExpression implements Expression {
 
     private String left;
     private String right;
 
-    public BooleanExpression(String left, String right) {
+    public BinaryExpression(String left, String right) {
         this.left = left;
         this.right = right;
     }
-
-    @Override
-    public abstract Boolean evaluate();
-    public abstract String getOperand();
 
     public String getLeft() {
         return left;

@@ -14,5 +14,6 @@ package com.freedomotic.reactions;
 public interface Expression<T> {
     
     public T evaluate();
+    public String getOperand();
     
 }

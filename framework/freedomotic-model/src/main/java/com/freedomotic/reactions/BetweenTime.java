@@ -17,10 +17,10 @@ import java.util.logging.Logger;
  *
  * @author nicoletti
  */
-public class BetweenTimeExpression extends BooleanExpression {
+public class BetweenTime extends BinaryExpression {
 
     private static final String OPERAND = Statement.BETWEEN_TIME;
-    private static final Logger LOG = Logger.getLogger(BetweenTimeExpression.class.getName());
+    private static final Logger LOG = Logger.getLogger(BetweenTime.class.getName());
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
     Date todaysEnd;
     Date tomorrowStart;
@@ -33,7 +33,7 @@ public class BetweenTimeExpression extends BooleanExpression {
     // left is an hour in form HH:MM::SS
     //right is a time interval in form HH:MM::SS-HH:MM::SS
     //this class checks if left is inside the right interval
-    public BetweenTimeExpression(String left, String right) {
+    public BetweenTime(String left, String right) {
         super(left, right);
         try {
             todaysEnd = TIME_FORMAT.parse("24:00:00");

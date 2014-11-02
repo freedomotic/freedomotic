@@ -11,17 +11,17 @@ import java.util.logging.Logger;
  *
  * @author nicoletti
  */
-public class GreaterEqualThanExpression extends BooleanExpression {
+public class GreaterEqualThan extends BinaryExpression {
 
     private static final String OPERATOR = Statement.GREATER_EQUAL_THAN;
-    private static final Logger LOG = Logger.getLogger(GreaterEqualThanExpression.class.getName());
+    private static final Logger LOG = Logger.getLogger(GreaterEqualThan.class.getName());
 
     @Override
     public String getOperand() {
         return OPERATOR;
     }
 
-    public GreaterEqualThanExpression(String left, String right) {
+    public GreaterEqualThan(String left, String right) {
         super(left, right);
     }
 

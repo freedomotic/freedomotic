@@ -12,11 +12,11 @@ import java.util.regex.Pattern;
  *
  * @author nicoletti
  */
-public class RegexExpression extends BooleanExpression {
+public class Regex extends BinaryExpression {
 
     private static final String OPERATOR = Statement.REGEX;
 
-    public RegexExpression(String left, String right) {
+    public Regex(String left, String right) {
         super(left, right);
     }
 
