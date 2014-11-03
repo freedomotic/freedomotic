@@ -275,7 +275,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
         return new BehaviorResource(UUID);
     }
 
-    @Path("behaviors")
+    //@Path("behaviors")
     @Api(value = "behaviors", description = "Operations on object's behaviors")
     private class BehaviorResource extends AbstractResource<Behavior> {
 

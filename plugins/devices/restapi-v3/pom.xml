@@ -53,6 +53,12 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+ <!--         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>freedomotic-marketplace</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
+        </dependency> -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>freedomotic-core</artifactId>

@@ -9,16 +9,19 @@ import org.openide.util.lookup.ServiceProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author GGPT
  */
 @ServiceProvider(service = IMarketPlace.class)
-public class FreedomoticMarketPlace implements IMarketPlace {
+@XmlRootElement
+public final class FreedomoticMarketPlace implements IMarketPlace {
 
-    private ArrayList<IPluginPackage> packageList;
-    private ArrayList<IPluginCategory> categoryList;
+    private final ArrayList<IPluginPackage> packageList;
+    private final ArrayList<IPluginCategory> categoryList;
 
     public FreedomoticMarketPlace() {
         packageList = new ArrayList<IPluginPackage>();
@@ -34,7 +37,7 @@ public class FreedomoticMarketPlace implements IMarketPlace {
 
     @Override
     public void updateAllPackageList() {
-        packageList = new ArrayList<IPluginPackage>();
+        packageList.clear();
         packageList.addAll(DrupalRestHelper.retrieveAllPlugins());
     }
 
@@ -44,8 +47,9 @@ public class FreedomoticMarketPlace implements IMarketPlace {
     }
 
     @Override
+    @XmlTransient
     public ArrayList<IPluginPackage> getAvailablePackages(IPluginCategory category) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (ArrayList<IPluginPackage>) category.listPlugins();
     }
 
     @Override

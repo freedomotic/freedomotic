@@ -8,18 +8,20 @@ import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.IPluginPackage;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author gpt
  */
+@XmlRootElement
 public class MarketPlacePluginCategory implements IPluginCategory {
 
     private String tid;
     private String name;
     private String description;
     private String uri;
-    private transient List<IPluginPackage> plugins;
+    private transient List<IPluginPackage> plugins = new ArrayList<IPluginPackage>();
 
     /**
      * @return the tid
@@ -54,10 +56,13 @@ public class MarketPlacePluginCategory implements IPluginCategory {
 
     @Override
     public List<IPluginPackage> retrievePluginsInfo() {
-        if (plugins == null) {
-            plugins = new ArrayList<IPluginPackage>();
-            plugins.addAll(DrupalRestHelper.retrievePluginsByCategory(tid));
-        }
+        plugins.clear();
+        plugins.addAll(DrupalRestHelper.retrievePluginsByCategory(tid));
+        return plugins;
+    }
+
+    @Override
+    public List<IPluginPackage> listPlugins() {
         return plugins;
     }
 }

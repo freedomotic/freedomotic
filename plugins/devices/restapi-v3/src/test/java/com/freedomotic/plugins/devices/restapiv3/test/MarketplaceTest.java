@@ -20,6 +20,8 @@
 package com.freedomotic.plugins.devices.restapiv3.test;
 
 import com.freedomotic.marketplace.IMarketPlace;
+import com.freedomotic.marketplace.IPluginCategory;
+import com.freedomotic.marketplace.IPluginPackage;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.MarketplaceResource;
 import com.freedomotic.plugins.devices.restapiv3.utils.ThrowableExceptionMapper;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -41,8 +44,6 @@ public class MarketplaceTest extends JerseyTest{
     
     MediaType representation = MediaType.APPLICATION_JSON_TYPE;
     String PATH = UriBuilder.fromResource(MarketplaceResource.class).build().toString();
-    GenericType<IMarketPlace> marketSingleType = new GenericType<IMarketPlace>(){};
-    GenericType<ArrayList<IMarketPlace>> marketListType = new GenericType<ArrayList<IMarketPlace>>(){};
     
     @Override
     protected Application configure() {
@@ -55,9 +56,29 @@ public class MarketplaceTest extends JerseyTest{
         return rc;
     }
     
+    GenericType<IMarketPlace> marketSingleType = new GenericType<IMarketPlace>(){};
+    GenericType<ArrayList<IMarketPlace>> marketListType = new GenericType<ArrayList<IMarketPlace>>(){};
+    
     @Test
     public void providersList() {
     ArrayList<IMarketPlace> ml = target(PATH).path("providers").request(representation).get(marketListType);
-       // assertEquals("List size", 1, ml.size());    
+    // assertEquals("List size", 1, ml.size());    
     }
+    
+    GenericType<IPluginCategory> categorySingleType = new GenericType<IPluginCategory>(){};
+    GenericType<ArrayList<IPluginCategory>> categoryListType = new GenericType<ArrayList<IPluginCategory>>(){};
+    
+    @Test
+    public void categoriesTest(){
+    ArrayList<IPluginCategory> pc = target(PATH).path("categories").request(representation).get(categoryListType);
+    }
+    
+    GenericType<IPluginPackage> pluginSingleType = new GenericType<IPluginPackage>(){};
+    GenericType<ArrayList<IPluginPackage>> pluginListType = new GenericType<ArrayList<IPluginPackage>>(){};
+    
+    @Test
+    public void pluginsTest(){
+        ArrayList<IPluginPackage> pp = target(PATH).path("plugins").request(representation).get(pluginListType);
+    }
+    
 }

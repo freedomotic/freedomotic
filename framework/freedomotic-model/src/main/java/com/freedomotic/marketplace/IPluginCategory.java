@@ -25,12 +25,16 @@
  */
 package com.freedomotic.marketplace;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author gpt
  */
+@XmlRootElement
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 public interface IPluginCategory {
 
     /**
@@ -44,8 +48,14 @@ public interface IPluginCategory {
     public String getName();
 
     /**
-     *
-     * @return
+     * Retrieve the updated list of plugin from online Marketplace provider
+     * @return the updated list of plugins
      */
     public List<IPluginPackage> retrievePluginsInfo();
+    
+    /**
+     * Get the cached list of plugins (may need to call retrievePluginsInfo() before this)
+     * @return the current list of plugins 
+     */
+    public List<IPluginPackage> listPlugins();
 }

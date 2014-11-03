@@ -1,6 +1,23 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2014 Freedomotic team
+ * http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This Program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Freedomotic; see the file COPYING.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -53,9 +70,9 @@ public class MarketPlaceForm
     private static final IPlugCatComparator CatComp = new IPlugCatComparator();
     private static final IPlugPackComparator PackComp = new IPlugPackComparator();
     private final I18n I18n;
-    private ClientStorage clients;
+    private final ClientStorage clients;
 
-    private PluginsManager pluginsManager;
+    private final PluginsManager pluginsManager;
 
     /**
      * Creates new form MarketPlaceForm
@@ -73,6 +90,7 @@ public class MarketPlaceForm
             @Override
             public void run() {
                 new Thread(new Runnable() {
+                    @Override
                     public void run() {
                         MarketPlaceService mps = MarketPlaceService.getInstance();
                         pluginCategoryList = mps.getCategoryList();
@@ -98,6 +116,7 @@ public class MarketPlaceForm
 
         //add listener to category selection changes
         cmbCategory.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 int index = cmbCategory.getSelectedIndex();
                 retrievePlugins(pluginCategoryList.get(index));

@@ -7,9 +7,10 @@ package com.freedomotic.marketplace.util;
 import com.freedomotic.marketplace.IPluginPackage;
 import java.util.ArrayList;
 import java.util.Collections;
+import javax.swing.ImageIcon;
 
-import javax.swing.*;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -18,6 +19,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author gpt New version of the POJO that represents a plugin
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class MarketPlacePlugin2 implements IPluginPackage {
 
     private String nid;
@@ -26,13 +28,11 @@ public class MarketPlacePlugin2 implements IPluginPackage {
     private String body;
     private String teaser;
     private ArrayList<MarketPlaceUser> field_developer;
-    @XmlElement
     private ArrayList<MarketPlaceValue> field_status;
     private ArrayList<MarketPlaceValue> field_description;
     private ArrayList<MarketPlaceValue> field_category;
     private ArrayList<MarketPlaceValue> field_plugin_category;
     private ArrayList<MarketPlaceFile> field_icon;
-    @XmlElement
     private ArrayList<MarketPlaceValue> field_os;
     private ArrayList<MarketPlaceFile> field_file;
     private String uri;
@@ -41,6 +41,7 @@ public class MarketPlacePlugin2 implements IPluginPackage {
     //private String path; 
     //private ArrayList<String> taxonomy;
     //Fields not parsed
+    @XmlTransient
     private transient ImageIcon icon;
 
     @Override

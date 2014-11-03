@@ -20,7 +20,6 @@
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.core.ResourcesManager;
-import com.freedomotic.plugins.devices.restapiv3.utils.ResourceInterface;
 import com.freedomotic.util.Info;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -29,7 +28,6 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Singleton;

@@ -25,12 +25,16 @@
  */
 package com.freedomotic.marketplace;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import javax.swing.ImageIcon;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author gpt
  */
+@XmlRootElement
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 public interface IPluginPackage {
 
     /**

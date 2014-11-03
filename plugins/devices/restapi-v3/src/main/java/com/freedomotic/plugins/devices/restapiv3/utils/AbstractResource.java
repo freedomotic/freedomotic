@@ -19,25 +19,18 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.utils;
 
-import com.freedomotic.api.API;
-import com.freedomotic.app.FreedomoticInjector;
+
 import com.freedomotic.plugins.devices.restapiv3.filters.ForbiddenException;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -52,52 +45,7 @@ import javax.ws.rs.core.UriBuilder;
  * @author matteo
  * @param <T>
  */
-public abstract class AbstractResource<T> implements ResourceInterface<T> {
-
-    public static final Logger LOG = Logger.getLogger(AbstractResource.class.getName());
-    protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
-    protected final static API api = INJECTOR.getInstance(API.class);
-    protected String authContext = "*";
-
-    /**
-     *
-     * @return
-     */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Get a list of items", position = 10)
-    @Override
-    public Response list() {
-        if (api.getAuth().isPermitted(authContext + ":read")) {
-            return Response.ok(prepareList()).build();
-        }
-        throw new ForbiddenException("user: " + api.getAuth().getSubject().getPrincipal() + " cannot read any" + authContext);
-    }
-
-    /**
-     * @param UUID
-     * @return
-     */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Get a single item", position = 20)
-    @Path("/{id}")
-    @ApiResponses(value = {
-        @ApiResponse(code = 404, message = "Item not found")
-    })
-    @Override
-    public Response get(
-            @ApiParam(value = "ID of item to fetch", required = true)
-            @PathParam("id") String UUID) {
-        if (api.getAuth().isPermitted(authContext + ":read:" + UUID)) {
-            T item = prepareSingle(UUID);
-            if (item != null) {
-                return Response.ok(item).build();
-            }
-            throw new ItemNotFoundException("Cannot find item: " + UUID);
-        }
-        throw new ForbiddenException("User " + api.getAuth().getSubject().getPrincipal() + " cannot read " + authContext + " " + UUID);
-    }
+public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> implements ResourceInterface<T> {
 
     /**
      *
@@ -135,12 +83,6 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
             }
         }
         throw new ForbiddenException("User " + api.getAuth().getSubject().getPrincipal() + " cannot modify " + authContext + " " + UUID);
-    }
-
-    @OPTIONS
-    @Override
-    public Response options() {
-        return Response.ok().build();
     }
 
     /**
@@ -246,18 +188,4 @@ public abstract class AbstractResource<T> implements ResourceInterface<T> {
      * @return
      */
     abstract protected T doUpdate(String UUID, T o);
-
-    /**
-     *
-     * @return
-     */
-    abstract protected List<T> prepareList();
-
-    /**
-     *
-     * @param uuid
-     * @return
-     */
-    abstract protected T prepareSingle(String uuid);
-
 }

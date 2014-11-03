@@ -22,7 +22,6 @@
 
 package com.freedomotic.plugins.devices.restapiv3.utils;
 
-import java.net.URISyntaxException;
 import javax.ws.rs.core.Response;
 
 /**
@@ -30,23 +29,12 @@ import javax.ws.rs.core.Response;
  * @author matteo
  * @param <T>
  */
-public interface ResourceInterface<T> extends ResourceReadOnlyInterface<T>{
+public interface ResourceReadOnlyInterface<T> {
   
-    @Override
     public Response list();
    
-    @Override
     public Response get(String UUID);
  
-    public Response delete(String UUID);
-    
-    public Response copy(String UUID);
-  
-    public Response create(T s) throws URISyntaxException;
-  
-    public Response update(String UUID, T s);
-    
-    @Override
     public Response options();
     
 }
