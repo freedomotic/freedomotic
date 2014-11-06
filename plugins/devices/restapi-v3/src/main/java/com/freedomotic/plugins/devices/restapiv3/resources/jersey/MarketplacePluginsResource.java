@@ -19,20 +19,16 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
-import com.freedomotic.api.Client;
-import com.freedomotic.api.Plugin;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.IPluginPackage;
 import com.freedomotic.marketplace.MarketPlaceService;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractReadOnlyResource;
-import com.freedomotic.util.Info;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -79,76 +75,6 @@ public class MarketplacePluginsResource extends AbstractReadOnlyResource<IPlugin
     @Override
     protected List<IPluginPackage> prepareList() {
         return plugList;
-    }
-
-    @POST
-    @Path("/install/{url}")
-    @ApiOperation(value = "Download and install a plugin")
-    @ApiResponses(value = {
-        @ApiResponse(code = 202, message = "Plugin installation succeded")
-    })
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response installPlugin(
-            @ApiParam(value = "URL of plugin to download and install - this have to be url-encoded", required = true)
-            @PathParam("url") String pluginPath) {
-        boolean done;
-        PluginsManager plugMgr = api.getPluginManager();
-        try {
-            done = plugMgr.installBoundle(new URL(URLDecoder.decode(pluginPath)));
-        } catch (MalformedURLException ex) {
-            done = false;
-        }
-        if (done) {
-            return Response.accepted().build();
-        }
-        return Response.serverError().entity(pluginPath + "\n" + URLDecoder.decode(pluginPath)).build();
-    }
-
-    private String extractVersion(String filename) {
-        //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
-        //only 5.2.x-1.212 is needed
-        //remove extension
-        filename
-                = filename.substring(0,
-                        filename.lastIndexOf("."));
-
-        String[] tokens = filename.split("-");
-
-        //3 tokens expected
-        if (tokens.length == 3) {
-            return tokens[1] + "-" + tokens[2];
-        } else {
-            return filename;
-        }
-    }
-
-    @POST
-    @Path("/upgrade")
-    @ApiOperation(value = "Upgrade plugins with most recent version available on marketplaces")
-    public Response upgrade() {
-        for (Client c : api.getClients("plugin")) {
-            Plugin p = (Plugin) c;
-            for (IPluginPackage pp : mps.getPackageList()) {
-                String freedomoticVersion = Info.getMajor() + "." + Info.getMinor();
-                if (pp.getFilePath(freedomoticVersion) != null
-                        && !pp.getFilePath(freedomoticVersion).isEmpty()
-                        && pp.getTitle() != null) {
-                    String packageVersion = extractVersion(new File(pp.getFilePath(freedomoticVersion)).getName());
-                    int result = api.getClientStorage().compareVersions(pp.getTitle(), packageVersion);
-                    switch (result) {
-                        case -1:  //older version or not yet installed -> INSTALL
-                            break;
-                        case 1:  //newer version -> UPGRADE
-                            try {
-                                api.getPluginManager().installBoundle(new URL(pp.getFilePath(freedomoticVersion)));
-                            } catch (MalformedURLException e) {
-                            }
-                            break;
-                    }
-                }
-            }
-        }
-        return Response.accepted().build();
     }
 
     @GET

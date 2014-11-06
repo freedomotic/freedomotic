@@ -65,7 +65,8 @@ public class MarketplaceCategoryResource extends AbstractReadOnlyResource<IPlugi
     }
 
     @GET
-    @Path("{cat}/plugins")
+    @Path("/{cat}/plugins")
+    @ApiOperation(value = "Show the list of plugins belonging to selected category")
     public MarketplacePluginsResource listPluginsFromCategory(
             @ApiParam(value = "Name of plugins category to fetch", required = true)
             @PathParam("cat") String cat) {
