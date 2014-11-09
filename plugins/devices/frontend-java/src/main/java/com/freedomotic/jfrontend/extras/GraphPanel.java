@@ -21,6 +21,7 @@ package com.freedomotic.jfrontend.extras;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Plugin;
+import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.charting.UsageData;
 import com.freedomotic.model.charting.UsageDataFrame;
@@ -62,13 +63,13 @@ public class GraphPanel extends javax.swing.JFrame {
     private TimeSeries series;
     private JFreeChart chart;
     private String title;
-    private Plugin master;
+    private Protocol master;
 
     /**
      * Creates new form GraphWindow
      * @param obj
      */
-    public GraphPanel(Plugin master, EnvObjectLogic obj) {
+    public GraphPanel(Protocol master, EnvObjectLogic obj) {
         this.master = master;
         this.obj = obj;
         this.title = obj.getPojo().getPhisicalAddress();
@@ -254,7 +255,7 @@ public class GraphPanel extends javax.swing.JFrame {
                 d.setProperty("startDate", Long.toString(((Date) jSpinnerStartDate.getValue()).getTime()));
                 d.setProperty("stopDate", Long.toString(((Date) jSpinnerStopDate.getValue()).getTime()));
                 d.setProperty("QueryAddress", obj.getPojo().getPhisicalAddress());
-                Freedomotic.sendCommand(d);
+                master.notifyCommand(d);
 
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(GraphPanel.class.getName()).log(Level.SEVERE, null, ex);

@@ -124,6 +124,10 @@ public abstract class Protocol
         }
     }
 
+    public Command notifyCommand(Command command) {
+        return getBusService().send(command);
+    }
+
     /**
      *
      * @param ev

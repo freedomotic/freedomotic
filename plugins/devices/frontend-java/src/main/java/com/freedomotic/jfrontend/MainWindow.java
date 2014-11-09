@@ -334,7 +334,7 @@ public class MainWindow
         c.setProperty("plugin", master.getName());
         c.setProperty("action", "restart"); //the default choice
 
-        Freedomotic.sendCommand(c);
+        master.notifyCommand(c);
     }
 
     private void changeRenderer(String renderer) {
@@ -1075,7 +1075,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         c.setProperty("plugin", "Automations Editor");
         c.setProperty("action", "show"); //the default choice
 
-        Freedomotic.sendCommand(c);
+        master.notifyCommand(c);
     }//GEN-LAST:event_mnuAutomationsActionPerformed
 
     private void mnuChangeRendererActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuChangeRendererActionPerformed
