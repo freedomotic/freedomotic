@@ -14,27 +14,10 @@ import com.freedomotic.environment.Room;
  */
 public interface GenericGate {
 
-    /**
-     *
-     */
+
     void evaluateGate();
-
-    /**
-     *
-     * @return
-     */
     Room getFrom();
-
-    /**
-     *
-     * @return
-     */
     Room getTo();
-
-    /**
-     *
-     * @return
-     */
     boolean isOpen();
     
 }

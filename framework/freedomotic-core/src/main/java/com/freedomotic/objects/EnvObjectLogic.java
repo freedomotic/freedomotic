@@ -60,7 +60,6 @@ public class EnvObjectLogic {
 
     //@Inject
     //private BusService busService;
-
     private EnvObject pojo;
     private boolean changed;
     // private String message;
@@ -278,11 +277,10 @@ public class EnvObjectLogic {
         createTriggers();
         commandsMapping = new HashMap<String, Command>();
         cacheDeveloperLevelCommand();
-        //assign to an environment
-        pojo.getEnvironmentID();
-        this.setEnvironment(environment);
-        checkTopology();
-
+        // assign object to an environment
+        this.setEnvironment(EnvironmentPersistence.getEnvByUUID(pojo.getEnvironmentID()));
+        // update topology information
+        updateTopology();
     }
 
     @Deprecated
@@ -377,12 +375,8 @@ public class EnvObjectLogic {
      */
     @RequiresPermissions("objects:create")
     public final void setRandomLocation() {
-        int randomX
-                = 0
-                + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth());
-        int randomY
-                = 0
-                + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight());
+        int randomX = 0 + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth());
+        int randomY = 0 + (int) (Math.random() * EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight());
         setLocation(randomX, randomY);
     }
 
@@ -397,13 +391,13 @@ public class EnvObjectLogic {
             rep.setOffset(x, y);
         }
 
-        checkTopology();
+        updateTopology();
         //commit the changes to this object
         this.setChanged(true);
     }
 
     @RequiresPermissions({"objects:read", "zones.update"})
-    private void checkTopology() {
+    private void updateTopology() {
         FreedomShape shape = getPojo().getRepresentations().get(0).getShape();
         int xoffset = getPojo().getCurrentRepresentation().getOffset().getX();
         int yoffset = getPojo().getCurrentRepresentation().getOffset().getY();
@@ -412,17 +406,17 @@ public class EnvObjectLogic {
         FreedomPolygon translatedObject
                 = (FreedomPolygon) TopologyUtils.translate((FreedomPolygon) shape, xoffset, yoffset);
 
+        //REGRESSION
         for (EnvironmentLogic locEnv : EnvironmentPersistence.getEnvironments()) {
             for (ZoneLogic zone : locEnv.getZones()) {
-                //remove from every zone
-                zone.getPojo().getObjects().remove(this.getPojo());
                 if (this.getEnvironment() == locEnv && TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
                     //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
                     //add to the zones this object belongs
                     zone.getPojo().getObjects().add(this.getPojo());
-                    LOG.log(Level.CONFIG, "Object {0} is in zone {1}",
-                            new Object[]{getPojo().getName(), zone.getPojo().getName()});
+                    LOG.log(Level.FINE, "Object {0} is in zone {1}", new Object[]{getPojo().getName(), zone.getPojo().getName()});
                 } else {
+                    //remove from the zone
+                    zone.getPojo().getObjects().remove(this.getPojo());
                     //DEBUG: System.out.println("object " + getPojo().getName() + " NOT intersects zone " + zone.getPojo().getName());
                 }
             }
@@ -569,13 +563,7 @@ public class EnvObjectLogic {
      */
     @RequiresPermissions("objects:update")
     protected void setPojo(EnvObject pojo) {
-        if (((pojo.getEnvironmentID() == null) || pojo.getEnvironmentID().isEmpty())
-                && (EnvironmentPersistence.getEnvironments().size() > 0)) {
-            pojo.setEnvironmentID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
-        }
-
         this.pojo = pojo;
-        this.environment = EnvironmentPersistence.getEnvByUUID(pojo.getEnvironmentID());
     }
 
     @RequiresPermissions({"objects:update", "triggers:update"})
@@ -641,8 +629,12 @@ public class EnvObjectLogic {
     @RequiresPermissions("objects:update")
     public void setEnvironment(EnvironmentLogic selEnv) {
         if (selEnv == null) {
-            throw new IllegalArgumentException("Selected environment cannot be "
-                    + "null for object " + getPojo().getName());
+            LOG.warning("Trying to assign a null environment to object " + this.getPojo().getName() 
+                    + ". It will be relocated to the fallback environment");
+            selEnv = EnvironmentPersistence.getEnvironments().get(0);
+            if (selEnv == null) {
+                throw new IllegalArgumentException("Fallback environment is null for object " + getPojo().getName());
+            }
         }
         this.environment = selEnv;
         getPojo().setEnvironmentID(selEnv.getPojo().getUUID());

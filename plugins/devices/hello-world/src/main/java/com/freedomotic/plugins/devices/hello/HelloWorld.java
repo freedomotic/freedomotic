@@ -21,7 +21,6 @@ package com.freedomotic.plugins.devices.hello;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;

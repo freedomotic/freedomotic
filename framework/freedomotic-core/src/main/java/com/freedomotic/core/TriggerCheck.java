@@ -26,7 +26,7 @@ package com.freedomotic.core;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
-import com.freedomotic.environment.EnvironmentPersistence;
+import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.objects.BehaviorLogic;
@@ -54,11 +54,11 @@ import java.util.logging.Logger;
 public class TriggerCheck {
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
-    private final EnvironmentPersistence environmentPersistence;
+    private final EnvironmentRepository environmentPersistence;
     private final BusService busService;
 
     @Inject
-    TriggerCheck(EnvironmentPersistence environmentPersistence, BusService busService) {
+    TriggerCheck(EnvironmentRepository environmentPersistence, BusService busService) {
         this.environmentPersistence = environmentPersistence;
         this.busService = busService;
     }

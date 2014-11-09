@@ -51,21 +51,22 @@ class BusServiceImpl extends LifeCycle implements BusService {
 
     private static final Logger LOG = Logger.getLogger(BusServiceImpl.class.getName());
 
-    @Inject
     private AppConfig config;
-
     private BusBroker brokerHolder;
     private BusConnection connectionHolder;
     private DestinationRegistry destination;
-
     private Session receiveSession;
     private Session sendSession;
     private Session unlistenedSession;
-
-    /**
-     *
-     */
     protected MessageProducer messageProducer;
+    
+    @Inject
+    public BusServiceImpl(AppConfig config){
+        this.config = config;
+        if (BootStatus.getCurrentStatus() == BootStatus.STOPPED) {
+           init();
+        }
+    }
 
     /**
      * {@inheritDoc}

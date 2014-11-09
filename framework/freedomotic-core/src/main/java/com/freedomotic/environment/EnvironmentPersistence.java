@@ -19,7 +19,6 @@
  */
 package com.freedomotic.environment;
 
-import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
 import com.freedomotic.app.FreedomoticInjector;
 //import com.freedomotic.app.Freedomotic;
@@ -29,7 +28,6 @@ import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
-import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
@@ -61,7 +59,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  *
  * @author Enrico
  */
-public final class EnvironmentPersistence implements Repository<EnvironmentLogic> {
+public class EnvironmentPersistence implements EnvironmentRepository {
 
     private static final List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
     private final ClientStorage clientStorage;
@@ -83,7 +81,7 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
      * @throws DaoLayerException
      */
     @RequiresPermissions("environments:save")
-    public static void saveEnvironmentsToFolder(File folder) throws DaoLayerException {
+    public void saveEnvironmentsToFolder(File folder) throws DaoLayerException {
         if (environments.isEmpty()) {
             LOG.warning("There is no environment to persist, " + folder.getAbsolutePath() + " will not be altered.");
             return;
@@ -164,8 +162,8 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
      * @deprecated
      */
     @Deprecated
-    public synchronized static boolean loadEnvironmentsFromDir(File folder, boolean makeUnique)
-            throws DaoLayerException {
+    @Override
+    public boolean loadEnvironmentsFromDir(File folder, boolean makeUnique) throws DaoLayerException {
         if (folder == null) {
             throw new DaoLayerException("Cannot");
         }
@@ -386,7 +384,7 @@ public final class EnvironmentPersistence implements Repository<EnvironmentLogic
      * @throws IOException
      */
     @RequiresPermissions("environments:save")
-    public static void saveAs(EnvironmentLogic env, File folder) throws IOException {
+    public void saveAs(EnvironmentLogic env, File folder) throws IOException {
         LOG.config("Serializing new environment to " + folder);
 
         createFolderStructure(folder);

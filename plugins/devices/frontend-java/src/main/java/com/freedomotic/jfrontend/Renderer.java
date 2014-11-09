@@ -22,7 +22,6 @@ package com.freedomotic.jfrontend;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.i18n.I18n;
@@ -79,22 +78,19 @@ public class Renderer
     private double widthRescale = 1.0;
     private double heightRescale = 1.0;
     private boolean backgroundChanged = true;
-    private int environmentWidth = (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getWidth();
-    private int environmentHeight = (int) EnvironmentPersistence.getEnvironments().get(0).getPojo().getHeight();
+    private int environmentWidth;
+    private int environmentHeight;
     private static int BORDER_X = 10; //the empty space around the map
     private static int BORDER_Y = 10; //the empty space around the map
-    private double CANVAS_WIDTH = environmentWidth + (BORDER_X * 2);
-    private double CANVAS_HEIGHT = environmentHeight + (BORDER_Y * 2);
+    private double CANVAS_WIDTH;
+    private double CANVAS_HEIGHT;
     private static final int SNAP_TO_GRID = 20; //a grid of 20cm
     public static final int HIGH_OPACITY = 180;
     public static final int DEFAULT_OPACITY = 150;
     public static final int LOW_OPACITY = 120;
     private static Map<ZoneLogic, Color> zoneColors = new HashMap<ZoneLogic, Color>();
     private final I18n I18n;
-    /**
-     *
-     */
-    protected Color backgroundColor = TopologyUtils.convertColorToAWT(EnvironmentPersistence.getEnvironments().get(0).getPojo().getBackgroundColor());
+    protected Color backgroundColor;
     private EnvObjectLogic selectedObject;
     private ArrayList<Indicator> indicators = new ArrayList<Indicator>();
     private HashMap<String, Shape> cachedShapes = new HashMap<String, Shape>();
@@ -103,15 +99,47 @@ public class Renderer
     private FreedomPoint originalHandleLocation = null;
     private ArrayList<Handle> handles = new ArrayList<Handle>();
     private ZoneLogic selectedZone;
-    /**
-     *
-     */
     protected CalloutsUpdater callouts;
     private boolean objectEditMode = false;
     private Point messageCorner = new Point(50, 50);
     private Dimension dragDiff = null;
-    private EnvironmentLogic currEnv = EnvironmentPersistence.getEnvironments().get(0);
+    private EnvironmentLogic currEnv;
+
     private HashMap<EnvObjectLogic, ObjectEditor> objEditorPanels = new HashMap<EnvObjectLogic, ObjectEditor>();
+    
+        /**
+     *
+     * @param master
+     */
+    public Renderer(JavaDesktopFrontend master) {
+        this.plugin = master;
+        this.I18n = plugin.getApi().getI18n();
+        environmentWidth = (int) getEnvironments().get(0).getPojo().getWidth();
+        environmentHeight = (int) getEnvironments().get(0).getPojo().getHeight();
+        CANVAS_WIDTH = environmentWidth + (BORDER_X * 2);
+        CANVAS_HEIGHT = environmentHeight + (BORDER_Y * 2);
+        backgroundColor = TopologyUtils.convertColorToAWT(getEnvironments().get(0).getPojo().getBackgroundColor());
+        currEnv = getEnvironments().get(0);
+        ResourcesManager.clear();
+        clear();
+        addCustomMouseListener();
+        addCustomMouseMotionListener();
+        setBackground(backgroundColor);
+        addComponentListener(new ComponentAdapter() {
+
+            @Override
+            public void componentResized(ComponentEvent e) {
+                backgroundChanged = true;
+                findRescaleFactor();
+            }
+        });
+        callouts = new CalloutsUpdater(this, 1000);
+        repaint();
+    }
+    
+    private List<EnvironmentLogic> getEnvironments() {
+        return plugin.getApi().environments().list();
+    }
 
     /**
      *
@@ -138,6 +166,7 @@ public class Renderer
      *
      * @return
      */
+    @Override
     public EnvironmentLogic getCurrEnv() {
         return this.currEnv;
     }
@@ -146,10 +175,10 @@ public class Renderer
      *
      * @param env
      */
+    @Override
     public void setCurrEnv(EnvironmentLogic env) {
         this.currEnv = env;
         updateEnvRelatedVars();
-
         setNeedRepaint(true);
     }
 
@@ -221,30 +250,6 @@ public class Renderer
                 addIndicator(TopologyUtils.convertToAWT(room.getPojo().getShape()), zoneColors.get(room));
             }
         }
-    }
-
-    /**
-     *
-     * @param master
-     */
-    public Renderer(JavaDesktopFrontend master) {
-        this.plugin = master;
-        this.I18n = plugin.getApi().getI18n();
-        ResourcesManager.clear();
-        clear();
-        addCustomMouseListener();
-        addCustomMouseMotionListener();
-        setBackground(backgroundColor);
-        addComponentListener(new ComponentAdapter() {
-
-            @Override
-            public void componentResized(ComponentEvent e) {
-                backgroundChanged = true;
-                findRescaleFactor();
-            }
-        });
-        callouts = new CalloutsUpdater(this, 1000);
-        repaint();
     }
 
     private void addCustomMouseListener() {

@@ -9,8 +9,7 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
-import static com.freedomotic.core.BehaviorManager.getMessagingChannel;
-import com.freedomotic.environment.EnvironmentPersistence;
+import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.LocationEvent;
 import com.freedomotic.model.geometry.FreedomPoint;
@@ -19,6 +18,7 @@ import com.freedomotic.objects.impl.Person;
 import com.freedomotic.util.TopologyUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
@@ -31,12 +31,15 @@ import javax.jms.ObjectMessage;
 public class TopologyManager implements BusConsumer {
 
     private static final Logger LOG = Logger.getLogger(TopologyManager.class.getName());
-    private static BusMessagesListener listener;
     private static final String LISTEN_CHANNEL = "app.event.sensor.person.movement.detected";
+    private final EnvironmentRepository environmentRepository;
+    private static BusMessagesListener listener;
     private final BusService busService;
 
-    public TopologyManager() {
-        busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+    @Inject
+    public TopologyManager(BusService busService, EnvironmentRepository environmentRepository) {
+        this.busService = busService;
+        this.environmentRepository = environmentRepository;
         listener = new BusMessagesListener(this, busService);
         listener.consumeCommandFrom(LISTEN_CHANNEL);
     }
@@ -67,7 +70,7 @@ public class TopologyManager implements BusConsumer {
      * @param event
      */
     private void fireEnterExitEvents(Person person, LocationEvent event) {
-        for (ZoneLogic zone : EnvironmentPersistence.getEnvironments().get(0).getZones()) {
+        for (ZoneLogic zone : environmentRepository.list().get(0).getZones()) {
             // are the new Person coordinates inside the current zone?
             boolean isZoneAffected = TopologyUtils.contains(zone.getPojo().getShape(), new FreedomPoint(event.getX(), event.getY()));
             if (isZoneAffected) {

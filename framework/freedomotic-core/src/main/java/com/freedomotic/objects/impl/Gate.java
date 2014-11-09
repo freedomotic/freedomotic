@@ -23,6 +23,7 @@ package com.freedomotic.objects.impl;
 
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
+import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.ds.Config;
@@ -39,6 +40,7 @@ import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.util.TopologyUtils;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 
 /**
  *
@@ -254,6 +256,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         from = null;
         to = null;
 
+        //REGRESSION
         FreedomPolygon objShape =
                 TopologyUtils.rotate(TopologyUtils.translate(pojoShape, xoffset, yoffset),
                 (int) representation.getRotation());

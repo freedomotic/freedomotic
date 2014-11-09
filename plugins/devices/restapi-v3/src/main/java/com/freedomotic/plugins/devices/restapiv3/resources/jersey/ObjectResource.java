@@ -152,12 +152,12 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     protected List<EnvObject> prepareList() {
         List<EnvObject> objects = new ArrayList<EnvObject>();
         if (envUUID == null) {
-            for (EnvObjectLogic objLogic : api.objects().list()) {
+            for (EnvObjectLogic objLogic : api.things().list()) {
                 objects.add(objLogic.getPojo());
             }
         } else {
 
-            for (EnvObjectLogic objLogic : api.objects().getObjectByEnvironment(envUUID)) {
+            for (EnvObjectLogic objLogic : api.things().getObjectByEnvironment(envUUID)) {
                 objects.add(objLogic.getPojo());
             }
         }
@@ -166,7 +166,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
     @Override
     protected EnvObject prepareSingle(String uuid) {
-        EnvObjectLogic el = api.objects().get(uuid);
+        EnvObjectLogic el = api.things().get(uuid);
         if (el != null) {
             return el.getPojo();
         } else {
@@ -176,7 +176,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
     @Override
     protected boolean doDelete(String UUID) {
-        return api.objects().delete(UUID);
+        return api.things().delete(UUID);
     }
 
     @Override
@@ -184,7 +184,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
         try {
             eo.setUUID(uuid);
             EnvObjectLogic el = EnvObjectFactory.create(eo);
-            if (api.objects().modify(uuid, el) != null) {
+            if (api.things().modify(uuid, el) != null) {
                 return eo;
             } else {
                 return null;
@@ -201,7 +201,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
         EnvObjectLogic el;
         try {
             el = EnvObjectFactory.create(eo);
-            api.objects().create(el);
+            api.things().create(el);
             return createUri(el.getPojo().getUUID());
         } catch (DaoLayerException ex) {
             LOG.log(Level.SEVERE, null, ex);
@@ -212,7 +212,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
     @Override
     protected URI doCopy(String UUID) {
-        return createUri(api.objects().copy(UUID).getPojo().getUUID());
+        return createUri(api.things().copy(UUID).getPojo().getUUID());
     }
 
     @POST
@@ -222,7 +222,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
             @ApiParam(value = "UUID of object to click", required = true)
             @PathParam("id") String UUID) {
         try {
-            EnvObjectLogic el = api.objects().get(UUID);
+            EnvObjectLogic el = api.things().get(UUID);
             ObjectReceiveClick event = new ObjectReceiveClick(this, el, ObjectReceiveClick.SINGLE_CLICK);
             Freedomotic.sendEvent(event);
             return Response.accepted().build();

@@ -101,7 +101,7 @@ public abstract class AbstractTest<Z> extends JerseyTest {
         getApi().environments().clear();
         getApi().triggers().clear();
         getApi().reactions().clear();
-        getApi().objects().clear();
+        getApi().things().clear();
         super.tearDown(); //To change body of generated methods, choose Tools | Templates.
     }
 

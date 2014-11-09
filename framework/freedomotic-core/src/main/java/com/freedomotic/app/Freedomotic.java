@@ -26,13 +26,12 @@ import com.freedomotic.bus.BootStatus;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
-import com.freedomotic.bus.InjectorBus;
 import com.freedomotic.core.BehaviorManager;
 import com.freedomotic.core.TopologyManager;
 import com.freedomotic.environment.EnvironmentDAO;
 import com.freedomotic.environment.EnvironmentDAOFactory;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentPersistence;
+import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.PluginHasChanged.PluginActions;
 import com.freedomotic.exceptions.DaoLayerException;
@@ -58,7 +57,6 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
@@ -111,6 +109,8 @@ public class Freedomotic implements BusConsumer {
     public static Injector INJECTOR;
     //dependencies
     private final EnvironmentDAOFactory environmentDaoFactory;
+    private final EnvironmentRepository environmentRepository;
+    private final TopologyManager topologyManager;
     private final ClientStorage clientStorage;
     private final PluginsManager pluginsManager;
     private AppConfig config;
@@ -124,26 +124,32 @@ public class Freedomotic implements BusConsumer {
      *
      * @param pluginsLoader
      * @param environmentDaoFactory
+     * @param environmentRepository
      * @param clientStorage
      * @param config
      * @param api
      * @param busService
+     * @param topologyManager
      */
     @Inject
     public Freedomotic(
             PluginsManager pluginsLoader,
             EnvironmentDAOFactory environmentDaoFactory,
+            EnvironmentRepository environmentRepository,
             ClientStorage clientStorage,
             AppConfig config,
             API api,
-            BusService busService) {
+            BusService busService,             
+            TopologyManager topologyManager) {
         this.pluginsManager = pluginsLoader;
         this.environmentDaoFactory = environmentDaoFactory;
+        this.environmentRepository = environmentRepository;
+        this.busService = busService;
+        this.topologyManager = topologyManager;
         this.clientStorage = clientStorage;
         this.config = config;
         this.api = api;
         this.auth = api.getAuth();
-        this.busService = busService;
     }
 
     /**
@@ -187,9 +193,11 @@ public class Freedomotic implements BusConsumer {
                 + System.getProperty("user.dir") + "\n" + "Java Version: " + System.getProperty("java.version")
                 + "\n" + "Resources Path: " + resourcesPath);
 
-        // Initialize bus here!
-        //busService = INJECTOR.getInstance(BusService.class);
-        busService.init();
+        
+        //check if topology manager is initiated
+        if (topologyManager == null) {
+            throw new IllegalStateException("Topology manager has not started");
+        }
 
         // register listener
         this.listener = new BusMessagesListener(this, busService);
@@ -361,7 +369,6 @@ public class Freedomotic implements BusConsumer {
          * A service to add environment objects using XML commands
          */
         new BehaviorManager();
-        new TopologyManager();
         new SerialConnectionProvider();
 
         /**
@@ -429,7 +436,7 @@ public class Freedomotic implements BusConsumer {
                 EnvironmentLogic logic = INJECTOR.getInstance(EnvironmentLogic.class);
                 logic.setPojo(env);
                 logic.setSource(new File(folder + "/" + env.getUUID() + ".xenv"));
-                EnvironmentPersistence.add(logic, false);
+                environmentRepository.create(logic);
             }
 
             //now add related objects
@@ -577,7 +584,7 @@ public class Freedomotic implements BusConsumer {
         try {
             folder = new File(environmentFilePath).getParentFile();
 
-            EnvironmentPersistence.saveEnvironmentsToFolder(folder);
+            environmentRepository.saveEnvironmentsToFolder(folder);
 
             if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
                 File saveDir = null;

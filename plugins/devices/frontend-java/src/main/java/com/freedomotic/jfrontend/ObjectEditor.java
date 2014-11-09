@@ -14,7 +14,6 @@ import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.jfrontend.automationeditor.ReactionEditor;
 import com.freedomotic.jfrontend.automationeditor.ReactionsPanel;
 import com.freedomotic.jfrontend.utils.CheckBoxList;
@@ -1033,7 +1032,7 @@ public class ObjectEditor
     }
 
     private void populateEnvironment() {
-        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+        for (EnvironmentLogic env : api.environments().list()) {
             environmentComboBox.addItem(env);
         }
 

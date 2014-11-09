@@ -21,9 +21,9 @@ package com.freedomotic.objects;
 
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentPersistence;
+import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.exceptions.DaoLayerException;
 import com.freedomotic.model.object.EnvObject;
-import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
@@ -47,36 +47,26 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
  * @author Enrico
  */
-public class EnvObjectPersistence implements Repository<EnvObjectLogic> {
+public class EnvObjectPersistence implements ThingsRepository {
 
-    /**
-     *
-     */
     public static final boolean MAKE_UNIQUE = true;
 
-    /**
-     *
-     */
     public static final boolean MAKE_NOT_UNIQUE = false;
     private static final Map<String, EnvObjectLogic> objectList = new HashMap<String, EnvObjectLogic>();
+    private final EnvironmentRepository environmentPersistence;
 
-    /**
-     *
-     */
-    public EnvObjectPersistence() {
-        //disable instance creation
+    @Inject
+    public EnvObjectPersistence(EnvironmentRepository environmentPersistence) {
+        this.environmentPersistence = environmentPersistence;
     }
 
-    /**
-     *
-     * @return
-     */
     @Deprecated
     @RequiresPermissions("objects:read")
     public static Collection<EnvObjectLogic> getObjectList() {
@@ -115,12 +105,12 @@ public class EnvObjectPersistence implements Repository<EnvObjectLogic> {
                     envObject.getPojo().setUUID(UUID.randomUUID().toString());
                 }
 
-                if ((envObject.getPojo().getEnvironmentID() == null)
-                        || envObject.getPojo().getEnvironmentID().isEmpty()) {
-                    envObject.getPojo()
-                            .setEnvironmentID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
-                }
-
+                //REGRESSION
+//                if ((envObject.getPojo().getEnvironmentID() == null)
+//                        || envObject.getPojo().getEnvironmentID().isEmpty()) {
+//                    envObject.getPojo()
+//                            .setEnvironmentID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
+//                }
                 String fileName = envObject.getPojo().getUUID() + ".xobj";
                 File file = new File(folder + "/" + fileName);
                 FreedomXStream.toXML(envObject.getPojo(), file);
@@ -212,10 +202,10 @@ public class EnvObjectPersistence implements Repository<EnvObjectLogic> {
                     if (env != null) {
                         loaded.setEnvironment(env);
                     } else {
-                        loaded.setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
                         LOG.warning("Reset environment UUID of object " + loaded.getPojo().getName()
                                 + " to the default environment. This is because the environment UUID "
                                 + loaded.getPojo().getEnvironmentID() + " does not exists.");
+                        loaded.setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
                     }
                     add(loaded, makeUnique);
                 }

@@ -194,9 +194,10 @@ public final class Reaction
             Command c = commandIterator.next();
             if (c != null) {
                 b.append("(");
-                if (!c.isExecuted()) {
-                    b.append("FAILED: ");
-                }
+                //TODO: disabled because it always reports 'failed'
+//                if (!c.isExecuted()) {
+//                    b.append("FAILED: ");
+//                }
                 b.append(c.getName()).append(")");
             }
 

@@ -11,12 +11,14 @@ import com.freedomotic.core.TriggerCheck;
 import com.freedomotic.environment.EnvironmentDAO;
 import com.freedomotic.environment.EnvironmentDAOFactory;
 import com.freedomotic.environment.EnvironmentDAOXstream;
+import com.freedomotic.environment.InjectorEnvironment;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.plugins.InjectorPlugins;
 import com.freedomotic.security.Auth;
 import com.freedomotic.security.AuthImpl2;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.i18n.I18nImpl;
+import com.freedomotic.objects.InjectorThings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -33,6 +35,8 @@ public class FreedomoticInjector extends AbstractModule {
         install(new InjectorBus());
         install(new InjectorPlugins());
         install(new InjectorApi());
+        install(new InjectorEnvironment());
+        install(new InjectorThings());
         
         
         //TODO: move this definitions to package specific modules (with protected implementation classes)

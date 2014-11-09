@@ -7,7 +7,7 @@ package com.freedomotic.api;
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentPersistence;
+import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.plugins.ClientStorage;
@@ -33,7 +33,7 @@ import java.util.List;
  */
 class APIStandardImpl implements API {
 
-    private final EnvironmentPersistence environments;
+    private final EnvironmentRepository environments;
     private final EnvObjectPersistence objects;
     private final ClientStorage clientStorage;
     private final AppConfig config;
@@ -58,7 +58,7 @@ class APIStandardImpl implements API {
      */
     @Inject
     public APIStandardImpl(
-            EnvironmentPersistence environment,
+            EnvironmentRepository environment,
             EnvObjectPersistence object,
             ClientStorage clientStorage,
             AppConfig config,
@@ -172,45 +172,6 @@ class APIStandardImpl implements API {
 
     /**
      *
-     * @param obj
-     * @param MAKE_UNIQUE
-     * @return
-     */
-    @Override
-    public EnvironmentLogic addEnvironment(EnvironmentLogic obj, boolean MAKE_UNIQUE) {
-        return environments.add(obj, MAKE_UNIQUE);
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public List<EnvironmentLogic> getEnvironments() {
-        return environments.getEnvironments();
-    }
-
-    /**
-     *
-     * @param UUID
-     * @return
-     */
-    @Override
-    public EnvironmentLogic getEnvByUUID(String UUID) {
-        return environments.getEnvByUUID(UUID);
-    }
-
-    /**
-     *
-     * @param input
-     */
-    @Override
-    public void removeEnvironment(EnvironmentLogic input) {
-        environments.remove(input);
-    }
-
-    /**
-     *
      * @param filter
      * @return
      */
@@ -280,7 +241,7 @@ class APIStandardImpl implements API {
     }
 
     @Override
-    public EnvironmentPersistence environments() {
+    public EnvironmentRepository environments() {
         return environments;
     }
 
@@ -290,7 +251,7 @@ class APIStandardImpl implements API {
     }
 
     @Override
-    public EnvObjectPersistence objects() {
+    public EnvObjectPersistence things() {
         return objects;
     }
 

@@ -69,7 +69,9 @@ public class BusMessagesListener implements MessageListener {
      */
     @Inject
     public BusMessagesListener(BusConsumer busConsumer, BusService busService) {
-
+        if (busService == null) {
+            throw new IllegalArgumentException("Bus service cannot be not null");
+        }
         this.busConsumer = busConsumer;
         this.busService = busService;
         this.registeredEventQueues = new HashMap<>();

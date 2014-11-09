@@ -22,8 +22,6 @@ package com.freedomotic.jfrontend;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.bus.BusConsumer;
-import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.events.ObjectHasChangedBehavior;
@@ -40,7 +38,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jms.ObjectMessage;
 import javax.swing.JOptionPane;
 
 /**
@@ -173,17 +170,10 @@ public class JavaDesktopFrontend extends Protocol {
     protected void onCommand(final Command c)
             throws IOException, UnableToExecuteException {
         String callout = c.getProperty("callout.message");
-
         if (callout != null) {
-            Callout callout1 = new Callout(this.getClass().getCanonicalName(),
-                    "info",
-                    callout,
-                    0,
-                    0,
-                    0,
-                    0);
+            Callout callout1 = new Callout(this.getClass().getCanonicalName(), "info", callout, 0, 0, 0, 0);
             drawer.createCallout(callout1);
-        } else if (c.getProperty("command").equals("GRAPH-DATA")) { // show GUI
+        } else if (c.getProperty("command") != null && c.getProperty("command").equals("GRAPH-DATA")) { // show GUI
             // get related object from address
             EnvObjectLogic obj = (EnvObjectLogic) getApi().getObjectByAddress("harvester", c.getProperty("event.object.address")).toArray()[0];
             // open GraphWindow related to the object
@@ -205,6 +195,7 @@ public class JavaDesktopFrontend extends Protocol {
                 @Override
                 public void run() {
                     new Thread(new Runnable() {
+                        @Override
                         public void run() {
                             //Custom button text
                             if (c.getProperty("options") != null) {
@@ -224,7 +215,7 @@ public class JavaDesktopFrontend extends Protocol {
                                         options[n].toString());
                             }
 
-                            //sendBack(c);
+                            reply(c);
                         }
                     }).start();
                 }

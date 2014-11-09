@@ -24,7 +24,6 @@ import com.freedomotic.api.Plugin;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.GenericEvent;
@@ -144,7 +143,7 @@ public class MainWindow
         mnuPluginList.setEnabled(Auth.isPermitted("plugins:read"));
         frameClient.setVisible(Auth.isPermitted("plugins:read"));
         mnuPrivileges.setEnabled(Auth.isPermitted("auth:privileges:read") || Auth.isPermitted("auth:privileges:update"));
-        mnuSelectEnvironment.setEnabled(master.getApi().getEnvironments().size() > 1);
+        mnuSelectEnvironment.setEnabled(master.getApi().environments().list().size() > 1);
     }
 
     private void setEnvironment(EnvironmentLogic input) {
@@ -924,7 +923,7 @@ public class MainWindow
             LOG.info("Opening " + file.getAbsolutePath());
 
             try {
-                boolean loaded = EnvironmentPersistence.loadEnvironmentsFromDir(file.getParentFile(),
+                boolean loaded = master.getApi().environments().loadEnvironmentsFromDir(file.getParentFile(),
                         false);
 
                 if (loaded) {
@@ -1038,7 +1037,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             File folder = fc.getSelectedFile();
 
             try {
-                EnvironmentPersistence.saveEnvironmentsToFolder(folder);
+                master.getApi().environments().saveEnvironmentsToFolder(folder);
 
             } catch (Exception ex) {
                 LOG.log(Level.SEVERE, null, ex);
@@ -1159,10 +1158,10 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         File template
                 = new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/templates/template-square/template-square.xenv");
         LOG.info("Opening " + template.getAbsolutePath());
-        drawer.setCurrEnv(0);
+        drawer.setCurrEnv(master.getApi().environments().list().get(0));
 
         try {
-            boolean loaded = EnvironmentPersistence.loadEnvironmentsFromDir(template.getParentFile(),
+            boolean loaded = master.getApi().environments().loadEnvironmentsFromDir(template.getParentFile(),
                     false);
 
             if (loaded) {
@@ -1179,13 +1178,12 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                                 new File(folder + "/" + newenv.getPojo().getUUID() + ".xenv"));
                         setEnvironment(newenv);
                         //save the new environment
-                        EnvironmentPersistence.saveAs(newenv, folder);
+                        master.getApi().environments().saveAs(newenv, folder);
                     }
                 } else {
                     LOG.info("Save command cancelled by user.");
                     //reload the old file
-                    EnvironmentPersistence.loadEnvironmentsFromDir(oldEnv.getParentFile(),
-                            false);
+                    master.getApi().environments().loadEnvironmentsFromDir(oldEnv.getParentFile(), false);
 
                     setEnvironment(api.environments().list().get(0));
                 }
@@ -1203,7 +1201,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 = Info.PATHS.PATH_DATA_FOLDER + "/furn" + api.getConfig().getProperty("KEY_ROOM_XML_PATH");
 
         try {
-            EnvironmentPersistence.saveEnvironmentsToFolder(new File(environmentFilePath).getParentFile());
+            master.getApi().environments().saveEnvironmentsToFolder(new File(environmentFilePath).getParentFile());
         } catch (DaoLayerException ex) {
             JOptionPane.showMessageDialog(this,
                     "Cannot save environment at "
@@ -1223,8 +1221,8 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         if (Auth.isPermitted("environments:read")) {
 
             if (api.environments().list().size() == 1) {
-                drawer.setCurrEnv(0);
-                setMapTitle(api.getEnvironments().get(0).getPojo().getName());
+                drawer.setCurrEnv(api.environments().list().get(0));
+                setMapTitle(api.environments().list().get(0).getPojo().getName());
             } else {
                 Object[] possibilities = api.environments().list().toArray();
                 EnvironmentLogic input = (EnvironmentLogic) JOptionPane.showInputDialog(
@@ -1260,7 +1258,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
     private void mnuRenameEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameEnvironmentActionPerformed
-        String input = JOptionPane.showInputDialog(this, i18n.msg("enter_new_name_for_env_X",new Object[]{ drawer.getCurrEnv().getPojo().getName()}),i18n.msg("environment_rename_popup_title"),JOptionPane.QUESTION_MESSAGE);
+        String input = JOptionPane.showInputDialog(this, i18n.msg("enter_new_name_for_env_X", new Object[]{drawer.getCurrEnv().getPojo().getName()}), i18n.msg("environment_rename_popup_title"), JOptionPane.QUESTION_MESSAGE);
         if (input != null) {
             if (!input.isEmpty()) {
                 drawer.getCurrEnv().getPojo().setName(input.trim());
@@ -1306,7 +1304,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 }
             }
             api.environments().delete(oldenv);
-            if (api.objects().list().isEmpty()) {
+            if (api.things().list().isEmpty()) {
                 // add a new object placeholder
                 ObjectPluginPlaceholder objp = (ObjectPluginPlaceholder) api.getClients("object").toArray()[0];
                 objp.startOnEnv(oldenv);

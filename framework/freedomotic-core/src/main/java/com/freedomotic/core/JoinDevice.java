@@ -26,7 +26,7 @@ package com.freedomotic.core;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
-import com.freedomotic.environment.EnvironmentPersistence;
+import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.reactions.Command;
 import com.google.inject.Inject;
@@ -50,11 +50,11 @@ public final class JoinDevice
     private static final Logger LOG = Logger.getLogger(JoinDevice.class.getName());
 
     //dependencies
-    private final EnvironmentPersistence environmentPersistence;
+    private final EnvironmentRepository environmentPersistence;
     private BusService busService;
 
     @Inject
-    private JoinDevice(EnvironmentPersistence environmentPersistence, BusService busService) {
+    private JoinDevice(EnvironmentRepository environmentPersistence, BusService busService) {
         this.environmentPersistence = environmentPersistence;
         this.busService = busService;
         register();

@@ -22,7 +22,6 @@ package com.freedomotic.jfrontend;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentPersistence;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.jfrontend.utils.SpringUtilities;
@@ -51,12 +50,10 @@ import javax.swing.SpringLayout;
  *
  * @author enrico
  */
-public class ListDrawer
-        extends Renderer {
+public class ListDrawer extends Renderer {
 
     JComboBox cmbZone = new JComboBox();
     JPanel panel = new JPanel();
-    EnvironmentLogic currEnv = EnvironmentPersistence.getEnvironments().get(0);
 
     /**
      *
@@ -83,22 +80,6 @@ public class ListDrawer
         setPreferredSize(new Dimension(400, 300));
         //add(scroll);
         validate();
-    }
-
-    /**
-     *
-     * @param env
-     */
-    public void setCurrEnv(EnvironmentLogic env) {
-        this.currEnv = env;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public EnvironmentLogic getCurrEnv() {
-        return this.currEnv;
     }
 
     private void enlistZones() {

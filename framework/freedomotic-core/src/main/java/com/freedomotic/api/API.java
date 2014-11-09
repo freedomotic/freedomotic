@@ -6,7 +6,7 @@ package com.freedomotic.api;
 
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentPersistence;
+import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.plugins.ClientStorage;
@@ -126,37 +126,6 @@ public interface API {
 
     /**
      *
-     * @param obj
-     * @param MAKE_UNIQUE
-     * @return
-     */
-        EnvironmentLogic addEnvironment(final EnvironmentLogic obj, boolean MAKE_UNIQUE);
-
-    //read
-
-    /**
-     *
-     * @return
-     */
-        List<EnvironmentLogic> getEnvironments();
-
-    /**
-     *
-     * @param UUID
-     * @return
-     */
-    EnvironmentLogic getEnvByUUID(String UUID);
-
-    //delete
-
-    /**
-     *
-     * @param input
-     */
-        void removeEnvironment(EnvironmentLogic input);
-
-    /**
-     *
      * @return
      */
     Collection<Client> getClients();
@@ -182,9 +151,9 @@ public interface API {
      */
     BufferedImage getResource(String resourceIdentifier);
     
-    EnvironmentPersistence environments();
+    EnvironmentRepository environments();
     TriggerPersistence triggers();
-    EnvObjectPersistence objects();
+    EnvObjectPersistence things();
     CommandPersistence commands();
     ReactionPersistence reactions();
 }
