@@ -117,8 +117,12 @@ public class PluginResource extends AbstractResource<Plugin> {
     public Response start(
             @PathParam("id")
             @ApiParam(value = "Classname of plugin", required = true) String name) {
+        if (!api.getAuth().isPermitted("sys:plugins:start")) {
+            throw new ForbiddenException();
+        }
         Plugin p = prepareSingle(name);
         if (p != null) {
+            
             p.start();
             return Response.accepted().build();
         }
@@ -136,6 +140,9 @@ public class PluginResource extends AbstractResource<Plugin> {
     public Response stop(
             @PathParam("id")
             @ApiParam(value = "Classname of plugin", required = true) String name) {
+        if (!api.getAuth().isPermitted("sys:plugins:stop")) {
+            throw new ForbiddenException();
+        }
         Plugin p = prepareSingle(name);
         if (p != null) {
             p.stop();

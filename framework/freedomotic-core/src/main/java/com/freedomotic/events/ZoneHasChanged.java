@@ -46,7 +46,7 @@ public class ZoneHasChanged
         this.setSender(source);
         payload.addStatement("zone.name", zone.getName());
         payload.addStatement("zone.description", zone.getDescription());
-
+        payload.addStatement("zone.uuid", zone.getUuid());
         //TODO: just a reminder for this property
 		//    Room room = null; 
 		//    if (room != null) {

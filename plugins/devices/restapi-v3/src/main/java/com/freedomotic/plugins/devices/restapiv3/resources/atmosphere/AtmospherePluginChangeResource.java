@@ -19,8 +19,13 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.atmosphere;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
+import com.freedomotic.api.Plugin;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
+import com.freedomotic.plugins.devices.restapiv3.utils.AbstractWSResource;
 import com.wordnik.swagger.annotations.Api;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -40,17 +45,25 @@ import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
         interceptors = {AtmosphereResourceLifecycleInterceptor.class, TrackMessageSizeInterceptor.class},
         path = "/" + RestAPIv3.API_VERSION + "/ws/" + AtmospherePluginChangeResource.PATH,
         servlet = "org.glassfish.jersey.servlet.ServletContainer")
-public class AtmospherePluginChangeResource {
+public class AtmospherePluginChangeResource extends AbstractWSResource {
 
     public final static String PATH = "pluginchange";
 
     @POST
     public static void broadcast(EventTemplate message) {
-        try {
-            BroadcasterFactory.getDefault()
-                    .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmospherePluginChangeResource.PATH)
-                    .broadcast(message.getPayload());
-        } catch (NullPointerException ex) {
+        if (api != null) {
+            for (Client c : api.getClients("plugin")) {
+                Plugin p = (Plugin) c;
+                if (p.getName().equalsIgnoreCase(message.getPayload().getStatementValue("plugin"))) {
+                    try {
+                        BroadcasterFactory.getDefault()
+                                .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmospherePluginChangeResource.PATH)
+                                    .broadcast(om.writeValueAsString(p));
+                    } catch (JsonProcessingException ex) {
+                    }
+                    return;
+                }
+            }
         }
     }
 

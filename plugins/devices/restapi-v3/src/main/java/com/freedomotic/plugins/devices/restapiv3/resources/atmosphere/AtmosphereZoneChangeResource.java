@@ -19,8 +19,13 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.atmosphere;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.freedomotic.api.EventTemplate;
+import com.freedomotic.environment.EnvironmentLogic;
+import com.freedomotic.environment.ZoneLogic;
+import com.freedomotic.model.environment.Environment;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
+import com.freedomotic.plugins.devices.restapiv3.utils.AbstractWSResource;
 import com.wordnik.swagger.annotations.Api;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -40,18 +45,27 @@ import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
         interceptors = {AtmosphereResourceLifecycleInterceptor.class, TrackMessageSizeInterceptor.class},
         path = "/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereZoneChangeResource.PATH,
         servlet = "org.glassfish.jersey.servlet.ServletContainer")
-public class AtmosphereZoneChangeResource {
+public class AtmosphereZoneChangeResource extends AbstractWSResource {
 
     public final static String PATH = "zonechange";
 
     @POST
     public static void broadcast(EventTemplate message) {
-        try {
-            BroadcasterFactory.getDefault()
-                    .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereZoneChangeResource.PATH)
-                    .broadcast(message.getPayload());
-        } catch (NullPointerException ex) {
+        if (api != null) {
+            for (EnvironmentLogic e : api.environments().list()) {
+                ZoneLogic z = e.getZone(message.getPayload().getStatementValue("zone.name"));
+                if (z != null) {
+                    try {
+                        BroadcasterFactory.getDefault()
+                                .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereZoneChangeResource.PATH)
+                                .broadcast(
+                                        om.writeValueAsString(z));
+                    } catch (JsonProcessingException ex) {
+
+                    }
+                    return;
+                }
+            }
         }
     }
-
 }

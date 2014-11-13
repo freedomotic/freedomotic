@@ -19,12 +19,14 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.atmosphere;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.freedomotic.api.EventTemplate;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
+import com.freedomotic.plugins.devices.restapiv3.utils.AbstractWSResource;
 import com.wordnik.swagger.annotations.Api;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import org.atmosphere.client.TrackMessageSizeInterceptor;
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
@@ -37,23 +39,29 @@ import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
 @Api(value = "ws_objectChange", description = "WS for object change events", position = 10)
 @AtmosphereService(
         dispatch = false,
-        interceptors = {AtmosphereResourceLifecycleInterceptor.class, TrackMessageSizeInterceptor.class},
+        interceptors = {AtmosphereResourceLifecycleInterceptor.class},
         path = "/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereObjectChangeResource.PATH,
         servlet = "org.glassfish.jersey.servlet.ServletContainer")
-public class AtmosphereObjectChangeResource {
+public class AtmosphereObjectChangeResource extends AbstractWSResource {
 
     public final static String PATH = "objectchange";
-    
-        @POST
-    public static void broadcast(EventTemplate message) {
-        try {
-            BroadcasterFactory
-                    .getDefault()
-                    .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereObjectChangeResource.PATH)
-                    .broadcast(message.getPayload().getStatementValue("object.uuid"));
-        } catch (NullPointerException ex) {
 
+    public static void broadcast(EventTemplate message) {
+        if (api != null) {
+            String msg;
+            try {
+                msg = om.writeValueAsString(
+                        api.getObjectByUUID(
+                                message.getPayload().getStatementValue("object.uuid")
+                        ).getPojo()
+                );
+                BroadcasterFactory
+                        .getDefault()
+                        .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereObjectChangeResource.PATH)
+                        .broadcast(msg);
+            } catch (JsonProcessingException ex) {
+                Freedomotic.logger.warning(ex.getLocalizedMessage());
+            }
         }
     }
-
 }
