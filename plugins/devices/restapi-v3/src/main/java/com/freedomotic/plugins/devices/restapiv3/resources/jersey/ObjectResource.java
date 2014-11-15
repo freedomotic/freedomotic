@@ -157,7 +157,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
             }
         } else {
 
-            for (EnvObjectLogic objLogic : api.things().getObjectByEnvironment(envUUID)) {
+            for (EnvObjectLogic objLogic : api.things().findByEnvironment(envUUID)) {
                 objects.add(objLogic.getPojo());
             }
         }
@@ -284,7 +284,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
         public BehaviorResource(String objUUID) {
             this.objUUID = objUUID;
-            this.obj = api.getObjectByUUID(objUUID);
+            this.obj = api.things().get(objUUID);
         }
 
         @Override

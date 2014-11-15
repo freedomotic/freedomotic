@@ -5,12 +5,18 @@
  */
 package com.freedomotic.objects;
 
+import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.persistence.Repository;
+import java.util.List;
 
 /**
  *
  * @author enrico
  */
-public interface ThingsRepository extends Repository<EnvObjectLogic>{
+public interface ThingsRepository extends Repository<EnvObjectLogic> {
+    
+    public List<EnvObjectLogic> findByEnvironment(EnvironmentLogic env);
+    public List<EnvObjectLogic> findByEnvironment(String uuid);
+    public List<EnvObjectLogic> findByAddress(String protocol, String address);
     
 }

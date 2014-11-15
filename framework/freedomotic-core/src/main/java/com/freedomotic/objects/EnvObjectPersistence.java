@@ -597,4 +597,19 @@ public class EnvObjectPersistence implements ThingsRepository {
         }
         return list;
     }
+
+    @Override
+    public List<EnvObjectLogic> findByEnvironment(EnvironmentLogic env) {
+        return getObjectByEnvironment(env.getPojo().getUUID());
+    }
+
+    @Override
+    public List<EnvObjectLogic> findByEnvironment(String uuid) {
+        return getObjectByEnvironment(uuid);
+    }
+
+    @Override
+    public List<EnvObjectLogic> findByAddress(String protocol, String address) {
+        return getObjectByAddress(protocol, address);
+    }
 }

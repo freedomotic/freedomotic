@@ -25,7 +25,6 @@ import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.objects.impl.Gate;
 import com.freedomotic.util.Graph;
 import com.freedomotic.util.UidGenerator;
@@ -48,7 +47,7 @@ public final class EnvironmentLogic {
     private Environment pojo = null;
     private List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
     private File source = null;
-    //private final API api;
+    private final API api;
 
     /**
      *
@@ -56,7 +55,7 @@ public final class EnvironmentLogic {
      */
     @Inject
     public EnvironmentLogic(API api) {
-        //this.api = api;
+        this.api = api;
     }
 
     /**
@@ -151,7 +150,7 @@ public final class EnvironmentLogic {
         if (zone.getPojo().isRoom()) {
             Room room = (Room) zone;
             room.init(this);
-            Iterator<EnvObjectLogic> it = EnvObjectPersistence.iterator();
+            Iterator<EnvObjectLogic> it = api.things().list().iterator();
             //check if this rooms has gates
             while (it.hasNext()) {
                 EnvObjectLogic obj = it.next();
@@ -192,7 +191,7 @@ public final class EnvironmentLogic {
     @Deprecated
     @RequiresPermissions("environments:read")
     public int getLastObjectIndex() {
-        return EnvObjectPersistence.size();
+        return api.things().list().size();
     }
 
     /**

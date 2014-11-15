@@ -19,12 +19,12 @@
  */
 package com.freedomotic.jfrontend;
 
+import com.freedomotic.api.Protocol;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.util.TopologyUtils;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,8 +36,9 @@ import java.util.Queue;
  *
  * @author enrico
  */
-public class ImageDrawer
-        extends PlainDrawer {
+public class ImageDrawer extends PlainDrawer {
+    
+    Protocol master;
 
     /**
      *
@@ -45,6 +46,7 @@ public class ImageDrawer
      */
     public ImageDrawer(JavaDesktopFrontend master) {
         super(master);
+        this.master = master;
     }
 
     /**
@@ -59,7 +61,7 @@ public class ImageDrawer
      */
     @Override
     public void renderObjects() {
-        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
+        for (EnvObjectLogic obj : master.getApi().things().findByEnvironment(getCurrEnv())) {
             renderSingleObject(obj);
         }
     }

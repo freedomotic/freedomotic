@@ -25,7 +25,6 @@ import com.freedomotic.events.LocationEvent;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.objects.impl.Person;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
@@ -60,16 +59,12 @@ public class TrackingRandomPosition extends Protocol {
 
     @Override
     protected void onRun() {
-        if (EnvObjectPersistence.getObjectList().size() <= 0) {
-            LOG.log(Level.WARNING, "No things of type Person registred in this environment");
-        } else {
-            for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
-                if (object instanceof Person) {
-                    Person person = (Person) object;
-                    FreedomPoint location = randomLocation();
-                    LocationEvent event = new LocationEvent(this, person.getPojo().getUUID(), location);
-                    notifyEvent(event);
-                }
+        for (EnvObjectLogic object : getApi().things().list()) {
+            if (object instanceof Person) {
+                Person person = (Person) object;
+                FreedomPoint location = randomLocation();
+                LocationEvent event = new LocationEvent(this, person.getPojo().getUUID(), location);
+                notifyEvent(event);
             }
         }
     }

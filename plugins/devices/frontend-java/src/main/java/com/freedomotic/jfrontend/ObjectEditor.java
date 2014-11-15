@@ -25,7 +25,6 @@ import com.freedomotic.model.object.Representation;
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.BooleanBehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.objects.ListBehaviorLogic;
 import com.freedomotic.objects.RangedIntBehaviorLogic;
 import com.freedomotic.objects.TaxonomyBehaviorLogic;
@@ -158,7 +157,7 @@ public class ObjectEditor
         //population combo box representation
         DefaultComboBoxModel representationsModel = new DefaultComboBoxModel();
 
-        for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
+        for (EnvObjectLogic object : api.things().list()) {
             for (Representation rep : object.getPojo().getRepresentations()) {
                 representationsModel.addElement(rep);
             }
@@ -755,7 +754,7 @@ public class ObjectEditor
                         JOptionPane.QUESTION_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
-            EnvObjectPersistence.remove(object);
+            api.things().delete(object);
             this.dispose();
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
@@ -773,7 +772,7 @@ public class ObjectEditor
         //        }
         //        EnvObjectLogic envObjectLogic = EnvObjectFactory.save(pojoCopy);
         //        envObjectLogic.getPojo().setUUID("");
-        EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
+        api.things().create(object);
         //object.setChanged(true);
         this.dispose();
     }//GEN-LAST:event_btnCreateObjectCopyActionPerformed

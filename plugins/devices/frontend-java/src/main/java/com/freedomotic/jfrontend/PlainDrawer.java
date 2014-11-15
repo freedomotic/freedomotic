@@ -19,12 +19,12 @@
  */
 package com.freedomotic.jfrontend;
 
+import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.util.TopologyUtils;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -49,6 +49,7 @@ public class PlainDrawer
     private int INTERNAL_WALLS_TICKNESS = 3;
     private int ENVIRONMENT_SHADOW_OFFSET = 10;
     private Color ENVIRONMENT_SHADOW_COLOR = backgroundColor.darker();
+    Protocol master;
 
     /**
      *
@@ -56,6 +57,7 @@ public class PlainDrawer
      */
     public PlainDrawer(JavaDesktopFrontend master) {
         super(master);
+        this.master = master;
     }
 
     /**
@@ -135,7 +137,7 @@ public class PlainDrawer
      */
     @Override
     public void renderObjects() {
-        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
+        for (EnvObjectLogic obj : master.getApi().things().findByEnvironment(getCurrEnv())) {
             if (obj != null) {
                 setTransformContextFor(obj.getPojo());
                 drawPlainObject(obj);

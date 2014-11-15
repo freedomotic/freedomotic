@@ -19,16 +19,15 @@
  */
 package com.freedomotic.jfrontend;
 
+import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.ResourcesManager;
-import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.jfrontend.utils.SpringUtilities;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -54,6 +53,7 @@ public class ListDrawer extends Renderer {
 
     JComboBox cmbZone = new JComboBox();
     JPanel panel = new JPanel();
+    Protocol master;
 
     /**
      *
@@ -61,6 +61,7 @@ public class ListDrawer extends Renderer {
      */
     public ListDrawer(JavaDesktopFrontend master) {
         super(master);
+        this.master = master;
         cmbZone.removeAllItems();
         cmbZone.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -99,7 +100,7 @@ public class ListDrawer extends Renderer {
         }
 
         for (final EnvObject objPojo : zone.getPojo().getObjects()) {
-            final EnvObjectLogic obj = EnvObjectPersistence.getObjectByUUID(objPojo.getUUID());
+            final EnvObjectLogic obj = master.getApi().things().get(objPojo.getUUID());
 
             //a coloumn with object name
             JLabel icon = new JLabel(renderSingleObject(obj.getPojo()));

@@ -8,7 +8,7 @@ import com.freedomotic.app.AppConfig;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.CommandPersistence;
@@ -46,17 +46,6 @@ public interface API {
      */
     I18n getI18n();
 
-    //Object API
-    //create
-
-    /**
-     *
-     * @param obj
-     * @param MAKE_UNIQUE
-     * @return
-     */
-        EnvObjectLogic addObject(final EnvObjectLogic obj, final boolean MAKE_UNIQUE);
-
     /**
      *
      * @return
@@ -64,65 +53,6 @@ public interface API {
     ClientStorage getClientStorage();
     //read
 
-    /**
-     *
-     * @return
-     */
-    Collection<EnvObjectLogic> getObjectList();
-
-    /**
-     *
-     * @param name
-     * @return
-     */
-    EnvObjectLogic getObjectByName(String name);
-
-    /**
-     *
-     * @param uuid
-     * @return
-     */
-    EnvObjectLogic getObjectByUUID(String uuid);
-
-    /**
-     *
-     * @param tag
-     * @return
-     */
-    Collection<EnvObjectLogic> getObjectByTag(String tag);
-
-    /**
-     *
-     * @param protocol
-     * @param address
-     * @return
-     */
-    Collection<EnvObjectLogic> getObjectByAddress(String protocol, String address);
-
-    /**
-     *
-     * @param protocol
-     * @return
-     */
-    Collection<EnvObjectLogic> getObjectByProtocol(String protocol);
-
-    /**
-     *
-     * @param uuid
-     * @return
-     */
-    Collection<EnvObjectLogic> getObjectByEnvironment(String uuid);
-
-    //delete
-
-    /**
-     *
-     * @param input
-     */
-        void removeObject(EnvObjectLogic input);
-
-    //Environment API
-    //create
 
     /**
      *
@@ -153,7 +83,7 @@ public interface API {
     
     EnvironmentRepository environments();
     TriggerPersistence triggers();
-    EnvObjectPersistence things();
+    ThingsRepository things();
     CommandPersistence commands();
     ReactionPersistence reactions();
 }

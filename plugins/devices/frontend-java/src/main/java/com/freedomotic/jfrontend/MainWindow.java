@@ -32,7 +32,6 @@ import com.freedomotic.jfrontend.utils.OpenDialogFileFilter;
 import com.freedomotic.jfrontend.utils.TipOfTheDay;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.security.Auth;
@@ -1291,7 +1290,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             if (envCombo.getSelectedItem() instanceof EnvironmentLogic) {
                 // assign objects to new environment
                 EnvironmentLogic env = (EnvironmentLogic) envCombo.getSelectedItem();
-                for (EnvObjectLogic obj : api.getObjectByEnvironment(oldenv.getPojo().getUUID())) {
+                for (EnvObjectLogic obj : api.things().findByEnvironment(oldenv)) {
                     obj.setEnvironment(env);
                 }
                 setEnvironment(env);

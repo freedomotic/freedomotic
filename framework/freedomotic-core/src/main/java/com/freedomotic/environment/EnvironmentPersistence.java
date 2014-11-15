@@ -28,6 +28,7 @@ import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
@@ -62,17 +63,20 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 public class EnvironmentPersistence implements EnvironmentRepository {
 
     private static final List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
-    private final ClientStorage clientStorage;
     private final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
+    // Dependencies
+    private final ClientStorage clientStorage;
+    private final ThingsRepository thingsRepository;
 
     /**
      *
      * @param clientStorage
      */
     @Inject
-    public EnvironmentPersistence(ClientStorage clientStorage) {
+    public EnvironmentPersistence(ClientStorage clientStorage, ThingsRepository thingsRepository) {
         //disable instance creation
         this.clientStorage = clientStorage;
+        this.thingsRepository = thingsRepository;
     }
 
     /**

@@ -6,10 +6,8 @@ package com.freedomotic.api;
 
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.core.ResourcesManager;
-import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.CommandPersistence;
@@ -17,10 +15,10 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
+import com.freedomotic.objects.ThingsRepository;
 import com.google.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Implements the standard freedomotic APIs available to plugins. This class
@@ -34,7 +32,7 @@ import java.util.List;
 class APIStandardImpl implements API {
 
     private final EnvironmentRepository environments;
-    private final EnvObjectPersistence objects;
+    private final ThingsRepository things;
     private final ClientStorage clientStorage;
     private final AppConfig config;
     private final Auth auth;
@@ -47,7 +45,7 @@ class APIStandardImpl implements API {
     /**
      *
      * @param environment
-     * @param object
+     * @param things
      * @param clientStorage
      * @param config
      * @param auth
@@ -59,7 +57,7 @@ class APIStandardImpl implements API {
     @Inject
     public APIStandardImpl(
             EnvironmentRepository environment,
-            EnvObjectPersistence object,
+            ThingsRepository things,
             ClientStorage clientStorage,
             AppConfig config,
             Auth auth,
@@ -69,7 +67,7 @@ class APIStandardImpl implements API {
             CommandPersistence commands,
             ReactionPersistence reactions) {
         this.environments = environment;
-        this.objects = object;
+        this.things = things;
         this.clientStorage = clientStorage;
         this.config = config;
         this.auth = auth;
@@ -88,88 +86,7 @@ class APIStandardImpl implements API {
     public AppConfig getConfig() {
         return config;
     }
-
-    /**
-     *
-     * @param obj
-     * @param MAKE_UNIQUE
-     * @return
-     */
-    @Override
-    public EnvObjectLogic addObject(EnvObjectLogic obj, boolean MAKE_UNIQUE) {
-        return objects.add(obj, MAKE_UNIQUE);
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public Collection<EnvObjectLogic> getObjectList() {
-        return /*Collections.unmodifiableList(*/ objects.getObjectList(); /*);*/
-
-    }
-
-    /**
-     *
-     * @param name
-     * @return
-     */
-    @Override
-    public EnvObjectLogic getObjectByName(String name) {
-        return objects.getObjectByName(name);
-    }
-
-    /**
-     *
-     * @param uuid
-     * @return
-     */
-    @Override
-    public EnvObjectLogic getObjectByUUID(String uuid) {
-        return objects.getObjectByUUID(uuid);
-    }
-
-    /**
-     *
-     * @param protocol
-     * @param address
-     * @return
-     */
-    @Override
-    public Collection<EnvObjectLogic> getObjectByAddress(String protocol, String address) {
-        return objects.getObjectByAddress(protocol, address);
-    }
-
-    /**
-     *
-     * @param protocol
-     * @return
-     */
-    @Override
-    public Collection<EnvObjectLogic> getObjectByProtocol(String protocol) {
-        return objects.getObjectByProtocol(protocol);
-    }
-
-    /**
-     *
-     * @param uuid
-     * @return
-     */
-    @Override
-    public Collection<EnvObjectLogic> getObjectByEnvironment(String uuid) {
-        return objects.getObjectByEnvironment(uuid);
-    }
-
-    /**
-     *
-     * @param input
-     */
-    @Override
-    public void removeObject(EnvObjectLogic input) {
-        objects.remove(input);
-    }
-
+    
     /**
      *
      * @param filter
@@ -230,16 +147,6 @@ class APIStandardImpl implements API {
         return plugManager;
     }
 
-    /**
-     *
-     * @param tag
-     * @return
-     */
-    @Override
-    public Collection<EnvObjectLogic> getObjectByTag(String tag) {
-        return objects.getObjectByTags(tag);
-    }
-
     @Override
     public EnvironmentRepository environments() {
         return environments;
@@ -251,8 +158,8 @@ class APIStandardImpl implements API {
     }
 
     @Override
-    public EnvObjectPersistence things() {
-        return objects;
+    public ThingsRepository things() {
+        return things;
     }
 
     @Override

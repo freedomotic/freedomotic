@@ -29,7 +29,6 @@ import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
 import com.freedomotic.util.TopologyUtils;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -751,7 +750,7 @@ public class Renderer
     protected EnvObjectLogic mouseOnObject(Point p) {
         Point mousePointer = toRealCoords(p);
 
-        for (EnvObjectLogic logic : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
+        for (EnvObjectLogic logic : plugin.getApi().things().findByEnvironment(currEnv)) {
             if (getCachedShape(logic).contains(mousePointer)) {
                 return logic;
             }
@@ -821,7 +820,7 @@ public class Renderer
     }
 
     private void rebuildShapesCache() {
-        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(getCurrEnv().getPojo().getUUID())) {
+        for (EnvObjectLogic obj : plugin.getApi().things().findByEnvironment(getCurrEnv())) {
             rebuildShapeCache(obj);
         }
     }
