@@ -34,6 +34,7 @@ import com.freedomotic.model.object.Representation;
 import com.freedomotic.objects.BooleanBehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.RangedIntBehaviorLogic;
+import com.freedomotic.objects.impl.GenericGate;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;

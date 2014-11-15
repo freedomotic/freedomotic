@@ -25,7 +25,7 @@ import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.impl.Gate;
+import com.freedomotic.objects.impl.GenericGate;
 import com.freedomotic.util.Graph;
 import com.freedomotic.util.UidGenerator;
 import com.google.inject.Inject;
@@ -154,8 +154,8 @@ public final class EnvironmentLogic {
             //check if this rooms has gates
             while (it.hasNext()) {
                 EnvObjectLogic obj = it.next();
-                if (obj instanceof Gate) {
-                    Gate gate = (Gate) obj;
+                if (obj instanceof GenericGate) {
+                    GenericGate gate = (GenericGate) obj;
                     gate.evaluateGate();
                 }
             }

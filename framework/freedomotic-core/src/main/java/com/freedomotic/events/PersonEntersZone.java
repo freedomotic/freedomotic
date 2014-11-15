@@ -22,7 +22,7 @@ package com.freedomotic.events;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.environment.Zone;
-import com.freedomotic.objects.impl.Person;
+import com.freedomotic.objects.impl.GenericPerson;
 import java.util.logging.Logger;
 
 /**
@@ -35,7 +35,7 @@ public final class PersonEntersZone extends EventTemplate {
     private final String uuid;
     private final String zoneName;
 
-    public PersonEntersZone(ZoneLogic aThis, Person p, Zone zone) {
+    public PersonEntersZone(ZoneLogic aThis, GenericPerson p, Zone zone) {
         this.uuid = p.getPojo().getUUID();
         this.zoneName = zone.getName();
         generateEventPayload();

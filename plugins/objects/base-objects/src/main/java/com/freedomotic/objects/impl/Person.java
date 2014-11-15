@@ -27,7 +27,6 @@ import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.model.object.ListBehavior;
 import com.freedomotic.model.object.PropertiesBehavior;
 import com.freedomotic.objects.BooleanBehaviorLogic;
-import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.ListBehaviorLogic;
 import com.freedomotic.objects.PropertiesBehaviorLogic;
 import com.freedomotic.reactions.Trigger;
@@ -38,7 +37,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class Person extends EnvObjectLogic {
+public class Person extends GenericPerson {
 
     protected BooleanBehaviorLogic present;
     protected ListBehaviorLogic activity;

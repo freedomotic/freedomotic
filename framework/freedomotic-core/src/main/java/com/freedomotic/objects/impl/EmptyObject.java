@@ -32,7 +32,6 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-public class EmptyObject
-        extends EnvObjectLogic {
+public class EmptyObject extends EnvObjectLogic {
     private static final Logger LOG = Logger.getLogger(EmptyObject.class.getName());
 }

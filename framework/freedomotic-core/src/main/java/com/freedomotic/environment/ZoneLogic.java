@@ -45,7 +45,7 @@ import com.freedomotic.events.PersonEntersZone;
 import com.freedomotic.events.PersonExitsZone;
 import com.freedomotic.events.ZoneHasChanged;
 import com.freedomotic.model.environment.Zone;
-import com.freedomotic.objects.impl.Person;
+import com.freedomotic.objects.impl.GenericPerson;
 import com.google.inject.Guice;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class ZoneLogic {
     //private BusService busService;
     private Zone pojo;
     private Ownership owner = new LastOutStrategy();
-    private final List<Person> occupiers = new ArrayList<Person>();
+    private final List<GenericPerson> occupiers = new ArrayList<GenericPerson>();
     private EnvironmentLogic FatherEnv = null;
     private Ownership ownershipStrategy;
     private static final Logger LOG = Logger.getLogger(ZoneLogic.class.getName());
@@ -98,7 +98,7 @@ public class ZoneLogic {
      * @return
      */
     @RequiresPermissions("zones:read")
-    public boolean isInside(Person g) {
+    public boolean isInside(GenericPerson g) {
         try {
             return occupiers.contains(g);
         } catch (Exception e) {
@@ -136,7 +136,7 @@ public class ZoneLogic {
      * @return
      */
     @RequiresPermissions("zones:update")
-    public synchronized boolean enter(Person p) {
+    public synchronized boolean enter(GenericPerson p) {
         boolean success = false;
         owner = getOwnershipStrategy();
 
@@ -157,7 +157,7 @@ public class ZoneLogic {
      * @return
      */
     @RequiresPermissions("zones:update")
-    public synchronized boolean exit(Person p) {
+    public synchronized boolean exit(GenericPerson p) {
         boolean success = false;
         owner = getOwnershipStrategy();
 

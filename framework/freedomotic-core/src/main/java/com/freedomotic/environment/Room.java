@@ -27,7 +27,7 @@ package com.freedomotic.environment;
 
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.environment.Zone;
-import com.freedomotic.objects.impl.Gate;
+import com.freedomotic.objects.impl.GenericGate;
 import com.freedomotic.util.Edge;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 public class Room
         extends ZoneLogic {
 
-    private List<Gate> gates;
+    private List<GenericGate> gates;
     private List<Room> reachable;
 
     /**
@@ -58,7 +58,7 @@ public class Room
      * @param gate
      */
     @RequiresPermissions("zones:update")    
-    public void addGate(Gate gate) {
+    public void addGate(GenericGate gate) {
         try {
             gates.add(gate);
             getEnv().getGraph().add(gate.getFrom(),
@@ -86,7 +86,7 @@ public class Room
         super.init(env);
 
         if (gates == null) {
-            gates = new ArrayList<Gate>();
+            gates = new ArrayList<GenericGate>();
         }
 
         if (reachable == null) {
@@ -126,7 +126,7 @@ public class Room
                         //operazione di enqueue coda
                         Room x = (Room) adiacent.getX();
                         Room y = (Room) adiacent.getY();
-                        Gate gate = (Gate) adiacent.getValue();
+                        GenericGate gate = (GenericGate) adiacent.getValue();
                         boolean open = gate.isOpen();
 
                         if (open) {
