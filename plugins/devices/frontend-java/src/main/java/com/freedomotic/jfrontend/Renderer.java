@@ -98,15 +98,15 @@ public class Renderer
     private FreedomPoint originalHandleLocation = null;
     private ArrayList<Handle> handles = new ArrayList<Handle>();
     private ZoneLogic selectedZone;
-    protected CalloutsUpdater callouts;
+    protected CalloutsUpdater calloutsUpdater;
     private boolean objectEditMode = false;
     private Point messageCorner = new Point(50, 50);
     private Dimension dragDiff = null;
     private EnvironmentLogic currEnv;
 
     private HashMap<EnvObjectLogic, ObjectEditor> objEditorPanels = new HashMap<EnvObjectLogic, ObjectEditor>();
-    
-        /**
+
+    /**
      *
      * @param master
      */
@@ -118,6 +118,7 @@ public class Renderer
         CANVAS_WIDTH = environmentWidth + (BORDER_X * 2);
         CANVAS_HEIGHT = environmentHeight + (BORDER_Y * 2);
         backgroundColor = TopologyUtils.convertColorToAWT(getEnvironments().get(0).getPojo().getBackgroundColor());
+        calloutsUpdater = new CalloutsUpdater(this, 500);
         currEnv = getEnvironments().get(0);
         ResourcesManager.clear();
         clear();
@@ -132,36 +133,11 @@ public class Renderer
                 findRescaleFactor();
             }
         });
-        callouts = new CalloutsUpdater(this, 1000);
         repaint();
     }
-    
+
     private List<EnvironmentLogic> getEnvironments() {
         return plugin.getApi().environments().list();
-    }
-
-    /**
-     *
-     * @param master
-     */
-    public Renderer(JavaDesktopFrontend master) {
-        this.plugin = master;
-        this.I18n = plugin.getApi().getI18n();
-        callouts = new CalloutsUpdater(this, 250);
-        ResourcesManager.clear();
-        clear();
-        addCustomMouseListener();
-        addCustomMouseMotionListener();
-        setBackground(backgroundColor);
-        addComponentListener(new ComponentAdapter() {
-
-            @Override
-            public void componentResized(ComponentEvent e) {
-                backgroundChanged = true;
-                findRescaleFactor();
-            }
-        });
-        repaint();
     }
 
     /**
@@ -463,22 +439,30 @@ public class Renderer
 
     private void renderCalloutsLayer() {
         int numOfInfoLines = 0;
-        int offset =0;
-        for (Callout callout : callouts.getPrintableCallouts()) {
-            //display multiple info callouts on different lines
-            System.out.println("CALLOUT: " + callout.getGroup() + " - " + callout.getText());
-            if (callout.getGroup().equalsIgnoreCase("info")) {
-                offset = (numOfInfoLines * 50);
-                numOfInfoLines++;
-            }
-            drawString(callout.getText(),
-                    (int) callout.getPosition().getX(),
-                    (int) callout.getPosition().getY() + offset,
-                    (float) 0.0,
-                    callout.getColor());
-            //limit to the last 10 most recent lines
-            if (numOfInfoLines > 10) {
-                return;
+        int offset = 0;
+        synchronized (calloutsUpdater.getPrintableCallouts()) {
+            for (Callout callout : calloutsUpdater.getPrintableCallouts()) {
+                //display multiple info callouts on different lines
+                if (callout.getGroup().equalsIgnoreCase("info")) {
+                    offset = (numOfInfoLines * 50);
+                    numOfInfoLines++;
+                    drawString(callout.getText(),
+                            (int) callout.getPosition().getX(),
+                            (int) callout.getPosition().getY() + offset,
+                            (float) 0.0,
+                            callout.getColor());
+                } else {
+                    drawString(callout.getText(),
+                            (int) callout.getPosition().getX(),
+                            (int) callout.getPosition().getY(),
+                            (float) 0.0,
+                            callout.getColor());
+                }
+
+                //limit to the last 10 most recent lines
+                if (numOfInfoLines > 10) {
+                    return;
+                }
             }
         }
     }
@@ -489,7 +473,7 @@ public class Renderer
      */
     @Override
     public void createCallout(Callout callout) {
-        callouts.addCallout(callout);
+        calloutsUpdater.addCallout(callout);
     }
 
     private void createSceneTransformContext(Graphics g) {
@@ -906,11 +890,11 @@ public class Renderer
                 }
             } else {
                 removeIndicators();
-                callouts.clearAll();
+                calloutsUpdater.clearAll();
             }
         } else { //if edit mode
             removeIndicators();
-            callouts.clearAll();
+            calloutsUpdater.clearAll();
 
             toRealCoords(e.getPoint());
 
@@ -1133,7 +1117,7 @@ public class Renderer
             if ((obj == null) && (selectedObject != null)) {
                 removeIndicators();
                 mouseExitsObject(selectedObject);
-                callouts.clear("object.description");
+                calloutsUpdater.clear("object.description");
             }
 
             if (obj != null) {
@@ -1160,7 +1144,7 @@ public class Renderer
 
     private void clear() {
         this.indicators.clear();
-        callouts.clearAll();
+        calloutsUpdater.clearAll();
         this.backgroundChanged = true;
     }
 
@@ -1235,7 +1219,7 @@ public class Renderer
             handles.clear();
             indicators.clear();
             selectedZone = null;
-            callouts.clearAll();
+            calloutsUpdater.clearAll();
         }
 
         setNeedRepaint(true);

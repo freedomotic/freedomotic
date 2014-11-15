@@ -23,9 +23,11 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,28 +37,30 @@ import java.util.TimerTask;
  */
 public class CalloutsUpdater {
 
-    private static List<Callout> callouts = new ArrayList<Callout>();
+    private static final List<Callout> callouts = Collections.synchronizedList(new ArrayList<Callout>());
     private Timer timer;
 
     /**
      *
      * @param drawer
-     * @param milliseconds
+     * @param schedulingRate
      */
-    public CalloutsUpdater(final Renderer drawer, int milliseconds) {
+    public CalloutsUpdater(final Renderer drawer, int schedulingRate) {
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 long now = System.currentTimeMillis();
-                Iterator it = callouts.iterator();
                 boolean removedSomething = false;
-                while (it.hasNext()) {
-                    Callout callout = (Callout) it.next();
-                    long elapsedTime = now - callout.getTimestamp();
-                    if (elapsedTime > callout.getDuration()) {
-                        removedSomething = true;
-                        it.remove();
+                synchronized (callouts) {
+                    Iterator it = callouts.iterator();
+                    while (it.hasNext() && !removedSomething) {
+                        Callout callout = (Callout) it.next();
+                        long elapsedTime = now - callout.getTimestamp();
+                        if (elapsedTime > callout.getDuration()) {
+                            removedSomething = true;
+                            it.remove();
+                        }
                     }
                 }
 
@@ -65,7 +69,7 @@ public class CalloutsUpdater {
                     drawer.setNeedRepaint(false);
                 }
             }
-        }, 0, milliseconds);
+        }, 0, schedulingRate);
     }
 
     /**
@@ -80,7 +84,8 @@ public class CalloutsUpdater {
             }
             //random color for info text
             if (newCallout.getGroup().equalsIgnoreCase("info")) {
-                newCallout.setColor(new Color(rand(0, 255), rand(0, 255), rand(0, 255), 180));
+                //newCallout.setColor(new Color(rand(0, 255), rand(0, 255), rand(0, 255), 180));
+                newCallout.setColor(new Color(50, 50, 50, 180));
             }
             callouts.add(newCallout);
         }
@@ -111,19 +116,20 @@ public class CalloutsUpdater {
      * @param group
      */
     public void clear(String group) {
-        Iterator it = callouts.iterator();
+        synchronized (callouts) {
+            Iterator it = callouts.iterator();
+            while (it.hasNext()) {
+                Callout callout = (Callout) it.next();
 
-        while (it.hasNext()) {
-            Callout callout = (Callout) it.next();
-
-            if (callout.getGroup().equals(group)) {
-                it.remove();
+                if (callout.getGroup().equals(group)) {
+                    it.remove();
+                }
             }
         }
     }
 
     Collection<Callout> getPrintableCallouts() {
-        Collections.reverse(callouts);
-        return Collections.unmodifiableCollection(callouts);
+        //Collections.reverse(callouts);
+        return callouts;
     }
 }

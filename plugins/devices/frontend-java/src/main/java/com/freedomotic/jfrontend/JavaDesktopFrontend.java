@@ -160,7 +160,7 @@ public class JavaDesktopFrontend extends Protocol {
 
         if (drawer instanceof Renderer) {
             Renderer renderer = (Renderer) drawer;
-            renderer.callouts = new CalloutsUpdater(renderer, 1000);
+            renderer.calloutsUpdater = new CalloutsUpdater(renderer, 1000);
         }
 
         return drawer;
@@ -237,7 +237,7 @@ public class JavaDesktopFrontend extends Protocol {
         } else if (event instanceof ZoneHasChanged) {
             //writing the string on the screen
             String zoneDesc = event.getProperty("zone.description");
-            Callout callout = new Callout(zoneDesc, 2000, Color.blue);
+            Callout callout = new Callout(zoneDesc, -1, Color.blue);
             drawer.createCallout(callout);
             drawer.setNeedRepaint(true);
         } else if (event instanceof MessageEvent) {
@@ -255,7 +255,7 @@ public class JavaDesktopFrontend extends Protocol {
     public void printCallout(String message) {
         Callout callout = new Callout(
                 message,
-                2000,
+                3400,
                 Color.blue);
         drawer.createCallout(callout);
         drawer.setNeedRepaint(true);
