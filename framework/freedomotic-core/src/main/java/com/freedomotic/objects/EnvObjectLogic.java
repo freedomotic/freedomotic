@@ -402,8 +402,9 @@ public class EnvObjectLogic {
      * reserver for it's exclusive use.
      */
     public void synchLocation(int x, int y) {
-        Representation rep = getPojo().getCurrentRepresentation();
-        rep.setOffset(x, y);
+        for (Representation rep : getPojo().getRepresentations()) {
+            rep.setOffset(x, y);
+        }
         updateTopology();
     }
 
