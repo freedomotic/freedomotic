@@ -27,9 +27,11 @@ import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.core.BehaviorManager;
+import com.freedomotic.core.SynchManager;
 import com.freedomotic.core.TopologyManager;
-import com.freedomotic.environment.EnvironmentDAO;
-import com.freedomotic.environment.EnvironmentDAOFactory;
+import com.freedomotic.environment.EnvironmentLoader;
+
+import com.freedomotic.environment.EnvironmentLoaderFactory;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.events.PluginHasChanged;
@@ -67,6 +69,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -95,7 +98,7 @@ public class Freedomotic implements BusConsumer {
     public static final Logger logger = Logger.getLogger("com.freedomotic");
     //this should replace Freedomotic.logger reference
     private static final Logger LOG = Logger.getLogger(Freedomotic.class.getName());
-    private static String INSTANCE_ID;
+    public static String INSTANCE_ID;
 
     /**
      *
@@ -108,9 +111,10 @@ public class Freedomotic implements BusConsumer {
     @Deprecated
     public static Injector INJECTOR;
     //dependencies
-    private final EnvironmentDAOFactory environmentDaoFactory;
+    private final EnvironmentLoaderFactory environmentLoaderFactory;
     private final EnvironmentRepository environmentRepository;
     private final TopologyManager topologyManager;
+    private final SynchManager synchManager;
     private final ClientStorage clientStorage;
     private final PluginsManager pluginsManager;
     private AppConfig config;
@@ -122,30 +126,33 @@ public class Freedomotic implements BusConsumer {
 
     /**
      *
+     * @param environmentLoaderFactory
      * @param pluginsLoader
-     * @param environmentDaoFactory
      * @param environmentRepository
      * @param clientStorage
      * @param config
      * @param api
      * @param busService
      * @param topologyManager
+     * @param synchManager
      */
     @Inject
     public Freedomotic(
+            EnvironmentLoaderFactory environmentLoaderFactory,
             PluginsManager pluginsLoader,
-            EnvironmentDAOFactory environmentDaoFactory,
             EnvironmentRepository environmentRepository,
             ClientStorage clientStorage,
             AppConfig config,
             API api,
-            BusService busService,             
-            TopologyManager topologyManager) {
+            BusService busService,
+            TopologyManager topologyManager,
+            SynchManager synchManager) {
+        this.environmentLoaderFactory = environmentLoaderFactory;
         this.pluginsManager = pluginsLoader;
-        this.environmentDaoFactory = environmentDaoFactory;
         this.environmentRepository = environmentRepository;
         this.busService = busService;
         this.topologyManager = topologyManager;
+        this.synchManager = synchManager;
         this.clientStorage = clientStorage;
         this.config = config;
         this.api = api;
@@ -193,10 +200,13 @@ public class Freedomotic implements BusConsumer {
                 + System.getProperty("user.dir") + "\n" + "Java Version: " + System.getProperty("java.version")
                 + "\n" + "Resources Path: " + resourcesPath);
 
-        
         //check if topology manager is initiated
         if (topologyManager == null) {
             throw new IllegalStateException("Topology manager has not started");
+        }
+
+        if (synchManager == null) {
+            throw new IllegalStateException("Synch manager has not started");
         }
 
         // register listener
@@ -319,68 +329,20 @@ public class Freedomotic implements BusConsumer {
             }
         }
 
-        /**
-         * ******************************************************************
-         * Deserialize the default environment (its shape + zones)
-         * *****************************************************************
-         */
-        /**
-         *
-         *
-         * /**
-         * ******************************************************************
-         * Deserialize objects from XML
-         * *****************************************************************
-         */
-        // REMOVED: now it's up to EnvironmentPersistence to add objects.
-        // EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
+        // Deserialize the default environment (topology + objects)
         loadDefaultEnvironment();
 
-        /**
-         * ******************************************************************
-         * Init frontends sending an object changed behavior event
-         * *****************************************************************
-         */
-//        for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
-//            ObjectHasChangedBehavior event = new ObjectHasChangedBehavior(
-//                    this,
-//                    object);
-//            sendEvent(event);
-//        }
-        /**
-         * ******************************************************************
-         * Updating zone object list
-         * *****************************************************************
-         */
-//        LOG.config("---- Checking zones topology ----");
-//        for (ZoneLogic z : environment.getZones()) {
-//            z.checkTopology();
-//        }
-        /**
-         * ******************************************************************
-         * Loads the entire Reactions system (Trigger + Commands + Reactions)
-         * *****************************************************************
-         */
+        // Loads the entire Reactions system (Trigger + Commands + Reactions)
         TriggerPersistence.loadTriggers(new File(Info.PATHS.PATH_DATA_FOLDER + "/trg/"));
         CommandPersistence.loadCommands(new File(Info.PATHS.PATH_DATA_FOLDER + "/cmd/"));
         ReactionPersistence.loadReactions(new File(Info.PATHS.PATH_DATA_FOLDER + "/rea/"));
 
-        /**
-         * A service to add environment objects using XML commands
-         */
+        // A service to add environment objects using XML commands
         new BehaviorManager();
         new SerialConnectionProvider();
 
-        /**
-         * ******************************************************************
-         * Starting plugins
-         * *****************************************************************
-         */
-        double MB = 1024 * 1024;
-        Runtime runtime = Runtime.getRuntime();
-        double memory = ((runtime.totalMemory() - runtime.freeMemory()) / MB);
-        LOG.config("Freedomotic + data uses " + memory + "MB");
 
+        // Starting plugins
         for (Client plugin : clientStorage.getClients()) {
             String startupTime = plugin.getConfiguration().getStringProperty("startup-time", "undefined");
 
@@ -391,17 +353,14 @@ public class Freedomotic implements BusConsumer {
                         plugin.getName(),
                         PluginActions.DESCRIPTION);
                 busService.send(event);
-
-                double snapshot = (((runtime.totalMemory() - runtime.freeMemory()) / MB) - memory);
-                LOG.config(plugin.getName() + " uses " + snapshot + "MB of memory");
-                memory += snapshot;
             }
         }
-
+        
+        double MB = 1024 * 1024;
+        Runtime runtime = Runtime.getRuntime();
         LOG.config("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
 
         LOG.info("Freedomotic startup completed");
-        //new SynchManager();
     }
 
     /**
@@ -425,12 +384,11 @@ public class Freedomotic implements BusConsumer {
         }
 
         try {
-            //EnvironmentPersistence.loadEnvironmentsFromDir(folder, false);
-            EnvironmentDAO loader = environmentDaoFactory.create(folder);
-            Collection<Environment> loaded = loader.load();
+            EnvironmentLoader environmentLoader = environmentLoaderFactory.create(folder);
+            Collection<Environment> loaded = environmentLoader.load();
 
             if (loaded == null) {
-                throw new IllegalStateException("Object data cannot be null at this stage");
+                throw new IllegalStateException("Environment data cannot be null at this stage");
             }
             for (Environment env : loaded) {
                 EnvironmentLogic logic = INJECTOR.getInstance(EnvironmentLogic.class);
@@ -496,7 +454,7 @@ public class Freedomotic implements BusConsumer {
         }
 
         if ((INSTANCE_ID == null) || (INSTANCE_ID.isEmpty())) {
-            INSTANCE_ID = "A";
+            INSTANCE_ID = UUID.randomUUID().toString();
         }
 
         LOG.info("Freedomotic instance ID: " + INSTANCE_ID);

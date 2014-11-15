@@ -8,9 +8,6 @@ import com.freedomotic.api.InjectorApi;
 import com.freedomotic.bus.InjectorBus;
 import com.freedomotic.core.JoinPlugin;
 import com.freedomotic.core.TriggerCheck;
-import com.freedomotic.environment.EnvironmentDAO;
-import com.freedomotic.environment.EnvironmentDAOFactory;
-import com.freedomotic.environment.EnvironmentDAOXstream;
 import com.freedomotic.environment.InjectorEnvironment;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.plugins.InjectorPlugins;
@@ -21,7 +18,6 @@ import com.freedomotic.i18n.I18nImpl;
 import com.freedomotic.objects.InjectorThings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 
 /**
@@ -42,8 +38,6 @@ public class FreedomoticInjector extends AbstractModule {
         //TODO: move this definitions to package specific modules (with protected implementation classes)
         bind(JoinPlugin.class).in(Singleton.class);
         bind(TriggerCheck.class).in(Singleton.class);
-        install(new FactoryModuleBuilder().implement(EnvironmentDAO.class, EnvironmentDAOXstream.class)
-                .build(EnvironmentDAOFactory.class));
         
         bind(ProtocolRead.class);
         

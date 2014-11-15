@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -21,10 +20,13 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
+import com.freedomotic.model.geometry.FreedomPoint;
+import com.freedomotic.model.object.Representation;
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -45,7 +47,7 @@ public class ObjectHasChangedBehavior extends EventTemplate {
     private static final long serialVersionUID = 6892968576173017195L;
     private static final Logger LOG = Logger.getLogger(ObjectHasChangedBehavior.class.getName());
 
-	//private EnvObject obj;
+    //private EnvObject obj;
     /**
      *
      * @param source
@@ -71,6 +73,17 @@ public class ObjectHasChangedBehavior extends EventTemplate {
                         behavior.getValueAsString());
                 behavior.setChanged(false);
             }
+        }
+
+        // Include object location
+        try {
+            FreedomPoint location = obj.getPojo().getCurrentRepresentation().getOffset();
+            if (location != null) {
+                payload.addStatement("object.location.x", location.getX());
+                payload.addStatement("object.location.y", location.getY());
+            }
+        } catch (Exception e) {
+            //best effort, location can be null
         }
     }
 

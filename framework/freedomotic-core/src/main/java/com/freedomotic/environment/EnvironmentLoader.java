@@ -19,19 +19,34 @@
  */
 package com.freedomotic.environment;
 
-import com.google.inject.assistedinject.Assisted;
-import java.io.File;
+import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.model.environment.Environment;
+import java.util.Collection;
 
 /**
  *
  * @author enrico
  */
-public interface EnvironmentDAOFactory {
+public interface EnvironmentLoader {
 
     /**
      *
-     * @param directory
-     * @return
+     * @param environment
+     * @throws DaoLayerException
      */
-    public EnvironmentDAO create(@Assisted File directory);
+    void save(Environment environment) throws DaoLayerException;
+
+    /**
+     *
+     * @param environment
+     * @throws DaoLayerException
+     */
+    void delete(Environment environment) throws DaoLayerException;
+
+    /**
+     *
+     * @return
+     * @throws DaoLayerException
+     */
+    Collection<Environment> load() throws DaoLayerException;
 }

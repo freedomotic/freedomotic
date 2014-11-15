@@ -118,7 +118,7 @@ public class HttpHelper {
 
     /**
      *
-     * @return @throws IOException
+     * @return @throws IOException if the URL format is wrong or if cannot read from source
      */
     private String doGet(String url, String username, String password) throws IOException {
 
@@ -131,7 +131,7 @@ public class HttpHelper {
             decodedUrl = URLDecoder.decode(url, "UTF-8");
             request = new HttpGet(new URL(decodedUrl).toURI());
         } catch (URISyntaxException | MalformedURLException ex) {
-            throw new IOException("Cannot retrive url content", ex);
+            throw new IOException("The URL " + url + "' is not properly formatted: " + ex.getMessage(), ex);
         }
         HttpResponse response = client.execute(request);
 

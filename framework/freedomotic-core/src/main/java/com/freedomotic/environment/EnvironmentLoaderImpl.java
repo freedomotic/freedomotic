@@ -44,14 +44,13 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-public class EnvironmentDAOXstream
-        implements EnvironmentDAO {
+class EnvironmentLoaderImpl implements EnvironmentLoader {
 
     private File directory;
     private boolean savedAsNewEnvironment;
 
     @Inject
-    EnvironmentDAOXstream(@Assisted File directory) {
+    EnvironmentLoaderImpl(@Assisted File directory) {
         this.directory = directory;
     }
 
@@ -248,5 +247,5 @@ public class EnvironmentDAOXstream
 //        //envLogic.init();
 //        add(envLogic, false);
     }
-    private static final Logger LOG = Logger.getLogger(EnvironmentDAOXstream.class.getName());
+    private static final Logger LOG = Logger.getLogger(EnvironmentLoaderImpl.class.getName());
 }

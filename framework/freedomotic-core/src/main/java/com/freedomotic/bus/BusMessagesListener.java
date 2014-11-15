@@ -133,21 +133,27 @@ public class BusMessagesListener implements MessageListener {
     }
 
     /**
-     * Registers on a event queue
+     * Registers on a event queue. It is a Virtual Topic in activemq lingo
      *
      * @param queueName Queue name
      */
     public void consumeEventFrom(String queueName) {
-
         try {
-
-            BusDestination busDestination = busService
-                    .registerEventQueue(queueName);
-
+            BusDestination busDestination = busService.registerEventQueue(queueName);
             registeredEventQueues.put(busDestination.getDestinationName(), registerOnQueue(busDestination));
-
         } catch (JMSException e) {
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
+        }
+    }
 
+    /**
+    * Subscribes a messaging topic. The message will be received by ALL the subscribers
+    */
+    public void subscribeEventFrom(String queueName) {
+        try {
+            BusDestination busDestination = busService.registerTopic(queueName);
+            registeredEventQueues.put(busDestination.getDestinationName(), registerOnQueue(busDestination));
+        } catch (JMSException e) {
             LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
@@ -214,14 +220,4 @@ public class BusMessagesListener implements MessageListener {
         registeredCommandQueues.clear();
     }
 
-    /**
-     * FIXME LCG is really unused?
-     */
-//	private ObjectMessage createObjectMessage() throws JMSException {
-//
-//		final Session sendSession = busService.getSendSession();
-//		ObjectMessage msg = sendSession.createObjectMessage();
-//
-//		return msg;
-//	}
 }

@@ -249,6 +249,7 @@ class BusServiceImpl extends LifeCycle implements BusService {
             ObjectMessage msg = createObjectMessage();
             msg.setObject(command);
             msg.setJMSCorrelationID(correlationID);
+            msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
             getMessageProducer().send(destination, msg);
             Profiler.incrementSentReplies();
         } catch (JMSException jmse) {
@@ -267,6 +268,7 @@ class BusServiceImpl extends LifeCycle implements BusService {
             ObjectMessage msg = createObjectMessage();
 
             msg.setObject(command);
+            msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
 
             Queue destination = new ActiveMQQueue(command.getReceiver());
 
@@ -385,6 +387,7 @@ class BusServiceImpl extends LifeCycle implements BusService {
                 ObjectMessage msg = createObjectMessage();
 
                 msg.setObject(ev);
+                msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
 
                 // a consumer consumes on
                 // Consumer.A_PROGRESSIVE_INTEGER_ID.VirtualTopic.

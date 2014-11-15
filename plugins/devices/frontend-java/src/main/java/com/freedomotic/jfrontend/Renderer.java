@@ -966,11 +966,7 @@ public class Renderer
     @Override
     public void mouseReleased(MouseEvent e) {
         if (inDrag) {
-            Handle currHandle = null;
             for (Handle handle : handles) {
-                if (handle.isSelected()) {
-                    currHandle = handle;
-                }
                 handle.setSelected(false);
             }
 
@@ -983,12 +979,6 @@ public class Renderer
             //check if rooms overlap
             if (roomEditMode && (selectedZone) != null) {
                 setSelectedZone(selectedZone);
-//                if (!overlappedRooms(selectedZone).isEmpty()) {
-//                    //move the handle back to the original position to undo the editing
-//                    currHandle.move(originalHandleLocation.getX(), originalHandleLocation.getY());
-//                    removeIndicators();
-//                    addIndicator(TopologyUtils.convertToAWT(selectedZone.getPojo().getShape()));
-//                }
             }
         }
 

@@ -393,7 +393,18 @@ public class EnvObjectLogic {
 
         updateTopology();
         //commit the changes to this object
-        this.setChanged(true);
+        setChanged(true);
+    }
+
+    /**
+     * Sets the object location without invoking an object change notification
+     * An user should never use this method. It's needed by the framework and 
+     * reserver for it's exclusive use.
+     */
+    public void synchLocation(int x, int y) {
+        Representation rep = getPojo().getCurrentRepresentation();
+        rep.setOffset(x, y);
+        updateTopology();
     }
 
     @RequiresPermissions({"objects:read", "zones.update"})
@@ -629,7 +640,7 @@ public class EnvObjectLogic {
     @RequiresPermissions("objects:update")
     public void setEnvironment(EnvironmentLogic selEnv) {
         if (selEnv == null) {
-            LOG.warning("Trying to assign a null environment to object " + this.getPojo().getName() 
+            LOG.warning("Trying to assign a null environment to object " + this.getPojo().getName()
                     + ". It will be relocated to the fallback environment");
             selEnv = EnvironmentPersistence.getEnvironments().get(0);
             if (selEnv == null) {

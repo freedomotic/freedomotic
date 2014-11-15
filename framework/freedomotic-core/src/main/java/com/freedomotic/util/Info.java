@@ -25,6 +25,7 @@ import java.net.InetAddress;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -92,24 +93,20 @@ public class Info {
          * public static final String BROKER_DEFAULT = "vm://freedomotic";
          * info about peer brokers http://fusesource.com/docs/broker/5.2/connectivity_guide/N04F73598.04EE2290.html
          */
-        public final String BROKER_DEFAULT = "vm://localhost";//"peer://localhost/broker"+UUID.randomUUID();
-
+        public final String BROKER_DEFAULT = "peer://freedomotic/" + UUID.randomUUID();
         public final int BROKER_PORT = 61616;
 
-        public final String BROKER_STOMP = "stomp://0.0.0.0:61666";
-
-        public final String BROKER_WEBSOCKET = "ws://0.0.0.0:61614";
+        //port zero mean the first available port
+        public final String BROKER_STOMP = "stomp://0.0.0.0:0";
+        //port zero mean the first available port
+        public final String BROKER_WEBSOCKET = "ws://0.0.0.0:0";
         //default queues
-
         public final String CHANNEL_OBJECT_UPDATE = "app.event.object.behavior.change";
-
         public final String CHANNEL_ZONE_OCCUPIERS = "app.event.person.zone";
-
         public final String CHANNEL_PEOPLE_LOCATION = "app.event.sensor.person.movement.*";
 
         //behavior proprities
         public final int BEHAVIOR_MAX_PRIORITY = 9;
-
         public final int BEHAVIOR_MIN_PRIORITY = 0;
     }
 
