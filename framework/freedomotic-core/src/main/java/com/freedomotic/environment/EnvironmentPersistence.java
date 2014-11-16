@@ -181,11 +181,7 @@ public class EnvironmentPersistence implements EnvironmentRepository {
                 = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xenv")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return file.isFile() && file.getName().endsWith(".xenv");
                     }
                 };
 
@@ -257,6 +253,7 @@ public class EnvironmentPersistence implements EnvironmentRepository {
      * @param address
      * @return
      */
+    @Override
     public EnvObjectLogic join(String clazz, String name, String protocol, String address) {
         EnvObjectLogic loaded = null;
         ObjectPluginPlaceholder objectPlugin = (ObjectPluginPlaceholder) clientStorage.get(clazz);
@@ -286,6 +283,9 @@ public class EnvironmentPersistence implements EnvironmentRepository {
         loaded = EnvObjectPersistence.add(loaded, EnvObjectPersistence.MAKE_UNIQUE);
         loaded.getPojo().setProtocol(protocol);
         loaded.getPojo().setPhisicalAddress(address);
+        // Remove the 'virtual' tag and any other actAs configuration. 
+        //TODO: it would be better to remove the actAs property and manage all with tags
+        loaded.getPojo().setActAs("");
         loaded.setRandomLocation();
 
         //set the PREFERRED MAPPING of the protocol plugin (if any is defined in its manifest)
