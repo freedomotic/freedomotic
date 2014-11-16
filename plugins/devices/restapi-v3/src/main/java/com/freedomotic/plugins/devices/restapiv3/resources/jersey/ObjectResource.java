@@ -29,7 +29,6 @@ import com.freedomotic.objects.EnvObjectFactory;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
-import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;

@@ -25,7 +25,6 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractWSResource;
 import com.wordnik.swagger.annotations.Api;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.BroadcasterFactory;

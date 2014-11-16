@@ -19,7 +19,12 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.utils;
 
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
 
@@ -33,6 +38,13 @@ public abstract class AbstractWSResource {
     static {
         api = Freedomotic.INJECTOR.getInstance(API.class);
         om = new ObjectMapper();
+        // JAXB annotation
+        AnnotationIntrospector jaxbIntrospector = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
+        AnnotationIntrospector jacksonIntrospector = new JacksonAnnotationIntrospector();
+        om.setAnnotationIntrospector(new AnnotationIntrospectorPair(jaxbIntrospector, jacksonIntrospector));
+
     }
+    
+    
     
 }

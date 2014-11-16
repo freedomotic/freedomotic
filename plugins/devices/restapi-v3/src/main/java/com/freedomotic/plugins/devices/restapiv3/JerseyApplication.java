@@ -20,6 +20,7 @@
 package com.freedomotic.plugins.devices.restapiv3;
 
 import static com.freedomotic.plugins.devices.restapiv3.RestAPIv3.JERSEY_RESOURCE_PKG;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
@@ -29,7 +30,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class JerseyApplication extends ResourceConfig {
     
     public JerseyApplication(){
-        packages(JERSEY_RESOURCE_PKG);
-        // register(DeclarativeLinkingFeature.class);
+        packages(JERSEY_RESOURCE_PKG)
+        .register(JacksonFeature.class);
     }
 }
