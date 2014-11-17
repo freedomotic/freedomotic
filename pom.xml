@@ -273,7 +273,7 @@
                                             </mapper>
                                         </data>
                                         <data>
-                                            <src>${freedomotic.basedir}/scripts/shared/freedomotic-icon.png</src>
+                                            <src>${freedomotic.basedir}/scripts/assets/freedomotic-icon.png</src>
                                             <type>file</type>
                                             <mapper>
                                                 <type>perm</type>
@@ -293,7 +293,7 @@
                                             </mapper>
                                         </data>
                                         <data>
-                                            <src>${freedomotic.basedir}/scripts/shared/freedomotic.desktop</src>
+                                            <src>${freedomotic.basedir}/scripts/assets/freedomotic.desktop</src>
                                             <type>file</type>
                                             <mapper>
                                                 <type>perm</type>
