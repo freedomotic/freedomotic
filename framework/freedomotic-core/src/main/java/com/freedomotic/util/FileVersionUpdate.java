@@ -19,8 +19,9 @@ package com.freedomotic.util;
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-import com.freedomotic.util.Info;
+
 import java.io.File;
+import java.io.StringWriter;
 import java.util.logging.Logger;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -43,9 +44,12 @@ public class FileVersionUpdate {
             TransformerFactory factory = TransformerFactory.newInstance();
             Source xslt = new StreamSource(new File(Info.PATHS.PATH_CONFIG_FOLDER + "/validator/object-update-" + Info.getVersion() + ".xslt"));
             Transformer transformer = factory.newTransformer(xslt);
-
+StringWriter sw = new StringWriter();
             Source text = new StreamSource(src);
-            transformer.transform(text, new StreamResult(src));
+           
+            transformer.transform(text, new StreamResult(sw));
+            LOG.info(sw.toString());
+            //LOG.info(res);
         } catch (TransformerConfigurationException w) {
             LOG.severe(w.getLocalizedMessage());
         } catch (TransformerException z) {
