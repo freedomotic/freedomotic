@@ -19,6 +19,7 @@
  */
 package com.freedomotic.things.impl;
 
+import com.freedomotic.util.FileVersionUpdate;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.exceptions.RepositoryException;
