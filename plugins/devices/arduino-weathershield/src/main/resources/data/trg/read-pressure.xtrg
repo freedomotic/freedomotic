@@ -1,21 +1,21 @@
 <trigger>
-    <name>Arduino WeatherShield reads pressure change</name>
-    <description>Arduino WeatherShield reads pressure change</description>
-    <channel>app.event.sensor.protocol.read.ArduinoWeatherShield</channel>
+    <name>Arduino WeatherShield reads pressure value</name>
+    <description>Arduino WeatherShield reads pressure value</description>
+    <channel>app.event.sensor.protocol.read.arduino-weathershield</channel>
     <payload>
         <payload>
-            <it.freedom.reactions.Statement>
+            <com.freedomotic.reactions.Statement>
                 <logical>AND</logical>
                 <attribute>protocol</attribute>
                 <operand>EQUALS</operand>
-                <value>ArduinoWeatherShield</value>
-            </it.freedom.reactions.Statement>
-            <it.freedom.reactions.Statement>
+                <value>arduino-weathershield</value>
+            </com.freedomotic.reactions.Statement>
+            <com.freedomotic.reactions.Statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>@event.sensor.pressure</value>
-            </it.freedom.reactions.Statement>
+                <value>= behaviorValue=Math.round(@event.sensor.pressure*10)</value>
+            </com.freedomotic.reactions.Statement>
         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>
