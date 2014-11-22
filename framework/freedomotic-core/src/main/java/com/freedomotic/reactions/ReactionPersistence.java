@@ -284,18 +284,18 @@ public class ReactionPersistence implements Repository<Reaction> {
     private static final Logger LOG = Logger.getLogger(ReactionPersistence.class.getName());
 
     @Override
-    public List<Reaction> list() {
+    public List<Reaction> findAll() {
         return Collections.unmodifiableList(list);
     }
 
     @Override
-    public List<Reaction> getByName(String name) {
+    public List<Reaction> findByName(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
     }
 
     @Override
-    public Reaction get(String uuid) {
+    public Reaction findOne(String uuid) {
         for (Reaction r : list) {
             if (r.getUuid().equalsIgnoreCase(uuid)) {
                 return r;
@@ -326,7 +326,7 @@ public class ReactionPersistence implements Repository<Reaction> {
 
     @Override
     public boolean delete(String uuid) {
-        return delete(get(uuid));
+        return delete(findOne(uuid));
     }
 
     @Override
@@ -345,7 +345,7 @@ public class ReactionPersistence implements Repository<Reaction> {
     @Override
     public Reaction copy(String uuid) {
         try {
-            Reaction r = get(uuid);
+            Reaction r = findOne(uuid);
             Reaction newOne = (Reaction) r.clone();
             create(newOne);
             return newOne;
@@ -356,9 +356,9 @@ public class ReactionPersistence implements Repository<Reaction> {
     }
 
     @Override
-    public void clear() {
+    public void deleteAll() {
         try {
-            for (Reaction r : list()) {
+            for (Reaction r : findAll()) {
                 delete(r);
             }
         } catch (Exception e) {

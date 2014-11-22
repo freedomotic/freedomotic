@@ -50,7 +50,7 @@ public class AtmosphereObjectChangeResource extends AbstractWSResource {
             String msg;
             try {
                 msg = om.writeValueAsString(
-                        api.things().get(
+                        api.things().findOne(
                                 message.getPayload().getStatementValue("object.uuid")
                         ).getPojo()
                 );

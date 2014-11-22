@@ -70,7 +70,7 @@ public class TopologyManager implements BusConsumer {
      * @param event
      */
     private void fireEnterExitEvents(GenericPerson person, LocationEvent event) {
-        for (ZoneLogic zone : environmentRepository.list().get(0).getZones()) {
+        for (ZoneLogic zone : environmentRepository.findAll().get(0).getZones()) {
             // are the new Person coordinates inside the current zone?
             boolean isZoneAffected = TopologyUtils.contains(zone.getPojo().getShape(), new FreedomPoint(event.getX(), event.getY()));
             if (isZoneAffected) {

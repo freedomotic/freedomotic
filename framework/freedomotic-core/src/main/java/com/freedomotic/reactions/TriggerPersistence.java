@@ -346,14 +346,14 @@ public class TriggerPersistence implements Repository<Trigger> {
     private static final Logger LOG = Logger.getLogger(TriggerPersistence.class.getName());
 
     @Override
-    public List<Trigger> list() {
+    public List<Trigger> findAll() {
         return getTriggers();
     }
 
     @Override
-    public List<Trigger> getByName(String name) {
+    public List<Trigger> findByName(String name) {
         List<Trigger> tl = new ArrayList<Trigger>();
-        for (Trigger t : list()) {
+        for (Trigger t : findAll()) {
             if (t.getName().equalsIgnoreCase(name)) {
                 tl.add(t);
             }
@@ -362,7 +362,7 @@ public class TriggerPersistence implements Repository<Trigger> {
     }
 
     @Override
-    public Trigger get(String uuid) {
+    public Trigger findOne(String uuid) {
         return getTriggerByUUID(uuid);
     }
 
@@ -389,7 +389,7 @@ public class TriggerPersistence implements Repository<Trigger> {
 
     @Override
     public boolean delete(String uuid) {
-        return delete(get(uuid));
+        return delete(findOne(uuid));
     }
 
     @Override
@@ -418,7 +418,7 @@ public class TriggerPersistence implements Repository<Trigger> {
     @Override
     public Trigger copy(String uuid) {
         try {
-            Trigger t = get(uuid).clone();
+            Trigger t = findOne(uuid).clone();
             t.setName("Copy of " + t.getName());
             create(t);
             return t;
@@ -428,9 +428,9 @@ public class TriggerPersistence implements Repository<Trigger> {
     }
 
     @Override
-    public void clear() {
+    public void deleteAll() {
     try{
-        for (Trigger t : list()){
+        for (Trigger t : findAll()){
             delete(t);
         }
         } catch (Exception e){

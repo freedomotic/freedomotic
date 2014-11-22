@@ -45,7 +45,7 @@ public class OldReactionResource extends AbstractResource<Reaction>{
 
     @Override
     protected boolean doDelete(String UUID) {
-        Reaction r = api.reactions().get(UUID);
+        Reaction r = api.reactions().findOne(UUID);
         if (r !=null){
             api.reactions().delete(r);
             return true;
@@ -61,12 +61,12 @@ public class OldReactionResource extends AbstractResource<Reaction>{
 
     @Override
     protected List<Reaction> prepareList() {
-        return api.reactions().list();
+        return api.reactions().findAll();
     }
 
     @Override
     protected Reaction prepareSingle(String uuid) {
-        return api.reactions().get(uuid);
+        return api.reactions().findOne(uuid);
     }
 
     @Override

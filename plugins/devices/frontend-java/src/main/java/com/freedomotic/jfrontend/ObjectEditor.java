@@ -157,7 +157,7 @@ public class ObjectEditor
         //population combo box representation
         DefaultComboBoxModel representationsModel = new DefaultComboBoxModel();
 
-        for (EnvObjectLogic object : api.things().list()) {
+        for (EnvObjectLogic object : api.things().findAll()) {
             for (Representation rep : object.getPojo().getRepresentations()) {
                 representationsModel.addElement(rep);
             }
@@ -1031,7 +1031,7 @@ public class ObjectEditor
     }
 
     private void populateEnvironment() {
-        for (EnvironmentLogic env : api.environments().list()) {
+        for (EnvironmentLogic env : api.environments().findAll()) {
             environmentComboBox.addItem(env);
         }
 

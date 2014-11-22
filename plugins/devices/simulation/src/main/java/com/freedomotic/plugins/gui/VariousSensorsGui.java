@@ -70,14 +70,14 @@ public class VariousSensorsGui
     private void notifyLuminosityEvent(int luminosity) {
         LuminosityEvent luminosityEvent
                 = new LuminosityEvent(this, luminosity,
-                        sensor.getApi().environments().list().get(0).getPojo().getZone(0));
+                        sensor.getApi().environments().findAll().get(0).getPojo().getZone(0));
         sensor.notifyEvent(luminosityEvent);
     }
 
     private void notifyTemperatureEvent(int temperature) {
         TemperatureEvent temperatureEvent
                 = new TemperatureEvent(this, temperature,
-                        sensor.getApi().environments().list().get(0).getPojo().getZone(0));
+                        sensor.getApi().environments().findAll().get(0).getPojo().getZone(0));
         sensor.notifyEvent(temperatureEvent);
     }
 

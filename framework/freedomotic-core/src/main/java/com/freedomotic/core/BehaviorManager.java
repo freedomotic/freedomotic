@@ -151,7 +151,7 @@ public final class BehaviorManager implements BusConsumer {
             Set<String> testSet = new HashSet<String>();
             Set<String> extestSet = new HashSet<String>();
 
-            for (EnvObjectLogic object : api.things().list()) {
+            for (EnvObjectLogic object : api.things().findAll()) {
                 final EnvObject pojo = object.getPojo();
                 boolean apply;
                 testSet.clear();
@@ -190,7 +190,7 @@ public final class BehaviorManager implements BusConsumer {
             String regex = "^" + objectClass.replace(".", "\\.") + ".*";
             Pattern pattern = Pattern.compile(regex);
 
-            for (EnvObjectLogic object : api.things().list()) {
+            for (EnvObjectLogic object : api.things().findAll()) {
 
                 final EnvObject pojo = object.getPojo();
                 final Matcher matcher = pattern.matcher(pojo.getType());
@@ -213,7 +213,7 @@ public final class BehaviorManager implements BusConsumer {
             List<String> newList = new ArrayList<String>();
 
             //Search for the 'object.zone' name in all environments
-            for (EnvironmentLogic env : api.environments().list()) {
+            for (EnvironmentLogic env : api.environments().findAll()) {
                 if (zoneName != null) {
                     ZoneLogic z = env.getZone(zoneName);
                     for (EnvObject obj : z.getPojo().getObjects()) {

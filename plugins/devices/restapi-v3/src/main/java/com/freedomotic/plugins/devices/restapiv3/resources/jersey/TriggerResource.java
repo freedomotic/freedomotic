@@ -142,12 +142,12 @@ public class TriggerResource extends AbstractResource<Trigger> {
 
     @Override
     protected List<Trigger> prepareList() {
-        return api.triggers().list();
+        return api.triggers().findAll();
     }
 
     @Override
     protected Trigger prepareSingle(String uuid) {
-        return api.triggers().get(uuid);
+        return api.triggers().findOne(uuid);
     }
 
     @Override

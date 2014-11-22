@@ -29,21 +29,19 @@ import com.freedomotic.bus.BusService;
 import com.freedomotic.core.BehaviorManager;
 import com.freedomotic.core.SynchManager;
 import com.freedomotic.core.TopologyManager;
-import com.freedomotic.environment.EnvironmentLoader;
-
-import com.freedomotic.environment.EnvironmentLoaderFactory;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.PluginHasChanged.PluginActions;
-import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.exceptions.FreedomoticException;
 import com.freedomotic.exceptions.PluginLoadingException;
 import com.freedomotic.marketplace.ClassPathUpdater;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.MarketPlaceService;
-import com.freedomotic.model.environment.Environment;
+import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.Command;
@@ -68,7 +66,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.UUID;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -111,8 +108,8 @@ public class Freedomotic implements BusConsumer {
     @Deprecated
     public static Injector INJECTOR;
     //dependencies
-    private final EnvironmentLoaderFactory environmentLoaderFactory;
     private final EnvironmentRepository environmentRepository;
+    private final ThingsRepository thingsRepository;
     private final TopologyManager topologyManager;
     private final SynchManager synchManager;
     private final ClientStorage clientStorage;
@@ -138,18 +135,18 @@ public class Freedomotic implements BusConsumer {
      */
     @Inject
     public Freedomotic(
-            EnvironmentLoaderFactory environmentLoaderFactory,
             PluginsManager pluginsLoader,
             EnvironmentRepository environmentRepository,
+            ThingsRepository thingsRepository,
             ClientStorage clientStorage,
             AppConfig config,
             API api,
             BusService busService,
             TopologyManager topologyManager,
             SynchManager synchManager) {
-        this.environmentLoaderFactory = environmentLoaderFactory;
         this.pluginsManager = pluginsLoader;
         this.environmentRepository = environmentRepository;
+        this.thingsRepository = thingsRepository;
         this.busService = busService;
         this.topologyManager = topologyManager;
         this.synchManager = synchManager;
@@ -169,10 +166,6 @@ public class Freedomotic implements BusConsumer {
          * First of all the configuration file is loaded into a data structure
          * *****************************************************************
          */
-        loadAppConfig();
-        // Relocate base data folder according to configuration (if specified)
-        String defaultPath = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
-        Info.relocateDataPath(new File(config.getStringProperty("KEY_DATA_PATH", defaultPath)));
 
         // init localization
         api.getI18n().setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
@@ -329,8 +322,19 @@ public class Freedomotic implements BusConsumer {
             }
         }
 
-        // Deserialize the default environment (topology + objects)
-        loadDefaultEnvironment();
+        // Bootstrap Things in the environments
+        // This should be done after loading all Things plugins otherwise
+        // its java class will not be recognized by the system
+        for (EnvironmentLogic env : environmentRepository.findAll()) {
+            // Load all the Things in this environment
+            File thingsFolder = env.getObjectFolder();
+            for (File thingFile : thingsFolder.listFiles()) {
+                EnvObjectLogic loadedThing = thingsRepository.load(thingFile);
+                loadedThing.setEnvironment(env);
+                // Actvates the Thing. Important, otherwise it will be not visible in the environment
+                thingsRepository.create(loadedThing);
+            }
+        }
 
         // Loads the entire Reactions system (Trigger + Commands + Reactions)
         TriggerPersistence.loadTriggers(new File(Info.PATHS.PATH_DATA_FOLDER + "/trg/"));
@@ -340,7 +344,6 @@ public class Freedomotic implements BusConsumer {
         // A service to add environment objects using XML commands
         new BehaviorManager();
         new SerialConnectionProvider();
-
 
         // Starting plugins
         for (Client plugin : clientStorage.getClients()) {
@@ -355,7 +358,7 @@ public class Freedomotic implements BusConsumer {
                 busService.send(event);
             }
         }
-        
+
         double MB = 1024 * 1024;
         Runtime runtime = Runtime.getRuntime();
         LOG.config("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
@@ -365,56 +368,10 @@ public class Freedomotic implements BusConsumer {
 
     /**
      *
-     * @throws FreedomoticException
-     */
-    public void loadDefaultEnvironment()
-            throws FreedomoticException {
-        String envFilePath = config.getProperty("KEY_ROOM_XML_PATH");
-        File envFile = new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/" + envFilePath);
-        File folder = envFile.getParentFile();
-
-        if (!folder.exists()) {
-            throw new FreedomoticException(
-                    "Folder " + folder + " do not exists. Cannot load default "
-                    + "environment from " + envFile.getAbsolutePath().toString());
-        } else if (!folder.isDirectory()) {
-            throw new FreedomoticException(
-                    "Environment folder " + folder.getAbsolutePath()
-                    + " is supposed to be a directory");
-        }
-
-        try {
-            EnvironmentLoader environmentLoader = environmentLoaderFactory.create(folder);
-            Collection<Environment> loaded = environmentLoader.load();
-
-            if (loaded == null) {
-                throw new IllegalStateException("Environment data cannot be null at this stage");
-            }
-            for (Environment env : loaded) {
-                EnvironmentLogic logic = INJECTOR.getInstance(EnvironmentLogic.class);
-                logic.setPojo(env);
-                logic.setSource(new File(folder + "/" + env.getUUID() + ".xenv"));
-                environmentRepository.create(logic);
-            }
-
-            //now add related objects
-            EnvObjectPersistence.loadObjects(new File(folder + "/data/obj"), false);
-        } catch (DaoLayerException e) {
-            throw new FreedomoticException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     *
      * @return
      */
     public static String getInstanceID() {
         return INSTANCE_ID;
-    }
-
-    private void loadAppConfig() {
-        config = config.load();
-        LOG.info(config.toString());
     }
 
     // FIXME This shouldn't be done through this method
@@ -549,11 +506,11 @@ public class Freedomotic implements BusConsumer {
                 try {
                     saveDir = new File(folder + "/data/obj");
                     EnvObjectPersistence.saveObjects(saveDir);
-                } catch (DaoLayerException ex) {
+                } catch (RepositoryException ex) {
                     LOG.severe("Cannot save objects in " + saveDir.getAbsolutePath().toString());
                 }
             }
-        } catch (DaoLayerException ex) {
+        } catch (RepositoryException ex) {
             LOG.severe("Cannot save environment to folder " + folder + "due to " + ex.getCause());
         }
 

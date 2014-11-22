@@ -46,7 +46,7 @@ public class RoomResource extends AbstractResource<Zone> {
 
     protected RoomResource(String envUUID) {
         this.envUUID = envUUID;
-        this.env = api.environments().get(envUUID);
+        this.env = api.environments().findOne(envUUID);
     }
 
     @GET

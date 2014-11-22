@@ -27,7 +27,7 @@ package com.freedomotic.plugins;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.EnvObjectPersistence;
@@ -47,10 +47,10 @@ public class ObjectPluginPlaceholder
     /**
      *
      * @param example
-     * @throws DaoLayerException
+     * @throws RepositoryException
      */
     public ObjectPluginPlaceholder(File example)
-            throws DaoLayerException {
+            throws RepositoryException {
         this.example = example;
         object = EnvObjectPersistence.loadObject(example);
         config = new Config();

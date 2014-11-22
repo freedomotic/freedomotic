@@ -100,7 +100,7 @@ public class ListDrawer extends Renderer {
         }
 
         for (final EnvObject objPojo : zone.getPojo().getObjects()) {
-            final EnvObjectLogic obj = master.getApi().things().get(objPojo.getUUID());
+            final EnvObjectLogic obj = master.getApi().things().findOne(objPojo.getUUID());
 
             //a coloumn with object name
             JLabel icon = new JLabel(renderSingleObject(obj.getPojo()));

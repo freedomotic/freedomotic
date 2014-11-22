@@ -332,7 +332,7 @@ public class CommandPersistence implements Repository<Command> {
     private static final Logger LOG = Logger.getLogger(CommandPersistence.class.getName());
 
     @Override
-    public List<Command> list() {
+    public List<Command> findAll() {
         List<Command> cl = new ArrayList<Command>(userCommands.values());
         cl.addAll(hardwareCommands.values());
         return cl;
@@ -340,9 +340,9 @@ public class CommandPersistence implements Repository<Command> {
     }
 
     @Override
-    public List<Command> getByName(String name) {
+    public List<Command> findByName(String name) {
         List<Command> cl = new ArrayList<Command>();
-        for (Command c : list()) {
+        for (Command c : findAll()) {
             if (c.getName().equalsIgnoreCase(name)) {
                 cl.add(c);
             }
@@ -351,7 +351,7 @@ public class CommandPersistence implements Repository<Command> {
     }
 
     @Override
-    public Command get(String uuid) {
+    public Command findOne(String uuid) {
         return getCommandByUUID(uuid);
     }
 
@@ -377,7 +377,7 @@ public class CommandPersistence implements Repository<Command> {
 
     @Override
     public boolean delete(String uuid) {
-        return delete(get(uuid));
+        return delete(findOne(uuid));
     }
 
     @Override
@@ -395,7 +395,7 @@ public class CommandPersistence implements Repository<Command> {
     @Override
     public Command copy(String uuid) {
         try {
-            Command c = get(uuid).clone();
+            Command c = findOne(uuid).clone();
             c.setName("Copy of " + c.getName());
             add(c);
             return c;
@@ -405,9 +405,9 @@ public class CommandPersistence implements Repository<Command> {
     }
 
     @Override
-    public void clear() {
+    public void deleteAll() {
         try {
-            for (Command c : list()) {
+            for (Command c : findAll()) {
                 delete(c);
             }
         } catch (Exception e) {

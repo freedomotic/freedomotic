@@ -21,7 +21,7 @@ package com.freedomotic.plugins;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
-import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.exceptions.RepositoryException;
 import java.io.File;
 import java.util.List;
 
@@ -47,10 +47,10 @@ public interface ClientStorage {
      *
      * @param template
      * @return
-     * @throws DaoLayerException
+     * @throws RepositoryException
      */
     Client createObjectPlaceholder(final File template)
-            throws DaoLayerException;
+            throws RepositoryException;
 
     /**
      * Creates a placeholder plugin and adds it to the list of added plugins.

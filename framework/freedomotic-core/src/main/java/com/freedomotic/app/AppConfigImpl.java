@@ -19,8 +19,8 @@
  */
 package com.freedomotic.app;
 
-
 import com.freedomotic.util.Info;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,10 +40,18 @@ import java.util.logging.Logger;
  * @author Expression autor is undefined on line 12, column 14 in
  * Templates/Classes/Class.java.
  */
-public class AppConfigImpl implements AppConfig {
+class AppConfigImpl implements AppConfig {
 
     private static final long serialVersionUID = 1380975976029008480L;
-    private Properties properties = new Properties();
+    private final Properties properties = new Properties();
+
+    public AppConfigImpl() {
+        // Get configuration from filesystem
+        load();
+        // Relocate base data folder according to configuration (if specified in the config file)
+        String defaultPath = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
+        Info.relocateDataPath(new File(getStringProperty("KEY_DATA_PATH", defaultPath)));
+    }
 
     @Override
     public void setProperty(String key, String value) {
@@ -62,7 +70,7 @@ public class AppConfigImpl implements AppConfig {
     }
 
     @Override
-    public Set<Entry<Object, Object>> entrySet() {
+    public Set<Entry<Object, Object>> propertiesSet() {
         return properties.entrySet();
     }
 
@@ -174,7 +182,7 @@ public class AppConfigImpl implements AppConfig {
 
     @Override
     public String toString() {
-        Set<Entry<Object, Object>> entries = entrySet();
+        Set<Entry<Object, Object>> entries = propertiesSet();
         Iterator<Entry<Object, Object>> it = entries.iterator();
         StringBuilder string = new StringBuilder();
 
@@ -189,7 +197,7 @@ public class AppConfigImpl implements AppConfig {
     }
 
     @Override
-    public AppConfig load() {
+    public final AppConfig load() {
         try {
             properties.load(new FileInputStream(Info.PATHS.PATH_CONFIG_FOLDER + "/config.xml"));
         } catch (IOException ex) {

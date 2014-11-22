@@ -57,7 +57,7 @@ public class ReactionTest extends AbstractTest<ReactionRepresentation>{
 
     @Override
     protected void putModifications(ReactionRepresentation orig) {
-        orig.setTriggerUuid(getApi().triggers().getByName("Second Trigger").get(0).getUUID());
+        orig.setTriggerUuid(getApi().triggers().findByName("Second Trigger").get(0).getUUID());
     }
 
     @Override

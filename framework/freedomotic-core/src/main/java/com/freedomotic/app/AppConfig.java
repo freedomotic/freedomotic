@@ -21,7 +21,7 @@ public interface AppConfig extends Serializable {
      *
      * @return
      */
-    Set<Map.Entry<Object, Object>> entrySet();
+    Set<Map.Entry<Object, Object>> propertiesSet();
 
     /**
      *

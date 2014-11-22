@@ -27,7 +27,7 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.GenericEvent;
-import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.jfrontend.utils.OpenDialogFileFilter;
 import com.freedomotic.jfrontend.utils.TipOfTheDay;
 import com.freedomotic.model.environment.Zone;
@@ -117,7 +117,7 @@ public class MainWindow
         updateMenusPermissions();
 
         String defEnv = master.getApi().getConfig().getProperty("KEY_ROOM_XML_PATH");
-        EnvironmentLogic env = api.environments().get(defEnv.substring(defEnv.length() - 41, defEnv.length() - 5));
+        EnvironmentLogic env = api.environments().findOne(defEnv.substring(defEnv.length() - 41, defEnv.length() - 5));
         setEnvironment(env);
 
         checkDeletableEnvironments();
@@ -142,7 +142,7 @@ public class MainWindow
         mnuPluginList.setEnabled(Auth.isPermitted("plugins:read"));
         frameClient.setVisible(Auth.isPermitted("plugins:read"));
         mnuPrivileges.setEnabled(Auth.isPermitted("auth:privileges:read") || Auth.isPermitted("auth:privileges:update"));
-        mnuSelectEnvironment.setEnabled(master.getApi().environments().list().size() > 1);
+        mnuSelectEnvironment.setEnabled(master.getApi().environments().findAll().size() > 1);
     }
 
     private void setEnvironment(EnvironmentLogic input) {
@@ -190,7 +190,7 @@ public class MainWindow
 
     private void checkDeletableEnvironments() {
         // disable remove option if ther's just an available environment
-        if (api.environments().list().size() == 1) {
+        if (api.environments().findAll().size() == 1) {
             mnuDelete.setEnabled(false);
         } else {
             mnuDelete.setEnabled(true);
@@ -252,7 +252,7 @@ public class MainWindow
             LOG.severe(Freedomotic.getStackTraceInfo(ex));
         }
 
-        EnvironmentLogic previousEnv = api.environments().list().get(0);
+        EnvironmentLogic previousEnv = api.environments().findAll().get(0);
 
         if (drawer != null) {
             previousEnv = drawer.getCurrEnv();
@@ -1151,13 +1151,13 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     private void mnuNewEnvironmentActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuNewEnvironmentActionPerformed
 
         mnuSaveActionPerformed(null);
-        File oldEnv = api.environments().list().get(0).getSource();
+        File oldEnv = api.environments().findAll().get(0).getSource();
 
         //creates a new environment coping it from a template
         File template
                 = new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/templates/template-square/template-square.xenv");
         LOG.info("Opening " + template.getAbsolutePath());
-        drawer.setCurrEnv(master.getApi().environments().list().get(0));
+        drawer.setCurrEnv(master.getApi().environments().findAll().get(0));
 
         try {
             boolean loaded = master.getApi().environments().loadEnvironmentsFromDir(template.getParentFile(),
@@ -1172,7 +1172,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                     File folder = fc.getSelectedFile();
 
                     if (!folder.getName().isEmpty()) {
-                        EnvironmentLogic newenv = api.environments().list().get(0);
+                        EnvironmentLogic newenv = api.environments().findAll().get(0);
                         newenv.setSource(
                                 new File(folder + "/" + newenv.getPojo().getUUID() + ".xenv"));
                         setEnvironment(newenv);
@@ -1184,7 +1184,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                     //reload the old file
                     master.getApi().environments().loadEnvironmentsFromDir(oldEnv.getParentFile(), false);
 
-                    setEnvironment(api.environments().list().get(0));
+                    setEnvironment(api.environments().findAll().get(0));
                 }
             }
         } catch (Exception e) {
@@ -1201,7 +1201,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
         try {
             master.getApi().environments().saveEnvironmentsToFolder(new File(environmentFilePath).getParentFile());
-        } catch (DaoLayerException ex) {
+        } catch (RepositoryException ex) {
             JOptionPane.showMessageDialog(this,
                     "Cannot save environment at "
                     + new File(environmentFilePath).getAbsolutePath());
@@ -1219,11 +1219,11 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     private void mnuSelectEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSelectEnvironmentActionPerformed
         if (Auth.isPermitted("environments:read")) {
 
-            if (api.environments().list().size() == 1) {
-                drawer.setCurrEnv(api.environments().list().get(0));
-                setMapTitle(api.environments().list().get(0).getPojo().getName());
+            if (api.environments().findAll().size() == 1) {
+                drawer.setCurrEnv(api.environments().findAll().get(0));
+                setMapTitle(api.environments().findAll().get(0).getPojo().getName());
             } else {
-                Object[] possibilities = api.environments().list().toArray();
+                Object[] possibilities = api.environments().findAll().toArray();
                 EnvironmentLogic input = (EnvironmentLogic) JOptionPane.showInputDialog(
                         this,
                         i18n.msg("select_env"),
@@ -1237,7 +1237,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 if (input != null) {
                     setEnvironment(input);
                 } else {
-                    setEnvironment(api.environments().list().get(0));
+                    setEnvironment(api.environments().findAll().get(0));
                 }
             }
         }
@@ -1249,7 +1249,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         if (input != null && !input.isEmpty()) {
             newEnv.getPojo().setName(input.trim());
             newEnv.setSource(new File(drawer.getCurrEnv().getSource().getParentFile() + "/" + newEnv.getPojo().getUUID() + ".xenv"));
-            setEnvironment(api.environments().get(newEnv.getPojo().getUUID()));
+            setEnvironment(api.environments().findOne(newEnv.getPojo().getUUID()));
         } else {
             JOptionPane.showMessageDialog(this, i18n.msg("room_name_cannot_be_empty"), i18n.msg("room_rename_popup_title"), JOptionPane.ERROR_MESSAGE);
         }
@@ -1276,7 +1276,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
         ArrayList<Object> possibilities = new ArrayList<Object>();
         possibilities.add(i18n.msg("delete_envobj_alongside_environment"));
-        possibilities.addAll(api.environments().list());
+        possibilities.addAll(api.environments().findAll());
         possibilities.remove(oldenv);
 
         JComboBox envCombo = new JComboBox(possibilities.toArray());
@@ -1296,14 +1296,14 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 setEnvironment(env);
             } else {
                 // let objects be deleted and automatically select a new environment to show
-                if (api.environments().list().get(0) != oldenv) {
-                    setEnvironment(api.environments().list().get(0));
+                if (api.environments().findAll().get(0) != oldenv) {
+                    setEnvironment(api.environments().findAll().get(0));
                 } else {
-                    setEnvironment(api.environments().list().get(1));
+                    setEnvironment(api.environments().findAll().get(1));
                 }
             }
             api.environments().delete(oldenv);
-            if (api.things().list().isEmpty()) {
+            if (api.things().findAll().isEmpty()) {
                 // add a new object placeholder
                 ObjectPluginPlaceholder objp = (ObjectPluginPlaceholder) api.getClients("object").toArray()[0];
                 objp.startOnEnv(oldenv);

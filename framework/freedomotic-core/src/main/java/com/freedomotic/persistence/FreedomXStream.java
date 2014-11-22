@@ -19,7 +19,6 @@
  */
 package com.freedomotic.persistence;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.Condition;
 import com.freedomotic.environment.Room;
 import com.freedomotic.model.ds.Config;
@@ -44,13 +43,11 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import static java.lang.Math.log;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.SimpleRole;
-import static org.eclipse.jetty.util.IO.close;
 
 /**
  *

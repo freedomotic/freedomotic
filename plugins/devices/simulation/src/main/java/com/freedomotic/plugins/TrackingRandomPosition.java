@@ -51,15 +51,15 @@ public class TrackingRandomPosition extends Protocol {
 
         Random rx = new Random();
         Random ry = new Random();
-        x = rx.nextInt(getApi().environments().list().get(0).getPojo().getWidth());
-        y = ry.nextInt(getApi().environments().list().get(0).getPojo().getHeight());
+        x = rx.nextInt(getApi().environments().findAll().get(0).getPojo().getWidth());
+        y = ry.nextInt(getApi().environments().findAll().get(0).getPojo().getHeight());
 
         return new FreedomPoint(x, y);
     }
 
     @Override
     protected void onRun() {
-        for (EnvObjectLogic object : getApi().things().list()) {
+        for (EnvObjectLogic object : getApi().things().findAll()) {
             if (object instanceof GenericPerson) {
                 GenericPerson person = (GenericPerson) object;
                 FreedomPoint location = randomLocation();

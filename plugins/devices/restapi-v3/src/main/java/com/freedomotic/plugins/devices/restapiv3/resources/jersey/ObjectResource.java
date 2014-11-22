@@ -22,7 +22,7 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 import com.freedomotic.api.Client;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ObjectReceiveClick;
-import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.objects.EnvObjectFactory;
@@ -151,7 +151,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     protected List<EnvObject> prepareList() {
         List<EnvObject> objects = new ArrayList<EnvObject>();
         if (envUUID == null) {
-            for (EnvObjectLogic objLogic : api.things().list()) {
+            for (EnvObjectLogic objLogic : api.things().findAll()) {
                 objects.add(objLogic.getPojo());
             }
         } else {
@@ -165,7 +165,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
     @Override
     protected EnvObject prepareSingle(String uuid) {
-        EnvObjectLogic el = api.things().get(uuid);
+        EnvObjectLogic el = api.things().findOne(uuid);
         if (el != null) {
             return el.getPojo();
         } else {
@@ -202,7 +202,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
             el = EnvObjectFactory.create(eo);
             api.things().create(el);
             return createUri(el.getPojo().getUUID());
-        } catch (DaoLayerException ex) {
+        } catch (RepositoryException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
         return null;
@@ -221,7 +221,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
             @ApiParam(value = "UUID of object to click", required = true)
             @PathParam("id") String UUID) {
         try {
-            EnvObjectLogic el = api.things().get(UUID);
+            EnvObjectLogic el = api.things().findOne(UUID);
             ObjectReceiveClick event = new ObjectReceiveClick(this, el, ObjectReceiveClick.SINGLE_CLICK);
             Freedomotic.sendEvent(event);
             return Response.accepted().build();
@@ -283,7 +283,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
         public BehaviorResource(String objUUID) {
             this.objUUID = objUUID;
-            this.obj = api.things().get(objUUID);
+            this.obj = api.things().findOne(objUUID);
         }
 
         @Override

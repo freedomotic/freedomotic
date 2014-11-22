@@ -5,7 +5,7 @@
  */
 package com.freedomotic.environment;
 
-import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.persistence.Repository;
 import java.io.File;
@@ -18,9 +18,9 @@ import java.io.IOException;
 public interface EnvironmentRepository extends Repository<EnvironmentLogic> {
     
     //TODO: remove it it's just temporary to ease the refactoring
-    public void saveEnvironmentsToFolder(File folder) throws DaoLayerException;
+    public void saveEnvironmentsToFolder(File folder) throws RepositoryException;
     public EnvObjectLogic join(String clazz, String name, String protocol, String address);
-    public boolean loadEnvironmentsFromDir(File folder, boolean makeUnique) throws DaoLayerException;
+    public boolean loadEnvironmentsFromDir(File folder, boolean makeUnique) throws RepositoryException;
     public void saveAs(EnvironmentLogic env, File folder) throws IOException;
     
 }

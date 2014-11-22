@@ -25,7 +25,7 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.PluginHasChanged.PluginActions;
-import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.util.Info;
 import java.io.File;
@@ -351,11 +351,11 @@ class ClientStorageInMemory implements ClientStorage {
      *
      * @param template
      * @return
-     * @throws DaoLayerException
+     * @throws RepositoryException
      */
     @Override
     public Client createObjectPlaceholder(final File template)
-            throws DaoLayerException {
+            throws RepositoryException {
         return new ObjectPluginPlaceholder(template);
     }
 

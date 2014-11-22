@@ -11,6 +11,6 @@ import java.io.File;
  *
  * @author enrico
  */
-public interface EnvironmentLoaderFactory {
-        public EnvironmentLoader create(File directory);
+interface EnvironmentPersistenceFactory {
+        public EnvironmentPersistence create(File directory);
 }

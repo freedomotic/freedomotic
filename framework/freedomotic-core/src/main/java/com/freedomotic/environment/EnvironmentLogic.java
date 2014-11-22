@@ -19,19 +19,14 @@
  */
 package com.freedomotic.environment;
 
-import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.geometry.FreedomPolygon;
-import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.impl.GenericGate;
 import com.freedomotic.util.Graph;
 import com.freedomotic.util.UidGenerator;
-import com.google.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -47,15 +42,13 @@ public final class EnvironmentLogic {
     private Environment pojo = null;
     private List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
     private File source = null;
-    private final API api;
+    //private final API api;
 
     /**
-     *
-     * @param api
+     * Instantiation is disabled outside this package.
      */
-    @Inject
-    public EnvironmentLogic(API api) {
-        this.api = api;
+    protected EnvironmentLogic() {
+
     }
 
     /**
@@ -147,31 +140,31 @@ public final class EnvironmentLogic {
 
         zone.init(this);
 
-        if (zone.getPojo().isRoom()) {
-            Room room = (Room) zone;
-            room.init(this);
-            Iterator<EnvObjectLogic> it = api.things().list().iterator();
-            //check if this rooms has gates
-            while (it.hasNext()) {
-                EnvObjectLogic obj = it.next();
-                if (obj instanceof GenericGate) {
-                    GenericGate gate = (GenericGate) obj;
-                    gate.evaluateGate();
-                }
-            }
-            try {
-                room.setChanged();
-            } catch (Exception e) {
-                LOG.warning("Cannot notify room changes");
-            }
-        } else {
-            try {
-                zone.setChanged();
-            } catch (Exception e) {
-                LOG.warning("Cannot notify room changes");
-            }
-
-        }
+        //REGRESSION
+//        if (zone.getPojo().isRoom()) {
+//            Room room = (Room) zone;
+//            room.init(this);
+//            Iterator<EnvObjectLogic> it = api.things().findAll().iterator();
+//            //check if this rooms has gates
+//            while (it.hasNext()) {
+//                EnvObjectLogic obj = it.next();
+//                if (obj instanceof GenericGate) {
+//                    GenericGate gate = (GenericGate) obj;
+//                    gate.evaluateGate();
+//                }
+//            }
+//            try {
+//                room.setChanged();
+//            } catch (Exception e) {
+//                LOG.warning("Cannot notify room changes");
+//            }
+//        } else {
+//            try {
+//                zone.setChanged();
+//            } catch (Exception e) {
+//                LOG.warning("Cannot notify room changes");
+//            }
+//        }
     }
 
     /**
@@ -182,16 +175,6 @@ public final class EnvironmentLogic {
     public void removeZone(ZoneLogic zone) {
         getPojo().getZones().remove(zone.getPojo());
         zones.remove(zone);
-    }
-
-    /**
-     *
-     * @return @deprecated
-     */
-    @Deprecated
-    @RequiresPermissions("environments:read")
-    public int getLastObjectIndex() {
-        return api.things().list().size();
     }
 
     /**
@@ -264,8 +247,7 @@ public final class EnvironmentLogic {
     @RequiresPermissions({"environments:read", "zones:read"})
     public ZoneLogic getZone(String zoneName) {
         for (ZoneLogic zone : zones) {
-            if (zone.getPojo().getName().equalsIgnoreCase(zoneName)
-                    /*&& api.getAuth().isPermitted("zone:read" + zoneName)*/) {
+            if (zone.getPojo().getName().equalsIgnoreCase(zoneName) /*&& api.getAuth().isPermitted("zone:read" + zoneName)*/) {
                 return zone;
             }
         }
@@ -281,8 +263,7 @@ public final class EnvironmentLogic {
     @RequiresPermissions({"environments:read", "zones:read"})
     public ZoneLogic getZoneByUuid(String uuid) {
         for (ZoneLogic zone : zones) {
-            if (zone.getPojo().getUuid().equalsIgnoreCase(uuid)
-                    /*&& api.getAuth().isPermitted("zone:read" + uuid)*/) {
+            if (zone.getPojo().getUuid().equalsIgnoreCase(uuid) /*&& api.getAuth().isPermitted("zone:read" + uuid)*/) {
                 return zone;
             }
         }

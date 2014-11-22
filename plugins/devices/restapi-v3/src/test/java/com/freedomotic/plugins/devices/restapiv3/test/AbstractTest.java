@@ -97,11 +97,11 @@ public abstract class AbstractTest<Z> extends JerseyTest {
     @After
     @Override
     public void tearDown() throws Exception {
-        getApi().commands().clear();
-        getApi().environments().clear();
-        getApi().triggers().clear();
-        getApi().reactions().clear();
-        getApi().things().clear();
+        getApi().commands().deleteAll();
+        getApi().environments().deleteAll();
+        getApi().triggers().deleteAll();
+        getApi().reactions().deleteAll();
+        getApi().things().deleteAll();
         super.tearDown(); //To change body of generated methods, choose Tools | Templates.
     }
 

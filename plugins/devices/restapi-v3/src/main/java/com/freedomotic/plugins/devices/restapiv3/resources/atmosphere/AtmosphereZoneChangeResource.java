@@ -52,7 +52,7 @@ public class AtmosphereZoneChangeResource extends AbstractWSResource {
     @POST
     public static void broadcast(EventTemplate message) {
         if (api != null) {
-            for (EnvironmentLogic e : api.environments().list()) {
+            for (EnvironmentLogic e : api.environments().findAll()) {
                 ZoneLogic z = e.getZone(message.getPayload().getStatementValue("zone.name"));
                 if (z != null) {
                     try {

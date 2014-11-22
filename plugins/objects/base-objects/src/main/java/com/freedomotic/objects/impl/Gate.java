@@ -22,7 +22,7 @@
 package com.freedomotic.objects.impl;
 
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentPersistence;
+import com.freedomotic.environment.EnvironmentRepositoryImpl;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
@@ -184,7 +184,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
     @Override
     public final void setChanged(boolean value) {
         //update the room that can be reached
-        for (EnvironmentLogic env : EnvironmentPersistence.getEnvironments()) {
+        for (EnvironmentLogic env : EnvironmentRepositoryImpl.getEnvironments()) {
             for (ZoneLogic z : env.getZones()) {
                 if (z instanceof Room) {
                     final Room room = (Room) z;
@@ -261,7 +261,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         FreedomPolygon objShape =
                 TopologyUtils.rotate(TopologyUtils.translate(pojoShape, xoffset, yoffset),
                 (int) representation.getRotation());
-        EnvironmentLogic env = EnvironmentPersistence.getEnvByUUID(getPojo().getEnvironmentID());
+        EnvironmentLogic env = EnvironmentRepositoryImpl.getEnvByUUID(getPojo().getEnvironmentID());
 
         if (env != null) {
             for (Room room : env.getRooms()) {

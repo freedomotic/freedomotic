@@ -28,13 +28,13 @@ import java.util.List;
  */
 public interface Repository<T> {
 
-    public List<T> list();
+    public List<T> findAll();
 
-    public List<T> getByName(String name);
+    public List<T> findByName(String name);
 
-    public T get(String uuid);
+    public T findOne(String uuid);
 
-    public boolean create(T item);
+    public boolean create(T item);  //TODO: refactor in T save(T item)
 
     public boolean delete(T item);
 
@@ -44,6 +44,11 @@ public interface Repository<T> {
     
     public T copy(String uuid);
     
-    public void clear();
+    public void deleteAll();
+    
+    //TODO: public long count();
+    //TODO: public boolean exists(String uuid);
+    //TODO: public void flush();
+    //TODO: T saveAndFlush(T arg0)
 
 }

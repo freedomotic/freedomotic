@@ -149,7 +149,7 @@ public class HardwareCommandResource extends AbstractResource<Command> {
 
     @Override
     protected Command prepareSingle(String uuid) {
-        return api.commands().get(uuid);
+        return api.commands().findOne(uuid);
     }
 
     @Override

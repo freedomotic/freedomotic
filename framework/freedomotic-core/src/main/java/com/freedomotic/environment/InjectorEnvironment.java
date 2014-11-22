@@ -17,9 +17,9 @@ public class InjectorEnvironment extends AbstractModule {
     @Override
     protected void configure() {
 
-        bind(EnvironmentRepository.class).to(EnvironmentPersistence.class).in(Singleton.class);
+        bind(EnvironmentRepository.class).to(EnvironmentRepositoryImpl.class).in(Singleton.class);
 
-        install(new FactoryModuleBuilder().implement(EnvironmentLoader.class, EnvironmentLoaderImpl.class)
-                .build(EnvironmentLoaderFactory.class));
+        install(new FactoryModuleBuilder().implement(EnvironmentPersistence.class, EnvironmentPersistenceImpl.class)
+                .build(EnvironmentPersistenceFactory.class));
     }
 }

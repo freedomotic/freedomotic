@@ -126,7 +126,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
     @Override
     protected List<Environment> prepareList() {
         List<Environment> environments = new ArrayList<Environment>();
-        for (EnvironmentLogic log : api.environments().list()) {
+        for (EnvironmentLogic log : api.environments().findAll()) {
             environments.add(log.getPojo());
         }
         return environments;
@@ -134,7 +134,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Override
     protected Environment prepareSingle(String uuid) {
-        EnvironmentLogic el = api.environments().get(uuid);
+        EnvironmentLogic el = api.environments().findOne(uuid);
         if (el != null) {
             return el.getPojo();
         }
@@ -143,7 +143,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Override
     protected boolean doDelete(String UUID) {
-        EnvironmentLogic env = api.environments().get(UUID);
+        EnvironmentLogic env = api.environments().findOne(UUID);
         if (env != null) {
             return api.environments().delete(UUID);
         } else {

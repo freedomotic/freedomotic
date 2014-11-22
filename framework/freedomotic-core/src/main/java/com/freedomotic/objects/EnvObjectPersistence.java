@@ -20,9 +20,9 @@
 package com.freedomotic.objects;
 
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentPersistence;
+import com.freedomotic.environment.EnvironmentRepositoryImpl;
 import com.freedomotic.environment.EnvironmentRepository;
-import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
@@ -76,64 +76,42 @@ public class EnvObjectPersistence implements ThingsRepository {
     /**
      *
      * @param folder
-     * @throws DaoLayerException
+     * @throws RepositoryException
      */
     @RequiresPermissions("objects:save")
-    public static void saveObjects(File folder) throws DaoLayerException {
+    public static void saveObjects(File folder) throws RepositoryException {
         if (objectList.isEmpty()) {
-            throw new DaoLayerException("There are no object to persist, " + folder.getAbsolutePath()
+            throw new RepositoryException("There are no object to persist, " + folder.getAbsolutePath()
                     + " will not be altered.");
         }
 
         if (!folder.isDirectory()) {
-            throw new DaoLayerException(folder.getAbsoluteFile() + " is not a valid object folder. Skipped");
+            throw new RepositoryException(folder.getAbsoluteFile() + " is not a valid object folder. Skipped");
         }
 
-        try {
-            deleteObjectFiles(folder);
+        deleteObjectFiles(folder);
 
-            // Create file
-            StringBuilder summary = new StringBuilder();
-            //print an header for the index.txt file
-            summary.append("#Filename \t\t #EnvObjectName \t\t\t #EnvObjectType \t\t\t #Protocol \t\t\t #Address")
-                    .append("\n");
+        for (EnvObjectLogic envObject : objectList.values()) {
+            String uuid = envObject.getPojo().getUUID();
 
-            for (EnvObjectLogic envObject : objectList.values()) {
-                String uuid = envObject.getPojo().getUUID();
+            if ((uuid == null) || uuid.isEmpty()) {
+                envObject.getPojo().setUUID(UUID.randomUUID().toString());
+            }
 
-                if ((uuid == null) || uuid.isEmpty()) {
-                    envObject.getPojo().setUUID(UUID.randomUUID().toString());
-                }
-
-                //REGRESSION
+            //REGRESSION
 //                if ((envObject.getPojo().getEnvironmentID() == null)
 //                        || envObject.getPojo().getEnvironmentID().isEmpty()) {
 //                    envObject.getPojo()
 //                            .setEnvironmentID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
 //                }
-                String fileName = envObject.getPojo().getUUID() + ".xobj";
-                File file = new File(folder + "/" + fileName);
-                FreedomXStream.toXML(envObject.getPojo(), file);
-
-                summary.append(fileName).append("\t").append(envObject.getPojo().getName()).append("\t")
-                        .append(envObject.getPojo().getType()).append("\t")
-                        .append(envObject.getPojo().getProtocol()).append("\t")
-                        .append(envObject.getPojo().getPhisicalAddress()).append("\n");
-            }
-
-            //writing a summary .txt file with the list of commands in this folder
-            FileWriter fstream = new FileWriter(folder + "/index.txt");
-            try (BufferedWriter indexfile = new BufferedWriter(fstream)) {
-                indexfile.write(summary.toString());
-                //Close the output stream
-            }
-        } catch (IOException ex) {
-            throw new DaoLayerException(ex);
+            String fileName = envObject.getPojo().getUUID() + ".xobj";
+            File file = new File(folder + "/" + fileName);
+            FreedomXStream.toXML(envObject.getPojo(), file);
         }
     }
 
     private static void deleteObjectFiles(File folder)
-            throws DaoLayerException {
+            throws RepositoryException {
         if ((folder == null) || !folder.isDirectory()) {
             throw new IllegalArgumentException("Unable to delete objects files in a null or not valid folder");
         }
@@ -159,7 +137,7 @@ public class EnvObjectPersistence implements ThingsRepository {
             boolean deleted = file.delete();
 
             if (!deleted) {
-                throw new DaoLayerException("Unable to delete file " + file.getAbsoluteFile());
+                throw new RepositoryException("Unable to delete file " + file.getAbsoluteFile());
             }
         }
     }
@@ -169,10 +147,10 @@ public class EnvObjectPersistence implements ThingsRepository {
      *
      * @param folder
      * @param makeUnique
-     * @throws com.freedomotic.exceptions.DaoLayerException
+     * @throws com.freedomotic.exceptions.RepositoryException
      */
     public synchronized static void loadObjects(File folder, final boolean makeUnique)
-            throws DaoLayerException {
+            throws RepositoryException {
         objectList.clear();
         System.out.println("DEBUG: loading objects from " + folder.getAbsolutePath());
 
@@ -198,14 +176,14 @@ public class EnvObjectPersistence implements ThingsRepository {
                 EnvObjectLogic loaded = loadObject(file);
 
                 if (loaded != null) {
-                    EnvironmentLogic env = EnvironmentPersistence.getEnvByUUID(loaded.getPojo().getEnvironmentID());
+                    EnvironmentLogic env = EnvironmentRepositoryImpl.getEnvByUUID(loaded.getPojo().getEnvironmentID());
                     if (env != null) {
                         loaded.setEnvironment(env);
                     } else {
                         LOG.warning("Reset environment UUID of object " + loaded.getPojo().getName()
                                 + " to the default environment. This is because the environment UUID "
                                 + loaded.getPojo().getEnvironmentID() + " does not exists.");
-                        loaded.setEnvironment(EnvironmentPersistence.getEnvironments().get(0));
+                        loaded.setEnvironment(EnvironmentRepositoryImpl.getEnvironments().get(0));
                     }
                     add(loaded, makeUnique);
                 }
@@ -219,36 +197,39 @@ public class EnvObjectPersistence implements ThingsRepository {
      * @param file
      * @return
      */
-    public static EnvObjectLogic loadObject(File file)
-            throws DaoLayerException {
+    public static EnvObjectLogic loadObject(File file) throws RepositoryException {
+        // Arguments validation
+        if (file == null) {
+            throw new IllegalArgumentException("Cannot load a null Thing file");
+        }
+        if (!file.isFile()) {
+            throw new IllegalArgumentException("Thing file in input is not a file");
+        }
+
+        // Configure the deserialization engine
+        LOG.log(Level.CONFIG, "Loading Thing from file {0}", file.getAbsolutePath());
         XStream xstream = FreedomXStream.getXstream();
 
-        //validate the object against a predefined DTD
+        // Validate the object against a predefined DTD
         String xml;
-
         try {
             xml = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/object.dtd");
 
             EnvObject pojo = (EnvObject) xstream.fromXML(xml);
-            EnvObjectLogic objectLogic = null;
+            EnvObjectLogic objectLogic;
 
             try {
                 objectLogic = EnvObjectFactory.create(pojo);
-                LOG.config("Created a new logic for " + objectLogic.getPojo().getName()
-                        + " of type " + objectLogic.getClass().getCanonicalName().toString());
-
+                LOG.log(Level.CONFIG, "Created a new logic for {0} of type {1}", new Object[]{objectLogic.getPojo().getName(), objectLogic.getClass().getCanonicalName()});
                 return objectLogic;
-            } catch (DaoLayerException daoLayerException) {
+            } catch (RepositoryException daoLayerException) {
                 LOG.warning(daoLayerException.getMessage());
             }
         } catch (IOException ex) {
-            throw new DaoLayerException(ex.getMessage(), ex);
+            throw new RepositoryException("Cannot read Thing file " + file.getAbsolutePath(), ex);
         } catch (XStreamException e) {
-            throw new DaoLayerException(e.getMessage(), e);
+            throw new RepositoryException("Error while deserializing Thing file " + file.getAbsolutePath(), e);
         }
-        //EnvObjectLogic objectLogic = EnvObjectFactory.save(pojo);
-        //LOG.info("Created a new logic for " + objectLogic.getPojo().getName() + " of type " + objectLogic.getClass().getCanonicalName().toString());
-        //add(objectLogic);
         return null;
     }
 
@@ -450,7 +431,7 @@ public class EnvObjectPersistence implements ThingsRepository {
 
             try {
                 envObjectLogic = EnvObjectFactory.create(pojoCopy);
-            } catch (DaoLayerException ex) {
+            } catch (RepositoryException ex) {
                 LOG.warning(ex.getMessage());
             }
         }
@@ -489,7 +470,7 @@ public class EnvObjectPersistence implements ThingsRepository {
      */
     @RequiresPermissions("objects:delete")
     @Override
-    public void clear() {
+    public void deleteAll() {
         try {
             for (EnvObjectLogic el : objectList.values()) {
                 delete(el);
@@ -503,7 +484,7 @@ public class EnvObjectPersistence implements ThingsRepository {
 
     @Override
     @RequiresPermissions("objects:read")
-    public List<EnvObjectLogic> list() {
+    public List<EnvObjectLogic> findAll() {
         LOG.info("OBJECT LIST SIZE: " + objectList.size());
         List<EnvObjectLogic> el = new ArrayList<EnvObjectLogic>();
         el.addAll(objectList.values());
@@ -512,9 +493,9 @@ public class EnvObjectPersistence implements ThingsRepository {
 
     @Override
     @RequiresPermissions("objects:read")
-    public List<EnvObjectLogic> getByName(String name) {
+    public List<EnvObjectLogic> findByName(String name) {
         List<EnvObjectLogic> el = new ArrayList<EnvObjectLogic>();
-        for (EnvObjectLogic e : list()) {
+        for (EnvObjectLogic e : findAll()) {
             if (e.getPojo().getName().equalsIgnoreCase(name)) {
                 el.add(e);
             }
@@ -524,7 +505,7 @@ public class EnvObjectPersistence implements ThingsRepository {
 
     @Override
     @RequiresPermissions("objects:read")
-    public EnvObjectLogic get(String uuid) {
+    public EnvObjectLogic findOne(String uuid) {
         return getObjectByUUID(uuid);
     }
 
@@ -587,7 +568,7 @@ public class EnvObjectPersistence implements ThingsRepository {
     @Override
     @RequiresPermissions("objects:create")
     public EnvObjectLogic copy(String uuid) {
-        return add(get(uuid), true);
+        return add(findOne(uuid), true);
     }
 
     public static List<String> getObjectsNames() {
@@ -611,5 +592,15 @@ public class EnvObjectPersistence implements ThingsRepository {
     @Override
     public List<EnvObjectLogic> findByAddress(String protocol, String address) {
         return getObjectByAddress(protocol, address);
+    }
+
+    @Override
+    public EnvObjectLogic load(File file) {
+        try {
+            return loadObject(file);
+        } catch (RepositoryException ex) {
+            LOG.log(Level.SEVERE, "Error while loading Thing from file " + file.getAbsolutePath(), ex);
+            return null;
+        }
     }
 }

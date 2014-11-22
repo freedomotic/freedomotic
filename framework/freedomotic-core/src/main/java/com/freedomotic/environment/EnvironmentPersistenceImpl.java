@@ -19,7 +19,7 @@
  */
 package com.freedomotic.environment;
 
-import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.persistence.FreedomXStream;
@@ -29,13 +29,12 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,13 +43,15 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-class EnvironmentLoaderImpl implements EnvironmentLoader {
+class EnvironmentPersistenceImpl implements EnvironmentPersistence {
+
+    private static final Logger LOG = Logger.getLogger(EnvironmentPersistenceImpl.class.getName());
 
     private File directory;
     private boolean savedAsNewEnvironment;
 
     @Inject
-    EnvironmentLoaderImpl(@Assisted File directory) {
+    EnvironmentPersistenceImpl(@Assisted File directory) {
         this.directory = directory;
     }
 
@@ -75,48 +76,31 @@ class EnvironmentLoaderImpl implements EnvironmentLoader {
      * engine (XML)
      *
      * @param environment
-     * @throws DaoLayerException
+     * @throws RepositoryException
      */
     @Override
-    public void save(Environment environment) throws DaoLayerException {
+    public void persist(Environment environment) throws RepositoryException {
         if (!directory.isDirectory()) {
-            throw new DaoLayerException(directory.getAbsoluteFile() + " is not a valid environment folder. Skipped");
+            throw new RepositoryException(directory.getAbsoluteFile() + " is not a valid environment folder. Skipped");
         }
 
         if (this.isSavedAsNewEnvironment()) {
             try {
                 saveAs(environment);
             } catch (IOException ex) {
-                throw new DaoLayerException(ex);
+                throw new RepositoryException(ex);
             }
         } else {
             delete(environment);
-
             try {
-                // Create file
-                StringBuilder summary = new StringBuilder();
-                //print an header for the index.txt file
-                summary.append("#Filename \t\t #EnvName").append("\n");
-
                 String uuid = environment.getUUID();
-
                 if ((uuid == null) || uuid.isEmpty()) {
                     environment.setUUID(UUID.randomUUID().toString());
                 }
-
                 String fileName = environment.getUUID() + ".xenv";
-                serialize(environment,
-                        new File(directory + "/" + fileName));
-                summary.append(fileName).append("\t").append(environment.getName()).append("\n");
-
-                //writing a summary .txt file with the list of commands in this folder
-                FileWriter fstream = new FileWriter(directory + "/index.txt");
-                BufferedWriter indexfile = new BufferedWriter(fstream);
-                indexfile.write(summary.toString());
-                //Close the output stream
-                indexfile.close();
+                serialize(environment, new File(directory + "/" + fileName));
             } catch (IOException ex) {
-                throw new DaoLayerException(ex);
+                throw new RepositoryException(ex);
             }
         }
     }
@@ -150,11 +134,11 @@ class EnvironmentLoaderImpl implements EnvironmentLoader {
     /**
      *
      * @param environment
-     * @throws DaoLayerException
+     * @throws RepositoryException
      */
     @Override
     public void delete(Environment environment)
-            throws DaoLayerException {
+            throws RepositoryException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -164,13 +148,13 @@ class EnvironmentLoaderImpl implements EnvironmentLoader {
      *
      * @return an Environment object or null if no environments are found in the
      * given folder
-     * @throws DaoLayerException
+     * @throws RepositoryException
      */
     @Override
-    public Collection<Environment> load()
-            throws DaoLayerException {
+    public Collection<Environment> loadAll()
+            throws RepositoryException {
         if (directory == null) {
-            throw new DaoLayerException("Cannot load environments from null directory");
+            throw new RepositoryException("Cannot load environments from null directory");
         }
 
         // This filter only returns env files
@@ -178,17 +162,13 @@ class EnvironmentLoaderImpl implements EnvironmentLoader {
                 = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xenv")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return file.isFile() && file.getName().endsWith(".xenv");
                     }
                 };
 
         File[] files = directory.listFiles(envFileFilter);
 
-        ArrayList<Environment> environments = new ArrayList<Environment>();
+        List<Environment> environments = new ArrayList<Environment>();
         for (File file : files) {
             environments.add(deserialize(file));
 
@@ -212,40 +192,25 @@ class EnvironmentLoaderImpl implements EnvironmentLoader {
      *
      * @param file
      * @return
-     * @throws DaoLayerException
+     * @throws RepositoryException
      */
-    public static Environment deserialize(final File file)
-            throws DaoLayerException {
+    public static Environment deserialize(final File file) throws RepositoryException {
         XStream xstream = FreedomXStream.getXstream();
-
         //validate the object against a predefined DTD
         String xml;
-
         try {
             xml = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/environment.dtd");
         } catch (IOException ex) {
-            throw new DaoLayerException(ex.getMessage(), ex);
+            throw new RepositoryException(ex.getMessage(), ex);
         }
-
         Environment pojo = null;
-
         try {
             pojo = (Environment) xstream.fromXML(xml);
 
             return pojo;
         } catch (XStreamException e) {
-            throw new DaoLayerException("XML parsing error. Readed XML is \n" + xml, e);
+            throw new RepositoryException("XML parsing error. Readed XML is \n" + xml, e);
         }
-
-//        EnvironmentLogic envLogic = new EnvironmentLogic();
-//        if (pojo == null) {
-//            throw new IllegalStateException("Object data cannot be null at this stage");
-//        }
-//        envLogic.setPojo(pojo);
-//        envLogic.setSource(file);
-//        // next line is commented as the method init() is called in the add()
-//        //envLogic.init();
-//        add(envLogic, false);
     }
-    private static final Logger LOG = Logger.getLogger(EnvironmentLoaderImpl.class.getName());
+
 }

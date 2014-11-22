@@ -137,9 +137,9 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
         if (o.getUuid() != null && !o.getUuid().isEmpty()) {
             r.setUuid(o.getUuid());
         }
-        r.setTrigger(api.triggers().get(o.getTriggerUuid()));
+        r.setTrigger(api.triggers().findOne(o.getTriggerUuid()));
         for (HashMap<String, String> c : o.getCommands()) {
-            r.getCommands().add(api.commands().get(c.get("uuid")));
+            r.getCommands().add(api.commands().findOne(c.get("uuid")));
         }
         r.setConditions(o.getConditions());
         r.setChanged();
@@ -167,7 +167,7 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
     @Override
     protected List<ReactionRepresentation> prepareList() {
         ArrayList<ReactionRepresentation> list = new ArrayList<ReactionRepresentation>();
-        for (Reaction r : api.reactions().list()) {
+        for (Reaction r : api.reactions().findAll()) {
             list.add(new ReactionRepresentation(r));
         }
         return list;
@@ -175,7 +175,7 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
 
     @Override
     protected ReactionRepresentation prepareSingle(String uuid) {
-        Reaction r = api.reactions().get(uuid);
+        Reaction r = api.reactions().findOne(uuid);
         if (r != null) {
             return new ReactionRepresentation(r);
         }

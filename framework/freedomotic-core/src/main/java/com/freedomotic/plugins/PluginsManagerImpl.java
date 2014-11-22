@@ -7,7 +7,7 @@ package com.freedomotic.plugins;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.exceptions.PluginLoadingException;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.ReactionPersistence;
@@ -270,7 +270,7 @@ class PluginsManagerImpl implements PluginsManager {
                     placeholder = clientStorage.createObjectPlaceholder(template);
                     placeholder = mergePackageConfiguration(placeholder, directory);
                     clientStorage.add(placeholder);
-                } catch (DaoLayerException ex) {
+                } catch (RepositoryException ex) {
                     throw new PluginLoadingException("Cannot create object plugin " + "placeholder from template "
                             + template.getAbsolutePath(), ex);
                 } catch (IOException ex) {

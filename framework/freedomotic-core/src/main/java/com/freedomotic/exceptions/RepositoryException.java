@@ -10,14 +10,14 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-public class DaoLayerException
+public class RepositoryException
         extends FreedomoticException {
 
     /**
      * Creates a new instance of
      * <code>DaoLayerException</code> without detail message.
      */
-    public DaoLayerException() {
+    public RepositoryException() {
     }
 
     /**
@@ -26,7 +26,7 @@ public class DaoLayerException
      *
      * @param msg the detail message.
      */
-    public DaoLayerException(String msg) {
+    public RepositoryException(String msg) {
         super(msg);
     }
 
@@ -35,7 +35,7 @@ public class DaoLayerException
      * @param message
      * @param cause
      */
-    public DaoLayerException(String message, Throwable cause) {
+    public RepositoryException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -43,8 +43,8 @@ public class DaoLayerException
      *
      * @param cause
      */
-    public DaoLayerException(Throwable cause) {
+    public RepositoryException(Throwable cause) {
         super(cause);
     }
-    private static final Logger LOG = Logger.getLogger(DaoLayerException.class.getName());
+    private static final Logger LOG = Logger.getLogger(RepositoryException.class.getName());
 }

@@ -137,7 +137,7 @@ public class Renderer
     }
 
     private List<EnvironmentLogic> getEnvironments() {
-        return plugin.getApi().environments().list();
+        return plugin.getApi().environments().findAll();
     }
 
     /**

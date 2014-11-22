@@ -21,12 +21,8 @@
  */
 package com.freedomotic.objects;
 
-import com.freedomotic.app.Freedomotic;
-import com.freedomotic.app.FreedomoticInjector;
-import com.freedomotic.exceptions.DaoLayerException;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import java.net.URLClassLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,9 +40,9 @@ public class EnvObjectFactory {
      *
      * @param pojo
      * @return
-     * @throws com.freedomotic.exceptions.DaoLayerException
+     * @throws com.freedomotic.exceptions.RepositoryException
      */
-    public static EnvObjectLogic create(EnvObject pojo) throws DaoLayerException {
+    public static EnvObjectLogic create(EnvObject pojo) throws RepositoryException {
         if (pojo == null) {
             throw new IllegalArgumentException("Cannot create an object logic from null object data");
         }
@@ -54,8 +50,6 @@ public class EnvObjectFactory {
         try {
             URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
             Class<?> clazz = classLoader.loadClass(pojo.getHierarchy()); //eg: com.freedomotic.objects.impl.ElectricDevice
-
-            //EnvObjectLogic logic = (EnvObjectLogic) Freedomotic.INJECTOR.getInstance(clazz);
             EnvObjectLogic logic = null;
             try {
                 logic = (EnvObjectLogic) clazz.newInstance();
@@ -72,7 +66,7 @@ public class EnvObjectFactory {
             // } catch (IllegalAccessException ex) {
             //     throw new DaoLayerException(ex);
         } catch (ClassNotFoundException ex) {
-            throw new DaoLayerException("Class '" + pojo.getHierarchy() + "' not found. "
+            throw new RepositoryException("Class '" + pojo.getHierarchy() + "' not found. "
                     + "The related object plugin is not "
                     + "loaded succesfully or you have a wrong hierarchy "
                     + "value in your XML definition of the object."

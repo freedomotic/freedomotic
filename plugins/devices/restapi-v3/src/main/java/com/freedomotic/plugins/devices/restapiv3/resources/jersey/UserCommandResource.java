@@ -150,7 +150,7 @@ public class UserCommandResource extends AbstractResource<Command> {
 
     @Override
     protected Command prepareSingle(String uuid) {
-        return api.commands().get(uuid);
+        return api.commands().findOne(uuid);
     }
 
     @POST
@@ -160,7 +160,7 @@ public class UserCommandResource extends AbstractResource<Command> {
     public Response fire(
             @ApiParam(value = "UUID of user's command to execute", required = true)
             @PathParam("id") String UUID) {
-        Command c = api.commands().get(UUID);
+        Command c = api.commands().findOne(UUID);
         if (c != null) {
             return fire(c);
         }
