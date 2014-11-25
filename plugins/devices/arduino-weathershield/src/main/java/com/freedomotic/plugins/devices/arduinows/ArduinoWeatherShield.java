@@ -40,18 +40,14 @@ import java.util.logging.Logger;
 public class ArduinoWeatherShield extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(ArduinoWeatherShield.class.getName());
-    private static int POLLING_TIME = 10000;
+    private int POLLING_TIME = configuration.getIntProperty("time-between-reads", 1000);
     private int SOCKET_TIMEOUT = 10000;
-    private static String IP_TO_QUERY;
-    private static String DELIMITER;
-    private static int PORT_TO_QUERY;
-    private static int BOARD_NUMBER;
-    private static ArrayList<Board> boards = null;
-    private String response = null;
-    private boolean connected = false;
-    private Socket socket = null;
-    private DataOutputStream outputStream = null;
-    private BufferedReader inputStream = null;
+    private String IP_TO_QUERY;
+    private String DELIMITER;
+    private int PORT_TO_QUERY;
+    private int BOARD_NUMBER = configuration.getTuples().size();
+    private ArrayList<Board> boards = null;
+    HttpHelper http = new HttpHelper();
 
     public ArduinoWeatherShield() {
         super("Arduino WeatherShield", "/arduino-weathershield/arduinows-manifest.xml");
@@ -82,8 +78,6 @@ public class ArduinoWeatherShield extends Protocol {
      */
     @Override
     public void onStart() {
-        POLLING_TIME = configuration.getIntProperty("time-between-reads", 1000);
-        BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
         loadBoards();
     }
@@ -102,25 +96,17 @@ public class ArduinoWeatherShield extends Protocol {
     protected void onRun() {
         for (Board board : boards) {
             try {
-                //getParametersValue(board);
                 readValues(board);
             } catch (UnableToExecuteException ex) {
                 LOG.severe(ex.getMessage());
             } catch (IOException ex) {
                 LOG.severe(ex.getMessage());
             }
-            try {
-                Thread.sleep(POLLING_TIME);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ArduinoWeatherShield.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 
     private void readValues(Board board) throws UnableToExecuteException, IOException {
-        System.out.println("Retrieving data from " + "http://" + board.getIpAddress());
         try {
-            HttpHelper http = new HttpHelper();
             String data = http.retrieveContent("http://" + board.getIpAddress() + ":" + board.getPort());
             LOG.info("Read data: " + data);
             sendChanges(board, data);
@@ -132,31 +118,35 @@ public class ArduinoWeatherShield extends Protocol {
     private void sendChanges(Board board, String parametersValue) {
         String address = board.getIpAddress() + ":" + board.getPort();
         String values[] = parametersValue.split(board.getDelimiter());
+        
+        if(!(values.length==3)) {
+            // eccezione numero parametri
+        }
         //building the event
-        ProtocolRead event = new ProtocolRead(this, "arduino-weatherShield", address+":"+"T"); //IP:PORT
+        ProtocolRead event = new ProtocolRead(this, "arduino-weatherShield", address + ":" + "T"); //IP:PORT
         //adding some optional information to the event
-        event.addProperty("boardIP", board.getIpAddress());
-        event.addProperty("boardPort", new Integer(board.getPort()).toString());
+        event.addProperty("board.ip", board.getIpAddress());
+        event.addProperty("board.port", new Integer(board.getPort()).toString());
         event.addProperty("sensor.temperature", values[0]);
         event.addProperty("object.class", "Thermometer");
         event.addProperty("object.name", "Arduino WeatherShield Thermometer");
         //publish the event on the messaging bus
         this.notifyEvent(event);
-        
-        event = new ProtocolRead(this, "arduino-weatherShield", address+":"+"P"); //IP:PORT
+
+        event = new ProtocolRead(this, "arduino-weatherShield", address + ":" + "P"); //IP:PORT
         //adding some optional information to the event
-        event.addProperty("boardIP", board.getIpAddress());
-        event.addProperty("boardPort", new Integer(board.getPort()).toString());
+        event.addProperty("board.ip", board.getIpAddress());
+        event.addProperty("board.port", new Integer(board.getPort()).toString());
         event.addProperty("sensor.pressure", values[1]);
         event.addProperty("object.class", "Barometer");
         event.addProperty("object.name", "Arduino WeatherShield Barometer");
         //publish the event on the messaging bus
         this.notifyEvent(event);
-        
-        event = new ProtocolRead(this, "arduino-weatherShield", address+":"+"H"); //IP:PORT
+
+        event = new ProtocolRead(this, "arduino-weatherShield", address + ":" + "H"); //IP:PORT
         //adding some optional information to the event
-        event.addProperty("boardIP", board.getIpAddress());
-        event.addProperty("boardPort", new Integer(board.getPort()).toString());
+        event.addProperty("board.ip", board.getIpAddress());
+        event.addProperty("board.port", new Integer(board.getPort()).toString());
         event.addProperty("sensor.humidity", values[2]);
         event.addProperty("object.class", "Hygrometer");
         event.addProperty("object.name", "Arduino WeatherShield Hygrometer");
