@@ -39,7 +39,8 @@ import java.util.logging.Logger;
 public class UdpHelper {
 
     private static final Logger LOG = Logger.getLogger(UdpHelper.class.getName());
-    private DatagramSocket serverDatagramSocket = null;
+    private static UDPThreadServer server;
+    private static DatagramSocket serverDatagramSocket = null;
 
     public UdpHelper() {
     }
@@ -54,36 +55,15 @@ public class UdpHelper {
      * @throws IOException
      */
     public void startServer(String serverAddress, int serverPort, final UdpListener consumer) {
-
-        try {
-            serverDatagramSocket = new DatagramSocket(null);
-            InetSocketAddress address = new InetSocketAddress(serverAddress, serverPort);
-            serverDatagramSocket.bind(address);
-            //buffer to receive incoming data
-            byte[] buffer = new byte[65536];
-            DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
-            LOG.log(Level.INFO, "Server UDP started. Waiting for incoming data on " + serverAddress + ":" + serverPort);
-            //communication loop
-            while (true) {
-                serverDatagramSocket.receive(inPacket);
-                byte[] payload = inPacket.getData();
-                String sourceAddress = inPacket.getAddress().getHostAddress();
-                Integer sourcePort = inPacket.getPort();
-                String data = new String(payload, 0, inPacket.getLength());
-                LOG.log(Level.CONFIG, "Received packet from " + sourceAddress + ":" + sourcePort);
-                consumer.onDataAvailable(sourceAddress, sourcePort, data);
-            }
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Server UDP not started for ", e);
-        }
+        server = new UDPThreadServer(serverAddress, serverPort, consumer);
+        server.start();
     }
 
     public void stopServer() {
-        if (!(serverDatagramSocket == null) && !(serverDatagramSocket.isClosed())) {
-            serverDatagramSocket.close();
-            LOG.log(Level.INFO, "Server UDP stopped.");
-        }
-
+        //if (!(serverDatagramSocket == null) && !(serverDatagramSocket.isClosed())) {
+        //  serverDatagramSocket.close();
+        LOG.info("Server UDP stopped.");
+        //}
     }
 
     /**
@@ -123,6 +103,45 @@ public class UdpHelper {
             LOG.log(Level.WARNING, ex.getMessage());
         } finally {
             datagramSocket.close();
+        }
+    }
+
+    private static class UDPThreadServer extends Thread {
+
+        String serverAddress;
+        int serverPort;
+        UdpListener consumer;
+
+        UDPThreadServer(String serverAddress, int serverPort, final UdpListener consumer) {
+            this.serverAddress = serverAddress;
+            this.serverPort = serverPort;
+            this.consumer = consumer;
+            System.out.println("Starting threaded server");
+            start();
+        }
+
+        public void run() {
+            try {
+                serverDatagramSocket = new DatagramSocket(null);
+                InetSocketAddress address = new InetSocketAddress(serverAddress, serverPort);
+                serverDatagramSocket.bind(address);
+                //buffer to receive incoming data
+                byte[] buffer = new byte[65536];
+                DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
+                LOG.log(Level.INFO, "Server UDP started. Waiting for incoming data on " + serverAddress + ":" + serverPort);
+                //communication loop
+                while (true) {
+                    serverDatagramSocket.receive(inPacket);
+                    byte[] payload = inPacket.getData();
+                    String sourceAddress = inPacket.getAddress().getHostAddress();
+                    Integer sourcePort = inPacket.getPort();
+                    String data = new String(payload, 0, inPacket.getLength());
+                    LOG.log(Level.CONFIG, "Received packet from " + sourceAddress + ":" + sourcePort);
+                    consumer.onDataAvailable(sourceAddress, sourcePort, data);
+                }
+            } catch (IOException e) {
+                LOG.log(Level.SEVERE, "Server UDP not started for ", e);
+            }
         }
     }
 }
