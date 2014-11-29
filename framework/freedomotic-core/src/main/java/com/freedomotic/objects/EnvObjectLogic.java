@@ -430,9 +430,9 @@ public class EnvObjectLogic {
     }
 
     /**
-     *
-     * @param t
-     * @return
+     * Changes a behavior value accordingly to the value property in the trigger in input
+     * @param t an hardware level trigger
+     * @return true if the values is applied successfully, false otherwise
      */
     public final boolean executeTrigger(Trigger t) {
         String behavior = getAction(t.getName());
@@ -463,8 +463,7 @@ public class EnvObjectLogic {
                 new Object[]{t.getName(), getPojo().getName(), behavior, valueStatement.getValue()});
 
         Config params = new Config();
-        params.setProperty("value",
-                valueStatement.getValue());
+        params.setProperty("value", valueStatement.getValue());
         getBehavior(behavior).filterParams(params, false); //false means not fire commands, only change behavior value
 
         return true;

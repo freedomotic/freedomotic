@@ -219,7 +219,7 @@ public class EnvObjectPersistence implements ThingsRepository {
             EnvObjectLogic objectLogic;
 
             try {
-                objectLogic = EnvObjectFactory.create(pojo);
+                objectLogic = EnvObjectLogicFactory.create(pojo);
                 LOG.log(Level.CONFIG, "Created a new logic for {0} of type {1}", new Object[]{objectLogic.getPojo().getName(), objectLogic.getClass().getCanonicalName()});
                 return objectLogic;
             } catch (RepositoryException daoLayerException) {
@@ -430,7 +430,7 @@ public class EnvObjectPersistence implements ThingsRepository {
             pojoCopy.setUUID(UUID.randomUUID().toString());
 
             try {
-                envObjectLogic = EnvObjectFactory.create(pojoCopy);
+                envObjectLogic = EnvObjectLogicFactory.create(pojoCopy);
             } catch (RepositoryException ex) {
                 LOG.warning(ex.getMessage());
             }

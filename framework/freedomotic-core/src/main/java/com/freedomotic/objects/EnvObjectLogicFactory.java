@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class EnvObjectFactory {
+public class EnvObjectLogicFactory {
 
     
     /**
@@ -54,9 +54,9 @@ public class EnvObjectFactory {
             try {
                 logic = (EnvObjectLogic) clazz.newInstance();
             } catch (InstantiationException ex) {
-                Logger.getLogger(EnvObjectFactory.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(EnvObjectLogicFactory.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
-                Logger.getLogger(EnvObjectFactory.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(EnvObjectLogicFactory.class.getName()).log(Level.SEVERE, null, ex);
             }
             logic.setPojo(pojo);
 
@@ -75,7 +75,7 @@ public class EnvObjectFactory {
         }
     }
 
-    private EnvObjectFactory() {
+    private EnvObjectLogicFactory() {
         // Suppress default constructor for noninstantiability
         throw new AssertionError();
     }

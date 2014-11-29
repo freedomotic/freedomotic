@@ -34,9 +34,9 @@
       <active>true</active>
       <priority>-1</priority>
       <properties>
-            <property name="birthdate" value="01/01/1900"/>
-            <property name="email" value="info@freedomotic.com"/>
-            <property name="mobile" value=""/>
+            <property name="birthdate" value="05/10/1984"/>
+            <property name="email" value="user@freedomotic.com"/>
+            <property name="mobile" value="+39111223344"/>
       </properties> 
     </com.freedomotic.model.object.PropertiesBehavior>
   </behaviors>

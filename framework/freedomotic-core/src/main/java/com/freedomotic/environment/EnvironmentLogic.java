@@ -111,7 +111,7 @@ public final class EnvironmentLogic {
         }
 
         if (zones.contains(zone)) {
-            Freedomotic.logger.warning("Attempt to add a null or already existent room");
+            LOG.warning("Attempt to add a null or already existent room");
 
             return;
         }
@@ -210,21 +210,21 @@ public final class EnvironmentLogic {
                 room.init(this);
 
                 if (!zones.contains(room)) {
-                    Freedomotic.logger.config("Adding room " + room);
+                    LOG.config("Adding room " + room);
 
                     this.zones.add(room);
                 } else {
-                    Freedomotic.logger.warning("Attempt to add a null or an already existent room " + room);
+                    LOG.warning("Attempt to add a null or an already existent room " + room);
                 }
             } else {
                 ZoneLogic zoneLogic = new ZoneLogic(z);
                 zoneLogic.init(this);
 
                 if (!zones.contains(zoneLogic)) {
-                    Freedomotic.logger.config("Adding zone " + zoneLogic);
+                    LOG.config("Adding zone " + zoneLogic);
                     this.zones.add(zoneLogic);
                 } else {
-                    Freedomotic.logger.warning("Attempt to add a null or an already existent zone " + zoneLogic);
+                    LOG.warning("Attempt to add a null or an already existent zone " + zoneLogic);
                 }
             }
         }

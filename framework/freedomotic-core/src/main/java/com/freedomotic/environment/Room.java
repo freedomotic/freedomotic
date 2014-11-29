@@ -32,6 +32,7 @@ import com.freedomotic.util.Edge;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
@@ -65,7 +66,7 @@ public class Room
                     gate.getTo(),
                     gate);
         } catch (Exception e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.log(Level.SEVERE, "Error while adding a Gate", e);
         }
     }
 

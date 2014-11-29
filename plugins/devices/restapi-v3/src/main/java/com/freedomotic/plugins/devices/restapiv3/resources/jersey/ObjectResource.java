@@ -25,7 +25,7 @@ import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.EnvObject;
-import com.freedomotic.objects.EnvObjectFactory;
+import com.freedomotic.objects.EnvObjectLogicFactory;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
@@ -182,7 +182,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     protected EnvObject doUpdate(String uuid, EnvObject eo) {
         try {
             eo.setUUID(uuid);
-            EnvObjectLogic el = EnvObjectFactory.create(eo);
+            EnvObjectLogic el = EnvObjectLogicFactory.create(eo);
             if (api.things().modify(uuid, el) != null) {
                 return eo;
             } else {
@@ -199,7 +199,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     protected URI doCreate(EnvObject eo) throws URISyntaxException {
         EnvObjectLogic el;
         try {
-            el = EnvObjectFactory.create(eo);
+            el = EnvObjectLogicFactory.create(eo);
             api.things().create(el);
             return createUri(el.getPojo().getUUID());
         } catch (RepositoryException ex) {

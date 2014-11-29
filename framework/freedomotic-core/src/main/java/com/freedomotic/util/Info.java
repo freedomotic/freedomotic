@@ -72,7 +72,8 @@ public class Info {
 
         public File PATH_DATA_FOLDER = new File(PATH_WORKDIR + "/data/");
         public File PATH_RESOURCES_FOLDER = new File(PATH_DATA_FOLDER + "/resources/");
-
+        public File PATH_ENVIRONMENTS_FOLDER = new File(PATH_DATA_FOLDER + "/furn/");
+        
         public final File PATH_PLUGINS_FOLDER = new File(PATH_WORKDIR + "/plugins/");
         public final File PATH_DEVICES_FOLDER = new File(PATH_PLUGINS_FOLDER + "/devices/");
         public final File PATH_OBJECTS_FOLDER = new File(PATH_PLUGINS_FOLDER + "/objects/");

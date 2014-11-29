@@ -429,16 +429,13 @@ public class EnvironmentRepositoryImpl implements EnvironmentRepository {
      * @throws IOException
      */
     @RequiresPermissions("environments:save")
+    @Override
     public void saveAs(EnvironmentLogic env, File folder) throws IOException {
         LOG.config("Serializing new environment to " + folder);
 
         createFolderStructure(folder);
 
-        save(env,
-                new File(folder + "/" + env.getPojo().getUUID() + ".xenv"));
-
-        //TODO: Freedomotic.environment.getPojo().setObjectsFolder()
-        //  EnvObjectPersistence.saveObjects(new File(folder + "/objects"));
+        save(env, new File(folder + "/" + env.getPojo().getUUID() + ".xenv"));
     }
 
     /**

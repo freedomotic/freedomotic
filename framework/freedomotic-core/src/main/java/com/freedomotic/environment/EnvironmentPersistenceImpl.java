@@ -124,11 +124,7 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
             new File(directory + "/data/resources").mkdir();
         }
 
-        serialize(env,
-                new File(directory + "/" + fileName + ".xenv"));
-
-        //TODO: Freedomotic.environment.getPojo().setObjectsFolder()
-        //  EnvObjectPersistence.saveObjects(new File(folder + "/objects"));
+        serialize(env, new File(directory + "/" + fileName + ".xenv"));
     }
 
     /**
