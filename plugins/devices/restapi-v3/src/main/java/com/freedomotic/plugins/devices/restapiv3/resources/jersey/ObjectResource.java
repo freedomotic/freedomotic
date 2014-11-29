@@ -56,8 +56,6 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     private String envUUID = null;
     private String roomName = null;
     
-    @Inject
-    private ThingsFactory thingsFactory;
 
     public ObjectResource() {
         authContext = "objects";
@@ -186,7 +184,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     protected EnvObject doUpdate(String uuid, EnvObject eo) {
         try {
             eo.setUUID(uuid);
-            EnvObjectLogic el = thingsFactory.create(eo);
+            EnvObjectLogic el = api.thingsFactory().create(eo);
             if (api.things().modify(uuid, el) != null) {
                 return eo;
             } else {
@@ -203,7 +201,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     protected URI doCreate(EnvObject eo) throws URISyntaxException {
         EnvObjectLogic el;
         try {
-            el = thingsFactory.create(eo);
+            el = api.thingsFactory().create(eo);
             api.things().create(el);
             return createUri(el.getPojo().getUUID());
         } catch (RepositoryException ex) {

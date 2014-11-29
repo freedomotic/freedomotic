@@ -166,9 +166,6 @@ public class Freedomotic implements BusConsumer {
          * First of all the configuration file is loaded into a data structure
          * *****************************************************************
          */
-                // Relocate base data folder according to configuration (if specified in the config file)
-        String defaultPath = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
-        Info.relocateDataPath(new File(config.getStringProperty("KEY_DATA_PATH", defaultPath)));
 
         // init localization
         api.getI18n().setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));

@@ -15,6 +15,7 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
+import com.freedomotic.objects.ThingsFactory;
 import com.freedomotic.objects.ThingsRepository;
 import com.google.inject.Inject;
 import java.awt.image.BufferedImage;
@@ -41,6 +42,7 @@ class APIStandardImpl implements API {
     private TriggerPersistence triggers;
     private CommandPersistence commands;
     private ReactionPersistence reactions;
+    private final ThingsFactory thingsFactory;
 
     /**
      *
@@ -58,6 +60,7 @@ class APIStandardImpl implements API {
     public APIStandardImpl(
             EnvironmentRepository environment,
             ThingsRepository things,
+            ThingsFactory thingsFactory,
             ClientStorage clientStorage,
             AppConfig config,
             Auth auth,
@@ -76,6 +79,7 @@ class APIStandardImpl implements API {
         this.triggers = triggerPersistence;
         this.commands = commands;
         this.reactions = reactions;
+        this.thingsFactory = thingsFactory;
     }
 
     /**
@@ -170,6 +174,11 @@ class APIStandardImpl implements API {
     @Override
     public ReactionPersistence reactions() {
         return reactions;
+    }
+
+    @Override
+    public ThingsFactory thingsFactory() {
+        return thingsFactory;
     }
 
     

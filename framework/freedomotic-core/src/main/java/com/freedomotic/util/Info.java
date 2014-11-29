@@ -142,6 +142,9 @@ public class Info {
             jarFolder = jarFolder.substring(0, jarFolder.indexOf("/target/classes/"));
         } else if (jarFolder.endsWith("freedomotic.jar")) { //run from release package
             jarFolder = jarFolder.substring(0, jarFolder.indexOf("freedomotic.jar"));
+        } else if (jarFolder.endsWith(".jar")) {
+            String tmp = ClassLoader.getSystemClassLoader().getResource(".").getPath();
+            jarFolder = tmp.substring(0, tmp.indexOf("/plugins/")) + "/framework/freedomotic-core/"; //run from integration test in a plugin
         }
 
         try {

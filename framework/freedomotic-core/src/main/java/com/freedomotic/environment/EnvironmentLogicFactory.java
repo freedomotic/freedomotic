@@ -27,7 +27,6 @@ public class EnvironmentLogicFactory implements Provider<EnvironmentLogic> {
 
     @Inject
     public EnvironmentLogicFactory(Environment environment) {
-        System.out.println("DEBUG: environment pojo is " + environment.getName());
         this.environment = environment;
     }
 
