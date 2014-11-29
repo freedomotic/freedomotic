@@ -31,19 +31,21 @@ import com.freedomotic.reactions.Command;
 import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 
-public class RestAPIv3
-        extends Protocol {
+public class RestAPIv3 extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(RestAPIv3.class.getName());
     private static final String RESOURCE_PKG = "com.freedomotic.plugins.devices.restapiv3.resources";
     public static final String JERSEY_RESOURCE_PKG = RESOURCE_PKG + ".jersey";
     public static final String ATMOSPHRE_RESOURCE_PKG = RESOURCE_PKG + ".atmosphere";
 
-    private RestJettyServer jServer;
     public static URI BASE_URI;
     public static final String API_VERSION = "v3";
+    
+    @Inject
+    private RestJettyServer jServer;
 
     public RestAPIv3() {
         super("RestAPI-v3", "/restapi-v3/restapiv3-manifest.xml");
@@ -67,8 +69,8 @@ public class RestAPIv3
         LOG.log(Level.INFO, "RestAPI v3 plugin is started at {0}", BASE_URI);
 
         
-        jServer = new RestJettyServer(this);
         try {
+            jServer.setMaster(this);
             jServer.startServer();
             setDescription("API is available at " + BASE_URI.toString().substring(0,BASE_URI.toString().length()-2));
         } catch (Exception ex) {

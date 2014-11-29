@@ -152,7 +152,8 @@ public class TriggerResource extends AbstractResource<Trigger> {
 
     @Override
     protected URI doCopy(String UUID) {
-        Trigger t = api.triggers().copy(UUID);
+        Trigger found = api.triggers().findOne(UUID);
+        Trigger t = api.triggers().copy(found);
         try {
             t.register();
         } catch (Exception e) {

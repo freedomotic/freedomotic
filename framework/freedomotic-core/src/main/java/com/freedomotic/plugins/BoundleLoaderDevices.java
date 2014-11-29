@@ -22,6 +22,7 @@ class BoundleLoaderDevices implements BoundleLoader {
 
     private static final Logger LOG = Logger.getLogger(BoundleLoaderDevices.class.getName());
     private File path;
+    
 
     BoundleLoaderDevices(File path) {
         this.path = path;

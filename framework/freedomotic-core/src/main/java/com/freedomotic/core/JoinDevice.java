@@ -27,7 +27,7 @@ import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.environment.EnvironmentRepository;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.objects.ThingsRepositoryImpl;
 import com.freedomotic.reactions.Command;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -84,7 +84,7 @@ public final class JoinDevice
                 String address = command.getProperty("object.address");
                 String clazz = command.getProperty("object.class");
 
-                if (EnvObjectPersistence.getObjectByAddress(protocol, address).isEmpty()) {
+                if (ThingsRepositoryImpl.getObjectByAddress(protocol, address).isEmpty()) {
                     environmentPersistence.join(clazz, name, protocol, address);
                 }
             }

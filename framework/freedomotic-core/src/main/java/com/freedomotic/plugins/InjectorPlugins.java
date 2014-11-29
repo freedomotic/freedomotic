@@ -20,6 +20,5 @@ public class InjectorPlugins extends AbstractModule {
         
         bind(ClientStorage.class).to(ClientStorageInMemory.class).in(Singleton.class);
                 bind(PluginsManager.class).to(PluginsManagerImpl.class).in(Singleton.class);
-        
     }
 }

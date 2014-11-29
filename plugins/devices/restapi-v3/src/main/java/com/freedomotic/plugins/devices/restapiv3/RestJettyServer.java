@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.atmosphere.cpr.AtmosphereServlet;
 import org.eclipse.jetty.http.ssl.SslContextFactory;
@@ -52,11 +53,13 @@ public final class RestJettyServer extends Server {
 
     private static final Logger LOG = Logger.getLogger(RestJettyServer.class.getName());
 
-    private static Server webServer;
-    private static Plugin master;
+    private Server webServer;
+    private Plugin master;
+    
+    @Inject
+    private GuiceServletConfig guiceServletConfig;
 
-    public RestJettyServer(Plugin master) {
-        RestJettyServer.master = master;
+    public RestJettyServer() {
     }
 
     public void startServer() throws Exception {
@@ -64,12 +67,11 @@ public final class RestJettyServer extends Server {
         LOG.info("Starting RestAPI Server...");
 
         /**
-         * TODO WHEN MOVING TO JETTY 9
-         * refactor connectors code and add spdy support
+         * TODO WHEN MOVING TO JETTY 9 refactor connectors code and add spdy
+         * support
          * http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/SpdyConnector.html
          *
          */
-        
         if (!master.configuration.getBooleanProperty("enable-ssl", false)) {
             SelectChannelConnector selectChannelConnector = new SelectChannelConnector();
             selectChannelConnector.setPort(master.configuration.getIntProperty("http-port", 9111));
@@ -122,17 +124,17 @@ public final class RestJettyServer extends Server {
             corsFilterHolder.setInitParameter("allowCredentials", "true");
             context.addFilter(corsFilterHolder, "/*", null);
         }
-        
+
         // shiro filter
         if (master.getApi().getAuth().isInited()) {
             context.addEventListener(new ShiroListener());
             context.addFilter(ShiroFilter.class, "/" + API_VERSION + "/*", null);
         }
-        
+
         // giuce filter
-        context.addEventListener(new GuiceServletConfig());
-        context.addFilter(GuiceFilter.class,"/*",null);
-        
+        context.addEventListener(guiceServletConfig);
+        context.addFilter(GuiceFilter.class, "/*", null);
+
         //static files handler        
         String staticDir = master.configuration.getStringProperty("serve-static", "swagger");
         context.setResourceBase(new File(master.getFile().getParent() + "/data/" + staticDir + "/").getAbsolutePath());
@@ -140,11 +142,11 @@ public final class RestJettyServer extends Server {
 
         // serve resource files (images and so on)
         ServletHolder resHolder = new ServletHolder("static-home", DefaultServlet.class);
-        resHolder.setInitParameter("resourceBase",Info.PATHS.PATH_RESOURCES_FOLDER.getAbsolutePath());
-        resHolder.setInitParameter("dirAllowed","true");
-        resHolder.setInitParameter("pathInfoOnly","true");
-        context.addServlet(resHolder,"/res/*");
-        
+        resHolder.setInitParameter("resourceBase", Info.PATHS.PATH_RESOURCES_FOLDER.getAbsolutePath());
+        resHolder.setInitParameter("dirAllowed", "true");
+        resHolder.setInitParameter("pathInfoOnly", "true");
+        context.addServlet(resHolder, "/res/*");
+
         HandlerList handlers = new HandlerList();
         handlers.addHandler(context);
         handlers.addHandler(new DefaultHandler());
@@ -159,6 +161,10 @@ public final class RestJettyServer extends Server {
         LOG.info("Stopping RestAPI Server...");
         webServer.stop();
         LOG.info("Stopped RestAPI Server");
+    }
+
+    void setMaster(RestAPIv3 master) {
+        this.master = master;
     }
 
 }

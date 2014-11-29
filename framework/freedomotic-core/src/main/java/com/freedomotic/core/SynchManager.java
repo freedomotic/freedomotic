@@ -13,7 +13,7 @@ import com.freedomotic.events.ObjectHasChangedBehavior;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.objects.ThingsRepositoryImpl;
 import com.google.inject.Inject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +59,7 @@ public class SynchManager implements BusConsumer {
 
     private void synchronizeLocalThing(ObjectHasChangedBehavior event) {
         // Synchronize changed behaviors
-        EnvObjectLogic obj = EnvObjectPersistence.getObjectByUUID(event.getProperty("object.uuid"));
+        EnvObjectLogic obj = ThingsRepositoryImpl.getObjectByUUID(event.getProperty("object.uuid"));
         for (BehaviorLogic b : obj.getBehaviors()) {
             String value = event.getProperty("object.behavior." + b.getName());
             if (value != null && !value.isEmpty()) {

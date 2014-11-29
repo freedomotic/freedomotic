@@ -19,7 +19,6 @@
  */
 package com.freedomotic.environment;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.geometry.FreedomPolygon;
@@ -38,11 +37,12 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  */
 public final class EnvironmentLogic {
 
+    private static final Logger LOG = Logger.getLogger(EnvironmentLogic.class.getName());
+
     private Graph graph = null;
     private Environment pojo = null;
     private List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
     private File source = null;
-    //private final API api;
 
     /**
      * Instantiation is disabled outside this package.
@@ -302,9 +302,9 @@ public final class EnvironmentLogic {
      * @return
      */
     @RequiresPermissions("environments:read")
+    @Override
     public String toString() {
         return this.getPojo().getName();
     }
-    private static final Logger LOG = Logger.getLogger(EnvironmentLogic.class.getName());
 
 }

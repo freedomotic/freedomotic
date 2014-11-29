@@ -22,8 +22,6 @@
 package com.freedomotic.objects.impl;
 
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentRepositoryImpl;
-import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.ds.Config;
@@ -34,14 +32,12 @@ import com.freedomotic.model.object.Representation;
 import com.freedomotic.objects.BooleanBehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.RangedIntBehaviorLogic;
-import com.freedomotic.objects.impl.GenericGate;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.util.TopologyUtils;
 import java.util.logging.Logger;
-import javax.inject.Inject;
 
 /**
  *
@@ -184,7 +180,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
     @Override
     public final void setChanged(boolean value) {
         //update the room that can be reached
-        for (EnvironmentLogic env : EnvironmentRepositoryImpl.getEnvironments()) {
+        for (EnvironmentLogic env : environmentRepository.findAll()) {
             for (ZoneLogic z : env.getZones()) {
                 if (z instanceof Room) {
                     final Room room = (Room) z;
@@ -261,7 +257,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         FreedomPolygon objShape =
                 TopologyUtils.rotate(TopologyUtils.translate(pojoShape, xoffset, yoffset),
                 (int) representation.getRotation());
-        EnvironmentLogic env = EnvironmentRepositoryImpl.getEnvByUUID(getPojo().getEnvironmentID());
+        EnvironmentLogic env = environmentRepository.findOne(getPojo().getEnvironmentID());
 
         if (env != null) {
             for (Room room : env.getRooms()) {

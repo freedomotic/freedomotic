@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 /*
@@ -30,29 +28,34 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.objects.ThingsRepository;
 import java.io.File;
 
 /**
  *
  * @author enrico
  */
-public class ObjectPluginPlaceholder
-        implements Client {
+public class ObjectPluginPlaceholder implements Client {
 
-    private File example;
-    private EnvObjectLogic object;
+    private final File example;
+    private final EnvObjectLogic template;
     private Config config;
+    private final ThingsRepository thingsRepository;
 
     /**
      *
+     * @param thingsRepository
      * @param example
      * @throws RepositoryException
      */
-    public ObjectPluginPlaceholder(File example)
-            throws RepositoryException {
+    public ObjectPluginPlaceholder(ThingsRepository thingsRepository, File example) throws RepositoryException {
         this.example = example;
-        object = EnvObjectPersistence.loadObject(example);
+        this.thingsRepository = thingsRepository;
+        template = thingsRepository.load(example);
+        if (template == null) {
+            throw new IllegalStateException("Cannot build an object placeholder plugin from a null object");
+        }           
+        System.out.println("TEMPLATE: " + template.toString());
         config = new Config();
     }
 
@@ -61,7 +64,7 @@ public class ObjectPluginPlaceholder
      * @return
      */
     public EnvObjectLogic getObject() {
-        return object;
+        return template;
     }
 
     /**
@@ -79,7 +82,7 @@ public class ObjectPluginPlaceholder
      */
     @Override
     public String getDescription() {
-        return object.getPojo().getDescription();
+        return template.getPojo().getDescription();
     }
 
     /**
@@ -97,7 +100,7 @@ public class ObjectPluginPlaceholder
      */
     @Override
     public String getName() {
-        return object.getPojo().getName();
+        return template.getPojo().getName();
     }
 
     /**
@@ -114,7 +117,7 @@ public class ObjectPluginPlaceholder
      */
     @Override
     public void start() {
-        EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
+        thingsRepository.copy(template);
     }
 
     /**
@@ -130,7 +133,7 @@ public class ObjectPluginPlaceholder
      */
     @Override
     public boolean isRunning() {
-        //is running if there is already an object of this kind in the map
+        //is running if there is already an template of this kind in the map
 //        boolean found = false;
 //        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectList()) {
 //            if (obj.getClass().getCanonicalName().equals(clazz.getCanonicalName())) {
@@ -177,10 +180,10 @@ public class ObjectPluginPlaceholder
      * @param env
      */
     public void startOnEnv(EnvironmentLogic env) {
-        if (env==null){
+        if (env == null) {
             throw new IllegalArgumentException("Cannot place an object on a null environment");
         }
-        EnvObjectLogic obj = EnvObjectPersistence.add(object, EnvObjectPersistence.MAKE_UNIQUE);
+        EnvObjectLogic obj = thingsRepository.copy(template);
         obj.setEnvironment(env);
     }
 }

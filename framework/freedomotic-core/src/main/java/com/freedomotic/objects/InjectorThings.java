@@ -18,7 +18,8 @@ public class InjectorThings extends AbstractModule {
     @Override
     protected void configure() {
         
-        bind(ThingsRepository.class).to(EnvObjectPersistence.class).in(Singleton.class);
+        bind(ThingsRepository.class).to(ThingsRepositoryImpl.class).in(Singleton.class);
+        bind(ThingsFactory.class);
         
     }
 }

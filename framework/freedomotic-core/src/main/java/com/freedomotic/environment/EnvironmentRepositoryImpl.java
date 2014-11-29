@@ -27,7 +27,8 @@ import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.objects.ThingsRepository;
+import com.freedomotic.objects.ThingsRepositoryImpl;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
@@ -54,15 +55,16 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  * Repository to manage the {@link Environment} loaded from filesystem
- * 
+ *
  * @author Enrico
  */
-public class EnvironmentRepositoryImpl implements EnvironmentRepository {
+class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
     // Dependencies
     private final AppConfig appConfig;
     private final ClientStorage clientStorage;
     private final EnvironmentPersistenceFactory environmentPersistenceFactory;
+    private final ThingsRepository thingsRepository;
 
     // The Environments cache
     private static final List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
@@ -82,17 +84,21 @@ public class EnvironmentRepositoryImpl implements EnvironmentRepository {
     EnvironmentRepositoryImpl(
             AppConfig appConfig,
             ClientStorage clientStorage,
+            ThingsRepository thingsRepository,
             EnvironmentPersistenceFactory environmentPersistenceFactory)
             throws RepositoryException {
         this.appConfig = appConfig;
+        this.thingsRepository = thingsRepository;
         this.clientStorage = clientStorage;
         this.environmentPersistenceFactory = environmentPersistenceFactory;
         cacheInitialData();
     }
 
     /**
-     * Reads initial environment data from filesystem using the {@link EnvironmentPersistence} class
-     * @throws RepositoryException 
+     * Reads initial environment data from filesystem using the
+     * {@link EnvironmentPersistence} class
+     *
+     * @throws RepositoryException
      */
     private synchronized void cacheInitialData() throws RepositoryException {
         if (initialized) {
@@ -204,27 +210,24 @@ public class EnvironmentRepositoryImpl implements EnvironmentRepository {
      * @param folder
      * @param makeUnique
      * @return
+     * @throws com.freedomotic.exceptions.RepositoryException
      * @deprecated
      */
     @Deprecated
     @Override
     public boolean loadEnvironmentsFromDir(File folder, boolean makeUnique) throws RepositoryException {
         if (folder == null) {
-            throw new RepositoryException("Cannot");
+            throw new RepositoryException("Cannot load enviornments from a null folder");
         }
-
         environments.clear();
 
-        boolean check = true;
-
         // This filter only returns env files
-        FileFilter envFileFilter
-                = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        return file.isFile() && file.getName().endsWith(".xenv");
-                    }
-                };
+        FileFilter envFileFilter = new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isFile() && file.getName().endsWith(".xenv");
+            }
+        };
 
         File[] files = folder.listFiles(envFileFilter);
 
@@ -232,12 +235,11 @@ public class EnvironmentRepositoryImpl implements EnvironmentRepository {
             loadEnvironmentFromFile(file);
         }
 
-        if (check) {
-            EnvObjectPersistence.loadObjects(EnvironmentRepositoryImpl.getEnvironments().get(0).getObjectFolder(),
-                    false);
-        }
+        // Load all objects in this environment
+        thingsRepository.loadAll(EnvironmentRepositoryImpl.getEnvironments().get(0).getObjectFolder());
 
-        return check;
+        // TODO: this return value makes no sense
+        return true;
     }
 
     /**
@@ -306,13 +308,11 @@ public class EnvironmentRepositoryImpl implements EnvironmentRepository {
         }
 
         File templateFile = objectPlugin.getTemplate();
-
         try {
-            loaded = EnvObjectPersistence.loadObject(templateFile);
+            loaded = thingsRepository.load(templateFile);
         } catch (RepositoryException ex) {
-            LOG.severe("Cannot join an object taken from template file " + templateFile);
+            Logger.getLogger(EnvironmentRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         //changing the name and other properties invalidates related trigger and commands
         //call init() again after this changes
         if ((name != null) && !name.isEmpty()) {
@@ -321,7 +321,7 @@ public class EnvironmentRepositoryImpl implements EnvironmentRepository {
             loaded.getPojo().setName(protocol);
         }
 
-        loaded = EnvObjectPersistence.add(loaded, EnvObjectPersistence.MAKE_UNIQUE);
+        loaded = thingsRepository.copy(loaded);
         loaded.getPojo().setProtocol(protocol);
         loaded.getPojo().setPhisicalAddress(address);
         // Remove the 'virtual' tag and any other actAs configuration. 
@@ -369,8 +369,8 @@ public class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @RequiresPermissions("environments:delete")
     @Deprecated
     public static void remove(EnvironmentLogic input) {
-        for (EnvObjectLogic obj : EnvObjectPersistence.getObjectByEnvironment(input.getPojo().getUUID())) {
-            EnvObjectPersistence.remove(obj);
+        for (EnvObjectLogic obj : ThingsRepositoryImpl.getObjectByEnvironment(input.getPojo().getUUID())) {
+            ThingsRepositoryImpl.remove(obj);
         }
 
         environments.remove(input);
@@ -576,8 +576,8 @@ public class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
     @Override
     @RequiresPermissions("environments:create")
-    public EnvironmentLogic copy(String uuid) {
-        return add(findOne(uuid), true);
+    public EnvironmentLogic copy(EnvironmentLogic env) {
+        return add(env, true);
     }
 
 }

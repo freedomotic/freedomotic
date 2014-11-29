@@ -48,9 +48,6 @@ class AppConfigImpl implements AppConfig {
     public AppConfigImpl() {
         // Get configuration from filesystem
         load();
-        // Relocate base data folder according to configuration (if specified in the config file)
-        String defaultPath = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
-        Info.relocateDataPath(new File(getStringProperty("KEY_DATA_PATH", defaultPath)));
     }
 
     @Override

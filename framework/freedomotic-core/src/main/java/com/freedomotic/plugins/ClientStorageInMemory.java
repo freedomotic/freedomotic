@@ -27,7 +27,10 @@ import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.PluginHasChanged.PluginActions;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.ds.Config;
+import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.util.Info;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +46,9 @@ import java.util.logging.Logger;
 class ClientStorageInMemory implements ClientStorage {
 
     private static final List<Client> clients = new ArrayList<Client>();
+    //It works because this class is created by guice and the injector is automatically available in thi case
+    @Inject private Injector injector; 
+    @Inject private ThingsRepository thingsRepository;
 
 
     ClientStorageInMemory() {
@@ -58,7 +64,7 @@ class ClientStorageInMemory implements ClientStorage {
         if (!clients.contains(c)) {
             if (isCompatible(c)) {
                 //force injection as this class is not built by guice
-                Freedomotic.INJECTOR.injectMembers(c);
+                injector.injectMembers(c);
                 clients.add(c);
             } else {
                 Client client
@@ -354,9 +360,8 @@ class ClientStorageInMemory implements ClientStorage {
      * @throws RepositoryException
      */
     @Override
-    public Client createObjectPlaceholder(final File template)
-            throws RepositoryException {
-        return new ObjectPluginPlaceholder(template);
+    public Client createObjectPlaceholder(final File template) throws RepositoryException {
+        return new ObjectPluginPlaceholder(thingsRepository, template);
     }
 
 

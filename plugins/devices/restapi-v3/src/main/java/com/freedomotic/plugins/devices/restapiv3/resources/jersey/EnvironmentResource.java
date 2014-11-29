@@ -187,7 +187,8 @@ public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Override
     protected URI doCopy(String UUID) {
-        EnvironmentLogic el = api.environments().copy(UUID);
+        EnvironmentLogic found = api.environments().findOne(UUID);
+        EnvironmentLogic el = api.environments().copy(found);
         return createUri(el.getPojo().getUUID());
     }
 }

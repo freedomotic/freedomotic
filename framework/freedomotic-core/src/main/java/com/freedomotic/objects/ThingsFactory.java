@@ -23,6 +23,8 @@ package com.freedomotic.objects;
 
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import java.net.URLClassLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +33,14 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class EnvObjectLogicFactory {
+public class ThingsFactory {
+    
+    @Inject
+    private Injector injector;
+    
+    protected ThingsFactory() {
+        //do not build this class outsite this package
+    }
 
     
     /**
@@ -42,7 +51,7 @@ public class EnvObjectLogicFactory {
      * @return
      * @throws com.freedomotic.exceptions.RepositoryException
      */
-    public static EnvObjectLogic create(EnvObject pojo) throws RepositoryException {
+    public EnvObjectLogic create(EnvObject pojo) throws RepositoryException {
         if (pojo == null) {
             throw new IllegalArgumentException("Cannot create an object logic from null object data");
         }
@@ -53,12 +62,13 @@ public class EnvObjectLogicFactory {
             EnvObjectLogic logic = null;
             try {
                 logic = (EnvObjectLogic) clazz.newInstance();
+                logic.setPojo(pojo);
+                injector.injectMembers(logic);
             } catch (InstantiationException ex) {
-                Logger.getLogger(EnvObjectLogicFactory.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ThingsFactory.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
-                Logger.getLogger(EnvObjectLogicFactory.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ThingsFactory.class.getName()).log(Level.SEVERE, null, ex);
             }
-            logic.setPojo(pojo);
 
             return logic;
             // } catch (InstantiationException ex) {
@@ -71,12 +81,7 @@ public class EnvObjectLogicFactory {
                     + "loaded succesfully or you have a wrong hierarchy "
                     + "value in your XML definition of the object."
                     + "The hierarchy value is composed by the package name plus the java file name "
-                    + "like com.freedomotic.objects.impl.Light not com.freedomotic.objects.impl.ElectricDevice.Light");
+                    + "like com.freedomotic.objects.impl.Light not com.freedomotic.objects.impl.ElectricDevice.Light", ex);
         }
-    }
-
-    private EnvObjectLogicFactory() {
-        // Suppress default constructor for noninstantiability
-        throw new AssertionError();
     }
 }

@@ -416,9 +416,9 @@ public class TriggerPersistence implements Repository<Trigger> {
     }
 
     @Override
-    public Trigger copy(String uuid) {
+    public Trigger copy(Trigger trg) {
         try {
-            Trigger t = findOne(uuid).clone();
+            Trigger t = findOne(trg.getUUID()).clone();
             t.setName("Copy of " + t.getName());
             create(t);
             return t;

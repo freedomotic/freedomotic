@@ -13,7 +13,7 @@ import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.LocationEvent;
 import com.freedomotic.model.geometry.FreedomPoint;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.objects.ThingsRepositoryImpl;
 import com.freedomotic.objects.impl.GenericPerson;
 import com.freedomotic.util.TopologyUtils;
 import java.util.logging.Level;
@@ -55,7 +55,7 @@ public class TopologyManager implements BusConsumer {
 
         if (jmsObject instanceof LocationEvent) {
             LocationEvent event = (LocationEvent) jmsObject;
-            GenericPerson person = (GenericPerson) EnvObjectPersistence.getObjectByUUID(event.getUuid());
+            GenericPerson person = (GenericPerson) ThingsRepositoryImpl.getObjectByUUID(event.getUuid());
             //apply the new position
             person.setLocation(event.getX(), event.getY());
             //check if this person is entering/exiting an evironment zone

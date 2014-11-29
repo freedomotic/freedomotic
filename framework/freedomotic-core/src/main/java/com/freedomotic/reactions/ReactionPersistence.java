@@ -343,9 +343,9 @@ public class ReactionPersistence implements Repository<Reaction> {
     }
 
     @Override
-    public Reaction copy(String uuid) {
+    public Reaction copy(Reaction rea) {
         try {
-            Reaction r = findOne(uuid);
+            Reaction r = findOne(rea.getUuid());
             Reaction newOne = (Reaction) r.clone();
             create(newOne);
             return newOne;

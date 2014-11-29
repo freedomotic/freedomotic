@@ -71,7 +71,8 @@ public class OldReactionResource extends AbstractResource<Reaction>{
 
     @Override
     protected URI doCopy(String UUID) {
-        Reaction r = api.reactions().copy(UUID);
+        Reaction found = api.reactions().findOne(UUID);
+        Reaction r = api.reactions().copy(found);
         return createUri(UUID);
     }
     

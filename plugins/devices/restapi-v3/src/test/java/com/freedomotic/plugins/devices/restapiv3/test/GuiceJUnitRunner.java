@@ -40,6 +40,17 @@ public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
 
     /**
      *
+     * @param klass
+     * @throws InitializationError
+     */
+    public GuiceJUnitRunner(Class<?> klass) throws InitializationError {
+        super(klass);
+        Class<?>[] classes = getModulesFor(klass);
+        injector = createInjectorFor(classes);
+    }
+
+    /**
+     *
      */
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
@@ -55,25 +66,13 @@ public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
 
     /**
      *
-     * @return
-     * @throws Exception
+     * @return @throws Exception
      */
     @Override
     public Object createTest() throws Exception {
         Object obj = super.createTest();
         injector.injectMembers(obj);
         return obj;
-    }
-
-    /**
-     *
-     * @param klass
-     * @throws InitializationError
-     */
-    public GuiceJUnitRunner(Class<?> klass) throws InitializationError {
-        super(klass);
-        Class<?>[] classes = getModulesFor(klass);
-        injector = createInjectorFor(classes);
     }
 
     private Injector createInjectorFor(Class<?>[] classes) throws InitializationError {

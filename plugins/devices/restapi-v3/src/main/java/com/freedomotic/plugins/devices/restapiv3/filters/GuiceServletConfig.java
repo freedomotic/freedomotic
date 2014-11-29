@@ -19,9 +19,9 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.filters;
 
-import com.freedomotic.app.Freedomotic;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
+import javax.inject.Inject;
 
 /**
  *
@@ -29,8 +29,11 @@ import com.google.inject.servlet.GuiceServletContextListener;
  */
 public class GuiceServletConfig extends GuiceServletContextListener {
 
-  @Override
-  protected Injector getInjector() {
-    return Freedomotic.INJECTOR;
-  }
+    @Inject
+    private Injector injector;
+
+    @Override
+    protected Injector getInjector() {
+        return injector;
+    }
 }

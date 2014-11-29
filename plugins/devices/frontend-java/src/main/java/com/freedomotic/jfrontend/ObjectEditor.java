@@ -772,7 +772,7 @@ public class ObjectEditor
         //        }
         //        EnvObjectLogic envObjectLogic = EnvObjectFactory.save(pojoCopy);
         //        envObjectLogic.getPojo().setUUID("");
-        api.things().copy(object.getPojo().getUUID());
+        api.things().copy(object);
         //object.setChanged(true);
         this.dispose();
     }//GEN-LAST:event_btnCreateObjectCopyActionPerformed

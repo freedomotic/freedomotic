@@ -1244,7 +1244,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuSelectEnvironmentActionPerformed
 
     private void mnuAddDuplicateEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAddDuplicateEnvironmentActionPerformed
-        EnvironmentLogic newEnv = api.environments().copy(drawer.getCurrEnv().getPojo().getUUID());
+        EnvironmentLogic newEnv = api.environments().copy(drawer.getCurrEnv());
         String input = JOptionPane.showInputDialog(i18n.msg("enter_new_name_for_env") + newEnv.getPojo().getName());
         if (input != null && !input.isEmpty()) {
             newEnv.getPojo().setName(input.trim());

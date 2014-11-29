@@ -22,7 +22,10 @@ package com.freedomotic.plugins.devices.hello;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.UnableToExecuteException;
+import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.reactions.Command;
+import com.google.inject.Inject;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -31,6 +34,9 @@ public class HelloWorld
 
     private static final Logger LOG = Logger.getLogger(HelloWorld.class.getName());
     final int POLLING_WAIT;
+    
+    @Inject
+    private ThingsRepository thingsRepository;
 
     public HelloWorld() {
         //every plugin needs a name and a manifest XML file
@@ -62,12 +68,9 @@ public class HelloWorld
 
     @Override
     protected void onRun() {
-        LOG.info("HelloWorld onRun() logs this message every " + "POLLINGWAIT=" + POLLING_WAIT
-                + "milliseconds");
-
-        //at the end of this method the system waits POLLINGTIME 
-        //before calling it again. The result is this log message is printed
-        //every 2 seconds (2000 millisecs)
+        for (EnvObjectLogic thing : thingsRepository.findAll()) {
+            LOG.info("HelloWorld sees Thing: " + thing.getPojo().getName());
+        }
     }
 
     @Override

@@ -42,7 +42,8 @@ public interface Repository<T> {
 
     public T modify(String uuid, T data);
     
-    public T copy(String uuid);
+    //TODO: should take an object
+    public T copy(T data);
     
     public void deleteAll();
     

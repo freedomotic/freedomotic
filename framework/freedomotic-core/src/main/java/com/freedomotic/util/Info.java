@@ -66,10 +66,9 @@ public class Info {
     public static class PathSettings {
 
         //framework base paths
-        public final File PATH_WORKDIR = Info.getWorkdir();
+        public File PATH_WORKDIR = Info.getWorkdir();
 
         public final File PATH_CONFIG_FOLDER = new File(PATH_WORKDIR + "/config/");
-
         public File PATH_DATA_FOLDER = new File(PATH_WORKDIR + "/data/");
         public File PATH_RESOURCES_FOLDER = new File(PATH_DATA_FOLDER + "/resources/");
         public File PATH_ENVIRONMENTS_FOLDER = new File(PATH_DATA_FOLDER + "/furn/");
@@ -169,6 +168,10 @@ public class Info {
         }
         Info.PATHS.PATH_DATA_FOLDER = path;
         Info.PATHS.PATH_RESOURCES_FOLDER = new File(path + "/resources/");
+    }
+    
+    public static void relocateWorkdir(File file) {
+        Info.PATHS.PATH_WORKDIR = file;
     }
 
     /**

@@ -29,11 +29,8 @@ import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -393,9 +390,9 @@ public class CommandPersistence implements Repository<Command> {
     }
 
     @Override
-    public Command copy(String uuid) {
+    public Command copy(Command command) {
         try {
-            Command c = findOne(uuid).clone();
+            Command c = findOne(command.getUuid()).clone();
             c.setName("Copy of " + c.getName());
             add(c);
             return c;

@@ -185,7 +185,8 @@ public class UserCommandResource extends AbstractResource<Command> {
 
     @Override
     protected URI doCopy(String uuid) {
-        Command c = api.commands().copy(uuid);
+        Command found = api.commands().findOne(uuid);
+        Command c = api.commands().copy(found);
         return createUri(c.getUuid());
     }
 }

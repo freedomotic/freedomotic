@@ -22,7 +22,7 @@ package com.freedomotic.objects;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.Resolver;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentRepositoryImpl;
+import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.ObjectHasChangedBehavior;
 import com.freedomotic.exceptions.VariableResolutionException;
@@ -39,6 +39,7 @@ import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.util.TopologyUtils;
+import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,9 +62,12 @@ public class EnvObjectLogic {
     private Map<String, BehaviorLogic> behaviors = new HashMap<String, BehaviorLogic>();
     private EnvironmentLogic environment;
 
+    @Inject
+    protected EnvironmentRepository environmentRepository;
+
     /**
-     * Instantiation disabled from outside its package. Use {@code EnvObjectFactory}
-     * to generate instances of {@code EnvObjectLogic}
+     * Instantiation disabled from outside its package. Use
+     * {@code EnvObjectFactory} to generate instances of {@code EnvObjectLogic}
      */
     protected EnvObjectLogic() {
         super();
@@ -272,7 +276,7 @@ public class EnvObjectLogic {
         commandsMapping = new HashMap<String, Command>();
         cacheDeveloperLevelCommand();
         // assign object to an environment
-        this.setEnvironment(EnvironmentRepositoryImpl.getEnvByUUID(pojo.getEnvironmentID()));
+        this.setEnvironment(environmentRepository.findOne(pojo.getEnvironmentID()));
         // update topology information
         updateTopology();
     }
@@ -369,8 +373,8 @@ public class EnvObjectLogic {
      */
     @RequiresPermissions("objects:create")
     public final void setRandomLocation() {
-        int randomX = 0 + (int) (Math.random() * EnvironmentRepositoryImpl.getEnvironments().get(0).getPojo().getWidth());
-        int randomY = 0 + (int) (Math.random() * EnvironmentRepositoryImpl.getEnvironments().get(0).getPojo().getHeight());
+        int randomX = 0 + (int) (Math.random() * environmentRepository.findAll().get(0).getPojo().getWidth());
+        int randomY = 0 + (int) (Math.random() * environmentRepository.findAll().get(0).getPojo().getHeight());
         setLocation(randomX, randomY);
     }
 
@@ -392,7 +396,7 @@ public class EnvObjectLogic {
 
     /**
      * Sets the object location without invoking an object change notification
-     * An user should never use this method. It's needed by the framework and 
+     * An user should never use this method. It's needed by the framework and
      * reserver for it's exclusive use.
      */
     public void synchLocation(int x, int y) {
@@ -413,7 +417,7 @@ public class EnvObjectLogic {
                 = (FreedomPolygon) TopologyUtils.translate((FreedomPolygon) shape, xoffset, yoffset);
 
         //REGRESSION
-        for (EnvironmentLogic locEnv : EnvironmentRepositoryImpl.getEnvironments()) {
+        for (EnvironmentLogic locEnv : environmentRepository.findAll()) {
             for (ZoneLogic zone : locEnv.getZones()) {
                 if (this.getEnvironment() == locEnv && TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
                     //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
@@ -430,7 +434,9 @@ public class EnvObjectLogic {
     }
 
     /**
-     * Changes a behavior value accordingly to the value property in the trigger in input
+     * Changes a behavior value accordingly to the value property in the trigger
+     * in input
+     *
      * @param t an hardware level trigger
      * @return true if the values is applied successfully, false otherwise
      */
@@ -636,7 +642,7 @@ public class EnvObjectLogic {
         if (selEnv == null) {
             LOG.warning("Trying to assign a null environment to object " + this.getPojo().getName()
                     + ". It will be relocated to the fallback environment");
-            selEnv = EnvironmentRepositoryImpl.getEnvironments().get(0);
+            selEnv = environmentRepository.findAll().get(0);
             if (selEnv == null) {
                 throw new IllegalArgumentException("Fallback environment is null for object " + getPojo().getName());
             }

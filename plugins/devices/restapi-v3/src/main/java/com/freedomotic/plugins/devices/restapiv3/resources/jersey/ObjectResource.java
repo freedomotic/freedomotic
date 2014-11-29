@@ -25,11 +25,12 @@ import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.EnvObject;
-import com.freedomotic.objects.EnvObjectLogicFactory;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
+import com.freedomotic.objects.ThingsFactory;
+import com.google.inject.Inject;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -54,6 +55,9 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
     private String envUUID = null;
     private String roomName = null;
+    
+    @Inject
+    private ThingsFactory thingsFactory;
 
     public ObjectResource() {
         authContext = "objects";
@@ -182,7 +186,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     protected EnvObject doUpdate(String uuid, EnvObject eo) {
         try {
             eo.setUUID(uuid);
-            EnvObjectLogic el = EnvObjectLogicFactory.create(eo);
+            EnvObjectLogic el = thingsFactory.create(eo);
             if (api.things().modify(uuid, el) != null) {
                 return eo;
             } else {
@@ -199,7 +203,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
     protected URI doCreate(EnvObject eo) throws URISyntaxException {
         EnvObjectLogic el;
         try {
-            el = EnvObjectLogicFactory.create(eo);
+            el = thingsFactory.create(eo);
             api.things().create(el);
             return createUri(el.getPojo().getUUID());
         } catch (RepositoryException ex) {
@@ -211,7 +215,9 @@ public class ObjectResource extends AbstractResource<EnvObject> {
 
     @Override
     protected URI doCopy(String UUID) {
-        return createUri(api.things().copy(UUID).getPojo().getUUID());
+        EnvObjectLogic thing = api.things().findOne(UUID);
+        EnvObjectLogic thingCopy = api.things().copy(thing);
+        return createUri(thingCopy.getPojo().getUUID());
     }
 
     @POST

@@ -31,7 +31,7 @@ import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.objects.ThingsRepositoryImpl;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
@@ -140,7 +140,7 @@ public class TriggerCheck {
         if ((protocol != null) && (address != null)) {
             String clazz = event.getProperty("object.class");
             String name = event.getProperty("object.name");
-            affectedObjects = EnvObjectPersistence.getObjectByAddress(protocol, address);
+            affectedObjects = ThingsRepositoryImpl.getObjectByAddress(protocol, address);
 
             if (affectedObjects.isEmpty()) { //there isn't an object with this protocol and address
 
@@ -221,7 +221,7 @@ public class TriggerCheck {
                                 } else {
                                     //if the event has a target object we include also object info
                                     EnvObjectLogic targetObject
-                                            = EnvObjectPersistence.getObjectByName(event.getProperty("object.name"));
+                                            = ThingsRepositoryImpl.getObjectByName(event.getProperty("object.name"));
 
                                     if (targetObject != null) {
                                         commandResolver.addContext("current.",
@@ -290,7 +290,7 @@ public class TriggerCheck {
                 boolean result = true;
                 for (Condition condition : rea.getConditions()) {
                     //System.out.println("DEBUG: check condition " + condition.getTarget());
-                    EnvObjectLogic object = EnvObjectPersistence.getObjectByName(condition.getTarget());
+                    EnvObjectLogic object = ThingsRepositoryImpl.getObjectByName(condition.getTarget());
                     Statement statement = condition.getStatement();
                     if (object != null) {
                         BehaviorLogic behavior = object.getBehavior(statement.getAttribute());

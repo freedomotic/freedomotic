@@ -29,7 +29,7 @@ import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.objects.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.objects.ThingsRepositoryImpl;
 import com.freedomotic.reactions.Command;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -111,7 +111,7 @@ public final class BehaviorManager implements BusConsumer {
 
         // gets a reference to an EnvObject using the key 'object' in the user
         // level command
-        List<String> objNames = EnvObjectPersistence.getObjectsNames();
+        List<String> objNames = ThingsRepositoryImpl.getObjectsNames();
         // filter first tags, then class, then zone
         List<String> affectedObjects
                 = filterByZone(userLevelCommand,
@@ -232,7 +232,7 @@ public final class BehaviorManager implements BusConsumer {
 
         // gets a reference to an EnvObject using the key 'object' in the user
         // level command
-        EnvObjectLogic obj = EnvObjectPersistence
+        EnvObjectLogic obj = ThingsRepositoryImpl
                 .getObjectByName(userLevelCommand.getProperty(Command.PROPERTY_OBJECT));
 
         // if the object exists
