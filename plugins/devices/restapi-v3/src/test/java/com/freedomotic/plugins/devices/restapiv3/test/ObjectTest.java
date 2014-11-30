@@ -29,7 +29,7 @@ import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.model.object.Representation;
-import com.freedomotic.plugins.devices.restapiv3.resources.jersey.ObjectResource;
+import com.freedomotic.plugins.devices.restapiv3.resources.jersey.ThingResource;
 import com.google.inject.Inject;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
@@ -86,7 +86,7 @@ public class ObjectTest extends AbstractTest<EnvObject> {
         b.setName("powered");
         b.setValue(true);
         getItem().getBehaviors().add(b);
-        initPath(ObjectResource.class);
+        initPath(ThingResource.class);
         setListType(new GenericType<List<EnvObject>>(){});
         setSingleType(new GenericType<EnvObject>(){});
     }

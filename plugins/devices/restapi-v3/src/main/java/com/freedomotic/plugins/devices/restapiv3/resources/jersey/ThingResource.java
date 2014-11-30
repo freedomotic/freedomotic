@@ -51,21 +51,20 @@ import javax.ws.rs.core.Response;
  */
 @Path("objects")
 @Api(value = "/objects", description = "Operations on environment objects", position = 2)
-public class ObjectResource extends AbstractResource<EnvObject> {
+public class ThingResource extends AbstractResource<EnvObject> {
 
     private String envUUID = null;
     private String roomName = null;
-    
 
-    public ObjectResource() {
+    public ThingResource() {
         authContext = "objects";
     }
 
-    public ObjectResource(String envUUID) {
+    public ThingResource(String envUUID) {
         this.envUUID = envUUID;
     }
 
-    public ObjectResource(String envUUID, String room) {
+    public ThingResource(String envUUID, String room) {
         this.envUUID = envUUID;
         this.roomName = room;
     }
@@ -129,7 +128,7 @@ public class ObjectResource extends AbstractResource<EnvObject> {
             @PathParam("id") String UUID, EnvObject s) {
         return super.update(UUID, s);
     }
-    
+
     /**
      *
      * @param s
@@ -148,7 +147,6 @@ public class ObjectResource extends AbstractResource<EnvObject> {
         return super.create(s);
     }
 
-    
     @Override
     protected List<EnvObject> prepareList() {
         List<EnvObject> objects = new ArrayList<EnvObject>();
@@ -157,9 +155,12 @@ public class ObjectResource extends AbstractResource<EnvObject> {
                 objects.add(objLogic.getPojo());
             }
         } else {
-
-            for (EnvObjectLogic objLogic : api.things().findByEnvironment(envUUID)) {
-                objects.add(objLogic.getPojo());
+            if (roomName != null && !roomName.isEmpty()) {
+                objects.addAll(api.environments().findOne(envUUID).getZone(roomName).getPojo().getObjects());
+            } else {
+                for (EnvObjectLogic objLogic : api.things().findByEnvironment(envUUID)) {
+                    objects.add(objLogic.getPojo());
+                }
             }
         }
         return objects;

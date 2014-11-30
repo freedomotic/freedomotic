@@ -179,10 +179,10 @@ public class EnvironmentResource extends AbstractResource<Environment> {
     }
 
     @Path("/{id}/objects")
-    public ObjectResource objects(
+    public ThingResource objects(
             @ApiParam(value = "Environment to fetch objects from", required = true)
             @PathParam("id") String UUID) {
-        return new ObjectResource(UUID);
+        return new ThingResource(UUID);
     }
 
     @Override
