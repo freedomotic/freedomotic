@@ -149,6 +149,7 @@ public class Zone
      *
      * @return
      */
+    @XmlTransient
     public ArrayList<EnvObject> getObjects() {
         if (objects == null) {
             objects = new ArrayList<EnvObject>();
