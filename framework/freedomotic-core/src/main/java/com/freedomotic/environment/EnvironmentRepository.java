@@ -22,5 +22,6 @@ public interface EnvironmentRepository extends Repository<EnvironmentLogic> {
     public EnvObjectLogic join(String clazz, String name, String protocol, String address);
     public boolean loadEnvironmentsFromDir(File folder, boolean makeUnique) throws RepositoryException;
     public void saveAs(EnvironmentLogic env, File folder) throws IOException;
+    public void init() throws RepositoryException;
     
 }

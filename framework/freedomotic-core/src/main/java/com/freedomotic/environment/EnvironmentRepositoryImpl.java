@@ -91,6 +91,10 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         this.thingsRepository = thingsRepository;
         this.clientStorage = clientStorage;
         this.environmentPersistenceFactory = environmentPersistenceFactory;
+    }
+    
+    @Override
+    public void init() throws RepositoryException {
         cacheInitialData();
     }
 

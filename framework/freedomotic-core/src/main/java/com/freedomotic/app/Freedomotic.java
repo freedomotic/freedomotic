@@ -161,11 +161,10 @@ public class Freedomotic implements BusConsumer {
      * @throws FreedomoticException
      */
     public void start() throws FreedomoticException {
-        /**
-         * ******************************************************************
-         * First of all the configuration file is loaded into a data structure
-         * *****************************************************************
-         */
+        // Relocate base data folder according to configuration (if specified in the config file)
+        // Do not move it in AppConfigImpl otherwise unit tests will become dependent to the presence of the data folder
+        String defaultPath = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
+        Info.relocateDataPath(new File(config.getStringProperty("KEY_DATA_PATH", defaultPath)));
 
         // init localization
         api.getI18n().setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
@@ -325,6 +324,7 @@ public class Freedomotic implements BusConsumer {
         // Bootstrap Things in the environments
         // This should be done after loading all Things plugins otherwise
         // its java class will not be recognized by the system
+        environmentRepository.init();
         for (EnvironmentLogic env : environmentRepository.findAll()) {
             // Load all the Things in this environment
             File thingsFolder = env.getObjectFolder();
