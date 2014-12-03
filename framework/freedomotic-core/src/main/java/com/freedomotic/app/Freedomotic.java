@@ -40,7 +40,7 @@ import com.freedomotic.marketplace.ClassPathUpdater;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.MarketPlaceService;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.ThingsRepositoryImpl;
+import com.freedomotic.objects.impl.ThingsRepositoryImpl;
 import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;

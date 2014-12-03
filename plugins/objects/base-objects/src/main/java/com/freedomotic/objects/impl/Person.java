@@ -21,14 +21,15 @@
  */
 package com.freedomotic.objects.impl;
 
+import com.freedomotic.objects.GenericPerson;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.model.object.ListBehavior;
 import com.freedomotic.model.object.PropertiesBehavior;
-import com.freedomotic.objects.BooleanBehaviorLogic;
-import com.freedomotic.objects.ListBehaviorLogic;
-import com.freedomotic.objects.PropertiesBehaviorLogic;
+import com.freedomotic.behaviors.BooleanBehaviorLogic;
+import com.freedomotic.behaviors.ListBehaviorLogic;
+import com.freedomotic.behaviors.PropertiesBehaviorLogic;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import java.util.logging.Logger;

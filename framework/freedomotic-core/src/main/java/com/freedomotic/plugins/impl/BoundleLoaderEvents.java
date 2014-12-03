@@ -19,11 +19,12 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins;
+package com.freedomotic.plugins.impl;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.PluginLoadingException;
+import com.freedomotic.plugins.impl.BoundleLoader;
 import com.freedomotic.util.JarFilter;
 import java.io.File;
 import java.util.ArrayList;

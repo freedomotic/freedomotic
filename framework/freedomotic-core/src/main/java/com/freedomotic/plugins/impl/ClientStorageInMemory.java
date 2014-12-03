@@ -17,7 +17,7 @@
  along with EventEngine; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package com.freedomotic.plugins;
+package com.freedomotic.plugins.impl;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
@@ -28,6 +28,8 @@ import com.freedomotic.events.PluginHasChanged.PluginActions;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.objects.ThingsRepository;
+import com.freedomotic.plugins.ClientStorage;
+import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.util.Info;
 import com.google.inject.Inject;
 import com.google.inject.Injector;

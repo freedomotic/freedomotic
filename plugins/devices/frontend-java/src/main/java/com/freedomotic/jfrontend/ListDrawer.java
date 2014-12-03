@@ -26,7 +26,7 @@ import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.jfrontend.utils.SpringUtilities;
 import com.freedomotic.model.object.EnvObject;
-import com.freedomotic.objects.BehaviorLogic;
+import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import java.awt.BorderLayout;
 import java.awt.Color;

@@ -25,7 +25,7 @@ package com.freedomotic.objects.impl;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
-import com.freedomotic.objects.RangedIntBehaviorLogic;
+import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 

@@ -17,18 +17,19 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.environment;
+package com.freedomotic.environment.impl;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.environment.EnvironmentLogic;
+import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.objects.ThingsRepository;
-import com.freedomotic.objects.ThingsRepositoryImpl;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
@@ -372,9 +373,9 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
      */
     @RequiresPermissions("environments:delete")
     @Deprecated
-    public static void remove(EnvironmentLogic input) {
-        for (EnvObjectLogic obj : ThingsRepositoryImpl.getObjectByEnvironment(input.getPojo().getUUID())) {
-            ThingsRepositoryImpl.remove(obj);
+    public void remove(EnvironmentLogic input) {
+        for (EnvObjectLogic obj : thingsRepository.findByEnvironment(input)) {
+            thingsRepository.delete(obj);
         }
 
         environments.remove(input);

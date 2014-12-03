@@ -25,7 +25,7 @@ package com.freedomotic.objects.impl;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
-import com.freedomotic.objects.RangedIntBehaviorLogic;
+import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import java.util.logging.Logger;
 
 public class PowerMeter

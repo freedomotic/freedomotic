@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.plugins;
+package com.freedomotic.plugins.impl;
 
+import com.freedomotic.plugins.ClientStorage;
+import com.freedomotic.plugins.PluginsManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 

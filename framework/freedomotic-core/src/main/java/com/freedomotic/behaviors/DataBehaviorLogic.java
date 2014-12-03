@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.objects;
+package com.freedomotic.behaviors;
 
 import com.freedomotic.model.charting.UsageData;
 import com.freedomotic.model.charting.UsageDataFrame;

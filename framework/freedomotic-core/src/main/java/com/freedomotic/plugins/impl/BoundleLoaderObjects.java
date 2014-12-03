@@ -2,11 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.plugins;
+package com.freedomotic.plugins.impl;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.PluginLoadingException;
+import com.freedomotic.plugins.impl.BoundleLoader;
 import com.freedomotic.util.JarFilter;
 import java.io.File;
 import java.io.IOException;

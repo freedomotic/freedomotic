@@ -25,7 +25,7 @@ package com.freedomotic.objects.impl;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.MultiselectionListBehavior;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.TaxonomyBehaviorLogic;
+import com.freedomotic.behaviors.TaxonomyBehaviorLogic;
 
 /**
  *

@@ -27,7 +27,7 @@ package com.freedomotic.environment;
 
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.environment.Zone;
-import com.freedomotic.objects.impl.GenericGate;
+import com.freedomotic.objects.GenericGate;
 import com.freedomotic.util.Edge;
 import java.util.ArrayList;
 import java.util.List;

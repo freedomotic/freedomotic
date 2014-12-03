@@ -21,6 +21,7 @@
  */
 package com.freedomotic.objects.impl;
 
+import com.freedomotic.objects.GenericGate;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
@@ -29,9 +30,9 @@ import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.model.object.Representation;
-import com.freedomotic.objects.BooleanBehaviorLogic;
+import com.freedomotic.behaviors.BooleanBehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.RangedIntBehaviorLogic;
+import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;

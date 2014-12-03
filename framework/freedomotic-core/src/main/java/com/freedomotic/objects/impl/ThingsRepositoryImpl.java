@@ -17,13 +17,16 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.objects;
+package com.freedomotic.objects.impl;
 
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
+import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.objects.ThingsFactory;
+import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;
@@ -52,7 +55,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  *
  * @author Enrico
  */
-public class ThingsRepositoryImpl implements ThingsRepository {
+class ThingsRepositoryImpl implements ThingsRepository {
 
     public static final boolean MAKE_UNIQUE = true;
 

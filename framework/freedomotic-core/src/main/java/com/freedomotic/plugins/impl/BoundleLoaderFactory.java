@@ -2,10 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.plugins;
+package com.freedomotic.plugins.impl;
 
 import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.util.Info;
 import com.google.inject.Guice;
 import com.google.inject.Injector;

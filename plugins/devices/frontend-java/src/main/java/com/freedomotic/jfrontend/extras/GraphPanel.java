@@ -25,7 +25,7 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.charting.UsageData;
 import com.freedomotic.model.charting.UsageDataFrame;
-import com.freedomotic.objects.DataBehaviorLogic;
+import com.freedomotic.behaviors.DataBehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;

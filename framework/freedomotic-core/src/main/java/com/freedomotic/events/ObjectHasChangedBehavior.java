@@ -22,7 +22,7 @@ package com.freedomotic.events;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.object.Representation;
-import com.freedomotic.objects.BehaviorLogic;
+import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import java.util.Iterator;
 import java.util.Map.Entry;

@@ -10,32 +10,30 @@ import java.io.File;
 import java.net.URL;
 
 /**
- *
+ * Loads bundles from external jar files at runtime. Loaded bundles are then
+ * added to the {@link ClientStorage}
+ * 
  * @author enrico
  */
 public interface PluginsManager {
 
-    /**
-     *
-     */
     int TYPE_DEVICE = 0;
-
-    /**
-     *
-     */
     int TYPE_EVENT = 2;
-
-    /**
-     *
-     */
     int TYPE_OBJECT = 1;
 
     /**
-     * Install a plugins boundle downloading it from remote URL
+     * Install a plugins bundle downloading it from remote URL
+     * @param fromURL
      * @return 
      */
     boolean installBoundle(URL fromURL);
     
+    /**
+     * Uninstalls a given plugin. The plugin can be part of a bundle, in this case
+     * the entire boundle will be uninstalled
+     * @param c
+     * @return 
+     */
     boolean uninstallBundle(Client c);
 
     /**
@@ -50,7 +48,6 @@ public interface PluginsManager {
     /**
      * Loads all plugins from filesystem regardless their type
      *
-     * @param TYPE
      * @throws com.freedomotic.exceptions.PluginLoadingException
      */
     void loadAllPlugins() throws PluginLoadingException;

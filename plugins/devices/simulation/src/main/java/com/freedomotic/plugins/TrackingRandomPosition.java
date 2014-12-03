@@ -25,7 +25,7 @@ import com.freedomotic.events.LocationEvent;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.impl.GenericPerson;
+import com.freedomotic.objects.GenericPerson;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
 import java.util.Random;

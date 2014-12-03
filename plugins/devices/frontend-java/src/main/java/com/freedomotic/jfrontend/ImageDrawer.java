@@ -23,7 +23,7 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.geometry.FreedomPoint;
-import com.freedomotic.objects.BehaviorLogic;
+import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.util.TopologyUtils;
 import java.awt.Color;

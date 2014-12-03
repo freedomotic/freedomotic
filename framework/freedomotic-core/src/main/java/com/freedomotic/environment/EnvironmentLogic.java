@@ -47,7 +47,7 @@ public final class EnvironmentLogic {
     /**
      * Instantiation is disabled outside this package.
      */
-    protected EnvironmentLogic() {
+    public EnvironmentLogic() {
 
     }
 

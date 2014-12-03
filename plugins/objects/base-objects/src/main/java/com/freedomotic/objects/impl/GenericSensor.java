@@ -27,7 +27,7 @@ import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.RangedIntBehaviorLogic;
+import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import java.util.logging.Level;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.objects.impl;
+package com.freedomotic.objects;
 
 import com.freedomotic.objects.EnvObjectLogic;
 

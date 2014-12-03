@@ -19,6 +19,7 @@
  */
 package com.freedomotic.objects;
 
+import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.Resolver;
 import com.freedomotic.environment.EnvironmentLogic;
