@@ -19,20 +19,20 @@
  */
 package com.freedomotic.jfrontend;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.util.TopologyUtils;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
+import java.util.logging.Logger;
 
 /**
  *
  * @author enrico
  */
-public class PhotoDrawer
-        extends ImageDrawer {
+public class PhotoDrawer extends ImageDrawer {
+    private static final Logger LOG = Logger.getLogger(PhotoDrawer.class.getName());
 
     /**
      *
@@ -56,7 +56,7 @@ public class PhotoDrawer
         if (img != null) {
             getContext().drawImage(img, 0, 0, this);
         } else {
-            Freedomotic.logger.warning("Cannot find environment background image " + fileName);
+            LOG.warning("Cannot find environment background image " + fileName);
         }
     }
 

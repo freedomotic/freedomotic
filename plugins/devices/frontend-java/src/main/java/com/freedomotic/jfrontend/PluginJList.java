@@ -18,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Vector;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -34,19 +35,12 @@ import javax.swing.ListCellRenderer;
  *
  * @author Enrico
  */
-public final class PluginJList
-        extends JList {
+public final class PluginJList extends JList {
+    
+    private static final Logger LOG = Logger.getLogger(PluginJList.class.getName());
 
     private String filter;
-
-    /**
-     *
-     */
     public boolean inDrag = false;
-
-    /**
-     *
-     */
     public int dragged = 0;
     private MainWindow parent;
 
@@ -259,7 +253,7 @@ public final class PluginJList
             ListCellRenderer renderer = new CustomCellRenderer();
             setCellRenderer(renderer);
         } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 

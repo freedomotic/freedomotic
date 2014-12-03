@@ -355,7 +355,7 @@ public abstract class Protocol
                     }
                 }
             } catch (Exception e) {
-                notifyError(e.getMessage());
+                notifyCriticalError(e.getMessage());
             }
         }
     }

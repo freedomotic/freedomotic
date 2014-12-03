@@ -26,7 +26,6 @@ import com.freedomotic.bus.BootStatus;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
-import com.freedomotic.core.BehaviorManager;
 import com.freedomotic.core.SynchManager;
 import com.freedomotic.core.TopologyManager;
 import com.freedomotic.environment.EnvironmentLogic;
@@ -40,7 +39,6 @@ import com.freedomotic.marketplace.ClassPathUpdater;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.MarketPlaceService;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.impl.ThingsRepositoryImpl;
 import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
@@ -50,7 +48,6 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.security.UserRealm;
-import com.freedomotic.serial.SerialConnectionProvider;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.LogFormatter;
 import com.google.inject.Guice;
@@ -91,8 +88,8 @@ public class Freedomotic implements BusConsumer {
      *
      * @deprecated
      */
-    @Deprecated
-    public static final Logger logger = Logger.getLogger("com.freedomotic");
+    //@Deprecated
+    //public static final Logger logger = Logger.getLogger("com.freedomotic");
     //this should replace Freedomotic.logger reference
     private static final Logger LOG = Logger.getLogger(Freedomotic.class.getName());
     public static String INSTANCE_ID;
@@ -230,9 +227,9 @@ public class Freedomotic implements BusConsumer {
                 FileHandler handler = new FileHandler(logfile.getAbsolutePath(),
                         false);
                 handler.setFormatter(new LogFormatter());
-                logger.setLevel(Level.ALL);
-                logger.addHandler(handler);
-                logger.config(api.getI18n().msg("INIT_MESSAGE"));
+                LOG.setLevel(Level.ALL);
+                LOG.addHandler(handler);
+                LOG.config(api.getI18n().msg("INIT_MESSAGE"));
 
                 if ((config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
                         && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
@@ -253,7 +250,7 @@ public class Freedomotic implements BusConsumer {
 //            try {
 //                CopyFile.copy(new File(Info.getDatafilePath()), new File(Info.getApplicationPath() + "/backup"));
 //            } catch (Exception ex) {
-//                logger.warning("unable to save a backup copy of application data " + getStackTraceInfo(ex));
+//                logger.warning("unable to saveAll a backup copy of application data " + getStackTraceInfo(ex));
 //            }
 //        }
         /**
@@ -340,10 +337,6 @@ public class Freedomotic implements BusConsumer {
         TriggerPersistence.loadTriggers(new File(Info.PATHS.PATH_DATA_FOLDER + "/trg/"));
         CommandPersistence.loadCommands(new File(Info.PATHS.PATH_DATA_FOLDER + "/cmd/"));
         ReactionPersistence.loadReactions(new File(Info.PATHS.PATH_DATA_FOLDER + "/rea/"));
-
-        // A service to add environment objects using XML commands
-        new BehaviorManager();
-        new SerialConnectionProvider();
 
         // Starting plugins
         for (Client plugin : clientStorage.getClients()) {
@@ -492,26 +485,24 @@ public class Freedomotic implements BusConsumer {
         ReactionPersistence.saveReactions(new File(savedDataRoot + "/rea"));
 
         //save the environment
-        String environmentFilePath
-                = Info.PATHS.PATH_DATA_FOLDER + "/furn/" + config.getProperty("KEY_ROOM_XML_PATH");
+        String environmentFilePath = Info.PATHS.PATH_DATA_FOLDER + "/furn/" + config.getProperty("KEY_ROOM_XML_PATH");
         File folder = null;
 
         try {
             folder = new File(environmentFilePath).getParentFile();
-
             environmentRepository.saveEnvironmentsToFolder(folder);
 
             if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
                 File saveDir = null;
                 try {
                     saveDir = new File(folder + "/data/obj");
-                    ThingsRepositoryImpl.saveObjects(saveDir);
+                    thingsRepository.saveAll(saveDir);
                 } catch (RepositoryException ex) {
-                    LOG.severe("Cannot save objects in " + saveDir.getAbsolutePath().toString());
+                    LOG.log(Level.SEVERE, "Cannot save objects in {0}", saveDir.getAbsolutePath());
                 }
             }
         } catch (RepositoryException ex) {
-            LOG.severe("Cannot save environment to folder " + folder + "due to " + ex.getCause());
+            LOG.log(Level.SEVERE, "Cannot save environment to folder {0} due to {1}", new Object[]{folder, ex.getCause()});
         }
 
         System.exit(0);

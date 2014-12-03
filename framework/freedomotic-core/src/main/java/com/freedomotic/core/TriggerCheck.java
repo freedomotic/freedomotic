@@ -31,16 +31,16 @@ import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.impl.ThingsRepositoryImpl;
+import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -50,17 +50,22 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-@Singleton
 public class TriggerCheck {
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+    
+    // Dependencies
     private final EnvironmentRepository environmentPersistence;
     private final BusService busService;
+    private final ThingsRepository thingsRepository;
+    private final BehaviorManager behaviorManager;
 
     @Inject
-    TriggerCheck(EnvironmentRepository environmentPersistence, BusService busService) {
+    TriggerCheck(EnvironmentRepository environmentPersistence, ThingsRepository thingsRepository, BusService busService, BehaviorManager behaviorManager) {
         this.environmentPersistence = environmentPersistence;
+        this.thingsRepository = thingsRepository;
         this.busService = busService;
+        this.behaviorManager = behaviorManager;
     }
 
     /**
@@ -130,7 +135,7 @@ public class TriggerCheck {
     private void applySensorNotification(Trigger resolved, final EventTemplate event) {
         String protocol;
         String address;
-        ArrayList<EnvObjectLogic> affectedObjects = new ArrayList<EnvObjectLogic>();
+        List<EnvObjectLogic> affectedObjects = new ArrayList<EnvObjectLogic>();
 
         //join device: add the object on the map if not already there
         //join device requires to know 'object.class' and 'object.name' properties
@@ -140,7 +145,7 @@ public class TriggerCheck {
         if ((protocol != null) && (address != null)) {
             String clazz = event.getProperty("object.class");
             String name = event.getProperty("object.name");
-            affectedObjects = ThingsRepositoryImpl.getObjectByAddress(protocol, address);
+            affectedObjects = thingsRepository.findByAddress(protocol, address);
 
             if (affectedObjects.isEmpty()) { //there isn't an object with this protocol and address
 
@@ -217,11 +222,11 @@ public class TriggerCheck {
                                     //this command is for an object so it needs only to know only about event parameters
                                     Command resolvedCommand = commandResolver.resolve(command);
                                     //doing so we bypass messaging system gaining better performances
-                                    BehaviorManager.parseCommand(resolvedCommand);
+                                    behaviorManager.parseCommand(resolvedCommand);
                                 } else {
                                     //if the event has a target object we include also object info
                                     EnvObjectLogic targetObject
-                                            = ThingsRepositoryImpl.getObjectByName(event.getProperty("object.name"));
+                                            = thingsRepository.findByName(event.getProperty("object.name")).get(0);
 
                                     if (targetObject != null) {
                                         commandResolver.addContext("current.",
@@ -290,7 +295,7 @@ public class TriggerCheck {
                 boolean result = true;
                 for (Condition condition : rea.getConditions()) {
                     //System.out.println("DEBUG: check condition " + condition.getTarget());
-                    EnvObjectLogic object = ThingsRepositoryImpl.getObjectByName(condition.getTarget());
+                    EnvObjectLogic object = thingsRepository.findByName(condition.getTarget()).get(0);
                     Statement statement = condition.getStatement();
                     if (object != null) {
                         BehaviorLogic behavior = object.getBehavior(statement.getAttribute());

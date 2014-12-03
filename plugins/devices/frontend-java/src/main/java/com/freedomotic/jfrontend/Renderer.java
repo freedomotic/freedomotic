@@ -58,15 +58,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Logger;
 
 /**
  *
  * @author enrico
  */
-public class Renderer
-        extends Drawer
-        implements MouseListener,
-        MouseMotionListener {
+public class Renderer extends Drawer implements MouseListener, MouseMotionListener {
+    
+    private static final Logger LOG = Logger.getLogger(Renderer.class.getName());
 
     private JavaDesktopFrontend plugin;
     private Graphics graph;
@@ -377,8 +377,8 @@ public class Renderer
                 renderHandles();
             }
         } catch (Exception e) {
-            Freedomotic.logger.severe("Error while painting environment");
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.severe("Error while painting environment");
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         } finally {
             restoreTransformContext();
         }
@@ -568,7 +568,7 @@ public class Renderer
                     getHeight(),
                     BufferedImage.TYPE_INT_ARGB);
         } catch (Exception e) {
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
 
         return img;
@@ -681,7 +681,7 @@ public class Renderer
         if (img != null) {
             getContext().drawImage(img, 0, 0, this);
         } else {
-            Freedomotic.logger.warning("Cannot find image " + obj.getCurrentRepresentation().getIcon()
+            LOG.warning("Cannot find image " + obj.getCurrentRepresentation().getIcon()
                     + " for object " + obj.getName());
             throw new RuntimeException();
         }

@@ -5,7 +5,6 @@
  */
 package com.freedomotic.core;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
@@ -13,8 +12,8 @@ import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.LocationEvent;
 import com.freedomotic.model.geometry.FreedomPoint;
-import com.freedomotic.objects.impl.ThingsRepositoryImpl;
 import com.freedomotic.objects.GenericPerson;
+import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.util.TopologyUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,14 +31,18 @@ public class TopologyManager implements BusConsumer {
 
     private static final Logger LOG = Logger.getLogger(TopologyManager.class.getName());
     private static final String LISTEN_CHANNEL = "app.event.sensor.person.movement.detected";
-    private final EnvironmentRepository environmentRepository;
     private static BusMessagesListener listener;
+
+    // Dependencies
+    private final EnvironmentRepository environmentRepository;
     private final BusService busService;
+    private final ThingsRepository thingsRepository;
 
     @Inject
-    public TopologyManager(BusService busService, EnvironmentRepository environmentRepository) {
+    TopologyManager(BusService busService, ThingsRepository thingsRepository, EnvironmentRepository environmentRepository) {
         this.busService = busService;
         this.environmentRepository = environmentRepository;
+        this.thingsRepository = thingsRepository;
         listener = new BusMessagesListener(this, busService);
         listener.consumeCommandFrom(LISTEN_CHANNEL);
     }
@@ -55,7 +58,7 @@ public class TopologyManager implements BusConsumer {
 
         if (jmsObject instanceof LocationEvent) {
             LocationEvent event = (LocationEvent) jmsObject;
-            GenericPerson person = (GenericPerson) ThingsRepositoryImpl.getObjectByUUID(event.getUuid());
+            GenericPerson person = (GenericPerson) thingsRepository.findOne(event.getUuid());
             //apply the new position
             person.setLocation(event.getX(), event.getY());
             //check if this person is entering/exiting an evironment zone

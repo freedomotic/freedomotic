@@ -314,10 +314,10 @@ class ThingsRepositoryImpl implements ThingsRepository {
 
     /**
      * Add an object to the environment. You can use
-     * EnvObjectPersistnce.MAKE_UNIQUE to save an object that will surely be
-     * unique. Beware this means it is created with defensive copy of the object
-     * in input and name, protocol, address and UUID are reset to a default
-     * value.
+ EnvObjectPersistnce.MAKE_UNIQUE to saveAll an object that will surely be
+ unique. Beware this means it is created with defensive copy of the object
+ in input and name, protocol, address and UUID are reset to a default
+ value.
      *
      * @param obj the environment object to add
      * @param MAKE_UNIQUE can be true or false. Creates a defensive copy
@@ -594,5 +594,10 @@ class ThingsRepositoryImpl implements ThingsRepository {
             }
         }
         return results;
+    }
+
+    @Override
+    public void saveAll(File folder) throws RepositoryException {
+        saveObjects(folder);
     }
 }

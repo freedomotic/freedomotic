@@ -24,4 +24,5 @@ public interface ThingsRepository extends Repository<EnvObjectLogic> {
     //TODO: temporary for refactoring, should be removed
     public EnvObjectLogic load(File file) throws RepositoryException;
     public List<EnvObjectLogic> loadAll(File folder) throws RepositoryException;   
+    public void saveAll(File folder) throws RepositoryException;
 }

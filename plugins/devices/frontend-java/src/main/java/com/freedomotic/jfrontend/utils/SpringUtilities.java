@@ -31,8 +31,10 @@
 package com.freedomotic.jfrontend.utils;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.jfrontend.MarketPlaceForm;
 import java.awt.Component;
 import java.awt.Container;
+import java.util.logging.Logger;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
@@ -42,6 +44,8 @@ import javax.swing.SpringLayout;
  * as SpringBox and SpringCompactGrid.
  */
 public class SpringUtilities {
+    
+    private static final Logger LOG = Logger.getLogger(SpringUtilities.class.getName());
 
     /**
      * A debugging utility that prints to stdout the component's minimum,
@@ -49,9 +53,9 @@ public class SpringUtilities {
      * @param c
      */
     public static void printSizes(Component c) {
-        Freedomotic.logger.info("minimumSize = " + c.getMinimumSize());
-        Freedomotic.logger.info("preferredSize = " + c.getPreferredSize());
-        Freedomotic.logger.info("maximumSize = " + c.getMaximumSize());
+        LOG.info("minimumSize = " + c.getMinimumSize());
+        LOG.info("preferredSize = " + c.getPreferredSize());
+        LOG.info("maximumSize = " + c.getMaximumSize());
     }
 
     /**
@@ -76,8 +80,7 @@ public class SpringUtilities {
         try {
             layout = (SpringLayout) parent.getLayout();
         } catch (ClassCastException exc) {
-            Freedomotic.logger.warning("The first argument to makeGrid must use SpringLayout.");
-
+            LOG.warning("The first argument to makeGrid must use SpringLayout.");
             return;
         }
 
@@ -180,8 +183,7 @@ public class SpringUtilities {
         try {
             layout = (SpringLayout) parent.getLayout();
         } catch (ClassCastException exc) {
-            Freedomotic.logger.warning("The first argument to makeCompactGrid must use SpringLayout.");
-
+            LOG.warning("The first argument to makeCompactGrid must use SpringLayout.");
             return;
         }
 

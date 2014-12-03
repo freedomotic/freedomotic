@@ -19,7 +19,6 @@
  */
 package com.freedomotic.core;
 
-import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
@@ -28,11 +27,11 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.behaviors.BehaviorLogic;
+import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.impl.ThingsRepositoryImpl;
+import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.reactions.Command;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.inject.Inject;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
@@ -64,15 +64,17 @@ public final class BehaviorManager implements BusConsumer {
     private static final Logger LOG = Logger.getLogger(BehaviorManager.class.getName());
     private static final String MESSAGING_CHANNEL = "app.events.sensors.behavior.request.objects";
     private BusMessagesListener listener;
+
+    // Dependencies
     private final BusService busService;
-    private static API api = Freedomotic.INJECTOR.getInstance(API.class);
+    private final ThingsRepository thingsRepository;
+    private final EnvironmentRepository environmentRepository;
 
-    static String getMessagingChannel() {
-        return MESSAGING_CHANNEL;
-    }
-
-    public BehaviorManager() {
-        this.busService = Freedomotic.INJECTOR.getInstance(BusService.class);
+    @Inject
+    BehaviorManager(BusService busService, ThingsRepository thingsRepository, EnvironmentRepository environmentRepository) {
+        this.busService = busService;
+        this.thingsRepository = thingsRepository;
+        this.environmentRepository = environmentRepository;
         register();
     }
 
@@ -107,11 +109,11 @@ public final class BehaviorManager implements BusConsumer {
         }
     }
 
-    private static void applyToCategory(Command userLevelCommand) {
+    private void applyToCategory(Command userLevelCommand) {
 
         // gets a reference to an EnvObject using the key 'object' in the user
         // level command
-        List<String> objNames = ThingsRepositoryImpl.getObjectsNames();
+        List<String> objNames = getObjectsNames();
         // filter first tags, then class, then zone
         List<String> affectedObjects
                 = filterByZone(userLevelCommand,
@@ -124,7 +126,7 @@ public final class BehaviorManager implements BusConsumer {
         }
     }
 
-    private static List<String> filterByTags(Command userLevelCommand, List<String> origList) {
+    private List<String> filterByTags(Command userLevelCommand, List<String> origList) {
         String includeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_INCLUDETAGS);
         String excludeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_EXCLUDETAGS);
         if (includeTags != null || excludeTags != null) {
@@ -151,7 +153,7 @@ public final class BehaviorManager implements BusConsumer {
             Set<String> testSet = new HashSet<String>();
             Set<String> extestSet = new HashSet<String>();
 
-            for (EnvObjectLogic object : api.things().findAll()) {
+            for (EnvObjectLogic object : thingsRepository.findAll()) {
                 final EnvObject pojo = object.getPojo();
                 boolean apply;
                 testSet.clear();
@@ -182,7 +184,7 @@ public final class BehaviorManager implements BusConsumer {
         return origList;
     }
 
-    private static List<String> filterByObjClass(Command userLevelCommand, List<String> origList) {
+    private List<String> filterByObjClass(Command userLevelCommand, List<String> origList) {
         String objectClass = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS);
 
         if (objectClass != null) {
@@ -190,7 +192,7 @@ public final class BehaviorManager implements BusConsumer {
             String regex = "^" + objectClass.replace(".", "\\.") + ".*";
             Pattern pattern = Pattern.compile(regex);
 
-            for (EnvObjectLogic object : api.things().findAll()) {
+            for (EnvObjectLogic object : thingsRepository.findAll()) {
 
                 final EnvObject pojo = object.getPojo();
                 final Matcher matcher = pattern.matcher(pojo.getType());
@@ -206,14 +208,14 @@ public final class BehaviorManager implements BusConsumer {
         return origList;
     }
 
-    private static List<String> filterByZone(Command userLevelCommand, List<String> origList) {
+    private List<String> filterByZone(Command userLevelCommand, List<String> origList) {
         String zoneName = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ZONE);
 
         if (zoneName != null) {
             List<String> newList = new ArrayList<String>();
 
             //Search for the 'object.zone' name in all environments
-            for (EnvironmentLogic env : api.environments().findAll()) {
+            for (EnvironmentLogic env : environmentRepository.findAll()) {
                 if (zoneName != null) {
                     ZoneLogic z = env.getZone(zoneName);
                     for (EnvObject obj : z.getPojo().getObjects()) {
@@ -228,36 +230,37 @@ public final class BehaviorManager implements BusConsumer {
         return origList;
     }
 
-    private static void applyToSingleObject(Command userLevelCommand) {
+    private void applyToSingleObject(Command userLevelCommand) {
 
         // gets a reference to an EnvObject using the key 'object' in the user
         // level command
-        EnvObjectLogic obj = ThingsRepositoryImpl
-                .getObjectByName(userLevelCommand.getProperty(Command.PROPERTY_OBJECT));
+        List<EnvObjectLogic> things = thingsRepository.findByName(userLevelCommand.getProperty(Command.PROPERTY_OBJECT));
 
         // if the object exists
-        if (obj != null) {
+        if (!things.isEmpty()) {
+            for (EnvObjectLogic thing : things) {
 
-            // gets the behavior name in the user level command
-            String behaviorName = userLevelCommand.getProperty(Command.PROPERTY_BEHAVIOR);
-            BehaviorLogic behavior = obj.getBehavior(behaviorName);
+                // gets the behavior name in the user level command
+                String behaviorName = userLevelCommand.getProperty(Command.PROPERTY_BEHAVIOR);
+                BehaviorLogic behavior = thing.getBehavior(behaviorName);
 
-            // if this behavior exists in object obj
-            if (behavior != null) {
+                // if this behavior exists in object obj
+                if (behavior != null) {
 
-                LOG.log(Level.CONFIG,
-                        "User level command ''{0}'' request changing behavior {1} of object ''{2}'' "
-                        + "from value ''{3}'' to value ''{4}''",
-                        new Object[]{userLevelCommand.getName(), behavior.getName(), obj.getPojo().getName(), behavior.getValueAsString(), userLevelCommand.getProperties().getProperty("value")});
+                    LOG.log(Level.CONFIG,
+                            "User level command ''{0}'' request changing behavior {1} of object ''{2}'' "
+                            + "from value ''{3}'' to value ''{4}''",
+                            new Object[]{userLevelCommand.getName(), behavior.getName(), thing.getPojo().getName(), behavior.getValueAsString(), userLevelCommand.getProperties().getProperty("value")});
 
-                // true means a command must be fired
-                behavior.filterParams(userLevelCommand.getProperties(), true);
+                    // true means a command must be fired
+                    behavior.filterParams(userLevelCommand.getProperties(), true);
 
-            } else {
-                LOG.log(Level.WARNING,
-                        "Behavior ''{0}'' is not a valid behavior for object ''{1}''. "
-                        + "Please check ''behavior'' parameter spelling in command {2}",
-                        new Object[]{behaviorName, obj.getPojo().getName(), userLevelCommand.getName()});
+                } else {
+                    LOG.log(Level.WARNING,
+                            "Behavior ''{0}'' is not a valid behavior for object ''{1}''. "
+                            + "Please check ''behavior'' parameter spelling in command {2}",
+                            new Object[]{behaviorName, thing.getPojo().getName(), userLevelCommand.getName()});
+                }
             }
         } else {
             LOG.log(Level.WARNING, "Object ''{0}"
@@ -265,13 +268,14 @@ public final class BehaviorManager implements BusConsumer {
                     + "Please check ''object'' parameter spelling in command {1}",
                     new Object[]{userLevelCommand.getProperty(Command.PROPERTY_OBJECT), userLevelCommand.getName()});
         }
+
     }
 
     /**
      *
      * @param userLevelCommand
      */
-    protected static void parseCommand(Command userLevelCommand) {
+    protected void parseCommand(Command userLevelCommand) {
 
         if (userLevelCommand.getProperty(Command.PROPERTY_BEHAVIOR) != null) {
 
@@ -322,5 +326,17 @@ public final class BehaviorManager implements BusConsumer {
         } catch (JMSException ex) {
             LOG.severe(Freedomotic.getStackTraceInfo(ex));
         }
+    }
+
+    private List<String> getObjectsNames() {
+        List<String> names = new ArrayList<String>();
+        for (EnvObjectLogic thing : thingsRepository.findAll()) {
+            names.add(thing.getPojo().getName());
+        }
+        return names;
+    }
+
+    public static String getMessagingChannel() {
+        return MESSAGING_CHANNEL;
     }
 }

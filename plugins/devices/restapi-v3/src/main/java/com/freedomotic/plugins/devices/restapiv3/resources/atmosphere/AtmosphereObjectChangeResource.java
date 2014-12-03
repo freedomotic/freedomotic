@@ -21,10 +21,10 @@ package com.freedomotic.plugins.devices.restapiv3.resources.atmosphere;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.freedomotic.api.EventTemplate;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractWSResource;
 import com.wordnik.swagger.annotations.Api;
+import java.util.logging.Logger;
 import javax.ws.rs.Path;
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -43,6 +43,8 @@ import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
         servlet = "org.glassfish.jersey.servlet.ServletContainer")
 public class AtmosphereObjectChangeResource extends AbstractWSResource {
 
+    private static final Logger LOG = Logger.getLogger(AtmosphereObjectChangeResource.class.getName());
+
     public final static String PATH = "objectchange";
 
     public static void broadcast(EventTemplate message) {
@@ -59,7 +61,7 @@ public class AtmosphereObjectChangeResource extends AbstractWSResource {
                         .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereObjectChangeResource.PATH)
                         .broadcast(msg);
             } catch (JsonProcessingException ex) {
-                Freedomotic.logger.warning(ex.getLocalizedMessage());
+                LOG.warning(ex.getLocalizedMessage());
             }
         }
     }

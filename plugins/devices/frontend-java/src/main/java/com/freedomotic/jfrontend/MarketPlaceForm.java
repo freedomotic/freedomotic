@@ -62,9 +62,8 @@ import javax.swing.SpringLayout;
  *
  * @author gpt
  */
-public class MarketPlaceForm
-        extends javax.swing.JFrame {
-    //ArrayList<IPluginPackage> pluginList;
+public class MarketPlaceForm extends javax.swing.JFrame {
+    private static final Logger LOG = Logger.getLogger(MarketPlaceForm.class.getName());
 
     ArrayList<IPluginCategory> pluginCategoryList;
     private static final IPlugCatComparator CatComp = new IPlugCatComparator();
@@ -177,7 +176,7 @@ public class MarketPlaceForm
                             politeWaitingMessage(false);
                             pnlMain.repaint();
                         } catch (Exception e) {
-                            Freedomotic.logger.warning(Freedomotic.getStackTraceInfo(e));
+                            LOG.warning(Freedomotic.getStackTraceInfo(e));
                         }
                     }
                 }).start();
@@ -313,7 +312,7 @@ public class MarketPlaceForm
 
         Runnable task;
         final String string = pp.getFilePath(freedomoticVersion);
-        Freedomotic.logger.finest("Download string:" + string);
+        LOG.config("Download string:" + string);
         task
                 = new Runnable() {
                     boolean done = false;

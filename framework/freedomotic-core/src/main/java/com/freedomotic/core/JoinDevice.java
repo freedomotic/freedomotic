@@ -27,7 +27,7 @@ import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.environment.EnvironmentRepository;
-import com.freedomotic.objects.impl.ThingsRepositoryImpl;
+import com.freedomotic.objects.ThingsRepository;
 import com.freedomotic.reactions.Command;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -40,22 +40,22 @@ import javax.jms.ObjectMessage;
  *
  * @author enrico
  */
-@Singleton
-public final class JoinDevice
-        implements BusConsumer {
+public final class JoinDevice implements BusConsumer {
 
     private static final String MESSAGING_CHANNEL = "app.objects.create";
 
     private static BusMessagesListener listener;
     private static final Logger LOG = Logger.getLogger(JoinDevice.class.getName());
 
-    //dependencies
+    // Dependencies
     private final EnvironmentRepository environmentPersistence;
-    private BusService busService;
+    private final BusService busService;
+    private final ThingsRepository thingsRepository;
 
     @Inject
-    private JoinDevice(EnvironmentRepository environmentPersistence, BusService busService) {
-        this.environmentPersistence = environmentPersistence;
+    JoinDevice(EnvironmentRepository environmentRepository, ThingsRepository thingsRepository, BusService busService) {
+        this.environmentPersistence = environmentRepository;
+        this.thingsRepository = thingsRepository;
         this.busService = busService;
         register();
     }
@@ -84,7 +84,7 @@ public final class JoinDevice
                 String address = command.getProperty("object.address");
                 String clazz = command.getProperty("object.class");
 
-                if (ThingsRepositoryImpl.getObjectByAddress(protocol, address).isEmpty()) {
+                if (thingsRepository.findByAddress(protocol, address).isEmpty()) {
                     environmentPersistence.join(clazz, name, protocol, address);
                 }
             }
