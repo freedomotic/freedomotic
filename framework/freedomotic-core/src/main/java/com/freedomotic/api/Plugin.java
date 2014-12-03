@@ -97,6 +97,7 @@ public class Plugin implements Client {
     }
 
     public Plugin() {
+        Freedomotic.INJECTOR.injectMembers(this);
     }
 
     /**
@@ -115,6 +116,7 @@ public class Plugin implements Client {
      */
     public Plugin(String pluginName) {
         //probably this class is not instantiated using DI, we have to force the injection
+        Freedomotic.INJECTOR.injectMembers(this);
         setName(pluginName);
     }
 

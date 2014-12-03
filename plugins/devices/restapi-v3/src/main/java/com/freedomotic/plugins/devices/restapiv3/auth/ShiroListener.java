@@ -17,13 +17,11 @@ import javax.servlet.annotation.WebListener;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 
 @WebListener
-public class ShiroListener extends EnvironmentLoaderListener implements
-    ServletContextListener {
+public class ShiroListener extends EnvironmentLoaderListener implements ServletContextListener {
 
   @Override
   public void contextInitialized(ServletContextEvent sce) {
-    sce.getServletContext().setInitParameter(ENVIRONMENT_CLASS_PARAM,
-        FDWebEnvironment.class.getName());
+    sce.getServletContext().setInitParameter(ENVIRONMENT_CLASS_PARAM, FDWebEnvironment.class.getName());
     super.contextInitialized(sce);
   }
 
