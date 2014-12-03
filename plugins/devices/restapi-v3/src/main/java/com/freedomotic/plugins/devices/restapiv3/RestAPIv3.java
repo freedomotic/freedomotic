@@ -46,6 +46,12 @@ public class RestAPIv3 extends Protocol {
     
     @Inject
     private RestJettyServer jServer;
+    @Inject
+    private AtmosphereObjectChangeResource atmosphereObjectChangeResource;
+    @Inject
+    private AtmosphereZoneChangeResource atmosphereZoneChangeResource;
+    @Inject
+    private AtmospherePluginChangeResource atmospherePluginChangeResource;
 
     public RestAPIv3() {
         super("RestAPI-v3", "/restapi-v3/restapiv3-manifest.xml");
@@ -109,11 +115,11 @@ public class RestAPIv3 extends Protocol {
     @Override
     protected void onEvent(EventTemplate event) {
         if (event instanceof ObjectHasChangedBehavior) {
-            AtmosphereObjectChangeResource.broadcast(event);
+            atmosphereObjectChangeResource.broadcast(event);
         } else if (event instanceof ZoneHasChanged) {
-            AtmosphereZoneChangeResource.broadcast(event);
+            atmosphereZoneChangeResource.broadcast(event);
         } else if (event instanceof PluginHasChanged) {
-            AtmospherePluginChangeResource.broadcast(event);
+            atmospherePluginChangeResource.broadcast(event);
         }
     }
 

@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins.devices.restapiv3.utils;
+package com.freedomotic.plugins.devices.restapiv3.resources.atmosphere;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,17 +26,20 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.freedomotic.api.API;
-import com.freedomotic.app.Freedomotic;
+import com.google.inject.Inject;
 
 /**
  *
  * @author matteo
  */
-public abstract class AbstractWSResource {
-    protected static final API api;
-    protected static final ObjectMapper om;
-    static {
-        api = Freedomotic.INJECTOR.getInstance(API.class);
+public abstract class AbstractWSResource implements WebSocketEndpoint {
+
+    @Inject
+    protected API api;
+    protected ObjectMapper om;
+
+    public AbstractWSResource() {
+        //api = Freedomotic.INJECTOR.getInstance(API.class);
         om = new ObjectMapper();
         // JAXB annotation
         AnnotationIntrospector jaxbIntrospector = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
@@ -45,6 +48,5 @@ public abstract class AbstractWSResource {
 
     }
     
-    
-    
+
 }

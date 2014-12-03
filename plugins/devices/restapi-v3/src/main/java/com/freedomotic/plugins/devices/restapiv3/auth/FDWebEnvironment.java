@@ -6,8 +6,8 @@
 package com.freedomotic.plugins.devices.restapiv3.auth;
 
 import com.freedomotic.api.API;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.devices.restapiv3.filters.CorsBasicHttpAuthenticationFilter;
+import javax.inject.Inject;
 import org.apache.shiro.web.env.DefaultWebEnvironment;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.apache.shiro.web.filter.authc.LogoutFilter;
@@ -21,9 +21,12 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
  * @author matteo
  */
 public class FDWebEnvironment extends DefaultWebEnvironment {
+    
+    @Inject
+    private API api;
 
     public FDWebEnvironment() {
-        API api = Freedomotic.INJECTOR.getInstance(API.class);
+        //API api = Freedomotic.INJECTOR.getInstance(API.class);
         BasicHttpAuthenticationFilter authc = new CorsBasicHttpAuthenticationFilter();
         LogoutFilter logout = new LogoutFilter();
 

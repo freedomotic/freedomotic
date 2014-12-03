@@ -23,9 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.ZoneLogic;
-import com.freedomotic.model.environment.Environment;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
-import com.freedomotic.plugins.devices.restapiv3.utils.AbstractWSResource;
 import com.wordnik.swagger.annotations.Api;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -50,7 +48,8 @@ public class AtmosphereZoneChangeResource extends AbstractWSResource {
     public final static String PATH = "zonechange";
 
     @POST
-    public static void broadcast(EventTemplate message) {
+    @Override
+    public void broadcast(EventTemplate message) {
         if (api != null) {
             for (EnvironmentLogic e : api.environments().findAll()) {
                 ZoneLogic z = e.getZone(message.getPayload().getStatementValue("zone.name"));

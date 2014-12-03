@@ -5,8 +5,8 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.atmosphere;
 
+import com.freedomotic.api.EventTemplate;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
-import com.freedomotic.plugins.devices.restapiv3.utils.AbstractWSResource;
 import com.wordnik.swagger.annotations.Api;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
@@ -45,5 +45,10 @@ public class AtmospherePermissionCheckResource extends AbstractWSResource {
             throw new IllegalStateException();
         }
 
+    }
+
+    @Override
+    public void broadcast(EventTemplate message) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

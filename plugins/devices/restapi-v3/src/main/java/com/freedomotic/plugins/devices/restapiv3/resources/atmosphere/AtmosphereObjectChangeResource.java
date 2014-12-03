@@ -22,7 +22,6 @@ package com.freedomotic.plugins.devices.restapiv3.resources.atmosphere;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
-import com.freedomotic.plugins.devices.restapiv3.utils.AbstractWSResource;
 import com.wordnik.swagger.annotations.Api;
 import java.util.logging.Logger;
 import javax.ws.rs.Path;
@@ -47,7 +46,8 @@ public class AtmosphereObjectChangeResource extends AbstractWSResource {
 
     public final static String PATH = "objectchange";
 
-    public static void broadcast(EventTemplate message) {
+    @Override
+    public void broadcast(EventTemplate message) {
         if (api != null) {
             String msg;
             try {

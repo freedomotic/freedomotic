@@ -23,9 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Plugin;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
-import com.freedomotic.plugins.devices.restapiv3.utils.AbstractWSResource;
 import com.wordnik.swagger.annotations.Api;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -50,7 +48,8 @@ public class AtmospherePluginChangeResource extends AbstractWSResource {
     public final static String PATH = "pluginchange";
 
     @POST
-    public static void broadcast(EventTemplate message) {
+    @Override
+    public void broadcast(EventTemplate message) {
         if (api != null) {
             for (Client c : api.getClients("plugin")) {
                 Plugin p = (Plugin) c;
