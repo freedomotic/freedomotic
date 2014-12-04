@@ -30,6 +30,8 @@ import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.objects.ThingsFactory;
+import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
+import com.freedomotic.reactions.Command;
 import com.google.inject.Inject;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -234,7 +236,33 @@ public class ThingResource extends AbstractResource<EnvObject> {
             return Response.serverError().build();
         }
     }
-    private static final ClientStorage clientStorage = INJECTOR.getInstance(ClientStorage.class);
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}/behaviorchange/{bid}/{value}")
+    @ApiOperation("Fire a behavior change request, using provided data")
+    public Response behaviorChange(
+            @ApiParam(value = "UUID of object to click", required = true)
+            @PathParam("id") String UUID,
+            @ApiParam(value = "name of behavior", required = true)
+            @PathParam("bid") String behavior,
+            @ApiParam(value = "desired value of behavior", required = true)
+            @PathParam("value") String value) {
+        if (prepareSingle(UUID) != null) {
+            Command c = new Command();
+            c.setReceiver("app.events.sensors.behavior.request.objects");
+            c.getProperties().setProperty(Command.PROPERTY_BEHAVIOR, behavior);
+            c.getProperties().setProperty("value", value);
+            c.getProperties().setProperty("object", prepareSingle(UUID).getName());
+            
+            Freedomotic.sendCommand(c);
+            return Response.accepted().build();
+        }
+        throw new ItemNotFoundException();
+    }
+
+    private static final ClientStorage clientStorage = INJECTOR.getInstance(ClientStorage.class
+    );
 
     @GET
     @Path("/templates")

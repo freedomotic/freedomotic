@@ -79,7 +79,7 @@ public final class Command implements Serializable, Cloneable {
     private int timeout;
     private String description;
     private String stopIf;
-    private HashSet<String> tags;
+    private HashSet<String> tags = new HashSet<String>();
     //by default a command is userLevel, this means that can be used in reactions.
     //Hardware level commands cannot be used in reactions but only linked to an object action
     private boolean hardwareLevel;
