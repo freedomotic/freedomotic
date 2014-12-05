@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import com.freedomotic.events.ProtocolRead;
 
-import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.things.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectPersistence;
 import java.io.IOException;
 import java.io.*;
 import java.net.*;

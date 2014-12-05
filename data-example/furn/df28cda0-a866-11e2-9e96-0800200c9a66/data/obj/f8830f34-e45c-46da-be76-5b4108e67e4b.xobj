@@ -4,7 +4,7 @@
   <actAs>virtual</actAs>
   <type>EnvObject.Decoration.Clock</type>
   <uuid>f8830f34-e45c-46da-be76-5b4108e67e4b</uuid>
-  <hierarchy>com.freedomotic.objects.impl.Clock</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.Clock</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors/>

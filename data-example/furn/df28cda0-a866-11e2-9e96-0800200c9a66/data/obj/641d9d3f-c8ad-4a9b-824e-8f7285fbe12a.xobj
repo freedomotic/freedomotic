@@ -4,7 +4,7 @@
   <actAs>virtual</actAs>
   <type>EnvObject.Gate</type>
   <uuid>641d9d3f-c8ad-4a9b-824e-8f7285fbe12a</uuid>
-  <hierarchy>com.freedomotic.objects.impl.Gate</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.Gate</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

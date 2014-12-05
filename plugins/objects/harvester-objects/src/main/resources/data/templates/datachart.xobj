@@ -3,7 +3,7 @@
   <description>Shows Data Previously Collected by Harvester</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.DataChart</type>
-  <hierarchy>com.freedomotic.objects.impl.DataChart</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.DataChart</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

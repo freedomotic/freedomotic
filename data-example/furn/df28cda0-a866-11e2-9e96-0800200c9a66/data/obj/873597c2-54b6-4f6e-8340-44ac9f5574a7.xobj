@@ -4,7 +4,7 @@
   <actAs>virtual</actAs>
   <type>EnvObject.Thermometer</type>
   <uuid>873597c2-54b6-4f6e-8340-44ac9f5574a7</uuid>
-  <hierarchy>com.freedomotic.objects.impl.Thermometer</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.Thermometer</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

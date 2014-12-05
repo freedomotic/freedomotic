@@ -98,7 +98,7 @@ public class TrackingReadSocket extends Protocol {
 
 //          MUST BE REIMPLEMENTED
 //        for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
-//            if (object instanceof com.freedomotic.objects.impl.Person){
+//            if (object instanceof com.freedomotic.things.impl.Person){
 //                Person person = (Person)object;
 //                Point position = inventPosition();
 //                person.getPojo().setCurrentRepresentation(0);

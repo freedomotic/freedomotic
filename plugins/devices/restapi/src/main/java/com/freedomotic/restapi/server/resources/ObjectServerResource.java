@@ -23,7 +23,7 @@
 package com.freedomotic.restapi.server.resources;
 
 import com.freedomotic.model.object.EnvObject;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.things.EnvObjectPersistence;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.restapi.server.interfaces.ObjectResource;
 import org.restlet.data.Reference;

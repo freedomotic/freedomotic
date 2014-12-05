@@ -4,7 +4,7 @@
   <actAs>virtual</actAs>
   <type>EnvObject.Thermostat</type>
   <uuid>cb02d463-070b-47ac-a98d-1f0e1e95fd30</uuid>
-  <hierarchy>com.freedomotic.objects.impl.Thermostat</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.Thermostat</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

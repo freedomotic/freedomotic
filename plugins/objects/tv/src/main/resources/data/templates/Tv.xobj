@@ -3,7 +3,7 @@
   <description>A Pionner 5090H TV</description>
   <actAs>button</actAs>
   <type>EnvObject.ElectricDevice.TV</type>
-  <hierarchy>com.freedomotic.objects.impl.TV</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.TV</hierarchy>
   <protocol>pioneer-kuro</protocol>
   <phisicalAddress>pioneer-kuro</phisicalAddress>
   <behaviors>

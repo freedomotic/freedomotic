@@ -27,7 +27,7 @@ import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.charting.UsageData;
 import com.freedomotic.model.charting.UsageDataFrame;
 import com.freedomotic.model.ds.Tuples;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
 import java.io.ByteArrayOutputStream;
 import java.io.File;

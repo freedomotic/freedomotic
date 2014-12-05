@@ -58,7 +58,7 @@ public class ThingsFactory {
 
         try {
             URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-            Class<?> clazz = classLoader.loadClass(pojo.getHierarchy()); //eg: com.freedomotic.objects.impl.ElectricDevice
+            Class<?> clazz = classLoader.loadClass(pojo.getHierarchy()); //eg: com.freedomotic.things.impl.ElectricDevice
             EnvObjectLogic logic = null;
             try {
                 logic = (EnvObjectLogic) clazz.newInstance();
@@ -81,7 +81,7 @@ public class ThingsFactory {
                     + "loaded succesfully or you have a wrong hierarchy "
                     + "value in your XML definition of the object."
                     + "The hierarchy value is composed by the package name plus the java file name "
-                    + "like com.freedomotic.objects.impl.Light not com.freedomotic.objects.impl.ElectricDevice.Light", ex);
+                    + "like com.freedomotic.things.impl.Light not com.freedomotic.things.impl.ElectricDevice.Light", ex);
         }
     }
 }

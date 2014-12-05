@@ -4,7 +4,7 @@
   <actAs>virtual</actAs>
   <type>EnvObject.ElectricDevice</type>
   <uuid>d8b455b7-9883-4e82-95e3-965c35f404ba</uuid>
-  <hierarchy>com.freedomotic.objects.impl.ElectricDevice</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.ElectricDevice</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

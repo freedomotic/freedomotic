@@ -30,8 +30,8 @@ import java.io.*;
 import java.net.*;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.PluginRuntimeException;
-import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.EnvObjectPersistence;
+import com.freedomotic.things.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectPersistence;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

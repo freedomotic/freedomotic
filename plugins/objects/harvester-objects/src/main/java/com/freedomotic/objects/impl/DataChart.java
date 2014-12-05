@@ -17,15 +17,15 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
 import com.google.inject.Inject;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.model.object.DataBehavior;
-import com.freedomotic.objects.DataBehaviorLogic;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.DataBehaviorLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.util.I18n.I18n;

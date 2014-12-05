@@ -67,7 +67,7 @@ class BoundleLoaderObjects implements BoundleLoader {
                         try {
                             clazz = BoundleLoaderFactory.getClass(jar, name);
 
-                            if (clazz.getName().startsWith("com.freedomotic.objects.")
+                            if (clazz.getName().startsWith("com.freedomotic.things.")
                                     && !clazz.getName().contains("$")) {
                                 LOG.log(Level.CONFIG,
                                         "Found object plugin " + clazz.getSimpleName().toString()

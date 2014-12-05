@@ -20,15 +20,15 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.model.object.ListBehavior;
 import com.freedomotic.model.object.RangedIntBehavior;
-import com.freedomotic.objects.BooleanBehaviorLogic;
-import com.freedomotic.objects.ListBehaviorLogic;
-import com.freedomotic.objects.RangedIntBehaviorLogic;
+import com.freedomotic.things.BooleanBehaviorLogic;
+import com.freedomotic.things.ListBehaviorLogic;
+import com.freedomotic.things.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Command;
 
