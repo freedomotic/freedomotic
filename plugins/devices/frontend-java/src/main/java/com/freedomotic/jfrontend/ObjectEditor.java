@@ -24,7 +24,7 @@ import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
 import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.behaviors.BooleanBehaviorLogic;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.behaviors.ListBehaviorLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.behaviors.TaxonomyBehaviorLogic;

@@ -3,7 +3,7 @@
   <description>Collects temperature events</description>
   <actAs>virtual</actAs>
   <type>EnvObject.Thermometer</type>
-  <hierarchy>com.freedomotic.objects.impl.Thermometer</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.Thermometer</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

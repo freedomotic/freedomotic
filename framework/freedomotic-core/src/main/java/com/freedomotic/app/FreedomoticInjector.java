@@ -14,7 +14,7 @@ import com.freedomotic.security.Auth;
 import com.freedomotic.security.AuthImpl2;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.i18n.I18nImpl;
-import com.freedomotic.objects.impl.InjectorThings;
+import com.freedomotic.things.impl.InjectorThings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 

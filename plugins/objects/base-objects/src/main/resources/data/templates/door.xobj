@@ -3,7 +3,7 @@
   <description>A door capable of open and close</description>
   <actAs>virtual</actAs>
   <type>EnvObject.Gate</type>
-  <hierarchy>com.freedomotic.objects.impl.Gate</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.Gate</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
 <behaviors>

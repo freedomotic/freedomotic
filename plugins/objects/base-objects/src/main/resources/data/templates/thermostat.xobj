@@ -3,7 +3,7 @@
   <description>Senses temperature and defines a setpoint</description>
   <actAs>virtual</actAs>
   <type>EnvObject.Thermostat</type>
-  <hierarchy>com.freedomotic.objects.impl.Thermostat</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.Thermostat</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

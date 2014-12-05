@@ -124,7 +124,7 @@ public abstract class AbstractTest<Z> extends JerseyTest {
         //GET list
         List<Z> cl = target(getPATH()).request(getRepresentation()).get(getListType());
         if (testGET) {
-            assertEquals("List size", 1, cl.size());
+            assertEquals("Assertion failed while testing GET. List size", 1, cl.size());
             listAssertions(cl);
         }
         //GET single

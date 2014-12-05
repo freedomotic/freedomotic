@@ -19,7 +19,7 @@
  */
 package com.freedomotic.jfrontend.automationeditor;
 
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.Statement;

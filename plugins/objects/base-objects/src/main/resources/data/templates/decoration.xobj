@@ -3,7 +3,7 @@
   <description>A decorative green plant</description>
   <actAs>virtual</actAs>
   <type>EnvObject.Decoration</type>
-  <hierarchy>com.freedomotic.objects.impl.EmptyObject</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.EmptyObject</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

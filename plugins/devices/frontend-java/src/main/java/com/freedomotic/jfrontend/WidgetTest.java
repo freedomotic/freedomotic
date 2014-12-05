@@ -20,7 +20,7 @@
 package com.freedomotic.jfrontend;
 
 import com.freedomotic.core.ResourcesManager;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;

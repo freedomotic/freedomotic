@@ -19,9 +19,9 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
-import com.freedomotic.objects.GenericPerson;
+import com.freedomotic.things.GenericPerson;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.BooleanBehavior;

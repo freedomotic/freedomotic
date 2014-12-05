@@ -6,7 +6,7 @@
 package com.freedomotic.environment;
 
 import com.freedomotic.exceptions.RepositoryException;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.persistence.Repository;
 import java.io.File;
 import java.io.IOException;

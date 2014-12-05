@@ -20,8 +20,9 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
+import com.freedomotic.things.impl.ElectricDevice;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;

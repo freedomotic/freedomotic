@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.freedomotic.objects;
+package com.freedomotic.things;
 
 import com.freedomotic.environment.Room;
 

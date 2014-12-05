@@ -23,9 +23,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import java.util.logging.Logger;
 
 /**

@@ -17,16 +17,16 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
-import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.ThingsFactory;
-import com.freedomotic.objects.ThingsRepository;
+import com.freedomotic.things.EnvObjectLogic;
+import com.freedomotic.things.ThingsFactory;
+import com.freedomotic.things.ThingsRepository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.util.DOMValidateDTD;
 import com.freedomotic.util.Info;

@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.objects;
+package com.freedomotic.things;
 
 import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.app.Freedomotic;

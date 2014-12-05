@@ -28,7 +28,7 @@ import com.freedomotic.i18n.I18n;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.util.TopologyUtils;
 import java.awt.AlphaComposite;
 import java.awt.Color;

@@ -20,10 +20,10 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
 import com.freedomotic.events.ObjectReceiveClick;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 

@@ -20,9 +20,9 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 
 /**
  *

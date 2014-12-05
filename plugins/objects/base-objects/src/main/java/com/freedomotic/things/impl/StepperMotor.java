@@ -21,8 +21,9 @@
  */
 
 
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
+import com.freedomotic.things.impl.ElectricDevice;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;

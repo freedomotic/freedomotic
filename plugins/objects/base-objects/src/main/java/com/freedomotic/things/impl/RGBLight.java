@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.Behavior;
@@ -26,8 +26,8 @@ import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.behaviors.ListBehaviorLogic;
-import com.freedomotic.objects.impl.Light;
-import com.freedomotic.objects.impl.Light;
+import com.freedomotic.things.impl.Light;
+import com.freedomotic.things.impl.Light;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import java.util.ArrayList;

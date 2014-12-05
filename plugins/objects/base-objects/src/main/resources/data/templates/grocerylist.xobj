@@ -3,7 +3,7 @@
   <description>A list of food and beverages you need</description>
   <actAs>virtual</actAs>
   <type>EnvObject.Wishlist</type>
-  <hierarchy>com.freedomotic.objects.impl.Wishlist</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.Wishlist</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

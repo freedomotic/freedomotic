@@ -24,7 +24,7 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.model.geometry.FreedomPoint;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.util.TopologyUtils;
 import java.awt.BasicStroke;
 import java.awt.Color;

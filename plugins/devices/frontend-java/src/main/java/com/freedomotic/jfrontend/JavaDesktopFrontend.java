@@ -29,7 +29,7 @@ import com.freedomotic.events.ZoneHasChanged;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.jfrontend.extras.GraphPanel;
 import com.freedomotic.jfrontend.utils.SplashLogin;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
 import java.awt.Color;
 import java.awt.EventQueue;

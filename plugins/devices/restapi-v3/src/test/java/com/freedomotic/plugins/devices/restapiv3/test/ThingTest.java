@@ -43,7 +43,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
-public class ObjectTest extends AbstractTest<EnvObject> {
+public class ThingTest extends AbstractTest<EnvObject> {
 
 
    @Inject 
@@ -68,7 +68,7 @@ public class ObjectTest extends AbstractTest<EnvObject> {
         setItem(obj);
         getItem().setName("TestObject");
         getItem().setUUID(getUuid());
-        getItem().setHierarchy("com.freedomotic.objects.impl.ElectricDevice");
+        getItem().setHierarchy("com.freedomotic.things.impl.ElectricDevice");
         getItem().setType("EnvObject.ElectricDevice");
         getItem().setEnvironmentID(e.getUUID());
         Representation r = new Representation();

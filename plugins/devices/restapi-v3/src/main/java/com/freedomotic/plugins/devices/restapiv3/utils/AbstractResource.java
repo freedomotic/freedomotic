@@ -20,10 +20,8 @@
 package com.freedomotic.plugins.devices.restapiv3.utils;
 
 
-import com.freedomotic.objects.ThingsFactory;
 import com.freedomotic.plugins.devices.restapiv3.filters.ForbiddenException;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
-import com.google.inject.Inject;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;

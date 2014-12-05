@@ -27,8 +27,8 @@ import com.freedomotic.api.Client;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.ds.Config;
-import com.freedomotic.objects.EnvObjectLogic;
-import com.freedomotic.objects.ThingsRepository;
+import com.freedomotic.things.EnvObjectLogic;
+import com.freedomotic.things.ThingsRepository;
 import java.io.File;
 
 /**

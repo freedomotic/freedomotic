@@ -31,7 +31,7 @@ import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.jfrontend.utils.OpenDialogFileFilter;
 import com.freedomotic.jfrontend.utils.TipOfTheDay;
 import com.freedomotic.model.environment.Zone;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.security.Auth;

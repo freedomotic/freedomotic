@@ -3,7 +3,7 @@
   <description>A Rgb Light</description>
   <actAs>virtual</actAs>
   <type>EnvObject.ElectricDevice.Light.RGBLight</type>
-  <hierarchy>com.freedomotic.objects.impl.RGBLight</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.RGBLight</hierarchy>
   <protocol>unknowkn</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

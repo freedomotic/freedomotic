@@ -22,7 +22,7 @@ package com.freedomotic.events;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.environment.Zone;
-import com.freedomotic.objects.GenericPerson;
+import com.freedomotic.things.GenericPerson;
 import java.util.logging.Logger;
 
 /**

@@ -3,7 +3,7 @@
   <description>A Switch</description>
   <actAs>virtual</actAs>
   <type>EnvObject.ElectricDevice</type>
-  <hierarchy>com.freedomotic.objects.impl.ElectricDevice</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.ElectricDevice</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

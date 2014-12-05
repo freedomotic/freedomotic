@@ -26,7 +26,7 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.charting.UsageData;
 import com.freedomotic.model.charting.UsageDataFrame;
 import com.freedomotic.behaviors.DataBehaviorLogic;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import java.awt.Color;

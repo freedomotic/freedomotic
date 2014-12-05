@@ -20,17 +20,14 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
-import com.freedomotic.objects.EnvObjectLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -38,19 +35,23 @@ import java.util.logging.Logger;
  * @author enrico
  */
 
-public class GenericSensor
-        extends EnvObjectLogic {
+public class Thermostat
+        extends Thermometer {
 
-    private static final Logger LOG = Logger.getLogger(GenericSensor.class.getName()); 
-    private RangedIntBehaviorLogic readValue;
-    
+    private static final Logger LOG = Logger.getLogger(Thermostat.class.getName()); 
+    private RangedIntBehaviorLogic setpoint;
+    private static final String BEHAVIOR_TEMPERATURE_SETPOINT = "setpoint";
 
     @Override
     public void init() {
-        //linking this property with the behavior defined in the XML
-        // being this a GENERIC object, we cannot foresee the name given to related behavior, so we must address it by index 
-        readValue = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehaviors().get(0));
-        readValue.addListener(new RangedIntBehaviorLogic.Listener() {
+        
+        if ( getPojo().getBehavior(BEHAVIOR_TEMPERATURE_SETPOINT) == null){
+            RangedIntBehavior setpointbeh = new RangedIntBehavior();
+            setpointbeh.setName(BEHAVIOR_TEMPERATURE_SETPOINT);
+            getPojo().getBehaviors().add(setpointbeh);
+        }
+        setpoint = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_TEMPERATURE_SETPOINT));
+        setpoint.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //there is an hardware read error
@@ -64,30 +65,31 @@ public class GenericSensor
             @Override
             public void onRangeValue(int rangeValue, Config params, boolean fireCommand) {
                 if (fireCommand) {
-                    executeSetReadValue(rangeValue, params);
+                    executeSetTemperatureSetpoint(rangeValue, params);
                 } else {
-                    setReadValue(rangeValue);
+                    setTemperatureSetpoint(rangeValue);
                 }
             }
         });
-        //register this behavior to the superclass to make it visible to it
-        registerBehavior(readValue);
+        registerBehavior(setpoint);
+        
         super.init();
     }
 
-    public void executeSetReadValue(int rangeValue, Config params) {
-        boolean executed = executeCommand("set read value", params);
+    public void executeSetTemperatureSetpoint(int rangeValue, Config params) {
+        boolean executed = executeCommand("set setpoint", params);
 
         if (executed) {
-            readValue.setValue(rangeValue);
+            setpoint.setValue(rangeValue);
             getPojo().setCurrentRepresentation(0);
             setChanged(true);
         }
     }
 
-    private void setReadValue(int value) {
-        LOG.log(Level.INFO, "Setting behavior ''{0}'' of object ''{1}'' to {2}", new Object[]{readValue.getName(), getPojo().getName(), value});
-        readValue.setValue(value);
+    private void setTemperatureSetpoint(int value) {
+        LOG.config("Setting behavior 'setpoint' of object '" + getPojo().getName() + "' to "
+                + value);
+        setpoint.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
     }

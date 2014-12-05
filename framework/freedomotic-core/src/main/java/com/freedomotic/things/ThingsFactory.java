@@ -19,7 +19,7 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.objects;
+package com.freedomotic.things;
 
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;

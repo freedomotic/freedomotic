@@ -19,9 +19,9 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.objects.impl;
+package com.freedomotic.things.impl;
 
-import com.freedomotic.objects.GenericGate;
+import com.freedomotic.things.GenericGate;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
@@ -31,7 +31,7 @@ import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.model.object.Representation;
 import com.freedomotic.behaviors.BooleanBehaviorLogic;
-import com.freedomotic.objects.EnvObjectLogic;
+import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;

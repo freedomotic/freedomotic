@@ -27,7 +27,7 @@ import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.PluginHasChanged.PluginActions;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.ds.Config;
-import com.freedomotic.objects.ThingsRepository;
+import com.freedomotic.things.ThingsRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.util.Info;

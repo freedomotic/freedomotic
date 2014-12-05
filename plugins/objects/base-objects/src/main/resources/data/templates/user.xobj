@@ -3,7 +3,7 @@
   <description>A user in the environment</description>
   <actAs>virtual</actAs>
   <type>EnvObject.Person.User</type>
-  <hierarchy>com.freedomotic.objects.impl.Person</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.Person</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

@@ -3,7 +3,7 @@
   <description>A clock for timed automations</description>
   <actAs>virtual</actAs>
   <type>EnvObject.Decoration.Clock</type>
-  <hierarchy>com.freedomotic.objects.impl.Clock</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.Clock</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

@@ -3,7 +3,7 @@
   <description>Collects pressure events</description>
   <actAs>virtual</actAs>
   <type>EnvObject.GenericSensor.Barometer</type>
-  <hierarchy>com.freedomotic.objects.impl.GenericSensor</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.GenericSensor</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

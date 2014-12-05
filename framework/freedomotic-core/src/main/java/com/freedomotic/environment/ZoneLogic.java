@@ -43,7 +43,7 @@ import com.freedomotic.events.PersonEntersZone;
 import com.freedomotic.events.PersonExitsZone;
 import com.freedomotic.events.ZoneHasChanged;
 import com.freedomotic.model.environment.Zone;
-import com.freedomotic.objects.GenericPerson;
+import com.freedomotic.things.GenericPerson;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;

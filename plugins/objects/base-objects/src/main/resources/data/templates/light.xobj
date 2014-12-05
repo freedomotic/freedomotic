@@ -3,7 +3,7 @@
   <description>A light</description>
   <actAs>virtual</actAs>
   <type>EnvObject.ElectricDevice.Light</type>
-  <hierarchy>com.freedomotic.objects.impl.Light</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.Light</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>

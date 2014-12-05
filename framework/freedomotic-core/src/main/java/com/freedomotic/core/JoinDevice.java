@@ -27,7 +27,7 @@ import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.environment.EnvironmentRepository;
-import com.freedomotic.objects.ThingsRepository;
+import com.freedomotic.things.ThingsRepository;
 import com.freedomotic.reactions.Command;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

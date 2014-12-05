@@ -3,7 +3,7 @@
   <description>A powermeter</description>
   <actAs>virtual</actAs>
   <type>EnvObject.ElectricDevice.PowerMeter</type>
-  <hierarchy>com.freedomotic.objects.impl.PowerMeter</hierarchy>
+  <hierarchy>com.freedomotic.things.impl.PowerMeter</hierarchy>
   <protocol>unknown</protocol>
   <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
