@@ -31,6 +31,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  * A sensor for the Arduino Weather Shield developed by www.ethermania.com
@@ -73,9 +74,6 @@ public class ArduinoWeatherShield extends Protocol {
         }
     }
 
-    /**
-     * Sensor side
-     */
     @Override
     public void onStart() {
         setPollingWait(POLLING_TIME);
@@ -115,15 +113,22 @@ public class ArduinoWeatherShield extends Protocol {
         }
     }
 
-    private void sendChanges(Board board, String parametersValue) {
+    private void sendChanges(Board board, String parametersValue) throws IllegalArgumentException, NumberFormatException {
         String address = board.getIpAddress() + ":" + board.getPort();
         String values[] = parametersValue.split(board.getDelimiter());
-        
-        if(!(values.length==3)) {
-            // eccezione numero parametri
+
+        if (!(values.length == 3)) {
+            throw new IllegalArgumentException("Retrieved data insufficient: 3 values required");
+        } else {
+            for (int i = 0; i < 3; i++) {
+                if (!isNumber(values[i])) {
+                        throw new NumberFormatException("'" + values[i] + "' is not a number");
+                     }
+            }
         }
+
         //building the event
-        ProtocolRead event = new ProtocolRead(this, "arduino-weatherShield", address + ":" + "T"); //IP:PORT
+        ProtocolRead event = new ProtocolRead(this, "arduino-weathershield", address + ":" + "T"); //IP:PORT
         //adding some optional information to the event
         event.addProperty("board.ip", board.getIpAddress());
         event.addProperty("board.port", new Integer(board.getPort()).toString());
@@ -152,6 +157,10 @@ public class ArduinoWeatherShield extends Protocol {
         event.addProperty("object.name", "Arduino WeatherShield Hygrometer");
         //publish the event on the messaging bus
         this.notifyEvent(event);
+    }
+
+    private boolean isNumber(String stringNumber) {
+        return stringNumber.matches("-?\\d+(\\.\\d+)?");
     }
 
     @Override
