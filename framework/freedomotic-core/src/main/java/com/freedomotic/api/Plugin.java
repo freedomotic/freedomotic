@@ -23,6 +23,8 @@ import com.freedomotic.exceptions.PluginShutdownException;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.app.ConfigPersistence;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.bus.BusConsumer;
+import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.events.PluginHasChanged;
@@ -35,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.jms.ObjectMessage;
 import javax.swing.JFrame;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -47,11 +50,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class Plugin implements Client {
+public class Plugin implements Client, BusConsumer {
 
     final static int SAME_VERSION = 0;
     final static int FIRST_IS_OLDER = -1;
     final static int LAST_IS_OLDER = 1;
+    private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
     private static final Logger LOG = Logger.getLogger(Plugin.class.getName());
     @XmlElement
     private String pluginName;
@@ -80,6 +84,8 @@ public class Plugin implements Client {
     @XmlElement
     private File path;
 
+    protected BusMessagesListener listener;
+
     @Inject
     private API api;
     @Inject
@@ -91,31 +97,26 @@ public class Plugin implements Client {
      * @param manifestPath
      */
     public Plugin(String pluginName, String manifestPath) {
-        this(pluginName);
-        path = new File(Info.PATHS.PATH_DEVICES_FOLDER + manifestPath);
-        init(path);
-    }
-
-    public Plugin() {
         Freedomotic.INJECTOR.injectMembers(this);
+        setName(pluginName);
+        path = new File(Info.PATHS.PATH_DEVICES_FOLDER + manifestPath);
     }
 
     /**
+     * Used to create a Plugin placeholder for things
+     */
+    public Plugin(String pluginName) {
+        Freedomotic.INJECTOR.injectMembers(this);
+        setName(pluginName);
+    }
+
+    /**
+     * User by JoinPlugin to instantiate a new plugin
      *
      * @param pluginName
      * @param manifest
      */
     public Plugin(String pluginName, Config manifest) {
-        this(pluginName);
-        init(manifest);
-    }
-
-    /**
-     *
-     * @param pluginName
-     */
-    public Plugin(String pluginName) {
-        //probably this class is not instantiated using DI, we have to force the injection
         Freedomotic.INJECTOR.injectMembers(this);
         setName(pluginName);
     }
@@ -138,14 +139,14 @@ public class Plugin implements Client {
 
     /**
      *
-     * @throws com.freedomotic.api.PluginStartupException
+     * @throws com.freedomotic.exceptions.PluginStartupException
      */
     protected void onStart() throws PluginStartupException {
     }
 
     /**
      *
-     * @throws com.freedomotic.api.PluginShutdownException
+     * @throws com.freedomotic.exceptions.PluginShutdownException
      */
     protected void onStop() throws PluginShutdownException {
     }
@@ -159,10 +160,14 @@ public class Plugin implements Client {
         if (!getDescription().equalsIgnoreCase(description)) {
             this.description = description;
 
-            PluginHasChanged event = new PluginHasChanged(this,
-                    this.getName(),
-                    PluginActions.DESCRIPTION);
-            busService.send(event);
+            try {
+                PluginHasChanged event = new PluginHasChanged(this,
+                        this.getName(),
+                        PluginActions.DESCRIPTION);
+                busService.send(event);
+            } catch (Exception e) {
+                LOG.log(Level.WARNING, "Cannot notify new plugin description for " + getName(), e);
+            }
         }
     }
 
@@ -316,7 +321,7 @@ public class Plugin implements Client {
     public boolean isRunning() {
         return currentPluginStatus.equals(PluginStatus.RUNNING);
     }
-    
+
     public boolean isAllowedToStart() {
         return PluginStatus.isAllowedToStart(currentPluginStatus);
     }
@@ -325,7 +330,7 @@ public class Plugin implements Client {
      *
      * @return
      */
-    @XmlElement(name="uuid")
+    @XmlElement(name = "uuid")
     public String getClassName() {
         return (this.getClass().getSimpleName().toLowerCase());
     }
@@ -389,7 +394,21 @@ public class Plugin implements Client {
         return hash;
     }
 
-    private void init(File manifest) {
+    public void init() {
+        if (configuration == null) {
+            //try to load it from file
+            deserializeManifest(path);
+        }
+        description = configuration.getStringProperty("description", "Missing plugin manifest");
+        setDescription(description);
+        category = configuration.getStringProperty("category", "undefined");
+        shortName = configuration.getStringProperty("short-name", "undefined");
+        listenOn = configuration.getStringProperty("listen-on", "undefined");
+        sendOn = configuration.getStringProperty("send-on", "undefined");
+        register();
+    }
+
+    private void deserializeManifest(File manifest) {
         try {
             configuration = ConfigPersistence.deserialize(manifest);
         } catch (IOException ex) {
@@ -397,18 +416,24 @@ public class Plugin implements Client {
             setDescription("Missing manifest file " + manifest.toString());
         }
 
-        init(configuration);
-
     }
 
-    private void init(Config configuration) {
-        setDescription("No description");
-        description = configuration.getStringProperty("description", "Missing plugin manifest");
-        setDescription(description);
-        category = configuration.getStringProperty("category", "undefined");
-        shortName = configuration.getStringProperty("short-name", "undefined");
-        listenOn = configuration.getStringProperty("listen-on", "undefined");
-        sendOn = configuration.getStringProperty("send-on", "undefined");
+    private void register() {
+        listener = new BusMessagesListener(this, getBusService());
+        listener.consumeCommandFrom(getCommandsChannelToListen());
+    }
+
+    private String getCommandsChannelToListen() {
+        String defaultQueue = ACTUATORS_QUEUE_DOMAIN + category + "." + shortName;
+        String customizedQueue = ACTUATORS_QUEUE_DOMAIN + listenOn;
+
+        if (getReadQueue().equalsIgnoreCase("undefined")) {
+            listenOn = defaultQueue + ".in";
+
+            return listenOn;
+        } else {
+            return customizedQueue;
+        }
     }
 
     /**
@@ -461,6 +486,11 @@ public class Plugin implements Client {
 
     public BusService getBusService() {
         return busService;
+    }
+
+    @Override
+    public void onMessage(ObjectMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -20,8 +20,6 @@
 package com.freedomotic.api;
 
 import com.freedomotic.exceptions.PluginRuntimeException;
-import com.freedomotic.bus.BusConsumer;
-import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.exceptions.PluginShutdownException;
 import com.freedomotic.exceptions.PluginStartupException;
@@ -38,14 +36,10 @@ import javax.jms.ObjectMessage;
  * Uses a Template Method pattern which allows subclass to define how to perform
  * a command or how to act when a specific event is received.
  */
-public abstract class Protocol
-        extends Plugin
-        implements BusConsumer {
+public abstract class Protocol extends Plugin {
 
     private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
-    private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
     private int pollingWaitTime = -1;
-    private BusMessagesListener listener;
     private Protocol.SensorThread sensorThread;
     private volatile Destination lastDestination;
 
@@ -55,10 +49,8 @@ public abstract class Protocol
      * @param manifest
      */
     public Protocol(String pluginName, String manifest) {
-
         super(pluginName, manifest);
         this.currentPluginStatus = PluginStatus.STOPPED;
-        register();
     }
 
     /**
@@ -88,10 +80,6 @@ public abstract class Protocol
      */
     protected abstract void onEvent(EventTemplate event);
 
-    private void register() {
-        listener = new BusMessagesListener(this, getBusService());
-        listener.consumeCommandFrom(getCommandsChannelToListen());
-    }
 
     /**
      *
@@ -99,19 +87,6 @@ public abstract class Protocol
      */
     public void addEventListener(String listento) {
         listener.consumeEventFrom(listento);
-    }
-
-    private String getCommandsChannelToListen() {
-        String defaultQueue = ACTUATORS_QUEUE_DOMAIN + category + "." + shortName;
-        String customizedQueue = ACTUATORS_QUEUE_DOMAIN + listenOn;
-
-        if (getReadQueue().equalsIgnoreCase("undefined")) {
-            listenOn = defaultQueue + ".in";
-
-            return listenOn;
-        } else {
-            return customizedQueue;
-        }
     }
 
     /**

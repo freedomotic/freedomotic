@@ -265,9 +265,7 @@ public class Freedomotic implements BusConsumer {
         try {
             pluginsManager.loadAllPlugins();
         } catch (PluginLoadingException ex) {
-            LOG.log(Level.WARNING,
-                    "Cannot load event plugin {0}. {1}",
-                    new Object[]{ex.getPluginName(), ex.getMessage()});
+            LOG.log(Level.WARNING,"Error while loading all plugins. Impossible to load " + ex.getPluginName(), ex);
         }
 
         /**

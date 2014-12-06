@@ -21,7 +21,6 @@ package com.freedomotic.plugins.impl;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.PluginHasChanged.PluginActions;
@@ -49,9 +48,12 @@ class ClientStorageInMemory implements ClientStorage {
 
     private static final List<Client> clients = new ArrayList<Client>();
     //It works because this class is created by guice and the injector is automatically available in thi case
-    @Inject private Injector injector; 
-    @Inject private ThingsRepository thingsRepository;
-
+    @Inject
+    private Injector injector;
+    @Inject
+    private ThingsRepository thingsRepository;
+    @Inject
+    private BusService busService;
 
     ClientStorageInMemory() {
         //just injected
@@ -65,8 +67,6 @@ class ClientStorageInMemory implements ClientStorage {
     public void add(Client c) {
         if (!clients.contains(c)) {
             if (isCompatible(c)) {
-                //force injection as this class is not built by guice
-                injector.injectMembers(c);
                 clients.add(c);
             } else {
                 Client client
@@ -81,7 +81,6 @@ class ClientStorageInMemory implements ClientStorage {
             PluginHasChanged event
                     = new PluginHasChanged(ClientStorageInMemory.class,
                             c.getName(), PluginActions.ENQUEUE);
-            final BusService busService = Freedomotic.INJECTOR.getInstance(BusService.class);
             busService.send(event);
             LOG.log(Level.CONFIG,
                     "{0} added to plugins list.",
@@ -101,7 +100,6 @@ class ClientStorageInMemory implements ClientStorage {
             PluginHasChanged event
                     = new PluginHasChanged(ClientStorageInMemory.class,
                             c.getName(), PluginActions.DEQUEUE);
-            final BusService busService = Freedomotic.INJECTOR.getInstance(BusService.class);
             busService.send(event);
         }
     }
@@ -207,7 +205,7 @@ class ClientStorageInMemory implements ClientStorage {
                 return -1;
             }
 
-            return getOldestVersion(plugin.getVersion(),version);
+            return getOldestVersion(plugin.getVersion(), version);
         } else {
             //not installed
             return -1;
@@ -296,8 +294,8 @@ class ClientStorageInMemory implements ClientStorage {
     /**
      * Creates a placeholder plugin and adds it to the list of added plugins.
      * This plugin is just a mock object to inform the user that an object with
- complete features is expected here. It can be used for example to list a
- fake plugin that informs the user the real plugin cannot be added.
+     * complete features is expected here. It can be used for example to list a
+     * fake plugin that informs the user the real plugin cannot be added.
      *
      * @param simpleName
      * @param type
@@ -365,7 +363,6 @@ class ClientStorageInMemory implements ClientStorage {
     public Client createObjectPlaceholder(final File template) throws RepositoryException {
         return new ObjectPluginPlaceholder(thingsRepository, template);
     }
-
 
     class ClientNameComparator implements Comparator<Client> {
 

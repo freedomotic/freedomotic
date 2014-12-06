@@ -55,15 +55,15 @@ public class Scheduler
     
     public Scheduler() {
         super("Scheduler", "/essential/scheduler.xml");
-        setDescription("Timer for scheduled events");
-        TIMER_RESOLUTION = configuration.getIntProperty("timer-resolution", 1000);
     }
 
+    @Override
     protected void onRun() {
     }
 
     @Override
     protected void onStart() {
+        TIMER_RESOLUTION = configuration.getIntProperty("timer-resolution", 1000);
         timer = new Timer("FreedomClock", true);
         awake = new Awake();
         timer.scheduleAtFixedRate(awake, TIMER_RESOLUTION, TIMER_RESOLUTION);

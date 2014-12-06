@@ -80,8 +80,7 @@ public class JoinPlugin
         try {
             //here a plugin manifest is expected
             Config manifest = (Config) message.getObject();
-            Plugin plugin = new Plugin(manifest.getProperty("name"),
-                    manifest);
+            Plugin plugin = new Plugin(manifest.getProperty("name"), manifest);
             clientStorage.add(plugin);
             LOG.info("Enqueued remote plugin " + plugin.getName());
         } catch (JMSException ex) {

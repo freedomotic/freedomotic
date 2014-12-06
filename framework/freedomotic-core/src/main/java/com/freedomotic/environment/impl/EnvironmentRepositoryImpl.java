@@ -471,7 +471,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             throw new RepositoryException("XML parsing error. Readed XML is \n" + xml, e);
         }
 
-        EnvironmentLogic envLogic = Freedomotic.INJECTOR.getInstance(EnvironmentLogic.class);
+        EnvironmentLogic envLogic = new EnvironmentLogic();
 
         if (pojo == null) {
             throw new IllegalStateException("Object data cannot be null at this stage");

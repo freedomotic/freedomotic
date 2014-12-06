@@ -42,7 +42,6 @@ public class Delayer
      */
     public Delayer() {
         super("Delayer", "/essential/delayer.xml");
-        setDescription("Delayed commands in automations");
     }
 
     @Override

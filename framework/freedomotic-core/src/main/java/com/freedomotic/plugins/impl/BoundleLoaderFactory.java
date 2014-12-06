@@ -31,10 +31,6 @@ class BoundleLoaderFactory {
     // Parameters
 
     private static final Class[] PARAMETERS = new Class[]{URL.class};
-    //This is the second INJECTOR of freedomotic. It is needed to inject
-    //the plugins loaded using the classloader, so we have to force injection
-    //it's package protected to not make it visible from outside
-    protected static final Injector injector = Guice.createInjector(new FreedomoticInjector());
 
     BoundleLoaderFactory() {
     }

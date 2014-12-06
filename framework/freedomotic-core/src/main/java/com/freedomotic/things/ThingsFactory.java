@@ -71,15 +71,11 @@ public class ThingsFactory {
             }
 
             return logic;
-            // } catch (InstantiationException ex) {
-            //     throw new DaoLayerException(ex);
-            // } catch (IllegalAccessException ex) {
-            //     throw new DaoLayerException(ex);
         } catch (ClassNotFoundException ex) {
             throw new RepositoryException("Class '" + pojo.getHierarchy() + "' not found. "
-                    + "The related object plugin is not "
+                    + "The related Thing plugin is not "
                     + "loaded succesfully or you have a wrong hierarchy "
-                    + "value in your XML definition of the object."
+                    + "value in your XML definition of the Thing."
                     + "The hierarchy value is composed by the package name plus the java file name "
                     + "like com.freedomotic.things.impl.Light not com.freedomotic.things.impl.ElectricDevice.Light", ex);
         }

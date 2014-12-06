@@ -65,7 +65,7 @@ import java.util.logging.Logger;
  * @author enrico
  */
 public class Renderer extends Drawer implements MouseListener, MouseMotionListener {
-    
+
     private static final Logger LOG = Logger.getLogger(Renderer.class.getName());
 
     private JavaDesktopFrontend plugin;
@@ -118,7 +118,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         CANVAS_WIDTH = environmentWidth + (BORDER_X * 2);
         CANVAS_HEIGHT = environmentHeight + (BORDER_Y * 2);
         backgroundColor = TopologyUtils.convertColorToAWT(getEnvironments().get(0).getPojo().getBackgroundColor());
-        calloutsUpdater = new CalloutsUpdater(this, 500);
+        calloutsUpdater = new CalloutsUpdater(this, 900);
         currEnv = getEnvironments().get(0);
         ResourcesManager.clear();
         clear();
@@ -440,6 +440,18 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     private void renderCalloutsLayer() {
         int numOfInfoLines = 0;
         int offset = 0;
+
+        // Print mouse coordinates
+        Callout mousePointer = calloutsUpdater.getMousePointerCallout();
+        if (mousePointer != null) {
+            drawString(mousePointer.getText(),
+                    (int) mousePointer.getPosition().getX(),
+                    (int) mousePointer.getPosition().getY(),
+                    (float) 0.0,
+                    mousePointer.getColor());
+        }
+
+        // Print all other callouts
         synchronized (calloutsUpdater.getPrintableCallouts()) {
             for (Callout callout : calloutsUpdater.getPrintableCallouts()) {
                 //display multiple info callouts on different lines
@@ -1122,7 +1134,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
             if (!inDrag) {
                 Point mouse = toRealCoords(e.getPoint());
 
-                //create a callot which says the coordinates of click
+                //create a callout which says the coordinates of the mouse in the environment (centimeters)
                 Callout callout = new Callout(this.getClass().getCanonicalName(), "mouse",
                         (int) mouse.getX() + "cm," + (int) mouse.getY() + "cm", (int) mouse.getX(),
                         (int) mouse.getY(), 0, -1);

@@ -18,6 +18,7 @@ import com.freedomotic.util.FetchHttpFiles;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.Unzip;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,10 +42,13 @@ import org.apache.commons.io.FileUtils;
  * @author enrico
  */
 class PluginsManagerImpl implements PluginsManager {
-    //depedencies
 
+    // Depedencies
     private ClientStorage clientStorage;
     private TriggerPersistence triggers;
+
+    @Inject
+    Injector injector;
 
     @Inject
     PluginsManagerImpl(ClientStorage clientStorage, TriggerPersistence triggers) {
@@ -83,7 +87,6 @@ class PluginsManagerImpl implements PluginsManager {
         boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_OBJECT));
         boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_DEVICE));
 
-
         for (BoundleLoader boundleLoader : boundleLoaders) {
             loadSingleBundle(boundleLoader);
         }
@@ -109,11 +112,18 @@ class PluginsManagerImpl implements PluginsManager {
         loadPluginResources(loader.getPath());
 
         for (Client client : loaded) {
+            // Initialize the plugin
+            if (client instanceof Plugin) {
+                Plugin p = (Plugin) client;
+                p.init();
+            }
+            // Merge the config in PACKAGE file (eg: boundle version) with the plugin specific config
             try {
                 client = mergePackageConfiguration(client, loader.getPath());
             } catch (IOException ex) {
                 throw new PluginLoadingException("Missing PACKAGE info file " + ex.getMessage(), ex);
             }
+            // Now the plugin is fully loaded, take care of initialization and permissions management
             if (client instanceof Plugin) {
                 Plugin p = (Plugin) client;
                 p.loadPermissionsFromManifest();

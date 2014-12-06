@@ -23,11 +23,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,6 +36,7 @@ import java.util.TimerTask;
 public class CalloutsUpdater {
 
     private static final List<Callout> callouts = Collections.synchronizedList(new ArrayList<Callout>());
+    private static Callout mousePointerCallout;
     private Timer timer;
 
     /**
@@ -87,7 +86,11 @@ public class CalloutsUpdater {
                 //newCallout.setColor(new Color(rand(0, 255), rand(0, 255), rand(0, 255), 180));
                 newCallout.setColor(new Color(50, 50, 50, 180));
             }
-            callouts.add(newCallout);
+            if (newCallout.getGroup().equalsIgnoreCase("mouse")) {
+                mousePointerCallout = newCallout;
+            } else {
+                callouts.add(newCallout);
+            }
         }
     }
 
@@ -129,7 +132,10 @@ public class CalloutsUpdater {
     }
 
     Collection<Callout> getPrintableCallouts() {
-        //Collections.reverse(callouts);
         return callouts;
+    }
+    
+    Callout getMousePointerCallout() {
+        return mousePointerCallout;
     }
 }

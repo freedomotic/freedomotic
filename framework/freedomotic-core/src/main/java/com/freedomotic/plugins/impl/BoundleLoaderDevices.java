@@ -78,8 +78,7 @@ class BoundleLoaderDevices implements BoundleLoader {
                         }
                     }
                 } catch (Exception ex) {
-                    throw new PluginLoadingException("Generic error while loading boundle "
-                            + pluginJar.getAbsolutePath(), ex);
+                    throw new PluginLoadingException("Generic error while loading boundle " + pluginJar.getAbsolutePath(), ex);
                 }
             }
         }
