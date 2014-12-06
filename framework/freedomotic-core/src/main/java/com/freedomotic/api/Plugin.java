@@ -100,6 +100,7 @@ public class Plugin implements Client, BusConsumer {
         Freedomotic.INJECTOR.injectMembers(this);
         setName(pluginName);
         path = new File(Info.PATHS.PATH_DEVICES_FOLDER + manifestPath);
+        init();
     }
 
     /**
@@ -108,6 +109,7 @@ public class Plugin implements Client, BusConsumer {
     public Plugin(String pluginName) {
         Freedomotic.INJECTOR.injectMembers(this);
         setName(pluginName);
+        init();
     }
 
     /**
@@ -119,6 +121,7 @@ public class Plugin implements Client, BusConsumer {
     public Plugin(String pluginName, Config manifest) {
         Freedomotic.INJECTOR.injectMembers(this);
         setName(pluginName);
+        init();
     }
 
     /**
@@ -394,7 +397,7 @@ public class Plugin implements Client, BusConsumer {
         return hash;
     }
 
-    public void init() {
+    private void init() {
         if (configuration == null) {
             //try to load it from file
             deserializeManifest(path);

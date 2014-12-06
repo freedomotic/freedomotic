@@ -112,11 +112,6 @@ class PluginsManagerImpl implements PluginsManager {
         loadPluginResources(loader.getPath());
 
         for (Client client : loaded) {
-            // Initialize the plugin
-            if (client instanceof Plugin) {
-                Plugin p = (Plugin) client;
-                p.init();
-            }
             // Merge the config in PACKAGE file (eg: boundle version) with the plugin specific config
             try {
                 client = mergePackageConfiguration(client, loader.getPath());
