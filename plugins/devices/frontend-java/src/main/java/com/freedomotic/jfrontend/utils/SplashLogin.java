@@ -113,8 +113,8 @@ public class SplashLogin extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
         setUndecorated(true);
+        setResizable(false);
 
         btnLogin.setText(I18n .msg("login"));
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
@@ -144,11 +144,11 @@ public class SplashLogin extends javax.swing.JFrame {
         msgBox.setForeground(new java.awt.Color(255, 0, 0));
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        jLabel1.setText("IoT and Smart Spaces Framework");
+        jLabel1.setText("Open IoT Framework");
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(207, 7, 7));
-        jLabel2.setText("IT'S OPEN SOURCE!");
+        jLabel2.setText("THING WIDER");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
