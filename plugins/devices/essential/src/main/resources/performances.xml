@@ -4,5 +4,6 @@
         <property name="description"                       value="Performance reports"/>
         <property name="category"                       value="profiler"/>
         <property name="short-name"                       value="frontend"/>
+        <property name="startup-time"                       value="on load"/>
     </properties>
 </config>
