@@ -22,7 +22,7 @@ package com.freedomotic.reactions;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
-import com.freedomotic.util.DOMValidateDTD;
+import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.util.Info;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
@@ -217,7 +217,7 @@ public class CommandPersistence implements CommandsRepository {
                     Command command = null;
                     String xml = null;
                     try {
-                        xml = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/command.dtd");
+                        xml = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/command.dtd");
                     } catch (Exception e) {
                         LOG.log(Level.SEVERE, "Reaction file {0} is not well formatted: {1}", new Object[]{file.getPath(), e.getLocalizedMessage()});
                         continue;

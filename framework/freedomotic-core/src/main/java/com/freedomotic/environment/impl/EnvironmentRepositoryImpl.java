@@ -34,7 +34,7 @@ import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
-import com.freedomotic.util.DOMValidateDTD;
+import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.SerialClone;
 import com.freedomotic.util.UidGenerator;
@@ -457,7 +457,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         String xml;
 
         try {
-            xml = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/environment.dtd");
+            xml = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/environment.dtd");
         } catch (IOException ex) {
             throw new RepositoryException(ex.getMessage(), ex);
         }

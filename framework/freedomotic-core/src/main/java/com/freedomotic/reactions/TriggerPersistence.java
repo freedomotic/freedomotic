@@ -22,7 +22,7 @@ package com.freedomotic.reactions;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
-import com.freedomotic.util.DOMValidateDTD;
+import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.util.Info;
 import com.thoughtworks.xstream.XStream;
 import java.io.BufferedWriter;
@@ -145,7 +145,7 @@ public class TriggerPersistence implements Repository<Trigger> {
                     try {
                         //validate the object against a predefined DTD
                         String xml
-                                = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/trigger.dtd");
+                                = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/trigger.dtd");
                         trigger = (Trigger) xstream.fromXML(xml);
                     } catch (Exception e) {
                         LOG.log(Level.SEVERE, "Trigger file {0} is not well formatted: {1}", new Object[]{file.getPath(), e.getLocalizedMessage()});

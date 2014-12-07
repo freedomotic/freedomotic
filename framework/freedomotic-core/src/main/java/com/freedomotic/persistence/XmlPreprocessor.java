@@ -1,30 +1,29 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.util;
+package com.freedomotic.persistence;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -45,7 +44,9 @@ import org.xml.sax.SAXParseException;
  *
  * @author nicoletti
  */
-public class DOMValidateDTD {
+public class XmlPreprocessor {
+
+    private static final Logger LOG = Logger.getLogger(XmlPreprocessor.class.getName());
 
     /**
      *
@@ -54,8 +55,7 @@ public class DOMValidateDTD {
      * @return
      * @throws IOException
      */
-    public static String validate(File xmlFile, String absolutePathToDtd)
-            throws IOException {
+    public static String validate(File xmlFile, String absolutePathToDtd) throws IOException {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder;
@@ -72,6 +72,8 @@ public class DOMValidateDTD {
             transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,
                     new File(absolutePathToDtd).getAbsolutePath());
 
+            // Add the current framework version on top of the data
+            //transformer.setOutputProperty(OutputKeys.VERSION, Info.getVersion());
             StringWriter writer = new StringWriter();
             StreamResult result = new StreamResult(writer);
             transformer.transform(source, result);
@@ -81,18 +83,21 @@ public class DOMValidateDTD {
             factory.setValidating(true);
             documentBuilder = factory.newDocumentBuilder();
             documentBuilder.setErrorHandler(new org.xml.sax.ErrorHandler() {
+                @Override
                 public void fatalError(SAXParseException fatal)
                         throws SAXException {
                     //enable when validator feature is fully implemented
                     //LOG.warning(fatal.getMessage());
                 }
 
+                @Override
                 public void error(SAXParseException e)
                         throws SAXParseException {
                     //enable when validator feature is fully implemented
                     //LOG.warning("Error at line " + e.getLineNumber() + ". " + e.getMessage());
                 }
 
+                @Override
                 public void warning(SAXParseException err)
                         throws SAXParseException {
                     //enable when validator feature is fully implemented
@@ -115,7 +120,4 @@ public class DOMValidateDTD {
         }
     }
 
-    private DOMValidateDTD() {
-    }
-    private static final Logger LOG = Logger.getLogger(DOMValidateDTD.class.getName());
 }

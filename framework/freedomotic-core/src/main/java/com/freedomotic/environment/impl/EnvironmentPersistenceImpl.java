@@ -23,7 +23,7 @@ import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.persistence.FreedomXStream;
-import com.freedomotic.util.DOMValidateDTD;
+import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.util.Info;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -195,7 +195,7 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
         //validate the object against a predefined DTD
         String xml;
         try {
-            xml = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/environment.dtd");
+            xml = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/environment.dtd");
         } catch (IOException ex) {
             throw new RepositoryException(ex.getMessage(), ex);
         }

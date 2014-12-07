@@ -19,9 +19,9 @@
  */
 package com.freedomotic.things.impl;
 
-import com.freedomotic.util.FileVersionUpdate;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
+import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
@@ -29,7 +29,8 @@ import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.ThingsFactory;
 import com.freedomotic.things.ThingsRepository;
 import com.freedomotic.persistence.FreedomXStream;
-import com.freedomotic.util.DOMValidateDTD;
+import com.freedomotic.persistence.DataUpgradeService;
+import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.SerialClone;
 import com.freedomotic.util.UidGenerator;
@@ -37,6 +38,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,6 +47,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -64,6 +67,7 @@ class ThingsRepositoryImpl implements ThingsRepository {
     private static final Map<String, EnvObjectLogic> objectList = new HashMap<String, EnvObjectLogic>();
     private final ThingsFactory thingsFactory;
     private final EnvironmentRepository environmentRepository;
+    private final DataUpgradeService dataUpgradeService;
 
     /**
      *
@@ -71,9 +75,10 @@ class ThingsRepositoryImpl implements ThingsRepository {
      * @param environmentRepository
      */
     @Inject
-    public ThingsRepositoryImpl(ThingsFactory thingsFactory, EnvironmentRepository environmentRepository) {
+    public ThingsRepositoryImpl(ThingsFactory thingsFactory, EnvironmentRepository environmentRepository, DataUpgradeService dataUpgradeService) {
         this.thingsFactory = thingsFactory;
         this.environmentRepository = environmentRepository;
+        this.dataUpgradeService = dataUpgradeService;
     }
 
     @Deprecated
@@ -540,7 +545,25 @@ class ThingsRepositoryImpl implements ThingsRepository {
         // Validate the object against a predefined DTD
         String xml;
         try {
-            xml = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/object.dtd");
+            // Validate the upgraded xml against a DTD file
+            xml = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/object.dtd");
+            //TODO: merge this upgrade code with the XmlPreprocessor (validation should be after the upgrade)
+            // Upgrade the data to be compatible with the current version (skipped if already up to date)
+            try {
+                Properties dataProperties = new Properties();
+                String fromVersion;
+                try {
+                    dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
+                    fromVersion  = dataProperties.getProperty("data.version");
+                } catch (IOException iOException) {
+                    // Fallback to a default version for older version without that properties file
+                    fromVersion = "5.5.0";
+                }
+                xml = (String) dataUpgradeService.upgrade(EnvObject.class, xml, fromVersion);
+            } catch (DataUpgradeException dataUpgradeException) {
+                throw new RepositoryException("Cannot upgrade Thing file " + file.getAbsolutePath(), dataUpgradeException);
+            }
+            // Deserialize the object from the upgraded and validated xml
             EnvObject pojo = (EnvObject) xstream.fromXML(xml);
             EnvObjectLogic objectLogic = thingsFactory.create(pojo);
             LOG.log(Level.CONFIG, "Created a new logic for {0} [id:{1}] of type {2}", new Object[]{objectLogic.getPojo().getName(), objectLogic.getPojo().getUUID(), objectLogic.getClass().getCanonicalName()});

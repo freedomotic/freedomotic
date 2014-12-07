@@ -22,7 +22,7 @@ package com.freedomotic.reactions;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
-import com.freedomotic.util.DOMValidateDTD;
+import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.util.Info;
 import com.thoughtworks.xstream.XStream;
 import java.io.BufferedWriter;
@@ -142,7 +142,7 @@ public class ReactionPersistence implements Repository<Reaction> {
                     //validate the object against a predefined DTD
                     try {
                         String xml
-                                = DOMValidateDTD.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/reaction.dtd");
+                                = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/reaction.dtd");
 
                         reaction = (Reaction) xstream.fromXML(xml);
                     } catch (Exception e) {
