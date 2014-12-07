@@ -25,8 +25,8 @@
  */
 package com.freedomotic.jfrontend.automationeditor;
 
-import com.freedomotic.reactions.Payload;
-import com.freedomotic.reactions.Statement;
+import com.freedomotic.rules.Payload;
+import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.i18n.I18n;

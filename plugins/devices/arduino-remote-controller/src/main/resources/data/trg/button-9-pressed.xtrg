@@ -4,18 +4,18 @@
     <channel>app.event.sensor.protocol.read.arduino-remote-controller</channel>
     <payload>
         <payload>
-            <com.freedomotic.reactions.Statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>protocol</attribute>
                 <operand>EQUALS</operand>
                 <value>arduino-remote-controller</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>@event.button.pressed</attribute>
                 <operand>EQUALS</operand>
                 <value>9</value>
-            </com.freedomotic.reactions.Statement>
+            </statement>
         </payload>
     </payload>
     <hardwareLevel>false</hardwareLevel>

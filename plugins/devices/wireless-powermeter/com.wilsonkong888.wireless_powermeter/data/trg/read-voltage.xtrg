@@ -4,12 +4,12 @@
     <channel>app.event.sensor.protocol.read.wireless_powermeter</channel>
     <payload>
         <payload>
-            <com.freedomotic.reactions.Statement>
+            <statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
                 <value>@event.wireless_powermeter.voltage</value>
-            </com.freedomotic.reactions.Statement>
+            </statement>
         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>

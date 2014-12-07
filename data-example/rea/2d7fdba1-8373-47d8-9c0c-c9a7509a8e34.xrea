@@ -1,6 +1,6 @@
-<com.freedomotic.reactions.Reaction>
+<reaction>
   <trigger>When Lights General Switch is clicked</trigger>
   <sequence>
     <command>switch power for all lights</command>
   </sequence>
-</com.freedomotic.reactions.Reaction>
+</reaction>

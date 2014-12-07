@@ -4,12 +4,12 @@
     <channel>app.event.sensor.video.motion</channel>
     <payload>
         <payload>
-            <com.freedomotic.reactions.Statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>motion-level</attribute>
                 <operand>GREATER_THAN</operand>
                 <value>20</value>
-            </com.freedomotic.reactions.Statement>
+            </statement>
         </payload>
     </payload>
     <hardwareLevel>false</hardwareLevel>

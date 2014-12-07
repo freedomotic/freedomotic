@@ -1,6 +1,6 @@
-<com.freedomotic.reactions.Reaction>
+<reaction>
   <trigger>Bedroom door becomes open</trigger>
   <sequence>
     <command>Say door/window status</command>
   </sequence>
-</com.freedomotic.reactions.Reaction>
+</reaction>

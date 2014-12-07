@@ -3,17 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.freedomotic.reactions;
+
+import com.freedomotic.persistence.Repository;
 
 /**
  *
- * @author nicoletti
- * @param <T>
+ * @author enrico
  */
-public interface Expression<T> {
-    
-    public T evaluate();
-    public String getOperand();
-    
+public interface CommandsRepository extends Repository<Command> {
+
 }

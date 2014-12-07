@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
   <name>turn off devices tagged useless</name>
   <receiver>app.events.sensors.behavior.request.objects</receiver>
   <uuid>40a233bc-922a-469c-9107-8a1946c3f3a3</uuid>
@@ -23,4 +23,4 @@
     </properties>
     <tuples/>
   </properties>
-</com.freedomotic.reactions.Command>
+</command>

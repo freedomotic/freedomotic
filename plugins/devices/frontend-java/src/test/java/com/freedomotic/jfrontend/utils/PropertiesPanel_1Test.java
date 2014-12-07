@@ -4,8 +4,8 @@
  */
 package com.freedomotic.jfrontend.utils;
 
-import com.freedomotic.reactions.Payload;
-import com.freedomotic.reactions.Statement;
+import com.freedomotic.rules.Payload;
+import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
 import java.util.Iterator;
 import javax.swing.JTextField;

@@ -35,7 +35,7 @@ import com.freedomotic.things.ThingsRepository;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
-import com.freedomotic.reactions.Statement;
+import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.google.inject.Inject;
 import java.util.ArrayList;

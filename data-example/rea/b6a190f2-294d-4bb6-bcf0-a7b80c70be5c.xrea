@@ -1,6 +1,6 @@
-<com.freedomotic.reactions.Reaction>
+<reaction>
   <trigger>When a door is clicked</trigger>
   <sequence>
     <command>Switch its open state</command>
   </sequence>
-</com.freedomotic.reactions.Reaction>
+</reaction>

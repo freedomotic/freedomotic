@@ -19,6 +19,8 @@
  */
 package com.freedomotic.reactions;
 
+import com.freedomotic.rules.Statement;
+import com.freedomotic.rules.Payload;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.Profiler;

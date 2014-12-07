@@ -55,7 +55,6 @@ public class ObjectPluginPlaceholder implements Client {
         if (template == null) {
             throw new IllegalStateException("Cannot build an object placeholder plugin from a null object");
         }           
-        System.out.println("TEMPLATE: " + template.toString());
         config = new Config();
     }
 

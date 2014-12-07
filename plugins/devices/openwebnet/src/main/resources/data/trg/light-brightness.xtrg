@@ -4,30 +4,30 @@
     <channel>app.event.sensor.protocol.read.openwebnet</channel>
     <payload>
         <payload>
-            <com.freedomotic.reactions.Statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>protocol</attribute>
                 <operand>EQUALS</operand>
                 <value>openwebnet</value>
-            </com.freedomotic.reactions.Statement> 
-            <com.freedomotic.reactions.Statement>
+            </statement> 
+            <statement>
                <logical>AND</logical>
                <attribute>who</attribute>
                <operand>EQUALS</operand>
                <value>1</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                <logical>AND</logical>
                <attribute>what</attribute>
                <operand>GREATER_THAN</operand>
                <value>1</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                <logical>SET</logical>
                <attribute>behaviorValue</attribute>
                <operand>EQUALS</operand>
                <value>= behaviorValue=Math.round(@event.what*10)</value>
-            </com.freedomotic.reactions.Statement>
+            </statement>
         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>

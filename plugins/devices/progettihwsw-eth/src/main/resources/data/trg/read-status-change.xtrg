@@ -5,18 +5,18 @@
     <channel>app.event.sensor.protocol.read.SNT084Eth8R8I</channel>
     <payload>
         <payload>
-            <com.freedomotic.reactions.Statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>protocol</attribute>
                 <operand>EQUALS</operand>
                 <value>SNT084Eth8R8I</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
                 <value>@event.isOn</value>
-            </com.freedomotic.reactions.Statement>
+            </statement>
         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>

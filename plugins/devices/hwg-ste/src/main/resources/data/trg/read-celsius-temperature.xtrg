@@ -4,24 +4,24 @@
     <channel>app.event.sensor.protocol.read.hwgste</channel>
     <payload>
         <payload>
-            <com.freedomotic.reactions.Statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>protocol</attribute>
                 <operand>EQUALS</operand>
                 <value>hwgste</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>@event.sensor.unit</attribute>
                 <operand>EQUALS</operand>
                 <value>C</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
                 <value>@event.sensor.value</value>
-            </com.freedomotic.reactions.Statement>
+            </statement>
         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>

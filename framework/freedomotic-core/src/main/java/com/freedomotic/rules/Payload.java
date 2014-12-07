@@ -21,7 +21,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.reactions;
+package com.freedomotic.rules;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,8 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Enrico
  */
 @XmlRootElement
-public final class Payload
-        implements Serializable {
+public final class Payload implements Serializable {
 
     private static final long serialVersionUID = -5799483105084939108L;
     @XmlElement
@@ -185,11 +184,9 @@ public final class Payload
     }
 
     private static boolean isStatementConsistent(String triggerOperand, String triggerValue, String eventValue) {
-
             ExpressionFactory factory = new ExpressionFactory<>();
             Expression exp = factory.createExpression(eventValue, triggerOperand, triggerValue);
             return (boolean) exp.evaluate();
-
     }
 
     /**

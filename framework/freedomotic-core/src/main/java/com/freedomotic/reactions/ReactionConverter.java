@@ -19,6 +19,7 @@
  */
 package com.freedomotic.reactions;
 
+import com.freedomotic.rules.Statement;
 import com.freedomotic.core.Condition;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;

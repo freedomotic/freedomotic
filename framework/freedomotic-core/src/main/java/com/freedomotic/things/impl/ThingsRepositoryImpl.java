@@ -408,7 +408,6 @@ class ThingsRepositoryImpl implements ThingsRepository {
     @Override
     @RequiresPermissions("objects:read")
     public List<EnvObjectLogic> findAll() {
-        LOG.info("OBJECT LIST SIZE: " + objectList.size());
         List<EnvObjectLogic> el = new ArrayList<EnvObjectLogic>();
         el.addAll(objectList.values());
         return el;
@@ -438,7 +437,6 @@ class ThingsRepositoryImpl implements ThingsRepository {
         try {
             int preSize = objectList.size();
             add(item, false);
-            LOG.info("OBJECT LIST SIZE: " + objectList.size());
             if (preSize + 1 == objectList.size()) {
                 return true;
             } else {

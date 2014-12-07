@@ -21,7 +21,6 @@ package com.freedomotic.environment.impl;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.app.AppConfig;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.exceptions.RepositoryException;

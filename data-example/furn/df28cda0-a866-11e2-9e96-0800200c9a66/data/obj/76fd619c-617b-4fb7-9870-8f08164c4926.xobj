@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Livingroom light</name>
   <description>A light</description>
   <actAs>virtual</actAs>
@@ -89,4 +89,4 @@
   </triggers>
   <currentRepresentation>0</currentRepresentation>
   <envUUID>df28cda0-a866-11e2-9e96-0800200c9a66</envUUID>
-</com.freedomotic.model.object.EnvObject>
+</object>

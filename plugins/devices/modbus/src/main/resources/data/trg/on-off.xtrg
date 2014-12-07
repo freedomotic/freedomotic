@@ -4,18 +4,18 @@
     <channel>app.event.sensor.protocol.read.modbus</channel>
     <payload>
         <payload>
-            <com.freedomotic.reactions.Statement>
+            <statement>
                <logical>AND</logical>
                <attribute>behavior</attribute>
                <operand>EQUALS</operand>
                <value>powered</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                <logical>SET</logical>
                <attribute>behaviorValue</attribute>
                <operand>EQUALS</operand>
                <value>@event.behaviorValue</value>
-            </com.freedomotic.reactions.Statement>
+            </statement>
         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>

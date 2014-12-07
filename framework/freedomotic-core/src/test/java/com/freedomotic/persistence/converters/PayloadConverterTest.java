@@ -26,7 +26,7 @@
 package com.freedomotic.persistence.converters;
 
 import com.freedomotic.persistence.PayloadConverter;
-import com.freedomotic.reactions.Payload;
+import com.freedomotic.rules.Payload;
 import com.thoughtworks.xstream.XStream;
 import java.util.logging.Logger;
 import org.junit.AfterClass;

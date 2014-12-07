@@ -19,7 +19,7 @@
  */
 package com.freedomotic.core;
 
-import com.freedomotic.reactions.Statement;
+import com.freedomotic.rules.Statement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**

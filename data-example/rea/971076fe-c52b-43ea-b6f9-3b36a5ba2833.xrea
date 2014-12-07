@@ -1,6 +1,6 @@
-<com.freedomotic.reactions.Reaction>
+<reaction>
   <trigger>When Clock is clicked</trigger>
   <sequence>
     <command>Say current time</command>
   </sequence>
-</com.freedomotic.reactions.Reaction>
+</reaction>

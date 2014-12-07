@@ -5,18 +5,18 @@
   <channel>app.event.sensor.person.zone.enter</channel>
   <payload>
     <payload>
-      <com.freedomotic.reactions.Statement>
+      <statement>
         <logical>AND</logical>
         <attribute>zone.name</attribute>
         <operand>EQUALS</operand>
         <value>Kitchen</value>
-      </com.freedomotic.reactions.Statement>
-      <com.freedomotic.reactions.Statement>
+      </statement>
+      <statement>
         <logical>AND</logical>
         <attribute>person.id</attribute>
         <operand>EQUALS</operand>
         <value>ANY</value>
-      </com.freedomotic.reactions.Statement>
+      </statement>
     </payload>
   </payload>
   <suspensionTime>0</suspensionTime>

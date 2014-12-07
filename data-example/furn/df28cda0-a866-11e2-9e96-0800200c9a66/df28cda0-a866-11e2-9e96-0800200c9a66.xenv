@@ -1,4 +1,4 @@
-<com.freedomotic.model.environment.Environment>
+<environment>
   <name>Ground Floor</name>
   <width>1500</width>
   <height>1324</height>
@@ -12,7 +12,7 @@
   </backgroundColor>
   <backgroundImage>map2.png</backgroundImage>
   <zones>
-    <com.freedomotic.model.environment.Zone>
+    <zone>
       <name>Indoor</name>
       <description></description>
       <room>false</room>
@@ -26,8 +26,8 @@
         <point x="300" y="905"/>
         <point x="20" y="905"/>
       </shape>
-    </com.freedomotic.model.environment.Zone>
-    <com.freedomotic.model.environment.Zone>
+    </zone>
+    <zone>
       <name>Bedroom</name>
       <description></description>
       <room>true</room>
@@ -40,8 +40,8 @@
         <point x="20" y="620"/>
       </shape>
       <texture>wood.jpg</texture>
-    </com.freedomotic.model.environment.Zone>
-    <com.freedomotic.model.environment.Zone>
+    </zone>
+    <zone>
       <name>Office</name>
       <description></description>
       <room>true</room>
@@ -52,8 +52,8 @@
         <point x="20" y="905"/>
       </shape>
       <texture>wood.jpg</texture>
-    </com.freedomotic.model.environment.Zone>
-    <com.freedomotic.model.environment.Zone>
+    </zone>
+    <zone>
       <name>Livingroom</name>
       <description></description>
       <room>true</room>
@@ -70,8 +70,8 @@
         <point x="305" y="1170"/>
       </shape>
       <texture>wood.jpg</texture>
-    </com.freedomotic.model.environment.Zone>
-    <com.freedomotic.model.environment.Zone>
+    </zone>
+    <zone>
       <name>Kitchen</name>
       <description></description>
       <room>true</room>
@@ -86,8 +86,8 @@
         <point x="855" y="730"/>
       </shape>
       <texture>wood.jpg</texture>
-    </com.freedomotic.model.environment.Zone>
-    <com.freedomotic.model.environment.Zone>
+    </zone>
+    <zone>
       <name>Bathroom</name>
       <description></description>
       <room>true</room>
@@ -98,8 +98,8 @@
         <point x="390" y="505"/>
       </shape>
       <texture>wood.jpg</texture>
-    </com.freedomotic.model.environment.Zone>
-    <com.freedomotic.model.environment.Zone>
+    </zone>
+    <zone>
       <name>Dress room</name>
       <description></description>
       <room>true</room>
@@ -110,8 +110,8 @@
         <point x="390" y="730"/>
       </shape>
       <texture>wood.jpg</texture>
-    </com.freedomotic.model.environment.Zone>
-    <com.freedomotic.model.environment.Zone>
+    </zone>
+    <zone>
       <name>Garage</name>
       <description></description>
       <room>true</room>
@@ -122,8 +122,8 @@
         <point x="990" y="730"/>
       </shape>
       <texture>wood.jpg</texture>
-    </com.freedomotic.model.environment.Zone>
-    <com.freedomotic.model.environment.Zone>
+    </zone>
+    <zone>
       <name>Bathroom Small</name>
       <description></description>
       <room>true</room>
@@ -136,8 +136,8 @@
         <point x="855" y="730"/>
       </shape>
       <texture>wood.jpg</texture>
-    </com.freedomotic.model.environment.Zone>
-    <com.freedomotic.model.environment.Zone>
+    </zone>
+    <zone>
       <name>Utility room</name>
       <description></description>
       <room>true</room>
@@ -150,8 +150,8 @@
         <point x="905" y="570"/>
       </shape>
       <texture>wood.jpg</texture>
-    </com.freedomotic.model.environment.Zone>
-    <com.freedomotic.model.environment.Zone>
+    </zone>
+    <zone>
       <name>Upstairs</name>
       <description></description>
       <room>true</room>
@@ -162,6 +162,6 @@
         <point x="730" y="1170"/>
       </shape>
       <texture>wood.jpg</texture>
-    </com.freedomotic.model.environment.Zone>
+    </zone>
   </zones>
-</com.freedomotic.model.environment.Environment>
+</environment>

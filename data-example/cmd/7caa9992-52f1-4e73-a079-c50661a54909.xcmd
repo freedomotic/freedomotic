@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
   <name>switch power for all lights</name>
   <receiver>app.events.sensors.behavior.request.objects</receiver>
   <uuid>7caa9992-52f1-4e73-a079-c50661a54909</uuid>
@@ -24,4 +24,4 @@
     </properties>
     <tuples/>
   </properties>
-</com.freedomotic.reactions.Command>
+</command>

@@ -8,7 +8,6 @@ package com.freedomotic.rules;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.Payload;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.Trigger;
 import java.util.Map;

@@ -5,18 +5,18 @@
   <channel>app.event.sensor.calendar.event.schedule</channel>
   <payload>
     <payload>
-      <com.freedomotic.reactions.Statement>
+      <statement>
         <logical>AND</logical>
         <attribute>time.hour</attribute>
         <operand>GREATER_THAN</operand>
         <value>13</value>
-      </com.freedomotic.reactions.Statement>
-      <com.freedomotic.reactions.Statement>
+      </statement>
+      <statement>
         <logical>AND</logical>
         <attribute>time.hour</attribute>
         <operand>LESS_THAN</operand>
         <value>19</value>
-      </com.freedomotic.reactions.Statement>
+      </statement>
     </payload>
   </payload>
   <hardwareLevel>false</hardwareLevel>

@@ -4,30 +4,30 @@
     <channel>app.event.sensor.protocol.read.zwave</channel>
     <payload>
         <payload>
-            <com.freedomotic.reactions.Statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>protocol</attribute>
                 <operand>EQUALS</operand>
                 <value>zwave</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>zwave.command</attribute>
                 <operand>EQUALS</operand>
                 <value>49</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>zwave.index</attribute>
                 <operand>EQUALS</operand>
                 <value>1</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                 <logical>SET</logical>
                 <attribute>object.class</attribute>
                 <operand>EQUALS</operand>
                 <value>Thermostat</value>
-            </com.freedomotic.reactions.Statement>
+            </statement>
          </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>

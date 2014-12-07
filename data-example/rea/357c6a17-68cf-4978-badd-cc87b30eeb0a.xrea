@@ -1,6 +1,6 @@
-<com.freedomotic.reactions.Reaction>
+<reaction>
   <trigger>When an electric device is clicked</trigger>
   <sequence>
     <command>Switch its power</command>
   </sequence>
-</com.freedomotic.reactions.Reaction>
+</reaction>

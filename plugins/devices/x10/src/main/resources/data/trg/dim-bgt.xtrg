@@ -4,24 +4,24 @@
     <channel>app.event.sensor.protocol.read.x10</channel>
     <payload>
         <payload>
-            <com.freedomotic.reactions.Statement>
+            <statement>
                <logical>AND</logical>
                <attribute>x10.function</attribute>
                <operand>EQUALS</operand>
                <value>DIM</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                <logical>OR</logical>
                <attribute>x10.function</attribute>
                <operand>EQUALS</operand>
                <value>BGT</value>
-            </com.freedomotic.reactions.Statement>
-            <com.freedomotic.reactions.Statement>
+            </statement>
+            <statement>
                <logical>SET</logical>
                <attribute>behaviorValue</attribute>
                <operand>EQUALS</operand>
                <value>= if ("@event.x10.function".toLowerCase()=="bgt") behaviorValue="+5"; else behaviorValue="-5"</value>
-            </com.freedomotic.reactions.Statement>
+            </statement>
         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>

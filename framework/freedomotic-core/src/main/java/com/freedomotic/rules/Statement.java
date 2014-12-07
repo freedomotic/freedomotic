@@ -21,7 +21,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.reactions;
+package com.freedomotic.rules;
 
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -78,7 +78,7 @@ public class Statement
      * @param value
      * @return
      */
-    protected Statement create(String logical, String attribute, String operand, String value) {
+    public Statement create(String logical, String attribute, String operand, String value) {
         if ((attribute != null) && (value != null)) {
             if ((attribute.trim().length() != 0) && (value.trim().length() != 0)) {
                 this.logical = logical;

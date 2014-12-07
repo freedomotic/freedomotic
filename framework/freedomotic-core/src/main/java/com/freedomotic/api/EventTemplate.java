@@ -20,8 +20,8 @@
 package com.freedomotic.api;
 
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.reactions.Payload;
-import com.freedomotic.reactions.Statement;
+import com.freedomotic.rules.Payload;
+import com.freedomotic.rules.Statement;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

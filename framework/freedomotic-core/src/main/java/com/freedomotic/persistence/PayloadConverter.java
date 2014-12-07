@@ -25,8 +25,8 @@
  */
 package com.freedomotic.persistence;
 
-import com.freedomotic.reactions.Payload;
-import com.freedomotic.reactions.Statement;
+import com.freedomotic.rules.Payload;
+import com.freedomotic.rules.Statement;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.reactions;
+package com.freedomotic.rules;
 
 import java.util.logging.Logger;
 
@@ -11,17 +11,17 @@ import java.util.logging.Logger;
  *
  * @author nicoletti
  */
-public class LessThan extends BinaryExpression {
+public class GreaterThan extends BinaryExpression {
 
-    private static final String OPERATOR = Statement.LESS_THAN;
-    private static final Logger LOG = Logger.getLogger(LessThan.class.getName());
+    private static final String OPERATOR = Statement.GREATER_THAN;
+    private static final Logger LOG = Logger.getLogger(GreaterThan.class.getName());
 
     @Override
     public String getOperand() {
         return OPERATOR;
     }
 
-    public LessThan(String left, String right) {
+    public GreaterThan(String left, String right) {
         super(left, right);
     }
 
@@ -30,10 +30,9 @@ public class LessThan extends BinaryExpression {
         try {
             Integer intRightValue = new Integer(getRight());
             Integer intLeftValue = new Integer(getLeft());
-
-            return intLeftValue < intRightValue;
+            return intLeftValue > intRightValue;
         } catch (NumberFormatException nfe) {
-            LOG.warning(Statement.LESS_THAN  + " operator can be applied only to integer values");
+            LOG.warning(Statement.GREATER_THAN  + " operator can be applied only to integer values");
             return false;
         }
     }

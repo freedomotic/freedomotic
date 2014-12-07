@@ -4,12 +4,12 @@
     <channel>app.event.sensor.messages.notify.user.*</channel>
     <payload>
         <payload>
-            <com.freedomotic.reactions.Statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>user.present</attribute>
                 <operand>EQUALS</operand>
                 <value>false</value>
-            </com.freedomotic.reactions.Statement>
+            </statement>
         </payload>
     </payload>
     <hardwareLevel>false</hardwareLevel>
