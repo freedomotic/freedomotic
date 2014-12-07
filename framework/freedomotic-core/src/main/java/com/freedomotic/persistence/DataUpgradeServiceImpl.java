@@ -42,7 +42,7 @@ import javax.xml.transform.stream.StreamSource;
  * files.
  * Transformation file should be in conf/validator folder and have a naming schema like
  * /conf/validator/TYPE-upgrade-FROMVERSION.xslt
- * /conf/validator/things-upgrade-5.4.0.xslt"
+ * /conf/validator/things-upgrade-5.5.0.xslt"
  *
  * @author matteo
  */

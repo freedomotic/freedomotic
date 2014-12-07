@@ -54,10 +54,10 @@ public class DataUpgradeServiceImplTest {
      */
     @Test
     public void testUpgrade() throws Exception {
-        System.out.println("Upgrade a v5.4.0 Thing data to v" + Info.getVersion());
+        System.out.println("Upgrade a v5.5.0 Thing data to v" + Info.getVersion());
         Class type = EnvObject.class;
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tag>some text</tag>";
-        String fromVersion = "5.4.0";
+        String fromVersion = "5.5.0";
         String expResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tag>some text</tag>";
         String result = (String) dataUpgradeService.upgrade(type, xml, fromVersion);
         assertEquals(expResult, result);
