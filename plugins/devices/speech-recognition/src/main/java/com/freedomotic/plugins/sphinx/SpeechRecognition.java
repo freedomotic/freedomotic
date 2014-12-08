@@ -13,7 +13,6 @@ package com.freedomotic.plugins.sphinx;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.events.SpeechEvent;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
@@ -21,11 +20,6 @@ import com.freedomotic.util.Info;
 import edu.cmu.sphinx.api.Configuration;
 import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import edu.cmu.sphinx.api.SpeechResult;
-import edu.cmu.sphinx.frontend.util.Microphone;
-import edu.cmu.sphinx.recognizer.Recognizer;
-import edu.cmu.sphinx.result.Result;
-import edu.cmu.sphinx.util.props.ConfigurationManager;
-import edu.cmu.sphinx.util.props.InternalConfigurationException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -55,6 +49,7 @@ public class SpeechRecognition extends Protocol {
 
     @Override
     public void onStart() throws PluginStartupException {
+        this.setPollingWait(-1); // Disable onRun loop execution
         Configuration sphinxConfiguration = new Configuration();
         // Load model from the jar
         sphinxConfiguration
@@ -90,8 +85,15 @@ public class SpeechRecognition extends Protocol {
                 String resultText = result.getHypothesis();
                 setDescription("You said: " + resultText);
                 if (!resultText.trim().isEmpty()) {
-                    SpeechEvent event = new SpeechEvent(this, resultText);
-                    notifyEvent(event);
+                    Command nlpCommand = new Command();
+                    nlpCommand.setName("Natuaral language command");
+                    nlpCommand.setDescription("A free-form text command to be interpreded by an NLP module");
+                    nlpCommand.setProperty("text", resultText);
+                    nlpCommand.setReplyTimeout(2000);
+                    Command reply = notifyCommand(nlpCommand);
+                    if (reply != null) {
+                        setDescription("No valid command similar to '" + resultText + "'");
+                    }
                 }
             } else {
                 setDescription("I can't undestand what you said");
