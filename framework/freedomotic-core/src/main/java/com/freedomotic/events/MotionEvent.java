@@ -21,11 +21,12 @@ package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.model.environment.Zone;
+import com.freedomotic.model.geometry.FreedomPoint;
 import java.util.logging.Logger;
 
 /**
  *
- * @author Enrico
+ * @author Mauro Cicolella
  */
 public class MotionEvent
         extends EventTemplate {
@@ -33,14 +34,18 @@ public class MotionEvent
     private static final Logger LOG = Logger.getLogger(MotionEvent.class.getName());
     private static final long serialVersionUID = 4965942901211451802L;
     private String zoneName;
+    private int motionArea;
+    private int centerOfGravity;
+    private int distance;
+    private FreedomPoint location;
 
     /**
      * @param source
-     * @param z
+     * @param zone
      */
-    public MotionEvent(Object source, Zone z) {
+    public MotionEvent(Object source, Zone zone) {
         this.setSender(source);
-        zoneName = z.getName();
+        zoneName = zone.getName();
         generateEventPayload();
     }
 
@@ -52,9 +57,50 @@ public class MotionEvent
         payload.addStatement("zone.name", zoneName);
 
     }
-    
+
     public String getZoneName() {
         return zoneName;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int dist) {
+        distance = dist;
+        payload.addStatement("distance", dist);
+
+    }
+
+    public FreedomPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(FreedomPoint loc) {
+        location = loc;
+        payload.addStatement("location-x", loc.getX());
+        payload.addStatement("location-y", loc.getY());
+
+    }
+
+    public int getCenterOfGravity() {
+        return centerOfGravity;
+    }
+
+    public void setCenterOfGravity(int cog) {
+        centerOfGravity = cog;
+        payload.addStatement("center-of-gravity", cog);
+
+    }
+
+    public int getMotionArea() {
+        return motionArea;
+    }
+
+    public void setMotionArea(int area) {
+        motionArea = area;
+        payload.addStatement("motion-area", area);
+
     }
 
     /**
