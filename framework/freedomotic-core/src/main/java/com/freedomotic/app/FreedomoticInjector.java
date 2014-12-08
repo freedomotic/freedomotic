@@ -13,8 +13,10 @@ import com.freedomotic.security.Auth;
 import com.freedomotic.security.AuthImpl2;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.i18n.I18nImpl;
+import com.freedomotic.nlp.InjectorNlp;
 import com.freedomotic.things.impl.InjectorThings;
 import com.freedomotic.persistence.InjectorPersistence;
+import com.freedomotic.reactions.InjectorAutomations;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
@@ -33,6 +35,8 @@ public class FreedomoticInjector extends AbstractModule {
         install(new InjectorThings());
         install(new InjectorFeatures());
         install(new InjectorPersistence());
+        install(new InjectorNlp());
+        install(new InjectorAutomations());
 
         bind(AppConfig.class).to(AppConfigImpl.class).in(Singleton.class);
 

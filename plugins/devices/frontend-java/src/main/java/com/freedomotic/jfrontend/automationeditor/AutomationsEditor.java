@@ -22,10 +22,12 @@ package com.freedomotic.jfrontend.automationeditor;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.UnableToExecuteException;
+import com.freedomotic.nlp.NlpCommands;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
+import com.google.inject.Inject;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -39,8 +41,9 @@ import javax.swing.JFrame;
  *
  * @author enrico
  */
-public class AutomationsEditor
-        extends Protocol {
+public class AutomationsEditor extends Protocol {
+    
+    @Inject private NlpCommands nlpCommands;
 
     /**
      *
@@ -83,7 +86,7 @@ public class AutomationsEditor
         frame.setTitle(getApi().getI18n().msg("manage") + getApi().getI18n().msg("automations"));
         frame.setPreferredSize(new Dimension(700, 600));
 
-        final ReactionsPanel panel = new ReactionsPanel(this);
+        final ReactionsPanel panel = new ReactionsPanel(this, nlpCommands);
         frame.setContentPane(panel);
 
         JButton ok = new JButton(getApi().getI18n().msg("ok"));

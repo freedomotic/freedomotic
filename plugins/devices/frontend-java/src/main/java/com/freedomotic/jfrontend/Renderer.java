@@ -149,11 +149,11 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
             if (objEditorPanels.get(obj) == null) {
                 objEditorPanels.remove(obj);
                 objEditorPanels.put(obj,
-                        new ObjectEditor(obj));
+                        new ObjectEditor(obj);
             }
         } else {
             objEditorPanels.put(obj,
-                    new ObjectEditor(obj));
+                    new ObjectEditor(obj);
         }
 
         ObjectEditor currEditorPanel = objEditorPanels.get(obj);

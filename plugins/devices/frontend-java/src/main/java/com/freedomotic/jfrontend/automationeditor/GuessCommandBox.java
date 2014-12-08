@@ -20,10 +20,12 @@
 package com.freedomotic.jfrontend.automationeditor;
 
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.core.NaturalLanguageProcessor;
+import com.freedomotic.exceptions.NoResultsException;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.i18n.I18n;
+import com.freedomotic.nlp.Nlp;
+import com.freedomotic.nlp.NlpCommands;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -52,7 +54,7 @@ public class GuessCommandBox
 
     private Command command = null;
     private ReactionEditor editor;
-    private static NaturalLanguageProcessor nlp = new NaturalLanguageProcessor();
+    private NlpCommands nlpCommands;
     private final JButton btnAdd = new JButton();
     private final JButton btnCustomize;
     private final GuessCommandBox me = this;
@@ -65,9 +67,10 @@ public class GuessCommandBox
      * @param i18n
      * @param editor
      */
-    public GuessCommandBox(I18n i18n, ReactionEditor editor) {        
+    public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommands nlpCommands) {        
         super();
         this.I18n = i18n;
+        this.nlpCommands = nlpCommands;
         btnCustomize = new JButton(I18n.msg( "edit"));
         ERROR_MESSAGE = I18n.msg("this_command_not_exists");
         INFO_MESSAGE = I18n.msg("write_here_command");
@@ -80,11 +83,13 @@ public class GuessCommandBox
      *
      * @param i18n
      * @param editor
+     * @param nlpCommands
      * @param command
      */
-    public GuessCommandBox(I18n i18n, ReactionEditor editor, Command command) {
+    public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommands nlpCommands, Command command) {
         super();
         this.I18n = i18n;
+        this.nlpCommands = nlpCommands;
         btnCustomize = new JButton(I18n.msg( "edit"));
         ERROR_MESSAGE = I18n.msg("this_command_not_exists");
         INFO_MESSAGE = I18n.msg("write_here_command");
@@ -124,20 +129,24 @@ public class GuessCommandBox
                         setForeground(Color.black);
 
                         //for (String line : lines) {
-                        List<NaturalLanguageProcessor.Rank> mostSimilar = nlp.getMostSimilarCommand(getText(),
-                                10);
+                        List<Nlp.Rank<Command>> mostSimilar = null;
+                        try {
+                            mostSimilar = nlpCommands.computeSimilarity(getText(), 10);
+                        } catch (NoResultsException noResultsException) {
+                            //do nothing if there are no results
+                        }
 
                         //Command command = mostSimilar.get(0).getCommand();
                         //txtInput.setText(txtInput.getText().replace(line, command.getName()));
                         JPopupMenu menu = new JPopupMenu();
 
                         //command = mostSimilar.get(0).getCommand();
-                        for (final NaturalLanguageProcessor.Rank rank : mostSimilar) {
-                            JMenuItem menuItem = new JMenuItem(rank.getCommand().toString());
+                        for (final Nlp.Rank<Command> rank : mostSimilar) {
+                            JMenuItem menuItem = new JMenuItem(rank.getElement().toString());
                             menuItem.addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
-                                    command = rank.getCommand();
+                                    command = rank.getElement();
                                     setText(command.getName());
                                 }
                             });

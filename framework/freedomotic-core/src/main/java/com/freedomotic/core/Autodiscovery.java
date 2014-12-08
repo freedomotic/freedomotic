@@ -40,12 +40,12 @@ import javax.jms.ObjectMessage;
  *
  * @author enrico
  */
-public final class JoinDevice implements BusConsumer {
+public final class Autodiscovery implements BusConsumer {
 
     private static final String MESSAGING_CHANNEL = "app.objects.create";
 
     private static BusMessagesListener listener;
-    private static final Logger LOG = Logger.getLogger(JoinDevice.class.getName());
+    private static final Logger LOG = Logger.getLogger(Autodiscovery.class.getName());
 
     // Dependencies
     private final EnvironmentRepository environmentPersistence;
@@ -53,7 +53,7 @@ public final class JoinDevice implements BusConsumer {
     private final ThingsRepository thingsRepository;
 
     @Inject
-    JoinDevice(EnvironmentRepository environmentRepository, ThingsRepository thingsRepository, BusService busService) {
+    Autodiscovery(EnvironmentRepository environmentRepository, ThingsRepository thingsRepository, BusService busService) {
         this.environmentPersistence = environmentRepository;
         this.thingsRepository = thingsRepository;
         this.busService = busService;
@@ -89,7 +89,7 @@ public final class JoinDevice implements BusConsumer {
                 }
             }
         } catch (JMSException ex) {
-            Logger.getLogger(JoinDevice.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Autodiscovery.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

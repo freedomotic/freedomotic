@@ -34,6 +34,7 @@ import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
+import com.freedomotic.nlp.NlpCommands;
 import com.freedomotic.util.Info;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -74,6 +75,7 @@ public class ObjectEditor
     private PropertiesPanel_1 pnlTriggers;
     //private PropertiesPanel_1 controlPanel;
     ReactionsPanel reactionsPanel;
+    private final NlpCommands nlpCommands;
 
     private static API api = null;
     private static I18n I18n;
@@ -92,6 +94,7 @@ public class ObjectEditor
      */
     public ObjectEditor(final EnvObjectLogic obj) {
         this.object = obj;
+        this.nlpCommands = nlpCommands;
         oldName = object.getPojo().getName();
 
         EnvObject pojo = obj.getPojo();
@@ -1007,7 +1010,7 @@ public class ObjectEditor
     private void populateAutomationsTab() {
         tabAutomations.removeAll();
         tabAutomations.setLayout(new BorderLayout());
-        reactionsPanel = new ReactionsPanel(I18n, object);
+        reactionsPanel = new ReactionsPanel(I18n, nlpCommands, object);
         tabAutomations.add(reactionsPanel);
         tabAutomations.validate();
     }

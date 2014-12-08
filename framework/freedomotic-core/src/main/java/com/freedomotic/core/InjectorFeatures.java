@@ -18,12 +18,14 @@ public class InjectorFeatures extends AbstractModule {
     @Override
     protected void configure() {
 
-        bind(JoinDevice.class).in(Singleton.class);
+        bind(Autodiscovery.class).in(Singleton.class);
         bind(SynchManager.class).in(Singleton.class);
         bind(TopologyManager.class).in(Singleton.class);
         bind(JoinPlugin.class).in(Singleton.class);
         bind(TriggerCheck.class).in(Singleton.class);
         bind(BehaviorManager.class).in(Singleton.class);
+        //TODO: bind(ResourcesManager.class).in(Singleton.class);
+        bind(FreeFormCommandsInterpreter.class).in(Singleton.class);
 
         // The ProcolRead event now needs the TriggerCheck class
         // It should be refactored in the future to avoid this dependency
