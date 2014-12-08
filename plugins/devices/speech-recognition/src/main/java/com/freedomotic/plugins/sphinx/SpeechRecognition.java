@@ -11,23 +11,26 @@
  */
 package com.freedomotic.plugins.sphinx;
 
+import com.freedomotic.api.EventTemplate;
+import com.freedomotic.api.Protocol;
+import com.freedomotic.events.SpeechEvent;
+import com.freedomotic.exceptions.PluginStartupException;
+import com.freedomotic.exceptions.UnableToExecuteException;
+import com.freedomotic.reactions.Command;
+import com.freedomotic.util.Info;
+import edu.cmu.sphinx.api.Configuration;
+import edu.cmu.sphinx.api.LiveSpeechRecognizer;
+import edu.cmu.sphinx.api.SpeechResult;
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
-import com.freedomotic.api.EventTemplate;
-import com.freedomotic.api.Protocol;
-import com.freedomotic.app.Freedomotic;
-import com.freedomotic.events.SpeechEvent;
-import com.freedomotic.exceptions.UnableToExecuteException;
-import com.freedomotic.reactions.Command;
-import com.freedomotic.util.Info;
+import edu.cmu.sphinx.util.props.InternalConfigurationException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
@@ -35,58 +38,63 @@ import java.util.logging.Logger;
 
 /**
  * A simple HelloWorld demo showing a simple speech application built using
- * Sphinx-4. This application uses the Sphinx-4 endpointer, which automatically
- * segments incoming audio into utterances and silences.
+ * SpeechRecognition-4. This application uses the SpeechRecognition-4
+ * endpointer, which automatically segments incoming audio into utterances and
+ * silences.
+ *
+ * More info at http://cmusphinx.sourceforge.net/wiki/tutorialsphinx4
+ *
  */
-public class Sphinx extends Protocol {
+public class SpeechRecognition extends Protocol {
 
-    private Recognizer recognizer;
+    private LiveSpeechRecognizer recognizer;
 
-    public Sphinx() {
-        super("Speech Recognition", "/it.nicoletti.sphinx4/speech-recognition-manifest.xml");
+    public SpeechRecognition() {
+        super("Speech Recognition", "/speech-recognition/speech-recognition-manifest.xml");
     }
 
     @Override
-    public void onStart() {
-        //setGrammar();
-        ConfigurationManager cm;
-        cm = new ConfigurationManager(Sphinx.class.getResource("sphinx.config.xml"));
+    public void onStart() throws PluginStartupException {
+        Configuration sphinxConfiguration = new Configuration();
+        // Load model from the jar
+        sphinxConfiguration
+                .setAcousticModelPath("resource:/edu/cmu/sphinx/models/acoustic/wsj");
+        sphinxConfiguration
+                .setDictionaryPath("resource:/edu/cmu/sphinx/models/acoustic/wsj/dict/cmudict.0.6d");
+        sphinxConfiguration
+                .setLanguageModelPath("resource:/edu/cmu/sphinx/models/language/en-us.lm.dmp");
+
         try {
-            recognizer = (Recognizer) cm.lookup("recognizer");
-            recognizer.allocate();
-        } catch (Exception e) {
-            e.printStackTrace();
+            recognizer = new LiveSpeechRecognizer(sphinxConfiguration);
+            // Start recognition process pruning previously cached data.
+            recognizer.startRecognition(true);
+        } catch (IOException ex) {
+            throw new PluginStartupException("Cannot listen from microphone", ex);
         }
-        // start the microphone or exit if the programm if this is not possible
-        Microphone microphone = (Microphone) cm.lookup("microphone");
-        if (microphone == null || !microphone.startRecording()) {
-            System.out.println("Cannot start microphone. Check if connected.");
-            recognizer.deallocate();
-        }
-        System.out.println("Say: (turn on | turn off) ( kitchen light | livingroom light | light one | light two )");
+
+        setDescription("Ready, try saying 'turn on kitchen light'");
     }
 
     @Override
     public void onStop() {
-        try {
-            recognizer.deallocate();
-        } catch (IllegalStateException illegalStateException) {
+        if (recognizer != null) {
+            recognizer.stopRecognition();
         }
     }
 
     @Override
     protected void onRun() {
         while (true) {
-            Result result = recognizer.recognize();
+            SpeechResult result = recognizer.getResult();
             if (result != null) {
-                String resultText = result.getBestFinalResultNoFiller();
+                String resultText = result.getHypothesis();
                 setDescription("You said: " + resultText);
                 if (!resultText.trim().isEmpty()) {
                     SpeechEvent event = new SpeechEvent(this, resultText);
-                    Freedomotic.sendEvent(event);
+                    notifyEvent(event);
                 }
             } else {
-                setDescription("I can't hear what you said");
+                setDescription("I can't undestand what you said");
             }
         }
     }
@@ -116,14 +124,14 @@ public class Sphinx extends Protocol {
         buffer.append(");");
         Writer output = null;
         System.out.println(buffer.toString());
-        File file = new File(Info.PATH_DATA_FOLDER + "commands.gram2");
+        File file = new File(Info.PATHS.PATH_DATA_FOLDER + "commands.gram2");
         System.out.println(file.getAbsolutePath());
         try {
             output = new BufferedWriter(new FileWriter(file));
             output.write(buffer.toString());
             output.close();
         } catch (IOException ex) {
-            Logger.getLogger(Sphinx.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SpeechRecognition.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return buffer.toString();

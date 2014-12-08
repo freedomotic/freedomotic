@@ -201,6 +201,12 @@ public class Plugin implements Client, BusConsumer {
         //plugin is now set as STOPPED, but should be marked as FAILED
         currentPluginStatus = PluginStatus.FAILED;
     }
+    
+    protected void notifyCriticalError(String message, Exception ex) {
+        //Log and keep stack trace
+        LOG.log(Level.SEVERE, message, ex);
+        notifyCriticalError(message);
+    }
 
     /**
      *

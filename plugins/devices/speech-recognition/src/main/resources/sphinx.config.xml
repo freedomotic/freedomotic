@@ -104,12 +104,9 @@
     <!-- The Dictionary configuration                            -->
     <!-- ******************************************************** -->
 
-    <component name="dictionary"
-               type="edu.cmu.sphinx.linguist.dictionary.FastDictionary">
-        <property name="dictionaryPath"
-                  value="resource:/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz/dict/cmudict.0.6d"/>
-        <property name="fillerPath"
-                  value="resource:/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz/noisedict"/>
+    <component name="dictionary" type="edu.cmu.sphinx.linguist.dictionary.FastDictionary">
+        <property name="dictionaryPath" value="resource:/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz/dict/cmudict.0.6d"/>
+        <property name="fillerPath" value="resource:/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz/noisedict"/>
         <property name="addSilEndingPronunciation" value="false"/>
         <property name="allowMissingWords" value="false"/>
         <property name="unitManager" value="unitManager"/>
@@ -118,8 +115,7 @@
     <!-- ******************************************************** -->
     <!-- The acoustic model configuration                         -->
     <!-- ******************************************************** -->
-    <component name="wsj"
-               type="edu.cmu.sphinx.linguist.acoustic.tiedstate.TiedStateAcousticModel">
+    <component name="wsj" type="edu.cmu.sphinx.linguist.acoustic.tiedstate.TiedStateAcousticModel">
         <property name="loader" value="wsjLoader"/>
         <property name="unitManager" value="unitManager"/>
     </component>
@@ -231,22 +227,19 @@
     <!--  monitors                                               -->
     <!-- ******************************************************* -->
 
-    <component name="accuracyTracker"
-               type="edu.cmu.sphinx.instrumentation.BestPathAccuracyTracker">
+    <component name="accuracyTracker" type="edu.cmu.sphinx.instrumentation.BestPathAccuracyTracker">
         <property name="recognizer" value="${recognizer}"/>
         <property name="showAlignedResults" value="false"/>
         <property name="showRawResults" value="false"/>
     </component>
 
-    <component name="memoryTracker"
-               type="edu.cmu.sphinx.instrumentation.MemoryTracker">
+    <component name="memoryTracker" type="edu.cmu.sphinx.instrumentation.MemoryTracker">
         <property name="recognizer" value="${recognizer}"/>
         <property name="showSummary" value="false"/>
         <property name="showDetails" value="false"/>
     </component>
 
-    <component name="speedTracker"
-               type="edu.cmu.sphinx.instrumentation.SpeedTracker">
+    <component name="speedTracker" type="edu.cmu.sphinx.instrumentation.SpeedTracker">
         <property name="recognizer" value="${recognizer}"/>
         <property name="frontend" value="${frontend}"/>
         <property name="showSummary" value="true"/>

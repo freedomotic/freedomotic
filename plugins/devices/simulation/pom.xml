@@ -41,8 +41,8 @@
         <!--don't like this but works for the moment -->
         <freedomotic.synch.dist.path>../../../framework/freedomotic-core/plugins/</freedomotic.synch.dist.path>
         <freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${project.version}.${freedomotic.package.type}</freedomotic.marketplace.file>
-
     </properties>
+    
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

@@ -137,7 +137,7 @@ public abstract class Protocol extends Plugin {
                         try {
                             onStart();
                         } catch (PluginStartupException startupEx) {
-                            notifyCriticalError(startupEx.getMessage());
+                            notifyCriticalError(startupEx.getMessage(), startupEx);
                         }
                     } catch (Exception e) {
                         currentPluginStatus = PluginStatus.FAILED;
@@ -330,7 +330,7 @@ public abstract class Protocol extends Plugin {
                     }
                 }
             } catch (Exception e) {
-                notifyCriticalError(e.getMessage());
+                notifyCriticalError(e.getMessage(), e);
             }
         }
     }
