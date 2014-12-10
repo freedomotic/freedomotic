@@ -94,7 +94,7 @@ public class ObjectEditor
      */
     public ObjectEditor(final EnvObjectLogic obj) {
         this.object = obj;
-        this.nlpCommands = nlpCommands;
+        this.nlpCommands = api.nlpCommands();
         oldName = object.getPojo().getName();
 
         EnvObject pojo = obj.getPojo();

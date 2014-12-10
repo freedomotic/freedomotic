@@ -71,7 +71,7 @@ public class NlpCommandsStringDistanceImpl implements NlpCommands {
     }
 
     /**
-     * Tokenize the string and compute string distance usind Damerau-Levensthein
+     * Tokenize the string and compute string distance using Damerau-Levensthein
      * algorithm. May return also elements with similarity equals to zero.
      *
      * @param input

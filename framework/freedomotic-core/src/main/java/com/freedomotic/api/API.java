@@ -5,9 +5,7 @@
 package com.freedomotic.api;
 
 import com.freedomotic.app.AppConfig;
-import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
-import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.ThingsRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
@@ -16,10 +14,10 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
+import com.freedomotic.nlp.NlpCommands;
 import com.freedomotic.things.ThingsFactory;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
-import java.util.List;
 
 /**
  *
@@ -87,6 +85,7 @@ public interface API {
     ThingsRepository things();
     CommandPersistence commands();
     ReactionPersistence reactions();
+    NlpCommands nlpCommands();
     
     ThingsFactory thingsFactory();
 }

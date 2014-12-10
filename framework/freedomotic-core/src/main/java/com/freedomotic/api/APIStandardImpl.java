@@ -7,7 +7,6 @@ package com.freedomotic.api;
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.environment.EnvironmentRepository;
-import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.CommandPersistence;
@@ -15,6 +14,7 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
+import com.freedomotic.nlp.NlpCommands;
 import com.freedomotic.things.ThingsFactory;
 import com.freedomotic.things.ThingsRepository;
 import com.google.inject.Inject;
@@ -43,6 +43,7 @@ class APIStandardImpl implements API {
     private CommandPersistence commands;
     private ReactionPersistence reactions;
     private final ThingsFactory thingsFactory;
+    private NlpCommands nlpCommands;
 
     /**
      *
@@ -68,7 +69,8 @@ class APIStandardImpl implements API {
             PluginsManager plugManager,
             TriggerPersistence triggerPersistence,
             CommandPersistence commands,
-            ReactionPersistence reactions) {
+            ReactionPersistence reactions,
+            NlpCommands nlpCommands) {
         this.environments = environment;
         this.things = things;
         this.clientStorage = clientStorage;
@@ -80,6 +82,7 @@ class APIStandardImpl implements API {
         this.commands = commands;
         this.reactions = reactions;
         this.thingsFactory = thingsFactory;
+        this.nlpCommands = nlpCommands;
     }
 
     /**
@@ -90,7 +93,7 @@ class APIStandardImpl implements API {
     public AppConfig getConfig() {
         return config;
     }
-    
+
     /**
      *
      * @param filter
@@ -181,5 +184,9 @@ class APIStandardImpl implements API {
         return thingsFactory;
     }
 
-    
+    @Override
+    public NlpCommands nlpCommands() {
+        return nlpCommands;
+    }
+
 }

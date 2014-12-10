@@ -139,13 +139,6 @@
             <artifactId>xstream</artifactId>
             <version>${xstream.version}</version>
         </dependency>
-        <!-- LEGACY LIBRARY for serial port communication -->
-        <dependency>
-            <groupId>org.rxtx</groupId>
-            <artifactId>rxtx</artifactId>
-            <version>2.1.7</version>
-            <type>jar</type>
-        </dependency>
         <!-- Dependency injection -->
         <dependency>
             <groupId>com.google.inject</groupId>
@@ -164,11 +157,6 @@
             <artifactId>shiro-core</artifactId>
             <version>1.2.3</version>
             <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-web</artifactId>
-            <version>1.2.3</version>
         </dependency>
         <!-- Json serialization -->
         <dependency>
