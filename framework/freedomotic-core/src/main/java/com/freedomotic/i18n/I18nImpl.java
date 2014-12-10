@@ -25,7 +25,6 @@ import com.freedomotic.api.Plugin;
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.util.Info;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -48,8 +47,7 @@ import java.util.logging.Logger;
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-@Singleton
-public class I18nImpl implements I18n {
+class I18nImpl implements I18n {
 
 	private static class CustomSecurityManager extends SecurityManager {
 

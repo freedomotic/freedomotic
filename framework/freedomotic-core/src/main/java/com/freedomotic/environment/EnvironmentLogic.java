@@ -22,7 +22,6 @@ package com.freedomotic.environment;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.geometry.FreedomPolygon;
-import com.freedomotic.util.Graph;
 import com.freedomotic.util.UidGenerator;
 import java.io.File;
 import java.util.ArrayList;

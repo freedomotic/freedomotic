@@ -17,10 +17,15 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.reactions;
+package com.freedomotic.persistence;
 
 import com.freedomotic.rules.Statement;
 import com.freedomotic.core.Condition;
+import com.freedomotic.reactions.Command;
+import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.Reaction;
+import com.freedomotic.reactions.Trigger;
+import com.freedomotic.reactions.TriggerPersistence;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -33,8 +38,7 @@ import java.util.List;
  *
  * @author Enrico
  */
-public class ReactionConverter
-        implements Converter {
+class ReactionConverter implements Converter {
 
     /**
      *

@@ -23,7 +23,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.util;
+package com.freedomotic.plugins.impl;
 
 import com.freedomotic.app.Freedomotic;
 import java.io.BufferedInputStream;
@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class FetchHttpFiles {
+class FetchHttpFiles {
 //    public static void downloadAll(URL httpUrl, File destFolder) {
 //        try {
 //            //File destFolder = new File(destFolder);

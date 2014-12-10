@@ -33,7 +33,6 @@ import com.freedomotic.model.object.Representation;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.rules.Payload;
 import com.freedomotic.reactions.Reaction;
-import com.freedomotic.reactions.ReactionConverter;
 import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.security.User;

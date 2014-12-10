@@ -19,21 +19,15 @@
  */
 package com.freedomotic.environment.impl;
 
-import com.freedomotic.api.Client;
 import com.freedomotic.app.AppConfig;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
-import com.freedomotic.model.object.Behavior;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.ThingsRepository;
 import com.freedomotic.persistence.FreedomXStream;
-import com.freedomotic.plugins.ClientStorage;
-import com.freedomotic.plugins.ObjectPluginPlaceholder;
-import com.freedomotic.reactions.CommandPersistence;
-import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.SerialClone;
@@ -47,7 +41,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,7 +55,6 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
     // Dependencies
     private final AppConfig appConfig;
-    private final ClientStorage clientStorage;
     private final EnvironmentPersistenceFactory environmentPersistenceFactory;
     private final ThingsRepository thingsRepository;
 
@@ -74,8 +66,6 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
      * Creates a new repository
      *
      * @param appConfig Needed to get the default environment
-     * @param clientStorage Needed to autodiscover new things and add them to
-     * this environment
      * @param environmentPersistenceFactory Creates the right environment loader
      * to manage the environment persistence
      * @throws com.freedomotic.exceptions.RepositoryException
@@ -83,13 +73,11 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @Inject
     EnvironmentRepositoryImpl(
             AppConfig appConfig,
-            ClientStorage clientStorage,
             ThingsRepository thingsRepository,
             EnvironmentPersistenceFactory environmentPersistenceFactory)
             throws RepositoryException {
         this.appConfig = appConfig;
         this.thingsRepository = thingsRepository;
-        this.clientStorage = clientStorage;
         this.environmentPersistenceFactory = environmentPersistenceFactory;
     }
     
@@ -104,6 +92,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
      *
      * @throws RepositoryException
      */
+    //TODO: change it to read all environments in the folder
     private synchronized void cacheInitialData() throws RepositoryException {
         if (initialized) {
             LOG.config("Environment repository is already initialized. Skip initialization phase");
@@ -292,79 +281,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         return envLogic;
     }
 
-    /**
-     *
-     * @param clazz
-     * @param name
-     * @param protocol
-     * @param address
-     * @return
-     */
-    @Override
-    public EnvObjectLogic join(String clazz, String name, String protocol, String address) {
-        EnvObjectLogic loaded = null;
-        ObjectPluginPlaceholder objectPlugin = (ObjectPluginPlaceholder) clientStorage.get(clazz);
-
-        if (objectPlugin == null) {
-            LOG.warning("Doesn't exist an object class called " + clazz);
-
-            return null;
-        }
-
-        File templateFile = objectPlugin.getTemplate();
-        try {
-            loaded = thingsRepository.load(templateFile);
-        } catch (RepositoryException ex) {
-            Logger.getLogger(EnvironmentRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        //changing the name and other properties invalidates related trigger and commands
-        //call init() again after this changes
-        if ((name != null) && !name.isEmpty()) {
-            loaded.getPojo().setName(name);
-        } else {
-            loaded.getPojo().setName(protocol);
-        }
-
-        loaded = thingsRepository.copy(loaded);
-        loaded.getPojo().setProtocol(protocol);
-        loaded.getPojo().setPhisicalAddress(address);
-        // Remove the 'virtual' tag and any other actAs configuration. 
-        //TODO: it would be better to remove the actAs property and manage all with tags
-        loaded.getPojo().setActAs("");
-        loaded.setRandomLocation();
-
-        //set the PREFERRED MAPPING of the protocol plugin (if any is defined in its manifest)
-        Client addon = clientStorage.getClientByProtocol(protocol);
-
-        if (addon != null) {
-            for (int i = 0; i < addon.getConfiguration().getTuples().size(); i++) {
-                Map tuple = addon.getConfiguration().getTuples().getTuple(i);
-                String regex = (String) tuple.get("object.class");
-
-                if ((regex != null) && clazz.matches(regex)) {
-                    //map object behaviors to hardware triggers
-                    for (Behavior behavior : loaded.getPojo().getBehaviors()) {
-                        String triggerName = (String) tuple.get(behavior.getName());
-                        if (triggerName != null) {
-                            loaded.addTriggerMapping(TriggerPersistence.getTrigger(triggerName),
-                                    behavior.getName());
-                        }
-                    }
-
-                    for (String action : loaded.getPojo().getActions().stringPropertyNames()) {
-                        String commandName = (String) tuple.get(action);
-
-                        if (commandName != null) {
-                            loaded.setAction(action,
-                                    CommandPersistence.getHardwareCommand(commandName));
-                        }
-                    }
-                }
-            }
-        }
-
-        return loaded;
-    }
+   
 
     /**
      *

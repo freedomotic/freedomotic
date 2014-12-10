@@ -63,6 +63,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -312,11 +313,11 @@ public class Freedomotic implements BusConsumer {
         for (EnvironmentLogic env : environmentRepository.findAll()) {
             // Load all the Things in this environment
             File thingsFolder = env.getObjectFolder();
-            for (File thingFile : thingsFolder.listFiles()) {
-                EnvObjectLogic loadedThing = thingsRepository.load(thingFile);
-                loadedThing.setEnvironment(env);
+            List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(thingsFolder);
+            for (EnvObjectLogic thing: loadedThings) {
+                thing.setEnvironment(env);
                 // Actvates the Thing. Important, otherwise it will be not visible in the environment
-                thingsRepository.create(loadedThing);
+                thingsRepository.create(thing);
             }
         }
 

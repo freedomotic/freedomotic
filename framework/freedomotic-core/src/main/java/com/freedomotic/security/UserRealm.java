@@ -21,9 +21,7 @@ package com.freedomotic.security;
 
 import com.freedomotic.persistence.FreedomXStream;
 import com.thoughtworks.xstream.XStream;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

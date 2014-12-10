@@ -14,7 +14,6 @@ import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
-import com.freedomotic.util.FetchHttpFiles;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.Unzip;
 import com.google.inject.Inject;

@@ -36,7 +36,7 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
  *
  * @author matteo
  */
-public class UserConverter implements Converter {
+class UserConverter implements Converter {
 
     private static final Logger LOG = Logger.getLogger(UserConverter.class.getName());
 

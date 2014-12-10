@@ -55,14 +55,18 @@ public class TriggerCheck {
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     
     // Dependencies
-    private final EnvironmentRepository environmentPersistence;
+    private final Autodiscovery autodiscovery;
     private final BusService busService;
     private final ThingsRepository thingsRepository;
     private final BehaviorManager behaviorManager;
 
     @Inject
-    TriggerCheck(EnvironmentRepository environmentPersistence, ThingsRepository thingsRepository, BusService busService, BehaviorManager behaviorManager) {
-        this.environmentPersistence = environmentPersistence;
+    TriggerCheck(
+            Autodiscovery autodiscovery, 
+            ThingsRepository thingsRepository, 
+            BusService busService, 
+            BehaviorManager behaviorManager) {
+        this.autodiscovery = autodiscovery;
         this.thingsRepository = thingsRepository;
         this.busService = busService;
         this.behaviorManager = behaviorManager;
@@ -150,7 +154,7 @@ public class TriggerCheck {
             if (affectedObjects.isEmpty()) { //there isn't an object with this protocol and address
 
                 if ((clazz != null) && !clazz.isEmpty()) {
-                    EnvObjectLogic joined = environmentPersistence.join(clazz, name, protocol, address);
+                    EnvObjectLogic joined = autodiscovery.join(clazz, name, protocol, address);
                     affectedObjects.add(joined);
                 }
             }

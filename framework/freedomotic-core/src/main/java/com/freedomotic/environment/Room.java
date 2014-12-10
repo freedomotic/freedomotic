@@ -25,10 +25,8 @@
  */
 package com.freedomotic.environment;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.things.GenericGate;
-import com.freedomotic.util.Edge;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -106,7 +104,7 @@ public class Room
         reachable.clear();
 
         LinkedBlockingQueue<Room> queue = new LinkedBlockingQueue<Room>();
-        ArrayList<Edge> visited = new ArrayList<Edge>();
+        ArrayList<GraphEdge> visited = new ArrayList<GraphEdge>();
         queue.add(this);
 
         while (!queue.isEmpty()) {
@@ -117,7 +115,7 @@ public class Room
             if (getEnv().getGraph().getEdgeSet(node) != null) { //if this room (the node) has adiacent rooms
 
                 for (Object object : getEnv().getGraph().getEdgeSet(node)) {
-                    Edge adiacent = (Edge) object;
+                    GraphEdge adiacent = (GraphEdge) object;
 
                     //LOG.info("  " + node.getPojo().getName() + " is linked with arch " + adiacent.toString());
                     if (!visited.contains(adiacent)) {

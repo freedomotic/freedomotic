@@ -40,8 +40,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class TupleConverter
-        implements Converter {
+class TupleConverter implements Converter {
 
     /**
      *

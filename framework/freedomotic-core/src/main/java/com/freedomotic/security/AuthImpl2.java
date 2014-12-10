@@ -43,7 +43,7 @@ import org.apache.shiro.util.ThreadState;
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public class AuthImpl2 implements Auth {
+class AuthImpl2 implements Auth {
 
     private static final Logger LOG = Logger.getLogger(AuthImpl2.class.getName());
     private static boolean realmInited = false;

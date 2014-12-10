@@ -1,25 +1,23 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.util;
+package com.freedomotic.environment;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,7 +45,7 @@ import java.util.logging.Logger;
  * operazioni.
  *
  */
-public class Graph {
+class Graph {
 
     HashMap nodi;
     int nArchi;
@@ -80,6 +78,7 @@ public class Graph {
      * add(x) aggiunge un nodo al grafo con valore x se non esiste, nulla
      * altrimenti L'aggiunta di un nodo significa aggiungere la coppia (x,
      * lista) nella HashMap dove lista è una HashSet nuovo vuoto.
+     *
      * @param x
      */
     public void add(Object x) {
@@ -96,11 +95,11 @@ public class Graph {
     public void remove(Object x) {
         if (nodi.containsKey(x)) {
             Iterator arcoIncidenteI = ((HashSet) nodi.get(x)).iterator();
-            Edge a;
+            GraphEdge a;
             Object y;
 
             while (arcoIncidenteI.hasNext()) {
-                a = (Edge) arcoIncidenteI.next();
+                a = (GraphEdge) arcoIncidenteI.next();
                 y = (a.x.equals(x)) ? a.y : a.x;
 
                 if (((HashSet) nodi.get(y)).remove(a)) {
@@ -114,7 +113,8 @@ public class Graph {
 
     /**
      * add(x,y,v) aggiunge un arco tra i nodi x e y con peso v
-     * @return 
+     *
+     * @return
      */
     public boolean add(Object x, Object y, Object value) {
         boolean flag = false;
@@ -128,7 +128,7 @@ public class Graph {
             add(y);
         }
 
-        Edge a = new Edge(x, y, value);
+        GraphEdge a = new GraphEdge(x, y, value);
         flag = ((HashSet) nodi.get(x)).add(a);
         flag1 = ((HashSet) nodi.get(y)).add(a);
         flag = flag && flag1;
@@ -145,7 +145,7 @@ public class Graph {
      * @param a
      * @return
      */
-    public boolean add(Edge a) {
+    public boolean add(GraphEdge a) {
         return add(a.x, a.y, a.value);
     }
 
@@ -157,7 +157,7 @@ public class Graph {
      * @return
      */
     public boolean remove(Object x, Object y, Object value) {
-        Edge a = new Edge(x, y, value);
+        GraphEdge a = new GraphEdge(x, y, value);
 
         return remove(a);
     }
@@ -167,7 +167,7 @@ public class Graph {
      * @param a
      * @return
      */
-    public boolean remove(Edge a) {
+    public boolean remove(GraphEdge a) {
         boolean flag = false;
         boolean flag1 = false;
 
@@ -224,7 +224,7 @@ public class Graph {
     public String toString() {
         StringBuilder out = new StringBuilder();
         Object nodo;
-        Edge a;
+        GraphEdge a;
         Iterator arcoI;
         Iterator nodoI = nodi.keySet().iterator();
 
@@ -233,7 +233,7 @@ public class Graph {
             out.append("Nodo ").append(nodo.toString()).append(": ");
 
             while (arcoI.hasNext()) {
-                a = (Edge) arcoI.next();
+                a = (GraphEdge) arcoI.next();
                 //out.append( ((a.x == nodo ) ? a.y.toString() : a.x.toString()) + "("+a.value.toString()+"), ");
                 out.append(a.toString()).append(", ");
             }

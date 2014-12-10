@@ -38,8 +38,7 @@ import java.util.logging.Logger;
  *
  * @author gpt
  */
-public class PropertiesConverter
-        implements Converter {
+class PropertiesConverter implements Converter {
 
     /**
      *

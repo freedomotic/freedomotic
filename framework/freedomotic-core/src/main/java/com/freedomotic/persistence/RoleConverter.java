@@ -35,7 +35,7 @@ import org.apache.shiro.authz.permission.WildcardPermission;
  *
  * @author matteo
  */
-public class RoleConverter implements Converter {
+class RoleConverter implements Converter {
 
     /**
      *

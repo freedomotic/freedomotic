@@ -28,7 +28,7 @@ import org.apache.shiro.realm.SimpleAccountRealm;
  *
  * @author matteo
  */
-public class PluginRealm extends SimpleAccountRealm {
+class PluginRealm extends SimpleAccountRealm {
 
     public final static String PLUGIN_REALM_NAME = "com.freedomotic.plugins.security";
     public final static String DEFAULT_PERMISSION = "*";

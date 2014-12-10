@@ -23,14 +23,22 @@
  */
 package com.freedomotic.core;
 
+import com.freedomotic.api.Client;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
-import com.freedomotic.environment.EnvironmentRepository;
+import com.freedomotic.exceptions.RepositoryException;
+import com.freedomotic.model.object.Behavior;
+import com.freedomotic.plugins.ClientStorage;
+import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.things.ThingsRepository;
 import com.freedomotic.reactions.Command;
+import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.TriggerPersistence;
+import com.freedomotic.things.EnvObjectLogic;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.io.File;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.JMSException;
@@ -48,13 +56,13 @@ public final class Autodiscovery implements BusConsumer {
     private static final Logger LOG = Logger.getLogger(Autodiscovery.class.getName());
 
     // Dependencies
-    private final EnvironmentRepository environmentPersistence;
+    private final ClientStorage clientStorage;
     private final BusService busService;
     private final ThingsRepository thingsRepository;
 
     @Inject
-    Autodiscovery(EnvironmentRepository environmentRepository, ThingsRepository thingsRepository, BusService busService) {
-        this.environmentPersistence = environmentRepository;
+    Autodiscovery(ClientStorage clientStorage, ThingsRepository thingsRepository, BusService busService) {
+        this.clientStorage = clientStorage;
         this.thingsRepository = thingsRepository;
         this.busService = busService;
         register();
@@ -85,11 +93,84 @@ public final class Autodiscovery implements BusConsumer {
                 String clazz = command.getProperty("object.class");
 
                 if (thingsRepository.findByAddress(protocol, address).isEmpty()) {
-                    environmentPersistence.join(clazz, name, protocol, address);
+                    join(clazz, name, protocol, address);
                 }
             }
         } catch (JMSException ex) {
             Logger.getLogger(Autodiscovery.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     *
+     * @param clazz
+     * @param name
+     * @param protocol
+     * @param address
+     * @return
+     */
+    protected EnvObjectLogic join(String clazz, String name, String protocol, String address) {
+        EnvObjectLogic loaded = null;
+        ObjectPluginPlaceholder objectPlugin = (ObjectPluginPlaceholder) clientStorage.get(clazz);
+
+        if (objectPlugin == null) {
+            LOG.warning("Doesn't exist an object class called " + clazz);
+
+            return null;
+        }
+
+        File templateFile = objectPlugin.getTemplate();
+        try {
+            loaded = thingsRepository.load(templateFile);
+        } catch (RepositoryException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+        //changing the name and other properties invalidates related trigger and commands
+        //call init() again after this changes
+        if ((name != null) && !name.isEmpty()) {
+            loaded.getPojo().setName(name);
+        } else {
+            loaded.getPojo().setName(protocol);
+        }
+
+        loaded = thingsRepository.copy(loaded);
+        loaded.getPojo().setProtocol(protocol);
+        loaded.getPojo().setPhisicalAddress(address);
+        // Remove the 'virtual' tag and any other actAs configuration. 
+        //TODO: it would be better to remove the actAs property and manage all with tags
+        loaded.getPojo().setActAs("");
+        loaded.setRandomLocation();
+
+        //set the PREFERRED MAPPING of the protocol plugin (if any is defined in its manifest)
+        Client addon = clientStorage.getClientByProtocol(protocol);
+
+        if (addon != null) {
+            for (int i = 0; i < addon.getConfiguration().getTuples().size(); i++) {
+                Map tuple = addon.getConfiguration().getTuples().getTuple(i);
+                String regex = (String) tuple.get("object.class");
+
+                if ((regex != null) && clazz.matches(regex)) {
+                    //map object behaviors to hardware triggers
+                    for (Behavior behavior : loaded.getPojo().getBehaviors()) {
+                        String triggerName = (String) tuple.get(behavior.getName());
+                        if (triggerName != null) {
+                            loaded.addTriggerMapping(TriggerPersistence.getTrigger(triggerName),
+                                    behavior.getName());
+                        }
+                    }
+
+                    for (String action : loaded.getPojo().getActions().stringPropertyNames()) {
+                        String commandName = (String) tuple.get(action);
+
+                        if (commandName != null) {
+                            loaded.setAction(action,
+                                    CommandPersistence.getHardwareCommand(commandName));
+                        }
+                    }
+                }
+            }
+        }
+
+        return loaded;
     }
 }

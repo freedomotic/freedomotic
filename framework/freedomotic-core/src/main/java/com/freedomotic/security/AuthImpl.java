@@ -50,7 +50,7 @@ import org.apache.shiro.util.ThreadState;
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public class AuthImpl implements Auth{
+class AuthImpl implements Auth{
 
     private final static String BASE_REALM_NAME = "com.freedomotic.security";
     private final static String PLUGIN_REALM_NAME = "com.freedomotic.plugins.security";

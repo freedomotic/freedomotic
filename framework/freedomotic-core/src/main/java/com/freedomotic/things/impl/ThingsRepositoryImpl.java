@@ -20,7 +20,6 @@
 package com.freedomotic.things.impl;
 
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;
@@ -64,9 +63,8 @@ class ThingsRepositoryImpl implements ThingsRepository {
     public static final boolean MAKE_UNIQUE = true;
 
     public static final boolean MAKE_NOT_UNIQUE = false;
-    private static final Map<String, EnvObjectLogic> objectList = new HashMap<String, EnvObjectLogic>();
+    private static final Map<String, EnvObjectLogic> objectList = new HashMap<>();
     private final ThingsFactory thingsFactory;
-    private final EnvironmentRepository environmentRepository;
     private final DataUpgradeService dataUpgradeService;
 
     /**
@@ -75,9 +73,10 @@ class ThingsRepositoryImpl implements ThingsRepository {
      * @param environmentRepository
      */
     @Inject
-    public ThingsRepositoryImpl(ThingsFactory thingsFactory, EnvironmentRepository environmentRepository, DataUpgradeService dataUpgradeService) {
+    public ThingsRepositoryImpl(
+            ThingsFactory thingsFactory, 
+            DataUpgradeService dataUpgradeService) {
         this.thingsFactory = thingsFactory;
-        this.environmentRepository = environmentRepository;
         this.dataUpgradeService = dataUpgradeService;
     }
 
@@ -320,10 +319,10 @@ class ThingsRepositoryImpl implements ThingsRepository {
 
     /**
      * Add an object to the environment. You can use
- EnvObjectPersistnce.MAKE_UNIQUE to saveAll an object that will surely be
- unique. Beware this means it is created with defensive copy of the object
- in input and name, protocol, address and UUID are reset to a default
- value.
+     * EnvObjectPersistnce.MAKE_UNIQUE to saveAll an object that will surely be
+     * unique. Beware this means it is created with defensive copy of the object
+     * in input and name, protocol, address and UUID are reset to a default
+     * value.
      *
      * @param obj the environment object to add
      * @param MAKE_UNIQUE can be true or false. Creates a defensive copy
@@ -554,7 +553,7 @@ class ThingsRepositoryImpl implements ThingsRepository {
                 String fromVersion;
                 try {
                     dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
-                    fromVersion  = dataProperties.getProperty("data.version");
+                    fromVersion = dataProperties.getProperty("data.version");
                 } catch (IOException iOException) {
                     // Fallback to a default version for older version without that properties file
                     fromVersion = "5.5.0";
@@ -600,19 +599,7 @@ class ThingsRepositoryImpl implements ThingsRepository {
         if (files != null) {
             for (File file : files) {
                 EnvObjectLogic loaded = load(file);
-
-                if (loaded != null) {
-                    EnvironmentLogic env = environmentRepository.findOne(loaded.getPojo().getEnvironmentID());
-                    if (env != null) {
-                        loaded.setEnvironment(env);
-                    } else {
-                        LOG.warning("Reset environment UUID of object " + loaded.getPojo().getName()
-                                + " to the default environment. This is because the environment UUID "
-                                + loaded.getPojo().getEnvironmentID() + " does not exists.");
-                        loaded.setEnvironment(environmentRepository.findAll().get(0));
-                    }
-                    results.add(loaded);
-                }
+                results.add(loaded);
             }
         }
         return results;
