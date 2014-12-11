@@ -26,7 +26,7 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.i18n.I18n;
-import com.freedomotic.nlp.NlpCommands;
+import com.freedomotic.nlp.NlpCommand;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -50,14 +50,14 @@ public class ReactionEditor
     private Box cmdBox = Box.createVerticalBox();
     private Component parent = null;
     private final I18n I18n;
-    private NlpCommands nlpCommands;
+    private NlpCommand nlpCommands;
 
     /**
      * Creates new form ReactionEditor
      *
      * @param parent
      */
-    public ReactionEditor(I18n i18n, NlpCommands nlpCommands, Reaction reaction, Component parent) {
+    public ReactionEditor(I18n i18n, NlpCommand nlpCommands, Reaction reaction, Component parent) {
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
         initComponents();
@@ -70,7 +70,7 @@ public class ReactionEditor
      *
      * @param i18n
      */
-    public ReactionEditor(I18n i18n, NlpCommands nlpCommands) {
+    public ReactionEditor(I18n i18n, NlpCommand nlpCommands) {
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
         initComponents();

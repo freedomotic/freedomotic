@@ -34,7 +34,7 @@ import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
-import com.freedomotic.nlp.NlpCommands;
+import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.util.Info;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -75,7 +75,7 @@ public class ObjectEditor
     private PropertiesPanel_1 pnlTriggers;
     //private PropertiesPanel_1 controlPanel;
     ReactionsPanel reactionsPanel;
-    private final NlpCommands nlpCommands;
+    private final NlpCommand nlpCommands;
 
     private static API api = null;
     private static I18n I18n;

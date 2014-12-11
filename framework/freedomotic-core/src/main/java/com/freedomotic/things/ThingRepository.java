@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author enrico
  */
-public interface ThingsRepository extends Repository<EnvObjectLogic> {
+public interface ThingRepository extends Repository<EnvObjectLogic> {
     
     public List<EnvObjectLogic> findByEnvironment(EnvironmentLogic env);
     public List<EnvObjectLogic> findByEnvironment(String uuid);

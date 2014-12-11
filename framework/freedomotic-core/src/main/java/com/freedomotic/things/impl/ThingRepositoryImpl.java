@@ -25,8 +25,8 @@ import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
 import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.ThingsFactory;
-import com.freedomotic.things.ThingsRepository;
+import com.freedomotic.things.ThingFactory;
+import com.freedomotic.things.ThingRepository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.DataUpgradeService;
 import com.freedomotic.persistence.XmlPreprocessor;
@@ -58,13 +58,13 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
  *
  * @author Enrico
  */
-class ThingsRepositoryImpl implements ThingsRepository {
+class ThingRepositoryImpl implements ThingRepository {
 
     public static final boolean MAKE_UNIQUE = true;
 
     public static final boolean MAKE_NOT_UNIQUE = false;
     private static final Map<String, EnvObjectLogic> objectList = new HashMap<>();
-    private final ThingsFactory thingsFactory;
+    private final ThingFactory thingsFactory;
     private final DataUpgradeService dataUpgradeService;
 
     /**
@@ -73,8 +73,8 @@ class ThingsRepositoryImpl implements ThingsRepository {
      * @param environmentRepository
      */
     @Inject
-    public ThingsRepositoryImpl(
-            ThingsFactory thingsFactory, 
+    public ThingRepositoryImpl(
+            ThingFactory thingsFactory, 
             DataUpgradeService dataUpgradeService) {
         this.thingsFactory = thingsFactory;
         this.dataUpgradeService = dataUpgradeService;
@@ -173,7 +173,7 @@ class ThingsRepositoryImpl implements ThingsRepository {
      */
     @RequiresPermissions("objects:read")
     public static EnvObjectLogic getObjectByName(String name) {
-        for (Iterator<EnvObjectLogic> it = ThingsRepositoryImpl.iterator(); it.hasNext();) {
+        for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getName().equalsIgnoreCase(name) //&& auth.isPermitted("objects:read:" + object.getPojo().getUUID())
                     ) {
@@ -251,7 +251,7 @@ class ThingsRepositoryImpl implements ThingsRepository {
         }
 
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
-        for (Iterator<EnvObjectLogic> it = ThingsRepositoryImpl.iterator(); it.hasNext();) {
+        for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if ((object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()))
                     && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(address.trim())) //           && auth.isPermitted("objects:read:" + object.getPojo().getUUID())
@@ -277,7 +277,7 @@ class ThingsRepositoryImpl implements ThingsRepository {
     @RequiresPermissions("objects:read")
     public static ArrayList<EnvObjectLogic> getObjectByProtocol(String protocol) {
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
-        for (Iterator<EnvObjectLogic> it = ThingsRepositoryImpl.iterator(); it.hasNext();) {
+        for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()) // && auth.isPermitted("objects:read:" + object.getPojo().getUUID())
                     ) {
@@ -297,7 +297,7 @@ class ThingsRepositoryImpl implements ThingsRepository {
     @RequiresPermissions("objects:read")
     public static ArrayList<EnvObjectLogic> getObjectByEnvironment(String uuid) {
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
-        for (Iterator<EnvObjectLogic> it = ThingsRepositoryImpl.iterator(); it.hasNext();) {
+        for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getEnvironmentID().equalsIgnoreCase(uuid) //&& auth.isPermitted("objects:read:" + object.getPojo().getUUID().substring(0, 7))
                     ) {
@@ -408,7 +408,7 @@ class ThingsRepositoryImpl implements ThingsRepository {
             objectList.clear();
         }
     }
-    private static final Logger LOG = Logger.getLogger(ThingsRepositoryImpl.class.getName());
+    private static final Logger LOG = Logger.getLogger(ThingRepositoryImpl.class.getName());
 
     @Override
     @RequiresPermissions("objects:read")

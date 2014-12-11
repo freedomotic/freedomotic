@@ -25,7 +25,7 @@ package com.freedomotic.nlp;
 
 import com.freedomotic.exceptions.NoResultsException;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandsRepository;
+import com.freedomotic.reactions.CommandRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,14 +40,14 @@ import javax.inject.Inject;
  * @see Command
  * @author Enrico
  */
-public class NlpCommandsStringDistanceImpl implements NlpCommands {
+public class NlpCommandStringDistanceImpl implements NlpCommand {
 
-    private static final Logger LOG = Logger.getLogger(NlpCommandsStringDistanceImpl.class.getName());
+    private static final Logger LOG = Logger.getLogger(NlpCommandStringDistanceImpl.class.getName());
     private List<Rank<Command>> ranking;
-    private final CommandsRepository commandsRepository;
+    private final CommandRepository commandsRepository;
 
     @Inject
-    public NlpCommandsStringDistanceImpl(CommandsRepository commandsRepository) {
+    public NlpCommandStringDistanceImpl(CommandRepository commandsRepository) {
         this.commandsRepository = commandsRepository;
     }
 

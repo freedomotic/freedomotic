@@ -39,7 +39,7 @@ import com.freedomotic.marketplace.ClassPathUpdater;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.MarketPlaceService;
 import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.ThingsRepository;
+import com.freedomotic.things.ThingRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.Command;
@@ -96,7 +96,7 @@ public class Freedomotic implements BusConsumer {
     public static Injector INJECTOR;
     //dependencies
     private final EnvironmentRepository environmentRepository;
-    private final ThingsRepository thingsRepository;
+    private final ThingRepository thingsRepository;
     private final TopologyManager topologyManager;
     private final SynchManager synchManager;
     private final ClientStorage clientStorage;
@@ -124,7 +124,7 @@ public class Freedomotic implements BusConsumer {
     public Freedomotic(
             PluginsManager pluginsLoader,
             EnvironmentRepository environmentRepository,
-            ThingsRepository thingsRepository,
+            ThingRepository thingsRepository,
             ClientStorage clientStorage,
             AppConfig config,
             API api,

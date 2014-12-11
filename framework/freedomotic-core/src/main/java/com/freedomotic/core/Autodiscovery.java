@@ -31,7 +31,7 @@ import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
-import com.freedomotic.things.ThingsRepository;
+import com.freedomotic.things.ThingRepository;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
@@ -58,10 +58,10 @@ public final class Autodiscovery implements BusConsumer {
     // Dependencies
     private final ClientStorage clientStorage;
     private final BusService busService;
-    private final ThingsRepository thingsRepository;
+    private final ThingRepository thingsRepository;
 
     @Inject
-    Autodiscovery(ClientStorage clientStorage, ThingsRepository thingsRepository, BusService busService) {
+    Autodiscovery(ClientStorage clientStorage, ThingRepository thingsRepository, BusService busService) {
         this.clientStorage = clientStorage;
         this.thingsRepository = thingsRepository;
         this.busService = busService;

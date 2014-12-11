@@ -29,7 +29,7 @@ import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.ThingsRepository;
+import com.freedomotic.things.ThingRepository;
 import com.freedomotic.reactions.Command;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -67,11 +67,11 @@ public final class BehaviorManager implements BusConsumer {
 
     // Dependencies
     private final BusService busService;
-    private final ThingsRepository thingsRepository;
+    private final ThingRepository thingsRepository;
     private final EnvironmentRepository environmentRepository;
 
     @Inject
-    BehaviorManager(BusService busService, ThingsRepository thingsRepository, EnvironmentRepository environmentRepository) {
+    BehaviorManager(BusService busService, ThingRepository thingsRepository, EnvironmentRepository environmentRepository) {
         this.busService = busService;
         this.thingsRepository = thingsRepository;
         this.environmentRepository = environmentRepository;

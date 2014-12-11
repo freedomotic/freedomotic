@@ -31,7 +31,7 @@ import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.ThingsRepository;
+import com.freedomotic.things.ThingRepository;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
@@ -57,13 +57,13 @@ public class TriggerCheck {
     // Dependencies
     private final Autodiscovery autodiscovery;
     private final BusService busService;
-    private final ThingsRepository thingsRepository;
+    private final ThingRepository thingsRepository;
     private final BehaviorManager behaviorManager;
 
     @Inject
     TriggerCheck(
             Autodiscovery autodiscovery, 
-            ThingsRepository thingsRepository, 
+            ThingRepository thingsRepository, 
             BusService busService, 
             BehaviorManager behaviorManager) {
         this.autodiscovery = autodiscovery;

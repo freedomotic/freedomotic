@@ -51,7 +51,7 @@ class BusServiceImpl extends LifeCycle implements BusService {
 
     private static final Logger LOG = Logger.getLogger(BusServiceImpl.class.getName());
 
-    private AppConfig config;
+    //private AppConfig config;
     private BusBroker brokerHolder;
     private BusConnection connectionHolder;
     private DestinationRegistry destination;
@@ -61,8 +61,8 @@ class BusServiceImpl extends LifeCycle implements BusService {
     protected MessageProducer messageProducer;
     
     @Inject
-    public BusServiceImpl(AppConfig config){
-        this.config = config;
+    public BusServiceImpl(){
+        //this.config = config;
         if (BootStatus.getCurrentStatus() == BootStatus.STOPPED) {
            init();
         }
@@ -106,14 +106,14 @@ class BusServiceImpl extends LifeCycle implements BusService {
     private MessageProducer createMessageProducer() throws JMSException {
 
         // null parameter creates a producer with no specified destination
-        final MessageProducer createProducer = sendSession.createProducer(null);
+        final MessageProducer createdProducer = sendSession.createProducer(null);
 
         // configure
-        createProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        final int tiemToLive = config.getIntProperty("KEY_MESSAGES_TTL", 1000);
-        createProducer.setTimeToLive(tiemToLive);
+        createdProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        //final int tiemToLive = config.getIntProperty("KEY_MESSAGES_TTL", 1000);
+        //createProducer.setTimeToLive(tiemToLive);
 
-        return createProducer;
+        return createdProducer;
     }
 
     /**
@@ -262,6 +262,9 @@ class BusServiceImpl extends LifeCycle implements BusService {
      */
     @Override
     public Command send(final Command command) {
+        if (command == null) {
+            throw new IllegalArgumentException("Cannot send a null command");
+        }
 
         try {
 
@@ -270,6 +273,9 @@ class BusServiceImpl extends LifeCycle implements BusService {
             msg.setObject(command);
             msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
 
+            if (command.getReceiver() == null || command.getReceiver().isEmpty()) {
+                throw new IllegalArgumentException("Cannot send command '" + command + "', the receiver channel is not specified");
+            }
             Queue destination = new ActiveMQQueue(command.getReceiver());
 
             if (command.getReplyTimeout() > 0) {

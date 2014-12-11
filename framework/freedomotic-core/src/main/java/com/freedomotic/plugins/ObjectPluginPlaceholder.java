@@ -28,7 +28,7 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.ThingsRepository;
+import com.freedomotic.things.ThingRepository;
 import java.io.File;
 
 /**
@@ -40,7 +40,7 @@ public class ObjectPluginPlaceholder implements Client {
     private final File example;
     private final EnvObjectLogic template;
     private Config config;
-    private final ThingsRepository thingsRepository;
+    private final ThingRepository thingsRepository;
 
     /**
      *
@@ -48,7 +48,7 @@ public class ObjectPluginPlaceholder implements Client {
      * @param example
      * @throws RepositoryException
      */
-    public ObjectPluginPlaceholder(ThingsRepository thingsRepository, File example) throws RepositoryException {
+    public ObjectPluginPlaceholder(ThingRepository thingsRepository, File example) throws RepositoryException {
         this.example = example;
         this.thingsRepository = thingsRepository;
         template = thingsRepository.load(example);

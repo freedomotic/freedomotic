@@ -11,6 +11,6 @@ import com.freedomotic.persistence.Repository;
  *
  * @author enrico
  */
-public interface CommandsRepository extends Repository<Command> {
+public interface CommandRepository extends Repository<Command> {
 
 }

@@ -13,7 +13,7 @@ import com.freedomotic.events.ObjectHasChangedBehavior;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.ThingsRepository;
+import com.freedomotic.things.ThingRepository;
 import com.google.inject.Inject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,10 +30,10 @@ public class SynchManager implements BusConsumer {
     private static final String LISTEN_CHANNEL = "app.event.sensor.object.behavior.change";
     private BusMessagesListener listener;
     private final BusService busService;
-    private final ThingsRepository thingsRepository;
+    private final ThingRepository thingsRepository;
 
     @Inject
-    SynchManager(BusService busService, ThingsRepository thingsRepository) {
+    SynchManager(BusService busService, ThingRepository thingsRepository) {
         this.busService = busService;
         this.thingsRepository = thingsRepository;
         listener = new BusMessagesListener(this, busService);

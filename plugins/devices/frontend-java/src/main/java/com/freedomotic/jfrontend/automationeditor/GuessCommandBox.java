@@ -25,7 +25,7 @@ import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.Nlp;
-import com.freedomotic.nlp.NlpCommands;
+import com.freedomotic.nlp.NlpCommand;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -54,7 +54,7 @@ public class GuessCommandBox
 
     private Command command = null;
     private ReactionEditor editor;
-    private NlpCommands nlpCommands;
+    private NlpCommand nlpCommands;
     private final JButton btnAdd = new JButton();
     private final JButton btnCustomize;
     private final GuessCommandBox me = this;
@@ -67,7 +67,7 @@ public class GuessCommandBox
      * @param i18n
      * @param editor
      */
-    public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommands nlpCommands) {        
+    public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommand nlpCommands) {        
         super();
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
@@ -86,7 +86,7 @@ public class GuessCommandBox
      * @param nlpCommands
      * @param command
      */
-    public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommands nlpCommands, Command command) {
+    public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommand nlpCommands, Command command) {
         super();
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;

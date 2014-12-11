@@ -22,7 +22,7 @@ package com.freedomotic.jfrontend.automationeditor;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.UnableToExecuteException;
-import com.freedomotic.nlp.NlpCommands;
+import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
@@ -43,7 +43,7 @@ import javax.swing.JFrame;
  */
 public class AutomationsEditor extends Protocol {
     
-    @Inject private NlpCommands nlpCommands;
+    @Inject private NlpCommand nlpCommands;
 
     /**
      *

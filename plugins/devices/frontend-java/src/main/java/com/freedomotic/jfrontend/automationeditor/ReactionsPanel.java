@@ -26,7 +26,7 @@ import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.i18n.I18n;
-import com.freedomotic.nlp.NlpCommands;
+import com.freedomotic.nlp.NlpCommand;
 import java.awt.BorderLayout;
 import java.util.Iterator;
 import javax.swing.BoxLayout;
@@ -45,14 +45,14 @@ public class ReactionsPanel
     private JPanel panel = new JPanel();
     private JScrollPane scrollPane;
     private final I18n I18n;
-    private NlpCommands nlpCommands;
+    private NlpCommand nlpCommands;
 
     /**
      * Creates new form ReactionList
      *
      * @param plugin
      */
-    public ReactionsPanel(AutomationsEditor plugin, NlpCommands nlpCommands) {
+    public ReactionsPanel(AutomationsEditor plugin, NlpCommand nlpCommands) {
         this.plugin = plugin;
         this.nlpCommands = nlpCommands;
         this.I18n = plugin.getApi().getI18n();
@@ -64,7 +64,7 @@ public class ReactionsPanel
      * @param i18n
      * @param obj
      */
-    public ReactionsPanel(I18n i18n, NlpCommands nlpCommands, EnvObjectLogic obj) {
+    public ReactionsPanel(I18n i18n, NlpCommand nlpCommands, EnvObjectLogic obj) {
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
         init(obj);

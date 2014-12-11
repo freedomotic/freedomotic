@@ -19,7 +19,6 @@
  */
 package com.freedomotic.bus;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.util.UidGenerator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

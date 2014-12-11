@@ -14,9 +14,9 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
-import com.freedomotic.nlp.NlpCommands;
-import com.freedomotic.things.ThingsFactory;
-import com.freedomotic.things.ThingsRepository;
+import com.freedomotic.nlp.NlpCommand;
+import com.freedomotic.things.ThingFactory;
+import com.freedomotic.things.ThingRepository;
 import com.google.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
@@ -33,7 +33,7 @@ import java.util.Collection;
 class APIStandardImpl implements API {
 
     private final EnvironmentRepository environments;
-    private final ThingsRepository things;
+    private final ThingRepository things;
     private final ClientStorage clientStorage;
     private final AppConfig config;
     private final Auth auth;
@@ -42,8 +42,8 @@ class APIStandardImpl implements API {
     private TriggerPersistence triggers;
     private CommandPersistence commands;
     private ReactionPersistence reactions;
-    private final ThingsFactory thingsFactory;
-    private NlpCommands nlpCommands;
+    private final ThingFactory thingsFactory;
+    private NlpCommand nlpCommands;
 
     /**
      *
@@ -60,8 +60,8 @@ class APIStandardImpl implements API {
     @Inject
     public APIStandardImpl(
             EnvironmentRepository environment,
-            ThingsRepository things,
-            ThingsFactory thingsFactory,
+            ThingRepository things,
+            ThingFactory thingsFactory,
             ClientStorage clientStorage,
             AppConfig config,
             Auth auth,
@@ -70,7 +70,7 @@ class APIStandardImpl implements API {
             TriggerPersistence triggerPersistence,
             CommandPersistence commands,
             ReactionPersistence reactions,
-            NlpCommands nlpCommands) {
+            NlpCommand nlpCommands) {
         this.environments = environment;
         this.things = things;
         this.clientStorage = clientStorage;
@@ -165,7 +165,7 @@ class APIStandardImpl implements API {
     }
 
     @Override
-    public ThingsRepository things() {
+    public ThingRepository things() {
         return things;
     }
 
@@ -180,12 +180,12 @@ class APIStandardImpl implements API {
     }
 
     @Override
-    public ThingsFactory thingsFactory() {
+    public ThingFactory thingsFactory() {
         return thingsFactory;
     }
 
     @Override
-    public NlpCommands nlpCommands() {
+    public NlpCommand nlpCommands() {
         return nlpCommands;
     }
 

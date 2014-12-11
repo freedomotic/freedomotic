@@ -12,7 +12,7 @@ import com.freedomotic.events.GenericEvent;
 import com.freedomotic.exceptions.NoResultsException;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.nlp.Nlp;
-import com.freedomotic.nlp.NlpCommands;
+import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.reactions.Command;
 import java.util.List;
 import java.util.logging.Level;
@@ -47,11 +47,11 @@ public class FreeFormCommandsInterpreter implements BusConsumer {
     private static final String MESSAGING_CHANNEL = "app.commands.interpreter.nlp";
     private BusMessagesListener listener;
     // Dependencies
-    private final NlpCommands nlpCommands;
+    private final NlpCommand nlpCommands;
     private final BusService busService;
 
     @Inject
-    public FreeFormCommandsInterpreter(NlpCommands nlpCommands, BusService busService) {
+    public FreeFormCommandsInterpreter(NlpCommand nlpCommands, BusService busService) {
         this.nlpCommands = nlpCommands;
         this.busService = busService;
         register();
@@ -77,7 +77,7 @@ public class FreeFormCommandsInterpreter implements BusConsumer {
         
         try {
             jmsObject = message.getObject();
-            // Sve some data for reply
+            // Save some data for reply
             replyChannel = message.getJMSReplyTo();
             correlationId = message.getJMSCorrelationID();
         } catch (JMSException ex) {
@@ -93,7 +93,7 @@ public class FreeFormCommandsInterpreter implements BusConsumer {
             try {
                 mostSimilar = findMostSimilarCommand(text);
             } catch (NoResultsException ex) {
-                LOG.log(Level.WARNING, "The given natural language text '" + text + "' cannot be recognized as a valid framework command", ex);
+                LOG.log(Level.WARNING, "The given natural language text ''{0}'' cannot be recognized as a valid framework command", text);
                 command.setExecuted(false);
                 busService.reply(command, replyChannel, correlationId);
             }
@@ -113,11 +113,11 @@ public class FreeFormCommandsInterpreter implements BusConsumer {
         }
     }
 
-    private Command findMostSimilarCommand(String phrase) throws NoResultsException {
+    protected Command findMostSimilarCommand(String phrase) throws NoResultsException {
         // Compute the commands ranking
         List<Nlp.Rank<Command>> ranking = nlpCommands.computeSimilarity(phrase, 10);
         // Avoid returning a command with zero similarity
-        if (ranking.get(0).getSimilarity() <= 0) {
+        if (ranking.isEmpty() || ranking.get(0).getSimilarity() <= 0) {
             throw new NoResultsException("No command is similar enough to '" + phrase + "'");
         }
         // Get the most similar command (it is in the top of the list)

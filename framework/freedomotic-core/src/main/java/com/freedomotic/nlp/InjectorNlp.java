@@ -16,7 +16,7 @@ public class InjectorNlp extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(NlpCommands.class).to(NlpCommandsStringDistanceImpl.class).in(Singleton.class);
+        bind(NlpCommand.class).to(NlpCommandStringDistanceImpl.class).in(Singleton.class);
     }
 
 }

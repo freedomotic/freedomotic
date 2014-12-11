@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class CommandPersistence implements CommandsRepository {
+public class CommandPersistence implements CommandRepository {
 
     private static final Map<String, Command> userCommands = new HashMap<String, Command>();
     private static final Map<String, Command> hardwareCommands = new HashMap<String, Command>();

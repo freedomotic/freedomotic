@@ -13,7 +13,7 @@ import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.LocationEvent;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.things.GenericPerson;
-import com.freedomotic.things.ThingsRepository;
+import com.freedomotic.things.ThingRepository;
 import com.freedomotic.util.TopologyUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,10 +36,10 @@ public class TopologyManager implements BusConsumer {
     // Dependencies
     private final EnvironmentRepository environmentRepository;
     private final BusService busService;
-    private final ThingsRepository thingsRepository;
+    private final ThingRepository thingsRepository;
 
     @Inject
-    TopologyManager(BusService busService, ThingsRepository thingsRepository, EnvironmentRepository environmentRepository) {
+    TopologyManager(BusService busService, ThingRepository thingsRepository, EnvironmentRepository environmentRepository) {
         this.busService = busService;
         this.environmentRepository = environmentRepository;
         this.thingsRepository = thingsRepository;

@@ -33,12 +33,12 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-public class ThingsFactory {
+public class ThingFactory {
     
     @Inject
     private Injector injector;
     
-    protected ThingsFactory() {
+    protected ThingFactory() {
         //do not build this class outsite this package
     }
 
@@ -65,9 +65,9 @@ public class ThingsFactory {
                 logic.setPojo(pojo);
                 injector.injectMembers(logic);
             } catch (InstantiationException ex) {
-                Logger.getLogger(ThingsFactory.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ThingFactory.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
-                Logger.getLogger(ThingsFactory.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ThingFactory.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             return logic;

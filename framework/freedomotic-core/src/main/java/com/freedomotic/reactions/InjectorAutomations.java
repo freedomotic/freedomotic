@@ -16,7 +16,7 @@ public class InjectorAutomations extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(CommandsRepository.class).to(CommandPersistence.class).in(Singleton.class);
+        bind(CommandRepository.class).to(CommandPersistence.class).in(Singleton.class);
     }
 
 }

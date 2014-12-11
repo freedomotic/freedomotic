@@ -26,7 +26,7 @@ import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.ThingsRepository;
+import com.freedomotic.things.ThingRepository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.util.Info;
@@ -56,7 +56,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     // Dependencies
     private final AppConfig appConfig;
     private final EnvironmentPersistenceFactory environmentPersistenceFactory;
-    private final ThingsRepository thingsRepository;
+    private final ThingRepository thingsRepository;
 
     // The Environments cache
     private static final List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
@@ -73,7 +73,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @Inject
     EnvironmentRepositoryImpl(
             AppConfig appConfig,
-            ThingsRepository thingsRepository,
+            ThingRepository thingsRepository,
             EnvironmentPersistenceFactory environmentPersistenceFactory)
             throws RepositoryException {
         this.appConfig = appConfig;
