@@ -44,7 +44,7 @@
         <freedomotic.marketplace.username></freedomotic.marketplace.username>
         <freedomotic.marketplace.password></freedomotic.marketplace.password>
         <jersey.version>2.13</jersey.version>
-        <atmosphere.version>2.2.3</atmosphere.version>
+        <atmosphere.version>2.2.4</atmosphere.version>
     </properties>
 
     <dependencies>

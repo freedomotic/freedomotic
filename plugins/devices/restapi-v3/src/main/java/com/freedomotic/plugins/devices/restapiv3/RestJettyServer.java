@@ -109,6 +109,7 @@ public final class RestJettyServer extends Server {
         ServletHolder jerseyServletHolder = new ServletHolder(ServletContainer.class);
         // jerseyServletHolder.setInitParameter("jersey.config.server.provider.packages", JERSEY_RESOURCE_PKG);
         jerseyServletHolder.setInitParameter("javax.ws.rs.Application", JerseyApplication.class.getCanonicalName());
+        jerseyServletHolder.setInitParameter("jersey.config.server.wadl.disableWadl","true");
         jerseyServletHolder.setInitOrder(1);
         context.addServlet(jerseyServletHolder, "/" + API_VERSION + "/*");
 
@@ -131,7 +132,7 @@ public final class RestJettyServer extends Server {
             context.addFilter(ShiroFilter.class, "/" + API_VERSION + "/*", null);
         }
 
-        // giuce filter
+        // guice filter
         context.addEventListener(guiceServletConfig);
         context.addFilter(GuiceFilter.class, "/*", null);
 
