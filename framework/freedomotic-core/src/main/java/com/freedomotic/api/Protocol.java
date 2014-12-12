@@ -127,18 +127,18 @@ public abstract class Protocol extends Plugin {
                 @Override
                 public synchronized void run() {
                     try {
-                        sensorThread = new Protocol.SensorThread();
-                        sensorThread.start();
-                        PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
-                        getBusService().send(event);
-                        currentPluginStatus = PluginStatus.RUNNING;
-                        //onStart() should be called as the last operation, after framework level operations
-                        //for example it may require something related with messaging wich should be initialized first
+                        currentPluginStatus = PluginStatus.STARTING;
+                        //onStart() is called before the thread because it may have some initialization for the sensor thread
                         try {
                             onStart();
                         } catch (PluginStartupException startupEx) {
                             notifyCriticalError(startupEx.getMessage(), startupEx);
                         }
+                        sensorThread = new Protocol.SensorThread();
+                        sensorThread.start();
+                        currentPluginStatus = PluginStatus.RUNNING;
+                        PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
+                        getBusService().send(event);
                     } catch (Exception e) {
                         currentPluginStatus = PluginStatus.FAILED;
                         setDescription("Plugin start FAILED. see logs for details.");
@@ -147,7 +147,6 @@ public abstract class Protocol extends Plugin {
 
                 }
             };
-
             getApi().getAuth().pluginExecutePrivileged(this, action);
         }
     }
