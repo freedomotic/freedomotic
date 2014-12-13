@@ -1,6 +1,6 @@
 <trigger>
-    <name>Arduino WeatherShield reads pressure value</name>
-    <description>Arduino WeatherShield reads pressure value</description>
+    <name>Arduino WeatherShield reads pressure</name>
+    <description>Arduino WeatherShield reads pressure</description>
     <channel>app.event.sensor.protocol.read.arduino-weathershield</channel>
     <payload>
         <payload>
