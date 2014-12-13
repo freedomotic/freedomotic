@@ -98,7 +98,7 @@ public class ArduinoWeatherShield extends Protocol {
             } catch (UnableToExecuteException ex) {
                 LOG.severe(ex.getMessage());
             } catch (IOException ex) {
-                LOG.severe(ex.getMessage());
+                LOG.severe("Exception during data retrieving for " + ex.getCause());
             }
         }
     }
@@ -109,12 +109,12 @@ public class ArduinoWeatherShield extends Protocol {
             LOG.info("Read data: " + data);
             sendChanges(board, data);
         } catch (IOException ex) {
-            LOG.severe("Exception " + ex.getCause());
+            throw ex;
         }
     }
 
     private void sendChanges(Board board, String parametersValue) throws IllegalArgumentException, NumberFormatException {
-        String address = board.getIpAddress() + ":" + board.getPort();
+        String address = board.getIpAddress() + DELIMITER + board.getPort();
         String values[] = parametersValue.split(board.getDelimiter());
 
         if (!(values.length == 3)) {
@@ -122,13 +122,13 @@ public class ArduinoWeatherShield extends Protocol {
         } else {
             for (int i = 0; i < 3; i++) {
                 if (!isNumber(values[i])) {
-                        throw new NumberFormatException("'" + values[i] + "' is not a number");
-                     }
+                    throw new NumberFormatException("'" + values[i] + "' is not a number");
+                }
             }
         }
 
         //building the event
-        ProtocolRead event = new ProtocolRead(this, "arduino-weathershield", address + ":" + "T"); //IP:PORT
+        ProtocolRead event = new ProtocolRead(this, "arduino-weathershield", address + DELIMITER + "T");
         //adding some optional information to the event
         event.addProperty("board.ip", board.getIpAddress());
         event.addProperty("board.port", new Integer(board.getPort()).toString());
@@ -138,7 +138,7 @@ public class ArduinoWeatherShield extends Protocol {
         //publish the event on the messaging bus
         this.notifyEvent(event);
 
-        event = new ProtocolRead(this, "arduino-weatherShield", address + ":" + "P"); //IP:PORT
+        event = new ProtocolRead(this, "arduino-weathershield", address + DELIMITER + "P");
         //adding some optional information to the event
         event.addProperty("board.ip", board.getIpAddress());
         event.addProperty("board.port", new Integer(board.getPort()).toString());
@@ -148,7 +148,7 @@ public class ArduinoWeatherShield extends Protocol {
         //publish the event on the messaging bus
         this.notifyEvent(event);
 
-        event = new ProtocolRead(this, "arduino-weatherShield", address + ":" + "H"); //IP:PORT
+        event = new ProtocolRead(this, "arduino-weathershield", address + DELIMITER + "H");
         //adding some optional information to the event
         event.addProperty("board.ip", board.getIpAddress());
         event.addProperty("board.port", new Integer(board.getPort()).toString());
