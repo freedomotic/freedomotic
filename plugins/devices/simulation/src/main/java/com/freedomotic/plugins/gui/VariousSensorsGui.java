@@ -81,6 +81,25 @@ public class VariousSensorsGui
         sensor.notifyEvent(temperatureEvent);
     }
 
+    private void notifyTFreeFormText(String text) {
+        Command nlpCommand = new Command();
+        nlpCommand.setName("Recognize text with NLP");
+        nlpCommand.setReceiver("app.commands.interpreter.nlp");
+        nlpCommand.setDescription("A free-form text command to be interpreded by an NLP module");
+        nlpCommand.setProperty("text", text);
+        nlpCommand.setReplyTimeout(10000);
+        Command reply = sensor.notifyCommand(nlpCommand);
+        if (reply != null) {
+            if (reply.isExecuted()) {
+                this.updateDescription("Executed command '" + reply.getName() + "'");
+            } else {
+                this.updateDescription("Don't exist any command similar to '" + text + "'");
+            }
+        } else {
+            this.updateDescription("NLP command recognition timeout");
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -88,228 +107,191 @@ public class VariousSensorsGui
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents(  )
-    {
-        jLabel1 = new javax.swing.JLabel(  );
-        sldLuminosity = new javax.swing.JSlider(  );
-        jLabel2 = new javax.swing.JLabel(  );
-        sldTemperature = new javax.swing.JSlider(  );
-        txtResult = new javax.swing.JLabel(  );
-        btnCancel = new javax.swing.JButton(  );
-        jButton1 = new javax.swing.JButton(  );
-        lblAsk = new javax.swing.JLabel(  );
-        jButton2 = new javax.swing.JButton(  );
-        jLabel3 = new javax.swing.JLabel(  );
-        btnJoinDevice = new javax.swing.JButton(  );
-        jLabel4 = new javax.swing.JLabel(  );
-        btnBypassTriggerSystem = new javax.swing.JButton(  );
-        jLabel5 = new javax.swing.JLabel(  );
+    private void initComponents() {
 
-        setDefaultCloseOperation( javax.swing.WindowConstants.DISPOSE_ON_CLOSE );
-        setTitle( "Simulate Sensors Variables" );
+        jLabel1 = new javax.swing.JLabel();
+        sldLuminosity = new javax.swing.JSlider();
+        jLabel2 = new javax.swing.JLabel();
+        sldTemperature = new javax.swing.JSlider();
+        txtResult = new javax.swing.JLabel();
+        btnCancel = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        lblAsk = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        btnJoinDevice = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        btnBypassTriggerSystem = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        btnSendNlpText = new javax.swing.JButton();
+        txtNlpText = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
 
-        jLabel1.setText( "Luminosity (0% to 100%):" );
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Simulate Sensors Variables");
 
-        sldLuminosity.setMajorTickSpacing( 5 );
-        sldLuminosity.setMinorTickSpacing( 1 );
-        sldLuminosity.setPaintTicks( true );
-        sldLuminosity.setSnapToTicks( true );
-        sldLuminosity.setValue( 70 );
-        sldLuminosity.addChangeListener( new javax.swing.event.ChangeListener(  )
-            {
-                public void stateChanged( javax.swing.event.ChangeEvent evt )
-                {
-                    sldLuminosityStateChanged( evt );
-                }
-            } );
+        jLabel1.setText("Luminosity (0% to 100%):");
 
-        jLabel2.setText( "Temperature (-10°C to +40°C)" );
+        sldLuminosity.setMajorTickSpacing(5);
+        sldLuminosity.setMinorTickSpacing(1);
+        sldLuminosity.setPaintTicks(true);
+        sldLuminosity.setSnapToTicks(true);
+        sldLuminosity.setValue(70);
+        sldLuminosity.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sldLuminosityStateChanged(evt);
+            }
+        });
 
-        sldTemperature.setMajorTickSpacing( 5 );
-        sldTemperature.setMaximum( 40 );
-        sldTemperature.setMinimum( -10 );
-        sldTemperature.setMinorTickSpacing( 1 );
-        sldTemperature.setPaintTicks( true );
-        sldTemperature.setSnapToTicks( true );
-        sldTemperature.setValue( 22 );
+        jLabel2.setText("Temperature (-10°C to +40°C)");
 
-        txtResult.setFont( new java.awt.Font( "Tahoma", 1, 14 ) ); // NOI18N
+        sldTemperature.setMajorTickSpacing(5);
+        sldTemperature.setMaximum(40);
+        sldTemperature.setMinimum(-10);
+        sldTemperature.setMinorTickSpacing(1);
+        sldTemperature.setPaintTicks(true);
+        sldTemperature.setSnapToTicks(true);
+        sldTemperature.setValue(22);
 
-        btnCancel.setText( "Cancel" );
-        btnCancel.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnCancelActionPerformed( evt );
-                }
-            } );
+        txtResult.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
 
-        jButton1.setText( "Do it" );
-        jButton1.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    jButton1ActionPerformed( evt );
-                }
-            } );
+        btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
 
-        lblAsk.setText( "Use 'User Input' plugin to ask someting to the user" );
+        jButton1.setText("Do it");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText( "Do it" );
-        jButton2.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    jButton2ActionPerformed( evt );
-                }
-            } );
+        lblAsk.setText("Use 'User Input' plugin to ask someting to the user");
 
-        jLabel3.setText( "Use 'Plugin remote controller' to show or hide a plugin gui" );
+        jButton2.setText("Do it");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
-        btnJoinDevice.setText( "Do it" );
-        btnJoinDevice.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnJoinDeviceActionPerformed( evt );
-                }
-            } );
+        jLabel3.setText("Use 'Plugin remote controller' to show or hide a plugin gui");
 
-        jLabel4.setText( "Add a new object using 'JoinDevice' command" );
+        btnJoinDevice.setText("Do it");
+        btnJoinDevice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnJoinDeviceActionPerformed(evt);
+            }
+        });
 
-        btnBypassTriggerSystem.setText( "Do it" );
-        btnBypassTriggerSystem.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnBypassTriggerSystemActionPerformed( evt );
-                }
-            } );
+        jLabel4.setText("Add a new object using 'JoinDevice' command");
 
-        jLabel5.setText( "Change an object behavior bypassing trigger system" );
+        btnBypassTriggerSystem.setText("Do it");
+        btnBypassTriggerSystem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBypassTriggerSystemActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout( getContentPane(  ) );
-        getContentPane(  ).setLayout( layout );
-        layout.setHorizontalGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING ).addGroup( layout.createSequentialGroup(  )
-                                                                                                                           .addContainerGap(  )
-                                                                                                                           .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                                                                                                                                            .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING,
-                                                                                                                                                                                   false )
-                                                                                                                                                             .addGroup( layout.createSequentialGroup(  )
-                                                                                                                                                                              .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                                                                                                                                                                                               .addComponent( jLabel1 )
-                                                                                                                                                                                               .addComponent( jLabel2 ) )
-                                                                                                                                                                              .addPreferredGap( javax.swing.LayoutStyle.ComponentPlacement.RELATED )
-                                                                                                                                                                              .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING,
-                                                                                                                                                                                                                     false )
-                                                                                                                                                                                               .addComponent( sldTemperature,
-                                                                                                                                                                                                              javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                              javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                              Short.MAX_VALUE )
-                                                                                                                                                                                               .addComponent( sldLuminosity,
-                                                                                                                                                                                                              javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                              462,
-                                                                                                                                                                                                              Short.MAX_VALUE ) ) )
-                                                                                                                                                             .addGroup( layout.createSequentialGroup(  )
-                                                                                                                                                                              .addComponent( btnCancel )
-                                                                                                                                                                              .addPreferredGap( javax.swing.LayoutStyle.ComponentPlacement.RELATED )
-                                                                                                                                                                              .addComponent( txtResult,
-                                                                                                                                                                                             javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                             javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                             Short.MAX_VALUE ) )
-                                                                                                                                                             .addGroup( layout.createSequentialGroup(  )
-                                                                                                                                                                              .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                                                                                                                                     false )
-                                                                                                                                                                                               .addComponent( jButton2,
-                                                                                                                                                                                                              javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                              javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                              Short.MAX_VALUE )
-                                                                                                                                                                                               .addComponent( jButton1,
-                                                                                                                                                                                                              javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                              javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                              Short.MAX_VALUE ) )
-                                                                                                                                                                              .addGap( 18,
-                                                                                                                                                                                       18,
-                                                                                                                                                                                       18 )
-                                                                                                                                                                              .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                                                                                                                                                                                               .addComponent( lblAsk,
-                                                                                                                                                                                                              javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                              javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                              Short.MAX_VALUE )
-                                                                                                                                                                                               .addComponent( jLabel3,
-                                                                                                                                                                                                              javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                              615,
-                                                                                                                                                                                                              Short.MAX_VALUE ) ) ) )
-                                                                                                                                            .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                                                                                                   false )
-                                                                                                                                                             .addGroup( 
-                                                                                                                                                                        javax.swing.GroupLayout.Alignment.LEADING,
-                                                                                                                                                                        layout.createSequentialGroup(  )
-                                                                                                                                                                              .addComponent( btnBypassTriggerSystem,
-                                                                                                                                                                                             javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                             44,
-                                                                                                                                                                                             javax.swing.GroupLayout.PREFERRED_SIZE )
-                                                                                                                                                                              .addGap( 18,
-                                                                                                                                                                                       18,
-                                                                                                                                                                                       18 )
-                                                                                                                                                                              .addComponent( jLabel5,
-                                                                                                                                                                                             javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                             javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                             Short.MAX_VALUE ) )
-                                                                                                                                                             .addGroup( 
-                                                                                                                                                                        javax.swing.GroupLayout.Alignment.LEADING,
-                                                                                                                                                                        layout.createSequentialGroup(  )
-                                                                                                                                                                              .addComponent( btnJoinDevice )
-                                                                                                                                                                              .addGap( 18,
-                                                                                                                                                                                       18,
-                                                                                                                                                                                       18 )
-                                                                                                                                                                              .addComponent( jLabel4,
-                                                                                                                                                                                             javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                             406,
-                                                                                                                                                                                             javax.swing.GroupLayout.PREFERRED_SIZE ) ) ) )
-                                                                                                                           .addContainerGap( 43,
-                                                                                                                                             Short.MAX_VALUE ) ) );
-        layout.setVerticalGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                                       .addGroup( layout.createSequentialGroup(  ).addContainerGap(  )
-                                                        .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.TRAILING )
-                                                                         .addComponent( jLabel1 )
-                                                                         .addComponent( sldLuminosity,
-                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE ) )
-                                                        .addGap( 16, 16, 16 )
-                                                        .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.TRAILING )
-                                                                         .addComponent( jLabel2 )
-                                                                         .addComponent( sldTemperature,
-                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE ) )
-                                                        .addGap( 18, 18, 18 )
-                                                        .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.BASELINE )
-                                                                         .addComponent( jButton1 ).addComponent( lblAsk ) )
-                                                        .addPreferredGap( javax.swing.LayoutStyle.ComponentPlacement.RELATED )
-                                                        .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.BASELINE )
-                                                                         .addComponent( jButton2 ).addComponent( jLabel3 ) )
-                                                        .addPreferredGap( javax.swing.LayoutStyle.ComponentPlacement.RELATED )
-                                                        .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.BASELINE )
-                                                                         .addComponent( btnJoinDevice )
-                                                                         .addComponent( jLabel4 ) )
-                                                        .addPreferredGap( javax.swing.LayoutStyle.ComponentPlacement.RELATED )
-                                                        .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.BASELINE )
-                                                                         .addComponent( btnBypassTriggerSystem )
-                                                                         .addComponent( jLabel5 ) )
-                                                        .addPreferredGap( javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                                                          112, Short.MAX_VALUE )
-                                                        .addGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.TRAILING )
-                                                                         .addComponent( btnCancel )
-                                                                         .addComponent( txtResult,
-                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                        24,
-                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE ) )
-                                                        .addContainerGap(  ) ) );
+        jLabel5.setText("Change an object behavior bypassing trigger system");
 
-        pack(  );
-    } // </editor-fold>//GEN-END:initComponents
+        btnSendNlpText.setText("Send");
+        btnSendNlpText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSendNlpTextActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Execute free-text commands");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(sldTemperature, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(sldLuminosity, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnCancel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblAsk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(btnBypassTriggerSystem, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(26, 26, 26)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(btnJoinDevice)
+                            .addGap(18, 18, 18)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNlpText, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSendNlpText, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(sldLuminosity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2)
+                    .addComponent(sldTemperature, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(lblAsk))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnJoinDevice)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBypassTriggerSystem)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSendNlpText)
+                    .addComponent(txtNlpText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnCancel)
+                    .addComponent(txtResult, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
 
     private void sldLuminosityStateChanged(javax.swing.event.ChangeEvent evt) {
 //GEN-FIRST:event_sldLuminosityStateChanged
@@ -356,11 +338,16 @@ public class VariousSensorsGui
         event.addProperty("behaviorValue", "true");
         Freedomotic.sendEvent(event);
     }//GEN-LAST:event_btnBypassTriggerSystemActionPerformed
-      // Variables declaration - do not modify//GEN-BEGIN:variables
 
+    private void btnSendNlpTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendNlpTextActionPerformed
+        notifyTFreeFormText(txtNlpText.getText());
+    }//GEN-LAST:event_btnSendNlpTextActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBypassTriggerSystem;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnJoinDevice;
+    private javax.swing.JButton btnSendNlpText;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -368,10 +355,11 @@ public class VariousSensorsGui
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel lblAsk;
     private javax.swing.JSlider sldLuminosity;
     private javax.swing.JSlider sldTemperature;
+    private javax.swing.JTextField txtNlpText;
     private javax.swing.JLabel txtResult;
-
     // End of variables declaration//GEN-END:variables
 }

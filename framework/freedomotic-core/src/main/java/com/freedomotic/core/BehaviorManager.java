@@ -277,35 +277,37 @@ public final class BehaviorManager implements BusConsumer {
      */
     protected void parseCommand(Command userLevelCommand) {
 
-        if (userLevelCommand.getProperty(Command.PROPERTY_BEHAVIOR) != null) {
+        if (userLevelCommand.getProperty(Command.PROPERTY_BEHAVIOR) == null) {
+            throw new IllegalArgumentException("Command '" + userLevelCommand.getName() + "' has not behavior property defined");
+        }
 
-            if (userLevelCommand.getProperty(Command.PROPERTY_OBJECT) != null) {
-                /*
-                 * if we have the object name and the behavior it means the
-                 * behavior must be applied only to the given object name.
-                 */
-                applyToSingleObject(userLevelCommand);
-            } else {
+        if (userLevelCommand.getProperty(Command.PROPERTY_OBJECT) != null) {
+            /*
+             * if we have the object name and the behavior it means the
+             * behavior must be applied only to the given object name.
+             */
+            applyToSingleObject(userLevelCommand);
+        } else {
 
-                if (userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS) != null
-                        || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_INCLUDETAGS) != null
-                        || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_EXCLUDETAGS) != null
-                        || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ENVIRONMENT) != null
-                        || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ZONE) != null) {
-                    try {
-                        /*
-                         * if we have the category and the behavior (and not the
-                         * object name) it means the behavior must be applied to all
-                         * object belonging to the given category. eg: all lights on
-                         */
-                        Command clonedOne = userLevelCommand.clone();
-                        applyToCategory(clonedOne);
-                    } catch (CloneNotSupportedException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
-                    }
+            if (userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS) != null
+                    || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_INCLUDETAGS) != null
+                    || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_EXCLUDETAGS) != null
+                    || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ENVIRONMENT) != null
+                    || userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ZONE) != null) {
+                try {
+                    /*
+                     * if we have the category and the behavior (and not the
+                     * object name) it means the behavior must be applied to all
+                     * object belonging to the given category. eg: all lights on
+                     */
+                    Command clonedOne = userLevelCommand.clone();
+                    applyToCategory(clonedOne);
+                } catch (CloneNotSupportedException ex) {
+                    LOG.log(Level.SEVERE, null, ex);
                 }
             }
         }
+
     }
 
     /**

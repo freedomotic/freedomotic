@@ -7,7 +7,6 @@ package com.freedomotic.plugins.impl;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.exceptions.PluginLoadingException;
-import com.freedomotic.plugins.impl.BoundleLoader;
 import com.freedomotic.util.JarFilter;
 import java.io.File;
 import java.util.ArrayList;

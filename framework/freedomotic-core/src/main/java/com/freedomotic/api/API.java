@@ -5,6 +5,7 @@
 package com.freedomotic.api;
 
 import com.freedomotic.app.AppConfig;
+import com.freedomotic.bus.BusService;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.plugins.ClientStorage;
@@ -71,7 +72,7 @@ public interface API {
      * @return
      */
     PluginsManager getPluginManager();
-
+    
     //Resources API
     /**
      *

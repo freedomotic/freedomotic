@@ -66,6 +66,7 @@ public class VariousSensors extends Protocol {
         c.setReplyTimeout(10000); //10 seconds
 
         new Thread(new Runnable() {
+            @Override
             public void run() {
                 VariousSensorsGui guiHook = (VariousSensorsGui) gui;
                 Command reply = send(c);

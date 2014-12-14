@@ -278,24 +278,24 @@ class BusServiceImpl extends LifeCycle implements BusService {
             if (command.getReceiver() == null || command.getReceiver().isEmpty()) {
                 throw new IllegalArgumentException("Cannot send command '" + command + "', the receiver channel is not specified");
             }
-            Queue destination = new ActiveMQQueue(command.getReceiver());
+            Queue currDestination = new ActiveMQQueue(command.getReceiver());
 
             if (command.getReplyTimeout() > 0) {
 
                 // we have to wait an execution reply for an hardware device or
                 // an external client
-                final Session unlistenedSession = this.getUnlistenedSession();
-                TemporaryQueue temporaryQueue = unlistenedSession
+                final Session currUnlistenedSession = this.getUnlistenedSession();
+                TemporaryQueue temporaryQueue = currUnlistenedSession
                         .createTemporaryQueue();
 
                 msg.setJMSReplyTo(temporaryQueue);
 
                 // a temporary consumer on a temporary queue
-                MessageConsumer temporaryConsumer = unlistenedSession
+                MessageConsumer temporaryConsumer = currUnlistenedSession
                         .createConsumer(temporaryQueue);
 
-                final MessageProducer messageProducer = this.getMessageProducer();
-                messageProducer.send(destination, msg);
+                final MessageProducer currMessageProducer = this.getMessageProducer();
+                currMessageProducer.send(currDestination, msg);
 
                 Profiler.incrementSentCommands();
 
@@ -352,7 +352,7 @@ class BusServiceImpl extends LifeCycle implements BusService {
                 // this increments perfornances if no reply is expected
                 final MessageProducer messageProducer = this.getMessageProducer();
                 LOG.log(Level.CONFIG, "Send command ''{0}'' (no reply expected)", command.getName());
-                messageProducer.send(destination, msg);
+                messageProducer.send(currDestination, msg);
 
                 Profiler.incrementSentCommands();
 

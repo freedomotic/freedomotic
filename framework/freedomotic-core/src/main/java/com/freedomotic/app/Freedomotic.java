@@ -26,6 +26,7 @@ import com.freedomotic.bus.BootStatus;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
+import com.freedomotic.core.FreeFormCommandsInterpreter;
 import com.freedomotic.core.SynchManager;
 import com.freedomotic.core.TopologyManager;
 import com.freedomotic.environment.EnvironmentLogic;
@@ -101,6 +102,7 @@ public class Freedomotic implements BusConsumer {
     private final ThingRepository thingsRepository;
     private final TopologyManager topologyManager;
     private final SynchManager synchManager;
+    private final FreeFormCommandsInterpreter freeFormCommandsInterpreter;
     private final ClientStorage clientStorage;
     private final PluginsManager pluginsManager;
     private AppConfig config;
@@ -128,6 +130,7 @@ public class Freedomotic implements BusConsumer {
             EnvironmentRepository environmentRepository,
             ThingRepository thingsRepository,
             ClientStorage clientStorage,
+            FreeFormCommandsInterpreter freeFormCommandsInterpreter,
             AppConfig config,
             API api,
             BusService busService,
@@ -137,6 +140,7 @@ public class Freedomotic implements BusConsumer {
         this.environmentRepository = environmentRepository;
         this.thingsRepository = thingsRepository;
         this.busService = busService;
+        this.freeFormCommandsInterpreter = freeFormCommandsInterpreter;
         this.topologyManager = topologyManager;
         this.synchManager = synchManager;
         this.clientStorage = clientStorage;
