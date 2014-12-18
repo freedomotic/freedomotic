@@ -50,7 +50,7 @@ public abstract class Protocol extends Plugin {
      */
     public Protocol(String pluginName, String manifest) {
         super(pluginName, manifest);
-        this.currentPluginStatus = PluginStatus.STOPPED;
+        setStatus(PluginStatus.STOPPED);
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class Protocol extends Plugin {
      * @param ev
      */
     public void notifyEvent(EventTemplate ev) {
-        if (isRunning()) {
+        if (isAllowedToSend()) {
             notifyEvent(ev, ev.getDefaultDestination());
         }
     }
@@ -109,7 +109,7 @@ public abstract class Protocol extends Plugin {
      * @param destination
      */
     public void notifyEvent(EventTemplate ev, String destination) {
-        if (isRunning()) {
+        if (isAllowedToSend()) {
             LOG.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":" + ev.getPayload().toString());
             getBusService().send(ev, destination);
         }
@@ -127,20 +127,21 @@ public abstract class Protocol extends Plugin {
                 @Override
                 public synchronized void run() {
                     try {
-                        currentPluginStatus = PluginStatus.STARTING;
+                        setStatus(PluginStatus.STARTING);
                         //onStart() is called before the thread because it may have some initialization for the sensor thread
                         try {
                             onStart();
                         } catch (PluginStartupException startupEx) {
                             notifyCriticalError(startupEx.getMessage(), startupEx);
+                            return; //stop the plugin startup
                         }
                         sensorThread = new Protocol.SensorThread();
                         sensorThread.start();
-                        currentPluginStatus = PluginStatus.RUNNING;
+                        setStatus(PluginStatus.RUNNING);
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
                         getBusService().send(event);
                     } catch (Exception e) {
-                        currentPluginStatus = PluginStatus.FAILED;
+                        setStatus(PluginStatus.FAILED);
                         setDescription("Plugin start FAILED. see logs for details.");
                         LOG.log(Level.SEVERE, "Plugin " + getName() + " start FAILED: " + e.getLocalizedMessage(), e);
                     }
@@ -162,7 +163,7 @@ public abstract class Protocol extends Plugin {
                 @Override
                 public synchronized void run() {
                     try {
-                        currentPluginStatus = PluginStatus.STOPPING;
+                        setStatus(PluginStatus.STOPPING);
                         try {
                             onStop();
                         } catch (PluginShutdownException shutdownEx) {
@@ -172,9 +173,9 @@ public abstract class Protocol extends Plugin {
                         listener.unsubscribeEvents();
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
                         getBusService().send(event);
-                        currentPluginStatus = PluginStatus.STOPPED;
+                        setStatus(PluginStatus.STOPPED);
                     } catch (Exception e) {
-                        currentPluginStatus = PluginStatus.FAILED;
+                        setStatus(PluginStatus.FAILED);
                         setDescription("Plugin stop FAILED. see logs for details.");
                         LOG.log(Level.SEVERE, "Error stopping " + getName() + ": " + e.getLocalizedMessage(), e);
                     }

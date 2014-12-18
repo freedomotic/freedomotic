@@ -114,10 +114,11 @@ public final class Autodiscovery implements BusConsumer {
         ObjectPluginPlaceholder objectPlugin = (ObjectPluginPlaceholder) clientStorage.get(clazz);
 
         if (objectPlugin == null) {
-            LOG.warning("Doesn't exist an object class called " + clazz);
-
+            LOG.log(Level.WARNING, "Autodiscovery error: doesn''t exist an object class called {0}", clazz);
             return null;
         }
+        
+        LOG.log(Level.WARNING, "Autodiscovery request for an object called ''{0}'' of type ''{1}''", new Object[]{name, clazz});
 
         File templateFile = objectPlugin.getTemplate();
         try {
@@ -170,7 +171,8 @@ public final class Autodiscovery implements BusConsumer {
                 }
             }
         }
-
+        LOG.log(Level.INFO, "Autodiscovery adds a thing called ''{0}'' of type ''{1}''", 
+                new Object[]{loaded.getPojo().getName(), clazz});
         return loaded;
     }
 }

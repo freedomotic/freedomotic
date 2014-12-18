@@ -22,8 +22,8 @@ public enum PluginStatus {
     INSTALLING,
     UNINSTALLING;
     
-    //eg: not allowed to start if it is already RUNNING or FAILED 
-    private static final EnumSet<PluginStatus> allowedToStartStatuses = EnumSet.of(STOPPED);
+    //eg: not allowed to start if it is already RUNNING
+    private static final EnumSet<PluginStatus> allowedToStartStatuses = EnumSet.of(STOPPED, FAILED);
     //Currently unused
     private static final EnumSet<PluginStatus> destroyStatuses = EnumSet.of(STOPPED, STOPPING);
 

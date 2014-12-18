@@ -53,7 +53,7 @@ import java.util.logging.Logger;
 public class TriggerCheck {
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
-    
+
     // Dependencies
     private final Autodiscovery autodiscovery;
     private final BusService busService;
@@ -62,9 +62,9 @@ public class TriggerCheck {
 
     @Inject
     TriggerCheck(
-            Autodiscovery autodiscovery, 
-            ThingRepository thingsRepository, 
-            BusService busService, 
+            Autodiscovery autodiscovery,
+            ThingRepository thingsRepository,
+            BusService busService,
             BehaviorManager behaviorManager) {
         this.autodiscovery = autodiscovery;
         this.thingsRepository = thingsRepository;
@@ -152,7 +152,7 @@ public class TriggerCheck {
             affectedObjects = thingsRepository.findByAddress(protocol, address);
 
             if (affectedObjects.isEmpty()) { //there isn't an object with this protocol and address
-
+                LOG.log(Level.WARNING, "Found a candidate for things autodiscovery: thing ''{0}'' of type ''{1}''", new Object[]{name, clazz});
                 if ((clazz != null) && !clazz.isEmpty()) {
                     EnvObjectLogic joined = autodiscovery.join(clazz, name, protocol, address);
                     affectedObjects.add(joined);
@@ -330,6 +330,6 @@ public class TriggerCheck {
         event.setType("callout"); //display as callout on frontends
         busService.send(event);
     }
-    
+
     private static final Logger LOG = Logger.getLogger(TriggerCheck.class.getName());
 }

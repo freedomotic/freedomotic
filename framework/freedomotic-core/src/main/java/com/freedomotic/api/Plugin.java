@@ -62,7 +62,7 @@ public class Plugin implements Client, BusConsumer {
     @XmlElement
     private final String type = "Plugin";
     @XmlElement
-    protected volatile PluginStatus currentPluginStatus = PluginStatus.STOPPED;
+    private volatile PluginStatus currentPluginStatus = PluginStatus.STOPPED;
     @XmlElement
     public Config configuration;
     @Deprecated
@@ -201,7 +201,7 @@ public class Plugin implements Client, BusConsumer {
         //plugin is now set as STOPPED, but should be marked as FAILED
         currentPluginStatus = PluginStatus.FAILED;
     }
-    
+
     protected void notifyCriticalError(String message, Exception ex) {
         //Log and keep stack trace
         LOG.log(Level.SEVERE, message, ex);
@@ -313,6 +313,10 @@ public class Plugin implements Client, BusConsumer {
         return pluginName;
     }
 
+    public String getStatus() {
+        return currentPluginStatus.name();
+    }
+
     /**
      *
      * @return
@@ -329,6 +333,10 @@ public class Plugin implements Client, BusConsumer {
     @Override
     public boolean isRunning() {
         return currentPluginStatus.equals(PluginStatus.RUNNING);
+    }
+
+    public boolean isAllowedToSend() {
+        return currentPluginStatus.equals(PluginStatus.STARTING) || currentPluginStatus.equals(PluginStatus.RUNNING);
     }
 
     public boolean isAllowedToStart() {
@@ -351,6 +359,11 @@ public class Plugin implements Client, BusConsumer {
     @Override
     public final void setName(String name) {
         pluginName = name;
+    }
+
+    protected final void setStatus(PluginStatus newStatus) {
+        currentPluginStatus = newStatus;
+
     }
 
 //    public boolean isConnected() {
