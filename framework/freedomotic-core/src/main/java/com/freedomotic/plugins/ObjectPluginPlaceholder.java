@@ -185,4 +185,10 @@ public class ObjectPluginPlaceholder implements Client {
         EnvObjectLogic obj = thingsRepository.copy(template);
         obj.setEnvironment(env);
     }
+
+    @Override
+    public void destroy() {
+        // There should be no need to destroy a placeholder
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

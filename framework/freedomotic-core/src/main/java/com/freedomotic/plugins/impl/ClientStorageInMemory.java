@@ -95,6 +95,8 @@ class ClientStorageInMemory implements ClientStorage {
     @Override
     public void remove(Client c) {
         if (clients.contains(c)) {
+            // Stops and unsubscribes channels
+            c.destroy();
             clients.remove(c);
 
             PluginHasChanged event

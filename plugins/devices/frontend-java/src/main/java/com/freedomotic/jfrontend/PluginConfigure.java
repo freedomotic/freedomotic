@@ -24,7 +24,6 @@ import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
-import com.freedomotic.i18n.I18n;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,9 +35,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -268,7 +265,6 @@ public class PluginConfigure
             saveConfiguration(item.getFile(),
                     txtArea.getText());
             //stopping and unloading the plugin
-            item.stop();
             clients.remove(item);
             //reload it with the new configuration
             System.out.println(item.getFile().getParentFile().toString());

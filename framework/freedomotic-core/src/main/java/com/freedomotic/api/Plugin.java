@@ -515,4 +515,11 @@ public class Plugin implements Client, BusConsumer {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void destroy() {
+        stop();
+        // Destroy the messaging channel
+        listener.unsubscribe();
+    }
+
 }
