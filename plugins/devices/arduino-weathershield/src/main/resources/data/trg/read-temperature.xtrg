@@ -1,21 +1,15 @@
 <trigger>
-    <name>Arduino WeatherShield reads temperature change</name>
-    <description>Arduino WeatherShield reads temperature change</description>
-    <channel>app.event.sensor.protocol.read.ArduinoWeatherShield</channel>
+    <name>Arduino WeatherShield reads temperature</name>
+    <description>Arduino WeatherShield reads temperature</description>
+    <channel>app.event.sensor.protocol.read.arduino-weathershield</channel>
     <payload>
         <payload>
-            <it.freedom.reactions.Statement>
-                <logical>AND</logical>
-                <attribute>protocol</attribute>
-                <operand>EQUALS</operand>
-                <value>ArduinoWeatherShield</value>
-            </it.freedom.reactions.Statement>
-            <it.freedom.reactions.Statement>
+            <statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>@event.sensor.temperature</value>
-            </it.freedom.reactions.Statement>
+                <value>= behaviorValue=Math.round(@event.sensor.temperature*10)</value>
+            </statement>
         </payload>
     </payload>
     <hardwareLevel>true</hardwareLevel>
