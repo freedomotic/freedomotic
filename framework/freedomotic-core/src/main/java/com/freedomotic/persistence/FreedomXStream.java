@@ -69,6 +69,9 @@ public class FreedomXStream {
             xstream = new XStream();
             xstream.setMode(XStream.NO_REFERENCES);
             xstream.autodetectAnnotations(true);
+            
+            // Things
+             xstream.omitField(EnvObject.class, "LOG");
 
             // Geometry
             xstream.alias("polygon", FreedomPolygon.class);

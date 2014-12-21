@@ -197,8 +197,7 @@ public class EnvObjectLogic {
             }
         }
 
-        pojo.getTriggers().setProperty(trigger.getName(),
-                behaviorName);
+        pojo.getTriggers().setProperty(trigger.getName(), behaviorName);
         LOG.log(Level.CONFIG, "Trigger mapping in object {0}: behavior ''{1}'' is now associated to trigger named ''{2}''",
                 new Object[]{this.getPojo().getName(), behaviorName, trigger.getName()});
     }
@@ -209,7 +208,7 @@ public class EnvObjectLogic {
      * @return
      */
     @RequiresPermissions("objects:read")
-    public String getAction(String t) {
+    public String getBehaviorNameMappedToTrigger(String t) {
         return getPojo().getTriggers().getProperty(t);
     }
 
@@ -258,7 +257,20 @@ public class EnvObjectLogic {
      */
     @RequiresPermissions("objects:read")
     public final BehaviorLogic getBehavior(String name) {
-        return behaviors.get(name);
+        BehaviorLogic behaviorLogic = behaviors.get(name);
+        // Manage the case the behavior is not found
+        if (behaviorLogic == null) {
+            // Create a list of available behaviors
+            StringBuilder buff = new StringBuilder();
+            for (BehaviorLogic behavior : behaviors.values()) {
+                buff.append(behavior.getName()).append(" ");
+            }
+            // Pring an user friendly message
+            LOG.log(Level.SEVERE, "Cannot find a behavior named ''{0}'' for thing named ''{1}''. "
+                    + "Avalable behaviors for this Thing are: {2}",
+                    new Object[]{name, getPojo().getName(), buff.toString()});
+        }
+        return behaviorLogic;
     }
 
     /**
@@ -438,41 +450,47 @@ public class EnvObjectLogic {
      * Changes a behavior value accordingly to the value property in the trigger
      * in input
      *
-     * @param t an hardware level trigger
+     * @param trigger an hardware level trigger
      * @return true if the values is applied successfully, false otherwise
      */
-    public final boolean executeTrigger(Trigger t) {
-        String behavior = getAction(t.getName());
-
-        if (behavior == null) {
+    public final boolean executeTrigger(Trigger trigger) {
+        // Get the behavior name connected to the trigger in input
+        String behaviorName = getBehaviorNameMappedToTrigger(trigger.getName());
+        // If missing because it's not an hardware trigger check if it is specified in the trigger itself
+        if (behaviorName == null) {
             //LOG.severe("Hardware trigger '" + t.getName() + "' is not bound to any action of object " + this.getPojo().getName());
             //check if the behavior name is written in the trigger
-
-            behavior = t.getPayload().getStatements("behavior.name").isEmpty() ? "" : t.getPayload().getStatements("behavior.name").get(0).getValue();
-
-            if (behavior.isEmpty()) {
+            behaviorName = trigger.getPayload().getStatements("behavior.name").isEmpty()
+                    ? "" : trigger.getPayload().getStatements("behavior.name").get(0).getValue();
+            if (behaviorName.isEmpty()) {
                 return false;
             }
         }
 
-        Statement valueStatement = t.getPayload().getStatements("behaviorValue").get(0);
+        Statement valueStatement = trigger.getPayload().getStatements("behaviorValue").get(0);
 
         if (valueStatement == null) {
             LOG.log(Level.WARNING,
-                    "No value in hardware trigger ''{0}'' to apply to object action ''{1}'' of object {2}",
-                    new Object[]{t.getName(), behavior, getPojo().getName()});
+                    "No value in hardware trigger ''{0}'' to apply to behavior ''{1}'' of Thing {2}",
+                    new Object[]{trigger.getName(), behaviorName, getPojo().getName()});
 
             return false;
         }
 
         LOG.log(Level.CONFIG,
-                "Sensors notification ''{0}'' has changed ''{1}'' behavior ''{2}'' to {3}",
-                new Object[]{t.getName(), getPojo().getName(), behavior, valueStatement.getValue()});
+                "Sensors notification ''{0}'' is going to change ''{1}'' behavior ''{2}'' to ''{3}''",
+                new Object[]{trigger.getName(), getPojo().getName(), behaviorName, valueStatement.getValue()});
 
         Config params = new Config();
         params.setProperty("value", valueStatement.getValue());
-        getBehavior(behavior).filterParams(params, false); //false means not fire commands, only change behavior value
-
+        // Validating the target behavior
+        BehaviorLogic behavior = getBehavior(behaviorName);
+        if (behavior != null) {
+            behavior.filterParams(params, false); //false means not fire commands, only change behavior value
+        } else {
+            LOG.log(Level.SEVERE, "Cannot apply trigger ''{0}'' to Thing {1}", new Object[]{trigger.getName(), getPojo().getName()});
+            return false;
+        }
         return true;
     }
 

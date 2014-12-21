@@ -231,8 +231,6 @@ public class EnvObject implements Serializable {
                 return b;
             }
         }
-
-        //Freedomotic.logger.warning("Searching for behavior named '" + behavior + "' but it doesen't exists for object '" + getName() + "'.");
         return null; //this behaviors doesn't exists for this object
     }
 

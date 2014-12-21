@@ -212,7 +212,7 @@ public abstract class Protocol extends Plugin {
     @Override
     public final void onMessage(final ObjectMessage message) {
         if (!isRunning()) {
-            notifyError(getName() + " receives a command while is not running. Turn on the plugin first");
+            notifyError("Plugin '" + getName() + "' receives a command while is not running. Turn on the plugin first");
             return;
         }
 
