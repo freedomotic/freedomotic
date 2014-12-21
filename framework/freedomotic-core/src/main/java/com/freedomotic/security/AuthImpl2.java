@@ -279,7 +279,8 @@ class AuthImpl2 implements Auth {
 
     @Override
     public User getCurrentUser() {
-        return (User) baseRealm.getUser(getSubject().getPrincipal().toString());
+        String principalName=getSubject().getPrincipal().toString();
+        return (User) baseRealm.getUser(principalName);
     }
 
     @Override

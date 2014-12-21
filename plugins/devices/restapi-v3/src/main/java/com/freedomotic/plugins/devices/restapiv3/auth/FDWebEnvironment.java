@@ -22,12 +22,13 @@ public class FDWebEnvironment extends DefaultWebEnvironment {
 
     public FDWebEnvironment() {
         BasicHttpAuthenticationFilter authc = new CorsBasicHttpAuthenticationFilter();
-        LogoutFilter logout = new LogoutFilter();
-
+        // LogoutFilter logout = new LogoutFilter();
+        // logout.setRedirectUrl("http://www.google.com/");
+        
         FilterChainManager fcMan = new DefaultFilterChainManager();
         fcMan.addFilter("authc", authc);
-        fcMan.addFilter("logout", logout);
-        fcMan.createChain("/logout", "logout");
+        // fcMan.addFilter("logout", logout);
+        // fcMan.createChain("/logout", "logout");
         fcMan.createChain("/**", "authc");
 
         PathMatchingFilterChainResolver resolver = new PathMatchingFilterChainResolver();

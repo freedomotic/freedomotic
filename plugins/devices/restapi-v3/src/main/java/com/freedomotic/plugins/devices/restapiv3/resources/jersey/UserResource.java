@@ -116,7 +116,11 @@ public class UserResource extends AbstractResource<UserRepresentation> {
 
     @Override
     protected boolean doDelete(String UUID) {
-        return api.getAuth().deleteUser(UUID);
+        if (!api.getAuth().getCurrentUser().getName().equals(UUID) ){
+            return api.getAuth().deleteUser(UUID);
+        } else {
+            throw new ForbiddenException("Users cannot delete themselves!!");
+        }
     }
 
     
@@ -146,9 +150,17 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     protected UserRepresentation doUpdate(String uuid, UserRepresentation o) {
         o.setName(uuid);
         try {
-            delete(uuid);
-            doCreate(o);
-            return o;
+            User u = api.getAuth().getUser(uuid);
+            u.setRoles(o.getRoles());
+            u.getProperties().clear();
+            if (o.getPassword()!= null && !o.getPassword().isEmpty()){
+                u.setPassword(o.getPassword());
+            }
+            u.getProperties().clear();
+            for (Object key : o.getProperties().keySet()) {
+                u.setProperty(key.toString(), o.getProperties().getProperty(key.toString()));
+            }
+            return new UserRepresentation(u);
         } catch (Exception e) {
             return null;
         }
@@ -194,7 +206,32 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     public Response getCurrentUser() {
         return Response.seeOther(createUri(api.getAuth().getCurrentUser().getName())).build();
     }
+    
+    @POST
+    @Path("/_/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get current user", position = 0)
+    public Response logout() {
+        api.getAuth().logout();
+        return Response.accepted().build();
+    }
 
+    @POST
+    @Path("/_/login")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @ApiOperation(value = "Get current user", position = 0)
+    public Response login(
+        @FormParam("name") String name,
+        @FormParam("password") String password) {
+        if (api.getAuth().login(name, password)){
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+    }
+    
     @Path("/{id}/properties")
     public PropertyResource props(
             @ApiParam(value = "User to fetch properties from", required = true)

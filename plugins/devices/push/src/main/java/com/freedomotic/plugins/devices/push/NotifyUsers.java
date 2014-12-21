@@ -11,8 +11,8 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.PropertiesBehaviorLogic;
-import com.freedomotic.things.impl.GenericPerson;
+import com.freedomotic.behaviors.PropertiesBehaviorLogic;
+import com.freedomotic.things.GenericPerson;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
 import java.util.Map.Entry;
@@ -39,7 +39,7 @@ public class NotifyUsers extends Protocol{
         for (String username : c.getProperty("notify.users").split(",")){
             // user has to be a Person envobject, as we're using his property behavior
             
-            for (EnvObjectLogic person : getApi().things().getByName(username)){
+            for (EnvObjectLogic person : getApi().things().findByName(username)){
                 if (person instanceof GenericPerson){
                     MessageEvent mess = new MessageEvent(null, c.getProperty("push.message"));
                     mess.setType("notify.user." + username);

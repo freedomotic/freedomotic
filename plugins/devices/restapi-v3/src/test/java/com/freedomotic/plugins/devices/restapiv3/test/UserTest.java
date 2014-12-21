@@ -54,6 +54,7 @@ public class UserTest extends AbstractTest<UserRepresentation>{
         initPath(UserResource.class);
         setListType(new GenericType<List<UserRepresentation>>(){});
         setSingleType(new GenericType<UserRepresentation>(){});
+        testDELETE = false;
     }
 
     @Override

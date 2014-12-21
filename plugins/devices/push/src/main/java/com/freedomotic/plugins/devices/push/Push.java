@@ -24,7 +24,8 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import statement;
+import com.freedomotic.rules.Statement;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;

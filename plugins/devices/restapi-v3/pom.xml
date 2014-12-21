@@ -43,7 +43,7 @@
         <freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${project.version}.${freedomotic.package.type}</freedomotic.marketplace.file>
         <freedomotic.marketplace.username></freedomotic.marketplace.username>
         <freedomotic.marketplace.password></freedomotic.marketplace.password>
-        <jersey.version>2.13</jersey.version>
+        <jersey.version>2.14</jersey.version>
         <atmosphere.version>2.2.4</atmosphere.version>
     </properties>
 
@@ -108,6 +108,11 @@
             <artifactId>atmosphere-jersey</artifactId>
             <version>${atmosphere.version}</version>
         </dependency>
+        <!-- <dependency>
+            <groupId>org.atmosphere</groupId>
+            <artifactId>atmosphere-guice</artifactId>
+            <version>${atmosphere.version}</version>
+        </dependency> -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>

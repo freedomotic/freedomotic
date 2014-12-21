@@ -35,8 +35,13 @@ response, Object mappedValue) {
     String httpMethod = httpRequest.getMethod();
     if ("OPTIONS".equalsIgnoreCase(httpMethod)) {
       return true;
-    } else {
+    } 
+    else if (httpRequest.getRequestURI().equalsIgnoreCase("/v3/users/_/login")){
+      return true;
+    }
+    else {
       return super.isAccessAllowed(request, response, mappedValue);
     }
   }
+ 
 }

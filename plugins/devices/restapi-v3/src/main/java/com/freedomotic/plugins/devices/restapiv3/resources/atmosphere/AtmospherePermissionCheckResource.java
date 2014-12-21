@@ -5,8 +5,11 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.atmosphere;
 
+import com.freedomotic.api.API;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
+import com.freedomotic.security.User;
+import com.google.inject.Inject;
 import com.wordnik.swagger.annotations.Api;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
@@ -28,27 +31,28 @@ import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
         interceptors = {AtmosphereResourceLifecycleInterceptor.class},
         path = "/" + RestAPIv3.API_VERSION + "/ws/" + AtmospherePermissionCheckResource.PATH,
         servlet = "org.glassfish.jersey.servlet.ServletContainer")
-public class AtmospherePermissionCheckResource extends AbstractWSResource {
+public class AtmospherePermissionCheckResource {
 
     public final static String PATH = "ispermitted";
+
+    @Inject
+    private API api;
 
     @Context
     private HttpServletRequest request;
 
     @POST
     public void query(String permission) {
-        AtmosphereResource r = (AtmosphereResource) request.getAttribute(ApplicationConfig.ATMOSPHERE_RESOURCE);
-        if (r != null) {
-            Boolean permOK = api.getAuth().isPermitted(permission);
-            r.getResponse().write("{'" + permission + "':" + permOK.toString() + "}");
-        } else {
-            throw new IllegalStateException();
+        if (api != null) {
+            AtmosphereResource r = (AtmosphereResource) request.getAttribute(ApplicationConfig.ATMOSPHERE_RESOURCE);
+            if (r != null) {
+                Boolean permOK = api.getAuth().isPermitted(permission);
+                User u = api.getAuth().getCurrentUser();
+                r.getResponse().write("{'" + u.getName() + ":" + permission + "':" + permOK.toString() + "}");
+            } else {
+                throw new IllegalStateException();
+            }
         }
-
     }
 
-    @Override
-    public void broadcast(EventTemplate message) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

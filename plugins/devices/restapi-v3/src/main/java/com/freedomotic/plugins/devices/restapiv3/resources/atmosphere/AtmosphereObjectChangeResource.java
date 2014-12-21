@@ -22,6 +22,7 @@ package com.freedomotic.plugins.devices.restapiv3.resources.atmosphere;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
+import com.freedomotic.things.EnvObjectLogic;
 import com.wordnik.swagger.annotations.Api;
 import java.util.logging.Logger;
 import javax.ws.rs.Path;
@@ -51,11 +52,12 @@ public class AtmosphereObjectChangeResource extends AbstractWSResource {
         if (api != null) {
             String msg;
             try {
-                msg = om.writeValueAsString(
-                        api.things().findOne(
-                                message.getPayload().getStatementValue("object.uuid")
-                        ).getPojo()
-                );
+                EnvObjectLogic t = api.things().findOne(message.getPayload().getStatementValue("object.uuid"));
+                if (t == null) {
+                    msg = "{}";
+                } else {
+                    msg = om.writeValueAsString(t.getPojo());
+                }
                 BroadcasterFactory
                         .getDefault()
                         .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereObjectChangeResource.PATH)

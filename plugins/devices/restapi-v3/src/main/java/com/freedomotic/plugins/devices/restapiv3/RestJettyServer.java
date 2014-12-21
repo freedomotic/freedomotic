@@ -107,11 +107,11 @@ public final class RestJettyServer extends Server {
 
         // jersey servlet
         ServletHolder jerseyServletHolder = new ServletHolder(ServletContainer.class);
-        // jerseyServletHolder.setInitParameter("jersey.config.server.provider.packages", JERSEY_RESOURCE_PKG);
         jerseyServletHolder.setInitParameter("javax.ws.rs.Application", JerseyApplication.class.getCanonicalName());
         jerseyServletHolder.setInitParameter("jersey.config.server.wadl.disableWadl","true");
         jerseyServletHolder.setInitOrder(1);
         context.addServlet(jerseyServletHolder, "/" + API_VERSION + "/*");
+        
 
         // cors filter
         if (master.configuration.getBooleanProperty("enable-cors", false)) {
@@ -135,7 +135,7 @@ public final class RestJettyServer extends Server {
         // guice filter
         context.addEventListener(guiceServletConfig);
         context.addFilter(GuiceFilter.class, "/*", null);
-
+    
         //static files handler        
         String staticDir = master.configuration.getStringProperty("serve-static", "swagger");
         context.setResourceBase(new File(master.getFile().getParent() + "/data/" + staticDir + "/").getAbsolutePath());
