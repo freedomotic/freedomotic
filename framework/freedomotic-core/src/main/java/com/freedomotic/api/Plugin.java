@@ -188,8 +188,6 @@ public class Plugin implements Client, BusConsumer {
     public void notifyCriticalError(String message) {
         //Log the error on console/logfiles
         LOG.warning(message);
-        //change plugin description
-        setDescription(message);
         //write something on the GUI
         MessageEvent callout = new MessageEvent(this, message);
         callout.setType("callout"); //display as callout on frontends
@@ -198,6 +196,8 @@ public class Plugin implements Client, BusConsumer {
         busService.send(callout);
         //stop this plugin
         stop();
+        //override plugin description
+        setDescription(message);
         //plugin is now set as STOPPED, but should be marked as FAILED
         currentPluginStatus = PluginStatus.FAILED;
     }

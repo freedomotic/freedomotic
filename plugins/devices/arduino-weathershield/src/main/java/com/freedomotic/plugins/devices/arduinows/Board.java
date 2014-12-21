@@ -25,24 +25,18 @@ package com.freedomotic.plugins.devices.arduinows;
 public class Board {
 
     private String ipAddress = null;
-    private String delimiter = null;
     private int port;
-    private int socketTimeout;
-    private int pollingTime;
 
-    public Board(String ipAddress, int port, int pollingTime, int socketTimeout, String delimiter) {
+    public Board(String ipAddress, int port) {
         setIpAddress(ipAddress);
         setPort(port);
-        setPollingTime(pollingTime);
-        setSocketTimeout(socketTimeout);
-        setDelimiter(delimiter);
     }
 
     public String getIpAddress() {
         return ipAddress;
     }
 
-    public void setIpAddress(String ipAddress) {
+    public final void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
 
@@ -50,31 +44,7 @@ public class Board {
         return port;
     }
 
-    public void setPort(int port) {
+    public final void setPort(int port) {
         this.port = port;
-    }
-
-    public void setPollingTime(int pollingTime) {
-        this.pollingTime = pollingTime;
-    }
-
-    public int getPollingTime() {
-        return pollingTime;
-    }
-
-    public void setSocketTimeout(int socketTimeout) {
-        this.socketTimeout = socketTimeout;
-    }
-
-    public int getSocketTimeout() {
-        return socketTimeout;
-    }
-
-    public String getDelimiter() {
-        return delimiter;
-    }
-
-    public void setDelimiter(String delimiter) {
-        this.delimiter = delimiter;
     }
 }

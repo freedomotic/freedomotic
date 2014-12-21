@@ -29,6 +29,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -41,6 +44,8 @@ public class HttpHelper {
 
     private DocumentBuilder documentBuilder;
     private XPath xPath;
+    private final HttpParams httpParams = new BasicHttpParams();
+    private static final int DEFAULT_TIMEOUT = 30000; //30seconds
 
     private static final Logger LOG = Logger.getLogger(HttpHelper.class.getName());
 
@@ -53,6 +58,7 @@ public class HttpHelper {
         }
         XPathFactory xpathFactory = XPathFactory.newInstance();
         xPath = xpathFactory.newXPath();
+        setConnectionTimeout(DEFAULT_TIMEOUT);
     }
 
     /**
@@ -116,15 +122,20 @@ public class HttpHelper {
         return results;
     }
 
+    public void setConnectionTimeout(int timeout) {
+        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+    }
+
     /**
      *
-     * @return @throws IOException if the URL format is wrong or if cannot read from source
+     * @return @throws IOException if the URL format is wrong or if cannot read
+     * from source
      */
     private String doGet(String url, String username, String password) throws IOException {
 
         Authenticator.setDefault(new MyAuthenticator(username, password));
 
-        DefaultHttpClient client = new DefaultHttpClient();
+        DefaultHttpClient client = new DefaultHttpClient(httpParams);
         String decodedUrl;
         HttpGet request = null;
         try {
