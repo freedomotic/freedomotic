@@ -3,5 +3,6 @@
         <property name="description"                       value="Makes plugins start, stop, show or hide GUI from remote"/>
         <property name="category"                       value="plugins"/>
         <property name="short-name"                       value="controller"/>
+<property name="startup-time" value="on load"/>
     </properties>
 </config>
