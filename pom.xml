@@ -20,6 +20,19 @@
     <url>http://freedomotic.com</url>
     <inceptionYear>2009</inceptionYear>
 
+    <!-- Modules to build by default -->
+    <modules>
+        <module>framework/freedomotic-model</module>
+        <module>framework/freedomotic-core</module>
+        <module>tools/freedomotic-marketplace</module>
+        <module>plugins/objects/base-objects</module>
+        <module>plugins/devices/frontend-java</module>
+        <module>plugins/devices/essential</module>
+        <module>plugins/devices/simulation</module>
+        <module>plugins/devices/hello-world</module>
+        <module>plugins/devices/restapi-v3</module>
+    </modules>
+
     <licenses>
         <license>
             <name>GNU GPL2</name>
@@ -73,26 +86,9 @@
     </properties>
 
     <profiles>
-        <!-- List all components that should be built by default -->
-        <profile>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>framework/freedomotic-model</module>
-                <module>framework/freedomotic-core</module>
-                <module>tools/freedomotic-marketplace</module>
-                <module>plugins/objects/base-objects</module>
-                <module>plugins/devices/frontend-java</module>
-                <module>plugins/devices/essential</module>
-                <module>plugins/devices/simulation</module>
-                <module>plugins/devices/hello-world</module>
-                <module>plugins/devices/restapi-v3</module>
-            </modules>
-        </profile>
         <!--Release framework on Maven Central repository (javadocs, sources, gpg plugin) 
-            Details: http://central.sonatype.org/pages/apache-maven.html 
-            USAGE: mvn deploy -P release -->
+        Details: http://central.sonatype.org/pages/apache-maven.html 
+        USAGE: mvn deploy -P release -->
         <profile>
             <id>release</id>
             <modules>
@@ -451,7 +447,6 @@
                         </dependencies>
                         <executions>
                             <execution>
-                                <phase>install</phase>
                                 <configuration>
                                     <tasks>
                                         <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
