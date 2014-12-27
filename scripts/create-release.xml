@@ -24,14 +24,13 @@
         />                
        
         <!-- The folder used as base to build the release -->
-        <property name="base" value="."/>
+        <property name="base" value="framework/freedomotic-core/"/>
         <!-- The root of GIT repository --> 
-        <property name="workspace-base" value="../../"/> 
+        <property name="workspace-base" value="."/> 
         <property name="release-base" value="${base}/target/release"/>
         <property name="release-folder" value="${release-base}/freedomotic-${release.version}"/>
         <property name="release-dump" value="${release-base}/temp"/>
         <property name="include" value="${workspace-base}/scripts/shared"/>
-        <property name="changeLogFile" value="${include}/CHANGELOG.TXT"/>     
  
          
         <mkdir dir="${release-folder}" />
