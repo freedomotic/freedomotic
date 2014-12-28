@@ -19,6 +19,7 @@
  */
 package com.freedomotic.plugins.devices.mysensors;
 
+import com.freedomotic.api.API;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
@@ -28,7 +29,11 @@ import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.helpers.SerialHelper;
 import com.freedomotic.helpers.SerialPortListener;
 import com.freedomotic.reactions.Command;
+import com.freedomotic.things.EnvObjectLogic;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jssc.SerialPortException;
@@ -36,33 +41,41 @@ import jssc.SerialPortException;
 public class MySensors extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(MySensors.class.getName());
+    private final API api;
+    // Type of message
+    private final String PRESENTATION = "0";
+    private final String SET_VARIABLE = "1";
+    private final String REQ_VARIABLE = "2";
+    private final String INTERNAL = "3";
+    private final String STREAM = "3";
     private String PORTNAME = configuration.getStringProperty("serial.port", "/dev/ttyACM0");
     private Integer BAUDRATE = configuration.getIntProperty("serial.baudrate", 9600);
     private Integer DATABITS = configuration.getIntProperty("serial.databits", 8);
     private Integer PARITY = configuration.getIntProperty("serial.parity", 0);
     private Integer STOPBITS = configuration.getIntProperty("serial.stopbits", 1);
     private SerialHelper serial;
+    Map<String, String> deviceNodeIDTable = new HashMap<>();
 
-    public MySensors() {
+    public MySensors(API api) {
         super("MySensors", "/mysensors/mysensors-manifest.xml");
         setPollingWait(-1); //disables polling
+        this.api = api;
     }
 
     @Override
     public void onStart() throws PluginStartupException {
+        loadConfiguredObjects();
         try {
             serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, new SerialPortListener() {
-
                 @Override
                 public void onDataAvailable(String data) {
                     LOG.info("MySensors received: " + data);
-                    sendChanges(data);
+                    manageMessage(data);
                 }
             });
-
             serial.setChunkTerminator("\n");
         } catch (SerialPortException ex) {
-            throw new PluginStartupException("Error while creating serial connection. " + ex.getMessage(), ex);
+            throw new PluginStartupException("Error: " + ex.getMessage(), ex);
         }
     }
 
@@ -89,7 +102,7 @@ public class MySensors extends Protocol {
         String subType = c.getProperty("sub-type");
         String payload = c.getProperty("payload");
         String message = address + ";" + IDMessageType + ";" + ack + ";" + subType + ";" + payload + "\n";
-        write(message);
+        writeSerialData(message);
     }
 
     @Override
@@ -102,16 +115,7 @@ public class MySensors extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void write(String data) {
-        LOG.info("MySensors writes '" + data + "' to serial connection");
-        try {
-            serial.write(data);
-        } catch (SerialPortException ex) {
-            Logger.getLogger(MySensors.class.getName()).log(Level.WARNING, null, ex);
-        }
-    }
-
-    private void sendChanges(String data) {
+    private void manageMessage(String data) {
         String nodeID;
         String childSensorID;
         String messageType;
@@ -119,34 +123,127 @@ public class MySensors extends Protocol {
         String subType;
         String payload;
         String[] message = data.split(";");
-        nodeID = message[0];
-        childSensorID = message[1];
-        messageType = message[2];
-        ack = message[3];
-        subType = message[4];
-        payload = message[5];
 
-        // 
-        if (messageType.equalsIgnoreCase("0") || messageType.equalsIgnoreCase("1")) {
-            ProtocolRead event = new ProtocolRead(this, "mysensors", nodeID + ";" + childSensorID);
-            String objectClass = configuration.getProperty(subType);
-            if (objectClass != null) {
-                event.addProperty("object.class", objectClass);
-                event.addProperty("object.name", objectClass + " " + nodeID + ":" + childSensorID);
-                LOG.info("Created object " + objectClass + " with address " + nodeID + ":" + childSensorID);
+        if (message.length >= 5) {
+            nodeID = message[0];
+            childSensorID = message[1];
+            messageType = message[2];
+            ack = message[3];
+            subType = message[4];
+            payload = message[5];
+
+
+            switch (messageType) {
+
+                case INTERNAL:
+                    manageInternalMessage(nodeID, childSensorID, ack, subType, payload);
+                    break;
+
+                case SET_VARIABLE:
+                    manageSetMessage(nodeID, childSensorID, ack, subType, payload);
+                    break;
+
             }
-            // adds isOn property only for lights
-            if ((messageType.equalsIgnoreCase("0") && subType.equalsIgnoreCase("3")) || (messageType.equalsIgnoreCase("1") && subType.equalsIgnoreCase("2"))) {
-                if (payload.equalsIgnoreCase("1")) {
-                    event.addProperty("sensor.isOn", "true");
-                } else {
-                    event.addProperty("sensor.isOn", "false");
+        } else {
+            LOG.info("Data format incorrect");
+        }
+    }
+
+    private void manageSetMessage(String nodeID, String childSensorID, String ack, String subType, String payload) {
+
+        ProtocolRead event = new ProtocolRead(this, "mysensors", nodeID + ";" + childSensorID);
+        String subTypeName = SetReqSubType.fromInt(Integer.valueOf(subType)).toString();
+        String objectClass = configuration.getProperty(subTypeName);
+        if (objectClass != null) {
+            event.addProperty("object.class", objectClass);
+            event.addProperty("object.name", objectClass + " " + nodeID + ":" + childSensorID);
+            LOG.info("Created object " + objectClass + " with address " + nodeID + ":" + childSensorID);
+        }
+        // adds isOn property only for lights
+        if (subType.equalsIgnoreCase("V_LIGHT")) {
+            if (payload.equalsIgnoreCase("1")) {
+                event.addProperty("sensor.isOn", "true");
+            } else {
+                event.addProperty("sensor.isOn", "false");
+            }
+        }
+        event.addProperty("sensor.value", payload);
+        this.notifyEvent(event);
+
+
+
+    }
+
+    private void manageInternalMessage(String nodeID, String childSensorID, String ack, String subType, String payload) {
+        InternalSubType internalSubType = InternalSubType.I_ID_REQUEST;
+        switch (internalSubType) {
+            case I_ID_REQUEST:
+                if (nodeID.equalsIgnoreCase("255") && childSensorID.equalsIgnoreCase("255")) {
+                    // get a new available nodeID
+                    String newNodeID = getAvailableNodeID();
+                    if (!newNodeID.equalsIgnoreCase("-1")) {
+                        LOG.info("Node-ID assigned: " + newNodeID);
+                        sendMessage(nodeID, childSensorID, INTERNAL, ack, subType, newNodeID);
+                    } else {
+                        LOG.info("No more Node-ID available");
+                    }
                 }
-            }
-            event.addProperty("sensor.value", payload);
-            this.notifyEvent(event);
+                break;
+
+
 
         }
+    }
 
+    private void sendMessage(String nodeID, String childSensorID, String messageType, String ack, String subType, String payload) {
+        InternalSubType internalSubType = InternalSubType.I_ID_REQUEST;
+        StringBuilder messageToSend = new StringBuilder();
+        messageToSend.append(nodeID).append(";").append(childSensorID).append(";").append(messageType).append(";").append(ack).append(";").append(internalSubType.I_ID_RESPONSE).append(";").append(payload).append("\n");
+        writeSerialData(messageToSend.toString());
+    }
+
+    /**
+     * Returns an available NodeID for AUTO-id feature
+     *
+     * @return
+     * @throws Exception
+     */
+    private String getAvailableNodeID() {
+        boolean addressAvailable = false;
+        int i = 0;
+        for (i = 1; i < 254; i++) {
+            if (!deviceNodeIDTable.containsKey(String.valueOf(i))) {
+                addressAvailable = true;
+                break;
+            }
+        }
+        if (addressAvailable) {
+            deviceNodeIDTable.put(String.valueOf(i), null);
+            return String.valueOf(i);
+        }
+        return ("-1");
+    }
+
+    /* 
+     * Creates a list of configured objects in Freedomotic to determine the next
+     * available nodeID for AUTO-ID feature
+     */
+    private void loadConfiguredObjects() {
+        ArrayList<EnvObjectLogic> configuredObjects = (ArrayList<EnvObjectLogic>) api.things().findByProtocol("mysensors");
+        for (EnvObjectLogic obj : configuredObjects) {
+            String phisicalAddress = obj.getPojo().getPhisicalAddress();
+            String[] addrComponents = phisicalAddress.split("\n");
+            deviceNodeIDTable.put(addrComponents[0], obj.getPojo().getName());
+        }
+
+    }
+
+    private void writeSerialData(String data) {
+        try {
+            LOG.info("Sending " + data + " to MySensors gateway");
+            serial.write(data);
+        } catch (SerialPortException ex) {
+            LOG.severe("Impossible to write on serial for " + ex.getMessage());
+        }
     }
 }
