@@ -609,4 +609,9 @@ class ThingRepositoryImpl implements ThingRepository {
     public void saveAll(File folder) throws RepositoryException {
         saveObjects(folder);
     }
+
+    @Override
+    public List<EnvObjectLogic> findByProtocol(String protocolName) {
+        return getObjectByProtocol(protocolName);
+    }
 }

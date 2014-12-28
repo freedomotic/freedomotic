@@ -19,6 +19,8 @@ public interface ThingRepository extends Repository<EnvObjectLogic> {
     
     public List<EnvObjectLogic> findByEnvironment(EnvironmentLogic env);
     public List<EnvObjectLogic> findByEnvironment(String uuid);
+    public List<EnvObjectLogic> findByProtocol(String protocolName);
+    //TODO: should return a single element, done this way for backward compatibility
     public List<EnvObjectLogic> findByAddress(String protocol, String address);
     
     //TODO: temporary for refactoring, should be removed
