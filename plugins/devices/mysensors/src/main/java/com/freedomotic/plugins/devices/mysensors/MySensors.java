@@ -17,12 +17,14 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+/**
+ * @author Mauro Cicolella
+ */
 package com.freedomotic.plugins.devices.mysensors;
 
 import com.freedomotic.api.API;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
@@ -69,7 +71,7 @@ public class MySensors extends Protocol {
             serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, new SerialPortListener() {
                 @Override
                 public void onDataAvailable(String data) {
-                    LOG.info("MySensors received: " + data);
+                    LOG.log(Level.INFO, "MySensors received ''{0}'' ", data);
                     manageMessage(data);
                 }
             });
@@ -89,7 +91,7 @@ public class MySensors extends Protocol {
             if (serial.disconnect()) {
                 serial = null;
             } else {
-                LOG.info("Impossible to disconnect from ");
+                LOG.log(Level.WARNING, "Impossibile to disconnect from ''{0}'' ", serial.getPortName());
             }
         }
     }
@@ -145,7 +147,7 @@ public class MySensors extends Protocol {
 
             }
         } else {
-            LOG.info("Data format incorrect");
+            LOG.log(Level.WARNING, "Data format incorrect");
         }
     }
 
@@ -182,10 +184,10 @@ public class MySensors extends Protocol {
                     // get a new available nodeID
                     String newNodeID = getAvailableNodeID();
                     if (!newNodeID.equalsIgnoreCase("-1")) {
-                        LOG.info("Node-ID assigned: " + newNodeID);
+                        LOG.log(Level.INFO, "Node-ID assigned ''{0}'' ", newNodeID);
                         sendMessage(nodeID, childSensorID, INTERNAL, ack, subType, newNodeID);
                     } else {
-                        LOG.info("No more Node-ID available");
+                        LOG.log(Level.WARNING, "No more Node-ID available");
                     }
                 }
                 break;
@@ -240,10 +242,10 @@ public class MySensors extends Protocol {
 
     private void writeSerialData(String data) {
         try {
-            LOG.info("Sending " + data + " to MySensors gateway");
+            LOG.log(Level.INFO, "Sending ''{0}'' to MySensors gateway", data);
             serial.write(data);
         } catch (SerialPortException ex) {
-            LOG.severe("Impossible to write on serial for " + ex.getMessage());
+            LOG.log(Level.SEVERE, "Impossible to write on serial for " + ex.getLocalizedMessage());
         }
     }
 }
