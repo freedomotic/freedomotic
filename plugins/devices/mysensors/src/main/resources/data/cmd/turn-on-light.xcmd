@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Turn ON MySensors light</name>
     <receiver>app.actuators.protocol.mysensors.in</receiver>
     <description>Turn ON MySensors light</description>
@@ -15,4 +15,4 @@
 	    <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>
