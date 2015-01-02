@@ -129,7 +129,7 @@ public final class RestJettyServer extends Server {
         // shiro filter
         if (master.getApi().getAuth().isInited()) {
             context.addEventListener(new ShiroListener());
-            context.addFilter(ShiroFilter.class, "/" + API_VERSION + "/*", null);
+            context.addFilter(ShiroFilter.class, "/*", null);
         }
 
         // guice filter

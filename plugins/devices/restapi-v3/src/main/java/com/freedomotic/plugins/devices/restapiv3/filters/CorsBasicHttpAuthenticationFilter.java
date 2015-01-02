@@ -24,6 +24,7 @@ package com.freedomotic.plugins.devices.restapiv3.filters;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 
@@ -43,5 +44,20 @@ response, Object mappedValue) {
       return super.isAccessAllowed(request, response, mappedValue);
     }
   }
+
+    @Override
+    protected boolean sendChallenge(ServletRequest request, ServletResponse response) {
+        
+    HttpServletRequest httpRequest = WebUtils.toHttp(request);
+        // During Cross Origin requests, no info about auth schema is given
+        if (httpRequest.getHeader("Origin") != null &&  !httpRequest.getHeader("Origin").isEmpty()){
+                HttpServletResponse httpResponse = WebUtils.toHttp(response);
+                httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return false;
+        }
+        return super.sendChallenge(request, response); //To change body of generated methods, choose Tools | Templates.
+    }
+  
+  
  
 }
