@@ -1,8 +1,10 @@
 <config>
     <properties>
-        <property name="description"                       value="A simple plugin to start coding"/>
-        <property name="category"                       value="devel"/>
-        <property name="short-name"                       value="hello"/>
+        <property name="description" value="MaryTTS Text to Speech"/>
+        <property name="category" value="media"/>
+        <property name="short-name" value="tts"/>
+        <property name="startup-time" value="on load"/>
+        <property name="voice" value="cmu-slt-hsmm"/>
     </properties>
 </config>
 
