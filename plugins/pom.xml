@@ -69,7 +69,7 @@
                                             name="marketplace"
                                             classname="com.freedomotic.marketplace.AntUploader" >
                                             <classpath>
-                                                <pathelement location="../../../tools/freedomotic-marketplace/target/freedomotic-marketplace-3.0-jar-with-dependencies.jar"/>
+                                                <pathelement location="../../../tools/freedomotic-drupal-marketplace/target/freedomotic-drupal-marketplace-3.0-jar-with-dependencies.jar"/>
                                                 <pathelement location="../../../framework/freedomotic-core/target/freedomotic-core/freedomotic.jar"/>
                                             </classpath>
                                         </taskdef>
