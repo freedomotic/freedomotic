@@ -25,11 +25,6 @@
         <module>devices/hello-world</module>
         <module>devices/restapi-v3</module>
     </modules> 
-    
-    <properties>
-        <freedomotic.basedir>../</freedomotic.basedir>
-        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-    </properties>
 
     <profiles>
         <!-- Uploads a plugin to the official freedomotic marketplace
@@ -152,68 +147,6 @@
                             </manifest>
                         </archive>
                     </configuration>
-                </plugin>
-                <!-- copy plugins dependencies when a plugin is installed -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.8</version>
-                    <executions>
-                        <execution>
-                            <id>copy-dependencies</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>copy-dependencies</goal>
-                            </goals>
-                            <configuration>
-                                <silent>true</silent>
-                                <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
-                                <includeScope>runtime</includeScope>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <!--license management for plugins-->
-                <plugin>
-                    <groupId>com.mycila.maven-license-plugin</groupId>
-                    <artifactId>maven-license-plugin</artifactId>
-                    <version>1.10.b1</version>
-                    <configuration>
-                        <header>LICENSE_HEADER.txt</header>
-                        <properties>
-                            <name>${project.name}</name>
-                            <inceptionyear>${project.inceptionYear}</inceptionyear>
-                            <!-- TODO: use current year -->
-                            <year>2013</year>
-                            <holder>Freedomotic team</holder>
-                            <contact>info@freedomotic.com</contact>
-                        </properties>
-                        <excludes>
-                            <exclude>**/*.xml</exclude>
-                            <exclude>**/*.properties</exclude>
-                            <exclude>**/*.xtrg</exclude>
-                            <exclude>**/*.xcmd</exclude>
-                            <exclude>**/*.xrea</exclude>
-                            <exclude>**/*.xobj</exclude>
-                            <exclude>**/*.png</exclude>
-                            <exclude>**/*.jpg</exclude>
-                            <exclude>**/*.PNG</exclude>
-                            <exclude>**/*.options</exclude>
-                        </excludes>
-                        <includes>
-                            <include>**/freedomotic-core/**</include>
-                            <include>**/freedomotic-model/**</include>
-                        </includes>
-                        <strictCheck>true</strictCheck>
-                        <aggregate>true</aggregate>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>format</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-antrun-plugin</artifactId>
