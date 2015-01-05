@@ -5,7 +5,7 @@
         <groupId>com.freedomotic</groupId>
         <artifactId>freedomotic-plugins</artifactId>
         <version>5.6-SNAPSHOT</version>
-        <relativePath>../../../</relativePath>
+        <relativePath>../../</relativePath>
     </parent>    
     <artifactId>frontend-java</artifactId>
     <packaging>jar</packaging>

@@ -16,22 +16,19 @@
            </classpath>
         </taskdef>        -->
 
-        <!-- We check if the release.version has been given externally of we have to ask-->
-        <input
-            message="Please enter the release major number and minor number separated by a dot."
-            addproperty="release.version"
-            defaultvalue="${project.version}"
-        />                
+	<!-- Set a default release version, it can be overridden passing parameter "-D release.version" from command line" -->       
+	<property name="release.version" value="${project.version}"/> 
       
-        <!-- The folder used as base to build the release -->
-        <property name="base" value="."/>
         <!-- The root of GIT repository --> 
-        <property name="workspace-base" value="../../"/> 
+        <property name="workspace-base" value="../"/> 
+        <property name="include" value="${workspace-base}/scripts/shared"/>
+        <!-- The folder from which to take the main source code -->
+        <property name="sources" value="${workspace-base}/framework/freedomotic-core/"/>
 
-        <property name="release-base" value="${base}/target/release"/>
+        <property name="release-base" value="${sources}/target/release"/>
         <property name="release-folder" value="${release-base}/freedomotic-${release.version}"/>
         <property name="release-dump" value="${release-base}/temp"/>
-        <property name="include" value="${workspace-base}/scripts/shared"/>
+
                
         <!-- just to be sure it exists and is ready to be filled -->
         <mkdir dir="${release-folder}" />
@@ -44,17 +41,17 @@
    
         <echo>  Add jar file and libraries</echo>
         <copy todir="${release-folder}">
-            <fileset dir="${base}/target/freedomotic-core" includes="**/freedomotic*.jar lib/**/*" />
+            <fileset dir="${sources}/target/freedomotic-core" includes="**/freedomotic*.jar lib/**/*" />
         </copy>
        
         <echo>  Add plugins</echo>
         <copy todir="${release-folder}/plugins">
-            <fileset dir="${base}/plugins" includes="**/*" />
+            <fileset dir="${sources}/plugins" includes="**/*" />
         </copy>
        
         <echo>  Add config file</echo>
         <copy todir="${release-folder}/config">
-            <fileset dir="${base}/config" includes="**/*" />
+            <fileset dir="${sources}/config" includes="**/*" />
         </copy>
        
         <echo>  Add example data file</echo>
@@ -64,7 +61,7 @@
 
         <echo>  Add i18n</echo>
         <copy todir="${release-folder}/i18n">
-            <fileset dir="${base}/i18n" includes="**/*" />
+            <fileset dir="${sources}/i18n" includes="**/*" />
         </copy>
        
         <!--<echo>Append changes to CHANGELOG file</echo>      
@@ -96,7 +93,7 @@
         <chmod file="${release-folder}/freedomotic.jar" perm="ugo+rx"/>
         <property name="shell-scripts" value="freedomotic-${release.version}/freedomotic.sh freedomotic-${release.version}/freedomotic.exe freedomotic-${release.version}/freedomotic.jar"/>
         <!--create the zip setting proper permissions-->
-        <zip destfile="${base}/target/freedomotic-${release.version}.zip" level="9">
+        <zip destfile="${release-base}/freedomotic-${release.version}.zip" level="9">
             <zipfileset dir="${release-base}" excludes="${shell-scripts}"/>
             <zipfileset dir="${release-base}" includes="${shell-scripts}" filemode="777" />
         </zip>

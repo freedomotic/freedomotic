@@ -11,9 +11,9 @@
     </parent>
     
     <modules>
-        <module>framework</module>
         <module>tools</module>
         <module>plugins</module>
+        <module>framework</module>
     </modules>
     
     <distributionManagement>
@@ -85,7 +85,7 @@
     </developers>
     
     <properties>
-        <freedomotic.basedir>${project.basedir}</freedomotic.basedir>
+        <freedomotic.basedir>${basedir}</freedomotic.basedir>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     </properties>
 

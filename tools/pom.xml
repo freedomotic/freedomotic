@@ -21,5 +21,10 @@
         <module>freedomotic-drupal-marketplace</module>
         <module>freedomotic-device-maven-archetype</module>
     </modules>
+    
+    <properties>
+        <freedomotic.basedir>${basedir}/..</freedomotic.basedir>
+        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+    </properties>
 
 </project>
