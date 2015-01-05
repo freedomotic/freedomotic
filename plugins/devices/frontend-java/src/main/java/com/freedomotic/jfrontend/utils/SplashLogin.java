@@ -207,7 +207,7 @@ public class SplashLogin extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
-        boolean loginSuccessfull = api.getAuth().login(username.getText(), password.getPassword());
+        boolean loginSuccessfull = api.getAuth().login(username.getText(), password.getPassword(), true);
         if (loginSuccessfull) {
             master.createMainWindow();
         } else {

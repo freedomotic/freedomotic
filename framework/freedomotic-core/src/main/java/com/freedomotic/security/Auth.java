@@ -56,15 +56,16 @@ public interface Auth {
      * @param password
      * @return
      */
-    public boolean login(String subject, char[] password);
+    public boolean login(String subject, char[] password, boolean rememberMe);
 
     /**
      *
      * @param subject
      * @param password
+     * @param rememberMe
      * @return
      */
-    public boolean login(String subject, String password);
+    public boolean login(String subject, String password, boolean rememberMe);
 
     /**
      *

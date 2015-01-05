@@ -92,9 +92,9 @@ class AuthImpl2 implements Auth {
      * @return
      */
     @Override
-    public boolean login(String subject, char[] password) {
+    public boolean login(String subject, char[] password, boolean rememberMe) {
         String pwdString = String.copyValueOf(password);
-        return login(subject, pwdString);
+        return login(subject, pwdString, rememberMe);
     }
 
     /**
@@ -104,9 +104,9 @@ class AuthImpl2 implements Auth {
      * @return
      */
     @Override
-    public boolean login(String subject, String password) {
+    public boolean login(String subject, String password, boolean rememberMe) {
         UsernamePasswordToken token = new UsernamePasswordToken(subject, password);
-        token.setRememberMe(true);
+        token.setRememberMe(rememberMe);
         Subject currentUser = SecurityUtils.getSubject();
         try {
             currentUser.login(token);

@@ -90,7 +90,7 @@ public class RealmTest {
     public void TestLogin(){
         auth.logout();
         assertEquals("Testing anonymous user prior to authenticate",false, auth.getSubject().isAuthenticated());
-        auth.login("system","password");
+        auth.login("system","password",true);
         assertEquals("Testing if user is authenticated",true, auth.getSubject().isAuthenticated());
         assertEquals("Testing name of authenticated user","system", auth.getSubject().getPrincipal());
         auth.logout();
@@ -100,7 +100,7 @@ public class RealmTest {
     @Test
     public void TestUserRoleToPermissions(){
         auth.logout();
-        auth.login("system","password");
+        auth.login("system","password", true);
         assertEquals("Checking whether 'system' user is permitted 'sys:*'",true, auth.getSubject().isPermitted("sys:*"));
         assertEquals("user is permitted 'sys:*' ",true, auth.getUser("system").isPermitted("sys:*"));
         assertEquals("user is not permitted '*' ",false, auth.getUser("system").isPermitted("*"));

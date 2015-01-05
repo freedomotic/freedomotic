@@ -220,11 +220,12 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     @Path("/_/login")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @ApiOperation(value = "Get current user", position = 0)
+    @ApiOperation(value = "Login a user", position = 0)
     public Response login(
         @FormParam("name") String name,
-        @FormParam("password") String password) {
-        if (api.getAuth().login(name, password)){
+        @FormParam("password") String password,
+        @FormParam("rememberMe") boolean rememberMe) {
+        if (api.getAuth().login(name, password, rememberMe)){
             return Response.ok().build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).build();
