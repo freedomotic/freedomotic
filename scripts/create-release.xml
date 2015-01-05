@@ -22,26 +22,25 @@
             addproperty="release.version"
             defaultvalue="${project.version}"
         />                
-       
+      
         <!-- The folder used as base to build the release -->
-        <property name="base" value="framework/freedomotic-core/"/>
+        <property name="base" value="."/>
         <!-- The root of GIT repository --> 
-        <property name="workspace-base" value="."/> 
+        <property name="workspace-base" value="../../"/> 
+
         <property name="release-base" value="${base}/target/release"/>
         <property name="release-folder" value="${release-base}/freedomotic-${release.version}"/>
         <property name="release-dump" value="${release-base}/temp"/>
         <property name="include" value="${workspace-base}/scripts/shared"/>
- 
-         
-        <mkdir dir="${release-folder}" />
-        <mkdir dir="${release-dump}" />
                
         <!-- just to be sure it exists and is ready to be filled -->
-        <mkdir dir="plugins/devices"/>
-        <mkdir dir="plugins/objects"/>
-        <mkdir dir="plugins/providers"/>
-        <mkdir dir="plugins/events"/>
-        <mkdir dir="data"/>
+        <mkdir dir="${release-folder}" />
+        <mkdir dir="${release-dump}" />
+        <mkdir dir="${release-folder}/plugins/devices"/>
+        <mkdir dir="${release-folder}/plugins/objects"/>
+        <mkdir dir="${release-folder}/plugins/providers"/>
+        <mkdir dir="${release-folder}/plugins/events"/>
+        <mkdir dir="${release-folder}/data"/>
    
         <echo>  Add jar file and libraries</echo>
         <copy todir="${release-folder}">
@@ -129,52 +128,5 @@
             summary="Daily build created by a Continuous Integration System. This release is unstable, do not use in production environment."
             labels="Featured, Type-DailyBuild, OpSys-All"
             verbose="true"/>
-    </target>
-   
-    <target name="upload-release" >
-        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
-            <classpath>
-                <pathelement location="../../lib/ant/ant-contrib-1.0b3.jar"/>
-            </classpath>
-        </taskdef>                        
-        <property name="workspace-base" value="../../"/>              
-        <property file="${workspace-base}/framework/freedomotic/releasetoupload" />
-        <taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="${workspace-base}/lib/ant/ant-googlecode-0.0.3.jar" name="gcupload"/>
-        <gcupload
-            username="${googlecode_username}"
-            password="${googlecode_password}"        
-            projectname="freedomotic"
-            filename="${workspace-base}/${upload.file.name}"
-            targetfilename="Freedomotic_v${upload.release.major}.zip"        
-            summary="The currently RECOMMENDED version to download. You may try the latest daily build if you feel brave."
-            labels="Featured, Type-Beta, OpSys-All"
-            verbose="true"/>
-    </target>
-    
-    <target name="generate-deb" >
-        <echo>  Add debian folder for .deb creation</echo>
-        <copy todir="${release-folder}/debian">
-            <fileset dir="${workspace-base}/scripts/debian" includes="**/*" />
-        </copy>    
- 
-        <echo>  Creating .deb package</echo>
-        <exec executable="chmod" dir="${release-folder}" os="Linux">
-            <arg value="a+x"/>
-            <arg value="debian/rules"/>
-        </exec>
-        <exec executable="fakeroot" dir="${release-folder}" os="Linux">
-            <arg value="debian/rules"/>
-            <arg value="clean"/>
-        </exec>
-        <exec executable="fakeroot" dir="${release-folder}" os="Linux">
-            <arg value="debian/rules"/>
-            <arg value="binary"/>
-        </exec>
-        <echo>Moving .deb file </echo>
-        <copy todir="$workspace-base}">
-            <fileset dir="${release-base}" includes="**/*.deb" />
-        </copy>
-        <echo>Deleting debian folder before compressing</echo>
-        <delete dir="${release-folder}/debian" />
     </target>
 </project>

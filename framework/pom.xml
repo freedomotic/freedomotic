@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>freedomotic-framework</artifactId>
+    <name>Freedomotic Framework</name>
+    <description>Freedomotic framework main components</description>
+    <url>http://freedomotic.com</url>
+    <inceptionYear>2009</inceptionYear>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>com.freedomotic</groupId>
+        <artifactId>freedomotic</artifactId>
+        <version>5.6-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+    </parent>    
+    
+    <modules>
+        <module>freedomotic-model</module>
+        <module>freedomotic-core</module>
+    </modules>
+    
+</project>

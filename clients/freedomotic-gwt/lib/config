@@ -1,6 +1,0 @@
-In order to compile, the gwt-slider-bar and lib-gwt-svg libraries must be installed on the local maven repository using the following commands:
-
-mvn install:install-file -Dfile=gwt-slider-bar-1.0.jar -DgroupId=com.kiouri -DartifactId=sliderbar -Dversion=1.0 -Dpackaging=jar
-
-mvn install:install-file -Dfile=lib-gwt-svg-0.5.9.jar -DgroupId=org.vectomatic -DartifactId=lib-gwt-svg -Dversion=0.5.9 -Dpackaging=jar
-
