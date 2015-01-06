@@ -25,8 +25,14 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
+import com.freedomotic.util.Info;
+import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioInputStream;
@@ -43,6 +49,9 @@ public class MaryTTS extends Protocol {
     private static final Logger LOG = Logger.getLogger(MaryTTS.class.getName());
     private MaryInterface marytts;
     private Voice defaultVoice;
+    private Voice voice;
+    private AudioInputStream audio;
+    private String VOICE_JAR_FILE = configuration.getProperty("voice-jar-file");
     private String VOICE = configuration.getProperty("voice");
 
     public MaryTTS() {
@@ -52,17 +61,18 @@ public class MaryTTS extends Protocol {
     @Override
     protected void onStart() throws PluginStartupException {
         try {
+            //add voices folder to classpath
+            addPath(Info.PATHS.PATH_DEVICES_FOLDER + System.getProperty("file.separator") + "marytts/lib/" + VOICE_JAR_FILE);
+            System.setProperty("mary.base", Info.PATHS.PATH_DEVICES_FOLDER + System.getProperty("file.separator") + "marytts");
             marytts = new LocalMaryInterface();
-            Locale currentLocale = Locale.getDefault();
-            if (marytts.getAvailableLocales().contains(currentLocale)) {
-                defaultVoice = Voice.getDefaultVoice(currentLocale);
-            }
-            if (defaultVoice == null) {
-                // set the first available voice
-                defaultVoice = Voice.getVoice(marytts.getAvailableVoices().iterator().next());
-            }
+            // print available voices and languages
+            getInfo();
+            // set default voice
+            defaultVoice = Voice.getVoice("cmu-slt-hsmm");
         } catch (MaryConfigurationException ex) {
             throw new PluginStartupException("Plugin can't start for " + ex.getMessage());
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Impossible to modify classpath for ''{0}''", Freedomotic.getStackTraceInfo(ex));
         }
     }
 
@@ -101,7 +111,6 @@ public class MaryTTS extends Protocol {
     }
 
     private void getInfo() {
-
         LOG.log(Level.INFO, "Available voices: ''{0}''", marytts.getAvailableVoices());
         LOG.log(Level.INFO, "Available languages: ''{0}''", marytts.getAvailableLocales());
     }
@@ -116,14 +125,12 @@ public class MaryTTS extends Protocol {
 
         @Override
         public synchronized void run() {
-            AudioInputStream audio = null;
-            Voice voice = null;
-            if (VOICE != "") {
-
-                LOG.log(Level.INFO, "Voice ''{0}'' not found. Using default voice", VOICE);
+            if (VOICE == "" || !isAvailableVoice(VOICE)) {
+                LOG.log(Level.INFO, "Voice ''{0}'' not found. Using default voice ", VOICE);
                 voice = defaultVoice;
             } else {
                 voice = Voice.getVoice(VOICE);
+                LOG.log(Level.INFO, "Voice set to ''{0}''", voice.getName());
             }
             try {
                 marytts.setVoice(voice.getName());
@@ -143,5 +150,21 @@ public class MaryTTS extends Protocol {
                 }
             }
         }
+    }
+
+    //need to do add path to Classpath with reflection since the URLClassLoader.addURL(URL url) method is protected:
+    private void addPath(String s) throws Exception {
+        File f = new File(s);
+        URI u = f.toURI();
+        URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+        Class<URLClassLoader> urlClass = URLClassLoader.class;
+        Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
+        method.setAccessible(true);
+        method.invoke(urlClassLoader, new Object[]{u.toURL()});
+    }
+
+    private boolean isAvailableVoice(String voice) {
+        Set<String> availableVoices = marytts.getAvailableVoices();
+        return availableVoices.contains(voice);
     }
 }
