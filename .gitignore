@@ -73,6 +73,7 @@ log/
 # Maven #
 #########
 target/
+*.versionsBackup
 
 #IntelliJ#
 *.iml
