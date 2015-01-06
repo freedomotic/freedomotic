@@ -132,8 +132,8 @@ public class FreedomXStream {
         try {
             outputStream = new FileOutputStream(file);
             writer = new OutputStreamWriter(outputStream, Charset.forName("UTF-8"));
-            //writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-            serializer.toXML(object, outputStream);
+            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+            serializer.toXML(object, writer);
         } catch (Exception exp) {
             LOG.log(Level.SEVERE, "Error while serializing instance to disk", exp);
         } finally {
