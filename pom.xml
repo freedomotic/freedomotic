@@ -11,6 +11,16 @@
     </parent>
     
     <modules>
+        <module>framework/freedomotic-model</module>
+        <module>framework/freedomotic-core</module>
+        <module>tools/freedomotic-drupal-marketplace</module>
+        <module>tools/freedomotic-device-maven-archetype</module>
+        <module>plugins/objects/base-objects</module>
+        <module>plugins/devices/frontend-java</module>
+        <module>plugins/devices/essential</module>
+        <module>plugins/devices/simulation</module>
+        <module>plugins/devices/hello-world</module>
+        <module>plugins/devices/restapi-v3</module>
         <module>tools</module>
         <module>plugins</module>
         <module>framework</module>
@@ -131,8 +141,91 @@
         </dependencies>
     </dependencyManagement>
     
+    <profiles>
+        <!--Release framework on Maven Central repository (javadocs, sources, gpg plugin) 
+        Details: http://central.sonatype.org/pages/apache-maven.html 
+        USAGE: mvn deploy -P release -->
+        <profile>
+            <id>release</id>
+            <modules>
+                <module>framework</module>
+            </modules>
+            <build>
+                <plugins>
+                    <!-- Attach source code when deploying on Maven Central -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Attach javadocs when deploying on Maven Central -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Sign the components with GPG (must be installed locally and 
+                    specific credentials in settings.xml are needed)
+                    More info here: http://central.sonatype.org/pages/apache-maven.html -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Use nexus plugin to deploy on Central Repository -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.3</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    
     <build>
         <plugins>
+            <!-- we don't want to deploy POM package artifacts.
+            IMPORTANT: If a module needs to be deployed it must override this plugin settings -->
+<!--            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

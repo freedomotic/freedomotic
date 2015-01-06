@@ -15,12 +15,7 @@
         <artifactId>freedomotic</artifactId>
         <version>5.6-SNAPSHOT</version>
         <relativePath>../</relativePath>
-    </parent>    
-    
-    <modules>
-        <module>freedomotic-drupal-marketplace</module>
-        <module>freedomotic-device-maven-archetype</module>
-    </modules>
+    </parent>
     
     <properties>
         <freedomotic.basedir>${basedir}/..</freedomotic.basedir>

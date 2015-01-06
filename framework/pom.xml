@@ -17,19 +17,14 @@
         <relativePath>../</relativePath>
     </parent>    
     
-    <modules>
-        <module>freedomotic-model</module>
-        <module>freedomotic-core</module>
-    </modules>
-    
     <properties>
         <freedomotic.basedir>${basedir}/..</freedomotic.basedir>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     </properties>
 
     <build>
-        <!-- Package a freedomotic release -->
         <plugins>
+            <!-- Package a freedomotic release -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.7</version>
@@ -58,75 +53,5 @@
             </plugin>
         </plugins>
     </build>
-    
-    <profiles>
-        <!--Release framework on Maven Central repository (javadocs, sources, gpg plugin) 
-        Details: http://central.sonatype.org/pages/apache-maven.html 
-        USAGE: mvn deploy -P release -->
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <!-- Attach source code when deploying on Maven Central -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- Attach javadocs when deploying on Maven Central -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- Sign the components with GPG (must be installed locally and 
-                    specific credentials in settings.xml are needed)
-                    More info here: http://central.sonatype.org/pages/apache-maven.html -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- Use nexus plugin to deploy on Central Repository -->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.3</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
      
 </project>

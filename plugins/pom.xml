@@ -15,16 +15,7 @@
         <artifactId>freedomotic</artifactId>
         <version>5.6-SNAPSHOT</version>
         <relativePath>../</relativePath>
-    </parent>   
-    
-    <modules>
-        <module>objects/base-objects</module>
-        <module>devices/frontend-java</module>
-        <module>devices/essential</module>
-        <module>devices/simulation</module>
-        <module>devices/hello-world</module>
-        <module>devices/restapi-v3</module>
-    </modules> 
+    </parent>
     
     <properties>
         <freedomotic.basedir>${basedir}/..</freedomotic.basedir>
