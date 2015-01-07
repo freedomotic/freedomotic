@@ -71,6 +71,8 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.RollingFileAppender;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -206,25 +208,21 @@ public class Freedomotic implements BusConsumer {
          * Starting the logger and popup it in the browser
          * *****************************************************************
          */
-        if (config.getBooleanProperty("KEY_SAVE_LOG_TO_FILE", false)) {
+        if (!config.getStringProperty("KEY_SAVE_LOG_TO_FILE", "OFF").trim().equalsIgnoreCase("OFF")) {
             try {
-                File logdir = new File(Info.PATHS.PATH_WORKDIR + "/log/");
-                logdir.mkdir();
-
-                File logfile = new File(logdir + "/freedomotic.html");
-                logfile.createNewFile();
-
-                FileHandler handler = new FileHandler(logfile.getAbsolutePath(),
-                        false);
-                handler.setFormatter(new LogFormatter());
-                LOG.setLevel(Level.ALL);
-                LOG.addHandler(handler);
-                LOG.config(api.getI18n().msg("INIT_MESSAGE"));
+                PatternLayout layout = new PatternLayout("%d{HH:mm:ss.SSS} %-5p [%t] (%F:%L) %m%n");
+                RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, Info.PATHS.PATH_WORKDIR + "/log/freedomotic.log");
+                rollingFileAppender.setMaxBackupIndex(5);
+                rollingFileAppender.setMaxFileSize("500KB");
+                org.apache.log4j.Logger proxyLogger = org.apache.log4j.Logger.getRootLogger();
+                proxyLogger.setLevel(org.apache.log4j.Level.toLevel(config.getStringProperty("KEY_SAVE_LOG_TO_FILE", "OFF")));
+                proxyLogger.setAdditivity(false);
+                proxyLogger.addAppender(rollingFileAppender);
 
                 if ((config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
                         && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
                     java.awt.Desktop.getDesktop()
-                            .browse(new File(Info.PATHS.PATH_WORKDIR + "/log/freedomotic.html").toURI());
+                            .browse(new File(Info.PATHS.PATH_WORKDIR + "/log/freedomotic.log").toURI());
                 }
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, null, ex);
@@ -266,7 +264,7 @@ public class Freedomotic implements BusConsumer {
         try {
             pluginsManager.loadAllPlugins();
         } catch (PluginLoadingException ex) {
-            LOG.log(Level.WARNING,"Error while loading all plugins. Impossible to load " + ex.getPluginName(), ex);
+            LOG.log(Level.WARNING, "Error while loading all plugins. Impossible to load " + ex.getPluginName(), ex);
         }
 
         /**
@@ -314,7 +312,7 @@ public class Freedomotic implements BusConsumer {
             // Load all the Things in this environment
             File thingsFolder = env.getObjectFolder();
             List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(thingsFolder);
-            for (EnvObjectLogic thing: loadedThings) {
+            for (EnvObjectLogic thing : loadedThings) {
                 thing.setEnvironment(env);
                 // Actvates the Thing. Important, otherwise it will be not visible in the environment
                 thingsRepository.create(thing);
