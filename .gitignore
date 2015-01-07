@@ -10,7 +10,6 @@ nbactions.xml
 nb-configuration.xml
 findbugs.settings
 pmd.setting
-PACKAGE
 
 # Java specific #
 #################
