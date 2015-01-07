@@ -1,0 +1,16 @@
+package.type=${freedomotic.package.type}
+package.name=${project.artifactId}
+package.license=${freedomotic.package.license}
+package.nodeid=${freedomotic.nodeid}
+package.vendor.name=${freedomotic.package.vendor.name}
+package.vendor.surname=${freedomotic.package.vendor.surname}
+package.vendor.contact=${freedomotic.package.vendor.contact}
+package.vendor.company=${freedomotic.package.vendor.company}
+package.vendor.nation=${freedomotic.package.vendor.nation}
+framework.required.major=${freedomotic.framework.required.major}
+framework.required.minor=${freedomotic.framework.required.minor}
+framework.required.build=${freedomotic.framework.required.build}
+build.create.dist.market=true
+build.create.dist.framework=true
+build.synch.dist=true
+build.synch.dist.path=${freedomotic.synch.dist.path}
