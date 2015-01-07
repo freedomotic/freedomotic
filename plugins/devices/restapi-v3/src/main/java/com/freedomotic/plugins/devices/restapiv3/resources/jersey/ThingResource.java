@@ -236,6 +236,25 @@ public class ThingResource extends AbstractResource<EnvObject> {
     }
 
     @POST
+    @Path("/{id}/move/{x}/{y}")
+    @ApiOperation(value = "Move a Thing to another position")
+    public Response move(
+            @ApiParam(value = "UUID of object to move", required = true) @PathParam("id") String UUID,
+            @ApiParam(value = "Left offset", required = true) @PathParam("x") int x,
+            @ApiParam(value = "Top offset", required = true) @PathParam("y") int y) {
+
+        EnvObjectLogic el = api.things().findOne(UUID);
+        try {
+            el.setLocation(x, y);
+            return Response.accepted().build();
+        } catch (Exception e) {
+            el.synchLocation(x, y);
+            return Response.accepted().build();
+        }
+
+    }
+
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}/behaviorchange/{bid}/{value}")
     @ApiOperation("Fire a behavior change request, using provided data")
@@ -252,7 +271,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
             c.getProperties().setProperty(Command.PROPERTY_BEHAVIOR, behavior);
             c.getProperties().setProperty("value", value);
             c.getProperties().setProperty("object", prepareSingle(UUID).getName());
-            
+
             Freedomotic.sendCommand(c);
             return Response.accepted().build();
         }

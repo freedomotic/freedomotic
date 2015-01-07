@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.plugins.devices.restapiv3.test;
@@ -32,9 +30,12 @@ import com.freedomotic.model.object.Representation;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.ThingResource;
 import com.google.inject.Inject;
 import java.util.List;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilderException;
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -45,26 +46,24 @@ import org.junit.runner.RunWith;
 @GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class ThingTest extends AbstractTest<EnvObject> {
 
+    @Inject
+    Environment e;
 
-   @Inject 
-   Environment e;
-   
-   @Inject
-   EnvironmentLogic el;
-   
-   @Inject 
-   EnvObject obj;
+    @Inject
+    EnvironmentLogic el;
 
-    
+    @Inject
+    EnvObject obj;
+
     @Override
     public void init() throws UriBuilderException, IllegalArgumentException {
         e.setName("Test env for zone");
         e.setUUID(getUuid());
-        
+
         el.setPojo(e);
         el.init();
         getApi().environments().create(el);
-        
+
         setItem(obj);
         getItem().setName("TestObject");
         getItem().setUUID(getUuid());
@@ -76,9 +75,9 @@ public class ThingTest extends AbstractTest<EnvObject> {
         r.setTangible(true);
         FreedomPolygon s = new FreedomPolygon();
         s.append(0, 0);
-        s.append(0,1);
-        s.append(1,1);
-        s.append(1,0);
+        s.append(0, 1);
+        s.append(1, 1);
+        s.append(1, 0);
         r.setShape(s);
         getItem().getRepresentations().add(r);
         getItem().setCurrentRepresentation(0);
@@ -87,8 +86,10 @@ public class ThingTest extends AbstractTest<EnvObject> {
         b.setValue(true);
         getItem().getBehaviors().add(b);
         initPath(ThingResource.class);
-        setListType(new GenericType<List<EnvObject>>(){});
-        setSingleType(new GenericType<EnvObject>(){});
+        setListType(new GenericType<List<EnvObject>>() {
+        });
+        setSingleType(new GenericType<EnvObject>() {
+        });
     }
 
     @Override
@@ -126,5 +127,24 @@ public class ThingTest extends AbstractTest<EnvObject> {
     protected String getUuid(EnvObject obj) {
         return obj.getUUID();
     }
-  
+
+    @Test
+    public void testPositionChange() {
+        init();
+        Entity<EnvObject> cmdEntity = Entity.entity(getItem(), getRepresentation());
+
+        final Response response1 = target(getPATH()).request().post(cmdEntity);
+        assertEquals("POST response HTTP status code not as expected", Response.Status.CREATED.getStatusCode(), response1.getStatus());
+
+        final Response response = target(getPATH()).path(getUuid(getItem()) + "/move/10/10").request().post(null);
+        assertEquals("Move POST response HTTP status code not as expected", Response.Status.ACCEPTED.getStatusCode(), response.getStatus());
+        EnvObject objPre = target(getPATH()).path(getUuid(getItem())).request(getRepresentation()).get(getSingleType());
+        assertEquals("X position after move", 10, objPre.getRepresentations().get(0).getOffset().getX());
+        assertEquals("Y position after move", 10, objPre.getRepresentations().get(0).getOffset().getY());
+        
+      //  Response resDELETE = target(getPATH()).path(getUuid(getItem())).request(getRepresentation()).delete();
+      //  assertEquals("DELETE test", Response.Status.OK.getStatusCode(), resDELETE.getStatus());
+
+    }
+
 }
