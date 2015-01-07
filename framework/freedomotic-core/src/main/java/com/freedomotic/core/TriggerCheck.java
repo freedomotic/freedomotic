@@ -26,7 +26,6 @@ package com.freedomotic.core;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
-import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.behaviors.BehaviorLogic;
@@ -84,46 +83,33 @@ public class TriggerCheck {
             throw new IllegalArgumentException("Event and Trigger cannot be null while performing trigger check");
         }
 
-        StringBuilder buff = new StringBuilder();
-
         try {
             if (trigger.isHardwareLevel()) { //hardware triggers can always fire
 
                 Trigger resolved = resolveTrigger(event, trigger);
 
                 if (resolved.isConsistentWith(event)) {
-                    buff.append("[CONSISTENT] hardware level trigger '").append(resolved.getName()).append("' ")
-                            .append(resolved.getPayload().toString()).append("'\nconsistent with received event '")
-                            .append(event.getEventName()).append("' ").append(event.getPayload().toString());
                     applySensorNotification(resolved, event);
-                    LOG.fine(buff.toString());
+                    LOG.log(Level.FINE, "[CONSISTENT] hardware level trigger ''{0}'' {1}''\nconsistent with received event ''{2}'' {3}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
                     return true;
                 }
             } else {
                 if (trigger.canFire()) {
                     Trigger resolved = resolveTrigger(event, trigger);
-
                     if (resolved.isConsistentWith(event)) {
-                        buff.append("[CONSISTENT] registred trigger '").append(resolved.getName()).append("' ")
-                                .append(resolved.getPayload().toString()).append("'\nconsistent with received event '")
-                                .append(event.getEventName()).append("' ").append(event.getPayload().toString());
                         executeTriggeredAutomations(resolved, event);
-                        LOG.fine(buff.toString());
+                        LOG.log(Level.FINE, "[CONSISTENT] registred trigger ''{0}'' {1}''\nconsistent with received event ''{2}'' {3}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
                         return true;
                     }
                 }
             }
 
             //if we are here the trigger is not consistent
-            buff.append("[NOT CONSISTENT] registred trigger '").append(trigger.getName()).append("' ")
-                    .append(trigger.getPayload().toString()).append("'\nnot consistent with received event '")
-                    .append(event.getEventName()).append("' ").append(event.getPayload().toString());
-            LOG.fine(buff.toString());
+            LOG.log(Level.FINE, "[NOT CONSISTENT] registred trigger ''{0}'' {1}''\nnot consistent with received event ''{2}'' {3}", new Object[]{trigger.getName(), trigger.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
 
             return false;
         } catch (Exception e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
-
+            LOG.log(Level.SEVERE, "Error while performing trigger check", e);
             return false;
         }
     }
@@ -132,7 +118,6 @@ public class TriggerCheck {
         Resolver resolver = new Resolver();
         resolver.addContext("event.",
                 event.getPayload());
-
         return resolver.resolve(trigger);
     }
 
@@ -180,6 +165,8 @@ public class TriggerCheck {
         if (!done) {
             LOG.log(Level.WARNING, "Hardware trigger {0} is not associated to any object.", resolved.getName());
         }
+        resolved.getPayload().clear();
+        event.getPayload().clear();
     }
 
     private void executeTriggeredAutomations(final Trigger trigger, final EventTemplate event) {
@@ -240,7 +227,6 @@ public class TriggerCheck {
                                     }
 
                                     final Command resolvedCommand = commandResolver.resolve(command);
-
                                     //it's not a user level command for objects (eg: turn it on), it is for another kind of actuator
                                     Command reply = busService.send(resolvedCommand); //blocking wait until executed
 
@@ -286,6 +272,8 @@ public class TriggerCheck {
                 if (!found) {
                     LOG.log(Level.CONFIG, "No valid reaction bound to trigger ''{0}''", trigger.getName());
                 }
+                trigger.getPayload().clear();
+                event.getPayload().clear();
             }
 
             /**

@@ -24,6 +24,7 @@
 package com.freedomotic.rules;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -35,7 +36,6 @@ public class Statement
         implements Serializable {
 
     private static final long serialVersionUID = -6983128779561551125L;
-
 
     public static final String EQUALS = "EQUALS";
     public static final String GREATER_THAN = "GREATER_THAN";
@@ -169,7 +169,10 @@ public class Statement
      */
     @Override
     public String toString() {
-        return attribute + " " + operand + " " + value;
+        return new StringBuilder()
+                .append(attribute).append(" ")
+                .append(operand).append(" ")
+                .append(value).toString();
     }
 
     /**
@@ -208,14 +211,13 @@ public class Statement
         return true;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public int hashCode() {
-        int hash = 3;
-
+        int hash = 7;
+        hash = 43 * hash + Objects.hashCode(this.logical);
+        hash = 43 * hash + Objects.hashCode(this.attribute);
+        hash = 43 * hash + Objects.hashCode(this.operand);
+        hash = 43 * hash + Objects.hashCode(this.value);
         return hash;
     }
 }

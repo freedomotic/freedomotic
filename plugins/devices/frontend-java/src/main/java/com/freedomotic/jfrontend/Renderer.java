@@ -58,6 +58,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -675,25 +676,15 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
      * @param obj
      * @throws RuntimeException
      */
-    protected void paintImage(EnvObject obj)
-            throws RuntimeException {
-        BufferedImage img = null;
-        Shape shape = TopologyUtils.convertToAWT(obj.getCurrentRepresentation().getShape());
-        Rectangle box = shape.getBounds();
-//        img = ResourcesManager.getResource(obj.getCurrentRepresentation().getIcon(),
-//                (int) box.getWidth(),
-//                (int) box.getHeight()); //-1 means no resizeing
+    protected void paintImage(EnvObject obj) {
 
-        img = ResourcesManager.getResource(obj.getCurrentRepresentation().getIcon(),
-                -1,
-                -1); //-1 means no resizeing
+        BufferedImage img = ResourcesManager.getResource(
+                obj.getCurrentRepresentation().getIcon(), -1, -1); //-1 means no resizeing
 
         if (img != null) {
             getContext().drawImage(img, 0, 0, this);
         } else {
-            LOG.warning("Cannot find image " + obj.getCurrentRepresentation().getIcon()
-                    + " for object " + obj.getName());
-            throw new RuntimeException();
+            throw new RuntimeException("Cannot find image " + obj.getCurrentRepresentation().getIcon() + " for object " + obj.getName());
         }
     }
 

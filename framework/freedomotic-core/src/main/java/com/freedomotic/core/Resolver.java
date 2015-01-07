@@ -62,7 +62,7 @@ import javax.script.ScriptException;
 public final class Resolver {
 
     // private static final String REFERENCE_DELIMITER = "@";
-    private ArrayList<String> prefixes = new ArrayList<String>();
+    private List<String> prefixes = new ArrayList<String>();
     private Payload context;
     private Reaction reaction;
     private Command command;
@@ -112,7 +112,7 @@ public final class Resolver {
             Command clone = command.clone();
             mergeContextParamsIntoCommand(clone);
             performSubstitutionInCommand(clone);
-
+            this.clear();
             return clone;
         }
 
@@ -134,7 +134,7 @@ public final class Resolver {
             Trigger clone = trigger.clone();
             mergeContextParamsIntoTrigger(clone);
             performSubstitutionInTrigger(clone);
-
+            this.clear();
             return clone;
         }
 
@@ -272,7 +272,7 @@ public final class Resolver {
             for (final String PREFIX : prefixes) {
                 Pattern pattern = Pattern.compile("@" + PREFIX + "[.A-Za-z0-9_-]*\\b(#)?"); //find any @token
                 Matcher matcher = pattern.matcher(propertyValue);
-                StringBuffer result = new StringBuffer(propertyValue.length());
+                StringBuffer result = new StringBuffer();
 
                 while (matcher.find()) {
                     matcher.appendReplacement(result, "");
@@ -458,7 +458,7 @@ public final class Resolver {
             if (statement.getAttribute().startsWith(PREFIX)) {
                 key = statement.getAttribute().substring(PREFIX.length());
             } else {
-                key = statement.getAttribute().toString();
+                key = statement.getAttribute();
             }
 
             context.addStatement(PREFIX + key,

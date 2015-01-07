@@ -40,6 +40,7 @@ import java.util.logging.Logger;
  * @author Enrico
  */
 public class TopologyUtils {
+    private static final AffineTransform transform = new AffineTransform();
 
     private TopologyUtils() {
     }
@@ -73,20 +74,14 @@ public class TopologyUtils {
     public static Shape convertToAWT(FreedomShape input, double xScale, double yScale) {
         if (input instanceof FreedomPolygon) {
             Shape shape = convertToAWT((FreedomPolygon) input);
-            AffineTransform transform = new AffineTransform();
             transform.scale(xScale, yScale);
-
             Shape transformed = transform.createTransformedShape(shape);
-
             return transformed;
         } else {
             if (input instanceof FreedomEllipse) {
                 Shape shape = convertToAWT((FreedomEllipse) input);
-                AffineTransform transform = new AffineTransform();
                 transform.scale(xScale, yScale);
-
                 Shape transformed = transform.createTransformedShape(shape);
-
                 return transformed;
             } else {
                 throw new IllegalArgumentException("The kind of shape in input is unknown");

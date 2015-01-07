@@ -29,11 +29,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  */
 public class ReactionPersistence implements Repository<Reaction> {
 
-    private static final List<Reaction> list = new CopyOnWriteArrayList<Reaction>(); //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
+    private static final List<Reaction> list = new ArrayList<Reaction>(); //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
 
     public ReactionPersistence() {
     }
@@ -65,7 +65,6 @@ public class ReactionPersistence implements Repository<Reaction> {
             return;
         }
 
-        XStream xstream = FreedomXStream.getXstream();
         deleteReactionFiles(folder);
 
         try {

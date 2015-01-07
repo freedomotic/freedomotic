@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -40,7 +39,7 @@ public final class Payload implements Serializable {
 
     private static final long serialVersionUID = -5799483105084939108L;
     @XmlElement
-    List<Statement> payload = new CopyOnWriteArrayList<Statement>();
+    List<Statement> payload = new ArrayList<Statement>();
 
     /**
      *
