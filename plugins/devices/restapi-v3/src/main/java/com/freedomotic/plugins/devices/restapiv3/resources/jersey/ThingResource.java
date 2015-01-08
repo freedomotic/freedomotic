@@ -49,15 +49,15 @@ import javax.ws.rs.core.Response;
  *
  * @author matteo
  */
-@Path("objects")
-@Api(value = "/objects", description = "Operations on environment objects", position = 2)
+@Path("things")
+@Api(value = "/things", description = "Operations on Things", position = 2)
 public class ThingResource extends AbstractResource<EnvObject> {
 
     private String envUUID = null;
     private String roomName = null;
 
     public ThingResource() {
-        authContext = "objects";
+        authContext = "things";
     }
 
     public ThingResource(String envUUID) {
@@ -71,7 +71,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List all objects", position = 10)
+    @ApiOperation(value = "List all things", position = 10)
     @Override
     public Response list() {
         return super.list();
@@ -83,14 +83,14 @@ public class ThingResource extends AbstractResource<EnvObject> {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Get an object", position = 20)
+    @ApiOperation(value = "Get a thing", position = 20)
     @Path("/{id}")
     @ApiResponses(value = {
-        @ApiResponse(code = 404, message = "Object not found")
+        @ApiResponse(code = 404, message = "Thing not found")
     })
     @Override
     public Response get(
-            @ApiParam(value = "UUID of object to fetch (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @ApiParam(value = "UUID of thing to fetch (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
             @PathParam("id") String UUID) {
         return super.get(UUID);
     }
@@ -98,12 +98,12 @@ public class ThingResource extends AbstractResource<EnvObject> {
     @Override
     @DELETE
     @Path("/{id}")
-    @ApiOperation(value = "Delete an object", position = 50)
+    @ApiOperation(value = "Delete a thing", position = 50)
     @ApiResponses(value = {
-        @ApiResponse(code = 404, message = "Object not found")
+        @ApiResponse(code = 404, message = "Thing not found")
     })
     public Response delete(
-            @ApiParam(value = "UUID of object to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @ApiParam(value = "UUID of thing to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
             @PathParam("id") String UUID) {
         return super.delete(UUID);
     }
@@ -120,11 +120,11 @@ public class ThingResource extends AbstractResource<EnvObject> {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
-        @ApiResponse(code = 304, message = "Object not modified")
+        @ApiResponse(code = 304, message = "Thing not modified")
     })
-    @ApiOperation(value = "Update an object", position = 40)
+    @ApiOperation(value = "Update a thing", position = 40)
     public Response update(
-            @ApiParam(value = "UUID of object to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
+            @ApiParam(value = "UUID of thing to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
             @PathParam("id") String UUID, EnvObject s) {
         return super.update(UUID, s);
     }
@@ -138,9 +138,9 @@ public class ThingResource extends AbstractResource<EnvObject> {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Add a new object", position = 30)
+    @ApiOperation(value = "Add a new thing", position = 30)
     @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "New object created")
+        @ApiResponse(code = 201, message = "New thing created")
     })
     @Override
     public Response create(EnvObject s) throws URISyntaxException {
@@ -192,7 +192,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
                 return null;
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Cannot modify object " + eo.getName(), e);
+            LOG.log(Level.SEVERE, "Cannot modify thing " + eo.getName(), e);
             return null;
         }
 
@@ -221,9 +221,9 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
     @POST
     @Path("/{id}/click")
-    @ApiOperation(value = "Send a ObjectClickEvent for related object")
+    @ApiOperation(value = "Send a ObjectClickEvent for related thing")
     public Response click(
-            @ApiParam(value = "UUID of object to click", required = true)
+            @ApiParam(value = "UUID of thing to click", required = true)
             @PathParam("id") String UUID) {
         try {
             EnvObjectLogic el = api.things().findOne(UUID);
@@ -237,9 +237,9 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
     @POST
     @Path("/{id}/move/{x}/{y}")
-    @ApiOperation(value = "Move a Thing to another position")
+    @ApiOperation(value = "Move a thing to another position")
     public Response move(
-            @ApiParam(value = "UUID of object to move", required = true) @PathParam("id") String UUID,
+            @ApiParam(value = "UUID of thing to move", required = true) @PathParam("id") String UUID,
             @ApiParam(value = "Left offset", required = true) @PathParam("x") int x,
             @ApiParam(value = "Top offset", required = true) @PathParam("y") int y) {
 
@@ -259,7 +259,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
     @Path("/{id}/behaviorchange/{bid}/{value}")
     @ApiOperation("Fire a behavior change request, using provided data")
     public Response behaviorChange(
-            @ApiParam(value = "UUID of object to click", required = true)
+            @ApiParam(value = "UUID of thing to click", required = true)
             @PathParam("id") String UUID,
             @ApiParam(value = "name of behavior", required = true)
             @PathParam("bid") String behavior,
@@ -283,7 +283,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
     @GET
     @Path("/templates")
-    @ApiOperation(value = "List all object templates")
+    @ApiOperation(value = "List all thing templates")
     public Response listTemplates() {
         List<EnvObject> templates = new ArrayList<EnvObject>();
         for (Client c : clientStorage.getClients("object")) {
@@ -295,13 +295,13 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
     @POST
     @Path("/templates/{name}/instantiate")
-    @ApiOperation(value = "Add a new object, based on selected template")
+    @ApiOperation(value = "Add a new thing, based on selected template")
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Template not found"),
-        @ApiResponse(code = 201, message = "Object added")
+        @ApiResponse(code = 201, message = "Thing added")
     })
     public Response instantiateTemplate(
-            @ApiParam(value = "Name of object template (e.g. Light, Thermostat)", required = true)
+            @ApiParam(value = "Name of thing template (e.g. Light, Thermostat)", required = true)
             @PathParam("name") String name) {
         for (Client c : clientStorage.getClients("object")) {
             if (c.getName().equalsIgnoreCase(name)) {
@@ -319,13 +319,13 @@ public class ThingResource extends AbstractResource<EnvObject> {
      */
     @Path("/{id}/behaviors")
     public BehaviorResource behaviors(
-            @ApiParam(value = "UUID of object to fetch behaviors from", required = true)
+            @ApiParam(value = "UUID of thing to fetch behaviors from", required = true)
             @PathParam("id") String UUID) {
         return new BehaviorResource(UUID);
     }
 
     //@Path("behaviors")
-    @Api(value = "behaviors", description = "Operations on object's behaviors")
+    @Api(value = "behaviors", description = "Operations on thing's behaviors")
     private class BehaviorResource extends AbstractResource<Behavior> {
 
         final private String objUUID;

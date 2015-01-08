@@ -178,9 +178,9 @@ public class EnvironmentResource extends AbstractResource<Environment> {
         return new RoomResource(UUID);
     }
 
-    @Path("/{id}/objects")
-    public ThingResource objects(
-            @ApiParam(value = "Environment to fetch objects from", required = true)
+    @Path("/{id}/things")
+    public ThingResource things(
+            @ApiParam(value = "Environment to fetch things from", required = true)
             @PathParam("id") String UUID) {
         return new ThingResource(UUID);
     }

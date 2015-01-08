@@ -176,9 +176,9 @@ public class RoomResource extends AbstractResource<Zone> {
         }
     }
 
-    @Path("/{id}/objects/")
+    @Path("/{id}/things/")
     public ThingResource objects(
-            @ApiParam(value = "UUID of room to fetch objects from", required = true)
+            @ApiParam(value = "UUID of room to fetch things from", required = true)
             @PathParam("id") String room) {
         return new ThingResource(envUUID, room);
     }
