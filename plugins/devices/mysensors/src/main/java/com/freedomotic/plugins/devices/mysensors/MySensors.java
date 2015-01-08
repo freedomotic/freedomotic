@@ -25,6 +25,7 @@ package com.freedomotic.plugins.devices.mysensors;
 import com.freedomotic.api.API;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
@@ -32,6 +33,8 @@ import com.freedomotic.helpers.SerialHelper;
 import com.freedomotic.helpers.SerialPortListener;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.things.EnvObjectLogic;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +46,8 @@ import jssc.SerialPortException;
 public class MySensors extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(MySensors.class.getName());
-    private final API api;
+    protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
+    protected final static API api = INJECTOR.getInstance(API.class);
     // Type of message
     private final String PRESENTATION = "0";
     private final String SET_VARIABLE = "1";
@@ -58,11 +62,10 @@ public class MySensors extends Protocol {
     private SerialHelper serial;
     Map<String, String> deviceNodeIDTable = new HashMap<>();
 
-    public MySensors(API api) {
+    public MySensors() {
         super("MySensors", "/mysensors/mysensors-manifest.xml");
         setPollingWait(-1); //disables polling
-        this.api = api;
-    }
+       }
 
     @Override
     public void onStart() throws PluginStartupException {
