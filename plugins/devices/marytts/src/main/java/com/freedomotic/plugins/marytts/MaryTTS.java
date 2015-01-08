@@ -17,6 +17,11 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @author Mauro Cicolella
+ */
+
 package com.freedomotic.plugins.marytts;
 
 import com.freedomotic.api.EventTemplate;
