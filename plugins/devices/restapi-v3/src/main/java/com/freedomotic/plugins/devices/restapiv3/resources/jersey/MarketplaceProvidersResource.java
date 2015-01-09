@@ -41,6 +41,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -105,7 +106,7 @@ public class MarketplaceProvidersResource extends AbstractReadOnlyResource<IMark
         return mps.getProviders().get(id);
     }
 
-    @GET
+   
     @Path("/{id}/categories")
     public MarketplaceCategoryResource listCategories(
             @ApiParam(value = "Index of marketplace provider", required = true)
@@ -114,7 +115,7 @@ public class MarketplaceProvidersResource extends AbstractReadOnlyResource<IMark
         return new MarketplaceCategoryResource((ArrayList<IPluginCategory>) mps.getProviders().get(id).getAvailableCategories());
     }
 
-    @GET
+    
     @Path("/{id}/plugins")
     public MarketplacePluginsResource listPluginsFromProvider(
             @ApiParam(value = "Index of marketplace provider", required = true)

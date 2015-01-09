@@ -118,6 +118,7 @@ public class MarketplaceResource {
     @POST
     @Path("/upgrade")
     @ApiOperation(value = "Upgrade plugins with most recent version available on marketplaces")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response upgrade() {
         MarketPlaceService mps = MarketPlaceService.getInstance();
         for (Client c : api.getClients("plugin")) {

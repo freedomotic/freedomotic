@@ -66,6 +66,7 @@ public class MarketplacePluginsResource extends AbstractReadOnlyResource<IPlugin
      * @return
      */
     @GET
+    @Produces(MediaType.APPLICATION_JSON)    
     @ApiOperation(value = "Show the list of registered remote marketplace providers")
     @Override
     public Response list(){
@@ -81,6 +82,7 @@ public class MarketplacePluginsResource extends AbstractReadOnlyResource<IPlugin
     @ApiOperation(value = "Get a single plugin package metadata")
     @Override
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)    
     public Response get( @ApiParam(value = "Name of plugin to fetch", required = true)
             @PathParam("id") String uuid) {
         return super.get(uuid);
