@@ -20,7 +20,6 @@
 package com.freedomotic.bus;
 
 import com.freedomotic.api.EventTemplate;
-import com.freedomotic.app.AppConfig;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.Profiler;
 import com.freedomotic.reactions.Command;
@@ -37,7 +36,6 @@ import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TemporaryQueue;
-import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQQueue;
 
 /**
@@ -60,12 +58,12 @@ class BusServiceImpl extends LifeCycle implements BusService {
     private Session sendSession;
     private Session unlistenedSession;
     protected MessageProducer messageProducer;
-    
+
     @Inject
-    public BusServiceImpl(){
+    public BusServiceImpl() {
         //this.config = config;
         if (BootStatus.getCurrentStatus() == BootStatus.STOPPED) {
-           init();
+            init();
         }
     }
 
@@ -78,8 +76,6 @@ class BusServiceImpl extends LifeCycle implements BusService {
     protected void start() throws Exception {
 
         BootStatus.setCurrentStatus(BootStatus.BOOTING);
-
-        //config = Freedomotic.INJECTOR.getInstance(AppConfig.class);
 
         brokerHolder = new BusBroker();
         brokerHolder.init();
@@ -96,8 +92,8 @@ class BusServiceImpl extends LifeCycle implements BusService {
         sendSession = createSession();
         // null parameter creates a producer with no specified destination
         messageProducer = createMessageProducer();
-        
-        if (sendSession == null){
+
+        if (sendSession == null) {
             throw new IllegalStateException("Messaging bus has not yet a valid send session");
         }
 
@@ -246,12 +242,18 @@ class BusServiceImpl extends LifeCycle implements BusService {
      */
     @Override
     public void reply(Command command, Destination destination, String correlationID) {
+        if (destination == null) {
+            throw new IllegalArgumentException("Null reply destination "
+                    + "for command " + command.getName() + " "
+                    + "(reply timeout: " + command.getReplyTimeout() + ")");
+        }
         try {
             ObjectMessage msg = createObjectMessage();
             msg.setObject(command);
             msg.setJMSDestination(destination);
             msg.setJMSCorrelationID(correlationID);
             msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
+            LOG.log(Level.CONFIG, "Sending reply to command ''{0}'' on {1}", new Object[]{command.getName(), msg.getJMSDestination()});
             getMessageProducer().send(msg);
             Profiler.incrementSentReplies();
         } catch (JMSException jmse) {
@@ -267,109 +269,108 @@ class BusServiceImpl extends LifeCycle implements BusService {
         if (command == null) {
             throw new IllegalArgumentException("Cannot send a null command");
         }
+        if (command.getReceiver() == null || command.getReceiver().isEmpty()) {
+            throw new IllegalArgumentException("Cannot send command '" + command + "', the receiver channel is not specified");
+        }
 
         try {
-
             ObjectMessage msg = createObjectMessage();
-
             msg.setObject(command);
             msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
 
-            if (command.getReceiver() == null || command.getReceiver().isEmpty()) {
-                throw new IllegalArgumentException("Cannot send command '" + command + "', the receiver channel is not specified");
-            }
             Queue currDestination = new ActiveMQQueue(command.getReceiver());
-
             if (command.getReplyTimeout() > 0) {
-
-                // we have to wait an execution reply for an hardware device or
-                // an external client
-                final Session currUnlistenedSession = this.getUnlistenedSession();
-                TemporaryQueue temporaryQueue = currUnlistenedSession
-                        .createTemporaryQueue();
-
-                msg.setJMSReplyTo(temporaryQueue);
-
-                // a temporary consumer on a temporary queue
-                MessageConsumer temporaryConsumer = currUnlistenedSession
-                        .createConsumer(temporaryQueue);
-
-                final MessageProducer currMessageProducer = this.getMessageProducer();
-                currMessageProducer.send(currDestination, msg);
-
-                Profiler.incrementSentCommands();
-
-                // the receive() call is blocking
-                LOG.config("Send and await reply to command '"
-                        + command.getName() + "' for "
-                        + command.getReplyTimeout() + "ms");
-
-                Message jmsResponse = temporaryConsumer.receive(command.getReplyTimeout());
-
-                //cleanup after receiving
-                temporaryConsumer.close();
-                //TODO: commented as sometimes genenerates a "cannot publish on deleted queue" exception
-                //check n the documentation if a temporary queue with no consumers
-                //is automatically deleted
-                //TODO: enable this: temporaryQueue.delete();
-
-                if (jmsResponse != null) {
-                    // TODO unchecked cast!
-                    ObjectMessage objMessage = (ObjectMessage) jmsResponse;
-
-                    // a command is sent, we expect a command as reply
-                    // TODO unchecked cast!
-                    Command reply = (Command) objMessage.getObject();
-
-                    LOG.config("Reply to command '"
-                            + command.getName() + "' is received. Result property inside this command is "
-                            + reply.getProperty("result")
-                            + ". It is used to pass data to the next command, can be empty or even null.");
-
-                    Profiler.incrementReceivedReplies();
-
-                    return reply;
-
-                } else {
-
-                    LOG.config("Command '" + command.getName()
-                            + "' timed out after " + command.getReplyTimeout()
-                            + "ms");
-
-                    Profiler.incrementTimeoutedReplies();
-                }
-
-                // mark as failed
-                command.setExecuted(false);
-
-                // returns back the original inaltered command
-                return command;
-
+                return sendAndWaitReply(command, currDestination, msg);
             } else {
-
-                // send the message immediately without creating temporary
-                // queues and consumers on it
-                // this increments perfornances if no reply is expected
-                final MessageProducer messageProducer = this.getMessageProducer();
-                LOG.log(Level.CONFIG, "Send command ''{0}'' (no reply expected)", command.getName());
-                messageProducer.send(currDestination, msg);
-
-                Profiler.incrementSentCommands();
-
-                command.setExecuted(true);
-
-                // always say it is executed (it's not sure but the caller is
-                // not interested: best effort)
-                return command;
+                return sendAndForget(command, currDestination, msg);
             }
         } catch (JMSException ex) {
-
             LOG.severe(Freedomotic.getStackTraceInfo(ex));
-
             command.setExecuted(false);
-
             return command;
         }
+    }
+
+    private Command sendAndForget(final Command command, Queue currDestination, ObjectMessage msg) throws JMSException {
+        // send the message immediately without creating temporary
+        // queues and consumers on it
+        // this increments perfornances if no reply is expected
+        final MessageProducer messageProducer = this.getMessageProducer();
+        LOG.log(Level.CONFIG, "Send command ''{0}'' (no reply expected)", command.getName());
+        messageProducer.send(currDestination, msg);
+
+        Profiler.incrementSentCommands();
+
+        command.setExecuted(true);
+
+        // always say it is executed (it's not sure but the caller is
+        // not interested: best effort)
+        return command;
+    }
+
+    private Command sendAndWaitReply(final Command command, Queue currDestination, ObjectMessage msg) throws JMSException {
+        // we have to wait an execution reply for an hardware device or
+        // an external client
+        final Session currUnlistenedSession = this.getUnlistenedSession();
+        TemporaryQueue temporaryQueue = currUnlistenedSession
+                .createTemporaryQueue();
+
+        msg.setJMSReplyTo(temporaryQueue);
+
+        // a temporary consumer on a temporary queue
+        MessageConsumer temporaryConsumer = currUnlistenedSession
+                .createConsumer(temporaryQueue);
+
+        final MessageProducer currMessageProducer = this.getMessageProducer();
+        currMessageProducer.send(currDestination, msg);
+
+        Profiler.incrementSentCommands();
+
+        // the receive() call is blocking
+        LOG.config("Send and await reply to command '"
+                + command.getName() + "' for "
+                + command.getReplyTimeout() + "ms");
+
+        Message jmsResponse = temporaryConsumer.receive(command.getReplyTimeout());
+
+        //cleanup after receiving
+        temporaryConsumer.close();
+        //TODO: commented as sometimes genenerates a "cannot publish on deleted queue" exception
+        //check n the documentation if a temporary queue with no consumers
+        //is automatically deleted
+        //TODO: enable this: temporaryQueue.delete();
+
+        if (jmsResponse != null) {
+            // TODO unchecked cast!
+            ObjectMessage objMessage = (ObjectMessage) jmsResponse;
+
+            // a command is sent, we expect a command as reply
+            // TODO unchecked cast!
+            Command reply = (Command) objMessage.getObject();
+
+            LOG.config("Reply to command '"
+                    + command.getName() + "' is received. Result property inside this command is "
+                    + reply.getProperty("result")
+                    + ". It is used to pass data to the next command, can be empty or even null.");
+
+            Profiler.incrementReceivedReplies();
+
+            return reply;
+
+        } else {
+
+            LOG.config("Command '" + command.getName()
+                    + "' timed out after " + command.getReplyTimeout()
+                    + "ms");
+
+            Profiler.incrementTimeoutedReplies();
+        }
+
+        // mark as failed
+        command.setExecuted(false);
+
+        // returns back the original inaltered command
+        return command;
     }
 
     /**

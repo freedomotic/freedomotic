@@ -11,6 +11,7 @@ import com.freedomotic.bus.BusService;
 import com.freedomotic.core.Resolver;
 import com.freedomotic.events.GenericEvent;
 import com.freedomotic.exceptions.NoResultsException;
+import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.reactions.Command;
 import java.util.List;
@@ -54,32 +55,29 @@ public class CommandsNlpService extends AbstractConsumer {
     }
 
     @Override
-    public void onCommand(Command command) {
+    public void onCommand(final Command command) throws UnableToExecuteException {
         String text = command.getProperty(PARAM_TEXT);
         // Use NLP to find the most similar Command using the given free-form text
         Command mostSimilar = null;
         try {
             mostSimilar = findMostSimilarCommand(text);
+            // Generate an almost empty event used to resolve commands properites (eg: current time and date)
+            GenericEvent event = new GenericEvent(this);
+            Resolver resolver = new Resolver();
+            resolver.addContext("event.", event.getPayload());
+            // Try to resolve the commands properties against the created event
+            try {
+                mostSimilar = resolver.resolve(mostSimilar);
+                mostSimilar.setReplyTimeout(-1);
+            } catch (CloneNotSupportedException | VariableResolutionException ex) {
+                Logger.getLogger(CommandsNlpService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            // Schedule the command for execution
+            getBusService().send(mostSimilar);
         } catch (NoResultsException ex) {
-            LOG.log(Level.WARNING, "The given natural language text ''{0}'' cannot be recognized as a valid framework command", text);
-            command.setExecuted(false);
-            this.reply(command);
+            throw new UnableToExecuteException("The given natural language text '"
+                    + text + "' cannot be recognized as a valid framework command");
         }
-        // Generate an almost empty event used to resolve commands properites (eg: current time and date)
-        GenericEvent event = new GenericEvent(this);
-        Resolver resolver = new Resolver();
-        resolver.addContext("event.", event.getPayload());
-        // Try to resolve the commands properties against the created event
-        Command commandToExecute = null;
-        try {
-            commandToExecute = resolver.resolve(mostSimilar);
-        } catch (CloneNotSupportedException | VariableResolutionException ex) {
-            Logger.getLogger(CommandsNlpService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        // Schedule the command for execution
-        getBusService().send(commandToExecute);
-        command.setExecuted(true);
-        this.reply(command);
     }
 
     /**

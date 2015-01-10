@@ -116,8 +116,7 @@ public class TriggerCheck {
 
     private Trigger resolveTrigger(final EventTemplate event, final Trigger trigger) throws VariableResolutionException {
         Resolver resolver = new Resolver();
-        resolver.addContext("event.",
-                event.getPayload());
+        resolver.addContext("event.", event.getPayload());
         return resolver.resolve(trigger);
     }
 

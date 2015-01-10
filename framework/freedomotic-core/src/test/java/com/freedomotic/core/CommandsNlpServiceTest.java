@@ -28,16 +28,16 @@ import org.junit.runner.RunWith;
  */
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceInjectors({FreedomoticTestsInjector.class})
-public class FreeFormCommandsInterpreterTest {
+public class CommandsNlpServiceTest {
 
-    private static final Logger LOG = Logger.getLogger(FreeFormCommandsInterpreterTest.class.getName());
+    private static final Logger LOG = Logger.getLogger(CommandsNlpServiceTest.class.getName());
 
     @Inject
     CommandRepository commandRepository;
     @Inject
     NlpCommand nlpCommand;
 
-    public FreeFormCommandsInterpreterTest() {
+    public CommandsNlpServiceTest() {
     }
 
     @BeforeClass

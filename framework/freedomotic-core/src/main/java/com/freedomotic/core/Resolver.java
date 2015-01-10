@@ -66,7 +66,6 @@ public final class Resolver {
     private List<String> namespaces = new ArrayList<String>();
     private Payload context;
 
-
     /**
      * Creates an empty resolution context
      */

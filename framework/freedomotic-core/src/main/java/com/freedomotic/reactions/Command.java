@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Logger;
+import javax.jms.Destination;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -60,7 +61,6 @@ public final class Command implements Serializable, Cloneable {
     private static final long serialVersionUID = -7287958816826580426L;
     private static final Logger LOG = Logger.getLogger(Command.class.getName());
 
-
     public static final String PROPERTY_BEHAVIOR = "behavior";
     public static final String PROPERTY_OBJECT_CLASS = "object.class";
     public static final String PROPERTY_OBJECT_ADDRESS = "object.address";
@@ -71,7 +71,7 @@ public final class Command implements Serializable, Cloneable {
     public static final String PROPERTY_OBJECT_ENVIRONMENT = "object.environment";
     public static final String PROPERTY_OBJECT_ZONE = "object.zone";
     public static final String PROPERTY_OBJECT = "object";
-    
+
     private String name;
     private String receiver;
     private String uuid;
@@ -144,8 +144,8 @@ public final class Command implements Serializable, Cloneable {
      * @return
      */
     public String getUuid() {
-        if (uuid == null || uuid.trim().equals("")){
-            uuid= UUID.randomUUID().toString();
+        if (uuid == null || uuid.trim().equals("")) {
+            uuid = UUID.randomUUID().toString();
         }
         return uuid;
     }
@@ -236,7 +236,9 @@ public final class Command implements Serializable, Cloneable {
      * @param value
      */
     public void setProperty(String key, String value) {
-        if (!key.isEmpty()) {
+        if (key == null || key.isEmpty() || value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("Cannot add empty or null properties in command");
+        } else {
             properties.setProperty(key, value);
         }
     }
@@ -255,11 +257,13 @@ public final class Command implements Serializable, Cloneable {
      * (not added to the returned List) The indexs must be contiguous
      * (1,2,3,...) for example:
      *
-     * <p> <li>parameter[0] = foo<li> <li>parameter[1] = bar</li>
+     * <p>
+     * <li>parameter[0] = foo<li> <li>parameter[1] = bar</li>
      * <li>parameter[3] = asd</li> <li>object = Light 1</li> <li>another-param =
      * myValue</li> </p>
      *
-     * <p>The returned ArrayList<String> is <li>[0]->foo</li> <li>[1]->bar</li>
+     * <p>
+     * The returned ArrayList<String> is <li>[0]->foo</li> <li>[1]->bar</li>
      * because the index = 2 is missing. </p>
      *
      * @return an ordered ArrayList<String> of command parameter values
@@ -355,6 +359,7 @@ public final class Command implements Serializable, Cloneable {
 
     /**
      * Two commands are considered equals if they have the same name
+     *
      * @param obj
      * @return
      */
@@ -391,8 +396,7 @@ public final class Command implements Serializable, Cloneable {
 
     /**
      *
-     * @return
-     * @throws CloneNotSupportedException
+     * @return @throws CloneNotSupportedException
      */
     @Override
     public Command clone()

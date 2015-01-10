@@ -205,6 +205,10 @@ public final class Payload implements Serializable {
 
         return statements;
     }
+    
+    public List<Statement> getStatements() {
+        return payload;
+    }
 
     public List<Statement> getStatements() {
         return payload;
