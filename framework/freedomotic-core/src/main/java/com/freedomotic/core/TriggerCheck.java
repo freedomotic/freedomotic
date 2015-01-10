@@ -51,7 +51,7 @@ import java.util.logging.Logger;
  */
 public class TriggerCheck {
 
-    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+    private static final ExecutorService AUTOMATION_EXECUTOR = Executors.newCachedThreadPool();
 
     // Dependencies
     private final Autodiscovery autodiscovery;
@@ -89,16 +89,16 @@ public class TriggerCheck {
                 Trigger resolved = resolveTrigger(event, trigger);
 
                 if (resolved.isConsistentWith(event)) {
-                    applySensorNotification(resolved, event);
                     LOG.log(Level.FINE, "[CONSISTENT] hardware level trigger ''{0}'' {1}''\nconsistent with received event ''{2}'' {3}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
+                    applySensorNotification(resolved, event);
                     return true;
                 }
             } else {
                 if (trigger.canFire()) {
                     Trigger resolved = resolveTrigger(event, trigger);
                     if (resolved.isConsistentWith(event)) {
-                        executeTriggeredAutomations(resolved, event);
                         LOG.log(Level.FINE, "[CONSISTENT] registred trigger ''{0}'' {1}''\nconsistent with received event ''{2}'' {3}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
+                        executeTriggeredAutomations(resolved, event);
                         return true;
                     }
                 }
@@ -170,8 +170,7 @@ public class TriggerCheck {
     }
 
     private void executeTriggeredAutomations(final Trigger trigger, final EventTemplate event) {
-        Runnable automation;
-        automation = new Runnable() {
+        Runnable automation = new Runnable() {
             @Override
             public void run() {
                 Iterator<Reaction> it = ReactionPersistence.iterator();
@@ -252,9 +251,7 @@ public class TriggerCheck {
                                 }
                             }
                         } catch (Exception e) {
-                            LOG.severe("Exception while merging event parameters into reaction.\n");
-                            LOG.severe(Freedomotic.getStackTraceInfo(e));
-
+                            LOG.log(Level.SEVERE,"Exception while merging event parameters into reaction.", e);
                             return;
                         }
 
@@ -310,7 +307,7 @@ public class TriggerCheck {
             }
         };
 
-        EXECUTOR.execute(automation);
+        AUTOMATION_EXECUTOR.execute(automation);
     }
 
     private void notifyMessage(String message) {

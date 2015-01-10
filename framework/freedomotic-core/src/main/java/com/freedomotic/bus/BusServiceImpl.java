@@ -37,6 +37,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TemporaryQueue;
+import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQQueue;
 
 /**
@@ -248,9 +249,10 @@ class BusServiceImpl extends LifeCycle implements BusService {
         try {
             ObjectMessage msg = createObjectMessage();
             msg.setObject(command);
+            msg.setJMSDestination(destination);
             msg.setJMSCorrelationID(correlationID);
             msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
-            getMessageProducer().send(destination, msg);
+            getMessageProducer().send(msg);
             Profiler.incrementSentReplies();
         } catch (JMSException jmse) {
             LOG.severe(Freedomotic.getStackTraceInfo(jmse));

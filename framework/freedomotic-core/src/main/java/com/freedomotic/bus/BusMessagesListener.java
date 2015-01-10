@@ -56,8 +56,6 @@ public class BusMessagesListener implements MessageListener {
 
     private BusConsumer busConsumer;
 
-    private MessageConsumer messageConsumer;
-
     private final HashMap<String, MessageConsumer> registeredEventQueues;
     private final HashMap<String, MessageConsumer> registeredCommandQueues;
 
@@ -188,7 +186,6 @@ public class BusMessagesListener implements MessageListener {
      * (invocations should be life cycle managed)
      */
     public void unsubscribeEvents() {
-        final Session receiveSession = busService.getReceiveSession();
         for (String queueName : registeredEventQueues.keySet()) {
             try {
                 MessageConsumer mc = registeredEventQueues.get(queueName);
@@ -207,7 +204,6 @@ public class BusMessagesListener implements MessageListener {
      * (invocations should be life cycle managed)
      */
     public void unsubscribeCommands() {
-        final Session receiveSession = busService.getReceiveSession();
         for (String queueName : registeredCommandQueues.keySet()) {
             try {
                 MessageConsumer mc = registeredCommandQueues.get(queueName);

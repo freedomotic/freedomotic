@@ -112,7 +112,7 @@ class DestinationRegistry {
                         .createQueue(getQueueName());
 
                 BusDestination busDestination = new BusDestination(destination,
-                        getQueueName(), DestinationType.QUEUE);
+                        getQueueName());
 
                 return busDestination;
             }
@@ -140,7 +140,7 @@ class DestinationRegistry {
                         .createTopic("VirtualTopic." + getQueueName());
 
                 BusDestination busDestination = new BusDestination(destination,
-                        getQueueName(), DestinationType.TOPIC);
+                        getQueueName());
 
                 return busDestination;
 

@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -159,7 +160,7 @@ public class EventTemplate
             payload.addStatement("sender",
                     getSender());
         } catch (Exception e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.log(Level.SEVERE, "Error while generating default data for event", e);
         }
     }
 

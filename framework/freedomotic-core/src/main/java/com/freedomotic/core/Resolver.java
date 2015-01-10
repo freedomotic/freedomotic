@@ -63,11 +63,9 @@ import javax.script.ScriptException;
 public final class Resolver {
 
     // private static final String REFERENCE_DELIMITER = "@";
-    private List<String> prefixes = new ArrayList<String>();
+    private List<String> namespaces = new ArrayList<String>();
     private Payload context;
-    private Reaction reaction;
-    private Command command;
-    private Trigger trigger;
+
 
     /**
      * Creates an empty resolution context
@@ -80,11 +78,10 @@ public final class Resolver {
      * Creates a resolved clone of the reaction in input. All commands in the
      * reaction are resolved according to the context given in the contructor.
      *
-     * @param r
+     * @param reaction
      * @return a clone of the resolver reaction
      */
-    public Reaction resolve(Reaction r) {
-        this.reaction = r;
+    public Reaction resolve(Reaction reaction) {
 
         if ((context != null) && (reaction != null)) {
             Reaction clone
@@ -101,13 +98,13 @@ public final class Resolver {
      * Creates a resolved clone of the command in input according to the current
      * context given in input to the constructor.
      *
-     * @param c
+     * @param command
      * @return
+     * @throws java.lang.CloneNotSupportedException
      * @throws com.freedomotic.exceptions.VariableResolutionException
      */
-    public Command resolve(Command c)
+    public Command resolve(Command command)
             throws CloneNotSupportedException, VariableResolutionException {
-        this.command = c;
 
         if ((context != null) && (command != null)) {
             Command clone = command.clone();
@@ -128,8 +125,7 @@ public final class Resolver {
      * @return
      * @throws com.freedomotic.exceptions.VariableResolutionException
      */
-    public Trigger resolve(Trigger t) throws VariableResolutionException {
-        this.trigger = t;
+    public Trigger resolve(Trigger trigger) throws VariableResolutionException {
 
         if ((context != null) && (trigger != null)) {
             Trigger clone = trigger.clone();
@@ -160,7 +156,7 @@ public final class Resolver {
                 tmp.add(clonedCmd);
             }
         } catch (Exception e) {
-            LOG.warning(Freedomotic.getStackTraceInfo(e));
+            LOG.log(Level.SEVERE, "Error while substituting variables", e);
         }
 
         return tmp;
@@ -179,8 +175,8 @@ public final class Resolver {
             String key = (String) aProperty.getKey();
             String propertyValue = (String) aProperty.getValue();
 
-            for (final String prefix : prefixes) {
-                String regex = "@" + prefix + "[.A-Za-z0-9_-]*\\b(#)?";
+            for (final String namespace : namespaces) {
+                String regex = "@" + namespace + "[.A-Za-z0-9_-]*\\b(#)?";
                 Pattern pattern = Pattern.compile(regex);
                 Matcher matcher = pattern.matcher(propertyValue);
 
@@ -244,7 +240,7 @@ public final class Resolver {
                     success = true;
                 } catch (Exception ex) {
                     success = false;
-                    LOG.severe(Freedomotic.getStackTraceInfo(ex));
+                    LOG.log(Level.SEVERE, "Error while evaluating script in command", ex);
                 }
             }
 
@@ -270,7 +266,7 @@ public final class Resolver {
             String key = (String) statement.getAttribute();
             String propertyValue = (String) statement.getValue();
 
-            for (final String PREFIX : prefixes) {
+            for (final String PREFIX : namespaces) {
                 Pattern pattern = Pattern.compile("@" + PREFIX + "[.A-Za-z0-9_-]*\\b(#)?"); //find any @token
                 Matcher matcher = pattern.matcher(propertyValue);
                 StringBuffer result = new StringBuffer();
@@ -373,8 +369,8 @@ public final class Resolver {
         }
 
         //registering the new prefix
-        if (!prefixes.contains(PREFIX)) {
-            prefixes.add(PREFIX);
+        if (!namespaces.contains(PREFIX)) {
+            namespaces.add(PREFIX);
         }
 
         Set entries = aContext.getProperties().entrySet();
@@ -409,8 +405,8 @@ public final class Resolver {
         }
 
         //registering the new prefix
-        if (!prefixes.contains(PREFIX)) {
-            prefixes.add(PREFIX);
+        if (!namespaces.contains(PREFIX)) {
+            namespaces.add(PREFIX);
         }
 
         Iterator it = aContext.entrySet().iterator();
@@ -444,8 +440,8 @@ public final class Resolver {
         }
 
         //registering the new prefix
-        if (!prefixes.contains(PREFIX)) {
-            prefixes.add(PREFIX);
+        if (!namespaces.contains(PREFIX)) {
+            namespaces.add(PREFIX);
         }
 
         // get an hold on the statements list mutex to avoid others to use it
@@ -468,11 +464,8 @@ public final class Resolver {
     }
 
     void clear() {
-        prefixes.clear();
+        namespaces.clear();
         context.clear();
-        reaction = null;
-        command = null;
-        trigger = null;
     }
     private static final Logger LOG = Logger.getLogger(Resolver.class.getName());
 }

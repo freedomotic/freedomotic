@@ -12,6 +12,7 @@ import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.testutils.FreedomoticTestsInjector;
 import com.freedomotic.testutils.GuiceJUnitRunner;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,6 +29,8 @@ import org.junit.runner.RunWith;
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceInjectors({FreedomoticTestsInjector.class})
 public class FreeFormCommandsInterpreterTest {
+    
+    private static final Logger LOG = Logger.getLogger(FreeFormCommandsInterpreterTest.class.getName());
 
     @Inject
     CommandRepository commandRepository;
@@ -47,13 +50,13 @@ public class FreeFormCommandsInterpreterTest {
 
     @Before
     public void setUp() {
-        Command expectedResult = new Command();
-        expectedResult.setName("Turn on kitchen light");
-        expectedResult.setReceiver("app.events.sensors.behavior.request.objects");
-        expectedResult.setProperty("object", "Kitchen Light");
-        expectedResult.setProperty("behavior", "powered");
-        expectedResult.setProperty("value", "true");
-        commandRepository.create(expectedResult);
+        Command command = new Command();
+        command.setName("Turn on kitchen light");
+        command.setReceiver("app.events.sensors.behavior.request.objects");
+        command.setProperty("object", "Kitchen Light");
+        command.setProperty("behavior", "powered");
+        command.setProperty("value", "true");
+        commandRepository.create(command);
     }
 
     @After
@@ -64,11 +67,11 @@ public class FreeFormCommandsInterpreterTest {
     /**
      * Test of findMostSimilarCommand method, of class
      * FreeFormCommandsInterpreter.
+     * @throws java.lang.Exception
      */
     @Test
     public void testFindMostSimilarCommand() throws Exception {
-        System.out.println("Find the most similar command using NLP");
-
+        LOG.info("Find the most similar command using NLP");
         String phrase = "kitccchen LiGhTT Power ON";
         // Compute the commands ranking
         List<Nlp.Rank<Command>> ranking = nlpCommand.computeSimilarity(phrase, 10);
@@ -77,12 +80,12 @@ public class FreeFormCommandsInterpreterTest {
 
     @Test
     public void testNoSimilarCommand() throws Exception {
-        System.out.println("No similar command exists");
-
+        LOG.info("Test for an unexistent command");
         String phrase = "asdasd tretert gbffdg uyututy mnbb";
         // Compute the commands ranking
         List<Nlp.Rank<Command>> ranking = nlpCommand.computeSimilarity(phrase, 10);
         assertEquals("Should find a command anyway, because zero similarity is allowed", ranking.size(), 1);
+        assertEquals("The command should be totally different from anyone else in the repository", ranking.get(0).getSimilarity(), 0);
     }
 
 }

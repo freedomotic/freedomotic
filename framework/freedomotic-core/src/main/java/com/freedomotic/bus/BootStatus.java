@@ -21,10 +21,10 @@
  */
 package com.freedomotic.bus;
 
-import com.freedomotic.app.Freedomotic;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -140,7 +140,7 @@ public enum BootStatus {
 		BootStatus.currentStatus = BootStatus.FAILED;
 
 		// FIXME LCG stop bootstrap
-		LOG.severe(Freedomotic.getStackTraceInfo(t));
+		 LOG.log(Level.SEVERE, "Error while initializeing bus service", t);
 	}
 	
 	private static boolean isAnInitialStatus(BootStatus status) {

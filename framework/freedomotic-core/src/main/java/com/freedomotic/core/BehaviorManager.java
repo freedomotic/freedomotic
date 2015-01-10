@@ -324,7 +324,7 @@ public final class BehaviorManager implements BusConsumer {
             }
 
         } catch (JMSException ex) {
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.log(Level.SEVERE, "Error while sending reply to " + command.getName(), ex);
         }
     }
 

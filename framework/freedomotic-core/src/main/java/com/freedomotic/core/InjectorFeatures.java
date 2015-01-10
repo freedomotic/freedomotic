@@ -25,7 +25,6 @@ public class InjectorFeatures extends AbstractModule {
         bind(TriggerCheck.class).in(Singleton.class);
         bind(BehaviorManager.class).in(Singleton.class);
         //TODO: bind(ResourcesManager.class).in(Singleton.class);
-        bind(FreeFormCommandsInterpreter.class).in(Singleton.class);
 
         // The ProcolRead event now needs the TriggerCheck class
         // It should be refactored in the future to avoid this dependency
