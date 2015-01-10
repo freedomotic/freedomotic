@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceInjectors({FreedomoticTestsInjector.class})
 public class FreeFormCommandsInterpreterTest {
-    
+
     private static final Logger LOG = Logger.getLogger(FreeFormCommandsInterpreterTest.class.getName());
 
     @Inject
@@ -67,6 +67,7 @@ public class FreeFormCommandsInterpreterTest {
     /**
      * Test of findMostSimilarCommand method, of class
      * FreeFormCommandsInterpreter.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -84,8 +85,8 @@ public class FreeFormCommandsInterpreterTest {
         String phrase = "asdasd tretert gbffdg uyututy mnbb";
         // Compute the commands ranking
         List<Nlp.Rank<Command>> ranking = nlpCommand.computeSimilarity(phrase, 10);
-        assertEquals("Should find a command anyway, because zero similarity is allowed", ranking.size(), 1);
-        assertEquals("The command should be totally different from anyone else in the repository", ranking.get(0).getSimilarity(), 0);
+        assertEquals("Should find a command anyway, because zero similarity is allowed", 1, ranking.size());
+        assertEquals("The command should be totally different from anyone else in the repository", 0, ranking.get(0).getSimilarity());
     }
 
 }

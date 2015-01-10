@@ -26,7 +26,6 @@ import com.freedomotic.bus.BootStatus;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
-import com.freedomotic.core.FreeFormCommandsInterpreter;
 import com.freedomotic.core.SynchManager;
 import com.freedomotic.core.TopologyManager;
 import com.freedomotic.environment.EnvironmentLogic;
@@ -39,6 +38,7 @@ import com.freedomotic.exceptions.PluginLoadingException;
 import com.freedomotic.marketplace.ClassPathUpdater;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.MarketPlaceService;
+import com.freedomotic.nlp.CommandsNlpService;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.plugins.ClientStorage;
@@ -102,7 +102,7 @@ public class Freedomotic implements BusConsumer {
     private final ThingRepository thingsRepository;
     private final TopologyManager topologyManager;
     private final SynchManager synchManager;
-    private final FreeFormCommandsInterpreter freeFormCommandsInterpreter;
+    private final CommandsNlpService commandsNlpService;
     private final ClientStorage clientStorage;
     private final PluginsManager pluginsManager;
     private AppConfig config;
@@ -118,6 +118,7 @@ public class Freedomotic implements BusConsumer {
      * @param environmentRepository
      * @param thingsRepository
      * @param clientStorage
+     * @param commandsNlpService
      * @param config
      * @param api
      * @param busService
@@ -130,7 +131,7 @@ public class Freedomotic implements BusConsumer {
             EnvironmentRepository environmentRepository,
             ThingRepository thingsRepository,
             ClientStorage clientStorage,
-            FreeFormCommandsInterpreter freeFormCommandsInterpreter,
+            CommandsNlpService commandsNlpService,
             AppConfig config,
             API api,
             BusService busService,
@@ -140,7 +141,7 @@ public class Freedomotic implements BusConsumer {
         this.environmentRepository = environmentRepository;
         this.thingsRepository = thingsRepository;
         this.busService = busService;
-        this.freeFormCommandsInterpreter = freeFormCommandsInterpreter;
+        this.commandsNlpService = commandsNlpService;
         this.topologyManager = topologyManager;
         this.synchManager = synchManager;
         this.clientStorage = clientStorage;

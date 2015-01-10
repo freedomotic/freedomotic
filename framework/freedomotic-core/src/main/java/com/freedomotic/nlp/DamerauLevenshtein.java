@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 /*
@@ -25,7 +23,6 @@
  */
 package com.freedomotic.nlp;
 
-import java.util.logging.Logger;
 
 /**
  *
@@ -38,12 +35,9 @@ public class DamerauLevenshtein {
     private int[][] matrix;
     private Boolean calculated = false;
 
-    /**
-     *
-     * @param a
-     * @param b
-     */
-    public DamerauLevenshtein(String a, String b) {
+
+    public void setWordsToCompare(String a, String b) {
+        calculated = false; //reset for a new calucation
         if ((a.length() > 0 || !a.isEmpty()) || (b.length() > 0 || !b.isEmpty())) {
             compOne = a;
             compTwo = b;
@@ -108,7 +102,6 @@ public class DamerauLevenshtein {
         calculated = true;
     }
 
-
     private int minimum(int d, int i, int s) {
         int m = Integer.MAX_VALUE;
 
@@ -137,5 +130,4 @@ public class DamerauLevenshtein {
 
         return m;
     }
-    private static final Logger LOG = Logger.getLogger(DamerauLevenshtein.class.getName());
 }

@@ -62,12 +62,12 @@ public class NlpCommandStringDistanceImpl implements NlpCommand {
         ranking = new ArrayList<>();
         buildRanking(inputText);
         Collections.sort(ranking, new DescendingRankComparator());
-        
-        for (Rank<Command> r : ranking) {
-            if (r.getSimilarity() > 0) {
-                System.out.println(r.getElement().getName() + " points " + r.getSimilarity());
-            }
-        }
+
+//        for (Rank<Command> r : ranking) {
+//            if (r.getSimilarity() > 0) {
+//                System.out.println(r.getElement().getName() + " points " + r.getSimilarity());
+//            }
+//        }
 
         if (ranking.isEmpty()) {
             return Collections.unmodifiableList(ranking);
@@ -86,15 +86,17 @@ public class NlpCommandStringDistanceImpl implements NlpCommand {
         if (input == null || input.isEmpty()) {
             return;
         }
+        DamerauLevenshtein algorithm = new DamerauLevenshtein();
         for (Command command : commandsRepository.findAll()) {
             int similarity = 0;
-            for (String inputTag : Arrays.asList(input.split(" "))) {
+            // Compare every word of the input to any word in the command name
+            for (String inputWord : Arrays.asList(input.split(" "))) {
                 // Use the command name not the command tags for this
-                for (String commandTag : Arrays.asList(command.getName().split(" "))) {
-                    DamerauLevenshtein algorithm = new DamerauLevenshtein(inputTag.trim().toLowerCase(), commandTag.trim().toLowerCase());
+                for (String commandWord : Arrays.asList(command.getName().split(" "))) {
+                    algorithm.setWordsToCompare(inputWord.trim().toLowerCase(), commandWord.trim().toLowerCase());
                     int distance = algorithm.getSimilarity();
-                    //convert this tag string distance into a percent value
-                    double distancePercent = ((double) (distance * 100)) / ((double) inputTag.length());
+                    //convert word distance into a percent value
+                    double distancePercent = ((double) (distance * 100)) / ((double) inputWord.length());
 
                     if (distancePercent == 0) {
                         similarity += 30; //3 points for any idenitical word
