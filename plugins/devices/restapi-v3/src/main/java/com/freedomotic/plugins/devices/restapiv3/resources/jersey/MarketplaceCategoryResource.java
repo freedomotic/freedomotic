@@ -33,6 +33,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -73,9 +74,14 @@ public class MarketplaceCategoryResource extends AbstractReadOnlyResource<IPlugi
     @ApiOperation(value = "Show the list of plugins belonging to selected category")
     public MarketplacePluginsResource listPluginsFromCategory(
             @ApiParam(value = "Name of plugins category to fetch", required = true)
-            @PathParam("cat") String cat) {
+            @PathParam("cat") String cat,
+            @ApiParam(value = "Retrieve package list automatically, if necessary", required = false)
+            @QueryParam("noUpdate") boolean noUpdate) {
         for (IPluginCategory category : catList) {
-            if (category.getName().equalsIgnoreCase(cat)) {
+            if (category.getName().equalsIgnoreCase(cat) ) {
+                if (mps.getPackageList(category).isEmpty() && !noUpdate){
+                    category.retrievePluginsInfo();
+                }
                 return new MarketplacePluginsResource(mps.getPackageList(category));
             }
         }
