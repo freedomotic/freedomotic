@@ -17,11 +17,9 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 /**
  * @author Mauro Cicolella
  */
-
 package com.freedomotic.plugins.marytts;
 
 import com.freedomotic.api.EventTemplate;
@@ -67,17 +65,18 @@ public class MaryTTS extends Protocol {
     protected void onStart() throws PluginStartupException {
         try {
             //add voices folder to classpath
-            addPath(Info.PATHS.PATH_DEVICES_FOLDER + System.getProperty("file.separator") + "marytts/lib/" + VOICE_JAR_FILE);
+            addPath(Info.PATHS.PATH_DEVICES_FOLDER + System.getProperty("file.separator") + "marytts" + System.getProperty("file.separator") + "lib" + System.getProperty("file.separator") + VOICE_JAR_FILE);
             System.setProperty("mary.base", Info.PATHS.PATH_DEVICES_FOLDER + System.getProperty("file.separator") + "marytts");
             marytts = new LocalMaryInterface();
             // print available voices and languages
-            getInfo();
+            LOG.log(Level.INFO, "Available voices: ''{0}''", marytts.getAvailableVoices());
+            LOG.log(Level.INFO, "Available languages: ''{0}''", marytts.getAvailableLocales());
             // set default voice
             defaultVoice = Voice.getVoice("cmu-slt-hsmm");
         } catch (MaryConfigurationException ex) {
-            throw new PluginStartupException("Plugin can't start for " + ex.getMessage());
+            throw new PluginStartupException("Plugin can't start for a configuration problem.", ex);
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, "Impossible to modify classpath for ''{0}''", Freedomotic.getStackTraceInfo(ex));
+            LOG.log(Level.SEVERE, "Impossible to modify classpath to add voice file ''{0}''", VOICE_JAR_FILE);
         }
     }
 
@@ -87,10 +86,14 @@ public class MaryTTS extends Protocol {
     }
 
     public void say(String message) {
-        try {
-            new MaryTTS.Speaker(message).start();
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Impossible to speak for ''{0}''", Freedomotic.getStackTraceInfo(e));
+        if (!message.isEmpty()) {
+            try {
+                new MaryTTS.Speaker(message).start();
+            } catch (Exception ex) {
+                LOG.log(Level.SEVERE, "Impossible to speak for ''{0}''", ex);
+            }
+        } else {
+            LOG.log(Level.WARNING, "Impossible to speak. Message is empty");
         }
     }
 
@@ -115,11 +118,6 @@ public class MaryTTS extends Protocol {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private void getInfo() {
-        LOG.log(Level.INFO, "Available voices: ''{0}''", marytts.getAvailableVoices());
-        LOG.log(Level.INFO, "Available languages: ''{0}''", marytts.getAvailableLocales());
-    }
-
     private class Speaker extends Thread {
 
         String message = "";
@@ -130,7 +128,7 @@ public class MaryTTS extends Protocol {
 
         @Override
         public synchronized void run() {
-            if (VOICE == "" || !isAvailableVoice(VOICE)) {
+            if (!isAvailableVoice(VOICE)) {
                 LOG.log(Level.INFO, "Voice ''{0}'' not found. Using default voice ", VOICE);
                 voice = defaultVoice;
             } else {
@@ -144,14 +142,14 @@ public class MaryTTS extends Protocol {
                 player.start();
                 player.join();
             } catch (SynthesisException ex) {
-                LOG.log(Level.SEVERE, "Error during audio generating for ''{0}''", ex.getLocalizedMessage());
+                LOG.log(Level.SEVERE, "Error during audio generating for ''{0}''", ex);
             } catch (InterruptedException ex) {
-                LOG.log(Level.SEVERE, "Error during speaking for ''{0}''", ex.getLocalizedMessage());
+                LOG.log(Level.SEVERE, "Error during speaking for ''{0}''", ex);
             } finally {
                 try {
                     audio.close();
                 } catch (IOException ex) {
-                    LOG.log(Level.SEVERE, "Error during audio closing for ''{0}''", ex.getLocalizedMessage());
+                    LOG.log(Level.SEVERE, "Error during audio closing for ''{0}''", ex);
                 }
             }
         }
@@ -169,7 +167,11 @@ public class MaryTTS extends Protocol {
     }
 
     private boolean isAvailableVoice(String voice) {
-        Set<String> availableVoices = marytts.getAvailableVoices();
-        return availableVoices.contains(voice);
+        if (voice.isEmpty()) {
+            return false;
+        } else {
+            Set<String> availableVoices = marytts.getAvailableVoices();
+            return availableVoices.contains(voice);
+        }
     }
 }
