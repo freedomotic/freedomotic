@@ -99,6 +99,7 @@ public final class RestJettyServer extends Server {
         ServletHolder atmosphereServletHolder = new ServletHolder(AtmosphereServlet.class);
         atmosphereServletHolder.setInitParameter("jersey.config.server.provider.packages", RestAPIv3.ATMOSPHRE_RESOURCE_PKG);
         atmosphereServletHolder.setInitParameter("org.atmosphere.websocket.messageContentType", "application/json");
+        atmosphereServletHolder.setInitParameter("org.atmosphere.cpr.AtmosphereInterceptor","org.atmosphere.interceptor.ShiroInterceptor");
 //        atmosphereServletHolder.setInitParameter("org.atmosphere.cpr.broadcasterClass", "org.atmosphere.jersey.JerseyBroadcaster");
         atmosphereServletHolder.setAsyncSupported(true);
         atmosphereServletHolder.setInitParameter("org.atmosphere.useWebSocket", "true");
