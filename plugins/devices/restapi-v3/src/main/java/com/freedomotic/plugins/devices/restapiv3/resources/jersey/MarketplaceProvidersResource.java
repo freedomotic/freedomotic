@@ -169,7 +169,7 @@ public class MarketplaceProvidersResource extends AbstractReadOnlyResource<IMark
     }
 
     @POST
-    @Path("{id}/plugins/install/{nid}")
+    @Path("/{id}/plugins/install/{nid}")
     @ApiOperation(value = "Download and install a plugin, given its node id")
     @ApiResponses(value = {
         @ApiResponse(code = 202, message = "Plugin installation succeded")

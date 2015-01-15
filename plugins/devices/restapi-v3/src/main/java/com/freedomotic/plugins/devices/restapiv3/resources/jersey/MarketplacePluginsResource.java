@@ -23,7 +23,9 @@ import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.IPluginPackage;
 import com.freedomotic.marketplace.MarketPlaceService;
 import com.freedomotic.plugins.PluginsManager;
+import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractReadOnlyResource;
+import com.freedomotic.util.Info;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -34,6 +36,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -96,6 +100,24 @@ public class MarketplacePluginsResource extends AbstractReadOnlyResource<IPlugin
             }
         }
         return null;
+    }
+    
+    @POST
+    @Path("/{id}/install")
+    @ApiOperation(value = "Install a plugin")
+    public Response install(@ApiParam(value = "Name of plugin to fetch", required = true)
+            @PathParam("id") String uuid) {
+        IPluginPackage p = prepareSingle(uuid);
+        String url = p.getFilePath(Info.getMajor()+ "." + Info.getMinor());
+        if (p == null){
+            throw new ItemNotFoundException(uuid);
+        }
+        try {
+            api.getPluginManager().installBoundle(new URL(url));
+        } catch (MalformedURLException ex) {
+            return Response.notAcceptable(null).build();
+        }
+        return Response.accepted().build();
     }
 
 }

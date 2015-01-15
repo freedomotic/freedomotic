@@ -10,6 +10,7 @@ import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.marketplace.IMarketPlace;
+import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.IPluginPackage;
 import com.freedomotic.marketplace.MarketPlaceService;
 import com.freedomotic.plugins.PluginsManager;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import javax.inject.Singleton;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -60,7 +62,15 @@ public class MarketplaceResource {
     @Path("/plugins")
 //    @ApiOperation("Manage plugin installation from marketplace(s)")
     public MarketplacePluginsResource plugins() {
-        return new MarketplacePluginsResource();
+        ArrayList<IPluginPackage> packageList = new ArrayList<>();
+        for (IMarketPlace provider : MarketPlaceService.getInstance().getProviders()) {
+            if (provider.getAvailablePackages().isEmpty()){
+                provider.updateAllPackageList();
+            }
+            packageList.addAll(provider.getAvailablePackages());
+        }
+        
+        return new MarketplacePluginsResource(packageList);
     }
 
     @POST
