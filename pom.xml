@@ -15,7 +15,7 @@
         <module>framework/freedomotic-core</module>
         <module>tools/freedomotic-drupal-marketplace</module>
         <module>tools/freedomotic-device-maven-archetype</module>
-        <module>plugins/objects/base-objects</module>
+        <module>plugins/objects/base-things</module>
         <module>plugins/devices/frontend-java</module>
         <module>plugins/devices/essential</module>
         <module>plugins/devices/simulation</module>
