@@ -210,10 +210,6 @@ public final class Payload implements Serializable {
         return payload;
     }
 
-    public List<Statement> getStatements() {
-        return payload;
-    }
-
     /**
      * Returns the value of the statement. BEWARE: there can be more the one
      * statement with the same key. This method returns the first occurrence
