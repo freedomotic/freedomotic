@@ -1,25 +1,22 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.plugins;
 
 import com.freedomotic.api.EventTemplate;
@@ -80,7 +77,36 @@ public class VariousSensors extends Protocol {
                         guiHook.updateDescription("The user has not responded to the question within the given time");
                     }
                 } else {
-                    guiHook.updateDescription("Unreceived reply within given time (10 seconds)");
+                    guiHook.updateDescription("Unreceived reply within given timeout (10 seconds)");
+                }
+            }
+        }).start();
+    }
+
+    public void executeNlpCommand(String text) {
+        final Command nlpCommand = new Command();
+        nlpCommand.setName("Recognize text with NLP");
+        nlpCommand.setReceiver("app.commands.interpreter.nlp");
+        nlpCommand.setDescription("A free-form text command to be interpreded by an NLP module");
+        nlpCommand.setProperty("text", text);
+        nlpCommand.setReplyTimeout(10000);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                VariousSensorsGui guiHook = (VariousSensorsGui) gui;
+                Command reply = send(nlpCommand);
+
+                if (reply != null) {
+                    String executedCommand = reply.getProperty("result");
+
+                    if (executedCommand != null) {
+                        guiHook.updateDescription("Recognized command: " + executedCommand);
+                    } else {
+                        guiHook.updateDescription("No similar command exists");
+                    }
+                } else {
+                    guiHook.updateDescription("Unreceived reply within given timeout (10 seconds)");
                 }
             }
         }).start();

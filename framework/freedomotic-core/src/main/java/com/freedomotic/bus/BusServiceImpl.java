@@ -254,7 +254,7 @@ class BusServiceImpl extends LifeCycle implements BusService {
             msg.setJMSCorrelationID(correlationID);
             msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
             LOG.log(Level.CONFIG, "Sending reply to command ''{0}'' on {1}", new Object[]{command.getName(), msg.getJMSDestination()});
-            getMessageProducer().send(msg);
+            getMessageProducer().send(destination, msg); //Always pass the destination, otherwise it complains
             Profiler.incrementSentReplies();
         } catch (JMSException jmse) {
             LOG.severe(Freedomotic.getStackTraceInfo(jmse));

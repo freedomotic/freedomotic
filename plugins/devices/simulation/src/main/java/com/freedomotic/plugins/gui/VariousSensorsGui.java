@@ -82,22 +82,7 @@ public class VariousSensorsGui
     }
 
     private void notifyTFreeFormText(String text) {
-        Command nlpCommand = new Command();
-        nlpCommand.setName("Recognize text with NLP");
-        nlpCommand.setReceiver("app.commands.interpreter.nlp");
-        nlpCommand.setDescription("A free-form text command to be interpreded by an NLP module");
-        nlpCommand.setProperty("text", text);
-        nlpCommand.setReplyTimeout(10000);
-        Command reply = sensor.notifyCommand(nlpCommand);
-        if (reply != null) {
-            if (reply.isExecuted()) {
-                this.updateDescription("Executed command '" + reply.getName() + "'");
-            } else {
-                this.updateDescription("Don't exist any command similar to '" + text + "'");
-            }
-        } else {
-            this.updateDescription("NLP command recognition timeout");
-        }
+        sensor.executeNlpCommand(text);
     }
 
     /**

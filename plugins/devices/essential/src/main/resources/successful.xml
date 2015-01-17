@@ -5,12 +5,6 @@
         <property name="category"                       value="simulator"/>
         <property name="short-name"                       value="success"/>
         <property name="protocol.name"                       value="test"/>
+        <property name="startup-time"                       value="on load"/>
     </properties>
-    <tuples>
-        <tuple>
-            <property name="object.class" value="Light"/>
-            <property name="powered" value="OWN protocol reads a lighting change"/>
-            <property name="turn on" value="Switch ON OWN light"/>
-        </tuple>
-    </tuples>
 </config>
