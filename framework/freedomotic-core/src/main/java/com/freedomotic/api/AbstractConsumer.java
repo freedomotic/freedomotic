@@ -18,6 +18,7 @@ import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
 /**
+ * TODO: THIS CLASS IT'S NOT FINISHED IT NEEDS TO IMPLEMENT THE REPLY FEATURE
  * Convenience root class for all bus message consumers
  *
  * @author enrico
