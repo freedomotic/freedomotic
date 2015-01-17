@@ -114,7 +114,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
     private File getDefaultEnvironmentFolder() throws RepositoryException {
         String envFilePath = appConfig.getProperty("KEY_ROOM_XML_PATH");
-        File envFile = new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/" + envFilePath);
+        File envFile = new File(Info.PATHS.PATH_ENVIRONMENTS_FOLDER + "/" + envFilePath);
         File folder = envFile.getParentFile();
 
         if (folder == null) {
