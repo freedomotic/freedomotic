@@ -134,7 +134,6 @@ public abstract class AbstractConsumer implements BusConsumer {
             // and sometimes this is not the intended behavior. Take a look at the Delayer plugin configuration
             // it has to call reply(...) explicitely
             if ((isAutomaticReply()) && (command.getReplyTimeout() > 0)) {
-                LOG.severe("DEBUG, reply channel in actuatorsperform: " + reply.toString());
                 getBusService().reply(command, reply, correlationID); //sends back the command marked as executed or not
             }
         }
