@@ -25,6 +25,7 @@ package com.freedomotic.rules;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -39,7 +40,7 @@ public final class Payload implements Serializable {
 
     private static final long serialVersionUID = -5799483105084939108L;
     @XmlElement
-    List<Statement> payload = new ArrayList<Statement>();
+    List<Statement> payload = Collections.synchronizedList(new ArrayList<Statement>());
 
     /**
      *
@@ -183,9 +184,9 @@ public final class Payload implements Serializable {
     }
 
     private static boolean isStatementConsistent(String triggerOperand, String triggerValue, String eventValue) {
-            ExpressionFactory factory = new ExpressionFactory<>();
-            Expression exp = factory.createExpression(eventValue, triggerOperand, triggerValue);
-            return (boolean) exp.evaluate();
+        ExpressionFactory factory = new ExpressionFactory<>();
+        Expression exp = factory.createExpression(eventValue, triggerOperand, triggerValue);
+        return (boolean) exp.evaluate();
     }
 
     /**
@@ -203,6 +204,10 @@ public final class Payload implements Serializable {
         }
 
         return statements;
+    }
+
+    public List<Statement> getStatements() {
+        return payload;
     }
 
     /**

@@ -47,8 +47,9 @@ import javax.script.ScriptException;
  *
  * @event.sender" becomes sensorPlugin="TemperatureSensorPlugin"
  *
- * <p> This class takes a list of properties in form key=value and propagates
- * this list to all commands in a given reaction. After that this list (called
+ * <p>
+ * This class takes a list of properties in form key=value and propagates this
+ * list to all commands in a given reaction. After that this list (called
  * context) is used to resolve the references to external values in the command.
  * For example Commmand: turn on this x10 device x10-object =
  * @event.object.name x10-address =
@@ -86,9 +87,9 @@ public final class Resolver {
         this.reaction = r;
 
         if ((context != null) && (reaction != null)) {
-            Reaction clone =
-                    new Reaction(reaction.getTrigger(),
-                    performSubstitutionInCommands(reaction.getCommands()));
+            Reaction clone
+                    = new Reaction(reaction.getTrigger(),
+                            performSubstitutionInCommands(reaction.getCommands()));
 
             return clone;
         }
@@ -196,9 +197,9 @@ public final class Resolver {
                     }
 
                     //cutting out the first char '@'
-                    referenceToResolve =
-                            referenceToResolve.substring(1,
-                            referenceToResolve.length());
+                    referenceToResolve
+                            = referenceToResolve.substring(1,
+                                    referenceToResolve.length());
 
                     String replacer = command.getProperty(referenceToResolve);
                     if (((replacer != null) && !replacer.isEmpty())) {
@@ -234,8 +235,8 @@ public final class Resolver {
                     }
 
                     if (js.get(key) == null) {
-                        LOG.log(Level.SEVERE, 
-                                "Script evaluation has returned a null value, maybe the key ''{0}'' is not evaluated properly.", 
+                        LOG.log(Level.SEVERE,
+                                "Script evaluation has returned a null value, maybe the key ''{0}'' is not evaluated properly.",
                                 key);
                     }
 
@@ -283,9 +284,9 @@ public final class Resolver {
                         tokenKey = tokenKey.substring(0, tokenKey.length() - 1); //cutting out the optional last '#'
                     }
 
-                    tokenKey =
-                            tokenKey.substring(1,
-                            tokenKey.length()); //cutting out the first char '@'
+                    tokenKey
+                            = tokenKey.substring(1,
+                                    tokenKey.length()); //cutting out the first char '@'
 
                     String tokenValue = trigger.getPayload().getStatementValue(tokenKey);
 
@@ -327,8 +328,8 @@ public final class Resolver {
                     }
 
                     if (js.get(key) == null) {
-                        LOG.log(Level.SEVERE, 
-                                "Script evaluation in trigger ''{0}'' has returned a null value, maybe the key ''{1}'' is not evaluated properly.", 
+                        LOG.log(Level.SEVERE,
+                                "Script evaluation in trigger ''{0}'' has returned a null value, maybe the key ''{1}'' is not evaluated properly.",
                                 new Object[]{trigger.getName(), key});
                     }
 
@@ -447,22 +448,22 @@ public final class Resolver {
             prefixes.add(PREFIX);
         }
 
-        Iterator it = aContext.iterator();
+        // get an hold on the statements list mutex to avoid others to use it
+        synchronized (aContext.getStatements()) {
+            Iterator it = aContext.iterator();
 
-        while (it.hasNext()) {
-            String key;
-            Statement statement = (Statement) it.next();
-
-            //removing the prefix of the properties if already exists
-            //to avoid dublicate prefixes like @event.event.object.name
-            if (statement.getAttribute().startsWith(PREFIX)) {
-                key = statement.getAttribute().substring(PREFIX.length());
-            } else {
-                key = statement.getAttribute();
+            while (it.hasNext()) {
+                String key;
+                Statement statement = (Statement) it.next();
+                //removing the prefix of the properties if already exists
+                //to avoid dublicate prefixes like @event.event.object.name
+                if (statement.getAttribute().startsWith(PREFIX)) {
+                    key = statement.getAttribute().substring(PREFIX.length());
+                } else {
+                    key = statement.getAttribute();
+                }
+                context.addStatement(PREFIX + key, statement.getValue());
             }
-
-            context.addStatement(PREFIX + key,
-                    statement.getValue());
         }
     }
 
