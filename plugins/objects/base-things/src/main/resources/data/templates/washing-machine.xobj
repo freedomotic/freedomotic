@@ -1,0 +1,87 @@
+<com.freedomotic.model.object.EnvObject>
+  <name>Washing machine</name>
+  <description>A washing machine</description>
+  <actAs>virtual</actAs>
+  <type>EnvObject.ElectricDevice.WashingMachine</type>
+  <hierarchy>com.freedomotic.things.impl.WashingMachine</hierarchy>
+  <protocol>unknown</protocol>
+  <phisicalAddress>unknown</phisicalAddress>
+  <behaviors>
+    <com.freedomotic.model.object.BooleanBehavior>
+      <name>powered</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>false</value>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>washing-temperature</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>40</value>
+      <max>90</max>
+      <min>40</min>
+      <step>10</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.ListBehavior>
+      <name>washing-cycle</name>
+      <description>Washing cycle programme</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <selected>2</selected>
+      <list>
+        <string>cotton</string>
+        <string>darks</string>
+        <string>whites</string>
+        <string>wool</string>
+      </list>
+    </com.freedomotic.model.object.ListBehavior>
+  </behaviors>
+  <representation>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>washingmachine-off.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>washingmachine-on.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+  </representation>
+  <actions>
+    <property name="turn off" value="Execute it successfully"/>
+    <property name="turn on" value="Execute it successfully"/>
+    <property name="set washing temperature" value="Execute it successfully"/>
+    <property name="set washing cycle" value="Execute it successfully"/>
+  </actions>
+  <triggers>
+    <property name="" value="powered"/>
+    <property name="" value="washing-temperature"/>
+    <property name="" value="washing-cycle"/>
+  </triggers>
+  <currentRepresentation>0</currentRepresentation>
+</com.freedomotic.model.object.EnvObject>
