@@ -20,15 +20,9 @@
       <active>true</active>
       <priority>-1</priority>
       <value>0</value>
-<<<<<<< HEAD
-      <max>50</max>
-      <min>-50</min>
-      <step>10</step>
-=======
       <max>5</max>
       <min>2</min>
       <step>1</step>
->>>>>>> f89420ac46cf9b5c5d3e0a482f5f8f61a9433e6f
     </com.freedomotic.model.object.RangedIntBehavior>
     <com.freedomotic.model.object.RangedIntBehavior>
       <name>freezer-temperature</name>
@@ -36,15 +30,9 @@
       <active>true</active>
       <priority>-1</priority>
       <value>0</value>
-<<<<<<< HEAD
-      <max>50</max>
-      <min>-50</min>
-      <step>10</step>
-=======
       <max>0</max>
       <min>-10</min>
       <step>1</step>
->>>>>>> f89420ac46cf9b5c5d3e0a482f5f8f61a9433e6f
     </com.freedomotic.model.object.RangedIntBehavior>
     <com.freedomotic.model.object.RangedIntBehavior>
       <name>power_consumption</name>
