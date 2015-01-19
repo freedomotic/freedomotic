@@ -30,6 +30,12 @@ import com.freedomotic.reactions.CommandPersistence;
 /**
  *
  * @author Mauro Cicolella
+ *
+ * This class represents a 'Fridge' thing template extending an ElectricDevice
+ * Behaviors:
+ * fridge-temperature
+ * freezer-temperature
+ *
  */
 public class Fridge
         extends ElectricDevice {
@@ -60,7 +66,7 @@ public class Fridge
                 executeSetFridgeTemperature(rangeValue, params);
             }
         });
-
+        
         freezerTemperature.addListener(new RangedIntBehaviorLogic.Listener() {
 
             @Override
@@ -76,34 +82,17 @@ public class Fridge
                 executeSetFreezerTemperature(rangeValue, params);
             }
         });
-
         //register new behaviors to the superclass to make it visible to it
         registerBehavior(fridgeTemperature);
         registerBehavior(freezerTemperature);
         super.init();
     }
 
-    @Override
-    public void executePowerOff(Config params) {
-        /*
-         * executeCommand the body of the super implementation The super call
-         * must be the last call as it executes setChanged(true)
-         */
-        super.executePowerOff(params);
-    }
-
-    @Override
-    public void executePowerOn(Config params) {
-        //executeCommand the body of the super implementation
-        super.executePowerOn(params);
-    }
-
     public void executeSetFridgeTemperature(int rangeValue, Config params) {
         boolean executed = executeCommand("set fridge temperature", params); //executes the developer level command associated with 'set brightness' action
 
         if (executed) {
-            fridgeTemperature.setValue(rangeValue);
-            setChanged(true);
+            setFridgeTemperature(rangeValue);
         }
     }
 
@@ -111,9 +100,18 @@ public class Fridge
         boolean executed = executeCommand("set freezer temperature", params); //executes the developer level command associated with 'set brightness' action
 
         if (executed) {
-            freezerTemperature.setValue(rangeValue);
-            setChanged(true);
+            setFreezerTemperature(rangeValue);
         }
+    }
+
+    private void setFridgeTemperature(int value) {
+        fridgeTemperature.setValue(value);
+        setChanged(true);
+    }
+    
+    private void setFreezerTemperature(int value) {
+        freezerTemperature.setValue(value);
+        setChanged(true);
     }
 
     @Override

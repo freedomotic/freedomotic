@@ -32,6 +32,10 @@ import com.freedomotic.reactions.CommandPersistence;
 /**
  *
  * @author Mauro Cicolella
+ *
+ * This class represents a 'Washing machine' thing template extending an
+ * ElectricDevice Behaviors: washing-temperature washing-cycle
+ *
  */
 public class WashingMachine
         extends ElectricDevice {
@@ -64,6 +68,7 @@ public class WashingMachine
 
         //linking this property with the behavior defined in the XML
         washingCycle = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior(BEHAVIOR_WASHING_CYCLE));
+
         washingCycle.addListener(new ListBehaviorLogic.Listener() {
 
             @Override
@@ -75,31 +80,10 @@ public class WashingMachine
                 }
             }
         });
-
-
         //register new behaviors to the superclass to make it visible to it
         registerBehavior(washingTemperature);
         registerBehavior(washingCycle);
         super.init();
-
-
-
-
-    }
-
-    @Override
-    public void executePowerOff(Config params) {
-        /*
-         * executeCommand the body of the super implementation The super call
-         * must be the last call as it executes setChanged(true)
-         */
-        super.executePowerOff(params);
-    }
-
-    @Override
-    public void executePowerOn(Config params) {
-        //executeCommand the body of the super implementation
-        super.executePowerOn(params);
     }
 
     public void executeSetWashingTemperature(int rangeValue, Config params) {
@@ -115,17 +99,13 @@ public class WashingMachine
         boolean executed = executeCommand("set washing cycle", params);
         if (executed) {
             setWashingCycle(params.getProperty("value"));
-            setChanged(true);
         }
     }
 
     public void setWashingCycle(String value) {
-        if (!washingCycle.getSelected().equals(value)) {
-            washingCycle.setSelected(value);
-            setChanged(true);
-        }
+        washingCycle.setSelected(value);
+        setChanged(true);
     }
-    
 
     @Override
     protected void createCommands() {
