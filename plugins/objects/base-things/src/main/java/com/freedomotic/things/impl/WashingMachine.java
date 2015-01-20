@@ -54,10 +54,12 @@ public class WashingMachine
 
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
+                executeSetWashingTemperature(washingTemperature.getMin(), params);
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
+                executeSetWashingTemperature(washingTemperature.getMax(), params);
             }
 
             @Override
