@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Fridge</name>
   <description>A fridge</description>
   <actAs>virtual</actAs>
@@ -93,4 +93,4 @@
     <property name="" value="freezer-temperature"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

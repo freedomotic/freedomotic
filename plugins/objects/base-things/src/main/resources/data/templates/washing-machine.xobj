@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Washing machine</name>
   <description>A washing machine</description>
   <actAs>virtual</actAs>
@@ -84,4 +84,4 @@
     <property name="" value="washing-cycle"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

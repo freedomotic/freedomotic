@@ -32,9 +32,7 @@ import com.freedomotic.reactions.CommandPersistence;
  * @author Mauro Cicolella
  *
  * This class represents a 'Fridge' thing template extending an ElectricDevice
- * Behaviors:
- * fridge-temperature
- * freezer-temperature
+ * Behaviors: fridge-temperature freezer-temperature
  *
  */
 public class Fridge
@@ -55,10 +53,12 @@ public class Fridge
 
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
+                executeSetFridgeTemperature(fridgeTemperature.getMin(), params);
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
+                executeSetFridgeTemperature(fridgeTemperature.getMax(), params);
             }
 
             @Override
@@ -66,15 +66,17 @@ public class Fridge
                 executeSetFridgeTemperature(rangeValue, params);
             }
         });
-        
+
         freezerTemperature.addListener(new RangedIntBehaviorLogic.Listener() {
 
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
+                executeSetFreezerTemperature(freezerTemperature.getMin(), params);
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
+                executeSetFreezerTemperature(freezerTemperature.getMax(), params);
             }
 
             @Override
@@ -108,7 +110,7 @@ public class Fridge
         fridgeTemperature.setValue(value);
         setChanged(true);
     }
-    
+
     private void setFreezerTemperature(int value) {
         freezerTemperature.setValue(value);
         setChanged(true);
