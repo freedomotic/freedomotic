@@ -54,12 +54,12 @@ public class Thermostat
         setpoint.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-                //there is an hardware read error
+                executeSetTemperatureSetpoint(setpoint.getMin(), params);
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-                //there is as hardware read error
+                executeSetTemperatureSetpoint(setpoint.getMax(), params);
             }
 
             @Override

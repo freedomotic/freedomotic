@@ -1,26 +1,22 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
-
 package com.freedomotic.things.impl;
 
 import com.freedomotic.things.impl.ElectricDevice;
@@ -31,12 +27,10 @@ import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 
-
 /**
  *
  * @author Enrico
  */
-
 public class Light
         extends ElectricDevice {
 
@@ -44,13 +38,13 @@ public class Light
     protected final static String BEHAVIOR_BRIGHTNESS = "brightness";
 
     //@Inject
-   // private I18n I18n;
-
+    // private I18n I18n;
     @Override
     public void init() {
         //linking this property with the behavior defined in the XML
         brightness = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_BRIGHTNESS));
         brightness.addListener(new RangedIntBehaviorLogic.Listener() {
+
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 executePowerOff(params);
@@ -129,7 +123,7 @@ public class Light
         Command b = new Command();
         // b.setName(I18n.msg("increase_X_brightness", new Object[]{this.getPojo().getName()}));
         b.setName("Increase " + getPojo().getName() + " brightness");
-        b.setDescription("increases " + getPojo().getName() + " brigthness of one step");
+        b.setDescription("increases " + getPojo().getName() + " brightness of one step");
         b.setReceiver("app.events.sensors.behavior.request.objects");
         b.setProperty("object",
                 getPojo().getName());
@@ -139,7 +133,7 @@ public class Light
         Command c = new Command();
         // c.setName(I18n.msg("decrease_X_brightness", new Object[]{this.getPojo().getName()}));
         c.setName("Decrease " + getPojo().getName() + " brightness");
-        c.setDescription("decreases " + getPojo().getName() + " brigthness of one step");
+        c.setDescription("decreases " + getPojo().getName() + " brightness of one step");
         c.setReceiver("app.events.sensors.behavior.request.objects");
         c.setProperty("object",
                 getPojo().getName());
@@ -159,7 +153,7 @@ public class Light
         Command e = new Command();
         // e.setName(I18n.msg("increase_its_brightness"));
         e.setName("Increase its brightness");
-        e.setDescription("increases its brigthness of one step");
+        e.setDescription("increases its brightness of one step");
         e.setReceiver("app.events.sensors.behavior.request.objects");
         e.setProperty("object", "@event.object.name");
         e.setProperty("behavior", BEHAVIOR_BRIGHTNESS);
@@ -168,7 +162,7 @@ public class Light
         Command f = new Command();
         // f.setName(I18n.msg("decrease_its_brightness"));
         f.setName("Decrease its brightness");
-        f.setDescription("decreases its brigthness of one step");
+        f.setDescription("decreases its brightness of one step");
         f.setReceiver("app.events.sensors.behavior.request.objects");
         f.setProperty("object", "@event.object.name");
         f.setProperty("behavior", BEHAVIOR_BRIGHTNESS);
@@ -177,7 +171,7 @@ public class Light
         Command g = new Command();
         // g.setName(I18n.msg("set_brightness_from_event_value"));
         g.setName("Set its brightness to the value in the event");
-        g.setDescription("set its brighness to the value in the event");
+        g.setDescription("set its brightness to the value in the event");
         g.setReceiver("app.events.sensors.behavior.request.objects");
         g.setProperty("object", "@event.object.name");
         g.setProperty("behavior", BEHAVIOR_BRIGHTNESS);
