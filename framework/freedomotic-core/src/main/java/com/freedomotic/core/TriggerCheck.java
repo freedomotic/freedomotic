@@ -24,7 +24,6 @@
 package com.freedomotic.core;
 
 import com.freedomotic.api.EventTemplate;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.VariableResolutionException;
@@ -214,10 +213,11 @@ public class TriggerCheck {
                                     behaviorManager.parseCommand(resolvedCommand);
                                 } else {
                                     //if the event has a target object we include also object info
-                                    EnvObjectLogic targetObject
-                                            = thingsRepository.findByName(event.getProperty("object.name")).get(0);
+                                    List<EnvObjectLogic> targetObjects
+                                            = thingsRepository.findByName(event.getProperty("object.name"));
 
-                                    if (targetObject != null) {
+                                    if (!targetObjects.isEmpty()) {
+                                        EnvObjectLogic targetObject = targetObjects.get(0);
                                         commandResolver.addContext("current.",
                                                 targetObject.getExposedProperties());
                                         commandResolver.addContext("current.",

@@ -46,7 +46,6 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Logger;
-import javax.jms.Destination;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -237,7 +236,8 @@ public final class Command implements Serializable, Cloneable {
      */
     public void setProperty(String key, String value) {
         if (key == null || key.isEmpty() || value == null || value.isEmpty()) {
-            throw new IllegalArgumentException("Cannot add empty or null properties in command");
+            throw new IllegalArgumentException("Cannot add empty or null properties "
+                    + "[" + key + " = " + value + "] in command '" + this.getName() + "'");
         } else {
             properties.setProperty(key, value);
         }
