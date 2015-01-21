@@ -34,7 +34,7 @@ import com.freedomotic.reactions.CommandPersistence;
  * @author Mauro Cicolella
  *
  * This class represents a 'Washing machine' thing template extending an
- * ElectricDevice Behaviors: washing-temperature washing-cycle
+ * ElectricDevice with behaviors: washing-temperature, washing-cycle
  *
  */
 public class WashingMachine
@@ -111,6 +111,44 @@ public class WashingMachine
 
     @Override
     protected void createCommands() {
+        super.createCommands();
+
+        Command a = new Command();
+        a.setName("Increase " + getPojo().getName() + " washing-temperature");
+        a.setDescription("increases " + getPojo().getName() + " washing-temperature of one step");
+        a.setReceiver("app.events.sensors.behavior.request.objects");
+        a.setProperty("object", getPojo().getName());
+        a.setProperty("behavior", BEHAVIOR_WASHING_TEMPERATURE);
+        a.setProperty("value", Behavior.VALUE_NEXT);
+
+        Command b = new Command();
+        b.setName("Decrease " + getPojo().getName() + " washing-temperature");
+        b.setDescription("decreases " + getPojo().getName() + " washing-temperature of one step");
+        b.setReceiver("app.events.sensors.behavior.request.objects");
+        b.setProperty("object", getPojo().getName());
+        b.setProperty("behavior", BEHAVIOR_WASHING_TEMPERATURE);
+        b.setProperty("value", Behavior.VALUE_PREVIOUS);
+
+        Command c = new Command();
+        c.setName(getPojo().getName() + " next washing cycle");
+        c.setDescription("select the " + getPojo().getName() + " next washing cycle");
+        c.setReceiver("app.events.sensors.behavior.request.objects");
+        c.setProperty("object", getPojo().getName());
+        c.setProperty("behavior", BEHAVIOR_WASHING_CYCLE);
+        c.setProperty("value", Behavior.VALUE_NEXT);
+
+        Command d = new Command();
+        d.setName(getPojo().getName() + " previous washing cycle");
+        d.setDescription("select the " + getPojo().getName() + " previous washing cycle");
+        d.setReceiver("app.events.sensors.behavior.request.objects");
+        d.setProperty("object", getPojo().getName());
+        c.setProperty("behavior", BEHAVIOR_WASHING_CYCLE);
+        c.setProperty("value", Behavior.VALUE_PREVIOUS);
+
+        CommandPersistence.add(a);
+        CommandPersistence.add(b);
+        CommandPersistence.add(c);
+        CommandPersistence.add(d);
     }
 
     @Override
