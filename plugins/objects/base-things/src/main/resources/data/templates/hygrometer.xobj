@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Hygrometer</name>
   <description>Collects humidity events</description>
   <actAs>virtual</actAs>
@@ -45,4 +45,4 @@
     <property name="" value="humidity"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

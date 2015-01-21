@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Grocery List</name>
   <description>A list of food and beverages you need</description>
   <actAs>virtual</actAs>
@@ -44,4 +44,4 @@
   <triggers>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

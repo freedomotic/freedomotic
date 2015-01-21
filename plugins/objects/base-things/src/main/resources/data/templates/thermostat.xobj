@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Thermostat</name>
   <description>Senses temperature and defines a setpoint</description>
   <actAs>virtual</actAs>
@@ -59,4 +59,4 @@
     <property name="" value="setpoint"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

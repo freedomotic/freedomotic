@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Light</name>
   <description>A light</description>
   <actAs>virtual</actAs>
@@ -81,4 +81,4 @@
     <property name="" value="brightness"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

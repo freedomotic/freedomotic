@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Switch</name>
   <description>A Switch</description>
   <actAs>virtual</actAs>
@@ -70,4 +70,4 @@
     <property name="" value="powered"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

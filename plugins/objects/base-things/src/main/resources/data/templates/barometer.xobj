@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Barometer</name>
   <description>Collects pressure events</description>
   <actAs>virtual</actAs>
@@ -45,4 +45,4 @@
     <property name="" value="pressure"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

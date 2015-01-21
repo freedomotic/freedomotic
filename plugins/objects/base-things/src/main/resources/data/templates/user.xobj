@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>User</name>
   <description>A user in the environment</description>
   <actAs>virtual</actAs>
@@ -82,4 +82,4 @@
     <property name="" value="powered"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

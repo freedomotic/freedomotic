@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>RGB Light</name>
   <description>A Rgb Light</description>
   <actAs>virtual</actAs>
@@ -104,4 +104,4 @@
     <property name="" value="saturation"/> 
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

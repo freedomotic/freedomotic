@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>PowerMeter</name>
   <description>A powermeter</description>
   <actAs>virtual</actAs>
@@ -115,4 +115,4 @@
     <property name="" value="energy"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

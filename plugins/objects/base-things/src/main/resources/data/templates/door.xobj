@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Door</name>
   <description>A door capable of open and close</description>
   <actAs>virtual</actAs>
@@ -91,4 +91,4 @@
     <property name="" value="openness"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

@@ -1,4 +1,4 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>Plant</name>
   <description>A decorative green plant</description>
   <actAs>virtual</actAs>
@@ -31,4 +31,4 @@
   <triggers>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>
