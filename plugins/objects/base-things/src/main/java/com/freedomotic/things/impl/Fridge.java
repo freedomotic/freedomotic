@@ -118,6 +118,62 @@ public class Fridge
 
     @Override
     protected void createCommands() {
+        super.createCommands();
+
+        Command a = new Command();
+        a.setName("Increase " + getPojo().getName() + " fridge-temperature");
+        a.setDescription("increases " + getPojo().getName() + " fridge-temperature of one step");
+        a.setReceiver("app.events.sensors.behavior.request.objects");
+        a.setProperty("object", getPojo().getName());
+        a.setProperty("behavior", BEHAVIOR_FRIDGE_TEMPERATURE);
+        a.setProperty("value", Behavior.VALUE_NEXT);
+
+        Command b = new Command();
+        b.setName("Decrease " + getPojo().getName() + " fridge-temperature");
+        b.setDescription("decreases " + getPojo().getName() + " fridge-temperature of one step");
+        b.setReceiver("app.events.sensors.behavior.request.objects");
+        b.setProperty("object", getPojo().getName());
+        b.setProperty("behavior", BEHAVIOR_FRIDGE_TEMPERATURE);
+        b.setProperty("value", Behavior.VALUE_PREVIOUS);
+
+        Command c = new Command();
+        c.setName("Set its fridge-temperature to the value in the event");
+        c.setDescription("set its fridge-temperature to the value in the event");
+        c.setReceiver("app.events.sensors.behavior.request.objects");
+        c.setProperty("object", "@event.object.name");
+        c.setProperty("behavior", BEHAVIOR_FRIDGE_TEMPERATURE);
+        c.setProperty("value", "@event.value");
+
+        Command d = new Command();
+        d.setName("Increase " + getPojo().getName() + " freezer-temperature");
+        d.setDescription("increases " + getPojo().getName() + " freezer-temperature of one step");
+        d.setReceiver("app.events.sensors.behavior.request.objects");
+        d.setProperty("object", getPojo().getName());
+        d.setProperty("behavior", BEHAVIOR_FREEZER_TEMPERATURE);
+        d.setProperty("value", Behavior.VALUE_NEXT);
+
+        Command e = new Command();
+        e.setName("Decrease " + getPojo().getName() + " freezer-temperature");
+        e.setDescription("decreases " + getPojo().getName() + " freezer-temperature of one step");
+        e.setReceiver("app.events.sensors.behavior.request.objects");
+        e.setProperty("object", getPojo().getName());
+        e.setProperty("behavior", BEHAVIOR_FREEZER_TEMPERATURE);
+        e.setProperty("value", Behavior.VALUE_PREVIOUS);
+
+        Command f = new Command();
+        f.setName("Set its freezer-temperature to the value in the event");
+        f.setDescription("set its freezer-temperature to the value in the event");
+        f.setReceiver("app.events.sensors.behavior.request.objects");
+        f.setProperty("object", "@event.object.name");
+        f.setProperty("behavior", BEHAVIOR_FREEZER_TEMPERATURE);
+        f.setProperty("value", "@event.value");
+
+        CommandPersistence.add(a);
+        CommandPersistence.add(b);
+        CommandPersistence.add(c);
+        CommandPersistence.add(d);
+        CommandPersistence.add(e);
+        CommandPersistence.add(f);
     }
 
     @Override
