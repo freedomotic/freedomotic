@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Restart Jfrontend Plugin</name>
     <receiver>app.actuators.plugins.controller.in</receiver>
     <description>Restarts Java Desktop plugin</description>
@@ -10,4 +10,4 @@
             <property name="action" value="restart"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>

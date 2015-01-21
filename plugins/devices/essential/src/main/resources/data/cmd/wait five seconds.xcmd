@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Wait five seconds</name>
     <receiver>app.actuators.automation.delayer.in</receiver>
     <description>delays next command of five seconds</description>
@@ -10,4 +10,4 @@
             <property name="delay" value="5000"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>

@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Ask something with dialog</name>
     <receiver>command.jfrontend.user.callout</receiver>
     <description>a yes/no dialog box is promped on the screen and wait for an user input</description>
@@ -10,4 +10,4 @@
             <property name="options" value="reply1, reply2, reply3, reply4"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>

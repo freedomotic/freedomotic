@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Execute it successfully</name>
     <receiver>app.actuators.simulator.success.in</receiver>
     <description>execute this command successfully</description>
@@ -7,7 +7,6 @@
     <timeout>0</timeout>
     <properties>
         <properties>
-            <property name="" value=""/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>
