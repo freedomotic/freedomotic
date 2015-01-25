@@ -33,7 +33,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * This class implements an UDP server listening for incoming packets and provides a method to send UDP
+ * packets to a specified server
+ * 
  * @author Mauro Cicolella
  */
 public class UdpHelper {
@@ -59,13 +61,7 @@ public class UdpHelper {
         server.start();
     }
 
-    public void stopServer() {
-        //if (!(serverDatagramSocket == null) && !(serverDatagramSocket.isClosed())) {
-        //  serverDatagramSocket.close();
-        LOG.info("Server UDP stopped.");
-        //}
-    }
-
+    
     /**
      * Sends an UDP packet to the server
      *
@@ -96,16 +92,20 @@ public class UdpHelper {
             datagramSocket.send(out_datagramPacket);
 
         } catch (UnknownHostException ex) {
-            LOG.log(Level.WARNING, ex.getMessage());
+            LOG.log(Level.WARNING, "Unknown UDP server. Packet not sent", ex.getMessage());
         } catch (SocketException ex) {
-            LOG.log(Level.WARNING, ex.getMessage());
+            LOG.log(Level.WARNING, "Socket exception. Packet not sent", ex.getMessage());
         } catch (IOException ex) {
-            LOG.log(Level.WARNING, ex.getMessage());
+            LOG.log(Level.WARNING, "IOException. Packet not sent", ex.getMessage());
         } finally {
             datagramSocket.close();
         }
     }
 
+    /*
+     *  Nested threaded class for UDP server 
+     *  Starts an UDP server in a separate thread
+     */
     private static class UDPThreadServer extends Thread {
 
         String serverAddress;
@@ -116,8 +116,7 @@ public class UdpHelper {
             this.serverAddress = serverAddress;
             this.serverPort = serverPort;
             this.consumer = consumer;
-            System.out.println("Starting threaded server");
-            start();
+            LOG.log(Level.CONFIG, "Starting threaded server on " + serverAddress + ":" + serverPort);
         }
 
         public void run() {
