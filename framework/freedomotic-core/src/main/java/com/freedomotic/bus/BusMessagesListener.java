@@ -21,9 +21,9 @@ package com.freedomotic.bus;
 
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.Profiler;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.freedomotic.util.UidGenerator;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -32,8 +32,9 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
-import javax.jms.Session;
+import javax.jms.Queue;
 import javax.jms.TextMessage;
+import javax.jms.Topic;
 
 /**
  * {@link MessageListener} implementation (former AbstractBusConnector class)
@@ -54,10 +55,10 @@ public class BusMessagesListener implements MessageListener {
 
     private BusService busService;
 
-    private BusConsumer busConsumer;
+    private BusConsumer messageHandler;
 
-    private final HashMap<String, MessageConsumer> registeredEventQueues;
-    private final HashMap<String, MessageConsumer> registeredCommandQueues;
+    // A listener can consume from multiple sources
+    private Set<MessageConsumer> consumers = new HashSet<MessageConsumer>();
 
     /**
      * Constructor
@@ -70,10 +71,9 @@ public class BusMessagesListener implements MessageListener {
         if (busService == null) {
             throw new IllegalArgumentException("Bus service cannot be not null");
         }
-        this.busConsumer = busConsumer;
+        this.messageHandler = busConsumer;
         this.busService = busService;
-        this.registeredEventQueues = new HashMap<>();
-        this.registeredCommandQueues = new HashMap<>();
+
         if (busService == null) {
             throw new IllegalStateException("A message listener must have a working bus link");
         }
@@ -94,7 +94,7 @@ public class BusMessagesListener implements MessageListener {
 
         if (message instanceof ObjectMessage) {
             final ObjectMessage objectMessage = (ObjectMessage) message;
-            busConsumer.onMessage(objectMessage);
+            messageHandler.onMessage(objectMessage);
         } else {
 
             LOG.severe("Message received by " + this.getClass().getSimpleName()
@@ -119,101 +119,68 @@ public class BusMessagesListener implements MessageListener {
     public void consumeCommandFrom(String queueName) {
 
         try {
-
-            BusDestination busDestination = busService
-                    .registerCommandQueue(queueName);
-
-            registeredCommandQueues.put(busDestination.getDestinationName(), registerOnQueue(busDestination));
+            Queue queue = busService.getReceiveSession().createQueue(queueName);
+            MessageConsumer consumer = busService.getReceiveSession().createConsumer(queue);
+            consumer.setMessageListener(this);
         } catch (JMSException e) {
-
             LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
     /**
-     * Registers on a event queue. It is a Virtual Topic in activemq lingo
+     * Registers on a event topic. It is a Virtual Topic in activemq lingo
      *
-     * @param queueName Queue name
+     * @param topicName
      */
-    public void consumeEventFrom(String queueName) {
+    public void consumeEventFrom(String topicName) {
         try {
-            BusDestination busDestination = busService.registerEventQueue(queueName);
-            registeredEventQueues.put(busDestination.getDestinationName(), registerOnQueue(busDestination));
+
+            final String virtualTopicName
+                    = "Consumer." + UidGenerator.getNextStringUid() + ".VirtualTopic."
+                    + topicName;
+
+            Queue queue = busService.getReceiveSession().createQueue(virtualTopicName);
+            MessageConsumer consumer = busService.getReceiveSession().createConsumer(queue);
+            consumer.setMessageListener(this);
         } catch (JMSException e) {
             LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
     /**
-    * Subscribes a messaging topic. The message will be received by ALL the subscribers
-    */
-    public void subscribeEventFrom(String queueName) {
+     * Subscribes a messaging topic. The message will be received by ALL the
+     * subscribers. It's not a virtual topic as in consumeEventFrom(). DO NOT USE
+     * IT IF YOU ARE NOT AWARE OF THE CONSEQUENCES. USE consumeEventFrom() instead.
+     *
+     * @param topicName
+     */
+    public void subscribeCrossInstanceEvents(String topicName) {
         try {
-            BusDestination busDestination = busService.registerTopic(queueName);
-            registeredEventQueues.put(busDestination.getDestinationName(), registerOnQueue(busDestination));
+            Topic topic = busService.getReceiveSession().createTopic("VirtualTopic." + topicName);
+            //TODO: add a selector for provenance field which should be "not from current instance"
+            MessageConsumer consumer = busService.getReceiveSession().createConsumer(topic);
+            consumer.setMessageListener(this);
         } catch (JMSException e) {
             LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
     }
 
-    private MessageConsumer registerOnQueue(BusDestination destination)
-            throws JMSException {
-
-        final Session receiveSession = busService.getReceiveSession();
-        MessageConsumer messageConsumer = receiveSession.createConsumer(destination
-                .getDestination());
-        messageConsumer.setMessageListener(this);
-        LOG.info(busConsumer.getClass().getSimpleName() + " listen on "
-                + destination.getDestinationName());
-        return messageConsumer;
-    }
-
     /**
-     * Unsubscribes from all topics queues
+     * Unsubscribes from all messaging channels (topics and queues)
      * <br>
      * (invocations should be life cycle managed)
      */
     public void unsubscribe() {
-
-        unsubscribeCommands();
-        unsubscribeEvents();
-
-    }
-
-    /**
-     * Unsubscribes from events queues
-     * <br>
-     * (invocations should be life cycle managed)
-     */
-    public void unsubscribeEvents() {
-        for (String queueName : registeredEventQueues.keySet()) {
-            try {
-                MessageConsumer mc = registeredEventQueues.get(queueName);
-                mc.setMessageListener(null);
-                mc.close();
-            } catch (JMSException ex) {
-                LOG.severe("Unable to unsubscribe from event channel " + queueName + " for reason: " + ex.getLocalizedMessage());
+        try {
+            while (consumers.iterator().hasNext()) {
+                MessageConsumer consumer = consumers.iterator().next();
+                LOG.info("Closing message consumer " + consumer.toString());
+                consumer.close();
             }
+        } catch (JMSException ex) {
+            Logger.getLogger(BusMessagesListener.class.getName()).log(Level.SEVERE, null, ex);
         }
-        registeredEventQueues.clear();
-    }
 
-    /**
-     * Unsubscribes from commands queues
-     * <br>
-     * (invocations should be life cycle managed)
-     */
-    public void unsubscribeCommands() {
-        for (String queueName : registeredCommandQueues.keySet()) {
-            try {
-                MessageConsumer mc = registeredCommandQueues.get(queueName);
-                mc.setMessageListener(null);
-                mc.close();
-            } catch (JMSException ex) {
-                LOG.severe("Unable to unsubscribe from event channel " + queueName + " for reason: " + ex.getLocalizedMessage());
-            }
-        }
-        registeredCommandQueues.clear();
     }
 
 }

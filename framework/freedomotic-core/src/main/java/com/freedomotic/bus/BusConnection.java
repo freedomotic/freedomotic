@@ -54,7 +54,6 @@ class BusConnection extends LifeCycle {
 		// tuned for performances
         // http://activemq.apache.org/performance-tuning.html
         factory.setUseAsyncSend(true);
-        factory.setOptimizeAcknowledge(true);
         factory.setAlwaysSessionAsync(true);
         factory.setObjectMessageSerializationDefered(true);
         factory.setCopyMessageOnSend(false);

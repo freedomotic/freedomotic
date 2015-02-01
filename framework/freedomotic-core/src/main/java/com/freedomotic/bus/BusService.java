@@ -84,21 +84,21 @@ public interface BusService {
      *
      * @return
      */
-    BusDestination registerCommandQueue(String queueName) throws JMSException;
+    //BusDestination registerCommandQueue(String queueName) throws JMSException;
 
     /**
      * Convenience method used by {@link BusMessagesListener}
      *
      * @return
      */
-    BusDestination registerEventQueue(String queueName) throws JMSException;
+    //BusDestination registerEventQueue(String queueName) throws JMSException;
 
     /**
      * Convenience method used by {@link BusMessagesListener}
      *
      * @return
      */
-    BusDestination registerTopic(String queueName) throws JMSException;
+    //BusDestination registerTopic(String queueName) throws JMSException;
 
     /**
      * Convenience method used by {@link BusMessagesListener}

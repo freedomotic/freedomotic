@@ -36,6 +36,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TemporaryQueue;
+import javax.jms.Topic;
 import org.apache.activemq.command.ActiveMQQueue;
 
 /**
@@ -53,7 +54,6 @@ class BusServiceImpl extends LifeCycle implements BusService {
     //private AppConfig config;
     private BusBroker brokerHolder;
     private BusConnection connectionHolder;
-    private DestinationRegistry destination;
     private Session receiveSession;
     private Session sendSession;
     private Session unlistenedSession;
@@ -82,8 +82,6 @@ class BusServiceImpl extends LifeCycle implements BusService {
 
         connectionHolder = new BusConnection();
         connectionHolder.init();
-
-        destination = new DestinationRegistry(this);
 
         receiveSession = createSession();
         // an unlistened session
@@ -165,42 +163,6 @@ class BusServiceImpl extends LifeCycle implements BusService {
     private MessageProducer getMessageProducer() {
 
         return messageProducer;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return
-     */
-    @Override
-    public BusDestination registerCommandQueue(String queueName)
-            throws JMSException {
-
-        return destination.registerCommandQueue(queueName);
-
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return
-     */
-    @Override
-    public BusDestination registerEventQueue(String queueName)
-            throws JMSException {
-
-        return destination.registerEventQueue(queueName);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return
-     */
-    @Override
-    public BusDestination registerTopic(String queueName) throws JMSException {
-
-        return destination.registerTopic(queueName);
     }
 
     /**
@@ -296,7 +258,7 @@ class BusServiceImpl extends LifeCycle implements BusService {
         // queues and consumers on it
         // this increments perfornances if no reply is expected
         final MessageProducer messageProducer = this.getMessageProducer();
-        LOG.log(Level.CONFIG, "Send command ''{0}'' (no reply expected)", command.getName());
+        LOG.log(Level.CONFIG, "Send command ''{0}'' (no reply requested to receiver)", command.getName());
         messageProducer.send(currDestination, msg);
 
         Profiler.incrementSentCommands();
@@ -327,14 +289,14 @@ class BusServiceImpl extends LifeCycle implements BusService {
         Profiler.incrementSentCommands();
 
         // the receive() call is blocking
-        LOG.config("Send and await reply to command '"
-                + command.getName() + "' for "
-                + command.getReplyTimeout() + "ms");
+        LOG.log(Level.CONFIG, "Send and await reply to command ''{0}'' for {1}ms", 
+                new Object[]{command.getName(), command.getReplyTimeout()});
 
         Message jmsResponse = temporaryConsumer.receive(command.getReplyTimeout());
 
         //cleanup after receiving
         temporaryConsumer.close();
+        temporaryQueue.delete();
         //TODO: commented as sometimes genenerates a "cannot publish on deleted queue" exception
         //check n the documentation if a temporary queue with no consumers
         //is automatically deleted
@@ -378,7 +340,6 @@ class BusServiceImpl extends LifeCycle implements BusService {
      */
     @Override
     public void send(EventTemplate ev) {
-
         send(ev, ev.getDefaultDestination());
     }
 
@@ -387,31 +348,26 @@ class BusServiceImpl extends LifeCycle implements BusService {
      */
     @Override
     public void send(final EventTemplate ev, final String to) {
+        if (ev == null) {
+            throw new IllegalArgumentException("Cannot send a null event");
+        }
 
-        // TODO should this null check be here?
-        if (ev != null) {
+        try {
 
-            try {
+            ObjectMessage msg = createObjectMessage();
 
-                ObjectMessage msg = createObjectMessage();
+            msg.setObject(ev);
+            msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
 
-                msg.setObject(ev);
-                msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
+            // Generate a new topic if not already exists, otherwire returns the old topic instance
+            Topic topic = getReceiveSession().createTopic("VirtualTopic." + to);
+            getMessageProducer().send(topic, msg);
 
-                // a consumer consumes on
-                // Consumer.A_PROGRESSIVE_INTEGER_ID.VirtualTopic.
-                BusDestination busDestination = this.registerTopic(to);
-                Destination tmpTopic = busDestination.getDestination();
+            Profiler.incrementSentEvents();
 
-                final MessageProducer messageProducer = this.getMessageProducer();
-                messageProducer.send(tmpTopic, msg);
+        } catch (JMSException ex) {
 
-                Profiler.incrementSentEvents();
-
-            } catch (JMSException ex) {
-
-                LOG.severe(Freedomotic.getStackTraceInfo(ex));
-            }
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         }
     }
 }

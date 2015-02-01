@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 /* * This Program is free software; you can redistribute it and/or modify
@@ -33,10 +31,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-
 
 /**
  *
@@ -44,7 +42,7 @@ import javax.imageio.ImageIO;
  */
 public final class ResourcesManager {
 
-    private static final HashMap<String, BufferedImage> CACHE = new HashMap<String, BufferedImage>();
+    private static final Map<String, BufferedImage> CACHE = new HashMap<String, BufferedImage>();
 
     /**
      *
@@ -64,8 +62,8 @@ public final class ResourcesManager {
                 //loads image from disk searching it recursively in folder
                 img = fetchFromHDD(Info.PATHS.PATH_RESOURCES_FOLDER, imageName);
             } catch (IOException e) {
-                LOG.log(Level.WARNING, "No image {0} found recursively in {1}", 
-                        new Object[]{imageName,Info.PATHS.PATH_RESOURCES_FOLDER.getPath()});
+                LOG.log(Level.WARNING, "No image {0} found recursively in {1}",
+                        new Object[]{imageName, Info.PATHS.PATH_RESOURCES_FOLDER.getPath()});
             }
             if (img != null) {
                 //img loaded from disk. Now it is cached resized
@@ -91,7 +89,7 @@ public final class ResourcesManager {
                 //loads image from disk searching it recursively in folder
                 img = fetchFromHDD(Info.PATHS.PATH_RESOURCES_FOLDER, imageName);
             } catch (IOException e) {
-                LOG.log(Level.WARNING, "No image {0} found recursively in {1}", 
+                LOG.log(Level.WARNING, "No image {0} found recursively in {1}",
                         new Object[]{imageName, Info.PATHS.PATH_RESOURCES_FOLDER.getPath()});
             }
             if (img != null) {
@@ -126,6 +124,13 @@ public final class ResourcesManager {
         CACHE.put(imageName, image);
     }
 
+    /**
+     * Removes any cached element
+     */
+    public static void clear() {
+        CACHE.clear();
+    }
+
     private static BufferedImage resizeImage(BufferedImage image, int width, int height) {
         int type = image.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : image.getType();
         BufferedImage resizedImage = new BufferedImage(width, height, type);
@@ -148,13 +153,6 @@ public final class ResourcesManager {
             throw new IOException();
         }
         return img;
-    }
-
-    /**
-     *
-     */
-    public static void clear() {
-        CACHE.clear();
     }
 
     private static class DirectoryReader {

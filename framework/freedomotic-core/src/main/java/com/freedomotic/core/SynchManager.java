@@ -31,15 +31,16 @@ public class SynchManager implements BusConsumer {
     private BusMessagesListener listener;
     private final BusService busService;
     private final ThingRepository thingsRepository;
+    public static final String KEY_PROVENANCE = "provenance";
 
     @Inject
     SynchManager(BusService busService, ThingRepository thingsRepository) {
         this.busService = busService;
         this.thingsRepository = thingsRepository;
-        listener = new BusMessagesListener(this, busService);
+        listener = new BusMessagesListener(this, this.busService);
         // It register the GLOBAL event channel, this mean it is using
         // standard JMS Topics not the activemq Virtual Topics
-        listener.subscribeEventFrom(LISTEN_CHANNEL);
+        listener.subscribeCrossInstanceEvents(LISTEN_CHANNEL);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class SynchManager implements BusConsumer {
         try {
             // Skip if the message comes from the same freedomotic instance
             // We don't want to notify changes to ourself
-            if (!message.getStringProperty("provenance").equals(Freedomotic.INSTANCE_ID)) {
+            if (!message.getStringProperty(KEY_PROVENANCE).equals(Freedomotic.INSTANCE_ID)) {
                 Object jmsObject = message.getObject();
                 if (jmsObject instanceof ObjectHasChangedBehavior) {
                     synchronizeLocalThing((ObjectHasChangedBehavior) jmsObject);
@@ -67,7 +68,8 @@ public class SynchManager implements BusConsumer {
             if (value != null && !value.isEmpty()) {
                 Config conf = new Config();
                 conf.setProperty("value", value);
-                LOG.log(Level.INFO, "Synch thing {0} behavior {1} to {2}", new Object[]{obj.getPojo().getName(), b.getName(), value});
+                LOG.log(Level.CONFIG, "Synch thing {0} behavior {1} to {2} notified by {3}", 
+                        new Object[]{obj.getPojo().getName(), b.getName(), value});
                 obj.getBehavior(b.getName()).filterParams(conf, false);
             }
         }
@@ -76,10 +78,11 @@ public class SynchManager implements BusConsumer {
         try {
             int locationX = Integer.parseInt(event.getProperty("object.location.x"));
             int locationY = Integer.parseInt(event.getProperty("object.location.y"));
-            LOG.log(Level.INFO, "Synch thing {0} location to {1},{2}", new Object[]{obj.getPojo().getName(), locationX, locationY});
+            LOG.log(Level.CONFIG, "Synch thing {0} location to {1},{2}", 
+                    new Object[]{obj.getPojo().getName(), locationX, locationY});
             obj.synchLocation(locationX, locationY);
         } catch (NumberFormatException numberFormatException) {
-            LOG.log(Level.CONFIG, "Synch thing location is not possible because notified location it's not a valid number");
+            LOG.log(Level.WARNING, "Synch thing location is not possible because notified location it's not a valid number");
         }
 
     }

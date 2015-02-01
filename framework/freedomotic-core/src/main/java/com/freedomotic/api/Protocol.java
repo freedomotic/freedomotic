@@ -170,7 +170,7 @@ public abstract class Protocol extends Plugin {
                             notifyError(shutdownEx.getMessage());
                         }
                         sensorThread = null;
-                        listener.unsubscribeEvents();
+                        listener.unsubscribe();
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
                         getBusService().send(event);
                         setStatus(PluginStatus.STOPPED);
