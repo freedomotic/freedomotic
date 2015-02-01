@@ -19,6 +19,8 @@ package com.freedomotic.persistence;
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.util.Info;
@@ -27,8 +29,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -39,16 +39,15 @@ import javax.xml.transform.stream.StreamSource;
 
 /**
  * Uses XSLT (http://en.wikipedia.org/wiki/XSLT) to transform and update XML
- * files.
- * Transformation file should be in conf/validator folder and have a naming schema like
- * /conf/validator/TYPE-upgrade-FROMVERSION.xslt
+ * files. Transformation file should be in conf/validator folder and have a
+ * naming schema like /conf/validator/TYPE-upgrade-FROMVERSION.xslt
  * /conf/validator/things-upgrade-5.5.0.xslt"
  *
  * @author matteo
  */
 class DataUpgradeServiceImpl implements DataUpgradeService<String> {
 
-    private static final Logger LOG = Logger.getLogger(DataUpgradeServiceImpl.class.getCanonicalName());
+    private static final Logger LOG = LoggerFactory.getLogger(DataUpgradeServiceImpl.class.getCanonicalName());
     // Cache the loaded transformations
     Map<File, Source> sources = new HashMap<>();
 
@@ -57,12 +56,13 @@ class DataUpgradeServiceImpl implements DataUpgradeService<String> {
      */
     @Override
     public String upgrade(Class type, String xml, String fromVersion) throws DataUpgradeException {
-        LOG.log(Level.CONFIG, "Upgrading data of type {0} from version {1} to version {2}",
-                new Object[]{type.getCanonicalName(), fromVersion, Info.getVersion()});
 
         if (fromVersion.trim().equals(Info.getVersion())) {
-            LOG.log(Level.CONFIG, "Given data are already consistent with the most recent framework version. No XML transformation was performed");
+            LOG.debug("Given data are already consistent with the most recent framework version. No XML transformation was performed");
             return xml;
+        } else {
+            LOG.info("Upgrading data of type {} from version {} to version {}",
+                    new Object[]{type.getCanonicalName(), fromVersion, Info.getVersion()});
         }
 
         String upgradedXml;

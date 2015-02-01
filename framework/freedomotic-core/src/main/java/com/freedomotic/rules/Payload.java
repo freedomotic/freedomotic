@@ -250,21 +250,21 @@ public final class Payload implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        Iterator<Statement> it = payload.iterator();
-        buffer.append("{{");
-        boolean first = true;
-        while (it.hasNext()) {
-            Statement s = it.next();
-            if (first) {
-                buffer.append(s.toString());
-                first = false;
-            } else {
-                buffer.append("; ").append(s.toString());
-            }
-        }
-        buffer.append("}}");
-        return buffer.toString();
+//        StringBuilder buffer = new StringBuilder();
+//        Iterator<Statement> it = payload.iterator();
+//        buffer.append("{{");
+//        boolean first = true;
+//        while (it.hasNext()) {
+//            Statement s = it.next();
+//            if (first) {
+//                buffer.append(s.toString());
+//                first = false;
+//            } else {
+//                buffer.append("; ").append(s.toString());
+//            }
+//        }
+//        buffer.append("}}");
+        return "";//buffer.toString();
     }
 
     /**

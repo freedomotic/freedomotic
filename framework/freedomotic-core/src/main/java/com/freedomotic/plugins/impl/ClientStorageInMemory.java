@@ -83,7 +83,7 @@ class ClientStorageInMemory implements ClientStorage {
                             c.getName(), PluginActions.ENQUEUE);
             busService.send(event);
             LOG.log(Level.CONFIG,
-                    "{0} added to plugins list.",
+                    "Extension ''{0}'' added to plugins list.",
                     c.getName());
         }
     }

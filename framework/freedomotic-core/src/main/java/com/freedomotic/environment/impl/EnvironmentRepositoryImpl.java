@@ -95,7 +95,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     //TODO: change it to read all environments in the folder
     private synchronized void cacheInitialData() throws RepositoryException {
         if (initialized) {
-            LOG.config("Environment repository is already initialized. Skip initialization phase");
+            LOG.warning("Environment repository is already initialized. Skip initialization phase");
             return;
         }
         File defaultEnvironmentFolder = getDefaultEnvironmentFolder();
@@ -366,8 +366,8 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
      * @deprecated
      */
     @Deprecated
-    public static void loadEnvironmentFromFile(final File file)
-            throws RepositoryException {
+    public static void loadEnvironmentFromFile(final File file) throws RepositoryException {
+        LOG.config("Loading environment from file " + file.getAbsolutePath());
         XStream xstream = FreedomXStream.getXstream();
 
         //validate the object against a predefined DTD
@@ -398,6 +398,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         // next line is commented as the method init() is called in the add()
         //envLogic.init();
         add(envLogic, false);
+        LOG.info("Environment '" + envLogic.getPojo().getName() + "' loaded");
     }
 
     /**

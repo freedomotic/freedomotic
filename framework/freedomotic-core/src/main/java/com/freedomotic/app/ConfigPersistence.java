@@ -33,13 +33,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author gpt
  */
 public class ConfigPersistence {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigPersistence.class.getName());
 
     /**
      *
@@ -59,7 +62,7 @@ public class ConfigPersistence {
      */
     public static Config deserialize(File file)
             throws IOException, ConversionException {
-        LOG.config("Deserializing configuration from " + file.getAbsolutePath());
+        LOG.info("Deserializing manifest from " + file.getAbsolutePath());
 
         XStream xstream = FreedomXStream.getXstream();
         xstream.autodetectAnnotations(true);
@@ -84,8 +87,8 @@ public class ConfigPersistence {
             c.setXmlFile(file);
 
             return c;
-        } catch (FileNotFoundException fileNotFoundException) {
-            LOG.warning(fileNotFoundException.getLocalizedMessage());
+        } catch (FileNotFoundException ex) {
+            LOG.warn("Error while deserializing configuration from " + file.getAbsolutePath(), ex);
         } finally {
             if (myInput != null) {
                 myInput.close();
@@ -97,5 +100,4 @@ public class ConfigPersistence {
 
     private ConfigPersistence() {
     }
-    private static final Logger LOG = Logger.getLogger(ConfigPersistence.class.getName());
 }

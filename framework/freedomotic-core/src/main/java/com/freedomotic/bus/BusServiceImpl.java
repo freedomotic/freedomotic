@@ -362,7 +362,6 @@ class BusServiceImpl extends LifeCycle implements BusService {
             // Generate a new topic if not already exists, otherwire returns the old topic instance
             Topic topic = getReceiveSession().createTopic("VirtualTopic." + to);
             getMessageProducer().send(topic, msg);
-
             Profiler.incrementSentEvents();
 
         } catch (JMSException ex) {

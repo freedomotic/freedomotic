@@ -49,10 +49,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -67,6 +67,8 @@ class ThingRepositoryImpl implements ThingRepository {
     private final ThingFactory thingsFactory;
     private final DataUpgradeService dataUpgradeService;
 
+    private static final Logger LOG = LoggerFactory.getLogger(ThingRepositoryImpl.class.getName());
+
     /**
      *
      * @param thingsFactory
@@ -74,7 +76,7 @@ class ThingRepositoryImpl implements ThingRepository {
      */
     @Inject
     public ThingRepositoryImpl(
-            ThingFactory thingsFactory, 
+            ThingFactory thingsFactory,
             DataUpgradeService dataUpgradeService) {
         this.thingsFactory = thingsFactory;
         this.dataUpgradeService = dataUpgradeService;
@@ -261,7 +263,7 @@ class ThingRepositoryImpl implements ThingRepository {
         }
 
         if (list.isEmpty()) {
-            LOG.warning("An object with protocol '" + protocol + "' and address '"
+            LOG.warn("An object with protocol '" + protocol + "' and address '"
                     + address + "' doesn't exist");
         }
 
@@ -361,7 +363,7 @@ class ThingRepositoryImpl implements ThingRepository {
             try {
                 envObjectLogic = thingsFactory.create(pojoCopy);
             } catch (RepositoryException ex) {
-                LOG.warning(ex.getMessage());
+                LOG.warn(ex.getMessage());
             }
         }
 
@@ -372,7 +374,7 @@ class ThingRepositoryImpl implements ThingRepository {
             try {
                 envObjectLogic.setChanged(true);
             } catch (Exception e) {
-                LOG.log(Level.WARNING, "Object was created, but cannot set it as Changed", e);
+                LOG.warn("Object was created, but cannot set it as Changed", e);
             }
         } else {
             throw new RuntimeException("Cannot add the same object more than one time");
@@ -408,7 +410,6 @@ class ThingRepositoryImpl implements ThingRepository {
             objectList.clear();
         }
     }
-    private static final Logger LOG = Logger.getLogger(ThingRepositoryImpl.class.getName());
 
     @Override
     @RequiresPermissions("objects:read")
@@ -448,7 +449,7 @@ class ThingRepositoryImpl implements ThingRepository {
                 return false;
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Cannot create object", e);
+            LOG.error("Cannot create object", e);
             return false;
         }
     }
@@ -467,12 +468,12 @@ class ThingRepositoryImpl implements ThingRepository {
             try {
                 eol.setChanged(true); //force repainting on frontends clients
             } catch (Exception e) {
-                LOG.warning("Cannot notify object changes");
+                LOG.warn("Cannot notify object changes");
             }
             eol.destroy();
             return true;
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Cannot delete object" + uuid, e);
+            LOG.error("Cannot delete object" + uuid, e);
             return false;
         }
 
@@ -538,7 +539,7 @@ class ThingRepositoryImpl implements ThingRepository {
         }
 
         // Configure the deserialization engine
-        LOG.log(Level.CONFIG, "Loading Thing from file {0}", file.getAbsolutePath());
+        LOG.debug("Loading Thing from file " + file.getAbsolutePath());
         XStream xstream = FreedomXStream.getXstream();
 
         // Validate the object against a predefined DTD
@@ -565,7 +566,8 @@ class ThingRepositoryImpl implements ThingRepository {
             // Deserialize the object from the upgraded and validated xml
             EnvObject pojo = (EnvObject) xstream.fromXML(xml);
             EnvObjectLogic objectLogic = thingsFactory.create(pojo);
-            LOG.log(Level.CONFIG, "Created a new logic for {0} [id:{1}] of type {2}", new Object[]{objectLogic.getPojo().getName(), objectLogic.getPojo().getUUID(), objectLogic.getClass().getCanonicalName()});
+            LOG.info("Loaded Thing {} [id:{}] of type {}", 
+                    new Object[]{objectLogic.getPojo().getName(), objectLogic.getPojo().getUUID(), objectLogic.getClass().getCanonicalName()});
             return objectLogic;
         } catch (IOException ex) {
             throw new RepositoryException("Cannot read Thing file " + file.getAbsolutePath(), ex);

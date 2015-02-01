@@ -239,7 +239,7 @@ public class EnvObjectLogic {
      */
     @RequiresPermissions("objects:update")
     public final void registerBehavior(BehaviorLogic b) {
-        if (getBehavior(b.getName()) != null) {
+        if (behaviors.get(b.getName()) != null) {
             behaviors.remove(b.getName());
             LOG.warning("Re-registering existing behavior " + b.getName() + " in object " + this.getPojo().getName());
             //throw new IllegalArgumentException("Impossible to register behavior " + b.getName() + " in object "
@@ -265,7 +265,7 @@ public class EnvObjectLogic {
             for (BehaviorLogic behavior : behaviors.values()) {
                 buff.append(behavior.getName()).append(" ");
             }
-            // Pring an user friendly message
+            // Print an user friendly message
             LOG.log(Level.SEVERE, "Cannot find a behavior named ''{0}'' for thing named ''{1}''. "
                     + "Avalable behaviors for this Thing are: {2}",
                     new Object[]{name, getPojo().getName(), buff.toString()});
@@ -640,12 +640,12 @@ public class EnvObjectLogic {
             Command command = CommandPersistence.getHardwareCommand(commandName);
 
             if (command != null) {
-                LOG.log(Level.CONFIG,
+                LOG.log(Level.FINE,
                         "Caching the command ''{0}'' as related to action ''{1}'' ",
                         new Object[]{command.getName(), action});
                 setAction(action, command);
             } else {
-                LOG.log(Level.CONFIG,
+                LOG.log(Level.WARNING,
                         "Don''t exist a command called ''{0}'' is not possible to bound this command to action ''{1}'' of {2}",
                         new Object[]{commandName, action, this.getPojo().getName()});
             }

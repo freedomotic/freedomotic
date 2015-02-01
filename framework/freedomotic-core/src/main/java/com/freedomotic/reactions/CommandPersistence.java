@@ -37,14 +37,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Enrico
  */
 public class CommandPersistence implements CommandRepository {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CommandPersistence.class.getName());
 
     private static final Map<String, Command> userCommands = new HashMap<String, Command>();
     private static final Map<String, Command> hardwareCommands = new HashMap<String, Command>();
@@ -63,21 +65,21 @@ public class CommandPersistence implements CommandRepository {
                 if (!userCommands.containsKey(c.getName().trim().toLowerCase())) {
                     userCommands.put(c.getName(),
                             c);
-                    LOG.log(Level.FINE, "Added command ''{0}'' to the list of user commands", c.getName());
+                    LOG.trace("Added command ''{}'' to the list of user commands", c.getName());
                 } else {
-                    LOG.log(Level.CONFIG, "Command ''{0}'' already in the list of user commands. Skipped", c.getName());
+                    LOG.debug("Command ''{}'' already in the list of user commands. Skipped", c.getName());
                 }
             } else {
                 if (!hardwareCommands.containsKey(c.getName().trim().toLowerCase())) {
                     hardwareCommands.put(c.getName(),
                             c);
-                    LOG.log(Level.FINE, "Added command ''{0}'' to the list of hardware commands", c.getName());
+                    LOG.trace("Added command ''{}'' to the list of hardware commands", c.getName());
                 } else {
-                    LOG.log(Level.CONFIG, "Command ''{0}'' already in the list of hardware commands. Skipped", c.getName());
+                    LOG.debug("Command ''{}'' already in the list of hardware commands. Skipped", c.getName());
                 }
             }
         } else {
-            LOG.warning("Attempt to add a null user command to the list. Skipped");
+            LOG.warn("Attempt to add a null user command to the list. Skipped");
         }
     }
 
@@ -175,7 +177,7 @@ public class CommandPersistence implements CommandRepository {
         Command command = hardwareCommands.get(name.trim());
 
         if (command == null) {
-            LOG.log(Level.SEVERE, "Missing command ''{0}" + "''. "
+            LOG.error("Missing command ''{}" + "''. "
                     + "Maybe the related plugin is not installed or cannot be loaded", name);
         }
 
@@ -218,7 +220,7 @@ public class CommandPersistence implements CommandRepository {
                     try {
                         xml = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/command.dtd");
                     } catch (Exception e) {
-                        LOG.log(Level.SEVERE, "Reaction file {0} is not well formatted: {1}", new Object[]{file.getPath(), e.getLocalizedMessage()});
+                        LOG.error("Reaction file {} is not well formatted: {}", new Object[]{file.getPath(), e.getLocalizedMessage()});
                         continue;
                     }
                     try {
@@ -239,7 +241,7 @@ public class CommandPersistence implements CommandRepository {
                         summary.append(file.getName()).append("\t\t").append(command.getName())
                                 .append("\t\t\t").append(command.getReceiver()).append("\n");
                     } catch (CannotResolveClassException e) {
-                        LOG.log(Level.SEVERE, "Cannot unserialize command due to unrecognized class ''{0}'' in \n{1}", new Object[]{e.getMessage(), xml});
+                        LOG.error("Cannot unserialize command due to unrecognized class ''{}'' in \n{}", new Object[]{e.getMessage(), xml});
                     }
                 }
 
@@ -250,16 +252,16 @@ public class CommandPersistence implements CommandRepository {
                 //Close the output stream
                 indexfile.close();
             } catch (IOException ex) {
-                Logger.getLogger(CommandPersistence.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.error("Error while loading command" , ex);
             } finally {
                 try {
                     fstream.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(CommandPersistence.class.getName()).log(Level.SEVERE, null, ex);
+                    //do nothing
                 }
             }
         } else {
-            LOG.log(Level.CONFIG, "No commands to load from this folder {0}", folder.toString());
+            LOG.debug("No commands to load from this folder {}", folder.toString());
         }
     }
 
@@ -270,12 +272,12 @@ public class CommandPersistence implements CommandRepository {
     public static void saveCommands(File folder) {
 
         if (userCommands.isEmpty()) {
-            LOG.log(Level.WARNING, "There are no commands to persist, {0} will not be altered.", folder.getAbsolutePath());
+            LOG.warn("There are no commands to persist, {} will not be altered.", folder.getAbsolutePath());
             return;
         }
 
         if (!folder.isDirectory()) {
-            LOG.log(Level.WARNING, "{0} is not a valid command folder. Skipped", folder.getAbsoluteFile());
+            LOG.warn("{} is not a valid command folder. Skipped", folder.getAbsoluteFile());
             return;
         }
 
@@ -298,8 +300,7 @@ public class CommandPersistence implements CommandRepository {
                 }
             }
         } catch (Exception e) {
-            LOG.info(e.getLocalizedMessage());
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.error("Error while saving commands to " + folder.getAbsolutePath(), e);
         }
     }
 
@@ -324,8 +325,6 @@ public class CommandPersistence implements CommandRepository {
             file.delete();
         }
     }
-
-    private static final Logger LOG = Logger.getLogger(CommandPersistence.class.getName());
 
     @Override
     public List<Command> findAll() {

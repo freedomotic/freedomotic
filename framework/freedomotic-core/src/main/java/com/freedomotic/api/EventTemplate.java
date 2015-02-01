@@ -22,6 +22,7 @@ package com.freedomotic.api;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.rules.Payload;
 import com.freedomotic.rules.Statement;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,8 +36,7 @@ import java.util.logging.Logger;
  *
  * @author enrico
  */
-public class EventTemplate
-        implements Serializable {
+public class EventTemplate implements Serializable {
 
     private static final long serialVersionUID = -6726283450243677665L;
     protected String eventName;
@@ -44,6 +44,9 @@ public class EventTemplate
     protected Payload payload = new Payload();
     protected boolean isValid;
     private long creation;
+    
+    @XStreamOmitField
+    private static final Logger LOG = Logger.getLogger(EventTemplate.class.getName());
 
     protected void generateEventPayload() {
     }
@@ -195,5 +198,4 @@ public class EventTemplate
     public Payload getPayload() {
         return payload;
     }
-    private static final Logger LOG = Logger.getLogger(EventTemplate.class.getName());
 }

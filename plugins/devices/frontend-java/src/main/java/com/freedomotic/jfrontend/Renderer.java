@@ -30,7 +30,6 @@ import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.util.TopologyUtils;
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -58,7 +57,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -104,6 +102,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     private Point messageCorner = new Point(50, 50);
     private Dimension dragDiff = null;
     private EnvironmentLogic currEnv;
+    private BufferedImage background;
 
     private HashMap<EnvObjectLogic, ObjectEditor> objEditorPanels = new HashMap<EnvObjectLogic, ObjectEditor>();
 
@@ -401,16 +400,16 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
 
                     @Override
                     public void run() {
-                        BufferedImage background = createDrawableCanvas();
-                        paintEnvironmentLayer(setRenderingQuality(background.createGraphics()));
-                        ResourcesManager.addResource("background", background);
+                        BufferedImage bkg = createDrawableCanvas();
+                        paintEnvironmentLayer(setRenderingQuality(bkg.createGraphics()));
+                        background = bkg;
                     }
                 }.run();
             }
         }
 
         setContext(g2);
-        getContext().drawImage(ResourcesManager.getResource("background"),
+        getContext().drawImage(background,
                 0,
                 0,
                 this);

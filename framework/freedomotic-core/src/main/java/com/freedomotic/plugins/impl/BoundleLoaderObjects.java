@@ -13,8 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Loads plugin that are freedomotic objects
@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  */
 class BoundleLoaderObjects implements BoundleLoader {
 
-    private static final Logger LOG = Logger.getLogger(BoundleLoaderObjects.class.getName());;
+    private static final Logger LOG = LoggerFactory.getLogger(BoundleLoaderObjects.class.getName());;
     private File path;
 
     BoundleLoaderObjects(File path) {
@@ -57,7 +57,7 @@ class BoundleLoaderObjects implements BoundleLoader {
                     try {
                         classNames = BoundleLoaderFactory.getClassesInside(jar.getAbsolutePath());
                     } catch (IOException ex) {
-                        LOG.severe(Freedomotic.getStackTraceInfo(ex));
+                        LOG.error("Error loading classes", ex);
                     }
 
                     for (String className : classNames) {
@@ -69,18 +69,17 @@ class BoundleLoaderObjects implements BoundleLoader {
 
                             if (clazz.getName().startsWith("com.freedomotic.things.")
                                     && !clazz.getName().contains("$")) {
-                                LOG.log(Level.CONFIG,
-                                        "Found object plugin " + clazz.getSimpleName().toString()
-                                        + " in " + path);
+                                LOG.debug("Found object plugin '" + clazz.getSimpleName().toString()
+                                        + "' in " + path);
                             }
                         } catch (Exception ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.error("Error loading thing plugin", ex);
                         }
                     }
                 }
             }
         } else {
-            LOG.warning("No object can be found in folder " + pluginFolder.getAbsolutePath());
+            LOG.warn("No object can be found in folder " + pluginFolder.getAbsolutePath());
         }
 
         return results;

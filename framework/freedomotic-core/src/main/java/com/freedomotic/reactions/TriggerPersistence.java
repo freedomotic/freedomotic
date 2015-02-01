@@ -148,7 +148,7 @@ public class TriggerPersistence implements Repository<Trigger> {
                                 = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/trigger.dtd");
                         trigger = (Trigger) xstream.fromXML(xml);
                     } catch (Exception e) {
-                        LOG.log(Level.SEVERE, "Trigger file {0} is not well formatted: {1}", new Object[]{file.getPath(), e.getLocalizedMessage()});
+                        LOG.log(Level.SEVERE, "Trigger file {} is not well formatted: {}", new Object[]{file.getPath(), e.getLocalizedMessage()});
                         continue;
                     }
 
@@ -276,7 +276,7 @@ public class TriggerPersistence implements Repository<Trigger> {
             }
         }
 
-        LOG.log(Level.WARNING, "Searching for a trigger named ''{0}'' but it doesn''t exist.", name);
+        LOG.log(Level.WARNING, "Searching for a trigger named ''{}'' but it doesn''t exist.", name);
 
         return null;
     }
