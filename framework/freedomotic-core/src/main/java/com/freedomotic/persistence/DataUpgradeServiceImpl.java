@@ -22,7 +22,7 @@ package com.freedomotic.persistence;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.object.EnvObject;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;

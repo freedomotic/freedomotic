@@ -14,7 +14,7 @@ import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.IPluginPackage;
 import com.freedomotic.marketplace.MarketPlaceService;
 import com.freedomotic.plugins.PluginsManager;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.wordnik.swagger.annotations.Api;

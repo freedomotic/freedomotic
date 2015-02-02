@@ -24,7 +24,7 @@
  */
 package com.freedomotic.core;
 
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;

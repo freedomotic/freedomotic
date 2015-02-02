@@ -5,7 +5,7 @@
 package com.freedomotic.jfrontend;
 
 import com.freedomotic.api.API;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;

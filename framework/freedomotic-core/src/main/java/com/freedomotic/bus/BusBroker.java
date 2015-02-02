@@ -19,7 +19,7 @@
  */
 package com.freedomotic.bus;
 
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import java.util.logging.Logger;
 import org.apache.activemq.broker.BrokerService;
 

@@ -19,7 +19,7 @@
  */
 package com.freedomotic.environment.impl;
 
-import com.freedomotic.app.AppConfig;
+import com.freedomotic.settings.AppConfig;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.exceptions.RepositoryException;
@@ -29,7 +29,7 @@ import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.XmlPreprocessor;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import com.freedomotic.util.SerialClone;
 import com.freedomotic.util.UidGenerator;
 import com.google.inject.Inject;

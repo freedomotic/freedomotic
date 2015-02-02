@@ -19,6 +19,7 @@
  */
 package com.freedomotic.app;
 
+import com.freedomotic.settings.AppConfig;
 import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
@@ -49,7 +50,8 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.security.Auth;
 import com.freedomotic.security.UserRealm;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
+import com.freedomotic.util.LogFormatter;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;

@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.util;
+package com.freedomotic.settings;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

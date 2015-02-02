@@ -29,7 +29,7 @@ import com.freedomotic.model.ds.Config;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import java.io.File;

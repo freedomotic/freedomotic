@@ -24,8 +24,8 @@
 package com.freedomotic.security;
 
 import com.freedomotic.api.Plugin;
-import com.freedomotic.app.AppConfig;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.AppConfig;
+import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;

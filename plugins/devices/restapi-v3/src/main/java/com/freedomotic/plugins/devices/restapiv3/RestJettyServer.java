@@ -27,7 +27,7 @@ import com.freedomotic.api.Plugin;
 import static com.freedomotic.plugins.devices.restapiv3.RestAPIv3.API_VERSION;
 import com.freedomotic.plugins.devices.restapiv3.auth.ShiroListener;
 import com.freedomotic.plugins.devices.restapiv3.filters.GuiceServletConfig;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import com.google.inject.servlet.GuiceFilter;
 import java.io.File;
 import java.io.FileInputStream;

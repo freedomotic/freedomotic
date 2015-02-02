@@ -26,7 +26,7 @@ import com.freedomotic.model.environment.Zone;
 import com.freedomotic.persistence.DataUpgradeService;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.XmlPreprocessor;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.thoughtworks.xstream.XStream;

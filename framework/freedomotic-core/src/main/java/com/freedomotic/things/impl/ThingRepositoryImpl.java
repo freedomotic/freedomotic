@@ -30,7 +30,7 @@ import com.freedomotic.things.ThingRepository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.DataUpgradeService;
 import com.freedomotic.persistence.XmlPreprocessor;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import com.freedomotic.util.SerialClone;
 import com.freedomotic.util.UidGenerator;
 import com.thoughtworks.xstream.XStream;

@@ -29,7 +29,7 @@ import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import static com.freedomotic.plugins.devices.restapiv3.resources.jersey.MarketplaceResource.api;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractReadOnlyResource;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;

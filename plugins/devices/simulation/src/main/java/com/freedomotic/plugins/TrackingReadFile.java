@@ -24,7 +24,7 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.plugins.fromfile.WorkerThread;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;

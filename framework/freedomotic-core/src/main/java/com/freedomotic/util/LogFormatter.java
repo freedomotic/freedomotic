@@ -19,6 +19,7 @@
  */
 package com.freedomotic.util;
 
+import com.freedomotic.settings.Info;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Formatter;

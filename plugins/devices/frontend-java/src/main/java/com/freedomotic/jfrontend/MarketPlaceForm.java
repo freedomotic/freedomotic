@@ -36,7 +36,7 @@ import com.freedomotic.marketplace.MarketPlaceService;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.i18n.I18n;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;

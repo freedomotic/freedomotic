@@ -21,7 +21,7 @@
  */
 package com.freedomotic.security;
 
-import com.freedomotic.app.AppConfig;
+import com.freedomotic.settings.AppConfig;
 import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.testutils.GuiceJUnitRunner;
 import com.google.inject.Inject;

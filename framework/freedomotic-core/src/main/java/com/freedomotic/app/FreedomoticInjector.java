@@ -15,8 +15,8 @@ import com.freedomotic.things.impl.InjectorThings;
 import com.freedomotic.persistence.InjectorPersistence;
 import com.freedomotic.reactions.InjectorAutomations;
 import com.freedomotic.security.InjectorSecurity;
+import com.freedomotic.settings.InjectorSettings;
 import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
 
 /**
  *
@@ -37,8 +37,7 @@ public class FreedomoticInjector extends AbstractModule {
         install(new InjectorAutomations());
         install(new InjectorI18n());
         install(new InjectorSecurity());
-
-        bind(AppConfig.class).to(AppConfigImpl.class).in(Singleton.class);
-
+        install(new InjectorSettings());
+        
     }
 }

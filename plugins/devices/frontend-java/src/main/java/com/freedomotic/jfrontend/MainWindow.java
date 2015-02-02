@@ -37,7 +37,7 @@ import com.freedomotic.reactions.Command;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.ComboLanguage;
 import com.freedomotic.i18n.I18n;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;

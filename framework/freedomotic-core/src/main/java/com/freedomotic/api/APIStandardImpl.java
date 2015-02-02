@@ -4,7 +4,8 @@
  */
 package com.freedomotic.api;
 
-import com.freedomotic.app.AppConfig;
+import com.freedomotic.settings.AppConfig;
+import com.freedomotic.bus.BusService;
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.plugins.ClientStorage;

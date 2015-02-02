@@ -7,7 +7,7 @@ package com.freedomotic.plugins.impl;
 import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.PluginsManager;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import java.io.File;

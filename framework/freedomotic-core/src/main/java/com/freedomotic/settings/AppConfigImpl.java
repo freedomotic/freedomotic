@@ -17,9 +17,9 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.app;
+package com.freedomotic.settings;
 
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
