@@ -29,6 +29,7 @@ sys:plugins:read
 sys:plugins:start
 sys:plugins:stop
 sys:plugins:update
+sys:shutdown
 
 [auth]
 auth:privileges:update

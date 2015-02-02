@@ -23,6 +23,7 @@ import com.freedomotic.api.API;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.events.GenericEvent;
+import com.freedomotic.plugins.devices.restapiv3.filters.ForbiddenException;
 import com.freedomotic.util.Info;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -47,7 +48,7 @@ public class SystemResource {
 
     protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
     protected final static API api = INJECTOR.getInstance(API.class);
-    
+
     @GET
     @Path("/info/framework")
     @ApiOperation(value = "Show information about Freedomotic framework")
@@ -79,15 +80,19 @@ public class SystemResource {
     public Response listLanguages() {
         return Response.ok(api.getI18n().getAvailableLocales()).build();
     }
-    
+
     @POST
     @Path("/exit")
     @ApiOperation(value = "Initiate shutdown procedure")
     @Produces(MediaType.APPLICATION_JSON)
     public Response exit() {
-        GenericEvent exitSignal = new GenericEvent(this);
-        exitSignal.setDestination("app.event.system.exit");
-        Freedomotic.sendEvent(exitSignal);
-        return Response.accepted().build();
+        if (api.getAuth().isPermitted("sys:shutdown")) {
+            GenericEvent exitSignal = new GenericEvent(this);
+            exitSignal.setDestination("app.event.system.exit");
+            Freedomotic.sendEvent(exitSignal);
+            return Response.accepted().build();
+        } else {
+            throw new ForbiddenException("Only privileged users are able to shutdown system");
+        }
     }
 }

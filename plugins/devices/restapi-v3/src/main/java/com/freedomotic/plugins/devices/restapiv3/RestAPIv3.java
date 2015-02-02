@@ -21,9 +21,11 @@ package com.freedomotic.plugins.devices.restapiv3;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
+import com.freedomotic.events.MessageEvent;
 import com.freedomotic.events.ObjectHasChangedBehavior;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.ZoneHasChanged;
+import com.freedomotic.plugins.devices.restapiv3.resources.atmosphere.AtmosphereMessageCalloutResource;
 import com.freedomotic.plugins.devices.restapiv3.resources.atmosphere.AtmosphereObjectChangeResource;
 import com.freedomotic.plugins.devices.restapiv3.resources.atmosphere.AtmospherePluginChangeResource;
 import com.freedomotic.plugins.devices.restapiv3.resources.atmosphere.AtmosphereZoneChangeResource;
@@ -53,6 +55,8 @@ public class RestAPIv3 extends Protocol {
     private AtmosphereZoneChangeResource atmosphereZoneChangeResource;
     @Inject
     private AtmospherePluginChangeResource atmospherePluginChangeResource;
+    @Inject 
+    private AtmosphereMessageCalloutResource atmosphereMessageCalloutResource;
     
     // Hold a preconfigurd static web security manager which can be used by Shiro
     public static DefaultWebSecurityManager defaultWebSecurityManager;
@@ -124,6 +128,8 @@ public class RestAPIv3 extends Protocol {
             atmosphereZoneChangeResource.broadcast(event);
         } else if (event instanceof PluginHasChanged) {
             atmospherePluginChangeResource.broadcast(event);
+        } else if (event instanceof MessageEvent){
+            atmosphereMessageCalloutResource.broadcast(event);
         }
     }
 

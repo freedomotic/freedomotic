@@ -182,7 +182,11 @@ class AuthImpl2 implements Auth {
             //LOG.info("Executing privileged for plugin: " + classname);
             PrincipalCollection plugPrincipals = new SimplePrincipalCollection(classname, pluginRealm.getName());
             Subject plugSubject = new Subject.Builder().principals(plugPrincipals).authenticated(true).buildSubject();
-            plugSubject.getSession().setTimeout(-1);
+            try{
+                plugSubject.getSession().setTimeout(-1);
+            } catch (Exception e){
+              LOG.log(Level.WARNING, "ERROR retrieving session for user {0}", classname);
+            }
             plugSubject.execute(action);
         } else {
             action.run();

@@ -44,7 +44,6 @@ import javax.ws.rs.core.Response;
 @Api(value = "plugins", description = "Operations on plugins", position = 7)
 public class PluginResource extends AbstractResource<Plugin> {
 
-    
     @Override
     protected URI doCreate(Plugin o) throws URISyntaxException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -117,14 +116,17 @@ public class PluginResource extends AbstractResource<Plugin> {
     public Response start(
             @PathParam("id")
             @ApiParam(value = "Classname of plugin", required = true) String name) {
-        if (!api.getAuth().isPermitted("sys:plugins:start")) {
+        if (!api.getAuth().isPermitted("sys:plugins:start:" + name)) {
             throw new ForbiddenException();
         }
         Plugin p = prepareSingle(name);
         if (p != null) {
-            
-            p.start();
-            return Response.accepted().build();
+            if (p.isAllowedToStart()) {
+                p.start();
+                return Response.accepted().build();
+            } else {
+                return Response.notModified("Cannot start plugin as its status is: " +p.getStatus()).build();
+            }
         }
         throw new ItemNotFoundException();
     }
@@ -139,20 +141,26 @@ public class PluginResource extends AbstractResource<Plugin> {
     })
     public Response stop(
             @PathParam("id")
-            @ApiParam(value = "Classname of plugin", required = true) String name) {
-        if (!api.getAuth().isPermitted("sys:plugins:stop")) {
+            @ApiParam(value = "Classname of plugin", required = true) String name
+    ) {
+        if (!api.getAuth().isPermitted("sys:plugins:stop:" + name)) {
             throw new ForbiddenException();
         }
         Plugin p = prepareSingle(name);
         if (p != null) {
-            p.stop();
-            return Response.accepted().build();
+            if (p.isRunning()) {
+                p.stop();
+                return Response.accepted().build();
+            } else {
+                return Response.notModified("Plugin is not running").build();
+            }
         }
         throw new ItemNotFoundException();
     }
 
     @Override
-    protected URI doCopy(String UUID) {
+    protected URI doCopy(String UUID
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

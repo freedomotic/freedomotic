@@ -39,7 +39,7 @@ import org.atmosphere.interceptor.ShiroInterceptor;
  * @author matteo
  */
 @Path(AtmospherePermissionCheckResource.PATH)
-//@Api(value = "ws_permissionCheck", description = "WS for checking current user permissions", position = 10)
+@Api(value = "ws_permissionCheck", description = "WS for checking current user permissions", position = 10)
 @AtmosphereService(
         dispatch = false,
         interceptors = {AtmosphereResourceLifecycleInterceptor.class, ShiroInterceptor.class},
