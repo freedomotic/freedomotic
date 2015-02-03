@@ -105,14 +105,6 @@ public abstract class Behavior
 
     /**
      *
-     * @param readOnly
-     */
-    public void setReadonly(boolean readOnly) {
-        this.setReadOnly(readOnly);
-    }    
-
-    /**
-     *
      * @param desc
      */
     public void setDescription(String desc) {

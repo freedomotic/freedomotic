@@ -31,14 +31,11 @@ import com.freedomotic.reactions.CommandPersistence;
  *
  * @author Enrico
  */
-public class Light
-        extends ElectricDevice {
+public class Light extends ElectricDevice {
 
     private RangedIntBehaviorLogic brightness;
     protected final static String BEHAVIOR_BRIGHTNESS = "brightness";
 
-    //@Inject
-    // private I18n I18n;
     @Override
     public void init() {
         //linking this property with the behavior defined in the XML
@@ -67,30 +64,19 @@ public class Light
 
     @Override
     public void executePowerOff(Config params) {
-        /*
-         * Not called the setBrightness because this method executeCommand a
-         * command here we want only to mantain the system coerent. If we call
-         * setBrightness(0, params) the light recalls the onLowerBoundValue.
-         * Only ONE command execution per situation
-         */
+        // WHen a light is powered off it's brightness bacame zero
         brightness.setValue(0);
-        /*
-         * executeCommand the body of the super implementation The super call
-         * must be the last call as it executes setChanged(true)
-         */
+        // executeCommand the body of the super implementation. The super call
+        // must be the last call as it executes setChanged(true)
         super.executePowerOff(params);
     }
 
     @Override
     public void executePowerOn(Config params) {
-        /*
-         * Not called the setBrightness because this method executeCommand a
-         * command here we want only to mantain the system coerent. If we call
-         * setBrightness(100, params) the light recalls the onUpperBoundValue.
-         * Only ONE command execution per situation
-         */
+        // When a light is powered on it's brightness became 100%
         brightness.setValue(100);
-        //executeCommand the body of the super implementation
+        // executeCommand the body of the super implementation. The super call
+        // must be the last call as it executes setChanged(true)
         super.executePowerOn(params);
     }
 

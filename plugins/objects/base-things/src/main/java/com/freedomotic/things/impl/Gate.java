@@ -50,24 +50,9 @@ public class Gate extends EnvObjectLogic implements GenericGate {
     private Room from;
     private Room to;
 
-    /**
-     *
-     */
     protected RangedIntBehaviorLogic openness;
-
-    /**
-     *
-     */
     protected BooleanBehaviorLogic open;
-
-    /**
-     *
-     */
     protected final static String BEHAVIOR_OPEN = "open";
-
-    /**
-     *
-     */
     protected final static String BEHAVIOR_OPENNESS = "openness";
 
     @Override
@@ -75,7 +60,6 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         super.init();
         //linking this open property with the open behavior defined in the XML
         open = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior(BEHAVIOR_OPEN));
-//        open.createCommands(this);
         open.addListener(new BooleanBehaviorLogic.Listener() {
             @Override
             public void onTrue(Config params, boolean fireCommand) {
@@ -92,7 +76,6 @@ public class Gate extends EnvObjectLogic implements GenericGate {
 
         //linking this property with the behavior defined in the XML
         openness = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_OPENNESS));
-//        openness.createCommands(this);
         openness.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {

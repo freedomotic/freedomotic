@@ -84,10 +84,8 @@ public class ListBehavior
     public boolean setSelected(String key) {
         if (list.contains(key)) {
             selected = list.indexOf(key);
-
             return true;
         }
-
         return false;
     }
 

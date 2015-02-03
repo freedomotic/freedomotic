@@ -232,7 +232,6 @@ public class JavaDesktopFrontend extends Protocol {
             }
             if (drawer != null) {
                 drawer.setNeedRepaint(true);
-
             }
         } else if (event instanceof ZoneHasChanged) {
             //writing the string on the screen

@@ -34,12 +34,12 @@ import org.codehaus.jackson.map.ObjectMapper;
  *
  * @author Matteo Mazzoni <matteo@bestmazzo.it>
  */
-public class DataBehaviorLogic implements BehaviorLogic{
-    
+public class DataBehaviorLogic implements BehaviorLogic {
+
     private DataBehavior data;
     private boolean changed;
     private DataBehaviorLogic.Listener listener;
-    private static  ObjectMapper om = new ObjectMapper();
+    private static ObjectMapper om = new ObjectMapper();
 
     /**
      *
@@ -52,17 +52,17 @@ public class DataBehaviorLogic implements BehaviorLogic{
          * @param fireCommand
          */
         public void onReceiveData(Config params, boolean fireCommand);
-           
+
     }
-    
+
     /**
      *
      * @param pojo
      */
-    public DataBehaviorLogic(DataBehavior pojo){
-        this.data=pojo;
+    public DataBehaviorLogic(DataBehavior pojo) {
+        this.data = pojo;
     }
-    
+
     /**
      *
      * @param dataBehaviorListener
@@ -70,7 +70,7 @@ public class DataBehaviorLogic implements BehaviorLogic{
     public void addListener(DataBehaviorLogic.Listener dataBehaviorListener) {
         this.listener = dataBehaviorListener;
     }
-    
+
     @Override
     public void filterParams(Config params, boolean fireCommand) {
         // send hardware command: ask Harvester for data /subscribe
@@ -87,6 +87,15 @@ public class DataBehaviorLogic implements BehaviorLogic{
     @Override
     public String getName() {
         return data.getName();
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getDescription() {
+        return data.getDescription();
     }
 
     /**
@@ -125,6 +134,11 @@ public class DataBehaviorLogic implements BehaviorLogic{
         return data.isReadOnly();
     }
 
+    @Override
+    public void setReadOnly(boolean value) {
+        data.setReadOnly(value);
+    }
+
     /**
      *
      * @return
@@ -133,41 +147,41 @@ public class DataBehaviorLogic implements BehaviorLogic{
     public String getValueAsString() {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
-            om.writeValue(os, data.getData());    
+            om.writeValue(os, data.getData());
             return os.toString();
-        } catch (IOException ex){
-            Logger.getLogger(DataBehaviorLogic.class.getName()).log(Level.SEVERE, null, ex); 
+        } catch (IOException ex) {
+            Logger.getLogger(DataBehaviorLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-    
+
     /**
      *
      * @param JSON
      */
-    public void setData(String JSON){
-       UsageDataFrame df;
-       
-  //     om.setVisibility(JsonMethod.FIELD, JsonAutoDetect.Visibility.ANY);
+    public void setData(String JSON) {
+        UsageDataFrame df;
+
+        //     om.setVisibility(JsonMethod.FIELD, JsonAutoDetect.Visibility.ANY);
         try {
             df = om.readValue(JSON, UsageDataFrame.class);
-            if ( df.getFrameType() == UsageDataFrame.FULL_UPDATE ){
+            if (df.getFrameType() == UsageDataFrame.FULL_UPDATE) {
                 this.data.setData(df.getData());
-            } else if ( df.getFrameType() == UsageDataFrame.INCREMENTAL_UPDATE ){
+            } else if (df.getFrameType() == UsageDataFrame.INCREMENTAL_UPDATE) {
                 this.data.addData(df.getData());
             }
             setChanged(true);
-         } catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(DataBehaviorLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
-    
+
     /**
      *
      * @return
      */
-    public List<UsageData> getData(){
+    public List<UsageData> getData() {
         return data.getData();
     }
 }

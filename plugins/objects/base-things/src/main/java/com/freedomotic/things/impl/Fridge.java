@@ -19,7 +19,6 @@
  */
 package com.freedomotic.things.impl;
 
-import com.freedomotic.things.impl.ElectricDevice;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.RangedIntBehavior;
@@ -35,8 +34,7 @@ import com.freedomotic.reactions.CommandPersistence;
  * Behaviors: fridge-temperature freezer-temperature
  *
  */
-public class Fridge
-        extends ElectricDevice {
+public class Fridge extends ElectricDevice {
 
     private RangedIntBehaviorLogic fridgeTemperature;
     private RangedIntBehaviorLogic freezerTemperature;
@@ -120,60 +118,42 @@ public class Fridge
     protected void createCommands() {
         super.createCommands();
 
-        Command a = new Command();
-        a.setName("Increase " + getPojo().getName() + " fridge-temperature");
-        a.setDescription("increases " + getPojo().getName() + " fridge-temperature of one step");
-        a.setReceiver("app.events.sensors.behavior.request.objects");
-        a.setProperty("object", getPojo().getName());
-        a.setProperty("behavior", BEHAVIOR_FRIDGE_TEMPERATURE);
-        a.setProperty("value", Behavior.VALUE_NEXT);
+        Command increaseFridgeTemp = new Command();
+        increaseFridgeTemp.setName("Increase " + getPojo().getName() + " fridge-temperature");
+        increaseFridgeTemp.setDescription("increases " + getPojo().getName() + " fridge-temperature of one step");
+        increaseFridgeTemp.setReceiver("app.events.sensors.behavior.request.objects");
+        increaseFridgeTemp.setProperty("object", getPojo().getName());
+        increaseFridgeTemp.setProperty("behavior", BEHAVIOR_FRIDGE_TEMPERATURE);
+        increaseFridgeTemp.setProperty("value", Behavior.VALUE_NEXT);
 
-        Command b = new Command();
-        b.setName("Decrease " + getPojo().getName() + " fridge-temperature");
-        b.setDescription("decreases " + getPojo().getName() + " fridge-temperature of one step");
-        b.setReceiver("app.events.sensors.behavior.request.objects");
-        b.setProperty("object", getPojo().getName());
-        b.setProperty("behavior", BEHAVIOR_FRIDGE_TEMPERATURE);
-        b.setProperty("value", Behavior.VALUE_PREVIOUS);
+        Command decreaseFridgeTemp = new Command();
+        decreaseFridgeTemp.setName("Decrease " + getPojo().getName() + " fridge-temperature");
+        decreaseFridgeTemp.setDescription("decreases " + getPojo().getName() + " fridge-temperature of one step");
+        decreaseFridgeTemp.setReceiver("app.events.sensors.behavior.request.objects");
+        decreaseFridgeTemp.setProperty("object", getPojo().getName());
+        decreaseFridgeTemp.setProperty("behavior", BEHAVIOR_FRIDGE_TEMPERATURE);
+        decreaseFridgeTemp.setProperty("value", Behavior.VALUE_PREVIOUS);
 
-        Command c = new Command();
-        c.setName("Set its fridge-temperature to the value in the event");
-        c.setDescription("set its fridge-temperature to the value in the event");
-        c.setReceiver("app.events.sensors.behavior.request.objects");
-        c.setProperty("object", "@event.object.name");
-        c.setProperty("behavior", BEHAVIOR_FRIDGE_TEMPERATURE);
-        c.setProperty("value", "@event.value");
+        Command increaseFreezerTemp = new Command();
+        increaseFreezerTemp.setName("Increase " + getPojo().getName() + " freezer-temperature");
+        increaseFreezerTemp.setDescription("increases " + getPojo().getName() + " freezer-temperature of one step");
+        increaseFreezerTemp.setReceiver("app.events.sensors.behavior.request.objects");
+        increaseFreezerTemp.setProperty("object", getPojo().getName());
+        increaseFreezerTemp.setProperty("behavior", BEHAVIOR_FREEZER_TEMPERATURE);
+        increaseFreezerTemp.setProperty("value", Behavior.VALUE_NEXT);
 
-        Command d = new Command();
-        d.setName("Increase " + getPojo().getName() + " freezer-temperature");
-        d.setDescription("increases " + getPojo().getName() + " freezer-temperature of one step");
-        d.setReceiver("app.events.sensors.behavior.request.objects");
-        d.setProperty("object", getPojo().getName());
-        d.setProperty("behavior", BEHAVIOR_FREEZER_TEMPERATURE);
-        d.setProperty("value", Behavior.VALUE_NEXT);
+        Command decreaseFreezerTemp = new Command();
+        decreaseFreezerTemp.setName("Decrease " + getPojo().getName() + " freezer-temperature");
+        decreaseFreezerTemp.setDescription("decreases " + getPojo().getName() + " freezer-temperature of one step");
+        decreaseFreezerTemp.setReceiver("app.events.sensors.behavior.request.objects");
+        decreaseFreezerTemp.setProperty("object", getPojo().getName());
+        decreaseFreezerTemp.setProperty("behavior", BEHAVIOR_FREEZER_TEMPERATURE);
+        decreaseFreezerTemp.setProperty("value", Behavior.VALUE_PREVIOUS);
 
-        Command e = new Command();
-        e.setName("Decrease " + getPojo().getName() + " freezer-temperature");
-        e.setDescription("decreases " + getPojo().getName() + " freezer-temperature of one step");
-        e.setReceiver("app.events.sensors.behavior.request.objects");
-        e.setProperty("object", getPojo().getName());
-        e.setProperty("behavior", BEHAVIOR_FREEZER_TEMPERATURE);
-        e.setProperty("value", Behavior.VALUE_PREVIOUS);
-
-        Command f = new Command();
-        f.setName("Set its freezer-temperature to the value in the event");
-        f.setDescription("set its freezer-temperature to the value in the event");
-        f.setReceiver("app.events.sensors.behavior.request.objects");
-        f.setProperty("object", "@event.object.name");
-        f.setProperty("behavior", BEHAVIOR_FREEZER_TEMPERATURE);
-        f.setProperty("value", "@event.value");
-
-        CommandPersistence.add(a);
-        CommandPersistence.add(b);
-        CommandPersistence.add(c);
-        CommandPersistence.add(d);
-        CommandPersistence.add(e);
-        CommandPersistence.add(f);
+        CommandPersistence.add(increaseFridgeTemp);
+        CommandPersistence.add(decreaseFridgeTemp);
+        CommandPersistence.add(increaseFreezerTemp);
+        CommandPersistence.add(decreaseFreezerTemp);
     }
 
     @Override

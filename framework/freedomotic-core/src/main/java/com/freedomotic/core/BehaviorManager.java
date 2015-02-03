@@ -19,7 +19,6 @@
  */
 package com.freedomotic.core;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;

@@ -34,11 +34,14 @@ import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
+import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.util.Info;
+import com.google.common.collect.Iterators;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -174,43 +177,44 @@ public class ObjectEditor
             setTitle(pojo.getName() + " (" + pojo.getSimpleType() + ")");
         }
 
-//        controlPanel = new PropertiesPanel_1(0, 1);
-//        tabControls.add(controlPanel);
-        tabControls.setLayout(new BoxLayout(tabControls, BoxLayout.PAGE_AXIS));
+        populateControlPanel();
+    }
+
+    public void populateControlPanel() {
+        tabControls.removeAll();
+        //tabControls.setLayout(new BoxLayout(tabControls, BoxLayout.PAGE_AXIS));
+        tabControls.setLayout(new GridLayout(Iterators.size(object.getBehaviors().iterator()), 2));
 
         //create an array of controllers for the object behaviors
         int row = 0;
 
-        for (BehaviorLogic b : object.getBehaviors()) {
+        for (Behavior behavior : object.getPojo().getBehaviors()) {
+            // All this is done just to keep the behavior orders as in pojo definition
+            BehaviorLogic b= object.getBehavior(behavior.getName());
             if (b instanceof BooleanBehaviorLogic) {
                 final BooleanBehaviorLogic bb = (BooleanBehaviorLogic) b;
                 final JToggleButton button;
 
                 if (bb.getValue()) {
-                    button = new JToggleButton(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("false")}));
+                    button = new JToggleButton(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName() + " ", I18n.msg("false")}));
                 } else {
-                    button = new JToggleButton(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("true")}));
+                    button = new JToggleButton(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName() + " ", I18n.msg("true")}));
                 }
 
-                JLabel label = new JLabel(b.getName() + ":");
-//                controlPanel.addRow();
-//                controlPanel.addElement(label, row, 0);
-//                controlPanel.addRow();
-//                controlPanel.addElement(button, row+1, 0);
+                JLabel label = new JLabel(getBehaviorLabel(b));
                 tabControls.add(label);
                 tabControls.add(button);
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         Config params = new Config();
-                        params.setProperty("value",
-                                new Boolean(!bb.getValue()).toString());
+                        params.setProperty("value", Boolean.toString(!bb.getValue()));
                         bb.filterParams(params, true);
 
                         if (bb.getValue()) {
-                            button.setText(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("false")}));
+                            button.setText(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName() + " ", I18n.msg("false")}));
                         } else {
-                            button.setText(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName(), I18n.msg("true")}));
+                            button.setText(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName() + " ", I18n.msg("true")}));
                         }
                     }
                 });
@@ -229,11 +233,12 @@ public class ObjectEditor
                 slider.setPaintTicks(true);
                 slider.setPaintTrack(true);
                 slider.setPaintLabels(false);
-                slider.setMajorTickSpacing(rb.getScale() * 10);
-                slider.setMinorTickSpacing(rb.getStep());
+                //slider.setMajorTickSpacing(rb.getScale() * 10);
+                //slider.setMinorTickSpacing(rb.getStep());
+                slider.setMajorTickSpacing(rb.getStep());
                 slider.setSnapToTicks(true);
 
-                JLabel label = new JLabel(b.getName() + ":");
+                JLabel label = new JLabel(getBehaviorLabel(b));
                 tabControls.add(label);
                 sliderPanel.add(slider);
                 sliderPanel.add(doubleValue);
@@ -270,10 +275,11 @@ public class ObjectEditor
                 comboBox.setEditable(false);
                 comboBox.setSelectedItem(lb.getSelected());
 
-                JLabel label = new JLabel(b.getName() + ":");
+                JLabel label = new JLabel(getBehaviorLabel(b));
                 tabControls.add(label);
                 tabControls.add(comboBox);
                 comboBox.addActionListener(new ActionListener() {
+                    @Override
                     public void actionPerformed(ActionEvent e) {
                         Config params = new Config();
                         params.setProperty("value", (String) comboBox.getSelectedItem());
@@ -1124,5 +1130,15 @@ public class ObjectEditor
         spnY.setEnabled(auth.isPermitted("objects:update"));
         environmentComboBox.setEditable(auth.isPermitted("objects:update"));
         btnDelete.setEnabled(auth.isPermitted("objects:delete"));
+    }
+
+    private String getBehaviorLabel(BehaviorLogic b) {
+        String label = "";
+        if (b.getDescription() != null && !b.getDescription().isEmpty()) {
+            label = b.getDescription() + " (" + b.getValueAsString() + "): ";
+        } else {
+            label = b.getName() + " (" + b.getValueAsString() + "): ";
+        }
+        return label;
     }
 }

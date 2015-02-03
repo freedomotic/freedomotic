@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.behaviors;
@@ -61,7 +59,7 @@ public class PropertiesBehaviorLogic
 
     @Override
     public synchronized final void filterParams(final Config params, boolean fireCommand) {
-    	
+
 //        String[] parsed = params.getProperty("value").trim().split("=");
 //        String key = parsed[0].trim();
 //        String value = parsed[1].trim();
@@ -87,6 +85,15 @@ public class PropertiesBehaviorLogic
         return data.getName();
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getDescription() {
+        return data.getDescription();
+    }
+
 //    public String getProperty(String key) {
 //        return data.getProperty(key);
 //    }
@@ -94,12 +101,11 @@ public class PropertiesBehaviorLogic
 //    public void setProperty(String key, String value) {
 //        data.setProperty(key, value);
 //    }
-
     /**
      *
      * @return
      */
-        @Override
+    @Override
     public boolean isActive() {
         return data.isActive();
     }
@@ -113,6 +119,11 @@ public class PropertiesBehaviorLogic
         return data.isReadOnly();
     }
 
+    @Override
+    public void setReadOnly(boolean value) {
+        data.setReadOnly(value);
+    }
+
     /**
      *
      * @return
@@ -123,12 +134,13 @@ public class PropertiesBehaviorLogic
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
-    public PropertiesBehavior getPojo(){
+    public PropertiesBehavior getPojo() {
         return data;
     }
+
     /**
      *
      * @param propertiesBehaviorListener

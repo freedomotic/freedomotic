@@ -448,7 +448,7 @@ public class EnvObjectLogic {
 
     /**
      * Changes a behavior value accordingly to the value property in the trigger
-     * in input
+     * in input without firing a command on hardware. It updates only the internal model
      *
      * @param trigger an hardware level trigger
      * @return true if the values is applied successfully, false otherwise

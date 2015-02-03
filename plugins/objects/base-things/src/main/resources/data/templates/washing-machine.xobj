@@ -9,14 +9,21 @@
   <behaviors>
     <com.freedomotic.model.object.BooleanBehavior>
       <name>powered</name>
-      <description></description>
+      <description>On</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>false</value>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
+      <name>washing</name>
+      <description>Washing</description>
       <active>true</active>
       <priority>-1</priority>
       <value>false</value>
     </com.freedomotic.model.object.BooleanBehavior>
     <com.freedomotic.model.object.RangedIntBehavior>
       <name>washing-temperature</name>
-      <description></description>
+      <description>Washing Temperature</description>
       <active>true</active>
       <priority>-1</priority>
       <value>40</value>
@@ -24,17 +31,41 @@
       <min>40</min>
       <step>10</step>
     </com.freedomotic.model.object.RangedIntBehavior>
-    <com.freedomotic.model.object.ListBehavior>
-      <name>washing-cycle</name>
-      <description>Washing cycle programme</description>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>spinning-rpm</name>
+      <description>Spinning rotations/min</description>
       <active>true</active>
       <priority>-1</priority>
-      <selected>2</selected>
+      <value>1000</value>
+      <max>1400</max>
+      <min>600</min>
+      <step>100</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.ListBehavior>
+      <name>washing-program</name>
+      <description>Washing program</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <selected>0</selected>
       <list>
-        <string>cotton</string>
-        <string>darks</string>
-        <string>whites</string>
-        <string>wool</string>
+        <string>Custom</string>
+        <string>Cotton</string>
+        <string>Darks</string>
+        <string>Whites</string>
+        <string>Wool</string>
+      </list>
+    </com.freedomotic.model.object.ListBehavior>
+    <com.freedomotic.model.object.ListBehavior>
+      <name>washing-cycle</name>
+      <description>Washing cycle</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <selected>0</selected>
+      <list>
+        <string>Washing</string>
+        <string>Rinsing</string>
+        <string>Spinning</string>
+        <string>Finished</string>
       </list>
     </com.freedomotic.model.object.ListBehavior>
   </behaviors>
@@ -71,17 +102,39 @@
         <point x="0" y="64"/>
       </shape>
     </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>washingmachine-running.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
   </representation>
   <actions>
     <property name="turn off" value="Execute it successfully"/>
     <property name="turn on" value="Execute it successfully"/>
+    <property name="start washing" value="Execute it successfully"/>
+    <property name="pause washing" value="Execute it successfully"/>
     <property name="set washing temperature" value="Execute it successfully"/>
+    <property name="set spinning RPM" value="Execute it successfully"/>
     <property name="set washing cycle" value="Execute it successfully"/>
+    <property name="set washing program" value="Execute it successfully"/>
   </actions>
   <triggers>
     <property name="" value="powered"/>
     <property name="" value="washing-temperature"/>
+    <property name="" value="spinning-rpm"/>
     <property name="" value="washing-cycle"/>
+    <property name="" value="washing-program"/>
   </triggers>
   <currentRepresentation>0</currentRepresentation>
 </object>
