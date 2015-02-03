@@ -1,0 +1,96 @@
+<object>
+  <name>Fridge</name>
+  <description>A fridge</description>
+  <actAs>virtual</actAs>
+  <type>EnvObject.ElectricDevice.Fridge</type>
+  <hierarchy>com.freedomotic.things.impl.Fridge</hierarchy>
+  <protocol>unknown</protocol>
+  <phisicalAddress>unknown</phisicalAddress>
+  <behaviors>
+    <com.freedomotic.model.object.BooleanBehavior>
+      <name>powered</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>false</value>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>fridge-temperature</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>5</max>
+      <min>2</min>
+      <step>1</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>freezer-temperature</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>0</max>
+      <min>-10</min>
+      <step>1</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>power_consumption</name>
+      <description>Power consumed by device when it's on</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <readOnly>true</readOnly>
+      <value>0</value>
+      <max>3000</max>
+      <min>0</min>
+      <scale>1</scale>
+      <step>10</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+  </behaviors>
+  <representation>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>fridge-off.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>fridge-on.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+  </representation>
+  <actions>
+    <property name="turn off" value="Execute it successfully"/>
+    <property name="turn on" value="Execute it successfully"/>
+    <property name="set fridge temperature" value="Execute it successfully"/>
+    <property name="set freezer temperature" value="Execute it successfully"/>
+  </actions>
+  <triggers>
+    <property name="" value="powered"/>
+    <property name="" value="fridge-temperature"/>
+    <property name="" value="freezer-temperature"/>
+  </triggers>
+  <currentRepresentation>0</currentRepresentation>
+</object>
