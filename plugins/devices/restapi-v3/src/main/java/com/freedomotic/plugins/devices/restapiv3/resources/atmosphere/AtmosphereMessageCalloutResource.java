@@ -19,8 +19,10 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.atmosphere;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
+import com.freedomotic.plugins.devices.restapiv3.representations.MessageCalloutRepresentation;
 import com.wordnik.swagger.annotations.Api;
 import java.util.logging.Logger;
 import javax.ws.rs.Path;
@@ -44,15 +46,19 @@ public class AtmosphereMessageCalloutResource extends AbstractWSResource {
     private static final Logger LOG = Logger.getLogger(AtmosphereMessageCalloutResource.class.getName());
 
     public final static String PATH = "messagecallout";
-    
+
     @Override
     public void broadcast(EventTemplate message) {
         if (api != null) {
-            String msg = "{ 'message': '" + message.getProperty("message.text") + "'}";
-            BroadcasterFactory
-                    .getDefault()
-                    .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereMessageCalloutResource.PATH)
-                    .broadcast(msg);
+            String msg;
+            try {
+                msg = om.writeValueAsString(new MessageCalloutRepresentation(message.getProperty("message.text")));
+                BroadcasterFactory
+                        .getDefault()
+                        .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereMessageCalloutResource.PATH)
+                        .broadcast(msg);
+            } catch (JsonProcessingException ex) {
+            }
         }
     }
 }
