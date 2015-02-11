@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -46,7 +47,7 @@ public class Config
         implements Serializable {
 
     private static final long serialVersionUID = 1380975976029008480L;
-	
+    @XmlElement(name="props") 	
     private final Properties properties = new Properties();
     private String xmlFile = "";
     private final Tuples tuples = new Tuples();

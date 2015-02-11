@@ -9,6 +9,7 @@ import com.freedomotic.security.User;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
@@ -21,6 +22,7 @@ public class UserRepresentation {
     private String name;
     private String password;
     private Set<String> roles = new HashSet<String>();
+    @XmlElement(name="props")
     private Properties properties;
 
     public UserRepresentation() {

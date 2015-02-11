@@ -22,7 +22,6 @@ package com.freedomotic.plugins.devices.restapiv3.representations;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleRole;
 import org.apache.shiro.authz.permission.WildcardPermission;

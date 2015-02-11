@@ -84,7 +84,7 @@ public final class Command implements Serializable, Cloneable {
     private boolean hardwareLevel;
     private boolean editable;
     private boolean executed;
-    @XmlElement
+    @XmlElement(name="props")
     private Config properties = new Config();
 
     /**
