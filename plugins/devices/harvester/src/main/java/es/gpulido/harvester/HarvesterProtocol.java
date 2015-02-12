@@ -185,15 +185,15 @@ public final class HarvesterProtocol extends Protocol {
                 q.setParameter("protocol", "%");
 
             } else if (type.equals("tag")) {
-                Collection<EnvObjectLogic> objs = getApi().getObjectByTag(id);
+                Collection<EnvObjectLogic> objs = getApi().things().findAll();
 
             } else if (type.startsWith("prot")) {
-                Collection<EnvObjectLogic> objs = getApi().getObjectByProtocol(id);
+                Collection<EnvObjectLogic> objs = getApi().things().findByProtocol(id);
 
             } else if (type.equals("room")) {
                 // to be implemented
             } else if (type.startsWith("env")) {
-                Collection<EnvObjectLogic> objs = getApi().getObjectByEnvironment(id);
+                Collection<EnvObjectLogic> objs = getApi().things().findByEnvironment(id);
 
             }
 
