@@ -131,7 +131,6 @@ public class UserRealm extends SimpleAccountRealm {
 
     public void removeRole(String roleName) {
         SimpleRole r = getRole(roleName);
-        getRoles().remove(roleName);
         for (User u : getUsers().values()) {
             u.removeRole(roleName);
             u.setObjectPermissions(null);
@@ -140,5 +139,6 @@ public class UserRealm extends SimpleAccountRealm {
                 u.addObjectPermissions(nr.getPermissions());
             }
         }
+        getRoles().remove(roleName);
     }
 }

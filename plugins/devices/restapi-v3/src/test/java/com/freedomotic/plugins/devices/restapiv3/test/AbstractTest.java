@@ -102,6 +102,9 @@ public abstract class AbstractTest<Z> extends JerseyTest {
         getApi().triggers().deleteAll();
         getApi().reactions().deleteAll();
         getApi().things().deleteAll();
+        for (String roleName : getApi().getAuth().getRoles().keySet()){
+            getApi().getAuth().deleteRole(roleName);
+        }
         super.tearDown(); //To change body of generated methods, choose Tools | Templates.
     }
 

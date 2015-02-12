@@ -23,7 +23,6 @@ import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.plugins.devices.restapiv3.representations.RoleRepresentation;
 import com.freedomotic.plugins.devices.restapiv3.resources.jersey.RoleResource;
 import com.google.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilderException;

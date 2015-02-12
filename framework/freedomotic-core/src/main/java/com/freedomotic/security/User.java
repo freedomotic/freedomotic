@@ -19,7 +19,6 @@
  */
 package com.freedomotic.security;
 
-
 import java.util.Collection;
 import java.util.Properties;
 import java.util.Set;
@@ -35,21 +34,21 @@ import org.apache.shiro.authz.permission.WildcardPermission;
  * @author matteo
  */
 public final class User extends SimpleAccount {
-    
+
     private static final Logger LOG = Logger.getLogger(User.class.getName());
 
     private final Properties properties = new Properties();
-    
-    private final Auth auth ;
+
+    private final Auth auth;
 
     public User(Object principal, Object credentials, String roleName, Auth auth) {
         this(principal, credentials, auth);
         addRole(roleName);
     }
-    
+
     public User(Object principal, Object credentials, Auth auth) {
         super(principal, credentials, UserRealm.USER_REALM_NAME);
-        this.auth=auth;
+        this.auth = auth;
     }
 
     public String getProperty(String key) {
@@ -101,14 +100,18 @@ public final class User extends SimpleAccount {
         }
     }
 
-    public void removeRole(String roleName){
+    public void removeRole(String roleName) {
+        try {
+            getObjectPermissions().removeAll(auth.getRole(roleName).getPermissions());
+        } catch (Exception e) {
+
+        }
         getRoles().remove(roleName);
-        getObjectPermissions().removeAll(auth.getRole(roleName).getPermissions());
     }
-    
-    public boolean isPermitted(String perm){
-        for (Permission p : this.getObjectPermissions()){
-            if (p.implies(new WildcardPermission(perm))){
+
+    public boolean isPermitted(String perm) {
+        for (Permission p : this.getObjectPermissions()) {
+            if (p.implies(new WildcardPermission(perm))) {
                 return true;
             }
         }

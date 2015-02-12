@@ -44,7 +44,7 @@
         <freedomotic.marketplace.username></freedomotic.marketplace.username>
         <freedomotic.marketplace.password></freedomotic.marketplace.password>
         <jersey.version>2.15</jersey.version>
-        <atmosphere.version>2.2.4</atmosphere.version>
+        <atmosphere.version>2.2.5</atmosphere.version>
     </properties>
 
     <dependencies>
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>com.wordnik</groupId>
             <artifactId>swagger-jaxrs_2.11</artifactId>
-            <version>1.3.10</version>
+            <version>1.3.12</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
