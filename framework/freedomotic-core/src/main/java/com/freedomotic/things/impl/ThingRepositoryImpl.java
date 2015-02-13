@@ -64,27 +64,12 @@ class ThingRepositoryImpl implements ThingRepository {
 
     public static final boolean MAKE_NOT_UNIQUE = false;
     private static final Map<String, EnvObjectLogic> objectList = new HashMap<>();
-    private final ThingFactory thingsFactory;
-    private final DataUpgradeService dataUpgradeService;
-
     private static final Logger LOG = LoggerFactory.getLogger(ThingRepositoryImpl.class.getName());
-
-    /**
-     *
-     * @param thingsFactory
-     * @param environmentRepository
-     */
-    @Inject
-    public ThingRepositoryImpl(
-            ThingFactory thingsFactory,
-            DataUpgradeService dataUpgradeService) {
-        this.thingsFactory = thingsFactory;
-        this.dataUpgradeService = dataUpgradeService;
-    }
 
     @Deprecated
     @RequiresPermissions("objects:read")
-    public static Collection<EnvObjectLogic> getObjectList() {
+    public static Collection<EnvObjectLogic> getObjectList(
+            ) {
         return objectList.values();
     }
 
@@ -125,8 +110,7 @@ class ThingRepositoryImpl implements ThingRepository {
         }
     }
 
-    private static void deleteObjectFiles(File folder)
-            throws RepositoryException {
+    private static void deleteObjectFiles(File folder) throws RepositoryException {
         if ((folder == null) || !folder.isDirectory()) {
             throw new IllegalArgumentException("Unable to delete objects files in a null or not valid folder");
         }
@@ -163,9 +147,9 @@ class ThingRepositoryImpl implements ThingRepository {
      */
     @Deprecated
     @RequiresPermissions("objects:read")
-    public static Iterator<EnvObjectLogic> iterator() {
-        return objectList.values().iterator();
-    }
+public static Iterator<EnvObjectLogic> iterator() {
+    return objectList.values().iterator();
+}
 
     /**
      * Gets the object by name
@@ -173,7 +157,7 @@ class ThingRepositoryImpl implements ThingRepository {
      * @param name
      * @return
      */
-    @RequiresPermissions("objects:read")
+@RequiresPermissions("objects:read")
     public static EnvObjectLogic getObjectByName(String name) {
         for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
@@ -196,7 +180,7 @@ class ThingRepositoryImpl implements ThingRepository {
         ArrayList<EnvObjectLogic> results = new ArrayList<EnvObjectLogic>();
         // split tags string
         String[] tagList = tags.split(",");
-
+        
         // search every object for at least one tag 
         for (EnvObjectLogic obj : objectList.values()) {
             Set<String> tagSet = new HashSet<String>();
@@ -320,6 +304,39 @@ class ThingRepositoryImpl implements ThingRepository {
     }
 
     /**
+     *
+     * @param input
+     */
+    @Deprecated
+    @RequiresPermissions("objects:delete")
+    public static void remove(EnvObjectLogic input) {
+        objectList.remove(input.getPojo().getUUID());
+        input.setChanged(true); //force repainting on frontends clients
+        input.destroy(); //free memory
+    }
+
+    public static List<String> getObjectsNames() {
+        List<String> list = new ArrayList<String>();
+        for (EnvObjectLogic obj : objectList.values()) {
+            list.add(obj.getPojo().getName());
+        }
+        return list;
+    }
+    private final ThingFactory thingsFactory;
+    private final DataUpgradeService dataUpgradeService;
+
+    /**
+     *
+     * @param thingsFactory
+     * @param environmentRepository
+     */
+    @Inject
+    public ThingRepositoryImpl(ThingFactory thingsFactory, DataUpgradeService dataUpgradeService) {
+        this.thingsFactory = thingsFactory;
+        this.dataUpgradeService = dataUpgradeService;
+    }
+
+    /**
      * Add an object to the environment. You can use
      * EnvObjectPersistnce.MAKE_UNIQUE to saveAll an object that will surely be
      * unique. Beware this means it is created with defensive copy of the object
@@ -385,21 +402,9 @@ class ThingRepositoryImpl implements ThingRepository {
 
     /**
      *
-     * @param input
-     */
-    @Deprecated
-    @RequiresPermissions("objects:delete")
-    public static void remove(EnvObjectLogic input) {
-        objectList.remove(input.getPojo().getUUID());
-        input.setChanged(true); //force repainting on frontends clients
-        input.destroy(); //free memory
-    }
-
-    /**
-     *
      */
     @RequiresPermissions("objects:delete")
-    @Override
+@Override
     public void deleteAll() {
         try {
             for (EnvObjectLogic el : objectList.values()) {
@@ -496,14 +501,6 @@ class ThingRepositoryImpl implements ThingRepository {
     @RequiresPermissions("objects:create")
     public EnvObjectLogic copy(EnvObjectLogic thing) {
         return add(thing, true);
-    }
-
-    public static List<String> getObjectsNames() {
-        List<String> list = new ArrayList<String>();
-        for (EnvObjectLogic obj : objectList.values()) {
-            list.add(obj.getPojo().getName());
-        }
-        return list;
     }
 
     @Override
