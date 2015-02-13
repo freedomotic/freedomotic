@@ -155,9 +155,10 @@ class BusServiceImpl extends LifeCycle implements BusService {
         session.close();
     }
 
-    private Session createSession() throws Exception {
-
+    @Override
+    public Session createSession() throws Exception {
         return connectionHolder.createSession();
+
     }
 
     private MessageProducer getMessageProducer() {
@@ -289,19 +290,17 @@ class BusServiceImpl extends LifeCycle implements BusService {
         Profiler.incrementSentCommands();
 
         // the receive() call is blocking
-        LOG.log(Level.CONFIG, "Send and await reply to command ''{0}'' for {1}ms", 
+        LOG.log(Level.CONFIG, "Send and await reply to command ''{0}'' for {1}ms",
                 new Object[]{command.getName(), command.getReplyTimeout()});
 
         Message jmsResponse = temporaryConsumer.receive(command.getReplyTimeout());
 
         //cleanup after receiving
-        temporaryConsumer.close();
-        temporaryQueue.delete();
+        //temporaryConsumer.close();
+        //temporaryQueue.delete();
         //TODO: commented as sometimes genenerates a "cannot publish on deleted queue" exception
         //check n the documentation if a temporary queue with no consumers
         //is automatically deleted
-        //TODO: enable this: temporaryQueue.delete();
-
         if (jmsResponse != null) {
             // TODO unchecked cast!
             ObjectMessage objMessage = (ObjectMessage) jmsResponse;

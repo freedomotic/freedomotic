@@ -85,21 +85,18 @@ public interface BusService {
      * @return
      */
     //BusDestination registerCommandQueue(String queueName) throws JMSException;
-
     /**
      * Convenience method used by {@link BusMessagesListener}
      *
      * @return
      */
     //BusDestination registerEventQueue(String queueName) throws JMSException;
-
     /**
      * Convenience method used by {@link BusMessagesListener}
      *
      * @return
      */
     //BusDestination registerTopic(String queueName) throws JMSException;
-
     /**
      * Convenience method used by {@link BusMessagesListener}
      *
@@ -120,4 +117,12 @@ public interface BusService {
      * @return
      */
     Session getUnlistenedSession();
+
+    /**
+     * Convenience method used by {@link BusMessagesListener}
+     *
+     * @return
+     * @throws java.lang.Exception
+     */
+    Session createSession() throws Exception;
 }

@@ -250,7 +250,7 @@ public class TriggerCheck {
                                 }
                             }
                         } catch (Exception e) {
-                            LOG.log(Level.SEVERE,"Exception while merging event parameters into reaction.", e);
+                            LOG.log(Level.SEVERE, "Exception while merging event parameters into reaction.", e);
                             return;
                         }
 
@@ -272,41 +272,41 @@ public class TriggerCheck {
                 event.getPayload().clear();
             }
 
-            /**
-             * Resolves the additional conditions of the reaction in input. Now
-             * it just takes the statement attribute and value and check if they
-             * are equal to the target behavior name and value respectively.
-             * This should be improved to allow also REGEX and other statement
-             * resolution.
-             */
-            private boolean checkAdditionalConditions(Reaction rea) {
-                boolean result = true;
-                for (Condition condition : rea.getConditions()) {
-                    //System.out.println("DEBUG: check condition " + condition.getTarget());
-                    EnvObjectLogic object = thingsRepository.findByName(condition.getTarget()).get(0);
-                    Statement statement = condition.getStatement();
-                    if (object != null) {
-                        BehaviorLogic behavior = object.getBehavior(statement.getAttribute());
-                        //System.out.println("DEBUG: " + object.getPojo().getName() + " "
-                        //+ " behavior: " + behavior.getName() + " " + behavior.getValueAsString());
-                        boolean eval = behavior.getValueAsString().equalsIgnoreCase(statement.getValue());
-                        if (statement.getLogical().equalsIgnoreCase("AND")) {
-                            result = result && eval;
-                            //System.out.println("DEBUG: result and: " + result + "(" + eval +")");
-                        } else {
-                            result = result || eval;
-                            //System.out.println("DEBUG: result or: " + result + "(" + eval +")");
-                        }
-                    } else {
-                        LOG.log(Level.WARNING, "Cannot test condition on unexistent object: {0}", condition.getTarget());
-                        return false;
-                    }
-                }
-                return result;
-            }
         };
 
         AUTOMATION_EXECUTOR.execute(automation);
+    }
+
+    /**
+     * Resolves the additional conditions of the reaction in input. Now it just
+     * takes the statement attribute and value and check if they are equal to
+     * the target behavior name and value respectively. This should be improved
+     * to allow also REGEX and other statement resolution.
+     */
+    private boolean checkAdditionalConditions(Reaction rea) {
+        boolean result = true;
+        for (Condition condition : rea.getConditions()) {
+            //System.out.println("DEBUG: check condition " + condition.getTarget());
+            EnvObjectLogic object = thingsRepository.findByName(condition.getTarget()).get(0);
+            Statement statement = condition.getStatement();
+            if (object != null) {
+                BehaviorLogic behavior = object.getBehavior(statement.getAttribute());
+                        //System.out.println("DEBUG: " + object.getPojo().getName() + " "
+                //+ " behavior: " + behavior.getName() + " " + behavior.getValueAsString());
+                boolean eval = behavior.getValueAsString().equalsIgnoreCase(statement.getValue());
+                if (statement.getLogical().equalsIgnoreCase("AND")) {
+                    result = result && eval;
+                    //System.out.println("DEBUG: result and: " + result + "(" + eval +")");
+                } else {
+                    result = result || eval;
+                    //System.out.println("DEBUG: result or: " + result + "(" + eval +")");
+                }
+            } else {
+                LOG.log(Level.WARNING, "Cannot test condition on unexistent object: {0}", condition.getTarget());
+                return false;
+            }
+        }
+        return result;
     }
 
     private void notifyMessage(String message) {

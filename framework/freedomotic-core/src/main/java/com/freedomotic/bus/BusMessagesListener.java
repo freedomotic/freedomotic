@@ -33,6 +33,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import javax.jms.Queue;
+import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 
@@ -56,6 +57,8 @@ public class BusMessagesListener implements MessageListener {
     private BusService busService;
 
     private BusConsumer messageHandler;
+    
+    private Session session;
 
     // A listener can consume from multiple sources
     private Set<MessageConsumer> consumers = new HashSet<MessageConsumer>();
@@ -79,6 +82,12 @@ public class BusMessagesListener implements MessageListener {
         }
         if (busConsumer == null) {
             throw new IllegalStateException("A message listener must have an attached consumer");
+        }
+        
+        try {
+            this.session = busService.createSession();
+        } catch (Exception ex) {
+            Logger.getLogger(BusMessagesListener.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -120,7 +129,7 @@ public class BusMessagesListener implements MessageListener {
 
         try {
             Queue queue = busService.getReceiveSession().createQueue(queueName);
-            MessageConsumer consumer = busService.getReceiveSession().createConsumer(queue);
+            MessageConsumer consumer = session.createConsumer(queue);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
             LOG.severe(Freedomotic.getStackTraceInfo(e));
@@ -140,7 +149,7 @@ public class BusMessagesListener implements MessageListener {
                     + topicName;
 
             Queue queue = busService.getReceiveSession().createQueue(virtualTopicName);
-            MessageConsumer consumer = busService.getReceiveSession().createConsumer(queue);
+            MessageConsumer consumer = session.createConsumer(queue);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
             LOG.severe(Freedomotic.getStackTraceInfo(e));
@@ -158,7 +167,7 @@ public class BusMessagesListener implements MessageListener {
         try {
             Topic topic = busService.getReceiveSession().createTopic("VirtualTopic." + topicName);
             //TODO: add a selector for provenance field which should be "not from current instance"
-            MessageConsumer consumer = busService.getReceiveSession().createConsumer(topic);
+            MessageConsumer consumer = session.createConsumer(topic);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
             LOG.severe(Freedomotic.getStackTraceInfo(e));
