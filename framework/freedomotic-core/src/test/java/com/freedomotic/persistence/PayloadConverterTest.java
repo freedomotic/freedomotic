@@ -23,9 +23,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.persistence.converters;
+package com.freedomotic.persistence;
 
-import com.freedomotic.persistence.PayloadConverter;
 import com.freedomotic.rules.Payload;
 import com.thoughtworks.xstream.XStream;
 import java.util.logging.Logger;

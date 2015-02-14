@@ -1,0 +1,81 @@
+<it.freedomotic.model.object.EnvObject>
+    <name>Kitchen Light</name>
+    <description>A light</description>
+    <actAs>virtual</actAs>
+    <type>EnvObject.ElectricDevice.Light</type>
+    <uuid>21969e70-7e00-4a0d-a13f-a4728240d9d0</uuid>
+    <hierarchy>it.freedomotic.objects.impl.Light</hierarchy>
+    <protocol>unknown</protocol>
+    <phisicalAddress>unknown</phisicalAddress>
+    <behaviors>
+        <it.freedomotic.model.object.BooleanBehavior>
+            <name>powered</name>
+            <description></description>
+            <active>true</active>
+            <priority>-1</priority>
+            <readOnly>false</readOnly>
+            <value>false</value>
+        </it.freedomotic.model.object.BooleanBehavior>
+        <it.freedomotic.model.object.RangedIntBehavior>
+            <name>brightness</name>
+            <description></description>
+            <active>true</active>
+            <priority>-1</priority>
+            <readOnly>false</readOnly>
+            <value>0</value>
+            <max>100</max>
+            <min>0</min>
+            <scale>1</scale>
+            <step>10</step>
+        </it.freedomotic.model.object.RangedIntBehavior>
+    </behaviors>
+    <representation>
+        <view>
+            <tangible>true</tangible>
+            <intersecable>false</intersecable>
+            <offset x="726" y="482"/>
+            <rotation>0.0</rotation>
+            <icon>light-off.png</icon>
+            <fillColor>#000000</fillColor>
+            <textColor>#000000</textColor>
+            <borderColor>#000000</borderColor>
+            <scaleX>0.0</scaleX>
+            <scaleY>0.0</scaleY>
+            <shape class="polygon">
+                <point x="0" y="0"/>
+                <point x="64" y="0"/>
+                <point x="64" y="64"/>
+                <point x="0" y="64"/>
+            </shape>
+        </view>
+        <view>
+            <tangible>true</tangible>
+            <intersecable>false</intersecable>
+            <offset x="726" y="482"/>
+            <rotation>0.0</rotation>
+            <icon>light-on.png</icon>
+            <fillColor>#000000</fillColor>
+            <textColor>#000000</textColor>
+            <borderColor>#000000</borderColor>
+            <scaleX>0.0</scaleX>
+            <scaleY>0.0</scaleY>
+            <shape class="polygon">
+                <point x="0" y="0"/>
+                <point x="64" y="0"/>
+                <point x="64" y="64"/>
+                <point x="0" y="64"/>
+            </shape>
+        </view>
+    </representation>
+    <tags/>
+    <actions>
+        <property name="turn off" value="Execute it successfully"/>
+        <property name="set brightness" value="Execute it successfully"/>
+        <property name="turn on" value="Execute it successfully"/>
+    </actions>
+    <triggers>
+        <property name="" value="brightness"/>
+    </triggers>
+    <currentRepresentation>0</currentRepresentation>
+    <envUUID>df28cda0-a866-11e2-9e96-0800200c9a66</envUUID>
+</it.freedomotic.model.object.EnvObject>
