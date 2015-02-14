@@ -29,54 +29,46 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * This class implements an UDP server listening for incoming packets and provides a method to send UDP
- * packets to a specified server
- * 
+ * This class implements an UDP server listening for incoming packets and
+ * provides a method to send UDP packets to a specified server
+ *
  * @author Mauro Cicolella
  */
 public class UdpHelper {
 
-    private static final Logger LOG = Logger.getLogger(UdpHelper.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(UdpHelper.class.getName());
     private static UDPThreadServer server;
-    private static DatagramSocket serverDatagramSocket = null;
+    private static DatagramSocket serverDatagramSocket;
 
-    public UdpHelper() {
-    }
 
     /**
-     * Starts an UDP server
+     * Starts an UDP server listening on the given address and port. It allows
+     * to bind a consumer which will be notified of any message received by the
+     * UDP server.
      *
      * @param serverAddress Server UDP address
      * @param serverPort Server UDP port number
      * @param consumer UdpListener for incoming packets
-     * @return
-     * @throws IOException
      */
     public void startServer(String serverAddress, int serverPort, final UdpListener consumer) {
         server = new UDPThreadServer(serverAddress, serverPort, consumer);
         server.start();
     }
 
-    
     /**
      * Sends an UDP packet to the server
      *
      * @param serverAddress Server UDP address
      * @param serverPort Server UDP port number
-     * @param message Message to send
-     * @return
-     * @throws UnknownHostException
-     * @throws SocketException
-     * @throws IOException
+     * @param payload the data to send
+     * @throws java.io.IOException
      */
-    public void send(String serverAddress, int serverPort, String payload) {
+    public void send(String serverAddress, int serverPort, String payload) throws IOException {
         DatagramSocket datagramSocket = null;
-        int BUFFER_SIZE = 1024;
-        byte[] buffer;
 
         try {
             InetAddress inetAddress = InetAddress.getByName(serverAddress);
@@ -92,19 +84,18 @@ public class UdpHelper {
             datagramSocket.send(out_datagramPacket);
 
         } catch (UnknownHostException ex) {
-            LOG.log(Level.WARNING, "Unknown UDP server. Packet not sent", ex.getMessage());
+            throw new IOException("Unknown UDP server. Packet not sent", ex);
         } catch (SocketException ex) {
-            LOG.log(Level.WARNING, "Socket exception. Packet not sent", ex.getMessage());
-        } catch (IOException ex) {
-            LOG.log(Level.WARNING, "IOException. Packet not sent", ex.getMessage());
+            throw new IOException("Socket exception. Packet not sent", ex);
         } finally {
-            datagramSocket.close();
+            if (datagramSocket != null) {
+                datagramSocket.close();
+            }
         }
     }
 
-    /*
-     *  Nested threaded class for UDP server 
-     *  Starts an UDP server in a separate thread
+    /**
+     *  The UDP server thread
      */
     private static class UDPThreadServer extends Thread {
 
@@ -116,9 +107,10 @@ public class UdpHelper {
             this.serverAddress = serverAddress;
             this.serverPort = serverPort;
             this.consumer = consumer;
-            LOG.log(Level.CONFIG, "Starting threaded server on " + serverAddress + ":" + serverPort);
+            LOG.debug("UDP server starting on {}:{}", new Object[]{serverAddress, serverPort});
         }
 
+        @Override
         public void run() {
             try {
                 serverDatagramSocket = new DatagramSocket(null);
@@ -127,7 +119,7 @@ public class UdpHelper {
                 //buffer to receive incoming data
                 byte[] buffer = new byte[65536];
                 DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
-                LOG.log(Level.INFO, "Server UDP started. Waiting for incoming data on " + serverAddress + ":" + serverPort);
+                LOG.info("UDP server started. Waiting for incoming data on {}:{}", new Object[]{serverAddress, serverPort});
                 //communication loop
                 while (true) {
                     serverDatagramSocket.receive(inPacket);
@@ -135,11 +127,11 @@ public class UdpHelper {
                     String sourceAddress = inPacket.getAddress().getHostAddress();
                     Integer sourcePort = inPacket.getPort();
                     String data = new String(payload, 0, inPacket.getLength());
-                    LOG.log(Level.CONFIG, "Received packet from " + sourceAddress + ":" + sourcePort);
+                    LOG.debug("UDP server receives packet from {}:{}", new Object[]{sourceAddress, sourcePort});
                     consumer.onDataAvailable(sourceAddress, sourcePort, data);
                 }
             } catch (IOException e) {
-                LOG.log(Level.SEVERE, "Server UDP not started for ", e);
+                LOG.error("UDP server not started for ", e);
             }
         }
     }
