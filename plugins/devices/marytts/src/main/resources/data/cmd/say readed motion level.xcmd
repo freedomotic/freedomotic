@@ -1,0 +1,15 @@
+<command>
+  <name>Say readed motion level</name>
+  <receiver>app.actuators.media.tts.in</receiver>
+  <delay>0</delay>
+  <timeout>0</timeout>
+  <description>say motion level readed in the video stream</description>
+  <editable>false</editable>
+  <executed>false</executed>
+  <properties>
+    <properties>
+      <property name="say" value="motion level is @event.motion-level"/>
+    </properties>
+    <tuples/>
+  </properties>
+</command>

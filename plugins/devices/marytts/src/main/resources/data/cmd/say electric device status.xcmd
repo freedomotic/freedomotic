@@ -1,0 +1,15 @@
+<command>
+  <name>Say electric device status</name>
+  <receiver>app.actuators.media.tts.in</receiver>
+  <delay>0</delay>
+  <timeout>0</timeout>
+  <description>say the electric device status</description>
+  <hardwareLevel>false</hardwareLevel>
+  <editable>false</editable>
+  <properties>
+    <properties>
+      <property name="say" value="= if (@current.object.behavior.powered) say=&quot;@current.object.name is on with brightness at @current.object.behavior.brightness#%.&quot;; else say=&quot;@current.object.name is off.&quot;;"/>
+    </properties>
+    <tuples/>
+  </properties>
+</command>

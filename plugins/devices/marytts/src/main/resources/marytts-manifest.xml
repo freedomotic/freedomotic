@@ -1,0 +1,12 @@
+<config>
+    <properties>
+        <property name="description" value="MaryTTS Text to Speech"/>
+        <property name="category" value="media"/>
+        <property name="short-name" value="tts"/>
+        <property name="startup-time" value="on load"/>
+        <property name="voice-jar-file" value="voice-istc-lucia-hsmm-5.1.jar"/>
+        <property name="voice" value="istc-lucia-hsmm"/>
+    </properties>
+</config>
+
+                

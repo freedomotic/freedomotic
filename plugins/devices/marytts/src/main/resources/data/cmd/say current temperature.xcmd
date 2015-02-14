@@ -1,0 +1,12 @@
+<command>
+    <name>Say current temperature of the thermometer</name>
+    <receiver>app.actuators.media.tts.in</receiver>
+    <description>say current temperature of the thermometer object</description>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="say" value="@event.object.name temperature is @current.object.behavior.temperature Celsius degrees."/>
+        </properties>
+    </properties>
+</command>

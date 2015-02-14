@@ -1,0 +1,15 @@
+<command>
+  <name>Say door/window status</name>
+  <receiver>app.actuators.media.tts.in</receiver>
+  <delay>0</delay>
+  <timeout>0</timeout>
+  <description>say the status of a door or window object</description>
+  <hardwareLevel>false</hardwareLevel>
+  <editable>false</editable>
+  <properties>
+    <properties>
+      <property name="say" value="= if (@current.object.behavior.open) say=&quot;@current.object.name is open&quot;; else say=&quot;@current.object.name is closed.&quot;;"/>
+    </properties>
+    <tuples/>
+  </properties>
+</command>
