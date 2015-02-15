@@ -8,7 +8,7 @@ package com.freedomotic.persistence;
 import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.testutils.GuiceJUnitRunner;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import com.thoughtworks.xstream.XStream;
 import javax.inject.Inject;
 import org.apache.commons.io.IOUtils;

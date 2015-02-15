@@ -40,7 +40,7 @@ public final class Payload implements Serializable {
 
     private static final long serialVersionUID = -5799483105084939108L;
     @XmlElement
-    List<Statement> payload = Collections.synchronizedList(new ArrayList<Statement>());
+    private final List<Statement> payload = Collections.synchronizedList(new ArrayList<Statement>());
 
     /**
      *
@@ -197,15 +197,17 @@ public final class Payload implements Serializable {
     public List<Statement> getStatements(String attribute) {
         ArrayList<Statement> statements = new ArrayList<Statement>();
 
-        for (Statement i : payload) {
-            if (i.getAttribute().equalsIgnoreCase(attribute)) {
-                statements.add(i);
+        synchronized(payload) {
+            for (Statement i : payload) {
+                if (i.getAttribute().equalsIgnoreCase(attribute)) {
+                    statements.add(i);
+                }
             }
         }
 
         return statements;
     }
-    
+
     public List<Statement> getStatements() {
         return payload;
     }

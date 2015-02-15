@@ -35,6 +35,7 @@ import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.settings.Info;
+import com.google.common.collect.Iterators;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;

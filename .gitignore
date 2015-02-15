@@ -10,6 +10,7 @@ nbactions.xml
 nb-configuration.xml
 findbugs.settings
 pmd.setting
+.sonar/
 
 # Java specific #
 #################
