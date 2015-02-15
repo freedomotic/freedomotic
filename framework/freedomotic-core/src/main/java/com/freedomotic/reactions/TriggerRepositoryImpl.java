@@ -19,7 +19,6 @@
  */
 package com.freedomotic.reactions;
 
-//import com.freedomotic.app.Freedomotic;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.util.Info;
@@ -39,7 +38,7 @@ import java.util.logging.Logger;
  *
  * @author Enrico
  */
-class TriggerPersistence implements TriggerRepository {
+class TriggerRepositoryImpl implements TriggerRepository {
 
     private static ArrayList<Trigger> list = new ArrayList<Trigger>();
 
@@ -190,12 +189,12 @@ class TriggerPersistence implements TriggerRepository {
      * @param t
      */
     public static synchronized void addAndRegister(Trigger t) {
-        int preSize = TriggerPersistence.size();
+        int preSize = TriggerRepositoryImpl.size();
 
         if (!list.contains(t)) {
             list.add(t);
             t.register();
-            int postSize = TriggerPersistence.size();
+            int postSize = TriggerRepositoryImpl.size();
             if (!(postSize == (preSize + 1))) {
                 LOG.severe("Error while while adding and registering trigger '" + t.getName() + "'");
             }
@@ -215,7 +214,7 @@ class TriggerPersistence implements TriggerRepository {
      */
     public static synchronized void add(Trigger t) {
         if (t != null) {
-            int preSize = TriggerPersistence.size();
+            int preSize = TriggerRepositoryImpl.size();
 
             if (!list.contains(t)) {
                 list.add(t);
@@ -226,7 +225,7 @@ class TriggerPersistence implements TriggerRepository {
                 list.set(old, t);
             }
 
-            int postSize = TriggerPersistence.size();
+            int postSize = TriggerRepositoryImpl.size();
 
             if (!(postSize == (preSize + 1))) {
                 LOG.severe("Error while while adding trigger '" + t.getName() + "'");
@@ -239,12 +238,12 @@ class TriggerPersistence implements TriggerRepository {
      * @param t
      */
     public static synchronized void remove(Trigger t) {
-        int preSize = TriggerPersistence.size();
+        int preSize = TriggerRepositoryImpl.size();
 
         try {
             t.unregister();
             list.remove(t);
-            int postSize = TriggerPersistence.size();
+            int postSize = TriggerRepositoryImpl.size();
 
             if (!(postSize == (preSize - 1))) {
                 LOG.severe("Error while while removing trigger '" + t.getName() + "'");
@@ -340,7 +339,7 @@ class TriggerPersistence implements TriggerRepository {
         return list.size();
     }
 
-    private static final Logger LOG = Logger.getLogger(TriggerPersistence.class.getName());
+    private static final Logger LOG = Logger.getLogger(TriggerRepositoryImpl.class.getName());
 
     @Override
     public List<Trigger> findAll() {

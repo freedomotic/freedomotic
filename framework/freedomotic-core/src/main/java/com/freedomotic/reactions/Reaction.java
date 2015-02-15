@@ -82,7 +82,7 @@ public final class Reaction
     }
 
     public Reaction(String triggerName, List<Condition> conditions, List<Command> commands) {
-        Trigger t = TriggerPersistence.getTrigger(triggerName);
+        Trigger t = TriggerRepositoryImpl.getTrigger(triggerName);
         this.uuid = UUID.randomUUID().toString();
         this.conditions = conditions;
         create(t, commands);
@@ -94,7 +94,7 @@ public final class Reaction
      * @param commands
      */
     public Reaction(String trigger, List<Command> commands) {
-        Trigger t = TriggerPersistence.getTrigger(trigger);
+        Trigger t = TriggerRepositoryImpl.getTrigger(trigger);
         create(t, commands);
     }
 
@@ -220,7 +220,7 @@ public final class Reaction
         StringBuilder b = new StringBuilder();
 
         if ((trigger != null) && (trigger.getDescription() != null)) {
-            b.append(TriggerPersistence.getTrigger(trigger).getDescription());
+            b.append(TriggerRepositoryImpl.getTrigger(trigger).getDescription());
         }
 
         b.append(" then ");
