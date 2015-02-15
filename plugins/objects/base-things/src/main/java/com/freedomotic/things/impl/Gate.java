@@ -36,7 +36,6 @@ import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.util.TopologyUtils;
 import java.util.logging.Logger;
 
@@ -433,9 +432,9 @@ public class Gate extends EnvObjectLogic implements GenericGate {
                 this.getPojo().getName());
         turnsClosed.getPayload().addStatement("object.behavior."+BEHAVIOR_OPEN, "false");
 
-        TriggerPersistence.add(clicked);
-        TriggerPersistence.add(turnsOpen);
-        TriggerPersistence.add(turnsClosed);
+        triggerRepository.create(clicked);
+        triggerRepository.create(turnsOpen);
+        triggerRepository.create(turnsClosed);
     }
     private static final Logger LOG = Logger.getLogger(Gate.class.getName());
 }

@@ -81,6 +81,13 @@ public final class Reaction
         create(trigger, commands);
     }
 
+    public Reaction(String triggerName, List<Condition> conditions, List<Command> commands) {
+        Trigger t = TriggerPersistence.getTrigger(triggerName);
+        this.uuid = UUID.randomUUID().toString();
+        this.conditions = conditions;
+        create(t, commands);
+    }
+
     /**
      *
      * @param trigger

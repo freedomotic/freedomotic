@@ -22,14 +22,12 @@
 
 package com.freedomotic.things.impl;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -109,6 +107,6 @@ public class GenericSensor
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
 
-        TriggerPersistence.add(clicked);
+        triggerRepository.create(clicked);
     }
 }

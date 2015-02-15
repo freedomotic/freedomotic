@@ -189,6 +189,5 @@ public class ObjectPluginPlaceholder implements Client {
     @Override
     public void destroy() {
         // There should be no need to destroy a placeholder
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

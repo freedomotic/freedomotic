@@ -24,9 +24,9 @@ import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.NlpCommand;
+import com.freedomotic.reactions.TriggerRepository;
 import java.awt.BorderLayout;
 import java.util.Iterator;
 import javax.swing.BoxLayout;
@@ -46,16 +46,18 @@ public class ReactionsPanel
     private JScrollPane scrollPane;
     private final I18n I18n;
     private NlpCommand nlpCommands;
+    private TriggerRepository triggerRepository;
 
     /**
      * Creates new form ReactionList
      *
      * @param plugin
      */
-    public ReactionsPanel(AutomationsEditor plugin, NlpCommand nlpCommands) {
+    public ReactionsPanel(AutomationsEditor plugin, NlpCommand nlpCommands, TriggerRepository triggerRepository) {
         this.plugin = plugin;
         this.nlpCommands = nlpCommands;
         this.I18n = plugin.getApi().getI18n();
+        this.triggerRepository = triggerRepository;
         init(null);
     }
 
@@ -64,9 +66,10 @@ public class ReactionsPanel
      * @param i18n
      * @param obj
      */
-    public ReactionsPanel(I18n i18n, NlpCommand nlpCommands, EnvObjectLogic obj) {
+    public ReactionsPanel(I18n i18n, NlpCommand nlpCommands, TriggerRepository triggerRepository, EnvObjectLogic obj) {
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
+        this.triggerRepository = triggerRepository;
         init(obj);
     }
 
@@ -86,7 +89,7 @@ public class ReactionsPanel
     private void populateAllAutomations() {
         panel.removeAll();
 
-        for (Trigger trigger : TriggerPersistence.getTriggers()) {
+        for (Trigger trigger : triggerRepository.findAll()) {
             if (!trigger.isHardwareLevel()) {
                 //display already stored reactions related to this objects
                 boolean found = false;
@@ -118,7 +121,7 @@ public class ReactionsPanel
     private void populateObjAutomations(EnvObjectLogic object) {
         panel.removeAll();
 
-        for (Trigger trigger : TriggerPersistence.getTriggers()) {
+        for (Trigger trigger : triggerRepository.findAll()) {
             boolean isRelated = false;
 
             if (!trigger.isHardwareLevel()) {
@@ -130,7 +133,6 @@ public class ReactionsPanel
 
                     if (statement.getValue().contains(object.getPojo().getName())) {
                         isRelated = true; //is a trigger related with this object
-
                         break; //no need to check the other statements in current trigger
                     }
                 }

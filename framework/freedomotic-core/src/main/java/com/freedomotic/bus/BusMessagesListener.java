@@ -22,7 +22,10 @@ package com.freedomotic.bus;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.Profiler;
 import com.freedomotic.util.UidGenerator;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,7 +64,7 @@ public class BusMessagesListener implements MessageListener {
     private Session session;
 
     // A listener can consume from multiple sources
-    private Set<MessageConsumer> consumers = new HashSet<MessageConsumer>();
+    private List<MessageConsumer> consumers = new ArrayList<MessageConsumer>();
 
     /**
      * Constructor
@@ -130,6 +133,7 @@ public class BusMessagesListener implements MessageListener {
         try {
             Queue queue = busService.getReceiveSession().createQueue(queueName);
             MessageConsumer consumer = session.createConsumer(queue);
+            consumers.add(consumer);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
             LOG.severe(Freedomotic.getStackTraceInfo(e));
@@ -150,6 +154,7 @@ public class BusMessagesListener implements MessageListener {
 
             Queue queue = busService.getReceiveSession().createQueue(virtualTopicName);
             MessageConsumer consumer = session.createConsumer(queue);
+            consumers.add(consumer);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
             LOG.severe(Freedomotic.getStackTraceInfo(e));
@@ -168,6 +173,7 @@ public class BusMessagesListener implements MessageListener {
             Topic topic = busService.getReceiveSession().createTopic("VirtualTopic." + topicName);
             //TODO: add a selector for provenance field which should be "not from current instance"
             MessageConsumer consumer = session.createConsumer(topic);
+            consumers.add(consumer);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
             LOG.severe(Freedomotic.getStackTraceInfo(e));
@@ -179,13 +185,17 @@ public class BusMessagesListener implements MessageListener {
      * <br>
      * (invocations should be life cycle managed)
      */
-    public void unsubscribe() {
+    public void destroy() {
         try {
-            while (consumers.iterator().hasNext()) {
-                MessageConsumer consumer = consumers.iterator().next();
-                LOG.info("Closing message consumer " + consumer.toString());
+            Iterator it = consumers.iterator();
+            while (it.hasNext()) {
+                MessageConsumer consumer = (MessageConsumer) it.next();
+                LOG.log(Level.CONFIG, "Closing bus connection for {0}", messageHandler.getClass().getSimpleName());
                 consumer.close();
+                it.remove();
             }
+            consumers.clear();
+            session.close();
         } catch (JMSException ex) {
             Logger.getLogger(BusMessagesListener.class.getName()).log(Level.SEVERE, null, ex);
         }

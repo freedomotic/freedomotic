@@ -21,6 +21,7 @@ package com.freedomotic.things;
 
 import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.bus.BusService;
 import com.freedomotic.core.Resolver;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
@@ -38,7 +39,7 @@ import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
+import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.util.TopologyUtils;
 import com.google.inject.Inject;
 import java.util.Arrays;
@@ -65,6 +66,10 @@ public class EnvObjectLogic {
 
     @Inject
     protected EnvironmentRepository environmentRepository;
+    @Inject
+    protected TriggerRepository triggerRepository;
+    @Inject
+    private BusService busService;
 
     /**
      * Instantiation disabled from outside its package. Use
@@ -145,7 +150,7 @@ public class EnvObjectLogic {
         this.getPojo().setName(newName);
 
         //change trigger references to this object
-        for (Trigger t : TriggerPersistence.getTriggers()) {
+        for (Trigger t : triggerRepository.findAll()) {
             renameValuesInTrigger(t, oldName, newName);
         }
 
@@ -225,7 +230,7 @@ public class EnvObjectLogic {
             //send multicast because an event must be received by all triggers registred on the destination channel
             LOG.log(Level.FINE, "Object {0} changes something in its status (eg: a behavior value)",
                     this.getPojo().getName());
-            Freedomotic.sendEvent(objectEvent);
+            busService.send(objectEvent);
         } else {
             changed = false;
         }
@@ -448,7 +453,8 @@ public class EnvObjectLogic {
 
     /**
      * Changes a behavior value accordingly to the value property in the trigger
-     * in input without firing a command on hardware. It updates only the internal model
+     * in input without firing a command on hardware. It updates only the
+     * internal model
      *
      * @param trigger an hardware level trigger
      * @return true if the values is applied successfully, false otherwise

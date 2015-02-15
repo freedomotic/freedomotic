@@ -33,7 +33,6 @@ import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -230,9 +229,9 @@ public class ElectricDevice extends EnvObjectLogic {
         turnsOff.getPayload().addStatement("object.name", this.getPojo().getName());
         turnsOff.getPayload().addStatement("object.behavior." + BEHAVIOR_POWERED, BooleanBehavior.VALUE_FALSE);
 
-        TriggerPersistence.add(clicked);
-        TriggerPersistence.add(turnsOn);
-        TriggerPersistence.add(turnsOff);
+        triggerRepository.create(clicked);
+        triggerRepository.create(turnsOn);
+        triggerRepository.create(turnsOff);
     }
     private static final Logger LOG = Logger.getLogger(ElectricDevice.class.getName());
 }

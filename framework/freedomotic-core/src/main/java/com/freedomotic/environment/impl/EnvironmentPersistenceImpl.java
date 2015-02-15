@@ -51,7 +51,6 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
 
     private static final Logger LOG = Logger.getLogger(EnvironmentPersistenceImpl.class.getName());
 
-
     private final File directory;
     private boolean savedAsNewEnvironment;
     private final DataUpgradeService dataUpgradeService;
@@ -192,32 +191,32 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
      * @throws RepositoryException
      */
     @Override
-public Collection<Environment> loadAll() throws RepositoryException {
-    if (directory == null) {
-        throw new RepositoryException("Cannot load environments from null directory");
+    public Collection<Environment> loadAll() throws RepositoryException {
+        if (directory == null) {
+            throw new RepositoryException("Cannot load environments from null directory");
+        }
+
+        // This filter only returns env files
+        FileFilter envFileFilter
+                = new FileFilter() {
+                    @Override
+                    public boolean accept(File file) {
+                        return file.isFile() && file.getName().endsWith(".xenv");
+                    }
+                };
+
+        File[] files = directory.listFiles(envFileFilter);
+
+        List<Environment> environments = new ArrayList<Environment>();
+        for (File file : files) {
+            environments.add(deserialize(file));
+
+        }
+        if (environments.isEmpty()) {
+            return null;
+        }
+        return environments;
     }
-    
-    // This filter only returns env files
-    FileFilter envFileFilter
-            = new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.isFile() && file.getName().endsWith(".xenv");
-                }
-            };
-    
-    File[] files = directory.listFiles(envFileFilter);
-    
-    List<Environment> environments = new ArrayList<Environment>();
-    for (File file : files) {
-        environments.add(deserialize(file));
-        
-    }
-    if (environments.isEmpty()) {
-        return null;
-    }
-    return environments;
-}
 
     private void serialize(Environment env, File file) throws IOException {
         for (Zone zone : env.getZones()) {

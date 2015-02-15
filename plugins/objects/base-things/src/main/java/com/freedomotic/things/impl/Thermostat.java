@@ -27,7 +27,6 @@ import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
 import java.util.logging.Logger;
 
 /**
@@ -111,6 +110,6 @@ public class Thermostat
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
 
-        TriggerPersistence.add(clicked);
+        triggerRepository.create(clicked);
     }
 }

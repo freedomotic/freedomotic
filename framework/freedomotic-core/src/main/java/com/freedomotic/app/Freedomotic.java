@@ -46,11 +46,10 @@ import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.ReactionPersistence;
-import com.freedomotic.reactions.TriggerPersistence;
+import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.security.Auth;
 import com.freedomotic.security.UserRealm;
 import com.freedomotic.util.Info;
-import com.freedomotic.util.LogFormatter;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -66,7 +65,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -100,6 +98,7 @@ public class Freedomotic implements BusConsumer {
     //dependencies
     private final EnvironmentRepository environmentRepository;
     private final ThingRepository thingsRepository;
+    private final TriggerRepository triggerRepository;
     private final TopologyManager topologyManager;
     private final SynchManager synchManager;
     private final CommandsNlpService commandsNlpService;
@@ -130,6 +129,7 @@ public class Freedomotic implements BusConsumer {
             PluginsManager pluginsLoader,
             EnvironmentRepository environmentRepository,
             ThingRepository thingsRepository,
+            TriggerRepository triggerRepository,
             ClientStorage clientStorage,
             CommandsNlpService commandsNlpService,
             AppConfig config,
@@ -140,6 +140,7 @@ public class Freedomotic implements BusConsumer {
         this.pluginsManager = pluginsLoader;
         this.environmentRepository = environmentRepository;
         this.thingsRepository = thingsRepository;
+        this.triggerRepository = triggerRepository;
         this.busService = busService;
         this.commandsNlpService = commandsNlpService;
         this.topologyManager = topologyManager;
@@ -325,7 +326,7 @@ public class Freedomotic implements BusConsumer {
         }
 
         // Loads the entire Reactions system (Trigger + Commands + Reactions)
-        TriggerPersistence.loadTriggers(new File(Info.PATHS.PATH_DATA_FOLDER + "/trg/"));
+        triggerRepository.loadTriggers(new File(Info.PATHS.PATH_DATA_FOLDER + "/trg/"));
         CommandPersistence.loadCommands(new File(Info.PATHS.PATH_DATA_FOLDER + "/cmd/"));
         ReactionPersistence.loadReactions(new File(Info.PATHS.PATH_DATA_FOLDER + "/rea/"));
 
@@ -454,9 +455,9 @@ public class Freedomotic implements BusConsumer {
      */
     public void onExit(EventTemplate event) {
         LOG.info("Received exit signal...");
-        //stop all plugins
+        // Stops and unloads all plugins
         for (Client plugin : clientStorage.getClients()) {
-            plugin.stop();
+            plugin.destroy();
         }
         BootStatus.setCurrentStatus(BootStatus.STOPPING);
         busService.destroy();
@@ -471,7 +472,7 @@ public class Freedomotic implements BusConsumer {
             savedDataRoot = Info.PATHS.PATH_WORKDIR + "/testSave/data";
         }
 
-        TriggerPersistence.saveTriggers(new File(savedDataRoot + "/trg"));
+        triggerRepository.saveTriggers(new File(savedDataRoot + "/trg"));
         CommandPersistence.saveCommands(new File(savedDataRoot + "/cmd"));
         ReactionPersistence.saveReactions(new File(savedDataRoot + "/rea"));
 

@@ -80,13 +80,16 @@ public abstract class Protocol extends Plugin {
      */
     protected abstract void onEvent(EventTemplate event);
 
-
     /**
      *
      * @param listento
      */
     public void addEventListener(String listento) {
         listener.consumeEventFrom(listento);
+    }
+
+    public void removeEventListeners() {
+        listener.destroy();
     }
 
     /**
@@ -170,7 +173,6 @@ public abstract class Protocol extends Plugin {
                             notifyError(shutdownEx.getMessage());
                         }
                         sensorThread = null;
-                        listener.unsubscribe();
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
                         getBusService().send(event);
                         setStatus(PluginStatus.STOPPED);
@@ -202,29 +204,24 @@ public abstract class Protocol extends Plugin {
     }
 
     private boolean isPollingSensor() {
-        if (pollingWaitTime > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return pollingWaitTime > 0;
     }
 
     @Override
     public final void onMessage(final ObjectMessage message) {
         if (!isRunning()) {
-            notifyError("Plugin '" + getName() + "' receives a command while is not running. Turn on the plugin first");
+            notifyError("Plugin '" + getName() + "' receives a command while is not running. Turn on the plugin first ");
             return;
         }
 
-        Object payload = null;
+        Object payload;
 
         try {
             payload = message.getObject();
 
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
-                LOG.config(this.getName() + " receives command " + command.getName()
-                        + " with parametes {{" + command.getProperties() + "}}");
+                LOG.log(Level.CONFIG, "{0} receives command {1} with parametes '{''{'{2}'}''}'", new Object[]{this.getName(), command.getName(), command.getProperties()});
 
                 Protocol.ActuatorPerforms task;
                 lastDestination = message.getJMSReplyTo();

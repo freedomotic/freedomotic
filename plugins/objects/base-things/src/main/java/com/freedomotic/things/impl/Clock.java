@@ -25,7 +25,6 @@ package com.freedomotic.things.impl;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
 
 /**
  *
@@ -94,10 +93,10 @@ public class Clock
         eight.getPayload().addStatement("AND", "time.minute", "EQUALS", "0");
         eight.getPayload().addStatement("AND", "time.second", "EQUALS", "0");
 
-        TriggerPersistence.add(clicked);
-        TriggerPersistence.add(everySecond);
-        TriggerPersistence.add(everyMinute);
-        TriggerPersistence.add(morning);
-        TriggerPersistence.add(eight);
+        triggerRepository.create(clicked);
+        triggerRepository.create(everySecond);
+        triggerRepository.create(everyMinute);
+        triggerRepository.create(morning);
+        triggerRepository.create(eight);
     }
 }

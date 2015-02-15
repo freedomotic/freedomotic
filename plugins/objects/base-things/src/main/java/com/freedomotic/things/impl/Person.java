@@ -31,7 +31,6 @@ import com.freedomotic.behaviors.BooleanBehaviorLogic;
 import com.freedomotic.behaviors.ListBehaviorLogic;
 import com.freedomotic.behaviors.PropertiesBehaviorLogic;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
 import java.util.logging.Logger;
 
 /**
@@ -130,7 +129,7 @@ public class Person extends GenericPerson {
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
 
-        TriggerPersistence.add(clicked);
+        triggerRepository.create(clicked);
     }
     private static final Logger LOG = Logger.getLogger(Person.class.getName());
 }

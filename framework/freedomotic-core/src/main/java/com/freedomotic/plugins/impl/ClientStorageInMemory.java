@@ -89,7 +89,8 @@ class ClientStorageInMemory implements ClientStorage {
     }
 
     /**
-     *
+     * Unloads a plugin from memory and destroys all bus listeners associated
+     * to it.
      * @param c
      */
     @Override

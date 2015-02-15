@@ -34,7 +34,7 @@ import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
-import com.freedomotic.reactions.TriggerPersistence;
+import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.things.EnvObjectLogic;
 import com.google.inject.Inject;
 import java.io.File;
@@ -59,11 +59,16 @@ public final class Autodiscovery implements BusConsumer {
     private final ClientStorage clientStorage;
     private final BusService busService;
     private final ThingRepository thingsRepository;
+    private final TriggerRepository triggerRepository;
 
     @Inject
-    Autodiscovery(ClientStorage clientStorage, ThingRepository thingsRepository, BusService busService) {
+    Autodiscovery(ClientStorage clientStorage, 
+            ThingRepository thingsRepository, 
+            TriggerRepository triggerRepository,
+            BusService busService) {
         this.clientStorage = clientStorage;
         this.thingsRepository = thingsRepository;
+        this.triggerRepository = triggerRepository;
         this.busService = busService;
         register();
     }
@@ -155,7 +160,7 @@ public final class Autodiscovery implements BusConsumer {
                     for (Behavior behavior : loaded.getPojo().getBehaviors()) {
                         String triggerName = (String) tuple.get(behavior.getName());
                         if (triggerName != null) {
-                            loaded.addTriggerMapping(TriggerPersistence.getTrigger(triggerName),
+                            loaded.addTriggerMapping(triggerRepository.findByName(triggerName).get(0),
                                     behavior.getName());
                         }
                     }

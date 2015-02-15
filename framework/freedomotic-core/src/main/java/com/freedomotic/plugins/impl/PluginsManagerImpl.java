@@ -6,14 +6,13 @@ package com.freedomotic.plugins.impl;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.exceptions.PluginLoadingException;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.ReactionPersistence;
-import com.freedomotic.reactions.TriggerPersistence;
+import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.util.Info;
 import com.freedomotic.util.Unzip;
 import com.google.inject.Inject;
@@ -46,13 +45,13 @@ class PluginsManagerImpl implements PluginsManager {
 
     // Depedencies
     private ClientStorage clientStorage;
-    private TriggerPersistence triggers;
+    private TriggerRepository triggers;
 
     @Inject
     Injector injector;
 
     @Inject
-    PluginsManagerImpl(ClientStorage clientStorage, TriggerPersistence triggers) {
+    PluginsManagerImpl(ClientStorage clientStorage, TriggerRepository triggers) {
         this.clientStorage = clientStorage;
         this.triggers = triggers;
     }

@@ -25,7 +25,6 @@ import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -112,13 +111,13 @@ class ReactionConverter implements Converter {
      */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
-        Trigger t;
+        //Trigger t;
         List<Condition> conditions = new ArrayList<Condition>();
         ArrayList<Command> list = new ArrayList<Command>();
 
         reader.moveDown(); //goes down to <trigger>
         String triggerName = reader.getValue();
-        t = TriggerPersistence.getTrigger(triggerName.trim());
+        //t = TriggerPersistence.getTrigger(triggerName.trim());
         reader.moveUp(); //up to root
 
         //go down to conditions or sequence
@@ -162,7 +161,7 @@ class ReactionConverter implements Converter {
             reader.moveUp(); //move up to sequence
         }
         reader.moveUp(); //move uo to root
-        return new Reaction(t, conditions, list);
+        return new Reaction(triggerName, conditions, list);
     }
 
     /**

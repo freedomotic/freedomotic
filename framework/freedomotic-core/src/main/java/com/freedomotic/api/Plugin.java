@@ -517,9 +517,9 @@ public class Plugin implements Client, BusConsumer {
 
     @Override
     public void destroy() {
-        stop();
         // Destroy the messaging channel
-        listener.unsubscribe();
+        listener.destroy();
+        stop();
     }
 
 }

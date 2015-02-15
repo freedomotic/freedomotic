@@ -26,13 +26,15 @@ import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
+import com.freedomotic.reactions.TriggerRepository;
 import com.google.inject.Inject;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -42,8 +44,13 @@ import javax.swing.JFrame;
  * @author enrico
  */
 public class AutomationsEditor extends Protocol {
-    
-    @Inject private NlpCommand nlpCommands;
+
+    @Inject
+    private NlpCommand nlpCommands;
+    @Inject
+    private TriggerRepository triggerRepository;
+    private ReactionsPanel panel;
+    private JFrame frame;
 
     /**
      *
@@ -60,14 +67,31 @@ public class AutomationsEditor extends Protocol {
 //            ReactionList reactionList = new ReactionList(this);
             CustomizeCommand cc = new CustomizeCommand(getApi().getI18n(), command);
             cc.setVisible(true);
+            cc.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    refreshMainView();
+                }
+            });
         } else {
             if (c.getProperty("editor").equalsIgnoreCase("trigger")) {
-                Trigger trigger = TriggerPersistence.getTrigger(c.getProperty("editable"));
+                Trigger trigger = getApi().triggers().findByName(c.getProperty("editable")).get(0);
                 //ReactionList reactionList = new ReactionList(this);
-                CustomizeTrigger ct = new CustomizeTrigger(getApi().getI18n(), trigger);
+                CustomizeTrigger ct = new CustomizeTrigger(getApi().getI18n(), trigger, triggerRepository);
                 ct.setVisible(true);
+                ct.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        refreshMainView();
+                    }
+                });
             }
         }
+    }
+
+    private void refreshMainView() {
+        frame.dispose();
+        this.showGui();
     }
 
     /**
@@ -82,15 +106,19 @@ public class AutomationsEditor extends Protocol {
      */
     @Override
     public void onShowGui() {
-        final JFrame frame = new JFrame();
+        if (frame != null) {
+            frame.removeAll();
+        }
+        frame = new JFrame();
         frame.setTitle(getApi().getI18n().msg("manage") + getApi().getI18n().msg("automations"));
         frame.setPreferredSize(new Dimension(700, 600));
 
-        final ReactionsPanel panel = new ReactionsPanel(this, nlpCommands);
+        panel = new ReactionsPanel(this, nlpCommands, triggerRepository);
         frame.setContentPane(panel);
 
         JButton ok = new JButton(getApi().getI18n().msg("ok"));
         ok.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 for (Component component : panel.getPanel().getComponents()) {
                     if (component instanceof ReactionEditor) {
@@ -98,7 +126,6 @@ public class AutomationsEditor extends Protocol {
                         editor.finalizeEditing();
                     }
                 }
-
                 frame.dispose();
             }
         });

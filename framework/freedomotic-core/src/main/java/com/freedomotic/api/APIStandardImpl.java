@@ -5,14 +5,13 @@
 package com.freedomotic.api;
 
 import com.freedomotic.app.AppConfig;
-import com.freedomotic.bus.BusService;
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.ReactionPersistence;
-import com.freedomotic.reactions.TriggerPersistence;
+import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.NlpCommand;
@@ -40,7 +39,7 @@ class APIStandardImpl implements API {
     private final Auth auth;
     private final I18n i18n;
     private final PluginsManager plugManager;
-    private TriggerPersistence triggers;
+    private TriggerRepository triggers;
     private CommandPersistence commands;
     private ReactionPersistence reactions;
     private final ThingFactory thingsFactory;
@@ -68,7 +67,7 @@ class APIStandardImpl implements API {
             Auth auth,
             I18n i18n,
             PluginsManager plugManager,
-            TriggerPersistence triggerPersistence,
+            TriggerRepository triggerPersistence,
             CommandPersistence commands,
             ReactionPersistence reactions,
             NlpCommand nlpCommands) {
@@ -161,7 +160,7 @@ class APIStandardImpl implements API {
     }
 
     @Override
-    public TriggerPersistence triggers() {
+    public TriggerRepository triggers() {
         return triggers;
     }
 

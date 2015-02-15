@@ -65,11 +65,24 @@ class ThingRepositoryImpl implements ThingRepository {
     public static final boolean MAKE_NOT_UNIQUE = false;
     private static final Map<String, EnvObjectLogic> objectList = new HashMap<>();
     private static final Logger LOG = LoggerFactory.getLogger(ThingRepositoryImpl.class.getName());
+    // Dependencies
+    private final ThingFactory thingsFactory;
+    private final DataUpgradeService dataUpgradeService;
+
+    /**
+     *
+     * @param thingsFactory
+     * @param environmentRepository
+     */
+    @Inject
+    public ThingRepositoryImpl(ThingFactory thingsFactory, DataUpgradeService dataUpgradeService) {
+        this.thingsFactory = thingsFactory;
+        this.dataUpgradeService = dataUpgradeService;
+    }
 
     @Deprecated
     @RequiresPermissions("objects:read")
-    public static Collection<EnvObjectLogic> getObjectList(
-            ) {
+    private static Collection<EnvObjectLogic> getObjectList() {
         return objectList.values();
     }
 
@@ -79,7 +92,7 @@ class ThingRepositoryImpl implements ThingRepository {
      * @throws RepositoryException
      */
     @RequiresPermissions("objects:save")
-    public static void saveObjects(File folder) throws RepositoryException {
+    private static void saveObjects(File folder) throws RepositoryException {
         if (objectList.isEmpty()) {
             throw new RepositoryException("There are no object to persist, " + folder.getAbsolutePath()
                     + " will not be altered.");
@@ -147,9 +160,9 @@ class ThingRepositoryImpl implements ThingRepository {
      */
     @Deprecated
     @RequiresPermissions("objects:read")
-public static Iterator<EnvObjectLogic> iterator() {
-    return objectList.values().iterator();
-}
+    private static Iterator<EnvObjectLogic> iterator() {
+        return objectList.values().iterator();
+    }
 
     /**
      * Gets the object by name
@@ -157,8 +170,8 @@ public static Iterator<EnvObjectLogic> iterator() {
      * @param name
      * @return
      */
-@RequiresPermissions("objects:read")
-    public static EnvObjectLogic getObjectByName(String name) {
+    @RequiresPermissions("objects:read")
+    private static EnvObjectLogic getObjectByName(String name) {
         for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getName().equalsIgnoreCase(name) //&& auth.isPermitted("objects:read:" + object.getPojo().getUUID())
@@ -176,11 +189,11 @@ public static Iterator<EnvObjectLogic> iterator() {
      * @return
      */
     @RequiresPermissions("objects:read")
-    public static ArrayList<EnvObjectLogic> getObjectByTags(String tags) {
+    private static ArrayList<EnvObjectLogic> getObjectByTags(String tags) {
         ArrayList<EnvObjectLogic> results = new ArrayList<EnvObjectLogic>();
         // split tags string
         String[] tagList = tags.split(",");
-        
+
         // search every object for at least one tag 
         for (EnvObjectLogic obj : objectList.values()) {
             Set<String> tagSet = new HashSet<String>();
@@ -207,7 +220,7 @@ public static Iterator<EnvObjectLogic> iterator() {
      */
     @Deprecated
     @RequiresPermissions("objects:read")
-    public static EnvObjectLogic getObjectByUUID(String uuid) {
+    private static EnvObjectLogic getObjectByUUID(String uuid) {
         for (Iterator<EnvObjectLogic> it = iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getUUID().equalsIgnoreCase(uuid)) {
@@ -226,7 +239,7 @@ public static Iterator<EnvObjectLogic> iterator() {
      * @return
      */
     @RequiresPermissions("objects:read")
-    public static ArrayList<EnvObjectLogic> getObjectByAddress(String protocol, String address) {
+    private static ArrayList<EnvObjectLogic> getObjectByAddress(String protocol, String address) {
         if ((protocol == null)
                 || (address == null)
                 || protocol.trim().equalsIgnoreCase("unknown")
@@ -261,7 +274,7 @@ public static Iterator<EnvObjectLogic> iterator() {
      * @return
      */
     @RequiresPermissions("objects:read")
-    public static ArrayList<EnvObjectLogic> getObjectByProtocol(String protocol) {
+    private static ArrayList<EnvObjectLogic> getObjectByProtocol(String protocol) {
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
         for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
@@ -281,7 +294,7 @@ public static Iterator<EnvObjectLogic> iterator() {
      * @return
      */
     @RequiresPermissions("objects:read")
-    public static ArrayList<EnvObjectLogic> getObjectByEnvironment(String uuid) {
+    private static ArrayList<EnvObjectLogic> getObjectByEnvironment(String uuid) {
         ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
         for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
@@ -299,7 +312,7 @@ public static Iterator<EnvObjectLogic> iterator() {
      * @return
      */
     @RequiresPermissions("objects:read")
-    public static int size() {
+    private static int size() {
         return objectList.size();
     }
 
@@ -309,31 +322,18 @@ public static Iterator<EnvObjectLogic> iterator() {
      */
     @Deprecated
     @RequiresPermissions("objects:delete")
-    public static void remove(EnvObjectLogic input) {
+    private static void remove(EnvObjectLogic input) {
         objectList.remove(input.getPojo().getUUID());
         input.setChanged(true); //force repainting on frontends clients
         input.destroy(); //free memory
     }
 
-    public static List<String> getObjectsNames() {
+    private static List<String> getObjectsNames() {
         List<String> list = new ArrayList<String>();
         for (EnvObjectLogic obj : objectList.values()) {
             list.add(obj.getPojo().getName());
         }
         return list;
-    }
-    private final ThingFactory thingsFactory;
-    private final DataUpgradeService dataUpgradeService;
-
-    /**
-     *
-     * @param thingsFactory
-     * @param environmentRepository
-     */
-    @Inject
-    public ThingRepositoryImpl(ThingFactory thingsFactory, DataUpgradeService dataUpgradeService) {
-        this.thingsFactory = thingsFactory;
-        this.dataUpgradeService = dataUpgradeService;
     }
 
     /**
@@ -350,7 +350,7 @@ public static Iterator<EnvObjectLogic> iterator() {
      */
     @Deprecated
     @RequiresPermissions("objects:create")
-    public EnvObjectLogic add(final EnvObjectLogic obj, final boolean MAKE_UNIQUE) {
+    private EnvObjectLogic add(final EnvObjectLogic obj, final boolean MAKE_UNIQUE) {
         if ((obj == null)) {
             throw new IllegalArgumentException("Cannot add a null object to the environment");
         }
@@ -404,7 +404,7 @@ public static Iterator<EnvObjectLogic> iterator() {
      *
      */
     @RequiresPermissions("objects:delete")
-@Override
+    @Override
     public void deleteAll() {
         try {
             for (EnvObjectLogic el : objectList.values()) {
@@ -563,7 +563,7 @@ public static Iterator<EnvObjectLogic> iterator() {
             // Deserialize the object from the upgraded and validated xml
             EnvObject pojo = (EnvObject) xstream.fromXML(xml);
             EnvObjectLogic objectLogic = thingsFactory.create(pojo);
-            LOG.info("Loaded Thing {} [id:{}] of type {}", 
+            LOG.info("Loaded Thing {} [id:{}] of type {}",
                     new Object[]{objectLogic.getPojo().getName(), objectLogic.getPojo().getUUID(), objectLogic.getClass().getCanonicalName()});
             return objectLogic;
         } catch (IOException ex) {

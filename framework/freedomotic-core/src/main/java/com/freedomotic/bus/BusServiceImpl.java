@@ -116,6 +116,7 @@ class BusServiceImpl extends LifeCycle implements BusService {
      *
      * @throws java.lang.Exception
      */
+    @Override
     protected void stop() throws Exception {
 
         BootStatus.setCurrentStatus(BootStatus.STOPPING);

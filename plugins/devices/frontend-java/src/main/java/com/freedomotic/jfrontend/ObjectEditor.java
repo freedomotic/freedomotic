@@ -31,10 +31,8 @@ import com.freedomotic.behaviors.TaxonomyBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
-import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.util.Info;
 import com.google.common.collect.Iterators;
@@ -46,7 +44,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Map.Entry;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -960,7 +957,7 @@ public class ObjectEditor
             //addAndRegister a combo box with the list of all available hardware triggers
             DefaultComboBoxModel model = new DefaultComboBoxModel();
 
-            for (Trigger trigger : TriggerPersistence.getTriggers()) {
+            for (Trigger trigger : api.triggers().findAll()) {
                 if (trigger.isHardwareLevel()) {
                     model.addElement(trigger);
                 }
@@ -980,7 +977,7 @@ public class ObjectEditor
                 }
             }
 
-            Trigger relatedTrigger = TriggerPersistence.getTrigger(relatedTriggerName);
+            Trigger relatedTrigger = api.triggers().findByName(relatedTriggerName).get(0);
 
             //if related harware trigger is already defined
             if (relatedTrigger != null) {
@@ -1016,7 +1013,7 @@ public class ObjectEditor
     private void populateAutomationsTab() {
         tabAutomations.removeAll();
         tabAutomations.setLayout(new BorderLayout());
-        reactionsPanel = new ReactionsPanel(I18n, nlpCommands, object);
+        reactionsPanel = new ReactionsPanel(I18n, nlpCommands, api.triggers(), object);
         tabAutomations.add(reactionsPanel);
         tabAutomations.validate();
     }

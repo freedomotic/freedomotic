@@ -28,8 +28,8 @@ package com.freedomotic.jfrontend.automationeditor;
 import com.freedomotic.rules.Payload;
 import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
 import com.freedomotic.i18n.I18n;
+import com.freedomotic.reactions.TriggerRepository;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,12 +49,14 @@ public class CustomizeTrigger
     DefaultTableModel model = new DefaultTableModel();
     JTable table;
     private final I18n I18n;
+    private final TriggerRepository triggerRepository;
 
     /**
      * Creates new form CustomizeEvent
      */
-    CustomizeTrigger(I18n i18n, Trigger t) {
+    CustomizeTrigger(I18n i18n, Trigger t, TriggerRepository triggerRepository) {
          this.I18n = i18n;
+         this.triggerRepository = triggerRepository;
         initComponents();        
         original = t;
         this.setTitle(I18n.msg(
@@ -100,7 +102,7 @@ public class CustomizeTrigger
         model.addRow(new Object[]{"", "", "", ""});
     }
 
-    private void save(Trigger t) {
+    private void prepareForSaving(Trigger t) {
         if (table.getCellEditor() != null) {
             table.getCellEditor().stopCellEditing();
         }
@@ -366,16 +368,17 @@ public class CustomizeTrigger
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnSaveActionPerformed
 
         Trigger trigger = new Trigger();
-        save(trigger); //saves as new trigger
+        prepareForSaving(trigger); //saves as new trigger
         trigger.setPersistence(true);
 
-        int preSize = TriggerPersistence.size();
-        TriggerPersistence.addAndRegister(trigger);
+        int preSize = triggerRepository.findAll().size();
+        triggerRepository.create(trigger);
 
-        int postSize = TriggerPersistence.size();
+        int postSize = triggerRepository.findAll().size();
 
         if (preSize < postSize) {
             LOG.info("Trigger added correctly [" + postSize + " triggers]");
+            this.dispose();
         } else {
             LOG.warning("Error while addind a trigger in trigger editor");
         }
@@ -384,13 +387,13 @@ public class CustomizeTrigger
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnEditActionPerformed
-        save(original); //save changes over original trigger
+        prepareForSaving(original); //save changes over original trigger
         this.dispose();
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnDeleteActionPerformed
         System.out.println("Trying to remove a trigger from the list");
-        TriggerPersistence.remove(original);
+        triggerRepository.delete(original);
         this.dispose();
     }//GEN-LAST:event_btnDeleteActionPerformed
 

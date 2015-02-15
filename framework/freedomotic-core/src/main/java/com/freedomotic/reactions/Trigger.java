@@ -440,7 +440,7 @@ public final class Trigger implements BusConsumer, Cloneable {
      */
     public void unregister() {
         if (listener != null) {
-            listener.unsubscribe();
+            listener.destroy();
         }
     }
 

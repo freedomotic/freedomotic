@@ -19,7 +19,6 @@
  */
 package com.freedomotic.reactions;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.util.Info;
