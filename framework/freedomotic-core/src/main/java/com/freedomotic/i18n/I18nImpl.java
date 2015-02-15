@@ -19,9 +19,9 @@
  */
 package com.freedomotic.i18n;
 
-import com.freedomotic.api.API;
-import com.freedomotic.api.Client;
-import com.freedomotic.api.Plugin;
+//import com.freedomotic.api.API;
+//import com.freedomotic.api.Client;
+//import com.freedomotic.api.Plugin;
 import com.freedomotic.settings.AppConfig;
 import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
@@ -65,12 +65,10 @@ class I18nImpl implements I18n {
     private final AppConfig config;
     private final HashMap<String, File> packageBundleDir;
     private final Locale fallBackLocale = Locale.ENGLISH;
-    private final API api;
 
     @Inject
-    public I18nImpl(AppConfig config, API api) {
+    public I18nImpl(AppConfig config) {
         this.config = config;
-        this.api = api;
         currentLocale = Locale.getDefault();
         messages = new HashMap<String, ResourceBundle>();
         RB_Control = new UTF8control();
@@ -175,19 +173,10 @@ class I18nImpl implements I18n {
         return msg(caller, key, fields);
     }
 
-    private void registerBundleDir(String packageName, File path) {
+        @Override
+    public void registerBundleTranslations(String packageName, File i18nFolder) {
         if (!packageBundleDir.containsKey(packageName)) {
-            packageBundleDir.put(packageName, path);
-        }
-    }
-
-    @Override
-    public void registerPluginBundleDir(Client client) {
-        if (client instanceof Plugin) {
-            Plugin plug = (Plugin) client;
-            if (plug.configuration.getBooleanProperty("enable-i18n", false)) {
-                registerBundleDir(plug.getClass().getPackage().getName(), new File(plug.getFile().getParentFile() + "/data/i18n"));
-            }
+            packageBundleDir.put(packageName, i18nFolder);
         }
     }
 

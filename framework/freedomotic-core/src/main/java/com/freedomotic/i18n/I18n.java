@@ -5,9 +5,9 @@
 package com.freedomotic.i18n;
 
 import com.freedomotic.api.Client;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Vector;
 
 /**
  *
@@ -61,8 +61,9 @@ public interface I18n {
     
     /**
      *
-     * @param client
+     * @param packageName
+     * @param i18nFolder
      */
-    void registerPluginBundleDir(Client client);
+    void registerBundleTranslations(String packageName, File i18nFolder);
     
 }
