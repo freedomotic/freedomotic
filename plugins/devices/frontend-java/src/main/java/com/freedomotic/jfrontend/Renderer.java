@@ -58,7 +58,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -82,8 +84,8 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     private boolean backgroundChanged = true;
     private int environmentWidth;
     private int environmentHeight;
-    private static int BORDER_X = 10; //the empty space around the map
-    private static int BORDER_Y = 10; //the empty space around the map
+    private static final int BORDER_X = 10; //the empty space around the map
+    private static final int BORDER_Y = 10; //the empty space around the map
     private double CANVAS_WIDTH;
     private double CANVAS_HEIGHT;
     private static final int SNAP_TO_GRID = 20; //a grid of 20cm
@@ -165,6 +167,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
+                    System.out.println("DEBUG: UNLOADED EDITOR");
                     objEditorPanels.remove(currEditorPanel);
                 } catch (Exception ex) {
                     LOG.log(Level.SEVERE, "Cannot unload object editor frame", ex);
@@ -286,9 +289,18 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                for (ObjectEditor editor : getOpenThingEditors().values()) {
+                Iterator it = getOpenThingEditors().entrySet().iterator();
+                while (it.hasNext()) {
+                    Entry entry = (Entry) it.next();
+                    EnvObjectLogic thing = (EnvObjectLogic) entry.getKey();
+                    ObjectEditor editor = (ObjectEditor) entry.getValue();
                     //The object may have changed, refresh this panel
-                    editor.populateControlPanel();
+                    //Both null checks are REQUIRED!
+                    if (thing != null && thing.getPojo() != null) {
+                        editor = new ObjectEditor(thing);
+                     } else {
+                        it.remove();
+                    }
                 }
             }
         });

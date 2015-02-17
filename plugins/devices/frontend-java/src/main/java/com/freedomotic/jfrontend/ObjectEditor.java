@@ -43,6 +43,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -69,7 +70,7 @@ import javax.swing.event.ChangeListener;
 public class ObjectEditor
         extends javax.swing.JFrame {
 
-    private final EnvObjectLogic object;
+    private EnvObjectLogic object;
     private String oldName;
     private PropertiesPanel_1 commandsControlPanel;
     private PropertiesPanel_1 pnlTriggers;
@@ -177,8 +178,19 @@ public class ObjectEditor
         populateControlPanel();
     }
 
-    public void populateControlPanel() {
+    /**
+     * Returns a reference to the thing that is edited by this form. It may be
+     * null if the thing it's deleted while the editor is open
+     *
+     * @return the thing reference or null if object does not exists anymore
+     */
+    public EnvObjectLogic getThing() {
+        return object;
+    }
+
+    private void populateControlPanel() {
         tabControls.removeAll();
+
         //tabControls.setLayout(new BoxLayout(tabControls, BoxLayout.PAGE_AXIS));
         tabControls.setLayout(new GridLayout(Iterators.size(object.getBehaviors().iterator()), 2));
 
@@ -187,7 +199,7 @@ public class ObjectEditor
 
         for (Behavior behavior : object.getPojo().getBehaviors()) {
             // All this is done just to keep the behavior orders as in pojo definition
-            BehaviorLogic b= object.getBehavior(behavior.getName());
+            BehaviorLogic b = object.getBehavior(behavior.getName());
             if (b instanceof BooleanBehaviorLogic) {
                 final BooleanBehaviorLogic bb = (BooleanBehaviorLogic) b;
                 final JToggleButton button;
@@ -977,7 +989,11 @@ public class ObjectEditor
                 }
             }
 
-            Trigger relatedTrigger = api.triggers().findByName(relatedTriggerName).get(0);
+            List<Trigger> found = api.triggers().findByName(relatedTriggerName);
+            Trigger relatedTrigger = null;
+            if (!found.isEmpty()){
+                relatedTrigger = found.get(0);
+            }
 
             //if related harware trigger is already defined
             if (relatedTrigger != null) {

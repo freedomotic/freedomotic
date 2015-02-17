@@ -481,7 +481,6 @@ class ThingRepositoryImpl implements ThingRepository {
             LOG.error("Cannot delete object" + uuid, e);
             return false;
         }
-
     }
 
     @Override
