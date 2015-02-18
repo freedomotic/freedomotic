@@ -218,7 +218,7 @@ public class WashingMachine extends ElectricDevice {
      * execute something on the hardware
      */
     public void setWashingTemperature(int value, Config params, boolean fireCommand) {
-        // Makes to program a custom one
+        // Makes the program a custom one
         washingProgram.setSelected("Custom");
         //Turn it on first (executed only if not already powered)
         executePowerOn(params);

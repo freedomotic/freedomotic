@@ -167,7 +167,6 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
-                    System.out.println("DEBUG: UNLOADED EDITOR");
                     objEditorPanels.remove(currEditorPanel);
                 } catch (Exception ex) {
                     LOG.log(Level.SEVERE, "Cannot unload object editor frame", ex);

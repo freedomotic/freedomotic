@@ -41,17 +41,17 @@ import java.util.logging.Logger;
  * @author enrico
  */
 public class ElectricDevice extends EnvObjectLogic {
-
+    
     protected BooleanBehaviorLogic powered;
     protected RangedIntBehaviorLogic consumption;
     protected final static String BEHAVIOR_POWERED = "powered";
     protected final static String BEHAVIOR_POWER_CONSUMPTION = "power_consumption";
     protected final static String ACTION_TURN_ON = "turn on";
     protected final static String ACTION_TURN_OFF = "turn off";
-
+    
     public ElectricDevice() {
     }
-
+    
     @Override
     public void init() {
         powered = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior(BEHAVIOR_POWERED));
@@ -65,7 +65,7 @@ public class ElectricDevice extends EnvObjectLogic {
                     setOn(); //sets the object behavior to on as a result from a notified value
                 }
             }
-
+            
             @Override
             public void onFalse(Config params, boolean fireCommand) {
                 if (fireCommand) {
@@ -79,14 +79,55 @@ public class ElectricDevice extends EnvObjectLogic {
         registerBehavior(powered);
 
         //ADD CONSUMPTION BEHAVIOR
-        RangedIntBehavior cons_pojo = (RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_POWER_CONSUMPTION);
-        if (cons_pojo != null) {
-            consumption = new RangedIntBehaviorLogic(cons_pojo);
+        final RangedIntBehavior consumptionPojo = (RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_POWER_CONSUMPTION);
+        if (consumptionPojo != null) {
+            consumption = new RangedIntBehaviorLogic(consumptionPojo);
+            consumption.addListener(new RangedIntBehaviorLogic.Listener() {
+                
+                @Override
+                public void onLowerBoundValue(Config params, boolean fireCommand) {
+                    setConsumptionValue(consumptionPojo.getMin(), params, fireCommand);
+                }
+                
+                @Override
+                public void onUpperBoundValue(Config params, boolean fireCommand) {
+                    setConsumptionValue(consumptionPojo.getMax(), params, fireCommand);
+                }
+                
+                @Override
+                public void onRangeValue(int rangeValue, Config params, boolean fireCommand) {
+                    setConsumptionValue(rangeValue, params, fireCommand);
+                }
+            });
+            //register this behavior to the superclass to make it visible to it
             registerBehavior(consumption);
         }
 
         //caches hardware level commands and builds user command for the Electric Devices
         super.init();
+    }
+
+    /**
+     * Update the power consumption value. This behavior is supposed to be
+     * read only by design, so no commands are executed even if the fireCommand
+     * property is set to true.
+     *
+     * @param value the new consumption value
+     * @param params general request parameters
+     * @param fireCommand true if a command should executed by the related
+     * plugin, false if this is just a thing status update
+     */
+    public void setConsumptionValue(int value, Config params, boolean fireCommand) {
+        if (fireCommand) {
+            // Action on the hardware is required
+            LOG.log(Level.WARNING, "Power consumption behavior of thing ''{0}''"
+                    + " is supposed to be a read only value. "
+                    + "No command is executed!", this.getPojo().getName());
+        } else {
+            // Just a change in the virtual thing status
+            consumption.setValue(value);
+            setChanged(true);
+        }
     }
 
     /**
@@ -98,7 +139,7 @@ public class ElectricDevice extends EnvObjectLogic {
      */
     public void executePowerOn(Config params) {
         boolean executed = executeCommand(ACTION_TURN_ON, params);
-
+        
         if (executed) {
             setOn();
         }
@@ -113,12 +154,12 @@ public class ElectricDevice extends EnvObjectLogic {
      */
     public void executePowerOff(Config params) {
         boolean executed = executeCommand(ACTION_TURN_OFF, params);
-
+        
         if (executed) {
             setOff();
         }
     }
-
+    
     private void setOn() {
         LOG.log(Level.CONFIG, "Setting behavior ''powered'' of object ''{0}'' to true", getPojo().getName());
 
@@ -131,7 +172,7 @@ public class ElectricDevice extends EnvObjectLogic {
             setChanged(true);
         }
     }
-
+    
     private void setOff() {
         LOG.log(Level.CONFIG, "Setting behavior ''powered'' of object ''{0}'' to false", getPojo().getName());
 
@@ -155,7 +196,7 @@ public class ElectricDevice extends EnvObjectLogic {
         setOn.setProperty("object", getPojo().getName());
         setOn.setProperty("behavior", BEHAVIOR_POWERED);
         setOn.setProperty("value", BooleanBehavior.VALUE_TRUE);
-
+        
         Command setOff = new Command();
         setOff.setName("Turn off " + getPojo().getName());
         setOff.setDescription(getPojo().getName() + " turns off");
@@ -163,7 +204,7 @@ public class ElectricDevice extends EnvObjectLogic {
         setOff.setProperty("object", getPojo().getName());
         setOff.setProperty("behavior", BEHAVIOR_POWERED);
         setOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
-
+        
         Command switchPower = new Command();
         switchPower.setName("Switch " + getPojo().getName() + " power");
         switchPower.setDescription("switches the power of " + getPojo().getName());
@@ -171,9 +212,9 @@ public class ElectricDevice extends EnvObjectLogic {
         switchPower.setProperty("object", getPojo().getName());
         switchPower.setProperty("behavior", BEHAVIOR_POWERED);
         switchPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
-
+        
         Command setItOn = new Command();
-
+        
         setItOn.setName("Turn it on");
         setItOn.setDescription("Object turns on");
         setItOn.setReceiver("app.events.sensors.behavior.request.objects");
@@ -181,7 +222,7 @@ public class ElectricDevice extends EnvObjectLogic {
         setItOn.setProperty("behavior", BEHAVIOR_POWERED);
         setItOn.setProperty("value", "true");
         CommandPersistence.add(setItOn);
-
+        
         Command setItOff = new Command();
         setItOff.setName("Turn it off");
         setItOff.setDescription("Object turns off");
@@ -190,7 +231,7 @@ public class ElectricDevice extends EnvObjectLogic {
         setItOff.setProperty("behavior", BEHAVIOR_POWERED);
         setItOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
         CommandPersistence.add(setItOff);
-
+        
         Command switchItsPower = new Command();
         switchItsPower.setName("Switch its power");
         switchItsPower.setDescription("Object switches its power");
@@ -199,7 +240,7 @@ public class ElectricDevice extends EnvObjectLogic {
         switchItsPower.setProperty("behavior", BEHAVIOR_POWERED);
         switchItsPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
         CommandPersistence.add(switchItsPower);
-
+        
         CommandPersistence.add(setOff);
         CommandPersistence.add(setOn);
         CommandPersistence.add(switchPower);
@@ -216,19 +257,19 @@ public class ElectricDevice extends EnvObjectLogic {
         clicked.getPayload().addStatement("object.name", this.getPojo().getName());
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
-
+        
         Trigger turnsOn = new Trigger();
         turnsOn.setName(this.getPojo().getName() + " turns on");
         turnsOn.setChannel("app.event.sensor.object.behavior.change");
         turnsOn.getPayload().addStatement("object.name", this.getPojo().getName());
         turnsOn.getPayload().addStatement("object.behavior." + BEHAVIOR_POWERED, BooleanBehavior.VALUE_TRUE);
-
+        
         Trigger turnsOff = new Trigger();
         turnsOff.setName(this.getPojo().getName() + " turns off");
         turnsOff.setChannel("app.event.sensor.object.behavior.change");
         turnsOff.getPayload().addStatement("object.name", this.getPojo().getName());
         turnsOff.getPayload().addStatement("object.behavior." + BEHAVIOR_POWERED, BooleanBehavior.VALUE_FALSE);
-
+        
         triggerRepository.create(clicked);
         triggerRepository.create(turnsOn);
         triggerRepository.create(turnsOff);
