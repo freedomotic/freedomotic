@@ -26,6 +26,7 @@ import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.NlpCommand;
+import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.reactions.TriggerRepository;
 import java.awt.BorderLayout;
 import java.util.Iterator;
@@ -47,17 +48,19 @@ public class ReactionsPanel
     private final I18n I18n;
     private NlpCommand nlpCommands;
     private TriggerRepository triggerRepository;
+        private CommandRepository commandRepository;
 
     /**
      * Creates new form ReactionList
      *
      * @param plugin
      */
-    public ReactionsPanel(AutomationsEditor plugin, NlpCommand nlpCommands, TriggerRepository triggerRepository) {
+    public ReactionsPanel(AutomationsEditor plugin, NlpCommand nlpCommands, TriggerRepository triggerRepository, CommandRepository commandRepository) {
         this.plugin = plugin;
         this.nlpCommands = nlpCommands;
         this.I18n = plugin.getApi().getI18n();
         this.triggerRepository = triggerRepository;
+        this.commandRepository = commandRepository;
         init(null);
     }
 
@@ -66,10 +69,11 @@ public class ReactionsPanel
      * @param i18n
      * @param obj
      */
-    public ReactionsPanel(I18n i18n, NlpCommand nlpCommands, TriggerRepository triggerRepository, EnvObjectLogic obj) {
+    public ReactionsPanel(I18n i18n, NlpCommand nlpCommands, TriggerRepository triggerRepository, CommandRepository commandRepository, EnvObjectLogic obj) {
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
         this.triggerRepository = triggerRepository;
+                this.commandRepository = commandRepository;
         init(obj);
     }
 
@@ -97,7 +101,7 @@ public class ReactionsPanel
 
                 for (Reaction r : ReactionPersistence.getReactions()) {
                     if (r.getTrigger().equals(trigger) && !r.getCommands().isEmpty()) {
-                        ReactionEditor editor = new ReactionEditor(I18n, nlpCommands, r, this);
+                        ReactionEditor editor = new ReactionEditor(I18n, nlpCommands, commandRepository, r, this);
                         panel.add(editor, pos++);
                         found = true;
                     }
@@ -106,7 +110,7 @@ public class ReactionsPanel
                 if (!found) { //add an empty reaction if none
                     pos = panel.getComponentCount();
 
-                    ReactionEditor editor = new ReactionEditor(I18n, nlpCommands, new Reaction(trigger), this);
+                    ReactionEditor editor = new ReactionEditor(I18n, nlpCommands, commandRepository, new Reaction(trigger), this);
                     panel.add(editor, pos++);
                 }
 
@@ -145,7 +149,7 @@ public class ReactionsPanel
                     //display already stored reactions related to this objects
                     for (Reaction r : ReactionPersistence.getReactions()) {
                         if (r.getTrigger().equals(trigger)) {
-                            ReactionEditor editor = new ReactionEditor(I18n, nlpCommands, r, this);
+                            ReactionEditor editor = new ReactionEditor(I18n, nlpCommands, commandRepository, r, this);
                             panel.add(editor);
                             alreadyStored = true;
                         }
@@ -153,7 +157,7 @@ public class ReactionsPanel
 
                     if (!alreadyStored) { //add an empty reaction if none
 
-                        ReactionEditor editor = new ReactionEditor(I18n, nlpCommands, new Reaction(trigger), this);
+                        ReactionEditor editor = new ReactionEditor(I18n, nlpCommands, commandRepository, new Reaction(trigger), this);
                         panel.add(editor);
                     }
                 }

@@ -26,6 +26,7 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.NlpCommand;
+import com.freedomotic.reactions.CommandRepository;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -51,15 +52,17 @@ public class ReactionEditor
     private Component parent = null;
     private final I18n I18n;
     private NlpCommand nlpCommands;
+    private CommandRepository commandRepository;
 
     /**
      * Creates new form ReactionEditor
      *
      * @param parent
      */
-    public ReactionEditor(I18n i18n, NlpCommand nlpCommands, Reaction reaction, Component parent) {
+    public ReactionEditor(I18n i18n, NlpCommand nlpCommands, CommandRepository commandRepository, Reaction reaction, Component parent) {
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
+        this.commandRepository = commandRepository;
         initComponents();
         this.reaction = reaction;
         this.parent = parent;
@@ -118,7 +121,7 @@ public class ReactionEditor
         int i = 0;
 
         for (Command command : reaction.getCommands()) {
-            GuessCommandBox box = new GuessCommandBox(I18n, this, nlpCommands, command);
+            GuessCommandBox box = new GuessCommandBox(I18n, this, nlpCommands, commandRepository, command);
 
             addBox(box);
         }
@@ -128,7 +131,7 @@ public class ReactionEditor
     }
 
     private void addEmptyBox() {
-        GuessCommandBox emptyBox = new GuessCommandBox(I18n, this, nlpCommands);
+        GuessCommandBox emptyBox = new GuessCommandBox(I18n, this, nlpCommands, commandRepository);
         addBox(emptyBox);
         this.validate();
         this.parent.validate();

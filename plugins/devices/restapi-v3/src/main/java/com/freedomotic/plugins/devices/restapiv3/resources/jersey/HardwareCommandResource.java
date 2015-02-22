@@ -143,7 +143,7 @@ public class HardwareCommandResource extends AbstractResource<Command> {
     @Override
     protected List<Command> prepareList() {
         List<Command> cl = new ArrayList<Command>();
-        cl.addAll(api.commands().getHardwareCommands());
+        cl.addAll(api.commands().findHardwareCommands());
         return cl;
     }
 

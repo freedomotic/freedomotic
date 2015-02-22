@@ -20,19 +20,17 @@
 package com.freedomotic.jfrontend.extras;
 
 import com.freedomotic.api.EventTemplate;
-import com.freedomotic.api.Plugin;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.charting.UsageData;
 import com.freedomotic.model.charting.UsageDataFrame;
 import com.freedomotic.behaviors.DataBehaviorLogic;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
 import java.awt.Color;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
@@ -67,6 +65,7 @@ public class GraphPanel extends javax.swing.JFrame {
 
     /**
      * Creates new form GraphWindow
+     *
      * @param obj
      */
     public GraphPanel(Protocol master, EnvObjectLogic obj) {
@@ -93,7 +92,6 @@ public class GraphPanel extends javax.swing.JFrame {
             dataTable.setModel(new FreedomoticTableModel());
             setVisible(true);
         }
-
 
     }
 
@@ -246,16 +244,23 @@ public class GraphPanel extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Command c = CommandPersistence.getCommand("Ask data from the harvester");
-        Command d;
-        if (c != null) {
-            try {
-                d = c.clone();
+        Command command;
+        List<Command> list = master.getApi().commands().findByName("Ask data from the harvester");
+        if (!list.isEmpty()) {
+            command = list.get(0);
+        } else {
+            throw new RuntimeException("No commands found with the specified name");
+        }
 
-                d.setProperty("startDate", Long.toString(((Date) jSpinnerStartDate.getValue()).getTime()));
-                d.setProperty("stopDate", Long.toString(((Date) jSpinnerStopDate.getValue()).getTime()));
-                d.setProperty("QueryAddress", obj.getPojo().getPhisicalAddress());
-                master.notifyCommand(d);
+        Command cloned;
+        if (command != null) {
+            try {
+                cloned = command.clone();
+
+                cloned.setProperty("startDate", Long.toString(((Date) jSpinnerStartDate.getValue()).getTime()));
+                cloned.setProperty("stopDate", Long.toString(((Date) jSpinnerStopDate.getValue()).getTime()));
+                cloned.setProperty("QueryAddress", obj.getPojo().getPhisicalAddress());
+                master.notifyCommand(cloned);
 
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(GraphPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -314,7 +319,7 @@ public class GraphPanel extends javax.swing.JFrame {
                 true, // legend
                 true, // tooltips
                 false // urls
-                );
+        );
         chart.setAntiAlias(true);
         // Set plot styles
         XYPlot plot = (XYPlot) chart.getPlot();
@@ -331,7 +336,6 @@ public class GraphPanel extends javax.swing.JFrame {
             renderer.setShapesVisible(true);
             renderer.setShapesFilled(true);
         }
-
 
         // Set date axis style
         DateAxis axis = (DateAxis) plot.getDomainAxis();

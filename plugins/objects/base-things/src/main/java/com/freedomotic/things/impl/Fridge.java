@@ -24,7 +24,6 @@ import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
 
 /**
  *
@@ -150,10 +149,10 @@ public class Fridge extends ElectricDevice {
         decreaseFreezerTemp.setProperty("behavior", BEHAVIOR_FREEZER_TEMPERATURE);
         decreaseFreezerTemp.setProperty("value", Behavior.VALUE_PREVIOUS);
 
-        CommandPersistence.add(increaseFridgeTemp);
-        CommandPersistence.add(decreaseFridgeTemp);
-        CommandPersistence.add(increaseFreezerTemp);
-        CommandPersistence.add(decreaseFreezerTemp);
+        commandRepository.create(increaseFridgeTemp);
+        commandRepository.create(decreaseFridgeTemp);
+        commandRepository.create(increaseFreezerTemp);
+        commandRepository.create(decreaseFreezerTemp);
     }
 
     @Override

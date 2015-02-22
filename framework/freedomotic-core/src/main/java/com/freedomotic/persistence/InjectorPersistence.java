@@ -17,6 +17,7 @@ public class InjectorPersistence extends AbstractModule {
     @Override
     protected void configure() {
         bind(DataUpgradeService.class).to(DataUpgradeServiceImpl.class).in(Singleton.class);
+        requestStaticInjection(FreedomXStream.class);
     }
 
 }

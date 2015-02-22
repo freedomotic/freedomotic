@@ -34,7 +34,7 @@ import com.freedomotic.model.geometry.FreedomShape;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.rules.Statement;
@@ -45,6 +45,7 @@ import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -68,6 +69,8 @@ public class EnvObjectLogic {
     protected EnvironmentRepository environmentRepository;
     @Inject
     protected TriggerRepository triggerRepository;
+    @Inject
+    protected CommandRepository commandRepository;
     @Inject
     private BusService busService;
 
@@ -155,7 +158,7 @@ public class EnvObjectLogic {
         }
 
         //change commands references to this object
-        for (Command c : CommandPersistence.getUserCommands()) {
+        for (Command c : commandRepository.findUserCommands()) {
             renameValuesInCommand(c, oldName, newName);
         }
 
@@ -643,7 +646,13 @@ public class EnvObjectLogic {
 
         for (String action : pojo.getActions().stringPropertyNames()) {
             String commandName = pojo.getActions().getProperty(action);
-            Command command = CommandPersistence.getHardwareCommand(commandName);
+            Command command;
+            List<Command> list = commandRepository.findByName(commandName);
+            if (!list.isEmpty()) {
+                command = list.get(0);
+            } else {
+                throw new RuntimeException("No commands found with name " + commandName);
+            }
 
             if (command != null) {
                 LOG.log(Level.FINE,

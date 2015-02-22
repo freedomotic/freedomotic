@@ -33,11 +33,12 @@ import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.things.EnvObjectLogic;
 import com.google.inject.Inject;
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,15 +61,18 @@ public final class Autodiscovery implements BusConsumer {
     private final BusService busService;
     private final ThingRepository thingsRepository;
     private final TriggerRepository triggerRepository;
+    private final CommandRepository commandRepository;
 
     @Inject
-    Autodiscovery(ClientStorage clientStorage, 
-            ThingRepository thingsRepository, 
+    Autodiscovery(ClientStorage clientStorage,
+            ThingRepository thingsRepository,
             TriggerRepository triggerRepository,
+            CommandRepository commandRepository,
             BusService busService) {
         this.clientStorage = clientStorage;
         this.thingsRepository = thingsRepository;
         this.triggerRepository = triggerRepository;
+        this.commandRepository = commandRepository;
         this.busService = busService;
         register();
     }
@@ -122,7 +126,7 @@ public final class Autodiscovery implements BusConsumer {
             LOG.log(Level.WARNING, "Autodiscovery error: doesn''t exist an object class called {0}", clazz);
             return null;
         }
-        
+
         LOG.log(Level.WARNING, "Autodiscovery request for an object called ''{0}'' of type ''{1}''", new Object[]{name, clazz});
 
         File templateFile = objectPlugin.getTemplate();
@@ -169,14 +173,18 @@ public final class Autodiscovery implements BusConsumer {
                         String commandName = (String) tuple.get(action);
 
                         if (commandName != null) {
-                            loaded.setAction(action,
-                                    CommandPersistence.getHardwareCommand(commandName));
+                            List<Command> list = commandRepository.findByName(commandName);
+                            if (list.isEmpty()) {
+                                loaded.setAction(action, list.get(0));
+                            } else {
+                                throw new RuntimeException("No commands found with name " + commandName);
+                            }
                         }
                     }
                 }
             }
         }
-        LOG.log(Level.INFO, "Autodiscovery adds a thing called ''{0}'' of type ''{1}''", 
+        LOG.log(Level.INFO, "Autodiscovery adds a thing called ''{0}'' of type ''{1}''",
                 new Object[]{loaded.getPojo().getName(), clazz});
         return loaded;
     }

@@ -10,12 +10,12 @@ import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
-import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.NlpCommand;
+import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.things.ThingFactory;
 import com.freedomotic.things.ThingRepository;
 import com.google.inject.Inject;
@@ -41,7 +41,7 @@ class APIStandardImpl implements API {
     private final I18n i18n;
     private final PluginsManager plugManager;
     private TriggerRepository triggers;
-    private CommandPersistence commands;
+    private CommandRepository commands;
     private ReactionPersistence reactions;
     private final ThingFactory thingsFactory;
     private NlpCommand nlpCommands;
@@ -69,7 +69,7 @@ class APIStandardImpl implements API {
             I18n i18n,
             PluginsManager plugManager,
             TriggerRepository triggerPersistence,
-            CommandPersistence commands,
+            CommandRepository commands,
             ReactionPersistence reactions,
             NlpCommand nlpCommands) {
         this.environments = environment;
@@ -171,7 +171,7 @@ class APIStandardImpl implements API {
     }
 
     @Override
-    public CommandPersistence commands() {
+    public CommandRepository commands() {
         return commands;
     }
 

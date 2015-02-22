@@ -6,6 +6,8 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.persistence.Repository;
+import java.io.File;
+import java.util.List;
 
 /**
  *
@@ -13,4 +15,13 @@ import com.freedomotic.persistence.Repository;
  */
 public interface CommandRepository extends Repository<Command> {
 
+    public List<Command> findHardwareCommands();
+
+    public List<Command> findUserCommands();
+
+    //TODO: remove it, here just for refactoring
+
+    public void loadCommands(File folder);
+
+    public void saveCommands(File folder);
 }

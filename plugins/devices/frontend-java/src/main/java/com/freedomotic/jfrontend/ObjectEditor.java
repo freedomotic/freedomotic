@@ -29,7 +29,6 @@ import com.freedomotic.behaviors.ListBehaviorLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.behaviors.TaxonomyBehaviorLogic;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
@@ -920,7 +919,7 @@ public class ObjectEditor
             //addAndRegister a combo box with the list of alla available commands
             DefaultComboBoxModel allHardwareCommands = new DefaultComboBoxModel();
 
-            for (Command command : CommandPersistence.getHardwareCommands()) {
+            for (Command command : api.commands().findHardwareCommands()) {
                 allHardwareCommands.addElement(command);
             }
 
@@ -1029,7 +1028,7 @@ public class ObjectEditor
     private void populateAutomationsTab() {
         tabAutomations.removeAll();
         tabAutomations.setLayout(new BorderLayout());
-        reactionsPanel = new ReactionsPanel(I18n, nlpCommands, api.triggers(), object);
+        reactionsPanel = new ReactionsPanel(I18n, nlpCommands, api.triggers(), api.commands(), object);
         tabAutomations.add(reactionsPanel);
         tabAutomations.validate();
     }

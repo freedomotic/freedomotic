@@ -11,7 +11,7 @@ import com.freedomotic.exceptions.PluginLoadingException;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
-import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.settings.Info;
@@ -48,15 +48,21 @@ class PluginsManagerImpl implements PluginsManager {
     private ClientStorage clientStorage;
     private TriggerRepository triggers;
     private I18n i18n;
+    private CommandRepository commandRepository;
 
     @Inject
     Injector injector;
 
     @Inject
-    PluginsManagerImpl(ClientStorage clientStorage, TriggerRepository triggers, I18n i18n) {
+    PluginsManagerImpl(
+            ClientStorage clientStorage,
+            TriggerRepository triggers,
+            CommandRepository commandRepository,
+            I18n i18n) {
         this.clientStorage = clientStorage;
         this.triggers = triggers;
         this.i18n = i18n;
+        this.commandRepository =  commandRepository;
     }
 
     /**
@@ -253,7 +259,7 @@ class PluginsManagerImpl implements PluginsManager {
             throws PluginLoadingException {
         //now loadBoundle data for this jar (can contain more than one plugin)
         //resources are mergend in the default resources folder
-        CommandPersistence.loadCommands(new File(directory + "/data/cmd"));
+        commandRepository.loadCommands(new File(directory + "/data/cmd"));
         triggers.loadTriggers(new File(directory + "/data/trg"));
         ReactionPersistence.loadReactions(new File(directory + "/data/rea"));
 

@@ -22,10 +22,10 @@ package com.freedomotic.jfrontend.automationeditor;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.NoResultsException;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.Nlp;
 import com.freedomotic.nlp.NlpCommand;
+import com.freedomotic.reactions.CommandRepository;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -61,20 +61,22 @@ public class GuessCommandBox
     private final String ERROR_MESSAGE;
     private final String INFO_MESSAGE;
     private final I18n I18n;
-    
+    private CommandRepository commandRepository;
+
     /**
      *
      * @param i18n
      * @param editor
      */
-    public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommand nlpCommands) {        
+    public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommand nlpCommands, CommandRepository commandRepository) {
         super();
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
-        btnCustomize = new JButton(I18n.msg( "edit"));
+        this.commandRepository = commandRepository;
+        btnCustomize = new JButton(I18n.msg("edit"));
         ERROR_MESSAGE = I18n.msg("this_command_not_exists");
         INFO_MESSAGE = I18n.msg("write_here_command");
-        
+
         this.editor = editor;
         init();
     }
@@ -86,14 +88,15 @@ public class GuessCommandBox
      * @param nlpCommands
      * @param command
      */
-    public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommand nlpCommands, Command command) {
+    public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommand nlpCommands, CommandRepository commandRepository, Command command) {
         super();
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
-        btnCustomize = new JButton(I18n.msg( "edit"));
+        this.commandRepository = commandRepository;
+        btnCustomize = new JButton(I18n.msg("edit"));
         ERROR_MESSAGE = I18n.msg("this_command_not_exists");
         INFO_MESSAGE = I18n.msg("write_here_command");
-        
+
         this.command = command;
         this.editor = editor;
         setEnabled(false);
@@ -121,8 +124,8 @@ public class GuessCommandBox
 
         this.setPreferredSize(new Dimension(300, 30));
 
-        KeyListener keyListener =
-                new KeyAdapter() {
+        KeyListener keyListener
+                = new KeyAdapter() {
                     @Override
                     public void keyTyped(KeyEvent evt) {
                         command = null;
@@ -165,8 +168,8 @@ public class GuessCommandBox
         this.addKeyListener(keyListener);
 
         if (command == null) {
-            btnAdd.setText(I18n.msg( "confirm"));
-            setToolTipText(I18n.msg( "cmd_box_msg"));
+            btnAdd.setText(I18n.msg("confirm"));
+            setToolTipText(I18n.msg("cmd_box_msg"));
         } else {
             btnAdd.setText(I18n.msg("remove"));
             setToolTipText(command.getDescription());
@@ -177,7 +180,13 @@ public class GuessCommandBox
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (isEnabled()) {
-                    command = CommandPersistence.getCommand(getText());
+                    Command command;
+                    List<Command> list = commandRepository.findByName(getText());
+                    if (!list.isEmpty()) {
+                        command = list.get(0);
+                    } else {
+                        throw new RuntimeException("No commands found with name " + getText());
+                    }
 
                     if (command != null) {
                         setEnabled(false);
@@ -189,7 +198,7 @@ public class GuessCommandBox
                     }
                 } else {
                     setEnabled(true);
-                    btnAdd.setText(I18n.msg( "confirm"));
+                    btnAdd.setText(I18n.msg("confirm"));
                     editor.onCommandCleared(me);
                     command = null;
                     setText(INFO_MESSAGE);
