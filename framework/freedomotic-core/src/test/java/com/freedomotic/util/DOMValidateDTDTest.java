@@ -25,19 +25,24 @@
  */
 package com.freedomotic.util;
 
+import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.reactions.Trigger;
+import com.freedomotic.testutils.GuiceJUnitRunner;
 import com.thoughtworks.xstream.XStream;
 import java.util.logging.Logger;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author Enrico
  */
+@RunWith(GuiceJUnitRunner.class)
+@GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class DOMValidateDTDTest {
 
     private static XStream xstream;
