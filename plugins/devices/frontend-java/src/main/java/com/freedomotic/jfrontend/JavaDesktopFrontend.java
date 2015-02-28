@@ -225,6 +225,10 @@ public class JavaDesktopFrontend extends Protocol {
 
     @Override
     protected void onEvent(EventTemplate event) {
+        if (drawer == null) {
+            LOG.warning("Skipping this frontend refresh, the plugin is not yet fully loaded");
+            return;
+        }
         if (event instanceof ObjectHasChangedBehavior) {
             drawer.setNeedRepaint(true);
             for (GraphPanel gp : graphs.values()) {
@@ -240,7 +244,7 @@ public class JavaDesktopFrontend extends Protocol {
             drawer.createCallout(callout);
             drawer.setNeedRepaint(true);
         } else if (event instanceof MessageEvent) {
-            printCallout(event.getProperty("message.text"));
+            //printCallout(event.getProperty("message.text"));
         } else if (null != window) {
             final PluginJList pluginJList = window.getPluginJList();
             if (null != pluginJList) {

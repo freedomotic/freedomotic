@@ -545,7 +545,7 @@ public class EnvObjectLogic {
 
         Resolver resolver = new Resolver();
         //adding a resolution context for object that owns this hardware level command. 'owner.' is the prefix of this context
-        resolver.addContext("request.", params);
+        //resolver.addContext("request.", params);
         resolver.addContext("owner.", getExposedProperties());
         resolver.addContext("owner.", getExposedBehaviors());
 
@@ -556,7 +556,7 @@ public class EnvObjectLogic {
             //mark the command as not executed if it is supposed to not return
             //an execution state value
             if (Boolean.valueOf(command.getProperty("send-and-forget")) == true) {
-                LOG.config("Command '" + resolvedCommand.getName() + "' is 'send-and-forget' no execution result will be catched from plugin's reply");
+                LOG.log(Level.CONFIG, "Command ''{0}'' is ''send-and-forget'' no execution result will be catched from plugin''s reply", resolvedCommand.getName());
                 resolvedCommand.setReplyTimeout(-1); //disable reply request
                 Freedomotic.sendCommand(resolvedCommand);
                 return false;
@@ -569,7 +569,7 @@ public class EnvObjectLogic {
             }
 
             if (result == null) {
-                LOG.log(Level.WARNING, "Received null reply after sending hardware command " + resolvedCommand.getName());
+                LOG.log(Level.WARNING, "Received null reply after sending hardware command {0}", resolvedCommand.getName());
             } else if (result.isExecuted()) {
                 return true; //succesfully executed
             }

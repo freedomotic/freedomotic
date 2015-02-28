@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.things.impl;
@@ -124,12 +122,25 @@ public class Person extends GenericPerson {
         Trigger clicked = new Trigger();
         clicked.setName("When " + this.getPojo().getName() + " is clicked");
         clicked.setChannel("app.event.sensor.object.behavior.clicked");
-        clicked.getPayload().addStatement("object.name",
-                this.getPojo().getName());
+        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
 
+        Trigger login = new Trigger();
+        login.setName("When account " + this.getPojo().getName() + " logs in");
+        login.setChannel("app.event.sensor.account.change");
+        login.getPayload().addStatement("object.action", "LOGIN");
+        login.setPersistence(false);
+
+        Trigger logout = new Trigger();
+        logout.setName("When account " + this.getPojo().getName() + " logs out");
+        logout.setChannel("app.event.sensor.account.change");
+        logout.getPayload().addStatement("object.action", "LOGOUT");
+        logout.setPersistence(false);
+
         triggerRepository.create(clicked);
+        triggerRepository.create(login);
+        triggerRepository.create(logout);
     }
     private static final Logger LOG = Logger.getLogger(Person.class.getName());
 }

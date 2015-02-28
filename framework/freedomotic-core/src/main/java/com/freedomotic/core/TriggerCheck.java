@@ -28,6 +28,7 @@ import com.freedomotic.bus.BusService;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.behaviors.BehaviorLogic;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.reactions.Command;
@@ -137,8 +138,13 @@ public class TriggerCheck {
             if (affectedObjects.isEmpty()) { //there isn't an object with this protocol and address
                 LOG.log(Level.WARNING, "Found a candidate for things autodiscovery: thing ''{0}'' of type ''{1}''", new Object[]{name, clazz});
                 if ((clazz != null) && !clazz.isEmpty()) {
-                    EnvObjectLogic joined = autodiscovery.join(clazz, name, protocol, address);
-                    affectedObjects.add(joined);
+                    EnvObjectLogic joined;
+                    try {
+                        joined = autodiscovery.join(clazz, name, protocol, address);
+                        affectedObjects.add(joined);
+                    } catch (RepositoryException ex) {
+                        Logger.getLogger(TriggerCheck.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }
@@ -291,7 +297,7 @@ public class TriggerCheck {
             Statement statement = condition.getStatement();
             if (object != null) {
                 BehaviorLogic behavior = object.getBehavior(statement.getAttribute());
-                        //System.out.println("DEBUG: " + object.getPojo().getName() + " "
+                //System.out.println("DEBUG: " + object.getPojo().getName() + " "
                 //+ " behavior: " + behavior.getName() + " " + behavior.getValueAsString());
                 boolean eval = behavior.getValueAsString().equalsIgnoreCase(statement.getValue());
                 if (statement.getLogical().equalsIgnoreCase("AND")) {

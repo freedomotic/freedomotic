@@ -20,13 +20,13 @@
 package com.freedomotic.app;
 
 import com.freedomotic.settings.AppConfig;
-import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.bus.BootStatus;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
+import com.freedomotic.core.Autodiscovery;
 import com.freedomotic.core.SynchManager;
 import com.freedomotic.core.TopologyManager;
 import com.freedomotic.environment.EnvironmentLogic;
@@ -36,6 +36,7 @@ import com.freedomotic.events.PluginHasChanged.PluginActions;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.exceptions.FreedomoticException;
 import com.freedomotic.exceptions.PluginLoadingException;
+import com.freedomotic.i18n.I18n;
 import com.freedomotic.marketplace.ClassPathUpdater;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.MarketPlaceService;
@@ -51,7 +52,6 @@ import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.security.Auth;
 import com.freedomotic.security.UserRealm;
 import com.freedomotic.settings.Info;
-import com.freedomotic.util.LogFormatter;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -108,24 +108,29 @@ public class Freedomotic implements BusConsumer {
     private final PluginsManager pluginsManager;
     private AppConfig config;
     private final Auth auth;
-    private final API api;
+    private final I18n i18n;
     private BusMessagesListener listener;
     // TODO remove static modifier once static methods sendEvent & sendCommand are erased.
     private static BusService busService;
     private final CommandRepository commandRepository;
+    private final Autodiscovery autodiscovery;
 
     /**
      *
+     * @param auth
      * @param pluginsLoader
      * @param environmentRepository
      * @param thingsRepository
+     * @param triggerRepository
+     * @param commandRepository
      * @param clientStorage
      * @param commandsNlpService
      * @param config
-     * @param api
+     * @param i18n
      * @param busService
      * @param topologyManager
      * @param synchManager
+     * @param autodiscovery
      */
     @Inject
     public Freedomotic(
@@ -137,10 +142,12 @@ public class Freedomotic implements BusConsumer {
             ClientStorage clientStorage,
             CommandsNlpService commandsNlpService,
             AppConfig config,
-            API api,
+            I18n i18n,
             BusService busService,
             TopologyManager topologyManager,
-            SynchManager synchManager) {
+            Auth auth,
+            SynchManager synchManager,
+            Autodiscovery autodiscovery) {
         this.pluginsManager = pluginsLoader;
         this.environmentRepository = environmentRepository;
         this.thingsRepository = thingsRepository;
@@ -152,8 +159,9 @@ public class Freedomotic implements BusConsumer {
         this.synchManager = synchManager;
         this.clientStorage = clientStorage;
         this.config = config;
-        this.api = api;
-        this.auth = api.getAuth();
+        this.i18n = i18n;
+        this.auth = auth;
+        this.autodiscovery = autodiscovery;
     }
 
     /**
@@ -167,7 +175,7 @@ public class Freedomotic implements BusConsumer {
         Info.relocateDataPath(new File(config.getStringProperty("KEY_DATA_PATH", defaultPath)));
 
         // init localization
-        api.getI18n().setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
+        i18n.setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
 
         // init auth* framework
         auth.initBaseRealm();
@@ -184,9 +192,9 @@ public class Freedomotic implements BusConsumer {
         String resourcesPath
                 = new File(Info.PATHS.PATH_WORKDIR
                         + config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
-        LOG.info("\nOS: " + System.getProperty("os.name") + "\n" + api.getI18n().msg("architecture") + ": "
+        LOG.info("\nOS: " + System.getProperty("os.name") + "\n" + i18n.msg("architecture") + ": "
                 + System.getProperty("os.arch") + "\n" + "OS Version: " + System.getProperty("os.version")
-                + "\n" + api.getI18n().msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
+                + "\n" + i18n.msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
                 + System.getProperty("java.home") + "\n" + "Java Library Path: {"
                 + System.getProperty("java.library.path") + "}\n" + "Program path: "
                 + System.getProperty("user.dir") + "\n" + "Java Version: " + System.getProperty("java.version")

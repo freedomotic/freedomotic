@@ -242,8 +242,6 @@ class ThingRepositoryImpl implements ThingRepository {
     private static ArrayList<EnvObjectLogic> getObjectByAddress(String protocol, String address) {
         if ((protocol == null)
                 || (address == null)
-                || protocol.trim().equalsIgnoreCase("unknown")
-                || address.trim().equalsIgnoreCase("unknown")
                 || protocol.isEmpty()
                 || address.isEmpty()) {
             throw new IllegalArgumentException();

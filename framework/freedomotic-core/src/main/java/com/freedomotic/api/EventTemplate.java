@@ -19,7 +19,6 @@
  */
 package com.freedomotic.api;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.rules.Payload;
 import com.freedomotic.rules.Statement;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
