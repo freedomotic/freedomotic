@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.freedomotic</groupId>
-        <artifactId>freedomotic</artifactId>
+        <artifactId>freedomotic-plugins</artifactId>
         <version>5.6-SNAPSHOT</version>
-        <relativePath>../../../</relativePath>
+        <relativePath>../../</relativePath>
     </parent>    
     <artifactId>chat</artifactId>
     <packaging>jar</packaging>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>com.github.taksan</groupId>
             <artifactId>skype-java-api</artifactId>
-            <version>1.4</version>
+            <version>1.7</version>
         </dependency>
     </dependencies>
 
