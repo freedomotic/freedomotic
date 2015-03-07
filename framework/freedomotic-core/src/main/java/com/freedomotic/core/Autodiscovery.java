@@ -26,7 +26,6 @@ package com.freedomotic.core;
 import com.freedomotic.api.AbstractConsumer;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
-import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.exceptions.UnableToExecuteException;

@@ -23,6 +23,7 @@ import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.core.Resolver;
+import com.freedomotic.core.SynchThingRequest;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.environment.ZoneLogic;
@@ -40,6 +41,7 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerRepository;
+import com.freedomotic.things.ThingRepository.SynchAction;
 import com.freedomotic.util.TopologyUtils;
 import com.google.inject.Inject;
 import java.util.Arrays;
@@ -218,6 +220,31 @@ public class EnvObjectLogic {
     @RequiresPermissions("objects:read")
     public String getBehaviorNameMappedToTrigger(String t) {
         return getPojo().getTriggers().getProperty(t);
+    }
+
+    /**
+     * Notify that this Thing was created, deleted or updated. To just notify an
+     * update is better to use the {@link setChanged(true)} method.
+     *
+     * @param action
+     */
+    public void setChanged(SynchAction action) {
+        switch (action) {
+            case CREATED:
+                SynchThingRequest creationEvent = new SynchThingRequest(SynchThingRequest.SynchAction.CREATED, getPojo());
+                busService.send(creationEvent);
+                break;
+            case DELETED:
+                SynchThingRequest deletionEvent = new SynchThingRequest(SynchThingRequest.SynchAction.DELETED, getPojo());
+                busService.send(deletionEvent);
+                break;
+            case UPDATED:
+                // do nothing, the update is forced later
+                break;
+            default:
+                throw new AssertionError(action.name());
+        }
+        setChanged(true); //force the update in any case
     }
 
     /**
@@ -545,7 +572,7 @@ public class EnvObjectLogic {
 
         Resolver resolver = new Resolver();
         //adding a resolution context for object that owns this hardware level command. 'owner.' is the prefix of this context
-        //resolver.addContext("request.", params);
+        resolver.addContext("", params);
         resolver.addContext("owner.", getExposedProperties());
         resolver.addContext("owner.", getExposedBehaviors());
 

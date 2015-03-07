@@ -47,7 +47,7 @@ import org.apache.activemq.command.ActiveMQQueue;
  * @author Freedomotic Team
  *
  */
-class BusServiceImpl extends LifeCycle implements BusService {
+final class BusServiceImpl extends LifeCycle implements BusService {
 
     private static final Logger LOG = Logger.getLogger(BusServiceImpl.class.getName());
 
@@ -64,7 +64,11 @@ class BusServiceImpl extends LifeCycle implements BusService {
         //this.config = config;
         if (BootStatus.getCurrentStatus() == BootStatus.STOPPED) {
             init();
+            if (sendSession == null) {
+                throw new IllegalStateException("Messaging bus has not yet a valid send session");
+            }
         }
+        LOG.info("Messaging bus is " + BootStatus.getCurrentStatus().name());
     }
 
     /**
@@ -90,10 +94,6 @@ class BusServiceImpl extends LifeCycle implements BusService {
         sendSession = createSession();
         // null parameter creates a producer with no specified destination
         messageProducer = createMessageProducer();
-
-        if (sendSession == null) {
-            throw new IllegalStateException("Messaging bus has not yet a valid send session");
-        }
 
         BootStatus.setCurrentStatus(BootStatus.STARTED);
     }

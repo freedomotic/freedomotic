@@ -45,6 +45,7 @@ class APIStandardImpl implements API {
     private ReactionPersistence reactions;
     private final ThingFactory thingsFactory;
     private NlpCommand nlpCommands;
+    private final BusService busService;
 
     /**
      *
@@ -60,6 +61,7 @@ class APIStandardImpl implements API {
      */
     @Inject
     public APIStandardImpl(
+            BusService busService,
             EnvironmentRepository environment,
             ThingRepository things,
             ThingFactory thingsFactory,
@@ -84,6 +86,7 @@ class APIStandardImpl implements API {
         this.reactions = reactions;
         this.thingsFactory = thingsFactory;
         this.nlpCommands = nlpCommands;
+        this.busService = busService;
     }
 
     /**
@@ -188,6 +191,11 @@ class APIStandardImpl implements API {
     @Override
     public NlpCommand nlpCommands() {
         return nlpCommands;
+    }
+
+    @Override
+    public BusService bus() {
+        return busService;
     }
 
 }

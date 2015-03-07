@@ -4,6 +4,7 @@
  */
 package com.freedomotic.api;
 
+import com.freedomotic.bus.BusService;
 import com.freedomotic.settings.AppConfig;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.things.ThingRepository;
@@ -88,4 +89,6 @@ public interface API {
     NlpCommand nlpCommands();
     
     ThingFactory thingsFactory();
+    
+    BusService bus();
 }

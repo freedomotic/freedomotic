@@ -19,6 +19,8 @@
  */
 package com.freedomotic.things.impl;
 
+import com.freedomotic.bus.BusService;
+import com.freedomotic.core.SynchThingRequest;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
@@ -64,7 +66,7 @@ class ThingRepositoryImpl implements ThingRepository {
 
     public static final boolean MAKE_NOT_UNIQUE = false;
     private static final Map<String, EnvObjectLogic> objectList = new HashMap<>();
-    private static final Logger LOG = LoggerFactory.getLogger(ThingRepositoryImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ThingRepositoryImpl.class.getName()); 
     // Dependencies
     private final ThingFactory thingsFactory;
     private final DataUpgradeService dataUpgradeService;
@@ -387,9 +389,9 @@ class ThingRepositoryImpl implements ThingRepository {
         if (!objectList.containsValue(envObjectLogic)) {
             objectList.put(envObjectLogic.getPojo().getUUID(), envObjectLogic);
             try {
-                envObjectLogic.setChanged(true);
+                envObjectLogic.setChanged(SynchAction.CREATED);
             } catch (Exception e) {
-                LOG.warn("Object was created, but cannot set it as Changed", e);
+                LOG.warn("Thing was created, but cannot set it as Changed", e);
             }
         } else {
             throw new RuntimeException("Cannot add the same object more than one time");
@@ -469,7 +471,7 @@ class ThingRepositoryImpl implements ThingRepository {
         try {
             EnvObjectLogic eol = objectList.remove(uuid);
             try {
-                eol.setChanged(true); //force repainting on frontends clients
+                eol.setChanged(SynchAction.DELETED); //force repainting on frontends clients
             } catch (Exception e) {
                 LOG.warn("Cannot notify object changes");
             }
@@ -575,8 +577,6 @@ class ThingRepositoryImpl implements ThingRepository {
         objectList.clear();
         List<EnvObjectLogic> results = new ArrayList<EnvObjectLogic>();
 
-        File[] files = folder.listFiles();
-
         // This filter only returns object files
         FileFilter objectFileFilter
                 = new FileFilter() {
@@ -590,7 +590,7 @@ class ThingRepositoryImpl implements ThingRepository {
                     }
                 };
 
-        files = folder.listFiles(objectFileFilter);
+        File[] files = folder.listFiles(objectFileFilter);
 
         if (files != null) {
             for (File file : files) {
