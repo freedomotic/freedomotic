@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<reaction>
+  <trigger>When an account logs in</trigger>
+  <sequence>
+    <command>Create a new User with the same name</command>
+  </sequence>
+</reaction>

@@ -8,7 +8,7 @@
         <payload>
             <statement>
                 <logical>AND</logical>
-                <attribute>object.action</attribute>
+                <attribute>account.action</attribute>
                 <operand>EQUALS</operand>
                 <value>LOGIN</value>
             </statement>

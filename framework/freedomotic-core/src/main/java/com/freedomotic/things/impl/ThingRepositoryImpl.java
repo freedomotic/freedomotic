@@ -19,8 +19,6 @@
  */
 package com.freedomotic.things.impl;
 
-import com.freedomotic.bus.BusService;
-import com.freedomotic.core.SynchThingRequest;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
@@ -34,7 +32,6 @@ import com.freedomotic.persistence.DataUpgradeService;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.settings.Info;
 import com.freedomotic.util.SerialClone;
-import com.freedomotic.util.UidGenerator;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import java.io.File;
@@ -368,7 +365,7 @@ class ThingRepositoryImpl implements ThingRepository {
         if (MAKE_UNIQUE) {
             //defensive copy to not affect the passed object with the changes
             EnvObject pojoCopy = SerialClone.clone(obj.getPojo());
-            pojoCopy.setName(obj.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
+            pojoCopy.setName(getNextInOrder(obj.getPojo().getName()));
             pojoCopy.setProtocol(obj.getPojo().getProtocol());
             pojoCopy.setPhisicalAddress("unknown");
             for (Representation rep : pojoCopy.getRepresentations()) {
@@ -398,6 +395,17 @@ class ThingRepositoryImpl implements ThingRepository {
         }
 
         return envObjectLogic;
+    }
+    
+    private String getNextInOrder(String name) {
+        String newName = name;
+        int i = 0;
+        while (!this.findByName(name).isEmpty() && (i < 1000)) {
+            // i < 1000 just to avoid infinite loop in case of errors
+            i++;
+            newName = name + "-" + i;
+        }
+        return newName;
     }
 
     /**

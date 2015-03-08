@@ -140,7 +140,7 @@ public class TriggerCheck {
                 if ((clazz != null) && !clazz.isEmpty()) {
                     EnvObjectLogic joined;
                     try {
-                        joined = autodiscovery.join(clazz, name, protocol, address);
+                        joined = autodiscovery.join(clazz, name, protocol, address, true);
                         affectedObjects.add(joined);
                     } catch (RepositoryException ex) {
                         Logger.getLogger(TriggerCheck.class.getName()).log(Level.SEVERE, null, ex);

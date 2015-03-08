@@ -84,7 +84,7 @@ public final class Command implements Serializable, Cloneable {
     private boolean hardwareLevel;
     private boolean editable;
     private boolean executed;
-    @XmlElement(name="props")
+    @XmlElement(name = "props")
     private Config properties = new Config();
 
     /**
@@ -221,12 +221,36 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
+     * Get the value of a property
      *
      * @param key
-     * @return
+     * @return The value of the key or null if not found
      */
     public String getProperty(String key) {
         return properties.getProperty(key);
+    }
+
+    /**
+     * Get a boolean property with a fallback default value
+     * 
+     * @param key the String key
+     * @param defaultValue the value to use if the given key does not exists
+     * @return the property value or the default value if the key doesn't exists
+     */
+    public boolean getBooleanProperty(String key, boolean defaultValue) {
+        String result = properties.getProperty(key);
+
+        if (result != null) {
+            if (result.trim().equalsIgnoreCase("true")) {
+                return true;
+            } else {
+                if (result.trim().equalsIgnoreCase("false")) {
+                    return false;
+                }
+            }
+        }
+
+        return defaultValue;
     }
 
     /**

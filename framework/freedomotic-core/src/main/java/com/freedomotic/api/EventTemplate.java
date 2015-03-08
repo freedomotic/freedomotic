@@ -197,4 +197,9 @@ public class EventTemplate implements Serializable {
     public Payload getPayload() {
         return payload;
     }
+    
+    @Override
+    public String toString() {
+        return getEventName();
+    }
 }

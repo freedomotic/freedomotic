@@ -237,6 +237,8 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             throw new IllegalArgumentException("Cannot send command '" + command + "', the receiver channel is not specified");
         }
 
+        LOG.log(Level.INFO, "Sending command ''{0}'' to destination ''{1}'' with reply timeout {2}", new Object[]{command.getName(), command.getReceiver(), command.getReplyTimeout()});
+
         try {
             ObjectMessage msg = createObjectMessage();
             msg.setObject(command);
@@ -260,7 +262,6 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         // queues and consumers on it
         // this increments perfornances if no reply is expected
         final MessageProducer messageProducer = this.getMessageProducer();
-        LOG.log(Level.CONFIG, "Send command ''{0}'' (no reply requested to receiver)", command.getName());
         messageProducer.send(currDestination, msg);
 
         Profiler.incrementSentCommands();
@@ -348,6 +349,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
      */
     @Override
     public void send(final EventTemplate ev, final String to) {
+        //LOG.log(Level.INFO, "Sending event ''{0}'' to destination ''{1}''", new Object[]{ev.toString(), to});
         if (ev == null) {
             throw new IllegalArgumentException("Cannot send a null event");
         }
