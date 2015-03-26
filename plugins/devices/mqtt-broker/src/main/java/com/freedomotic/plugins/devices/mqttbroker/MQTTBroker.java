@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -24,24 +24,24 @@ package com.freedomotic.plugins.devices.mqttbroker;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.app.Freedomotic;
+import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dna.mqtt.moquette.server.Server;
 
 public class MQTTBroker
         extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(MQTTBroker.class.getName());
-    private Server serverMqtt;
+    private static final Logger LOG = LoggerFactory.getLogger(MQTTBroker.class.getName());
+    private static Server serverMqtt;
 
     public MQTTBroker() {
-        super("MQTT", "/mqtt-broker/mqtt-broker-manifest.xml");
+        super("MQTT broker", "/mqtt-broker/mqtt-broker-manifest.xml");
         setPollingWait(-1); // onRun() disabled
     }
 
@@ -59,13 +59,14 @@ public class MQTTBroker
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart() throws PluginStartupException {
         serverMqtt = new Server();
         try {
             serverMqtt.startServer(new File(Info.PATHS.PATH_DEVICES_FOLDER + "/mqtt-broker/config/moquette.conf"));
         } catch (IOException ex) {
-            LOG.severe(ex.getMessage());
-        }
+            throw new PluginStartupException("Plugin can't start for an IOException.", ex);
+           }
+        setDescription("MQTT broker started");
         LOG.info("MQTT broker started");
     }
 
