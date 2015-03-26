@@ -1,0 +1,11 @@
+<config>
+    <properties>
+        <property name="description" value="A simple broker for MQTT protocol based on Moquette"/>
+        <property name="category" value="protocol"/>
+        <property name="short-name" value="mqtt-broker"/>
+        <property name="protocol.name" value="mqtt-broker"/>
+        <property name="startup-time"   value="on load"/>
+    </properties>
+</config>
+
+                
