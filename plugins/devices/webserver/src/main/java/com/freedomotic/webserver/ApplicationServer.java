@@ -34,6 +34,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ssl.SslSocketConnector;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
 
@@ -60,7 +62,7 @@ public class ApplicationServer extends Protocol {
 
         port = configuration.getIntProperty("PORT", 8080);
         webapp_dir = configuration.getStringProperty("WEBAPP_DIR", "/webapps/gwt_client");
-        war_file = configuration.getStringProperty("WAR_FILE", "Freedomotic.war");
+        war_file = configuration.getStringProperty("WAR_FILE", "");
         enableSSL = configuration.getBooleanProperty("ENABLE_SSL", true);
         sslPort = configuration.getIntProperty("SSL_PORT", 8443);
         keystorePassword = configuration.getStringProperty("KEYSTORE_PASSWORD", "password");
@@ -89,12 +91,12 @@ public class ApplicationServer extends Protocol {
                 sslContextFactory.setKeyStoreType(keystoreType);
 
                 SslSocketConnector SSLConnector = new SslSocketConnector(sslContextFactory);
-                
+
                 SSLConnector.setPort(sslPort);
                 SSLConnector.setMaxIdleTime(30000);
                 LOG.info("Webserver now listens on SLL port " + sslPort);
                 server.addConnector(SSLConnector);
-            } catch (Exception ex ) {
+            } catch (Exception ex) {
                 LOG.log(Level.SEVERE, "Cannot load java keystore for reason: ", ex.getLocalizedMessage());
             }
 
@@ -106,25 +108,36 @@ public class ApplicationServer extends Protocol {
 //        context.setParentLoaderPriority(true);  
 //        server.setHandler(context);
 
-        try {
-            WebAppContext webapp = new WebAppContext();
-            webapp.setContextPath(WEBAPP_CTX);
-            webapp.setWar(dir + "/" + war_file);
-            server.setHandler(webapp);
+        if (!war_file.isEmpty()) {
+            try {
+                WebAppContext webapp = new WebAppContext();
+                webapp.setContextPath(WEBAPP_CTX);
+                webapp.setWar(dir + "/" + war_file);
+                server.setHandler(webapp);
 
-            //print the URL to visit as plugin description
-            InetAddress addr = InetAddress.getLocalHost();
-            String hostname = addr.getHostName();
-            //strip away the '.war' extension and put all togheter
-            URL url = new URL("http://" + hostname + ":" + port + "/" + war_file.substring(0, war_file.lastIndexOf(".")));
-            setDescription("Visit " + url.toString());
-
-
-            server.start();
-        } catch (FileNotFoundException nf) {
-            LOG.warning("Cannot find WAR file " + war_file + " into directory " + dir);
-        } catch (Exception ex) {
-            LOG.log(Level.SEVERE, null, ex);
+                //print the URL to visit as plugin description
+                InetAddress addr = InetAddress.getLocalHost();
+                String hostname = addr.getHostName();
+                //strip away the '.war' extension and put all togheter
+                URL url = new URL("http://" + hostname + ":" + port + "/" + war_file.substring(0, war_file.lastIndexOf(".")));
+                setDescription("Visit " + url.toString());
+                server.start();
+            } catch (FileNotFoundException nf) {
+                LOG.warning("Cannot find WAR file " + war_file + " into directory " + dir);
+            } catch (Exception ex) {
+                LOG.log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+                context.setContextPath("/");
+                context.setResourceBase(new File(dir + "/").getAbsolutePath());
+                context.addServlet(DefaultServlet.class, "/*");
+                server.setHandler(context);
+                server.start();
+            } catch (Exception ex) {
+                LOG.log(Level.SEVERE, null, ex);
+            }
         }
 
     }

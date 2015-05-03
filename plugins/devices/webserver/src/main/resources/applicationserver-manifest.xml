@@ -6,13 +6,18 @@
         <property name="short-name" value="jetty"/>
         <property name="startup-time" value="on load"/>
         <property name="PORT" value="8090"/>
-        <property name="ENABLE_SSL" value="true"/>
+        <property name="ENABLE_SSL" value="false"/>
         <property name="KEYSTORE_FILE" value="keystore"/>
         <property name="KEYSTORE_TYPE" value="JKS"/>
         <property name="KEYSTORE_PASWORD" value="password"/>
-        <property name="SSL_PORT" value="8443"/>
+        <property name="SSL_PORT" value="9443"/>
+<!-- ENABLE THIS BLOCK FOR WEBAPP
+        <property name="WEBAPP_DIR" value="/data/fd-polymer-webapp/app"/> 
+-->
+<!-- or ENABLE THIS BLOCK FOR LOADING A WAR FILE
         <property name="WEBAPP_DIR" value="/data/webapps/gwt_client"/>
-        <property name="WAR_FILE" value="Freedomotic.war"/>
+        <property name="WAR_FILE" value="Freedomotic.war"/> 
+-->
         <property name="permissions" value="*"/>
     </properties>
 </config>

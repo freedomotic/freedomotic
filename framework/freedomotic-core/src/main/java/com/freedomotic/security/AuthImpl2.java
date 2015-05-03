@@ -116,15 +116,19 @@ class AuthImpl2 implements Auth {
         try {
             currentUser.login(token);
             currentUser.getSession().setTimeout(-1);
-            // Notify the login with a proper event
-            LOG.log(Level.INFO, "Account ''{0}'' is granted for login", subject);
-            AccountEvent loginEvent = new AccountEvent(this, subject, AccountActions.LOGIN);
-            bus.send(loginEvent);
-            return true;
+            LOG.log(Level.INFO, "Account ''{0}'' is granted for login", subject);          
         } catch (Exception e) {
             LOG.warning(e.getLocalizedMessage());
             return false;
         }
+        try {
+            // Notify login with a proper event
+            AccountEvent loginEvent = new AccountEvent(this, subject, AccountActions.LOGIN);
+            bus.send(loginEvent);
+        } catch (Exception e){
+            LOG.log(Level.WARNING, "Unable to send login notification message. Error: ", e);
+        }
+        return true;
     }
 
     /**
