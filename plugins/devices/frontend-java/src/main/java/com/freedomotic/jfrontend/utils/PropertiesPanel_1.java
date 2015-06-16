@@ -72,7 +72,7 @@ public class PropertiesPanel_1
      */
     public void layoutPanel() {
         //Lay out the panel.
-        System.out.println("row:" + rows + " cols:" + cols);
+        // System.out.println("row:" + rows + " cols:" + cols);
         SpringUtilities.makeCompactGrid(this, rows, cols, //rows, cols
                 5, 5, //initX, initY
                 5, 5); //xPad, yPad
