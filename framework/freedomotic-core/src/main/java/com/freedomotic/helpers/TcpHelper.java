@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.services;
+package com.freedomotic.helpers;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
