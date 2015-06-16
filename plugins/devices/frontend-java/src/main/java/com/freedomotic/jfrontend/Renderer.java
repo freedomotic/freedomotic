@@ -154,27 +154,42 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         if (objEditorPanels.containsKey(obj)) {
             if (objEditorPanels.get(obj) == null) {
                 objEditorPanels.remove(obj);
-                objEditorPanels.put(obj, new ObjectEditor(obj));
+                objEditorPanels.put(obj, createNewObjectEditor(obj));
             }
         } else {
-            objEditorPanels.put(obj, new ObjectEditor(obj));
+            objEditorPanels.put(obj, createNewObjectEditor(obj));
         }
 
         final ObjectEditor currEditorPanel = objEditorPanels.get(obj);
         currEditorPanel.setVisible(true);
         currEditorPanel.toFront();
-        currEditorPanel.addWindowListener(new WindowAdapter() {
+    }
+
+    private ObjectEditor createNewObjectEditor(final EnvObjectLogic o) {
+		final ObjectEditor oe = new ObjectEditor(o);
+		oe.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
-                    objEditorPanels.remove(currEditorPanel);
+                    objEditorPanels.remove(o);
+                } catch (Exception ex) {
+                    LOG.log(Level.SEVERE, "Cannot unload object editor frame", ex);
+                }
+            }
+            
+            @Override
+            public void windowClosed(WindowEvent e) {
+                try {
+                    if (objEditorPanels.containsKey(o))
+						objEditorPanels.remove(o);
                 } catch (Exception ex) {
                     LOG.log(Level.SEVERE, "Cannot unload object editor frame", ex);
                 }
             }
         });
+		return oe;
     }
-
+    
     public Map<EnvObjectLogic, ObjectEditor> getOpenThingEditors() {
         return objEditorPanels;
     }
