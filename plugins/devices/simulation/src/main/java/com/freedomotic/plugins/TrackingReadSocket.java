@@ -30,6 +30,7 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -37,8 +38,11 @@ import java.util.logging.Logger;
  * @author Enrico
  */
 public class TrackingReadSocket extends Protocol {
-    private static final int PORT = 1111;     private static final int maxConnections = -1; 
+
     private static final Logger LOG = Logger.getLogger(TrackingReadSocket.class.getName());
+    private static final int PORT = 7777;
+    private ServerSocket serverSocket;
+    private static final int maxConnections = -1;
     private OutputStream out;
     private final boolean connected = false;
     private final int SLEEP_TIME = 1000;
@@ -51,6 +55,7 @@ public class TrackingReadSocket extends Protocol {
         super("Tracking Simulator (Read Socket)", "/simulation/tracking-simulator-read-socket.xml");
         setDescription("It simulates a motes WSN that send information about movable sensors position, read from a socket (port:"
                 + PORT + ")");
+        setPollingWait(-1);
     }
 
     @Override
@@ -59,24 +64,13 @@ public class TrackingReadSocket extends Protocol {
     }
 
     private void createServerSocket() {
-        int i = 0;
 
         try {
-            ServerSocket listener = new ServerSocket(PORT);
-            Socket server;
-            System.out.println("\nStart listening on server socket " + listener.getInetAddress());
-
-            while (((i++ < maxConnections) || (maxConnections == -1)) && (isRunning())) {
-                ClientInputReader connection;
-                server = listener.accept();
-                connection = new ClientInputReader(server);
-
-                Thread t = new Thread(connection);
-                t.start();
-            }
+            serverSocket = new ServerSocket(PORT);
+            LOG.log(Level.INFO, "Start listening on server socket " + serverSocket.getInetAddress() + ":" + serverSocket.getLocalPort());
         } catch (IOException ioe) {
-            System.out.println("IOException on socket listen: " + ioe);
-            ioe.printStackTrace();
+            LOG.log(Level.SEVERE, "IOException on socket listen: " + ioe);
+            //ioe.printStackTrace();
         }
     }
 
@@ -92,7 +86,7 @@ public class TrackingReadSocket extends Protocol {
             x = new Integer(tokenizer.nextToken()).intValue();
             y = new Integer(tokenizer.nextToken()).intValue();
         } catch (Exception ex) {
-            System.out.println("Error while parsing client input." + "\n" + in + "\ntoken count: "
+            LOG.log(Level.SEVERE, "Error while parsing client input." + "\n" + in + "\ntoken count: "
                     + tokenizer.countTokens());
         }
 
@@ -110,7 +104,20 @@ public class TrackingReadSocket extends Protocol {
 
     @Override
     protected void onRun() {
-        //do nothing
+        int i = 0;
+
+        while (((i++ < maxConnections) || (maxConnections == -1))) {
+            try {
+                ClientInputReader clientConnection;
+                Socket clientSocket = serverSocket.accept();
+                clientConnection = new ClientInputReader(clientSocket);
+
+                Thread t = new Thread(clientConnection);
+                t.start();
+            } catch (IOException ioe) {
+                LOG.log(Level.SEVERE, "IOException on socket listen: " + ioe);
+            }
+        }
     }
 
     @Override
@@ -132,30 +139,30 @@ public class TrackingReadSocket extends Protocol {
     private class ClientInputReader
             implements Runnable {
 
-        private Socket server;
+        private Socket client;
         private String line;
         private String input;
 
-        ClientInputReader(Socket server) {
-            this.server = server;
-            System.out.println("New client connected to server on " + server.getInetAddress());
+        ClientInputReader(Socket client) {
+            this.client = client;
+            LOG.log(Level.INFO, "New client connected to server on " + client.getInetAddress());
         }
 
         public void run() {
             try {
                 // Get input from the client
-                DataInputStream in = new DataInputStream(server.getInputStream());
-                PrintStream out = new PrintStream(server.getOutputStream());
+                DataInputStream in = new DataInputStream(client.getInputStream());
+                PrintStream out = new PrintStream(client.getOutputStream());
 
                 while (((line = in.readLine()) != null) && !line.equals(".") && isRunning()) {
-                    System.out.println("Readed from socket: " + line);
+                    LOG.log(Level.INFO, "Readed from socket: " + line);
                     parseInput(line);
                 }
 
-                System.out.println("Closing socket connection " + server.getInetAddress());
-                server.close();
+                LOG.log(Level.INFO, "Closing socket connection " + client.getInetAddress());
+                client.close();
             } catch (IOException ioe) {
-                System.out.println("IOException on socket listen: " + ioe);
+                LOG.log(Level.SEVERE, "IOException on socket listen: " + ioe);
                 ioe.printStackTrace();
             }
         }
