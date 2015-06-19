@@ -1245,7 +1245,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuAddDuplicateEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAddDuplicateEnvironmentActionPerformed
         EnvironmentLogic newEnv = api.environments().copy(drawer.getCurrEnv());
-        String input = JOptionPane.showInputDialog(i18n.msg("enter_new_name_for_env") + newEnv.getPojo().getName());
+        String input = JOptionPane.showInputDialog(this, i18n.msg("enter_new_name_for_env") + newEnv.getPojo().getName(), i18n.msg("environment_duplicate_popup_title"), JOptionPane.QUESTION_MESSAGE);
         if (input != null && !input.isEmpty()) {
             newEnv.getPojo().setName(input.trim());
             newEnv.setSource(new File(drawer.getCurrEnv().getSource().getParentFile() + "/" + newEnv.getPojo().getUUID() + ".xenv"));
@@ -1257,7 +1257,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
     private void mnuRenameEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameEnvironmentActionPerformed
-        String input = JOptionPane.showInputDialog(this, i18n.msg("enter_new_name_for_env_X", new Object[]{drawer.getCurrEnv().getPojo().getName()}), i18n.msg("environment_rename_popup_title"), JOptionPane.QUESTION_MESSAGE);
+        String input = JOptionPane.showInputDialog(this, i18n.msg("enter_new_name_for_env", new Object[]{drawer.getCurrEnv().getPojo().getName()}), i18n.msg("environment_rename_popup_title"), JOptionPane.QUESTION_MESSAGE);
         if (input != null) {
             if (!input.isEmpty()) {
                 drawer.getCurrEnv().getPojo().setName(input.trim());
