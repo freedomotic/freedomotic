@@ -4,9 +4,13 @@
  */
 package com.freedomotic.bus;
 
+import com.freedomotic.api.AbstractConsumer;
+import com.freedomotic.api.EventTemplate;
 import com.freedomotic.app.FreedomoticInjector;
+import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.testutils.GuiceJUnitRunner;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -14,10 +18,7 @@ import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -69,6 +70,7 @@ public class BusServiceTest {
      */
     @After
     public void tearDown() {
+        busService.destroy();
     }
 
     /**
@@ -76,8 +78,9 @@ public class BusServiceTest {
      */
     @Test
     public void testSendCommand() {
-        LOG.info("Test bus send command asynch");
+        LOG.info("Test bus send and forget");
         Command command = new Command();
+        command.setName("Send and forget");
         command.setReceiver("unlistened.test.channel");
         assertFalse("Unsent command should be marked with executed=false flag", command.isExecuted());
         Command result = busService.send(command);
@@ -89,12 +92,14 @@ public class BusServiceTest {
      */
     @Test
     public void testSendCommandAndWaitTimeout() {
-        LOG.info("Test send command and do not reply to test timeout");
+        LOG.info("Test send and see what happens when reply timeout is reached");
         Command command = new Command();
+        command.setName("Unlistened command test");
         //send it on unlistened channel so it will not receive reply within timeout
         command.setReceiver("unlistened.test.channel");
-        command.setReplyTimeout(2000); //wait reply for two seconds
+        command.setReplyTimeout(100); //wait reply for two seconds
         Command result = busService.send(command);
+        LOG.log(Level.INFO, "Reply timeout for command ''{0}'' is reached, executed={1}", new Object[]{result, result.isExecuted()});
         assertEquals("Timeout reply command is the original command", result, command);
         assertFalse("When timeout is reached the original command is marked as not executed", result.isExecuted());
     }
@@ -104,31 +109,34 @@ public class BusServiceTest {
      */
     @Test
     public void testSendCommandAndWaitReply() {
-        LOG.info("Test send command and wait for reply");
+        LOG.info("Test send and wait for reply within timeout");
 
         //create a listener for this command
-        BusMessagesListener listener = new BusMessagesListener(new BusConsumer() {
+        AbstractConsumer listener = new AbstractConsumer(busService) {
 
             @Override
-            public void onMessage(ObjectMessage message) {
-                assertNotNull("Received message should be not null", message);
-                try {
-                    Command c = (Command) message.getObject();
-                    c.setProperty("receiver-reply", "OK");
-                } catch (JMSException ex) {
-                    Logger.getLogger(BusServiceTest.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            protected void onCommand(Command c) throws IOException, UnableToExecuteException {
+                c.setProperty("receiver-reply", "OK");
             }
 
-        }, busService);
-        listener.consumeCommandFrom("wait.for.reply.here");
+            @Override
+            protected void onEvent(EventTemplate event) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            protected String getMessagingChannel() {
+                return "wait.for.reply.here";
+            }
+        };
 
         //prepare and send the command
         Command command = new Command();
+        command.setName("Command with expected reply");
         command.setReceiver("wait.for.reply.here");
-        command.setReplyTimeout(2000); //wait reply for two seconds
+        command.setReplyTimeout(10000); //wait reply for ten seconds
         Command result = busService.send(command);
-
+        LOG.log(Level.INFO, "Received reply command is ''{0}'' executed={1}", new Object[]{result, result.isExecuted()});
         //the reply should have the property addedd by the listener
         assertTrue("Command reply was received", result.getProperty("receiver-reply").equals("OK"));
     }
