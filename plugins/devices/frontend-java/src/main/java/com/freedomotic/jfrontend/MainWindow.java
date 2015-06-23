@@ -1251,7 +1251,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             newEnv.setSource(new File(drawer.getCurrEnv().getSource().getParentFile() + "/" + newEnv.getPojo().getUUID() + ".xenv"));
             setEnvironment(api.environments().findOne(newEnv.getPojo().getUUID()));
         } else {
-            JOptionPane.showMessageDialog(this, i18n.msg("room_name_cannot_be_empty"), i18n.msg("room_rename_popup_title"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, i18n.msg("environment_name_cannot_be_empty"), i18n.msg("environment_rename_popup_title"), JOptionPane.ERROR_MESSAGE);
         }
         checkDeletableEnvironments();
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
