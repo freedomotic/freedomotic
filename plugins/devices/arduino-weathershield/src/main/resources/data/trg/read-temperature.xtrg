@@ -8,7 +8,7 @@
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>= behaviorValue=Math.round(@event.sensor.temperature*10)</value>
+                <value>= behaviorValue=Math.round(@event.sensor.temperature*10).toString()</value>
             </statement>
         </payload>
     </payload>
