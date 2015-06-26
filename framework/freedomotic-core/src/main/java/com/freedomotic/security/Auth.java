@@ -89,7 +89,7 @@ public interface Auth {
      * @param plugin
      * @param action
      */
-    public void pluginExecutePrivileged(Plugin plugin, Runnable action);
+    public Runnable pluginBindRunnablePrivileges(Plugin plugin, Runnable action);
 
     /**
      *

@@ -40,6 +40,7 @@ class PluginRealm extends SimpleAccountRealm {
     public void addPlugin(String pluginName, String permissions) {
         SimpleAccount pluginUser = new SimpleAccount(pluginName, UUID.randomUUID().toString(), getName());
         pluginUser.addObjectPermission(new WildcardPermission(permissions));
+        this.add(pluginUser);
     }
 
 }

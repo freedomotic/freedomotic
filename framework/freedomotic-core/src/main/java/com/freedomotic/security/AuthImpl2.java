@@ -20,6 +20,7 @@
 package com.freedomotic.security;
 
 import com.freedomotic.api.Plugin;
+import com.freedomotic.api.Protocol;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.events.AccountEvent;
 import com.freedomotic.events.AccountEvent.AccountActions;
@@ -191,24 +192,20 @@ class AuthImpl2 implements Auth {
      * @param action
      */
     @Override
-    public void pluginExecutePrivileged(Plugin plugin, Runnable action) {
-        executePrivileged(plugin.getClassName(), action);
-    }
+    public Runnable pluginBindRunnablePrivileges(Plugin plugin, Runnable action) {
 
-    private void executePrivileged(String classname, Runnable action) {
         if (isInited()) {
             //LOG.info("Executing privileged for plugin: " + classname);
-            PrincipalCollection plugPrincipals = new SimplePrincipalCollection(classname, pluginRealm.getName());
+            PrincipalCollection plugPrincipals = new SimplePrincipalCollection(plugin.getClassName(), pluginRealm.getName());
             Subject plugSubject = new Subject.Builder().principals(plugPrincipals).authenticated(true).buildSubject();
             try {
                 plugSubject.getSession().setTimeout(-1);
             } catch (Exception e) {
-                LOG.log(Level.WARNING, "ERROR retrieving session for user {0}", classname);
+                LOG.log(Level.WARNING, "ERROR retrieving session for user {0}", plugin.getClassName());
             }
-            plugSubject.execute(action);
-        } else {
-            action.run();
+            return plugSubject.associateWith(action);                
         }
+        return action;
     }
 
     /**

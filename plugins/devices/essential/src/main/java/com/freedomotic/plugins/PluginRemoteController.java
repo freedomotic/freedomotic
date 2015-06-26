@@ -74,7 +74,7 @@ public class PluginRemoteController extends Protocol {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(PluginRemoteController.class.getName()).log(Level.SEVERE, null, ex);
+                        LOG.log(Level.SEVERE, null, ex);
                     }
                     plugin.start();
                 }
