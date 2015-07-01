@@ -194,6 +194,7 @@ public class ElectricDevice extends EnvObjectLogic {
         setOn.setProperty("object", getPojo().getName());
         setOn.setProperty("behavior", BEHAVIOR_POWERED);
         setOn.setProperty("value", BooleanBehavior.VALUE_TRUE);
+        commandRepository.create(setOn);
 
         Command setOff = new Command();
         setOff.setName("Turn off " + getPojo().getName());
@@ -202,6 +203,7 @@ public class ElectricDevice extends EnvObjectLogic {
         setOff.setProperty("object", getPojo().getName());
         setOff.setProperty("behavior", BEHAVIOR_POWERED);
         setOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
+        commandRepository.create(setOff);
 
         Command switchPower = new Command();
         switchPower.setName("Switch " + getPojo().getName() + " power");
@@ -210,9 +212,9 @@ public class ElectricDevice extends EnvObjectLogic {
         switchPower.setProperty("object", getPojo().getName());
         switchPower.setProperty("behavior", BEHAVIOR_POWERED);
         switchPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
+        commandRepository.create(switchPower);
 
         Command setItOn = new Command();
-
         setItOn.setName("Turn it on");
         setItOn.setDescription("Object turns on");
         setItOn.setReceiver("app.events.sensors.behavior.request.objects");
@@ -238,10 +240,6 @@ public class ElectricDevice extends EnvObjectLogic {
         switchItsPower.setProperty("behavior", BEHAVIOR_POWERED);
         switchItsPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
         commandRepository.create(switchItsPower);
-
-        commandRepository.create(setOff);
-        commandRepository.create(setOn);
-        commandRepository.create(switchPower);
     }
 
     /**

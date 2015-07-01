@@ -125,7 +125,7 @@ public abstract class Protocol extends Plugin {
     public void start() {
         super.start();
         if (isAllowedToStart()) {
-
+            LOG.log(Level.INFO, "Starting plugin {0}", getName());
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
@@ -162,6 +162,7 @@ public abstract class Protocol extends Plugin {
     public void stop() {
         super.stop();
         if (isRunning()) {
+            LOG.log(Level.INFO, "Stopping plugin {0}", getName());
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {

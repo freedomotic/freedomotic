@@ -244,7 +244,7 @@ public class JavaDesktopFrontend extends Protocol {
             drawer.createCallout(callout);
             drawer.setNeedRepaint(true);
         } else if (event instanceof MessageEvent) {
-            //printCallout(event.getProperty("message.text"));
+            printCallout(event.getProperty("message.text"));
         } else if (null != window) {
             final PluginJList pluginJList = window.getPluginJList();
             if (null != pluginJList) {

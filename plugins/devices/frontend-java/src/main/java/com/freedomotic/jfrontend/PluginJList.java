@@ -127,11 +127,7 @@ public final class PluginJList extends JList {
 
                     public void actionPerformed(ActionEvent e) {
                         if (client.getType().equalsIgnoreCase("plugin")) {
-
-                            //new PluginConfigure(parent.getPlugin().getApi(), client);
-                            if (!client.isRunning()) {
-                                client.start();
-                            }
+                            client.start();
                             client.showGui();
                             update();
                         }
@@ -180,10 +176,10 @@ public final class PluginJList extends JList {
      */
     public void update() {
         try {
-            ImageIcon defaultIconRunning =
-                    new ImageIcon(ResourcesManager.getResource("plugin-running.png", 64, 64)); //new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
-            ImageIcon defaultIconStopped =
-                    new ImageIcon(ResourcesManager.getResource("plugin-stopped.png", 64, 64)); //new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
+            ImageIcon defaultIconRunning
+                    = new ImageIcon(ResourcesManager.getResource("plugin-running.png", 64, 64)); //new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
+            ImageIcon defaultIconStopped
+                    = new ImageIcon(ResourcesManager.getResource("plugin-stopped.png", 64, 64)); //new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
 
             Vector vector = new Vector();
             Collection<Client> clients = getApi().getClients(getFilter());

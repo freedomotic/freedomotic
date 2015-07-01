@@ -477,7 +477,6 @@ public class Plugin implements Client, BusConsumer {
      */
     @Override
     public void start() {
-        LOG.log(Level.INFO, "Starting plugin {0}", getName());
         //do not add code here
     }
 
@@ -486,7 +485,6 @@ public class Plugin implements Client, BusConsumer {
      */
     @Override
     public void stop() {
-        LOG.log(Level.INFO, "Stopping plugin {0}", getName());
         //do not add code here
     }
 
