@@ -1,9 +1,12 @@
 <config>
     <properties>
-        <property name="description"                       value="Simulates Fontana Mote Traking system. Positions from socket"/>
-        <property name="category"                       value="tracking"/>
-        <property name="short-name"                       value="socket"/>
-        <property name="send-on"                       value="tracking.fromsocket.out"/>
-        <property name="listen-on"                       value="tracking.fromsocket.in"/>
+        <property name="description" value="Simulates a Tracking system. Positions read from socket"/>
+        <property name="category" value="tracking"/>
+        <property name="short-name" value="socket"/>
+        <property name="send-on" value="tracking.fromsocket.out"/>
+        <property name="listen-on" value="tracking.fromsocket.in"/>
+        <property name="socket-server-port" value="7777"/>
+        <property name="sleep-time" value="1000"/>
+        <property name="max-connections" value="-1"/>
     </properties>
 </config>
