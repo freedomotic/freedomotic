@@ -235,7 +235,6 @@ public class ObjectEditor
                 final JPanel sliderPanel = new JPanel(new FlowLayout());
                 final JSlider slider = new JSlider();
 
-                slider.setValue(rb.getValue());
                 slider.setMaximum(rb.getMax());
                 slider.setMinimum(rb.getMin());
                 slider.setPaintTicks(true);
@@ -245,6 +244,7 @@ public class ObjectEditor
                 //slider.setMinorTickSpacing(rb.getStep());
                 slider.setMajorTickSpacing(rb.getStep());
                 slider.setSnapToTicks(true);
+                slider.setValue(rb.getValue());
 
                 JLabel label = new JLabel(getBehaviorLabel(b));
                 tabControls.add(label);
