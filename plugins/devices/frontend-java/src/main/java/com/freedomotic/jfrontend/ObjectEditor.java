@@ -242,8 +242,14 @@ public class ObjectEditor
                 slider.setPaintLabels(false);
                 //slider.setMajorTickSpacing(rb.getScale() * 10);
                 //slider.setMinorTickSpacing(rb.getStep());
-                slider.setMajorTickSpacing(rb.getStep());
-                slider.setSnapToTicks(true);
+        		if ((rb.getMax() - rb.getMin()) / rb.getStep() < 10000) {
+        			slider.setMajorTickSpacing(rb.getStep());
+        			slider.setSnapToTicks(true);
+        		} else {
+        			// range is too wide, use 10000 ticks instead and don't snap
+        			slider.setMajorTickSpacing(10000);
+        			slider.setSnapToTicks(false);
+        		}
                 slider.setValue(rb.getValue());
 
                 JLabel label = new JLabel(getBehaviorLabel(b));
@@ -255,6 +261,15 @@ public class ObjectEditor
                     @Override
                     public void stateChanged(ChangeEvent e) {
                         if (!slider.getValueIsAdjusting()) {
+        					if (!slider.getSnapToTicks()) {
+        						// SnapToTicks disabled, snap to RangedIntBehavior step (round down to closest)
+        						int snapValue = slider.getValue() / rb.getStep() * rb.getStep();
+        						if (slider.getValue() != snapValue) {
+        							slider.setValue(snapValue);
+        							return;
+        						}
+        					}
+
                             Config params = new Config();
                             params.setProperty("value",
                                     String.valueOf(slider.getValue()));
