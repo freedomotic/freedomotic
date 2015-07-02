@@ -18,6 +18,7 @@ import com.freedomotic.jfrontend.automationeditor.ReactionEditor;
 import com.freedomotic.jfrontend.automationeditor.ReactionsPanel;
 import com.freedomotic.jfrontend.utils.CheckBoxList;
 import com.freedomotic.jfrontend.utils.PropertiesPanel_1;
+import com.freedomotic.jfrontend.utils.SliderPopup;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.EnvObject;
@@ -35,6 +36,7 @@ import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.settings.Info;
 import com.google.common.collect.Iterators;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -44,6 +46,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 import java.util.Map.Entry;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -257,6 +260,9 @@ public class ObjectEditor
                 sliderPanel.add(slider);
                 sliderPanel.add(doubleValue);
                 tabControls.add(sliderPanel);
+                // if slider is enabled, add a popup to allow user to write values
+        		if (!b.isReadOnly()) 
+        			slider.addMouseListener(new SliderPopup(slider, rb));
                 slider.addChangeListener(new ChangeListener() {
                     @Override
                     public void stateChanged(ChangeEvent e) {
