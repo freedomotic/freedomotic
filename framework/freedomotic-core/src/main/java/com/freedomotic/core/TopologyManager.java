@@ -44,7 +44,7 @@ public class TopologyManager implements BusConsumer {
         this.environmentRepository = environmentRepository;
         this.thingsRepository = thingsRepository;
         listener = new BusMessagesListener(this, busService);
-        listener.consumeCommandFrom(LISTEN_CHANNEL);
+        listener.consumeEventFrom(LISTEN_CHANNEL);
     }
 
     @Override
