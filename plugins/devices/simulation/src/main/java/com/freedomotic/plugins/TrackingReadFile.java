@@ -42,6 +42,7 @@ import java.util.logging.Logger;
  */
 public class TrackingReadFile extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(TrackingReadFile.class.getName());
     OutputStream out;
     boolean connected = false;
     final int SLEEP_TIME = 1000;
@@ -75,7 +76,7 @@ public class TrackingReadFile extends Protocol {
 
         try {
             File f = new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/mote-" + n + ".txt");
-            System.out.println("\nReading coordinates from file " + f.getAbsolutePath());
+            LOG.log(Level.INFO, "Reading coordinates from file " + f.getAbsolutePath());
             fr = new FileReader(f);
 
             BufferedReader br = new BufferedReader(fr);
@@ -84,7 +85,7 @@ public class TrackingReadFile extends Protocol {
             while ((line = br.readLine()) != null) {
                 //tokenize string
                 StringTokenizer st = new StringTokenizer(line);
-                System.out.println("   Mote " + n + " coordinate added " + line);
+                LOG.log(Level.INFO, "Mote " + n + " coordinate added " + line);
 
                 Coordinate c = new Coordinate();
                 c.setId(n);
@@ -99,14 +100,14 @@ public class TrackingReadFile extends Protocol {
             WorkerThread wt = new WorkerThread(this, coord);
             workers.add(wt);
         } catch (FileNotFoundException ex) {
-            System.out.println("Coordinates file not found for mote " + n);
+            LOG.log(Level.SEVERE, "Coordinates file not found for mote " + n);
         } catch (IOException ex) {
-            Logger.getLogger(TrackingReadFile.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, "IOException: " + ex);
         } finally {
             try {
                 fr.close();
             } catch (IOException ex) {
-                Logger.getLogger(TrackingReadFile.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, "IOException: " + ex);
             }
         }
     }
