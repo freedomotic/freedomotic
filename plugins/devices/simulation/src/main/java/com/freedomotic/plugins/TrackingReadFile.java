@@ -43,11 +43,11 @@ import java.util.logging.Logger;
 public class TrackingReadFile extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(TrackingReadFile.class.getName());
-    OutputStream out;
-    boolean connected = false;
-    final int SLEEP_TIME = 1000;
-    int NUM_MOTE = 3;
-    ArrayList<WorkerThread> workers = new ArrayList<WorkerThread>();
+    private OutputStream out;
+    private boolean connected = false;
+    private final int SLEEP_TIME = 1000;
+    private int NUM_MOTE = 1;
+    private ArrayList<WorkerThread> workers = null;
 
     /**
      *
@@ -59,9 +59,10 @@ public class TrackingReadFile extends Protocol {
 
     @Override
     public void onStart() {
-        NUM_MOTE = Integer.valueOf(getApi().getConfig().getIntProperty("KEY_SIMULATED_PERSON_COUNT", 3));
+        NUM_MOTE = configuration.getIntProperty("simulated-person-count", 1);
+        workers = new ArrayList<WorkerThread>();
 
-        for (int i = 0; i < NUM_MOTE; i++) {
+        for (int i = 1; i <= NUM_MOTE; i++) {
             readMoteFile(i);
         }
 
@@ -75,7 +76,7 @@ public class TrackingReadFile extends Protocol {
         ArrayList<Coordinate> coord = new ArrayList<Coordinate>();
 
         try {
-            File f = new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/mote-" + n + ".txt");
+            File f = new File(Info.PATHS.PATH_DEVICES_FOLDER + "/simulation/mote-" + n + ".txt");
             LOG.log(Level.INFO, "Reading coordinates from file " + f.getAbsolutePath());
             fr = new FileReader(f);
 

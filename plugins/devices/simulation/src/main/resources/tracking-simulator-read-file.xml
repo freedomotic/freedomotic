@@ -1,9 +1,10 @@
 <config>
     <properties>
-        <property name="description"                       value="Insert a description in config file"/>
-        <property name="category"                       value="tracking"/>
-        <property name="short-name"                       value="file"/>
-        <property name="send-on"                       value="tracking.fromfile.out"/>
-        <property name="listen-on"                       value="tracking.fromfile.in"/>
+        <property name="description" value="It simulates a motes WSN that send information about movable sensors position. Positions are read from a text file"/>
+        <property name="category"    value="tracking"/>
+        <property name="short-name"  value="tracking-from-file"/>
+        <property name="send-on"     value="tracking.fromfile.out"/>
+        <property name="listen-on"   value="tracking.fromfile.in"/>
+        <property name="simulated-person-count" value="1"/>
     </properties>
 </config>
