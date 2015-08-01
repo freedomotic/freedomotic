@@ -206,7 +206,7 @@ public final class Autodiscovery extends AbstractConsumer {
 
                         if (commandName != null) {
                             List<Command> list = commandRepository.findByName(commandName);
-                            if (list.isEmpty()) {
+                            if (!list.isEmpty()) {
                                 loaded.setAction(action, list.get(0));
                             } else {
                                 throw new RuntimeException("No commands found with name " + commandName);
