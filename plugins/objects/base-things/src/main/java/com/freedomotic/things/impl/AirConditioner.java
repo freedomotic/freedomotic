@@ -55,12 +55,12 @@ public class AirConditioner extends ElectricDevice {
 
             @Override
             public void onTrue(Config params, boolean fireCommand) {
-                //startSwing(params, fireCommand);
+                startSwing(params);
             }
 
             @Override
             public void onFalse(Config params, boolean fireCommand) {
-                //stopSwing(params, fireCommand);
+                stopSwing(params);
             }
         });
 
@@ -114,15 +114,6 @@ public class AirConditioner extends ElectricDevice {
             }
         });
 
-        // Controls the current conditionning mode
-        conditioningMode = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior(BEHAVIOR_CONDITIONING_MODE));
-        conditioningMode.addListener(new ListBehaviorLogic.Listener() {
-
-            @Override
-            public void selectedChanged(Config params, boolean fireCommand) {
-                setConditioningMode(params.getProperty("value"), params, fireCommand);
-            }
-        });
 
         //register new behaviors to the superclass to make it visible to it
         registerBehavior(swingMode);
@@ -137,6 +128,33 @@ public class AirConditioner extends ElectricDevice {
         // Resume normal poweroff procedure from superclass
         super.executePowerOff(params);
     }
+
+    /**
+     *
+     * @param params
+     */
+    protected void stopSwing(Config params) {
+        boolean executed = executeCommand("set swing mode", params);
+
+        if (executed) {
+            swingMode.setValue(false);
+            setChanged(true);
+        }
+    }
+
+    /**
+     *
+     * @param params
+     */
+    protected void startSwing(Config params) {
+        boolean executed = executeCommand("set swing mode", params);
+
+        if (executed) {
+            swingMode.setValue(true);
+            setChanged(true);
+        }
+    }
+    
 
     /**
      * Updates the internal state of the air conditioner related to its
