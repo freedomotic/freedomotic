@@ -19,6 +19,7 @@
  */
 package com.freedomotic.things.impl;
 
+import com.freedomotic.core.SynchAction;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
@@ -34,6 +35,7 @@ import com.freedomotic.settings.Info;
 import com.freedomotic.util.SerialClone;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -48,7 +50,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.inject.Inject;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
