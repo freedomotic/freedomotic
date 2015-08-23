@@ -65,13 +65,13 @@ public class SynchManager implements BusConsumer {
                         Logger.getLogger(SynchManager.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     // A new thing was created in another instance
-                    if (synchThingRequest.getProperty(SynchThingRequest.KEY_SYNCH_ACTION)
-                            .equalsIgnoreCase(SynchThingRequest.SynchAction.CREATED.name())) {
+                    if (synchThingRequest.getProperty(SynchAction.KEY_SYNCH_ACTION)
+                            .equalsIgnoreCase(SynchAction.CREATED.name())) {
                         thingsRepository.create(thing);
                     }
                     // A thing was deleted in another instance
-                    if (synchThingRequest.getProperty(SynchThingRequest.KEY_SYNCH_ACTION)
-                            .equalsIgnoreCase(SynchThingRequest.SynchAction.DELETED.name())) {
+                    if (synchThingRequest.getProperty(SynchAction.KEY_SYNCH_ACTION)
+                            .equalsIgnoreCase(SynchAction.DELETED.name())) {
                         thingsRepository.delete(thing);
                     }
                 }

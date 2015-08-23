@@ -17,11 +17,6 @@ import java.util.List;
  */
 public interface ThingRepository extends Repository<EnvObjectLogic> {
 
-    public enum SynchAction {
-
-        CREATED, DELETED, UPDATED
-    };
-
     public List<EnvObjectLogic> findByEnvironment(EnvironmentLogic env);
 
     public List<EnvObjectLogic> findByEnvironment(String uuid);

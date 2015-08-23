@@ -14,18 +14,11 @@ import com.freedomotic.model.object.EnvObject;
  */
 public class SynchThingRequest extends EventTemplate {
     
-    static final String KEY_SYNCH_ACTION = "synch.action";
-
     private final EnvObject thing;
-
-    public enum SynchAction {
-
-        CREATED, DELETED
-    };
 
     public SynchThingRequest(SynchAction action, EnvObject thing) {
         this.thing = thing;
-        this.addProperty("synch.action", action.name());
+        this.addProperty(SynchAction.KEY_SYNCH_ACTION, action.name());
     }
 
     public EnvObject getThing() {
