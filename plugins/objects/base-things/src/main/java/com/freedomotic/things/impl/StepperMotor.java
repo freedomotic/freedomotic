@@ -44,11 +44,23 @@ public class StepperMotor
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOff(params);
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set minimum                	
+            		onRangeValue(position.getMin(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOn(params);
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set maximum                	
+            		onRangeValue(position.getMax(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
