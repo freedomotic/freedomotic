@@ -177,11 +177,15 @@ public class RangedIntBehaviorLogic
             if (tmpValue <= getMin()) {
                 params.setProperty("value",
                         Integer.valueOf(getMin()).toString());
+                params.setProperty("value.original",
+                        Integer.valueOf(tmpValue).toString());
                 listener.onLowerBoundValue(params, fireCommand);
             } else {
                 if (tmpValue >= getMax()) {
                     params.setProperty("value",
                             String.valueOf(getMax()));
+                    params.setProperty("value.original",
+                            Integer.valueOf(tmpValue).toString());
                     listener.onUpperBoundValue(params, fireCommand);
                 } else {
                     listener.onRangeValue(tmpValue, params, fireCommand);
