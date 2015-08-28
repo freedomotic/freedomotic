@@ -61,20 +61,20 @@ public class PropertiesBehaviorLogic
     @Override
     public synchronized final void filterParams(final Config params, boolean fireCommand) {
 
-//        String[] parsed = params.getProperty("value").trim().split("=");
-//        String key = parsed[0].trim();
-//        String value = parsed[1].trim();
-//
-//        if (key != null && value != null && !key.isEmpty() && !value.isEmpty()) {
-//            String currentValue = data.getProperty(key);
-//            if (currentValue != null) {
-//                if (!currentValue.equalsIgnoreCase(value)) {
-//                    //notify the user wants to change a property in the list
-//                    params.setProperty(key, value);
-//                    listener.propertyChanged(key, value, params, fireCommand);
-//                }
-//            }
-//        }
+        String[] parsed = params.getProperty("value").trim().split("=");
+        String key = parsed[0].trim();
+        String value = parsed[1].trim();
+
+        if (key != null && value != null && !key.isEmpty() && !value.isEmpty()) {
+            String currentValue = data.getProperty(key);
+            if (currentValue != null) {
+                if (!currentValue.equalsIgnoreCase(value)) {
+                    //notify the user wants to change a property in the list
+                    params.setProperty(key, value);
+                    listener.propertyChanged(key, value, params, fireCommand);
+                }
+            }
+        }
     }
 
     /**
