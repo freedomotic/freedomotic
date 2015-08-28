@@ -61,8 +61,8 @@ public class WorkerThread
             Coordinate c = (Coordinate) it.next();
 
             if (c != null) {
-                for (EnvObjectLogic object : master.getApi().things().findByName(String.valueOf(c.getId()))) {
-                    if ((object instanceof GenericPerson) && (object.getPojo().getName().equalsIgnoreCase(String.valueOf(c.getId())))) {
+                for (EnvObjectLogic object : master.getApi().things().findByName(c.getUserId())) {
+                    if ((object instanceof GenericPerson) && (object.getPojo().getName().equalsIgnoreCase(c.getUserId()))) {
                         GenericPerson person = (GenericPerson) object;
                         FreedomPoint location = new FreedomPoint(c.getX(), c.getY());
                         LocationEvent event = new LocationEvent(this, person.getPojo().getUUID(), location);
