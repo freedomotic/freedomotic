@@ -194,13 +194,13 @@ public class ObjectEditor
         tabControls.removeAll();
 
         //tabControls.setLayout(new BoxLayout(tabControls, BoxLayout.PAGE_AXIS));
-        tabControls.setLayout(new GridLayout(Iterators.size(object.getBehaviors().iterator()), 2));
-
-        //create an array of controllers for the object behaviors
-        int row = 0;
+        tabControls.setLayout(new GridLayout(Iterators.size(object.getBehaviors().iterator()),1));
 
         for (Behavior behavior : object.getPojo().getBehaviors()) {
-            // All this is done just to keep the behavior orders as in pojo definition
+        	JPanel rowPanel = new JPanel();
+        	rowPanel.setLayout(new GridLayout());
+        	
+        	// All this is done just to keep the behavior orders as in pojo definition
             BehaviorLogic b = object.getBehavior(behavior.getName());
             if (b instanceof BooleanBehaviorLogic) {
                 final BooleanBehaviorLogic bb = (BooleanBehaviorLogic) b;
@@ -213,8 +213,9 @@ public class ObjectEditor
                 }
 
                 JLabel label = new JLabel(getBehaviorLabel(b));
-                tabControls.add(label);
-                tabControls.add(button);
+                rowPanel.add(label);
+                rowPanel.add(button);
+                tabControls.add(rowPanel);
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -258,10 +259,11 @@ public class ObjectEditor
                 slider.setValue(rb.getValue());
 
                 JLabel label = new JLabel(getBehaviorLabel(b));
-                tabControls.add(label);
+                rowPanel.add(label);
                 sliderPanel.add(slider);
                 sliderPanel.add(doubleValue);
-                tabControls.add(sliderPanel);
+                rowPanel.add(sliderPanel);
+                tabControls.add(rowPanel);
                 // if slider is enabled, add a popup to allow user to write values
         		if (!b.isReadOnly()) 
         			slider.addMouseListener(new SliderPopup(slider, rb));
@@ -307,8 +309,9 @@ public class ObjectEditor
                 comboBox.setSelectedItem(lb.getSelected());
 
                 JLabel label = new JLabel(getBehaviorLabel(b));
-                tabControls.add(label);
-                tabControls.add(comboBox);
+                rowPanel.add(label);
+                rowPanel.add(comboBox);
+                tabControls.add(rowPanel);
                 comboBox.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -657,7 +660,6 @@ public class ObjectEditor
 
         tabObjectEditor.addTab(I18n.msg("appearance"), tabRepresentation);
 
-        tabControls.setLayout(new java.awt.BorderLayout());
         tabObjectEditor.addTab(I18n.msg("control_panel"), tabControls);
 
         tabAutomations.setLayout(new java.awt.BorderLayout());
@@ -1116,11 +1118,14 @@ public class ObjectEditor
             }
         });
         refreshMultiselectionList(lb, list);
-        tabControls.add(label);
-        tabControls.add(list);
-        tabControls.add(newItem);
-        tabControls.add(btnAdd);
-        tabControls.add(btnRemove);
+    	JPanel rowPanel = new JPanel();
+    	rowPanel.setLayout(new GridLayout());
+    	rowPanel.add(label);
+        rowPanel.add(list);
+        rowPanel.add(newItem);
+        rowPanel.add(btnAdd);
+        rowPanel.add(btnRemove);
+        tabControls.add(rowPanel);
         tabControls.validate();
     }
 
