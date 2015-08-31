@@ -243,10 +243,12 @@ public class ObjectEditor
                 slider.setPaintTicks(true);
                 slider.setPaintTrack(true);
                 slider.setPaintLabels(false);
+                int step = rb.getStep();
+                if (step == 0) step = 1;
                 //slider.setMajorTickSpacing(rb.getScale() * 10);
                 //slider.setMinorTickSpacing(rb.getStep());
-        		if ((rb.getMax() - rb.getMin()) / rb.getStep() < 10000) {
-        			slider.setMajorTickSpacing(rb.getStep());
+        		if ((rb.getMax() - rb.getMin()) / step < 10000) {
+        			slider.setMajorTickSpacing(step);
         			slider.setSnapToTicks(true);
         		} else {
         			// range is too wide, use 10000 ticks instead and don't snap
