@@ -404,7 +404,7 @@ class ThingRepositoryImpl implements ThingRepository {
     private String getNextInOrder(String name) {
         String newName = name;
         int i = 0;
-        while (!this.findByName(name).isEmpty() && (i < 1000)) {
+        while (!this.findByName(newName).isEmpty() && (i < 1000)) {
             // i < 1000 just to avoid infinite loop in case of errors
             i++;
             newName = name + "-" + i;
