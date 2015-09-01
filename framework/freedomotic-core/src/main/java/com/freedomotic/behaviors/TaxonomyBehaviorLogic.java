@@ -20,10 +20,10 @@
  */
 package com.freedomotic.behaviors;
 
+import java.util.List;
+
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.MultiselectionListBehavior;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * This behavior accepts a string which is an element of the list or "next" or
@@ -94,17 +94,17 @@ public class TaxonomyBehaviorLogic
             listener.onAdd(params, fireCommand);
         } else {
             if (value.equalsIgnoreCase("remove")) {
-                //data.setUnselected(item);
+                data.setUnselected(item);
                 listener.onRemove(params, fireCommand);
             } else {
                 if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("selected") || value.equals("1")) {
-                    //data.setSelected(item);
+                    data.setSelected(item);
                     listener.onSelection(params, fireCommand);
                 } else {
                     if (value.equalsIgnoreCase("false")
                             || value.equalsIgnoreCase("unselected")
                             || value.equals("0")) {
-                        //data.setUnselected(item);
+                        data.setUnselected(item);
                         listener.onUnselection(params, fireCommand);
                     }
                 }
@@ -247,5 +247,5 @@ public class TaxonomyBehaviorLogic
     public void setChanged(boolean value) {
         changed = value;
     }
-    private static final Logger LOG = Logger.getLogger(TaxonomyBehaviorLogic.class.getName());
+
 }
