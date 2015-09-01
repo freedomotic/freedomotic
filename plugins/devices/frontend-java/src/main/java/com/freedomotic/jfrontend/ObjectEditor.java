@@ -1136,6 +1136,7 @@ public class ObjectEditor
             final JCheckBox box = new JCheckBox(item);
 
             if (!model.contains(box)) { //no duplicates allowed
+            	box.setSelected(source.getSelected().contains(item));
                 box.addChangeListener(new ChangeListener() {
                     public void stateChanged(ChangeEvent e) {
                         Config params = new Config();
@@ -1146,7 +1147,6 @@ public class ObjectEditor
                         source.filterParams(params, true);
                     }
                 });
-                box.setSelected(source.getSelected().contains(item));
                 model.addElement(box);
             }
         }
