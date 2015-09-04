@@ -327,8 +327,6 @@ public class EnvObjectLogic {
         cacheDeveloperLevelCommand();
         // assign object to an environment
         this.setEnvironment(environmentRepository.findOne(pojo.getEnvironmentID()));
-        // update topology information
-        updateTopology();
     }
 
     @Deprecated
@@ -712,6 +710,8 @@ public class EnvObjectLogic {
         }
         this.environment = selEnv;
         getPojo().setEnvironmentID(selEnv.getPojo().getUUID());
+        // update topology information
+        updateTopology();
     }
 
     /**

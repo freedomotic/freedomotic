@@ -102,6 +102,7 @@ class ThingRepositoryImpl implements ThingRepository {
         }
 
         if (!folder.isDirectory()) {
+            //TODO: create folder tree instead of just complaining
             throw new RepositoryException(folder.getAbsoluteFile() + " is not a valid object folder. Skipped");
         }
 

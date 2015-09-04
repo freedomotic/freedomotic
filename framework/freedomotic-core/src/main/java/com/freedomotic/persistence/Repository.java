@@ -30,7 +30,7 @@ public interface Repository<T> {
 
     public List<T> findAll();
 
-    // TODO: it's supposed name it's a unique identifier, should return a single object
+    // TODO: it's supposed name is a unique identifier, should return a single object
     public List<T> findByName(String name);
 
     public T findOne(String uuid);

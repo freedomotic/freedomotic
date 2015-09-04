@@ -101,6 +101,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             return;
         }
         File defaultEnvironmentFolder = getDefaultEnvironmentFolder();
+        createFolderStructure(defaultEnvironmentFolder);
         EnvironmentPersistence environmentPersistence = environmentPersistenceFactory.create(defaultEnvironmentFolder);
         Collection<Environment> loadedPojo = environmentPersistence.loadAll();
 
@@ -228,9 +229,16 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         File[] files = folder.listFiles(envFileFilter);
 
         for (File file : files) {
-            loadEnvironmentFromFile(file);
+            try {
+                EnvironmentLogic envLogic = loadEnvironmentFromFile(file);
+                if (envLogic != null) {
+                    add(envLogic, false);
+                }
+            } catch (RepositoryException re) {
+                LOG.warning("Cannot add environment from file " + file.getAbsolutePath());
+            }
         }
-
+        createFolderStructure(folder);
         // Load all objects in this environment
         thingsRepository.loadAll(EnvironmentRepositoryImpl.getEnvironments().get(0).getObjectFolder());
 
@@ -317,14 +325,14 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
     private static void createFolderStructure(File folder) {
         if (!folder.exists()) {
-            folder.mkdir();
-            new File(folder + "/data").mkdir();
-            new File(folder + "/data/obj").mkdir();
-            new File(folder + "/data/rea").mkdir();
-            new File(folder + "/data/trg").mkdir();
-            new File(folder + "/data/cmd").mkdir();
-            new File(folder + "/data/resources").mkdir();
-        }
+            folder.mkdirs();
+        }   
+        new File(folder + "/data").mkdir();
+        new File(folder + "/data/obj").mkdir();
+        new File(folder + "/data/rea").mkdir();
+        new File(folder + "/data/trg").mkdir();
+        new File(folder + "/data/cmd").mkdir();
+        new File(folder + "/data/resources").mkdir();
     }
 
     private static void save(EnvironmentLogic env, File file) throws IOException {
@@ -359,7 +367,8 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
      * @deprecated
      */
     @Deprecated
-    private static void loadEnvironmentFromFile(final File file) throws RepositoryException {
+    @Override
+    public EnvironmentLogic loadEnvironmentFromFile(final File file) throws RepositoryException {
         LOG.config("Loading environment from file " + file.getAbsolutePath());
         XStream xstream = FreedomXStream.getXstream();
 
@@ -388,10 +397,8 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
         envLogic.setPojo(pojo);
         envLogic.setSource(file);
-        // next line is commented as the method init() is called in the add()
-        //envLogic.init();
-        add(envLogic, false);
         LOG.info("Environment '" + envLogic.getPojo().getName() + "' loaded");
+        return envLogic;
     }
 
     /**
