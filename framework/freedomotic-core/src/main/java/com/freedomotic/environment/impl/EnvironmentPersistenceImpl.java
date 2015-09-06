@@ -99,22 +99,6 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
     }
 
     /**
-     *
-     * @return
-     */
-    public boolean isSavedAsNewEnvironment() {
-        return savedAsNewEnvironment;
-    }
-
-    /**
-     *
-     * @param saveAsNewEnvironment
-     */
-    public void setSavedAsNewEnvironment(boolean saveAsNewEnvironment) {
-        this.savedAsNewEnvironment = saveAsNewEnvironment;
-    }
-
-    /**
      * Persists an environment on filesystem using XStream as serialization
      * engine (XML)
      *
@@ -124,51 +108,18 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
     @Override
     public void persist(Environment environment)
             throws RepositoryException {
+        directory.mkdirs();
         if (!directory.isDirectory()) {
             throw new RepositoryException(directory.getAbsoluteFile() + " is not a valid environment folder. Skipped");
         }
-
-        if (this.isSavedAsNewEnvironment()) {
-            try {
-                saveAs(environment);
-            } catch (IOException ex) {
-                throw new RepositoryException(ex);
-            }
-        } else {
-            delete(environment);
-            try {
-                String uuid = environment.getUUID();
-                if ((uuid == null) || uuid.isEmpty()) {
-                    environment.setUUID(UUID.randomUUID().toString());
-                }
-                String fileName = environment.getUUID() + ".xenv";
-                serialize(environment, new File(directory + "/" + fileName));
-            } catch (IOException ex) {
-                throw new RepositoryException(ex);
-            }
+        verifyFolderStructure(directory);
+        delete(environment);
+        String fileName = getEnvFilename(environment);
+        try {
+            serialize(environment, new File(directory + "/" + fileName));
+        } catch (IOException ex) {
+            throw new RepositoryException(ex);
         }
-    }
-
-    /**
-     *
-     * @param env
-     * @throws IOException
-     */
-    public void saveAs(Environment env)
-            throws IOException {
-        String fileName = directory.getName();
-
-        if (!directory.exists()) {
-            directory.mkdir();
-            new File(directory + "/data").mkdir();
-            new File(directory + "/data/obj").mkdir();
-            new File(directory + "/data/rea").mkdir();
-            new File(directory + "/data/trg").mkdir();
-            new File(directory + "/data/cmd").mkdir();
-            new File(directory + "/data/resources").mkdir();
-        }
-
-        serialize(env, new File(directory + "/" + fileName + ".xenv"));
     }
 
     /**
@@ -179,7 +130,17 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
     @Override
     public void delete(Environment environment)
             throws RepositoryException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        File deleteMe = new File(directory + "/" + getEnvFilename(environment));
+        deleteMe.delete();
+    }
+
+    private String getEnvFilename(Environment environment) {
+        String uuid = environment.getUUID();
+        if ((uuid == null) || uuid.isEmpty()) {
+            environment.setUUID(UUID.randomUUID().toString());
+        }
+        String fileName = environment.getUUID() + ".xenv";
+        return fileName;
     }
 
     /**
@@ -210,12 +171,26 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
         List<Environment> environments = new ArrayList<Environment>();
         for (File file : files) {
             environments.add(deserialize(file));
-
         }
+
+        verifyFolderStructure(directory);
+
         if (environments.isEmpty()) {
             return null;
         }
         return environments;
+    }
+
+    private void verifyFolderStructure(File folder) {
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        new File(folder + "/data").mkdir();
+        new File(folder + "/data/obj").mkdir();
+        new File(folder + "/data/rea").mkdir();
+        new File(folder + "/data/trg").mkdir();
+        new File(folder + "/data/cmd").mkdir();
+        new File(folder + "/data/resources").mkdir();
     }
 
     private void serialize(Environment env, File file) throws IOException {

@@ -587,7 +587,7 @@ class ThingRepositoryImpl implements ThingRepository {
 
     @Override
     public List<EnvObjectLogic> loadAll(File folder) throws RepositoryException {
-        objectList.clear();
+        this.deleteAll();
         List<EnvObjectLogic> results = new ArrayList<EnvObjectLogic>();
 
         // This filter only returns object files
@@ -607,8 +607,13 @@ class ThingRepositoryImpl implements ThingRepository {
 
         if (files != null) {
             for (File file : files) {
+                try{
                 EnvObjectLogic loaded = load(file);
                 results.add(loaded);
+                }
+                catch (RepositoryException ex){
+                    LOG.warn(ex.getMessage());
+                }
             }
         }
         return results;

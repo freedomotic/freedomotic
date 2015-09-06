@@ -908,12 +908,13 @@ public class MainWindow
     private void mnuOpenEnvironmentActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuOpenEnvironmentActionPerformed
         mnuSaveActionPerformed(null);
         final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + "/furn/");
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         File file = null;
-        OpenDialogFileFilter filter = new OpenDialogFileFilter();
-        filter.addExtension("xenv");
-        filter.setDescription("Freedomotic XML Environment file");
-        fc.addChoosableFileFilter(filter);
-        fc.setFileFilter(filter);
+        // OpenDialogFileFilter filter = new OpenDialogFileFilter();
+        // filter.addExtension("xenv");
+        // filter.setDescription("Freedomotic XML Environment file");
+        // fc.addChoosableFileFilter(filter);
+        // fc.setFileFilter(filter);
 
         int returnVal = fc.showOpenDialog(this);
 
@@ -922,16 +923,13 @@ public class MainWindow
             LOG.info("Opening " + file.getAbsolutePath());
 
             try {
-                boolean loaded = master.getApi().environments().loadEnvironmentsFromDir(file.getParentFile(),
-                        false);
-
-                if (loaded) {
-                    mnuSelectEnvironmentActionPerformed(null);
-                }
-            } catch (Exception e) {
+                api.environments().init(file);
+                setEnvironment(api.environments().findAll().get(0));
+                mnuSelectEnvironmentActionPerformed(null);
+                
+            } catch (RepositoryException e) {
                 LOG.severe(Freedomotic.getStackTraceInfo(e));
             }
-
             setWindowedMode();
         } else {
             LOG.info(i18n.msg("canceled_by_user"));
@@ -1189,9 +1187,8 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 } else {
                     LOG.info("Save command cancelled by user.");
                     //reload the old file
-                   api.environments().loadEnvironmentsFromDir(oldEnv.getParentFile(), false);
-
-                    setEnvironment(api.environments().findAll().get(0));
+                   api.environments().init(oldEnv.getParentFile());
+                   setEnvironment(api.environments().findAll().get(0));
                 }
             }
         } catch (Exception e) {
