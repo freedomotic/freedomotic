@@ -101,21 +101,27 @@ public class MultiselectionListBehavior
     /**
      *
      * @param key
+     * @return key selected (boolean)
      */
-    public void setSelected(String key) {
+    public boolean setSelected(String key) {
         if (list.contains(key) && !selected.contains(key)) {
             selected.add(key);
+            return true;
         }
+        return false;
     }
 
     /**
      *
      * @param key
+     * @return key unselected (boolean)
      */
-    public void setUnselected(String key) {
+    public boolean setUnselected(String key) {
         if (list.contains(key) && selected.contains(key)) {
             selected.remove(key);
+            return true;
         }
+        return false;
     }
 
     /**

@@ -94,17 +94,17 @@ public class TaxonomyBehaviorLogic
             listener.onAdd(params, fireCommand);
         } else {
             if (value.equalsIgnoreCase("remove")) {
-                data.setUnselected(item);
+                setUnselected(item);
                 listener.onRemove(params, fireCommand);
             } else {
                 if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("selected") || value.equals("1")) {
-                    data.setSelected(item);
+                    setSelected(item);
                     listener.onSelection(params, fireCommand);
                 } else {
                     if (value.equalsIgnoreCase("false")
                             || value.equalsIgnoreCase("unselected")
                             || value.equals("0")) {
-                        data.setUnselected(item);
+                        setUnselected(item);
                         listener.onUnselection(params, fireCommand);
                     }
                 }
@@ -139,8 +139,7 @@ public class TaxonomyBehaviorLogic
      * @param item
      */
     protected void setSelected(String item) {
-        if (!data.getSelected().equals(item)) {
-            data.setSelected(item);
+        if (data.setSelected(item)) {
             setChanged(true);
         }
     }
@@ -150,8 +149,7 @@ public class TaxonomyBehaviorLogic
      * @param item
      */
     protected void setUnselected(String item) {
-        if (data.getSelected().equals(item)) {
-            data.setUnselected(item);
+        if (data.setUnselected(item)) {
             setChanged(true);
         }
     }
