@@ -1093,13 +1093,12 @@ public class ObjectEditor
         btnAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!newItem.getText().isEmpty()) {
-                    refreshMultiselectionList(lb, list);
-
                     Config params = new Config();
                     params.setProperty("item",
                             newItem.getText());
                     params.setProperty("value", "add");
                     lb.filterParams(params, true);
+                    refreshMultiselectionList(lb, list);
                 }
             }
         });
