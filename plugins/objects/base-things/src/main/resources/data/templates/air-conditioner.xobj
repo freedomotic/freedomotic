@@ -1,0 +1,126 @@
+<object>
+  <name>Air conditioner</name>
+  <description>An air conditioner</description>
+  <actAs>virtual</actAs>
+  <type>EnvObject.ElectricDevice.AirConditioner</type>
+  <hierarchy>com.freedomotic.things.impl.AirConditioner</hierarchy>
+  <protocol>unknown</protocol>
+  <phisicalAddress>unknown</phisicalAddress>
+  <behaviors>
+    <com.freedomotic.model.object.BooleanBehavior>
+      <name>powered</name>
+      <description>On</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>false</value>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.BooleanBehavior>
+      <name>swing-mode</name>
+      <description>Swing mode</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>false</value>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>conditioning-temperature</name>
+      <description>Conditioning temperature</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>25</value>
+      <max>35</max>
+      <min>15</min>
+      <step>1</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>fan-speed</name>
+      <description>Fan speed</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>5</max>
+      <min>0</min>
+      <step>1</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.ListBehavior>
+      <name>conditioning-mode</name>
+      <description>Conditioning mode</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <selected>0</selected>
+      <list>
+        <string>Auto</string>
+        <string>Dry</string>
+        <string>Cool</string>
+        <string>Heat</string>
+        <string>Fan</string>
+        <string>Humidity</string>
+      </list>
+    </com.freedomotic.model.object.ListBehavior>
+  </behaviors>
+  <representation>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>airconditioner-off.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>airconditioner-on.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>airconditioner-running.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+  </representation>
+  <actions>
+    <property name="turn off" value="Execute it successfully"/>
+    <property name="turn on" value="Execute it successfully"/>
+    <property name="set swing mode" value="Execute it successfully"/>
+    <property name="set conditioning temperature" value="Execute it successfully"/>
+    <property name="set fan speed" value="Execute it successfully"/>
+    <property name="set conditioning mode" value="Execute it successfully"/>
+  </actions>
+  <triggers>
+    <property name="" value="powered"/>
+    <property name="" value="conditioning-temperature"/>
+    <property name="" value="swing-mode"/>
+    <property name="" value="fan-speed"/>
+    <property name="" value="conditioning-mode"/>
+  </triggers>
+  <currentRepresentation>0</currentRepresentation>
+</object>
