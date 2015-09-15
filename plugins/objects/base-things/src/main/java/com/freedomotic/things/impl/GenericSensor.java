@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
+ * Copyright (c) 2009-2015 Freedomotic team
  * http://freedomotic.com
  *
  * This file is part of Freedomotic
@@ -51,12 +51,22 @@ public class GenericSensor
         readValue.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-                //there is an hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set minimum                	
+            		onRangeValue(readValue.getMin(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-                //there is as hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set maximum                	
+            		onRangeValue(readValue.getMax(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override

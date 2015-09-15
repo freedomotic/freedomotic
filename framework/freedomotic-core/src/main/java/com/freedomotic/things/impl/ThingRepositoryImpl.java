@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -19,6 +19,7 @@
  */
 package com.freedomotic.things.impl;
 
+import com.freedomotic.core.SynchAction;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
@@ -34,6 +35,7 @@ import com.freedomotic.settings.Info;
 import com.freedomotic.util.SerialClone;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -48,7 +50,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.inject.Inject;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,6 +102,7 @@ class ThingRepositoryImpl implements ThingRepository {
         }
 
         if (!folder.isDirectory()) {
+            //TODO: create folder tree instead of just complaining
             throw new RepositoryException(folder.getAbsoluteFile() + " is not a valid object folder. Skipped");
         }
 
@@ -400,7 +405,7 @@ class ThingRepositoryImpl implements ThingRepository {
     private String getNextInOrder(String name) {
         String newName = name;
         int i = 0;
-        while (!this.findByName(name).isEmpty() && (i < 1000)) {
+        while (!this.findByName(newName).isEmpty() && (i < 1000)) {
             // i < 1000 just to avoid infinite loop in case of errors
             i++;
             newName = name + "-" + i;
@@ -582,7 +587,7 @@ class ThingRepositoryImpl implements ThingRepository {
 
     @Override
     public List<EnvObjectLogic> loadAll(File folder) throws RepositoryException {
-        objectList.clear();
+        this.deleteAll();
         List<EnvObjectLogic> results = new ArrayList<EnvObjectLogic>();
 
         // This filter only returns object files
@@ -602,8 +607,13 @@ class ThingRepositoryImpl implements ThingRepository {
 
         if (files != null) {
             for (File file : files) {
+                try{
                 EnvObjectLogic loaded = load(file);
                 results.add(loaded);
+                }
+                catch (RepositoryException ex){
+                    LOG.warn(ex.getMessage());
+                }
             }
         }
         return results;

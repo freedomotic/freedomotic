@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
+ * Copyright (c) 2009-2015 Freedomotic team
  * http://freedomotic.com
  *
  * This file is part of Freedomotic
@@ -32,6 +32,7 @@ public class Coordinate {
     private int x;
     private int y;
     private int time;
+    private String userId; 
 
     /**
      *
@@ -67,6 +68,14 @@ public class Coordinate {
 
     /**
      *
+     * @return
+     */
+    public String getUserId() {
+        return userId;
+    }
+    
+    /**
+     *
      * @param x
      */
     public void setX(int x) {
@@ -95,5 +104,13 @@ public class Coordinate {
      */
     public void setId(int id) {
         this.id = id;
+    }
+    
+    /**
+     *
+     * @param userId
+     */
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

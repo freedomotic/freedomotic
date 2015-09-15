@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -23,6 +23,7 @@ import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.core.Resolver;
+import com.freedomotic.core.SynchAction;
 import com.freedomotic.core.SynchThingRequest;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
@@ -41,9 +42,9 @@ import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerRepository;
-import com.freedomotic.things.ThingRepository.SynchAction;
 import com.freedomotic.util.TopologyUtils;
 import com.google.inject.Inject;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -52,6 +53,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
@@ -231,11 +233,11 @@ public class EnvObjectLogic {
     public void setChanged(SynchAction action) {
         switch (action) {
             case CREATED:
-                SynchThingRequest creationEvent = new SynchThingRequest(SynchThingRequest.SynchAction.CREATED, getPojo());
+                SynchThingRequest creationEvent = new SynchThingRequest(SynchAction.CREATED, getPojo());
                 busService.send(creationEvent);
                 break;
             case DELETED:
-                SynchThingRequest deletionEvent = new SynchThingRequest(SynchThingRequest.SynchAction.DELETED, getPojo());
+                SynchThingRequest deletionEvent = new SynchThingRequest(SynchAction.DELETED, getPojo());
                 busService.send(deletionEvent);
                 break;
             case UPDATED:
@@ -325,8 +327,6 @@ public class EnvObjectLogic {
         cacheDeveloperLevelCommand();
         // assign object to an environment
         this.setEnvironment(environmentRepository.findOne(pojo.getEnvironmentID()));
-        // update topology information
-        updateTopology();
     }
 
     @Deprecated
@@ -710,6 +710,8 @@ public class EnvObjectLogic {
         }
         this.environment = selEnv;
         getPojo().setEnvironmentID(selEnv.getPojo().getUUID());
+        // update topology information
+        updateTopology();
     }
 
     /**

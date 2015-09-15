@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A sensor for the Arduino Weather Shield developed by www.ethermania.com
@@ -42,8 +44,7 @@ public class ArduinoWeatherShield extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(ArduinoWeatherShield.class.getName());
     private final int POLLING_TIME = configuration.getIntProperty("time-between-reads", 1000);
-    private final String DELIMITER = configuration.getStringProperty("address-delimiter", "|");
-    ;
+    private final String DELIMITER = configuration.getStringProperty("delimiter", ":");
     private final int TUPLES_COUNT = configuration.getTuples().size();
     private List<Board> boards = new ArrayList<>();
     private HttpHelper http = new HttpHelper();
@@ -80,7 +81,7 @@ public class ArduinoWeatherShield extends Protocol {
                 readValues(board);
             } catch (IOException ex) {
                 //TODO: implement a retry to connect mechanism with a max failures counter (in a separate method)
-                throw new PluginRuntimeException("Cannot connect to Arduino Weathershiled board at " 
+                throw new PluginRuntimeException("Cannot connect to Arduino Weathershield board at "
                         + board.getIpAddress() + ":" + board.getPort(), ex);
             }
         }
@@ -108,11 +109,14 @@ public class ArduinoWeatherShield extends Protocol {
     private void readValues(Board board) throws IOException {
         String urlString = "http://" + board.getIpAddress() + ":" + board.getPort();
         String data = http.retrieveContent(urlString);
-        LOG.log(Level.CONFIG, "Read data from Arduino Weathershlied: {0}", data);
-        try {
-            notifyReadValues(board, data);
-        } catch (IllegalArgumentException ex) {
-            notifyCriticalError("Error while notifying Arduino Weathershield data", ex);
+        String dataSensors = parseBody(data);
+         if (!dataSensors.isEmpty()) {
+            LOG.log(Level.CONFIG, "Read data from Arduino Weathershield: {0}", dataSensors);
+            try {
+                notifyReadValues(board, dataSensors);
+            } catch (IllegalArgumentException ex) {
+                notifyCriticalError("Error while notifying Arduino Weathershield data", ex);
+            }
         }
     }
 
@@ -123,14 +127,16 @@ public class ArduinoWeatherShield extends Protocol {
         if (!(values.length == 3)) {
             throw new IllegalArgumentException("Cannot parse string " + parametersValue
                     + " to extract three numeric values separated by '" + DELIMITER + "'");
-        } else {
-            for (int i = 0; i < 3; i++) {
-                if (!isNumber(values[i])) {
-                    throw new IllegalArgumentException("Error while parsing string '"
-                            + parametersValue + "'" + values[i] + "' is not a number");
-                }
-            }
-        }
+        } 
+        // disabled control for now - looking for a good isNumber implementation
+        //else {
+          //  for (int i = 0; i < 3; i++) {
+            //    if (!isNumber(values[i])) {
+              //      throw new IllegalArgumentException("Error while parsing string '"
+                //            + parametersValue + "'" + values[i] + "' is not a number");
+              //  }
+            //}
+        //}
 
         //building the event
         ProtocolRead event = new ProtocolRead(this, "arduino-weathershield", address + DELIMITER + "T");
@@ -139,6 +145,7 @@ public class ArduinoWeatherShield extends Protocol {
         event.addProperty("board.port", Integer.toString(board.getPort()));
         event.addProperty("sensor.temperature", values[0]);
         event.addProperty("object.class", "Thermometer");
+        event.addProperty("autodiscovery.allow-clones", "false");
         event.addProperty("object.name", "Arduino WeatherShield Thermometer");
         //publish the event on the messaging bus
         this.notifyEvent(event);
@@ -149,6 +156,7 @@ public class ArduinoWeatherShield extends Protocol {
         event.addProperty("board.port", Integer.toString(board.getPort()));
         event.addProperty("sensor.pressure", values[1]);
         event.addProperty("object.class", "Barometer");
+        event.addProperty("autodiscovery.allow-clones", "false");
         event.addProperty("object.name", "Arduino WeatherShield Barometer");
         //publish the event on the messaging bus
         this.notifyEvent(event);
@@ -159,6 +167,7 @@ public class ArduinoWeatherShield extends Protocol {
         event.addProperty("board.port", Integer.toString(board.getPort()));
         event.addProperty("sensor.humidity", values[2]);
         event.addProperty("object.class", "Hygrometer");
+        event.addProperty("autodiscovery.allow-clones", "false");
         event.addProperty("object.name", "Arduino WeatherShield Hygrometer");
         //publish the event on the messaging bus
         this.notifyEvent(event);
@@ -182,5 +191,18 @@ public class ArduinoWeatherShield extends Protocol {
     @Override
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    // extract sensors data from <body></body> tags
+    private static String parseBody(String html) {
+        Pattern p = Pattern.compile("<body.*?>(?<Content>([^<]|<[^/]|</[^b]|</b[^o])*)",
+                Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(html);
+        if (m.find()) {
+            String element = m.group(1);
+            return element;
+        } else {
+            return "";
+        }
     }
 }

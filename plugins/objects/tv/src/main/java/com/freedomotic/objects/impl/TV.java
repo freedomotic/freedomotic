@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
+ * Copyright (c) 2009-2015 Freedomotic team
  * http://freedomotic.com
  *
  * This file is part of Freedomotic
@@ -56,11 +56,13 @@ public class TV extends ElectricDevice {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOff(params);
+            	onRangeValue(volume.getMin(), params, fireCommand)
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOn(params);
+            	onRangeValue(volume.getMax(), params, fireCommand)
             }
 
             @Override
@@ -80,10 +82,12 @@ public class TV extends ElectricDevice {
         channel.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
+            	onRangeValue(channel.getMin(), params, fireCommand)
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
+            	onRangeValue(channel.getMax(), params, fireCommand)
             }
 
             @Override

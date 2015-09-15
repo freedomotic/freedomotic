@@ -4,14 +4,13 @@
         <property name="protocol.name"  value="arduino-weathershield"/>
         <property name="category"       value="protocol"/>
         <property name="short-name"     value="weathershield"/>
+        <property name="delimiter" value=":"/>
         <property name="time-between-read"   value="10000"/>
-        <property name="address-delimiter"   value="|"/>
     </properties>
     <tuples>
         <tuple>
             <property name="ip-to-query" value="192.168.0.150"/>
             <property name="port-to-query" value="80"/>
-            <property name="delimiter" value=":"/>
         </tuple>
         <tuple>
             <property name="object.class" value="Thermometer"/>

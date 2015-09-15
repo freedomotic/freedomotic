@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -908,12 +908,13 @@ public class MainWindow
     private void mnuOpenEnvironmentActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuOpenEnvironmentActionPerformed
         mnuSaveActionPerformed(null);
         final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + "/furn/");
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         File file = null;
-        OpenDialogFileFilter filter = new OpenDialogFileFilter();
-        filter.addExtension("xenv");
-        filter.setDescription("Freedomotic XML Environment file");
-        fc.addChoosableFileFilter(filter);
-        fc.setFileFilter(filter);
+        // OpenDialogFileFilter filter = new OpenDialogFileFilter();
+        // filter.addExtension("xenv");
+        // filter.setDescription("Freedomotic XML Environment file");
+        // fc.addChoosableFileFilter(filter);
+        // fc.setFileFilter(filter);
 
         int returnVal = fc.showOpenDialog(this);
 
@@ -922,16 +923,13 @@ public class MainWindow
             LOG.info("Opening " + file.getAbsolutePath());
 
             try {
-                boolean loaded = master.getApi().environments().loadEnvironmentsFromDir(file.getParentFile(),
-                        false);
-
-                if (loaded) {
-                    mnuSelectEnvironmentActionPerformed(null);
-                }
-            } catch (Exception e) {
+                api.environments().init(file);
+                setEnvironment(api.environments().findAll().get(0));
+                mnuSelectEnvironmentActionPerformed(null);
+                
+            } catch (RepositoryException e) {
                 LOG.severe(Freedomotic.getStackTraceInfo(e));
             }
-
             setWindowedMode();
         } else {
             LOG.info(i18n.msg("canceled_by_user"));
@@ -1149,42 +1147,48 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuRoomBackgroundActionPerformed
 
     private void mnuNewEnvironmentActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuNewEnvironmentActionPerformed
-
+        // we are about to make changes to environments: we'd better save current status
         mnuSaveActionPerformed(null);
         File oldEnv = api.environments().findAll().get(0).getSource();
 
         //creates a new environment coping it from a template
         File template
                 = new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/templates/template-square/template-square.xenv");
+        
         LOG.info("Opening " + template.getAbsolutePath());
-        drawer.setCurrEnv(master.getApi().environments().findAll().get(0));
+        setEnvironment(api.environments().findAll().get(0));
 
         try {
-            boolean loaded = master.getApi().environments().loadEnvironmentsFromDir(template.getParentFile(),
-                    false);
+            
+            EnvironmentLogic enL = api.environments().loadEnvironmentFromFile(template);
 
-            if (loaded) {
+            if (enL != null) {
                 //EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
-                final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + "/furn/");
+                final JFileChooser fc = new JFileChooser(oldEnv.getParentFile().getParentFile());
+                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                fc.setDialogTitle(api.getI18n().msg("select_env_folder_save"));
+                fc.setSelectedFile(oldEnv.getParentFile());
                 int returnVal = fc.showSaveDialog(this);
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File folder = fc.getSelectedFile();
-
+                    
                     if (!folder.getName().isEmpty()) {
-                        EnvironmentLogic newenv = api.environments().findAll().get(0);
+                        if (! folder.getAbsolutePath().equalsIgnoreCase(oldEnv.getParentFile().getAbsolutePath())){
+                            // we are making a new environment set
+                            api.environments().deleteAll();
+                        }
+                        EnvironmentLogic newenv =api.environments().copy(enL);
                         newenv.setSource(
                                 new File(folder + "/" + newenv.getPojo().getUUID() + ".xenv"));
                         setEnvironment(newenv);
-                        //save the new environment
-                        master.getApi().environments().saveAs(newenv, folder);
+                        api.environments().saveAs(newenv, folder);    
                     }
                 } else {
                     LOG.info("Save command cancelled by user.");
                     //reload the old file
-                    master.getApi().environments().loadEnvironmentsFromDir(oldEnv.getParentFile(), false);
-
-                    setEnvironment(api.environments().findAll().get(0));
+                   api.environments().init(oldEnv.getParentFile());
+                   setEnvironment(api.environments().findAll().get(0));
                 }
             }
         } catch (Exception e) {
@@ -1200,7 +1204,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 = Info.PATHS.PATH_DATA_FOLDER + "/furn" + api.getConfig().getProperty("KEY_ROOM_XML_PATH");
 
         try {
-            master.getApi().environments().saveEnvironmentsToFolder(new File(environmentFilePath).getParentFile());
+            api.environments().saveEnvironmentsToFolder(new File(environmentFilePath).getParentFile());
         } catch (RepositoryException ex) {
             JOptionPane.showMessageDialog(this,
                     "Cannot save environment at "
@@ -1209,7 +1213,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuSaveActionPerformed
 
     private void mnuPluginConfigureActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuPluginConfigureActionPerformed
-        new PluginConfigure(master.getApi());
+        new PluginConfigure(api);
     }//GEN-LAST:event_mnuPluginConfigureActionPerformed
 
     private void mnuTutorialActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuTutorialActionPerformed

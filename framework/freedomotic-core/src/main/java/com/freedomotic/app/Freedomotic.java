@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -326,17 +326,17 @@ public class Freedomotic implements BusConsumer {
         // Bootstrap Things in the environments
         // This should be done after loading all Things plugins otherwise
         // its java class will not be recognized by the system
-        environmentRepository.init();
-        for (EnvironmentLogic env : environmentRepository.findAll()) {
+        environmentRepository.initFromDefaultFolder();
+        // for (EnvironmentLogic env : environmentRepository.findAll()) {
             // Load all the Things in this environment
-            File thingsFolder = env.getObjectFolder();
-            List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(thingsFolder);
-            for (EnvObjectLogic thing : loadedThings) {
-                thing.setEnvironment(env);
+        //    File thingsFolder = env.getObjectFolder();
+        //    List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(thingsFolder);
+        //    for (EnvObjectLogic thing : loadedThings) {
+        //        thing.setEnvironment(env);
                 // Actvates the Thing. Important, otherwise it will be not visible in the environment
-                thingsRepository.create(thing);
-            }
-        }
+        //        thingsRepository.create(thing);
+        //    }
+        // }
 
         // Loads the entire Reactions system (Trigger + Commands + Reactions)
         triggerRepository.loadTriggers(new File(Info.PATHS.PATH_DATA_FOLDER + "/trg/"));
@@ -497,15 +497,16 @@ public class Freedomotic implements BusConsumer {
             folder = new File(environmentFilePath).getParentFile();
             environmentRepository.saveEnvironmentsToFolder(folder);
 
-            if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
-                File saveDir = null;
-                try {
-                    saveDir = new File(folder + "/data/obj");
-                    thingsRepository.saveAll(saveDir);
-                } catch (RepositoryException ex) {
-                    LOG.log(Level.SEVERE, "Cannot save objects in {0}", saveDir.getAbsolutePath());
-                }
-            }
+            // block moved inside environmentRepository.saveEnvironmentsToFolder()
+            // if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
+            //    File saveDir = null;
+            //    try {
+            //        saveDir = new File(folder + "/data/obj");
+            //        thingsRepository.saveAll(saveDir);
+            //    } catch (RepositoryException ex) {
+            //        LOG.log(Level.SEVERE, "Cannot save objects in {0}", saveDir.getAbsolutePath());
+            //    }
+            // }
         } catch (RepositoryException ex) {
             LOG.log(Level.SEVERE, "Cannot save environment to folder {0} due to {1}", new Object[]{folder, ex.getCause()});
         }
