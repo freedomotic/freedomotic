@@ -27,7 +27,7 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
