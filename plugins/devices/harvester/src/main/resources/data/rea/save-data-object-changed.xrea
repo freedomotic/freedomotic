@@ -1,0 +1,6 @@
+<reaction>
+  <trigger>An object has changed</trigger>
+  <sequence>
+    <command>Save data on the harvester</command>
+  </sequence>
+</reaction>

@@ -1,0 +1,11 @@
+<command>
+  <name>Save data on the harvester</name>
+  <receiver>app.actuators.protocol.harvester.in</receiver>
+  <description>The harvester has registered a new log entry</description>
+  <delay>0</delay>
+  <timeout>10000</timeout>
+  <properties>
+    <properties>        
+    </properties>
+  </properties>
+</command>

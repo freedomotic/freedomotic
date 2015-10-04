@@ -1,0 +1,10 @@
+<trigger>
+    <name>An object has changed</name>
+    <description>When an object changed one of its behaviors</description>
+    <channel>app.event.sensor.object.behavior.change</channel>   
+    <delay>0</delay>
+    <payload>
+        <payload>
+        </payload>
+    </payload>
+</trigger>

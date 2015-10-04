@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package es.gpulido.harvester;
+package com.freedomotic.plugins.devices.harvester;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
@@ -70,7 +70,6 @@ public final class HarvesterProtocol extends Protocol {
         super("HarvesterProtocol", "/harvester/harvester-manifest.xml");
         this.setName("Harvester");
         setPollingWait(-1); // disable polling
-        //onStart();
     }
 
     @Override
@@ -102,9 +101,10 @@ public final class HarvesterProtocol extends Protocol {
         } catch (FileNotFoundException e) {
             LOG.log(Level.SEVERE, "Unable to find configuration file for harvester of type: {0}", dbType);
         } catch (ArgumentException e) {
-            LOG.warning(e.getLocalizedMessage());
+            LOG.warning("ArgumentException " + e.getLocalizedMessage());
         } catch (Exception e) {
-            LOG.severe(e.getLocalizedMessage());
+            LOG.severe("Exception " + e.getLocalizedMessage());
+            e.printStackTrace();
             stop();
         }
 
@@ -220,7 +220,7 @@ public final class HarvesterProtocol extends Protocol {
                 LOG.severe(ex.getLocalizedMessage());
             }
             ev.addProperty("behaviorValue", os.toString());
-            Freedomotic.sendEvent(ev);
+            this.notifyEvent(ev);
         } else {
             Tuples t = c.getProperties().getTuples();
             t.clear();
