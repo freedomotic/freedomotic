@@ -12,6 +12,6 @@ RUN rm -rf /srv/freedomotic/plugins/devices/frontend-java
 
 VOLUME /srv/freedomotic/data
 
-EXPOSE 9001 
+EXPOSE 9111 
 
 ENTRYPOINT /srv/freedomotic/freedomotic.sh -D FOREGROUND
