@@ -18,6 +18,7 @@ import com.freedomotic.jfrontend.automationeditor.ReactionEditor;
 import com.freedomotic.jfrontend.automationeditor.ReactionsPanel;
 import com.freedomotic.jfrontend.utils.CheckBoxList;
 import com.freedomotic.jfrontend.utils.PropertiesPanel_1;
+import com.freedomotic.jfrontend.utils.SliderPopup;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.EnvObject;
@@ -29,13 +30,13 @@ import com.freedomotic.behaviors.ListBehaviorLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.behaviors.TaxonomyBehaviorLogic;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.settings.Info;
 import com.google.common.collect.Iterators;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -45,6 +46,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 import java.util.Map.Entry;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -192,13 +194,13 @@ public class ObjectEditor
         tabControls.removeAll();
 
         //tabControls.setLayout(new BoxLayout(tabControls, BoxLayout.PAGE_AXIS));
-        tabControls.setLayout(new GridLayout(Iterators.size(object.getBehaviors().iterator()), 2));
-
-        //create an array of controllers for the object behaviors
-        int row = 0;
+        tabControls.setLayout(new GridLayout(Iterators.size(object.getBehaviors().iterator()),1));
 
         for (Behavior behavior : object.getPojo().getBehaviors()) {
-            // All this is done just to keep the behavior orders as in pojo definition
+        	JPanel rowPanel = new JPanel();
+        	rowPanel.setLayout(new GridLayout());
+        	
+        	// All this is done just to keep the behavior orders as in pojo definition
             BehaviorLogic b = object.getBehavior(behavior.getName());
             if (b instanceof BooleanBehaviorLogic) {
                 final BooleanBehaviorLogic bb = (BooleanBehaviorLogic) b;
@@ -211,8 +213,9 @@ public class ObjectEditor
                 }
 
                 JLabel label = new JLabel(getBehaviorLabel(b));
-                tabControls.add(label);
-                tabControls.add(button);
+                rowPanel.add(label);
+                rowPanel.add(button);
+                tabControls.add(rowPanel);
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -236,26 +239,47 @@ public class ObjectEditor
                 final JPanel sliderPanel = new JPanel(new FlowLayout());
                 final JSlider slider = new JSlider();
 
-                slider.setValue(rb.getValue());
                 slider.setMaximum(rb.getMax());
                 slider.setMinimum(rb.getMin());
                 slider.setPaintTicks(true);
                 slider.setPaintTrack(true);
                 slider.setPaintLabels(false);
+                int step = rb.getStep();
+                if (step == 0) step = 1;
                 //slider.setMajorTickSpacing(rb.getScale() * 10);
                 //slider.setMinorTickSpacing(rb.getStep());
-                slider.setMajorTickSpacing(rb.getStep());
-                slider.setSnapToTicks(true);
+        		if ((rb.getMax() - rb.getMin()) / step < 10000) {
+        			slider.setMajorTickSpacing(step);
+        			slider.setSnapToTicks(true);
+        		} else {
+        			// range is too wide, use 10000 ticks instead and don't snap
+        			slider.setMajorTickSpacing(10000);
+        			slider.setSnapToTicks(false);
+        		}
+                slider.setValue(rb.getValue());
 
                 JLabel label = new JLabel(getBehaviorLabel(b));
-                tabControls.add(label);
+                rowPanel.add(label);
                 sliderPanel.add(slider);
                 sliderPanel.add(doubleValue);
-                tabControls.add(sliderPanel);
+                rowPanel.add(sliderPanel);
+                tabControls.add(rowPanel);
+                // if slider is enabled, add a popup to allow user to write values
+        		if (!b.isReadOnly()) 
+        			slider.addMouseListener(new SliderPopup(slider, rb));
                 slider.addChangeListener(new ChangeListener() {
                     @Override
                     public void stateChanged(ChangeEvent e) {
                         if (!slider.getValueIsAdjusting()) {
+        					if (!slider.getSnapToTicks()) {
+        						// SnapToTicks disabled, snap to RangedIntBehavior step (round down to closest)
+        						int snapValue = slider.getValue() / rb.getStep() * rb.getStep();
+        						if (slider.getValue() != snapValue) {
+        							slider.setValue(snapValue);
+        							return;
+        						}
+        					}
+
                             Config params = new Config();
                             params.setProperty("value",
                                     String.valueOf(slider.getValue()));
@@ -285,8 +309,9 @@ public class ObjectEditor
                 comboBox.setSelectedItem(lb.getSelected());
 
                 JLabel label = new JLabel(getBehaviorLabel(b));
-                tabControls.add(label);
-                tabControls.add(comboBox);
+                rowPanel.add(label);
+                rowPanel.add(comboBox);
+                tabControls.add(rowPanel);
                 comboBox.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -635,7 +660,6 @@ public class ObjectEditor
 
         tabObjectEditor.addTab(I18n.msg("appearance"), tabRepresentation);
 
-        tabControls.setLayout(new java.awt.BorderLayout());
         tabObjectEditor.addTab(I18n.msg("control_panel"), tabControls);
 
         tabAutomations.setLayout(new java.awt.BorderLayout());
@@ -920,7 +944,7 @@ public class ObjectEditor
             //addAndRegister a combo box with the list of alla available commands
             DefaultComboBoxModel allHardwareCommands = new DefaultComboBoxModel();
 
-            for (Command command : CommandPersistence.getHardwareCommands()) {
+            for (Command command : api.commands().findHardwareCommands()) {
                 allHardwareCommands.addElement(command);
             }
 
@@ -1029,7 +1053,7 @@ public class ObjectEditor
     private void populateAutomationsTab() {
         tabAutomations.removeAll();
         tabAutomations.setLayout(new BorderLayout());
-        reactionsPanel = new ReactionsPanel(I18n, nlpCommands, api.triggers(), object);
+        reactionsPanel = new ReactionsPanel(I18n, nlpCommands, api.triggers(), api.commands(), object);
         tabAutomations.add(reactionsPanel);
         tabAutomations.validate();
     }
@@ -1069,13 +1093,12 @@ public class ObjectEditor
         btnAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!newItem.getText().isEmpty()) {
-                    refreshMultiselectionList(lb, list);
-
                     Config params = new Config();
                     params.setProperty("item",
                             newItem.getText());
                     params.setProperty("value", "add");
                     lb.filterParams(params, true);
+                    refreshMultiselectionList(lb, list);
                 }
             }
         });
@@ -1094,11 +1117,14 @@ public class ObjectEditor
             }
         });
         refreshMultiselectionList(lb, list);
-        tabControls.add(label);
-        tabControls.add(list);
-        tabControls.add(newItem);
-        tabControls.add(btnAdd);
-        tabControls.add(btnRemove);
+    	JPanel rowPanel = new JPanel();
+    	rowPanel.setLayout(new GridLayout());
+    	rowPanel.add(label);
+        rowPanel.add(list);
+        rowPanel.add(newItem);
+        rowPanel.add(btnAdd);
+        rowPanel.add(btnRemove);
+        tabControls.add(rowPanel);
         tabControls.validate();
     }
 
@@ -1109,6 +1135,7 @@ public class ObjectEditor
             final JCheckBox box = new JCheckBox(item);
 
             if (!model.contains(box)) { //no duplicates allowed
+            	box.setSelected(source.getSelected().contains(item));
                 box.addChangeListener(new ChangeListener() {
                     public void stateChanged(ChangeEvent e) {
                         Config params = new Config();
@@ -1119,7 +1146,6 @@ public class ObjectEditor
                         source.filterParams(params, true);
                     }
                 });
-                box.setSelected(source.getSelected().contains(item));
                 model.addElement(box);
             }
         }

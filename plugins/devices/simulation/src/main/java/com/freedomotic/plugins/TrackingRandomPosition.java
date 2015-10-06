@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -29,7 +29,6 @@ import com.freedomotic.things.GenericPerson;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

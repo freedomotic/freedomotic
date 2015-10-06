@@ -19,7 +19,7 @@ pmd.setting
 *.war
 *.ear
 
-# Archieves #
+# Archives #
 #############
 *.7z
 *.dmg
@@ -78,6 +78,11 @@ target/
 #IntelliJ#
 *.iml
 .idea/
+
+#Eclipse#
+.classpath
+.project
+.settings/
 
 # Libraries (negate general jar rule) #
 #######################################

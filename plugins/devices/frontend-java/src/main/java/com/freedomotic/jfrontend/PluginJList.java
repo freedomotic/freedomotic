@@ -1,3 +1,22 @@
+/**
+ *
+ * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
 package com.freedomotic.jfrontend;
 
 import com.freedomotic.api.API;
@@ -27,18 +46,13 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.ListCellRenderer;
 
-/*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
- */
 /**
  *
  * @author Enrico
  */
 public final class PluginJList extends JList {
-    
-    private static final Logger LOG = Logger.getLogger(PluginJList.class.getName());
 
+    private static final Logger LOG = Logger.getLogger(PluginJList.class.getName());
     private String filter;
     public boolean inDrag = false;
     public int dragged = 0;
@@ -52,6 +66,7 @@ public final class PluginJList extends JList {
         this.parent = parent;
         setFilter("plugin"); //default value for filterning the list
         addMouseListener(new MouseAdapter() {
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 Point p = e.getPoint();
@@ -109,13 +124,12 @@ public final class PluginJList extends JList {
                 }
 
                 mnuConfigure.addActionListener(new ActionListener() {
+
                     public void actionPerformed(ActionEvent e) {
                         if (client.getType().equalsIgnoreCase("plugin")) {
-                            
-                            //new PluginConfigure(parent.getPlugin().getApi(), client);
-                             client.start();
-                             client.showGui();
-                             update();
+                            client.start();
+                            client.showGui();
+                            update();
                         }
 
                         if (client.getType().equalsIgnoreCase("object")) {
@@ -162,10 +176,10 @@ public final class PluginJList extends JList {
      */
     public void update() {
         try {
-            ImageIcon defaultIconRunning =
-                    new ImageIcon(ResourcesManager.getResource("plugin-running.png", 64, 64)); //new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
-            ImageIcon defaultIconStopped =
-                    new ImageIcon(ResourcesManager.getResource("plugin-stopped.png", 64, 64)); //new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
+            ImageIcon defaultIconRunning
+                    = new ImageIcon(ResourcesManager.getResource("plugin-running.png", 64, 64)); //new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
+            ImageIcon defaultIconStopped
+                    = new ImageIcon(ResourcesManager.getResource("plugin-stopped.png", 64, 64)); //new ImageIcon(path + File.separatorChar + "plug-cool.png", "Icon");
 
             Vector vector = new Vector();
             Collection<Client> clients = getApi().getClients(getFilter());

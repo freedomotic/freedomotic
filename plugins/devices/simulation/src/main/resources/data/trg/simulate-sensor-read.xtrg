@@ -1,7 +1,7 @@
 <trigger>
     <name>Simulate a powered change</name>
     <description>Simulate a powered change</description>
-    <channel>app.event.sensor.protocol.read</channel>
+    <channel>app.event.sensor.protocol.read.test</channel>
     <payload>
         <payload>
             <statement>

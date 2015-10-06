@@ -1,6 +1,7 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team
+ * http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -21,12 +22,10 @@ package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.model.geometry.FreedomPoint;
-import com.freedomotic.model.object.Representation;
 import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.things.EnvObjectLogic;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

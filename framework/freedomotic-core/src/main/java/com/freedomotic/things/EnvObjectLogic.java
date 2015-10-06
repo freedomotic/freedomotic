@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -23,6 +23,8 @@ import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.core.Resolver;
+import com.freedomotic.core.SynchAction;
+import com.freedomotic.core.SynchThingRequest;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.environment.ZoneLogic;
@@ -34,7 +36,7 @@ import com.freedomotic.model.geometry.FreedomShape;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.rules.Statement;
@@ -42,13 +44,16 @@ import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.util.TopologyUtils;
 import com.google.inject.Inject;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
@@ -68,6 +73,8 @@ public class EnvObjectLogic {
     protected EnvironmentRepository environmentRepository;
     @Inject
     protected TriggerRepository triggerRepository;
+    @Inject
+    protected CommandRepository commandRepository;
     @Inject
     private BusService busService;
 
@@ -155,7 +162,7 @@ public class EnvObjectLogic {
         }
 
         //change commands references to this object
-        for (Command c : CommandPersistence.getUserCommands()) {
+        for (Command c : commandRepository.findUserCommands()) {
             renameValuesInCommand(c, oldName, newName);
         }
 
@@ -215,6 +222,31 @@ public class EnvObjectLogic {
     @RequiresPermissions("objects:read")
     public String getBehaviorNameMappedToTrigger(String t) {
         return getPojo().getTriggers().getProperty(t);
+    }
+
+    /**
+     * Notify that this Thing was created, deleted or updated. To just notify an
+     * update is better to use the {@link setChanged(true)} method.
+     *
+     * @param action
+     */
+    public void setChanged(SynchAction action) {
+        switch (action) {
+            case CREATED:
+                SynchThingRequest creationEvent = new SynchThingRequest(SynchAction.CREATED, getPojo());
+                busService.send(creationEvent);
+                break;
+            case DELETED:
+                SynchThingRequest deletionEvent = new SynchThingRequest(SynchAction.DELETED, getPojo());
+                busService.send(deletionEvent);
+                break;
+            case UPDATED:
+                // do nothing, the update is forced later
+                break;
+            default:
+                throw new AssertionError(action.name());
+        }
+        setChanged(true); //force the update in any case
     }
 
     /**
@@ -295,8 +327,6 @@ public class EnvObjectLogic {
         cacheDeveloperLevelCommand();
         // assign object to an environment
         this.setEnvironment(environmentRepository.findOne(pojo.getEnvironmentID()));
-        // update topology information
-        updateTopology();
     }
 
     @Deprecated
@@ -542,7 +572,7 @@ public class EnvObjectLogic {
 
         Resolver resolver = new Resolver();
         //adding a resolution context for object that owns this hardware level command. 'owner.' is the prefix of this context
-        resolver.addContext("request.", params);
+        resolver.addContext("", params);
         resolver.addContext("owner.", getExposedProperties());
         resolver.addContext("owner.", getExposedBehaviors());
 
@@ -553,7 +583,7 @@ public class EnvObjectLogic {
             //mark the command as not executed if it is supposed to not return
             //an execution state value
             if (Boolean.valueOf(command.getProperty("send-and-forget")) == true) {
-                LOG.config("Command '" + resolvedCommand.getName() + "' is 'send-and-forget' no execution result will be catched from plugin's reply");
+                LOG.log(Level.CONFIG, "Command ''{0}'' is ''send-and-forget'' no execution result will be catched from plugin''s reply", resolvedCommand.getName());
                 resolvedCommand.setReplyTimeout(-1); //disable reply request
                 Freedomotic.sendCommand(resolvedCommand);
                 return false;
@@ -566,7 +596,7 @@ public class EnvObjectLogic {
             }
 
             if (result == null) {
-                LOG.log(Level.WARNING, "Received null reply after sending hardware command " + resolvedCommand.getName());
+                LOG.log(Level.WARNING, "Received null reply after sending hardware command {0}", resolvedCommand.getName());
             } else if (result.isExecuted()) {
                 return true; //succesfully executed
             }
@@ -643,7 +673,13 @@ public class EnvObjectLogic {
 
         for (String action : pojo.getActions().stringPropertyNames()) {
             String commandName = pojo.getActions().getProperty(action);
-            Command command = CommandPersistence.getHardwareCommand(commandName);
+            Command command;
+            List<Command> list = commandRepository.findByName(commandName);
+            if (!list.isEmpty()) {
+                command = list.get(0);
+            } else {
+                throw new RuntimeException("No commands found with name " + commandName);
+            }
 
             if (command != null) {
                 LOG.log(Level.FINE,
@@ -674,6 +710,8 @@ public class EnvObjectLogic {
         }
         this.environment = selEnv;
         getPojo().setEnvironmentID(selEnv.getPojo().getUUID());
+        // update topology information
+        updateTopology();
     }
 
     /**

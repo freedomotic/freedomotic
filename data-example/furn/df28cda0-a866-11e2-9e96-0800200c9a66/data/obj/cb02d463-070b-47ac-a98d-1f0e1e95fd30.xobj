@@ -29,7 +29,7 @@
       <max>0</max>
       <min>0</min>
       <scale>1</scale>
-      <step>0</step>
+      <step>1</step>
     </com.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>

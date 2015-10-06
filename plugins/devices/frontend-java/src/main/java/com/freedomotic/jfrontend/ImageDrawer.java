@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -229,6 +229,5 @@ public class ImageDrawer extends PlainDrawer {
     @Override
     public void mouseRightClickObject(EnvObjectLogic obj) {
         super.mouseRightClickObject(obj);
-        openObjEditor(obj);
     }
 }

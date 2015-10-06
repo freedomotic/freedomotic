@@ -43,7 +43,7 @@
         <freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${project.version}.${freedomotic.package.type}</freedomotic.marketplace.file>
         <freedomotic.marketplace.username></freedomotic.marketplace.username>
         <freedomotic.marketplace.password></freedomotic.marketplace.password>
-        <jersey.version>2.15</jersey.version>
+        <jersey.version>2.16</jersey.version>
         <atmosphere.version>2.2.5</atmosphere.version>
     </properties>
 
@@ -126,7 +126,7 @@
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-servlet</artifactId>
-            <version>4.0-SNAPSHOT</version>
+            <version>3.0</version>
             <type>jar</type>
         </dependency>
     </dependencies>

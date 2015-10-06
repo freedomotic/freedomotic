@@ -1,6 +1,7 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team
+ * http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -19,7 +20,6 @@
  */
 package com.freedomotic.api;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.rules.Payload;
 import com.freedomotic.rules.Statement;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -197,5 +197,10 @@ public class EventTemplate implements Serializable {
      */
     public Payload getPayload() {
         return payload;
+    }
+    
+    @Override
+    public String toString() {
+        return getEventName();
     }
 }

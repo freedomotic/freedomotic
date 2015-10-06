@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -28,6 +28,7 @@ import com.freedomotic.bus.BusService;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.behaviors.BehaviorLogic;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.reactions.Command;
@@ -51,7 +52,6 @@ import java.util.logging.Logger;
 public class TriggerCheck {
 
     private static final ExecutorService AUTOMATION_EXECUTOR = Executors.newCachedThreadPool();
-
     // Dependencies
     private final Autodiscovery autodiscovery;
     private final BusService busService;
@@ -132,13 +132,26 @@ public class TriggerCheck {
         if ((protocol != null) && (address != null)) {
             String clazz = event.getProperty("object.class");
             String name = event.getProperty("object.name");
+            String autodiscoveryAllowClones = event.getProperty("autodiscovery.allow-clones");
+
             affectedObjects = thingsRepository.findByAddress(protocol, address);
 
             if (affectedObjects.isEmpty()) { //there isn't an object with this protocol and address
                 LOG.log(Level.WARNING, "Found a candidate for things autodiscovery: thing ''{0}'' of type ''{1}''", new Object[]{name, clazz});
                 if ((clazz != null) && !clazz.isEmpty()) {
-                    EnvObjectLogic joined = autodiscovery.join(clazz, name, protocol, address);
-                    affectedObjects.add(joined);
+                    EnvObjectLogic joined;
+                    boolean allowClones;
+                    if (autodiscoveryAllowClones.equalsIgnoreCase("false")) {
+                        allowClones = false;
+                    } else {
+                        allowClones = true;
+                    }
+                    try {
+                        joined = autodiscovery.join(clazz, name, protocol, address, allowClones);
+                        affectedObjects.add(joined);
+                    } catch (RepositoryException ex) {
+                        Logger.getLogger(TriggerCheck.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }
@@ -169,6 +182,7 @@ public class TriggerCheck {
 
     private void executeTriggeredAutomations(final Trigger trigger, final EventTemplate event) {
         Runnable automation = new Runnable() {
+
             @Override
             public void run() {
                 Iterator<Reaction> it = ReactionPersistence.iterator();
@@ -205,16 +219,14 @@ public class TriggerCheck {
                                     continue; //skip this loop
                                 }
 
-                                if (command.getReceiver()
-                                        .equalsIgnoreCase(BehaviorManager.getMessagingChannel())) {
+                                if (command.getReceiver().equalsIgnoreCase(BehaviorManager.getMessagingChannel())) {
                                     //this command is for an object so it needs only to know only about event parameters
                                     Command resolvedCommand = commandResolver.resolve(command);
                                     //doing so we bypass messaging system gaining better performances
                                     behaviorManager.parseCommand(resolvedCommand);
                                 } else {
                                     //if the event has a target object we include also object info
-                                    List<EnvObjectLogic> targetObjects
-                                            = thingsRepository.findByName(event.getProperty("object.name"));
+                                    List<EnvObjectLogic> targetObjects = thingsRepository.findByName(event.getProperty("object.name"));
 
                                     if (!targetObjects.isEmpty()) {
                                         EnvObjectLogic targetObject = targetObjects.get(0);
@@ -254,8 +266,7 @@ public class TriggerCheck {
                             return;
                         }
 
-                        String info
-                                = "Executing automation '" + reaction.toString() + "' takes "
+                        String info = "Executing automation '" + reaction.toString() + "' takes "
                                 + (System.currentTimeMillis() - event.getCreation()) + "ms.";
                         LOG.info(info);
 
@@ -271,7 +282,6 @@ public class TriggerCheck {
                 trigger.getPayload().clear();
                 event.getPayload().clear();
             }
-
         };
 
         AUTOMATION_EXECUTOR.execute(automation);
@@ -291,7 +301,7 @@ public class TriggerCheck {
             Statement statement = condition.getStatement();
             if (object != null) {
                 BehaviorLogic behavior = object.getBehavior(statement.getAttribute());
-                        //System.out.println("DEBUG: " + object.getPojo().getName() + " "
+                //System.out.println("DEBUG: " + object.getPojo().getName() + " "
                 //+ " behavior: " + behavior.getName() + " " + behavior.getValueAsString());
                 boolean eval = behavior.getValueAsString().equalsIgnoreCase(statement.getValue());
                 if (statement.getLogical().equalsIgnoreCase("AND")) {
@@ -314,6 +324,5 @@ public class TriggerCheck {
         event.setType("callout"); //display as callout on frontends
         busService.send(event);
     }
-
     private static final Logger LOG = Logger.getLogger(TriggerCheck.class.getName());
 }

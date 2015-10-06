@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
+ * Copyright (c) 2009-2015 Freedomotic team
  * http://freedomotic.com
  *
  * This file is part of Freedomotic
@@ -101,21 +101,27 @@ public class MultiselectionListBehavior
     /**
      *
      * @param key
+     * @return key selected (boolean)
      */
-    public void setSelected(String key) {
+    public boolean setSelected(String key) {
         if (list.contains(key) && !selected.contains(key)) {
             selected.add(key);
+            return true;
         }
+        return false;
     }
 
     /**
      *
      * @param key
+     * @return key unselected (boolean)
      */
-    public void setUnselected(String key) {
+    public boolean setUnselected(String key) {
         if (list.contains(key) && selected.contains(key)) {
             selected.remove(key);
+            return true;
         }
+        return false;
     }
 
     /**

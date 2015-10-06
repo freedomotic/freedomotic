@@ -1,22 +1,21 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
+ * Copyright (c) 2009-2015 Freedomotic team
  * http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.things.impl;
@@ -34,7 +33,6 @@ import com.freedomotic.behaviors.BooleanBehaviorLogic;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.util.TopologyUtils;
 import java.util.logging.Logger;
@@ -237,9 +235,9 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         to = null;
 
         //REGRESSION
-        FreedomPolygon objShape =
-                TopologyUtils.rotate(TopologyUtils.translate(pojoShape, xoffset, yoffset),
-                (int) representation.getRotation());
+        FreedomPolygon objShape
+                = TopologyUtils.rotate(TopologyUtils.translate(pojoShape, xoffset, yoffset),
+                        (int) representation.getRotation());
         EnvironmentLogic env = environmentRepository.findOne(getPojo().getEnvironmentID());
 
         if (env != null) {
@@ -380,7 +378,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         n.setDescription("this gate is closed");
         n.setReceiver("app.events.sensors.behavior.request.objects");
         n.setProperty("object", "@event.object.name");
-        n.setProperty("behavior",BEHAVIOR_OPEN);
+        n.setProperty("behavior", BEHAVIOR_OPEN);
         n.setProperty("value", "false");
 
         Command o = new Command();
@@ -391,19 +389,19 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         o.setProperty("behavior", BEHAVIOR_OPEN);
         o.setProperty("value", "opposite");
 
-        CommandPersistence.add(a);
-        CommandPersistence.add(b);
-        CommandPersistence.add(c);
-        CommandPersistence.add(d);
-        CommandPersistence.add(e);
-        CommandPersistence.add(f);
-        CommandPersistence.add(g);
-        CommandPersistence.add(h);
-        CommandPersistence.add(i);
-        CommandPersistence.add(l);
-        CommandPersistence.add(m);
-        CommandPersistence.add(n);
-        CommandPersistence.add(o);
+        commandRepository.create(a);
+        commandRepository.create(b);
+        commandRepository.create(c);
+        commandRepository.create(d);
+        commandRepository.create(e);
+        commandRepository.create(f);
+        commandRepository.create(g);
+        commandRepository.create(h);
+        commandRepository.create(i);
+        commandRepository.create(l);
+        commandRepository.create(m);
+        commandRepository.create(n);
+        commandRepository.create(o);
     }
 
     /**
@@ -423,14 +421,14 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         turnsOpen.setChannel("app.event.sensor.object.behavior.change");
         turnsOpen.getPayload().addStatement("object.name",
                 this.getPojo().getName());
-        turnsOpen.getPayload().addStatement("object.behavior."+BEHAVIOR_OPEN, "true");
+        turnsOpen.getPayload().addStatement("object.behavior." + BEHAVIOR_OPEN, "true");
 
         Trigger turnsClosed = new Trigger();
         turnsClosed.setName(this.getPojo().getName() + " becomes closed");
         turnsClosed.setChannel("app.event.sensor.object.behavior.change");
         turnsClosed.getPayload().addStatement("object.name",
                 this.getPojo().getName());
-        turnsClosed.getPayload().addStatement("object.behavior."+BEHAVIOR_OPEN, "false");
+        turnsClosed.getPayload().addStatement("object.behavior." + BEHAVIOR_OPEN, "false");
 
         triggerRepository.create(clicked);
         triggerRepository.create(turnsOpen);

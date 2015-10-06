@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -30,6 +30,7 @@ import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,14 +44,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Enrico
  */
-public class CommandPersistence implements CommandRepository {
+class CommandRepositoryImpl implements CommandRepository {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CommandPersistence.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CommandRepositoryImpl.class.getName());
 
     private static final Map<String, Command> userCommands = new HashMap<String, Command>();
     private static final Map<String, Command> hardwareCommands = new HashMap<String, Command>();
 
-    public CommandPersistence() {
+    public CommandRepositoryImpl() {
     }
 
     /**
@@ -154,16 +155,18 @@ public class CommandPersistence implements CommandRepository {
      *
      * @return
      */
-    public static Collection<Command> getHardwareCommands() {
-        return hardwareCommands.values();
+    @Override
+    public List<Command> findHardwareCommands() {
+        return new ArrayList(hardwareCommands.values());
     }
 
     /**
      *
      * @return
      */
-    public static Collection<Command> getUserCommands() {
-        return userCommands.values();
+    @Override
+    public List<Command> findUserCommands() {
+        return new ArrayList(userCommands.values());
     }
 
     /**
@@ -187,7 +190,8 @@ public class CommandPersistence implements CommandRepository {
      *
      * @param folder
      */
-    public static void loadCommands(File folder) {
+    @Override
+    public void loadCommands(File folder) {
         XStream xstream = FreedomXStream.getXstream();
         File[] files = folder.listFiles();
 
@@ -251,7 +255,7 @@ public class CommandPersistence implements CommandRepository {
                 //Close the output stream
                 indexfile.close();
             } catch (IOException ex) {
-                LOG.error("Error while loading command" , ex);
+                LOG.error("Error while loading command", ex);
             } finally {
                 try {
                     fstream.close();
@@ -268,7 +272,8 @@ public class CommandPersistence implements CommandRepository {
      *
      * @param folder
      */
-    public static void saveCommands(File folder) {
+    @Override
+    public void saveCommands(File folder) {
 
         if (userCommands.isEmpty()) {
             LOG.warn("There are no commands to persist, {} will not be altered.", folder.getAbsolutePath());

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -20,6 +20,10 @@
 package com.freedomotic.security;
 
 import com.freedomotic.api.Plugin;
+import com.freedomotic.api.Protocol;
+import com.freedomotic.bus.BusService;
+import com.freedomotic.events.AccountEvent;
+import com.freedomotic.events.AccountEvent.AccountActions;
 import com.freedomotic.settings.AppConfig;
 import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
@@ -51,7 +55,9 @@ class AuthImpl2 implements Auth {
     private static final PluginRealm pluginRealm = new PluginRealm();
     private static final ArrayList<Realm> realmCollection = new ArrayList<Realm>();
     @Inject
-    AppConfig config;
+    private AppConfig config;
+    @Inject
+    private BusService bus;
 
     /**
      *
@@ -103,6 +109,19 @@ class AuthImpl2 implements Auth {
      * @param password
      * @return
      */
+//    @Override
+//    public boolean login(String subject, String password, boolean rememberMe) {
+//        UsernamePasswordToken token = new UsernamePasswordToken(subject, password);
+//        token.setRememberMe(rememberMe);
+//        Subject currentUser = SecurityUtils.getSubject();
+//        currentUser.login(token);
+//        currentUser.getSession().setTimeout(-1);
+//        LOG.log(Level.INFO, "Account ''{0}'' is granted for login", subject);
+//        // Notify login with a proper event
+//        AccountEvent loginEvent = new AccountEvent(this, subject, AccountActions.LOGIN);
+//        bus.send(loginEvent);
+//        return true;
+//    }
     @Override
     public boolean login(String subject, String password, boolean rememberMe) {
         UsernamePasswordToken token = new UsernamePasswordToken(subject, password);
@@ -173,24 +192,20 @@ class AuthImpl2 implements Auth {
      * @param action
      */
     @Override
-    public void pluginExecutePrivileged(Plugin plugin, Runnable action) {
-        executePrivileged(plugin.getClassName(), action);
-    }
+    public Runnable pluginBindRunnablePrivileges(Plugin plugin, Runnable action) {
 
-    private void executePrivileged(String classname, Runnable action) {
         if (isInited()) {
             //LOG.info("Executing privileged for plugin: " + classname);
-            PrincipalCollection plugPrincipals = new SimplePrincipalCollection(classname, pluginRealm.getName());
+            PrincipalCollection plugPrincipals = new SimplePrincipalCollection(plugin.getClassName(), pluginRealm.getName());
             Subject plugSubject = new Subject.Builder().principals(plugPrincipals).authenticated(true).buildSubject();
-            try{
+            try {
                 plugSubject.getSession().setTimeout(-1);
-            } catch (Exception e){
-              LOG.log(Level.WARNING, "ERROR retrieving session for user {0}", classname);
+            } catch (Exception e) {
+                LOG.log(Level.WARNING, "ERROR retrieving session for user {0}", plugin.getClassName());
             }
-            plugSubject.execute(action);
-        } else {
-            action.run();
+            return plugSubject.associateWith(action);                
         }
+        return action;
     }
 
     /**
@@ -283,7 +298,7 @@ class AuthImpl2 implements Auth {
 
     @Override
     public User getCurrentUser() {
-        String principalName=getSubject().getPrincipal().toString();
+        String principalName = getSubject().getPrincipal().toString();
         return (User) baseRealm.getUser(principalName);
     }
 

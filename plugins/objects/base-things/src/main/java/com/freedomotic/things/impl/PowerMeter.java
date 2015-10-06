@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
+ * Copyright (c) 2009-2015 Freedomotic team
  * http://freedomotic.com
  *
  * This file is part of Freedomotic
@@ -23,7 +23,6 @@
 package com.freedomotic.things.impl;
 
 import com.freedomotic.things.impl.ElectricDevice;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
@@ -46,12 +45,22 @@ public class PowerMeter
         current.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-                //there is an hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set minimum                	
+            		onRangeValue(current.getMin(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-                //there is as hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set maximum                	
+            		onRangeValue(current.getMax(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
@@ -70,12 +79,22 @@ public class PowerMeter
         voltage.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-                //there is an hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set minimum                	
+            		onRangeValue(voltage.getMin(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-                //there is as hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set maximum                	
+            		onRangeValue(voltage.getMax(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
@@ -94,12 +113,22 @@ public class PowerMeter
         power.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-                //there is an hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set minimum                	
+            		onRangeValue(power.getMin(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-                //there is as hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set maximum                	
+            		onRangeValue(power.getMax(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
@@ -118,12 +147,22 @@ public class PowerMeter
         powerFactor.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-                //there is an hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set minimum                	
+            		onRangeValue(powerFactor.getMin(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-                //there is as hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set maximum                	
+            		onRangeValue(powerFactor.getMax(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
@@ -142,12 +181,22 @@ public class PowerMeter
         energy.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-                //there is an hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set minimum                	
+            		onRangeValue(energy.getMin(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-                //there is as hardware read error
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set maximum                	
+            		onRangeValue(energy.getMax(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override

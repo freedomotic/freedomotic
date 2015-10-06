@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -54,7 +54,7 @@ import javax.ws.rs.core.Response;
 public class ThingResource extends AbstractResource<EnvObject> {
 
     private String envUUID = null;
-    private String roomName = null;
+    private String roomUUID = null;
 
     public ThingResource() {
         authContext = "things";
@@ -66,7 +66,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
     public ThingResource(String envUUID, String room) {
         this.envUUID = envUUID;
-        this.roomName = room;
+        this.roomUUID = room;
     }
 
     @GET
@@ -155,8 +155,8 @@ public class ThingResource extends AbstractResource<EnvObject> {
                 objects.add(objLogic.getPojo());
             }
         } else {
-            if (roomName != null && !roomName.isEmpty()) {
-                objects.addAll(api.environments().findOne(envUUID).getZone(roomName).getPojo().getObjects());
+            if (roomUUID != null && !roomUUID.isEmpty()) {
+                objects.addAll(api.environments().findOne(envUUID).getZoneByUuid(roomUUID).getPojo().getObjects());
             } else {
                 for (EnvObjectLogic objLogic : api.things().findByEnvironment(envUUID)) {
                     objects.add(objLogic.getPojo());

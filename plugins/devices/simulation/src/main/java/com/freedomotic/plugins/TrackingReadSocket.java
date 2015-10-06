@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -21,15 +21,22 @@ package com.freedomotic.plugins;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
+import com.freedomotic.events.LocationEvent;
+import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
+import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.reactions.Command;
+import com.freedomotic.things.EnvObjectLogic;
+import com.freedomotic.things.GenericPerson;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -37,46 +44,42 @@ import java.util.logging.Logger;
  * @author Enrico
  */
 public class TrackingReadSocket extends Protocol {
-    private static final int PORT = 1111;     private static final int maxConnections = -1; 
+
     private static final Logger LOG = Logger.getLogger(TrackingReadSocket.class.getName());
+    private ServerSocket serverSocket;
     private OutputStream out;
     private final boolean connected = false;
-    private final int SLEEP_TIME = 1000;
-    private final int NUM_MOTE = 3;
+    private final int PORT = configuration.getIntProperty("socket-server-port", 7777);
+    private final int SLEEP_TIME = configuration.getIntProperty("sleep-time", 1000);
+    private final int MAX_CONNECTIONS = configuration.getIntProperty("max-connections", -1);
 
     /**
      *
      */
     public TrackingReadSocket() {
         super("Tracking Simulator (Read Socket)", "/simulation/tracking-simulator-read-socket.xml");
-        setDescription("It simulates a motes WSN that send information about movable sensors position, read from a socket (port:"
+        setDescription("Simulates tracking system. Positions read from a socket (port:"
                 + PORT + ")");
+        setPollingWait(-1);
     }
 
     @Override
-    public void onStart() {
-        createServerSocket();
+    public void onStart() throws PluginStartupException {
+        try {
+            createServerSocket();
+        } catch (IOException ioe) {
+            throw new PluginStartupException("IOException on socket listen: " + ioe);
+        }
     }
 
-    private void createServerSocket() {
-        int i = 0;
-
+    private void createServerSocket() throws IOException {
         try {
-            ServerSocket listener = new ServerSocket(PORT);
-            Socket server;
-            System.out.println("\nStart listening on server socket " + listener.getInetAddress());
-
-            while (((i++ < maxConnections) || (maxConnections == -1)) && (isRunning())) {
-                ClientInputReader connection;
-                server = listener.accept();
-                connection = new ClientInputReader(server);
-
-                Thread t = new Thread(connection);
-                t.start();
-            }
+            serverSocket = new ServerSocket();
+            serverSocket.setReuseAddress(true);
+            serverSocket.bind(new InetSocketAddress(PORT));
+            LOG.log(Level.INFO, "Start listening on server socket " + serverSocket.getInetAddress() + ":" + serverSocket.getLocalPort());
         } catch (IOException ioe) {
-            System.out.println("IOException on socket listen: " + ioe);
-            ioe.printStackTrace();
+            throw ioe;
         }
     }
 
@@ -84,6 +87,7 @@ public class TrackingReadSocket extends Protocol {
         int id = 0;
         int x = -1;
         int y = -1;
+        FreedomPoint location;
         StringTokenizer tokenizer = null;
 
         try {
@@ -91,26 +95,46 @@ public class TrackingReadSocket extends Protocol {
             id = new Integer(tokenizer.nextToken()).intValue();
             x = new Integer(tokenizer.nextToken()).intValue();
             y = new Integer(tokenizer.nextToken()).intValue();
+            location = new FreedomPoint(x, y);
+            movePerson(id, location);
+
         } catch (Exception ex) {
-            System.out.println("Error while parsing client input." + "\n" + in + "\ntoken count: "
+            LOG.log(Level.SEVERE, "Error while parsing client input." + "\n" + in + "\ntoken count: "
                     + tokenizer.countTokens());
         }
+    }
 
-//          MUST BE REIMPLEMENTED
-//        for (EnvObjectLogic object : EnvObjectPersistence.getObjectList()) {
-//            if (object instanceof com.freedomotic.things.impl.Person){
-//                Person person = (Person)object;
-//                Point position = inventPosition();
-//                person.getPojo().setCurrentRepresentation(0);
-//                person.getPojo().getCurrentRepresentation().setOffset((int)position.getX(), (int)position.getY());
-//                person.setChanged(true);
-//            }
-//        }
+    // user ID must be associated to object address field
+    private void movePerson(int ID, FreedomPoint location) {
+        for (EnvObjectLogic object : getApi().things().findAll()) {
+            if ((object instanceof GenericPerson) && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(String.valueOf(ID)))) {
+                GenericPerson person = (GenericPerson) object;
+                LocationEvent event = new LocationEvent(this, person.getPojo().getUUID(), location);
+                notifyEvent(event);
+            }
+        }
     }
 
     @Override
     protected void onRun() {
-        //do nothing
+        int i = 0;
+
+        while (((i++ < MAX_CONNECTIONS) || (MAX_CONNECTIONS == -1))) {
+            try {
+                ClientInputReader clientConnection;
+                Socket clientSocket = serverSocket.accept();
+                clientConnection = new ClientInputReader(clientSocket);
+
+                Thread t = new Thread(clientConnection);
+                t.start();
+            } catch (IOException ioe) {
+                LOG.log(Level.SEVERE, "IOException on socket listen: " + ioe);
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
     }
 
     @Override
@@ -132,30 +156,30 @@ public class TrackingReadSocket extends Protocol {
     private class ClientInputReader
             implements Runnable {
 
-        private Socket server;
+        private Socket client;
         private String line;
         private String input;
 
-        ClientInputReader(Socket server) {
-            this.server = server;
-            System.out.println("New client connected to server on " + server.getInetAddress());
+        ClientInputReader(Socket client) {
+            this.client = client;
+            LOG.log(Level.INFO, "New client connected to server on " + client.getInetAddress());
         }
 
         public void run() {
             try {
                 // Get input from the client
-                DataInputStream in = new DataInputStream(server.getInputStream());
-                PrintStream out = new PrintStream(server.getOutputStream());
+                DataInputStream in = new DataInputStream(client.getInputStream());
+                PrintStream out = new PrintStream(client.getOutputStream());
 
                 while (((line = in.readLine()) != null) && !line.equals(".") && isRunning()) {
-                    System.out.println("Readed from socket: " + line);
+                    LOG.log(Level.INFO, "Readed from socket: " + line);
                     parseInput(line);
                 }
 
-                System.out.println("Closing socket connection " + server.getInetAddress());
-                server.close();
+                LOG.log(Level.INFO, "Closing socket connection " + client.getInetAddress());
+                client.close();
             } catch (IOException ioe) {
-                System.out.println("IOException on socket listen: " + ioe);
+                LOG.log(Level.SEVERE, "IOException on socket listen: " + ioe);
                 ioe.printStackTrace();
             }
         }

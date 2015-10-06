@@ -6,7 +6,6 @@ package com.freedomotic.things.impl;
 
 import com.freedomotic.things.ThingFactory;
 import com.freedomotic.things.ThingRepository;
-import com.freedomotic.things.impl.ThingRepositoryImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 

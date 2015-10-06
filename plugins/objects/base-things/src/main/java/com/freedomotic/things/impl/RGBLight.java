@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -21,24 +21,15 @@ package com.freedomotic.things.impl;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.Behavior;
-import com.freedomotic.model.object.ListBehavior;
 import com.freedomotic.model.object.RangedIntBehavior;
-import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
-import com.freedomotic.behaviors.ListBehaviorLogic;
-import com.freedomotic.things.impl.Light;
-import com.freedomotic.things.impl.Light;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author Mauro Cicolella
  */
-public class RGBLight
-        extends Light {
+public class RGBLight extends Light {
 
     private RangedIntBehaviorLogic hue;
     private RangedIntBehaviorLogic saturation;
@@ -258,21 +249,21 @@ public class RGBLight
         p.setProperty("behavior", BEHAVIOR_SATURATION);
         p.setProperty("value", "@event.value");
 
+        commandRepository.create(a);
+        commandRepository.create(b);
+        commandRepository.create(c);
+        commandRepository.create(d);
+        commandRepository.create(e);
+        commandRepository.create(f);
+        commandRepository.create(g);
+        commandRepository.create(h);
+        commandRepository.create(i);
+        commandRepository.create(l);
+        commandRepository.create(m);
+        commandRepository.create(n);
+        commandRepository.create(o);
+        commandRepository.create(p);
 
-        CommandPersistence.add(a);
-        CommandPersistence.add(b);
-        CommandPersistence.add(c);
-        CommandPersistence.add(d);
-        CommandPersistence.add(e);
-        CommandPersistence.add(f);
-        CommandPersistence.add(g);
-        CommandPersistence.add(h);
-        CommandPersistence.add(i);
-        CommandPersistence.add(l);
-        CommandPersistence.add(m);
-        CommandPersistence.add(n);
-        CommandPersistence.add(o);
-        CommandPersistence.add(p);
     }
 
     @Override

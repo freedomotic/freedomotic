@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -22,9 +22,8 @@ package com.freedomotic.persistence;
 import com.freedomotic.rules.Statement;
 import com.freedomotic.core.Condition;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.reactions.Reaction;
-import com.freedomotic.reactions.Trigger;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -32,12 +31,16 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 /**
  *
  * @author Enrico
  */
 class ReactionConverter implements Converter {
+    
+    @Inject
+    private CommandRepository commandRepository;
 
     /**
      *
@@ -154,9 +157,11 @@ class ReactionConverter implements Converter {
         }
         while (reader.hasMoreChildren()) {
             reader.moveDown(); //move down to command
-            Command c = CommandPersistence.getCommand(reader.getValue().trim());
-            if (c != null) {
-                list.add(c);
+            List<Command> commands = commandRepository.findByName(reader.getValue().trim());
+            if (!commands.isEmpty()) {
+                list.add(commands.get(0));
+            } else {
+                throw new RuntimeException("Cannot find command named " + reader.getValue().trim());
             }
             reader.moveUp(); //move up to sequence
         }

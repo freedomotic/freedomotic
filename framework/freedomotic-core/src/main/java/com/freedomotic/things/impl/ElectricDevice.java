@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -31,7 +31,6 @@ import com.freedomotic.behaviors.BooleanBehaviorLogic;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
 import com.freedomotic.reactions.Trigger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -195,6 +194,7 @@ public class ElectricDevice extends EnvObjectLogic {
         setOn.setProperty("object", getPojo().getName());
         setOn.setProperty("behavior", BEHAVIOR_POWERED);
         setOn.setProperty("value", BooleanBehavior.VALUE_TRUE);
+        commandRepository.create(setOn);
 
         Command setOff = new Command();
         setOff.setName("Turn off " + getPojo().getName());
@@ -203,6 +203,7 @@ public class ElectricDevice extends EnvObjectLogic {
         setOff.setProperty("object", getPojo().getName());
         setOff.setProperty("behavior", BEHAVIOR_POWERED);
         setOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
+        commandRepository.create(setOff);
 
         Command switchPower = new Command();
         switchPower.setName("Switch " + getPojo().getName() + " power");
@@ -211,16 +212,16 @@ public class ElectricDevice extends EnvObjectLogic {
         switchPower.setProperty("object", getPojo().getName());
         switchPower.setProperty("behavior", BEHAVIOR_POWERED);
         switchPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
+        commandRepository.create(switchPower);
 
         Command setItOn = new Command();
-
         setItOn.setName("Turn it on");
         setItOn.setDescription("Object turns on");
         setItOn.setReceiver("app.events.sensors.behavior.request.objects");
         setItOn.setProperty("object", "@event.object.name");
         setItOn.setProperty("behavior", BEHAVIOR_POWERED);
         setItOn.setProperty("value", "true");
-        CommandPersistence.add(setItOn);
+        commandRepository.create(setItOn);
 
         Command setItOff = new Command();
         setItOff.setName("Turn it off");
@@ -229,7 +230,7 @@ public class ElectricDevice extends EnvObjectLogic {
         setItOff.setProperty("object", "@event.object.name");
         setItOff.setProperty("behavior", BEHAVIOR_POWERED);
         setItOff.setProperty("value", BooleanBehavior.VALUE_FALSE);
-        CommandPersistence.add(setItOff);
+        commandRepository.create(setItOff);
 
         Command switchItsPower = new Command();
         switchItsPower.setName("Switch its power");
@@ -238,11 +239,7 @@ public class ElectricDevice extends EnvObjectLogic {
         switchItsPower.setProperty("object", "@event.object.name");
         switchItsPower.setProperty("behavior", BEHAVIOR_POWERED);
         switchItsPower.setProperty("value", BooleanBehavior.VALUE_OPPOSITE);
-        CommandPersistence.add(switchItsPower);
-
-        CommandPersistence.add(setOff);
-        CommandPersistence.add(setOn);
-        CommandPersistence.add(switchPower);
+        commandRepository.create(switchItsPower);
     }
 
     /**

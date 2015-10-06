@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -184,11 +184,11 @@ class AuthImpl implements Auth{
      * @param action
      */
     @Override
-    public void pluginExecutePrivileged(Plugin plugin, Runnable action) {
-        executePrivileged(plugin.getClassName(), action);
+    public Runnable pluginBindRunnablePrivileges(Plugin plugin, Runnable action) {
+        return executePrivileged(plugin.getClassName(), action);
     }
 
-    private void executePrivileged(String classname, Runnable action) {
+    private Runnable executePrivileged(String classname, Runnable action) {
         if (isInited()) {
             //LOG.info("Executing privileged for plugin: " + classname);
             PrincipalCollection plugPrincipals = new SimplePrincipalCollection(classname, pluginRealm.getName());
@@ -198,6 +198,7 @@ class AuthImpl implements Auth{
         } else {
             action.run();
         }
+        return null;
     }
 
     /**

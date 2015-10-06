@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -125,7 +125,7 @@ public abstract class Protocol extends Plugin {
     public void start() {
         super.start();
         if (isAllowedToStart()) {
-
+            LOG.log(Level.INFO, "Starting plugin {0}", getName());
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
@@ -151,7 +151,7 @@ public abstract class Protocol extends Plugin {
 
                 }
             };
-            getApi().getAuth().pluginExecutePrivileged(this, action);
+            getApi().getAuth().pluginBindRunnablePrivileges(this, action).run();
         }
     }
 
@@ -162,6 +162,7 @@ public abstract class Protocol extends Plugin {
     public void stop() {
         super.stop();
         if (isRunning()) {
+            LOG.log(Level.INFO, "Stopping plugin {0}", getName());
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
@@ -183,7 +184,7 @@ public abstract class Protocol extends Plugin {
                     }
                 }
             };
-            getApi().getAuth().pluginExecutePrivileged(this, action);
+            getApi().getAuth().pluginBindRunnablePrivileges(this, action).run();
         }
     }
 
@@ -223,17 +224,19 @@ public abstract class Protocol extends Plugin {
                 final Command command = (Command) payload;
                 LOG.log(Level.CONFIG, "{0} receives command {1} with parametes '{''{'{2}'}''}'", new Object[]{this.getName(), command.getName(), command.getProperties()});
 
-                Protocol.ActuatorPerforms task;
+                Protocol.ActuatorOnCommandRunnable action;
                 lastDestination = message.getJMSReplyTo();
-                task
-                        = new Protocol.ActuatorPerforms(command,
-                                message.getJMSReplyTo(),
-                                message.getJMSCorrelationID());
+                action = new Protocol.ActuatorOnCommandRunnable(command,
+                        message.getJMSReplyTo(),
+                        message.getJMSCorrelationID());
+                Protocol.ActuatorPerforms task = new Protocol.ActuatorPerforms(getApi().getAuth().pluginBindRunnablePrivileges(this, action));
                 task.start();
             } else {
                 if (payload instanceof EventTemplate) {
                     final EventTemplate event = (EventTemplate) payload;
-                    onEvent(event);
+                    Protocol.ActuatorOnEventRunnable r = new Protocol.ActuatorOnEventRunnable(event);
+                    Protocol.ActuatorPerforms task = new Protocol.ActuatorPerforms(getApi().getAuth().pluginBindRunnablePrivileges(this, r));
+                    task.start();
                 }
             }
         } catch (JMSException ex) {
@@ -264,15 +267,41 @@ public abstract class Protocol extends Plugin {
 
     private class ActuatorPerforms extends Thread {
 
+        public ActuatorPerforms(Runnable target) {
+            super(target, "freedomotic-protocol-executor");
+        }
+
+    }
+
+    public class ActuatorOnEventRunnable implements Runnable {
+
+        private final EventTemplate event;
+
+        ActuatorOnEventRunnable(EventTemplate e) {
+            this.event = e;
+        }
+
+        @Override
+        public void run() {
+            try {
+                // a command is supposed executed if the plugin doesen't say the contrary
+                onEvent(event);
+            } catch (Exception ex) {
+                LOG.log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public class ActuatorOnCommandRunnable implements Runnable {
+
         private final Command command;
         private final Destination reply;
         private final String correlationID;
 
-        ActuatorPerforms(Command c, Destination reply, String correlationID) {
+        ActuatorOnCommandRunnable(Command c, Destination reply, String correlationID) {
             this.command = c;
             this.reply = reply;
             this.correlationID = correlationID;
-            this.setName("freedomotic-protocol-executor");
         }
 
         @Override

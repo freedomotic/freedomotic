@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -24,7 +24,7 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerRepository;
 import com.google.inject.Inject;
@@ -36,6 +36,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -49,6 +50,8 @@ public class AutomationsEditor extends Protocol {
     private NlpCommand nlpCommands;
     @Inject
     private TriggerRepository triggerRepository;
+    @Inject
+    private CommandRepository commandRepository;
     private ReactionsPanel panel;
     private JFrame frame;
 
@@ -63,9 +66,15 @@ public class AutomationsEditor extends Protocol {
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
         if (c.getProperty("editor").equalsIgnoreCase("command")) {
-            Command command = CommandPersistence.getCommand(c.getProperty("editable"));
+            Command command;
+            List<Command> list = commandRepository.findByName(c.getProperty("editable"));
+            if (!list.isEmpty()) {
+                command = list.get(0);
+            } else {
+                throw new RuntimeException("No commands found with name " + c.getProperty("editable"));
+            }
 //            ReactionList reactionList = new ReactionList(this);
-            CustomizeCommand cc = new CustomizeCommand(getApi().getI18n(), command);
+            CustomizeCommand cc = new CustomizeCommand(getApi().getI18n(), command, commandRepository);
             cc.setVisible(true);
             cc.addWindowListener(new WindowAdapter() {
                 @Override
@@ -113,7 +122,7 @@ public class AutomationsEditor extends Protocol {
         frame.setTitle(getApi().getI18n().msg("manage") + getApi().getI18n().msg("automations"));
         frame.setPreferredSize(new Dimension(700, 600));
 
-        panel = new ReactionsPanel(this, nlpCommands, triggerRepository);
+        panel = new ReactionsPanel(this, nlpCommands, triggerRepository, commandRepository);
         frame.setContentPane(panel);
 
         JButton ok = new JButton(getApi().getI18n().msg("ok"));

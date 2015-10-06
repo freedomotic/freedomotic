@@ -1,6 +1,0 @@
-<reaction>
-  <trigger>Kitchen Light turns off</trigger>
-  <sequence>
-    <command>Say electric device status</command>
-  </sequence>
-</reaction>

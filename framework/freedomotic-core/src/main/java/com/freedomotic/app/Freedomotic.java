@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -20,13 +20,13 @@
 package com.freedomotic.app;
 
 import com.freedomotic.settings.AppConfig;
-import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.bus.BootStatus;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
+import com.freedomotic.core.Autodiscovery;
 import com.freedomotic.core.SynchManager;
 import com.freedomotic.core.TopologyManager;
 import com.freedomotic.environment.EnvironmentLogic;
@@ -36,6 +36,7 @@ import com.freedomotic.events.PluginHasChanged.PluginActions;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.exceptions.FreedomoticException;
 import com.freedomotic.exceptions.PluginLoadingException;
+import com.freedomotic.i18n.I18n;
 import com.freedomotic.marketplace.ClassPathUpdater;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.MarketPlaceService;
@@ -45,13 +46,12 @@ import com.freedomotic.things.ThingRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.reactions.ReactionPersistence;
 import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.security.Auth;
 import com.freedomotic.security.UserRealm;
 import com.freedomotic.settings.Info;
-import com.freedomotic.util.LogFormatter;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -108,23 +108,29 @@ public class Freedomotic implements BusConsumer {
     private final PluginsManager pluginsManager;
     private AppConfig config;
     private final Auth auth;
-    private final API api;
+    private final I18n i18n;
     private BusMessagesListener listener;
     // TODO remove static modifier once static methods sendEvent & sendCommand are erased.
     private static BusService busService;
+    private final CommandRepository commandRepository;
+    private final Autodiscovery autodiscovery;
 
     /**
      *
+     * @param auth
      * @param pluginsLoader
      * @param environmentRepository
      * @param thingsRepository
+     * @param triggerRepository
+     * @param commandRepository
      * @param clientStorage
      * @param commandsNlpService
      * @param config
-     * @param api
+     * @param i18n
      * @param busService
      * @param topologyManager
      * @param synchManager
+     * @param autodiscovery
      */
     @Inject
     public Freedomotic(
@@ -132,25 +138,30 @@ public class Freedomotic implements BusConsumer {
             EnvironmentRepository environmentRepository,
             ThingRepository thingsRepository,
             TriggerRepository triggerRepository,
+            CommandRepository commandRepository,
             ClientStorage clientStorage,
             CommandsNlpService commandsNlpService,
             AppConfig config,
-            API api,
+            I18n i18n,
             BusService busService,
             TopologyManager topologyManager,
-            SynchManager synchManager) {
+            Auth auth,
+            SynchManager synchManager,
+            Autodiscovery autodiscovery) {
         this.pluginsManager = pluginsLoader;
         this.environmentRepository = environmentRepository;
         this.thingsRepository = thingsRepository;
         this.triggerRepository = triggerRepository;
+        this.commandRepository = commandRepository;
         this.busService = busService;
         this.commandsNlpService = commandsNlpService;
         this.topologyManager = topologyManager;
         this.synchManager = synchManager;
         this.clientStorage = clientStorage;
         this.config = config;
-        this.api = api;
-        this.auth = api.getAuth();
+        this.i18n = i18n;
+        this.auth = auth;
+        this.autodiscovery = autodiscovery;
     }
 
     /**
@@ -164,7 +175,7 @@ public class Freedomotic implements BusConsumer {
         Info.relocateDataPath(new File(config.getStringProperty("KEY_DATA_PATH", defaultPath)));
 
         // init localization
-        api.getI18n().setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
+        i18n.setDefaultLocale(config.getStringProperty("KEY_ENABLE_I18N", "no"));
 
         // init auth* framework
         auth.initBaseRealm();
@@ -181,9 +192,9 @@ public class Freedomotic implements BusConsumer {
         String resourcesPath
                 = new File(Info.PATHS.PATH_WORKDIR
                         + config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
-        LOG.info("\nOS: " + System.getProperty("os.name") + "\n" + api.getI18n().msg("architecture") + ": "
+        LOG.info("\nOS: " + System.getProperty("os.name") + "\n" + i18n.msg("architecture") + ": "
                 + System.getProperty("os.arch") + "\n" + "OS Version: " + System.getProperty("os.version")
-                + "\n" + api.getI18n().msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
+                + "\n" + i18n.msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
                 + System.getProperty("java.home") + "\n" + "Java Library Path: {"
                 + System.getProperty("java.library.path") + "}\n" + "Program path: "
                 + System.getProperty("user.dir") + "\n" + "Java Version: " + System.getProperty("java.version")
@@ -315,21 +326,21 @@ public class Freedomotic implements BusConsumer {
         // Bootstrap Things in the environments
         // This should be done after loading all Things plugins otherwise
         // its java class will not be recognized by the system
-        environmentRepository.init();
-        for (EnvironmentLogic env : environmentRepository.findAll()) {
+        environmentRepository.initFromDefaultFolder();
+        // for (EnvironmentLogic env : environmentRepository.findAll()) {
             // Load all the Things in this environment
-            File thingsFolder = env.getObjectFolder();
-            List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(thingsFolder);
-            for (EnvObjectLogic thing : loadedThings) {
-                thing.setEnvironment(env);
+        //    File thingsFolder = env.getObjectFolder();
+        //    List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(thingsFolder);
+        //    for (EnvObjectLogic thing : loadedThings) {
+        //        thing.setEnvironment(env);
                 // Actvates the Thing. Important, otherwise it will be not visible in the environment
-                thingsRepository.create(thing);
-            }
-        }
+        //        thingsRepository.create(thing);
+        //    }
+        // }
 
         // Loads the entire Reactions system (Trigger + Commands + Reactions)
         triggerRepository.loadTriggers(new File(Info.PATHS.PATH_DATA_FOLDER + "/trg/"));
-        CommandPersistence.loadCommands(new File(Info.PATHS.PATH_DATA_FOLDER + "/cmd/"));
+        commandRepository.loadCommands(new File(Info.PATHS.PATH_DATA_FOLDER + "/cmd/"));
         ReactionPersistence.loadReactions(new File(Info.PATHS.PATH_DATA_FOLDER + "/rea/"));
 
         // Starting plugins
@@ -475,7 +486,7 @@ public class Freedomotic implements BusConsumer {
         }
 
         triggerRepository.saveTriggers(new File(savedDataRoot + "/trg"));
-        CommandPersistence.saveCommands(new File(savedDataRoot + "/cmd"));
+        commandRepository.saveCommands(new File(savedDataRoot + "/cmd"));
         ReactionPersistence.saveReactions(new File(savedDataRoot + "/rea"));
 
         //save the environment
@@ -486,15 +497,16 @@ public class Freedomotic implements BusConsumer {
             folder = new File(environmentFilePath).getParentFile();
             environmentRepository.saveEnvironmentsToFolder(folder);
 
-            if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
-                File saveDir = null;
-                try {
-                    saveDir = new File(folder + "/data/obj");
-                    thingsRepository.saveAll(saveDir);
-                } catch (RepositoryException ex) {
-                    LOG.log(Level.SEVERE, "Cannot save objects in {0}", saveDir.getAbsolutePath());
-                }
-            }
+            // block moved inside environmentRepository.saveEnvironmentsToFolder()
+            // if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
+            //    File saveDir = null;
+            //    try {
+            //        saveDir = new File(folder + "/data/obj");
+            //        thingsRepository.saveAll(saveDir);
+            //    } catch (RepositoryException ex) {
+            //        LOG.log(Level.SEVERE, "Cannot save objects in {0}", saveDir.getAbsolutePath());
+            //    }
+            // }
         } catch (RepositoryException ex) {
             LOG.log(Level.SEVERE, "Cannot save environment to folder {0} due to {1}", new Object[]{folder, ex.getCause()});
         }

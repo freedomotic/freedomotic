@@ -1,40 +1,34 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
+ * Copyright (c) 2009-2015 Freedomotic team
  * http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
-
 package com.freedomotic.things.impl;
 
-import com.freedomotic.things.impl.ElectricDevice;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
 
 /**
  *
  * @author gpt
  */
-
 public class StepperMotor
         extends ElectricDevice {
 
@@ -51,11 +45,23 @@ public class StepperMotor
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOff(params);
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set minimum                	
+            		onRangeValue(position.getMin(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOn(params);
+            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+//ok here, just trying to set maximum                	
+            		onRangeValue(position.getMax(), params, fireCommand);
+            	} else {
+//there is an hardware read error
+            	}
             }
 
             @Override
@@ -173,13 +179,14 @@ public class StepperMotor
         g.setProperty("behavior", "position");
         g.setProperty("value", "@event.value");
 
-        CommandPersistence.add(a);
-        CommandPersistence.add(b);
-        CommandPersistence.add(c);
-        CommandPersistence.add(d);
-        CommandPersistence.add(e);
-        CommandPersistence.add(f);
-        CommandPersistence.add(g);
+        commandRepository.create(a);
+        commandRepository.create(b);
+        commandRepository.create(c);
+        commandRepository.create(d);
+        commandRepository.create(e);
+        commandRepository.create(f);
+        commandRepository.create(g);
+
     }
 
     @Override

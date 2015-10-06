@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team
+ * Copyright (c) 2009-2015 Freedomotic team
  * http://freedomotic.com
  *
  * This file is part of Freedomotic
@@ -26,10 +26,9 @@ import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.model.object.ListBehavior;
 import com.freedomotic.model.object.RangedIntBehavior;
-import com.freedomotic.things.BooleanBehaviorLogic;
-import com.freedomotic.things.ListBehaviorLogic;
-import com.freedomotic.things.RangedIntBehaviorLogic;
-import com.freedomotic.reactions.CommandPersistence;
+import com.freedomotic.behaviors.BooleanBehaviorLogic;
+import com.freedomotic.behaviors.ListBehaviorLogic;
+import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
 
 /**
@@ -57,11 +56,13 @@ public class TV extends ElectricDevice {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOff(params);
+            	onRangeValue(volume.getMin(), params, fireCommand)
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOn(params);
+            	onRangeValue(volume.getMax(), params, fireCommand)
             }
 
             @Override
@@ -81,10 +82,12 @@ public class TV extends ElectricDevice {
         channel.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
+            	onRangeValue(channel.getMin(), params, fireCommand)
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
+            	onRangeValue(channel.getMax(), params, fireCommand)
             }
 
             @Override
@@ -479,23 +482,23 @@ public class TV extends ElectricDevice {
         t.setProperty("behavior", "input");
         t.setProperty("value", "previous");
 
-        CommandPersistence.add(a);
-        CommandPersistence.add(b);
-        CommandPersistence.add(c);
-        CommandPersistence.add(d);
-        CommandPersistence.add(e);
-        CommandPersistence.add(f);
-        CommandPersistence.add(g);
-        CommandPersistence.add(h);
-        CommandPersistence.add(i);
-        CommandPersistence.add(l);
-        CommandPersistence.add(m);
-        CommandPersistence.add(n);
-        CommandPersistence.add(o);
-        CommandPersistence.add(p);
-        CommandPersistence.add(q);
-        CommandPersistence.add(r);
-        CommandPersistence.add(s);
-        CommandPersistence.add(t);
+        commandRepository.create(a);
+        commandRepository.create(b);
+        commandRepository.create(c);
+        commandRepository.create(d);
+        commandRepository.create(e);
+        commandRepository.create(f);
+        commandRepository.create(g);
+        commandRepository.create(h);
+        commandRepository.create(i);
+        commandRepository.create(l);
+        commandRepository.create(m);
+        commandRepository.create(n);
+        commandRepository.create(o);
+        commandRepository.create(p);
+        commandRepository.create(q);
+        commandRepository.create(r);
+        commandRepository.create(s);
+        commandRepository.create(t);
     }
 }

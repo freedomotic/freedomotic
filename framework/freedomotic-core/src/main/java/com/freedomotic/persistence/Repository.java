@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -30,7 +30,7 @@ public interface Repository<T> {
 
     public List<T> findAll();
 
-    // TODO: it's supposed name it's a unique identifier, should return a single object
+    // TODO: it's supposed name is a unique identifier, should return a single object
     public List<T> findByName(String name);
 
     public T findOne(String uuid);

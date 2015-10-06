@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -47,7 +47,7 @@ import org.apache.activemq.command.ActiveMQQueue;
  * @author Freedomotic Team
  *
  */
-class BusServiceImpl extends LifeCycle implements BusService {
+final class BusServiceImpl extends LifeCycle implements BusService {
 
     private static final Logger LOG = Logger.getLogger(BusServiceImpl.class.getName());
 
@@ -64,7 +64,11 @@ class BusServiceImpl extends LifeCycle implements BusService {
         //this.config = config;
         if (BootStatus.getCurrentStatus() == BootStatus.STOPPED) {
             init();
+            if (sendSession == null) {
+                throw new IllegalStateException("Messaging bus has not yet a valid send session");
+            }
         }
+        LOG.info("Messaging bus is " + BootStatus.getCurrentStatus().name());
     }
 
     /**
@@ -90,10 +94,6 @@ class BusServiceImpl extends LifeCycle implements BusService {
         sendSession = createSession();
         // null parameter creates a producer with no specified destination
         messageProducer = createMessageProducer();
-
-        if (sendSession == null) {
-            throw new IllegalStateException("Messaging bus has not yet a valid send session");
-        }
 
         BootStatus.setCurrentStatus(BootStatus.STARTED);
     }
@@ -237,6 +237,8 @@ class BusServiceImpl extends LifeCycle implements BusService {
             throw new IllegalArgumentException("Cannot send command '" + command + "', the receiver channel is not specified");
         }
 
+        LOG.log(Level.INFO, "Sending command ''{0}'' to destination ''{1}'' with reply timeout {2}", new Object[]{command.getName(), command.getReceiver(), command.getReplyTimeout()});
+
         try {
             ObjectMessage msg = createObjectMessage();
             msg.setObject(command);
@@ -260,7 +262,6 @@ class BusServiceImpl extends LifeCycle implements BusService {
         // queues and consumers on it
         // this increments perfornances if no reply is expected
         final MessageProducer messageProducer = this.getMessageProducer();
-        LOG.log(Level.CONFIG, "Send command ''{0}'' (no reply requested to receiver)", command.getName());
         messageProducer.send(currDestination, msg);
 
         Profiler.incrementSentCommands();
@@ -348,6 +349,7 @@ class BusServiceImpl extends LifeCycle implements BusService {
      */
     @Override
     public void send(final EventTemplate ev, final String to) {
+        //LOG.log(Level.INFO, "Sending event ''{0}'' to destination ''{1}''", new Object[]{ev.toString(), to});
         if (ev == null) {
             throw new IllegalArgumentException("Cannot send a null event");
         }

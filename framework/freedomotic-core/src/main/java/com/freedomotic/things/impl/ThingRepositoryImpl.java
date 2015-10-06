@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -19,6 +19,7 @@
  */
 package com.freedomotic.things.impl;
 
+import com.freedomotic.core.SynchAction;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
@@ -32,9 +33,9 @@ import com.freedomotic.persistence.DataUpgradeService;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.settings.Info;
 import com.freedomotic.util.SerialClone;
-import com.freedomotic.util.UidGenerator;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -49,7 +50,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.inject.Inject;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +67,7 @@ class ThingRepositoryImpl implements ThingRepository {
 
     public static final boolean MAKE_NOT_UNIQUE = false;
     private static final Map<String, EnvObjectLogic> objectList = new HashMap<>();
-    private static final Logger LOG = LoggerFactory.getLogger(ThingRepositoryImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ThingRepositoryImpl.class.getName()); 
     // Dependencies
     private final ThingFactory thingsFactory;
     private final DataUpgradeService dataUpgradeService;
@@ -99,6 +102,7 @@ class ThingRepositoryImpl implements ThingRepository {
         }
 
         if (!folder.isDirectory()) {
+            //TODO: create folder tree instead of just complaining
             throw new RepositoryException(folder.getAbsoluteFile() + " is not a valid object folder. Skipped");
         }
 
@@ -242,8 +246,6 @@ class ThingRepositoryImpl implements ThingRepository {
     private static ArrayList<EnvObjectLogic> getObjectByAddress(String protocol, String address) {
         if ((protocol == null)
                 || (address == null)
-                || protocol.trim().equalsIgnoreCase("unknown")
-                || address.trim().equalsIgnoreCase("unknown")
                 || protocol.isEmpty()
                 || address.isEmpty()) {
             throw new IllegalArgumentException();
@@ -368,7 +370,7 @@ class ThingRepositoryImpl implements ThingRepository {
         if (MAKE_UNIQUE) {
             //defensive copy to not affect the passed object with the changes
             EnvObject pojoCopy = SerialClone.clone(obj.getPojo());
-            pojoCopy.setName(obj.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
+            pojoCopy.setName(getNextInOrder(obj.getPojo().getName()));
             pojoCopy.setProtocol(obj.getPojo().getProtocol());
             pojoCopy.setPhisicalAddress("unknown");
             for (Representation rep : pojoCopy.getRepresentations()) {
@@ -389,15 +391,26 @@ class ThingRepositoryImpl implements ThingRepository {
         if (!objectList.containsValue(envObjectLogic)) {
             objectList.put(envObjectLogic.getPojo().getUUID(), envObjectLogic);
             try {
-                envObjectLogic.setChanged(true);
+                envObjectLogic.setChanged(SynchAction.CREATED);
             } catch (Exception e) {
-                LOG.warn("Object was created, but cannot set it as Changed", e);
+                LOG.warn("Thing was created, but cannot set it as Changed", e);
             }
         } else {
             throw new RuntimeException("Cannot add the same object more than one time");
         }
 
         return envObjectLogic;
+    }
+    
+    private String getNextInOrder(String name) {
+        String newName = name;
+        int i = 0;
+        while (!this.findByName(newName).isEmpty() && (i < 1000)) {
+            // i < 1000 just to avoid infinite loop in case of errors
+            i++;
+            newName = name + "-" + i;
+        }
+        return newName;
     }
 
     /**
@@ -471,7 +484,7 @@ class ThingRepositoryImpl implements ThingRepository {
         try {
             EnvObjectLogic eol = objectList.remove(uuid);
             try {
-                eol.setChanged(true); //force repainting on frontends clients
+                eol.setChanged(SynchAction.DELETED); //force repainting on frontends clients
             } catch (Exception e) {
                 LOG.warn("Cannot notify object changes");
             }
@@ -574,10 +587,8 @@ class ThingRepositoryImpl implements ThingRepository {
 
     @Override
     public List<EnvObjectLogic> loadAll(File folder) throws RepositoryException {
-        objectList.clear();
+        this.deleteAll();
         List<EnvObjectLogic> results = new ArrayList<EnvObjectLogic>();
-
-        File[] files = folder.listFiles();
 
         // This filter only returns object files
         FileFilter objectFileFilter
@@ -592,12 +603,17 @@ class ThingRepositoryImpl implements ThingRepository {
                     }
                 };
 
-        files = folder.listFiles(objectFileFilter);
+        File[] files = folder.listFiles(objectFileFilter);
 
         if (files != null) {
             for (File file : files) {
+                try{
                 EnvObjectLogic loaded = load(file);
                 results.add(loaded);
+                }
+                catch (RepositoryException ex){
+                    LOG.warn(ex.getMessage());
+                }
             }
         }
         return results;

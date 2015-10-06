@@ -1,6 +1,7 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team
+ * http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -19,13 +20,11 @@
  */
 package com.freedomotic.things.impl;
 
-import com.freedomotic.things.impl.ElectricDevice;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
 
 /**
  *
@@ -163,13 +162,13 @@ public class Light extends ElectricDevice {
         g.setProperty("behavior", BEHAVIOR_BRIGHTNESS);
         g.setProperty("value", "@event.value");
 
-        CommandPersistence.add(a);
-        CommandPersistence.add(b);
-        CommandPersistence.add(c);
-        CommandPersistence.add(d);
-        CommandPersistence.add(e);
-        CommandPersistence.add(f);
-        CommandPersistence.add(g);
+        commandRepository.create(a);
+        commandRepository.create(b);
+        commandRepository.create(c);
+        commandRepository.create(d);
+        commandRepository.create(e);
+        commandRepository.create(f);
+        commandRepository.create(g);
     }
 
     @Override
