@@ -22,10 +22,8 @@
  */
 package com.freedomotic.plugins.devices.mysensors;
 
-import com.freedomotic.api.API;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
@@ -33,8 +31,6 @@ import com.freedomotic.helpers.SerialHelper;
 import com.freedomotic.helpers.SerialPortListener;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.things.EnvObjectLogic;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,8 +42,6 @@ import jssc.SerialPortException;
 public class MySensors extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(MySensors.class.getName());
-    protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
-    protected final static API api = INJECTOR.getInstance(API.class);
     // Type of message
     private final String PRESENTATION = "0";
     private final String SET_VARIABLE = "1";
@@ -94,7 +88,7 @@ public class MySensors extends Protocol {
             if (serial.disconnect()) {
                 serial = null;
             } else {
-                LOG.log(Level.WARNING, "Impossibile to disconnect from ''{0}'' ", serial.getPortName());
+                LOG.log(Level.WARNING, "Impossible to disconnect from ''{0}'' ", serial.getPortName());
             }
         }
     }
@@ -234,7 +228,7 @@ public class MySensors extends Protocol {
      * available nodeID for AUTO-ID feature
      */
     private void loadConfiguredObjects() {
-        ArrayList<EnvObjectLogic> configuredObjects = (ArrayList<EnvObjectLogic>) api.things().findByProtocol("mysensors");
+        ArrayList<EnvObjectLogic> configuredObjects = (ArrayList<EnvObjectLogic>) getApi().things().findByProtocol("mysensors");
         for (EnvObjectLogic obj : configuredObjects) {
             String phisicalAddress = obj.getPojo().getPhisicalAddress();
             String[] addrComponents = phisicalAddress.split("\n");
