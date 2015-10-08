@@ -1,0 +1,10 @@
+<config>
+    <properties>
+        <property name="name" value="harvester-things"/>
+        <property name="description" value="It is a graph-objects"/>
+        <property name="category" value="charts"/>
+        <property name="short-name" value="harvester-things"/>
+    </properties>
+</config>
+
+                

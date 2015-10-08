@@ -21,14 +21,14 @@ package com.freedomotic.things.impl;
 
 import com.google.inject.Inject;
 import com.freedomotic.events.ObjectReceiveClick;
+import com.freedomotic.i18n.I18n;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.model.object.DataBehavior;
-import com.freedomotic.things.DataBehaviorLogic;
+import com.freedomotic.behaviors.DataBehaviorLogic;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.util.I18n.I18n;
 
 /**
  *
