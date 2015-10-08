@@ -92,11 +92,13 @@ public final class HarvesterProtocol extends Protocol {
             props.put("openjpa.MetaDataFactory", "org.apache.openjpa.persistence.jdbc.PersistenceMappingFactory(Types=" + UsageData.class.getCanonicalName() + ";)");
             props.put("openjpa.TransactionMode", "local");
             props.put("openjpa.jdbc.SynchronizeMappings", "buildSchema");
+            props.put("openjpa.RemoteCommitProvider", "sjvm");
             props.put("openjpa.Log", configuration.getStringProperty("log.options", "DefaultLevel=WARN, Runtime=INFO, Tool=INFO"));
 
-            factory = Persistence.createEntityManagerFactory(null, props);
+            factory = Persistence.createEntityManagerFactory("UsageData", props);
             em = factory.createEntityManager();
-            setDescription("Saving data to: " + em.getProperties().get("openjpa.ConnectionURL"));
+            //setDescription("Saving data to: " + em.getProperties().get("openjpa.ConnectionURL")); // works only with JPA 2.0
+            setDescription("Connected to database");
             setPollingWait(2000);
         } catch (FileNotFoundException e) {
             LOG.log(Level.SEVERE, "Unable to find configuration file for harvester of type: {0}", dbType);

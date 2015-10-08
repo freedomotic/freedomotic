@@ -10,7 +10,7 @@
     <artifactId>harvester</artifactId>
     <packaging>jar</packaging>
     <name>harvester</name>
-    <version>3.1</version>
+    <version>3.0</version>
     <developers> 
         <developer>
             <id>gabriel</id>
