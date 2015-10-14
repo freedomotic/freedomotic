@@ -1,0 +1,9 @@
+<config>
+  <properties>
+    <property name="description" value="A Text to Speech Engine"/>
+    <property name="category" value="media"/>
+    <property name="short-name" value="tts"/>
+    <property name="startup-time" value="on load"/>
+    <property name="mbrola-voice" value="mbrola_us1"/>
+  </properties>
+</config>
