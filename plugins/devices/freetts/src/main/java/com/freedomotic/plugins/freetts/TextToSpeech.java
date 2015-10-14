@@ -27,7 +27,6 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.util.Info;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -56,23 +55,23 @@ public class TextToSpeech extends Protocol {
         try {
             //File mbrola = new File(Info.PATH_DEVICES_FOLDER + "/freetts/data/voices/");
             //if ((mbrola.exists())) {
-              //System.setProperty("mbrola.base", mbrola.getAbsolutePath().toString());
-              //voice = VoiceManager.getInstance().getVoice(configuration.getProperty("mbrola-voice"));
+            //System.setProperty("mbrola.base", mbrola.getAbsolutePath().toString());
+            //voice = VoiceManager.getInstance().getVoice(configuration.getProperty("mbrola-voice"));
             //} else {
             //use default basic voices
-            // System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-            // voice = VoiceManager.getInstance().getVoice(Utilities.getProperty("voice16kName", "kevin16"));
+            System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
+            voice = VoiceManager.getInstance().getVoice(Utilities.getProperty("voice16kName", "kevin16"));
             voice = VoiceManager.getInstance().getVoice("kevin16");
             //}
-            // VoiceManager voiceManager = VoiceManager.getInstance();
-            // Voice[] voices = voiceManager.getVoices();
-            // if (voices.length <= 0) {
-            //     LOG.severe("Cannot use text to speech, no voice found");
-            //     setDescription("Cannot use text to speech, no voice found");
-            //     stop();
-            // } else {
-            voice.allocate();
-            //}
+            VoiceManager voiceManager = VoiceManager.getInstance();
+            Voice[] voices = voiceManager.getVoices();
+            if (voices.length <= 0) {
+                LOG.severe("Cannot use text to speech, no voice found");
+                setDescription("Cannot use text to speech, no voice found");
+                stop();
+            } else {
+                voice.allocate();
+            }
         } catch (Exception e) {
             LOG.severe(Freedomotic.getStackTraceInfo(e));
         }
