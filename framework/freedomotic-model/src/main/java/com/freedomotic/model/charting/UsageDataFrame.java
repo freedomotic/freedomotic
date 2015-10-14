@@ -1,5 +1,3 @@
-package com.freedomotic.model.charting;
-
 /**
  *
  * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
@@ -19,6 +17,8 @@ package com.freedomotic.model.charting;
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+package com.freedomotic.model.charting;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
