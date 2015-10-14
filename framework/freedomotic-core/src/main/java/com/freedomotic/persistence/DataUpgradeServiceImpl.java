@@ -1,8 +1,6 @@
-package com.freedomotic.persistence;
-
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -19,6 +17,8 @@ package com.freedomotic.persistence;
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+package com.freedomotic.persistence;
+
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.object.EnvObject;
