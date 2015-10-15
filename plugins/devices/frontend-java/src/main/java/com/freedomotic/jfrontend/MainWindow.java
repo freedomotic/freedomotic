@@ -39,6 +39,7 @@ import com.freedomotic.i18n.ComboLanguage;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.settings.Info;
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -49,6 +50,9 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -172,7 +176,7 @@ public class MainWindow
                 }
             }
 
-            return false;
+            return false; 
         }
     }
 
@@ -528,6 +532,7 @@ public class MainWindow
         jMenuItem3 = new javax.swing.JMenuItem();
         mnuHelp = new javax.swing.JMenu();
         mnuTutorial = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         submnuHelp = new javax.swing.JMenuItem();
 
         jTextField1.setText("jTextField1");
@@ -845,6 +850,15 @@ public class MainWindow
             }
         });
         mnuHelp.add(mnuTutorial);
+
+        jMenuItem1.setText(master.getApi().getI18n().msg("report_issue")
+        );
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        mnuHelp.add(jMenuItem1);
 
         submnuHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         submnuHelp.setText(i18n.msg("about"));
@@ -1359,6 +1373,26 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
     }//GEN-LAST:event_formWindowClosed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        String url = "https://goo.gl/CC65By";
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+                try {
+                    URI uri = new URI(url); // url is a string containing the URL
+                    desktop.browse(uri);
+                } catch (IOException | URISyntaxException ex) {
+                    LOG.severe(ex.getLocalizedMessage());
+                }
+            }
+        }  
+        else {
+            //open popup with link
+            JOptionPane.showMessageDialog(this,i18n.msg("goto") + url);            
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     private void updateStrings() {
         mnuOpenNew.setText(i18n.msg("file"));
         mnuNewEnvironment.setText(i18n.msg("new") + i18n.msg("environment"));
@@ -1408,6 +1442,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JSeparator jSeparator1;
