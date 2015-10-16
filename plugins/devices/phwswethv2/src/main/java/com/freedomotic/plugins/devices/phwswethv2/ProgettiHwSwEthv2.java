@@ -157,7 +157,6 @@ public class ProgettiHwSwEthv2 extends Protocol {
      */
     @Override
     public void onStart() {
-        super.onStart();
         POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
         BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
@@ -166,7 +165,6 @@ public class ProgettiHwSwEthv2 extends Protocol {
 
     @Override
     public void onStop() {
-        super.onStop();
         //release resources
         boards.clear();
         boards = null;
