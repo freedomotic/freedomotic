@@ -6,12 +6,6 @@
         <payload>
             <statement>
                 <logical>AND</logical>
-                <attribute>protocol</attribute>
-                <operand>EQUALS</operand>
-                <value>hwgste</value>
-            </statement>
-            <statement>
-                <logical>AND</logical>
                 <attribute>@event.sensor.unit</attribute>
                 <operand>EQUALS</operand>
                 <value>K</value>
