@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.freedomotic.plugins.devices.twilight.providersit.mazzoni.twilight.providers;
+package com.freedomotic.plugins.devices.twilight.providers;
 
 import com.freedomotic.plugins.devices.twilight.WeatherInfo;
 import java.io.IOException;
@@ -22,14 +22,14 @@ import org.xml.sax.SAXException;
  *
  * @author matteo
  */
-public class EarthToolsWI implements WeatherInfo{
+public class OpenWeatherMapWI implements WeatherInfo{
 
-    private String latitude;
-    private String longitude;
+    private final String latitude;
+    private final String longitude;
     private DateTime nextSunrise;
     private DateTime nextSunset;
      
-    public EarthToolsWI(String latitude, String longitude){
+    public OpenWeatherMapWI(String latitude, String longitude){
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -53,17 +53,15 @@ public class EarthToolsWI implements WeatherInfo{
         } catch (ParserConfigurationException ex) {
             LOG.severe(ex.getLocalizedMessage());
         }
-        Document doc = null;
-        String statusFileURL = null;
-        
-            statusFileURL = "http://www.earthtools.org/sun/" + latitude + "/" + longitude + "/" + dom + "/" + moy + "/" + zone + "/" + dst;
+        Document doc ;
+        String statusFileURL = "http://api.openweathermap.org/data/2.5/weather?APPID=45ff563b52c93b074d3d23e46f6fa6a3&lat=" + latitude + "&lon=" + longitude+ "&mode=xml&type=accurate&units=metric" ;
             LOG.log(Level.INFO, "Getting twilight data from: {0}", statusFileURL);
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
 
         return doc;
     }
-     private static final Logger LOG = Logger.getLogger(EarthToolsWI.class.getCanonicalName());
+     private static final Logger LOG = Logger.getLogger(OpenWeatherMapWI.class.getCanonicalName());
 
     @Override
     public boolean updateData() throws Exception {
@@ -74,15 +72,12 @@ public class EarthToolsWI implements WeatherInfo{
         Document doc = getXMLStatusFile(dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst);
         //parse xml 
         if (doc != null) {
-            Node sunriseNode = doc.getElementsByTagName("sunrise").item(0);
-            Node sunsetNode = doc.getElementsByTagName("sunset").item(0);
+            Node sunriseNode = doc.getElementsByTagName("sun").item(0).getAttributes().getNamedItem("rise");
+            Node sunsetNode = doc.getElementsByTagName("sun").item(0).getAttributes().getNamedItem("set");
             // compara con l'ora attuale
-            String srTime[] = sunriseNode.getFirstChild().getNodeValue().split(":");
-            String ssTime[] = sunsetNode.getFirstChild().getNodeValue().split(":");
-            nextSunrise = new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
-                    Integer.parseInt(srTime[0]), Integer.parseInt(srTime[1]), Integer.parseInt(srTime[2]));
-            nextSunset = new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
-                    Integer.parseInt(ssTime[0]), Integer.parseInt(ssTime[1]), Integer.parseInt(ssTime[2]));
+            
+            nextSunrise = new DateTime(sunriseNode.getNodeValue()).plusHours(offset);
+            nextSunset = new DateTime(sunsetNode.getNodeValue()).plusHours(offset);
             LOG.log(Level.INFO, "Sunrise at: {0} Sunset at: {1}", new Object[]{nextSunrise, nextSunset});
  
             return true;
@@ -90,8 +85,7 @@ public class EarthToolsWI implements WeatherInfo{
             return false;
         }
     }
-
-    @Override
+        @Override
     public void setNextSunset(DateTime sunset) {
         nextSunset = sunset;
     }
@@ -100,5 +94,4 @@ public class EarthToolsWI implements WeatherInfo{
     public void setNextSunrise(DateTime sunrise) {
         nextSunrise=sunrise;
     }
-    
 }

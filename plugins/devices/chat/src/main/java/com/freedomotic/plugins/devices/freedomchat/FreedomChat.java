@@ -23,18 +23,16 @@ import com.skype.Skype;
 import com.skype.SkypeException;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.core.NaturalLanguageProcessor;
+import com.freedomotic.app.Freedomotic;
+
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.Reaction;
-import com.freedomotic.reactions.ReactionPersistence;
-import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,6 +50,9 @@ import org.jivesoftware.smack.packet.Presence;
 
 public class FreedomChat extends Protocol {
 
+    public static String ACCEPTED = "Just wait and see.";
+    public static String NOT_ACCEPTED = "";
+    
     final int POLLING_WAIT;
     private String hostname;
     private int port;
@@ -64,13 +65,13 @@ public class FreedomChat extends Protocol {
     private boolean manualHostname;
     XMPPConnection conn;
     private ChatMessageAdapter chatListener;
-    public static String IF = "if";
-    public static String THEN = "then";
-    public static String WHEN = "when";
-    public static String HELP = "help";
-    public static String LIST = "list";
-    public static String ACCEPTED = "Just wait and see.";
-    public static String NOT_ACCEPTED = "";
+
+
+    
+    private final MessageService msg;
+    
+    @Inject
+    Injector injector;
 
     public FreedomChat() {
         //every plugin needs a name and a manifest XML file
@@ -81,6 +82,7 @@ public class FreedomChat extends Protocol {
         //POLLING_WAIT is the value of the property "time-between-reads" or 2000 millisecs,
         //default value if the property does not exist in the manifest
         setPollingWait(POLLING_WAIT); //millisecs interval between hardware device status reads
+        msg = injector.getInstance(MessageService.class);        
     }
 
     @Override
@@ -145,64 +147,7 @@ public class FreedomChat extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private String manageMessage(String mess) {
-        Command c;
-        Trigger t = null;
-        Reaction r;
-        NaturalLanguageProcessor nlp2 = new NaturalLanguageProcessor();
-        //  String sentenceMess[] = nlp.getSentenceDetector().sentDetect(mess);
-        String tokenMess[] = mess.split(" "); //nlp.getTokenizer().tokenize(sentenceMess[0]);
-        String triggername = "";
-        int conditionSep = 0;
-        if (tokenMess[0].equalsIgnoreCase(HELP)) {
-            return help(tokenMess);
-        }
-        if (tokenMess[0].equalsIgnoreCase(LIST)) {
-            return list(tokenMess);
-        }
-
-        if (tokenMess[0].equalsIgnoreCase(IF) || tokenMess[0].equalsIgnoreCase(WHEN)) {
-            for (int i = 1; i < tokenMess.length; i++) {
-                if (tokenMess[i].equalsIgnoreCase(THEN)) {
-                    triggername = unsplit(tokenMess, 1, i - 1, " ");
-                    conditionSep = i + 1;
-                    break;
-                }
-            }
-            t = TriggerPersistence.getTrigger(triggername);
-        }
-
-        String commandName = unsplit(tokenMess, conditionSep, tokenMess.length - conditionSep, " ");
-        List<NaturalLanguageProcessor.Rank> mostSimilar = nlp2.getMostSimilarCommand(commandName, 10);
-        // user is asking for help
-        if (commandName.contains("*")) {
-            String response = "";
-            for (NaturalLanguageProcessor.Rank nlpr : mostSimilar) {
-                response += "? " + nlpr.getCommand().getName() + "\n";
-            }
-            return response;
-        }
-        if (!mostSimilar.isEmpty() && mostSimilar.get(0).getSimilarity() > 0) {
-            c = mostSimilar.get(0).getCommand();
-        } else {
-            return "No available commands similar to: " + commandName;
-        }
-        if (tokenMess[0].equalsIgnoreCase(IF)) {
-            Trigger NEWt = t.clone();
-            NEWt.setNumberOfExecutions(1);
-            r = new Reaction(NEWt, c);
-            ReactionPersistence.add(r);
-        } else if (tokenMess[0].equalsIgnoreCase(WHEN)) {
-            // do something
-            r = new Reaction(t, c);
-            ReactionPersistence.add(r);
-        } else {
-            send(c);
-            return c.getName() + "\n DONE.";
-        }
-        return "DONE";
-    }
-
+   
     public static String unsplit(String[] parts, int index, int length, String splitter) {
         if (parts == null) {
             return null;
@@ -232,16 +177,6 @@ public class FreedomChat extends Protocol {
     }
     private static final Logger LOG = Logger.getLogger(FreedomChat.class.getName());
 
-    private String help(String[] tokenMess) {
-        return "Freedomotic CHAT help:\n"
-                + "- enter a command name to be executed\n"
-                + "- enter a command with '*' in it to get a list of suggestions\n"
-                + "- enter 'LIST [commands|objects|triggers]' to retrieve related list";
-    }
-
-    private String list(String[] tokenMess) {
-        return "Not yet implemented";
-    }
 
     private boolean initXMPP() {
         manualHostname = configuration.getBooleanProperty("manual-hostname", false);
@@ -298,7 +233,7 @@ public class FreedomChat extends Protocol {
                                     if (conn.getRoster().getEntry(uname[0]) != null) {
                                         // Send back the same text the other user sent us.
                                         //chat.sendMessage(message.getBody());
-                                        chat.sendMessage(manageMessage(message.getBody()));
+                                        chat.sendMessage(msg.manageMessage(message.getBody()));
 
                                     } else {
                                         // expect a password in order to add user to friends' list
@@ -341,7 +276,7 @@ public class FreedomChat extends Protocol {
                     try {
                         if (received.getSender().isAuthorized()) {
                             if (received.getType().equals(ChatMessage.Type.SAID)) {
-                                received.getSender().send(manageMessage(received.getContent()));
+                                received.getSender().send(msg.manageMessage(received.getContent()));
                             }
                         } else {
                             received.getSender().send(manageSubscription(received));

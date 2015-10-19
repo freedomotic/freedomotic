@@ -10,7 +10,7 @@
     <artifactId>chat</artifactId>
     <packaging>jar</packaging>
     <name>Chat plugin for Freedomotic</name>
-    <version>3.1</version>
+    <version>4.0</version>
     <repositories>
         <repository>
             <id>opencast-public</id>
@@ -49,7 +49,7 @@
         <freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${project.version}.${freedomotic.package.type}</freedomotic.marketplace.file>
         <freedomotic.marketplace.username></freedomotic.marketplace.username>
         <freedomotic.marketplace.password></freedomotic.marketplace.password>
-        <smack.version>4.0.0</smack.version>
+        <smack.version>4.0.7</smack.version>
     </properties>
     <dependencies>
         <dependency>

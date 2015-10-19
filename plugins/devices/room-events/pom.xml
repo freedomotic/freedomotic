@@ -10,7 +10,7 @@
     <artifactId>room-events</artifactId>
     <packaging>jar</packaging>
     <name>Room-events plugin for Freedomotic</name>
-    <version>3.0</version>
+    <version>4.0</version>
 <developers>
         <developer>
             <id>matteo</id>

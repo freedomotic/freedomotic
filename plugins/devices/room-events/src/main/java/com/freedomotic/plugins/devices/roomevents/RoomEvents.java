@@ -27,10 +27,10 @@ import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandPersistence;
-import com.freedomotic.reactions.Payload;
+import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.reactions.Trigger;
-import com.freedomotic.reactions.TriggerPersistence;
+import com.freedomotic.reactions.TriggerRepository;
+import com.freedomotic.rules.Payload;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 public class RoomEvents extends Protocol {
 
     final int POLLING_WAIT;
-    CommandPersistence cp;
+    CommandRepository cp;
 
     public RoomEvents() {
         //every plugin needs a name and a manifest XML file
@@ -89,7 +89,7 @@ public class RoomEvents extends Protocol {
         // do here what you have now in onCommand and send your room status event
         // search related room
 
-        EnvObjectLogic object = getApi().objects().get(event.getProperty("object.uuid"));
+        EnvObjectLogic object = getApi().things().findOne(event.getProperty("object.uuid"));
 
         boolean found = false;
         for (Room z : object.getEnvironment().getRooms()) {
@@ -138,7 +138,7 @@ public class RoomEvents extends Protocol {
             String triggerName = "Room " + roomName + " has " + amount + " lights On";
             Trigger t;
 
-            if (getApi().triggers().getByName(triggerName).isEmpty()) {
+            if (getApi().triggers().findByName(triggerName).isEmpty()) {
                 t = new Trigger();
                 t.setName(triggerName);
                 t.setChannel(event);
@@ -146,19 +146,19 @@ public class RoomEvents extends Protocol {
                 p.addStatement("hasLightsOn", amount);
                 p.addStatement("roomName", roomName);
                 t.setPayload(p);
-
-                TriggerPersistence.addAndRegister(t);
+                
+                getApi().triggers().create(t);
             }
         }
     }
 
     private void addRoomCommands() {
         String cmdName;
-        for (EnvironmentLogic env : getApi().environments().list()) {
+        for (EnvironmentLogic env : getApi().environments().findAll()) {
             for (Zone z : env.getPojo().getZones()) {
                 if (z.isRoom()) {
                     cmdName = "Turn off devices inside room " + z.getName();
-                    for (Command c : cp.getByName(cmdName)) {
+                    for (Command c : cp.findByName(cmdName)) {
                         cp.delete(c);
                     }
                     Command c = new Command();
@@ -183,9 +183,9 @@ public class RoomEvents extends Protocol {
 
     private void addEnvCommands() {
         String cmdName;
-        for (EnvironmentLogic env : getApi().environments().list()) {
+        for (EnvironmentLogic env : getApi().environments().findAll()) {
             cmdName = "Turn off devices inside area " + env.getPojo().getName();
-            for (Command c : cp.getByName(cmdName)) {
+            for (Command c : cp.findByName(cmdName)) {
                 if (c != null) {
                     cp.delete(c);
                 }

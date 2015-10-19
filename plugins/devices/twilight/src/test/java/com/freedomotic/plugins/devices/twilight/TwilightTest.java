@@ -4,8 +4,8 @@
  */
 package com.freedomotic.plugins.devices.twilight;
 import com.freedomotic.events.GenericEvent;
-import com.freedomotic.plugins.devices.twilight.providersit.mazzoni.twilight.providers.EarthToolsWI;
-import com.freedomotic.plugins.devices.twilight.providersit.mazzoni.twilight.providers.OpenWeatherMapWI;
+import com.freedomotic.plugins.devices.twilight.providers.EarthToolsWI;
+import com.freedomotic.plugins.devices.twilight.providers.OpenWeatherMapWI;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.BeforeClass;
