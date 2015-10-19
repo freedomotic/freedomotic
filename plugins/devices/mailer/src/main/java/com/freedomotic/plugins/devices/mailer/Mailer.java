@@ -46,7 +46,7 @@ public final class Mailer extends Protocol {
     private int sentMails;
 
     public Mailer() {
-        super("Mailer", "/mailer/mailer.xml");
+        super("Mailer", "/mailer/mailer-manifest.xml");
         addEventListener("app.event.sensor.messages.mail");
     }
 
