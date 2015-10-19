@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugin.purl;
+package com.freedomotic.plugins.devices.purl;
 
 
 import com.freedomotic.api.EventTemplate;
@@ -68,7 +68,7 @@ public class Purl extends Protocol {
             url = URLDecoder.decode(configuration.getStringProperty("url", ""), "UTF-8");
             pageContent = readPage(new URL(url));
         } catch (Exception ex) {
-            Logger.getLogger(Purl.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.severe(ex.getLocalizedMessage());
         }
 
         if (!pageContent.isEmpty()) {
