@@ -63,7 +63,7 @@ public class Ipx800 extends Protocol {
     private String GET_STATUS_URL = configuration.getStringProperty("get-status-url", "status.xml");
     private String CHANGE_STATE_RELAY_URL = configuration.getStringProperty("change-state-relay-url", "leds.cgi?led=");
     private String SEND_PULSE_RELAY_URL = configuration.getStringProperty("send-pulse-relay-url", "rlyfs.cgi?rlyf=");
-   
+
     /**
      * Initializations
      */
@@ -149,7 +149,6 @@ public class Ipx800 extends Protocol {
      */
     @Override
     public void onStart() {
-        super.onStart();
         POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
         BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
@@ -158,7 +157,6 @@ public class Ipx800 extends Protocol {
 
     @Override
     public void onStop() {
-        super.onStop();
         //release resources
         boards.clear();
         boards = null;
@@ -269,7 +267,7 @@ public class Ipx800 extends Protocol {
         //building the event
         ProtocolRead event = new ProtocolRead(this, "ipx800", address); //IP:PORT:RELAYLINE
         // relay lines - status=0 -> off; status=1 -> on
-        
+
         if (tag.equalsIgnoreCase("led")) {
             event.addProperty("inputValue", "0");
             if (status.equals("0")) {
