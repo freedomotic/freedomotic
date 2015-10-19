@@ -6,12 +6,6 @@
         <payload>
             <statement>
                 <logical>AND</logical>
-                <attribute>protocol</attribute>
-                <operand>EQUALS</operand>
-                <value>ipx800</value>
-            </statement>
-            <statement>
-                <logical>AND</logical>
                 <attribute>address</attribute>
                 <operand>REGEX</operand>
                 <value>^(.*):(analog|an)$</value>
