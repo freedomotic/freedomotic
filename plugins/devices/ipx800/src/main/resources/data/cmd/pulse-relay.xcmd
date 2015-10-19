@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Pulse the relay on Ipx800 board</name>
     <receiver>app.actuators.protocol.ipx800.in</receiver>
     <description>toggles for 1 second</description>
@@ -11,4 +11,4 @@
             <property name="address" value="@owner.object.address"/>
 	</properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>

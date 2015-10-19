@@ -23,7 +23,6 @@
 
 package com.freedomotic.plugins.devices.hwgste;
 
-import com.freedomotic.app.Freedomotic;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
@@ -35,7 +34,7 @@ import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 public class MYSNMP {
 
-    public String SNMP_GET(String ipAddress, int port, String strOID, String community) {
+    public String SNMP_GET(HwgSte pluginRef, String ipAddress, int port, String strOID, String community) {
         String strResponse = "";
         ResponseEvent response;
         Snmp snmp;
@@ -69,7 +68,7 @@ public class MYSNMP {
                     }
                 }
             } else {
-               Freedomotic.logger.severe("TimeOut occured");
+                pluginRef.getLogger().severe("TimeOut occured");
             }
             snmp.close();
         } catch (Exception e) {
