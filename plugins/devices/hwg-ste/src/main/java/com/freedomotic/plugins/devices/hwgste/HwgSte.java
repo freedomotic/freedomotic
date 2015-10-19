@@ -121,7 +121,6 @@ public class HwgSte extends Protocol {
      */
     @Override
     public void onStart() {
-        super.onStart();
         POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
         BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
@@ -130,7 +129,6 @@ public class HwgSte extends Protocol {
 
     @Override
     public void onStop() {
-        super.onStop();
         //release resources
         boards.clear();
         boards = null;
@@ -155,17 +153,17 @@ public class HwgSte extends Protocol {
     public void SNMPRequest(Board board) {
         final MYSNMP snmpRequest = new MYSNMP();
         for (int i = 1; i <= board.getSensorsNumber(); i++) {
-            String sensorName = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_NAME_REQUEST + "." + i, SNMP_COMMUNITY);
+            String sensorName = snmpRequest.SNMP_GET(this, board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_NAME_REQUEST + "." + i, SNMP_COMMUNITY);
             System.out.println("Name =" + sensorName);
-            String sensorSN = snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_SN_REQUEST + "." + i, SNMP_COMMUNITY);
+            String sensorSN = snmpRequest.SNMP_GET(this, board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_SN_REQUEST + "." + i, SNMP_COMMUNITY);
             System.out.println("SN =" + sensorSN);
-            Integer sensorID = Integer.parseInt(snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_ID_REQUEST + "." + i, SNMP_COMMUNITY));
+            Integer sensorID = Integer.parseInt(snmpRequest.SNMP_GET(this, board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_ID_REQUEST + "." + i, SNMP_COMMUNITY));
             System.out.println("ID =" + sensorID);
-            Integer sensorState = Integer.parseInt(snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_STATE_REQUEST + "." + i, SNMP_COMMUNITY));
+            Integer sensorState = Integer.parseInt(snmpRequest.SNMP_GET(this, board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_STATE_REQUEST + "." + i, SNMP_COMMUNITY));
             System.out.println("State =" + sensorState);
-            Integer sensorValue = Integer.parseInt(snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_VALUE_REQUEST + "." + i, SNMP_COMMUNITY));
+            Integer sensorValue = Integer.parseInt(snmpRequest.SNMP_GET(this, board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_VALUE_REQUEST + "." + i, SNMP_COMMUNITY));
             System.out.println("Value =" + sensorValue);
-            Integer sensorUnit = Integer.parseInt(snmpRequest.SNMP_GET(board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_UNIT_REQUEST + "." + i, SNMP_COMMUNITY));
+            Integer sensorUnit = Integer.parseInt(snmpRequest.SNMP_GET(this, board.getIpAddress(), SNMP_PORT, "." + SNMP_OID + "." + SENSOR_UNIT_REQUEST + "." + i, SNMP_COMMUNITY));
             System.out.println("Unit =" + sensorUnit);
             String state = null;
             switch (sensorState) {
@@ -190,15 +188,15 @@ public class HwgSte extends Protocol {
                     break;
                 case 1:
                     unit = "C";
-                    objectClass = "Thermostat";
+                    objectClass = "Thermometer";
                     break;
                 case 2:
                     unit = "F";
-                    objectClass = "Thermostat";
+                    objectClass = "Thermometer";
                     break;
                 case 3:
                     unit = "K";
-                    objectClass = "Thermostat";
+                    objectClass = "Thermometer";
                     break;
                 case 4:
                     unit = "%";
@@ -238,5 +236,9 @@ public class HwgSte extends Protocol {
     @Override
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    public Logger getLogger() {
+        return LOG;
     }
 }
