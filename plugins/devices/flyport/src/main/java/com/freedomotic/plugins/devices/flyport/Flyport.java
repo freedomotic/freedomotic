@@ -17,7 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.plugins.devices.flyport;
 
 import com.freedomotic.api.EventTemplate;
@@ -132,7 +131,6 @@ public class Flyport extends Protocol {
      */
     @Override
     public void onStart() {
-        super.onStart();
         POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
         BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
@@ -141,7 +139,6 @@ public class Flyport extends Protocol {
 
     @Override
     public void onStop() {
-        super.onStop();
         //release resources
         boards.clear();
         boards = null;
@@ -157,7 +154,7 @@ public class Flyport extends Protocol {
             try {
                 Thread.sleep(POLLING_TIME);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Flyport.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.severe(ex.getLocalizedMessage());
             }
         }
     }
@@ -169,7 +166,7 @@ public class Flyport extends Protocol {
         try {
             dBuilder = dbFactory.newDocumentBuilder();
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(Flyport.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.severe(ex.getLocalizedMessage());
         }
         Document doc = null;
         String statusFileURL = null;
