@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.freedomotic</groupId>
-        <artifactId>freedomotic</artifactId>
+        <artifactId>freedomotic-plugins</artifactId>
         <version>5.6-SNAPSHOT</version>
-        <relativePath>../../../</relativePath>
-    </parent>    
+        <relativePath>../../</relativePath>
+    </parent>   
     <artifactId>openpicus-grove-system</artifactId>
     <packaging>jar</packaging>
     <name>Openpicus Grove System plugin for Freedomotic</name>
@@ -59,7 +59,6 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>

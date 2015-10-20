@@ -6,13 +6,7 @@
         <payload>
             <statement>
                 <logical>AND</logical>
-                <attribute>protocol</attribute>
-                <operand>EQUALS</operand>
-                <value>openpicus-grove-system</value>
-            </statement>
-            <statement>
-                <logical>AND</logical>
-                <attribute>@event.sensor.type</attribute>
+                <attribute>@event.openpicus-grove-system.sensor.type</attribute>
                 <operand>EQUALS</operand>
                 <value>temperature</value>
             </statement>
@@ -20,7 +14,7 @@
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>= behaviorValue=Math.round(@event.sensor.value*10)</value>
+                <value>= behaviorValue=Math.round(@event.openpicus-grove-system.sensor.value*10)</value>
             </statement>
         </payload>
     </payload>
