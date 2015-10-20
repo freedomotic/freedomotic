@@ -25,7 +25,6 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.EnvObjectPersistence;
 import com.freedomotic.reactions.Command;
 import java.io.*;
 import java.net.*;
@@ -117,7 +116,6 @@ public class ZWay extends Protocol {
      */
     @Override
     public void onStart() {
-        super.onStart();
         POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
         BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
@@ -126,7 +124,6 @@ public class ZWay extends Protocol {
 
     @Override
     public void onStop() {
-        super.onStop();
         //release resources
         devices.clear();
         devices = null;
@@ -145,22 +142,22 @@ public class ZWay extends Protocol {
                     Board board = devices.get(key);
                     try {
                         // retrieve a list of configured objects with "zway" protocol
-                        ArrayList<EnvObjectLogic> objectsList = EnvObjectPersistence.getObjectByProtocol("zway");
+                        List<EnvObjectLogic> objectsList = getApi().things().findByProtocol("zway");
                         if (objectsList.size() > 0) {
                             for (Iterator it = objectsList.iterator(); it.hasNext();) {
                                 EnvObjectLogic object = (EnvObjectLogic) it.next();
                                 // read status for each object 
                                 readStatus(board, object);
-                                System.out.println("Object address:" + object.getPojo().getPhisicalAddress() + " type:" + object.getPojo().getType());
+                                LOG.info("Object address:" + object.getPojo().getPhisicalAddress() + " type:" + object.getPojo().getType());
                             }
                         }
                     } catch (MalformedURLException ex) {
-                        Logger.getLogger(ZWay.class.getName()).log(Level.SEVERE, null, ex);
+                        LOG.severe(ex.getLocalizedMessage());
                     } catch (IOException ex) {
-                        Logger.getLogger(ZWay.class.getName()).log(Level.SEVERE, null, ex);
+                        LOG.severe(ex.getLocalizedMessage());
                     }
                 } catch (UnableToExecuteException ex) {
-                    Logger.getLogger(ZWay.class.getName()).log(Level.SEVERE, null, ex);
+                    LOG.severe(ex.getLocalizedMessage());
                 }
             }
         }
@@ -168,7 +165,7 @@ public class ZWay extends Protocol {
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
-            Logger.getLogger(ZWay.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.severe(ex.getLocalizedMessage());
         }
     }
 
@@ -222,7 +219,7 @@ public class ZWay extends Protocol {
         String deviceInstance = addressComponents[2];
         String objectType = addressComponents[3];
         String type[] = objectType.split(".");
-        
+
         // sends an update status request .Get() method
         String path = "http://" + board.getIpAddress() + ":" + board.getPort() + "/" + SEND_COMMAND_URL + "/devices[" + deviceAddress + "].instances[" + deviceInstance + "]."
                 + configuration.getProperty(objectType) + ".Get()";
