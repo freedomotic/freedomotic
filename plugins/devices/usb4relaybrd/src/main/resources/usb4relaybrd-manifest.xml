@@ -1,0 +1,20 @@
+<config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
+    <properties>
+        <property name="description" value="A plugin for Usb4RelayBrd"/>
+        <property name="category"  value="protocol"/>
+        <property name="protocol.name" value="usb4relaybrd"/>
+        <property name="short-name" value="usb4relaybrd"/>
+        <property name="time-between-reads" value="1000"/>
+    </properties>
+    <tuples>
+        <tuple>
+            <property name="object.class" value="Light"/>
+            <property name="powered" value="Usb4RelayBrd reads relay state"/>
+            <property name="turn on" value="Turn on a relay on Usb4Relay device"/>
+            <property name="turn off" value="Turn off a relay on Usb4Relay device"/>
+        </tuple>
+    </tuples>
+</config>
+
+                

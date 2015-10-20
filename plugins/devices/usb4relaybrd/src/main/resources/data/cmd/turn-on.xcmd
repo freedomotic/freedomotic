@@ -1,0 +1,14 @@
+<command>
+    <name>Turn on a relay on Usb4Relay device</name>
+    <receiver>app.actuators.protocol.usb4relaybrd.in</receiver>
+    <description>turn on the relay linked to this Usb4Relay device</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="control" value="ON"/>
+            <property name="address" value="@owner.object.address"/>
+        </properties>
+    </properties>
+</command>
