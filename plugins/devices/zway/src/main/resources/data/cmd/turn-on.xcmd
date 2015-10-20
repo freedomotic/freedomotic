@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Turn on a Zway controlled device</name>
     <receiver>app.actuators.protocol.zway.in</receiver>
     <description>turns on the object controlled by this Zway gateway</description>
@@ -13,4 +13,4 @@
             <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>

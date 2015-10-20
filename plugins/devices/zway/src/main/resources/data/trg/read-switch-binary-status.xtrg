@@ -6,12 +6,6 @@
         <payload>
             <statement>
                 <logical>AND</logical>
-                <attribute>protocol</attribute>
-                <operand>EQUALS</operand>
-                <value>zway</value>
-            </statement>
-            <statement>
-                <logical>AND</logical>
                 <attribute>@event.object.type</attribute>
                 <operand>EQUALS</operand>
                 <value>switch-binary</value>

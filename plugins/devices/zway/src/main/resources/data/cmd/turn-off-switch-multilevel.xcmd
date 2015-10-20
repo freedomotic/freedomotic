@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Turn off a Zway switch multilevel</name>
     <receiver>app.actuators.protocol.zway.in</receiver>
     <description>Turn off a Zway switch multilevel</description>
@@ -11,4 +11,4 @@
             <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>
