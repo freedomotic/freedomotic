@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Switch Zwave device</name>
     <receiver>app.actuators.protocol.zwave.in</receiver>
     <description>Switch Zwave device</description>
@@ -13,4 +13,4 @@
             <property name="zwave.class" value="37"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>

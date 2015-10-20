@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Zwave accept node inclusion for a while</name>
     <receiver>app.actuators.protocol.zwave.in</receiver>
     <description>Accept node inclusion</description>
@@ -11,4 +11,4 @@
             <property name="timeout" value="30000"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>
