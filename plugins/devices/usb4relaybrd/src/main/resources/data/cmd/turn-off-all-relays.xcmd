@@ -1,0 +1,14 @@
+<command>
+    <name>Turn off all relays on Usb4Relay device</name>
+    <receiver>app.actuators.protocol.usb4relaybrd.in</receiver>
+    <description>turn off all relays linked to this Usb4Relay device</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="control" value="ALLOFF"/>
+            <property name="address" value="@owner.object.address"/>
+        </properties>
+    </properties>
+</command>
