@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Set zwave temperature setpoint</name>
     <receiver>app.actuators.protocol.zwave.in</receiver>
     <description>Set temperature setpoint on a temperature device</description>
@@ -12,4 +12,4 @@
             <property name="zwave.valueType" value="DECIMAL"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>

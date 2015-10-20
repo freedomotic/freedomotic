@@ -6,12 +6,6 @@
         <payload>
             <statement>
                 <logical>AND</logical>
-                <attribute>protocol</attribute>
-                <operand>EQUALS</operand>
-                <value>zwave</value>
-            </statement>
-            <statement>
-                <logical>AND</logical>
                 <attribute>@event.value.label</attribute>
                 <operand>EQUALS</operand>
                 <value>Luminance</value>
