@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Turn on a relay on DAEnetIP2 device</name>
     <receiver>app.actuators.protocol.daenetip2.in</receiver>
     <description>turn on the relay linked to this DAEnetIP2 device</description>
@@ -11,4 +11,4 @@
             <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>

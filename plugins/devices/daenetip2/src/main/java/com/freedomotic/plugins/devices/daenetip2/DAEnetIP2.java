@@ -1,27 +1,23 @@
 /**
  *
- * Copyright (c) 2009-2015 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.plugins.devices.daenetip2;
-
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
@@ -33,23 +29,15 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-//import java.io.InputStreamReader;
 import java.math.BigInteger;
-//import java.net.ConnectException;
 import java.net.Socket;
-//import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//import javax.xml.parsers.DocumentBuilderFactory;
-//import javax.xml.parsers.DocumentBuilder;
-//import javax.xml.parsers.ParserConfigurationException;
-//import org.w3c.dom.*;
-//import org.xml.sax.SAXException;
 
 public class DAEnetIP2 extends Protocol {
 
-    //private static ArrayList<Board> boards = null;
+    private static final Logger LOG = Logger.getLogger(DAEnetIP2.class.getName());
     private static int BOARD_NUMBER = 1;
     Map<String, Board> devices = new HashMap<String, Board>();
     private static int POLLING_TIME = 1000;
@@ -92,7 +80,6 @@ public class DAEnetIP2 extends Protocol {
             ipAddress = configuration.getTuples().getStringProperty(i, "ip-address", "172.16.100.2");
             snmpPort = configuration.getTuples().getIntProperty(i, "snmp-port", 161);
             Board board = new Board(alias, ipAddress, snmpPort, readOnlyCommunity, readWriteCommunity);
-            //   boards.add(board);
             devices.put(alias, board);
             setDescription(getDescription() + " " + ipAddress + ":" + snmpPort + ";");
         }
@@ -103,7 +90,7 @@ public class DAEnetIP2 extends Protocol {
      */
     private boolean connect(String address, int port) {
 
-        Freedomotic.logger.info("Trying to connect to a DAEnetIP2 device on address " + address + ':' + port);
+        LOG.info("Trying to connect to a DAEnetIP2 device on address " + address + ':' + port);
         try {
             //TimedSocket is a non-blocking socket with timeout on exception
             socket = TimedSocket.getSocket(address, port, SOCKET_TIMEOUT);
@@ -112,7 +99,7 @@ public class DAEnetIP2 extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            Freedomotic.logger.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.severe("Unable to connect to host " + address + " on port " + port);
             return false;
         }
     }
@@ -133,7 +120,6 @@ public class DAEnetIP2 extends Protocol {
      */
     @Override
     public void onStart() {
-        super.onStart();
         POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
         BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
@@ -142,7 +128,6 @@ public class DAEnetIP2 extends Protocol {
 
     @Override
     public void onStop() {
-        super.onStop();
         //release resources
         devices.clear();
         devices = null;
@@ -159,19 +144,15 @@ public class DAEnetIP2 extends Protocol {
         while (keyIter.hasNext()) {
             String alias = (String) keyIter.next();
             Board board = (Board) devices.get(alias);
-            //System.out.println("Request for " + board.getAlias());
             SNMPRequest(board);
             readP6Port(board);
         }
 
-
-        //evaluateDiffs(getXMLStatusFile(board), board); //parses the xml and crosscheck the data with the previous read
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
-            Logger.getLogger(DAEnetIP2.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.severe(ex.getLocalizedMessage());
         }
-        // }
     }
 
     public void SNMPRequest(Board board) {
@@ -272,7 +253,7 @@ public class DAEnetIP2 extends Protocol {
         } else {
             status = "0";
         }
-        System.out.println("IP " + board.getIpAddress() + " OID " + SNMP_OID + "." + OID_REQUEST + " Status " + status + " pass " + board.getReadWriteCommunity());
+        LOG.info("IP " + board.getIpAddress() + " OID " + SNMP_OID + "." + OID_REQUEST + " Status " + status + " pass " + board.getReadWriteCommunity());
         snmpRequest.SNMP_SET(board.getIpAddress(), board.getSnmpPort(), SNMP_OID + "." + OID_REQUEST, status, board.getReadWriteCommunity());
     }
 

@@ -66,7 +66,7 @@ public class MYSNMP {
                     }
                 }
             } else {
-                Freedomotic.logger.severe("TimeOut occured");
+                //Freedomotic.logger.severe("TimeOut occured");
             }
             snmp.close();
         } catch (Exception e) {
