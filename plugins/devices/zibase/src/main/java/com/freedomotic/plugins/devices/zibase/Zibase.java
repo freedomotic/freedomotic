@@ -1,25 +1,22 @@
 /**
  *
- * Copyright (c) 2009-2015 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.plugins.devices.zibase;
 
 import com.freedomotic.api.EventTemplate;
@@ -28,7 +25,6 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.EnvObjectPersistence;
 import com.freedomotic.reactions.Command;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -52,6 +48,7 @@ import org.xml.sax.SAXException;
  */
 public class Zibase extends Protocol {
 
+    private static final Logger LOG = Logger.getLogger(Zibase.class.getName());
     Map<String, Board> devices = new HashMap<String, Board>();
     private static Map<String, String> X10Map;
     private static Map<String, String> ZwaveMap;
@@ -98,7 +95,7 @@ public class Zibase extends Protocol {
      */
     private boolean connect(String address, int port) {
 
-        Freedomotic.logger.info("Trying to connect to Zibase board on address " + address + ':' + port);
+        LOG.info("Trying to connect to Zibase board on address " + address + ':' + port);
         try {
             //TimedSocket is a non-blocking socket with timeout on exception
             socket = TimedSocket.getSocket(address, port, SOCKET_TIMEOUT);
@@ -107,7 +104,7 @@ public class Zibase extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            Freedomotic.logger.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.severe("Unable to connect to host " + address + " on port " + port);
             return false;
         }
     }
@@ -128,7 +125,6 @@ public class Zibase extends Protocol {
      */
     @Override
     public void onStart() {
-        super.onStart();
         POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
         BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
@@ -140,7 +136,6 @@ public class Zibase extends Protocol {
 
     @Override
     public void onStop() {
-        super.onStop();
         //release resources
         devices.clear();
         devices = null;
@@ -160,7 +155,7 @@ public class Zibase extends Protocol {
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Zibase.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.severe(ex.getLocalizedMessage());
         }
     }
 
@@ -171,14 +166,14 @@ public class Zibase extends Protocol {
         try {
             dBuilder = dbFactory.newDocumentBuilder();
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(Zibase.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.severe(ex.getLocalizedMessage());
         }
         Document doc = null;
         String statusFileURL = null;
         try {
             statusFileURL = "http://" + board.getIpAddress() + ":"
                     + Integer.toString(board.getPort()) + "/" + GET_SENSORS_URL;
-            Freedomotic.logger.info("Zibase gets relay status from file " + statusFileURL); // FOR DEBUG
+            LOG.info("Zibase gets relay status from file " + statusFileURL); // FOR DEBUG
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
         } catch (ConnectException connEx) {
@@ -188,12 +183,12 @@ public class Zibase extends Protocol {
         } catch (SAXException ex) {
             disconnect();
             this.stop();
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         } catch (Exception ex) {
             disconnect();
             this.stop();
             setDescription("Unable to connect to " + statusFileURL);
-            Freedomotic.logger.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.severe(Freedomotic.getStackTraceInfo(ex));
         }
         return doc;
     }
@@ -283,7 +278,7 @@ public class Zibase extends Protocol {
         //reconstruct freedomotic object address
         String address = board.getAlias() + ":" + x10Address + ":" + protocol;
         //String address = board.getIpAddress() + ":" + board.getPort() + ":" + x10Address + ":" + protocol;
-        Freedomotic.logger.severe("Sending Zibase protocol read event for object address '" + address + "'. It's readed status is " + status);
+        LOG.severe("Sending Zibase protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "zibase", address); //object address ALIAS:X10ADDRESS:PROTOCOL
         if (status.equals("0")) {
@@ -314,10 +309,10 @@ public class Zibase extends Protocol {
         try {
             connected = connect(ip_board, port_board);
         } catch (ArrayIndexOutOfBoundsException outEx) {
-            Freedomotic.logger.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
+           LOG.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
             throw new UnableToExecuteException();
         } catch (NumberFormatException numberFormatException) {
-            Freedomotic.logger.severe(port_board + " is not a valid ethernet port to connect to");
+            LOG.severe(port_board + " is not a valid ethernet port to connect to");
             throw new UnableToExecuteException();
         }
 
@@ -331,7 +326,7 @@ public class Zibase extends Protocol {
                 }
             } catch (IOException iOException) {
                 setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);
-                Freedomotic.logger.severe("Unable to send the message to host " + address[0] + " on port " + address[1]);
+               LOG.severe("Unable to send the message to host " + address[0] + " on port " + address[1]);
                 throw new UnableToExecuteException();
             } finally {
                 disconnect();
@@ -379,7 +374,7 @@ public class Zibase extends Protocol {
 
         // http request sending to the board
         message = "GET /" + page + " HTTP 1.0\r\n\r\n";
-        Freedomotic.logger.info("Sending 'GET /" + page + " HTTP 1.1' to Zibase board");
+        LOG.info("Sending 'GET /" + page + " HTTP 1.1' to Zibase board");
         return (message);
     }
 
@@ -476,7 +471,7 @@ public class Zibase extends Protocol {
 
     // initialize configured environment objects 
     public void initializeEnvironmentObjects() {
-        ArrayList<EnvObjectLogic> objectsList = EnvObjectPersistence.getObjectByProtocol("zibase");
+        List<EnvObjectLogic> objectsList = getApi().things().findByProtocol("zibase");
         if (objectsList.size() > 0) {
             for (EnvObjectLogic obj : objectsList) {
                 String objectAddress = obj.getPojo().getPhisicalAddress();

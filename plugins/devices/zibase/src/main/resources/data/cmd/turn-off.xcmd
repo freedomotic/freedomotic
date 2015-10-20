@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Turn off Zibase device</name>
     <receiver>app.actuators.protocol.zibase.in</receiver>
     <description>turns off the object linked to this zibase gateway</description>
@@ -11,4 +11,4 @@
             <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>
