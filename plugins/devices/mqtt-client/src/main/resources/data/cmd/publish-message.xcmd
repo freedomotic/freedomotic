@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Publish message on Mqtt topic</name>
     <receiver>app.actuators.protocol.mqtt-client.in</receiver>
     <description>publishes a message on a mqtt topic</description>
@@ -14,4 +14,4 @@
 	    <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>
