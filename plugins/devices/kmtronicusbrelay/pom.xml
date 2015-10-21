@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.freedomotic</groupId>
-        <artifactId>freedomotic</artifactId>
+        <artifactId>freedomotic-plugins</artifactId>
         <version>5.6-SNAPSHOT</version>
-        <relativePath>../../../</relativePath>
+        <relativePath>../../</relativePath>
     </parent>    
     <artifactId>kmtronicusbrelay</artifactId>
     <packaging>jar</packaging>
@@ -59,9 +59,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>kenai.com</groupId>
-            <artifactId>javaftd2xx</artifactId>
-            <version>0.2.6</version>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>4.1.0</version>
         </dependency>
     </dependencies>
 
