@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Turn on a relay on TCW122B-CM device</name>
     <receiver>app.actuators.protocol.tcw122bcm.in</receiver>
     <description>turn on the relay linked to this TCW122B-CM device</description>
@@ -12,4 +12,4 @@
             <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>
