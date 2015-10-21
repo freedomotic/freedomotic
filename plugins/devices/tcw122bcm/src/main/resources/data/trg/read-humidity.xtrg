@@ -5,12 +5,6 @@
     <payload>
         <payload>
             <statement>
-                <logical>AND</logical>
-                <attribute>protocol</attribute>
-                <operand>EQUALS</operand>
-                <value>tcw122bcm</value>
-            </statement>
-            <statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>

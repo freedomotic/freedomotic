@@ -99,7 +99,6 @@ public class Tcw122bcm extends Protocol {
      */
     @Override
     public void onStart() {
-        super.onStart();
         POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
         // number of configured boards in manifest file
         BOARD_NUMBER = configuration.getTuples().size();
@@ -109,7 +108,6 @@ public class Tcw122bcm extends Protocol {
 
     @Override
     public void onStop() {
-        super.onStop();
         //release resources
         devices.clear();
         devices = null;
