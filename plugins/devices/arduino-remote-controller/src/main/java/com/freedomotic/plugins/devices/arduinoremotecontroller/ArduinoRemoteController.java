@@ -1,26 +1,22 @@
 /**
  *
- * Copyright (c) 2009-2015 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
-
 package com.freedomotic.plugins.devices.arduinoremotecontroller;
 
 import com.freedomotic.api.EventTemplate;
@@ -35,10 +31,9 @@ import java.util.logging.Logger;
 /**
  * @autor Mauro Cicolella <mcicolella@libero.it>
  */
-
 public class ArduinoRemoteController extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(ArduinoRemoteController.class.getName());   
+    private static final Logger LOG = Logger.getLogger(ArduinoRemoteController.class.getName());
     private static int POLLING_TIME = 1000;
     private static int SOCKET_TIMEOUT = 1000;
     public final String UDP_SERVER_HOSTNAME = configuration.getStringProperty("udp-server-hostname", "192.168.1.100");
@@ -60,7 +55,6 @@ public class ArduinoRemoteController extends Protocol {
      */
     @Override
     public void onStart() {
-        super.onStart();
         try {
             udpServer = new UDPServer(this);
             udpServer.start();
@@ -71,7 +65,6 @@ public class ArduinoRemoteController extends Protocol {
 
     @Override
     public void onStop() {
-        super.onStop();
         //release resources
         udpServer.interrupt();
         udpServer = null;
@@ -98,7 +91,6 @@ public class ArduinoRemoteController extends Protocol {
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
     }
-
 
     @Override
     protected boolean canExecute(Command c) {
