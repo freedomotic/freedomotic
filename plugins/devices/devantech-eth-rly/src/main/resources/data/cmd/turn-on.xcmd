@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Turn on relay on Devantech Eth-Rly board</name>
     <receiver>app.actuators.protocol.devantech-eth-rly.in</receiver>
     <description>turn on the relay linked to this object on Devantech Eth-Rly board</description>
@@ -10,4 +10,4 @@
              <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>

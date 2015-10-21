@@ -146,7 +146,6 @@ public class DevantechEthRly extends Protocol {
      */
     @Override
     public void onStart() {
-        super.onStart();
         POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
         BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
@@ -155,7 +154,6 @@ public class DevantechEthRly extends Protocol {
 
     @Override
     public void onStop() {
-        super.onStop();
         //release resources
         devices.clear();
         devices = null;
