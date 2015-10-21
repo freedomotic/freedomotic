@@ -53,7 +53,7 @@ public class OAuthSetup {
         while (null == accessToken) {
             System.out.println("Open the following URL and grant access to your account:");
             System.out.println(requestToken.getAuthorizationURL());
-            System.out.print("Enter the PIN(if aviailable) or just hit enter.[PIN]:");
+            System.out.print("Enter the PIN(if available) or just hit enter.[PIN]:");
             String pin = br.readLine();
             try {
                 if (pin.length() > 0) {

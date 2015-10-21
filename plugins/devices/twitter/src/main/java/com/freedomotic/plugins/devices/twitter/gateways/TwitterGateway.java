@@ -46,7 +46,7 @@ public class TwitterGateway {
     public static synchronized Twitter getInstance(Config configuration) {
         if (twitter == null) {
             ConfigurationBuilder cb = new ConfigurationBuilder();
-            //TODO: create a default twitter account for freedom project. If the user do not customize the oauth parameters in
+            //TODO: create a default twitter account for freedomotic project. If the user do not customize the oauth parameters in
             //config file we can use by default the parameters of the freedom twitter account (the second argument in getStringProperty).
             cb.setDebugEnabled(true).setOAuthConsumerKey(configuration.getStringProperty("OAuthConsumerKey", null)) //"TLGtvoeABqf2tEG4itTUaw")
                     .setOAuthConsumerSecret(configuration.getStringProperty("OAuthConsumerSecret", null)) //"nUJPxYR1qJmhX9SnWTBT0MzO7dIqUtNyVPfhg10wf0")

@@ -41,7 +41,7 @@ public class TwitterActuator extends Protocol {
     private Twitter twitter;
 
     public TwitterActuator() {
-        super("TwitterActuator", "/twitter4f/twitter-actuator.xml");
+        super("TwitterActuator", "/twitter/twitter-actuator.xml");
         setPollingWait(-1);
         //start(); //or set the property startup-time at value "on load" in the config file
     }
