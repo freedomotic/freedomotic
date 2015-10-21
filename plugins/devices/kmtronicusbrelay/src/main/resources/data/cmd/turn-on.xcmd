@@ -1,4 +1,4 @@
-<com.freedomotic.reactions.Command>
+<command>
     <name>Turn on a relay on KMTronic usb device</name>
     <receiver>app.actuators.protocol.kmtronicusbrelay.in</receiver>
     <description>turn on the relay linked to this KMTronic device</description>
@@ -11,4 +11,4 @@
             <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
-</com.freedomotic.reactions.Command>
+</command>
