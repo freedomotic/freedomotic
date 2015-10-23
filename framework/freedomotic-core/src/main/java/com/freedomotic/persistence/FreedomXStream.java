@@ -115,6 +115,7 @@ public class FreedomXStream {
 
             // Register custom converters
             xstream.registerConverter(reactionConverter);
+            xstream.registerConverter(new PayloadConverter());
             xstream.registerConverter(new PropertiesConverter());
             xstream.registerConverter(new TupleConverter());
             xstream.alias("user", User.class);

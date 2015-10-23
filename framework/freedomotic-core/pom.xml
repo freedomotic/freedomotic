@@ -14,8 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.restlet.version>2.1.7</org.restlet.version>
-        <jersey.version>2.9</jersey.version>
-        <xstream.version>1.4.7</xstream.version>
+        <xstream.version>1.4.8</xstream.version>
     </properties>
     <build>
         <finalName>freedomotic</finalName> 
@@ -66,12 +65,12 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-all</artifactId>
-            <version>5.9.0</version> 
+            <version>5.12.0</version> 
         </dependency> 
         <dependency>
             <groupId>org.eclipse.jetty.aggregate</groupId>
             <artifactId>jetty-all-server</artifactId>
-            <version>8.1.15.v20140411</version>
+            <version>8.1.18.v20150929</version>
         </dependency>
         <!-- XML serialization library -->
         <dependency>
@@ -95,19 +94,19 @@
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.4</version>
             <type>jar</type>
         </dependency>
         <!-- Json serialization -->
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-lgpl</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.5</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-lgpl</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.5</version>
         </dependency>
         <!-- Utiliy library to manage files and streams -->
         <dependency>

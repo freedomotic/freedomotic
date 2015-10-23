@@ -56,7 +56,7 @@ public class PayloadConverter
         Iterator<Statement> it = payload.iterator();
         while (it.hasNext()) {
             Statement statement = it.next();
-            writer.startNode("com.freedomotic.reactions.Statement");
+            writer.startNode("statement");
             writer.startNode("logical");
             writer.setValue(statement.getLogical());
             writer.endNode(); //</logical>
@@ -104,7 +104,6 @@ public class PayloadConverter
             reader.moveUp(); //next <statement>
         } //no more <statements> (childs of payload)
 
-        reader.moveUp(); //goes up to the next <payload>
         reader.moveUp(); //goes up to the next <payload>
 
         return payload;

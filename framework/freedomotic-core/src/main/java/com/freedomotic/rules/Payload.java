@@ -28,18 +28,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Enrico
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public final class Payload implements Serializable {
 
+    @XmlTransient
     private static final long serialVersionUID = -5799483105084939108L;
-    @XmlElement
     private final List<Statement> payload = Collections.synchronizedList(new ArrayList<Statement>());
 
     /**
@@ -207,7 +210,7 @@ public final class Payload implements Serializable {
 
         return statements;
     }
-
+    
     public List<Statement> getStatements() {
         return payload;
     }

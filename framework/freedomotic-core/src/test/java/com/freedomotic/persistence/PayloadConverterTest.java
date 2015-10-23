@@ -54,13 +54,13 @@ public class PayloadConverterTest {
      */
     @BeforeClass
     public static void setUpClass() throws Exception {
-        xml = "<payload><payload><com.freedomotic.reactions.Statement>"
+        xml = "<payload><payload><statement>"
                 + "<logical>AND</logical><attribute>protocol</attribute>"
                 + "<operand>EQUALS</operand><value>SNT084Eth8R8I</value>"
-                + "</com.freedomotic.reactions.Statement>"
-                + "<com.freedomotic.reactions.Statement><logical>SET</logical>"
+                + "</statement>"
+                + "<statement><logical>SET</logical>"
                 + "<attribute>behaviorValue</attribute><operand>EQUALS</operand>"
-                + "<value>@event.isOn</value></com.freedomotic.reactions.Statement>"
+                + "<value>@event.isOn</value></statement>"
                 + "</payload></payload>";
 
         xstream = new XStream();
