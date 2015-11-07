@@ -27,13 +27,14 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,8 +54,9 @@ public class MaryTTS extends Protocol {
     private Voice defaultVoice;
     private Voice voice;
     private AudioInputStream audio;
-    private final String voiceJarFile = configuration.getProperty("voice-jar-file");
-    private final String voiceName = configuration.getProperty("voice");
+    private final String VOICE_JAR_FILE = configuration.getProperty("voice-jar-file");
+    private final String VOICE_NAME = configuration.getProperty("voice");
+    private MaryTTSGui GUI;
 
     public MaryTTS() {
         super("MaryTTS", "/marytts/marytts-manifest.xml");
@@ -62,9 +64,11 @@ public class MaryTTS extends Protocol {
 
     @Override
     protected void onStart() throws PluginStartupException {
+        GUI = new MaryTTSGui(this);
+
         try {
             //add voices folder to classpath
-            addPath(Info.PATHS.PATH_DEVICES_FOLDER + System.getProperty("file.separator") + "marytts" + System.getProperty("file.separator") + "lib" + System.getProperty("file.separator") + voiceJarFile);
+            addPath(Info.PATHS.PATH_DEVICES_FOLDER + System.getProperty("file.separator") + "marytts" + System.getProperty("file.separator") + "lib" + System.getProperty("file.separator") + VOICE_JAR_FILE);
             System.setProperty("mary.base", Info.PATHS.PATH_DEVICES_FOLDER + System.getProperty("file.separator") + "marytts");
             marytts = new LocalMaryInterface();
             // print available voices and languages
@@ -75,13 +79,13 @@ public class MaryTTS extends Protocol {
         } catch (MaryConfigurationException ex) {
             throw new PluginStartupException("Plugin can't start for a configuration problem.", ex);
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, "Impossible to modify classpath to add voice file ''{0}''", voiceJarFile);
+            throw new PluginStartupException("Plugin can't start. Impossible to modify classpath to add voice file  " + VOICE_JAR_FILE + " for " + ex.getLocalizedMessage());
         }
     }
 
     @Override
     protected void onShowGui() {
-        bindGuiToPlugin(new MaryTTSGui(this));
+        bindGuiToPlugin(GUI);
     }
 
     public void say(String message) {
@@ -127,11 +131,11 @@ public class MaryTTS extends Protocol {
 
         @Override
         public synchronized void run() {
-            if (!isVoiceAvailable(voiceName)) {
-                LOG.log(Level.INFO, "Voice ''{0}'' not found. Using default voice ", voiceName);
+            if (!isVoiceAvailable(VOICE_NAME)) {
+                LOG.log(Level.INFO, "Voice ''{0}'' not found. Using default voice ", VOICE_NAME);
                 voice = defaultVoice;
             } else {
-                voice = Voice.getVoice(voiceName);
+                voice = Voice.getVoice(VOICE_NAME);
                 LOG.log(Level.INFO, "Voice set to ''{0}''", voice.getName());
             }
             try {
@@ -143,7 +147,7 @@ public class MaryTTS extends Protocol {
             } catch (SynthesisException ex) {
                 LOG.log(Level.SEVERE, "Error during audio generation", ex);
             } catch (InterruptedException ex) {
-                LOG.log(Level.SEVERE, "Error during speaking'", ex);
+                LOG.log(Level.SEVERE, "Error during speaking", ex);
             } finally {
                 try {
                     if (audio != null) {
