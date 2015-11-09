@@ -20,7 +20,9 @@
  */
 package com.freedomotic.bus;
 
+import com.freedomotic.settings.AppConfig;
 import com.freedomotic.settings.Info;
+import com.google.inject.Inject;
 import java.util.logging.Logger;
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -44,13 +46,18 @@ class BusConnection extends LifeCycle {
     private static final String DEFAULT_USER = "user";
 
     private Connection connection;
+    
+    @Inject
+    private AppConfig config;
 
     private ActiveMQConnectionFactory factory;
 
     private ActiveMQConnectionFactory createFactory() {
 
         // connect to the embedded broker defined above
-        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(Info.MESSAGING.BROKER_DEFAULT);
+        String P2P_BROKER_URL=Info.MESSAGING.BROKER_DEFAULT_PROTOCOL + config.getStringProperty("P2P_CLUSTER_NAME", Info.MESSAGING.BROKER_DEFAULT_CLUSTER_NAME) + "/" + Info.MESSAGING.BROKER_DEFAULT_UUID;
+        LOG.info("P2P Connection on " + P2P_BROKER_URL);
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(P2P_BROKER_URL);
 
         // tuned for performances
         // http://activemq.apache.org/performance-tuning.html
