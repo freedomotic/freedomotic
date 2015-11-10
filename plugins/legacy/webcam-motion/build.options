@@ -1,0 +1,20 @@
+#Fri, 17 Aug 2012 14:12:28 +0200
+
+package.type=device
+package.name=com.freedomotic.wmotion
+package.nodeid=395
+package.license=GNU GPL2
+package.vendor.name=Freedomotic
+package.vendor.surname=Automation
+package.vendor.contact=info@freedomotic.com
+package.vendor.company=Freedomotic
+package.vendor.nation=it
+framework.required.major=5
+framework.required.minor=3
+framework.required.build=x
+build.major=1
+build.number=75
+build.create.dist.market=true
+build.create.dist.framework=true
+build.synch.dist=true
+build.synch.dist.path=../../../framework/freedomotic/plugins/

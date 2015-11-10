@@ -1,0 +1,15 @@
+<com.freedomotic.reactions.Command>
+    <name>Turn ON Relay on Progetti HWSR board</name>
+    <receiver>app.actuators.protocol.SNT084Eth8R8I.in</receiver>
+    <description>turns on the relay linked to this object on SNT084Eth8R8I board</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="command" value="RELAY"/>
+            <property name="behavior" value="on"/>
+			<property name="address" value="@owner.object.address"/>
+        </properties>
+    </properties>
+</com.freedomotic.reactions.Command>

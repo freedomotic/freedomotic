@@ -1,0 +1,15 @@
+<com.freedomotic.reactions.Command>
+    <name>Toggle for 1 second the relay on Progetti HWSR board</name>
+    <receiver>app.actuators.protocol.SNT084Eth8R8I.in</receiver>
+    <description>toggles for 1 second</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="command" value="TOGGLE"/>
+			<property name="address" value="@owner.object.address"/>
+			<property name="time-in-ms" value="1000"/>
+        </properties>
+    </properties>
+</com.freedomotic.reactions.Command>

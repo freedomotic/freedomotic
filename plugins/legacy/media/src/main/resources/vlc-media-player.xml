@@ -1,0 +1,11 @@
+
+<config>
+    <properties>
+        <property name="description"                    value="Uses VLC media player to display media files"/>
+        <property name="version"                        value="1.0.0"/>
+        <property name="required"                       value="5.0.0"/>
+        <property name="category"                       value="media"/>
+        <property name="short-name"                     value="player"/>
+        <property name="vlc-bin"                        value="/usr/bin/vlc"/>
+    </properties>
+</config>

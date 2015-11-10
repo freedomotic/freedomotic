@@ -1,0 +1,15 @@
+<com.freedomotic.reactions.Command>
+    <name>X10: turn off</name>
+    <receiver>app.actuators.protocol.x10.in</receiver>
+    <description>turns off x10 devices</description>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="x10.address" value="@owner.object.address"/>
+            <property name="x10.function" value="OFF"/>
+            <property name="x10.gateway" value="PMIX35"/>
+        </properties>
+    </properties>
+    <hardwareLevel>true</hardwareLevel>
+</com.freedomotic.reactions.Command>

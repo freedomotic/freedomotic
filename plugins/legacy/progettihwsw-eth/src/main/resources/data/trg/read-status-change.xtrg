@@ -1,0 +1,28 @@
+
+<trigger>
+    <name>Progetti HWSW board reads a state change</name>
+    <description>Progetti HWSW reads relay state change</description>
+    <channel>app.event.sensor.protocol.read.SNT084Eth8R8I</channel>
+    <payload>
+        <payload>
+            <statement>
+                <logical>AND</logical>
+                <attribute>protocol</attribute>
+                <operand>EQUALS</operand>
+                <value>SNT084Eth8R8I</value>
+            </statement>
+            <statement>
+                <logical>SET</logical>
+                <attribute>behaviorValue</attribute>
+                <operand>EQUALS</operand>
+                <value>@event.isOn</value>
+            </statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <priority>0</priority>
+    <maxExecutions>-1</maxExecutions>
+    <numberOfExecutions>0</numberOfExecutions>
+    <suspensionTime>0</suspensionTime>
+</trigger>

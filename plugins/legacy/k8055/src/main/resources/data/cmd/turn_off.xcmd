@@ -1,0 +1,15 @@
+<com.freedomotic.reactions.Command>
+    <name>Turn OFF on K8055 board</name>
+    <receiver>app.actuators.protocol.k8055.in</receiver>
+    <description>turns off the object linked to this K8055 board</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="command" value="RELAY"/>
+            <property name="behavior" value="off"/>
+	    <property name="address" value="@owner.object.address"/>
+        </properties>
+    </properties>
+</com.freedomotic.reactions.Command>

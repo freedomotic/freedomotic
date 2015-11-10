@@ -1,0 +1,82 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.freedomotic</groupId>
+        <artifactId>freedomotic</artifactId>
+        <version>5.6-SNAPSHOT</version>
+        <relativePath>../../../</relativePath>
+    </parent>    
+    <artifactId>progettihwsw-eth</artifactId>
+    <packaging>jar</packaging>
+    <name>ProgettiHwSw-Eth plugin for Freedomotic</name>
+    <version>3.0</version>
+    <developers>
+        <developer>
+            <id>mauro</id>
+            <name>Mauro</name>
+            <email>mauro@freedomotic.com</email>
+            <organization>Freedomotic</organization>
+            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <properties>
+                <nation>it</nation>
+            </properties>
+            <timezone>-1</timezone>
+        </developer>
+    </developers>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
+        <freedomotic.package.type>device</freedomotic.package.type>
+        <freedomotic.nodeid>351</freedomotic.nodeid>
+        <freedomotic.package.license>GNU GPL2</freedomotic.package.license>
+        <freedomotic.package.vendor.name>Mauro</freedomotic.package.vendor.name>
+        <freedomotic.package.vendor.surname>Cicolella</freedomotic.package.vendor.surname>
+        <freedomotic.package.vendor.contact>Cicolella</freedomotic.package.vendor.contact>
+        <freedomotic.package.vendor.company>Freedomotic</freedomotic.package.vendor.company>
+        <freedomotic.package.vendor.nation>it</freedomotic.package.vendor.nation>
+        <freedomotic.framework.required.major>5</freedomotic.framework.required.major>
+        <freedomotic.framework.required.minor>6</freedomotic.framework.required.minor>
+        <freedomotic.framework.required.build>x</freedomotic.framework.required.build>
+        <!--don't like this but works for the moment -->
+        <freedomotic.synch.dist.path>../../../framework/freedomotic-core/plugins/</freedomotic.synch.dist.path>
+        <freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${project.version}.${freedomotic.package.type}</freedomotic.marketplace.file>
+        <freedomotic.marketplace.username></freedomotic.marketplace.username>
+        <freedomotic.marketplace.password></freedomotic.marketplace.password>
+
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>freedomotic-core</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+

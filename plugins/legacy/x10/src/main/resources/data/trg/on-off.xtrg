@@ -1,0 +1,29 @@
+<trigger>
+    <name>X10: on/off state change</name>
+    <description>X10: power state change</description>
+    <channel>app.event.sensor.protocol.read.x10</channel>
+    <payload>
+        <payload>
+            <statement>
+               <logical>AND</logical>
+               <attribute>x10.function</attribute>
+               <operand>EQUALS</operand>
+               <value>ON</value>
+            </statement>
+            <statement>
+               <logical>OR</logical>
+               <attribute>x10.function</attribute>
+               <operand>EQUALS</operand>
+               <value>OFF</value>
+            </statement>
+            <statement>
+               <logical>SET</logical>
+               <attribute>behaviorValue</attribute>
+               <operand>EQUALS</operand>
+               <value>= if ("@event.x10.function".toLowerCase()=="on") behaviorValue="true"; else behaviorValue="false"</value>
+            </statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <maxExecutions>-1</maxExecutions>
+</trigger>
