@@ -1,0 +1,15 @@
+<com.freedomotic.reactions.Command>
+    <name>Turn OFF Isy99i device</name>
+    <receiver>app.actuators.protocol.isy99i.in</receiver>
+    <description>turns off the object linked to this Isy99i gateway</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+       <properties>
+            <property name="control" value="DOF"/>
+            <property name="action" value="0"/>
+            <property name="address" value="@owner.object.address"/>
+       </properties>
+    </properties>
+</com.freedomotic.reactions.Command>

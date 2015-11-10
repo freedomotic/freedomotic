@@ -1,0 +1,23 @@
+<config>
+    <properties>
+        <property name="description"                       value="A simple plugin to start coding"/>
+        <property name="protocol.name"  value="k8055"/>
+        <property name="category"                       value="protocol"/>
+        <property name="short-name"                       value="k8055"/>
+        <property name="address-delimiter" value=":"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="polling-time"   value="200"/>
+    </properties>
+    <tuples>
+        <tuple>
+            <property name="deviceToQuery" value="0"/>
+            <property name="digital-output-number" value="8"/>
+            <property name="analog-output-number" value="2"/>
+            <property name="analog-input-number" value="2"/>
+            <property name="digital-input-number" value="5"/>
+            <property name="starting-value" value="1"/>
+        </tuple>
+    </tuples>
+</config>
+
+                

@@ -1,0 +1,29 @@
+<trigger>
+    <name>X10: brightness change</name>
+    <description>X10: brightness change</description>
+    <channel>app.event.sensor.protocol.read.x10</channel>
+    <payload>
+        <payload>
+            <statement>
+               <logical>AND</logical>
+               <attribute>x10.function</attribute>
+               <operand>EQUALS</operand>
+               <value>DIM</value>
+            </statement>
+            <statement>
+               <logical>OR</logical>
+               <attribute>x10.function</attribute>
+               <operand>EQUALS</operand>
+               <value>BGT</value>
+            </statement>
+            <statement>
+               <logical>SET</logical>
+               <attribute>behaviorValue</attribute>
+               <operand>EQUALS</operand>
+               <value>= if ("@event.x10.function".toLowerCase()=="bgt") behaviorValue="+5"; else behaviorValue="-5"</value>
+            </statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <maxExecutions>-1</maxExecutions>
+</trigger>

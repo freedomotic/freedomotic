@@ -1,0 +1,13 @@
+
+<config>
+    <properties>
+        <property name="description"                    value="Detects motion on a MJPEG webcam stream"/>
+        <property name="category"                       value="motion"/>
+        <property name="short-name"                     value="detector"/>
+        <property name="camera-url"                     value="http://194.218.96.93/axis-cgi/mjpg/video.cgi?resolution=320x240"/>
+        <property name="sensibility-threshold"          value="20"/>
+        <property name="noise-threshold"                value="30"/>
+        <property name="algorithm"                      value="simple"/>
+        <property name="forgetting-factor"              value="0.7"/>
+    </properties>
+</config>

@@ -1,0 +1,15 @@
+<config>
+    <properties>
+        <property name="description"    value="Communicates with the gateway isy99i"/>
+        <property name="protocol.name"  value="Isy99i"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="isy99i"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="polling-time"   value="5000"/>
+        <property name="ip-address" value="24.24.176.17"/>
+        <property name="port-number" value="80"/>
+        <property name="uuid" value="00:21:b9:00:e0:07"/>
+        <property name="userid" value="admin"/>
+        <property name="password" value="admin"/>
+    </properties>
+</config>

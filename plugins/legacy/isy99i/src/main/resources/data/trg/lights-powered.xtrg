@@ -1,0 +1,27 @@
+<trigger>
+    <name>Isy99i reads a state change</name>
+    <description>Isy99i reads a state change</description>
+    <channel>app.event.sensor.protocol.read.Isy99i</channel>
+    <payload>
+        <payload>
+            <statement>
+                <logical>AND</logical>
+                <attribute>protocol</attribute>
+                <operand>EQUALS</operand>
+                <value>Isy99i</value>
+            </statement>
+            <statement>
+                <logical>SET</logical>
+                <attribute>behaviorValue</attribute>
+                <operand>EQUALS</operand>
+                <value>@event.isOn</value>
+            </statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <priority>0</priority>
+    <maxExecutions>-1</maxExecutions>
+    <numberOfExecutions>0</numberOfExecutions>
+    <suspensionTime>0</suspensionTime>
+</trigger>

@@ -1,0 +1,66 @@
+
+<config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
+    <properties>
+        <property name="description"    value="Communicates with the ethernet board SNT084Eth8R8I developed by www.progetti-hw-sw.it"/>
+        <property name="protocol.name"  value="SNT084Eth8R8I"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="SNT084Eth8R8I"/>
+        <property name="address-delimiter" value=":"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="TOGGLE1S1"  value="A"/>
+        <property name="TOGGLE1S2"  value="B"/>
+        <property name="TOGGLE1S3"  value="C"/>
+        <property name="TOGGLE1S4"  value="D"/>
+        <property name="TOGGLE1S5"  value="E"/>
+        <property name="TOGGLE1S6"  value="F"/>
+        <property name="TOGGLE1S7"  value="G"/>
+        <property name="TOGGLE1S8"  value="H"/>
+        <property name="TOGGLE1S9"  value="W"/>
+        <property name="TOGGLE1S10" value="X"/>
+        <property name="TOGGLE1S11" value="Y"/>
+        <property name="TOGGLE1S12" value="Z"/>
+        <property name="TOGGLE1S13" value="1"/>
+        <property name="TOGGLE1S14" value="2"/>
+        <property name="TOGGLE1S15" value="3"/>
+        <property name="TOGGLE1S16" value="4"/>
+        <property name="TOGGLE2S1"  value="I"/>
+        <property name="TOGGLE2S2"  value="L"/>
+        <property name="TOGGLE2S3"  value="M"/>
+        <property name="TOGGLE2S4"  value="N"/>
+        <property name="TOGGLE2S5"  value="O"/>
+        <property name="TOGGLE2S6"  value="P"/>
+        <property name="TOGGLE2S7"  value="Q"/>
+        <property name="TOGGLE2S8"  value="R"/>
+        <property name="TOGGLE2S9"  value="S"/>
+        <property name="TOGGLE2S10" value="T"/>
+        <property name="TOGGLE2S11" value="U"/>
+        <property name="TOGGLE2S12" value="V"/>
+        <property name="TOGGLE2S13" value="5"/>
+        <property name="TOGGLE2S14" value="6"/>
+        <property name="TOGGLE2S15" value="7"/>
+        <property name="TOGGLE2S16" value="8"/>
+        <property name="polling-time"   value="200"/>
+    </properties>
+    <tuples>
+        <!-- DEVICES CONFIGURATION -->  
+        <tuple>
+            <property name="ip-to-query" value="192.168.1.201"/>
+            <property name="port-to-query" value="8085"/>
+            <property name="relay-number" value="12"/>
+            <property name="analog-input-number" value="4"/>
+            <property name="digital-input-number" value="4"/>
+            <property name="starting-relay" value="0"/>
+            <property name="line-to-monitorize" value="btn"/>
+        </tuple>
+        <tuple>
+            <property name="ip-to-query" value="192.168.1.202"/>
+            <property name="port-to-query" value="8085"/>
+            <property name="relay-number" value="12"/>
+            <property name="analog-input-number" value="4"/>
+            <property name="digital-input-number" value="4"/>
+            <property name="starting-relay" value="0"/>
+            <property name="line-to-monitorize" value="btn"/>
+        </tuple>
+    </tuples>
+</config>
