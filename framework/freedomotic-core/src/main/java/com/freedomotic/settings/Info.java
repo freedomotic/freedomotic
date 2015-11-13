@@ -93,7 +93,10 @@ public class Info {
          * public static final String BROKER_DEFAULT = "vm://freedomotic";
          * info about peer brokers http://fusesource.com/docs/broker/5.2/connectivity_guide/N04F73598.04EE2290.html
          */
-        public final String BROKER_DEFAULT = "peer://freedomotic/" + UUID.randomUUID();
+        public final String BROKER_DEFAULT_PROTOCOL = "peer://";
+        public final String BROKER_DEFAULT_CLUSTER_NAME = "freedomotic";
+        public final String BROKER_DEFAULT_UUID = UUID.randomUUID().toString();
+        
         public final int BROKER_PORT = 61616;
 
         //port zero mean the first available port

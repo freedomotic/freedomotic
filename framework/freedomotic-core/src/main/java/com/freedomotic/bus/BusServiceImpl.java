@@ -23,6 +23,8 @@ import com.freedomotic.api.EventTemplate;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.app.Profiler;
 import com.freedomotic.reactions.Command;
+import com.freedomotic.settings.AppConfig;
+import com.google.inject.Injector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -57,12 +59,16 @@ final class BusServiceImpl extends LifeCycle implements BusService {
     private Session receiveSession;
     private Session sendSession;
     private Session unlistenedSession;
+    private AppConfig conf;
+    private Injector injector;
     protected MessageProducer messageProducer;
 
     @Inject
-    public BusServiceImpl() {
+    public BusServiceImpl(AppConfig config, Injector inj) {
         //this.config = config;
         if (BootStatus.getCurrentStatus() == BootStatus.STOPPED) {
+            conf = config;
+            injector = inj;
             init();
             if (sendSession == null) {
                 throw new IllegalStateException("Messaging bus has not yet a valid send session");
@@ -84,7 +90,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         brokerHolder = new BusBroker();
         brokerHolder.init();
 
-        connectionHolder = new BusConnection();
+        connectionHolder = injector.getInstance(BusConnection.class);
         connectionHolder.init();
 
         receiveSession = createSession();
