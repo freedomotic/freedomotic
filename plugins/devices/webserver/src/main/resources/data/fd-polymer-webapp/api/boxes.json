@@ -1,0 +1,173 @@
+[
+	{
+		"btitle": "environment",
+		"description": "This section gives you all the information about your Environment",
+		"img": "home",
+		"iconcolor": "#444",
+		"tooltipcolor": "#BDFFCD",
+		"color": "#BDFFCD",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "reactions",
+		"description": "This section lets you define Reactions on different triggers",
+		"img": "send",
+		"iconcolor": "#444",
+		"tooltipcolor": "#fcc",
+		"color": "#fcc",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "settings",
+		"description": "This section contains general dashboard Settings",
+		"img": "settings",
+		"iconcolor": "#444",
+		"tooltipcolor": "#eee",
+		"color": "#eee",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "info",
+		"description": "This section contains general usage Information",
+		"img": "info-outline",
+		"iconcolor": "#444",
+		"tooltipcolor": "#aaa",
+		"color": "#aaa",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "messages",
+		"description": "This section contains the list of Messages received",
+		"img": "list",
+		"iconcolor": "#444",
+		"tooltipcolor": "#ffa",
+		"color": "#ffa",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "objects",
+		"description": "This section contains the list of your Objects",
+		"img": "image:camera",
+		"iconcolor": "#444",
+		"tooltipcolor": "#bef",
+		"color": "#bef",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "family",
+		"description": "This section contains the list of users",
+		"img": "social:person",
+		"iconcolor": "#444",
+		"tooltipcolor": "#ccf",
+		"color": "#ccf",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "alerts",
+		"description": "Send an alert to the medical platform",
+		"img": "warning",
+		"iconcolor": "#444",
+		"tooltipcolor": "#fb8",
+		"color": "#fb8",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "commands",
+		"description": "Manually run a user command",
+		"img": "hardware:gamepad",
+		"iconcolor": "#444",
+		"tooltipcolor": "#f88",
+		"color": "#f88",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "triggers",
+		"description": "This section lets you define Triggers to handle environment changes",
+		"img": "image:flash-on",
+		"iconcolor": "#a8e",
+		"tooltipcolor": "#a8e",
+		"color": "#222",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "users",
+		"description": "This section lets you manage Users",
+		"img": "social:person",
+		"iconcolor": "#fbf",
+		"tooltipcolor": "#fbf",
+		"color": "#222",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "roles",
+		"description": "This section lets you manage Roles",
+		"img": "social:people",
+		"iconcolor": "#fbf",
+		"tooltipcolor": "#fbf",
+		"color": "#222",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "plugins",
+		"description": "This section lets you manage your Plugins",
+		"img": "extension",
+		"iconcolor": "#f66",
+		"tooltipcolor": "#f66",
+		"color": "#222",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "rooms",
+		"description": "This section lets you configure environment Rooms",
+		"img": "view-quilt",
+		"iconcolor": "#9f8",
+		"tooltipcolor": "#9f8",
+		"color": "#222",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "SetupObjects",
+		"description": "This section lets you configure environment Objects",
+		"img": "image:camera",
+		"iconcolor": "#adf",
+		"tooltipcolor": "#adf",
+		"color": "#222",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "marketplace",
+		"description": "This section lets you install and update Plugins in your System",
+		"img": "store",
+		"iconcolor": "#d95",
+		"tooltipcolor": "#d95",
+		"color": "#222",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "system",
+		"description": "This section lets you manage your System",
+		"img": "settings-applications",
+		"iconcolor": "#ee7",
+		"tooltipcolor": "#ee7",
+		"color": "#222",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "SetupSettings",
+		"description": "This section contains general dashboard Settings",
+		"img": "settings",
+		"iconcolor": "#eee",
+		"tooltipcolor": "#eee",
+		"color": "#222",
+		"bgcolor": "#fff"
+	},
+	{
+		"btitle": "SetupInfo",
+		"description": "This section contains general usage Information",
+		"img": "info-outline",
+		"iconcolor": "#aaa",
+		"tooltipcolor": "#aaa",
+		"color": "#222",
+		"bgcolor": "#fff"
+	}
+]

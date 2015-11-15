@@ -21,6 +21,7 @@
         <module>plugins/devices/simulation</module>
         <module>plugins/devices/hello-world</module>
         <module>plugins/devices/restapi-v3</module>
+        <module>plugins/devices/webserver</module>
         <module>tools</module>
         <module>plugins</module>
         <module>framework</module>
