@@ -1,6 +1,6 @@
 <com.freedomotic.model.object.EnvObject>
   <name>Data Chart</name>
-  <description>Shows Data Previously Collected by Harvester</description>
+  <description>Shows Data collected by Harvester</description>
   <actAs>unimplemented</actAs>
   <type>EnvObject.DataChart</type>
   <hierarchy>com.freedomotic.things.impl.DataChart</hierarchy>
@@ -22,7 +22,7 @@
       <intersecable>false</intersecable>
       <offset x="0" y="0"/>
       <rotation>0.0</rotation>
-      <icon>diagramma_a_torta.png</icon>
+      <icon>pie-chart.png</icon>
       <fillColor>#000000</fillColor>
       <textColor>#000000</textColor>
       <borderColor>#000000</borderColor>
