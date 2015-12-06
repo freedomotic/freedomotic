@@ -30,7 +30,9 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Authenticator;
 import java.net.ConnectException;
+import java.net.PasswordAuthentication;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class Ipx800 extends Protocol {
     Map<String, Board> devices = new HashMap<String, Board>();
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
+    private static String DELIMITER = ":";
     private Socket socket = null;
     private DataOutputStream outputStream = null;
     private BufferedReader inputStream = null;
@@ -63,7 +66,7 @@ public class Ipx800 extends Protocol {
     private String GET_STATUS_URL = configuration.getStringProperty("get-status-url", "status.xml");
     private String CHANGE_STATE_RELAY_URL = configuration.getStringProperty("change-state-relay-url", "leds.cgi?led=");
     private String SEND_PULSE_RELAY_URL = configuration.getStringProperty("send-pulse-relay-url", "rlyfs.cgi?rlyf=");
-   
+
     /**
      * Initializations
      */
@@ -86,6 +89,9 @@ public class Ipx800 extends Protocol {
             String digitalInputTag;
             String analogInputTag;
             String autoConfiguration;
+            String authentication;
+            String username;
+            String password;
             String objectClass;
             String alias;
             int portToQuery;
@@ -103,10 +109,13 @@ public class Ipx800 extends Protocol {
             ledTag = configuration.getTuples().getStringProperty(i, "led-tag", "led");
             digitalInputTag = configuration.getTuples().getStringProperty(i, "digital-input-tag", "btn");
             analogInputTag = configuration.getTuples().getStringProperty(i, "analog-input-tag", "analog");
+            authentication = configuration.getTuples().getStringProperty(i, "authentication", "false");
+            username = configuration.getTuples().getStringProperty(i, "username", "admin");
+            password = configuration.getTuples().getStringProperty(i, "password", "pass");
             autoConfiguration = configuration.getTuples().getStringProperty(i, "auto-configuration", "false");
             objectClass = configuration.getTuples().getStringProperty(i, "object.class", "Light");
             Board board = new Board(ipToQuery, portToQuery, alias, relayNumber, analogInputNumber,
-                    digitalInputNumber, startingRelay, ledTag, digitalInputTag, analogInputTag, autoConfiguration, objectClass);
+                    digitalInputNumber, startingRelay, ledTag, digitalInputTag, analogInputTag, autoConfiguration, objectClass, authentication, username, password);
             boards.add(board);
             // add board object and its alias as key for the hashmap
             devices.put(alias, board);
@@ -149,16 +158,15 @@ public class Ipx800 extends Protocol {
      */
     @Override
     public void onStart() {
-        super.onStart();
         POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
         BOARD_NUMBER = configuration.getTuples().size();
+        DELIMITER = configuration.getProperty("address-delimiter");
         setPollingWait(POLLING_TIME);
         loadBoards();
     }
 
     @Override
     public void onStop() {
-        super.onStop();
         //release resources
         boards.clear();
         boards = null;
@@ -183,6 +191,7 @@ public class Ipx800 extends Protocol {
     }
 
     private Document getXMLStatusFile(Board board) {
+        final Board b = board;
         //get the xml file from the socket connection
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = null;
@@ -194,8 +203,18 @@ public class Ipx800 extends Protocol {
         Document doc = null;
         String statusFileURL = null;
         try {
-            statusFileURL = "http://" + board.getIpAddress() + ":"
-                    + Integer.toString(board.getPort()) + "/" + GET_STATUS_URL;
+            if (board.getAuthentication().equalsIgnoreCase("true")) {
+                Authenticator.setDefault(new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(b.getUsername(), b.getPassword().toCharArray());
+                    }
+                });
+                statusFileURL = "http://" + b.getIpAddress() + ":"
+                        + Integer.toString(b.getPort()) + "/protect/" + GET_STATUS_URL;
+            } else {
+                statusFileURL = "http://" + board.getIpAddress() + ":"
+                        + Integer.toString(board.getPort()) + "/" + GET_STATUS_URL;
+            }
             LOG.log(Level.INFO, "Ipx800 gets relay status from file {0}", statusFileURL);
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
@@ -263,15 +282,14 @@ public class Ipx800 extends Protocol {
     private void sendChanges(int relayLine, Board board, String status, String tag) {
         relayLine++;
         //reconstruct freedomotic object address
-        //String address = board.getIpAddress() + ":" + board.getPort() + ":" + relayLine + ":" + tag;
-        String address = board.getAlias() + ":" + relayLine + ":" + tag;
-        //LOG.info("Sending Ipx800 protocol read event for object address '" + address + "'. It's readed status is " + status);
+        //ALIAS:LINE:TAG
+        String address = board.getAlias() + DELIMITER + relayLine +  DELIMITER + tag;
         //building the event
-        ProtocolRead event = new ProtocolRead(this, "ipx800", address); //IP:PORT:RELAYLINE
+        ProtocolRead event = new ProtocolRead(this, "ipx800", address); 
         // relay lines - status=0 -> off; status=1 -> on
-        
+
         if (tag.equalsIgnoreCase("led")) {
-            event.addProperty("inputValue", "0");
+            event.addProperty("inputValue", status);
             if (status.equals("0")) {
                 event.addProperty("isOn", "false");
             } else {
@@ -299,13 +317,12 @@ public class Ipx800 extends Protocol {
                     event.addProperty("isOn", "true");
                 }
                 event.addProperty("inputValue", status);
-
             }
         }
         //adding some optional information to the event
-        event.addProperty("boardIP", board.getIpAddress());
-        event.addProperty("boardPort", new Integer(board.getPort()).toString());
-        event.addProperty("relayLine", new Integer(relayLine).toString());
+        //event.addProperty("boardIP", board.getIpAddress());
+        //event.addProperty("boardPort", new Integer(board.getPort()).toString());
+        //event.addProperty("relayLine", new Integer(relayLine).toString());
 
         //publish the event on the messaging bus
         this.notifyEvent(event);
@@ -317,8 +334,7 @@ public class Ipx800 extends Protocol {
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
         //get connection paramentes address:port from received freedomotic command
-        String delimiter = configuration.getProperty("address-delimiter");
-        address = c.getProperty("address").split(delimiter);
+        address = c.getProperty("address").split(DELIMITER);
         Board board = (Board) devices.get(address[0]);
         String ip_board = board.getIpAddress();
         int port_board = board.getPort();
@@ -378,14 +394,12 @@ public class Ipx800 extends Protocol {
         Integer relay = 0;
 
         if (c.getProperty("command").equals("CHANGE-STATE-RELAY")) {
-            //relay = Integer.parseInt(address[2]) - 1;
             relay = Integer.parseInt(address[1]) - 1;
             page = CHANGE_STATE_RELAY_URL + relay;
         }
 
         if (c.getProperty("command").equals("PULSE-RELAY")) {
             // mapping relay line -> protocol
-            //relay = Integer.parseInt(address[2]) - 1;
             relay = Integer.parseInt(address[1]) - 1;
             //compose requested link
             page = SEND_PULSE_RELAY_URL + relay;
@@ -393,7 +407,6 @@ public class Ipx800 extends Protocol {
 
         // http request sending to the board
         message = "GET /" + page + " HTTP 1.1\r\n\r\n";
-        //LOG.info("Sending 'GET /" + page + " HTTP 1.1' to relay board");
         return (message);
     }
 
