@@ -1,0 +1,15 @@
+<command>
+    <name>Set digital input to off on Ipx800 board</name>
+    <receiver>app.actuators.protocol.ipx800.in</receiver>
+    <description>set digital input to off Ipx800 board</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="command" value="CHANGE-STATE-DIGITAL-INPUT"/>
+            <property name="state-value" value="0"/>
+            <property name="address" value="@owner.object.address"/>
+        </properties>
+    </properties>
+</command>

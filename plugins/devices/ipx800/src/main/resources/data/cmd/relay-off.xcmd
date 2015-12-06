@@ -1,0 +1,15 @@
+<command>
+    <name>Turn off relay on Ipx800 board</name>
+    <receiver>app.actuators.protocol.ipx800.in</receiver>
+    <description>turn off the relay linked to this object on Ipx800 board</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="command" value="CHANGE-STATE-RELAY"/>
+            <property name="state-value" value="0"/>
+            <property name="address" value="@owner.object.address"/>
+        </properties>
+    </properties>
+</command>

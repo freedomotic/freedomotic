@@ -1,6 +1,6 @@
 <trigger>
-    <name>Ipx800 board reads a analog value</name>
-    <description>Ipx800 reads a analog value change</description>
+    <name>Ipx800 board reads an analog value</name>
+    <description>Ipx800 reads an analog value</description>
     <channel>app.event.sensor.protocol.read.ipx800</channel>
     <payload>
         <payload>

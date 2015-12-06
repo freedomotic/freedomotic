@@ -1,0 +1,27 @@
+<trigger>
+    <name>Ipx800 board reads a digital value</name>
+    <description>Ipx800 reads a digital value</description>
+    <channel>app.event.sensor.protocol.read.ipx800</channel>
+    <payload>
+        <payload>
+            <statement>
+                <logical>AND</logical>
+                <attribute>address</attribute>
+                <operand>REGEX</operand>
+                <value>^(.*):btn$</value>
+            </statement>
+            <statement>
+                <logical>SET</logical>
+                <attribute>behaviorValue</attribute>
+                <operand>EQUALS</operand>
+                <value>@event.isOn</value>
+            </statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <priority>0</priority>
+    <maxExecutions>-1</maxExecutions>
+    <numberOfExecutions>0</numberOfExecutions>
+    <suspensionTime>0</suspensionTime>
+</trigger>
