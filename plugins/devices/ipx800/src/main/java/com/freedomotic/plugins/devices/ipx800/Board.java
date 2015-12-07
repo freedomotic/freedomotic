@@ -199,7 +199,7 @@ public final class Board {
         digitalInputValues[digitalInputNumber] = value;
     }
 
-    public int getanalogInputValue(int analogInputNumber) {
+    public int getAnalogInputValue(int analogInputNumber) {
         return analogInputValues[analogInputNumber];
     }
 

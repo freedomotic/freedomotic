@@ -205,6 +205,7 @@ public class Ipx800 extends Protocol {
         try {
             if (board.getAuthentication().equalsIgnoreCase("true")) {
                 Authenticator.setDefault(new Authenticator() {
+
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(b.getUsername(), b.getPassword().toCharArray());
                     }
@@ -219,6 +220,7 @@ public class Ipx800 extends Protocol {
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
         } catch (ConnectException connEx) {
+            LOG.severe(Freedomotic.getStackTraceInfo(connEx));
             disconnect();
             this.stop();
             this.setDescription("Connection timed out, no reply from the board at " + statusFileURL);
@@ -250,7 +252,6 @@ public class Ipx800 extends Protocol {
         for (int i = startingRelay; i < nl; i++) {
             try {
                 String tagName = tag + i;
-                //Freedomotic.logger.severe("Ipx800 monitorizes tags " + tagName);
                 // control for storing value
                 if (tag.equalsIgnoreCase("led")) {
                     if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
@@ -258,17 +259,16 @@ public class Ipx800 extends Protocol {
                         board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
                     }
                 } else if (tag.equalsIgnoreCase("btn")) {
-                } else if (tag.equalsIgnoreCase("an") || tag.equalsIgnoreCase("analog")) {
-                    if (tag.equalsIgnoreCase("an")) {
-                        tagName = tag + (i + 1);
+                    if (!(board.getDigitalInputValue(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
+                        sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                        board.setDigitalInputValue(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
                     }
-                    if (board.getanalogInputValue(i)
-                            != Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent())) {
+                } else if (tag.equalsIgnoreCase("an") || tag.equalsIgnoreCase("analog")) {
+                    if (!(board.getAnalogInputValue(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
                         sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
                         board.setAnalogInputValue(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
                     }
                 }
-                // sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
             } catch (DOMException dOMException) {
                 //do nothing
             } catch (NumberFormatException numberFormatException) {
@@ -283,9 +283,9 @@ public class Ipx800 extends Protocol {
         relayLine++;
         //reconstruct freedomotic object address
         //ALIAS:LINE:TAG
-        String address = board.getAlias() + DELIMITER + relayLine +  DELIMITER + tag;
+        String address = board.getAlias() + DELIMITER + relayLine + DELIMITER + tag;
         //building the event
-        ProtocolRead event = new ProtocolRead(this, "ipx800", address); 
+        ProtocolRead event = new ProtocolRead(this, "ipx800", address);
         // relay lines - status=0 -> off; status=1 -> on
 
         if (tag.equalsIgnoreCase("led")) {
@@ -319,11 +319,6 @@ public class Ipx800 extends Protocol {
                 event.addProperty("inputValue", status);
             }
         }
-        //adding some optional information to the event
-        //event.addProperty("boardIP", board.getIpAddress());
-        //event.addProperty("boardPort", new Integer(board.getPort()).toString());
-        //event.addProperty("relayLine", new Integer(relayLine).toString());
-
         //publish the event on the messaging bus
         this.notifyEvent(event);
     }
