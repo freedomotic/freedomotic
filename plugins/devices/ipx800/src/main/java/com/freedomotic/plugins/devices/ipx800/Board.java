@@ -37,7 +37,7 @@ public final class Board {
     private int digitalInputNumber;
     private int startingRelay;
     private int[] relayStatus;
-    private int[] digitalInputValues;
+    private String[] digitalInputValues;
     private int[] analogInputValues;
 
     public Board(String ipAddress, int port, String alias, int relayNumber, int analogInputNumber,
@@ -191,11 +191,11 @@ public final class Board {
         relayStatus[relayNumber] = value;
     }
 
-    public int getDigitalInputValue(int digitalInputNumber) {
+    public String getDigitalInputValue(int digitalInputNumber) {
         return digitalInputValues[digitalInputNumber];
     }
 
-    public void setDigitalInputValue(int digitalInputNumber, int value) {
+    public void setDigitalInputValue(int digitalInputNumber, String value) {
         digitalInputValues[digitalInputNumber] = value;
     }
 
@@ -215,9 +215,9 @@ public final class Board {
     }
 
     private void initializeDigitalInputValues(int digitalInputNumber) {
-        digitalInputValues = new int[digitalInputNumber];
+        digitalInputValues = new String[digitalInputNumber];
         for (int i = 0; i < digitalInputNumber; i++) {
-            digitalInputValues[i] = -1;
+            digitalInputValues[i] = "";
         }
     }
 

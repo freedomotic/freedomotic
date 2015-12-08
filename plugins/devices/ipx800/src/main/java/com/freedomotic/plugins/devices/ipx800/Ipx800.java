@@ -205,7 +205,6 @@ public class Ipx800 extends Protocol {
         try {
             if (board.getAuthentication().equalsIgnoreCase("true")) {
                 Authenticator.setDefault(new Authenticator() {
-
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(b.getUsername(), b.getPassword().toCharArray());
                     }
@@ -259,9 +258,9 @@ public class Ipx800 extends Protocol {
                         board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
                     }
                 } else if (tag.equalsIgnoreCase("btn")) {
-                    if (!(board.getDigitalInputValue(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
+                    if (!(board.getDigitalInputValue(i).equalsIgnoreCase(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
                         sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
-                        board.setDigitalInputValue(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
+                        board.setDigitalInputValue(i, doc.getElementsByTagName(tagName).item(0).getTextContent());
                     }
                 } else if (tag.equalsIgnoreCase("an") || tag.equalsIgnoreCase("analog")) {
                     if (!(board.getAnalogInputValue(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
@@ -269,12 +268,8 @@ public class Ipx800 extends Protocol {
                         board.setAnalogInputValue(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
                     }
                 }
-            } catch (DOMException dOMException) {
-                //do nothing
-            } catch (NumberFormatException numberFormatException) {
-                //do nothing
-            } catch (NullPointerException ex) {
-                //do nothing
+            } catch (DOMException domException) {
+                LOG.severe("DOMException " + domException.getLocalizedMessage());
             }
         }
     }
@@ -300,7 +295,7 @@ public class Ipx800 extends Protocol {
                     event.addProperty("object.name", address);
                 }
             }
-        } else // digital inputs (btn tag) status = up -> on; status = down -> off
+        } else // digital inputs (btn tag) status = up -> on; status = dn -> off
         if (tag.equalsIgnoreCase("btn")) {
             if (status.equalsIgnoreCase("up")) {
                 event.addProperty("isOn", "true");
