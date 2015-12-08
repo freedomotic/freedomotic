@@ -90,6 +90,7 @@ public class Ipx800 extends Protocol {
             String analogInputTag;
             String autoConfiguration;
             String authentication;
+            String pathAuthentication;
             String username;
             String password;
             String objectClass;
@@ -110,12 +111,14 @@ public class Ipx800 extends Protocol {
             digitalInputTag = configuration.getTuples().getStringProperty(i, "digital-input-tag", "btn");
             analogInputTag = configuration.getTuples().getStringProperty(i, "analog-input-tag", "analog");
             authentication = configuration.getTuples().getStringProperty(i, "authentication", "false");
+            pathAuthentication = configuration.getTuples().getStringProperty(i, "path-authentication", "");
             username = configuration.getTuples().getStringProperty(i, "username", "admin");
             password = configuration.getTuples().getStringProperty(i, "password", "pass");
             autoConfiguration = configuration.getTuples().getStringProperty(i, "auto-configuration", "false");
             objectClass = configuration.getTuples().getStringProperty(i, "object.class", "Light");
             Board board = new Board(ipToQuery, portToQuery, alias, relayNumber, analogInputNumber,
-                    digitalInputNumber, startingRelay, ledTag, digitalInputTag, analogInputTag, autoConfiguration, objectClass, authentication, username, password);
+                    digitalInputNumber, startingRelay, ledTag, digitalInputTag, analogInputTag, autoConfiguration,
+                    objectClass, authentication, username, password, pathAuthentication);
             boards.add(board);
             // add board object and its alias as key for the hashmap
             devices.put(alias, board);
@@ -210,7 +213,7 @@ public class Ipx800 extends Protocol {
                     }
                 });
                 statusFileURL = "http://" + b.getIpAddress() + ":"
-                        + Integer.toString(b.getPort()) + "/protect/" + GET_STATUS_URL;
+                        + Integer.toString(b.getPort()) + b.getPathAuthentication() + "/" + GET_STATUS_URL;
             } else {
                 statusFileURL = "http://" + board.getIpAddress() + ":"
                         + Integer.toString(board.getPort()) + "/" + GET_STATUS_URL;

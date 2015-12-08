@@ -27,8 +27,9 @@
             <property name="digital-input-tag" value="btn"/>
             <property name="auto-configuration" value="false"/>
             <property name="authentication" value="true"/>
-            <property name="username" value="admin"/>
-            <property name="password" value="pass"/>
+            <property name="path-authentication" value=""/>
+            <property name="username" value="ftp"/>
+            <property name="password" value="ftp"/>
             <property name="object.class" value="Light"/>
             <property name="powered" value="Ipx800 board reads a relay state change"/>
             <property name="turn on" value="Turn on relay on Ipx800 board"/>

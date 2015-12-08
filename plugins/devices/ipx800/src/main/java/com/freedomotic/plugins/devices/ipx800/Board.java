@@ -27,6 +27,7 @@ public final class Board {
     private String digitalInputTag;
     private String autoConfiguration;
     private String authentication = null;
+    private String pathAuthentication = null;
     private String username = null;
     private String password = null;
     private String objectClass;
@@ -42,7 +43,7 @@ public final class Board {
 
     public Board(String ipAddress, int port, String alias, int relayNumber, int analogInputNumber,
             int digitalInputNumber, int startingRelay, String ledTag, String digitalInputTag, String analogInputTag, String autoConfiguration, String objectClass,
-            String authentication, String username, String password) {
+            String authentication, String username, String password, String pathAuthentication) {
         setIpAddress(ipAddress);
         setPort(port);
         setAlias(alias);
@@ -57,6 +58,7 @@ public final class Board {
         setAuthentication(authentication);
         setUsername(username);
         setPassword(password);
+        setPathAuthentication(pathAuthentication);
         setObjectClass(objectClass);
         initializeRelayStatus(relayNumber);
         initializeDigitalInputValues(digitalInputNumber);
@@ -157,6 +159,14 @@ public final class Board {
 
     public void setAuthentication(String authentication) {
         this.authentication = authentication;
+    }
+    
+    public String getPathAuthentication() {
+        return pathAuthentication;
+    }
+
+    public void setPathAuthentication(String pathAuthentication) {
+        this.pathAuthentication = pathAuthentication;
     }
 
     public String getUsername() {
