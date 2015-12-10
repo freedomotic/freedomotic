@@ -14,7 +14,7 @@
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>@event.inputValue</value>
+                <value>@event.isOn</value>
             </statement>
         </payload>
     </payload>
