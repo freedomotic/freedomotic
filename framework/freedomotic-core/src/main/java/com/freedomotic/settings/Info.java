@@ -174,6 +174,7 @@ public class Info {
         }
         Info.PATHS.PATH_DATA_FOLDER = path;
         Info.PATHS.PATH_RESOURCES_FOLDER = new File(path + "/resources/");
+        Info.PATHS.PATH_ENVIRONMENTS_FOLDER = new File(path + "/furn/");
     }
     
     public static void relocateWorkdir(File file) {
