@@ -36,17 +36,21 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.atmosphere.cpr.AtmosphereServlet;
-import org.eclipse.jetty.http.ssl.SslContextFactory;
+import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 public final class RestJettyServer extends Server {
@@ -55,7 +59,7 @@ public final class RestJettyServer extends Server {
 
     private Server webServer;
     private Plugin master;
-    
+
     @Inject
     private GuiceServletConfig guiceServletConfig;
 
@@ -72,10 +76,13 @@ public final class RestJettyServer extends Server {
          * http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/SpdyConnector.html
          *
          */
+        HttpConfiguration http_config = new HttpConfiguration();
         if (!master.configuration.getBooleanProperty("enable-ssl", false)) {
-            SelectChannelConnector selectChannelConnector = new SelectChannelConnector();
-            selectChannelConnector.setPort(master.configuration.getIntProperty("http-port", 9111));
-            webServer.addConnector(selectChannelConnector);
+            ServerConnector http = new ServerConnector(webServer,
+                    new HttpConnectionFactory(http_config));
+
+            http.setPort(master.configuration.getIntProperty("http-port", 9111));
+            webServer.addConnector(http);
 
         } else {
             SslContextFactory sslContextFactory = new SslContextFactory();
@@ -86,9 +93,15 @@ public final class RestJettyServer extends Server {
                     new FileInputStream(master.getFile().getParent() + "/data/" + master.configuration.getStringProperty("KEYSTORE_SERVER_FILE", "keystore_server")),
                     master.configuration.getStringProperty("KEYSTORE_SERVER_PWD", "freedomotic").toCharArray());
             sslContextFactory.setKeyStore(keyStore);
-            SslSelectChannelConnector sslSelectChannelConnector = new SslSelectChannelConnector(sslContextFactory);
-            sslSelectChannelConnector.setPort(master.configuration.getIntProperty("https-port", 9113));
-            webServer.addConnector(sslSelectChannelConnector);
+            HttpConfiguration https_config = new HttpConfiguration(http_config);
+            https_config.addCustomizer(new SecureRequestCustomizer());
+            ServerConnector https = new ServerConnector(webServer,
+                    new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
+                    new HttpConnectionFactory(https_config));
+
+            https.setIdleTimeout(500000);
+            https.setPort(master.configuration.getIntProperty("https-port", 9113));
+            webServer.addConnector(https);
 
         }
 
@@ -99,7 +112,7 @@ public final class RestJettyServer extends Server {
         ServletHolder atmosphereServletHolder = new ServletHolder(AtmosphereServlet.class);
         atmosphereServletHolder.setInitParameter("jersey.config.server.provider.packages", RestAPIv3.ATMOSPHRE_RESOURCE_PKG);
         atmosphereServletHolder.setInitParameter("org.atmosphere.websocket.messageContentType", "application/json");
-        atmosphereServletHolder.setInitParameter("org.atmosphere.cpr.AtmosphereInterceptor","org.atmosphere.interceptor.ShiroInterceptor");
+        atmosphereServletHolder.setInitParameter("org.atmosphere.cpr.AtmosphereInterceptor", "org.atmosphere.interceptor.ShiroInterceptor");
 //        atmosphereServletHolder.setInitParameter("org.atmosphere.cpr.broadcasterClass", "org.atmosphere.jersey.JerseyBroadcaster");
         atmosphereServletHolder.setAsyncSupported(true);
         atmosphereServletHolder.setInitParameter("org.atmosphere.useWebSocket", "true");
@@ -109,10 +122,9 @@ public final class RestJettyServer extends Server {
         // jersey servlet
         ServletHolder jerseyServletHolder = new ServletHolder(ServletContainer.class);
         jerseyServletHolder.setInitParameter("javax.ws.rs.Application", JerseyApplication.class.getCanonicalName());
-        jerseyServletHolder.setInitParameter("jersey.config.server.wadl.disableWadl","true");
+        jerseyServletHolder.setInitParameter("jersey.config.server.wadl.disableWadl", "true");
         jerseyServletHolder.setInitOrder(1);
         context.addServlet(jerseyServletHolder, "/" + API_VERSION + "/*");
-        
 
         // cors filter
         if (master.configuration.getBooleanProperty("enable-cors", false)) {
@@ -136,7 +148,7 @@ public final class RestJettyServer extends Server {
         // guice filter
         context.addEventListener(guiceServletConfig);
         context.addFilter(GuiceFilter.class, "/*", null);
-    
+
         //static files handler        
         String staticDir = master.configuration.getStringProperty("serve-static", "swagger");
         context.setResourceBase(new File(master.getFile().getParent() + "/data/" + staticDir + "/").getAbsolutePath());

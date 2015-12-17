@@ -65,13 +65,14 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-all</artifactId>
-            <version>5.12.0</version> 
+            <version>5.13.0</version> 
         </dependency> 
         <dependency>
-            <groupId>org.eclipse.jetty.aggregate</groupId>
-            <artifactId>jetty-all-server</artifactId>
-            <version>8.1.18.v20150929</version>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>9.3.6.v20151106</version>
         </dependency>
+
         <!-- XML serialization library -->
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
