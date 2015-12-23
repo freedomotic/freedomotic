@@ -15,34 +15,44 @@
       <value>false</value>
     </com.freedomotic.model.object.BooleanBehavior>
     <com.freedomotic.model.object.RangedIntBehavior>
-      <name>brightness</name>
-      <description></description>
+      <name>red</name>
+      <description>red value</description>
       <active>true</active>
       <priority>-1</priority>
       <value>0</value>
       <max>255</max>
       <min>0</min>
-      <step>5</step>
+      <step>1</step>
     </com.freedomotic.model.object.RangedIntBehavior>
     <com.freedomotic.model.object.RangedIntBehavior>
-      <name>hue</name>
-      <description>the hue of the light</description>
+      <name>green</name>
+      <description>green value</description>
       <active>true</active>
       <priority>-1</priority>
       <value>0</value>
-      <max>65535</max>
+      <max>255</max>
+      <min>0</min>
+      <step>1</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>blue</name>
+      <description>blue value</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>255</max>
+      <min>0</min>
+      <step>1</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>brightness</name>
+      <description>brightness value</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>100</max>
       <min>0</min>
       <step>10</step>
-    </com.freedomotic.model.object.RangedIntBehavior>
-    <com.freedomotic.model.object.RangedIntBehavior>
-      <name>saturation</name>
-      <description>the saturation of the light</description>
-      <active>true</active>
-      <priority>-1</priority>
-      <value>0</value>
-      <max>255</max>
-      <min>0</min>
-      <step>5</step>
     </com.freedomotic.model.object.RangedIntBehavior>
     <com.freedomotic.model.object.RangedIntBehavior>
       <name>power_consumption</name>
@@ -94,14 +104,16 @@
   <actions>
     <property name="turn off" value="Execute it successfully"/>
     <property name="turn on" value="Execute it successfully"/>
+    <property name="set red" value="Execute it successfully"/>
+    <property name="set green" value="Execute it successfully"/>
+    <property name="set blue" value="Execute it successfully"/>
     <property name="set brightness" value="Execute it successfully"/>
-    <property name="set saturation" value="Execute it successfully"/>
-    <property name="set hue" value="Execute it successfully"/>
   </actions>
   <triggers>
-    <property name="" value="brightness"/>
-    <property name="" value="hue"/>
-    <property name="" value="saturation"/> 
+    <property name="" value="red"/>
+    <property name="" value="green"/>
+    <property name="" value="blue"/> 
+     <property name="" value="brightness"/> 
   </triggers>
   <currentRepresentation>0</currentRepresentation>
 </object>
