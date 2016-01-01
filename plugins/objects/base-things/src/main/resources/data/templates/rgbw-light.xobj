@@ -1,0 +1,131 @@
+<object>
+  <name>RGBW Light</name>
+  <description>A Rgbw Light</description>
+  <actAs>virtual</actAs>
+  <type>EnvObject.ElectricDevice.RGBLight.RGBWLight</type>
+  <hierarchy>com.freedomotic.things.impl.RGBWLight</hierarchy>
+  <protocol>unknowkn</protocol>
+  <phisicalAddress>unknown</phisicalAddress>
+  <behaviors>
+    <com.freedomotic.model.object.BooleanBehavior>
+      <name>powered</name>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>false</value>
+    </com.freedomotic.model.object.BooleanBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>red</name>
+      <description>red value</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>255</max>
+      <min>0</min>
+      <step>1</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>green</name>
+      <description>green value</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>255</max>
+      <min>0</min>
+      <step>1</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>blue</name>
+      <description>blue value</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>255</max>
+      <min>0</min>
+      <step>1</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>white</name>
+      <description>white value</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>255</max>
+      <min>0</min>
+      <step>1</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>brightness</name>
+      <description>brightness value</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <value>0</value>
+      <max>100</max>
+      <min>0</min>
+      <step>10</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+    <com.freedomotic.model.object.RangedIntBehavior>
+      <name>power_consumption</name>
+      <description>Power consumed by device when it's on</description>
+      <active>true</active>
+      <priority>-1</priority>
+      <readOnly>true</readOnly>
+      <value>0</value>
+      <max>3000</max>
+      <min>0</min>
+      <scale>1</scale>
+      <step>10</step>
+    </com.freedomotic.model.object.RangedIntBehavior>
+  </behaviors>
+  <representation>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>rgbw-light-off.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+    <view>
+      <tangible>true</tangible>
+      <intersecable>false</intersecable>
+      <offset x="0" y="0"/>
+      <rotation>0.0</rotation>
+      <icon>rgbw-light-on.png</icon>
+      <fillColor>#000000</fillColor>
+      <textColor>#000000</textColor>
+      <borderColor>#000000</borderColor>
+      <shape class="polygon">
+        <point x="0" y="0"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
+      </shape>
+    </view>
+  </representation>
+  <actions>
+    <property name="turn off" value="Execute it successfully"/>
+    <property name="turn on" value="Execute it successfully"/>
+    <property name="set red" value="Execute it successfully"/>
+    <property name="set green" value="Execute it successfully"/>
+    <property name="set blue" value="Execute it successfully"/>
+    <property name="set white" value="Execute it successfully"/>
+    <property name="set brightness" value="Execute it successfully"/>
+  </actions>
+  <triggers>
+    <property name="" value="red"/>
+    <property name="" value="green"/>
+    <property name="" value="blue"/>
+    <property name="" value="white"/> 
+    <property name="" value="brightness"/> 
+  </triggers>
+  <currentRepresentation>0</currentRepresentation>
+</object>
