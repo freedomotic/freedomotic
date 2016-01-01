@@ -198,8 +198,8 @@ public class RGBLight extends Light {
         d.setProperty("value", "50");
 
         Command e = new Command();
-        e.setName("Increase its hue");
-        e.setDescription("increases its hue of one step");
+        e.setName("Increase its red");
+        e.setDescription("increases its red of one step");
         e.setReceiver("app.events.sensors.behavior.request.objects");
         e.setProperty("object", "@event.object.name");
         e.setProperty("behavior", BEHAVIOR_RED);
