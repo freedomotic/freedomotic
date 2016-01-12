@@ -1,0 +1,13 @@
+<command>
+    <name>Capture image from an IpCamera</name>
+    <receiver>app.actuators.motion.ipcamera-motion.in</receiver>
+    <description>Capture image from an IpCamera</description>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="command" value="CAPTURE-IMAGE"/>
+            <property name="camera-name" value="@event.camera-name"/>
+     	</properties>
+    </properties>
+</command>
