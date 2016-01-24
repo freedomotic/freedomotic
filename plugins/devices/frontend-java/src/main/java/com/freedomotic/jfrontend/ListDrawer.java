@@ -71,7 +71,6 @@ public class ListDrawer extends Renderer {
         });
         this.setLayout(new BorderLayout());
         this.setBackground(Color.white);
-
         JScrollPane scroll = new JScrollPane(panel);
         add(scroll);
         enlistZones();
@@ -91,41 +90,53 @@ public class ListDrawer extends Renderer {
 
     private void enlistObjects(ZoneLogic zone) {
         panel.removeAll();
+        panel.updateUI();
         panel.setLayout(new SpringLayout());
 
         int row = 0;
 
+        panel.add(new JLabel("Select a zone"));
+        panel.add(cmbZone);
+        panel.add(new JLabel(""));
+
+        row++;
+
         if (zone.getPojo().getObjects().isEmpty()) {
+            panel.add(new JLabel(""));
             panel.add(new JLabel("No objects in this zone"));
-        }
-
-        for (final EnvObject objPojo : zone.getPojo().getObjects()) {
-            final EnvObjectLogic obj = master.getApi().things().findOne(objPojo.getUUID());
-
-            //a coloumn with object name
-            JLabel icon = new JLabel(renderSingleObject(obj.getPojo()));
-            icon.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    mouseClickObject(obj);
-                }
-            });
-            panel.add(icon);
-
-            JTextArea lblName = new JTextArea(objPojo.getName() + "\n\n" + getCompleteDescription(obj));
-            lblName.setBackground(getBackground());
-            panel.add(lblName);
-            //a configuration button with a listener
-            JButton btnConfig = new JButton("Configure");
-            btnConfig.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    ObjectEditor objectEditor = new ObjectEditor(obj);
-                    objectEditor.setVisible(true);
-                }
-            });
-            panel.add(btnConfig);
+            panel.add(new JLabel(""));
             row++;
+        } else {
+
+            for (final EnvObject objPojo : zone.getPojo().getObjects()) {
+                final EnvObjectLogic obj = master.getApi().things().findOne(objPojo.getUUID());
+
+                //a coloumn with object name
+                JLabel icon = new JLabel(renderSingleObject(obj.getPojo()));
+                icon.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        mouseClickObject(obj);
+                    }
+                });
+                panel.add(icon);
+
+                JTextArea lblName = new JTextArea(objPojo.getName() + "\n" + getCompleteDescription(obj));
+                lblName.setBackground(getBackground());
+                panel.add(lblName);
+                //a configuration button with a listener
+                JButton btnConfig = new JButton("Configure");
+                btnConfig.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        ObjectEditor objectEditor = new ObjectEditor(obj);
+                        objectEditor.setVisible(true);
+                    }
+                });
+                panel.add(btnConfig);
+                row++;
+            }
         }
+
         SpringUtilities.makeCompactGrid(panel,
                 row, 3, //rows, cols
                 5, 5, //initX, initY
