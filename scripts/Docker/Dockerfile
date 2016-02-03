@@ -1,4 +1,4 @@
-FROM java:7u79-jre 
+FROM java:8-jre 
 
 MAINTAINER Matteo Mazzoni <matteo@freedomotic.com> 
 
@@ -12,6 +12,6 @@ RUN rm -rf /srv/freedomotic/plugins/devices/frontend-java
 
 VOLUME /srv/freedomotic/data
 
-EXPOSE 9111 
+EXPOSE 9111 8090
 
 ENTRYPOINT /srv/freedomotic/freedomotic.sh -D FOREGROUND
