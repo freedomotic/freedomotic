@@ -16,12 +16,16 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+   <xsl:template match="it.freedomotic.reactions.Command">
+        <command version="5.6.0">
+            <xsl:apply-templates select="@*|node()" />
+        </command>
+    </xsl:template>
 
-
-    <xsl:template match="trigger">
-        <trigger version="5.6.0">
-            <xsl:apply-templates />
-        </trigger>
+    <xsl:template match="command">
+        <command version="5.6.0">
+            <xsl:apply-templates select="@*|node()" />
+        </command>
     </xsl:template>
 
     <xsl:template match="*">

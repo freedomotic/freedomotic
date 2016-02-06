@@ -25,7 +25,7 @@ import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
-import com.freedomotic.reactions.ReactionPersistence;
+import com.freedomotic.reactions.ReactionRepository;
 import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
@@ -57,7 +57,7 @@ class APIStandardImpl implements API {
     private final PluginsManager plugManager;
     private TriggerRepository triggers;
     private CommandRepository commands;
-    private ReactionPersistence reactions;
+    private ReactionRepository reactions;
     private final ThingFactory thingsFactory;
     private NlpCommand nlpCommands;
     private final BusService busService;
@@ -87,7 +87,7 @@ class APIStandardImpl implements API {
             PluginsManager plugManager,
             TriggerRepository triggerPersistence,
             CommandRepository commands,
-            ReactionPersistence reactions,
+            ReactionRepository reactions,
             NlpCommand nlpCommands) {
         this.environments = environment;
         this.things = things;
@@ -194,7 +194,7 @@ class APIStandardImpl implements API {
     }
 
     @Override
-    public ReactionPersistence reactions() {
+    public ReactionRepository reactions() {
         return reactions;
     }
 

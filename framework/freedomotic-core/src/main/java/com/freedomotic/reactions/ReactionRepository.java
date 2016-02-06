@@ -19,20 +19,20 @@
  */
 package com.freedomotic.reactions;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
+import com.freedomotic.persistence.Repository;
+import java.io.File;
+import java.util.List;
 
 /**
  *
  * @author enrico
  */
-public class InjectorAutomations extends AbstractModule {
+public interface ReactionRepository extends Repository<Reaction> {
 
-    @Override
-    protected void configure() {
-        bind(CommandRepository.class).to(CommandRepositoryImpl.class).in(Singleton.class);
-        bind(TriggerRepository.class).to(TriggerRepositoryImpl.class).in(Singleton.class);
-        bind(ReactionRepository.class).to(ReactionRepositoryImpl.class).in(Singleton.class);
-    }
+   
+    //TODO: remove it, here just for refactoring
 
+    public void loadReactions(File folder);
+
+    public void saveReactions(File folder);
 }

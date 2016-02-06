@@ -18,14 +18,16 @@
     </xsl:template>
 
 
-    <xsl:template match="command">
-        <command version="5.6.0">
-            <xsl:apply-templates />
-        </command>
+    <xsl:template match="trigger">
+        <trigger version="5.6.0">
+            <xsl:apply-templates select="@*|node()" />
+        </trigger>
     </xsl:template>
 
-    <xsl:template match="*">
-        <xsl:copy-of select="."/>
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()" />
+        </xsl:copy>
     </xsl:template>
 
 </xsl:stylesheet>

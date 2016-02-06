@@ -22,6 +22,9 @@ package com.freedomotic.persistence;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.object.EnvObject;
+import com.freedomotic.reactions.Command;
+import com.freedomotic.reactions.Reaction;
+import com.freedomotic.reactions.Trigger;
 import com.freedomotic.settings.Info;
 import java.io.File;
 import java.io.StringReader;
@@ -70,9 +73,15 @@ class DataUpgradeServiceImpl implements DataUpgradeService<String> {
         Source xsltAlgorthm;
         try {
             if (type == EnvObject.class) {
-                xsltAlgorthm = getTransformationAlgorithm("things", fromVersion);
+                xsltAlgorthm = getTransformationAlgorithm("thing", fromVersion);
             } else if (type == Environment.class) {
-                xsltAlgorthm = getTransformationAlgorithm("environments", fromVersion);
+                xsltAlgorthm = getTransformationAlgorithm("environment", fromVersion);
+            } else if (type == Reaction.class) {
+                xsltAlgorthm = getTransformationAlgorithm("reaction", fromVersion);            
+            } else if (type == Command.class) {
+                xsltAlgorthm = getTransformationAlgorithm("command", fromVersion);            
+            } else if (type == Trigger.class) {
+                xsltAlgorthm = getTransformationAlgorithm("trigger", fromVersion);
             } else {
                 // Return an exception if it's not a class that this service able to upgrade
                 throw new DataUpgradeException("Data upgrade service: upgrading entities of type " + type.getCanonicalName() + " is not supported");

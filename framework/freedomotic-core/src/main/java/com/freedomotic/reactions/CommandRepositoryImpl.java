@@ -19,14 +19,20 @@
  */
 package com.freedomotic.reactions;
 
+import com.freedomotic.exceptions.DataUpgradeException;
+import com.freedomotic.exceptions.RepositoryException;
+import com.freedomotic.persistence.DataUpgradeService;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.settings.Info;
+import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +42,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +57,11 @@ class CommandRepositoryImpl implements CommandRepository {
 
     private static final Map<String, Command> userCommands = new HashMap<String, Command>();
     private static final Map<String, Command> hardwareCommands = new HashMap<String, Command>();
+    private final DataUpgradeService dataUpgradeService;
 
-    public CommandRepositoryImpl() {
+    @Inject
+    public CommandRepositoryImpl(DataUpgradeService dataUpgradeService) {
+        this.dataUpgradeService = dataUpgradeService;
     }
 
     /**
@@ -69,14 +79,12 @@ class CommandRepositoryImpl implements CommandRepository {
                 } else {
                     LOG.debug("Command ''{}'' already in the list of user commands. Skipped", c.getName());
                 }
+            } else if (!hardwareCommands.containsKey(c.getName().trim().toLowerCase())) {
+                hardwareCommands.put(c.getName(),
+                        c);
+                LOG.trace("Added command ''{}'' to the list of hardware commands", c.getName());
             } else {
-                if (!hardwareCommands.containsKey(c.getName().trim().toLowerCase())) {
-                    hardwareCommands.put(c.getName(),
-                            c);
-                    LOG.trace("Added command ''{}'' to the list of hardware commands", c.getName());
-                } else {
-                    LOG.debug("Command ''{}'' already in the list of hardware commands. Skipped", c.getName());
-                }
+                LOG.debug("Command ''{}'' already in the list of hardware commands. Skipped", c.getName());
             }
         } else {
             LOG.warn("Attempt to add a null user command to the list. Skipped");
@@ -198,14 +206,14 @@ class CommandRepositoryImpl implements CommandRepository {
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xcmd")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+            public boolean accept(File file) {
+                if (file.isFile() && file.getName().endsWith(".xcmd")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
 
         files = folder.listFiles(objectFileFileter);
 
@@ -219,15 +227,31 @@ class CommandRepositoryImpl implements CommandRepository {
 
                 for (File file : files) {
                     Command command = null;
-                    String xml = null;
+                    String xml;
                     try {
                         xml = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/command.dtd");
-                    } catch (Exception e) {
-                        LOG.error("Reaction file {} is not well formatted: {}", new Object[]{file.getPath(), e.getLocalizedMessage()});
+                    } catch (IOException ex) {
                         continue;
                     }
                     try {
+                        Properties dataProperties = new Properties();
+                        String fromVersion;
+                        try {
+                            dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
+                            fromVersion = dataProperties.getProperty("data.version");
+                        } catch (IOException iOException) {
+                            // Fallback to a default version for older version without that properties file
+                            fromVersion = "5.5.0";
+                        }
+                        xml = (String) dataUpgradeService.upgrade(Command.class, xml, fromVersion);
                         command = (Command) xstream.fromXML(xml);
+
+                    } catch (DataUpgradeException dataUpgradeException) {
+                        throw new RepositoryException("Cannot upgrade Command file " + file.getAbsolutePath(), dataUpgradeException);
+                    } catch (XStreamException e) {
+                        throw new RepositoryException("XML parsing error. Readed XML is \n" + xml, e);
+                    }
+                    try {
 
                         if (command.isHardwareLevel()) { //an hardware level command
                             hardwareCommands.put(command.getName(),
@@ -254,7 +278,7 @@ class CommandRepositoryImpl implements CommandRepository {
                 indexfile.write(summary.toString());
                 //Close the output stream
                 indexfile.close();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 LOG.error("Error while loading command", ex);
             } finally {
                 try {
@@ -314,14 +338,14 @@ class CommandRepositoryImpl implements CommandRepository {
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xcmd")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+            public boolean accept(File file) {
+                if (file.isFile() && file.getName().endsWith(".xcmd")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
 
         files = folder.listFiles(objectFileFileter);
 

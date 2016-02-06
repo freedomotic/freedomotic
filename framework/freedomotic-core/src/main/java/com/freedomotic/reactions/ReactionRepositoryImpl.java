@@ -20,19 +20,28 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.exceptions.DataUpgradeException;
+import com.freedomotic.exceptions.RepositoryException;
+import com.freedomotic.model.environment.Environment;
+import com.freedomotic.persistence.DataUpgradeService;
 import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.settings.Info;
+import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,20 +50,23 @@ import org.slf4j.LoggerFactory;
  *
  * @author Enrico
  */
-public class ReactionPersistence implements Repository<Reaction> {
+public class ReactionRepositoryImpl implements ReactionRepository {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReactionPersistence.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ReactionRepositoryImpl.class.getName());
 
     private static final List<Reaction> list = new ArrayList<Reaction>(); //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
+    private final DataUpgradeService dataUpgradeService;
 
-    public ReactionPersistence() {
+    @Inject
+    public ReactionRepositoryImpl(DataUpgradeService dataUpgradeService) {
+        this.dataUpgradeService = dataUpgradeService;
     }
 
     /**
      *
      * @param folder
      */
-    public static void saveReactions(File folder) {
+    public void saveReactions(File folder) {
         if (list.isEmpty()) {
             LOG.warn("There are no reactions to persist, {} will not be altered.", folder.getAbsolutePath());
 
@@ -88,17 +100,17 @@ public class ReactionPersistence implements Repository<Reaction> {
         }
     }
 
-    private static void deleteReactionFiles(File folder) {
+    private void deleteReactionFiles(File folder) {
         File[] files;
 
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        return file.isFile() && file.getName().endsWith(".xrea");
-                    }
-                };
+            @Override
+            public boolean accept(File file) {
+                return file.isFile() && file.getName().endsWith(".xrea");
+            }
+        };
 
         files = folder.listFiles(objectFileFileter);
 
@@ -111,20 +123,20 @@ public class ReactionPersistence implements Repository<Reaction> {
      *
      * @param folder
      */
-    public synchronized static void loadReactions(File folder) {
+    public synchronized void loadReactions(File folder) {
         XStream xstream = FreedomXStream.getXstream();
 
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xrea")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+            public boolean accept(File file) {
+                if (file.isFile() && file.getName().endsWith(".xrea")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
 
         File[] files = folder.listFiles(objectFileFileter);
 
@@ -136,15 +148,30 @@ public class ReactionPersistence implements Repository<Reaction> {
             if (files != null) {
                 for (File file : files) {
                     Reaction reaction = null;
+                    String xml;
                     //validate the object against a predefined DTD
                     try {
-                        String xml
-                                = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/reaction.dtd");
-
+                        xml = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/reaction.dtd");
+                    } catch (IOException ex) {
+                        throw new RepositoryException(ex.getMessage(), ex);
+                    }
+                    try {
+                        Properties dataProperties = new Properties();
+                        String fromVersion;
+                        try {
+                            dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
+                            fromVersion = dataProperties.getProperty("data.version");
+                        } catch (IOException iOException) {
+                            // Fallback to a default version for older version without that properties file
+                            fromVersion = "5.5.0";
+                        }
+                        xml = (String) dataUpgradeService.upgrade(Reaction.class, xml, fromVersion);
                         reaction = (Reaction) xstream.fromXML(xml);
-                    } catch (Exception e) {
-                        LOG.error("Reaction file {} is not well formatted: {}", new Object[]{file.getName(), e.getLocalizedMessage()});
-                        continue;
+
+                    } catch (DataUpgradeException dataUpgradeException) {
+                        throw new RepositoryException("Cannot upgrade Reaction file " + file.getAbsolutePath(), dataUpgradeException);
+                    } catch (XStreamException e) {
+                        throw new RepositoryException("XML parsing error. Readed XML is \n" + xml, e);
                     }
 
                     if (reaction.getTrigger() != null && reaction.getTrigger().getName() != null) {
@@ -181,7 +208,7 @@ public class ReactionPersistence implements Repository<Reaction> {
      * @param r
      */
     @Deprecated
-    public static void add(Reaction r) {
+    public void add(Reaction r) {
         if (!exists(r)) { //if not already loaded
             //if it's a new reaction validate it's commands
             if (r.getCommands() != null && !r.getCommands().isEmpty()) {
@@ -209,7 +236,7 @@ public class ReactionPersistence implements Repository<Reaction> {
      * @param input
      */
     @Deprecated
-    public static void remove(Reaction input) {
+    public void remove(Reaction input) {
         if (input != null) {
             boolean removed = list.remove(input);
             LOG.info("Removed reaction {}", input.getDescription());
@@ -230,7 +257,7 @@ public class ReactionPersistence implements Repository<Reaction> {
      * @return
      */
     @Deprecated
-    public static Iterator<Reaction> iterator() {
+    public Iterator<Reaction> iterator() {
         return list.iterator();
     }
 
@@ -239,7 +266,7 @@ public class ReactionPersistence implements Repository<Reaction> {
      * @return
      */
     @Deprecated
-    public static List<Reaction> getReactions() {
+    public List<Reaction> getReactions() {
         return Collections.unmodifiableList(list);
     }
 
@@ -249,7 +276,7 @@ public class ReactionPersistence implements Repository<Reaction> {
      * @return
      */
     @Deprecated
-    public static Reaction getReaction(String uuid) {
+    public Reaction getReaction(String uuid) {
         for (Reaction r : list) {
             if (r.getUuid().equalsIgnoreCase(uuid)) {
                 return r;
@@ -262,7 +289,7 @@ public class ReactionPersistence implements Repository<Reaction> {
      *
      * @return
      */
-    public static int size() {
+    public int size() {
         return list.size();
     }
 
@@ -271,7 +298,7 @@ public class ReactionPersistence implements Repository<Reaction> {
      * @param input
      * @return
      */
-    public static boolean exists(Reaction input) {
+    public boolean exists(Reaction input) {
         if (input != null) {
             for (Iterator<Reaction> it = list.iterator(); it.hasNext();) {
                 Reaction reaction = it.next();

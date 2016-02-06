@@ -25,7 +25,7 @@ import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
-import com.freedomotic.reactions.ReactionPersistence;
+import com.freedomotic.reactions.ReactionRepository;
 import com.freedomotic.security.Auth;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.NlpCommand;
@@ -100,7 +100,7 @@ public interface API {
     TriggerRepository triggers();
     ThingRepository things();
     CommandRepository commands();
-    ReactionPersistence reactions();
+    ReactionRepository reactions();
     NlpCommand nlpCommands();
     
     ThingFactory thingsFactory();

@@ -46,7 +46,7 @@
                     <xsl:with-param name="by" select="'com.freedomotic'" />
                 </xsl:call-template>    
             </xsl:variable>
-            <xsl:variable name="b">
+       <!--     <xsl:variable name="b">
                 <xsl:call-template name="string-replace">
                     <xsl:with-param name="text" select="$a" />
                     <xsl:with-param name="replace" select="'Gate'" />
@@ -59,10 +59,10 @@
                     <xsl:with-param name="replace" select="'Person'" />
                     <xsl:with-param name="by" select="'GenericPerson'" />
                 </xsl:call-template>     
-            </xsl:variable>
+            </xsl:variable> -->
             <xsl:variable name="d">
                 <xsl:call-template name="string-replace">
-                    <xsl:with-param name="text" select="$c" />
+                    <xsl:with-param name="text" select="$a" /><!-- -->
                     <xsl:with-param name="replace" select="'freedomotic.objects'" />
                     <xsl:with-param name="by" select="'freedomotic.things'" />
                 </xsl:call-template>     
