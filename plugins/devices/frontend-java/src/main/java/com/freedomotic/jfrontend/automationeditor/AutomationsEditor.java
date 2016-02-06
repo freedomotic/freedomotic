@@ -25,6 +25,7 @@ import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandRepository;
+import com.freedomotic.reactions.ReactionRepository;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerRepository;
 import com.google.inject.Inject;
@@ -52,6 +53,9 @@ public class AutomationsEditor extends Protocol {
     private TriggerRepository triggerRepository;
     @Inject
     private CommandRepository commandRepository;
+    @Inject
+    private ReactionRepository reactionRepository;
+    
     private ReactionsPanel panel;
     private JFrame frame;
 
@@ -122,7 +126,7 @@ public class AutomationsEditor extends Protocol {
         frame.setTitle(getApi().getI18n().msg("manage") + getApi().getI18n().msg("automations"));
         frame.setPreferredSize(new Dimension(700, 600));
 
-        panel = new ReactionsPanel(this, nlpCommands, triggerRepository, commandRepository);
+        panel = new ReactionsPanel(this, nlpCommands, triggerRepository, commandRepository,reactionRepository);
         frame.setContentPane(panel);
 
         JButton ok = new JButton(getApi().getI18n().msg("ok"));
