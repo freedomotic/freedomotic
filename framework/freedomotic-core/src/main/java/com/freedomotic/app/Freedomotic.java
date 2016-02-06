@@ -41,13 +41,12 @@ import com.freedomotic.marketplace.ClassPathUpdater;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.MarketPlaceService;
 import com.freedomotic.nlp.CommandsNlpService;
-import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandRepository;
-import com.freedomotic.reactions.ReactionPersistence;
+import com.freedomotic.reactions.ReactionRepository;
 import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.security.Auth;
 import com.freedomotic.security.UserRealm;
@@ -113,6 +112,7 @@ public class Freedomotic implements BusConsumer {
     // TODO remove static modifier once static methods sendEvent & sendCommand are erased.
     private static BusService busService;
     private final CommandRepository commandRepository;
+    private final ReactionRepository reactionRepository;
     private final Autodiscovery autodiscovery;
 
     /**
@@ -139,6 +139,7 @@ public class Freedomotic implements BusConsumer {
             ThingRepository thingsRepository,
             TriggerRepository triggerRepository,
             CommandRepository commandRepository,
+            ReactionRepository reactionRepository,
             ClientStorage clientStorage,
             CommandsNlpService commandsNlpService,
             AppConfig config,
@@ -153,6 +154,7 @@ public class Freedomotic implements BusConsumer {
         this.thingsRepository = thingsRepository;
         this.triggerRepository = triggerRepository;
         this.commandRepository = commandRepository;
+        this.reactionRepository = reactionRepository;
         this.busService = busService;
         this.commandsNlpService = commandsNlpService;
         this.topologyManager = topologyManager;
@@ -341,7 +343,7 @@ public class Freedomotic implements BusConsumer {
         // Loads the entire Reactions system (Trigger + Commands + Reactions)
         triggerRepository.loadTriggers(new File(Info.PATHS.PATH_DATA_FOLDER + "/trg/"));
         commandRepository.loadCommands(new File(Info.PATHS.PATH_DATA_FOLDER + "/cmd/"));
-        ReactionPersistence.loadReactions(new File(Info.PATHS.PATH_DATA_FOLDER + "/rea/"));
+        reactionRepository.loadReactions(new File(Info.PATHS.PATH_DATA_FOLDER + "/rea/"));
 
         // Starting plugins
         for (Client plugin : clientStorage.getClients()) {
@@ -487,7 +489,7 @@ public class Freedomotic implements BusConsumer {
 
         triggerRepository.saveTriggers(new File(savedDataRoot + "/trg"));
         commandRepository.saveCommands(new File(savedDataRoot + "/cmd"));
-        ReactionPersistence.saveReactions(new File(savedDataRoot + "/rea"));
+        reactionRepository.saveReactions(new File(savedDataRoot + "/rea"));
 
         //save the environment
         String environmentFilePath = Info.PATHS.PATH_DATA_FOLDER + "/furn/" + config.getProperty("KEY_ROOM_XML_PATH");

@@ -19,17 +19,25 @@
  */
 package com.freedomotic.reactions;
 
+import com.freedomotic.exceptions.DataUpgradeException;
+import com.freedomotic.exceptions.RepositoryException;
+import com.freedomotic.persistence.DataUpgradeService;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.settings.Info;
+import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,6 +49,12 @@ import java.util.logging.Logger;
 class TriggerRepositoryImpl implements TriggerRepository {
 
     private static ArrayList<Trigger> list = new ArrayList<Trigger>();
+    private final DataUpgradeService dataUpgradeService;
+
+    @Inject
+    public TriggerRepositoryImpl(DataUpgradeService dataUpgradeService) {
+        this.dataUpgradeService = dataUpgradeService;
+    }
 
     /**
      *
@@ -88,14 +102,14 @@ class TriggerRepositoryImpl implements TriggerRepository {
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xtrg")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+            public boolean accept(File file) {
+                if (file.isFile() && file.getName().endsWith(".xtrg")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
         files = folder.listFiles(objectFileFileter);
         for (File file : files) {
             file.delete();
@@ -122,11 +136,11 @@ class TriggerRepositoryImpl implements TriggerRepository {
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        return file.isFile() && file.getName().endsWith(".xtrg");
-                    }
-                };
+            @Override
+            public boolean accept(File file) {
+                return file.isFile() && file.getName().endsWith(".xtrg");
+            }
+        };
 
         File[] files = folder.listFiles(objectFileFileter);
 
@@ -138,16 +152,31 @@ class TriggerRepositoryImpl implements TriggerRepository {
             if (files != null) {
                 for (File file : files) {
                     Trigger trigger = null;
+                    String xml;
                     try {
                         //validate the object against a predefined DTD
-                        String xml
-                                = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/trigger.dtd");
-                        trigger = (Trigger) xstream.fromXML(xml);
-                    } catch (Exception e) {
-                        LOG.log(Level.SEVERE, "Trigger file {} is not well formatted: {}", new Object[]{file.getPath(), e.getLocalizedMessage()});
+                        xml = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/trigger.dtd");
+                    } catch (IOException e) {
                         continue;
                     }
+                    try {
+                        Properties dataProperties = new Properties();
+                        String fromVersion;
+                        try {
+                            dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
+                            fromVersion = dataProperties.getProperty("data.version");
+                        } catch (IOException iOException) {
+                            // Fallback to a default version for older version without that properties file
+                            fromVersion = "5.5.0";
+                        }
+                        xml = (String) dataUpgradeService.upgrade(Trigger.class, xml, fromVersion);
+                        trigger = (Trigger) xstream.fromXML(xml);
 
+                    } catch (DataUpgradeException dataUpgradeException) {
+                        throw new RepositoryException("Cannot upgrade Trigger file " + file.getAbsolutePath(), dataUpgradeException);
+                    } catch (XStreamException e) {
+                        throw new RepositoryException("XML parsing error. Readed XML is \n" + xml, e);
+                    }
                     //addAndRegister trigger to the list if it is not a duplicate
                     if (!list.contains(trigger)) {
                         if (trigger.isHardwareLevel()) {
@@ -368,7 +397,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             add(item);
             return true;
         } catch (Exception e) {
-            LOG.log(Level.SEVERE,"Cannot add trigger " + item.getName(),e);
+            LOG.log(Level.SEVERE, "Cannot add trigger " + item.getName(), e);
             return false;
         }
     }
@@ -425,14 +454,14 @@ class TriggerRepositoryImpl implements TriggerRepository {
 
     @Override
     public void deleteAll() {
-    try{
-        for (Trigger t : findAll()){
-            delete(t);
-        }
-        } catch (Exception e){
+        try {
+            for (Trigger t : findAll()) {
+                delete(t);
+            }
+        } catch (Exception e) {
         } finally {
             list.clear();
         }
     }
-    
+
 }

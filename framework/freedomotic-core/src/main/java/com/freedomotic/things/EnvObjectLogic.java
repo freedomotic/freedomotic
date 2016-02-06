@@ -38,7 +38,7 @@ import com.freedomotic.model.object.Representation;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.reactions.Reaction;
-import com.freedomotic.reactions.ReactionPersistence;
+import com.freedomotic.reactions.ReactionRepository;
 import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerRepository;
@@ -75,6 +75,8 @@ public class EnvObjectLogic {
     protected TriggerRepository triggerRepository;
     @Inject
     protected CommandRepository commandRepository;
+    @Inject
+    protected ReactionRepository reactionRepository;
     @Inject
     private BusService busService;
 
@@ -167,7 +169,7 @@ public class EnvObjectLogic {
         }
 
         //rebuild reactions description
-        for (Reaction r : ReactionPersistence.getReactions()) {
+        for (Reaction r : reactionRepository.findAll()) {
             r.setChanged();
         }
     }

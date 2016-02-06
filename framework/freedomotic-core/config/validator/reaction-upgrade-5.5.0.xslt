@@ -20,12 +20,19 @@
 
     <xsl:template match="reaction">
         <reaction version="5.6.0">
-            <xsl:apply-templates />
+            <xsl:apply-templates select="@*|node()" />
+        </reaction>
+    </xsl:template>
+    <xsl:template match="it.freedomotic.reactions.Reaction">
+        <reaction version="5.6.0">
+            <xsl:apply-templates select="@*|node()" />
         </reaction>
     </xsl:template>
 
-    <xsl:template match="*">
-        <xsl:copy-of select="."/>
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()" />
+        </xsl:copy>
     </xsl:template>
 
 </xsl:stylesheet>

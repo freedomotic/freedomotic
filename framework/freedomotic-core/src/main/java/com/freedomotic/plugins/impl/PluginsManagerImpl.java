@@ -27,7 +27,7 @@ import com.freedomotic.i18n.I18n;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.reactions.CommandRepository;
-import com.freedomotic.reactions.ReactionPersistence;
+import com.freedomotic.reactions.ReactionRepository;
 import com.freedomotic.reactions.TriggerRepository;
 import com.freedomotic.settings.Info;
 import com.freedomotic.util.Unzip;
@@ -61,10 +61,11 @@ class PluginsManagerImpl implements PluginsManager {
     private static final Logger LOG = LoggerFactory.getLogger(PluginsManager.class.getName());
 
     // Depedencies
-    private ClientStorage clientStorage;
-    private TriggerRepository triggers;
-    private I18n i18n;
-    private CommandRepository commandRepository;
+    private final ClientStorage clientStorage;
+    private final TriggerRepository triggers;
+    private final I18n i18n;
+    private final CommandRepository commandRepository;
+    private final ReactionRepository reactionRepository;
 
     @Inject
     Injector injector;
@@ -74,11 +75,13 @@ class PluginsManagerImpl implements PluginsManager {
             ClientStorage clientStorage,
             TriggerRepository triggers,
             CommandRepository commandRepository,
+            ReactionRepository reactionRepository,
             I18n i18n) {
         this.clientStorage = clientStorage;
         this.triggers = triggers;
         this.i18n = i18n;
-        this.commandRepository =  commandRepository;
+        this.commandRepository = commandRepository;
+        this.reactionRepository = reactionRepository;
     }
 
     /**
@@ -159,7 +162,7 @@ class PluginsManagerImpl implements PluginsManager {
 
     @Override
     public boolean installBoundle(URL fromURL) {
-                
+
         try {
             String url = fromURL.toString();
 
@@ -176,25 +179,23 @@ class PluginsManagerImpl implements PluginsManager {
             Pattern p = Pattern.compile(pluginNameRegex);
             String[] items = p.split(filename);
             String pluginName = items[0];
-       
+
             //get the zip from the url and copy in plugin/device folder
             if (filename.endsWith(".device")) {
                 File zipFile = new File(Info.PATHS.PATH_DEVICES_FOLDER + "/" + filename);
                 FetchHttpFiles.download(fromURL, Info.PATHS.PATH_DEVICES_FOLDER, filename);
                 unzipAndDelete(zipFile);
                 loadSingleBoundle(new File(Info.PATHS.PATH_DEVICES_FOLDER + "/" + pluginName));
-            } else {
-                if (filename.endsWith(".object")) {
-                    FetchHttpFiles.download(fromURL,
-                            new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/objects"),
-                            filename);
+            } else if (filename.endsWith(".object")) {
+                FetchHttpFiles.download(fromURL,
+                        new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/objects"),
+                        filename);
 
-                    File zipFile = new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/objects/" + filename);
-                    unzipAndDelete(zipFile);
-                    loadSingleBoundle(new File(Info.PATHS.PATH_OBJECTS_FOLDER + "/" + pluginName));
-                } else {
-                    LOG.warn("No installable Freedomotic plugins at URL " + fromURL);
-                }
+                File zipFile = new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/objects/" + filename);
+                unzipAndDelete(zipFile);
+                loadSingleBoundle(new File(Info.PATHS.PATH_OBJECTS_FOLDER + "/" + pluginName));
+            } else {
+                LOG.warn("No installable Freedomotic plugins at URL " + fromURL);
             }
         } catch (Exception ex) {
             LOG.error("Error while installing boundle downloaded from " + fromURL, ex);
@@ -280,7 +281,7 @@ class PluginsManagerImpl implements PluginsManager {
         //resources are mergend in the default resources folder
         commandRepository.loadCommands(new File(directory + "/data/cmd"));
         triggers.loadTriggers(new File(directory + "/data/trg"));
-        ReactionPersistence.loadReactions(new File(directory + "/data/rea"));
+        reactionRepository.loadReactions(new File(directory + "/data/rea"));
 
         //create ad-hoc subfolders of temp
         File destination = new File(Info.PATHS.PATH_RESOURCES_FOLDER + "/temp/" + directory.getName());

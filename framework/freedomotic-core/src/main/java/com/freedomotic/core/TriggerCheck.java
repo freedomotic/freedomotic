@@ -33,12 +33,11 @@ import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Reaction;
-import com.freedomotic.reactions.ReactionPersistence;
+import com.freedomotic.reactions.ReactionRepository;
 import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
 import com.google.inject.Inject;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -56,6 +55,7 @@ public class TriggerCheck {
     private final Autodiscovery autodiscovery;
     private final BusService busService;
     private final ThingRepository thingsRepository;
+    private final ReactionRepository reactionRepository;
     private final BehaviorManager behaviorManager;
 
     @Inject
@@ -63,11 +63,13 @@ public class TriggerCheck {
             Autodiscovery autodiscovery,
             ThingRepository thingsRepository,
             BusService busService,
-            BehaviorManager behaviorManager) {
+            BehaviorManager behaviorManager,
+            ReactionRepository reactionRepository) {
         this.autodiscovery = autodiscovery;
         this.thingsRepository = thingsRepository;
         this.busService = busService;
         this.behaviorManager = behaviorManager;
+        this.reactionRepository = reactionRepository;
     }
 
     /**
@@ -185,13 +187,12 @@ public class TriggerCheck {
 
             @Override
             public void run() {
-                Iterator<Reaction> it = ReactionPersistence.iterator();
-
+                
                 //Searching for reactions using this trigger
                 boolean found = false;
 
-                while (it.hasNext()) {
-                    Reaction reaction = it.next();
+                for (Reaction reaction : reactionRepository.findAll()) {
+                    
                     Trigger reactionTrigger = reaction.getTrigger();
 
                     //found a related reaction. This must be executed
