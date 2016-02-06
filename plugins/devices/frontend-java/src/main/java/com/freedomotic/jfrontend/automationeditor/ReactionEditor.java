@@ -22,7 +22,7 @@ package com.freedomotic.jfrontend.automationeditor;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Reaction;
-import com.freedomotic.reactions.ReactionPersistence;
+import com.freedomotic.reactions.ReactionRepository;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.NlpCommand;
@@ -53,16 +53,24 @@ public class ReactionEditor
     private final I18n I18n;
     private NlpCommand nlpCommands;
     private CommandRepository commandRepository;
+    private ReactionRepository reactionRepository;
 
     /**
      * Creates new form ReactionEditor
      *
      * @param parent
      */
-    public ReactionEditor(I18n i18n, NlpCommand nlpCommands, CommandRepository commandRepository, Reaction reaction, Component parent) {
+    public ReactionEditor(
+            I18n i18n, 
+            NlpCommand nlpCommands, 
+            CommandRepository commandRepository, 
+            Reaction reaction, 
+            Component parent,
+            ReactionRepository reactionRepository) {
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
         this.commandRepository = commandRepository;
+        this.reactionRepository=reactionRepository;
         initComponents();
         this.reaction = reaction;
         this.parent = parent;
@@ -206,6 +214,6 @@ public class ReactionEditor
      *
      */
     public void finalizeEditing() {
-        ReactionPersistence.add(reaction);
+        reactionRepository.create(reaction);
     }
 }

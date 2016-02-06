@@ -1053,7 +1053,7 @@ public class ObjectEditor
     private void populateAutomationsTab() {
         tabAutomations.removeAll();
         tabAutomations.setLayout(new BorderLayout());
-        reactionsPanel = new ReactionsPanel(I18n, nlpCommands, api.triggers(), api.commands(), object);
+        reactionsPanel = new ReactionsPanel(I18n, nlpCommands, api.triggers(), api.commands(), object, api.reactions());
         tabAutomations.add(reactionsPanel);
         tabAutomations.validate();
     }
