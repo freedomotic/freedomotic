@@ -19,6 +19,10 @@
  */
 package com.freedomotic.settings;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -28,10 +32,6 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -93,7 +93,7 @@ public class Info {
          * public static final String BROKER_DEFAULT = "vm://freedomotic";
          * info about peer brokers http://fusesource.com/docs/broker/5.2/connectivity_guide/N04F73598.04EE2290.html
          */
-        public final String BROKER_DEFAULT_PROTOCOL = "peer://";
+        public final String BROKER_DEFAULT_PROTOCOL = "peer";
         public final String BROKER_DEFAULT_CLUSTER_NAME = "freedomotic";
         public final String BROKER_DEFAULT_UUID = UUID.randomUUID().toString();
         
