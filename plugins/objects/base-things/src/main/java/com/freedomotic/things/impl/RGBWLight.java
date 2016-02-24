@@ -19,10 +19,10 @@
  */
 package com.freedomotic.things.impl;
 
+import com.freedomotic.behaviors.BooleanBehaviorLogic;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.Behavior;
-import com.freedomotic.model.object.RangedIntBehavior;
-import com.freedomotic.behaviors.RangedIntBehaviorLogic;
+import com.freedomotic.model.object.BooleanBehavior;
 import com.freedomotic.reactions.Command;
 
 /**
@@ -31,33 +31,28 @@ import com.freedomotic.reactions.Command;
  */
 public class RGBWLight extends RGBLight {
 
-    private RangedIntBehaviorLogic white;
-    protected final static String BEHAVIOR_WHITE = "white";
- 
+    private BooleanBehaviorLogic whiteMode;
+    protected final static String BEHAVIOR_WHITE_MODE = "white-mode";
+
     @Override
     public void init() {
         //linking this property with the behavior defined in the XML
-        white = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_WHITE));
-        white.addListener(new RangedIntBehaviorLogic.Listener() {
+        whiteMode = new BooleanBehaviorLogic((BooleanBehavior) getPojo().getBehavior(BEHAVIOR_WHITE_MODE));
+        whiteMode.addListener(new BooleanBehaviorLogic.Listener() {
 
             @Override
-            public void onLowerBoundValue(Config params, boolean fireCommand) {
-                executeWhite(white.getMin(), params);
+            public void onTrue(Config params, boolean fireCommand) {
+                setWhiteMode(params);
             }
 
             @Override
-            public void onUpperBoundValue(Config params, boolean fireCommand) {
-                executeWhite(white.getMax(), params);
+            public void onFalse(Config params, boolean fireCommand) {
+                unsetWhiteMode(params);
             }
 
-            @Override
-            public void onRangeValue(int rangeValue, Config params, boolean fireCommand) {
-                executeWhite(rangeValue, params);
-            }
         });
         //register this behavior to the superclass to make it visible to it
-        registerBehavior(white);
-    
+        registerBehavior(whiteMode);
 
         super.init();
     }
@@ -84,88 +79,29 @@ public class RGBWLight extends RGBLight {
         super.executePowerOn(params);
     }
 
-    public void executeWhite(int rangeValue, Config params) {
-        boolean executed = executeCommand("set white", params); //executes the developer level command associated with 'set brightness' action
+    protected void setWhiteMode(Config params) {
+        boolean executed = executeCommand("set white mode", params);
 
         if (executed) {
-            powered.setValue(true);
-            white.setValue(rangeValue);
+            whiteMode.setValue(true);
             setChanged(true);
         }
     }
 
-   
+    protected void unsetWhiteMode(Config params) {
+        boolean executed = executeCommand("set white mode", params);
+
+        if (executed) {
+            whiteMode.setValue(false);
+            setChanged(true);
+        }
+    }
+
     @Override
     protected void createCommands() {
+
         super.createCommands();
 
-        Command a = new Command();
-        a.setName("Set " + getPojo().getName() + " white to 50%");
-        a.setDescription("the light " + getPojo().getName() + " changes its white value");
-        a.setReceiver("app.events.sensors.behavior.request.objects");
-        a.setProperty("object", getPojo().getName());
-        a.setProperty("behavior", BEHAVIOR_WHITE);
-        a.setProperty("value", "127");
-
-        Command b = new Command();
-        b.setName("Increase " + getPojo().getName() + " white");
-        b.setDescription("increases " + getPojo().getName() + " white of one step");
-        b.setReceiver("app.events.sensors.behavior.request.objects");
-        b.setProperty("object",
-                getPojo().getName());
-        b.setProperty("behavior", BEHAVIOR_WHITE);
-        b.setProperty("value", Behavior.VALUE_NEXT);
-
-        Command c = new Command();
-        c.setName("Decrease " + getPojo().getName() + " white");
-        c.setDescription("decreases " + getPojo().getName() + " white of one step");
-        c.setReceiver("app.events.sensors.behavior.request.objects");
-        c.setProperty("object",
-                getPojo().getName());
-        c.setProperty("behavior", BEHAVIOR_WHITE);
-        c.setProperty("value", Behavior.VALUE_PREVIOUS);
-
-        Command d = new Command();
-        d.setName("Set its white to 50%");
-        d.setDescription("set its white to 50%");
-        d.setReceiver("app.events.sensors.behavior.request.objects");
-        d.setProperty("object", "@event.object.name");
-        d.setProperty("behavior", BEHAVIOR_WHITE);
-        d.setProperty("value", "127");
-
-        Command e = new Command();
-        e.setName("Increase its white");
-        e.setDescription("increases its white of one step");
-        e.setReceiver("app.events.sensors.behavior.request.objects");
-        e.setProperty("object", "@event.object.name");
-        e.setProperty("behavior", BEHAVIOR_WHITE);
-        e.setProperty("value", Behavior.VALUE_NEXT);
-
-        Command f = new Command();
-        f.setName("Decrease its white");
-        f.setDescription("decreases its white of one step");
-        f.setReceiver("app.events.sensors.behavior.request.objects");
-        f.setProperty("object", "@event.object.name");
-        f.setProperty("behavior", BEHAVIOR_WHITE);
-        f.setProperty("value", Behavior.VALUE_PREVIOUS);
-
-        Command g = new Command();
-        g.setName("Set its white to the value in the event");
-        g.setDescription("set its white to the value in the event");
-        g.setReceiver("app.events.sensors.behavior.request.objects");
-        g.setProperty("object", "@event.object.name");
-        g.setProperty("behavior", BEHAVIOR_WHITE);
-        g.setProperty("value", "@event.value");
-
-       
-        commandRepository.create(a);
-        commandRepository.create(b);
-        commandRepository.create(c);
-        commandRepository.create(d);
-        commandRepository.create(e);
-        commandRepository.create(f);
-        commandRepository.create(g);
-        
     }
 
     @Override
