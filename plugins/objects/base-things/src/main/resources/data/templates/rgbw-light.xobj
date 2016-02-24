@@ -44,16 +44,13 @@
       <min>0</min>
       <step>1</step>
     </com.freedomotic.model.object.RangedIntBehavior>
-    <com.freedomotic.model.object.RangedIntBehavior>
-      <name>white</name>
-      <description>white value</description>
+   <com.freedomotic.model.object.BooleanBehavior>
+      <name>white-mode</name>
+      <description>white mode</description>
       <active>true</active>
       <priority>-1</priority>
-      <value>0</value>
-      <max>255</max>
-      <min>0</min>
-      <step>1</step>
-    </com.freedomotic.model.object.RangedIntBehavior>
+      <value>true</value>
+    </com.freedomotic.model.object.BooleanBehavior>
     <com.freedomotic.model.object.RangedIntBehavior>
       <name>brightness</name>
       <description>brightness value</description>
@@ -117,14 +114,14 @@
     <property name="set red" value="Execute it successfully"/>
     <property name="set green" value="Execute it successfully"/>
     <property name="set blue" value="Execute it successfully"/>
-    <property name="set white" value="Execute it successfully"/>
+    <property name="set white mode" value="Execute it successfully"/>
     <property name="set brightness" value="Execute it successfully"/>
   </actions>
   <triggers>
     <property name="" value="red"/>
     <property name="" value="green"/>
     <property name="" value="blue"/>
-    <property name="" value="white"/> 
+    <property name="" value="white-mode"/> 
     <property name="" value="brightness"/> 
   </triggers>
   <currentRepresentation>0</currentRepresentation>
