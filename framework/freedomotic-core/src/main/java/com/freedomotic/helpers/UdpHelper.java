@@ -1,23 +1,20 @@
-/*
- /**
+/**
  *
- * Copyright (c) 2009-2014 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.helpers;
@@ -44,7 +41,6 @@ public class UdpHelper {
     private static UDPThreadServer server;
     private static DatagramSocket serverDatagramSocket;
 
-
     /**
      * Starts an UDP server listening on the given address and port. It allows
      * to bind a consumer which will be notified of any message received by the
@@ -60,11 +56,21 @@ public class UdpHelper {
     }
 
     /**
+     * Stops the UDP server closing the socket.
+     */
+    public void stopServer() {
+        if (serverDatagramSocket.isBound()) {
+            serverDatagramSocket.close();
+            LOG.info("UDP server listening on {}:{} stopped.", new Object[]{serverDatagramSocket.getInetAddress(), serverDatagramSocket.getPort()});
+        }
+    }
+
+    /**
      * Sends an UDP packet to the server
      *
-     * @param serverAddress Server UDP address
-     * @param serverPort Server UDP port number
-     * @param payload the data to send
+     * @param serverAddress UDP server address
+     * @param serverPort UDP server port number
+     * @param payload data to send
      * @throws java.io.IOException
      */
     public void send(String serverAddress, int serverPort, String payload) throws IOException {
@@ -80,9 +86,8 @@ public class UdpHelper {
                     payload.length(),
                     inetAddress,
                     port);
-
             datagramSocket.send(out_datagramPacket);
-
+            LOG.debug("Sending UDP packet to {}:{}", new Object[]{serverAddress, serverPort});
         } catch (UnknownHostException ex) {
             throw new IOException("Unknown UDP server. Packet not sent", ex);
         } catch (SocketException ex) {
@@ -95,7 +100,7 @@ public class UdpHelper {
     }
 
     /**
-     *  The UDP server thread
+     * UDP server thread
      */
     private static class UDPThreadServer extends Thread {
 
@@ -114,6 +119,7 @@ public class UdpHelper {
         public void run() {
             try {
                 serverDatagramSocket = new DatagramSocket(null);
+                serverDatagramSocket.setReuseAddress(true);
                 InetSocketAddress address = new InetSocketAddress(serverAddress, serverPort);
                 serverDatagramSocket.bind(address);
                 //buffer to receive incoming data
