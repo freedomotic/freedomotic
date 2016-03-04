@@ -25,40 +25,35 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 @XmlRootElement
-public class DataBehavior extends Behavior{
-    
+public class DataBehavior extends Behavior {
+
     private List<UsageData> data;
 
     /**
      *
      * @param data
      */
-    public void setData(List<UsageData> data){
+    public void setData(List<UsageData> data) {
         this.data = data;
     }
-    
+
     /**
      *
      * @param data
      */
-    public void addData(List<UsageData> data){
+    public void addData(List<UsageData> data) {
         this.data.addAll(data);
     }
-    
+
     /**
      *
      * @return
      */
-    public List<UsageData> getData(){
+    public List<UsageData> getData() {
         return data;
     }
-    
 
-    
-    
-    
-    
 }

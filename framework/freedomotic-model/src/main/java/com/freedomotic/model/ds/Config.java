@@ -39,8 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Expression autor is undefined on line 12, column 14 in
- * Templates/Classes/Class.java.
+ * @author 
  */
 @XmlRootElement
 public class Config

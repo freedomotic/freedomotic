@@ -19,10 +19,7 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.freedomotic.marketplace;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -31,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 @XmlRootElement
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
@@ -55,6 +52,7 @@ public interface IPluginPackage {
     /**
      * Returns the path of the file matching the core version Empty string if it
      * doesn't have any file matching the version
+     * @param version
      * @return 
      */
     public String getFilePath(String version);

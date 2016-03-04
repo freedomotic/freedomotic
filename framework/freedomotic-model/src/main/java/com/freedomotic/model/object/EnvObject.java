@@ -33,12 +33,12 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"name", "description", "uuid","protocol","phisicalAddress","type","actAs",
-                "representation", "currentRepresentation", "behaviors","hierarchy","actions","triggers","tags","envUUID"})
+@XmlType(propOrder = {"name", "description", "uuid", "protocol", "phisicalAddress", "type", "actAs",
+    "representation", "currentRepresentation", "behaviors", "hierarchy", "actions", "triggers", "tags", "envUUID"})
 public class EnvObject implements Serializable {
 
     private static final long serialVersionUID = -7253889516478184321L;
