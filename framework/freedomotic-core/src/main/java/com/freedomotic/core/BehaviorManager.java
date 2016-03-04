@@ -337,6 +337,10 @@ public final class BehaviorManager implements BusConsumer {
         return names;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getMessagingChannel() {
         return MESSAGING_CHANNEL;
     }

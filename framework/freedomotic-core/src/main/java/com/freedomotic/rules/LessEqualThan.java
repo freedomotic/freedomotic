@@ -30,15 +30,28 @@ public class LessEqualThan extends BinaryExpression {
     private static final String OPERATOR = Statement.LESS_EQUAL_THAN;
     private static final Logger LOG = Logger.getLogger(LessEqualThan.class.getName());
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getOperand() {
         return OPERATOR;
     }
 
+    /**
+     *
+     * @param left
+     * @param right
+     */
     public LessEqualThan(String left, String right) {
         super(left, right);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean evaluate() {
         try {

@@ -58,7 +58,7 @@ import javax.script.ScriptException;
  * device' in this case the event can be something like 'object receive click on
  * the GUI' with paramenter object = Light 1 click = SINGLE_CLICK </p>
  *
- * @author Enrico Nicoletti (enrico.nicoletti84@gmail.com)
+ * @author Enrico Nicoletti
  */
 public final class Resolver {
 

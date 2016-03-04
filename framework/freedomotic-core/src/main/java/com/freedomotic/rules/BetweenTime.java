@@ -39,6 +39,10 @@ public class BetweenTime extends BinaryExpression {
     Date todaysEnd;
     Date tomorrowStart;
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getOperand() {
         return OPERAND;
@@ -47,7 +51,13 @@ public class BetweenTime extends BinaryExpression {
     // left is an hour in form HH:MM::SS
     //right is a time interval in form HH:MM::SS-HH:MM::SS
     //this class checks if left is inside the right interval
-    public BetweenTime(String left, String right) {
+
+    /**
+     *
+     * @param left
+     * @param right
+     */
+        public BetweenTime(String left, String right) {
         super(left, right);
         try {
             todaysEnd = TIME_FORMAT.parse("24:00:00");
@@ -57,6 +67,10 @@ public class BetweenTime extends BinaryExpression {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean evaluate() {
 

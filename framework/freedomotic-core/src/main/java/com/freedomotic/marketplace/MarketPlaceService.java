@@ -137,6 +137,10 @@ public class MarketPlaceService {
         return categoryList;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<IMarketPlace> getProviders() {
         ArrayList<IMarketPlace> markets = new ArrayList<IMarketPlace>();
         markets.addAll(marketPlaces);

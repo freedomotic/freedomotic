@@ -71,7 +71,10 @@ public class ZoneLogic {
         this.pojo = pojo;
     }
 
-
+    /**
+     *
+     * @return
+     */
     @RequiresPermissions("zones:read")
     public EnvironmentLogic getEnv() {
         return this.FatherEnv;

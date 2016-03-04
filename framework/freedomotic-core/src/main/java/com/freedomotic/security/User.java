@@ -41,37 +41,77 @@ public final class User extends SimpleAccount {
 
     private final Auth auth;
 
+    /**
+     *
+     * @param principal
+     * @param credentials
+     * @param roleName
+     * @param auth
+     */
     public User(Object principal, Object credentials, String roleName, Auth auth) {
         this(principal, credentials, auth);
         addRole(roleName);
     }
 
+    /**
+     *
+     * @param principal
+     * @param credentials
+     * @param auth
+     */
     public User(Object principal, Object credentials, Auth auth) {
         super(principal, credentials, UserRealm.USER_REALM_NAME);
         this.auth = auth;
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
 
+    /**
+     *
+     * @return
+     */
     public Properties getProperties() {
         return properties;
     }
 
+    /**
+     *
+     * @param key
+     * @param value
+     * @return
+     */
     public Object setProperty(String key, String value) {
         return properties.setProperty(key, value);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return getPrincipals().getPrimaryPrincipal().toString();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Collection<String> getRoles() {
         return super.getRoles();
     }
 
+    /**
+     *
+     * @param roles
+     */
     @Override
     public void setRoles(Set<String> roles) {
         for (String roleName : roles) {
@@ -84,10 +124,18 @@ public final class User extends SimpleAccount {
 
     }
 
+    /**
+     *
+     * @param password
+     */
     public void setPassword(String password) {
         setCredentials(password);
     }
 
+    /**
+     *
+     * @param roleName
+     */
     @Override
     public void addRole(String roleName) {
         SimpleRole role = auth.getRole(roleName);
@@ -100,6 +148,10 @@ public final class User extends SimpleAccount {
         }
     }
 
+    /**
+     *
+     * @param roleName
+     */
     public void removeRole(String roleName) {
         try {
             getObjectPermissions().removeAll(auth.getRole(roleName).getPermissions());
@@ -109,6 +161,11 @@ public final class User extends SimpleAccount {
         getRoles().remove(roleName);
     }
 
+    /**
+     *
+     * @param perm
+     * @return
+     */
     public boolean isPermitted(String perm) {
         for (Permission p : this.getObjectPermissions()) {
             if (p.implies(new WildcardPermission(perm))) {

@@ -52,7 +52,10 @@ public class ClassPathUpdater {
      *
      * @param s The directory to add to the classpath (or a file, which will
      * relegate to its directory).
+     * @throws java.io.IOException
+     * @throws java.lang.NoSuchMethodException
      * @throws java.lang.reflect.InvocationTargetException
+     * @throws java.lang.IllegalAccessException
      */
     public static void add(String s)
             throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -67,7 +70,10 @@ public class ClassPathUpdater {
      *
      * @param f The directory (or enclosing directory if a file) to add to the
      * classpath.
+     * @throws java.io.IOException
+     * @throws java.lang.NoSuchMethodException
      * @throws java.lang.reflect.InvocationTargetException
+     * @throws java.lang.IllegalAccessException
      */
     public static void add(File f)
             throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -91,6 +97,9 @@ public class ClassPathUpdater {
      * not a file.
      *
      * @param url The path to include when searching the classpath.
+     * @throws java.io.IOException
+     * @throws java.lang.NoSuchMethodException
+     * @throws java.lang.IllegalAccessException
      * @throws java.lang.reflect.InvocationTargetException
      */
     public static void add(URL url)

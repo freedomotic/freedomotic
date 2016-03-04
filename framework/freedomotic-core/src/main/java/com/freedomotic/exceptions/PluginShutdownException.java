@@ -25,11 +25,19 @@ package com.freedomotic.exceptions;
  */
 public class PluginShutdownException extends Exception {
     
+    /**
+     *
+     * @param msg
+     */
     public PluginShutdownException(String msg) {
         super(msg);
     }
 
-
+    /**
+     *
+     * @param message
+     * @param cause
+     */
     public PluginShutdownException(String message, Throwable cause) {
         super(message, cause);
     }

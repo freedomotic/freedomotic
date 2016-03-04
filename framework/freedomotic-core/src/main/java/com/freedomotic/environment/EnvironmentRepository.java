@@ -31,11 +31,42 @@ import java.io.IOException;
 public interface EnvironmentRepository extends Repository<EnvironmentLogic> {
     
     //TODO: remove it it's just temporary to ease the refactoring
-    public void saveEnvironmentsToFolder(File folder) throws RepositoryException;
+
+    /**
+     *
+     * @param folder
+     * @throws RepositoryException
+     */
+        public void saveEnvironmentsToFolder(File folder) throws RepositoryException;
     //public boolean loadEnvironmentsFromDir(File folder, boolean makeUnique) throws RepositoryException;
-    public EnvironmentLogic loadEnvironmentFromFile(File file) throws RepositoryException;
+
+    /**
+     *
+     * @param file
+     * @return
+     * @throws RepositoryException
+     */
+        public EnvironmentLogic loadEnvironmentFromFile(File file) throws RepositoryException;
+
+    /**
+     *
+     * @param env
+     * @param folder
+     * @throws IOException
+     */
     public void saveAs(EnvironmentLogic env, File folder) throws IOException;
+
+    /**
+     *
+     * @param folder
+     * @throws RepositoryException
+     */
     public void init(File folder) throws RepositoryException;
+
+    /**
+     *
+     * @throws RepositoryException
+     */
     public void initFromDefaultFolder() throws RepositoryException;
     
 }

@@ -129,6 +129,12 @@ public class FreedomXStream {
         return xstream;
     }
 
+    /**
+     *
+     * @param object
+     * @param file
+     * @return
+     */
     public static boolean toXML(Object object, File file) {
         XStream serializer = getXstream();
         OutputStream outputStream = null;

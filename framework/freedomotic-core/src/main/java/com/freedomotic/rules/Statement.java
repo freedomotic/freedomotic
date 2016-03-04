@@ -37,17 +37,64 @@ public class Statement
 
     private static final long serialVersionUID = -6983128779561551125L;
 
+    /**
+     *
+     */
     public static final String EQUALS = "EQUALS";
+
+    /**
+     *
+     */
     public static final String GREATER_THAN = "GREATER_THAN";
+
+    /**
+     *
+     */
     public static final String LESS_THAN = "LESS_THAN";
+
+    /**
+     *
+     */
     public static final String GREATER_EQUAL_THAN = "GREATER_EQUAL_THAN";
+
+    /**
+     *
+     */
     public static final String LESS_EQUAL_THAN = "LESS_EQUAL_THAN";
+
+    /**
+     *
+     */
     public static final String REGEX = "REGEX";
+
+    /**
+     *
+     */
     public static final String AND = "AND";
+
+    /**
+     *
+     */
     public static final String OR = "OR";
+
+    /**
+     *
+     */
     public static final String NOT = "NOT";
+
+    /**
+     *
+     */
     public static final String ANY = "ANY";
+
+    /**
+     *
+     */
     public static final String SET = "SET";
+
+    /**
+     *
+     */
     public static final String BETWEEN_TIME = "BETWEEN_TIME";
 
     /**

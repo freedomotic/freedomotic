@@ -29,13 +29,30 @@ import java.util.List;
  */
 public interface CommandRepository extends Repository<Command> {
 
+    /**
+     *
+     * @return
+     */
     public List<Command> findHardwareCommands();
 
+    /**
+     *
+     * @return
+     */
     public List<Command> findUserCommands();
 
     //TODO: remove it, here just for refactoring
 
+    /**
+     *
+     * @param folder
+     */
+    
     public void loadCommands(File folder);
 
+    /**
+     *
+     * @param folder
+     */
     public void saveCommands(File folder);
 }

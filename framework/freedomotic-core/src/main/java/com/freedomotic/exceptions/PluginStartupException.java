@@ -25,12 +25,19 @@ package com.freedomotic.exceptions;
  */
 public class PluginStartupException extends Exception {
     
-
+    /**
+     *
+     * @param msg
+     */
     public PluginStartupException(String msg) {
         super(msg);
     }
 
-
+    /**
+     *
+     * @param message
+     * @param cause
+     */
     public PluginStartupException(String message, Throwable cause) {
         super(message, cause);
     }

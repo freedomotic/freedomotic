@@ -88,6 +88,9 @@ public abstract class Protocol extends Plugin {
         listener.consumeEventFrom(listento);
     }
 
+    /**
+     *
+     */
     public void removeEventListeners() {
         listener.destroy();
     }
@@ -102,6 +105,11 @@ public abstract class Protocol extends Plugin {
         }
     }
 
+    /**
+     *
+     * @param command
+     * @return
+     */
     public Command notifyCommand(Command command) {
         return getBusService().send(command);
     }
@@ -273,6 +281,9 @@ public abstract class Protocol extends Plugin {
 
     }
 
+    /**
+     *
+     */
     public class ActuatorOnEventRunnable implements Runnable {
 
         private final EventTemplate event;
@@ -292,6 +303,9 @@ public abstract class Protocol extends Plugin {
         }
     }
 
+    /**
+     *
+     */
     public class ActuatorOnCommandRunnable implements Runnable {
 
         private final Command command;

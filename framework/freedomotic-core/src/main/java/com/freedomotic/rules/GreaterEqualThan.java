@@ -30,15 +30,28 @@ public class GreaterEqualThan extends BinaryExpression {
     private static final String OPERATOR = Statement.GREATER_EQUAL_THAN;
     private static final Logger LOG = Logger.getLogger(GreaterEqualThan.class.getName());
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getOperand() {
         return OPERATOR;
     }
 
+    /**
+     *
+     * @param left
+     * @param right
+     */
     public GreaterEqualThan(String left, String right) {
         super(left, right);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean evaluate() {
         try {

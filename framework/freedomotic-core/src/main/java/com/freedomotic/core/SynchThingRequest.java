@@ -30,11 +30,20 @@ public class SynchThingRequest extends EventTemplate {
     
     private final EnvObject thing;
 
+    /**
+     *
+     * @param action
+     * @param thing
+     */
     public SynchThingRequest(SynchAction action, EnvObject thing) {
         this.thing = thing;
         this.addProperty(SynchAction.KEY_SYNCH_ACTION, action.name());
     }
 
+    /**
+     *
+     * @return
+     */
     public EnvObject getThing() {
         return thing;
     }

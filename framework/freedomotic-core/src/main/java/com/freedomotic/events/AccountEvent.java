@@ -29,10 +29,43 @@ import com.freedomotic.api.EventTemplate;
  */
 public class AccountEvent extends EventTemplate {
 
+    /**
+     *
+     */
     public enum AccountActions {
-        CREATED, DELETED, BANNED, LOGIN, LOGOUT
+
+        /**
+         *
+         */
+        CREATED,
+
+        /**
+         *
+         */
+        DELETED,
+
+        /**
+         *
+         */
+        BANNED,
+
+        /**
+         *
+         */
+        LOGIN,
+
+        /**
+         *
+         */
+        LOGOUT
     };
 
+    /**
+     *
+     * @param source
+     * @param accountSubject
+     * @param action
+     */
     public AccountEvent(Object source, String accountSubject, AccountActions action) {
         payload.addStatement("account.subject", accountSubject);
         payload.addStatement("account.action", action.toString());

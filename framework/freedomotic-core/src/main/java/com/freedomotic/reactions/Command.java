@@ -60,15 +60,54 @@ public final class Command implements Serializable, Cloneable {
     private static final long serialVersionUID = -7287958816826580426L;
     private static final Logger LOG = Logger.getLogger(Command.class.getName());
 
+    /**
+     *
+     */
     public static final String PROPERTY_BEHAVIOR = "behavior";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_CLASS = "object.class";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_ADDRESS = "object.address";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_NAME = "object.name";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_PROTOCOL = "object.protocol";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_INCLUDETAGS = "object.includetags";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_EXCLUDETAGS = "object.excludetags";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_ENVIRONMENT = "object.environment";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT_ZONE = "object.zone";
+
+    /**
+     *
+     */
     public static final String PROPERTY_OBJECT = "object";
 
     private String name;

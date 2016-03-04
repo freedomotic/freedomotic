@@ -41,13 +41,39 @@ import java.util.logging.Logger;
  */
 public class ElectricDevice extends EnvObjectLogic {
 
+    /**
+     *
+     */
     protected BooleanBehaviorLogic powered;
+
+    /**
+     *
+     */
     protected RangedIntBehaviorLogic consumption;
+
+    /**
+     *
+     */
     protected final static String BEHAVIOR_POWERED = "powered";
+
+    /**
+     *
+     */
     protected final static String BEHAVIOR_POWER_CONSUMPTION = "power_consumption";
+
+    /**
+     *
+     */
     protected final static String ACTION_TURN_ON = "turn on";
+
+    /**
+     *
+     */
     protected final static String ACTION_TURN_OFF = "turn off";
 
+    /**
+     *
+     */
     public ElectricDevice() {
     }
 

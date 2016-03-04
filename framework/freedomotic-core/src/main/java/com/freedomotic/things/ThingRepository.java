@@ -31,20 +31,60 @@ import java.util.List;
  */
 public interface ThingRepository extends Repository<EnvObjectLogic> {
 
+    /**
+     *
+     * @param env
+     * @return
+     */
     public List<EnvObjectLogic> findByEnvironment(EnvironmentLogic env);
 
+    /**
+     *
+     * @param uuid
+     * @return
+     */
     public List<EnvObjectLogic> findByEnvironment(String uuid);
 
+    /**
+     *
+     * @param protocolName
+     * @return
+     */
     public List<EnvObjectLogic> findByProtocol(String protocolName);
 
     //TODO: should return a single element, done this way for backward compatibility
 
+    /**
+     *
+     * @param protocol
+     * @param address
+     * @return
+     */
+    
     public List<EnvObjectLogic> findByAddress(String protocol, String address);
 
     //TODO: temporary for refactoring, should be removed
-    public EnvObjectLogic load(File file) throws RepositoryException;
 
+    /**
+     *
+     * @param file
+     * @return
+     * @throws RepositoryException
+     */
+        public EnvObjectLogic load(File file) throws RepositoryException;
+
+    /**
+     *
+     * @param folder
+     * @return
+     * @throws RepositoryException
+     */
     public List<EnvObjectLogic> loadAll(File folder) throws RepositoryException;
 
+    /**
+     *
+     * @param folder
+     * @throws RepositoryException
+     */
     public void saveAll(File folder) throws RepositoryException;
 }

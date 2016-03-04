@@ -35,12 +35,21 @@ public final class PersonExitsZone extends EventTemplate {
     private final String uuid;
     private final String zoneName;
 
+    /**
+     *
+     * @param aThis
+     * @param p
+     * @param zone
+     */
     public PersonExitsZone(ZoneLogic aThis, GenericPerson p, Zone zone) {
         this.uuid = p.getPojo().getUUID();
         this.zoneName = zone.getName();
         generateEventPayload();
     }
 
+    /**
+     *
+     */
     @Override
     protected void generateEventPayload() {
         payload.addStatement("person.id", uuid);
@@ -52,10 +61,18 @@ public final class PersonExitsZone extends EventTemplate {
         return "app.event.sensor.person.zone.exit";
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPersonId() {
         return uuid;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getZoneName() {
         return zoneName;
     }

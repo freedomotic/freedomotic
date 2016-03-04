@@ -29,6 +29,9 @@ import com.google.inject.Singleton;
  */
 public class InjectorSecurity extends AbstractModule {
 
+    /**
+     *
+     */
     @Override
     protected void configure() {
         bind(Auth.class).to(AuthImpl2.class).in(Singleton.class);

@@ -63,27 +63,67 @@ public class Plugin implements Client, BusConsumer {
     private final String type = "Plugin";
     @XmlElement
     private volatile PluginStatus currentPluginStatus = PluginStatus.STOPPED;
+
+    /**
+     *
+     */
     @XmlElement
     public Config configuration;
+
+    /**
+     *
+     * @deprecated
+     */
     @Deprecated
     protected JFrame gui;
+
+    /**
+     *
+     */
     @XmlElement
     protected String description;
+
+    /**
+     *
+     */
     @XmlElement
     protected String version;
+
+    /**
+     *
+     */
     @XmlElement
     protected String requiredVersion;
+
+    /**
+     *
+     */
     @XmlElement
     protected String category;
+
+    /**
+     *
+     */
     @XmlElement
     protected String shortName;
+
+    /**
+     *
+     */
     @XmlElement
     protected String listenOn;
+
+    /**
+     *
+     */
     @XmlElement
     protected String sendOn;
     @XmlElement
     private File path;
 
+    /**
+     *
+     */
     protected BusMessagesListener listener;
 
     @Inject
@@ -105,6 +145,8 @@ public class Plugin implements Client, BusConsumer {
 
     /**
      * Used to create a Plugin placeholder for things
+     *
+     * @param pluginName
      */
     public Plugin(String pluginName) {
         Freedomotic.INJECTOR.injectMembers(this);
@@ -174,6 +216,10 @@ public class Plugin implements Client, BusConsumer {
         }
     }
 
+    /**
+     *
+     * @param message
+     */
     public void notifyError(String message) {
         //Log the error on console/logfiles
         LOG.warning(message);
@@ -185,6 +231,10 @@ public class Plugin implements Client, BusConsumer {
         busService.send(callout);
     }
 
+    /**
+     *
+     * @param message
+     */
     public void notifyCriticalError(String message) {
         //Log the error on console/logfiles
         LOG.warning(message);
@@ -202,6 +252,11 @@ public class Plugin implements Client, BusConsumer {
         currentPluginStatus = PluginStatus.FAILED;
     }
 
+    /**
+     *
+     * @param message
+     * @param ex
+     */
     protected void notifyCriticalError(String message, Exception ex) {
         //Log and keep stack trace
         LOG.log(Level.SEVERE, message, ex);
@@ -313,6 +368,10 @@ public class Plugin implements Client, BusConsumer {
         return pluginName;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getStatus() {
         return currentPluginStatus.name();
     }
@@ -335,10 +394,18 @@ public class Plugin implements Client, BusConsumer {
         return currentPluginStatus.equals(PluginStatus.RUNNING);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isAllowedToSend() {
         return currentPluginStatus.equals(PluginStatus.STARTING) || currentPluginStatus.equals(PluginStatus.RUNNING);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isAllowedToStart() {
         return PluginStatus.isAllowedToStart(currentPluginStatus);
     }
@@ -361,6 +428,10 @@ public class Plugin implements Client, BusConsumer {
         pluginName = name;
     }
 
+    /**
+     *
+     * @param newStatus
+     */
     protected final void setStatus(PluginStatus newStatus) {
         currentPluginStatus = newStatus;
 
@@ -460,6 +531,7 @@ public class Plugin implements Client, BusConsumer {
 
     /**
      *
+     * @deprecated
      */
     @Deprecated
     protected void onShowGui() {
@@ -467,6 +539,7 @@ public class Plugin implements Client, BusConsumer {
 
     /**
      *
+     * @deprecated
      */
     @Deprecated
     protected void onHideGui() {
@@ -504,6 +577,10 @@ public class Plugin implements Client, BusConsumer {
         getApi().getAuth().setPluginPrivileges(this, configuration.getStringProperty("permissions", getApi().getAuth().getPluginDefaultPermission()));
     }
 
+    /**
+     *
+     * @return
+     */
     public BusService getBusService() {
         return busService;
     }
