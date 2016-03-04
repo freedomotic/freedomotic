@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * used for instance in plugin configuration file to define plugin level
  * variables
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

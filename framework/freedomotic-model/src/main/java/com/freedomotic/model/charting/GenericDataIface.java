@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 public interface GenericDataIface extends Serializable {
     

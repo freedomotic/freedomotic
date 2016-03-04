@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni 
  */
 public class UsageDataFrame implements Serializable {
 

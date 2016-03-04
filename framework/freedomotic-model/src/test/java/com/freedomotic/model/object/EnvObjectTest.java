@@ -19,10 +19,7 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.freedomotic.model.object;
 
 import org.junit.After;
@@ -34,7 +31,7 @@ import org.junit.Test;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class EnvObjectTest {
 

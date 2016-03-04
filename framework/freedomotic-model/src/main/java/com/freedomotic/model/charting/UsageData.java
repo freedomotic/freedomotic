@@ -31,7 +31,7 @@ import javax.persistence.TemporalType;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 @Entity(name = "harvester")
 @NamedQueries({
