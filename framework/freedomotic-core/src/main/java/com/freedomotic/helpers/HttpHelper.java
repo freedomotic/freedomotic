@@ -63,6 +63,9 @@ public class HttpHelper {
 
     private static final Logger LOG = Logger.getLogger(HttpHelper.class.getName());
 
+    /**
+     *
+     */
     public HttpHelper() {
         try {
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -136,6 +139,10 @@ public class HttpHelper {
         return results;
     }
 
+    /**
+     *
+     * @param timeout
+     */
     public void setConnectionTimeout(int timeout) {
         HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
     }

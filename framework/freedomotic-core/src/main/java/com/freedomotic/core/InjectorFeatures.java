@@ -29,6 +29,9 @@ import com.google.inject.Singleton;
  */
 public class InjectorFeatures extends AbstractModule {
 
+    /**
+     *
+     */
     @Override
     protected void configure() {
 

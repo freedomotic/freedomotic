@@ -27,14 +27,26 @@ package com.freedomotic.rules;
 public abstract class UnaryExpression<E> implements Expression {
     private E argument;
     
+    /**
+     *
+     * @param argument
+     */
     public UnaryExpression(E argument) {
         this.argument = argument;
     }
 
+    /**
+     *
+     * @return
+     */
     public E getArgument() {
         return argument;
     }
 
+    /**
+     *
+     * @param argument
+     */
     public void setArgument(E argument) {
         this.argument = argument;
     }

@@ -37,7 +37,7 @@ import java.util.Collection;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public interface API {
     //Configuration APi
@@ -46,7 +46,6 @@ public interface API {
      *
      * @return
      */
-    
     AppConfig getConfig();
 
     /**
@@ -54,7 +53,7 @@ public interface API {
      * @return
      */
     Auth getAuth();
-    
+
     /**
      *
      * @return
@@ -68,7 +67,6 @@ public interface API {
     ClientStorage getClientStorage();
     //read
 
-
     /**
      *
      * @return
@@ -81,13 +79,13 @@ public interface API {
      * @return
      */
     Collection<Client> getClients(String filter);
-    
+
     /**
      *
      * @return
      */
     PluginsManager getPluginManager();
-    
+
     //Resources API
     /**
      *
@@ -95,15 +93,52 @@ public interface API {
      * @return
      */
     BufferedImage getResource(String resourceIdentifier);
-    
+
+    /**
+     *
+     * @return
+     */
     EnvironmentRepository environments();
+
+    /**
+     *
+     * @return
+     */
     TriggerRepository triggers();
+
+    /**
+     *
+     * @return
+     */
     ThingRepository things();
+
+    /**
+     *
+     * @return
+     */
     CommandRepository commands();
+
+    /**
+     *
+     * @return
+     */
     ReactionRepository reactions();
+
+    /**
+     *
+     * @return
+     */
     NlpCommand nlpCommands();
-    
+
+    /**
+     *
+     * @return
+     */
     ThingFactory thingsFactory();
-    
+
+    /**
+     *
+     * @return
+     */
     BusService bus();
 }

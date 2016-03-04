@@ -38,6 +38,9 @@ public class ThingFactory {
     @Inject
     private Injector injector;
     
+    /**
+     *
+     */
     protected ThingFactory() {
         //do not build this class outsite this package
     }

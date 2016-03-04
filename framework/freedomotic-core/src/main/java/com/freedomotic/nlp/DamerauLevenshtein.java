@@ -36,7 +36,11 @@ public class DamerauLevenshtein {
     private int[][] matrix;
     private Boolean calculated = false;
 
-
+    /**
+     *
+     * @param a
+     * @param b
+     */
     public void setWordsToCompare(String a, String b) {
         calculated = false; //reset for a new calucation
         if ((a.length() > 0 || !a.isEmpty()) || (b.length() > 0 || !b.isEmpty())) {

@@ -105,6 +105,10 @@ public class SerialHelper {
         return serialPort.writeBytes(bytes);
     }
 
+    /**
+     *
+     * @return
+     */
     public String[] getPortNames() {
         String[] serialPortList = SerialPortList.getPortNames();
         if (serialPortList.length == 0) {
@@ -131,6 +135,10 @@ public class SerialHelper {
         return serialPort.isOpened();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean disconnect() {
         try {
             return serialPort.closePort();
@@ -140,6 +148,10 @@ public class SerialHelper {
         }
     }
 
+    /**
+     *
+     * @param enabled
+     */
     public void setDTR(boolean enabled) {
         try {
             serialPort.setDTR(enabled);
@@ -148,6 +160,10 @@ public class SerialHelper {
         }
     }
 
+    /**
+     *
+     * @param enabled
+     */
     public void setRTS(boolean enabled) {
         try {
             serialPort.setRTS(enabled);
@@ -156,18 +172,30 @@ public class SerialHelper {
         }
     }
 
+    /**
+     *
+     * @param readTerminator
+     */
     public void setChunkTerminator(String readTerminator) {
         this.readTerminator = readTerminator;
         //disable chunk size splitting
         this.readChunkSize = -1;
     }
 
+    /**
+     *
+     * @param chunkSize
+     */
     public void setChunkSize(int chunkSize) {
         this.readChunkSize = chunkSize;
         // disable chunk terminator splitting
         this.readTerminator = "";
     }
 
+    /**
+     *
+     * @param consumer
+     */
     public void sendReadData(SerialPortListener consumer) {
         String bufferContent = readBuffer.toString();
         // if a terminator is configured

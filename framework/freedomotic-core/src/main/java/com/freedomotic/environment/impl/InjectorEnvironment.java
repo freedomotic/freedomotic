@@ -30,6 +30,9 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
  */
 public class InjectorEnvironment extends AbstractModule {
 
+    /**
+     *
+     */
     @Override
     protected void configure() {
 

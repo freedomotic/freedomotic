@@ -27,11 +27,20 @@ public class Equals extends BinaryExpression {
 
     private static final String OPERATOR = Statement.EQUALS;
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getOperand() {
         return OPERATOR;
     }
 
+    /**
+     *
+     * @param left
+     * @param right
+     */
     public Equals(String left, String right) {
         super(left, right);
     }

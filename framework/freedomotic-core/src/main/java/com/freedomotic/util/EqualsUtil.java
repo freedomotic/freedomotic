@@ -113,6 +113,8 @@ public class EqualsUtil {
      *
      * Includes type-safe enumerations and collections, but does not include
      * arrays. See class comment.
+     * @param aThis
+     * @param aThat
      * @return 
      */
     static public boolean areEqual(Object aThis, Object aThat) {

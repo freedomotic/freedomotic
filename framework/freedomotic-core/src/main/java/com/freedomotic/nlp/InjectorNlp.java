@@ -28,6 +28,9 @@ import com.google.inject.Singleton;
  */
 public class InjectorNlp extends AbstractModule {
 
+    /**
+     *
+     */
     @Override
     protected void configure() {
         bind(NlpCommand.class).to(NlpCommandStringDistanceImpl.class).in(Singleton.class);

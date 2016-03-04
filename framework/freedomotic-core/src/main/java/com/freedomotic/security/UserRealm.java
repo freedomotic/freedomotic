@@ -37,25 +37,49 @@ import org.apache.shiro.realm.SimpleAccountRealm;
 public class UserRealm extends SimpleAccountRealm {
 
     private final static Logger LOG = Logger.getLogger(UserRealm.class.getCanonicalName());
+
+    /**
+     *
+     */
     public final static String USER_REALM_NAME = "com.freedomotic.security";
 
+    /**
+     *
+     */
     public UserRealm() {
         setName(USER_REALM_NAME);
     }
 
+    /**
+     *
+     * @param account
+     */
     public void addUser(User account) {
         super.add(account);
     }
 
+    /**
+     *
+     * @param role
+     */
     public void addRole(SimpleRole role) {
         super.add(role);
     }
 
+    /**
+     *
+     * @param username
+     * @return
+     */
     @Override
     public User getUser(String username) {
         return (User) super.getUser(username);
     }
 
+    /**
+     *
+     * @return
+     */
     public Map<String, User> getUsers() {
         HashMap<String, User> accounts = new HashMap<String, User>();
         for (String userName : users.keySet()) {
@@ -64,10 +88,19 @@ public class UserRealm extends SimpleAccountRealm {
         return accounts;
     }
 
+    /**
+     *
+     * @return
+     */
     public Map<String, SimpleRole> getRoles() {
         return roles;
     }
 
+    /**
+     *
+     * @param rolename
+     * @return
+     */
     @Override
     public SimpleRole getRole(String rolename) {
         return super.getRole(rolename); //To change body of generated methods, choose Tools | Templates.
@@ -110,16 +143,29 @@ public class UserRealm extends SimpleAccountRealm {
         return true;
     }
 
+    /**
+     *
+     * @param file
+     */
     public void load(File file) {
         loadRoles(new File(file + "/roles.xml"));
         loadUsers(new File(file + "/users.xml"));
     }
 
+    /**
+     *
+     * @param file
+     * @throws IOException
+     */
     public void save(File file) throws IOException {
         saveUsers(new File(file + "/users.xml"));
         saveRoles(new File(file + "/roles.xml"));
     }
 
+    /**
+     *
+     * @param userName
+     */
     public void removeUser(String userName) {
         User u = getUser(userName);
         u.setObjectPermissions(null);
@@ -129,6 +175,10 @@ public class UserRealm extends SimpleAccountRealm {
         users.remove(userName);
     }
 
+    /**
+     *
+     * @param roleName
+     */
     public void removeRole(String roleName) {
         SimpleRole r = getRole(roleName);
         for (User u : getUsers().values()) {

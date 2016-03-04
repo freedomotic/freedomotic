@@ -39,6 +39,9 @@ import com.google.inject.AbstractModule;
  */
 public class FreedomoticInjector extends AbstractModule {
 
+    /**
+     *
+     */
     @Override
     protected void configure() {
         install(new InjectorBus());

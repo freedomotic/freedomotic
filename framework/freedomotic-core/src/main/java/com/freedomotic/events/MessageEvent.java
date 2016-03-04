@@ -71,6 +71,10 @@ public class MessageEvent
         this.getPayload().addStatement("message.type", type);
     }
 
+    /**
+     *
+     * @param level
+     */
     public void setLevel(String level) {
         this.getPayload().addStatement("message.level", level);
     }

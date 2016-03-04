@@ -88,7 +88,15 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 public class Freedomotic implements BusConsumer {
 
     private static final Logger LOG = Logger.getLogger(Freedomotic.class.getName());
+
+    /**
+     *
+     */
     public static String INSTANCE_ID;
+
+    /**
+     *
+     */
     public static ArrayList<IPluginCategory> onlinePluginCategories;
     /**
      * Should NOT be used. Reserved for una tantum internal freedomotic core use
@@ -122,6 +130,7 @@ public class Freedomotic implements BusConsumer {
      * @param environmentRepository
      * @param thingsRepository
      * @param triggerRepository
+     * @param reactionRepository
      * @param commandRepository
      * @param clientStorage
      * @param commandsNlpService

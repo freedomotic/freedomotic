@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -39,15 +38,34 @@ import java.util.logging.Logger;
 public class EventTemplate implements Serializable {
 
     private static final long serialVersionUID = -6726283450243677665L;
+
+    /**
+     *
+     */
     protected String eventName;
+
+    /**
+     *
+     */
     protected String sender;
+
+    /**
+     *
+     */
     protected Payload payload = new Payload();
+
+    /**
+     *
+     */
     protected boolean isValid;
     private long creation;
-    
+
     @XStreamOmitField
     private static final Logger LOG = Logger.getLogger(EventTemplate.class.getName());
 
+    /**
+     *
+     */
     protected void generateEventPayload() {
     }
 
@@ -198,7 +216,7 @@ public class EventTemplate implements Serializable {
     public Payload getPayload() {
         return payload;
     }
-    
+
     @Override
     public String toString() {
         return getEventName();

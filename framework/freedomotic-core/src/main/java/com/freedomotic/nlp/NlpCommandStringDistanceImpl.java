@@ -46,6 +46,10 @@ public class NlpCommandStringDistanceImpl implements NlpCommand {
     private List<Rank<Command>> ranking;
     private final CommandRepository commandsRepository;
 
+    /**
+     *
+     * @param commandsRepository
+     */
     @Inject
     public NlpCommandStringDistanceImpl(CommandRepository commandsRepository) {
         this.commandsRepository = commandsRepository;

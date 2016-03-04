@@ -58,10 +58,19 @@ public class CommandsNlpService extends AbstractConsumer {
     private static final Logger LOG = Logger.getLogger(CommandsNlpService.class.getName());
     private static final String MESSAGING_CHANNEL = "app.commands.interpreter.nlp";
     // Messaging related parameters
-    public static final String PARAM_NLP_TEXT = "text";
+
+    /**
+     *
+     */
+        public static final String PARAM_NLP_TEXT = "text";
     // Dependencies
     private final NlpCommand nlpCommands;
 
+    /**
+     *
+     * @param nlpCommands
+     * @param busService
+     */
     @Inject
     public CommandsNlpService(NlpCommand nlpCommands, BusService busService) {
         super(busService);
@@ -122,6 +131,10 @@ public class CommandsNlpService extends AbstractConsumer {
         throw new UnsupportedOperationException("This modules doesen't handle events");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getMessagingChannel() {
         return MESSAGING_CHANNEL;

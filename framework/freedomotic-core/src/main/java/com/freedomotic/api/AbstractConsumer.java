@@ -35,7 +35,7 @@ import javax.jms.ObjectMessage;
  * TODO: THIS CLASS IT'S NOT FINISHED IT NEEDS TO IMPLEMENT THE REPLY FEATURE
  * Convenience root class for all bus message consumers
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public abstract class AbstractConsumer implements BusConsumer {
 
@@ -58,8 +58,16 @@ public abstract class AbstractConsumer implements BusConsumer {
      */
     protected abstract void onEvent(EventTemplate event);
 
+    /**
+     *
+     * @return
+     */
     protected abstract String getMessagingChannel();
 
+    /**
+     *
+     * @param busService
+     */
     public AbstractConsumer(BusService busService) {
         this.busService = busService;
         listener = new BusMessagesListener(this, busService);
@@ -97,14 +105,26 @@ public abstract class AbstractConsumer implements BusConsumer {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isAutomaticReply() {
         return automaticReply;
     }
 
+    /**
+     *
+     * @param automaticReply
+     */
     public void setAutomaticReply(boolean automaticReply) {
         this.automaticReply = automaticReply;
     }
 
+    /**
+     *
+     * @return
+     */
     public BusService getBusService() {
         return busService;
     }

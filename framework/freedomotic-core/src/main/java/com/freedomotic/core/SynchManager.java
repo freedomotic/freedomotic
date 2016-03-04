@@ -43,10 +43,18 @@ import javax.jms.ObjectMessage;
 public class SynchManager implements BusConsumer {
 
     private static final Logger LOG = Logger.getLogger(TopologyManager.class.getName());
+
+    /**
+     *
+     */
     public static final String LISTEN_CHANNEL = "app.event.sensor.object.behavior.change";
     private BusMessagesListener listener;
     private final BusService busService;
     private final ThingRepository thingsRepository;
+
+    /**
+     *
+     */
     public static final String KEY_PROVENANCE = "provenance";
     private final ThingFactory thingFactory;
 

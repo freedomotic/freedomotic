@@ -19,10 +19,7 @@
  * along with Freedomotic; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.freedomotic.annotations;
 
 import java.lang.annotation.ElementType;

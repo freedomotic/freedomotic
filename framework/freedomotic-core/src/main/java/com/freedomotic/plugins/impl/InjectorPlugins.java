@@ -31,7 +31,9 @@ import com.google.inject.Singleton;
  */
 public class InjectorPlugins extends AbstractModule {
 
-
+    /**
+     *
+     */
     @Override
     protected void configure() {
         

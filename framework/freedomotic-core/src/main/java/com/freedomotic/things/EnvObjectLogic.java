@@ -69,12 +69,27 @@ public class EnvObjectLogic {
     private Map<String, BehaviorLogic> behaviors = new HashMap<String, BehaviorLogic>();
     private EnvironmentLogic environment;
 
+    /**
+     *
+     */
     @Inject
     protected EnvironmentRepository environmentRepository;
+
+    /**
+     *
+     */
     @Inject
     protected TriggerRepository triggerRepository;
+
+    /**
+     *
+     */
     @Inject
     protected CommandRepository commandRepository;
+
+    /**
+     *
+     */
     @Inject
     protected ReactionRepository reactionRepository;
     @Inject
@@ -448,6 +463,8 @@ public class EnvObjectLogic {
      * Sets the object location without invoking an object change notification
      * An user should never use this method. It's needed by the framework and
      * reserver for it's exclusive use.
+     * @param x
+     * @param y
      */
     public void synchLocation(int x, int y) {
         for (Representation rep : getPojo().getRepresentations()) {

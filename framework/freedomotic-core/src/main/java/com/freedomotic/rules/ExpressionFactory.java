@@ -26,6 +26,13 @@ package com.freedomotic.rules;
  */
 public class ExpressionFactory<T extends Expression> {
 
+    /**
+     *
+     * @param left
+     * @param operand
+     * @param right
+     * @return
+     */
     public T createExpression(String left, String operand, String right) {
         if (operand.endsWith(Statement.EQUALS)) {
             return (T) new Equals(left, right);

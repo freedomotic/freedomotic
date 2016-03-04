@@ -79,6 +79,10 @@ public final class Autodiscovery extends AbstractConsumer {
         this.commandRepository = commandRepository;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getMessagingChannel() {
         return MESSAGING_CHANNEL;

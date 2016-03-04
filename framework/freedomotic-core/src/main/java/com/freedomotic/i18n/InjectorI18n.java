@@ -28,6 +28,9 @@ import com.google.inject.Singleton;
  */
 public class InjectorI18n extends AbstractModule {
 
+    /**
+     *
+     */
     @Override
     protected void configure() {
         bind(I18n.class).to(I18nImpl.class).in(Singleton.class);

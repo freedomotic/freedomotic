@@ -25,10 +25,19 @@ package com.freedomotic.exceptions;
  */
 public class NoResultsException extends Exception {
 
+    /**
+     *
+     * @param msg
+     */
     public NoResultsException(String msg) {
         super(msg);
     }
 
+    /**
+     *
+     * @param message
+     * @param cause
+     */
     public NoResultsException(String message, Throwable cause) {
         super(message, cause);
     }

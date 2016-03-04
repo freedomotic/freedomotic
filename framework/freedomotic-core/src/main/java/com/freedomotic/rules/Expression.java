@@ -27,7 +27,16 @@ package com.freedomotic.rules;
  */
 public interface Expression<T> {
     
+    /**
+     *
+     * @return
+     */
     public T evaluate();
+
+    /**
+     *
+     * @return
+     */
     public String getOperand();
     
 }

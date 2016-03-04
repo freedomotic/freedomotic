@@ -84,6 +84,9 @@ public interface Nlp<T> {
         }
     }
 
+    /**
+     *
+     */
     public class DescendingRankComparator implements Comparator<Rank> {
 
         @Override

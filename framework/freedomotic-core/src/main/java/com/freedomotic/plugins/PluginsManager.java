@@ -32,8 +32,19 @@ import java.net.URL;
  */
 public interface PluginsManager {
 
+    /**
+     *
+     */
     int TYPE_DEVICE = 0;
+
+    /**
+     *
+     */
     int TYPE_EVENT = 2;
+
+    /**
+     *
+     */
     int TYPE_OBJECT = 1;
 
     /**
