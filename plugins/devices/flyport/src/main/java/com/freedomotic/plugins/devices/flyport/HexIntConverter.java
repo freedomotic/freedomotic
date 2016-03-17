@@ -17,9 +17,12 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.plugins.devices.flyport;
 
+/**
+ *
+ * @author Mauro Cicolella
+ */
 public class HexIntConverter {
 
     /**

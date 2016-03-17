@@ -27,17 +27,25 @@ import com.freedomotic.things.ThingRepository;
 import com.freedomotic.reactions.Command;
 import com.google.inject.Inject;
 import java.io.IOException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ *
+ * @author mauro
+ */
 public class HelloWorld
         extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(HelloWorld.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(HelloWorld.class.getName());
     final int POLLING_WAIT;
-    
+
     @Inject
     private ThingRepository thingsRepository;
 
+    /**
+     *
+     */
     public HelloWorld() {
         //every plugin needs a name and a manifest XML file
         super("HelloWorld", "/hello-world/hello-world-manifest.xml");

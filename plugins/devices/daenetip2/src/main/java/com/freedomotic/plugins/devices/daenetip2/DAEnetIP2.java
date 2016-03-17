@@ -32,12 +32,16 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ *
+ * @author Mauro Cicolella
+ */
 public class DAEnetIP2 extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(DAEnetIP2.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DAEnetIP2.class.getName());
     private static int BOARD_NUMBER = 1;
     Map<String, Board> devices = new HashMap<String, Board>();
     private static int POLLING_TIME = 1000;
@@ -99,7 +103,7 @@ public class DAEnetIP2 extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            LOG.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.error("Unable to connect to host " + address + " on port " + port);
             return false;
         }
     }
@@ -151,10 +155,14 @@ public class DAEnetIP2 extends Protocol {
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
-            LOG.severe(ex.getLocalizedMessage());
+            LOG.error(ex.getLocalizedMessage());
         }
     }
 
+    /**
+     *
+     * @param board
+     */
     public void SNMPRequest(Board board) {
         final MYSNMP snmpRequest = new MYSNMP();
         String relayStatus = null;
@@ -234,6 +242,7 @@ public class DAEnetIP2 extends Protocol {
 
     /**
      * Actuator side
+     * @throws com.freedomotic.exceptions.UnableToExecuteException
      */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
@@ -267,6 +276,12 @@ public class DAEnetIP2 extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param hm
+     * @param value
+     * @return
+     */
     public static Object getKeyFromValue(Map hm, Object value) {
         for (Object o : hm.keySet()) {
             if (hm.get(o).equals(value)) {

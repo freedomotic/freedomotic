@@ -30,11 +30,12 @@ import com.freedomotic.reactions.Command;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TextToSpeech extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(TextToSpeech.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TextToSpeech.class.getName());
     private com.sun.speech.freetts.Voice voice;
 
     public TextToSpeech() {
@@ -66,14 +67,14 @@ public class TextToSpeech extends Protocol {
             VoiceManager voiceManager = VoiceManager.getInstance();
             Voice[] voices = voiceManager.getVoices();
             if (voices.length <= 0) {
-                LOG.severe("Cannot use text to speech, no voice found");
+                LOG.error("Cannot use text to speech, no voice found");
                 setDescription("Cannot use text to speech, no voice found");
                 stop();
             } else {
                 voice.allocate();
             }
         } catch (Exception e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -81,7 +82,7 @@ public class TextToSpeech extends Protocol {
         try {
             new TextToSpeech.Speaker(message).start();
         } catch (Exception e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 

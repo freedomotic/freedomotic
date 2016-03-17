@@ -26,18 +26,31 @@ import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @autor Mauro Cicolella <mcicolella@libero.it>
+ * @autor Mauro Cicolella
  */
 public class ArduinoRemoteController extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(ArduinoRemoteController.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ArduinoRemoteController.class.getName());
     private static int POLLING_TIME = 1000;
     private static int SOCKET_TIMEOUT = 1000;
+
+    /**
+     *
+     */
     public final String UDP_SERVER_HOSTNAME = configuration.getStringProperty("udp-server-hostname", "192.168.1.100");
+
+    /**
+     *
+     */
     public final int UDP_SERVER_PORT = configuration.getIntProperty("udp-server-port", 7331);
+
+    /**
+     *
+     */
     public final String DELIMITER = configuration.getStringProperty("delimiter", ":");
     private int udpPort;
     private static UDPServer udpServer = null;
@@ -59,7 +72,7 @@ public class ArduinoRemoteController extends Protocol {
             udpServer = new UDPServer(this);
             udpServer.start();
         } catch (IOException iOException) {
-            LOG.severe("Error during UDP server creation " + iOException.toString());
+            LOG.error("Error during UDP server creation " + iOException.toString());
         }
     }
 
@@ -77,16 +90,24 @@ public class ArduinoRemoteController extends Protocol {
     protected void onRun() {
     }
 
+    /**
+     *
+     * @param objectAddress
+     * @param eventProperty
+     * @param eventValue
+     */
     public void sendEvent(String objectAddress, String eventProperty, String eventValue) {
         ProtocolRead event = new ProtocolRead(this, "arduino-remote-controller", objectAddress);
         event.addProperty("button.pressed", eventValue);
         //publish the event on the messaging bus
         this.notifyEvent(event);
-        System.out.println("Sending event : " + event.toString());  // FOR DEBUG USE
+        LOG.debug("Sending event : " + event.toString());  // FOR DEBUG USE
     }
 
     /**
      * Actuator side
+     *
+     * @throws com.freedomotic.exceptions.UnableToExecuteException
      */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {

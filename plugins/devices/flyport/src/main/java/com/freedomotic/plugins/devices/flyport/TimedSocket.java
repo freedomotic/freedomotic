@@ -17,7 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.plugins.devices.flyport;
 
 import java.net.*;
@@ -33,7 +32,7 @@ import java.io.*;
  * of time allowed for a connection can be specified, along with a host and
  * port.
  *
- * @author	David Reilly
+ * @author David Reilly
  */
 public class TimedSocket {
 
@@ -44,6 +43,9 @@ public class TimedSocket {
      * @param	addr	Address of host
      * @param	port	Port of service
      * @param	delay	Delay in milliseconds
+     * @return
+     * @throws java.io.InterruptedIOException
+     * @throws java.io.IOException
      */
     public static Socket getSocket(InetAddress addr, int port, int delay) throws InterruptedIOException, IOException {
         // Create a new socket thread, and start it running
@@ -93,6 +95,9 @@ public class TimedSocket {
      * @param	host	Hostname of machine
      * @param	port	Port of service
      * @param	delay	Delay in milliseconds
+     * @return
+     * @throws java.io.InterruptedIOException
+     * @throws java.io.IOException
      */
     public static Socket getSocket(String host, int port, int delay) throws InterruptedIOException, IOException {
         // Convert host into an InetAddress, and call getSocket method

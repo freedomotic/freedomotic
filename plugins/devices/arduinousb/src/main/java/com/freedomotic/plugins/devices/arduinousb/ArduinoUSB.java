@@ -27,13 +27,17 @@ import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.helpers.SerialHelper;
 import com.freedomotic.helpers.SerialPortListener;
 import com.freedomotic.reactions.Command;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import jssc.SerialPortException;
 
+/**
+ *
+ * @author Mauro Cicolella
+ */
 public class ArduinoUSB extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(ArduinoUSB.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ArduinoUSB.class.getName());
     private String portName = configuration.getStringProperty("serial.port", "/dev/usb0");
     private Integer baudRate = configuration.getIntProperty("serial.baudrate", 9600);
     private Integer dataBits = configuration.getIntProperty("serial.databits", 8);
@@ -45,6 +49,9 @@ public class ArduinoUSB extends Protocol {
     private String delimiter = configuration.getStringProperty("delimiter", ";");
     private SerialHelper serial;
 
+    /**
+     *
+     */
     public ArduinoUSB() {
         super("Arduino USB", "/arduinousb/arduinousb-manifest.xml");
         //This disables loop execution od onRun() method
@@ -58,7 +65,7 @@ public class ArduinoUSB extends Protocol {
 
                 @Override
                 public void onDataAvailable(String data) {
-                    LOG.log(Level.CONFIG, "Arduino USB received: {0}", data);
+                    LOG.info("Arduino USB received: {0}", data);
                     sendChanges(data);
                 }
             });

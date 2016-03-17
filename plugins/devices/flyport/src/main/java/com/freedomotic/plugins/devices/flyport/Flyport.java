@@ -34,8 +34,8 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -46,12 +46,13 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
- * A sensor for the board Flyport developed by openpicus.com author Mauro
- * Cicolella - www.emmecilab.net For more details please refer to
+ * A sensor for the board Flyport developed by openpicus.com
+ *
+ * @author Mauro Ccolella
  */
 public class Flyport extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(Flyport.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Flyport.class.getName());
     private static ArrayList<Board> boards = null;
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
@@ -110,7 +111,7 @@ public class Flyport extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            LOG.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.error("Unable to connect to host " + address + " on port " + port);
             return false;
         }
     }
@@ -154,7 +155,7 @@ public class Flyport extends Protocol {
             try {
                 Thread.sleep(POLLING_TIME);
             } catch (InterruptedException ex) {
-                LOG.severe(ex.getLocalizedMessage());
+                LOG.error(ex.getLocalizedMessage());
             }
         }
     }
@@ -166,7 +167,7 @@ public class Flyport extends Protocol {
         try {
             dBuilder = dbFactory.newDocumentBuilder();
         } catch (ParserConfigurationException ex) {
-            LOG.severe(ex.getLocalizedMessage());
+            LOG.error(ex.getLocalizedMessage());
         }
         Document doc = null;
         String statusFileURL = null;
@@ -183,12 +184,12 @@ public class Flyport extends Protocol {
         } catch (SAXException ex) {
             disconnect();
             this.stop();
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         } catch (Exception ex) {
             disconnect();
             this.stop();
             setDescription("Unable to connect to " + statusFileURL);
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
         return doc;
     }
@@ -208,7 +209,7 @@ public class Flyport extends Protocol {
                 try {
                     // converts i into hexadecimal value (string) and sends the parameters
                     String tagName = board.getLineToMonitorize() + HexIntConverter.convert(i);
-                    LOG.severe("Flyport monitorizes tags " + tagName);
+                    LOG.debug("Flyport monitorizes tags " + tagName);
                     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent());
                 } catch (DOMException dOMException) {
                     //do nothing
@@ -259,6 +260,8 @@ public class Flyport extends Protocol {
 
     /**
      * Actuator side
+     *
+     * @throws com.freedomotic.exceptions.UnableToExecuteException
      */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
@@ -270,10 +273,10 @@ public class Flyport extends Protocol {
         try {
             connected = connect(address[0], Integer.parseInt(address[1]));
         } catch (ArrayIndexOutOfBoundsException outEx) {
-            LOG.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
+            LOG.error("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
             throw new UnableToExecuteException();
         } catch (NumberFormatException numberFormatException) {
-            LOG.severe(address[1] + " is not a valid ethernet port to connect to");
+            LOG.error(address[1] + " is not a valid ethernet port to connect to");
             throw new UnableToExecuteException();
         }
 
@@ -287,7 +290,7 @@ public class Flyport extends Protocol {
                 }
             } catch (IOException iOException) {
                 setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);
-                LOG.severe("Unable to send the message to host " + address[0] + " on port " + address[1]);
+                LOG.error("Unable to send the message to host " + address[0] + " on port " + address[1]);
                 throw new UnableToExecuteException();
             } finally {
                 disconnect();
@@ -314,6 +317,11 @@ public class Flyport extends Protocol {
 
     // create message to send to the board
     // this part must be changed to relect board protocol
+    /**
+     *
+     * @param c
+     * @return
+     */
     public String createMessage(Command c) {
         String message = null;
         String page = null;

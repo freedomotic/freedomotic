@@ -22,28 +22,53 @@
 
 package com.freedomotic.plugins.devices.arduinows;
 
+/**
+ *
+ * @author mauro
+ */
 public class Board {
 
     private String ipAddress = null;
     private int port;
 
+    /**
+     *
+     * @param ipAddress
+     * @param port
+     */
     public Board(String ipAddress, int port) {
         setIpAddress(ipAddress);
         setPort(port);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getIpAddress() {
         return ipAddress;
     }
 
+    /**
+     *
+     * @param ipAddress
+     */
     public final void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPort() {
         return port;
     }
 
+    /**
+     *
+     * @param port
+     */
     public final void setPort(int port) {
         this.port = port;
     }

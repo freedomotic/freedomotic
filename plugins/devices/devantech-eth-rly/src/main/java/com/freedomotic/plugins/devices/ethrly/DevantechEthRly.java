@@ -34,12 +34,11 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -50,9 +49,13 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import org.apache.commons.codec.binary.Base64;
 
+/**
+ *
+ * @author Mauro Cicolella
+ */
 public class DevantechEthRly extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(DevantechEthRly.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DevantechEthRly.class.getName());
     Map<String, Board> devices = new HashMap<String, Board>();
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
@@ -125,7 +128,7 @@ public class DevantechEthRly extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            LOG.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.error("Unable to connect to host " + address + " on port " + port);
             return false;
         }
     }
@@ -173,7 +176,7 @@ public class DevantechEthRly extends Protocol {
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
-            Logger.getLogger(DevantechEthRly.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getLocalizedMessage());
         }
     }
 
@@ -184,7 +187,7 @@ public class DevantechEthRly extends Protocol {
         try {
             dBuilder = dbFactory.newDocumentBuilder();
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(DevantechEthRly.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getLocalizedMessage());
         }
         Document doc = null;
         URL url = null;
@@ -210,12 +213,12 @@ public class DevantechEthRly extends Protocol {
         } catch (SAXException ex) {
             disconnect();
             this.stop();
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         } catch (Exception ex) {
             disconnect();
             this.stop();
             setDescription("Unable to connect to " + url);
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
         return doc;
     }
@@ -276,6 +279,8 @@ public class DevantechEthRly extends Protocol {
 
     /**
      * Actuator side
+     *
+     * @throws com.freedomotic.exceptions.UnableToExecuteException
      */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
@@ -290,10 +295,10 @@ public class DevantechEthRly extends Protocol {
         try {
             connected = connect(ip_board, port_board);
         } catch (ArrayIndexOutOfBoundsException outEx) {
-            LOG.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
+            LOG.error("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
             throw new UnableToExecuteException();
         } catch (NumberFormatException numberFormatException) {
-            LOG.severe(port_board + " is not a valid ethernet port to connect to");
+            LOG.error(port_board + " is not a valid ethernet port to connect to");
             throw new UnableToExecuteException();
         }
         if (connected) {
@@ -306,7 +311,7 @@ public class DevantechEthRly extends Protocol {
                 }
             } catch (IOException iOException) {
                 setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);
-                LOG.severe("Unable to send the message to host " + ip_board + " on port " + port_board);
+                LOG.error("Unable to send the message to host " + ip_board + " on port " + port_board);
                 System.err.println(iOException);
                 throw new UnableToExecuteException();
             } finally {
@@ -334,6 +339,11 @@ public class DevantechEthRly extends Protocol {
 
     // create message to send to the board
     // this part must be changed to relect board protocol
+    /**
+     *
+     * @param c
+     * @return
+     */
     public String createMessage(Command c) {
         String message = null;
         String page = null;
@@ -359,6 +369,12 @@ public class DevantechEthRly extends Protocol {
     }
 
     // retrieve a key from value in the hashmap 
+    /**
+     *
+     * @param hm
+     * @param value
+     * @return
+     */
     public static Object getKeyFromValue(Map hm, Object value) {
         for (Object o : hm.keySet()) {
             if (hm.get(o).equals(value)) {

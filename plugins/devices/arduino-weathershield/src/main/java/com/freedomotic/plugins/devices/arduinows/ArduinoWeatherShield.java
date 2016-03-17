@@ -30,25 +30,28 @@ import com.freedomotic.reactions.Command;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * A sensor for the Arduino Weather Shield developed by www.ethermania.com
- * author Mauro Cicolella - www.emmecilab.net For details please refer to
- * http://www.ethermania.com/shop/index.php?main_page=product_info&cPath=91_104&products_id=612
+ *
+ * @author Mauro Cicolella
  */
 public class ArduinoWeatherShield extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(ArduinoWeatherShield.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ArduinoWeatherShield.class.getName());
     private final int POLLING_TIME = configuration.getIntProperty("time-between-reads", 1000);
     private final String DELIMITER = configuration.getStringProperty("delimiter", ":");
     private final int TUPLES_COUNT = configuration.getTuples().size();
     private List<Board> boards = new ArrayList<>();
     private HttpHelper http = new HttpHelper();
 
+    /**
+     *
+     */
     public ArduinoWeatherShield() {
         super("Arduino WeatherShield", "/arduino-weathershield/arduinows-manifest.xml");
     }
@@ -99,7 +102,7 @@ public class ArduinoWeatherShield extends Protocol {
                 String IP_TO_QUERY = configuration.getTuples().getStringProperty(i, "ip-to-query", "192.168.0.150");
                 int PORT_TO_QUERY = configuration.getTuples().getIntProperty(i, "port-to-query", 80);
                 Board board = new Board(IP_TO_QUERY, PORT_TO_QUERY);
-                LOG.log(Level.INFO, "Arduino Weathershield board configured to be"
+                LOG.info("Arduino Weathershield board configured to be"
                         + " queried at {0}:{1}", new Object[]{IP_TO_QUERY, PORT_TO_QUERY});
                 boards.add(board);
             }
@@ -110,8 +113,8 @@ public class ArduinoWeatherShield extends Protocol {
         String urlString = "http://" + board.getIpAddress() + ":" + board.getPort();
         String data = http.retrieveContent(urlString);
         String dataSensors = parseBody(data);
-         if (!dataSensors.isEmpty()) {
-            LOG.log(Level.CONFIG, "Read data from Arduino Weathershield: {0}", dataSensors);
+        if (!dataSensors.isEmpty()) {
+            LOG.info("Read data from Arduino Weathershield: {0}", dataSensors);
             try {
                 notifyReadValues(board, dataSensors);
             } catch (IllegalArgumentException ex) {
@@ -127,15 +130,15 @@ public class ArduinoWeatherShield extends Protocol {
         if (!(values.length == 3)) {
             throw new IllegalArgumentException("Cannot parse string " + parametersValue
                     + " to extract three numeric values separated by '" + DELIMITER + "'");
-        } 
+        }
         // disabled control for now - looking for a good isNumber implementation
         //else {
-          //  for (int i = 0; i < 3; i++) {
-            //    if (!isNumber(values[i])) {
-              //      throw new IllegalArgumentException("Error while parsing string '"
-                //            + parametersValue + "'" + values[i] + "' is not a number");
-              //  }
-            //}
+        //  for (int i = 0; i < 3; i++) {
+        //    if (!isNumber(values[i])) {
+        //      throw new IllegalArgumentException("Error while parsing string '"
+        //            + parametersValue + "'" + values[i] + "' is not a number");
+        //  }
+        //}
         //}
 
         //building the event
