@@ -1,0 +1,10 @@
+<config>
+    <properties>
+        <property name="description" value="BT Speech Recognition"/>
+        <property name="category"  value="speech"/>
+        <property name="short-name" value="bt-speech-recognition"/>
+        <property name="startup-time" value="on load"/>
+    </properties>
+</config>
+
+                
