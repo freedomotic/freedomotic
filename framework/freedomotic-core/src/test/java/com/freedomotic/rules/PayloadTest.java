@@ -19,7 +19,7 @@
  */
 package com.freedomotic.rules;
 
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -27,14 +27,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.slf4j.Logger;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class PayloadTest {
 
-    private static final Logger LOG = Logger.getLogger(PayloadTest.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(PayloadTest.class.getName());
 
     /**
      *

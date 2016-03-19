@@ -19,25 +19,28 @@
  */
 package com.freedomotic.exceptions;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class FreedomoticException
         extends Exception {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FreedomoticException.class.getName());
+
     /**
-     * Creates a new instance of
-     * <code>FreedomoticException</code> without detail message.
+     * Creates a new instance of <code>FreedomoticException</code> without
+     * detail message.
      */
     public FreedomoticException() {
     }
 
     /**
-     * Constructs an instance of
-     * <code>FreedomoticException</code> with the specified detail message.
+     * Constructs an instance of <code>FreedomoticException</code> with the
+     * specified detail message.
      *
      * @param msg the detail message.
      */
@@ -61,5 +64,4 @@ public class FreedomoticException
     public FreedomoticException(Throwable cause) {
         super(cause);
     }
-    private static final Logger LOG = Logger.getLogger(FreedomoticException.class.getName());
 }

@@ -30,160 +30,62 @@ import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 @XmlRootElement
 public class Info {
 
-    private static final Logger LOG = Logger.getLogger(Info.class.getName());
-
-    /**
-     *
-     */
+    private static final Logger LOG = LoggerFactory.getLogger(Info.class.getName());
     public static FrameworkSettings FRAMEWORK = new FrameworkSettings();
-
-    /**
-     *
-     */
     public static PathSettings PATHS = new PathSettings();
-
-    /**
-     *
-     */
     public static MessagingSettings MESSAGING = new MessagingSettings();
 
-    /**
-     *
-     */
     @XmlRootElement
     @XmlAccessorType(XmlAccessType.FIELD)
     public static final class FrameworkSettings {
 
         //framework versioning
-
-        /**
-         *
-         */
-                public final Integer FRAMEWORK_MAJOR = 5;
-
-        /**
-         *
-         */
+        public final Integer FRAMEWORK_MAJOR = 5;
         public final Integer FRAMEWORK_MINOR = 6;
-
-        /**
-         *
-         */
         public final Integer FRAMEWORK_BUILD = 0;
-
-        /**
-         *
-         */
         public final String FRAMEWORK_VERSION_CODENAME = "Commander";
-
-        /**
-         *
-         */
         public final String FRAMEWORK_RELEASE_DATE = "In Development";
-
-        /**
-         *
-         */
         public final String FRAMEWORK_LICENSE = "GNU GPL v2";
-
-        /**
-         *
-         */
         public final String FRAMEWORK_RELEASE_TYPE = "beta";
-
-        /**
-         *
-         */
         public final String FRAMEWORK_AUTHOR = "Freedomotic Development Team";
-
-        /**
-         *
-         */
         public final String PROJECT_MAIL = "info@freedomotic.com";
     }
 
-    /**
-     *
-     */
     @XmlRootElement
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class PathSettings {
 
         //framework base paths
+        public File PATH_WORKDIR = Info.getWorkdir();
 
-        /**
-         *
-         */
-                public File PATH_WORKDIR = Info.getWorkdir();
-
-        /**
-         *
-         */
         public final File PATH_CONFIG_FOLDER = new File(PATH_WORKDIR + "/config/");
-
-        /**
-         *
-         */
         public File PATH_DATA_FOLDER = new File(PATH_WORKDIR + "/data/");
-
-        /**
-         *
-         */
         public File PATH_RESOURCES_FOLDER = new File(PATH_DATA_FOLDER + "/resources/");
-
-        /**
-         *
-         */
         public File PATH_ENVIRONMENTS_FOLDER = new File(PATH_DATA_FOLDER + "/furn/");
-        
-        /**
-         *
-         */
+
         public final File PATH_PLUGINS_FOLDER = new File(PATH_WORKDIR + "/plugins/");
-
-        /**
-         *
-         */
         public final File PATH_DEVICES_FOLDER = new File(PATH_PLUGINS_FOLDER + "/devices/");
-
-        /**
-         *
-         */
         public final File PATH_OBJECTS_FOLDER = new File(PATH_PLUGINS_FOLDER + "/objects/");
-
-        /**
-         *
-         */
         public final File PATH_EVENTS_FOLDER = new File(PATH_PLUGINS_FOLDER + "/events/");
 
-        /**
-         *
-         */
         public final File PATH_PROVIDERS_FOLDER = new File(PATH_PLUGINS_FOLDER + "/providers/");
     }
 
-    /**
-     *
-     */
     @XmlRootElement
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class MessagingSettings {
         //framework API and messaging
 
-        /**
-         *
-         */
-        
         public final String BROKER_IP = Info.getLocalHost();
 
         /* http://activemq.apache.org/activemq-3-transport-configurations.html
@@ -191,67 +93,23 @@ public class Info {
          * public static final String BROKER_DEFAULT = "vm://freedomotic";
          * info about peer brokers http://fusesource.com/docs/broker/5.2/connectivity_guide/N04F73598.04EE2290.html
          */
-
-        /**
-         *
-         */
-        
         public final String BROKER_DEFAULT_PROTOCOL = "peer";
-
-        /**
-         *
-         */
         public final String BROKER_DEFAULT_CLUSTER_NAME = "freedomotic";
-
-        /**
-         *
-         */
         public final String BROKER_DEFAULT_UUID = UUID.randomUUID().toString();
-        
-        /**
-         *
-         */
+
         public final int BROKER_PORT = 61616;
 
         //port zero mean the first available port
-
-        /**
-         *
-         */
-                public final String BROKER_STOMP = "stomp://0.0.0.0:0";
+        public final String BROKER_STOMP = "stomp://0.0.0.0:0";
         //port zero mean the first available port
-
-        /**
-         *
-         */
-                public final String BROKER_WEBSOCKET = "ws://0.0.0.0:0";
+        public final String BROKER_WEBSOCKET = "ws://0.0.0.0:0";
         //default queues
-
-        /**
-         *
-         */
-                public final String CHANNEL_OBJECT_UPDATE = "app.event.object.behavior.change";
-
-        /**
-         *
-         */
+        public final String CHANNEL_OBJECT_UPDATE = "app.event.object.behavior.change";
         public final String CHANNEL_ZONE_OCCUPIERS = "app.event.person.zone";
-
-        /**
-         *
-         */
         public final String CHANNEL_PEOPLE_LOCATION = "app.event.sensor.person.movement.*";
 
         //behavior proprities
-
-        /**
-         *
-         */
-                public final int BEHAVIOR_MAX_PRIORITY = 9;
-
-        /**
-         *
-         */
+        public final int BEHAVIOR_MAX_PRIORITY = 9;
         public final int BEHAVIOR_MIN_PRIORITY = 0;
     }
 
@@ -262,10 +120,8 @@ public class Info {
             address = InetAddress.getLocalHost().toString();
 
         } catch (UnknownHostException ex) {
-            Logger.getLogger(Info.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
-
         return address;
 
     }
@@ -299,18 +155,14 @@ public class Info {
             LOG.info(workdir.getAbsolutePath());
             return workdir;
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(Info.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
 
-        LOG.severe("Something went wrong when figuring out which is the current workdir. "
+        LOG.error("Something went wrong when figuring out which is the current workdir. "
                 + "Cannot start freedmotic as a consequence");
         return null;
     }
 
-    /**
-     *
-     * @param path
-     */
     public static void relocateDataPath(File path) {
         if (path == null) {
             throw new IllegalArgumentException("Base data path should point to a not null file");
@@ -322,11 +174,7 @@ public class Info {
         Info.PATHS.PATH_RESOURCES_FOLDER = new File(path + "/resources/");
         Info.PATHS.PATH_ENVIRONMENTS_FOLDER = new File(path + "/furn/");
     }
-    
-    /**
-     *
-     * @param file
-     */
+
     public static void relocateWorkdir(File file) {
         Info.PATHS.PATH_WORKDIR = file;
     }

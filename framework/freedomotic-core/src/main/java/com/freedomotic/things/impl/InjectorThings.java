@@ -24,21 +24,17 @@ import com.freedomotic.things.ThingRepository;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
-
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class InjectorThings extends AbstractModule {
 
-    /**
-     *
-     */
     @Override
     protected void configure() {
-        
+
         bind(ThingRepository.class).to(ThingRepositoryImpl.class).in(Singleton.class);
         bind(ThingFactory.class);
-        
+
     }
 }

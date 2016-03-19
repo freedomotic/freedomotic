@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
@@ -63,6 +63,7 @@ import javax.script.ScriptException;
 public final class Resolver {
 
     // private static final String REFERENCE_DELIMITER = "@";
+    private static final Logger LOG = LoggerFactory.getLogger(Resolver.class.getName());
     private List<String> namespaces = new ArrayList<String>();
     private Payload context;
 
@@ -155,7 +156,7 @@ public final class Resolver {
                 tmp.add(clonedCmd);
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Error while substituting variables", e);
+            LOG.error("Error while substituting variables", e);
         }
 
         return tmp;
@@ -220,17 +221,17 @@ public final class Resolver {
                     String script = possibleScript.substring(1); //removing equal sign on the head
 
                     if (js == null) {
-                        LOG.severe("Cannot instatiate a JavaScript engine");
+                        LOG.error("Cannot instatiate a JavaScript engine");
                     }
 
                     try {
                         js.eval(script);
                     } catch (ScriptException scriptException) {
-                        LOG.severe(scriptException.getMessage());
+                        LOG.error(scriptException.getMessage());
                     }
 
                     if (js.get(key) == null) {
-                        LOG.log(Level.SEVERE,
+                        LOG.error(
                                 "Script evaluation has returned a null value, maybe the key ''{0}'' is not evaluated properly.",
                                 key);
                     }
@@ -239,7 +240,7 @@ public final class Resolver {
                     success = true;
                 } catch (Exception ex) {
                     success = false;
-                    LOG.log(Level.SEVERE, "Error while evaluating script in command", ex);
+                    LOG.error("Error while evaluating script in command", ex);
                 }
             }
 
@@ -313,17 +314,17 @@ public final class Resolver {
                     String script = possibleScript.substring(1);
 
                     if (js == null) {
-                        LOG.severe("Cannot instatiate a JavaScript engine");
+                        LOG.error("Cannot instatiate a JavaScript engine");
                     }
 
                     try {
                         js.eval(script);
                     } catch (ScriptException scriptException) {
-                        LOG.severe(scriptException.getMessage());
+                        LOG.error(scriptException.getMessage());
                     }
 
                     if (js.get(key) == null) {
-                        LOG.log(Level.SEVERE,
+                        LOG.error(
                                 "Script evaluation in trigger ''{0}'' has returned a null value, maybe the key ''{1}'' is not evaluated properly.",
                                 new Object[]{trigger.getName(), key});
                     }
@@ -332,7 +333,7 @@ public final class Resolver {
                     success = true;
                 } catch (Exception ex) {
                     success = false;
-                    LOG.severe(ex.getMessage());
+                    LOG.error(ex.getMessage());
                 }
             }
 
@@ -466,5 +467,4 @@ public final class Resolver {
         namespaces.clear();
         context.clear();
     }
-    private static final Logger LOG = Logger.getLogger(Resolver.class.getName());
 }

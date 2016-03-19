@@ -22,10 +22,13 @@ package com.freedomotic.environment.impl;
 import java.io.File;
 
 /**
- * A Guice factory to bind the {@link EnvironmentPersistence} class to its implementation
- * while allowing to pass a parameter to the implementation constructior (see Guice assisted injection)
- * @author enrico
+ * A Guice factory to bind the {@link EnvironmentPersistence} class to its
+ * implementation while allowing to pass a parameter to the implementation
+ * constructior (see Guice assisted injection)
+ *
+ * @author Enrico Nicoletti
  */
 interface EnvironmentPersistenceFactory {
-        public EnvironmentPersistence create(File directory);
+
+    public EnvironmentPersistence create(File directory);
 }

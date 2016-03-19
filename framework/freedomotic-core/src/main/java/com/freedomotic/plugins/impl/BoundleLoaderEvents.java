@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.plugins.impl;
@@ -29,14 +27,16 @@ import com.freedomotic.util.JarFilter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 class BoundleLoaderEvents implements BoundleLoader {
 
+    private static final Logger LOG = LoggerFactory.getLogger(BoundleLoaderEvents.class.getName());
     private File path;
 
     BoundleLoaderEvents(File path) {
@@ -76,11 +76,11 @@ class BoundleLoaderEvents implements BoundleLoader {
                                 results.add(plugin);
                             } catch (Exception exception) {
                                 LOG.info("Exception raised while loading this event. Skip it.");
-                                LOG.severe(Freedomotic.getStackTraceInfo(exception));
+                                LOG.error(Freedomotic.getStackTraceInfo(exception));
                             }
                         }
                     } catch (Exception ex) {
-                        LOG.severe(Freedomotic.getStackTraceInfo(ex));
+                        LOG.error(Freedomotic.getStackTraceInfo(ex));
                     }
                 }
             }
@@ -93,5 +93,4 @@ class BoundleLoaderEvents implements BoundleLoader {
     public File getPath() {
         return path;
     }
-    private static final Logger LOG = Logger.getLogger(BoundleLoaderEvents.class.getName());
 }

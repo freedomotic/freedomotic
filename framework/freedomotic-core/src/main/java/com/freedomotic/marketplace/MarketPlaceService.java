@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -23,8 +22,8 @@ package com.freedomotic.marketplace;
 import com.freedomotic.app.Freedomotic;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openide.util.Lookup;
 import org.openide.util.Lookup.Result;
 import org.openide.util.Lookup.Template;
@@ -33,10 +32,11 @@ import org.openide.util.LookupListener;
 
 /**
  *
- * @author Gabriel Pulido
+ * @author Gabriel Pulido de Torres
  */
 public class MarketPlaceService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MarketPlaceService.class.getName());
     private static MarketPlaceService service;
     private Lookup marketPlaceLookup;
     private Collection<? extends IMarketPlace> marketPlaces;
@@ -56,11 +56,11 @@ public class MarketPlaceService {
 
                 @Override
                 public void resultChanged(LookupEvent e) {
-                    LOG.severe("Lookup has changed");
+                    LOG.error("Lookup has changed");
                 }
             });
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Error initializing marketplace service", e);
+            LOG.error("Error initializing marketplace service", e);
         }
     }
 
@@ -90,7 +90,7 @@ public class MarketPlaceService {
                 packageList.addAll(market.getAvailablePackages());
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Error downloading the packages list", e);
+            LOG.error("Error downloading the packages list", e);
         }
 
         return packageList;
@@ -111,7 +111,7 @@ public class MarketPlaceService {
                 packageList.addAll(market.getAvailablePackages(category));
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Error downloading the packages list for category " + category.getName(), e);
+            LOG.error("Error downloading the packages list for category " + category.getName(), e);
         }
 
         return packageList;
@@ -131,21 +131,15 @@ public class MarketPlaceService {
                 categoryList.addAll(market.getAvailableCategories());
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Error downloading the marketplace categories list", e);
+            LOG.error("Error downloading the marketplace categories list", e);
         }
 
         return categoryList;
     }
 
-    /**
-     *
-     * @return
-     */
     public ArrayList<IMarketPlace> getProviders() {
         ArrayList<IMarketPlace> markets = new ArrayList<IMarketPlace>();
         markets.addAll(marketPlaces);
         return markets;
     }
-
-    private static final Logger LOG = Logger.getLogger(MarketPlaceService.class.getName());
 }

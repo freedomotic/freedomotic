@@ -43,20 +43,20 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.SimpleRole;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 public class FreedomXStream {
 
     private static XStream xstream = null;
-    private static final Logger LOG = Logger.getLogger(FreedomXStream.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(FreedomXStream.class.getName());
 
     @Inject
     private static ReactionConverter reactionConverter;
@@ -129,12 +129,6 @@ public class FreedomXStream {
         return xstream;
     }
 
-    /**
-     *
-     * @param object
-     * @param file
-     * @return
-     */
     public static boolean toXML(Object object, File file) {
         XStream serializer = getXstream();
         OutputStream outputStream = null;
@@ -146,7 +140,7 @@ public class FreedomXStream {
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
             serializer.toXML(object, writer);
         } catch (Exception exp) {
-            LOG.log(Level.SEVERE, "Error while serializing instance to disk", exp);
+            LOG.error("Error while serializing instance to disk", exp);
         } finally {
             IOUtils.closeQuietly(writer);
             IOUtils.closeQuietly(outputStream);

@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -22,15 +21,17 @@ package com.freedomotic.behaviors;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class RangedIntBehaviorLogic
         implements BehaviorLogic {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RangedIntBehaviorLogic.class.getName());
     private final RangedIntBehavior data;
     private Listener listener;
     private boolean changed;
@@ -154,7 +155,7 @@ public class RangedIntBehaviorLogic
                 }
             }
         } catch (NumberFormatException numberFormatException) {
-            LOG.warning("Paramenter 'value = " + params.getProperty("value").trim() + "' in "
+            LOG.warn("Paramenter 'value = " + params.getProperty("value").trim() + "' in "
                     + this.getName() + " behavior is not an integer.");
         }
 
@@ -300,5 +301,4 @@ public class RangedIntBehaviorLogic
     public void setChanged(boolean value) {
         changed = value;
     }
-    private static final Logger LOG = Logger.getLogger(RangedIntBehaviorLogic.class.getName());
 }

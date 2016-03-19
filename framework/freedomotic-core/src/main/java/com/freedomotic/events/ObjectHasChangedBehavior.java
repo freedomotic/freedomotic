@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -26,7 +25,8 @@ import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.things.EnvObjectLogic;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Channel <b>app.event.sensor.object.behavior.change</b> informs that an object
@@ -39,12 +39,12 @@ import java.util.logging.Logger;
  * @see com.freedomotic.object.EnvObjectLogic#getExposedProperties() for object
  * data
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class ObjectHasChangedBehavior extends EventTemplate {
 
     private static final long serialVersionUID = 6892968576173017195L;
-    private static final Logger LOG = Logger.getLogger(ObjectHasChangedBehavior.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ObjectHasChangedBehavior.class.getName());
 
     //private EnvObject obj;
     /**

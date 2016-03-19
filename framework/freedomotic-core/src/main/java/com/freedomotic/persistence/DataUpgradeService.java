@@ -24,7 +24,7 @@ import com.freedomotic.exceptions.DataUpgradeException;
 /**
  * Upgrades the data making them compatible with the current version
  *
- * @author enrico
+ * @author Enrico Nicoletti
  * @param <T> The type of data to upgrade
  */
 public interface DataUpgradeService<T> {

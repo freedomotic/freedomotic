@@ -27,13 +27,13 @@ import java.util.List;
 /**
  * Loader service for loading plugin types deployed on local filesystem
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 interface BoundleLoader {
 
     /**
-     * Loads all plugins. The concrete
-     * factories will have to implement these methods.
+     * Loads all plugins. The concrete factories will have to implement these
+     * methods.
      */
     List<Client> loadBoundle() throws PluginLoadingException;
 

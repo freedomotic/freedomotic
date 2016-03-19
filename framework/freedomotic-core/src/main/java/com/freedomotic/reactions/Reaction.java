@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 @XmlRootElement
 public final class Reaction
@@ -81,12 +81,6 @@ public final class Reaction
         create(trigger, commands);
     }
 
-    /**
-     *
-     * @param triggerName
-     * @param conditions
-     * @param commands
-     */
     public Reaction(String triggerName, List<Condition> conditions, List<Command> commands) {
         Trigger t = TriggerRepositoryImpl.getTrigger(triggerName);
         this.uuid = UUID.randomUUID().toString();
@@ -387,20 +381,10 @@ public final class Reaction
         return r;
     }
 
-    /**
-     *
-     * @param c
-     * @return
-     */
     public boolean addCommand(Command c) {
         return commands.add(c);
     }
 
-    /**
-     *
-     * @param c
-     * @return
-     */
     public boolean removeCommand(Command c) {
         return commands.remove(c);
     }

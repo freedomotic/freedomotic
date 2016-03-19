@@ -20,8 +20,8 @@
 package com.freedomotic.helpers;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import jssc.*;
 
 /**
@@ -33,11 +33,11 @@ import jssc.*;
  * interface and pass a 'this' reference in the constructor of
  * SerialConnectionProvider.
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class SerialHelper {
 
-    private static final Logger LOG = Logger.getLogger(SerialHelper.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(SerialHelper.class.getName());
     private SerialPort serialPort;
     private String portName;
     private String readTerminator = "";
@@ -70,10 +70,10 @@ public class SerialHelper {
                         try {
                             readBuffer.append(new String(serialPort.readBytes()));
                         } catch (SerialPortException ex) {
-                            LOG.log(Level.WARNING, null, ex);
+                            LOG.warn(ex.getMessage());
                         }
                     }
-                    LOG.log(Level.CONFIG, "Received message ''{0}'' from serial port {1}", new Object[]{readBuffer.toString(), portName});
+                    LOG.info("Received message ''{0}'' from serial port {1}", new Object[]{readBuffer.toString(), portName});
                     sendReadData(consumer);
                 }
             }
@@ -82,14 +82,14 @@ public class SerialHelper {
     }
 
     /**
-     * Sends a string message to the device. 
+     * Sends a string message to the device.
      *
      * @param message The message to send
      * @return true if executed succesfully, false otherwise
      * @throws jssc.SerialPortException
      */
     public boolean write(String message) throws SerialPortException {
-        LOG.log(Level.CONFIG, "Writing {0} to serial port {1}", new Object[]{message, portName});
+        LOG.info("Writing {0} to serial port {1}", new Object[]{message, portName});
         return serialPort.writeString(message);
     }
 
@@ -97,22 +97,18 @@ public class SerialHelper {
      * Sends a bytes message to the device
      *
      * @param bytes The message to send
-     * @return 
-     * @throws jssc.SerialPortException 
+     * @return
+     * @throws jssc.SerialPortException
      */
     public boolean write(byte[] bytes) throws SerialPortException {
-        LOG.log(Level.CONFIG, "Writing bytes '{0}' to serial port {1}", new Object[]{bytes.toString(), portName});
+        LOG.info("Writing bytes '{0}' to serial port {1}", new Object[]{bytes.toString(), portName});
         return serialPort.writeBytes(bytes);
     }
 
-    /**
-     *
-     * @return
-     */
     public String[] getPortNames() {
         String[] serialPortList = SerialPortList.getPortNames();
         if (serialPortList.length == 0) {
-            LOG.severe("No serial ports found");
+            LOG.error("No serial ports found");
         }
         return (serialPortList);
     }
@@ -135,67 +131,43 @@ public class SerialHelper {
         return serialPort.isOpened();
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean disconnect() {
         try {
             return serialPort.closePort();
         } catch (SerialPortException ex) {
-            LOG.log(Level.WARNING, "Error while closing serial port " + serialPort.getPortName(), ex);
+            LOG.warn("Error while closing serial port " + serialPort.getPortName(), ex);
             return false;
         }
     }
 
-    /**
-     *
-     * @param enabled
-     */
     public void setDTR(boolean enabled) {
         try {
             serialPort.setDTR(enabled);
         } catch (SerialPortException ex) {
-            LOG.severe(ex.getMessage());
+            LOG.error(ex.getMessage());
         }
     }
 
-    /**
-     *
-     * @param enabled
-     */
     public void setRTS(boolean enabled) {
         try {
             serialPort.setRTS(enabled);
         } catch (SerialPortException ex) {
-            LOG.severe(ex.getMessage());
+            LOG.error(ex.getMessage());
         }
     }
 
-    /**
-     *
-     * @param readTerminator
-     */
     public void setChunkTerminator(String readTerminator) {
         this.readTerminator = readTerminator;
         //disable chunk size splitting
         this.readChunkSize = -1;
     }
 
-    /**
-     *
-     * @param chunkSize
-     */
     public void setChunkSize(int chunkSize) {
         this.readChunkSize = chunkSize;
         // disable chunk terminator splitting
         this.readTerminator = "";
     }
 
-    /**
-     *
-     * @param consumer
-     */
     public void sendReadData(SerialPortListener consumer) {
         String bufferContent = readBuffer.toString();
         // if a terminator is configured

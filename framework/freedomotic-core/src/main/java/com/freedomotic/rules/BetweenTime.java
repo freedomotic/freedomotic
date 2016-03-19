@@ -24,25 +24,21 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class BetweenTime extends BinaryExpression {
 
     private static final String OPERAND = Statement.BETWEEN_TIME;
-    private static final Logger LOG = Logger.getLogger(BetweenTime.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BetweenTime.class.getName());
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
     Date todaysEnd;
     Date tomorrowStart;
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getOperand() {
         return OPERAND;
@@ -51,13 +47,7 @@ public class BetweenTime extends BinaryExpression {
     // left is an hour in form HH:MM::SS
     //right is a time interval in form HH:MM::SS-HH:MM::SS
     //this class checks if left is inside the right interval
-
-    /**
-     *
-     * @param left
-     * @param right
-     */
-        public BetweenTime(String left, String right) {
+    public BetweenTime(String left, String right) {
         super(left, right);
         try {
             todaysEnd = TIME_FORMAT.parse("24:00:00");
@@ -67,10 +57,6 @@ public class BetweenTime extends BinaryExpression {
         }
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public Boolean evaluate() {
 
@@ -79,7 +65,7 @@ public class BetweenTime extends BinaryExpression {
         try {
             time = TIME_FORMAT.parse(this.getLeft());
         } catch (ParseException ex) {
-            LOG.log(Level.WARNING, "Cannot parse hours " + getLeft() + ", valid format is HH:mm:ss", ex);
+            LOG.warn("Cannot parse hours " + getLeft() + ", valid format is HH:mm:ss", ex);
         }
 
         // Parse the hour interval HH:mm:ss-HH:mm:ss
@@ -90,7 +76,7 @@ public class BetweenTime extends BinaryExpression {
             leftDate = TIME_FORMAT.parse(interval[0]);
             rightDate = TIME_FORMAT.parse(interval[1]);
         } catch (ParseException ex) {
-            LOG.log(Level.WARNING, "Cannot parse hours interval " + getRight() + ", valid hour interval format is HH:mm:ss-HH:mm:ss", ex);
+            LOG.warn("Cannot parse hours interval " + getRight() + ", valid hour interval format is HH:mm:ss-HH:mm:ss", ex);
         }
 
         Calendar timeCalendar = GregorianCalendar.getInstance();

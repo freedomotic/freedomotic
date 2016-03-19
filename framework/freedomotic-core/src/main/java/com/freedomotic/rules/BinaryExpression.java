@@ -21,51 +21,30 @@ package com.freedomotic.rules;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public abstract class BinaryExpression implements Expression {
 
     private String left;
     private String right;
 
-    /**
-     *
-     * @param left
-     * @param right
-     */
     public BinaryExpression(String left, String right) {
         this.left = left;
         this.right = right;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getLeft() {
         return left;
     }
 
-    /**
-     *
-     * @param left
-     */
     public void setLeft(String left) {
         this.left = left;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getRight() {
         return right;
     }
 
-    /**
-     *
-     * @param right
-     */
     public void setRight(String right) {
         this.right = right;
     }

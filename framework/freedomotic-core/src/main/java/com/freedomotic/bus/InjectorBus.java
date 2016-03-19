@@ -22,20 +22,16 @@ package com.freedomotic.bus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
-
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class InjectorBus extends AbstractModule {
 
-    /**
-     *
-     */
     @Override
     protected void configure() {
-        
+
         bind(BusService.class).to(BusServiceImpl.class).in(Singleton.class);
-        
+
     }
 }

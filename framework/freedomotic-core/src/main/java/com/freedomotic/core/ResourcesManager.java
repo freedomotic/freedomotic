@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -36,17 +35,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public final class ResourcesManager {
 
     // private static final Map<String, BufferedImage> CACHE = new HashMap<String, BufferedImage>();
+    private static final Logger LOG = LoggerFactory.getLogger(ResourcesManager.class.getName());
     private static final LoadingCache<String, BufferedImage> imagesCache = CacheBuilder.newBuilder()
             .expireAfterAccess(1, TimeUnit.MINUTES)
             .weakValues()
@@ -55,7 +55,7 @@ public final class ResourcesManager {
                 public BufferedImage load(String imageName) throws Exception {
                     //loads image from disk searching it recursively in a given folder
                     BufferedImage img = fetchFromHDD(Info.PATHS.PATH_RESOURCES_FOLDER, imageName);
-                    if (img!=null) {
+                    if (img != null) {
                         return img;
                     } else {
                         throw new IOException("Cannot recursively find image " + imageName + " in " + Info.PATHS.PATH_RESOURCES_FOLDER);
@@ -97,7 +97,7 @@ public final class ResourcesManager {
                 return img;
             }
         } catch (ExecutionException ex) {
-            Logger.getLogger(ResourcesManager.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
             return null;
         }
     }
@@ -111,7 +111,7 @@ public final class ResourcesManager {
         try {
             return imagesCache.get(imageName);
         } catch (ExecutionException ex) {
-            Logger.getLogger(ResourcesManager.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
             return null;
         }
     }
@@ -194,5 +194,4 @@ public final class ResourcesManager {
 
     private ResourcesManager() {
     }
-    private static final Logger LOG = Logger.getLogger(ResourcesManager.class.getName());
 }

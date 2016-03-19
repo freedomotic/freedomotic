@@ -28,7 +28,7 @@ import org.apache.shiro.subject.Subject;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 public interface Auth {
 
@@ -54,7 +54,6 @@ public interface Auth {
      *
      * @param subject
      * @param password
-     * @param rememberMe
      * @return
      */
     public boolean login(String subject, char[] password, boolean rememberMe);
@@ -89,7 +88,6 @@ public interface Auth {
      *
      * @param plugin
      * @param action
-     * @return 
      */
     public Runnable pluginBindRunnablePrivileges(Plugin plugin, Runnable action);
 
@@ -121,89 +119,35 @@ public interface Auth {
     @RequiresPermissions("auth:fakeUser")
     public boolean bindFakeUser(String userName);
 
-    /**
-     *
-     */
     public void load();
 
-    /**
-     *
-     */
     public void save();
 
-    /**
-     *
-     * @param userName
-     * @param password
-     * @param role
-     * @return
-     */
     @RequiresPermissions("auth:users:create")
     public boolean addUser(String userName, String password, String role);
 
-    /**
-     *
-     * @param role
-     * @return
-     */
     @RequiresPermissions("auth:roles:create")
     public boolean addRole(SimpleRole role);
 
-    /**
-     *
-     * @return
-     */
     public User getCurrentUser();
-    
-    /**
-     *
-     * @param username
-     * @return
-     */
+
     @RequiresPermissions("auth:users:read")
     public User getUser(String username);
-    
-    /**
-     *
-     * @return
-     */
+
     @RequiresPermissions("auth:users:read")
     public Map<String, User> getUsers();
 
-    /**
-     *
-     * @param name
-     * @return
-     */
     @RequiresPermissions("auth:roles:read")
     public SimpleRole getRole(String name);
 
-    /**
-     *
-     * @return
-     */
     @RequiresPermissions("auth:roles:read")
     public Map<String, SimpleRole> getRoles();
-    
-    /**
-     *
-     * @param userName
-     * @return
-     */
+
     @RequiresPermissions("auth:users:delete")
     public boolean deleteUser(String userName);
-    
-    /**
-     *
-     * @param roleName
-     * @return
-     */
+
     @RequiresPermissions("auth:roles:delete")
     public boolean deleteRole(String roleName);
-    
-    /**
-     *
-     * @return
-     */
+
     public Realm getUserRealm();
 }

@@ -25,8 +25,8 @@ import com.freedomotic.util.UidGenerator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -53,12 +53,12 @@ import javax.jms.Topic;
  */
 public class BusMessagesListener implements MessageListener {
 
-    private static final Logger LOG = Logger.getLogger(BusMessagesListener.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BusMessagesListener.class.getName());
 
     private BusService busService;
 
     private BusConsumer messageHandler;
-    
+
     private Session session;
 
     // A listener can consume from multiple sources
@@ -84,11 +84,11 @@ public class BusMessagesListener implements MessageListener {
         if (busConsumer == null) {
             throw new IllegalStateException("A message listener must have an attached consumer");
         }
-        
+
         try {
             this.session = busService.createSession();
         } catch (Exception ex) {
-            Logger.getLogger(BusMessagesListener.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
     }
 
@@ -107,15 +107,15 @@ public class BusMessagesListener implements MessageListener {
             messageHandler.onMessage(objectMessage);
         } else {
 
-            LOG.severe("Message received by " + this.getClass().getSimpleName()
+            LOG.error("Message received by " + this.getClass().getSimpleName()
                     + " is not an object message, is a "
                     + message.getClass().getCanonicalName());
             if (message instanceof TextMessage) {
                 TextMessage text = (TextMessage) message;
                 try {
-                    LOG.severe(text.getText());
+                    LOG.error(text.getText());
                 } catch (JMSException ex) {
-                    LOG.log(Level.SEVERE, "Error while receiving a text message", ex);
+                    LOG.error("Error while receiving a text message", ex);
                 }
             }
         }
@@ -134,7 +134,7 @@ public class BusMessagesListener implements MessageListener {
             consumers.add(consumer);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -155,14 +155,15 @@ public class BusMessagesListener implements MessageListener {
             consumers.add(consumer);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 
     /**
      * Subscribes a messaging topic. The message will be received by ALL the
-     * subscribers. It's not a virtual topic as in consumeEventFrom(). DO NOT USE
-     * IT IF YOU ARE NOT AWARE OF THE CONSEQUENCES. USE consumeEventFrom() instead.
+     * subscribers. It's not a virtual topic as in consumeEventFrom(). DO NOT
+     * USE IT IF YOU ARE NOT AWARE OF THE CONSEQUENCES. USE consumeEventFrom()
+     * instead.
      *
      * @param topicName
      */
@@ -174,7 +175,7 @@ public class BusMessagesListener implements MessageListener {
             consumers.add(consumer);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -188,16 +189,14 @@ public class BusMessagesListener implements MessageListener {
             Iterator it = consumers.iterator();
             while (it.hasNext()) {
                 MessageConsumer consumer = (MessageConsumer) it.next();
-                LOG.log(Level.CONFIG, "Closing bus connection for {0}", messageHandler.getClass().getSimpleName());
+                LOG.info("Closing bus connection for {0}", messageHandler.getClass().getSimpleName());
                 consumer.close();
                 it.remove();
             }
             consumers.clear();
             session.close();
         } catch (JMSException ex) {
-            Logger.getLogger(BusMessagesListener.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
-
     }
-
 }

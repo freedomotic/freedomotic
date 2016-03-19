@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -20,7 +19,8 @@
  */
 package com.freedomotic.environment;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Title: Graph Description: Prova di implementazione di un struttura dati per
@@ -35,6 +35,7 @@ import java.util.logging.Logger;
  */
 class GraphEdge implements Comparable<GraphEdge> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GraphEdge.class.getName());
     Object x, y;
     Object value;
 
@@ -147,5 +148,4 @@ class GraphEdge implements Comparable<GraphEdge> {
             return i;
         }
     }
-    private static final Logger LOG = Logger.getLogger(GraphEdge.class.getName());
 }

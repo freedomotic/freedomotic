@@ -39,12 +39,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 class TriggerRepositoryImpl implements TriggerRepository {
 
@@ -63,13 +63,13 @@ class TriggerRepositoryImpl implements TriggerRepository {
     @Override
     public void saveTriggers(File folder) {
         if (list.isEmpty()) {
-            LOG.warning("There are no triggers to persist, " + folder.getAbsolutePath()
+            LOG.warn("There are no triggers to persist, " + folder.getAbsolutePath()
                     + " will not be altered.");
             return;
         }
 
         if (!folder.isDirectory()) {
-            LOG.warning(folder.getAbsoluteFile() + " is not a valid trigger folder. Skipped");
+            LOG.warn(folder.getAbsoluteFile() + " is not a valid trigger folder. Skipped");
             return;
         }
 
@@ -93,7 +93,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                 }
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Error while saving triggers", e);
+            LOG.error("Error while saving triggers", e);
         }
     }
 
@@ -102,14 +102,14 @@ class TriggerRepositoryImpl implements TriggerRepository {
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xtrg")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xtrg")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
         files = folder.listFiles(objectFileFileter);
         for (File file : files) {
             file.delete();
@@ -136,11 +136,11 @@ class TriggerRepositoryImpl implements TriggerRepository {
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return file.isFile() && file.getName().endsWith(".xtrg");
-            }
-        };
+                    @Override
+                    public boolean accept(File file) {
+                        return file.isFile() && file.getName().endsWith(".xtrg");
+                    }
+                };
 
         File[] files = folder.listFiles(objectFileFileter);
 
@@ -192,7 +192,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                             list.add(trigger); //only in the list not registred. I will be registred only if used in mapping
                         }
                     } else {
-                        LOG.warning("Trigger '" + trigger.getName() + "' is already in the list");
+                        LOG.warn("Trigger '" + trigger.getName() + "' is already in the list");
                     }
 
                     summary.append(trigger.getUUID()).append("\t\t").append(trigger.getName()).append("\t\t\t")
@@ -206,10 +206,10 @@ class TriggerRepositoryImpl implements TriggerRepository {
                 //Close the output stream
                 indexfile.close();
             } else {
-                LOG.config("No triggers to load from this folder " + folder.toString());
+                LOG.info("No triggers to load from this folder " + folder.toString());
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Exception while loading this trigger", e);
+            LOG.error("Exception while loading this trigger", e);
         }
     }
 
@@ -225,7 +225,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             t.register();
             int postSize = TriggerRepositoryImpl.size();
             if (!(postSize == (preSize + 1))) {
-                LOG.severe("Error while while adding and registering trigger '" + t.getName() + "'");
+                LOG.error("Error while while adding and registering trigger '" + t.getName() + "'");
             }
         } else {
             //this trigger is already in the list
@@ -257,7 +257,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             int postSize = TriggerRepositoryImpl.size();
 
             if (!(postSize == (preSize + 1))) {
-                LOG.severe("Error while while adding trigger '" + t.getName() + "'");
+                LOG.error("Error while while adding trigger '" + t.getName() + "'");
             }
         }
     }
@@ -275,10 +275,10 @@ class TriggerRepositoryImpl implements TriggerRepository {
             int postSize = TriggerRepositoryImpl.size();
 
             if (!(postSize == (preSize - 1))) {
-                LOG.severe("Error while while removing trigger '" + t.getName() + "'");
+                LOG.error("Error while while removing trigger '" + t.getName() + "'");
             }
         } catch (Exception e) {
-            LOG.severe("Error while while unregistering the trigger '" + t.getName() + "'");
+            LOG.error("Error while while unregistering the trigger '" + t.getName() + "'");
         }
     }
 
@@ -301,7 +301,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             }
         }
 
-        LOG.log(Level.WARNING, "Searching for a trigger named ''{}'' but it doesn''t exist.", name);
+        LOG.warn("Searching for a trigger named ''{}'' but it doesn''t exist.", name);
 
         return null;
     }
@@ -368,7 +368,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
         return list.size();
     }
 
-    private static final Logger LOG = Logger.getLogger(TriggerRepositoryImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TriggerRepositoryImpl.class.getName());
 
     @Override
     public List<Trigger> findAll() {
@@ -397,7 +397,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             add(item);
             return true;
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Cannot add trigger " + item.getName(), e);
+            LOG.error("Cannot add trigger " + item.getName(), e);
             return false;
         }
     }
@@ -421,7 +421,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
     public Trigger modify(String uuid, Trigger data) {
         try {
             if (uuid == null || uuid.isEmpty() || data == null) {
-                LOG.warning("Cannot even start modifying trigger, basic data missing");
+                LOG.warn("Cannot even start modifying trigger, basic data missing");
                 return null;
             } else {
                 delete(uuid);
@@ -430,12 +430,12 @@ class TriggerRepositoryImpl implements TriggerRepository {
                 try {
                     data.register();
                 } catch (Exception f) {
-                    LOG.warning("Cannot register trigger " + data.getName());
+                    LOG.warn("Cannot register trigger " + data.getName());
                 }
                 return data;
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Error while modifying trigger" + data.getName(), e);
+            LOG.error("Error while modifying trigger" + data.getName(), e);
             return null;
         }
     }
@@ -463,5 +463,4 @@ class TriggerRepositoryImpl implements TriggerRepository {
             list.clear();
         }
     }
-
 }

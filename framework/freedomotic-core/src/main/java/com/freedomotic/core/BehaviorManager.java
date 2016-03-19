@@ -34,8 +34,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ import javax.jms.ObjectMessage;
  */
 public final class BehaviorManager implements BusConsumer {
 
-    private static final Logger LOG = Logger.getLogger(BehaviorManager.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BehaviorManager.class.getName());
     private static final String MESSAGING_CHANNEL = "app.events.sensors.behavior.request.objects";
     private BusMessagesListener listener;
 
@@ -93,7 +93,7 @@ public final class BehaviorManager implements BusConsumer {
         try {
             jmsObject = message.getObject();
         } catch (JMSException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
 
         if (jmsObject instanceof Command) {
@@ -173,7 +173,7 @@ public final class BehaviorManager implements BusConsumer {
                 }
 
                 if (apply) {
-                    LOG.config("Filter by tag affects object " + pojo.getName());
+                    LOG.info("Filter by tag affects object " + pojo.getName());
                     newList.add(pojo.getName());
                 }
             }
@@ -197,7 +197,7 @@ public final class BehaviorManager implements BusConsumer {
                 final Matcher matcher = pattern.matcher(pojo.getType());
 
                 if (matcher.matches()) {
-                    LOG.config("Filter by class affects object " + pojo.getName());
+                    LOG.info("Filter by class affects object " + pojo.getName());
                     newList.add(pojo.getName());
                 }
             }
@@ -218,7 +218,7 @@ public final class BehaviorManager implements BusConsumer {
                 if (zoneName != null) {
                     ZoneLogic z = env.getZone(zoneName);
                     for (EnvObject obj : z.getPojo().getObjects()) {
-                        LOG.config("Filter by zone affects object " + obj.getName());
+                        LOG.info("Filter by zone affects object " + obj.getName());
                         newList.add(obj.getName());
                     }
                 }
@@ -246,7 +246,7 @@ public final class BehaviorManager implements BusConsumer {
                 // if this behavior exists in object obj
                 if (behavior != null) {
 
-                    LOG.log(Level.CONFIG,
+                    LOG.info(
                             "User level command ''{0}'' request changing behavior {1} of object ''{2}'' "
                             + "from value ''{3}'' to value ''{4}''",
                             new Object[]{userLevelCommand.getName(), behavior.getName(), thing.getPojo().getName(), behavior.getValueAsString(), userLevelCommand.getProperties().getProperty("value")});
@@ -255,14 +255,14 @@ public final class BehaviorManager implements BusConsumer {
                     behavior.filterParams(userLevelCommand.getProperties(), true);
 
                 } else {
-                    LOG.log(Level.WARNING,
+                    LOG.warn(
                             "Behavior ''{0}'' is not a valid behavior for object ''{1}''. "
                             + "Please check ''behavior'' parameter spelling in command {2}",
                             new Object[]{behaviorName, thing.getPojo().getName(), userLevelCommand.getName()});
                 }
             }
         } else {
-            LOG.log(Level.WARNING, "Object ''{0}"
+            LOG.warn("Object ''{0}"
                     + "'' don''t exist in this environment. "
                     + "Please check ''object'' parameter spelling in command {1}",
                     new Object[]{userLevelCommand.getProperty(Command.PROPERTY_OBJECT), userLevelCommand.getName()});
@@ -302,7 +302,7 @@ public final class BehaviorManager implements BusConsumer {
                     Command clonedOne = userLevelCommand.clone();
                     applyToCategory(clonedOne);
                 } catch (CloneNotSupportedException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.error(ex.getMessage());
                 }
             }
         }
@@ -325,7 +325,7 @@ public final class BehaviorManager implements BusConsumer {
             }
 
         } catch (JMSException ex) {
-            LOG.log(Level.SEVERE, "Error while sending reply to " + command.getName(), ex);
+            LOG.error("Error while sending reply to " + command.getName(), ex);
         }
     }
 
@@ -337,10 +337,6 @@ public final class BehaviorManager implements BusConsumer {
         return names;
     }
 
-    /**
-     *
-     * @return
-     */
     public static String getMessagingChannel() {
         return MESSAGING_CHANNEL;
     }

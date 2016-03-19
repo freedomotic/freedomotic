@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public interface ClientStorage {
     /*

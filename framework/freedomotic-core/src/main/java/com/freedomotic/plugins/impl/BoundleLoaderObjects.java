@@ -34,11 +34,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Loads plugin that are freedomotic objects
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 class BoundleLoaderObjects implements BoundleLoader {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BoundleLoaderObjects.class.getName());;
+    private static final Logger LOG = LoggerFactory.getLogger(BoundleLoaderObjects.class.getName());
+    ;
     private File path;
 
     BoundleLoaderObjects(File path) {

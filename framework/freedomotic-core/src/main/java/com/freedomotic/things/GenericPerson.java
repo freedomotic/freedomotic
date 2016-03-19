@@ -23,8 +23,8 @@ import com.freedomotic.things.EnvObjectLogic;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class GenericPerson extends EnvObjectLogic {
-    
+
 }

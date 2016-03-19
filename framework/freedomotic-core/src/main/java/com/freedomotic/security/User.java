@@ -22,8 +22,8 @@ package com.freedomotic.security;
 import java.util.Collection;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleRole;
@@ -31,87 +31,47 @@ import org.apache.shiro.authz.permission.WildcardPermission;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 public final class User extends SimpleAccount {
 
-    private static final Logger LOG = Logger.getLogger(User.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(User.class.getName());
 
     private final Properties properties = new Properties();
 
     private final Auth auth;
 
-    /**
-     *
-     * @param principal
-     * @param credentials
-     * @param roleName
-     * @param auth
-     */
     public User(Object principal, Object credentials, String roleName, Auth auth) {
         this(principal, credentials, auth);
         addRole(roleName);
     }
 
-    /**
-     *
-     * @param principal
-     * @param credentials
-     * @param auth
-     */
     public User(Object principal, Object credentials, Auth auth) {
         super(principal, credentials, UserRealm.USER_REALM_NAME);
         this.auth = auth;
     }
 
-    /**
-     *
-     * @param key
-     * @return
-     */
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
 
-    /**
-     *
-     * @return
-     */
     public Properties getProperties() {
         return properties;
     }
 
-    /**
-     *
-     * @param key
-     * @param value
-     * @return
-     */
     public Object setProperty(String key, String value) {
         return properties.setProperty(key, value);
     }
 
-    /**
-     *
-     * @return
-     */
     public String getName() {
         return getPrincipals().getPrimaryPrincipal().toString();
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public Collection<String> getRoles() {
         return super.getRoles();
     }
 
-    /**
-     *
-     * @param roles
-     */
     @Override
     public void setRoles(Set<String> roles) {
         for (String roleName : roles) {
@@ -124,34 +84,22 @@ public final class User extends SimpleAccount {
 
     }
 
-    /**
-     *
-     * @param password
-     */
     public void setPassword(String password) {
         setCredentials(password);
     }
 
-    /**
-     *
-     * @param roleName
-     */
     @Override
     public void addRole(String roleName) {
         SimpleRole role = auth.getRole(roleName);
         if (role != null) {
             super.addRole(role.getName());
             addObjectPermissions(role.getPermissions());
-            LOG.log(Level.INFO, "Adding role {0} to user {1}: {2}", new Object[]{role.getName(), getName(), role.getPermissions()});
+            LOG.info("Adding role {0} to user {1}: {2}", new Object[]{role.getName(), getName(), role.getPermissions()});
         } else {
-            LOG.log(Level.SEVERE, "Cannot find role: {0}", roleName);
+            LOG.error("Cannot find role: {0}", roleName);
         }
     }
 
-    /**
-     *
-     * @param roleName
-     */
     public void removeRole(String roleName) {
         try {
             getObjectPermissions().removeAll(auth.getRole(roleName).getPermissions());
@@ -161,11 +109,6 @@ public final class User extends SimpleAccount {
         getRoles().remove(roleName);
     }
 
-    /**
-     *
-     * @param perm
-     * @return
-     */
     public boolean isPermitted(String perm) {
         for (Permission p : this.getObjectPermissions()) {
             if (p.implies(new WildcardPermission(perm))) {

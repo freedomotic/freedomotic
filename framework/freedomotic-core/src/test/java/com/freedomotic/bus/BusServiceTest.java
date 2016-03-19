@@ -1,6 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.bus;
 
@@ -11,8 +26,8 @@ import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.testutils.GuiceJUnitRunner;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
@@ -26,11 +41,13 @@ import org.junit.runner.RunWith;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class BusServiceTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BusServiceTest.class.getName());
 
     @Inject
     private BusService busService;
@@ -72,12 +89,12 @@ public class BusServiceTest {
     public void tearDown() {
         busService.destroy();
     }
-    
+
     // A bit fictitious...
     @Test
-    public void test(){
+    public void test() {
     }
-    
+
     /**
      * Test of send method, of class BusService.
      */
@@ -104,7 +121,7 @@ public class BusServiceTest {
         command.setReceiver("unlistened.test.channel");
         command.setReplyTimeout(100); //wait reply for two seconds
         Command result = busService.send(command);
-        LOG.log(Level.INFO, "Reply timeout for command ''{0}'' is reached, executed={1}", new Object[]{result, result.isExecuted()});
+        LOG.info("Reply timeout for command ''{0}'' is reached, executed={1}", new Object[]{result, result.isExecuted()});
         assertEquals("Timeout reply command is the original command", result, command);
         assertFalse("When timeout is reached the original command is marked as not executed", result.isExecuted());
     }
@@ -141,10 +158,8 @@ public class BusServiceTest {
         command.setReceiver("wait.for.reply.here");
         command.setReplyTimeout(10000); //wait reply for ten seconds
         Command result = busService.send(command);
-        LOG.log(Level.INFO, "Received reply command is ''{0}'' executed={1}", new Object[]{result, result.isExecuted()});
+        LOG.info("Received reply command is ''{0}'' executed={1}", new Object[]{result, result.isExecuted()});
         //the reply should have the property addedd by the listener
         assertTrue("Command reply was received", result.getProperty("receiver-reply").equals("OK"));
     }
-
-    private static final Logger LOG = Logger.getLogger(BusServiceTest.class.getName());
 }

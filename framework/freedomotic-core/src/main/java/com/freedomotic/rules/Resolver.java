@@ -1,6 +1,7 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team
+ * http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -28,7 +29,7 @@ import java.util.Map;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public interface Resolver {
 
@@ -68,7 +69,6 @@ public interface Resolver {
      *
      * @param c
      * @return
-     * @throws java.lang.CloneNotSupportedException
      * @throws com.freedomotic.exceptions.VariableResolutionException
      */
     Command resolve(Command c) throws CloneNotSupportedException, VariableResolutionException;
@@ -77,7 +77,6 @@ public interface Resolver {
      * Creates a resolved clone of the trigger in input according to the current
      * context given in input to the constructor.
      *
-     * @param t
      * @param trigger
      * @return
      * @throws com.freedomotic.exceptions.VariableResolutionException

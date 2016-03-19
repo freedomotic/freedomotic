@@ -45,69 +45,31 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.slf4j.Logger;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 @XmlRootElement
 public final class Command implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -7287958816826580426L;
-    private static final Logger LOG = Logger.getLogger(Command.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Command.class.getName());
 
-    /**
-     *
-     */
     public static final String PROPERTY_BEHAVIOR = "behavior";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_CLASS = "object.class";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_ADDRESS = "object.address";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_NAME = "object.name";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_PROTOCOL = "object.protocol";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_INCLUDETAGS = "object.includetags";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_EXCLUDETAGS = "object.excludetags";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_ENVIRONMENT = "object.environment";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT_ZONE = "object.zone";
-
-    /**
-     *
-     */
     public static final String PROPERTY_OBJECT = "object";
 
     private String name;
@@ -253,7 +215,7 @@ public final class Command implements Serializable, Cloneable {
         if (properties.getProperty("behavior") != null) {
             return properties.getProperty("behavior");
         } else {
-            LOG.warning("Undefined property 'behavior' in command '" + this.getName() + "'");
+            LOG.warn("Undefined property 'behavior' in command '" + this.getName() + "'");
 
             return "undefined-behavior";
         }
@@ -271,7 +233,7 @@ public final class Command implements Serializable, Cloneable {
 
     /**
      * Get a boolean property with a fallback default value
-     * 
+     *
      * @param key the String key
      * @param defaultValue the value to use if the given key does not exists
      * @return the property value or the default value if the key doesn't exists

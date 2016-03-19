@@ -17,10 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.freedomotic.security;
 
 import com.freedomotic.api.Plugin;
@@ -31,8 +27,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.SimpleRole;
@@ -48,9 +44,9 @@ import org.apache.shiro.util.ThreadState;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
-class AuthImpl implements Auth{
+class AuthImpl implements Auth {
 
     private final static String BASE_REALM_NAME = "com.freedomotic.security";
     private final static String PLUGIN_REALM_NAME = "com.freedomotic.plugins.security";
@@ -59,17 +55,18 @@ class AuthImpl implements Auth{
     private SimpleAccountRealm pluginRealm = new SimpleAccountRealm(PLUGIN_REALM_NAME);
     private String DEFAULT_PERMISSION = "*";
     private ArrayList<Realm> realmCollection = new ArrayList<Realm>();
-    @Inject AppConfig config;
-    
+    @Inject
+    AppConfig config;
+
     /**
      *
      * @return
      */
     @Override
-    public boolean isInited(){
+    public boolean isInited() {
         return realmInited;
     }
-    
+
     /**
      *
      */
@@ -83,7 +80,7 @@ class AuthImpl implements Auth{
 
             pluginRealm.init();
 
-             securityManager = new DefaultSecurityManager();
+            securityManager = new DefaultSecurityManager();
             //securityManager = injector.getInstance(DefaultSecurityManager.class);
 
             realmCollection.add(baseRealm);
@@ -123,7 +120,7 @@ class AuthImpl implements Auth{
             currentUser.getSession().setTimeout(-1);
             return true;
         } catch (Exception e) {
-            LOG.warning(e.getLocalizedMessage());
+            LOG.warn(e.getLocalizedMessage());
             return false;
         }
     }
@@ -211,21 +208,20 @@ class AuthImpl implements Auth{
         if (!pluginRealm.accountExists(plugin.getClassName())) {
             // check whether declared permissions correspond the ones requested at runtime
             if (plugin.getConfiguration().getStringProperty("permissions", getPluginDefaultPermission()).equals(permissions)) {
-                LOG.log(Level.INFO, "Setting permissions for plugin {0}: {1}", new Object[]{plugin.getClassName(), permissions});
+                LOG.info("Setting permissions for plugin {0}: {1}", new Object[]{plugin.getClassName(), permissions});
                 String plugrole = UUID.randomUUID().toString();
 
                 pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
                 pluginRealm.addRole(plugrole + "=" + permissions);
             } else {
-                LOG.log(Level.SEVERE, "Plugin {0} tried to request incorrect privileges", plugin.getName());
+                LOG.error("Plugin {0} tried to request incorrect privileges", plugin.getName());
             }
         }
     }
 
     /**
      *
-     * @return
-     * @deprecated
+     * @return @deprecated
      */
     @Deprecated
     @Override
@@ -270,7 +266,7 @@ class AuthImpl implements Auth{
         }
         return false;
     }
-    private static final Logger LOG = Logger.getLogger(AuthImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(AuthImpl.class.getName());
 
     @Override
     public void load() {
@@ -329,7 +325,4 @@ class AuthImpl implements Auth{
     public boolean deleteRole(String roleName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-
-
 }

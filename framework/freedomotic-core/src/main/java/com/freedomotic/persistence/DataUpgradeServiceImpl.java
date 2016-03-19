@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * naming schema like /conf/validator/TYPE-upgrade-FROMVERSION.xslt
  * /conf/validator/things-upgrade-5.5.0.xslt"
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 class DataUpgradeServiceImpl implements DataUpgradeService<String> {
 
@@ -77,9 +77,9 @@ class DataUpgradeServiceImpl implements DataUpgradeService<String> {
             } else if (type == Environment.class) {
                 xsltAlgorthm = getTransformationAlgorithm("environment", fromVersion);
             } else if (type == Reaction.class) {
-                xsltAlgorthm = getTransformationAlgorithm("reaction", fromVersion);            
+                xsltAlgorthm = getTransformationAlgorithm("reaction", fromVersion);
             } else if (type == Command.class) {
-                xsltAlgorthm = getTransformationAlgorithm("command", fromVersion);            
+                xsltAlgorthm = getTransformationAlgorithm("command", fromVersion);
             } else if (type == Trigger.class) {
                 xsltAlgorthm = getTransformationAlgorithm("trigger", fromVersion);
             } else {

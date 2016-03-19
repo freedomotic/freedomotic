@@ -35,10 +35,10 @@ import javax.inject.Inject;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 class ReactionConverter implements Converter {
-    
+
     @Inject
     private CommandRepository commandRepository;
 
@@ -83,7 +83,7 @@ class ReactionConverter implements Converter {
                     writer.startNode("value");
                     writer.setValue(statement.getValue());
                     writer.endNode(); //</value>
-                    writer.endNode(); 
+                    writer.endNode();
                     //end statement
                     writer.endNode();
                     //end condition

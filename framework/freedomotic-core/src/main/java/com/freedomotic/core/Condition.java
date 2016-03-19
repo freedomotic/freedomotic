@@ -24,27 +24,28 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 @XmlRootElement
 public class Condition {
+
     private String target;
     private Statement statement;
-    
+
     /**
      *
      * @param target
      * @param statement
      */
-    public Condition(String target, Statement statement){
-        this.target=target;
-        this.statement=statement;
+    public Condition(String target, Statement statement) {
+        this.target = target;
+        this.statement = statement;
     }
-    
+
     /**
      *
      */
-    public Condition(){
+    public Condition() {
     }
 
     /**

@@ -26,7 +26,7 @@ import org.apache.shiro.realm.SimpleAccountRealm;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 class PluginRealm extends SimpleAccountRealm {
 

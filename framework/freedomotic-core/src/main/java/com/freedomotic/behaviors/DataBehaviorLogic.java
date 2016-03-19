@@ -26,16 +26,17 @@ import com.freedomotic.model.object.DataBehavior;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 public class DataBehaviorLogic implements BehaviorLogic {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DataBehaviorLogic.class.getName());
     private DataBehavior data;
     private boolean changed;
     private DataBehaviorLogic.Listener listener;
@@ -150,7 +151,7 @@ public class DataBehaviorLogic implements BehaviorLogic {
             om.writeValue(os, data.getData());
             return os.toString();
         } catch (IOException ex) {
-            Logger.getLogger(DataBehaviorLogic.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
         return null;
     }
@@ -172,7 +173,7 @@ public class DataBehaviorLogic implements BehaviorLogic {
             }
             setChanged(true);
         } catch (IOException ex) {
-            Logger.getLogger(DataBehaviorLogic.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
 
     }

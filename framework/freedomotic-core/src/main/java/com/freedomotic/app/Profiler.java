@@ -1,36 +1,36 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.app;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Deprecated: switch to AOP instead
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 @Deprecated
 public class Profiler {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Profiler.class.getName());
     private static final double STARTUP_TIME = System.currentTimeMillis();
     private static int sentEvents;
     private static int sentCommands;
@@ -195,7 +195,7 @@ public class Profiler {
             buff.append("Freedomotic have sent ").append(sentCommands)
                     .append(" commands (user level + hardware level). ").append(receivedCommands)
                     .append(" of them are arrived to destination (non arrived commands have reached TTL, lost on the bus network or have wrong receiver address).\n "
-                    + "Commands execution takes an average time of ").append(averageExecutionTime)
+                            + "Commands execution takes an average time of ").append(averageExecutionTime)
                     .append("ms and a max of ").append(maxExecutionTime).append("ms. Commands average latency is ")
                     .append(averageCommandsLatency).append("ms. Max commands latency is ").append(maxCommandsLatency)
                     .append("ms.\n");
@@ -245,5 +245,4 @@ public class Profiler {
 
     private Profiler() {
     }
-    private static final Logger LOG = Logger.getLogger(Profiler.class.getName());
 }

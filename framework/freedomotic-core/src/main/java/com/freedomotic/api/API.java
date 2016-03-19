@@ -1,6 +1,7 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team
+ * http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -94,51 +95,19 @@ public interface API {
      */
     BufferedImage getResource(String resourceIdentifier);
 
-    /**
-     *
-     * @return
-     */
     EnvironmentRepository environments();
 
-    /**
-     *
-     * @return
-     */
     TriggerRepository triggers();
 
-    /**
-     *
-     * @return
-     */
     ThingRepository things();
 
-    /**
-     *
-     * @return
-     */
     CommandRepository commands();
 
-    /**
-     *
-     * @return
-     */
     ReactionRepository reactions();
 
-    /**
-     *
-     * @return
-     */
     NlpCommand nlpCommands();
 
-    /**
-     *
-     * @return
-     */
     ThingFactory thingsFactory();
 
-    /**
-     *
-     * @return
-     */
     BusService bus();
 }

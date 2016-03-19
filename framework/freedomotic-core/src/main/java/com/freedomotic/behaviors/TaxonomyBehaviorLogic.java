@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -31,7 +30,7 @@ import com.freedomotic.model.object.MultiselectionListBehavior;
  * is valid (new selection is a value in the list) and if is not the current
  * selected value.
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class TaxonomyBehaviorLogic
         implements BehaviorLogic {

@@ -1,27 +1,21 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package com.freedomotic.plugins.impl;
 
@@ -33,13 +27,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 class FetchHttpFiles {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FetchHttpFiles.class.getName());
+
 //    public static void downloadAll(URL httpUrl, File destFolder) {
 //        try {
 //            //File destFolder = new File(destFolder);
@@ -54,10 +52,9 @@ class FetchHttpFiles {
 //            }
 //            LOG.info("download is complete..");
 //        } catch (Exception e) {
-//            LOG.severe(Freedomotic.getStackTraceInfo(e));
+//            LOG.error(Freedomotic.getStackTraceInfo(e));
 //        }
 //    }
-
     /**
      *
      * @param url
@@ -66,15 +63,14 @@ class FetchHttpFiles {
      * @return
      * @throws Exception
      */
-    
     public static boolean download(URL url, File destFolder, String filename)
             throws Exception {
         //File sourceFile = new File(url.getPath());
         //File destinationFile = new File(destFolder.getPath() + "/" + sourceFile.getName());
         File destinationFile = new File(destFolder.getPath() + "/" + filename);
-        LOG.config("  Download started");
-        LOG.config("    Source folder:      " + url);
-        LOG.config("    Destination folder: " + destinationFile);
+        LOG.info("  Download started");
+        LOG.info("    Source folder:      " + url);
+        LOG.info("    Destination folder: " + destinationFile);
 
         //destination.getParentFile().mkdirs();
         BufferedInputStream bis = null;
@@ -96,7 +92,7 @@ class FetchHttpFiles {
                 try {
                     bis.close();
                 } catch (IOException ioe) {
-                    LOG.severe(Freedomotic.getStackTraceInfo(ioe));
+                    LOG.error(Freedomotic.getStackTraceInfo(ioe));
 
                     return false;
                 }
@@ -106,7 +102,7 @@ class FetchHttpFiles {
                 try {
                     bos.close();
                 } catch (IOException ioe) {
-                    LOG.severe(Freedomotic.getStackTraceInfo(ioe));
+                    LOG.error(Freedomotic.getStackTraceInfo(ioe));
 
                     return false;
                 }
@@ -148,13 +144,13 @@ class FetchHttpFiles {
 //                                download(new URL(Info.getRemoteRepository() + url.toString()), path);
 //                                updated = true;
 //                            } catch (Exception exception) {
-//                                LOG.warning("Download error missing file on server or server unreachable");
+//                                LOG.warn("Download error missing file on server or server unreachable");
 //                            }
 //                        } catch (Exception e) {
-//                            LOG.warning("Missing destination folder for updated plugins.");
+//                            LOG.warn("Missing destination folder for updated plugins.");
 //                        }
 //                    } catch (Exception ex) {
-//                        Logger.getLogger(FetchHttpFiles.class.getName()).log(Level.SEVERE, null, ex);
+//                        LoggerFactory.getLogger(FetchHttpFiles.class.getName()).log(Level.SEVERE, null, ex);
 //                    }
 //                    i++;
 //                }
@@ -189,5 +185,4 @@ class FetchHttpFiles {
 //    }
     private FetchHttpFiles() {
     }
-    private static final Logger LOG = Logger.getLogger(FetchHttpFiles.class.getName());
 }

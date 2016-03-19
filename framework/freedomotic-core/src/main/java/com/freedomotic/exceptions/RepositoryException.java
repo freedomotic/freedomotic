@@ -19,25 +19,28 @@
  */
 package com.freedomotic.exceptions;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class RepositoryException
         extends FreedomoticException {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RepositoryException.class.getName());
+
     /**
-     * Creates a new instance of
-     * <code>DaoLayerException</code> without detail message.
+     * Creates a new instance of <code>DaoLayerException</code> without detail
+     * message.
      */
     public RepositoryException() {
     }
 
     /**
-     * Constructs an instance of
-     * <code>DaoLayerException</code> with the specified detail message.
+     * Constructs an instance of <code>DaoLayerException</code> with the
+     * specified detail message.
      *
      * @param msg the detail message.
      */
@@ -61,5 +64,4 @@ public class RepositoryException
     public RepositoryException(Throwable cause) {
         super(cause);
     }
-    private static final Logger LOG = Logger.getLogger(RepositoryException.class.getName());
 }

@@ -28,44 +28,25 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class EventTemplate implements Serializable {
 
     private static final long serialVersionUID = -6726283450243677665L;
-
-    /**
-     *
-     */
     protected String eventName;
-
-    /**
-     *
-     */
     protected String sender;
-
-    /**
-     *
-     */
     protected Payload payload = new Payload();
-
-    /**
-     *
-     */
     protected boolean isValid;
     private long creation;
 
     @XStreamOmitField
-    private static final Logger LOG = Logger.getLogger(EventTemplate.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(EventTemplate.class.getName());
 
-    /**
-     *
-     */
     protected void generateEventPayload() {
     }
 
@@ -181,7 +162,7 @@ public class EventTemplate implements Serializable {
             payload.addStatement("sender",
                     getSender());
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Error while generating default data for event", e);
+            LOG.error("Error while generating default data for event", e);
         }
     }
 

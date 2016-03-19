@@ -19,39 +19,27 @@
  */
 package com.freedomotic.rules;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class LessThan extends BinaryExpression {
 
     private static final String OPERATOR = Statement.LESS_THAN;
-    private static final Logger LOG = Logger.getLogger(LessThan.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(LessThan.class.getName());
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getOperand() {
         return OPERATOR;
     }
 
-    /**
-     *
-     * @param left
-     * @param right
-     */
     public LessThan(String left, String right) {
         super(left, right);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public Boolean evaluate() {
         try {
@@ -60,7 +48,7 @@ public class LessThan extends BinaryExpression {
 
             return intLeftValue < intRightValue;
         } catch (NumberFormatException nfe) {
-            LOG.warning(Statement.LESS_THAN  + " operator can be applied only to integer values");
+            LOG.warn(Statement.LESS_THAN + " operator can be applied only to integer values");
             return false;
         }
     }

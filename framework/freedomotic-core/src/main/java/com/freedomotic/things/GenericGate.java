@@ -17,38 +17,22 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.things;
 
 import com.freedomotic.environment.Room;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public interface GenericGate {
 
-    /**
-     *
-     */
     void evaluateGate();
 
-    /**
-     *
-     * @return
-     */
     Room getFrom();
 
-    /**
-     *
-     * @return
-     */
     Room getTo();
 
-    /**
-     *
-     * @return
-     */
     boolean isOpen();
-    
+
 }

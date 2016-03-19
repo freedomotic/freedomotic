@@ -17,14 +17,11 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Channel <b>app.event.sensor.messages.MESSAGE_TYPE</b> informs that
@@ -38,11 +35,12 @@ import java.util.logging.Logger;
  * 'app.event.sensor.messages.mail' so it can be received listened by different
  * plugins that can implement the messaging feature their way.
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class MessageEvent
         extends EventTemplate {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MessageEvent.class.getName());
     private static final long serialVersionUID = 4733356918386875096L;
 
     /**
@@ -71,10 +69,6 @@ public class MessageEvent
         this.getPayload().addStatement("message.type", type);
     }
 
-    /**
-     *
-     * @param level
-     */
     public void setLevel(String level) {
         this.getPayload().addStatement("message.level", level);
     }
@@ -149,5 +143,4 @@ public class MessageEvent
 
         return "app.event.sensor.messages" + type;
     }
-    private static final Logger LOG = Logger.getLogger(MessageEvent.class.getName());
 }

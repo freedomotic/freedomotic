@@ -31,8 +31,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -52,7 +52,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class HttpHelper {
 
@@ -61,17 +61,14 @@ public class HttpHelper {
     private final HttpParams httpParams = new BasicHttpParams();
     private static final int DEFAULT_TIMEOUT = 30000; //30seconds
 
-    private static final Logger LOG = Logger.getLogger(HttpHelper.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(HttpHelper.class.getName());
 
-    /**
-     *
-     */
     public HttpHelper() {
         try {
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
             documentBuilder = builderFactory.newDocumentBuilder();
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(HttpHelper.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
         XPathFactory xpathFactory = XPathFactory.newInstance();
         xPath = xpathFactory.newXPath();
@@ -127,7 +124,7 @@ public class HttpHelper {
                 String result = xPath.compile(xpathQuery).evaluate(xmlDocument);
                 // Notify an enpy result to the user
                 if (result == null || result.isEmpty()) {
-                    LOG.log(Level.WARNING, "XPath query {0} produced no results on content: \n{1}", new String[]{xpathQuery, xmlContent});
+                    LOG.warn("XPath query {0} produced no results on content: \n{1}", new String[]{xpathQuery, xmlContent});
                     result = "";
                 }
                 results.add(result);
@@ -139,10 +136,6 @@ public class HttpHelper {
         return results;
     }
 
-    /**
-     *
-     * @param timeout
-     */
     public void setConnectionTimeout(int timeout) {
         HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
     }

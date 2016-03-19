@@ -41,18 +41,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  * Repository to manage the {@link Environment} loaded from filesystem
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
-    private static final Logger LOG = Logger.getLogger(EnvironmentRepositoryImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(EnvironmentRepositoryImpl.class.getName());
 
     // Dependencies
     private final AppConfig appConfig;
@@ -87,20 +87,19 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         File defaultEnvironmentFolder = getDefaultEnvironmentFolder();
         this.init(defaultEnvironmentFolder);
     }
-    
+
     /**
      * Reads environment data from filesystem using the
      * {@link EnvironmentPersistence} class
      *
      * @throws RepositoryException
      */
-    
     @Override
     public synchronized void init(File folder) throws RepositoryException {
        // if (initialized) {
-       //     LOG.warning("Environment repository is already initialized. Skip initialization phase");
-       //     return;
-       // }
+        //     LOG.warn("Environment repository is already initialized. Skip initialization phase");
+        //     return;
+        // }
         EnvironmentPersistence environmentPersistence = environmentPersistenceFactory.create(folder);
         Collection<Environment> loadedPojo = environmentPersistence.loadAll();
         this.deleteAll();
@@ -112,10 +111,10 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             this.create(envLogic);
         }
         // EnvironmentRepositoryImpl.initialized = true;
-        List<EnvObjectLogic> loadedThings  = thingsRepository.loadAll(findAll().get(0).getObjectFolder());
+        List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(findAll().get(0).getObjectFolder());
         for (EnvObjectLogic thing : loadedThings) {
-                // Stores the Thing in repository. Important, otherwise it will be not visible in the environment
-                thingsRepository.create(thing);
+            // Stores the Thing in repository. Important, otherwise it will be not visible in the environment
+            thingsRepository.create(thing);
         }
     }
 
@@ -149,9 +148,9 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @RequiresPermissions("environments:save")
     @Override
     public void saveEnvironmentsToFolder(File folder) throws RepositoryException {
-        
+
         if (environments.isEmpty()) {
-            LOG.warning("There is no environment to persist, " + folder.getAbsolutePath() + " will not be altered.");
+            LOG.warn("There is no environment to persist, " + folder.getAbsolutePath() + " will not be altered.");
             return;
         }
         if (folder.exists() && !folder.isDirectory()) {
@@ -172,16 +171,16 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         } catch (IOException e) {
             throw new RepositoryException(e.getCause());
         }
-        
+
         // save environment's things
-            if (appConfig.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
-                try {
-                    thingsRepository.saveAll(findAll().get(0).getObjectFolder());
-                } catch (RepositoryException ex) {
-                    LOG.log(Level.SEVERE, "Cannot save objects in {0}", findAll().get(0).getObjectFolder().getAbsolutePath());
-                }
+        if (appConfig.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
+            try {
+                thingsRepository.saveAll(findAll().get(0).getObjectFolder());
+            } catch (RepositoryException ex) {
+                LOG.error("Cannot save objects in {0}", findAll().get(0).getObjectFolder().getAbsolutePath());
             }
-    
+        }
+
     }
 
     private static void deleteEnvFiles(File folder)
@@ -247,7 +246,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
                     add(envLogic, false);
                 }
             } catch (RepositoryException re) {
-                LOG.warning("Cannot add environment from file " + file.getAbsolutePath());
+                LOG.warn("Cannot add environment from file " + file.getAbsolutePath());
             }
         }
         //createFolderStructure(folder);
@@ -335,16 +334,14 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         }
     }
 
-    
-
     private void save(EnvironmentLogic env, File file) throws IOException {
-        try {    
+        try {
             EnvironmentPersistence environmentPersistence = environmentPersistenceFactory.create(file.getParentFile());
             environmentPersistence.persist(env.getPojo());
         } catch (RepositoryException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
-        
+
     }
 
     /**
@@ -356,7 +353,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @RequiresPermissions("environments:save")
     @Override
     public void saveAs(EnvironmentLogic env, File folder) throws IOException {
-        LOG.config("Serializing new environment to " + folder);
+        LOG.info("Serializing new environment to " + folder);
         save(env, new File(folder + "/" + env.getPojo().getUUID() + ".xenv"));
     }
 
@@ -369,7 +366,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @Deprecated
     @Override
     public EnvironmentLogic loadEnvironmentFromFile(final File file) throws RepositoryException {
-        LOG.config("Loading environment from file " + file.getAbsolutePath());
+        LOG.info("Loading environment from file " + file.getAbsolutePath());
         XStream xstream = FreedomXStream.getXstream();
 
         //validate the object against a predefined DTD

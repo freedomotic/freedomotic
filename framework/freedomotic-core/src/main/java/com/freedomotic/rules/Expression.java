@@ -17,26 +17,17 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.rules;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  * @param <T>
  */
 public interface Expression<T> {
-    
-    /**
-     *
-     * @return
-     */
+
     public T evaluate();
 
-    /**
-     *
-     * @return
-     */
     public String getOperand();
-    
+
 }

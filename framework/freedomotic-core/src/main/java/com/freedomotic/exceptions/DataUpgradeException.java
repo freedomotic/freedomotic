@@ -21,23 +21,14 @@ package com.freedomotic.exceptions;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class DataUpgradeException extends Exception {
 
-    /**
-     *
-     * @param msg
-     */
     public DataUpgradeException(String msg) {
         super(msg);
     }
 
-    /**
-     *
-     * @param message
-     * @param cause
-     */
     public DataUpgradeException(String message, Throwable cause) {
         super(message, cause);
     }

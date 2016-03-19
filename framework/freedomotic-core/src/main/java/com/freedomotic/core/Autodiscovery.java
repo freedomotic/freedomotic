@@ -42,8 +42,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Create Things on the fly using a template as a starting point. It can be
@@ -53,12 +53,12 @@ import java.util.logging.Logger;
  * name, protocol and address. Moreover it can load the hardware trigger and
  * commands mapping from the tuples defined plugin manifest
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public final class Autodiscovery extends AbstractConsumer {
 
     private static final String MESSAGING_CHANNEL = "app.objects.create";
-    private static final Logger LOG = Logger.getLogger(Autodiscovery.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Autodiscovery.class.getName());
 
     // Dependencies
     private final ClientStorage clientStorage;
@@ -79,10 +79,6 @@ public final class Autodiscovery extends AbstractConsumer {
         this.commandRepository = commandRepository;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getMessagingChannel() {
         return MESSAGING_CHANNEL;
@@ -100,7 +96,7 @@ public final class Autodiscovery extends AbstractConsumer {
         try {
             join(clazz, name, protocol, address, allowClones);
         } catch (RepositoryException ex) {
-            Logger.getLogger(Autodiscovery.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
     }
 
@@ -122,7 +118,7 @@ public final class Autodiscovery extends AbstractConsumer {
     protected EnvObjectLogic join(String clazz, String name, String protocol, String address, boolean allowClones) throws RepositoryException {
         // Check if autodiscovery can be applied
         if (thingAlreadyExists(protocol, address)) {
-            LOG.log(Level.INFO, "A thing with protocol ''{0}'' and address ''{1}'' "
+            LOG.info("A thing with protocol ''{0}'' and address ''{1}'' "
                     + "already exists in the environment. "
                     + "Autodiscovery exists without changes", new Object[]{protocol, address});
             return null;
@@ -130,7 +126,7 @@ public final class Autodiscovery extends AbstractConsumer {
 
         // If not allowed to clone an Thing
         if (!allowClones && thingAlreadyExists(name)) {
-            LOG.log(Level.INFO, "A thing with name ''{0}'' already exists in the environment. "
+            LOG.info("A thing with name ''{0}'' already exists in the environment. "
                     + "Autodiscovery exists without changes because property "
                     + "'autodiscovery.allow-clones' property is "
                     + allowClones + " for the received command", name);
@@ -140,12 +136,12 @@ public final class Autodiscovery extends AbstractConsumer {
         // Check if the requested Thing template is loaded
         ObjectPluginPlaceholder thingTemplate = (ObjectPluginPlaceholder) clientStorage.get(clazz);
         if (thingTemplate == null) {
-            LOG.log(Level.WARNING, "Autodiscovery error: doesn't exist an object class called ''{0}''", clazz);
+            LOG.warn("Autodiscovery error: doesn't exist an object class called ''{0}''", clazz);
             return null;
         }
 
         // Start the new Thing creation
-        LOG.log(Level.WARNING, "Autodiscovery request for an object called ''{0}'' of type ''{1}''", new Object[]{name, clazz});
+        LOG.warn("Autodiscovery request for an object called ''{0}'' of type ''{1}''", new Object[]{name, clazz});
         File templateFile = thingTemplate.getTemplate();
         EnvObjectLogic loaded = thingsRepository.load(templateFile);
 
@@ -165,7 +161,7 @@ public final class Autodiscovery extends AbstractConsumer {
         loaded.getPojo().setActAs("");
         loaded.setRandomLocation();
         configureOptionalMapping(protocol, clazz, loaded);
-        LOG.log(Level.INFO, "Autodiscovery adds a thing called ''{0}'' of type ''{1}''",
+        LOG.info("Autodiscovery adds a thing called ''{0}'' of type ''{1}''",
                 new Object[]{loaded.getPojo().getName(), clazz});
         return loaded;
     }

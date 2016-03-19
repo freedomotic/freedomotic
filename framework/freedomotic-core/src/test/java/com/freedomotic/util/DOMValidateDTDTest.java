@@ -1,27 +1,21 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package com.freedomotic.util;
 
@@ -30,24 +24,27 @@ import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.testutils.GuiceJUnitRunner;
 import com.thoughtworks.xstream.XStream;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class DOMValidateDTDTest {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DOMValidateDTDTest.class.getName());
+
     private static XStream xstream;
-    private String file =
-            "<trigger>"
+    private String file
+            = "<trigger>"
             + "<name>Every hour</name>"
             + "<description>schedule actions to be executed at a fixed interval of 60 minutes</description>"
             + "<channel>app.event.sensor.calendar.event.schedule</channel>"
@@ -116,5 +113,4 @@ public class DOMValidateDTDTest {
         assertEquals("Suspension time", 1000, trigger.getSuspensionTime());
         assertEquals("Suspension time", 1000, trigger2.getSuspensionTime());
     }
-    private static final Logger LOG = Logger.getLogger(DOMValidateDTDTest.class.getName());
 }

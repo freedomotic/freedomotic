@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.util;
@@ -42,13 +40,16 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class SerialClone {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SerialClone.class.getName());
 
     /**
      *
@@ -77,10 +78,10 @@ public class SerialClone {
         ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
         CloneInput cin = new CloneInput(bin, cout);
 
-	@SuppressWarnings("unchecked")  // thanks to Bas de Bakker for the tip!
-	T clone = (T) cin.readObject();
-	cin.close();
-	return clone;
+        @SuppressWarnings("unchecked")  // thanks to Bas de Bakker for the tip!
+        T clone = (T) cin.readObject();
+        cin.close();
+        return clone;
     }
 
     private static class CloneOutput
@@ -139,5 +140,4 @@ public class SerialClone {
 
     private SerialClone() {
     }
-    private static final Logger LOG = Logger.getLogger(SerialClone.class.getName());
 }

@@ -29,8 +29,8 @@ import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.things.GenericPerson;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.util.TopologyUtils;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
@@ -39,11 +39,11 @@ import javax.jms.ObjectMessage;
  * Listen to topology related events and manages them, eventually throwing more
  * specific events like "PersonEnterZone" if it's the case.
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class TopologyManager implements BusConsumer {
 
-    private static final Logger LOG = Logger.getLogger(TopologyManager.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TopologyManager.class.getName());
     private static final String LISTEN_CHANNEL = "app.event.sensor.person.movement.detected";
     private static BusMessagesListener listener;
 
@@ -67,7 +67,7 @@ public class TopologyManager implements BusConsumer {
         try {
             jmsObject = message.getObject();
         } catch (JMSException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
 
         if (jmsObject instanceof LocationEvent) {

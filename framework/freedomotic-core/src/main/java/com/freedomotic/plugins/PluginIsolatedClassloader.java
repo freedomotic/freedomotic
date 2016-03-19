@@ -26,9 +26,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 /**
- * THIS IS CURRENTLY NOT USED
- * A parent-last classloader that will try the child classloader first and then
- * the parent.
+ * THIS IS CURRENTLY NOT USED A parent-last classloader that will try the child
+ * classloader first and then the parent.
  */
 public class PluginIsolatedClassloader extends ClassLoader {
 
@@ -107,12 +106,12 @@ public class PluginIsolatedClassloader extends ClassLoader {
                     System.out.println("Class " + name + " is already loaded by " + cls.getClassLoader().toString());
                     return cls;
                 }
-                
-                if (name.contains("org.slf4j")){
+
+                if (name.contains("org.slf4j")) {
                     System.out.println("Cannot load logging libraries. Delegate to parent");
                     return realParent.loadClass(name);
                 }
-                
+
                 // first try to use the URLClassLoader findClass
                 return super.findClass(name);
             } catch (ClassNotFoundException e) {

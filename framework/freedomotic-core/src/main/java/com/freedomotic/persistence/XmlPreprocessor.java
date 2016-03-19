@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -24,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -35,6 +34,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.slf4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -42,11 +42,11 @@ import org.xml.sax.SAXParseException;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class XmlPreprocessor {
 
-    private static final Logger LOG = Logger.getLogger(XmlPreprocessor.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(XmlPreprocessor.class.getName());
 
     /**
      *
@@ -87,21 +87,21 @@ public class XmlPreprocessor {
                 public void fatalError(SAXParseException fatal)
                         throws SAXException {
                     //enable when validator feature is fully implemented
-                    //LOG.warning(fatal.getMessage());
+                    //LOG.warn(fatal.getMessage());
                 }
 
                 @Override
                 public void error(SAXParseException e)
                         throws SAXParseException {
                     //enable when validator feature is fully implemented
-                    //LOG.warning("Error at line " + e.getLineNumber() + ". " + e.getMessage());
+                    //LOG.warn("Error at line " + e.getLineNumber() + ". " + e.getMessage());
                 }
 
                 @Override
                 public void warning(SAXParseException err)
                         throws SAXParseException {
                     //enable when validator feature is fully implemented
-                    //LOG.warning("Warning at line " + err.getLineNumber() + ". " + err.getMessage());
+                    //LOG.warn("Warning at line " + err.getLineNumber() + ". " + err.getMessage());
                 }
             });
             //finally parse the result. 

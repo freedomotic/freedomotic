@@ -27,38 +27,29 @@ import java.net.URL;
 /**
  * Loads bundles from external jar files at runtime. Loaded bundles are then
  * added to the {@link ClientStorage}
- * 
- * @author enrico
+ *
+ * @author Enrico Nicoletti
  */
 public interface PluginsManager {
 
-    /**
-     *
-     */
     int TYPE_DEVICE = 0;
-
-    /**
-     *
-     */
     int TYPE_EVENT = 2;
-
-    /**
-     *
-     */
     int TYPE_OBJECT = 1;
 
     /**
      * Install a plugins bundle downloading it from remote URL
+     *
      * @param fromURL
-     * @return 
+     * @return
      */
     boolean installBoundle(URL fromURL);
-    
+
     /**
-     * Uninstalls a given plugin. The plugin can be part of a bundle, in this case
-     * the entire boundle will be uninstalled
+     * Uninstalls a given plugin. The plugin can be part of a bundle, in this
+     * case the entire boundle will be uninstalled
+     *
      * @param c
-     * @return 
+     * @return
      */
     boolean uninstallBundle(Client c);
 
@@ -79,13 +70,13 @@ public interface PluginsManager {
     void loadAllPlugins() throws PluginLoadingException;
 
     /**
-     * Load a single plugin package from a given directory. This directory should be the
-     * root path of the plugin package, not a directory containing more than one
-     * plugin package.
+     * Load a single plugin package from a given directory. This directory
+     * should be the root path of the plugin package, not a directory containing
+     * more than one plugin package.
      *
      * @param directory
      * @throws PluginLoadingException
      */
     void loadSingleBoundle(File directory) throws PluginLoadingException;
-    
+
 }

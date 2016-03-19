@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -46,12 +45,13 @@ import com.freedomotic.model.environment.Zone;
 import com.freedomotic.things.GenericPerson;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class ZoneLogic {
 
@@ -61,7 +61,7 @@ public class ZoneLogic {
     private final List<GenericPerson> occupiers = new ArrayList<GenericPerson>();
     private EnvironmentLogic FatherEnv = null;
     private Ownership ownershipStrategy;
-    private static final Logger LOG = Logger.getLogger(ZoneLogic.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ZoneLogic.class.getName());
 
     /**
      *
@@ -71,10 +71,6 @@ public class ZoneLogic {
         this.pojo = pojo;
     }
 
-    /**
-     *
-     * @return
-     */
     @RequiresPermissions("zones:read")
     public EnvironmentLogic getEnv() {
         return this.FatherEnv;
@@ -82,8 +78,8 @@ public class ZoneLogic {
 
     /**
      *
-
-
+     *
+     *
      * @return
      */
     @RequiresPermissions("zones:read")

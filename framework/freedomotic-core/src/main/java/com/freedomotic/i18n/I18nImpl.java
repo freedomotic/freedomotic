@@ -40,25 +40,26 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 class I18nImpl implements I18n {
 
-	private static class CustomSecurityManager extends SecurityManager {
+    private static class CustomSecurityManager extends SecurityManager {
 
-		public Class<?> getCallerClass() {
-			return getClassContext()[2];
-		}
-	}
+        public Class<?> getCallerClass() {
+            return getClassContext()[2];
+        }
+    }
 
-	private static final CustomSecurityManager customSecurityManager = new CustomSecurityManager();
+    private static final Logger LOG = LoggerFactory.getLogger(I18n.class.getName());
+    private static final CustomSecurityManager customSecurityManager = new CustomSecurityManager();
 
-		private Locale currentLocale;
+    private Locale currentLocale;
     private final HashMap<String, ResourceBundle> messages;
     private final UTF8control RB_Control;
     private static final ArrayList<Locale> locales = new ArrayList<Locale>();
@@ -114,7 +115,6 @@ class I18nImpl implements I18n {
         String loc = locale.toString(); //currentLocale.getLanguage() + "_" + currentLocale.getCountry();
 
         // cerca in messages (ed eventualmente aggiungi) la risorsa per il package e la lingua
-
         if (!messages.containsKey(packageName + ":" + loc)) {
             try {
 
@@ -126,16 +126,15 @@ class I18nImpl implements I18n {
                 String baseName = packageName.split("\\.")[lastSize - 1];
 
                 messages.put(packageName + ":" + loc, ResourceBundle.getBundle(baseName, currentLocale, loader, RB_Control));
-                LOG.log(Level.INFO, "Adding resourceBundle: package={0}, locale={1} pointing at {2}", new Object[]{packageName, loc, folder.getAbsolutePath()});
+                LOG.info("Adding resourceBundle: package={0}, locale={1} pointing at {2}", new Object[]{packageName, loc, folder.getAbsolutePath()});
             } catch (MalformedURLException ex) {
-                LOG.log(Level.SEVERE, "Cannot find folder while loading resourceBundle for package{0}", packageName);
+                LOG.error("Cannot find folder while loading resourceBundle for package{0}", packageName);
             } catch (MissingResourceException ex) {
-                LOG.log(Level.SEVERE, "Cannot find resourceBundle files inside folder {1} for package{0}", new Object[]{packageName, folder.getAbsolutePath()});
+                LOG.error("Cannot find resourceBundle files inside folder {1} for package{0}", new Object[]{packageName, folder.getAbsolutePath()});
             }
         }
 
         // estrai stringa
-
         if (messages.containsKey(packageName + ":" + loc)) {
             try {
                 // try and extract strig for current locale...
@@ -155,7 +154,7 @@ class I18nImpl implements I18n {
                 }
 
             } catch (MissingResourceException ex) {
-                LOG.log(Level.SEVERE, "Cannot find resourceBundle files inside folder {0} for package{1}", new Object[]{folder.getAbsolutePath(), packageName});
+                LOG.error("Cannot find resourceBundle files inside folder {0} for package{1}", new Object[]{folder.getAbsolutePath(), packageName});
             }
         }
         return null;
@@ -173,7 +172,7 @@ class I18nImpl implements I18n {
         return msg(caller, key, fields);
     }
 
-        @Override
+    @Override
     public void registerBundleTranslations(String packageName, File i18nFolder) {
         if (!packageBundleDir.containsKey(packageName)) {
             packageBundleDir.put(packageName, i18nFolder);
@@ -258,19 +257,15 @@ class I18nImpl implements I18n {
             }
         });
 
-
         for (File file : files) {
             String value = file.getName().replaceAll("^" + bundlename + "(_)?|\\.properties$", "");
 
             if (!value.isEmpty()) {
                 Locale loc = new Locale(value.substring(0, 2), value.substring(3, 5));
                 locales.add(loc);
-               
+
             }
         }
         return locales;
     }
-    
-    private static final Logger LOG = Logger.getLogger(I18n.class.getName());
 }
-

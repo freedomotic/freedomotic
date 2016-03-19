@@ -23,33 +23,25 @@ import com.freedomotic.api.EventTemplate;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.things.GenericPerson;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public final class PersonExitsZone extends EventTemplate {
 
-    private static final Logger LOG = Logger.getLogger(PersonExitsZone.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(PersonExitsZone.class.getName());
     private final String uuid;
     private final String zoneName;
 
-    /**
-     *
-     * @param aThis
-     * @param p
-     * @param zone
-     */
     public PersonExitsZone(ZoneLogic aThis, GenericPerson p, Zone zone) {
         this.uuid = p.getPojo().getUUID();
         this.zoneName = zone.getName();
         generateEventPayload();
     }
 
-    /**
-     *
-     */
     @Override
     protected void generateEventPayload() {
         payload.addStatement("person.id", uuid);
@@ -61,22 +53,14 @@ public final class PersonExitsZone extends EventTemplate {
         return "app.event.sensor.person.zone.exit";
     }
 
-    /**
-     *
-     * @return
-     */
     public String getPersonId() {
         return uuid;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getZoneName() {
         return zoneName;
     }
-    
+
     /**
      *
      * @return

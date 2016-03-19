@@ -30,8 +30,8 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.SimpleRole;
@@ -45,11 +45,11 @@ import org.apache.shiro.util.ThreadState;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 class AuthImpl2 implements Auth {
 
-    private static final Logger LOG = Logger.getLogger(AuthImpl2.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(AuthImpl2.class.getName());
     private static boolean realmInited = false;
     private static final UserRealm baseRealm = new UserRealm();
     private static final PluginRealm pluginRealm = new PluginRealm();
@@ -132,7 +132,7 @@ class AuthImpl2 implements Auth {
             currentUser.getSession().setTimeout(-1);
             return true;
         } catch (Exception e) {
-            LOG.warning(e.getLocalizedMessage());
+            LOG.warn(e.getLocalizedMessage());
             return false;
         }
     }
@@ -201,9 +201,9 @@ class AuthImpl2 implements Auth {
             try {
                 plugSubject.getSession().setTimeout(-1);
             } catch (Exception e) {
-                LOG.log(Level.WARNING, "ERROR retrieving session for user {0}", plugin.getClassName());
+                LOG.warn("ERROR retrieving session for user {0}", plugin.getClassName());
             }
-            return plugSubject.associateWith(action);                
+            return plugSubject.associateWith(action);
         }
         return action;
     }
@@ -219,13 +219,13 @@ class AuthImpl2 implements Auth {
         if (!pluginRealm.accountExists(plugin.getClassName())) {
             // check whether declared permissions correspond the ones requested at runtime
             if (plugin.getConfiguration().getStringProperty("permissions", getPluginDefaultPermission()).equals(permissions)) {
-                LOG.log(Level.INFO, "Setting permissions for plugin {0}: {1}", new Object[]{plugin.getClassName(), permissions});
+                LOG.info("Setting permissions for plugin {0}: {1}", new Object[]{plugin.getClassName(), permissions});
                 pluginRealm.addPlugin(plugin.getClassName(), permissions);
                 //pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
                 //pluginRealm.addRole(plugrole);
 
             } else {
-                LOG.log(Level.SEVERE, "Plugin {0} tried to request incorrect privileges", plugin.getName());
+                LOG.error("Plugin {0} tried to request incorrect privileges", plugin.getName());
             }
         }
     }
@@ -322,7 +322,7 @@ class AuthImpl2 implements Auth {
         try {
             baseRealm.save(Info.PATHS.PATH_CONFIG_FOLDER);
         } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
     }
 

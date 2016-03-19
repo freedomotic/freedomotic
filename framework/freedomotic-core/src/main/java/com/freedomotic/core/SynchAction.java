@@ -19,29 +19,9 @@
  */
 package com.freedomotic.core;
 
-/**
- *
- * @author mauro
- */
 public enum SynchAction {
 
-    /**
-     *
-     */
-    CREATED,
+    CREATED, DELETED, UPDATED;
 
-    /**
-     *
-     */
-    DELETED,
-
-    /**
-     *
-     */
-    UPDATED;
-
-    /**
-     *
-     */
     public static final String KEY_SYNCH_ACTION = "synch.action";
 }

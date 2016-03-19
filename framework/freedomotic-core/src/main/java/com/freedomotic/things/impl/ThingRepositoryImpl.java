@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 class ThingRepositoryImpl implements ThingRepository {
 
@@ -67,7 +67,7 @@ class ThingRepositoryImpl implements ThingRepository {
 
     public static final boolean MAKE_NOT_UNIQUE = false;
     private static final Map<String, EnvObjectLogic> objectList = new HashMap<>();
-    private static final Logger LOG = LoggerFactory.getLogger(ThingRepositoryImpl.class.getName()); 
+    private static final Logger LOG = LoggerFactory.getLogger(ThingRepositoryImpl.class.getName());
     // Dependencies
     private final ThingFactory thingsFactory;
     private final DataUpgradeService dataUpgradeService;
@@ -401,7 +401,7 @@ class ThingRepositoryImpl implements ThingRepository {
 
         return envObjectLogic;
     }
-    
+
     private String getNextInOrder(String name) {
         String newName = name;
         int i = 0;
@@ -607,11 +607,10 @@ class ThingRepositoryImpl implements ThingRepository {
 
         if (files != null) {
             for (File file : files) {
-                try{
-                EnvObjectLogic loaded = load(file);
-                results.add(loaded);
-                }
-                catch (RepositoryException ex){
+                try {
+                    EnvObjectLogic loaded = load(file);
+                    results.add(loaded);
+                } catch (RepositoryException ex) {
                     LOG.warn(ex.getMessage());
                 }
             }

@@ -30,17 +30,19 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class Unzip {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Unzip.class.getName());
 
     /**
      *
@@ -56,9 +58,9 @@ public class Unzip {
         ZipFile zip = new ZipFile(file);
         String newPath = zipFile.substring(0, zipFile.length() - 4);
 //simulates the unzip here feature
-        newPath =
-                newPath.substring(0,
-                newPath.lastIndexOf(File.separator));
+        newPath
+                = newPath.substring(0,
+                        newPath.lastIndexOf(File.separator));
 
         Enumeration<? extends ZipEntry> zipFileEntries = zip.entries();
 
@@ -91,10 +93,9 @@ public class Unzip {
                         dest.write(data, 0, currentByte);
                     }
 
-
                 }
             } catch (IOException ex) {
-                Logger.getLogger(Unzip.class.getName()).log(Level.WARNING, null, ex);
+                LOG.error(ex.getMessage());
             } finally {
                 if (dest != null) {
                     dest.flush();
@@ -114,5 +115,4 @@ public class Unzip {
 
     private Unzip() {
     }
-    private static final Logger LOG = Logger.getLogger(Unzip.class.getName());
 }

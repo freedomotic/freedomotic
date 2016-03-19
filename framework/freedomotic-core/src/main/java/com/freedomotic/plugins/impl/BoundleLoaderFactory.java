@@ -36,23 +36,28 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Creates the instances of <code>BoundleLoader</code> used to loadBoundle plugins from
- * filesystem.
- * @author enrico
+ * Creates the instances of <code>BoundleLoader</code> used to loadBoundle
+ * plugins from filesystem.
+ *
+ * @author Enrico Nicoletti
  */
 class BoundleLoaderFactory {
     // Parameters
 
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(BoundleLoaderFactory.class.getName());
     private static final Class[] PARAMETERS = new Class[]{URL.class};
 
     BoundleLoaderFactory() {
     }
 
     /**
-     * Takes in input the type of the plugins and from this creates a pointer to the right 
-     * filesystem folder, used later to loadBoundle all plugins at this path.
+     * Takes in input the type of the plugins and from this creates a pointer to
+     * the right filesystem folder, used later to loadBoundle all plugins at
+     * this path.
+     *
      * @param type The type of the plugin (DEVICE, OBJECT, EVENT)
      * @return a list of object to trigger the loading of the plugin jar package
      */
@@ -93,12 +98,12 @@ class BoundleLoaderFactory {
     }
 
     /**
-     * Returns a single plugin package factory that can be used to loadBoundle all the
-     * plugins it has inside
+     * Returns a single plugin package factory that can be used to loadBoundle
+     * all the plugins it has inside
      *
-     * @param directory The filesystem folder from which loadBoundle the plugins. This
-     * folder can have other subfolder that contains specific plugin types
-     * (DEVICES, OBJECTS, EVENTS)
+     * @param directory The filesystem folder from which loadBoundle the
+     * plugins. This folder can have other subfolder that contains specific
+     * plugin types (DEVICES, OBJECTS, EVENTS)
      * @return
      */
     protected BoundleLoader getSingleBoundleLoader(File directory) {
@@ -133,17 +138,17 @@ class BoundleLoaderFactory {
         try {
             while (true) {
                 jarEntry = jarFile.getNextJarEntry();
-                
+
                 if (jarEntry == null) {
                     break;
                 }
-                
+
                 if (jarEntry.getName().endsWith(".class")) {
                     classes.add(jarEntry.getName().replaceAll("/", "\\."));
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(BoundleLoaderFactory.class).warn(ex.getMessage());
+            LoggerFactory.getLogger(BoundleLoaderFactory.class).warn(ex.getMessage());
         } finally {
             jarFile.close();
         }
@@ -185,9 +190,8 @@ class BoundleLoaderFactory {
             method.invoke(sysLoader,
                     new Object[]{u});
         } catch (Throwable t) {
-            LOG.severe(Freedomotic.getStackTraceInfo(t));
+            LOG.error(Freedomotic.getStackTraceInfo(t));
             throw new IOException("Error, could not add URL to system classloader");
         }
     }
-    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(BoundleLoaderFactory.class.getName());
 }

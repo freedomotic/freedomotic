@@ -24,21 +24,27 @@ import com.freedomotic.model.environment.Environment;
 import java.util.Collection;
 
 /**
- * This interface is intended to be used by only by the related {@link EnvironmentRepository}
- * It will manage the lower layer details about persistence (eg: filesystem load/save)
- * @author enrico
+ * This interface is intended to be used by only by the related
+ * {@link EnvironmentRepository} It will manage the lower layer details about
+ * persistence (eg: filesystem load/save)
+ *
+ * @author Enrico Nicoletti
  */
 interface EnvironmentPersistence {
 
     /**
-     * Dumps an Environment to the persistence layer (eg: filesystem or database)
+     * Dumps an Environment to the persistence layer (eg: filesystem or
+     * database)
+     *
      * @param environment
      * @throws RepositoryException
      */
     void persist(Environment environment) throws RepositoryException;
 
     /**
-     * Completely removes an Environment from the persistence layer (eg: filesystem or database)
+     * Completely removes an Environment from the persistence layer (eg:
+     * filesystem or database)
+     *
      * @param environment
      * @throws RepositoryException
      */
@@ -46,6 +52,7 @@ interface EnvironmentPersistence {
 
     /**
      * Bootstaps all the resources reading them from the persistence layer
+     *
      * @return
      * @throws RepositoryException
      */

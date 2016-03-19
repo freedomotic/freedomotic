@@ -26,47 +26,21 @@ import java.io.IOException;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public interface EnvironmentRepository extends Repository<EnvironmentLogic> {
-    
-    //TODO: remove it it's just temporary to ease the refactoring
 
-    /**
-     *
-     * @param folder
-     * @throws RepositoryException
-     */
-        public void saveEnvironmentsToFolder(File folder) throws RepositoryException;
+    //TODO: remove it it's just temporary to ease the refactoring
+    public void saveEnvironmentsToFolder(File folder) throws RepositoryException;
+
     //public boolean loadEnvironmentsFromDir(File folder, boolean makeUnique) throws RepositoryException;
 
-    /**
-     *
-     * @param file
-     * @return
-     * @throws RepositoryException
-     */
-        public EnvironmentLogic loadEnvironmentFromFile(File file) throws RepositoryException;
+    public EnvironmentLogic loadEnvironmentFromFile(File file) throws RepositoryException;
 
-    /**
-     *
-     * @param env
-     * @param folder
-     * @throws IOException
-     */
     public void saveAs(EnvironmentLogic env, File folder) throws IOException;
 
-    /**
-     *
-     * @param folder
-     * @throws RepositoryException
-     */
     public void init(File folder) throws RepositoryException;
 
-    /**
-     *
-     * @throws RepositoryException
-     */
     public void initFromDefaultFolder() throws RepositoryException;
-    
+
 }

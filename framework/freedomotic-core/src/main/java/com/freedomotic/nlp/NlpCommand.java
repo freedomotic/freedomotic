@@ -22,9 +22,11 @@ package com.freedomotic.nlp;
 import com.freedomotic.reactions.Command;
 
 /**
- * Computes Commands similarity ranking starting from free-text strings using NLP techniques
- * @author enrico
+ * Computes Commands similarity ranking starting from free-text strings using
+ * NLP techniques
+ *
+ * @author Enrico Nicoletti
  */
-public interface NlpCommand extends Nlp<Command>{
-    
+public interface NlpCommand extends Nlp<Command> {
+
 }

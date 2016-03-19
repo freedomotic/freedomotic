@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -22,14 +21,16 @@ package com.freedomotic.behaviors;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.BooleanBehavior;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class BooleanBehaviorLogic implements BehaviorLogic {
 
+    private static final Logger LOG = LoggerFactory.getLogger(BooleanBehaviorLogic.class.getName());
     private final BooleanBehavior data;
     private Listener listener;
     private boolean changed;
@@ -234,5 +235,4 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
     public void setChanged(boolean value) {
         changed = value;
     }
-    private static final Logger LOG = Logger.getLogger(BooleanBehaviorLogic.class.getName());
 }

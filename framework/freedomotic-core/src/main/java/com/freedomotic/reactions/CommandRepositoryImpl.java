@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 class CommandRepositoryImpl implements CommandRepository {
 
@@ -206,14 +206,14 @@ class CommandRepositoryImpl implements CommandRepository {
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xcmd")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xcmd")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
 
         files = folder.listFiles(objectFileFileter);
 
@@ -338,14 +338,14 @@ class CommandRepositoryImpl implements CommandRepository {
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xcmd")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xcmd")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
 
         files = folder.listFiles(objectFileFileter);
 

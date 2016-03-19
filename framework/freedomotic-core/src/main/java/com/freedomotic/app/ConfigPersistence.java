@@ -17,10 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.freedomotic.app;
 
 import com.freedomotic.model.ds.Config;
@@ -38,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 public class ConfigPersistence {
 

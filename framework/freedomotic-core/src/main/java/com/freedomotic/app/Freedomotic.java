@@ -67,8 +67,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import org.slf4j.Logger;
 import java.util.logging.LogManager;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import org.apache.log4j.PatternLayout;
@@ -87,16 +88,8 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
  */
 public class Freedomotic implements BusConsumer {
 
-    private static final Logger LOG = Logger.getLogger(Freedomotic.class.getName());
-
-    /**
-     *
-     */
+    private static final Logger LOG = LoggerFactory.getLogger(Freedomotic.class.getName());
     public static String INSTANCE_ID;
-
-    /**
-     *
-     */
     public static ArrayList<IPluginCategory> onlinePluginCategories;
     /**
      * Should NOT be used. Reserved for una tantum internal freedomotic core use
@@ -130,7 +123,6 @@ public class Freedomotic implements BusConsumer {
      * @param environmentRepository
      * @param thingsRepository
      * @param triggerRepository
-     * @param reactionRepository
      * @param commandRepository
      * @param clientStorage
      * @param commandsNlpService
@@ -255,7 +247,7 @@ public class Freedomotic implements BusConsumer {
                             .browse(new File(Info.PATHS.PATH_WORKDIR + "/log/freedomotic.log").toURI());
                 }
             } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.error(ex.getMessage());
             }
         }
 
@@ -280,9 +272,9 @@ public class Freedomotic implements BusConsumer {
             try {
                 java.awt.Desktop.getDesktop().browse(new URI("www.freedomotic.com"));
             } catch (URISyntaxException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.error(ex.getMessage());
             } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.error(ex.getMessage());
             }
         }
 
@@ -294,7 +286,7 @@ public class Freedomotic implements BusConsumer {
         try {
             pluginsManager.loadAllPlugins();
         } catch (PluginLoadingException ex) {
-            LOG.log(Level.WARNING, "Error while loading all plugins. Impossible to load " + ex.getPluginName(), ex);
+            LOG.warn("Error while loading all plugins. Impossible to load " + ex.getPluginName(), ex);
         }
 
         /**
@@ -305,7 +297,7 @@ public class Freedomotic implements BusConsumer {
         try {
             ClassPathUpdater.add(Info.PATHS.PATH_PROVIDERS_FOLDER);
         } catch (IOException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
 
         /**
@@ -330,7 +322,7 @@ public class Freedomotic implements BusConsumer {
                     }
                 });
             } catch (Exception e) {
-                LOG.warning("Unable to cache plugins package from marketplace");
+                LOG.warn("Unable to cache plugins package from marketplace");
             }
         }
 
@@ -339,12 +331,12 @@ public class Freedomotic implements BusConsumer {
         // its java class will not be recognized by the system
         environmentRepository.initFromDefaultFolder();
         // for (EnvironmentLogic env : environmentRepository.findAll()) {
-            // Load all the Things in this environment
+        // Load all the Things in this environment
         //    File thingsFolder = env.getObjectFolder();
         //    List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(thingsFolder);
         //    for (EnvObjectLogic thing : loadedThings) {
         //        thing.setEnvironment(env);
-                // Actvates the Thing. Important, otherwise it will be not visible in the environment
+        // Actvates the Thing. Important, otherwise it will be not visible in the environment
         //        thingsRepository.create(thing);
         //    }
         // }
@@ -370,8 +362,7 @@ public class Freedomotic implements BusConsumer {
 
         double MB = 1024 * 1024;
         Runtime runtime = Runtime.getRuntime();
-        LOG.config("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
-
+        LOG.info("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
         LOG.info("Freedomotic startup completed");
     }
 
@@ -405,7 +396,8 @@ public class Freedomotic implements BusConsumer {
     }
 
     /**
-     * Main entry point of freedomotic. All starts from here.
+     * Main entry point of Freedomotic.
+     * All starts from here.
      *
      * @param args
      */
@@ -431,7 +423,7 @@ public class Freedomotic implements BusConsumer {
             //start freedomotic
             freedomotic.start();
         } catch (FreedomoticException ex) {
-            LOG.severe(ex.getMessage());
+            LOG.error(ex.getMessage());
             System.exit(1);
         }
     }
@@ -469,7 +461,7 @@ public class Freedomotic implements BusConsumer {
                 onExit(event);
             }
         } catch (JMSException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
     }
 
@@ -519,7 +511,7 @@ public class Freedomotic implements BusConsumer {
             //    }
             // }
         } catch (RepositoryException ex) {
-            LOG.log(Level.SEVERE, "Cannot save environment to folder {0} due to {1}", new Object[]{folder, ex.getCause()});
+            LOG.error("Cannot save environment to folder {0} due to {1}", new Object[]{folder, ex.getCause()});
         }
 
         System.exit(0);

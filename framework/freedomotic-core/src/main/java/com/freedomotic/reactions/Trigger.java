@@ -34,8 +34,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -45,12 +45,13 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class Trigger implements BusConsumer, Cloneable {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Trigger.class.getName());
     private String name;
     private String description;
     private String uuid;
@@ -244,7 +245,7 @@ public final class Trigger implements BusConsumer, Cloneable {
                 DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy kk:mm:ss.SSS");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(wakeup);
-                LOG.config("Trigger " + getName() + " is suspended until "
+                LOG.info("Trigger " + getName() + " is suspended until "
                         + formatter.format(calendar.getTime()));
 
                 //it is currently suspended
@@ -389,12 +390,12 @@ public final class Trigger implements BusConsumer, Cloneable {
         try {
             payload = message.getObject();
         } catch (JMSException ex) {
-            Logger.getLogger(Trigger.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
 
         if (payload instanceof EventTemplate) {
             EventTemplate event = (EventTemplate) payload;
-            LOG.fine("Trigger '" + this.getName() + "' filters event '" + event.getEventName()
+            LOG.debug("Trigger '" + this.getName() + "' filters event '" + event.getEventName()
                     + "' on channel " + this.getChannel());
 
             checker.check(event, this);
@@ -449,7 +450,7 @@ public final class Trigger implements BusConsumer, Cloneable {
      * @return
      */
     public String getUUID() {
-        if (uuid == null ){
+        if (uuid == null) {
             uuid = UUID.randomUUID().toString();
         }
         return uuid;
@@ -483,5 +484,4 @@ public final class Trigger implements BusConsumer, Cloneable {
     private void setTriggerCheck(TriggerCheck checker) {
         this.checker = checker;
     }
-    private static final Logger LOG = Logger.getLogger(Trigger.class.getName());
 }

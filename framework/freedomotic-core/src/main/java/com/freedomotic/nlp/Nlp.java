@@ -25,9 +25,10 @@ import com.freedomotic.exceptions.NoResultsException;
 
 /**
  * Takes in input some text, analyzes it to compute a similarity value related
- * to a set of predefined object avaliable to the system (eg: automation commands)
- * 
- * @author enrico
+ * to a set of predefined object avaliable to the system (eg: automation
+ * commands)
+ *
+ * @author Enrico Nicoletti
  * @param <T>
  */
 public interface Nlp<T> {
@@ -84,9 +85,6 @@ public interface Nlp<T> {
         }
     }
 
-    /**
-     *
-     */
     public class DescendingRankComparator implements Comparator<Rank> {
 
         @Override

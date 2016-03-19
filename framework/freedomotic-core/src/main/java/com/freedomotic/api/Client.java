@@ -87,14 +87,12 @@ public interface Client {
 
     /**
      *
-     * @deprecated
      */
     @Deprecated
     public void showGui();
 
     /**
      *
-     * @deprecated
      */
     @Deprecated
     public void hideGui();

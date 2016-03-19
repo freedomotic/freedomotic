@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -28,7 +27,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.Session;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Bus connection holder.
@@ -40,14 +40,14 @@ import java.util.logging.Logger;
  */
 class BusConnection extends LifeCycle {
 
-    private static final Logger LOG = Logger.getLogger(BusConnection.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BusConnection.class.getName());
 
     // FIXME LCG get out from here!
     private static final String DEFAULT_PASSWORD = "password";
     private static final String DEFAULT_USER = "user";
 
     private Connection connection;
-    
+
     @Inject
     private AppConfig config;
 
@@ -56,7 +56,7 @@ class BusConnection extends LifeCycle {
     private ActiveMQConnectionFactory createFactory() {
 
         // connect to the embedded broker defined above
-        String P2P_BROKER_URL= config.getStringProperty("BROKER_PROTOCOL", Info.MESSAGING.BROKER_DEFAULT_PROTOCOL)
+        String P2P_BROKER_URL = config.getStringProperty("BROKER_PROTOCOL", Info.MESSAGING.BROKER_DEFAULT_PROTOCOL)
                 + "://"
                 + config.getStringProperty("P2P_CLUSTER_NAME", Info.MESSAGING.BROKER_DEFAULT_CLUSTER_NAME)
                 + "/" + Info.MESSAGING.BROKER_DEFAULT_UUID;

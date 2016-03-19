@@ -1,27 +1,21 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package com.freedomotic.events;
 
@@ -30,16 +24,19 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.TriggerCheck;
 import com.freedomotic.reactions.Trigger;
 import com.google.inject.Inject;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Channel <b>app.event.sensor.protocol.read.PROTOCOL_NAME</b> informs about
  * state changes of objects identified by protocol PROTOCOL_NAME
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public final class ProtocolRead
         extends EventTemplate {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProtocolRead.class.getName());
 
     String protocol;
     @Inject
@@ -103,5 +100,4 @@ public final class ProtocolRead
             return "app.event.sensor.protocol.read." + protocol.trim().toLowerCase();
         }
     }
-    private static final Logger LOG = Logger.getLogger(ProtocolRead.class.getName());
 }

@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -18,10 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.freedomotic.plugins;
 
 import com.freedomotic.api.Client;
@@ -34,7 +29,7 @@ import java.io.File;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class ObjectPluginPlaceholder implements Client {
 
@@ -55,7 +50,7 @@ public class ObjectPluginPlaceholder implements Client {
         template = thingsRepository.load(example);
         if (template == null) {
             throw new IllegalStateException("Cannot build an object placeholder plugin from a null object");
-        }           
+        }
         config = new Config();
     }
 

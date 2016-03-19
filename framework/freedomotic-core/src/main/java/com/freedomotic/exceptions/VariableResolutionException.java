@@ -21,7 +21,7 @@ package com.freedomotic.exceptions;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class VariableResolutionException extends FreedomoticException {
 

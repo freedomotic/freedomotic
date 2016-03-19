@@ -26,7 +26,7 @@ import java.util.Locale;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 public interface I18n {
 
@@ -37,13 +37,11 @@ public interface I18n {
     ArrayList<Locale> getAvailableLocales();
 
     // should be replaced by user specific Locale
-
     /**
      *
-     * @return
-     * @deprecated
+     * @return @deprecated
      */
-        @Deprecated
+    @Deprecated
     Locale getDefaultLocale();
 
     /*
@@ -51,13 +49,11 @@ public interface I18n {
      * For Plugin: translations are inside plugins/_plugin_type_/_plugin_package_/i18n/_package_last_part_.properties
      */
     //String msg(String packageName, String key, Object[] fields);
-
     /**
      *
      * @param key
      * @return
      */
-    
     String msg(String key);
 
     /**
@@ -73,12 +69,12 @@ public interface I18n {
      * @param loc
      */
     void setDefaultLocale(String loc);
-    
+
     /**
      *
      * @param packageName
      * @param i18nFolder
      */
     void registerBundleTranslations(String packageName, File i18nFolder);
-    
+
 }

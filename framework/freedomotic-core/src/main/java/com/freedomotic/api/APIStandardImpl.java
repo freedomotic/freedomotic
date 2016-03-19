@@ -1,6 +1,7 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team
+ * http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -44,7 +45,7 @@ import java.util.Collection;
  * themselves, but they are immutable trough the references retrieved from the
  * methods of this class.
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 class APIStandardImpl implements API {
 

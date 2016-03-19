@@ -27,16 +27,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public final class EnvironmentLogic {
 
-    private static final Logger LOG = Logger.getLogger(EnvironmentLogic.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(EnvironmentLogic.class.getName());
 
     private Graph graph = null;
     private Environment pojo = null;
@@ -110,7 +111,7 @@ public final class EnvironmentLogic {
         }
 
         if (zones.contains(zone)) {
-            LOG.warning("Attempt to add a null or already existent room");
+            LOG.warn("Attempt to add a null or already existent room");
 
             return;
         }
@@ -155,13 +156,13 @@ public final class EnvironmentLogic {
 //            try {
 //                room.setChanged();
 //            } catch (Exception e) {
-//                LOG.warning("Cannot notify room changes");
+//                LOG.warn("Cannot notify room changes");
 //            }
 //        } else {
 //            try {
 //                zone.setChanged();
 //            } catch (Exception e) {
-//                LOG.warning("Cannot notify room changes");
+//                LOG.warn("Cannot notify room changes");
 //            }
 //        }
     }
@@ -209,21 +210,21 @@ public final class EnvironmentLogic {
                 room.init(this);
 
                 if (!zones.contains(room)) {
-                    LOG.config("Adding room " + room);
+                    LOG.info("Adding room " + room);
 
                     this.zones.add(room);
                 } else {
-                    LOG.warning("Attempt to add a null or an already existent room " + room);
+                    LOG.warn("Attempt to add a null or an already existent room " + room);
                 }
             } else {
                 ZoneLogic zoneLogic = new ZoneLogic(z);
                 zoneLogic.init(this);
 
                 if (!zones.contains(zoneLogic)) {
-                    LOG.config("Adding zone " + zoneLogic);
+                    LOG.info("Adding zone " + zoneLogic);
                     this.zones.add(zoneLogic);
                 } else {
-                    LOG.warning("Attempt to add a null or an already existent zone " + zoneLogic);
+                    LOG.warn("Attempt to add a null or an already existent zone " + zoneLogic);
                 }
             }
         }

@@ -25,8 +25,8 @@ import com.freedomotic.bus.BusService;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
@@ -39,7 +39,7 @@ import javax.jms.ObjectMessage;
  */
 public abstract class AbstractConsumer implements BusConsumer {
 
-    private static final Logger LOG = Logger.getLogger(AbstractConsumer.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractConsumer.class.getName());
     private final BusMessagesListener listener;
     private final BusService busService;
     private boolean automaticReply;
@@ -58,16 +58,8 @@ public abstract class AbstractConsumer implements BusConsumer {
      */
     protected abstract void onEvent(EventTemplate event);
 
-    /**
-     *
-     * @return
-     */
     protected abstract String getMessagingChannel();
 
-    /**
-     *
-     * @param busService
-     */
     public AbstractConsumer(BusService busService) {
         this.busService = busService;
         listener = new BusMessagesListener(this, busService);
@@ -83,7 +75,7 @@ public abstract class AbstractConsumer implements BusConsumer {
 
             if (jmsObject instanceof Command) {
                 final Command command = (Command) jmsObject;
-                LOG.log(Level.CONFIG, "{0} receives command {1} with parametes '{''{'{2}'}''}'",
+                LOG.info("{0} receives command {1} with parametes '{''{'{2}'}''}'",
                         new Object[]{
                             this.getClass().getCanonicalName(),
                             command.getName(),
@@ -101,41 +93,27 @@ public abstract class AbstractConsumer implements BusConsumer {
                 }
             }
         } catch (JMSException ex) {
-            LOG.log(Level.SEVERE, "Error while receiving a JMS message", ex);
+            LOG.error("Error while receiving a JMS message", ex);
         }
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean isAutomaticReply() {
         return automaticReply;
     }
 
-    /**
-     *
-     * @param automaticReply
-     */
     public void setAutomaticReply(boolean automaticReply) {
         this.automaticReply = automaticReply;
     }
 
-    /**
-     *
-     * @return
-     */
     public BusService getBusService() {
         return busService;
     }
 
-
     //public void reply(Command command) {
-        // sends back the command
+    // sends back the command
     //    final String defaultCorrelationID = "-1";
     //    getBusService().reply(command, lastDestination, defaultCorrelationID);
     //}
-
     private class ActuatorPerforms extends Thread {
 
         private final Command command;
@@ -156,11 +134,11 @@ public abstract class AbstractConsumer implements BusConsumer {
                 command.setExecuted(true);
                 onCommand(command);
             } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.error(ex.getLocalizedMessage());
                 command.setExecuted(false);
             } catch (UnableToExecuteException ex) {
                 command.setExecuted(false);
-                LOG.log(Level.INFO, "{0} failed to execute command {1}: {2}", new Object[]{getName(), command.getName(), ex.getMessage()});
+                LOG.info("{0} failed to execute command {1}: {2}", new Object[]{getName(), command.getName(), ex.getMessage()});
             }
 
             // automatic-reply-to-command is used when the plugin executes the command in a

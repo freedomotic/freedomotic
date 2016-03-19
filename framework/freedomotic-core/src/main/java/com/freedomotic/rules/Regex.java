@@ -24,25 +24,16 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class Regex extends BinaryExpression {
 
     private static final String OPERATOR = Statement.REGEX;
 
-    /**
-     *
-     * @param left
-     * @param right
-     */
     public Regex(String left, String right) {
         super(left, right);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public Boolean evaluate() {
         Pattern pattern = Pattern.compile(getRight());
@@ -51,10 +42,6 @@ public class Regex extends BinaryExpression {
         return matcher.matches();
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getOperand() {
         return OPERATOR;

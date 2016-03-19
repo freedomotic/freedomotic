@@ -25,47 +25,15 @@ import com.freedomotic.api.EventTemplate;
  * Channel <b>app.event.sensor.account.change"</b>. Informs about a change in an
  * account status.
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class AccountEvent extends EventTemplate {
 
-    /**
-     *
-     */
     public enum AccountActions {
 
-        /**
-         *
-         */
-        CREATED,
-
-        /**
-         *
-         */
-        DELETED,
-
-        /**
-         *
-         */
-        BANNED,
-
-        /**
-         *
-         */
-        LOGIN,
-
-        /**
-         *
-         */
-        LOGOUT
+        CREATED, DELETED, BANNED, LOGIN, LOGOUT
     };
 
-    /**
-     *
-     * @param source
-     * @param accountSubject
-     * @param action
-     */
     public AccountEvent(Object source, String accountSubject, AccountActions action) {
         payload.addStatement("account.subject", accountSubject);
         payload.addStatement("account.action", action.toString());

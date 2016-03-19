@@ -35,8 +35,8 @@ import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.jms.ObjectMessage;
 import javax.swing.JFrame;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -56,74 +56,34 @@ public class Plugin implements Client, BusConsumer {
     final static int FIRST_IS_OLDER = -1;
     final static int LAST_IS_OLDER = 1;
     private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
-    private static final Logger LOG = Logger.getLogger(Plugin.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Plugin.class.getName());
     @XmlElement
     private String pluginName;
     @XmlElement
     private final String type = "Plugin";
     @XmlElement
     private volatile PluginStatus currentPluginStatus = PluginStatus.STOPPED;
-
-    /**
-     *
-     */
     @XmlElement
     public Config configuration;
-
-    /**
-     *
-     * @deprecated
-     */
     @Deprecated
     protected JFrame gui;
-
-    /**
-     *
-     */
     @XmlElement
     protected String description;
-
-    /**
-     *
-     */
     @XmlElement
     protected String version;
-
-    /**
-     *
-     */
     @XmlElement
     protected String requiredVersion;
-
-    /**
-     *
-     */
     @XmlElement
     protected String category;
-
-    /**
-     *
-     */
     @XmlElement
     protected String shortName;
-
-    /**
-     *
-     */
     @XmlElement
     protected String listenOn;
-
-    /**
-     *
-     */
     @XmlElement
     protected String sendOn;
     @XmlElement
     private File path;
 
-    /**
-     *
-     */
     protected BusMessagesListener listener;
 
     @Inject
@@ -145,8 +105,6 @@ public class Plugin implements Client, BusConsumer {
 
     /**
      * Used to create a Plugin placeholder for things
-     *
-     * @param pluginName
      */
     public Plugin(String pluginName) {
         Freedomotic.INJECTOR.injectMembers(this);
@@ -211,18 +169,14 @@ public class Plugin implements Client, BusConsumer {
                         PluginActions.DESCRIPTION);
                 busService.send(event);
             } catch (Exception e) {
-                LOG.log(Level.WARNING, "Cannot notify new plugin description for " + getName(), e);
+                LOG.warn("Cannot notify new plugin description for " + getName(), e);
             }
         }
     }
 
-    /**
-     *
-     * @param message
-     */
     public void notifyError(String message) {
         //Log the error on console/logfiles
-        LOG.warning(message);
+        LOG.warn(message);
         //write something on the GUI
         MessageEvent callout = new MessageEvent(this, message);
         callout.setType("callout"); //display as callout on frontends
@@ -231,13 +185,9 @@ public class Plugin implements Client, BusConsumer {
         busService.send(callout);
     }
 
-    /**
-     *
-     * @param message
-     */
     public void notifyCriticalError(String message) {
         //Log the error on console/logfiles
-        LOG.warning(message);
+        LOG.warn(message);
         //write something on the GUI
         MessageEvent callout = new MessageEvent(this, message);
         callout.setType("callout"); //display as callout on frontends
@@ -252,14 +202,9 @@ public class Plugin implements Client, BusConsumer {
         currentPluginStatus = PluginStatus.FAILED;
     }
 
-    /**
-     *
-     * @param message
-     * @param ex
-     */
     protected void notifyCriticalError(String message, Exception ex) {
         //Log and keep stack trace
-        LOG.log(Level.SEVERE, message, ex);
+        LOG.error(message, ex);
         notifyCriticalError(message);
     }
 
@@ -342,7 +287,7 @@ public class Plugin implements Client, BusConsumer {
         if (gui != null) {
             gui.setVisible(true);
         } else {
-            LOG.warning("ERROR: plugin gui is null");
+            LOG.warn("ERROR: plugin gui is null");
         }
     }
 
@@ -368,10 +313,6 @@ public class Plugin implements Client, BusConsumer {
         return pluginName;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getStatus() {
         return currentPluginStatus.name();
     }
@@ -394,18 +335,10 @@ public class Plugin implements Client, BusConsumer {
         return currentPluginStatus.equals(PluginStatus.RUNNING);
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean isAllowedToSend() {
         return currentPluginStatus.equals(PluginStatus.STARTING) || currentPluginStatus.equals(PluginStatus.RUNNING);
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean isAllowedToStart() {
         return PluginStatus.isAllowedToStart(currentPluginStatus);
     }
@@ -428,10 +361,6 @@ public class Plugin implements Client, BusConsumer {
         pluginName = name;
     }
 
-    /**
-     *
-     * @param newStatus
-     */
     protected final void setStatus(PluginStatus newStatus) {
         currentPluginStatus = newStatus;
 
@@ -505,7 +434,7 @@ public class Plugin implements Client, BusConsumer {
         try {
             configuration = ConfigPersistence.deserialize(manifest);
         } catch (IOException ex) {
-            LOG.severe("Missing manifest " + manifest.toString() + " for plugin " + getName());
+            LOG.error("Missing manifest " + manifest.toString() + " for plugin " + getName());
             setDescription("Missing manifest file " + manifest.toString());
         }
 
@@ -531,7 +460,6 @@ public class Plugin implements Client, BusConsumer {
 
     /**
      *
-     * @deprecated
      */
     @Deprecated
     protected void onShowGui() {
@@ -539,7 +467,6 @@ public class Plugin implements Client, BusConsumer {
 
     /**
      *
-     * @deprecated
      */
     @Deprecated
     protected void onHideGui() {
@@ -577,10 +504,6 @@ public class Plugin implements Client, BusConsumer {
         getApi().getAuth().setPluginPrivileges(this, configuration.getStringProperty("permissions", getApi().getAuth().getPluginDefaultPermission()));
     }
 
-    /**
-     *
-     * @return
-     */
     public BusService getBusService() {
         return busService;
     }

@@ -1,22 +1,20 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.util;
@@ -33,13 +31,16 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class TopologyUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TopologyUtils.class.getName());
     private static final AffineTransform transform = new AffineTransform();
 
     private TopologyUtils() {
@@ -173,18 +174,18 @@ public class TopologyUtils {
         int maxy = Integer.MIN_VALUE;
 
         for (FreedomPoint p : input.getPoints()) {
-            minx =
-                    Math.min(minx,
-                    p.getX());
-            miny =
-                    Math.min(miny,
-                    p.getY());
-            maxx =
-                    Math.max(maxx,
-                    p.getX());
-            maxy =
-                    Math.max(maxy,
-                    p.getY());
+            minx
+                    = Math.min(minx,
+                            p.getX());
+            miny
+                    = Math.min(miny,
+                            p.getY());
+            maxx
+                    = Math.max(maxx,
+                            p.getX());
+            maxy
+                    = Math.max(maxy,
+                            p.getY());
         }
 
         FreedomPolygon poly = new FreedomPolygon();
@@ -217,14 +218,14 @@ public class TopologyUtils {
         double cosAngle = Math.cos(radians);
         double sinAngle = Math.sin(radians);
 
-        int x =
-                (int) Math.round(pivot.getX()
-                + (double) (((pt.getX() - pivot.getX()) * cosAngle)
-                - ((pt.getY() - pivot.getY()) * sinAngle)));
-        int y =
-                (int) Math.round(pivot.getY()
-                + (double) (((pt.getX() - pivot.getX()) * sinAngle)
-                + ((pt.getY() - pivot.getY()) * cosAngle)));
+        int x
+                = (int) Math.round(pivot.getX()
+                        + (double) (((pt.getX() - pivot.getX()) * cosAngle)
+                        - ((pt.getY() - pivot.getY()) * sinAngle)));
+        int y
+                = (int) Math.round(pivot.getY()
+                        + (double) (((pt.getX() - pivot.getX()) * sinAngle)
+                        + ((pt.getY() - pivot.getY()) * cosAngle)));
 
         return new FreedomPoint(x, y);
     }
@@ -324,5 +325,4 @@ public class TopologyUtils {
 
         return oddNodes;
     }
-    private static final Logger LOG = Logger.getLogger(TopologyUtils.class.getName());
 }

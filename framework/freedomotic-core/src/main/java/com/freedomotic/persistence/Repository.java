@@ -23,77 +23,32 @@ import java.util.List;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  * @param <T>
  */
 public interface Repository<T> {
 
-    /**
-     *
-     * @return
-     */
     public List<T> findAll();
 
     // TODO: it's supposed name is a unique identifier, should return a single object
+    public List<T> findByName(String name);
 
-    /**
-     *
-     * @param name
-     * @return
-     */
-        public List<T> findByName(String name);
-
-    /**
-     *
-     * @param uuid
-     * @return
-     */
     public T findOne(String uuid);
 
-    /**
-     *
-     * @param item
-     * @return
-     */
     public boolean create(T item);  //TODO: refactor in T save(T item)
 
-    /**
-     *
-     * @param item
-     * @return
-     */
     public boolean delete(T item);
 
-    /**
-     *
-     * @param uuid
-     * @return
-     */
     public boolean delete(String uuid);
 
-    /**
-     *
-     * @param uuid
-     * @param data
-     * @return
-     */
     public T modify(String uuid, T data);
-    
-    /**
-     *
-     * @param data
-     * @return
-     */
+
     public T copy(T data);
-    
-    /**
-     *
-     */
+
     public void deleteAll();
-    
+
     //TODO: public long count();
     //TODO: public boolean exists(String uuid);
     //TODO: public void flush();
     //TODO: T saveAndFlush(T arg0)
-
 }

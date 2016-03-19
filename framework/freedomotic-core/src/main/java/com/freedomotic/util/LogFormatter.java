@@ -25,15 +25,18 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import org.slf4j.Logger;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class LogFormatter
         extends Formatter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LogFormatter.class.getName());
 
     SimpleDateFormat date = new SimpleDateFormat("HH:mm  ss,S");
 
@@ -139,5 +142,4 @@ public class LogFormatter
     public String getTail(Handler h) {
         return ("</table>\n</font>\n</body>\n</html>");
     }
-    private static final Logger LOG = Logger.getLogger(LogFormatter.class.getName());
 }

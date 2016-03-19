@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  * An helper class that uses an internal DAO pattern to addBoundle plugins of
  * different types from local filesystem
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 class PluginsManagerImpl implements PluginsManager {
 

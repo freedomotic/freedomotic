@@ -1,27 +1,21 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package com.freedomotic.environment;
 
@@ -30,17 +24,18 @@ import com.freedomotic.things.GenericGate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class Room
         extends ZoneLogic {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Room.class.getName());
     private List<GenericGate> gates;
     private List<Room> reachable;
 
@@ -56,7 +51,7 @@ public class Room
      *
      * @param gate
      */
-    @RequiresPermissions("zones:update")    
+    @RequiresPermissions("zones:update")
     public void addGate(GenericGate gate) {
         try {
             gates.add(gate);
@@ -64,11 +59,11 @@ public class Room
                     gate.getTo(),
                     gate);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Error while adding a Gate", e);
+            LOG.error("Error while adding a Gate", e);
         }
     }
 
-    @RequiresPermissions("zones:update")    
+    @RequiresPermissions("zones:update")
     private void addLink(Room link) {
         if ((!reachable.contains(link)) && (link != this)) {
             reachable.add(link);
@@ -80,7 +75,7 @@ public class Room
      * @param env
      */
     @Override
-    @RequiresPermissions("zones:read")    
+    @RequiresPermissions("zones:read")
     public void init(EnvironmentLogic env) {
         super.init(env);
 
@@ -98,7 +93,7 @@ public class Room
     /**
      *
      */
-    @RequiresPermissions("zones:read")    
+    @RequiresPermissions("zones:read")
     public void visit() {
         //reset current links
         reachable.clear();
@@ -152,7 +147,7 @@ public class Room
      *
      * @return
      */
-    @RequiresPermissions("zones:read")    
+    @RequiresPermissions("zones:read")
     public String getDescription() {
         return getPojo().getDescription();
     }
@@ -161,7 +156,7 @@ public class Room
      *
      * @param description
      */
-    @RequiresPermissions("zones:update")    
+    @RequiresPermissions("zones:update")
     public void setDescription(String description) {
         getPojo().setDescription(description);
     }
@@ -169,7 +164,7 @@ public class Room
     /**
      *
      */
-    @RequiresPermissions("zones:update")    
+    @RequiresPermissions("zones:update")
     public void updateDescription() {
         StringBuilder buff = new StringBuilder();
 
@@ -192,7 +187,7 @@ public class Room
      * @return
      */
     @Override
-    @RequiresPermissions("zones:read")    
+    @RequiresPermissions("zones:read")
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
@@ -202,11 +197,10 @@ public class Room
      * @return
      */
     @Override
-    @RequiresPermissions("zones:read")    
+    @RequiresPermissions("zones:read")
     public int hashCode() {
         int hash = 3;
 
         return hash;
     }
-    private static final Logger LOG = Logger.getLogger(Room.class.getName());
 }

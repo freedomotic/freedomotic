@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class ReactionRepositoryImpl implements ReactionRepository {
 
@@ -57,10 +57,6 @@ public class ReactionRepositoryImpl implements ReactionRepository {
     private static final List<Reaction> list = new ArrayList<Reaction>(); //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
     private final DataUpgradeService dataUpgradeService;
 
-    /**
-     *
-     * @param dataUpgradeService
-     */
     @Inject
     public ReactionRepositoryImpl(DataUpgradeService dataUpgradeService) {
         this.dataUpgradeService = dataUpgradeService;
@@ -110,11 +106,11 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return file.isFile() && file.getName().endsWith(".xrea");
-            }
-        };
+                    @Override
+                    public boolean accept(File file) {
+                        return file.isFile() && file.getName().endsWith(".xrea");
+                    }
+                };
 
         files = folder.listFiles(objectFileFileter);
 
@@ -133,14 +129,14 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(".xrea")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+                    public boolean accept(File file) {
+                        if (file.isFile() && file.getName().endsWith(".xrea")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
 
         File[] files = folder.listFiles(objectFileFileter);
 
@@ -315,31 +311,17 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         return false;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public List<Reaction> findAll() {
         return Collections.unmodifiableList(list);
     }
 
-    /**
-     *
-     * @param name
-     * @return
-     */
     @Override
     public List<Reaction> findByName(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
     }
 
-    /**
-     *
-     * @param uuid
-     * @return
-     */
     @Override
     public Reaction findOne(String uuid) {
         for (Reaction r : list) {
@@ -350,11 +332,6 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         return null;
     }
 
-    /**
-     *
-     * @param item
-     * @return
-     */
     @Override
     public boolean create(Reaction item) {
         try {
@@ -365,11 +342,6 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         }
     }
 
-    /**
-     *
-     * @param item
-     * @return
-     */
     @Override
     public boolean delete(Reaction item) {
         try {
@@ -380,22 +352,11 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         }
     }
 
-    /**
-     *
-     * @param uuid
-     * @return
-     */
     @Override
     public boolean delete(String uuid) {
         return delete(findOne(uuid));
     }
 
-    /**
-     *
-     * @param uuid
-     * @param data
-     * @return
-     */
     @Override
     public Reaction modify(String uuid, Reaction data) {
         try {
@@ -409,11 +370,6 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         }
     }
 
-    /**
-     *
-     * @param rea
-     * @return
-     */
     @Override
     public Reaction copy(Reaction rea) {
         try {
@@ -427,9 +383,6 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         }
     }
 
-    /**
-     *
-     */
     @Override
     public void deleteAll() {
         try {

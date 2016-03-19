@@ -26,8 +26,8 @@ import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
@@ -38,7 +38,7 @@ import javax.jms.ObjectMessage;
  */
 public abstract class Protocol extends Plugin {
 
-    private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Protocol.class.getName());
     private int pollingWaitTime = -1;
     private Protocol.SensorThread sensorThread;
     private volatile Destination lastDestination;
@@ -88,9 +88,6 @@ public abstract class Protocol extends Plugin {
         listener.consumeEventFrom(listento);
     }
 
-    /**
-     *
-     */
     public void removeEventListeners() {
         listener.destroy();
     }
@@ -105,11 +102,6 @@ public abstract class Protocol extends Plugin {
         }
     }
 
-    /**
-     *
-     * @param command
-     * @return
-     */
     public Command notifyCommand(Command command) {
         return getBusService().send(command);
     }
@@ -121,7 +113,7 @@ public abstract class Protocol extends Plugin {
      */
     public void notifyEvent(EventTemplate ev, String destination) {
         if (isAllowedToSend()) {
-            LOG.fine("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":" + ev.getPayload().toString());
+            LOG.debug("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":" + ev.getPayload().toString());
             getBusService().send(ev, destination);
         }
     }
@@ -133,7 +125,7 @@ public abstract class Protocol extends Plugin {
     public void start() {
         super.start();
         if (isAllowedToStart()) {
-            LOG.log(Level.INFO, "Starting plugin {0}", getName());
+            LOG.info("Starting plugin {0}", getName());
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
@@ -154,7 +146,7 @@ public abstract class Protocol extends Plugin {
                     } catch (Exception e) {
                         setStatus(PluginStatus.FAILED);
                         setDescription("Plugin start FAILED. see logs for details.");
-                        LOG.log(Level.SEVERE, "Plugin " + getName() + " start FAILED: " + e.getLocalizedMessage(), e);
+                        LOG.error("Plugin " + getName() + " start FAILED: " + e.getLocalizedMessage(), e);
                     }
 
                 }
@@ -170,7 +162,7 @@ public abstract class Protocol extends Plugin {
     public void stop() {
         super.stop();
         if (isRunning()) {
-            LOG.log(Level.INFO, "Stopping plugin {0}", getName());
+            LOG.info("Stopping plugin {0}", getName());
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
@@ -188,7 +180,7 @@ public abstract class Protocol extends Plugin {
                     } catch (Exception e) {
                         setStatus(PluginStatus.FAILED);
                         setDescription("Plugin stop FAILED. see logs for details.");
-                        LOG.log(Level.SEVERE, "Error stopping " + getName() + ": " + e.getLocalizedMessage(), e);
+                        LOG.error("Error stopping " + getName() + ": " + e.getLocalizedMessage(), e);
                     }
                 }
             };
@@ -230,7 +222,7 @@ public abstract class Protocol extends Plugin {
 
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
-                LOG.log(Level.CONFIG, "{0} receives command {1} with parametes '{''{'{2}'}''}'", new Object[]{this.getName(), command.getName(), command.getProperties()});
+                LOG.info("{0} receives command {1} with parametes '{''{'{2}'}''}'", new Object[]{this.getName(), command.getName(), command.getProperties()});
 
                 Protocol.ActuatorOnCommandRunnable action;
                 lastDestination = message.getJMSReplyTo();
@@ -248,7 +240,7 @@ public abstract class Protocol extends Plugin {
                 }
             }
         } catch (JMSException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.error(ex.getLocalizedMessage());
 
         }
     }
@@ -281,9 +273,6 @@ public abstract class Protocol extends Plugin {
 
     }
 
-    /**
-     *
-     */
     public class ActuatorOnEventRunnable implements Runnable {
 
         private final EventTemplate event;
@@ -298,14 +287,11 @@ public abstract class Protocol extends Plugin {
                 // a command is supposed executed if the plugin doesen't say the contrary
                 onEvent(event);
             } catch (Exception ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.error(ex.getLocalizedMessage());
             }
         }
     }
 
-    /**
-     *
-     */
     public class ActuatorOnCommandRunnable implements Runnable {
 
         private final Command command;
@@ -325,7 +311,7 @@ public abstract class Protocol extends Plugin {
                 command.setExecuted(true);
                 onCommand(command);
             } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.error(ex.getLocalizedMessage());
                 command.setExecuted(false);
             } catch (UnableToExecuteException ex) {
                 command.setExecuted(false);

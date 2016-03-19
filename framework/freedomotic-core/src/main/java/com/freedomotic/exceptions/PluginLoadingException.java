@@ -21,15 +21,15 @@ package com.freedomotic.exceptions;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class PluginLoadingException extends FreedomoticException {
 
     String pluginName;
 
     /**
-     * Creates a new instance of
-     * <code>PluginLoadingException</code> without detail message.
+     * Creates a new instance of <code>PluginLoadingException</code> without
+     * detail message.
      */
     public PluginLoadingException() {
     }
@@ -51,8 +51,8 @@ public class PluginLoadingException extends FreedomoticException {
     }
 
     /**
-     * Constructs an instance of
-     * <code>PluginLoadingException</code> with the specified detail message.
+     * Constructs an instance of <code>PluginLoadingException</code> with the
+     * specified detail message.
      *
      * @param msg the detail message.
      */
@@ -68,7 +68,7 @@ public class PluginLoadingException extends FreedomoticException {
     public PluginLoadingException(String message, Throwable cause) {
         super(message, cause);
     }
-    
+
     /**
      *
      * @param message

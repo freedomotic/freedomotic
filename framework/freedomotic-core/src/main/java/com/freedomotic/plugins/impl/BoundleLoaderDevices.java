@@ -26,17 +26,17 @@ import com.freedomotic.util.JarFilter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 class BoundleLoaderDevices implements BoundleLoader {
 
-    private static final Logger LOG = Logger.getLogger(BoundleLoaderDevices.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BoundleLoaderDevices.class.getName());
     private File path;
-    
 
     BoundleLoaderDevices(File path) {
         this.path = path;

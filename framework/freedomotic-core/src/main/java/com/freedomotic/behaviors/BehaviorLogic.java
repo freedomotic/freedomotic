@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -24,7 +23,7 @@ import com.freedomotic.model.ds.Config;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public interface BehaviorLogic {
 

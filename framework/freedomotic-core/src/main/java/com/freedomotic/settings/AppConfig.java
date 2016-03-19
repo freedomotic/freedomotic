@@ -1,6 +1,7 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team
+ * http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -28,7 +29,7 @@ import java.util.Set;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public interface AppConfig extends Serializable {
 

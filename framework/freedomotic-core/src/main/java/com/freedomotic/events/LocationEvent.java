@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -22,18 +21,19 @@ package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.model.geometry.FreedomPoint;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A person is detected in a position with coordinates x,y of the environment.
  * This event is thrown on the first time a person is detected, after a
  * detection, if the person moves, a {@link PersonMoving} event is thrown.
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public final class LocationEvent extends EventTemplate {
 
-    private static final Logger LOG = Logger.getLogger(LocationEvent.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(LocationEvent.class.getName());
     private final String uuid;
     private final int x;
     private final int y;
@@ -53,7 +53,6 @@ public final class LocationEvent extends EventTemplate {
         generateEventPayload();
     }
 
-    
     /**
      *
      */
@@ -89,8 +88,8 @@ public final class LocationEvent extends EventTemplate {
     public int getY() {
         return y;
     }
-    
-        /**
+
+    /**
      *
      * @return
      */

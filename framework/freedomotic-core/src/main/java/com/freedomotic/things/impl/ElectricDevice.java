@@ -17,10 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.freedomotic.things.impl;
 
 import com.freedomotic.events.ObjectReceiveClick;
@@ -32,48 +28,23 @@ import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Trigger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class ElectricDevice extends EnvObjectLogic {
 
-    /**
-     *
-     */
+    private static final Logger LOG = LoggerFactory.getLogger(ElectricDevice.class.getName());
     protected BooleanBehaviorLogic powered;
-
-    /**
-     *
-     */
     protected RangedIntBehaviorLogic consumption;
-
-    /**
-     *
-     */
     protected final static String BEHAVIOR_POWERED = "powered";
-
-    /**
-     *
-     */
     protected final static String BEHAVIOR_POWER_CONSUMPTION = "power_consumption";
-
-    /**
-     *
-     */
     protected final static String ACTION_TURN_ON = "turn on";
-
-    /**
-     *
-     */
     protected final static String ACTION_TURN_OFF = "turn off";
 
-    /**
-     *
-     */
     public ElectricDevice() {
     }
 
@@ -145,7 +116,7 @@ public class ElectricDevice extends EnvObjectLogic {
     public void setConsumptionValue(int value, Config params, boolean fireCommand) {
         if (fireCommand) {
             // Action on the hardware is required
-            LOG.log(Level.WARNING, "Power consumption behavior of thing ''{0}''"
+            LOG.warn("Power consumption behavior of thing ''{0}''"
                     + " is supposed to be a read only value. "
                     + "No command is executed!", this.getPojo().getName());
         }
@@ -185,7 +156,7 @@ public class ElectricDevice extends EnvObjectLogic {
     }
 
     private void setOn() {
-        LOG.log(Level.CONFIG, "Setting behavior ''powered'' of object ''{0}'' to true", getPojo().getName());
+        LOG.info("Setting behavior ''powered'' of object ''{0}'' to true", getPojo().getName());
 
         //if not already on
         if (powered.getValue() != true) {
@@ -198,7 +169,7 @@ public class ElectricDevice extends EnvObjectLogic {
     }
 
     private void setOff() {
-        LOG.log(Level.CONFIG, "Setting behavior ''powered'' of object ''{0}'' to false", getPojo().getName());
+        LOG.info("Setting behavior ''powered'' of object ''{0}'' to false", getPojo().getName());
 
         //if not already off
         if (powered.getValue() != false) {
@@ -296,5 +267,4 @@ public class ElectricDevice extends EnvObjectLogic {
         triggerRepository.create(turnsOn);
         triggerRepository.create(turnsOff);
     }
-    private static final Logger LOG = Logger.getLogger(ElectricDevice.class.getName());
 }

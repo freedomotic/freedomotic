@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -24,7 +23,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Title: Graph Description: Prova di implementazione di un struttura dati per
@@ -48,6 +48,7 @@ import java.util.logging.Logger;
  */
 class Graph {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Graph.class.getName());
     HashMap nodi;
     int nArchi;
 
@@ -244,5 +245,4 @@ class Graph {
 
         return out.toString();
     }
-    private static final Logger LOG = Logger.getLogger(Graph.class.getName());
 }

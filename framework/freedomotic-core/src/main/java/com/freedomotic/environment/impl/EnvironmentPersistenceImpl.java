@@ -40,16 +40,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 class EnvironmentPersistenceImpl implements EnvironmentPersistence {
 
-    private static final Logger LOG = Logger.getLogger(EnvironmentPersistenceImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(EnvironmentPersistenceImpl.class.getName());
 
     private final File directory;
     private boolean savedAsNewEnvironment;
@@ -197,9 +197,9 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
         for (Zone zone : env.getZones()) {
             zone.setObjects(null);
         }
-        LOG.log(Level.CONFIG, "Serializing environment to {0}", file);
+        LOG.info("Serializing environment to {0}", file);
         FreedomXStream.toXML(env, file);
-        LOG.log(Level.INFO, "Application environment {0} succesfully serialized", env.getName());
+        LOG.info("Application environment {0} succesfully serialized", env.getName());
     }
 
 }

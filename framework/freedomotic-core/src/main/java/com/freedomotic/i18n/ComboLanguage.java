@@ -23,7 +23,7 @@ import java.util.Locale;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 public class ComboLanguage implements Comparable {
 
@@ -31,12 +31,6 @@ public class ComboLanguage implements Comparable {
     private String value;
     private Locale loc;
 
-    /**
-     *
-     * @param descr
-     * @param value
-     * @param loc
-     */
     public ComboLanguage(String descr, String value, Locale loc) {
         this.descr = descr;
         this.value = value;

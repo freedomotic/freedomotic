@@ -32,16 +32,16 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Expression autor is undefined on line 12, column 14 in
- * Templates/Classes/Class.java.
+ * @author Enrico Nicoletti
  */
 class AppConfigImpl implements AppConfig {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AppConfigImpl.class.getName());
     private static final long serialVersionUID = 1380975976029008480L;
     private final Properties properties = new Properties();
 
@@ -146,7 +146,7 @@ class AppConfigImpl implements AppConfig {
             try {
                 list.add(new URL(token));
             } catch (MalformedURLException ex) {
-                Logger.getLogger(com.freedomotic.model.ds.Config.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.error(ex.getMessage());
             }
         }
 
@@ -165,7 +165,7 @@ class AppConfigImpl implements AppConfig {
             try {
                 list.add(token);
             } catch (Exception ex) {
-                Logger.getLogger(com.freedomotic.model.ds.Config.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.error(ex.getMessage());
             }
         }
 
@@ -198,7 +198,7 @@ class AppConfigImpl implements AppConfig {
         try {
             properties.load(new FileInputStream(Info.PATHS.PATH_CONFIG_FOLDER + "/config.xml"));
         } catch (IOException ex) {
-            Logger.getLogger(AppConfigImpl.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
         return this;
     }
@@ -208,7 +208,7 @@ class AppConfigImpl implements AppConfig {
         try {
             properties.store(new FileOutputStream(Info.PATHS.PATH_CONFIG_FOLDER + "/config.xml"), null);
         } catch (IOException ex) {
-            Logger.getLogger(AppConfigImpl.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
     }
 }

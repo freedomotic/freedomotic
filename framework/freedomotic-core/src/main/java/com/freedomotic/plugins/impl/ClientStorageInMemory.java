@@ -38,14 +38,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A storage of added plugins and connected clients
  */
 class ClientStorageInMemory implements ClientStorage {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ClientStorageInMemory.class.getName());
     private static final List<Client> clients = new ArrayList<Client>();
     //It works because this class is created by guice and the injector is automatically available in thi case
     @Inject
@@ -74,7 +75,7 @@ class ClientStorageInMemory implements ClientStorage {
                                 "Plugin",
                                 "Not compatible with this framework version v" + Info.getVersion());
                 clients.add(client);
-                LOG.log(Level.WARNING, "Plugin {0} is not compatible with this framework version v{1}",
+                LOG.warn("Plugin {0} is not compatible with this framework version v{1}",
                         new Object[]{c.getName(), Info.getVersion()});
             }
 
@@ -82,15 +83,16 @@ class ClientStorageInMemory implements ClientStorage {
                     = new PluginHasChanged(ClientStorageInMemory.class,
                             c.getName(), PluginActions.ENQUEUE);
             busService.send(event);
-            LOG.log(Level.CONFIG,
+            LOG.info(
                     "Extension ''{0}'' added to plugins list.",
                     c.getName());
         }
     }
 
     /**
-     * Unloads a plugin from memory and destroys all bus listeners associated
-     * to it.
+     * Unloads a plugin from memory and destroys all bus listeners associated to
+     * it.
+     *
      * @param c
      */
     @Override
@@ -375,5 +377,4 @@ class ClientStorageInMemory implements ClientStorage {
             return m1.getName().compareTo(m2.getName());
         }
     }
-    private static final Logger LOG = Logger.getLogger(ClientStorageInMemory.class.getName());
 }

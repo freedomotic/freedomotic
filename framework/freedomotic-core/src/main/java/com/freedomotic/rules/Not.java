@@ -21,33 +21,21 @@ package com.freedomotic.rules;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class Not extends UnaryExpression<Boolean> {
 
     private static final String OPERATOR = Statement.NOT;
 
-    /**
-     *
-     * @param argument
-     */
     public Not(Boolean argument) {
         super(argument);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public Boolean evaluate() {
         return !getArgument();
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getOperand() {
         return OPERATOR;

@@ -25,8 +25,8 @@ import com.freedomotic.app.Profiler;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.settings.AppConfig;
 import com.google.inject.Injector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -51,7 +51,7 @@ import org.apache.activemq.command.ActiveMQQueue;
  */
 final class BusServiceImpl extends LifeCycle implements BusService {
 
-    private static final Logger LOG = Logger.getLogger(BusServiceImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BusServiceImpl.class.getName());
 
     //private AppConfig config;
     private BusBroker brokerHolder;
@@ -223,11 +223,11 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             msg.setJMSDestination(destination);
             msg.setJMSCorrelationID(correlationID);
             msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
-            LOG.log(Level.CONFIG, "Sending reply to command ''{0}'' on {1}", new Object[]{command.getName(), msg.getJMSDestination()});
+            LOG.info("Sending reply to command ''{0}'' on {1}", new Object[]{command.getName(), msg.getJMSDestination()});
             getMessageProducer().send(destination, msg); //Always pass the destination, otherwise it complains
             Profiler.incrementSentReplies();
         } catch (JMSException jmse) {
-            LOG.severe(Freedomotic.getStackTraceInfo(jmse));
+            LOG.error(Freedomotic.getStackTraceInfo(jmse));
         }
     }
 
@@ -243,7 +243,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             throw new IllegalArgumentException("Cannot send command '" + command + "', the receiver channel is not specified");
         }
 
-        LOG.log(Level.INFO, "Sending command ''{0}'' to destination ''{1}'' with reply timeout {2}", new Object[]{command.getName(), command.getReceiver(), command.getReplyTimeout()});
+        LOG.info("Sending command ''{0}'' to destination ''{1}'' with reply timeout {2}", new Object[]{command.getName(), command.getReceiver(), command.getReplyTimeout()});
 
         try {
             ObjectMessage msg = createObjectMessage();
@@ -257,7 +257,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
                 return sendAndForget(command, currDestination, msg);
             }
         } catch (JMSException ex) {
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
             command.setExecuted(false);
             return command;
         }
@@ -298,7 +298,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         Profiler.incrementSentCommands();
 
         // the receive() call is blocking
-        LOG.log(Level.CONFIG, "Send and await reply to command ''{0}'' for {1}ms",
+        LOG.info("Send and await reply to command ''{0}'' for {1}ms",
                 new Object[]{command.getName(), command.getReplyTimeout()});
 
         Message jmsResponse = temporaryConsumer.receive(command.getReplyTimeout());
@@ -317,7 +317,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             // TODO unchecked cast!
             Command reply = (Command) objMessage.getObject();
 
-            LOG.config("Reply to command '"
+            LOG.info("Reply to command '"
                     + command.getName() + "' is received. Result property inside this command is "
                     + reply.getProperty("result")
                     + ". It is used to pass data to the next command, can be empty or even null.");
@@ -328,7 +328,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
 
         } else {
 
-            LOG.config("Command '" + command.getName()
+            LOG.info("Command '" + command.getName()
                     + "' timed out after " + command.getReplyTimeout()
                     + "ms");
 
@@ -374,7 +374,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
 
         } catch (JMSException ex) {
 
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
     }
 }

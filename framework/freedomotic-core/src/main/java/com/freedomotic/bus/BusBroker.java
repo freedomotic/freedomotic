@@ -20,8 +20,9 @@
 package com.freedomotic.bus;
 
 import com.freedomotic.settings.Info;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.activemq.broker.BrokerService;
+import org.slf4j.Logger;
 
 /**
  * Bus broker implementation holder.
@@ -33,7 +34,7 @@ import org.apache.activemq.broker.BrokerService;
  */
 class BusBroker extends LifeCycle {
 
-    private static final Logger LOG = Logger.getLogger(BusBroker.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BusBroker.class.getName());
 
     private BrokerService broker; // the broker itself.
 
@@ -43,7 +44,6 @@ class BusBroker extends LifeCycle {
         // broker.addConnector(Info.MESSAGING.BROKER_STOMP);
         // websocket connector for javascript apps
         // broker.addConnector(Info.MESSAGING.BROKER_WEBSOCKET);
-
         // broker setup
         broker.setPersistent(false); // do not save messages on disk
         broker.setUseJmx(false);

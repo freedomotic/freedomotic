@@ -21,26 +21,17 @@ package com.freedomotic.rules;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class Equals extends BinaryExpression {
 
     private static final String OPERATOR = Statement.EQUALS;
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getOperand() {
         return OPERATOR;
     }
 
-    /**
-     *
-     * @param left
-     * @param right
-     */
     public Equals(String left, String right) {
         super(left, right);
     }
@@ -51,7 +42,7 @@ public class Equals extends BinaryExpression {
      */
     @Override
     public Boolean evaluate() {
-        if (getLeft().equalsIgnoreCase(getRight()) 
+        if (getLeft().equalsIgnoreCase(getRight())
                 || (getRight().equals(Statement.ANY))) {
             return true;
         }

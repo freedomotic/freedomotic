@@ -24,13 +24,10 @@ import com.google.inject.Singleton;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class InjectorApi extends AbstractModule {
 
-    /**
-     *
-     */
     @Override
     protected void configure() {
 

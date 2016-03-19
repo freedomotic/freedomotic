@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -23,7 +22,8 @@ package com.freedomotic.behaviors;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.ListBehavior;
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This behavior accepts a string which is an element of the list or "next" or
@@ -31,11 +31,12 @@ import java.util.logging.Logger;
  * is valid (new selection is a value in the list) and if is not the current
  * selected value.
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class ListBehaviorLogic
         implements BehaviorLogic {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ListBehaviorLogic.class.getName());
     private ListBehavior data;
     private Listener listener;
     private boolean changed;
@@ -210,5 +211,4 @@ public class ListBehaviorLogic
     public void setChanged(boolean value) {
         changed = value;
     }
-    private static final Logger LOG = Logger.getLogger(ListBehaviorLogic.class.getName());
 }

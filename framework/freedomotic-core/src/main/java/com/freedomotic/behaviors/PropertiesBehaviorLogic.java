@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -22,15 +21,17 @@ package com.freedomotic.behaviors;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.PropertiesBehavior;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class PropertiesBehaviorLogic
         implements BehaviorLogic {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PropertiesBehaviorLogic.class.getName());
     private PropertiesBehavior data;
     private PropertiesBehaviorLogic.Listener listener;
     private boolean changed;
@@ -167,5 +168,4 @@ public class PropertiesBehaviorLogic
     public void setChanged(boolean value) {
         changed = value;
     }
-    private static final Logger LOG = Logger.getLogger(PropertiesBehaviorLogic.class.getName());
 }

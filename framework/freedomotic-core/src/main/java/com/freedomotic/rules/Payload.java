@@ -17,10 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.freedomotic.rules;
 
 import java.io.Serializable;
@@ -35,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -200,7 +196,7 @@ public final class Payload implements Serializable {
     public List<Statement> getStatements(String attribute) {
         ArrayList<Statement> statements = new ArrayList<Statement>();
 
-        synchronized(payload) {
+        synchronized (payload) {
             for (Statement i : payload) {
                 if (i.getAttribute().equalsIgnoreCase(attribute)) {
                     statements.add(i);
@@ -210,11 +206,7 @@ public final class Payload implements Serializable {
 
         return statements;
     }
-    
-    /**
-     *
-     * @return
-     */
+
     public List<Statement> getStatements() {
         return payload;
     }

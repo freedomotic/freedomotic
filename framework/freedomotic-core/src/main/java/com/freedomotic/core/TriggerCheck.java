@@ -17,10 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.freedomotic.core;
 
 import com.freedomotic.api.EventTemplate;
@@ -41,15 +37,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class TriggerCheck {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TriggerCheck.class.getName());
     private static final ExecutorService AUTOMATION_EXECUTOR = Executors.newCachedThreadPool();
     // Dependencies
     private final Autodiscovery autodiscovery;
@@ -90,7 +87,7 @@ public class TriggerCheck {
                 Trigger resolved = resolveTrigger(event, trigger);
 
                 if (resolved.isConsistentWith(event)) {
-                    LOG.log(Level.FINE, "[CONSISTENT] hardware level trigger ''{0}'' {1}''\nconsistent with received event ''{2}'' {3}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
+                    LOG.debug("[CONSISTENT] hardware level trigger ''{0}'' {1}''\nconsistent with received event ''{2}'' {3}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
                     applySensorNotification(resolved, event);
                     return true;
                 }
@@ -98,7 +95,7 @@ public class TriggerCheck {
                 if (trigger.canFire()) {
                     Trigger resolved = resolveTrigger(event, trigger);
                     if (resolved.isConsistentWith(event)) {
-                        LOG.log(Level.FINE, "[CONSISTENT] registred trigger ''{0}'' {1}''\nconsistent with received event ''{2}'' {3}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
+                        LOG.debug("[CONSISTENT] registered trigger ''{0}'' {1}''\nconsistent with received event ''{2}'' {3}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
                         executeTriggeredAutomations(resolved, event);
                         return true;
                     }
@@ -106,11 +103,11 @@ public class TriggerCheck {
             }
 
             //if we are here the trigger is not consistent
-            LOG.log(Level.FINE, "[NOT CONSISTENT] registred trigger ''{0}'' {1}''\nnot consistent with received event ''{2}'' {3}", new Object[]{trigger.getName(), trigger.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
+            LOG.debug("[NOT CONSISTENT] registered trigger ''{0}'' {1}''\nnot consistent with received event ''{2}'' {3}", new Object[]{trigger.getName(), trigger.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
 
             return false;
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Error while performing trigger check", e);
+            LOG.error("Error while performing trigger check", e);
             return false;
         }
     }
@@ -139,7 +136,7 @@ public class TriggerCheck {
             affectedObjects = thingsRepository.findByAddress(protocol, address);
 
             if (affectedObjects.isEmpty()) { //there isn't an object with this protocol and address
-                LOG.log(Level.WARNING, "Found a candidate for things autodiscovery: thing ''{0}'' of type ''{1}''", new Object[]{name, clazz});
+                LOG.warn("Found a candidate for things autodiscovery: thing ''{0}'' of type ''{1}''", new Object[]{name, clazz});
                 if ((clazz != null) && !clazz.isEmpty()) {
                     EnvObjectLogic joined;
                     boolean allowClones;
@@ -152,7 +149,7 @@ public class TriggerCheck {
                         joined = autodiscovery.join(clazz, name, protocol, address, allowClones);
                         affectedObjects.add(joined);
                     } catch (RepositoryException ex) {
-                        Logger.getLogger(TriggerCheck.class.getName()).log(Level.SEVERE, null, ex);
+                        LOG.error(ex.getMessage());
                     }
                 }
             }
@@ -169,14 +166,14 @@ public class TriggerCheck {
                 done = true;
 
                 long elapsedTime = System.currentTimeMillis() - event.getCreation();
-                LOG.log(Level.INFO,
+                LOG.info(
                         "Sensor notification ''{0}'' applied to object ''{1}'' in {2}ms.",
                         new Object[]{resolved.getName(), object.getPojo().getName(), elapsedTime});
             }
         }
 
         if (!done) {
-            LOG.log(Level.WARNING, "Hardware trigger {0} is not associated to any object.", resolved.getName());
+            LOG.warn("Hardware trigger {0} is not associated to any object.", resolved.getName());
         }
         resolved.getPayload().clear();
         event.getPayload().clear();
@@ -187,24 +184,24 @@ public class TriggerCheck {
 
             @Override
             public void run() {
-                
+
                 //Searching for reactions using this trigger
                 boolean found = false;
 
                 for (Reaction reaction : reactionRepository.findAll()) {
-                    
+
                     Trigger reactionTrigger = reaction.getTrigger();
 
                     //found a related reaction. This must be executed
                     if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {
                         if (!checkAdditionalConditions(reaction)) {
-                            LOG.log(Level.INFO,
+                            LOG.info(
                                     "Additional conditions test failed in reaction {0}", reaction.toString());
                             return;
                         }
                         reactionTrigger.setExecuted();
                         found = true;
-                        LOG.log(Level.FINE, "Try to execute reaction {0}", reaction.toString());
+                        LOG.debug("Try to execute reaction {0}", reaction.toString());
 
                         try {
                             //executes the commands in sequence (only the first sequence is used) 
@@ -243,7 +240,7 @@ public class TriggerCheck {
 
                                     if (reply == null) {
                                         command.setExecuted(false);
-                                        LOG.log(Level.WARNING,
+                                        LOG.warn(
                                                 "Unreceived reply within given time ({0}ms) for command {1}",
                                                 new Object[]{command.getReplyTimeout(), command.getName()});
                                         notifyMessage("Unreceived reply within given time for command " + command.getName());
@@ -251,10 +248,10 @@ public class TriggerCheck {
                                         if (reply.isExecuted()) {
                                             //the reply is executed so mark the origial command as executed as well
                                             command.setExecuted(true);
-                                            LOG.log(Level.FINE, "Executed succesfully {0}", command.getName());
+                                            LOG.debug("Executed succesfully {0}", command.getName());
                                         } else {
                                             command.setExecuted(false);
-                                            LOG.log(Level.WARNING, "Unable to execute command {0}. Skipping the others", command.getName());
+                                            LOG.warn("Unable to execute command {0}. Skipping the others", command.getName());
                                             notifyMessage("Unable to execute command " + command.getName());
                                             // skip the other commands
                                             return;
@@ -263,7 +260,7 @@ public class TriggerCheck {
                                 }
                             }
                         } catch (Exception e) {
-                            LOG.log(Level.SEVERE, "Exception while merging event parameters into reaction.", e);
+                            LOG.error("Exception while merging event parameters into reaction.", e);
                             return;
                         }
 
@@ -278,7 +275,7 @@ public class TriggerCheck {
                 }
 
                 if (!found) {
-                    LOG.log(Level.CONFIG, "No valid reaction bound to trigger ''{0}''", trigger.getName());
+                    LOG.info("No valid reaction bound to trigger ''{0}''", trigger.getName());
                 }
                 trigger.getPayload().clear();
                 event.getPayload().clear();
@@ -313,7 +310,7 @@ public class TriggerCheck {
                     //System.out.println("DEBUG: result or: " + result + "(" + eval +")");
                 }
             } else {
-                LOG.log(Level.WARNING, "Cannot test condition on unexistent object: {0}", condition.getTarget());
+                LOG.warn("Cannot test condition on unexistent object: {0}", condition.getTarget());
                 return false;
             }
         }
@@ -325,5 +322,4 @@ public class TriggerCheck {
         event.setType("callout"); //display as callout on frontends
         busService.send(event);
     }
-    private static final Logger LOG = Logger.getLogger(TriggerCheck.class.getName());
 }
