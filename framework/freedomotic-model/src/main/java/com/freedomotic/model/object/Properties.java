@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Gabriel Pulido de Torres
+ * @author gpt
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)

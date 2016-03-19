@@ -54,9 +54,6 @@ public class Zone
         return this.name;
     }
 
-    /**
-     *
-     */
     public Zone() {
         this.uuid = UUID.randomUUID().toString();
     }

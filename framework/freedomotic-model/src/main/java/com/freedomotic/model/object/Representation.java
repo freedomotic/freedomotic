@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Enrico Nicoletti
+ * @author Enrico
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)

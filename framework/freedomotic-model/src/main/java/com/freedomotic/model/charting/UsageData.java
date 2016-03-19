@@ -194,5 +194,4 @@ public class UsageData implements Cloneable {
         this.uuid = val;
     }
 
-
 }

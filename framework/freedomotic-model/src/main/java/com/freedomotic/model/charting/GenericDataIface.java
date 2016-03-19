@@ -26,7 +26,7 @@ import java.io.Serializable;
  * @author Matteo Mazzoni
  */
 public interface GenericDataIface extends Serializable {
-    
+
     /**
      *
      * @return
@@ -38,5 +38,5 @@ public interface GenericDataIface extends Serializable {
      * @return
      */
     public String toJSON();
-    
+
 }

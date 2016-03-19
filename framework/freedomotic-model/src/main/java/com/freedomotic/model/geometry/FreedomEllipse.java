@@ -62,9 +62,6 @@ public class FreedomEllipse
         this.yRadius = yRadius;
     }
 
-    /**
-     *
-     */
     public FreedomEllipse() {
         this.center = new FreedomPoint(0, 0);
         this.xRadius = 0;
