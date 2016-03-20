@@ -93,6 +93,30 @@
             </roles>
             <timezone>0</timezone>
         </developer>
+        <developer>
+            <id>matteo</id>
+            <name>Matteo Mazzoni</name>
+            <email>matteo@freedomotic.com</email>
+            <url>http://www.freedomotic.com</url>
+            <organization>Freedomotic</organization>
+            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <id>mauro</id>
+            <name>Mauro Cicolella</name>
+            <email>mauro@freedomotic.com</email>
+            <url>http://www.freedomotic.com</url>
+            <organization>Freedomotic</organization>
+            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
     </developers>
     
     <properties>
