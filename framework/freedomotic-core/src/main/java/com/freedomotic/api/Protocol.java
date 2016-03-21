@@ -125,7 +125,7 @@ public abstract class Protocol extends Plugin {
     public void start() {
         super.start();
         if (isAllowedToStart()) {
-            LOG.info("Starting plugin {0}", getName());
+            LOG.info("Starting plugin {}", getName());
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
@@ -162,7 +162,7 @@ public abstract class Protocol extends Plugin {
     public void stop() {
         super.stop();
         if (isRunning()) {
-            LOG.info("Stopping plugin {0}", getName());
+            LOG.info("Stopping plugin {}", getName());
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
@@ -222,7 +222,7 @@ public abstract class Protocol extends Plugin {
 
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
-                LOG.info("{0} receives command {1} with parametes '{''{'{2}'}''}'", new Object[]{this.getName(), command.getName(), command.getProperties()});
+                LOG.info("{} receives command {} with parametes '{''{'{}'}''}'", new Object[]{this.getName(), command.getName(), command.getProperties()});
 
                 Protocol.ActuatorOnCommandRunnable action;
                 lastDestination = message.getJMSReplyTo();

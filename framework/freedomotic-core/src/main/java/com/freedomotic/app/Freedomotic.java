@@ -507,11 +507,11 @@ public class Freedomotic implements BusConsumer {
             //        saveDir = new File(folder + "/data/obj");
             //        thingsRepository.saveAll(saveDir);
             //    } catch (RepositoryException ex) {
-            //        LOG.log(Level.SEVERE, "Cannot save objects in {0}", saveDir.getAbsolutePath());
+            //        LOG.log(Level.SEVERE, "Cannot save objects in {}", saveDir.getAbsolutePath());
             //    }
             // }
         } catch (RepositoryException ex) {
-            LOG.error("Cannot save environment to folder {0} due to {1}", new Object[]{folder, ex.getCause()});
+            LOG.error("Cannot save environment to folder {} due to {}", new Object[]{folder, ex.getCause()});
         }
 
         System.exit(0);

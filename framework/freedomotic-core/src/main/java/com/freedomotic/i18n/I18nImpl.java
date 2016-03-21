@@ -126,11 +126,11 @@ class I18nImpl implements I18n {
                 String baseName = packageName.split("\\.")[lastSize - 1];
 
                 messages.put(packageName + ":" + loc, ResourceBundle.getBundle(baseName, currentLocale, loader, RB_Control));
-                LOG.info("Adding resourceBundle: package={0}, locale={1} pointing at {2}", new Object[]{packageName, loc, folder.getAbsolutePath()});
+                LOG.info("Adding resourceBundle: package={}, locale={} pointing at {}", new Object[]{packageName, loc, folder.getAbsolutePath()});
             } catch (MalformedURLException ex) {
-                LOG.error("Cannot find folder while loading resourceBundle for package{0}", packageName);
+                LOG.error("Cannot find folder while loading resourceBundle for package{}", packageName);
             } catch (MissingResourceException ex) {
-                LOG.error("Cannot find resourceBundle files inside folder {1} for package{0}", new Object[]{packageName, folder.getAbsolutePath()});
+                LOG.error("Cannot find resourceBundle files inside folder {} for package{}", new Object[]{packageName, folder.getAbsolutePath()});
             }
         }
 
@@ -154,7 +154,7 @@ class I18nImpl implements I18n {
                 }
 
             } catch (MissingResourceException ex) {
-                LOG.error("Cannot find resourceBundle files inside folder {0} for package{1}", new Object[]{folder.getAbsolutePath(), packageName});
+                LOG.error("Cannot find resourceBundle files inside folder {} for package{}", new Object[]{folder.getAbsolutePath(), packageName});
             }
         }
         return null;
@@ -253,7 +253,7 @@ class I18nImpl implements I18n {
         File[] files = root.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.matches("^" + bundlename + "(_\\w{2}(_\\w{2})?)?\\.properties$");
+                return name.matches("^" + bundlename + "(_\\w{}(_\\w{})?)?\\.properties$");
             }
         });
 

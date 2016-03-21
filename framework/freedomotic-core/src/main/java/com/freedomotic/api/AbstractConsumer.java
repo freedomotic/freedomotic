@@ -75,7 +75,7 @@ public abstract class AbstractConsumer implements BusConsumer {
 
             if (jmsObject instanceof Command) {
                 final Command command = (Command) jmsObject;
-                LOG.info("{0} receives command {1} with parametes '{''{'{2}'}''}'",
+                LOG.info("{} receives command {} with parametes '{''{'{}'}''}'",
                         new Object[]{
                             this.getClass().getCanonicalName(),
                             command.getName(),
@@ -138,7 +138,7 @@ public abstract class AbstractConsumer implements BusConsumer {
                 command.setExecuted(false);
             } catch (UnableToExecuteException ex) {
                 command.setExecuted(false);
-                LOG.info("{0} failed to execute command {1}: {2}", new Object[]{getName(), command.getName(), ex.getMessage()});
+                LOG.info("{} failed to execute command {}: {}", new Object[]{getName(), command.getName(), ex.getMessage()});
             }
 
             // automatic-reply-to-command is used when the plugin executes the command in a

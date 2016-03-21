@@ -223,7 +223,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             msg.setJMSDestination(destination);
             msg.setJMSCorrelationID(correlationID);
             msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
-            LOG.info("Sending reply to command ''{0}'' on {1}", new Object[]{command.getName(), msg.getJMSDestination()});
+            LOG.info("Sending reply to command ''{}'' on {}", new Object[]{command.getName(), msg.getJMSDestination()});
             getMessageProducer().send(destination, msg); //Always pass the destination, otherwise it complains
             Profiler.incrementSentReplies();
         } catch (JMSException jmse) {
@@ -243,7 +243,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             throw new IllegalArgumentException("Cannot send command '" + command + "', the receiver channel is not specified");
         }
 
-        LOG.info("Sending command ''{0}'' to destination ''{1}'' with reply timeout {2}", new Object[]{command.getName(), command.getReceiver(), command.getReplyTimeout()});
+        LOG.info("Sending command ''{}'' to destination ''{}'' with reply timeout {}", new Object[]{command.getName(), command.getReceiver(), command.getReplyTimeout()});
 
         try {
             ObjectMessage msg = createObjectMessage();
@@ -298,7 +298,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         Profiler.incrementSentCommands();
 
         // the receive() call is blocking
-        LOG.info("Send and await reply to command ''{0}'' for {1}ms",
+        LOG.info("Send and await reply to command ''{}'' for {}ms",
                 new Object[]{command.getName(), command.getReplyTimeout()});
 
         Message jmsResponse = temporaryConsumer.receive(command.getReplyTimeout());
@@ -355,7 +355,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
      */
     @Override
     public void send(final EventTemplate ev, final String to) {
-        //LOG.log(Level.INFO, "Sending event ''{0}'' to destination ''{1}''", new Object[]{ev.toString(), to});
+        //LOG.log(Level.INFO, "Sending event ''{}'' to destination ''{}''", new Object[]{ev.toString(), to});
         if (ev == null) {
             throw new IllegalArgumentException("Cannot send a null event");
         }

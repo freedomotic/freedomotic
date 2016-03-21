@@ -247,8 +247,8 @@ public final class BehaviorManager implements BusConsumer {
                 if (behavior != null) {
 
                     LOG.info(
-                            "User level command ''{0}'' request changing behavior {1} of object ''{2}'' "
-                            + "from value ''{3}'' to value ''{4}''",
+                            "User level command ''{}'' request changing behavior {} of object ''{}'' "
+                            + "from value ''{}'' to value ''{}''",
                             new Object[]{userLevelCommand.getName(), behavior.getName(), thing.getPojo().getName(), behavior.getValueAsString(), userLevelCommand.getProperties().getProperty("value")});
 
                     // true means a command must be fired
@@ -256,15 +256,15 @@ public final class BehaviorManager implements BusConsumer {
 
                 } else {
                     LOG.warn(
-                            "Behavior ''{0}'' is not a valid behavior for object ''{1}''. "
-                            + "Please check ''behavior'' parameter spelling in command {2}",
+                            "Behavior ''{}'' is not a valid behavior for object ''{}''. "
+                            + "Please check ''behavior'' parameter spelling in command {}",
                             new Object[]{behaviorName, thing.getPojo().getName(), userLevelCommand.getName()});
                 }
             }
         } else {
-            LOG.warn("Object ''{0}"
+            LOG.warn("Object ''{}"
                     + "'' don''t exist in this environment. "
-                    + "Please check ''object'' parameter spelling in command {1}",
+                    + "Please check ''object'' parameter spelling in command {}",
                     new Object[]{userLevelCommand.getProperty(Command.PROPERTY_OBJECT), userLevelCommand.getName()});
         }
 

@@ -208,13 +208,13 @@ class AuthImpl implements Auth {
         if (!pluginRealm.accountExists(plugin.getClassName())) {
             // check whether declared permissions correspond the ones requested at runtime
             if (plugin.getConfiguration().getStringProperty("permissions", getPluginDefaultPermission()).equals(permissions)) {
-                LOG.info("Setting permissions for plugin {0}: {1}", new Object[]{plugin.getClassName(), permissions});
+                LOG.info("Setting permissions for plugin {}: {}", new Object[]{plugin.getClassName(), permissions});
                 String plugrole = UUID.randomUUID().toString();
 
                 pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
                 pluginRealm.addRole(plugrole + "=" + permissions);
             } else {
-                LOG.error("Plugin {0} tried to request incorrect privileges", plugin.getName());
+                LOG.error("Plugin {} tried to request incorrect privileges", plugin.getName());
             }
         }
     }

@@ -232,7 +232,7 @@ public final class Resolver {
 
                     if (js.get(key) == null) {
                         LOG.error(
-                                "Script evaluation has returned a null value, maybe the key ''{0}'' is not evaluated properly.",
+                                "Script evaluation has returned a null value, maybe the key ''{}'' is not evaluated properly.",
                                 key);
                     }
 
@@ -325,7 +325,7 @@ public final class Resolver {
 
                     if (js.get(key) == null) {
                         LOG.error(
-                                "Script evaluation in trigger ''{0}'' has returned a null value, maybe the key ''{1}'' is not evaluated properly.",
+                                "Script evaluation in trigger ''{}'' has returned a null value, maybe the key ''{}'' is not evaluated properly.",
                                 new Object[]{trigger.getName(), key});
                     }
 

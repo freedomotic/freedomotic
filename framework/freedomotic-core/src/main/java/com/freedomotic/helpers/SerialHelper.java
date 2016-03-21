@@ -73,7 +73,7 @@ public class SerialHelper {
                             LOG.warn(ex.getMessage());
                         }
                     }
-                    LOG.info("Received message ''{0}'' from serial port {1}", new Object[]{readBuffer.toString(), portName});
+                    LOG.info("Received message ''{}'' from serial port {}", new Object[]{readBuffer.toString(), portName});
                     sendReadData(consumer);
                 }
             }
@@ -89,7 +89,7 @@ public class SerialHelper {
      * @throws jssc.SerialPortException
      */
     public boolean write(String message) throws SerialPortException {
-        LOG.info("Writing {0} to serial port {1}", new Object[]{message, portName});
+        LOG.info("Writing {} to serial port {}", new Object[]{message, portName});
         return serialPort.writeString(message);
     }
 
@@ -101,7 +101,7 @@ public class SerialHelper {
      * @throws jssc.SerialPortException
      */
     public boolean write(byte[] bytes) throws SerialPortException {
-        LOG.info("Writing bytes '{0}' to serial port {1}", new Object[]{bytes.toString(), portName});
+        LOG.info("Writing bytes '{}' to serial port {}", new Object[]{bytes.toString(), portName});
         return serialPort.writeBytes(bytes);
     }
 

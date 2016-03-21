@@ -86,7 +86,7 @@ public class UserRealm extends SimpleAccountRealm {
     private boolean saveRoles(File file) throws IOException {
         SimpleRole[] ra = new SimpleRole[]{};
         ra = getRoles().values().toArray(ra);
-        LOG.info("Serializing roles to {0}", file);
+        LOG.info("Serializing roles to {}", file);
         FreedomXStream.toXML(ra, file);
         return true;
     }
@@ -104,7 +104,7 @@ public class UserRealm extends SimpleAccountRealm {
     private boolean saveUsers(File file) throws IOException {
         User[] ua = new User[]{};
         ua = getUsers().values().toArray(ua);
-        LOG.info("Serializing users to {0}", file);
+        LOG.info("Serializing users to {}", file);
         FreedomXStream.toXML(ua, file);
 
         return true;

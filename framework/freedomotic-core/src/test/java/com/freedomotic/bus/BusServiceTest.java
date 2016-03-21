@@ -121,7 +121,7 @@ public class BusServiceTest {
         command.setReceiver("unlistened.test.channel");
         command.setReplyTimeout(100); //wait reply for two seconds
         Command result = busService.send(command);
-        LOG.info("Reply timeout for command ''{0}'' is reached, executed={1}", new Object[]{result, result.isExecuted()});
+        LOG.info("Reply timeout for command ''{}'' is reached, executed={}", new Object[]{result, result.isExecuted()});
         assertEquals("Timeout reply command is the original command", result, command);
         assertFalse("When timeout is reached the original command is marked as not executed", result.isExecuted());
     }
@@ -158,7 +158,7 @@ public class BusServiceTest {
         command.setReceiver("wait.for.reply.here");
         command.setReplyTimeout(10000); //wait reply for ten seconds
         Command result = busService.send(command);
-        LOG.info("Received reply command is ''{0}'' executed={1}", new Object[]{result, result.isExecuted()});
+        LOG.info("Received reply command is ''{}'' executed={}", new Object[]{result, result.isExecuted()});
         //the reply should have the property addedd by the listener
         assertTrue("Command reply was received", result.getProperty("receiver-reply").equals("OK"));
     }

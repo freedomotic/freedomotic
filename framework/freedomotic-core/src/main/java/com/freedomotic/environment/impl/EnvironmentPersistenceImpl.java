@@ -197,9 +197,9 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
         for (Zone zone : env.getZones()) {
             zone.setObjects(null);
         }
-        LOG.info("Serializing environment to {0}", file);
+        LOG.info("Serializing environment to {}", file);
         FreedomXStream.toXML(env, file);
-        LOG.info("Application environment {0} succesfully serialized", env.getName());
+        LOG.info("Application environment {} succesfully serialized", env.getName());
     }
 
 }

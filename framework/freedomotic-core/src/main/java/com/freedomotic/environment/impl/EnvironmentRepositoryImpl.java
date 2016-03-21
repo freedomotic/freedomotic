@@ -177,7 +177,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             try {
                 thingsRepository.saveAll(findAll().get(0).getObjectFolder());
             } catch (RepositoryException ex) {
-                LOG.error("Cannot save objects in {0}", findAll().get(0).getObjectFolder().getAbsolutePath());
+                LOG.error("Cannot save objects in {}", findAll().get(0).getObjectFolder().getAbsolutePath());
             }
         }
 

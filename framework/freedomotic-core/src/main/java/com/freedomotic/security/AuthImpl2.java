@@ -116,7 +116,7 @@ class AuthImpl2 implements Auth {
 //        Subject currentUser = SecurityUtils.getSubject();
 //        currentUser.login(token);
 //        currentUser.getSession().setTimeout(-1);
-//        LOG.log(Level.INFO, "Account ''{0}'' is granted for login", subject);
+//        LOG.log(Level.INFO, "Account ''{}'' is granted for login", subject);
 //        // Notify login with a proper event
 //        AccountEvent loginEvent = new AccountEvent(this, subject, AccountActions.LOGIN);
 //        bus.send(loginEvent);
@@ -201,7 +201,7 @@ class AuthImpl2 implements Auth {
             try {
                 plugSubject.getSession().setTimeout(-1);
             } catch (Exception e) {
-                LOG.warn("ERROR retrieving session for user {0}", plugin.getClassName());
+                LOG.warn("ERROR retrieving session for user {}", plugin.getClassName());
             }
             return plugSubject.associateWith(action);
         }
@@ -219,13 +219,13 @@ class AuthImpl2 implements Auth {
         if (!pluginRealm.accountExists(plugin.getClassName())) {
             // check whether declared permissions correspond the ones requested at runtime
             if (plugin.getConfiguration().getStringProperty("permissions", getPluginDefaultPermission()).equals(permissions)) {
-                LOG.info("Setting permissions for plugin {0}: {1}", new Object[]{plugin.getClassName(), permissions});
+                LOG.info("Setting permissions for plugin {}: {}", new Object[]{plugin.getClassName(), permissions});
                 pluginRealm.addPlugin(plugin.getClassName(), permissions);
                 //pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
                 //pluginRealm.addRole(plugrole);
 
             } else {
-                LOG.error("Plugin {0} tried to request incorrect privileges", plugin.getName());
+                LOG.error("Plugin {} tried to request incorrect privileges", plugin.getName());
             }
         }
     }

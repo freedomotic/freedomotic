@@ -118,7 +118,7 @@ public final class Autodiscovery extends AbstractConsumer {
     protected EnvObjectLogic join(String clazz, String name, String protocol, String address, boolean allowClones) throws RepositoryException {
         // Check if autodiscovery can be applied
         if (thingAlreadyExists(protocol, address)) {
-            LOG.info("A thing with protocol ''{0}'' and address ''{1}'' "
+            LOG.info("A thing with protocol ''{}'' and address ''{}'' "
                     + "already exists in the environment. "
                     + "Autodiscovery exists without changes", new Object[]{protocol, address});
             return null;
@@ -126,7 +126,7 @@ public final class Autodiscovery extends AbstractConsumer {
 
         // If not allowed to clone an Thing
         if (!allowClones && thingAlreadyExists(name)) {
-            LOG.info("A thing with name ''{0}'' already exists in the environment. "
+            LOG.info("A thing with name ''{}'' already exists in the environment. "
                     + "Autodiscovery exists without changes because property "
                     + "'autodiscovery.allow-clones' property is "
                     + allowClones + " for the received command", name);
@@ -136,12 +136,12 @@ public final class Autodiscovery extends AbstractConsumer {
         // Check if the requested Thing template is loaded
         ObjectPluginPlaceholder thingTemplate = (ObjectPluginPlaceholder) clientStorage.get(clazz);
         if (thingTemplate == null) {
-            LOG.warn("Autodiscovery error: doesn't exist an object class called ''{0}''", clazz);
+            LOG.warn("Autodiscovery error: doesn't exist an object class called ''{}''", clazz);
             return null;
         }
 
         // Start the new Thing creation
-        LOG.warn("Autodiscovery request for an object called ''{0}'' of type ''{1}''", new Object[]{name, clazz});
+        LOG.warn("Autodiscovery request for an object called ''{}'' of type ''{}''", new Object[]{name, clazz});
         File templateFile = thingTemplate.getTemplate();
         EnvObjectLogic loaded = thingsRepository.load(templateFile);
 
@@ -161,7 +161,7 @@ public final class Autodiscovery extends AbstractConsumer {
         loaded.getPojo().setActAs("");
         loaded.setRandomLocation();
         configureOptionalMapping(protocol, clazz, loaded);
-        LOG.info("Autodiscovery adds a thing called ''{0}'' of type ''{1}''",
+        LOG.info("Autodiscovery adds a thing called ''{}'' of type ''{}''",
                 new Object[]{loaded.getPojo().getName(), clazz});
         return loaded;
     }

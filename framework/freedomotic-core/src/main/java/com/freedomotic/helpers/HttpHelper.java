@@ -124,7 +124,7 @@ public class HttpHelper {
                 String result = xPath.compile(xpathQuery).evaluate(xmlDocument);
                 // Notify an enpy result to the user
                 if (result == null || result.isEmpty()) {
-                    LOG.warn("XPath query {0} produced no results on content: \n{1}", new String[]{xpathQuery, xmlContent});
+                    LOG.warn("XPath query {} produced no results on content: \n{}", new String[]{xpathQuery, xmlContent});
                     result = "";
                 }
                 results.add(result);

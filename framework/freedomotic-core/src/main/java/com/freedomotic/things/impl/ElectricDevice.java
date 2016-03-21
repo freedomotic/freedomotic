@@ -116,7 +116,7 @@ public class ElectricDevice extends EnvObjectLogic {
     public void setConsumptionValue(int value, Config params, boolean fireCommand) {
         if (fireCommand) {
             // Action on the hardware is required
-            LOG.warn("Power consumption behavior of thing ''{0}''"
+            LOG.warn("Power consumption behavior of thing ''{}''"
                     + " is supposed to be a read only value. "
                     + "No command is executed!", this.getPojo().getName());
         }
@@ -156,7 +156,7 @@ public class ElectricDevice extends EnvObjectLogic {
     }
 
     private void setOn() {
-        LOG.info("Setting behavior ''powered'' of object ''{0}'' to true", getPojo().getName());
+        LOG.info("Setting behavior ''powered'' of object ''{}'' to true", getPojo().getName());
 
         //if not already on
         if (powered.getValue() != true) {
@@ -169,7 +169,7 @@ public class ElectricDevice extends EnvObjectLogic {
     }
 
     private void setOff() {
-        LOG.info("Setting behavior ''powered'' of object ''{0}'' to false", getPojo().getName());
+        LOG.info("Setting behavior ''powered'' of object ''{}'' to false", getPojo().getName());
 
         //if not already off
         if (powered.getValue() != false) {
