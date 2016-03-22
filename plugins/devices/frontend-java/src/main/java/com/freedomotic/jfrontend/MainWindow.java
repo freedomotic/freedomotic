@@ -1,6 +1,7 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team
+ * http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -57,8 +58,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -71,10 +70,12 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class MainWindow
         extends javax.swing.JFrame {
@@ -93,7 +94,7 @@ public class MainWindow
     private final API api;
     private final I18n i18n;
     boolean isAuthenticated = false;
-    private static final Logger LOG = Logger.getLogger(JavaDesktopFrontend.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(JavaDesktopFrontend.class.getName());
 
     /**
      *
@@ -176,7 +177,7 @@ public class MainWindow
                 }
             }
 
-            return false; 
+            return false;
         }
     }
 
@@ -216,13 +217,13 @@ public class MainWindow
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
-            LOG.severe("Cannot find system look&feel\n" + ex.toString());
+            LOG.error("Cannot find system look&feel\n", ex.toString());
         } catch (InstantiationException ex) {
-            LOG.severe("Cannot instantiate system look&feel\n" + ex.toString());
+            LOG.error("Cannot instantiate system look&feel\n", ex.toString());
         } catch (IllegalAccessException ex) {
-            LOG.severe("Illegal access to system look&feel\n" + ex.toString());
+            LOG.error("Illegal access to system look&feel\n", ex.toString());
         } catch (UnsupportedLookAndFeelException ex) {
-            LOG.severe("Unsupported system look&feel\n" + ex.toString());
+            LOG.error("Unsupported system look&feel\n", ex.toString());
         }
 
         setDefaultLookAndFeelDecorated(true);
@@ -253,7 +254,7 @@ public class MainWindow
         try {
             frameClient.setSelected(true);
         } catch (PropertyVetoException ex) {
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
 
         EnvironmentLogic previousEnv = api.environments().findAll().get(0);
@@ -269,7 +270,7 @@ public class MainWindow
             setDrawer(drawer);
             ResourcesManager.clear();
         } else {
-            LOG.severe("Unable to create a drawer to render the environment on the desktop frontend");
+            LOG.error("Unable to create a drawer to render the environment on the desktop frontend");
         }
 
         this.setTitle("Freedomotic " + Info.getLicense() + " - www.freedomotic.com");
@@ -311,7 +312,7 @@ public class MainWindow
             if (drawer != null) {
                 setDrawer(drawer);
             } else {
-                LOG.severe("Unable to create a drawer to render the environment on the desktop frontend in fullscreen mode");
+                LOG.error("Unable to create a drawer to render the environment on the desktop frontend in fullscreen mode");
             }
             add(drawer);
 
@@ -934,15 +935,15 @@ public class MainWindow
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             file = fc.getSelectedFile();
-            LOG.info("Opening " + file.getAbsolutePath());
+            LOG.info("Opening {}", file.getAbsolutePath());
 
             try {
                 api.environments().init(file);
                 setEnvironment(api.environments().findAll().get(0));
                 mnuSelectEnvironmentActionPerformed(null);
-                
+
             } catch (RepositoryException e) {
-                LOG.severe(Freedomotic.getStackTraceInfo(e));
+                LOG.error(Freedomotic.getStackTraceInfo(e));
             }
             setWindowedMode();
         } else {
@@ -1051,7 +1052,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 master.getApi().environments().saveEnvironmentsToFolder(folder);
 
             } catch (Exception ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.error(ex.getMessage());
             }
         } else {
             LOG.info(i18n.msg("canceled_by_user"));
@@ -1123,7 +1124,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             //This is where a real application would open the file.
-            LOG.info("Opening " + file.getAbsolutePath());
+            LOG.info("Opening {}", file.getAbsolutePath());
             drawer.getCurrEnv().getPojo().setBackgroundImage(file.getName());
             drawer.setNeedRepaint(true);
             frameMap.validate();
@@ -1168,12 +1169,12 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         //creates a new environment coping it from a template
         File template
                 = new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/templates/template-square/template-square.xenv");
-        
+
         LOG.info("Opening " + template.getAbsolutePath());
         setEnvironment(api.environments().findAll().get(0));
 
         try {
-            
+
             EnvironmentLogic enL = api.environments().loadEnvironmentFromFile(template);
 
             if (enL != null) {
@@ -1186,27 +1187,27 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File folder = fc.getSelectedFile();
-                    
+
                     if (!folder.getName().isEmpty()) {
-                        if (! folder.getAbsolutePath().equalsIgnoreCase(oldEnv.getParentFile().getAbsolutePath())){
+                        if (!folder.getAbsolutePath().equalsIgnoreCase(oldEnv.getParentFile().getAbsolutePath())) {
                             // we are making a new environment set
                             api.environments().deleteAll();
                         }
-                        EnvironmentLogic newenv =api.environments().copy(enL);
+                        EnvironmentLogic newenv = api.environments().copy(enL);
                         newenv.setSource(
                                 new File(folder + "/" + newenv.getPojo().getUUID() + ".xenv"));
                         setEnvironment(newenv);
-                        api.environments().saveAs(newenv, folder);    
+                        api.environments().saveAs(newenv, folder);
                     }
                 } else {
                     LOG.info("Save command cancelled by user.");
                     //reload the old file
-                   api.environments().init(oldEnv.getParentFile());
-                   setEnvironment(api.environments().findAll().get(0));
+                    api.environments().init(oldEnv.getParentFile());
+                    setEnvironment(api.environments().findAll().get(0));
                 }
             }
         } catch (Exception e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
 
         setWindowedMode();
@@ -1383,13 +1384,12 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                     URI uri = new URI(url); // url is a string containing the URL
                     desktop.browse(uri);
                 } catch (IOException | URISyntaxException ex) {
-                    LOG.severe(ex.getLocalizedMessage());
+                    LOG.error(ex.getLocalizedMessage());
                 }
             }
-        }  
-        else {
+        } else {
             //open popup with link
-            JOptionPane.showMessageDialog(this,i18n.msg("goto") + url);            
+            JOptionPane.showMessageDialog(this, i18n.msg("goto") + url);
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 

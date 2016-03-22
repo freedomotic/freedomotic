@@ -30,7 +30,7 @@ import java.awt.image.BufferedImage;
  * red vertical bar at the left side of the object icon. Refer to ImageDrawer
  * renderObjects method to enable it.
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class WidgetTest {
 

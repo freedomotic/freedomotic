@@ -1,29 +1,21 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
- */
-
-/*
- * MarketPlaceForm.java
- *
- * Created on 28-dic-2011, 23:50:20
  */
 package com.freedomotic.jfrontend;
 
@@ -50,20 +42,21 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SpringLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 public class MarketPlaceForm extends javax.swing.JFrame {
-    private static final Logger LOG = Logger.getLogger(MarketPlaceForm.class.getName());
+
+    private static final Logger LOG = LoggerFactory.getLogger(MarketPlaceForm.class.getName());
 
     ArrayList<IPluginCategory> pluginCategoryList;
     private static final IPlugCatComparator CatComp = new IPlugCatComparator();
@@ -176,7 +169,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                             politeWaitingMessage(false);
                             pnlMain.repaint();
                         } catch (Exception e) {
-                            LOG.warning(Freedomotic.getStackTraceInfo(e));
+                            LOG.warn(Freedomotic.getStackTraceInfo(e));
                         }
                     }
                 }).start();
@@ -236,8 +229,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 try {
                     browse(new URI(pp.getURI()));
                 } catch (URISyntaxException ex) {
-                    Logger.getLogger(MarketPlaceForm.class.getName())
-                            .log(Level.SEVERE, null, ex);
+                    LOG.error(ex.getMessage());
                 }
             }
         });
@@ -312,7 +304,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
 
         Runnable task;
         final String string = pp.getFilePath(freedomoticVersion);
-        LOG.config("Download string:" + string);
+        LOG.info("Download string: {}", string);
         task
                 = new Runnable() {
                     boolean done = false;
@@ -323,7 +315,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                             done = pluginsManager.installBoundle(new URL(string));
                         } catch (MalformedURLException ex) {
                             done = false;
-                            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                            LOG.error(ex.getMessage());
                         }
 
                         if (!done) {

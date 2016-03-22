@@ -99,6 +99,7 @@ public class OpenDialogFileFilter
      * Note that the "." before the extension is not needed. If provided, it
      * will be ignored.
      *
+     * @param extension
      * @param description
      * @see #addExtension
      */
@@ -134,6 +135,7 @@ public class OpenDialogFileFilter
      *
      * Note that the "." before the extension is not needed and will be ignored.
      *
+     * @param filters
      * @param description
      * @see #addExtension
      */
@@ -156,7 +158,8 @@ public class OpenDialogFileFilter
      *
      * Files that begin with "." are ignored.
      *
-     * @return 
+     * @param f
+     * @return
      * @see #getExtension
      * @see FileFilter#accepts
      */
@@ -180,7 +183,8 @@ public class OpenDialogFileFilter
     /**
      * Return the extension portion of the file's name .
      *
-     * @return 
+     * @param f
+     * @return
      * @see #getExtension
      * @see FileFilter#accept
      */
@@ -208,6 +212,7 @@ public class OpenDialogFileFilter
      * filter.addExtension("jpg"); filter.addExtension("tif");
      *
      * Note that the "." before the extension is not needed and will be ignored.
+     *
      * @param extension
      */
     public void addExtension(String extension) {
@@ -224,7 +229,7 @@ public class OpenDialogFileFilter
      * Returns the human readable description of this filter. For example: "JPEG
      * and GIF Image Files (*.jpg, *.gif)"
      *
-     * @return 
+     * @return
      * @see setDescription
      * @see setExtensionListInDescription
      * @see isExtensionListInDescription
@@ -293,7 +298,7 @@ public class OpenDialogFileFilter
      * Only relevent if a description was provided in the constructor or using
      * setDescription();
      *
-     * @return 
+     * @return
      * @see getDescription
      * @see setDescription
      * @see setExtensionListInDescription

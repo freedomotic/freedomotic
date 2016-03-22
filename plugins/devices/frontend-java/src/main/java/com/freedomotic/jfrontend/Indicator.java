@@ -24,12 +24,11 @@ import java.awt.Shape;
 import java.util.Random;
 
 /**
- * Created with IntelliJ IDEA. User: Bastiaan Visser Date: 7/2/13 Time: 10:54 AM
+ * @author Bastiaan Visser
  */
 public class Indicator {
 
     //the default opacity
-
     private static final int OPACITY = Renderer.DEFAULT_OPACITY;
     private Shape shape;
     //the default shape fill color, blue

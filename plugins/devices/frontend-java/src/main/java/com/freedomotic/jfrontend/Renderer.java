@@ -61,17 +61,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class Renderer extends Drawer implements MouseListener, MouseMotionListener {
 
-    private static final Logger LOG = Logger.getLogger(Renderer.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Renderer.class.getName());
 
     private JavaDesktopFrontend plugin;
     private Graphics graph;
@@ -89,11 +89,27 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     private double CANVAS_WIDTH;
     private double CANVAS_HEIGHT;
     private static final int SNAP_TO_GRID = 20; //a grid of 20cm
+
+    /**
+     *
+     */
     public static final int HIGH_OPACITY = 180;
+
+    /**
+     *
+     */
     public static final int DEFAULT_OPACITY = 150;
+
+    /**
+     *
+     */
     public static final int LOW_OPACITY = 120;
     private static Map<ZoneLogic, Color> zoneColors = new HashMap<ZoneLogic, Color>();
     private final I18n I18n;
+
+    /**
+     *
+     */
     protected Color backgroundColor;
     private EnvObjectLogic selectedObject;
     private ArrayList<Indicator> indicators = new ArrayList<Indicator>();
@@ -103,6 +119,10 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     private FreedomPoint originalHandleLocation = null;
     private ArrayList<Handle> handles = new ArrayList<Handle>();
     private ZoneLogic selectedZone;
+
+    /**
+     *
+     */
     protected CalloutsUpdater calloutsUpdater;
     private boolean objectEditMode = false;
     private Point messageCorner = new Point(50, 50);
@@ -166,30 +186,35 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     }
 
     private ObjectEditor createNewObjectEditor(final EnvObjectLogic o) {
-		final ObjectEditor oe = new ObjectEditor(o);
-		oe.addWindowListener(new WindowAdapter() {
+        final ObjectEditor oe = new ObjectEditor(o);
+        oe.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
                     objEditorPanels.remove(o);
                 } catch (Exception ex) {
-                    LOG.log(Level.SEVERE, "Cannot unload object editor frame", ex);
+                    LOG.error("Cannot unload object editor frame", ex);
                 }
             }
-            
+
             @Override
             public void windowClosed(WindowEvent e) {
                 try {
-                    if (objEditorPanels.containsKey(o))
-						objEditorPanels.remove(o);
+                    if (objEditorPanels.containsKey(o)) {
+                        objEditorPanels.remove(o);
+                    }
                 } catch (Exception ex) {
-                    LOG.log(Level.SEVERE, "Cannot unload object editor frame", ex);
+                    LOG.error("Cannot unload object editor frame", ex);
                 }
             }
         });
-		return oe;
+        return oe;
     }
-    
+
+    /**
+     *
+     * @return
+     */
     public Map<EnvObjectLogic, ObjectEditor> getOpenThingEditors() {
         return objEditorPanels;
     }
@@ -266,6 +291,10 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         return selectedZone;
     }
 
+    /**
+     *
+     * @param selectedZone
+     */
     @Override
     public void setSelectedZone(ZoneLogic selectedZone) {
         removeIndicators();
@@ -312,7 +341,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                     //Both null checks are REQUIRED!
                     if (thing != null && thing.getPojo() != null) {
                         editor = new ObjectEditor(thing);
-                     } else {
+                    } else {
                         it.remove();
                     }
                 }
@@ -429,8 +458,8 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 renderHandles();
             }
         } catch (Exception e) {
-            LOG.severe("Error while painting environment");
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.error("Error while painting environment");
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         } finally {
             restoreTransformContext();
         }
@@ -632,7 +661,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                     getHeight(),
                     BufferedImage.TYPE_INT_ARGB);
         } catch (Exception e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
 
         return img;

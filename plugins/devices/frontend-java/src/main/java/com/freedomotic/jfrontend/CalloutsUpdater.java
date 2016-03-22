@@ -31,7 +31,7 @@ import java.util.TimerTask;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class CalloutsUpdater {
 
@@ -134,7 +134,7 @@ public class CalloutsUpdater {
     Collection<Callout> getPrintableCallouts() {
         return callouts;
     }
-    
+
     Callout getMousePointerCallout() {
         return mousePointerCallout;
     }

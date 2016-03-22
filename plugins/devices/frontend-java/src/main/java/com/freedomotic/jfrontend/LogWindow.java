@@ -44,7 +44,7 @@ import javax.swing.table.TableColumn;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class LogWindow extends JFrame {
 
@@ -52,13 +52,11 @@ public class LogWindow extends JFrame {
     DefaultTableModel model = new DefaultTableModel();
     String[] levels = {
         "ALL",
-        "FINEST",
-        "FINER",
-        "FINE",
-        "CONFIG",
+        "TRACE",
+        "DEBUG",
         "INFO",
-        "WARNING",
-        "SEVERE",
+        "WARN",
+        "ERROR",
         "OFF",};
     JComboBox cmbLevel = new JComboBox(levels);
     JTable table = new JTable(model);

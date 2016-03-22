@@ -52,7 +52,7 @@ import org.jfree.ui.RectangleInsets;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 public class GraphPanel extends javax.swing.JFrame {
 
@@ -66,6 +66,7 @@ public class GraphPanel extends javax.swing.JFrame {
     /**
      * Creates new form GraphWindow
      *
+     * @param master
      * @param obj
      */
     public GraphPanel(Protocol master, EnvObjectLogic obj) {

@@ -1,12 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * ObjectEditor.java
+/**
  *
- * Created on 27-set-2010, 14.11.08
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.jfrontend;
 
@@ -67,7 +76,7 @@ import javax.swing.event.ChangeListener;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class ObjectEditor
         extends javax.swing.JFrame {
@@ -194,13 +203,13 @@ public class ObjectEditor
         tabControls.removeAll();
 
         //tabControls.setLayout(new BoxLayout(tabControls, BoxLayout.PAGE_AXIS));
-        tabControls.setLayout(new GridLayout(Iterators.size(object.getBehaviors().iterator()),1));
+        tabControls.setLayout(new GridLayout(Iterators.size(object.getBehaviors().iterator()), 1));
 
         for (Behavior behavior : object.getPojo().getBehaviors()) {
-        	JPanel rowPanel = new JPanel();
-        	rowPanel.setLayout(new GridLayout());
-        	
-        	// All this is done just to keep the behavior orders as in pojo definition
+            JPanel rowPanel = new JPanel();
+            rowPanel.setLayout(new GridLayout());
+
+            // All this is done just to keep the behavior orders as in pojo definition
             BehaviorLogic b = object.getBehavior(behavior.getName());
             if (b instanceof BooleanBehaviorLogic) {
                 final BooleanBehaviorLogic bb = (BooleanBehaviorLogic) b;
@@ -245,17 +254,19 @@ public class ObjectEditor
                 slider.setPaintTrack(true);
                 slider.setPaintLabels(false);
                 int step = rb.getStep();
-                if (step == 0) step = 1;
+                if (step == 0) {
+                    step = 1;
+                }
                 //slider.setMajorTickSpacing(rb.getScale() * 10);
                 //slider.setMinorTickSpacing(rb.getStep());
-        		if ((rb.getMax() - rb.getMin()) / step < 10000) {
-        			slider.setMajorTickSpacing(step);
-        			slider.setSnapToTicks(true);
-        		} else {
-        			// range is too wide, use 10000 ticks instead and don't snap
-        			slider.setMajorTickSpacing(10000);
-        			slider.setSnapToTicks(false);
-        		}
+                if ((rb.getMax() - rb.getMin()) / step < 10000) {
+                    slider.setMajorTickSpacing(step);
+                    slider.setSnapToTicks(true);
+                } else {
+                    // range is too wide, use 10000 ticks instead and don't snap
+                    slider.setMajorTickSpacing(10000);
+                    slider.setSnapToTicks(false);
+                }
                 slider.setValue(rb.getValue());
 
                 JLabel label = new JLabel(getBehaviorLabel(b));
@@ -265,20 +276,21 @@ public class ObjectEditor
                 rowPanel.add(sliderPanel);
                 tabControls.add(rowPanel);
                 // if slider is enabled, add a popup to allow user to write values
-        		if (!b.isReadOnly()) 
-        			slider.addMouseListener(new SliderPopup(slider, rb));
+                if (!b.isReadOnly()) {
+                    slider.addMouseListener(new SliderPopup(slider, rb));
+                }
                 slider.addChangeListener(new ChangeListener() {
                     @Override
                     public void stateChanged(ChangeEvent e) {
                         if (!slider.getValueIsAdjusting()) {
-        					if (!slider.getSnapToTicks()) {
-        						// SnapToTicks disabled, snap to RangedIntBehavior step (round down to closest)
-        						int snapValue = slider.getValue() / rb.getStep() * rb.getStep();
-        						if (slider.getValue() != snapValue) {
-        							slider.setValue(snapValue);
-        							return;
-        						}
-        					}
+                            if (!slider.getSnapToTicks()) {
+                                // SnapToTicks disabled, snap to RangedIntBehavior step (round down to closest)
+                                int snapValue = slider.getValue() / rb.getStep() * rb.getStep();
+                                if (slider.getValue() != snapValue) {
+                                    slider.setValue(snapValue);
+                                    return;
+                                }
+                            }
 
                             Config params = new Config();
                             params.setProperty("value",
@@ -1015,7 +1027,7 @@ public class ObjectEditor
 
             List<Trigger> found = api.triggers().findByName(relatedTriggerName);
             Trigger relatedTrigger = null;
-            if (!found.isEmpty()){
+            if (!found.isEmpty()) {
                 relatedTrigger = found.get(0);
             }
 
@@ -1117,9 +1129,9 @@ public class ObjectEditor
             }
         });
         refreshMultiselectionList(lb, list);
-    	JPanel rowPanel = new JPanel();
-    	rowPanel.setLayout(new GridLayout());
-    	rowPanel.add(label);
+        JPanel rowPanel = new JPanel();
+        rowPanel.setLayout(new GridLayout());
+        rowPanel.add(label);
         rowPanel.add(list);
         rowPanel.add(newItem);
         rowPanel.add(btnAdd);
@@ -1135,7 +1147,7 @@ public class ObjectEditor
             final JCheckBox box = new JCheckBox(item);
 
             if (!model.contains(box)) { //no duplicates allowed
-            	box.setSelected(source.getSelected().contains(item));
+                box.setSelected(source.getSelected().contains(item));
                 box.addChangeListener(new ChangeListener() {
                     public void stateChanged(ChangeEvent e) {
                         Config params = new Config();

@@ -1,6 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.jfrontend;
 
@@ -14,20 +29,23 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 public class PrivilegesConfiguration extends javax.swing.JFrame {
-    
+
+    private static final Logger LOG = LoggerFactory.getLogger(PrivilegesConfiguration.class.getName());
     private File write = new File(Info.PATHS.PATH_CONFIG_FOLDER + "/security.properties");
     private final API api;
+
     /**
-        
+     *
      * Creates new form PrivilegesConfiguration
+     *
      * @param api
      */
     public PrivilegesConfiguration(API api) {
@@ -39,7 +57,7 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
         pack();
         setVisible(true);
     }
-    
+
     private String readConfiguration(File file) {
         FileInputStream fis;
         BufferedInputStream bis;
@@ -83,7 +101,6 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
         out.close();
     }
 
-  
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -156,7 +173,7 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
         try {
             saveConfiguration(write, txtArea.getText());
         } catch (IOException ex) {
-            Logger.getLogger(PrivilegesConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed

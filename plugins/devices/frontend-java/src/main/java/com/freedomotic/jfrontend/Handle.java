@@ -25,7 +25,7 @@ import java.awt.Rectangle;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class Handle {
 

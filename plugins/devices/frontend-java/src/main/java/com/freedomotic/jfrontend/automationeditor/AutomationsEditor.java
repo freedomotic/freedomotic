@@ -1,6 +1,7 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team
+ * http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -43,7 +44,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class AutomationsEditor extends Protocol {
 
@@ -55,7 +56,7 @@ public class AutomationsEditor extends Protocol {
     private CommandRepository commandRepository;
     @Inject
     private ReactionRepository reactionRepository;
-    
+
     private ReactionsPanel panel;
     private JFrame frame;
 
@@ -126,7 +127,7 @@ public class AutomationsEditor extends Protocol {
         frame.setTitle(getApi().getI18n().msg("manage") + getApi().getI18n().msg("automations"));
         frame.setPreferredSize(new Dimension(700, 600));
 
-        panel = new ReactionsPanel(this, nlpCommands, triggerRepository, commandRepository,reactionRepository);
+        panel = new ReactionsPanel(this, nlpCommands, triggerRepository, commandRepository, reactionRepository);
         frame.setContentPane(panel);
 
         JButton ok = new JButton(getApi().getI18n().msg("ok"));

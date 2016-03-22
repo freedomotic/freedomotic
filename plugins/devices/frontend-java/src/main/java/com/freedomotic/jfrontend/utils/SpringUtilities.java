@@ -44,12 +44,13 @@ import javax.swing.SpringLayout;
  * as SpringBox and SpringCompactGrid.
  */
 public class SpringUtilities {
-    
+
     private static final Logger LOG = Logger.getLogger(SpringUtilities.class.getName());
 
     /**
      * A debugging utility that prints to stdout the component's minimum,
      * preferred, and maximum sizes.
+     *
      * @param c
      */
     public static void printSizes(Component c) {
@@ -59,9 +60,7 @@ public class SpringUtilities {
     }
 
     /**
-     * Aligns the first
-     * <code>rows</code>
-     * <code>cols</code> components of
+     * Aligns the first <code>rows</code> <code>cols</code> components of
      * <code>parent</code> in a grid. Each component is as big as the maximum
      * preferred width and height of the components. The parent is made just big
      * enough to fit them all.
@@ -98,12 +97,12 @@ public class SpringUtilities {
         for (int i = 1; i < max; i++) {
             SpringLayout.Constraints cons = layout.getConstraints(parent.getComponent(i));
 
-            maxWidthSpring =
-                    Spring.max(maxWidthSpring,
-                    cons.getWidth());
-            maxHeightSpring =
-                    Spring.max(maxHeightSpring,
-                    cons.getHeight());
+            maxWidthSpring
+                    = Spring.max(maxWidthSpring,
+                            cons.getWidth());
+            maxHeightSpring
+                    = Spring.max(maxHeightSpring,
+                            cons.getHeight());
         }
 
         //Apply the new width/height Spring. This forces all the
@@ -145,10 +144,10 @@ public class SpringUtilities {
         SpringLayout.Constraints pCons = layout.getConstraints(parent);
         pCons.setConstraint(SpringLayout.SOUTH,
                 Spring.sum(Spring.constant(yPad),
-                lastCons.getConstraint(SpringLayout.SOUTH)));
+                        lastCons.getConstraint(SpringLayout.SOUTH)));
         pCons.setConstraint(SpringLayout.EAST,
                 Spring.sum(Spring.constant(xPad),
-                lastCons.getConstraint(SpringLayout.EAST)));
+                        lastCons.getConstraint(SpringLayout.EAST)));
     }
 
     /* Used by makeCompactGrid. */
@@ -160,9 +159,7 @@ public class SpringUtilities {
     }
 
     /**
-     * Aligns the first
-     * <code>rows</code>
-     * <code>cols</code> components of
+     * Aligns the first <code>rows</code> <code>cols</code> components of
      * <code>parent</code> in a grid. Each component in a column is as wide as
      * the maximum preferred width of the components in that column; height is
      * similarly determined for each row. The parent is made just big enough to
@@ -194,9 +191,9 @@ public class SpringUtilities {
             Spring width = Spring.constant(0);
 
             for (int r = 0; r < rows; r++) {
-                width =
-                        Spring.max(width,
-                        getConstraintsForCell(r, c, parent, cols).getWidth());
+                width
+                        = Spring.max(width,
+                                getConstraintsForCell(r, c, parent, cols).getWidth());
             }
 
             for (int r = 0; r < rows; r++) {
@@ -207,7 +204,7 @@ public class SpringUtilities {
 
             x = Spring.sum(x,
                     Spring.sum(width,
-                    Spring.constant(xPad)));
+                            Spring.constant(xPad)));
         }
 
         //Align all cells in each row and make them the same height.
@@ -217,9 +214,9 @@ public class SpringUtilities {
             Spring height = Spring.constant(0);
 
             for (int c = 0; c < cols; c++) {
-                height =
-                        Spring.max(height,
-                        getConstraintsForCell(r, c, parent, cols).getHeight());
+                height
+                        = Spring.max(height,
+                                getConstraintsForCell(r, c, parent, cols).getHeight());
             }
 
             for (int c = 0; c < cols; c++) {
@@ -230,7 +227,7 @@ public class SpringUtilities {
 
             y = Spring.sum(y,
                     Spring.sum(height,
-                    Spring.constant(yPad)));
+                            Spring.constant(yPad)));
         }
 
         //Set the parent's size.

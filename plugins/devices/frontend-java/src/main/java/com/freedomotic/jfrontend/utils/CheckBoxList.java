@@ -32,7 +32,7 @@ import javax.swing.border.EmptyBorder;
 
 /**
  *
- * @author nicoletti
+ * @author Enrico Nicoletti
  */
 public class CheckBoxList
         extends JList {

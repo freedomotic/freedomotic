@@ -25,14 +25,16 @@ import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.util.TopologyUtils;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class PhotoDrawer extends ImageDrawer {
-    private static final Logger LOG = Logger.getLogger(PhotoDrawer.class.getName());
+
+    private static final Logger LOG = LoggerFactory.getLogger(PhotoDrawer.class.getName());
 
     /**
      *
@@ -56,7 +58,7 @@ public class PhotoDrawer extends ImageDrawer {
         if (img != null) {
             getContext().drawImage(img, 0, 0, this);
         } else {
-            LOG.warning("Cannot find environment background image " + fileName);
+            LOG.warn("Cannot find environment background image {}", fileName);
         }
     }
 

@@ -41,13 +41,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
-/*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
- */
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class GuessCommandBox
         extends JTextField {
@@ -67,6 +63,8 @@ public class GuessCommandBox
      *
      * @param i18n
      * @param editor
+     * @param nlpCommands
+     * @param commandRepository
      */
     public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommand nlpCommands, CommandRepository commandRepository) {
         super();
@@ -86,6 +84,7 @@ public class GuessCommandBox
      * @param i18n
      * @param editor
      * @param nlpCommands
+     * @param commandRepository
      * @param command
      */
     public GuessCommandBox(I18n i18n, ReactionEditor editor, NlpCommand nlpCommands, CommandRepository commandRepository, Command command) {

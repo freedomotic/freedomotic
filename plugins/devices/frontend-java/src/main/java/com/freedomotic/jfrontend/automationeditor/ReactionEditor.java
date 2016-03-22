@@ -40,7 +40,7 @@ import javax.swing.JButton;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class ReactionEditor
         extends javax.swing.JPanel {
@@ -58,19 +58,24 @@ public class ReactionEditor
     /**
      * Creates new form ReactionEditor
      *
+     * @param i18n
+     * @param nlpCommands
+     * @param commandRepository
      * @param parent
+     * @param reaction
+     * @param reactionRepository
      */
     public ReactionEditor(
-            I18n i18n, 
-            NlpCommand nlpCommands, 
-            CommandRepository commandRepository, 
-            Reaction reaction, 
+            I18n i18n,
+            NlpCommand nlpCommands,
+            CommandRepository commandRepository,
+            Reaction reaction,
             Component parent,
             ReactionRepository reactionRepository) {
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
         this.commandRepository = commandRepository;
-        this.reactionRepository=reactionRepository;
+        this.reactionRepository = reactionRepository;
         initComponents();
         this.reaction = reaction;
         this.parent = parent;
@@ -80,6 +85,7 @@ public class ReactionEditor
     /**
      *
      * @param i18n
+     * @param nlpCommands
      */
     public ReactionEditor(I18n i18n, NlpCommand nlpCommands) {
         this.I18n = i18n;

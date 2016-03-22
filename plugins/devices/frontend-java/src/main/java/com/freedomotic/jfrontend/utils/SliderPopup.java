@@ -14,6 +14,10 @@ import javax.swing.JSlider;
 
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 
+/**
+ *
+ * @author Mauro Cicolella
+ */
 @SuppressWarnings("serial")
 public class SliderPopup extends JPopupMenu implements ActionListener,
 		PropertyChangeListener, MouseListener {
@@ -22,7 +26,12 @@ public class SliderPopup extends JPopupMenu implements ActionListener,
 	private RangedIntBehaviorLogic rib;
 	private JFormattedTextField txtValue;
 
-	public SliderPopup(JSlider slider, RangedIntBehaviorLogic rib) {
+    /**
+     *
+     * @param slider
+     * @param rib
+     */
+    public SliderPopup(JSlider slider, RangedIntBehaviorLogic rib) {
 		super();
 		this.slider = slider;
 		this.rib = rib;
@@ -34,7 +43,11 @@ public class SliderPopup extends JPopupMenu implements ActionListener,
 		addPropertyChangeListener("visible", this);
 	}
 
-	public void setValue(int val) {
+    /**
+     *
+     * @param val
+     */
+    public void setValue(int val) {
 		txtValue.setValue((double) val / rib.getScale());
 	}
 

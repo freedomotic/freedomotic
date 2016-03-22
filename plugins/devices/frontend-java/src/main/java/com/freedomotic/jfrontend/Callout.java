@@ -24,7 +24,7 @@ import java.awt.Point;
 
 /**
  *
- * @author Enrico Nicoletti (enrico.nicoletti84@gmail.com)
+ * @author Enrico Nicoletti
  */
 public class Callout {
 
@@ -86,9 +86,9 @@ public class Callout {
     }
 
     private String format(String text) {
-        text =
-                text + "\n" + text.substring(text.length() / 2,
-                text.length());
+        text
+                = text + "\n" + text.substring(text.length() / 2,
+                        text.length());
 
         return text;
     }

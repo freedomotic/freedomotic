@@ -36,17 +36,17 @@ import java.awt.EventQueue;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class JavaDesktopFrontend extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(JavaDesktopFrontend.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(JavaDesktopFrontend.class.getName());
 
     private MainWindow window;
     private Drawer drawer;
@@ -102,7 +102,7 @@ public class JavaDesktopFrontend extends Protocol {
             }
             init = true;
         } catch (Exception e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -122,7 +122,7 @@ public class JavaDesktopFrontend extends Protocol {
             sl = null;
         }
 
-        LOG.log(Level.INFO, "JFrontend running as user: {0}", getApi().getAuth().getPrincipal());
+        LOG.info("JFrontend running as user: {}", getApi().getAuth().getPrincipal());
     }
 
     /**
@@ -154,7 +154,7 @@ public class JavaDesktopFrontend extends Protocol {
                 drawer.setCurrEnv(env);
             }
         } catch (Exception e) {
-            Logger.getLogger(JavaDesktopFrontend.class.getName()).severe("Error while initializing a drawer in desktop frontend.");
+            LOG.error("Error while initializing a drawer in desktop frontend.");
             e.printStackTrace();
         }
 
@@ -226,7 +226,7 @@ public class JavaDesktopFrontend extends Protocol {
     @Override
     protected void onEvent(EventTemplate event) {
         if (drawer == null) {
-            LOG.warning("Skipping this frontend refresh, the plugin is not yet fully loaded");
+            LOG.warn("Skipping this frontend refresh, the plugin is not yet fully loaded");
             return;
         }
         if (event instanceof ObjectHasChangedBehavior) {
@@ -253,8 +253,12 @@ public class JavaDesktopFrontend extends Protocol {
         }
     }
 
-//    //annotation doesen't work because annotation parsing is enabled only in Protocol subclasses
+//    //annotation doesn't work because annotation parsing is enabled only in Protocol subclasses
 //    @ListenEventsOn(channel = "app.event.sensor.messages.callout")
+    /**
+     *
+     * @param message
+     */
     public void printCallout(String message) {
         Callout callout = new Callout(
                 message,

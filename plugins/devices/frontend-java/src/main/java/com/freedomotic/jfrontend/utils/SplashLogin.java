@@ -29,7 +29,7 @@ import javax.swing.Timer;
 
 /**
  *
- * @author Matteo Mazzoni <matteo@bestmazzo.it>
+ * @author Matteo Mazzoni
  */
 public class SplashLogin extends javax.swing.JFrame {
 
@@ -49,10 +49,9 @@ public class SplashLogin extends javax.swing.JFrame {
         logo.setIcon(new javax.swing.ImageIcon(api.getResource("Freedomotic_noBack.png")));
         // center window on screen
         setLocationRelativeTo(null);
-        
+
         this.setAutoRequestFocus(true);
         this.getRootPane().setDefaultButton(btnLogin);
-        
 
         // as a tip for first login attempts
         setDefaultLoginData();

@@ -23,7 +23,7 @@ import javax.swing.JComboBox;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 class GuessTriggerBox
         extends JComboBox {

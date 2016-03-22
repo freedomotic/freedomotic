@@ -35,7 +35,7 @@ import java.util.Queue;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class PlainDrawer
         extends Renderer {
@@ -101,23 +101,23 @@ public class PlainDrawer
         getContext().translate(-offset, -offset);
 
         //external border of perimetral wall
-        final BasicStroke stroke4 =
-                new BasicStroke(PERIMETRAL_WALLS_TICKNESS, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
+        final BasicStroke stroke4
+                = new BasicStroke(PERIMETRAL_WALLS_TICKNESS, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
         g2.setStroke(stroke4);
         getContext().setColor(PERIMETRAL_WALLS_COLOR_LIGHT);
         g2.drawPolygon(poly);
 
         //center of perimetral wall
-        final BasicStroke stroke =
-                new BasicStroke(PERIMETRAL_WALLS_TICKNESS / 10, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
+        final BasicStroke stroke
+                = new BasicStroke(PERIMETRAL_WALLS_TICKNESS / 10, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
         g2.setStroke(stroke);
 
         //internal of perimetral wall
         getContext().setColor(PERIMETRAL_WALLS_COLOR);
         g2.drawPolygon(poly);
 
-        final BasicStroke stroke2 =
-                new BasicStroke(PERIMETRAL_WALLS_TICKNESS / 4, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
+        final BasicStroke stroke2
+                = new BasicStroke(PERIMETRAL_WALLS_TICKNESS / 4, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
         g2.setStroke(stroke2);
         getContext().setColor(PERIMETRAL_WALLS_COLOR_DARK);
         g2.drawPolygon(poly);
@@ -210,8 +210,8 @@ public class PlainDrawer
 
         g2.drawPolygon(poly);
 
-        final BasicStroke stroke2 =
-                new BasicStroke(INTERNAL_WALLS_TICKNESS, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
+        final BasicStroke stroke2
+                = new BasicStroke(INTERNAL_WALLS_TICKNESS, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
         g2.setStroke(stroke2);
 
         Color walls2 = INTERNAL_WALLS_COLOR_DARK;

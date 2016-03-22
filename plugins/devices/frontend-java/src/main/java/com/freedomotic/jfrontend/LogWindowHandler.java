@@ -27,7 +27,7 @@ import java.util.logging.LogRecord;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class LogWindowHandler extends Handler {
 

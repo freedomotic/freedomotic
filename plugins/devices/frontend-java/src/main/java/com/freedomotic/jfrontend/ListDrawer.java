@@ -47,7 +47,7 @@ import javax.swing.SpringLayout;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class ListDrawer extends Renderer {
 

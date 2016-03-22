@@ -26,7 +26,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public abstract class Drawer extends JPanel {
 
@@ -67,8 +67,8 @@ public abstract class Drawer extends JPanel {
         //throw new UnsupportedOperationException("Not yet implemented");
         return false;
     }
-    
-    void setSelectedZone(ZoneLogic selectedZone){
+
+    void setSelectedZone(ZoneLogic selectedZone) {
         //overwritted by subclasses
     }
 

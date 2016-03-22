@@ -17,12 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
-/*
- * CustomizeEvent.java
- *
- * Created on 4-set-2010, 9.57.19
- */
 package com.freedomotic.jfrontend.automationeditor;
 
 import com.freedomotic.api.Client;
@@ -35,14 +29,15 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class CustomizeCommand
         extends javax.swing.JFrame {
@@ -55,11 +50,14 @@ public class CustomizeCommand
     @Inject
     private ClientStorage clients;
     private final CommandRepository commandRepository;
+    private final static Logger LOG = LoggerFactory.getLogger(CustomizeCommand.class.getName());
 
     /**
      * Creates new form CustomizeEvent
      *
+     * @param i18n
      * @param original
+     * @param commandRepository
      */
     public CustomizeCommand(I18n i18n, Command original, CommandRepository commandRepository) {
         this.I18n = i18n;
@@ -115,14 +113,14 @@ public class CustomizeCommand
             c.setReceiver(original.getReceiver());
         }
 
-        System.out.println("receiver for  " + c.getName() + " is: " + c.getReceiver());
+        LOG.debug("Receiver for {} is: {}", c.getName(), c.getReceiver());
 
         for (int r = 0; r < model.getRowCount(); r++) {
             c.setProperty(model.getValueAt(r, 0).toString(),
                     model.getValueAt(r, 1).toString());
         }
 
-        System.out.println(c.getProperties().toString());
+        LOG.debug(c.getProperties().toString());
 
         return c;
     }
@@ -317,9 +315,9 @@ public class CustomizeCommand
         int postSize = commandRepository.findAll().size();
 
         if (preSize < postSize) {
-            LOG.info("Command addedd correctly [" + postSize + " commands]");
+            LOG.info("Command addedd correctly [{} commands]", postSize);
         } else {
-            LOG.severe("Error while adding a command");
+            LOG.error("Error while adding a command");
         }
 
 //        main.setTargetCommand(c);
@@ -344,9 +342,9 @@ public class CustomizeCommand
         int postSize = commandRepository.findAll().size();
 
         if (preSize == postSize) {
-            LOG.info("Command edited correctly [" + postSize + " commands]");
+            LOG.info("Command edited correctly [{} commands]", postSize);
         } else {
-            LOG.severe("Error while edit a command");
+            LOG.error("Error while edit a command");
         }
 
 //        main.setTargetCommand(newCommand);
@@ -354,7 +352,7 @@ public class CustomizeCommand
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnDeleteActionPerformed
-        LOG.info("Trying to remove a commend from the list");
+        LOG.info("Trying to remove a command from the list");
         commandRepository.delete(original);
 //        main.updateData();
         this.dispose();
@@ -381,5 +379,4 @@ public class CustomizeCommand
     private javax.swing.JLabel txtReceiver;
 
     // End of variables declaration//GEN-END:variables
- private final static Logger LOG = Logger.getLogger(CustomizeCommand.class.getName());
 }

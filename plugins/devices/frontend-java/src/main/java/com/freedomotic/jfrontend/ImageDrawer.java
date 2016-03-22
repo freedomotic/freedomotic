@@ -34,10 +34,10 @@ import java.util.Queue;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class ImageDrawer extends PlainDrawer {
-    
+
     Protocol master;
 
     /**
@@ -193,9 +193,9 @@ public class ImageDrawer extends PlainDrawer {
         Rectangle2D box = getCachedShape(obj).getBounds2D();
         int x = (int) box.getMaxX() + 20;
         int y = (int) box.getY() + 10;
-        Callout callout =
-                new Callout(obj.getPojo().getName(), "object.description",
-                description.toString(), x, y, 0.0f, 2000);
+        Callout callout
+                = new Callout(obj.getPojo().getName(), "object.description",
+                        description.toString(), x, y, 0.0f, 2000);
 //        if (!obj.getMessage().isEmpty()) {
 //            callout.setColor(Color.red.darker());
 //        }

@@ -36,14 +36,14 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class PluginConfigure
         extends javax.swing.JFrame {
@@ -53,6 +53,7 @@ public class PluginConfigure
 
     private PluginsManager pluginsManager;
     private static HashMap<Plugin, String> predefined = new HashMap<Plugin, String>();
+    private static final Logger LOG = LoggerFactory.getLogger(PluginConfigure.class.getName());
 
     /**
      * Creates new form PluginConfigure
@@ -84,6 +85,11 @@ public class PluginConfigure
         setVisible(true);
     }
 
+    /**
+     *
+     * @param api
+     * @param showClient
+     */
     public PluginConfigure(API api, Client showClient) {
         this(api);
         if (showClient instanceof Plugin) {
@@ -285,7 +291,7 @@ public class PluginConfigure
                 this.dispose();
             }
         } catch (Exception ex) {
-            Logger.getLogger(PluginConfigure.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 

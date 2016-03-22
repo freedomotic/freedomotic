@@ -37,7 +37,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Vector;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -45,16 +44,26 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.ListCellRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public final class PluginJList extends JList {
 
-    private static final Logger LOG = Logger.getLogger(PluginJList.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(PluginJList.class.getName());
     private String filter;
+
+    /**
+     *
+     */
     public boolean inDrag = false;
+
+    /**
+     *
+     */
     public int dragged = 0;
     private MainWindow parent;
 
@@ -267,7 +276,7 @@ public final class PluginJList extends JList {
             ListCellRenderer renderer = new CustomCellRenderer();
             setCellRenderer(renderer);
         } catch (Exception e) {
-            LOG.severe(Freedomotic.getStackTraceInfo(e));
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 

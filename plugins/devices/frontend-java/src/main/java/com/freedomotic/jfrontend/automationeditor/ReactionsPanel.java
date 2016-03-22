@@ -37,7 +37,7 @@ import javax.swing.JSeparator;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class ReactionsPanel
         extends JPanel {
@@ -55,11 +55,15 @@ public class ReactionsPanel
      * Creates new form ReactionList
      *
      * @param plugin
+     * @param nlpCommands
+     * @param triggerRepository
+     * @param reactionRepository
+     * @param commandRepository
      */
     public ReactionsPanel(
-            AutomationsEditor plugin, 
-            NlpCommand nlpCommands, 
-            TriggerRepository triggerRepository, 
+            AutomationsEditor plugin,
+            NlpCommand nlpCommands,
+            TriggerRepository triggerRepository,
             CommandRepository commandRepository,
             ReactionRepository reactionRepository) {
         this.plugin = plugin;
@@ -67,26 +71,30 @@ public class ReactionsPanel
         this.I18n = plugin.getApi().getI18n();
         this.triggerRepository = triggerRepository;
         this.commandRepository = commandRepository;
-        this.reactionRepository=reactionRepository;
+        this.reactionRepository = reactionRepository;
         init(null);
     }
 
     /**
      *
      * @param i18n
+     * @param nlpCommands
+     * @param triggerRepository
      * @param obj
+     * @param reactionRepository
+     * @param commandRepository
      */
     public ReactionsPanel(
-            I18n i18n, 
-            NlpCommand nlpCommands, 
-            TriggerRepository triggerRepository, 
-            CommandRepository commandRepository, 
+            I18n i18n,
+            NlpCommand nlpCommands,
+            TriggerRepository triggerRepository,
+            CommandRepository commandRepository,
             EnvObjectLogic obj,
             ReactionRepository reactionRepository) {
         this.I18n = i18n;
         this.nlpCommands = nlpCommands;
         this.triggerRepository = triggerRepository;
-        this.reactionRepository=reactionRepository;
+        this.reactionRepository = reactionRepository;
         this.commandRepository = commandRepository;
         init(obj);
     }
@@ -115,7 +123,7 @@ public class ReactionsPanel
 
                 for (Reaction r : reactionRepository.findAll()) {
                     if (r.getTrigger().equals(trigger) && !r.getCommands().isEmpty()) {
-                        ReactionEditor editor = new ReactionEditor(I18n, nlpCommands, commandRepository, r, this,reactionRepository);
+                        ReactionEditor editor = new ReactionEditor(I18n, nlpCommands, commandRepository, r, this, reactionRepository);
                         panel.add(editor, pos++);
                         found = true;
                     }
@@ -145,7 +153,7 @@ public class ReactionsPanel
             if (!trigger.isHardwareLevel()) {
                 Iterator it = trigger.getPayload().iterator();
 
-                //chack if this trigger is related toi the object and set a flag
+                //chack if this trigger is related to the object and set a flag
                 while (it.hasNext()) {
                     Statement statement = (Statement) it.next();
 

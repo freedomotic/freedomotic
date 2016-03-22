@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class LogViewer extends Protocol {
 
