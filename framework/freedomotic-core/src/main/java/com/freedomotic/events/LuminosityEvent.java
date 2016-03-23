@@ -40,17 +40,17 @@ public class LuminosityEvent
     /**
      *
      * @param source
-     * @param temperature
+     * @param luminosity
      * @param z
      */
-    public LuminosityEvent(Object source, int temperature, Zone z) {
-        this.luminosity = temperature;
+    public LuminosityEvent(Object source, int luminosity, Zone z) {
+        this.luminosity = luminosity;
         zone = z.getName();
         generateEventPayload();
     }
 
     /**
-     *
+     * Generates the event payload.
      */
     @Override
     protected void generateEventPayload() {
@@ -68,8 +68,9 @@ public class LuminosityEvent
     }
 
     /**
+     * Gets the default channel.
      *
-     * @return
+     * @return the default channel 'app.event.sensor.luminosity'
      */
     @Override
     public String getDefaultDestination() {

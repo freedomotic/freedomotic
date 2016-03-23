@@ -93,8 +93,8 @@ public class Plugin implements Client, BusConsumer {
 
     /**
      *
-     * @param pluginName
-     * @param manifestPath
+     * @param pluginName the plugin name
+     * @param manifestPath the path of the plugin configuration file
      */
     public Plugin(String pluginName, String manifestPath) {
         Freedomotic.INJECTOR.injectMembers(this);
@@ -104,7 +104,9 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
-     * Used to create a Plugin placeholder for things
+     * Used to create a Plugin placeholder for things.
+     *
+     * @param pluginName the plugin name
      */
     public Plugin(String pluginName) {
         Freedomotic.INJECTOR.injectMembers(this);
@@ -113,10 +115,10 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
-     * User by JoinPlugin to instantiate a new plugin
+     * Used by JoinPlugin to instantiate a new plugin.
      *
-     * @param pluginName
-     * @param manifest
+     * @param pluginName the plugin name
+     * @param manifest the manifest config file
      */
     public Plugin(String pluginName, Config manifest) {
         Freedomotic.INJECTOR.injectMembers(this);
@@ -125,8 +127,9 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Returns the path of the plugin configuration file.
      *
-     * @return
+     * @return the path of the plugin configuration file
      */
     public File getFile() {
         return path;
@@ -155,6 +158,7 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Sets the plugin description.
      *
      * @param description
      */
@@ -174,6 +178,11 @@ public class Plugin implements Client, BusConsumer {
         }
     }
 
+    /**
+     * Notifies an error on console/logfile and shows a callout on the frontend.
+     *
+     * @param message the error message
+     */
     public void notifyError(String message) {
         //Log the error on console/logfiles
         LOG.warn(message);
@@ -202,6 +211,12 @@ public class Plugin implements Client, BusConsumer {
         currentPluginStatus = PluginStatus.FAILED;
     }
 
+    /**
+     * Notifies a critical error on the console/logfile and keeps a stack trace.
+     *
+     * @param message the error message
+     * @param ex the raised exception
+     */
     protected void notifyCriticalError(String message, Exception ex) {
         //Log and keep stack trace
         LOG.error(message, ex);
@@ -209,8 +224,9 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Returns the plugin description.
      *
-     * @return
+     * @return the plugin description
      */
     @Override
     public String getDescription() {
@@ -239,24 +255,27 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Returns the plugin category.
      *
-     * @return
+     * @return the plugin category
      */
     public final String getCategory() {
         return category;
     }
 
     /**
+     * Returns the required version for the plugin.
      *
-     * @return
+     * @return the required version
      */
     public String getRequiredVersion() {
         return requiredVersion;
     }
 
     /**
+     * Returns the plugin version.
      *
-     * @return
+     * @return the plugin version
      */
     public String getVersion() {
         return version;
@@ -305,21 +324,28 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Returns the plugin name.
      *
-     * @return
+     * @return the plugin name
      */
     @Override
     public String getName() {
         return pluginName;
     }
 
+    /**
+     * Returns the current plugin status.
+     *
+     * @return the current plugin status
+     */
     public String getStatus() {
         return currentPluginStatus.name();
     }
 
     /**
+     * Returns the plugin type.
      *
-     * @return
+     * @return the plugin type
      */
     @Override
     public String getType() {
@@ -327,25 +353,38 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Checks if the plugin status is 'RUNNING'.
      *
-     * @return
+     * @return true if the plugin status is 'RUNNING', false otherwise
      */
     @Override
     public boolean isRunning() {
         return currentPluginStatus.equals(PluginStatus.RUNNING);
     }
 
+    /**
+     * Checks if the plugin status is 'STARTING' or 'RUNNING'.
+     *
+     * @return true if the plugin status is 'STARTING' or 'RUNNING', false
+     * otherwise
+     */
     public boolean isAllowedToSend() {
         return currentPluginStatus.equals(PluginStatus.STARTING) || currentPluginStatus.equals(PluginStatus.RUNNING);
     }
 
+    /**
+     * Checks if the plugin can start.
+     *
+     * @return true if the plugin can start, false otherwise
+     */
     public boolean isAllowedToStart() {
         return PluginStatus.isAllowedToStart(currentPluginStatus);
     }
 
     /**
+     * Gets the plugin class name.
      *
-     * @return
+     * @return the plugin class name
      */
     @XmlElement(name = "uuid")
     public String getClassName() {
@@ -353,14 +392,20 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Sets the plugin name.
      *
-     * @param name
+     * @param name the new plugin name
      */
     @Override
     public final void setName(String name) {
         pluginName = name;
     }
 
+    /**
+     * Sets the plugin status.
+     *
+     * @param newStatus the new plugin status
+     */
     protected final void setStatus(PluginStatus newStatus) {
         currentPluginStatus = newStatus;
 
@@ -405,8 +450,9 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Calculates an hash code.
      *
-     * @return
+     * @return an hash code
      */
     @Override
     public int hashCode() {
@@ -430,11 +476,16 @@ public class Plugin implements Client, BusConsumer {
         register();
     }
 
+    /**
+     * Deserializes the xml configuration file.
+     *
+     * @param manifest the manifest configuration file
+     */
     private void deserializeManifest(File manifest) {
         try {
             configuration = ConfigPersistence.deserialize(manifest);
         } catch (IOException ex) {
-            LOG.error("Missing manifest " + manifest.toString() + " for plugin " + getName());
+            LOG.error("Missing manifest {} for plugin {}", new Object[]{manifest.toString(), getName()});
             setDescription("Missing manifest file " + manifest.toString());
         }
 
@@ -490,7 +541,7 @@ public class Plugin implements Client, BusConsumer {
 
     /**
      *
-     * @return
+     * @return the plugin name
      */
     @Override
     public String toString() {
@@ -513,6 +564,10 @@ public class Plugin implements Client, BusConsumer {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Destroyies the messaging channel.
+     *
+     */
     @Override
     public void destroy() {
         // Destroy the messaging channel

@@ -46,7 +46,7 @@ public abstract class AbstractConsumer implements BusConsumer {
 
     /**
      *
-     * @param c
+     * @param c the command received
      * @throws IOException
      * @throws UnableToExecuteException
      */
@@ -130,7 +130,7 @@ public abstract class AbstractConsumer implements BusConsumer {
         @Override
         public void run() {
             try {
-                // a command is supposed executed if the plugin doesen't say the contrary
+                // a command is supposed executed if the plugin doesn't say the contrary
                 command.setExecuted(true);
                 onCommand(command);
             } catch (IOException ex) {

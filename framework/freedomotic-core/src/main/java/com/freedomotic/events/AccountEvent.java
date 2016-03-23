@@ -22,8 +22,8 @@ package com.freedomotic.events;
 import com.freedomotic.api.EventTemplate;
 
 /**
- * Channel <b>app.event.sensor.account.change"</b>. Informs about a change in an
- * account status.
+ * Channel <b>app.event.sensor.account.change"</b> informs about an account
+ * status change.
  *
  * @author Enrico Nicoletti
  */
@@ -47,8 +47,9 @@ public class AccountEvent extends EventTemplate {
     }
 
     /**
+     * Gets the default channel.
      *
-     * @return
+     * @return the default channel 'app.event.sensor.account.change'
      */
     @Override
     public String getDefaultDestination() {
