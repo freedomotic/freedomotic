@@ -72,7 +72,7 @@ public class ArduinoRemoteController extends Protocol {
             udpServer = new UDPServer(this);
             udpServer.start();
         } catch (IOException iOException) {
-            LOG.error("Error during UDP server creation " + iOException.toString());
+            LOG.error("Error during UDP server creation {}", iOException.toString());
         }
     }
 
@@ -101,7 +101,7 @@ public class ArduinoRemoteController extends Protocol {
         event.addProperty("button.pressed", eventValue);
         //publish the event on the messaging bus
         this.notifyEvent(event);
-        LOG.debug("Sending event : " + event.toString());  // FOR DEBUG USE
+        LOG.debug("Sending event : {}", event.toString());
     }
 
     /**

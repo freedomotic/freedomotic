@@ -103,7 +103,7 @@ public class ArduinoWeatherShield extends Protocol {
                 int PORT_TO_QUERY = configuration.getTuples().getIntProperty(i, "port-to-query", 80);
                 Board board = new Board(IP_TO_QUERY, PORT_TO_QUERY);
                 LOG.info("Arduino Weathershield board configured to be"
-                        + " queried at {0}:{1}", new Object[]{IP_TO_QUERY, PORT_TO_QUERY});
+                        + " queried at {}:{}", new Object[]{IP_TO_QUERY, PORT_TO_QUERY});
                 boards.add(board);
             }
         }
@@ -114,7 +114,7 @@ public class ArduinoWeatherShield extends Protocol {
         String data = http.retrieveContent(urlString);
         String dataSensors = parseBody(data);
         if (!dataSensors.isEmpty()) {
-            LOG.info("Read data from Arduino Weathershield: {0}", dataSensors);
+            LOG.info("Read data from Arduino Weathershield: {}", dataSensors);
             try {
                 notifyReadValues(board, dataSensors);
             } catch (IllegalArgumentException ex) {

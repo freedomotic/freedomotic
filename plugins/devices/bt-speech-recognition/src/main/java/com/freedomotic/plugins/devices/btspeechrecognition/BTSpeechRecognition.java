@@ -111,7 +111,7 @@ public class BTSpeechRecognition
     public void sendCommand(String command) {
         if (!command.trim().isEmpty()) {
             String commandRecognized = command.substring(0, command.length() - 1);
-            LOG.info("Trying to send command ''{0}''", commandRecognized);
+            LOG.info("Trying to send command ''{}''", commandRecognized);
             Command nlpCommand = new Command();
             nlpCommand.setName("Recognize text with NLP");
             nlpCommand.setReceiver("app.commands.interpreter.nlp");
@@ -124,10 +124,10 @@ public class BTSpeechRecognition
                 String executedCommand = reply.getProperty("result");
                 if (executedCommand != null) {
                     setDescription("Recognized command: " + executedCommand);
-                    LOG.info("Recognized command ''{0}''", executedCommand);
+                    LOG.info("Recognized command ''{}''", executedCommand);
                 } else {
                     setDescription("No similar command exists");
-                    LOG.info("No valid command similar to ''{0}''", commandRecognized);
+                    LOG.info("No valid command similar to ''{}''", commandRecognized);
                 }
             } else {
                 setDescription("Unreceived reply within given timeout (10 seconds)");

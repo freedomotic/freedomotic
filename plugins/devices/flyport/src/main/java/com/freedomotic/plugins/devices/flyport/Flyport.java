@@ -102,7 +102,7 @@ public class Flyport extends Protocol {
      */
     private boolean connect(String address, int port) {
 
-        LOG.info("Trying to connect to flyport board on address " + address + ':' + port);
+        LOG.info("Trying to connect to flyport board on address {}:{}", address, port);
         try {
             //TimedSocket is a non-blocking socket with timeout on exception
             socket = TimedSocket.getSocket(address, port, SOCKET_TIMEOUT);
@@ -111,7 +111,7 @@ public class Flyport extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            LOG.error("Unable to connect to host " + address + " on port " + port);
+            LOG.error("Unable to connect to host {} on port {}", address, port);
             return false;
         }
     }
@@ -174,7 +174,7 @@ public class Flyport extends Protocol {
         try {
             statusFileURL = "http://" + board.getIpAddress() + ":"
                     + Integer.toString(board.getPort()) + "/status.xml";
-            LOG.info("Flyport gets relay status from file " + statusFileURL);
+            LOG.info("Flyport gets relay status from file {}", statusFileURL);
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
         } catch (ConnectException connEx) {
@@ -209,7 +209,7 @@ public class Flyport extends Protocol {
                 try {
                     // converts i into hexadecimal value (string) and sends the parameters
                     String tagName = board.getLineToMonitorize() + HexIntConverter.convert(i);
-                    LOG.debug("Flyport monitorizes tags " + tagName);
+                    LOG.debug("Flyport monitorizes tags {}", tagName);
                     sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent());
                 } catch (DOMException dOMException) {
                     //do nothing
@@ -225,7 +225,7 @@ public class Flyport extends Protocol {
     private void sendChanges(int relayLine, Board board, String status) {
         //reconstruct freedomotic object address
         String address = board.getIpAddress() + ":" + board.getPort() + ":" + relayLine;
-        LOG.info("Sending Flyport protocol read event for object address '" + address + "'. It's readed status is " + status);
+        LOG.info("Sending Flyport protocol read event for object address '{}'. It's readed status is {}", address, status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "flyport", address); //IP:PORT:RELAYLINE
         // relay lines - status=0 -> off; status=1 -> on

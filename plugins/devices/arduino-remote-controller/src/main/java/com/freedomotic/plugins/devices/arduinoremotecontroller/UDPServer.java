@@ -43,7 +43,7 @@ public class UDPServer extends Thread {
     public UDPServer(ArduinoRemoteController plugin) throws IOException {
         this.plugin = plugin;
         socket = new DatagramSocket(plugin.UDP_SERVER_PORT, InetAddress.getByName(plugin.UDP_SERVER_HOSTNAME));
-        LOG.info("ServerUDP listen to " + socket.getLocalSocketAddress());
+        LOG.info("ServerUDP listen to {}", socket.getLocalSocketAddress());
     }
 
     public void run() {
@@ -57,7 +57,7 @@ public class UDPServer extends Thread {
                     extractData(packet);
                 }
             } catch (Exception ex) {
-                LOG.error("Reading UDP packet exception " + ex);
+                LOG.error("Reading UDP packet exception {}", ex);
             }
         }
     }

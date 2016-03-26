@@ -31,21 +31,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+/**
+ *
+ * @author mauro
+ */
 public class Ipx800 extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(Ipx800.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Ipx800.class.getName());
     private static ArrayList<Board> boards = null;
     Map<String, Board> devices = new HashMap<String, Board>();
     private static int BOARD_NUMBER = 1;
@@ -164,7 +168,7 @@ public class Ipx800 extends Protocol {
         try {
             dBuilder = dbFactory.newDocumentBuilder();
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(Ipx800.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
         Document doc = null;
         String statusFileURL = null;
@@ -182,21 +186,21 @@ public class Ipx800 extends Protocol {
                 statusFileURL = "http://" + board.getIpAddress() + ":"
                         + Integer.toString(board.getPort()) + "/" + GET_STATUS_URL;
             }
-            LOG.log(Level.INFO, "Ipx800 gets relay status from file {0}", statusFileURL);
+            LOG.info("Ipx800 gets relay status from file {0}", statusFileURL);
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
         } catch (ConnectException connEx) {
-            LOG.severe(Freedomotic.getStackTraceInfo(connEx));
+            LOG.error(Freedomotic.getStackTraceInfo(connEx));
             //disconnect();
             this.stop();
             this.setDescription("Connection timed out, no reply from the board at " + statusFileURL);
         } catch (SAXException ex) {
             //this.stop();
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         } catch (Exception ex) {
             //this.stop();
             setDescription("Unable to connect to " + statusFileURL);
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
         return doc;
     }
@@ -234,7 +238,7 @@ public class Ipx800 extends Protocol {
                     }
                 }
             } catch (DOMException domException) {
-                LOG.severe("DOMException " + domException.getLocalizedMessage());
+                LOG.error("DOMException " + domException.getLocalizedMessage());
             }
         }
     }
@@ -285,7 +289,7 @@ public class Ipx800 extends Protocol {
 
     /**
      * Actuator side
-     */
+     * @throws com.freedomotic.exceptions.UnableToExecuteException    */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
         //get connection paramentes address:port from received freedomotic command
@@ -294,7 +298,7 @@ public class Ipx800 extends Protocol {
         try {
             sendToBoard(board, c);
         } catch (IOException ex) {
-            LOG.severe("Impossibile to send command " + ex.getLocalizedMessage());
+            LOG.error("Impossibile to send command " + ex.getLocalizedMessage());
         }
     }
 
@@ -334,9 +338,9 @@ public class Ipx800 extends Protocol {
             }
             String result = sb.toString();
         } catch (MalformedURLException e) {
-            LOG.severe("Command malformed URL " + e.toString());
+            LOG.error("Command malformed URL " + e.toString());
         } catch (IOException e) {
-            LOG.severe("Command IOexception" + e.toString());
+            LOG.error("Command IOexception" + e.toString());
         }
     }
 

@@ -76,9 +76,9 @@ public class BTServer
     private void initDevice() throws BluetoothStateException {
         try {  // make the server's device discoverable
             LocalDevice local = LocalDevice.getLocalDevice();
-            pluginRef.pluginLog().info("Found local device: " + local.getFriendlyName() + " with Bluetooth Address: " + local.getBluetoothAddress());
+            pluginRef.pluginLog().info("Found local device: {}", local.getFriendlyName() + " with Bluetooth Address: " + local.getBluetoothAddress());
             boolean res = local.setDiscoverable(DiscoveryAgent.GIAC);
-            pluginRef.pluginLog().info("Discoverability set: '{0}'", res);
+            pluginRef.pluginLog().info("Discoverability set: '{}'", res);
         } catch (BluetoothStateException ex) {
             // throws the exception to caller thread run()
             throw ex;
@@ -90,7 +90,7 @@ public class BTServer
      * and name. This also creates a service record.
      */ {
         try {
-            pluginRef.pluginLog().info("Start advertising ''{0}'' service ...", SERVICE_NAME);
+            pluginRef.pluginLog().info("Start advertising ''{}'' service ...", SERVICE_NAME);
             server = (StreamConnectionNotifier) Connector.open(
                     "btspp://localhost:" + UUID_STRING
                     + ";name=" + SERVICE_NAME + ";authenticate=false");

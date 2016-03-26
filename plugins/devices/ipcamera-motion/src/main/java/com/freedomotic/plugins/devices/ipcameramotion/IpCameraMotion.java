@@ -40,18 +40,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.border.Border;
 import java.net.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IpCameraMotion
         extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(IpCameraMotion.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(IpCameraMotion.class.getName());
     private final int PANEL_WIDTH = configuration.getIntProperty("panel-width", 256);
     private final int PANEL_HEIGHT = configuration.getIntProperty("panel-height", 144);
     private final int DETECTOR_INTERVAL = configuration.getIntProperty("detector-interval", 2000);
@@ -96,7 +96,7 @@ public class IpCameraMotion
             // TODO if there are no cameras available stop plugin
             throw new PluginStartupException("Error loading cameras " + ex.getMessage(), ex);
         }
-        LOG.log(Level.INFO, "IpCamera Motion plugin started");
+        LOG.info("IpCamera Motion plugin started");
 
     }
 
@@ -111,7 +111,7 @@ public class IpCameraMotion
         for (Webcam webcam : Webcam.getWebcams()) {
             webcam.close();
         }
-        LOG.log(Level.INFO, "IpCamera Motion plugin stopped");
+        LOG.info("IpCamera Motion plugin stopped");
     }
 
     @Override
@@ -119,12 +119,12 @@ public class IpCameraMotion
             throws IOException, UnableToExecuteException {
         switch (c.getProperty("command")) {
             case "CAPTURE-IMAGE":
-                System.out.println("Command capture image " + c.getProperty("camera-name"));
+                LOG.debug("Command capture image " + c.getProperty("camera-name"));
                 captureImage(c.getProperty("camera-name"));
                 break;
 
         }
-        LOG.log(Level.INFO, "IpCamera Motion plugin receives a command called " + c.getName() + " with parameters "
+        LOG.info("IpCamera Motion plugin receives a command called " + c.getName() + " with parameters "
                 + c.getProperties().toString());
     }
 
@@ -232,7 +232,7 @@ public class IpCameraMotion
             event.getPayload().addStatement("motion-area", String.valueOf(wme.getArea())); //percentage of complete image pixels area that has been changed between two consecutive images
             event.getPayload().addStatement("center-of-gravity", wme.getCog().toString()); //center-of-gravity (the center of motion area)
             notifyEvent(event);
-            LOG.log(Level.INFO, "IpCamera {0} detected motion!", webcam.getName());
+            LOG.info("IpCamera {} detected motion!", webcam.getName());
         }
     }
 
@@ -247,7 +247,7 @@ public class IpCameraMotion
             try {
                 ImageIO.write(image, "JPG", new File(Info.PATHS.PATH_DEVICES_FOLDER + "/ipcamera-motion/data/captured-images/" + webcam.getName() + "_" + dateStr + ".jpg"));
             } catch (IOException ex) {
-                LOG.severe("Error during image capture from camera " + cameraName + " for: " + ex.getMessage());
+                LOG.error("Error during image capture from camera " + cameraName + " for: " + ex.getMessage());
             }
         }
     }

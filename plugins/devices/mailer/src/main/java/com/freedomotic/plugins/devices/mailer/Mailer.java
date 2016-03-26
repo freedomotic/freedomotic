@@ -26,7 +26,6 @@ import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.Logger;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -35,6 +34,8 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -42,9 +43,15 @@ import javax.mail.internet.MimeMessage;
  */
 public final class Mailer extends Protocol {
 
-    public static final Logger LOG = Logger.getLogger(Mailer.class.getName());
+    /**
+     *
+     */
+    public static final Logger LOG = LoggerFactory.getLogger(Mailer.class.getName());
     private int sentMails;
 
+    /**
+     *
+     */
     public Mailer() {
         super("Mailer", "/mailer/mailer-manifest.xml");
         addEventListener("app.event.sensor.messages.mail");

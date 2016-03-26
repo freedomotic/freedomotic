@@ -31,12 +31,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class HwgSte extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(HwgSte.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(HwgSte.class.getName());
     private static ArrayList<Board> boards = null;
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
@@ -100,7 +101,7 @@ public class HwgSte extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            LOG.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.error("Unable to connect to host " + address + " on port " + port);
             return false;
         }
     }
@@ -145,7 +146,7 @@ public class HwgSte extends Protocol {
             try {
                 Thread.sleep(POLLING_TIME);
             } catch (InterruptedException ex) {
-                Logger.getLogger(HwgSte.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.error(ex.getMessage());
             }
         }
     }

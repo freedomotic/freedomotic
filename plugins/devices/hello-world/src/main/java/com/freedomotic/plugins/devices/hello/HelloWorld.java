@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author mauro
+ * @author Mauro Cicolella
  */
 public class HelloWorld
         extends Protocol {
@@ -77,25 +77,25 @@ public class HelloWorld
     @Override
     protected void onRun() {
         for (EnvObjectLogic thing : thingsRepository.findAll()) {
-            LOG.info("HelloWorld sees Thing: " + thing.getPojo().getName());
+            LOG.info("HelloWorld sees Thing: {}", thing.getPojo().getName());
         }
     }
 
     @Override
     protected void onStart() {
-        LOG.info("HelloWorld plugin is started");
+        LOG.info("HelloWorld plugin started");
     }
 
     @Override
     protected void onStop() {
-        LOG.info("HelloWorld plugin is stopped ");
+        LOG.info("HelloWorld plugin stopped");
     }
 
     @Override
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
-        LOG.info("HelloWorld plugin receives a command called " + c.getName() + " with parameters "
-                + c.getProperties().toString());
+        LOG.info("HelloWorld plugin receives a command called {} with parameters {}", c.getName(),
+                c.getProperties().toString());
     }
 
     @Override

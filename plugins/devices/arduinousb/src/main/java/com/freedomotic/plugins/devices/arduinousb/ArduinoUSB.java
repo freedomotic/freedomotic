@@ -65,7 +65,7 @@ public class ArduinoUSB extends Protocol {
 
                 @Override
                 public void onDataAvailable(String data) {
-                    LOG.info("Arduino USB received: {0}", data);
+                    LOG.info("Arduino USB received: {}", data);
                     sendChanges(data);
                 }
             });

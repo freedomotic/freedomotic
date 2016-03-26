@@ -17,7 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.plugins.devices.btspeechrecognition;
 
 
@@ -32,8 +31,7 @@ import javax.microedition.io.*;
 import javax.bluetooth.*;
 
 /**
- * @author Mauro Cicolella
- * Adapted from original code by Andrew Davison
+ * @author Mauro Cicolella Adapted from original code by Andrew Davison
  * ad@fivedots.coe.psu.ac.th, February 2011
  */
 public class ThreadedBTClientHandler extends Thread {
@@ -56,7 +54,7 @@ public class ThreadedBTClientHandler extends Thread {
 
         // store the name of the connected client
         clientName = reportDeviceName(conn);
-        pluginRef.pluginLog().info("Handler spawned for BT client: ''{0}''", clientName);
+        pluginRef.pluginLog().info("Handler spawned for BT client: ''{}''", clientName);
     } // end of ThreadedEchoHandler()
 
     private String reportDeviceName(StreamConnection conn) /*
@@ -81,7 +79,7 @@ public class ThreadedBTClientHandler extends Thread {
             in = conn.openInputStream();
             out = conn.openOutputStream();
             processMsgs();
-            pluginRef.pluginLog().info("Closing ''{0}'' connection", clientName);
+            pluginRef.pluginLog().info("Closing ''{}'' connection", clientName);
             if (conn != null) {
                 in.close();
                 out.close();
@@ -127,7 +125,7 @@ public class ThreadedBTClientHandler extends Thread {
         try {
             int len = in.read();    // get the message length
             if (len <= 0) {
-                pluginRef.pluginLog().error(clientName + ": Message Length Error");
+                pluginRef.pluginLog().error("{} : Message Length Error", clientName);
                 return null;
             }
 
@@ -137,7 +135,7 @@ public class ThreadedBTClientHandler extends Thread {
                 receivedMessage = new String(buffer, 0, readBytes);
             }
         } catch (IOException e) {
-            pluginRef.pluginLog().error(" readData(): {0}", e);
+            pluginRef.pluginLog().error(" readData(): {}", e);
             return null;
         }
         return receivedMessage;
@@ -152,8 +150,8 @@ public class ThreadedBTClientHandler extends Thread {
             out.flush();
             return true;
         } catch (Exception e) {
-            pluginRef.pluginLog().error(clientName + " sendMessage(): {0}", e);
+            pluginRef.pluginLog().error("{} sendMessage(): {}", clientName, e);
             return false;
         }
     }  // end of sendMessage()
-}  
+}

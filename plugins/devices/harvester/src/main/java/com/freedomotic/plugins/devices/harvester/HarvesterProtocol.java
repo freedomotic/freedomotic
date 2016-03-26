@@ -41,8 +41,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.EntityManager;
@@ -51,10 +49,12 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import org.apache.openjpa.persistence.ArgumentException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 public final class HarvesterProtocol extends Protocol {
 
@@ -64,8 +64,11 @@ public final class HarvesterProtocol extends Protocol {
     EntityManager em;
     Properties props;
     String dbType;
-    private final static Logger LOG = Logger.getLogger(HarvesterProtocol.class.getName());
+    private final static Logger LOG = LoggerFactory.getLogger(HarvesterProtocol.class.getName());
 
+    /**
+     *
+     */
     public HarvesterProtocol() {
         super("HarvesterProtocol", "/harvester/harvester-manifest.xml");
         this.setName("Harvester");
@@ -101,11 +104,11 @@ public final class HarvesterProtocol extends Protocol {
             setDescription("Connected to database");
             setPollingWait(2000);
         } catch (FileNotFoundException e) {
-            LOG.log(Level.SEVERE, "Unable to find configuration file for harvester of type: {0}", dbType);
+            LOG.error("Unable to find configuration file for harvester of type: {}", dbType);
         } catch (ArgumentException e) {
-            LOG.warning("ArgumentException " + e.getLocalizedMessage());
+            LOG.warn("ArgumentException {}", e.getLocalizedMessage());
         } catch (Exception e) {
-            LOG.severe("Exception " + e.getLocalizedMessage());
+            LOG.error("Exception {}", e.getLocalizedMessage());
             e.printStackTrace();
             stop();
         }
@@ -123,7 +126,7 @@ public final class HarvesterProtocol extends Protocol {
             em.close();
             factory.close();
         } catch (Exception e) {
-            LOG.severe("Error stopping Harvester: " + e.getLocalizedMessage());
+            LOG.error("Error stopping Harvester: {}", e.getLocalizedMessage());
         }
         this.setDescription("Disconnected");
 
@@ -203,7 +206,7 @@ public final class HarvesterProtocol extends Protocol {
             LOG.info(df.toString());
             return df;
         } else {
-            LOG.warning("Harvester cannot extract data if it misses FilterType or FilterID properties");
+            LOG.warn("Harvester cannot extract data if it misses FilterType or FilterID properties");
             return null;
         }
     }
@@ -219,7 +222,7 @@ public final class HarvesterProtocol extends Protocol {
             try {
                 om.writeValue(os, df);
             } catch (IOException ex) {
-                LOG.severe(ex.getLocalizedMessage());
+                LOG.error(ex.getLocalizedMessage());
             }
             ev.addProperty("behaviorValue", os.toString());
             this.notifyEvent(ev);
@@ -275,7 +278,7 @@ public final class HarvesterProtocol extends Protocol {
                 }
             }
         } catch (Exception ex) {
-            LOG.severe(ex.getLocalizedMessage());
+            LOG.error(ex.getLocalizedMessage());
             ex.printStackTrace();
         }
     }

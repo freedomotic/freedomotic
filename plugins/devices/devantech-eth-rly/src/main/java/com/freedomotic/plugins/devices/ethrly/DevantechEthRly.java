@@ -119,7 +119,7 @@ public class DevantechEthRly extends Protocol {
      */
     private boolean connect(String address, int port) {
 
-        LOG.info("Trying to connect to Devantech Eth-Rly board on address " + address + ':' + port);
+        LOG.info("Trying to connect to Devantech Eth-Rly board on address {}", address + ':' + port);
         try {
             //TimedSocket is a non-blocking socket with timeout on exception
             socket = TimedSocket.getSocket(address, port, SOCKET_TIMEOUT);
@@ -128,7 +128,7 @@ public class DevantechEthRly extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            LOG.error("Unable to connect to host " + address + " on port " + port);
+            LOG.error("Unable to connect to host {} on port {}", address, port);
             return false;
         }
     }
@@ -203,7 +203,7 @@ public class DevantechEthRly extends Protocol {
             if (board.getHttpAuthentication().equalsIgnoreCase("true")) {
                 urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
             }
-            LOG.info("Devantech Eth-Rly gets relay status from file " + url);
+            LOG.info("Devantech Eth-Rly gets relay status from file {}", url);
             doc = dBuilder.parse(urlConnection.getInputStream());
             doc.getDocumentElement().normalize();
         } catch (ConnectException connEx) {
@@ -256,7 +256,7 @@ public class DevantechEthRly extends Protocol {
         relayLine++;
         //reconstruct freedomotic object address
         String address = board.getAlias() + ":" + relayLine;
-        LOG.info("Sending Devantech Eth-Rly protocol read event for object address '" + address + "'. It's readed status is " + status);
+        LOG.info("Sending Devantech Eth-Rly protocol read event for object address '{}'. It's readed status is {}", address, status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "devantech-eth-rly", address); //ALIAS:RELAYLINE
         if (status.equals("0")) {
@@ -311,7 +311,7 @@ public class DevantechEthRly extends Protocol {
                 }
             } catch (IOException iOException) {
                 setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);
-                LOG.error("Unable to send the message to host " + ip_board + " on port " + port_board);
+                LOG.error("Unable to send the message to host {} on port ", ip_board, port_board);
                 System.err.println(iOException);
                 throw new UnableToExecuteException();
             } finally {
@@ -337,9 +337,9 @@ public class DevantechEthRly extends Protocol {
         return receivedReply;
     }
 
-    // create message to send to the board
-    // this part must be changed to relect board protocol
     /**
+     * Create message to send to the board. This part must be changed to reflect
+     * board protocol
      *
      * @param c
      * @return
