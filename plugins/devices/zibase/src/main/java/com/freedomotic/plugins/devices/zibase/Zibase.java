@@ -35,20 +35,21 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 /**
  *
+ * @author Mauro Cicolella
  */
 public class Zibase extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(Zibase.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Zibase.class.getName());
     Map<String, Board> devices = new HashMap<String, Board>();
     private static Map<String, String> X10Map;
     private static Map<String, String> ZwaveMap;
@@ -104,7 +105,7 @@ public class Zibase extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            LOG.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.error("Unable to connect to host " + address + " on port " + port);
             return false;
         }
     }
@@ -155,7 +156,7 @@ public class Zibase extends Protocol {
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
-            LOG.severe(ex.getLocalizedMessage());
+            LOG.error(ex.getLocalizedMessage());
         }
     }
 
@@ -166,7 +167,7 @@ public class Zibase extends Protocol {
         try {
             dBuilder = dbFactory.newDocumentBuilder();
         } catch (ParserConfigurationException ex) {
-            LOG.severe(ex.getLocalizedMessage());
+            LOG.error(ex.getLocalizedMessage());
         }
         Document doc = null;
         String statusFileURL = null;
@@ -183,12 +184,12 @@ public class Zibase extends Protocol {
         } catch (SAXException ex) {
             disconnect();
             this.stop();
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         } catch (Exception ex) {
             disconnect();
             this.stop();
             setDescription("Unable to connect to " + statusFileURL);
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
         return doc;
     }
@@ -278,7 +279,7 @@ public class Zibase extends Protocol {
         //reconstruct freedomotic object address
         String address = board.getAlias() + ":" + x10Address + ":" + protocol;
         //String address = board.getIpAddress() + ":" + board.getPort() + ":" + x10Address + ":" + protocol;
-        LOG.severe("Sending Zibase protocol read event for object address '" + address + "'. It's readed status is " + status);
+        LOG.error("Sending Zibase protocol read event for object address '" + address + "'. It's readed status is " + status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "zibase", address); //object address ALIAS:X10ADDRESS:PROTOCOL
         if (status.equals("0")) {
@@ -292,6 +293,8 @@ public class Zibase extends Protocol {
 
     /**
      * Actuator side
+     *
+     * @throws com.freedomotic.exceptions.UnableToExecuteException
      */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
@@ -309,10 +312,10 @@ public class Zibase extends Protocol {
         try {
             connected = connect(ip_board, port_board);
         } catch (ArrayIndexOutOfBoundsException outEx) {
-           LOG.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
+            LOG.error("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
             throw new UnableToExecuteException();
         } catch (NumberFormatException numberFormatException) {
-            LOG.severe(port_board + " is not a valid ethernet port to connect to");
+            LOG.error(port_board + " is not a valid ethernet port to connect to");
             throw new UnableToExecuteException();
         }
 
@@ -326,7 +329,7 @@ public class Zibase extends Protocol {
                 }
             } catch (IOException iOException) {
                 setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);
-               LOG.severe("Unable to send the message to host " + address[0] + " on port " + address[1]);
+                LOG.error("Unable to send the message to host " + address[0] + " on port " + address[1]);
                 throw new UnableToExecuteException();
             } finally {
                 disconnect();
@@ -352,6 +355,11 @@ public class Zibase extends Protocol {
     }
 
     // create message to send to the board
+    /**
+     *
+     * @param c
+     * @return
+     */
     public String createMessage(Command c) {
         String message = null;
         String page = null;
@@ -378,7 +386,12 @@ public class Zibase extends Protocol {
         return (message);
     }
 
-    // convert an hexadecimal digit to a 4 binary digits format
+    /**
+     * Converts an hexadecimal digit to a 4 binary digits format
+     *
+     * @param hexString
+     * @return
+     */
     public static String hexToBinary(String hexString) {
         String[] hexDigit = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
         String[] binary = {"0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001", "1010", "1011", "1100", "1101", "1110", "1111"};
@@ -399,6 +412,9 @@ public class Zibase extends Protocol {
     // inizialize the x10 addresses map to "0" - all devices OFF
     // A1 = 0, A2 =0 etc...
     // this map stores the status of each device
+    /**
+     *
+     */
     public static void initX10Map() {
         X10Map = new HashMap();
 
@@ -422,9 +438,12 @@ public class Zibase extends Protocol {
         }
     }
 
-    // inizialize the Zwave x10 addresses map to "0" - all devices OFF
+    // Inizializes Zwave x10 addresses map to "0" - all devices OFF
     // ZA1 = 0, ZA2 = 0 etc...
     // this map stores the status of each device
+    /**
+     *
+     */
     public static void initZwaveMap() {
         ZwaveMap = new HashMap();
         String prefix = "Z";
@@ -460,6 +479,12 @@ public class Zibase extends Protocol {
     }
 
     // retrieve a key from value in the hashmap 
+    /**
+     *
+     * @param hm
+     * @param value
+     * @return
+     */
     public static Object getKeyFromValue(Map hm, Object value) {
         for (Object o : hm.keySet()) {
             if (hm.get(o).equals(value)) {
@@ -470,6 +495,9 @@ public class Zibase extends Protocol {
     }
 
     // initialize configured environment objects 
+    /**
+     *
+     */
     public void initializeEnvironmentObjects() {
         List<EnvObjectLogic> objectsList = getApi().things().findByProtocol("zibase");
         if (objectsList.size() > 0) {

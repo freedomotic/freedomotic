@@ -25,21 +25,24 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 public class TwitterActuator extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(TwitterActuator.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TwitterActuator.class.getName());
     private Twitter twitter;
 
+    /**
+     *
+     */
     public TwitterActuator() {
         super("TwitterActuator", "/twitter/twitter-actuator.xml");
         setPollingWait(-1);
@@ -54,9 +57,9 @@ public class TwitterActuator extends Protocol {
                 //First implementation. We can extend sending a mes to an specific user (for example)
                 String statusmess = c.getProperty("status");
                 Status status = twitter.updateStatus(statusmess);
-                System.out.println("Successfully updated the status to [" + status.getText() + "].");
+                LOG.info("Successfully updated the status to [" + status.getText() + "].");
             } catch (TwitterException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.error(ex.getMessage());
             }
         }
     }
@@ -67,7 +70,7 @@ public class TwitterActuator extends Protocol {
             twitter = TwitterGateway.getInstance(configuration);
             setDescription("Connected as " + twitter.getScreenName());
         } catch (Exception e) {
-            LOG.severe("Cannot start TwitterGateway for the followin reason:" + e.getMessage());
+            LOG.error("Cannot start TwitterGateway for the followin reason:" + e.getMessage());
             stop();
         }
     }

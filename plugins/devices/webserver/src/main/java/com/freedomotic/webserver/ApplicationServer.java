@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.security.KeyStore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -42,14 +40,18 @@ import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 public class ApplicationServer extends Protocol {
-    //TODO: read from config file
 
+    private static final Logger LOG = LoggerFactory.getLogger(ApplicationServer.class.getName());
+
+//TODO: read from config file
     int port;// = 8080;
     String webapp_dir;
     String war_file;
@@ -62,7 +64,7 @@ public class ApplicationServer extends Protocol {
     private static String keystoreType;
 
     public ApplicationServer() {
-        super("ApplicationServer", "/webserver/applicationserver-manifest.xml");
+        super("Application Server", "/webserver/applicationserver-manifest.xml");
 
         // port = configuration.getIntProperty("PORT", 8080);
         webapp_dir = configuration.getStringProperty("WEBAPP_DIR", "/webapps/gwt_client");
@@ -112,7 +114,7 @@ public class ApplicationServer extends Protocol {
                 server.addConnector(https);
                 LOG.info("Webserver now listens on SLL port " + configuration.getIntProperty("SSL_PORT", 8443));
             } catch (Exception ex) {
-                LOG.log(Level.SEVERE, "Cannot load java keystore for reason: ", ex.getLocalizedMessage());
+                LOG.error("Cannot load java keystore for reason: ", ex.getLocalizedMessage());
             }
 
         }
@@ -130,11 +132,10 @@ public class ApplicationServer extends Protocol {
 //                webapp.setWar(dir + "/" + war_file);
 //                webapp.setWar(dir + "/" + war_file);
 //                server.setHandler(webapp);
-
-                //print the URL to visit as plugin description
+        //print the URL to visit as plugin description
 //                InetAddress addr = InetAddress.getLocalHost();
 //                String hostname = addr.getHostName();
-                //strip away the '.war' extension and put all togheter
+        //strip away the '.war' extension and put all togheter
 //                URL url = new URL("http://" + hostname + ":" + port + "/" + war_file.substring(0, war_file.lastIndexOf(".")));
 //                setDescription("Visit " + url.toString());
 //                server.start();
@@ -144,16 +145,16 @@ public class ApplicationServer extends Protocol {
 //                LOG.log(Level.SEVERE, null, ex);
 //            }
 //        } else {
-            try {
-                ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-                context.setContextPath("/");
-                context.setResourceBase(new File(dir + "/").getAbsolutePath());
-                context.addServlet(DefaultServlet.class, "/*");
-                server.setHandler(context);
-                server.start();
-            } catch (Exception ex) {
-                LOG.log(Level.SEVERE, null, ex);
-            }
+        try {
+            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+            context.setContextPath("/");
+            context.setResourceBase(new File(dir + "/").getAbsolutePath());
+            context.addServlet(DefaultServlet.class, "/*");
+            server.setHandler(context);
+            server.start();
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage());
+        }
 //        }
 
     }
@@ -164,7 +165,7 @@ public class ApplicationServer extends Protocol {
             server.stop();
             setDescription(configuration.getStringProperty("description", this.getName()));
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
 
     }
@@ -188,5 +189,4 @@ public class ApplicationServer extends Protocol {
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    private static final Logger LOG = Logger.getLogger(ApplicationServer.class.getName());
 }

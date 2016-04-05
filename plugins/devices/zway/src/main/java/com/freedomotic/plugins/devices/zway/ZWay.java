@@ -29,17 +29,18 @@ import com.freedomotic.reactions.Command;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.net.www.http.HttpClient;
 
 /**
  *
  *
+ * @author Mauro Cicolella
  */
 public class ZWay extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(ZWay.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ZWay.class.getName());
     Map<String, Board> devices = new HashMap<String, Board>();
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
@@ -86,7 +87,7 @@ public class ZWay extends Protocol {
      */
     private boolean connect(String address, int port) {
 
-        LOG.info("Trying to connect to ZWay board on address " + address + ':' + port);
+        LOG.info("Trying to connect to ZWay board on address {}:{}", address, port);
         try {
             //TimedSocket is a non-blocking socket with timeout on exception
             socket = TimedSocket.getSocket(address, port, SOCKET_TIMEOUT);
@@ -95,7 +96,7 @@ public class ZWay extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            LOG.severe("Unable to connect to host " + address + " on port " + port + " " + e.toString());
+            LOG.error("Unable to connect to host {} on port {}", address, port);
             return false;
         }
     }
@@ -152,12 +153,12 @@ public class ZWay extends Protocol {
                             }
                         }
                     } catch (MalformedURLException ex) {
-                        LOG.severe(ex.getLocalizedMessage());
+                        LOG.error(ex.getLocalizedMessage());
                     } catch (IOException ex) {
-                        LOG.severe(ex.getLocalizedMessage());
+                        LOG.error(ex.getLocalizedMessage());
                     }
                 } catch (UnableToExecuteException ex) {
-                    LOG.severe(ex.getLocalizedMessage());
+                    LOG.error(ex.getLocalizedMessage());
                 }
             }
         }
@@ -165,12 +166,13 @@ public class ZWay extends Protocol {
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
-            LOG.severe(ex.getLocalizedMessage());
+            LOG.error(ex.getLocalizedMessage());
         }
     }
 
     /**
-     * Actuator side
+     * @param c
+     * @throws UnableToExecuteException
      */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
@@ -185,10 +187,10 @@ public class ZWay extends Protocol {
         try {
             connected = connect(ip_board, port_board);
         } catch (ArrayIndexOutOfBoundsException outEx) {
-            LOG.severe("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
+            LOG.error("The object address '" + c.getProperty("address") + "' is not properly formatted. Check it!");
             throw new UnableToExecuteException();
         } catch (NumberFormatException numberFormatException) {
-            LOG.severe(port_board + " is not a valid ethernet port to connect to");
+            LOG.error(port_board + " is not a valid ethernet port to connect to");
             throw new UnableToExecuteException();
         }
         if (connected) {
@@ -201,7 +203,7 @@ public class ZWay extends Protocol {
                 }
             } catch (IOException iOException) {
                 setDescription("Unable to send the message to host " + address[0] + " on port " + address[1]);
-                LOG.severe("Unable to send the message to host " + address[0] + " on port " + address[1]);
+                LOG.error("Unable to send the message to host " + address[0] + " on port " + address[1]);
                 throw new UnableToExecuteException();
             } finally {
                 disconnect();
@@ -282,6 +284,11 @@ public class ZWay extends Protocol {
 
     // create command message to send to the board
     // this part must be changed to reflect the board protocol
+    /**
+     *
+     * @param c
+     * @return
+     */
     public String createCommandMessage(Command c) {
         String message = null;
         String page = null;
@@ -311,7 +318,13 @@ public class ZWay extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    // retrieve a key from value in the hashmap 
+    /**
+     * Retrieves a key from value in the hashmap
+     *
+     * @param hm
+     * @param value
+     * @return
+     */
     public static Object getKeyFromValue(Map hm, Object value) {
         for (Object o : hm.keySet()) {
             if (hm.get(o).equals(value)) {

@@ -17,7 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.plugins.devices.zwave;
 
 import com.freedomotic.api.EventTemplate;
@@ -30,8 +29,8 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zwave4j.ControllerCallback;
 import org.zwave4j.ControllerCommand;
 import org.zwave4j.ControllerError;
@@ -46,10 +45,14 @@ import org.zwave4j.ValueId;
 import org.zwave4j.ValueType;
 import org.zwave4j.ZWave4j;
 
+/**
+ *
+ * @author Mauro Cicolella
+ */
 public class Zwave4FD
         extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(Zwave4FD.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Zwave4FD.class.getName());
     final int POLLING_WAIT;
     private Manager manager;
     private NotificationWatcher watcher;
@@ -69,6 +72,9 @@ public class Zwave4FD
         }
     };
 
+    /**
+     *
+     */
     public Zwave4FD() {
         super("Zwave4FD", "/zwave/zwave-manifest.xml");
         POLLING_WAIT = configuration.getIntProperty("time-between-reads", -1);
@@ -133,7 +139,7 @@ public class Zwave4FD
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         LOG.info("Zwave plugin is started");
         controllerPort = configuration.getStringProperty("controller-port", "/dev/ttyS0");
         options = Options.create(new File(getFile().getParentFile() + "/data/config").getAbsolutePath(), "", "");
@@ -143,7 +149,7 @@ public class Zwave4FD
         options.addOptionBool("Logging", configuration.getBooleanProperty("zw-logging", false));
         options.addOptionInt("SaveLogLevel", configuration.getIntProperty("zw-save-log-level", 6));
         //  more options could be picked up from https://code.google.com/p/open-zwave/wiki/Config_Options
-        
+
         options.lock();
         watcher = new NotificationWatcher() {
 
@@ -156,7 +162,7 @@ public class Zwave4FD
                         LOG.info(String.format("Driver ready - home id: %d", homeId));
                         break;
                     case DRIVER_FAILED:
-                        LOG.warning("Driver failed - controller port was '" + controllerPort + "'");
+                        LOG.warn("Driver failed - controller port was '" + controllerPort + "'");
                         stop();
                         break;
                     case DRIVER_RESET:
@@ -171,7 +177,7 @@ public class Zwave4FD
                         ready = true;
                         break;
                     case ALL_NODES_QUERIED_SOME_DEAD:
-                        LOG.warning("All nodes queried some dead");
+                        LOG.warn("All nodes queried some dead");
                         manager.writeConfig(homeId);
                         ready = true;
                         break;
@@ -282,7 +288,7 @@ public class Zwave4FD
         manager = Manager.create();
         manager.addWatcher(watcher, null);
         manager.addDriver(controllerPort);
-        
+
     }
 
     @Override
@@ -297,7 +303,7 @@ public class Zwave4FD
     @Override
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
-        LOG.log(Level.INFO, "Zwave plugin receives a command called {0} with parameters {1}", new Object[]{c.getName(), c.getProperties().toString()});
+        LOG.info("Zwave plugin receives a command called {0} with parameters {1}", new Object[]{c.getName(), c.getProperties().toString()});
         String commandName = c.getProperty("command");
 
         /*
@@ -411,7 +417,7 @@ public class Zwave4FD
     /*
      * Notifies event to Freedomotic
      *
-     * @param ValueId @return noid
+     * @param ValueId 
      *
      */
     private void sendNotification(ValueId id) {

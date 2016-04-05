@@ -21,7 +21,7 @@ package com.freedomotic.plugins.devices.zway;
 
 /**
  *
- * @Author Mauro Cicolella
+ * @author Mauro Cicolella
  */
 public class Board {
 
@@ -31,6 +31,14 @@ public class Board {
     private String alias = null;
     private int port;
 
+    /**
+     *
+     * @param ipAddress
+     * @param port
+     * @param alias
+     * @param autoConfiguration
+     * @param objectClass
+     */
     public Board(String ipAddress, int port, String alias, String autoConfiguration, String objectClass) {
         setIpAddress(ipAddress);
         setPort(port);
@@ -39,42 +47,82 @@ public class Board {
         setObjectClass(objectClass);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getIpAddress() {
         return ipAddress;
     }
 
+    /**
+     *
+     * @param ipAddress
+     */
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPort() {
         return port;
     }
 
+    /**
+     *
+     * @param port
+     */
     public void setPort(int port) {
         this.port = port;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getAlias() {
         return alias;
     }
 
+    /**
+     *
+     * @param alias
+     */
     public void setAlias(String alias) {
         this.alias = alias;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getAutoConfiguration() {
         return autoConfiguration;
     }
 
+    /**
+     *
+     * @param autoConfiguration
+     */
     public void setAutoConfiguration(String autoConfiguration) {
         this.autoConfiguration = autoConfiguration;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getObjectClass() {
         return objectClass;
     }
 
+    /**
+     *
+     * @param objectClass
+     */
     public void setObjectClass(String objectClass) {
         this.objectClass = objectClass;
     }

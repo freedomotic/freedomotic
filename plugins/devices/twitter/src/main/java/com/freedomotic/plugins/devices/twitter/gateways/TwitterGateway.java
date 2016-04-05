@@ -27,7 +27,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 
 public class TwitterGateway {
@@ -39,10 +39,19 @@ public class TwitterGateway {
     private TwitterGateway() {
     }
 
+    /**
+     *
+     * @return
+     */
     public static Twitter getInstance() {
         return getInstance(new Config());
     }
 
+    /**
+     *
+     * @param configuration
+     * @return
+     */
     public static synchronized Twitter getInstance(Config configuration) {
         if (twitter == null) {
             ConfigurationBuilder cb = new ConfigurationBuilder();

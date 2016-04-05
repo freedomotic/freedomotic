@@ -22,7 +22,7 @@ package com.freedomotic.plugins.devices.twitter.gateways;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 
 import java.io.BufferedReader;
@@ -34,10 +34,12 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
+
 public class OAuthSetup {
 
     /**
      * @param args
+     * @throws java.lang.Exception
      */
     public static void main(String args[]) throws Exception {
         // The factory instance is re-useable and thread safe.

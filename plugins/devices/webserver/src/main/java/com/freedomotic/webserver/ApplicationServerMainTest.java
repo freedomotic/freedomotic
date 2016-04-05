@@ -23,7 +23,7 @@ import org.eclipse.jetty.server.Server;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 public class ApplicationServerMainTest {
 
