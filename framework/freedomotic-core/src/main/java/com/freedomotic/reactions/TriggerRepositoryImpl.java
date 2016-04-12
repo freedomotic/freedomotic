@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
  */
 class TriggerRepositoryImpl implements TriggerRepository {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TriggerRepositoryImpl.class.getName());
     private static ArrayList<Trigger> list = new ArrayList<Trigger>();
     private final DataUpgradeService dataUpgradeService;
 
@@ -57,19 +58,19 @@ class TriggerRepositoryImpl implements TriggerRepository {
     }
 
     /**
+     * Saves the triggers into the specified folder.
      *
-     * @param folder
+     * @param folder the folder where to save the triggers
      */
     @Override
     public void saveTriggers(File folder) {
         if (list.isEmpty()) {
-            LOG.warn("There are no triggers to persist, " + folder.getAbsolutePath()
-                    + " will not be altered.");
+            LOG.warn("There are no triggers to persist, {} will not be altered", folder.getAbsolutePath());
             return;
         }
 
         if (!folder.isDirectory()) {
-            LOG.warn(folder.getAbsoluteFile() + " is not a valid trigger folder. Skipped");
+            LOG.warn("{} is not a valid trigger folder. Skipped", folder.getAbsoluteFile());
             return;
         }
 
@@ -77,8 +78,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
         deleteTriggerFiles(folder);
 
         try {
-            LOG.info("Saving triggers to file in " + folder.getAbsolutePath());
-
+            LOG.info("Saving triggers to file in {}", folder.getAbsolutePath());
             for (Trigger trigger : list) {
                 if (trigger.isToPersist()) {
                     String uuid = trigger.getUUID();
@@ -93,14 +93,19 @@ class TriggerRepositoryImpl implements TriggerRepository {
                 }
             }
         } catch (Exception e) {
-            LOG.error("Error while saving triggers", e);
+            LOG.error("Error while saving triggers ", e);
         }
     }
 
+    /**
+     * Deletes all the triggers into the specified folder.
+     *
+     * @param folder the folder containing all the triggers to delete
+     */
     private static void deleteTriggerFiles(File folder) {
         File[] files = folder.listFiles();
-        // This filter only returns object files
-        FileFilter objectFileFileter
+        // this filter only returns triggers files
+        FileFilter objectFileFilter
                 = new FileFilter() {
                     public boolean accept(File file) {
                         if (file.isFile() && file.getName().endsWith(".xtrg")) {
@@ -110,7 +115,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                         }
                     }
                 };
-        files = folder.listFiles(objectFileFileter);
+        files = folder.listFiles(objectFileFilter);
         for (File file : files) {
             file.delete();
         }
@@ -126,14 +131,15 @@ class TriggerRepositoryImpl implements TriggerRepository {
     }
 
     /**
+     * Loads triggers from a specified folder.
      *
-     * @param folder
+     * @param folder the folder to load triggers from
      */
     @Override
     public void loadTriggers(File folder) {
         XStream xstream = FreedomXStream.getXstream();
 
-        // This filter only returns object files
+        // this filter only returns triggers files
         FileFilter objectFileFileter
                 = new FileFilter() {
                     @Override
@@ -166,7 +172,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                             dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
                             fromVersion = dataProperties.getProperty("data.version");
                         } catch (IOException iOException) {
-                            // Fallback to a default version for older version without that properties file
+                            // fallback to a default version for older version without that properties file
                             fromVersion = "5.5.0";
                         }
                         xml = (String) dataUpgradeService.upgrade(Trigger.class, xml, fromVersion);
@@ -192,7 +198,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                             list.add(trigger); //only in the list not registred. I will be registred only if used in mapping
                         }
                     } else {
-                        LOG.warn("Trigger '" + trigger.getName() + "' is already in the list");
+                        LOG.warn("Trigger '{}' is already in the list", trigger.getName());
                     }
 
                     summary.append(trigger.getUUID()).append("\t\t").append(trigger.getName()).append("\t\t\t")
@@ -203,19 +209,20 @@ class TriggerRepositoryImpl implements TriggerRepository {
                 FileWriter fstream = new FileWriter(folder + "/index.txt");
                 BufferedWriter indexfile = new BufferedWriter(fstream);
                 indexfile.write(summary.toString());
-                //Close the output stream
+                //close the output stream
                 indexfile.close();
             } else {
-                LOG.info("No triggers to load from this folder " + folder.toString());
+                LOG.info("No triggers to load from this folder {}", folder.toString());
             }
         } catch (Exception e) {
-            LOG.error("Exception while loading this trigger", e);
+            LOG.error("Exception while loading this trigger ", e);
         }
     }
 
     /**
+     * Adds and registers a trigger.
      *
-     * @param t
+     * @param t the trigger to add and register
      */
     public static synchronized void addAndRegister(Trigger t) {
         int preSize = TriggerRepositoryImpl.size();
@@ -225,7 +232,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             t.register();
             int postSize = TriggerRepositoryImpl.size();
             if (!(postSize == (preSize + 1))) {
-                LOG.error("Error while while adding and registering trigger '" + t.getName() + "'");
+                LOG.error("Error while adding and registering trigger '{}'", t.getName());
             }
         } else {
             //this trigger is already in the list
@@ -238,8 +245,9 @@ class TriggerRepositoryImpl implements TriggerRepository {
     }
 
     /**
+     * Adds a trigger.
      *
-     * @param t
+     * @param t the trigger to add
      */
     public static synchronized void add(Trigger t) {
         if (t != null) {
@@ -257,14 +265,15 @@ class TriggerRepositoryImpl implements TriggerRepository {
             int postSize = TriggerRepositoryImpl.size();
 
             if (!(postSize == (preSize + 1))) {
-                LOG.error("Error while while adding trigger '" + t.getName() + "'");
+                LOG.error("Error while adding trigger '{}'", t.getName());
             }
         }
     }
 
     /**
+     * Removes a trigger.
      *
-     * @param t
+     * @param t the trigger to remove
      */
     public static synchronized void remove(Trigger t) {
         int preSize = TriggerRepositoryImpl.size();
@@ -275,19 +284,18 @@ class TriggerRepositoryImpl implements TriggerRepository {
             int postSize = TriggerRepositoryImpl.size();
 
             if (!(postSize == (preSize - 1))) {
-                LOG.error("Error while while removing trigger '" + t.getName() + "'");
+                LOG.error("Error while removing trigger '{}'", t.getName());
             }
         } catch (Exception e) {
-            LOG.error("Error while while unregistering the trigger '" + t.getName() + "'");
+            LOG.error("Error while unregistering the trigger '{}'", t.getName(), e);
         }
     }
 
     /**
-     * Get a trigger by its name
+     * Gets a trigger by its name.
      *
      * @param name
-     * @return a Trigger object with the name (ignore-case) as the String in
-     * input
+     * @return a trigger with the name (ignore-case) as the String in input
      */
     @Deprecated
     public static Trigger getTrigger(String name) {
@@ -300,9 +308,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                 return trigger;
             }
         }
-
-        LOG.warn("Searching for a trigger named ''{}'' but it doesn''t exist.", name);
-
+        LOG.warn("Searching for a trigger named ''{}'' but it doesn''t exist", name);
         return null;
     }
 
@@ -368,13 +374,16 @@ class TriggerRepositoryImpl implements TriggerRepository {
         return list.size();
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(TriggerRepositoryImpl.class.getName());
-
     @Override
     public List<Trigger> findAll() {
         return getTriggers();
     }
 
+    /**
+     * Finds a trigger given its name.
+     *
+     * @param name the name of the trigger to find
+     */
     @Override
     public List<Trigger> findByName(String name) {
         List<Trigger> tl = new ArrayList<Trigger>();
@@ -397,7 +406,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             add(item);
             return true;
         } catch (Exception e) {
-            LOG.error("Cannot add trigger " + item.getName(), e);
+            LOG.error("Cannot add trigger {} " + item.getName(), e);
             return false;
         }
     }
@@ -412,6 +421,11 @@ class TriggerRepositoryImpl implements TriggerRepository {
         }
     }
 
+    /**
+     * Deletes a trigger given its uuid.
+     *
+     * @param uuid the uuid of the trigger to delete
+     */
     @Override
     public boolean delete(String uuid) {
         return delete(findOne(uuid));
@@ -430,16 +444,21 @@ class TriggerRepositoryImpl implements TriggerRepository {
                 try {
                     data.register();
                 } catch (Exception f) {
-                    LOG.warn("Cannot register trigger " + data.getName());
+                    LOG.warn("Cannot register trigger {} ", data.getName(), f);
                 }
                 return data;
             }
         } catch (Exception e) {
-            LOG.error("Error while modifying trigger" + data.getName(), e);
+            LOG.error("Error while modifying trigger {} " + data.getName(), e);
             return null;
         }
     }
 
+    /**
+     * Creates a copy of a given trigger.
+     *
+     * @param trg the trigger to copy
+     */
     @Override
     public Trigger copy(Trigger trg) {
         try {
@@ -452,6 +471,10 @@ class TriggerRepositoryImpl implements TriggerRepository {
         }
     }
 
+    /**
+     * Deletes all triggers.
+     *
+     */
     @Override
     public void deleteAll() {
         try {
