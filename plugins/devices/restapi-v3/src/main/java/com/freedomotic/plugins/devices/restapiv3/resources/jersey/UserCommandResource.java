@@ -99,7 +99,7 @@ public class UserCommandResource extends AbstractResource<Command> {
             @PathParam("id") String UUID, Command s) {
         return super.update(UUID, s);
     }
-    
+
     /**
      *
      * @param s
@@ -117,7 +117,6 @@ public class UserCommandResource extends AbstractResource<Command> {
     public Response create(Command s) throws URISyntaxException {
         return super.create(s);
     }
-    
 
     public UserCommandResource() {
         authContext = "commands";
@@ -188,5 +187,35 @@ public class UserCommandResource extends AbstractResource<Command> {
         Command found = api.commands().findOne(uuid);
         Command c = api.commands().copy(found);
         return createUri(c.getUuid());
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/nlp/{id}/run")
+    @ApiOperation("Fire a command recognized by NLP")
+    @ApiResponses(value = {
+        @ApiResponse(code = 404, message = "No similar command found and executed")
+    })
+    public Response NlpFire(
+            @ApiParam(value = "Command name to execute", required = true)
+            @PathParam("id") String commandToExecute) {
+        Command nlpCommand = new Command();
+        nlpCommand.setName("Recognize command with NLP");
+        nlpCommand.setReceiver("app.commands.interpreter.nlp");
+        nlpCommand.setDescription("A free-form text command to be interpreted by a NLP module");
+        nlpCommand.setProperty("text", commandToExecute);
+        nlpCommand.setReplyTimeout(1000);
+        Command reply = Freedomotic.sendCommand(nlpCommand);
+
+        if (reply != null) {
+            String executedCommand = reply.getProperty("result");
+
+            if (executedCommand != null) {
+                return Response.ok(reply).build();
+            } else {
+                throw new ItemNotFoundException("No similar command found and executed");
+            }
+        }
+        return Response.accepted(reply).build();
     }
 }
