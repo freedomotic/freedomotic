@@ -83,8 +83,13 @@ public final class Mailer extends Protocol {
         final String username = configuration.getProperty("username");
         final String password = configuration.getProperty("password");
         Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.auth", configuration.getProperty("mail.smtp.auth"));
+        if (configuration.getProperty("mail.smtp.connection").equalsIgnoreCase("TLS")) {
+            props.put("mail.smtp.starttls.enable", "true");
+        } else {
+            props.put("mail.smtp.socketFactory.port", configuration.getProperty("mail.smtp.port"));
+            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        }
         props.put("mail.smtp.host", configuration.getProperty("mail.smtp.host"));
         props.put("mail.smtp.port", configuration.getProperty("mail.smtp.port"));
 
@@ -92,17 +97,16 @@ public final class Mailer extends Protocol {
             to = username;
         }
         if (subject == null || subject.isEmpty()) {
-            subject = "A notification from freedomotic";
+            subject = "A notification from Freedomotic";
         }
 
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
-
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
 
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress("you@home.com"));

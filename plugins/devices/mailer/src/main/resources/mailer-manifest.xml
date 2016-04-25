@@ -1,12 +1,15 @@
 
 <config>
     <properties>
-        <property name="description"        value="Sends emails"/>
-        <property name="category"           value="messaging"/>
-        <property name="short-name"         value="mail"/>
-        <property name="mail.smtp.host"     value="smtp.gmail.com"/>
-        <property name="mail.smtp.port"     value="587"/>
-        <property name="username"           value="youremail@gmail.com"/>
-        <property name="password"           value="yourGmalPassword"/>
+        <property name="description" value="Sends emails"/>
+        <property name="category" value="messaging"/>
+        <property name="short-name" value="mail"/>
+        <property name="startup-time" value="on load"/>
+        <property name="mail.smtp.host" value="smtp.gmail.com"/>
+        <property name="mail.smtp.port" value="465"/>
+        <property name="mail.smtp.auth" value="true"/>
+        <property name="mail.smtp.connection" value="SSL"/>
+        <property name="username" value="yourEmail@gmail.com"/>
+        <property name="password" value="yourEmailPassword"/>
     </properties>
 </config>
