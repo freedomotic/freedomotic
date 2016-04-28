@@ -19,7 +19,6 @@
         <module>plugins/devices/frontend-java</module>
         <module>plugins/devices/essential</module>
         <module>plugins/devices/simulation</module>
-        <module>plugins/devices/hello-world</module>
         <module>plugins/devices/restapi-v3</module>
         <module>plugins/devices/webserver</module>
         <module>tools</module>
