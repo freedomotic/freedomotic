@@ -105,9 +105,7 @@ public class CommandsNlpServiceTest {
         String phrase = "asdasd tretert gbffdg uyututy mnbb";
         // Compute the commands ranking
         List<Nlp.Rank<Command>> ranking = nlpCommand.computeSimilarity(phrase, 10);
-        for(Nlp.Rank<Command> r:ranking){
-            System.out.println(r.getElement().toString());
-        }
+      
         assertEquals("Should find a command anyway, because zero similarity is allowed", 1, ranking.size());
         assertEquals("The command should be totally different from anyone else in the repository", 0, ranking.get(0).getSimilarity());
     }
