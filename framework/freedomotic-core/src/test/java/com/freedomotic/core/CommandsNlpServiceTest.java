@@ -65,6 +65,10 @@ public class CommandsNlpServiceTest {
 
     @Before
     public void setUp() {
+        // Fix for failing test:
+        commandRepository.deleteAll();
+
+
         Command command = new Command();
         command.setName("Turn on kitchen light");
         command.setReceiver("app.events.sensors.behavior.request.objects");
@@ -76,7 +80,8 @@ public class CommandsNlpServiceTest {
 
     @After
     public void tearDown() {
-        commandRepository.deleteAll();
+        // DeleteAll  is done on setup
+        //commandRepository.deleteAll();
     }
 
     /**
@@ -100,6 +105,7 @@ public class CommandsNlpServiceTest {
         String phrase = "asdasd tretert gbffdg uyututy mnbb";
         // Compute the commands ranking
         List<Nlp.Rank<Command>> ranking = nlpCommand.computeSimilarity(phrase, 10);
+      
         assertEquals("Should find a command anyway, because zero similarity is allowed", 1, ranking.size());
         assertEquals("The command should be totally different from anyone else in the repository", 0, ranking.get(0).getSimilarity());
     }
