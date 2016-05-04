@@ -21,6 +21,7 @@ package com.freedomotic.plugins.devices.mailer;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
@@ -47,6 +48,8 @@ public final class Mailer extends Protocol {
      *
      */
     public static final Logger LOG = LoggerFactory.getLogger(Mailer.class.getName());
+    final String USERNAME = configuration.getProperty("username");
+    final String PASSWORD = configuration.getProperty("password");
     private int sentMails;
 
     /**
@@ -69,19 +72,33 @@ public final class Mailer extends Protocol {
             from = "your.home@freedomotic.com";
         }
         String to = c.getProperty("to");
+        if (to == null || to.isEmpty()) {
+            to = USERNAME;
+        }
         String subject = c.getProperty("subject");
+        if (subject == null || subject.isEmpty()) {
+            subject = "A notification from Freedomotic";
+        }
         final String text = c.getProperty("message");
         try {
             send(from, to, subject, text);
         } catch (MessagingException ex) {
-            this.notifyCriticalError("Error while sending email '" + subject + "' to '" + to + "' " + ex.getMessage());
+            this.notifyCriticalError("Error while sending email '" + subject + "' to '" + to + "' for " + Freedomotic.getStackTraceInfo(ex));
         }
 
     }
 
+    /**
+     * Sends the mail.
+     *
+     * @param from mail sender
+     * @param to mail receiver
+     * @param subject mail subject
+     * @param text mail body
+     * @throws AddressException
+     * @throws MessagingException
+     */
     private void send(String from, String to, String subject, String text) throws AddressException, MessagingException {
-        final String username = configuration.getProperty("username");
-        final String password = configuration.getProperty("password");
         Properties props = new Properties();
         props.put("mail.smtp.auth", configuration.getProperty("mail.smtp.auth"));
         if (configuration.getProperty("mail.smtp.connection").equalsIgnoreCase("TLS")) {
@@ -93,20 +110,13 @@ public final class Mailer extends Protocol {
         props.put("mail.smtp.host", configuration.getProperty("mail.smtp.host"));
         props.put("mail.smtp.port", configuration.getProperty("mail.smtp.port"));
 
-        if (to == null || to.isEmpty()) {
-            to = username;
-        }
-        if (subject == null || subject.isEmpty()) {
-            subject = "A notification from Freedomotic";
-        }
-
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
-            }
-        });
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(USERNAME, PASSWORD);
+                    }
+                });
 
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress("you@home.com"));
