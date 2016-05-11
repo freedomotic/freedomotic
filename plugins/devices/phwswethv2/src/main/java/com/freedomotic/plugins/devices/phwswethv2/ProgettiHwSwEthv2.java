@@ -47,7 +47,8 @@ public class ProgettiHwSwEthv2 extends Protocol {
 
     private static final Logger LOG = Logger.getLogger(ProgettiHwSwEthv2.class.getName());
     private static ArrayList<Board> boards = null;
-    Map<String, Board> devices = new HashMap<String, Board>();
+    private Map<String, Board> devices = new HashMap<String, Board>();
+    private Set<String> keySet = null;
     private static int BOARD_NUMBER = 1;
     private static int POLLING_TIME = 1000;
     private Socket socket = null;
@@ -161,6 +162,8 @@ public class ProgettiHwSwEthv2 extends Protocol {
         BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
         loadBoards();
+        // select all boards in the devices hashmap to evaluate their status
+        keySet = devices.keySet();
     }
 
     @Override
@@ -177,8 +180,6 @@ public class ProgettiHwSwEthv2 extends Protocol {
 
     @Override
     protected void onRun() {
-        // select all boards in the devices hashmap and evaluate the status
-        Set<String> keySet = devices.keySet();
         for (String key : keySet) {
             Board board = devices.get(key);
             //System.out.println("Richiesta per "+board.getAlias());
@@ -368,12 +369,12 @@ public class ProgettiHwSwEthv2 extends Protocol {
                 byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
                 String authStringEnc = new String(authEncBytes);
                 //Create a URL for the desired  page   
-                url = new URL("http://" + board.getIpAddress() + ":" + board.getPort() + "/protect/" + CHANGE_STATE_RELAY_URL + relayNumber + "=" + c.getProperty("behavior"));
+                url = new URL("http://" + board.getIpAddress() + ":" + board.getPort() + "/protect/" + CHANGE_STATE_RELAY_URL + relayNumber + "=" + c.getProperty("status"));
                 urlConnection = url.openConnection();
                 urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
             } else {
                 //Create a URL for the desired  page   
-                url = new URL("http://" + board.getIpAddress() + ":" + board.getPort() + "/" + CHANGE_STATE_RELAY_URL + relayNumber + "=" + c.getProperty("behavior"));
+                url = new URL("http://" + board.getIpAddress() + ":" + board.getPort() + "/" + CHANGE_STATE_RELAY_URL + relayNumber + "=" + c.getProperty("status"));
                 urlConnection = url.openConnection();
             }
             LOG.info("Freedomotic sends the command " + url);

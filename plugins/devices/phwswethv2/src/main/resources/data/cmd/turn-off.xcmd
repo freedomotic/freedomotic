@@ -8,7 +8,7 @@
     <properties>
         <properties>
             <property name="command" value="CHANGE-STATE-RELAY"/>
-            <property name="behavior" value="0"/>
+            <property name="status" value="0"/>
 	    <property name="address" value="@owner.object.address"/>
         </properties>
     </properties>
