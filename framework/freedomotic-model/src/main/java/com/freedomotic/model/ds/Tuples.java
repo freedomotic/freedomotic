@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * A data structure to collect blocks of data in {@link HashMap} style This are
- * used for instance in plugin configuration file to define plugin level
+ * A data structure to collect blocks of data in {@link HashMap} style.
+ * Used, for instance, in plugin configuration file to define its level
  * variables
  *
  * @author Enrico Nicoletti
@@ -45,19 +45,21 @@ public class Tuples
     private final ArrayList<HashMap<String, String>> tuples = new ArrayList<HashMap<String, String>>();
 
     /**
-     *
-     * @param i
-     * @return
+     * Returns a tuple given its index.
+     * 
+     * @param i index of the tuple
+     * @return the tuple retrieved
      */
     public HashMap<String, String> getTuple(int i) {
         return tuples.get(i);
     }
 
     /**
-     *
-     * @param tupleIndex
-     * @param key
-     * @return
+     * Returns a property value inside a tuple.
+     * 
+     * @param tupleIndex index of the tuple
+     * @param key the key name
+     * @return the value of the property
      */
     public String getProperty(int tupleIndex, String key) {
         return (String) tuples.get(tupleIndex).get(key);
