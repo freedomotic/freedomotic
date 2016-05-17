@@ -30,9 +30,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * A data structure to collect blocks of data in {@link HashMap} style.
- * Used, for instance, in plugin configuration file to define its level
- * variables
+ * A data structure to collect blocks of data in {@link HashMap} style. Used,
+ * for instance, in plugin configuration file to define its level variables
  *
  * @author Enrico Nicoletti
  */
@@ -46,7 +45,7 @@ public class Tuples
 
     /**
      * Returns a tuple given its index.
-     * 
+     *
      * @param i index of the tuple
      * @return the tuple retrieved
      */
@@ -56,7 +55,7 @@ public class Tuples
 
     /**
      * Returns a property value inside a tuple.
-     * 
+     *
      * @param tupleIndex index of the tuple
      * @param key the key name
      * @return the value of the property
@@ -66,27 +65,30 @@ public class Tuples
     }
 
     /**
+     * Returns an iterator for the properties of a tuple.
      *
-     * @param tupleIndex
-     * @return
+     * @param tupleIndex index of the tuple
+     * @return the iterator for the tuple properties
      */
     public Iterator<Entry<String, String>> getPropertiesIterator(int tupleIndex) {
         return tuples.get(tupleIndex).entrySet().iterator();
     }
 
     /**
+     * Returns the number of properties inside a tuple.
      *
-     * @param tupleIndex
-     * @return
+     * @param tupleIndex index of the tuple
+     * @return the number of properties
      */
     public int getPropertiesCount(int tupleIndex) {
         return tuples.get(tupleIndex).entrySet().size();
     }
 
     /**
+     * Returns the properties inside a tuple.
      *
-     * @param tupleIndex
-     * @return
+     * @param tupleIndex index of the tuple
+     * @return the set of properties
      */
     public Set<Entry<String, String>> getProperties(int tupleIndex) {
         return tuples.get(tupleIndex).entrySet();
@@ -101,19 +103,22 @@ public class Tuples
     }
 
     /**
+     * Returns the number of tuples.
      *
-     * @return
+     * @return the number of tuples
      */
     public int size() {
         return tuples.size();
     }
 
     /**
+     * Returns a string property value.
      *
-     * @param tupleIndex
-     * @param key
-     * @param defaultValue
-     * @return
+     * @param tupleIndex index of the tuple
+     * @param key the property name to retrieve
+     * @param defaultValue the property default value
+     * @return the property value if not null, otherwise the default value
+     * passed as param
      */
     public String getStringProperty(int tupleIndex, String key, String defaultValue) {
         String result = getProperty(tupleIndex, key);
@@ -127,11 +132,13 @@ public class Tuples
     }
 
     /**
+     * Returns an int property value.
      *
-     * @param tupleIndex
-     * @param key
-     * @param defaultValue
-     * @return
+     * @param tupleIndex index of the tuple
+     * @param key the property name to retrieve
+     * @param defaultValue the property default value
+     * @return the property value if not null, otherwise the default value
+     * passed as param
      */
     public int getIntProperty(int tupleIndex, String key, int defaultValue) {
         try {
@@ -144,11 +151,13 @@ public class Tuples
     }
 
     /**
+     * Returns a boolean property value.
      *
-     * @param tupleIndex
-     * @param key
-     * @param defaultValue
-     * @return
+     * @param tupleIndex index of the tuple
+     * @param key the property name to retrieve
+     * @param defaultValue the property default value
+     * @return the property value if not null, otherwise the default value
+     * passed as param
      */
     public boolean getBooleanProperty(int tupleIndex, String key, boolean defaultValue) {
         try {
@@ -161,11 +170,13 @@ public class Tuples
     }
 
     /**
+     * Returns a double property value.
      *
-     * @param tupleIndex
-     * @param key
-     * @param defaultValue
-     * @return
+     * @param tupleIndex index of the tuple
+     * @param key the property name to retrieve
+     * @param defaultValue the property default value
+     * @return the property value if not null, otherwise the default value
+     * passed as param
      */
     public double getDoubleProperty(int tupleIndex, String key, double defaultValue) {
         Double result = null;
@@ -190,7 +201,7 @@ public class Tuples
     }
 
     /**
-     *
+     * Deletes all tuples.
      */
     public void clear() {
         tuples.clear();
@@ -198,9 +209,10 @@ public class Tuples
     }
 
     /**
+     * Removes a tuple given its index.
      *
-     * @param i
-     * @return
+     * @param i index of the tuple
+     * @return true if the tuple removed, false otherwise
      */
     public boolean remove(int i) {
         return (tuples.remove(i) != null);
