@@ -77,7 +77,7 @@ void loop()
 void sendUDPpacket(char button)
 {
   Udp.beginPacket(ipServerUDP, ServerUDPport);
-  Udp.write("AN1:button:");
+  Udp.write("AN1:");
   Udp.write(button);
   Udp.endPacket();
 }

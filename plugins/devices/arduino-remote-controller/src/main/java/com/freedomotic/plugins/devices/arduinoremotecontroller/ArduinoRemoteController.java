@@ -24,8 +24,11 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
+import com.freedomotic.helpers.UdpHelper;
+import com.freedomotic.helpers.UdpListener;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
+import java.net.DatagramPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,53 +38,33 @@ import org.slf4j.LoggerFactory;
 public class ArduinoRemoteController extends Protocol {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArduinoRemoteController.class.getName());
-    private static int POLLING_TIME = 1000;
-    private static int SOCKET_TIMEOUT = 1000;
+    private final String UDP_SERVER_HOSTNAME = configuration.getStringProperty("udp-server-hostname", "192.168.1.100");
+    private final int UDP_SERVER_PORT = configuration.getIntProperty("udp-server-port", 7331);
+    private final String DELIMITER = configuration.getStringProperty("delimiter", ":");
 
-    /**
-     *
-     */
-    public final String UDP_SERVER_HOSTNAME = configuration.getStringProperty("udp-server-hostname", "192.168.1.100");
-
-    /**
-     *
-     */
-    public final int UDP_SERVER_PORT = configuration.getIntProperty("udp-server-port", 7331);
-
-    /**
-     *
-     */
-    public final String DELIMITER = configuration.getStringProperty("delimiter", ":");
     private int udpPort;
-    private static UDPServer udpServer = null;
+    private UdpHelper udpServer;
 
-    /**
-     * Initializations
-     */
     public ArduinoRemoteController() {
         super("Arduino Remote Controller", "/arduino-remote-controller/arduino-remote-controller-manifest.xml");
-        setPollingWait(POLLING_TIME);
+        setPollingWait(-1); // onRun() disabled
     }
 
-    /**
-     * Sensor side
-     */
     @Override
     public void onStart() {
-        try {
-            udpServer = new UDPServer(this);
-            udpServer.start();
-        } catch (IOException iOException) {
-            LOG.error("Error during UDP server creation {}", iOException.toString());
-        }
+        udpServer = new UdpHelper();
+        udpServer.startServer("0.0.0.0", UDP_SERVER_PORT, new UdpListener() {
+            @Override
+            public void onDataAvailable(String sourceAddress, Integer sourcePort, String data) {
+                LOG.info("Arduino Remote Controller received: {0}", data);
+                extractData(sourceAddress, sourcePort, data);
+            }
+        });
     }
 
     @Override
     public void onStop() {
-        //release resources
-        udpServer.interrupt();
-        udpServer = null;
-        setPollingWait(-1); //disable polling
+        udpServer.stopServer();
         //display the default description
         setDescription(configuration.getStringProperty("description", "Arduino Remote Controller stopped"));
     }
@@ -91,24 +74,38 @@ public class ArduinoRemoteController extends Protocol {
     }
 
     /**
+     * Extracts data from udp packets.
      *
-     * @param objectAddress
-     * @param eventProperty
-     * @param eventValue
+     * @param sourceAddress the client source address
+     * @param sourcePort the client source port
+     * @param data the payload
      */
-    public void sendEvent(String objectAddress, String eventProperty, String eventValue) {
+    private void extractData(String sourceAddress, Integer sourcePort, String data) {
+        String fields[] = null;
+        String sensorConnector = null;
+        String pressedButton = null;
+
+        fields = data.split(DELIMITER);
+        sensorConnector = fields[0];
+        pressedButton = fields[1];
+        sendEvent(sourceAddress + ":" + sensorConnector, pressedButton);
+    }
+
+    /**
+     * Sends a Freedomotic event with the pressed button.
+     *
+     * @param objectAddress the object address in the form
+     * 'sourceAddress:sensorConnector'
+     * @param pressedButton the pressed button
+     */
+    public void sendEvent(String objectAddress, String pressedButton) {
         ProtocolRead event = new ProtocolRead(this, "arduino-remote-controller", objectAddress);
-        event.addProperty("button.pressed", eventValue);
+        event.addProperty("button.pressed", pressedButton);
         //publish the event on the messaging bus
         this.notifyEvent(event);
         LOG.debug("Sending event : {}", event.toString());
     }
 
-    /**
-     * Actuator side
-     *
-     * @throws com.freedomotic.exceptions.UnableToExecuteException
-     */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
     }
