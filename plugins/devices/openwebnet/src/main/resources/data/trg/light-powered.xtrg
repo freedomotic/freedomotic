@@ -5,14 +5,8 @@
     <payload>
         <payload>
             <statement>
-                <logical>AND</logical>
-                <attribute>protocol</attribute>
-                <operand>EQUALS</operand>
-                <value>openwebnet</value>
-            </statement> 
-            <statement>
                <logical>AND</logical>
-               <attribute>who</attribute>
+               <attribute>openwebnet.who</attribute>
                <operand>EQUALS</operand>
                <value>1</value>
             </statement>
@@ -20,7 +14,7 @@
                <logical>SET</logical>
                <attribute>behaviorValue</attribute>
                <operand>EQUALS</operand>
-               <value>@event.what</value>
+               <value>@event.openwebnet.what</value>
             </statement>
         </payload>
     </payload>

@@ -1,25 +1,22 @@
 /**
-*
-* Copyright (c) 2009-2016 Freedomotic team
-* http://freedomotic.com
-*
-* This file is part of Freedomotic
-*
-* This Program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This Program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with Freedomotic; see the file COPYING. If not, see
-* <http://www.gnu.org/licenses/>.
-*/
-
+ *
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+* You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
 package com.freedomotic.plugins.devices.openwebnet;
 
 import com.freedomotic.app.Freedomotic;
@@ -30,6 +27,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+/**
+ *
+ * @author Mauro Cicolella
+ */
 public class OWNUtilities {
 
     /**
@@ -154,21 +155,63 @@ public class OWNUtilities {
     }
 
     // create the frame to send to the own gateway
-    public static String createFrame(Command c) {
-        String frame = null;
-        String address [] = null;
+
+    /**
+     *
+     * @param c
+     * @return
+     */
+        public static String createFrame(Command c) {
+        String frameToSend = null;
+        String address[] = null;
         String who = null;
         String what = null;
         String where = null;
+        String commandType = null;
+        String dimension = null;
+        String frame = null;
 
-        who = c.getProperty("who");
-        what = c.getProperty("what");
-        address = c.getProperty("address").split("\\*");
-        where = address[1];
-        frame = "*" + who + "*" + what + "*" + where + "##";
-        return (frame);
+        commandType = c.getProperty("command-type");
+
+        switch (commandType) {
+            case "command": {
+                who = c.getProperty("who");
+                what = c.getProperty("what");
+                address = c.getProperty("address").split("\\*");
+                where = address[1];
+                frameToSend = "*" + who + "*" + what + "*" + where + "##";
+                break;
+            }
+            case "request": {
+                where = c.getProperty("address");
+                dimension = c.getProperty("dimension");
+                frameToSend = "#" + where + "*" + dimension + "##";
+                break;
+            }
+            case "custom": {
+                frame = c.getProperty("frame");
+                frameToSend = frame;
+                break;
+            }
+        }
+        return (frameToSend);
     }
-    
+
+    /**
+     *
+     * @return
+     */
+    public static String getDateTime() {
+        Calendar calendar = new GregorianCalendar();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return (sdf.format(calendar.getTime()));
+    }
+
+    /**
+     *
+     * @param temperature
+     * @return
+     */
     public static String convertTemperature(String temperature) {
         String temp = null;
         if (!temperature.substring(0).equalsIgnoreCase("0")) {
@@ -179,8 +222,13 @@ public class OWNUtilities {
         temp += temperature.substring(3);
         return (temp);
     }
-    
-     public static String dayName(String dayNumber) {
+
+    /**
+     *
+     * @param dayNumber
+     * @return
+     */
+    public static String dayName(String dayNumber) {
         String dayName = null;
         switch (new Integer(Integer.parseInt(dayNumber))) {
             case (0):
@@ -200,8 +248,13 @@ public class OWNUtilities {
         }
         return (dayName);
     }
-     
-     public static String gatewayModel(String modelNumber) {
+
+    /**
+     *
+     * @param modelNumber
+     * @return
+     */
+    public static String gatewayModel(String modelNumber) {
         String model = null;
         switch (new Integer(Integer.parseInt(modelNumber))) {
             case (2):

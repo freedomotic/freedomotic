@@ -1,39 +1,37 @@
 /**
-*
-* Copyright (c) 2009-2016 Freedomotic team
-* http://freedomotic.com
-*
+ *
+ * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
+ * 
 * This file is part of Freedomotic
-*
-* This Program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This Program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with Freedomotic; see the file COPYING. If not, see
-* <http://www.gnu.org/licenses/>.
-*/
-
+ * 
+* This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ * 
+* This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+* You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
 package com.freedomotic.plugins.devices.openwebnet;
 
 import com.freedomotic.exceptions.UnableToExecuteException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.myhome.fcrisciani.exception.MalformedCommandOPEN;
 
 /**
  *
  * @author Mauro Cicolella
  */
 public class OWNFrame extends javax.swing.JFrame {
-     OpenWebNet pluginReference;
+
+    OpenWebNet pluginReference;
+
     /**
      * Creates new form OWNFrame
      */
@@ -136,19 +134,13 @@ public class OWNFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SendFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendFrameButtonActionPerformed
-        //OpenWebNet actuator = new OpenWebNet();
-        try {
-            pluginReference.myPlant.sendCommandAsync((String) jTextOwnFrame.getText(),1);
-        } catch (MalformedCommandOPEN ex) {
-            Logger.getLogger(OpenWebNet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        pluginReference.ownHandler.inviaComandoOpen((String) jTextOwnFrame.getText());
+        
     }//GEN-LAST:event_SendFrameButtonActionPerformed
 
     private void jTextOwnFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextOwnFrameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextOwnFrameActionPerformed
-
-            
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton SendFrameButton;
     private javax.swing.JLabel jLabel1;

@@ -1,0 +1,16 @@
+<command>
+  <name>Custom command</name>
+  <receiver>app.actuators.protocol.openwebnet.in</receiver>
+  <description>Custom command</description>
+  <hardwareLevel>true</hardwareLevel>
+  <delay>0</delay>
+  <timeout>0</timeout>
+  <properties>
+    <properties>
+      <property name="command-type" value="custom"/>
+      <property name="address" value="@owner.object.address"/>
+      <property name="object" value="@owner.object.name"/> 
+      <property name="frame" value="*#1*0##"/>
+    </properties>
+  </properties>
+</command>

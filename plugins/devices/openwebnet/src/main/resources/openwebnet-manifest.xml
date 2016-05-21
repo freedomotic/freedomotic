@@ -2,13 +2,11 @@
     <properties>
         <property name="description" value="Plugin for OpenWebNet protocol"/>
         <property name="protocol.name" value="openwebnet"/>        
-        <property name="version" value="1.0.0"/>
-        <property name="required" value="5.2.0"/>  
         <property name="category" value="protocol"/>
         <property name="short-name" value="openwebnet"/>
-        <property name="host" value="192.168.1.35"/>
+        <property name="host" value="127.0.0.1"/>
         <property name="port" value="20000"/>
-        <property name="startup-time"   value="on load"/>
+        <property name="startup-time" value="on load"/>
     </properties>
     <tuples>
         <tuple>
@@ -18,6 +16,11 @@
             <property name="turn on" value="Turn on OWN light"/>
             <property name="turn off" value="Turn off OWN light"/>
             <property name="set brightness" value="Dim OWN light"/>
+        </tuple>
+        <tuple>
+            <property name="object.class" value="Thermostat"/>
+            <property name="temperature" value="OWN protocol reads a temperature value"/>
+            <property name="setpoint" value="OWN protocol reads a setpoint value"/>
         </tuple>
     </tuples>
 

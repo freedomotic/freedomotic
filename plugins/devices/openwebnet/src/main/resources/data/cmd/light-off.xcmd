@@ -1,17 +1,17 @@
-<com.freedomotic.reactions.Command>
+<command>
   <name>Turn off OWN light</name>
   <receiver>app.actuators.protocol.openwebnet.in</receiver>
-  <description>An OWN light will turn off</description>
+  <description>Turn off OWN light</description>
   <hardwareLevel>true</hardwareLevel>
   <delay>0</delay>
   <timeout>0</timeout>
   <properties>
     <properties>
-      <property name="protocol" value="openwebnet"/>
+      <property name="command-type" value="command"/>
       <property name="address" value="@owner.object.address"/>
-      <property name="object" value="@event.object.name"/> 
+      <property name="object" value="@owner.object.name"/> 
       <property name="who" value="1"/>
       <property name="what" value="0"/>
     </properties>
   </properties>
-</com.freedomotic.reactions.Command>
+</command>

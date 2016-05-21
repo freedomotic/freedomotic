@@ -5,28 +5,16 @@
     <payload>
         <payload>
             <statement>
-                <logical>AND</logical>
-                <attribute>protocol</attribute>
-                <operand>EQUALS</operand>
-                <value>openwebnet</value>
-            </statement> 
-            <statement>
                <logical>AND</logical>
-               <attribute>who</attribute>
+               <attribute>openwebnet.who</attribute>
                <operand>EQUALS</operand>
-               <value>1</value>
-            </statement>
-            <statement>
-               <logical>AND</logical>
-               <attribute>what</attribute>
-               <operand>GREATER_THAN</operand>
                <value>1</value>
             </statement>
             <statement>
                <logical>SET</logical>
                <attribute>behaviorValue</attribute>
                <operand>EQUALS</operand>
-               <value>= behaviorValue=Math.round(@event.what*10)</value>
+               <value>= behaviorValue=Math.round(@event.openwebnet.what*10)</value>
             </statement>
         </payload>
     </payload>
