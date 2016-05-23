@@ -39,6 +39,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -63,19 +64,18 @@ public class ReactionRepositoryImpl implements ReactionRepository {
     }
 
     /**
+     * Saves all .xrea reaction files to a given folder.
      *
-     * @param folder
+     * @param folder the folder where to save the files
      */
     public void saveReactions(File folder) {
         if (list.isEmpty()) {
             LOG.warn("There are no reactions to persist, {} will not be altered.", folder.getAbsolutePath());
-
             return;
         }
 
         if (!folder.isDirectory()) {
             LOG.warn("{} is not a valid reaction folder. Skipped", folder.getAbsoluteFile());
-
             return;
         }
 
@@ -83,14 +83,11 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
         try {
             LOG.info("Saving reactions to file in {}", folder.getAbsolutePath());
-
             for (Reaction reaction : list) {
                 String uuid = reaction.getUuid();
-
                 if ((uuid == null) || uuid.isEmpty()) {
                     reaction.setUuid(UUID.randomUUID().toString());
                 }
-
                 String fileName = reaction.getUuid() + ".xrea";
                 File file = new File(folder + "/" + fileName);
                 FreedomXStream.toXML(reaction, file);
@@ -100,6 +97,11 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         }
     }
 
+    /**
+     * Deletes all .xrea reaction files from a given folder.
+     *
+     * @param folder the folder to save the files from
+     */
     private void deleteReactionFiles(File folder) {
         File[] files;
 
@@ -120,8 +122,9 @@ public class ReactionRepositoryImpl implements ReactionRepository {
     }
 
     /**
+     * Loads all .xrea reaction files from a given folder.
      *
-     * @param folder
+     * @param folder the folder to load reaction files from
      */
     public synchronized void loadReactions(File folder) {
         XStream xstream = FreedomXStream.getXstream();
@@ -286,17 +289,19 @@ public class ReactionRepositoryImpl implements ReactionRepository {
     }
 
     /**
-     *
-     * @return
+     * Returns the number of Reactions. 
+     * 
+     * @return the number of reactions 
      */
     public int size() {
         return list.size();
     }
 
     /**
-     *
-     * @param input
-     * @return
+     * Checks if a reaction exists.
+     * 
+     * @param input the reaction to check
+     * @return true if the reaction exists, false otherwise
      */
     public boolean exists(Reaction input) {
         if (input != null) {
@@ -307,13 +312,14 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                 }
             }
         }
-
         return false;
     }
 
     @Override
     public List<Reaction> findAll() {
-        return Collections.unmodifiableList(list);
+        //return Collections.unmodifiableList(list);
+        Collections.sort(list, new ReactionNameComparator());
+        return (list);
     }
 
     @Override
@@ -392,6 +398,14 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         } catch (Exception e) {
         } finally {
             list.clear();
+        }
+    }
+
+    class ReactionNameComparator implements Comparator<Reaction> {
+
+        @Override
+        public int compare(Reaction r1, Reaction r2) {
+            return r1.getTrigger().getName().compareTo(r2.getTrigger().getName());
         }
     }
 
