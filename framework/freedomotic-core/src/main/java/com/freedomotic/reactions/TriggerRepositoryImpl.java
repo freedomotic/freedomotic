@@ -35,6 +35,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -376,7 +378,9 @@ class TriggerRepositoryImpl implements TriggerRepository {
 
     @Override
     public List<Trigger> findAll() {
-        return getTriggers();
+        Collections.sort(list, new TriggerNameComparator());
+        //return getTriggers();
+        return list;
     }
 
     /**
@@ -484,6 +488,14 @@ class TriggerRepositoryImpl implements TriggerRepository {
         } catch (Exception e) {
         } finally {
             list.clear();
+        }
+    }
+
+    class TriggerNameComparator implements Comparator<Trigger> {
+
+        @Override
+        public int compare(Trigger t1, Trigger t2) {
+            return t1.getName().compareTo(t2.getName());
         }
     }
 }
