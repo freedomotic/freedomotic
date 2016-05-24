@@ -52,8 +52,9 @@ public final class EnvironmentLogic {
     }
 
     /**
+     * Returns the environment POJO.
      *
-     * @return
+     * @return the environment pojo
      */
     @RequiresPermissions("environments:read")
     public Environment getPojo() {
@@ -61,8 +62,9 @@ public final class EnvironmentLogic {
     }
 
     /**
+     * Sets an environment POJO.
      *
-     * @param pojo
+     * @param pojo the pojo to set
      */
     @RequiresPermissions("environments:update")
     public void setPojo(Environment pojo) {
@@ -74,8 +76,9 @@ public final class EnvironmentLogic {
     }
 
     /**
+     * Returns a graph that describes how rooms are connected through gates.
      *
-     * @return
+     * @return the environment rooms graph
      */
     @RequiresPermissions("environments:read")
     public Graph getGraph() {
@@ -83,8 +86,9 @@ public final class EnvironmentLogic {
     }
 
     /**
+     * Returns a list of rooms in the environment.
      *
-     * @return
+     * @return the list of rooms
      */
     @RequiresPermissions("environments:read")
     public List<Room> getRooms() {
@@ -95,13 +99,13 @@ public final class EnvironmentLogic {
                 rooms.add((Room) zone);
             }
         }
-
         return rooms;
     }
 
     /**
+     * Adds a room. Null and already existent rooms are not allowed.
      *
-     * @param zone
+     * @param zone the zone to add
      */
     @RequiresPermissions({"environments:update", "zones:create"})
     public void addRoom(ZoneLogic zone) {
@@ -109,21 +113,18 @@ public final class EnvironmentLogic {
         if (zone == null) {
             zone = new ZoneLogic(new Zone());
         }
-
         if (zones.contains(zone)) {
             LOG.warn("Attempt to add a null or already existent room");
-
             return;
         }
-
-        //check for vaild name
+        //check for a valid name
         if ((zone.getPojo().getName() == null) || (zone.getPojo().getName().isEmpty())) {
             zone.getPojo().setName("Unamed Zone " + UidGenerator.getNextStringUid());
         }
 
         zone.getPojo().setDescription("");
 
-        //check for valid shape
+        //check for a valid shape
         if (zone.getPojo().getShape() == null) {
             //a default shape
             FreedomPolygon p = new FreedomPolygon();
@@ -134,7 +135,7 @@ public final class EnvironmentLogic {
             zone.getPojo().setShape(p);
         }
 
-        //append to list and initilize
+        //append to the list and initialize
         getPojo().getZones().add(zone.getPojo());
         zones.add(zone);
 
@@ -168,8 +169,9 @@ public final class EnvironmentLogic {
     }
 
     /**
+     * Removes a zone.
      *
-     * @param zone
+     * @param zone the zone to remove
      */
     @RequiresPermissions("environments:delete")
     public void removeZone(ZoneLogic zone) {
@@ -178,7 +180,7 @@ public final class EnvironmentLogic {
     }
 
     /**
-     *
+     * Deletes all zones.
      */
     @RequiresPermissions("environments:delete")
     public void clear() {
@@ -193,7 +195,8 @@ public final class EnvironmentLogic {
     }
 
     /**
-     *
+     * Initializes the environment. The graph data structure describes how rooms
+     * are connected through gates.
      */
     @RequiresPermissions("environments:read")
     public void init() {
@@ -231,8 +234,9 @@ public final class EnvironmentLogic {
     }
 
     /**
+     * Returns a list of zones.
      *
-     * @return
+     * @return the list of zones
      */
     @RequiresPermissions("environments:read")
     public List<ZoneLogic> getZones() {
@@ -240,9 +244,10 @@ public final class EnvironmentLogic {
     }
 
     /**
+     * Gets a zone by its name.
      *
-     * @param zoneName
-     * @return
+     * @param zoneName the name of the zone to retrieve
+     * @return the zone
      */
     @RequiresPermissions({"environments:read", "zones:read"})
     public ZoneLogic getZone(String zoneName) {
@@ -251,14 +256,14 @@ public final class EnvironmentLogic {
                 return zone;
             }
         }
-
         return null;
     }
 
     /**
+     * Gets a zone by its UUID.
      *
-     * @param uuid
-     * @return
+     * @param uuid the uuid of the zone to retrieve
+     * @return the zone
      */
     @RequiresPermissions({"environments:read", "zones:read"})
     public ZoneLogic getZoneByUuid(String uuid) {
@@ -271,8 +276,9 @@ public final class EnvironmentLogic {
     }
 
     /**
+     * Return the environment source file.
      *
-     * @return
+     * @return the environment source file
      */
     @RequiresPermissions("environments:read")
     public File getSource() {
@@ -280,8 +286,9 @@ public final class EnvironmentLogic {
     }
 
     /**
+     * Returns the folder where the files representing objects are stored.
      *
-     * @return
+     * @return the objects folder
      */
     @RequiresPermissions("environments:read")
     public File getObjectFolder() {
@@ -289,8 +296,9 @@ public final class EnvironmentLogic {
     }
 
     /**
+     * Sets the environment source file.
      *
-     * @param source
+     * @param source the environment source file to set
      */
     @RequiresPermissions("environments:update,create")
     public void setSource(File source) {
@@ -298,8 +306,9 @@ public final class EnvironmentLogic {
     }
 
     /**
+     * Returns the environment name. Intended for debugging use.
      *
-     * @return
+     * @return the environment name
      */
     @RequiresPermissions("environments:read")
     @Override
