@@ -167,8 +167,9 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     }
 
     /**
+     * Opens object editor GUI.
      *
-     * @param obj
+     * @param obj the object to edit
      */
     public void openObjEditor(EnvObjectLogic obj) {
         if (objEditorPanels.containsKey(obj)) {
@@ -220,8 +221,9 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     }
 
     /**
+     * Returns the current environment.
      *
-     * @return
+     * @return the current environment
      */
     @Override
     public EnvironmentLogic getCurrEnv() {
@@ -229,6 +231,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     }
 
     /**
+     * Sets the current environment.
      *
      * @param env
      */
@@ -876,7 +879,6 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 Point mouse = toRealCoords(p);
                 onZone = TopologyUtils.contains(zone.getPojo().getShape(),
                         new FreedomPoint((int) mouse.getX(), (int) mouse.getY()));
-
                 if (onZone == true) {
                     return zone;
                 }
@@ -1004,7 +1006,9 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
             } else {
                 //click on a zone in edit mode if no handle is selected
                 ZoneLogic zone = mouseOnZone(e.getPoint());
-
+                Callout callout = new Callout(this.getClass().getCanonicalName(), "info",
+                        I18n.msg("room_zone_selected") + " [" + zone.getPojo().getName() + "]", 50, 150, 0, -1);
+                createCallout(callout);
                 if (zone != null) {
                     setSelectedZone(zone);
                 } else {
@@ -1012,8 +1016,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                     // createHandles(null);
                 }
             }
-
-            setNeedRepaint(true);
+        setNeedRepaint(true);
         }
     }
 
