@@ -51,13 +51,16 @@
             <property name="ip-to-query" value="192.168.1.201"/>
             <property name="port-to-query" value="80"/>
             <property name="relay-number" value="8"/>
+            <property name="temperature-number" value="1"/>
             <property name="analog-input-number" value="4"/>
             <property name="digital-input-number" value="4"/>
             <property name="starting-relay" value="0"/>
             <property name="led-tag" value="led"/>
+            <property name="temp-tag" value="temp"/>
             <property name="analog-input-tag" value="pot"/>
             <property name="digital-input-tag" value="btn"/>
             <property name="monitor-relay" value="true"/>
+            <property name="monitor-temperature" value="true"/>
             <property name="monitor-analog-input" value="true"/>
             <property name="monitor-digital-input" value="true"/>
             <property name="auto-configuration" value="false"/>

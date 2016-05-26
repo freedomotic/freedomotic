@@ -23,12 +23,14 @@ public class Board {
 
     private String ipAddress = null;
     private String ledTag;
+    private String tempTag;
     private String analogInputTag;
     private String digitalInputTag;
     private String autoConfiguration;
     private String objectClass;
     private String alias = null;
     private String monitorRelay = null;
+    private String monitorTemperature = null;
     private String monitorAnalogInput = null;
     private String monitorDigitalInput = null;
     private String authentication = null;
@@ -36,21 +38,26 @@ public class Board {
     private String password = null;
     private int port;
     private int relayNumber;
+    private int temperatureNumber;
     private int analogInputNumber;
     private int digitalInputNumber;
     private int startingRelay;
     private int[] relayStatus;
+    private float[] temperatureStatus;
     private String[] digitalInputValues;
     private int[] analogInputValues;
 
-    public Board(String ipAddress, int port, String alias, int relayNumber, int analogInputNumber,
-            int digitalInputNumber, int startingRelay, String ledTag, String digitalInputTag, String analogInputTag, String autoConfiguration, String objectClass,
-            String monitorRelay, String monitorAnalogInput, String monitorDigitalInput, String authentication,
+    public Board(String ipAddress, int port, String alias, int relayNumber, int temperatureNumber, int analogInputNumber,
+            int digitalInputNumber, int startingRelay, String ledTag, String tempTag, String digitalInputTag,
+                 String analogInputTag, String autoConfiguration, String objectClass,
+                 String monitorRelay, String monitorTemperature, String monitorAnalogInput,
+                 String monitorDigitalInput, String authentication,
             String username, String password) {
         setIpAddress(ipAddress);
         setPort(port);
         setAlias(alias);
         setRelayNumber(relayNumber);
+        setTemperatureNumber(temperatureNumber);
         setAnalogInputNumber(analogInputNumber);
         setDigitalInputNumber(digitalInputNumber);
         setStartingRelay(startingRelay);
@@ -58,14 +65,17 @@ public class Board {
         setUsername(username);
         setPassword(password);
         setLedTag(ledTag);
+        setTempTag(tempTag);
         setDigitalInputTag(digitalInputTag);
         setAnalogInputTag(analogInputTag);
         setAutoConfiguration(autoConfiguration);
         setObjectClass(objectClass);
         setMonitorRelay(monitorRelay);
+        setMonitorTemperature(monitorTemperature);
         setMonitorAnalogInput(monitorAnalogInput);
         setMonitorDigitalInput(monitorDigitalInput);
         initializeRelayStatus(relayNumber);
+        initializeTemperatureStatus(temperatureNumber);
         initializeDigitalInputValues(digitalInputNumber);
         initializeAnalogInputValues(analogInputNumber);
     }
@@ -122,8 +132,16 @@ public class Board {
         return ledTag;
     }
 
+    public String getTempTag() {
+        return tempTag;
+    }
+
     public void setLedTag(String ledTag) {
         this.ledTag = ledTag;
+    }
+
+    public void setTempTag(String tempTag) {
+        this.tempTag = tempTag;
     }
 
     public String getAnalogInputTag() {
@@ -136,6 +154,10 @@ public class Board {
 
     public void setMonitorRelay(String monitorRelay) {
         this.monitorRelay = monitorRelay;
+    }
+
+    public void setMonitorTemperature(String monitorTemperature) {
+        this.monitorTemperature = monitorTemperature;
     }
 
     public void setAnalogInput(String monitorAnalogInput) {
@@ -178,8 +200,16 @@ public class Board {
         return relayNumber;
     }
 
+    public int getTemperatureNumber() {
+        return temperatureNumber;
+    }
+
     public void setRelayNumber(int relayNumber) {
         this.relayNumber = relayNumber;
+    }
+
+    public void setTemperatureNumber(int temperatureNumber) {
+        this.temperatureNumber = temperatureNumber;
     }
 
     public int getStartingRelay() {
@@ -196,6 +226,10 @@ public class Board {
 
     public String getMonitorRelay() {
         return monitorRelay;
+    }
+
+    public String getMonitorTemperature() {
+        return monitorTemperature;
     }
 
     public String getMonitorAnalogInput() {
@@ -226,6 +260,14 @@ public class Board {
         relayStatus[relayNumber] = value;
     }
 
+    public float getTemperatureStatus(int temperatureNumber) {
+        return this.temperatureStatus[temperatureNumber];
+    }
+
+    public void setTemperatureStatus(int temperatureNumber, float value) {
+        temperatureStatus[temperatureNumber] = value;
+    }
+
     public String getDigitalInputValue(int digitalInputNumber) {
         return digitalInputValues[digitalInputNumber];
     }
@@ -246,6 +288,13 @@ public class Board {
         relayStatus = new int[relayNumber];
         for (int i = 0; i < relayNumber; i++) {
             relayStatus[i] = -1;
+        }
+    }
+
+    private void initializeTemperatureStatus(int temperatureNumber) {
+        temperatureStatus = new float[temperatureNumber];
+        for (int i = 0; i < temperatureNumber; i++) {
+            temperatureStatus[i] = 0;
         }
     }
 
