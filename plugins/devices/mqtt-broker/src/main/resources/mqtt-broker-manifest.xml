@@ -1,11 +1,20 @@
 <config>
     <properties>
-        <property name="description" value="A simple broker for MQTT protocol based on Moquette"/>
+        <property name="description" value="A broker for MQTT protocol based on Moquette library"/>
         <property name="category" value="protocol"/>
         <property name="short-name" value="mqtt-broker"/>
         <property name="protocol.name" value="mqtt-broker"/>
-        <property name="startup-time"   value="on load"/>
+        <property name="startup-time" value="on load"/>
+        <property name="broker-host" value="0.0.0.0"/>
+        <property name="broker-port" value="1883"/>
     </properties>
+    <tuples>
+        <tuple>
+            <property name="Name" value="Thermometer1"/>
+            <property name="Address" value="1111"/>
+            <property name="Topic" value="/"/>
+        </tuple>
+    </tuples>
 </config>
 
                 

@@ -1,0 +1,27 @@
+<trigger>
+    <name>MQTT reads a value</name>
+    <description>MQTT reads a value</description>
+    <channel>app.event.sensor.protocol.read.mqtt-broker</channel>
+    <payload>
+        <payload>
+            <statement>
+                <logical>AND</logical>
+                <attribute>address</attribute>
+                <operand>EQUALS</operand>
+                <value>@event.mqtt.topic</value>
+            </statement>
+            <statement>
+                <logical>SET</logical>
+                <attribute>behaviorValue</attribute>
+                <operand>EQUALS</operand>
+                <value>@event.mqtt.value</value>
+            </statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <priority>0</priority>
+    <maxExecutions>-1</maxExecutions>
+    <numberOfExecutions>0</numberOfExecutions>
+    <suspensionTime>0</suspensionTime>
+</trigger>
