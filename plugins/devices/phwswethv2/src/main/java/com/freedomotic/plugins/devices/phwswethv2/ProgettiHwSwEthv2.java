@@ -79,12 +79,14 @@ public class ProgettiHwSwEthv2 extends Protocol {
         for (int i = 0; i < BOARD_NUMBER; i++) {
             String ipToQuery;
             String ledTag;
+            String tempTag;
             String digitalInputTag;
             String analogInputTag;
             String autoConfiguration;
             String objectClass;
             String alias;
             String monitorRelay;
+            String monitorTemperature;
             String monitorAnalogInput;
             String monitorDigitalInput;
             String authentication;
@@ -94,11 +96,13 @@ public class ProgettiHwSwEthv2 extends Protocol {
             int digitalInputNumber;
             int analogInputNumber;
             int relayNumber;
+            int temperatureNumber;
             int startingRelay;
             ipToQuery = configuration.getTuples().getStringProperty(i, "ip-to-query", "192.168.1.201");
             portToQuery = configuration.getTuples().getIntProperty(i, "port-to-query", 80);
             alias = configuration.getTuples().getStringProperty(i, "alias", "default");
             relayNumber = configuration.getTuples().getIntProperty(i, "relay-number", 8);
+            temperatureNumber = configuration.getTuples().getIntProperty(i, "temperature-number", 1);
             analogInputNumber = configuration.getTuples().getIntProperty(i, "analog-input-number", 4);
             digitalInputNumber = configuration.getTuples().getIntProperty(i, "digital-input-number", 4);
             startingRelay = configuration.getTuples().getIntProperty(i, "starting-relay", 0);
@@ -106,16 +110,19 @@ public class ProgettiHwSwEthv2 extends Protocol {
             username = configuration.getTuples().getStringProperty(i, "username", "ftp");
             password = configuration.getTuples().getStringProperty(i, "password", "2406");
             ledTag = configuration.getTuples().getStringProperty(i, "led-tag", "led");
+            tempTag = configuration.getTuples().getStringProperty(i, "temp-tag", "temp");
             digitalInputTag = configuration.getTuples().getStringProperty(i, "digital-input-tag", "btn");
             analogInputTag = configuration.getTuples().getStringProperty(i, "analog-input-tag", "pot");
             autoConfiguration = configuration.getTuples().getStringProperty(i, "auto-configuration", "false");
             monitorRelay = configuration.getTuples().getStringProperty(i, "monitor-relay", "true");
+            monitorTemperature = configuration.getTuples().getStringProperty(i, "monitor-temperature", "true");
             monitorAnalogInput = configuration.getTuples().getStringProperty(i, "monitor-analog-input", "true");
             monitorDigitalInput = configuration.getTuples().getStringProperty(i, "monitor-digital-input", "true");
             objectClass = configuration.getTuples().getStringProperty(i, "object.class", "Light");
-            Board board = new Board(ipToQuery, portToQuery, alias, relayNumber, analogInputNumber,
-                    digitalInputNumber, startingRelay, ledTag, digitalInputTag, analogInputTag, autoConfiguration, objectClass,
-                    monitorRelay, monitorAnalogInput, monitorDigitalInput, authentication, username, password);
+            Board board = new Board(ipToQuery, portToQuery, alias, relayNumber, temperatureNumber, analogInputNumber,
+                    digitalInputNumber, startingRelay, ledTag, tempTag, digitalInputTag, analogInputTag, autoConfiguration,
+                    objectClass, monitorRelay, monitorTemperature, monitorAnalogInput, monitorDigitalInput,
+                    authentication, username, password);
             boards.add(board);
             // add board object and its alias as key for the hashmap
             devices.put(alias, board);
@@ -247,6 +254,9 @@ public class ProgettiHwSwEthv2 extends Protocol {
             if (board.getMonitorRelay().equalsIgnoreCase("true")) {
                 valueTag(doc, board, board.getRelayNumber(), board.getLedTag(), 0);
             }
+            if (board.getMonitorTemperature().equalsIgnoreCase("true")) {
+                valueTag(doc, board, board.getTemperatureNumber(), board.getTempTag(), 0);
+            }
             if (board.getMonitorDigitalInput().equalsIgnoreCase("true")) {
                 valueTag(doc, board, board.getDigitalInputNumber(), board.getDigitalInputTag(), 0);
             }
@@ -265,6 +275,12 @@ public class ProgettiHwSwEthv2 extends Protocol {
                     if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
                         sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
                         board.setRelayStatus(i, Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()));
+                    }
+                }
+                if (tag.equalsIgnoreCase(board.getTempTag())) {
+                    if (!(board.getTemperatureStatus(i) == Float.parseFloat(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
+                        sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
+                        board.setTemperatureStatus(i, Float.parseFloat(doc.getElementsByTagName(tagName).item(0).getTextContent()));
                     }
                 }
                 if (tag.equalsIgnoreCase(board.getAnalogInputTag())) {
