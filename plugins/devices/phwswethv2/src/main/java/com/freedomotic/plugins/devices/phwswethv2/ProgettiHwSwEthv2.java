@@ -322,6 +322,10 @@ public class ProgettiHwSwEthv2 extends Protocol {
                 event.addProperty("isOpen", "false");
             }
 
+        } else // temperature inputs value = float/number
+        if (tag.equalsIgnoreCase(board.getTempTag())) {
+            event.addProperty("sensor.temperature", status);
+
         } else {
             // analog inputs status = 0 -> off; status > 0 -> on
             if (tag.equalsIgnoreCase(board.getAnalogInputTag())) {
