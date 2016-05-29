@@ -24,7 +24,7 @@ package com.freedomotic.plugins;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class Coordinate {
 
@@ -35,16 +35,18 @@ public class Coordinate {
     private String userId; 
 
     /**
-     *
-     * @return
+     * Returns the x coordinate.
+     * 
+     * @return x coordinate
      */
     public int getX() {
         return x;
     }
 
     /**
-     *
-     * @return
+     * Returns the y coordinate.
+     * 
+     * @return y coordinate
      */
     public int getY() {
         return y;
@@ -52,7 +54,7 @@ public class Coordinate {
 
     /**
      *
-     * @return
+     * @return 
      */
     public int getTime() {
         return time;

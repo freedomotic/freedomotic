@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -31,22 +30,26 @@ import java.util.Iterator;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class WorkerThread
         extends Thread {
 
     ArrayList<Coordinate> coord;
     TrackingReadFile master;
+    int iterations = 1;
 
     /**
      *
-     * @param master
-     * @param coord
+     * @param master plugin instance
+     * @param coord new position coordinates
+     * @param iterations number of iterations to do
+     * 
      */
-    public WorkerThread(TrackingReadFile master, ArrayList<Coordinate> coord) {
+    public WorkerThread(TrackingReadFile master, ArrayList<Coordinate> coord, int iterations) {
         this.master = master;
         this.coord = coord;
+        this.iterations = iterations;
         setName("MoteTrackingFromFileWT");
     }
 
@@ -55,22 +58,25 @@ public class WorkerThread
      */
     @Override
     public void run() {
-        Iterator it = coord.iterator();
+        for (int i = 1; i <= iterations; i++) {
+            Iterator it = coord.iterator();
 
-        while (it.hasNext()) {
-            Coordinate c = (Coordinate) it.next();
+            while (it.hasNext()) {
+                Coordinate c = (Coordinate) it.next();
 
-            if (c != null) {
-                for (EnvObjectLogic object : master.getApi().things().findByName(c.getUserId())) {
-                    if ((object instanceof GenericPerson) && (object.getPojo().getName().equalsIgnoreCase(c.getUserId()))) {
-                        GenericPerson person = (GenericPerson) object;
-                        FreedomPoint location = new FreedomPoint(c.getX(), c.getY());
-                        LocationEvent event = new LocationEvent(this, person.getPojo().getUUID(), location);
-                        master.notifyEvent(event);
-                    }
-                    try {
-                        WorkerThread.sleep(c.getTime());
-                    } catch (InterruptedException interruptedException) {
+                if (c != null) {
+                    for (EnvObjectLogic object : master.getApi().things().findByName(c.getUserId())) {
+                        if ((object instanceof GenericPerson) && (object.getPojo().getName().equalsIgnoreCase(c.getUserId()))) {
+                            GenericPerson person = (GenericPerson) object;
+                            FreedomPoint location = new FreedomPoint(c.getX(), c.getY());
+                            LocationEvent event = new LocationEvent(this, person.getPojo().getUUID(), location);
+                            master.getLog().info("User '{}' moved to {}", c.getUserId(), location.toString());
+                                       master.notifyEvent(event);
+                        }
+                        try {
+                            WorkerThread.sleep(c.getTime());
+                        } catch (InterruptedException interruptedException) {
+                        }
                     }
                 }
             }
