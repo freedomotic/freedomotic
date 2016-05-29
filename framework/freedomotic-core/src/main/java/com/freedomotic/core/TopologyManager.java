@@ -36,7 +36,7 @@ import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
 /**
- * Listen to topology related events and manages them, eventually throwing more
+ * Listens to topology related events and manages them, eventually throwing more
  * specific events like "PersonEnterZone" if it's the case.
  *
  * @author Enrico Nicoletti
@@ -82,17 +82,18 @@ public class TopologyManager implements BusConsumer {
 
     /**
      * Fires PersonEntersZone or PersonExitsZone events after checking current
-     * and old location in the environment.
+     * and old person's location in the environment.
      *
-     * @param event
+     * @param person the person entering/exiting the zone 
+     * @param event the person's coordinates
      */
     private void fireEnterExitEvents(GenericPerson person, LocationEvent event) {
         for (ZoneLogic zone : environmentRepository.findAll().get(0).getZones()) {
-            // are the new Person coordinates inside the current zone?
+            // are the new Person's coordinates inside the current zone?
             boolean isZoneAffected = TopologyUtils.contains(zone.getPojo().getShape(), new FreedomPoint(event.getX(), event.getY()));
             if (isZoneAffected) {
                 if (!zone.isInside(person)) {
-                    // received coordinates are inside this zone but proviously 
+                    // received coordinates are inside this zone but previously 
                     // the person was not inside this zone
                     zone.enter(person); //update zone occupiers
                 }
