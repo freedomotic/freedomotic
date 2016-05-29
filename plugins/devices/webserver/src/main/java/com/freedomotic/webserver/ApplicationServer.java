@@ -30,14 +30,15 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.security.KeyStore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ssl.SslSocketConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
 /**
@@ -127,9 +128,9 @@ public class ApplicationServer extends Protocol {
                 setDescription("Visit " + url.toString());
                 server.start();
             } catch (FileNotFoundException nf) {
-                LOG.warning("Cannot find WAR file " + war_file + " into directory " + dir);
+                LOG.warn("Cannot find WAR file " + war_file + " into directory " + dir);
             } catch (Exception ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.error("Generic exception",ex);
             }
         } else {
             try {
@@ -140,7 +141,7 @@ public class ApplicationServer extends Protocol {
                 server.setHandler(context);
                 server.start();
             } catch (Exception ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.error(null, ex);
             }
         }
 

@@ -41,7 +41,7 @@ class BusBroker extends LifeCycle {
     private void configureBroker() throws Exception {
 
         // websocket connector for javascript apps
-        // broker.addConnector(Info.MESSAGING.BROKER_STOMP);
+        broker.addConnector(Info.MESSAGING.BROKER_STOMP);
         // websocket connector for javascript apps
         // broker.addConnector(Info.MESSAGING.BROKER_WEBSOCKET);
         // broker setup
