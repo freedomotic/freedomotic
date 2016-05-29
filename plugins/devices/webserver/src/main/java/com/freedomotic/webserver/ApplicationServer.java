@@ -30,18 +30,15 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.security.KeyStore;
-import org.eclipse.jetty.http.HttpVersion;
-import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.SecureRequestCustomizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.SslConnectionFactory;
+import org.eclipse.jetty.server.ssl.SslSocketConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.jetty.webapp.WebAppContext;
+
 
 /**
  *
@@ -66,13 +63,13 @@ public class ApplicationServer extends Protocol {
     public ApplicationServer() {
         super("Application Server", "/webserver/applicationserver-manifest.xml");
 
-        // port = configuration.getIntProperty("PORT", 8080);
+        port = configuration.getIntProperty("PORT", 8080);
         webapp_dir = configuration.getStringProperty("WEBAPP_DIR", "/webapps/gwt_client");
         war_file = configuration.getStringProperty("WAR_FILE", "");
         enableSSL = configuration.getBooleanProperty("ENABLE_SSL", true);
-        // sslPort = configuration.getIntProperty("SSL_PORT", 8443);
-        //keystorePassword = configuration.getStringProperty("KEYSTORE_PASSWORD", "password");
-        // keystoreFile = configuration.getStringProperty("KEYSTORE_FILE", "keystore");
+        sslPort = configuration.getIntProperty("SSL_PORT", 8443);
+        keystorePassword = configuration.getStringProperty("KEYSTORE_PASSWORD", "password");
+        keystoreFile = configuration.getStringProperty("KEYSTORE_FILE", "keystore");
         keystoreType = configuration.getStringProperty("KEYSTORE_TYPE", "JKS");
 
         //TODO: check that the war file is correct.
@@ -82,80 +79,70 @@ public class ApplicationServer extends Protocol {
     public void onStart() {
         String dir = new File(this.getFile().getParent() + File.separator + webapp_dir).getAbsolutePath();
 
-        server = new Server();
-        HttpConfiguration http_config = new HttpConfiguration();
-        if (!enableSSL) {
-
-            ServerConnector http = new ServerConnector(server,
-                    new HttpConnectionFactory(http_config));
-
-            http.setPort(configuration.getIntProperty("PORT", 8080));
-            server.addConnector(http);
-            LOG.info("Webserver now listens on port " + configuration.getIntProperty("PORT", 8080));
-        } else {
+        server = new Server(port);
+        LOG.info("Webserver now listens on port " + port);
+        if (enableSSL) {
+            KeyStore ks;
+            String keyStorePath = this.getFile().getParent() + "/data/" + keystoreFile;
             try {
+                ks = KeyStore.getInstance(keystoreType);
+                ks.load(new FileInputStream(keyStorePath), keystorePassword.toCharArray());
+
                 SslContextFactory sslContextFactory = new SslContextFactory();
-                sslContextFactory.setKeyStorePassword(configuration.getStringProperty("KEYSTORE_PASSWORD", "password"));
+                sslContextFactory.setKeyStore(ks);
+                sslContextFactory.setKeyStorePassword(keystorePassword);
+                sslContextFactory.setKeyStoreType(keystoreType);
 
-                KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-                keyStore.load(
-                        new FileInputStream(getFile().getParent() + "/data/" + configuration.getStringProperty("KEYSTORE_FILE", "keystore")),
-                        configuration.getStringProperty("KEYSTORE_PASSWORD", "password").toCharArray());
+                SslSocketConnector SSLConnector = new SslSocketConnector(sslContextFactory);
 
-                sslContextFactory.setKeyStore(keyStore);
-                HttpConfiguration https_config = new HttpConfiguration(http_config);
-                https_config.addCustomizer(new SecureRequestCustomizer());
-                ServerConnector https = new ServerConnector(server,
-                        new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
-                        new HttpConnectionFactory(https_config));
-
-                https.setIdleTimeout(500000);
-                https.setPort(configuration.getIntProperty("SSL_PORT", 8443));
-                server.addConnector(https);
-                LOG.info("Webserver now listens on SLL port " + configuration.getIntProperty("SSL_PORT", 8443));
+                SSLConnector.setPort(sslPort);
+                SSLConnector.setMaxIdleTime(30000);
+                LOG.info("Webserver now listens on SLL port " + sslPort);
+                server.addConnector(SSLConnector);
             } catch (Exception ex) {
                 LOG.error("Cannot load java keystore for reason: ", ex.getLocalizedMessage());
             }
 
         }
-
 //        WebAppContext context = new WebAppContext();        
 //        context.setDescriptor(dir+"/WEB-INF/web.xml");
 //        context.setResourceBase(dir);
 //        context.setContextPath(WEBAPP_CTX);
 //        context.setParentLoaderPriority(true);  
 //        server.setHandler(context);
-//        if (!war_file.isEmpty()) {
-//            try {
-//                WebAppContext webapp = new WebAppContext();
-//                webapp.setContextPath(WEBAPP_CTX);
-//                webapp.setWar(dir + "/" + war_file);
-//                webapp.setWar(dir + "/" + war_file);
-//                server.setHandler(webapp);
-        //print the URL to visit as plugin description
-//                InetAddress addr = InetAddress.getLocalHost();
-//                String hostname = addr.getHostName();
-        //strip away the '.war' extension and put all togheter
-//                URL url = new URL("http://" + hostname + ":" + port + "/" + war_file.substring(0, war_file.lastIndexOf(".")));
-//                setDescription("Visit " + url.toString());
-//                server.start();
-//            } catch (FileNotFoundException nf) {
-//                LOG.warning("Cannot find WAR file " + war_file + " into directory " + dir);
-//            } catch (Exception ex) {
-//                LOG.log(Level.SEVERE, null, ex);
-//            }
-//        } else {
-        try {
-            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-            context.setContextPath("/");
-            context.setResourceBase(new File(dir + "/").getAbsolutePath());
-            context.addServlet(DefaultServlet.class, "/*");
-            server.setHandler(context);
-            server.start();
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage());
+
+
+        if (!war_file.isEmpty()) {
+            try {
+                WebAppContext webapp = new WebAppContext();
+                webapp.setContextPath(WEBAPP_CTX);
+                webapp.setWar(dir + "/" + war_file);
+                server.setHandler(webapp);
+
+                //print the URL to visit as plugin description
+                InetAddress addr = InetAddress.getLocalHost();
+                String hostname = addr.getHostName();
+                //strip away the '.war' extension and put all togheter
+                URL url = new URL("http://" + hostname + ":" + port + "/" + war_file.substring(0, war_file.lastIndexOf(".")));
+                setDescription("Visit " + url.toString());
+                server.start();
+            } catch (FileNotFoundException nf) {
+                LOG.warning("Cannot find WAR file " + war_file + " into directory " + dir);
+            } catch (Exception ex) {
+                LOG.log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+                context.setContextPath("/");
+                context.setResourceBase(new File(dir + "/").getAbsolutePath());
+                context.addServlet(DefaultServlet.class, "/*");
+                server.setHandler(context);
+                server.start();
+            } catch (Exception ex) {
+                LOG.log(Level.SEVERE, null, ex);
+            }
         }
-//        }
 
     }
 
