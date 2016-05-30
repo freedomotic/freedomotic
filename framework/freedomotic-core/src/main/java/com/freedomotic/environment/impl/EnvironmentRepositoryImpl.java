@@ -24,6 +24,7 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.environment.Environment;
+import com.freedomotic.model.environment.Zone;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.ThingRepository;
 import com.freedomotic.persistence.FreedomXStream;
@@ -66,8 +67,8 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     /**
      * Creates a new repository
      *
-     * @param appConfig Needed to get the default environment
-     * @param environmentPersistenceFactory Creates the right environment loader
+     * @param appConfig needed to get the default environment
+     * @param environmentPersistenceFactory creates the right environment loader
      * to manage the environment persistence
      * @throws com.freedomotic.exceptions.RepositoryException
      */
@@ -96,7 +97,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
      */
     @Override
     public synchronized void init(File folder) throws RepositoryException {
-       // if (initialized) {
+        // if (initialized) {
         //     LOG.warn("Environment repository is already initialized. Skip initialization phase");
         //     return;
         // }
@@ -107,13 +108,13 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             EnvironmentLogic envLogic = new EnvironmentLogic();
             envLogic.setPojo(env);
             envLogic.setSource(new File(folder + "/" + env.getUUID() + ".xenv"));
-            // Activate this environment
+            // activate this environment
             this.create(envLogic);
         }
         // EnvironmentRepositoryImpl.initialized = true;
         List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(findAll().get(0).getObjectFolder());
         for (EnvObjectLogic thing : loadedThings) {
-            // Stores the Thing in repository. Important, otherwise it will be not visible in the environment
+            // stores the thing in repository. Important, otherwise it will be not visible in the environment
             thingsRepository.create(thing);
         }
     }
@@ -150,7 +151,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     public void saveEnvironmentsToFolder(File folder) throws RepositoryException {
 
         if (environments.isEmpty()) {
-            LOG.warn("There is no environment to persist, " + folder.getAbsolutePath() + " will not be altered.");
+            LOG.warn("There is no environment to persist. {} will not be altered.", folder.getAbsolutePath());
             return;
         }
         if (folder.exists() && !folder.isDirectory()) {
@@ -189,7 +190,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             throw new IllegalArgumentException("Unable to delete environment files in a null or not valid folder");
         }
 
-        // This filter only returns object files
+        // this filter only returns thing files
         FileFilter objectFileFileter
                 = new FileFilter() {
                     @Override
@@ -214,7 +215,8 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     }
 
     /**
-     * Loads all objects file filesystem folder and adds the objects to the list
+     * Loads all objects file filesystem folder and adds the objects to the
+     * list.
      *
      * @param folder
      * @param makeUnique
@@ -258,15 +260,15 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     }
 
     /**
-     * Add an environment. You can use EnvObjectPersistnce.MAKE_UNIQUE to create
-     * an object that will surely be unique. Beware this means it is created
-     * with defensive copy of the object in input and name, protocol, address
-     * and UUID are reset to a default value.
+     * Add an environment. You can use EnvObjectPersistance.MAKE_UNIQUE to
+     * create an object that will surely be unique. Beware this means it is
+     * created with defensive copy of the object in input and name, protocol,
+     * address and UUID are reset to a default value.
      *
      * @param obj the environment to add
      * @param MAKE_UNIQUE can be true or false. Creates a defensive copy
      * reference to the object in input.
-     * @return A pointer to the newly created environment object
+     * @return a pointer to the newly created environment object
      */
     @RequiresPermissions("environments:create")
     @Deprecated
@@ -288,6 +290,11 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             Environment pojoCopy = SerialClone.clone(obj.getPojo());
             pojoCopy.setName(obj.getPojo().getName() + "-" + UidGenerator.getNextStringUid());
             pojoCopy.setUUID(""); // force to assign a new random and unique UUID
+            // force to assign a new random and unique UUID to every zone
+            for (Zone z : pojoCopy.getZones()) {
+               z.setUuid(UUID.randomUUID().toString());
+            }
+
             //should be the last called after using setters on envLogic.getPojo()
             envLogic.setPojo(pojoCopy);
         }
