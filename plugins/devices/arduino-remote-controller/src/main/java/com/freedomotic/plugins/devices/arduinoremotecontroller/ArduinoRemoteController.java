@@ -56,7 +56,7 @@ public class ArduinoRemoteController extends Protocol {
         udpServer.startServer("0.0.0.0", UDP_SERVER_PORT, new UdpListener() {
             @Override
             public void onDataAvailable(String sourceAddress, Integer sourcePort, String data) {
-                LOG.info("Arduino Remote Controller received: {0}", data);
+                LOG.info("Arduino Remote Controller received: '{}'", data);
                 extractData(sourceAddress, sourcePort, data);
             }
         });
@@ -100,10 +100,10 @@ public class ArduinoRemoteController extends Protocol {
      */
     public void sendEvent(String objectAddress, String pressedButton) {
         ProtocolRead event = new ProtocolRead(this, "arduino-remote-controller", objectAddress);
-        event.addProperty("button.pressed", pressedButton);
+        event.getPayload().addStatement("button.pressed", pressedButton);
         //publish the event on the messaging bus
-        this.notifyEvent(event);
-        LOG.debug("Sending event : {}", event.toString());
+        LOG.debug("Sending event: '{}'", event.getPayload().getStatements());
+        notifyEvent(event);
     }
 
     @Override

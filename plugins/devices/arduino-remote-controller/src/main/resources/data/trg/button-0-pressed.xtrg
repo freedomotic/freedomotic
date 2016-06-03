@@ -6,7 +6,7 @@
         <payload>
             <statement>
                 <logical>AND</logical>
-                <attribute>@event.button.pressed</attribute>
+                <attribute>button.pressed</attribute>
                 <operand>EQUALS</operand>
                 <value>0</value>
             </statement>
