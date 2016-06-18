@@ -34,15 +34,23 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- *
- * @author matteo
+ * Room Resource
+ * 
+ * @author Matteo Mazzoni
  */
 @Path("rooms")
 @Api(value = "/rooms", description = "Operations on rooms", position = 1)
 public class RoomResource extends AbstractResource<Zone> {
 
-    final private String envUUID;
-    final private EnvironmentLogic env;
+    private String envUUID;
+    private EnvironmentLogic env;
+
+    public RoomResource() {
+        authContext = "rooms";
+        // set env and envUUID to the current environment
+        this.env = api.environments().findAll().get(0);
+        this.envUUID = env.getPojo().getUUID();
+    }
 
     protected RoomResource(String envUUID) {
         this.envUUID = envUUID;
@@ -51,7 +59,7 @@ public class RoomResource extends AbstractResource<Zone> {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List all rooms", position = 10)
+    @ApiOperation(value = "List all rooms in the current environment", position = 10)
     @Override
     public Response list() {
         return super.list();
@@ -63,7 +71,7 @@ public class RoomResource extends AbstractResource<Zone> {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Get a room", position = 20)
+    @ApiOperation(value = "Get a room in the current environment", position = 20)
     @Path("/{id}")
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Room not found")
@@ -78,7 +86,7 @@ public class RoomResource extends AbstractResource<Zone> {
     @Override
     @DELETE
     @Path("/{id}")
-    @ApiOperation(value = "Delete a room object", position = 50)
+    @ApiOperation(value = "Delete a room object from the current environment", position = 50)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Room not found")
     })
@@ -88,7 +96,7 @@ public class RoomResource extends AbstractResource<Zone> {
         return super.delete(UUID);
     }
 
-     /**
+    /**
      *
      * @param UUID
      * @param s
@@ -102,14 +110,13 @@ public class RoomResource extends AbstractResource<Zone> {
     @ApiResponses(value = {
         @ApiResponse(code = 304, message = "Room not modified")
     })
-    @ApiOperation(value = "Update a room", position = 40)
+    @ApiOperation(value = "Update a room in the current environment", position = 40)
     public Response update(
             @ApiParam(value = "UUID of room to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
             @PathParam("id") String UUID, Zone s) {
         return super.update(UUID, s);
     }
-    
-    
+
     /**
      *
      * @param s
@@ -119,15 +126,15 @@ public class RoomResource extends AbstractResource<Zone> {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Add a new room", position = 30)
-    @ApiResponses(value = {
+    @ApiOperation(value = "Add a new room to the current environment", position = 30)
+    @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "New room added")
     })
     @Override
     public Response create(Zone s) throws URISyntaxException {
         return super.create(s);
     }
-    
+
     @Override
     protected boolean doDelete(String ID) {
         try {
