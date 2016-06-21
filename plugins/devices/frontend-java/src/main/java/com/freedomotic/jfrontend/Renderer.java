@@ -1006,17 +1006,17 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
             } else {
                 //click on a zone in edit mode if no handle is selected
                 ZoneLogic zone = mouseOnZone(e.getPoint());
-                Callout callout = new Callout(this.getClass().getCanonicalName(), "info",
-                        I18n.msg("room_zone_selected") + " [" + zone.getPojo().getName() + "]", 50, 150, 0, -1);
-                createCallout(callout);
                 if (zone != null) {
+                    Callout callout = new Callout(this.getClass().getCanonicalName(), "info",
+                            I18n.msg("room_zone_selected") + " [" + zone.getPojo().getName() + "]", 50, 150, 0, -1);
+                    createCallout(callout);
                     setSelectedZone(zone);
                 } else {
                     handles.clear();
                     // createHandles(null);
                 }
             }
-        setNeedRepaint(true);
+            setNeedRepaint(true);
         }
     }
 
