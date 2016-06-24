@@ -55,14 +55,10 @@ class AppConfigImpl implements AppConfig {
         properties.setProperty(key, value);
     }
 
-    /**
-     * @param key
-     * @return the value of key or null if not key found
-     */
+  
     @Override
     public String getProperty(String key) {
         String result = properties.getProperty(key);
-
         return result;
     }
 

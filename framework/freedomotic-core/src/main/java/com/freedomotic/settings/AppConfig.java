@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -33,33 +32,32 @@ import java.util.Set;
  */
 public interface AppConfig extends Serializable {
 
-    /**
-     *
-     * @return
-     */
     Set<Map.Entry<Object, Object>> propertiesSet();
 
     /**
-     *
-     * @param key
-     * @param defaultValue
-     * @return
+     * Gets a boolean property value.
+     * 
+     * @param key property key to retrieve value from
+     * @param defaultValue default 
+     * @return the key value or the dafault value if the key doesn't exist
      */
     boolean getBooleanProperty(String key, boolean defaultValue);
 
     /**
-     *
-     * @param key
-     * @param defaultValue
-     * @return
+     * Gets a double property value.
+     * 
+     * @param key property key to retrieve value from
+     * @param defaultValue default 
+     * @return the key value or the dafault value if the key doesn't exist
      */
     double getDoubleProperty(String key, double defaultValue);
 
-    /**
-     *
-     * @param key
-     * @param defaultValue
-     * @return
+   /**
+     * Gets an integer property value.
+     * 
+     * @param key property key to retrieve value from
+     * @param defaultValue default 
+     * @return the key value or the dafault value if the key doesn't exist
      */
     int getIntProperty(String key, int defaultValue);
 
@@ -83,10 +81,11 @@ public interface AppConfig extends Serializable {
     String getProperty(String key);
 
     /**
-     *
-     * @param key
-     * @param defaultValue
-     * @return
+     * Gets a string property value.
+     * 
+     * @param key property key to retrieve value from
+     * @param defaultValue default 
+     * @return the key value or the dafault value if the key doesn't exist
      */
     String getStringProperty(String key, String defaultValue);
 
@@ -98,28 +97,31 @@ public interface AppConfig extends Serializable {
     ArrayList<URL> getUrlListProperty(String key);
 
     /**
-     *
-     * @param key
-     * @param value
+     * Puts a property. 
+     * 
+     * @param key property to add
+     * @param value property value 
      */
     void put(Object key, Object value);
 
     /**
-     *
-     * @param key
-     * @param value
+     * Sets a property value.
+     * 
+     * @param key property to set value
+     * @param value value to set
      */
     void setProperty(String key, String value);
-    
+
     /**
-     *
-     * @return
+     * Loads properties from configuration file.
+     * 
      */
     AppConfig load();
 
     /**
+     * Saves properties to configuration file.
      *
      */
     void save();
-    
+
 }

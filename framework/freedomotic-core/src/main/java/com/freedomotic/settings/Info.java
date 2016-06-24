@@ -180,72 +180,81 @@ public class Info {
     }
 
     /**
+     * Gets the framework major version.
      *
-     * @return
+     * @return the framework major version
      */
     public static Integer getMajor() {
         return FRAMEWORK.FRAMEWORK_MAJOR;
     }
 
     /**
+     * Gets the framework minor version.
      *
-     * @return
+     * @return the framework minor version
      */
     public static Integer getMinor() {
         return FRAMEWORK.FRAMEWORK_MINOR;
     }
 
     /**
+     * Gets the framework build revision.
      *
-     * @return
+     * @return the framework build revision
      */
     public static Integer getRevision() {
         return FRAMEWORK.FRAMEWORK_BUILD;
     }
 
     /**
+     * Gets the framework version.
      *
-     * @return
+     * @return the framework version
      */
     public static String getVersion() {
         return FRAMEWORK.FRAMEWORK_MAJOR.toString() + "." + FRAMEWORK.FRAMEWORK_MINOR.toString() + "." + FRAMEWORK.FRAMEWORK_BUILD.toString();
     }
 
     /**
+     * Gets the framework version codename.
      *
-     * @return
+     * @return the framework major version
      */
     public static String getVersionCodeName() {
         return FRAMEWORK.FRAMEWORK_VERSION_CODENAME;
     }
 
     /**
+     * Gets the framework release date.
      *
-     * @return
+     * @return the framework release date
      */
     public static String getReleaseDate() {
         return FRAMEWORK.FRAMEWORK_RELEASE_DATE;
     }
 
     /**
+     * Gets the framework release type.
      *
-     * @return
+     * @return the framework release type
      */
     public static String getReleaseType() {
         return FRAMEWORK.FRAMEWORK_RELEASE_TYPE;
     }
 
     /**
+     * Gets the framework license.
      *
-     * @return
+     * @return the framework license
      */
     public static String getLicense() {
         return FRAMEWORK.FRAMEWORK_LICENSE;
     }
 
     /**
+     * Gets the framework author.
      *
-     * @return
+     * @return the framework author
      */
     @XmlElement
     public static String getAuthor() {
@@ -253,16 +262,18 @@ public class Info {
     }
 
     /**
+     * Gets the framework author's mail.
      *
-     * @return
+     * @return the framework author's mail
      */
     public static String getAuthorMail() {
         return FRAMEWORK.PROJECT_MAIL;
     }
 
     /**
+     * Gets the classpath view.
      *
-     * @return
+     * @return the classpath view
      */
     public static String getAClasspathView() {
         String str = ("Operative System: " + System.getProperty("os.name") + "\n"
