@@ -34,7 +34,7 @@ import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path(AtmospherePluginChangeResource.PATH)
 @Api(value = "ws_pluginChange", description = "WS for plugin change events", position = 10)
@@ -57,7 +57,7 @@ public class AtmospherePluginChangeResource extends AbstractWSResource {
                     try {
                         BroadcasterFactory.getDefault()
                                 .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmospherePluginChangeResource.PATH)
-                                    .broadcast(om.writeValueAsString(p));
+                                .broadcast(om.writeValueAsString(p));
                     } catch (JsonProcessingException ex) {
                     }
                     return;

@@ -47,7 +47,7 @@ import javax.ws.rs.core.Response;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path("things")
 @Api(value = "/things", description = "Operations on Things", position = 2)
@@ -192,7 +192,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
                 return null;
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Cannot modify thing " + eo.getName(), e);
+            LOG.error("Cannot modify thing {}", eo.getName(), e);
             return null;
         }
 
@@ -206,7 +206,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
             api.things().create(el);
             return createUri(el.getPojo().getUUID());
         } catch (RepositoryException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
         return null;
 

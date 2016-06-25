@@ -40,7 +40,7 @@ import javax.ws.rs.core.Response;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path("users")
 @Api(value = "users", description = "Manage users", position = 300)
@@ -67,7 +67,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
         return null;
     }
 
-     /**
+    /**
      *
      * @param s
      * @return
@@ -84,8 +84,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     public Response create(UserRepresentation s) throws URISyntaxException {
         return super.create(s);
     }
-    
-    
+
     @Override
     protected URI doCreate(UserRepresentation o) throws URISyntaxException {
         User u = new User(o.getName(), o.getPassword(), api.getAuth());
@@ -116,14 +115,13 @@ public class UserResource extends AbstractResource<UserRepresentation> {
 
     @Override
     protected boolean doDelete(String UUID) {
-        if (!api.getAuth().getCurrentUser().getName().equals(UUID) ){
+        if (!api.getAuth().getCurrentUser().getName().equals(UUID)) {
             return api.getAuth().deleteUser(UUID);
         } else {
             throw new ForbiddenException("Users cannot delete themselves!!");
         }
     }
 
-    
     /**
      *
      * @param UUID
@@ -144,8 +142,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
             @PathParam("id") String UUID, UserRepresentation s) {
         return super.update(UUID, s);
     }
-    
-    
+
     @Override
     protected UserRepresentation doUpdate(String uuid, UserRepresentation o) {
         o.setName(uuid);
@@ -153,7 +150,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
             User u = api.getAuth().getUser(uuid);
             u.setRoles(o.getRoles());
             u.getProperties().clear();
-            if (o.getPassword()!= null && !o.getPassword().isEmpty()){
+            if (o.getPassword() != null && !o.getPassword().isEmpty()) {
                 u.setPassword(o.getPassword());
             }
             u.getProperties().clear();
@@ -192,7 +189,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
             @PathParam("id") String UUID) {
         return super.get(UUID);
     }
-    
+
     @Override
     protected UserRepresentation prepareSingle(String uuid) {
         User u = api.getAuth().getUser(uuid);
@@ -206,7 +203,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     public Response getCurrentUser() {
         return Response.seeOther(createUri(api.getAuth().getCurrentUser().getName())).build();
     }
-    
+
     @POST
     @Path("/_/logout")
     @Produces(MediaType.APPLICATION_JSON)
@@ -222,17 +219,17 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @ApiOperation(value = "Login a user", position = 0)
     public Response login(
-        @FormParam("name") String name,
-        @FormParam("password") String password,
-        @FormParam("rememberMe") boolean rememberMe) {
-        if (api.getAuth().login(name, password, rememberMe)){
+            @FormParam("name") String name,
+            @FormParam("password") String password,
+            @FormParam("rememberMe") boolean rememberMe) {
+        if (api.getAuth().login(name, password, rememberMe)) {
             return Response.ok().build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        
+
     }
-    
+
     @Path("/{id}/properties")
     public PropertyResource props(
             @ApiParam(value = "User to fetch properties from", required = true)

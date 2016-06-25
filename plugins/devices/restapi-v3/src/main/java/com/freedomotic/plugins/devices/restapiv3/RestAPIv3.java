@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2013 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -31,15 +31,15 @@ import com.freedomotic.plugins.devices.restapiv3.resources.atmosphere.Atmosphere
 import com.freedomotic.plugins.devices.restapiv3.resources.atmosphere.AtmosphereZoneChangeResource;
 import com.freedomotic.reactions.Command;
 import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RestAPIv3 extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(RestAPIv3.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RestAPIv3.class.getName());
     private static final String RESOURCE_PKG = "com.freedomotic.plugins.devices.restapiv3.resources";
     public static final String JERSEY_RESOURCE_PKG = RESOURCE_PKG + ".jersey";
     public static final String ATMOSPHRE_RESOURCE_PKG = RESOURCE_PKG + ".atmosphere";
@@ -81,14 +81,14 @@ public class RestAPIv3 extends Protocol {
 
         BASE_URI = UriBuilder.fromUri(protocol + "://" + configuration.getStringProperty("listen-address", "localhost") + "/").path(API_VERSION).port(port).build();
 
-        LOG.log(Level.INFO, "RestAPI v3 plugin is started at {0}", BASE_URI);
+        LOG.info("RestAPI v3 plugin is started at {}", BASE_URI);
 
         try {
             jServer.setMaster(this);
             jServer.startServer();
             setDescription("API is available at " + BASE_URI.toString().substring(0, BASE_URI.toString().length() - 2));
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
 
         addEventListener("app.event.sensor.object.behavior.change");
@@ -105,13 +105,13 @@ public class RestAPIv3 extends Protocol {
         try {
             jServer.stopServer();
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
     }
 
     @Override
     protected void onCommand(Command c) {
-        LOG.log(Level.INFO, "RestAPI v3 plugin receives a command called {0} with parameters {1}", new Object[]{c.getName(), c.getProperties().toString()});
+        LOG.info("RestAPI v3 plugin receives a command called {} with parameters {}", new Object[]{c.getName(), c.getProperties().toString()});
 
     }
 

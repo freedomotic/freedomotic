@@ -35,7 +35,7 @@ import javax.ws.rs.core.Response;
 
 /**
  * Room Resource
- * 
+ *
  * @author Matteo Mazzoni
  */
 @Path("rooms")
@@ -59,7 +59,7 @@ public class RoomResource extends AbstractResource<Zone> {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List all rooms in the current environment", position = 10)
+    @ApiOperation(value = "List all rooms", position = 10)
     @Override
     public Response list() {
         return super.list();
@@ -71,7 +71,7 @@ public class RoomResource extends AbstractResource<Zone> {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Get a room in the current environment", position = 20)
+    @ApiOperation(value = "Get a room", position = 20)
     @Path("/{id}")
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Room not found")
@@ -86,7 +86,7 @@ public class RoomResource extends AbstractResource<Zone> {
     @Override
     @DELETE
     @Path("/{id}")
-    @ApiOperation(value = "Delete a room object from the current environment", position = 50)
+    @ApiOperation(value = "Delete a room", position = 50)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Room not found")
     })
@@ -110,7 +110,7 @@ public class RoomResource extends AbstractResource<Zone> {
     @ApiResponses(value = {
         @ApiResponse(code = 304, message = "Room not modified")
     })
-    @ApiOperation(value = "Update a room in the current environment", position = 40)
+    @ApiOperation(value = "Update a room", position = 40)
     public Response update(
             @ApiParam(value = "UUID of room to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
             @PathParam("id") String UUID, Zone s) {
@@ -126,8 +126,8 @@ public class RoomResource extends AbstractResource<Zone> {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Add a new room to the current environment", position = 30)
-    @ApiResponses(value = { 
+    @ApiOperation(value = "Add a new room", position = 30)
+    @ApiResponses(value = {
         @ApiResponse(code = 201, message = "New room added")
     })
     @Override

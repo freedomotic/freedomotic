@@ -39,7 +39,7 @@ import javax.ws.rs.core.Response;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path("/system")
 @Singleton

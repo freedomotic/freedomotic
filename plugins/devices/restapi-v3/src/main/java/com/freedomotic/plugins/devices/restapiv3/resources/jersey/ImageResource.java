@@ -44,7 +44,7 @@ import javax.ws.rs.core.UriBuilder;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path("resources")
 @Singleton
@@ -79,14 +79,14 @@ public class ImageResource {
             @PathParam("id") String fileName,
             @ApiParam(value = "Name of alternate image file to fetch", required = false)
             @QueryParam("fbId") String fallbackFilename
-        ) {
+    ) {
         File imageFile = prepareSingle(fileName);
-        if (imageFile == null){
+        if (imageFile == null) {
             if (fallbackFilename != null && !fallbackFilename.isEmpty()) {
-             imageFile = prepareSingle(fallbackFilename);
-         }
+                imageFile = prepareSingle(fallbackFilename);
+            }
         }
-        if (imageFile == null){
+        if (imageFile == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
         String path = null;

@@ -34,7 +34,7 @@ import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path(AtmosphereZoneChangeResource.PATH)
 @Api(value = "ws_zoneChange", description = "WS for zone change events", position = 10)

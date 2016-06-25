@@ -24,15 +24,16 @@ import com.freedomotic.api.EventTemplate;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.things.EnvObjectLogic;
 import com.wordnik.swagger.annotations.Api;
-import java.util.logging.Logger;
 import javax.ws.rs.Path;
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path(AtmosphereObjectChangeResource.PATH)
 @Api(value = "ws_objectChange", description = "WS for object change events", position = 10)
@@ -43,7 +44,7 @@ import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
         servlet = "org.glassfish.jersey.servlet.ServletContainer")
 public class AtmosphereObjectChangeResource extends AbstractWSResource {
 
-    private static final Logger LOG = Logger.getLogger(AtmosphereObjectChangeResource.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(AtmosphereObjectChangeResource.class.getName());
 
     public final static String PATH = "objectchange";
 
@@ -63,7 +64,7 @@ public class AtmosphereObjectChangeResource extends AbstractWSResource {
                         .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereObjectChangeResource.PATH)
                         .broadcast(msg);
             } catch (JsonProcessingException ex) {
-                LOG.warning(ex.getLocalizedMessage());
+                LOG.warn(ex.getLocalizedMessage());
             }
         }
     }

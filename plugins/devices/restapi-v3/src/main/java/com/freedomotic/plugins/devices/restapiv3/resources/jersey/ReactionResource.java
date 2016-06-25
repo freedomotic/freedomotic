@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path("reactions")
 @Api(value = "reactions", description = "Operations on reactions", position = 3)
@@ -79,7 +79,7 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
         return super.delete(UUID);
     }
 
-     /**
+    /**
      *
      * @param UUID
      * @param s
@@ -99,8 +99,7 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
             @PathParam("id") String UUID, ReactionRepresentation s) {
         return super.update(UUID, s);
     }
-    
-    
+
     /**
      *
      * @param s
@@ -118,8 +117,7 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
     public Response create(ReactionRepresentation s) throws URISyntaxException {
         return super.create(s);
     }
-    
-    
+
     public ReactionResource() {
         authContext = "reactions";
     }

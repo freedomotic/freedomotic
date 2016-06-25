@@ -21,7 +21,7 @@ package com.freedomotic.plugins.devices.restapiv3;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 import com.freedomotic.api.Plugin;
 import static com.freedomotic.plugins.devices.restapiv3.RestAPIv3.API_VERSION;
@@ -32,7 +32,6 @@ import com.google.inject.servlet.GuiceFilter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyStore;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.atmosphere.cpr.AtmosphereServlet;
@@ -48,10 +47,12 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class RestJettyServer extends Server {
 
-    private static final Logger LOG = Logger.getLogger(RestJettyServer.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RestJettyServer.class.getName());
 
     private Server webServer;
     private Plugin master;

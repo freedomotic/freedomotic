@@ -52,7 +52,7 @@ import javax.ws.rs.core.Response;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Api(value = "marketplaceProviders", description = "Manage marketplace providers")
 public class MarketplaceProvidersResource extends AbstractReadOnlyResource<IMarketPlace> {
@@ -106,7 +106,6 @@ public class MarketplaceProvidersResource extends AbstractReadOnlyResource<IMark
         return mps.getProviders().get(id);
     }
 
-   
     @Path("/{id}/categories")
     public MarketplaceCategoryResource listCategories(
             @ApiParam(value = "Index of marketplace provider", required = true)
@@ -115,7 +114,6 @@ public class MarketplaceProvidersResource extends AbstractReadOnlyResource<IMark
         return new MarketplaceCategoryResource((ArrayList<IPluginCategory>) mps.getProviders().get(id).getAvailableCategories());
     }
 
-    
     @Path("/{id}/plugins")
     public MarketplacePluginsResource listPluginsFromProvider(
             @ApiParam(value = "Index of marketplace provider", required = true)

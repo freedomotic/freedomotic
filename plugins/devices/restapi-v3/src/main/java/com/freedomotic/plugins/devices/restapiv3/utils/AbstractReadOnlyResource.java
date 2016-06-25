@@ -30,7 +30,6 @@ import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
@@ -38,32 +37,31 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  * @param <T>
  */
 public abstract class AbstractReadOnlyResource<T> implements ResourceReadOnlyInterface<T> {
 
-    public static final Logger LOG = Logger.getLogger(AbstractReadOnlyResource.class.getName());
+    public static final Logger LOG = LoggerFactory.getLogger(AbstractReadOnlyResource.class.getName());
     protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
     protected final static API api = INJECTOR.getInstance(API.class);
     protected String authContext = "*";
-    
-    
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     @OPTIONS
     @Override
     public Response options() {
         return Response.ok().build();
     }
-    
-    
+
     /**
      *
      * @return

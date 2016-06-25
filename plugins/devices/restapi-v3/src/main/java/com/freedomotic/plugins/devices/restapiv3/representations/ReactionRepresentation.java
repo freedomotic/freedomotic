@@ -17,7 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.plugins.devices.restapiv3.representations;
 
 import com.freedomotic.core.Condition;
@@ -33,12 +32,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @XmlRootElement
 public class ReactionRepresentation {
-    
-    
+
     private List<Condition> conditions = new ArrayList<Condition>();
 
     public List<Condition> getConditions() {
@@ -58,14 +56,14 @@ public class ReactionRepresentation {
     }
 
     private String shortDescription;
-    
+
     private String uuid;
-    
+
     private String description;
-    
+
     private String triggerURI;
-    
-        private String triggerUuid;
+
+    private String triggerUuid;
 
     /**
      * Get the value of triggerUuid
@@ -85,13 +83,10 @@ public class ReactionRepresentation {
         this.triggerUuid = triggerUuid;
     }
 
-    
-    private List<HashMap<String,String>> commands = new ArrayList<HashMap<String,String>>();
-    
-    
-    
-    public ReactionRepresentation(){
-        
+    private List<HashMap<String, String>> commands = new ArrayList<HashMap<String, String>>();
+
+    public ReactionRepresentation() {
+
     }
 
     public String getShortDescription() {
@@ -106,24 +101,23 @@ public class ReactionRepresentation {
         return description;
     }
 
-    public List<HashMap<String,String>> getCommands() {
+    public List<HashMap<String, String>> getCommands() {
         return commands;
     }
 
-    
     public ReactionRepresentation(Reaction r) {
-         this.description = r.getDescription();
-         this.shortDescription = r.getShortDescription();
-         this.triggerURI = UriBuilder.fromResource(TriggerResource.class).path(r.getTrigger().getUUID()).build().toString();
-         this.triggerUuid = r.getTrigger().getUUID();
-         for (Command c : r.getCommands()){
-             HashMap<String,String> hm= new HashMap<String,String>();
-             hm.put("uuid", c.getUuid());
-             hm.put("uri", UriBuilder.fromResource(UserCommandResource.class).path(c.getUuid()).build().toString());
-             commands.add(hm);
-         }
-         this.uuid = r.getUuid();
-         this.conditions = r.getConditions();
+        this.description = r.getDescription();
+        this.shortDescription = r.getShortDescription();
+        this.triggerURI = UriBuilder.fromResource(TriggerResource.class).path(r.getTrigger().getUUID()).build().toString();
+        this.triggerUuid = r.getTrigger().getUUID();
+        for (Command c : r.getCommands()) {
+            HashMap<String, String> hm = new HashMap<String, String>();
+            hm.put("uuid", c.getUuid());
+            hm.put("uri", UriBuilder.fromResource(UserCommandResource.class).path(c.getUuid()).build().toString());
+            commands.add(hm);
+        }
+        this.uuid = r.getUuid();
+        this.conditions = r.getConditions();
     }
 
     public void setShortDescription(String shortDescription) {
@@ -142,7 +136,7 @@ public class ReactionRepresentation {
         this.triggerURI = trigger;
     }
 
-    public void setCommands(List<HashMap<String,String>> commands) {
+    public void setCommands(List<HashMap<String, String>> commands) {
         this.commands = commands;
     }
 

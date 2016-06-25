@@ -28,7 +28,7 @@ import org.apache.shiro.authz.permission.WildcardPermission;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @XmlRootElement
 public class RoleRepresentation {
@@ -42,7 +42,7 @@ public class RoleRepresentation {
     public RoleRepresentation(SimpleRole sr) {
         this.name = sr.getName();
         for (Permission p : sr.getPermissions()) {
-            this.permissions.add(p.toString().replace("[", "" ).replace("]","").replace(" ",""));
+            this.permissions.add(p.toString().replace("[", "").replace("]", "").replace(" ", ""));
         }
     }
 
@@ -60,14 +60,14 @@ public class RoleRepresentation {
 
     public void setPermissions(List<String> perms) {
         this.permissions.clear();
-        for (String s : perms){
+        for (String s : perms) {
             this.permissions.add(s);
         }
     }
-    
-    public SimpleRole asSimpleRole(){
+
+    public SimpleRole asSimpleRole() {
         SimpleRole sr = new SimpleRole(name);
-        for (String s : permissions){
+        for (String s : permissions) {
             sr.add(new WildcardPermission(s));
         }
         return sr;

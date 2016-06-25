@@ -40,9 +40,9 @@ import javax.ws.rs.core.Response;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
-@Api(value="marketplaceCategory", description="Manage marketplace plugin categories")
+@Api(value = "marketplaceCategory", description = "Manage marketplace plugin categories")
 public class MarketplaceCategoryResource extends AbstractReadOnlyResource<IPluginCategory> {
 
     MarketPlaceService mps = MarketPlaceService.getInstance();
@@ -52,23 +52,22 @@ public class MarketplaceCategoryResource extends AbstractReadOnlyResource<IPlugi
         this.catList = mps.getCategoryList();
     }
 
-    public MarketplaceCategoryResource(ArrayList<IPluginCategory> clist){
+    public MarketplaceCategoryResource(ArrayList<IPluginCategory> clist) {
         this.catList = clist;
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Show the list of registered remote marketplace providers")
     @Override
-    public Response list(){
+    public Response list() {
         return super.list();
     }
-   
+
     @Override
     protected List<IPluginCategory> prepareList() {
         return catList;
     }
-
 
     @Path("/{cat}/plugins")
     @ApiOperation(value = "Show the list of plugins belonging to selected category")
@@ -78,8 +77,8 @@ public class MarketplaceCategoryResource extends AbstractReadOnlyResource<IPlugi
             @ApiParam(value = "Retrieve package list automatically, if necessary", required = false)
             @QueryParam("noUpdate") boolean noUpdate) {
         for (IPluginCategory category : catList) {
-            if (category.getName().equalsIgnoreCase(cat) ) {
-                if (mps.getPackageList(category).isEmpty() && !noUpdate){
+            if (category.getName().equalsIgnoreCase(cat)) {
+                if (mps.getPackageList(category).isEmpty() && !noUpdate) {
                     category.retrievePluginsInfo();
                 }
                 return new MarketplacePluginsResource(mps.getPackageList(category));
@@ -108,10 +107,10 @@ public class MarketplaceCategoryResource extends AbstractReadOnlyResource<IPlugi
         }
         return null;
     }
-    
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)    
+    @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{id}/update")
     public Response update(
             @ApiParam(value = "Name of plugins category to fetch", required = true)
@@ -120,6 +119,5 @@ public class MarketplaceCategoryResource extends AbstractReadOnlyResource<IPlugi
         c.retrievePluginsInfo();
         return Response.accepted().build();
     }
-    
 
 }

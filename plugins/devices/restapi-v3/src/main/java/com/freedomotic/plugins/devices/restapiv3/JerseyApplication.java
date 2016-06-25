@@ -26,7 +26,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 public class JerseyApplication extends ResourceConfig {
     

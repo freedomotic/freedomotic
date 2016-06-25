@@ -30,7 +30,7 @@ import com.google.inject.Inject;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 public abstract class AbstractWSResource implements WebSocketEndpoint {
 
@@ -47,6 +47,5 @@ public abstract class AbstractWSResource implements WebSocketEndpoint {
         om.setAnnotationIntrospector(new AnnotationIntrospectorPair(jaxbIntrospector, jacksonIntrospector));
 
     }
-    
 
 }

@@ -36,8 +36,6 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -48,35 +46,35 @@ import javax.ws.rs.core.Response;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
-@Api(value="marketPlacePlugins", description="Manage marketplace plugin packages")
+@Api(value = "marketPlacePlugins", description = "Manage marketplace plugin packages")
 public class MarketplacePluginsResource extends AbstractReadOnlyResource<IPluginPackage> {
 
     MarketPlaceService mps = MarketPlaceService.getInstance();
     ArrayList<IPluginCategory> catList = mps.getCategoryList();
     ArrayList<IPluginPackage> plugList;
-    
+
     public MarketplacePluginsResource() {
         this.plugList = mps.getPackageList();
     }
-    
-    public MarketplacePluginsResource(ArrayList<IPluginPackage> plist){
+
+    public MarketplacePluginsResource(ArrayList<IPluginPackage> plist) {
         this.plugList = plist;
     }
-    
+
     /**
      *
      * @return
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)    
+    @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Show the list of registered remote marketplace providers")
     @Override
-    public Response list(){
+    public Response list() {
         return super.list();
     }
-    
+
     @Override
     protected List<IPluginPackage> prepareList() {
         return plugList;
@@ -86,8 +84,8 @@ public class MarketplacePluginsResource extends AbstractReadOnlyResource<IPlugin
     @ApiOperation(value = "Get a single plugin package metadata")
     @Override
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)    
-    public Response get( @ApiParam(value = "Name of plugin to fetch", required = true)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response get(@ApiParam(value = "Name of plugin to fetch", required = true)
             @PathParam("id") String uuid) {
         return super.get(uuid);
     }
@@ -101,15 +99,15 @@ public class MarketplacePluginsResource extends AbstractReadOnlyResource<IPlugin
         }
         return null;
     }
-    
+
     @POST
     @Path("/{id}/install")
     @ApiOperation(value = "Install a plugin")
     public Response install(@ApiParam(value = "Name of plugin to fetch", required = true)
             @PathParam("id") String uuid) {
         IPluginPackage p = prepareSingle(uuid);
-        String url = p.getFilePath(Info.getMajor()+ "." + Info.getMinor());
-        if (p == null){
+        String url = p.getFilePath(Info.getMajor() + "." + Info.getMinor());
+        if (p == null) {
             throw new ItemNotFoundException(uuid);
         }
         try {

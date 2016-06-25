@@ -124,7 +124,7 @@ public class TriggerResource extends AbstractResource<Trigger> {
         try {
             o.register();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Cannot register trigger", e);
+            LOG.error("Cannot register trigger", e);
         }
         return createUri(o.getUUID());
     }
@@ -157,7 +157,7 @@ public class TriggerResource extends AbstractResource<Trigger> {
         try {
             t.register();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Cannot register trigger ", e);
+            LOG.error("Cannot register trigger ", e);
         }
         return createUri(t.getUUID());
     }

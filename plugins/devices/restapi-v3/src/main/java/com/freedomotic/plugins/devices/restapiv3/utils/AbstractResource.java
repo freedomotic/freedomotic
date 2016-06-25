@@ -19,7 +19,6 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.utils;
 
-
 import com.freedomotic.plugins.devices.restapiv3.filters.ForbiddenException;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -42,7 +41,7 @@ import javax.ws.rs.core.UriBuilder;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  * @param <T>
  */
 public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> implements ResourceInterface<T> {
@@ -69,7 +68,7 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
         if (api.getAuth().isPermitted(authContext + ":update:" + UUID)) {
             try {
                 LOG.info("Acquiring modified element");
-                T z = doUpdate(UUID,s);
+                T z = doUpdate(UUID, s);
                 if (z != null) {
                     LOG.info("Everything was correctly computed");
                     return Response.ok().build();
@@ -78,7 +77,7 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
                     return Response.notModified().build();
                 }
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, "Cannot update an item", e);
+                LOG.error("Cannot update an item", e);
                 return Response.notModified().build();
             }
         }
@@ -105,7 +104,7 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
             try {
                 return Response.created(doCreate(s)).build();
             } catch (URISyntaxException e) {
-                LOG.log(Level.SEVERE, null, e);
+                LOG.error(e.getMessage());
                 return Response.serverError().build();
             }
         }

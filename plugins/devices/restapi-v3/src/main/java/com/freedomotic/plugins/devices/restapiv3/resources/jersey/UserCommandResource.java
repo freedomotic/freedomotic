@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path("commands/user")
 @Api(value = "userCommands", description = "Operations on user commands", position = 5)

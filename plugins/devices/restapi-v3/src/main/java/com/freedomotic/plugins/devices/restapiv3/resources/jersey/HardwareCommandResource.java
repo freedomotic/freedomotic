@@ -32,7 +32,7 @@ import javax.ws.rs.core.Response;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path("commands/hardware")
 @Api(value = "hardwareCommands", description = "Operations on hardware commands", position = 6)
@@ -76,8 +76,7 @@ public class HardwareCommandResource extends AbstractResource<Command> {
             @PathParam("id") String UUID) {
         return super.delete(UUID);
     }
-    
-    
+
     /**
      *
      * @param s
@@ -95,9 +94,8 @@ public class HardwareCommandResource extends AbstractResource<Command> {
     public Response create(Command s) throws URISyntaxException {
         return super.create(s);
     }
-    
 
-     /**
+    /**
      *
      * @param UUID
      * @param s
@@ -117,7 +115,7 @@ public class HardwareCommandResource extends AbstractResource<Command> {
             @PathParam("id") String UUID, Command s) {
         return super.update(UUID, s);
     }
-    
+
     public HardwareCommandResource() {
         authContext = "commands";
     }

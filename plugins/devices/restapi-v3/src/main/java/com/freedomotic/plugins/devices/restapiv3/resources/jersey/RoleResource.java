@@ -33,7 +33,7 @@ import org.apache.shiro.authz.SimpleRole;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path("system/roles")
 @Api(value = "roles", description = "Operations on global roles")

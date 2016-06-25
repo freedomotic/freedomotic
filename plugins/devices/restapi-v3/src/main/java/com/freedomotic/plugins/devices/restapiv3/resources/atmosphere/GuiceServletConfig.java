@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 public class GuiceServletConfig extends GuiceServletContextListener {
 
@@ -36,5 +36,5 @@ public class GuiceServletConfig extends GuiceServletContextListener {
     protected Injector getInjector() {
         return injector.createChildInjector();
     }
-    
+
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2014 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -24,15 +24,16 @@ import com.freedomotic.api.EventTemplate;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.plugins.devices.restapiv3.representations.MessageCalloutRepresentation;
 import com.wordnik.swagger.annotations.Api;
-import java.util.logging.Logger;
 import javax.ws.rs.Path;
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path(AtmosphereMessageCalloutResource.PATH)
 @Api(value = "ws_messageCallout", description = "WS for receiving generic notifications", position = 10)
@@ -43,7 +44,7 @@ import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
         servlet = "org.glassfish.jersey.servlet.ServletContainer")
 public class AtmosphereMessageCalloutResource extends AbstractWSResource {
 
-    private static final Logger LOG = Logger.getLogger(AtmosphereMessageCalloutResource.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(AtmosphereMessageCalloutResource.class.getName());
 
     public final static String PATH = "messagecallout";
 

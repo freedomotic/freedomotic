@@ -38,7 +38,7 @@ import javax.ws.rs.core.Response;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path("plugins")
 @Api(value = "plugins", description = "Operations on plugins", position = 7)
@@ -125,7 +125,7 @@ public class PluginResource extends AbstractResource<Plugin> {
                 p.start();
                 return Response.accepted().build();
             } else {
-                return Response.notModified("Cannot start plugin as its status is: " +p.getStatus()).build();
+                return Response.notModified("Cannot start plugin as its status is: " + p.getStatus()).build();
             }
         }
         throw new ItemNotFoundException();

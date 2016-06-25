@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response;
 /**
  * Environment Resource
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path("environments")
 @Api(value = "environments", description = "Operations on environments", position = 0)
@@ -121,7 +121,6 @@ public class EnvironmentResource extends AbstractResource<Environment> {
     public Response create(Environment s) throws URISyntaxException {
         return super.create(s);
     }
-    
 
     @Override
     protected List<Environment> prepareList() {
@@ -173,14 +172,14 @@ public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Path("/{id}/rooms")
     public RoomResource rooms(
-            @ApiParam(value = "Environment to fetch rooms from", required = true)
+            @ApiParam(value = "UUID of environment to fetch rooms from (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
             @PathParam("id") String UUID) {
         return new RoomResource(UUID);
     }
 
     @Path("/{id}/things")
     public ThingResource things(
-            @ApiParam(value = "Environment to fetch things from", required = true)
+            @ApiParam(value = "UUID of environment to fetch things from (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
             @PathParam("id") String UUID) {
         return new ThingResource(UUID);
     }
