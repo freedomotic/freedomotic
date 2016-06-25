@@ -32,11 +32,15 @@ import com.freedomotic.reactions.Reaction;
 import com.freedomotic.reactions.ReactionRepository;
 import com.freedomotic.rules.Statement;
 import com.freedomotic.reactions.Trigger;
+import com.freedomotic.rules.Expression;
+import com.freedomotic.rules.ExpressionFactory;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -294,27 +298,73 @@ public class TriggerCheck {
     private boolean checkAdditionalConditions(Reaction rea) {
         boolean result = true;
         for (Condition condition : rea.getConditions()) {
-            //System.out.println("DEBUG: check condition " + condition.getTarget());
             EnvObjectLogic object = thingsRepository.findByName(condition.getTarget()).get(0);
             Statement statement = condition.getStatement();
             if (object != null) {
                 BehaviorLogic behavior = object.getBehavior(statement.getAttribute());
-                //System.out.println("DEBUG: " + object.getPojo().getName() + " "
-                //+ " behavior: " + behavior.getName() + " " + behavior.getValueAsString());
-                boolean eval = behavior.getValueAsString().equalsIgnoreCase(statement.getValue());
-                if (statement.getLogical().equalsIgnoreCase("AND")) {
-                    result = result && eval;
-                    //System.out.println("DEBUG: result and: " + result + "(" + eval +")");
+                String attributeValue = behavior.getValueAsString();
+                String operand = statement.getOperand();
+                String value = statement.getValue();
+                String valueBehavior;
+
+                //check if value is an object behavior eg. <value>[object name].temperature</value>
+                Pattern p = Pattern.compile("\\[(.*?)\\]\\.+[0-9A-Za-z]");
+                Matcher m = p.matcher(value);
+                if (m.find()) {
+                    // in this case we consider the target object behavior 
+                    if (value.startsWith("[]")) {
+                        valueBehavior = value.substring(value.indexOf(".") + 1);
+                        behavior = object.getBehavior(valueBehavior);
+                        if (behavior != null) {
+                            value = behavior.getValueAsString();
+                        }
+                    } else {
+                        List<EnvObjectLogic> newObject = thingsRepository.findByName(value.substring(value.indexOf("[") + 1, value.indexOf("]")));
+                        if (newObject.isEmpty()) {
+                            LOG.warn("Cannot test condition on unexistent object: {}", value.substring(value.indexOf("[") + 1, value.indexOf("]")));
+                            return false;
+                        } else {
+                            valueBehavior = value.substring(value.indexOf(".") + 1);
+                            behavior = newObject.get(0).getBehavior(valueBehavior);
+                            if (behavior != null) {
+                                value = behavior.getValueAsString();
+                            } else {
+                                return false;
+                            }
+                        }
+                    }
+                    // if attributeValue and value are float and operand not "EQUALS" we must convert them to integer
+                    if ((isDecimalNumber(attributeValue) || isDecimalNumber(value)) && !(operand.equalsIgnoreCase("EQUALS"))) {
+                        attributeValue = String.valueOf((int) Float.parseFloat(attributeValue) * 10);
+                        value = String.valueOf((int) (Float.parseFloat(value) * 10));
+                    }
+                    ExpressionFactory factory = new ExpressionFactory<>();
+                    Expression exp = factory.createExpression(attributeValue, operand, value);
+                    boolean eval = (boolean) exp.evaluate();
+                    if (statement.getLogical().equalsIgnoreCase("AND")) {
+                        result = result && eval;
+                    } else {
+                        result = result || eval;
+                    }
                 } else {
-                    result = result || eval;
-                    //System.out.println("DEBUG: result or: " + result + "(" + eval +")");
+                    // regex fails LOG syntax error
+                    LOG.warn("Cannot test condition on unexistent object: {}", condition.getTarget());
+                    return false;
                 }
-            } else {
-                LOG.warn("Cannot test condition on unexistent object: {}", condition.getTarget());
-                return false;
             }
-        }
+        } // all is ok
         return result;
+    }
+
+    /**
+     * Checks if a string represents a decimal number.
+     *
+     * @param number string to check
+     * @return true if it's a decimal number, false otherwise
+     */
+    private boolean isDecimalNumber(String number) {
+        String decimalPattern = "([0-9]*)\\.([0-9]*)";
+        return Pattern.matches(decimalPattern, number);
     }
 
     private void notifyMessage(String message) {
