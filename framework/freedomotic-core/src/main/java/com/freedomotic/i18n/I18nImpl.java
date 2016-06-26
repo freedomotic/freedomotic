@@ -253,7 +253,7 @@ class I18nImpl implements I18n {
         File[] files = root.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.matches("^" + bundlename + "(_\\w{}(_\\w{})?)?\\.properties$");
+                return name.matches("^" + bundlename + "(_\\w{2}(_\\w{2})?)?\\.properties$");
             }
         });
 
