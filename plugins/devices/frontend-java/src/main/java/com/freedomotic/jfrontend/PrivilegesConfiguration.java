@@ -85,7 +85,7 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
             dis.close();
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            LOG.error("File {} not found. A new file will be created.", file.getAbsolutePath());            
         } catch (IOException e) {
             e.printStackTrace();
         }
