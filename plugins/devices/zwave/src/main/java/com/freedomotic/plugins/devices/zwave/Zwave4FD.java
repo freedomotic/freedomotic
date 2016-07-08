@@ -140,8 +140,8 @@ public class Zwave4FD
 
     @Override
     protected void onStart() {
-        LOG.info("Zwave plugin is started");
-        controllerPort = configuration.getStringProperty("controller-port", "/dev/ttyS0");
+        LOG.info("Zwave plugin started");
+        controllerPort = configuration.getStringProperty("zw-controller-port", "/dev/ttyS0");
         options = Options.create(new File(getFile().getParentFile() + "/data/config").getAbsolutePath(), "", "");
         options.addOptionBool("ConsoleOutput", configuration.getBooleanProperty("zw-console-output", false));
         options.addOptionInt("DriverMaxAttempts", configuration.getIntProperty("zw-driver-max-attempts", 1));
@@ -162,7 +162,7 @@ public class Zwave4FD
                         LOG.info(String.format("Driver ready - home id: %d", homeId));
                         break;
                     case DRIVER_FAILED:
-                        LOG.warn("Driver failed - controller port was '" + controllerPort + "'");
+                        LOG.warn("Driver failed - controller port was '{}'", controllerPort);
                         stop();
                         break;
                     case DRIVER_RESET:
@@ -297,13 +297,13 @@ public class Zwave4FD
         manager.removeDriver(controllerPort);
         Manager.destroy();
         Options.destroy();
-        LOG.info("Zwave plugin is stopped ");
+        LOG.info("Zwave plugin stopped ");
     }
 
     @Override
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
-        LOG.info("Zwave plugin receives a command called {0} with parameters {1}", new Object[]{c.getName(), c.getProperties().toString()});
+        LOG.info("Zwave plugin receives a command called {} with parameters {}", new Object[]{c.getName(), c.getProperties().toString()});
         String commandName = c.getProperty("command");
 
         /*
