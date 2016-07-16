@@ -35,53 +35,50 @@ import com.freedomotic.reactions.Command;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 public class Modbus extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(Modbus.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Modbus.class.getName());
     private int numRegisters;
     private BatchRead<String> batchRead = new BatchRead<String>();
     private BatchResults<String> results;
-    private List<FreedomModbusLocator> points = new ArrayList<FreedomModbusLocator>();
+    private List<FreedomoticModbusLocator> points = new ArrayList<FreedomoticModbusLocator>();
     private int pollingTime;
     private ModbusMaster master;
 
     public Modbus() {
-        super("Modbus", "/modbus/modbus.xml");
+        super("Modbus", "/modbus/modbus-manifest.xml");
     }
 
     /*
-     * Sensor side
+     * Sensor side 
      */
     @Override
     public void onStart() {
-        super.onStart();
 
         batchRead.setContiguousRequests(true);
         //ModBus General Configuration
-        pollingTime = configuration.getIntProperty("PollingTime", 1000);
+        pollingTime = configuration.getIntProperty("polling-time", 1000);
         points.clear();
         //Modbus registers configuration        
         for (int i = 0; i < configuration.getTuples().size(); i++) {
-            FreedomModbusLocator locator = new FreedomModbusLocator(configuration, i);
+            FreedomoticModbusLocator locator = new FreedomoticModbusLocator(configuration, i);
             points.add(locator);
             locator.updateBatchRead(batchRead);
         }
         master = ModbusMasterGateway.getInstance(configuration);
         setPollingWait(pollingTime);
 
-
     }
 
     @Override
     public void onStop() {
-        super.onStop();
         master.destroy();
         this.setDescription("Disconnected");
         setPollingWait(-1); // disable polling
@@ -95,30 +92,30 @@ public class Modbus extends Protocol {
                 results = master.send(batchRead);
                 sendEvents();
             } catch (ModbusTransportException ex) {
-                Logger.getLogger(Modbus.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.error(ex.getLocalizedMessage());
                 die(ex.getLocalizedMessage());
             } catch (ErrorResponseException ex) {
-                Logger.getLogger(Modbus.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.error(ex.getLocalizedMessage());
                 die(ex.getLocalizedMessage());
             } catch (ModbusInitException ex) {
-                Logger.getLogger(Modbus.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.error(ex.getLocalizedMessage());
                 die(ex.getLocalizedMessage());
             }
             Thread.sleep(pollingTime);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Modbus.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getLocalizedMessage());
         }
     }
 
     private void die(String message) {
         master.destroy();
         //we can use the plugin description to provide usefull information
-        this.setDescription("Plugin stoped: " + message);
+        this.setDescription("Plugin stopped: " + message);
         stop(); //stops the plugin on errors
     }
 
     private void sendEvents() {
-        for (FreedomModbusLocator point : points) {
+        for (FreedomoticModbusLocator point : points) {
             //TODO: Generate the modified point. At this moment, the points ArrayList is of ModbusLocator.            
 //            GenericEvent event = new GenericEvent(this);                                                
 //            point.fillEvent(results, event);
@@ -126,18 +123,17 @@ public class Modbus extends Protocol {
 //            notifyEvent(event); //sends the event on the messaging bus
 
             //use of Protocol Reads
-
-            ProtocolRead protocolEvent = new ProtocolRead(this, "Modbus", point.getName());
+            ProtocolRead protocolEvent = new ProtocolRead(this, "modbus", point.getName());
             point.fillProtocolEvent(results, protocolEvent);
             LOG.info("Sending Modbus protocol read event for eventName name: " + point.getName() + " value: " + protocolEvent.getProperty("behaviorValue"));
-            Freedomotic.sendEvent(protocolEvent);
+            notifyEvent(protocolEvent);
         }
     }
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
         try {
-            FreedomModbusLocator locator = new FreedomModbusLocator(c.getProperties(), 0);
+            FreedomoticModbusLocator locator = new FreedomoticModbusLocator(c.getProperties(), 0);
             //TODO: Syncronize the master?            
             master.init();
             Object value = locator.parseValue(c.getProperties(), 0);
@@ -147,11 +143,11 @@ public class Modbus extends Protocol {
 
             //TODO: manage the exceptions        
         } catch (ModbusTransportException ex) {
-            Logger.getLogger(Modbus.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getLocalizedMessage());
         } catch (ErrorResponseException ex) {
-            Logger.getLogger(Modbus.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getLocalizedMessage());
         } catch (ModbusInitException ex) {
-            Logger.getLogger(Modbus.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getLocalizedMessage());
         } finally {
             master.destroy();
         }

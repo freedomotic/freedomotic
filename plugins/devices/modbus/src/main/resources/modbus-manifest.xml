@@ -1,0 +1,45 @@
+<config>
+    <properties>
+        <property name="description" value="Plugin for Modbus protocol"/>
+        <property name="category" value="protocol"/>
+        <property name="short-name" value="modbus"/>
+        <property name="protocol.name" value="modbus"/>
+        <property name="polling-time" value="1000"/>
+        <property name="NumRegisters" value="5"/>
+        <property name="modbus-protocol" value="TCP"/>
+        <property name="host" value="cloud.bestmazzo.it"/>
+        <property name="tcp-port" value="4001"/>    
+        <property name="encapsulated" value="true"/>   
+        <property name="port" value="/dev/ttyUSB10"/>
+        <property name="baudrate" value="19200"/>
+        <property name="data-bits" value="8"/>
+        <property name="parity" value="2"/>
+        <property name="stop-bits" value="1"/>
+        <property name="timeout" value="250"/>
+        <property name="retries" value="2"/>
+     </properties>
+    <tuples>
+        <tuple>
+            <property name="Name" value="TemperatureZone1"/>
+            <property name="SlaveId" value="2"/>
+            <property name="RegisterRange" value="HOLDING_REGISTER"/>
+            <property name="DataType" value="TWO_BYTE_INT_UNSIGNED"/>
+            <property name="Offset" value="37"/>
+            <property name="NumberOfRegisters" value="1"/>
+            <property name="Bit" value="1"/>
+            <property name="EventName" value="TemperatureZone1"/>
+        </tuple>
+        <tuple>
+            <property name="Name" value="BitTest"/>
+            <property name="SlaveId" value="2"/>
+            <property name="RegisterRange" value="HOLDING_REGISTER"/>
+            <property name="DataType" value="BINARY"/>
+            <property name="Bit" value="3"/>
+            <property name="Multiplier" value="1"/>
+            <property name="Additive" value="0"/>
+            <property name="Offset" value="37"/>
+            <property name="NumberOfRegisters" value="1"/>
+            <property name="EventName" value="BitTest"/>
+        </tuple>
+    </tuples>
+</config>

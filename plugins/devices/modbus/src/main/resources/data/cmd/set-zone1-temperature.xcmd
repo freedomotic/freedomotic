@@ -1,0 +1,22 @@
+<command>
+  <name>Set zone1 temperature</name>
+  <receiver>app.actuators.protocol.modbus.in</receiver>
+  <delay>0</delay>
+  <timeout>2000</timeout>
+  <description>The desired zone1 temperature is set</description>
+  <properties>
+    <properties>      
+      <property name="object" value="Zone1DesiredTemp"/>     
+    </properties>
+      <tuples>
+        <tuple>
+          <property name="Name" value="SetTemperatureZone1"/>
+          <property name="SlaveId" value="1"/>
+          <property name="RegisterRange" value="HOLDING_REGISTER"/>
+          <property name="DataType" value="TWO_BYTE_INT_UNSIGNED"/>
+          <property name="Offset" value="13"/>       
+          <property name="value" value="1"/>
+        </tuple>
+      </tuples>
+  </properties>
+</command>
