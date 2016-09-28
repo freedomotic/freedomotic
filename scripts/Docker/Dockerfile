@@ -11,6 +11,7 @@ RUN mv /srv/freedom* /srv/freedomotic
 RUN rm -rf /srv/freedomotic/plugins/devices/frontend-java
 
 VOLUME /srv/freedomotic/data
+VOLUME /srv/freedomotic/plugins
 
 EXPOSE 9111 8090
 
