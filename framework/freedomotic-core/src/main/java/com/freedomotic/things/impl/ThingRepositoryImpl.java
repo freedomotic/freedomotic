@@ -240,10 +240,10 @@ class ThingRepositoryImpl implements ThingRepository {
      *
      * @param protocol
      * @param address
-     * @return
+     * @return EnvObjectLogic if one is found, else null is returned
      */
     @RequiresPermissions("objects:read")
-    private static ArrayList<EnvObjectLogic> getObjectByAddress(String protocol, String address) {
+    private static EnvObjectLogic getObjectByAddress(String protocol, String address) {
         if ((protocol == null)
                 || (address == null)
                 || protocol.isEmpty()
@@ -251,22 +251,19 @@ class ThingRepositoryImpl implements ThingRepository {
             throw new IllegalArgumentException();
         }
 
-        ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
         for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if ((object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()))
                     && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(address.trim())) //           && auth.isPermitted("objects:read:" + object.getPojo().getUUID())
                     ) {
-                list.add(object);
+                return object;
             }
         }
 
-        if (list.isEmpty()) {
-            LOG.warn("An object with protocol '" + protocol + "' and address '"
-                    + address + "' doesn't exist");
-        }
+        LOG.warn("An object with protocol '" + protocol + "' and address '"
+                + address + "' doesn't exist");
 
-        return list;
+        return null;
     }
 
     /**
@@ -526,7 +523,7 @@ class ThingRepositoryImpl implements ThingRepository {
     }
 
     @Override
-    public List<EnvObjectLogic> findByAddress(String protocol, String address) {
+    public EnvObjectLogic findByAddress(String protocol, String address) {
         return getObjectByAddress(protocol, address);
     }
 

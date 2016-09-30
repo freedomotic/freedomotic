@@ -175,9 +175,9 @@ public class JavaDesktopFrontend extends Protocol {
             drawer.createCallout(callout1);
         } else if (c.getProperty("command") != null && c.getProperty("command").equals("GRAPH-DATA")) { // show GUI
             // get related object from address
-            EnvObjectLogic obj = (EnvObjectLogic) getApi().things().findByAddress("harvester", c.getProperty("event.object.address")).toArray()[0];
+            EnvObjectLogic obj = (EnvObjectLogic) getApi().things().findByAddress("harvester", c.getProperty("event.object.address"));
             // open GraphWindow related to the object
-            if (obj.getBehavior("data") != null) { // has a 'data' behavior
+            if (obj != null && obj.getBehavior("data") != null) { // has a 'data' behavior
                 if (!obj.getBehavior("data").getValueAsString().isEmpty()) {
                     GraphPanel gw = graphs.get(obj.getPojo().getUUID());
                     if (gw != null) {

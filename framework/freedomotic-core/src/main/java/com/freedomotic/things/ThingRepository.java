@@ -37,8 +37,7 @@ public interface ThingRepository extends Repository<EnvObjectLogic> {
 
     public List<EnvObjectLogic> findByProtocol(String protocolName);
 
-    //TODO: should return a single element, done this way for backward compatibility
-    public List<EnvObjectLogic> findByAddress(String protocol, String address);
+    public EnvObjectLogic findByAddress(String protocol, String address);
 
     //TODO: temporary for refactoring, should be removed
     public EnvObjectLogic load(File file) throws RepositoryException;

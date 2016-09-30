@@ -125,7 +125,7 @@ public class TriggerCheck {
     private void applySensorNotification(Trigger resolved, final EventTemplate event) {
         String protocol;
         String address;
-        List<EnvObjectLogic> affectedObjects = new ArrayList<EnvObjectLogic>();
+        EnvObjectLogic affectedObject = null;
 
         //join device: add the object on the map if not already there
         //join device requires to know 'object.class' and 'object.name' properties
@@ -137,12 +137,11 @@ public class TriggerCheck {
             String name = event.getProperty("object.name");
             String autodiscoveryAllowClones = event.getProperty("autodiscovery.allow-clones");
 
-            affectedObjects = thingsRepository.findByAddress(protocol, address);
+            affectedObject = thingsRepository.findByAddress(protocol, address);
 
-            if (affectedObjects.isEmpty()) { //there isn't an object with this protocol and address
+            if (affectedObject == null) { //there isn't an object with this protocol and address
                 LOG.warn("Found a candidate for things autodiscovery: thing ''{}'' of type ''{}''", new Object[]{name, clazz});
                 if ((clazz != null) && !clazz.isEmpty()) {
-                    EnvObjectLogic joined;
                     boolean allowClones;
                     if (autodiscoveryAllowClones.equalsIgnoreCase("false")) {
                         allowClones = false;
@@ -150,8 +149,7 @@ public class TriggerCheck {
                         allowClones = true;
                     }
                     try {
-                        joined = autodiscovery.join(clazz, name, protocol, address, allowClones);
-                        affectedObjects.add(joined);
+                        affectedObject = autodiscovery.join(clazz, name, protocol, address, allowClones);
                     } catch (RepositoryException ex) {
                         LOG.error(ex.getMessage());
                     }
@@ -159,24 +157,13 @@ public class TriggerCheck {
             }
         }
 
-        //now we have the target object on the map for sure. Apply changes notified by sensors
-        boolean done = false;
-
-        for (EnvObjectLogic object : affectedObjects) {
-            //uses trigger->behavior mapping to apply the trigger to this object
-            boolean executed = object.executeTrigger(resolved);
-
-            if (executed) {
-                done = true;
-
-                long elapsedTime = System.currentTimeMillis() - event.getCreation();
-                LOG.info(
-                        "Sensor notification ''{}'' applied to object ''{}'' in {}ms.",
-                        new Object[]{resolved.getName(), object.getPojo().getName(), elapsedTime});
-            }
-        }
-
-        if (!done) {
+        //uses trigger->behavior mapping to apply the trigger to this object
+        if (affectedObject != null && affectedObject.executeTrigger(resolved)) {
+            long elapsedTime = System.currentTimeMillis() - event.getCreation();
+            LOG.info(
+                    "Sensor notification ''{}'' applied to object ''{}'' in {}ms.",
+                    new Object[]{resolved.getName(), affectedObject.getPojo().getName(), elapsedTime});
+        } else {
             LOG.warn("Hardware trigger {} is not associated to any object.", resolved.getName());
         }
         resolved.getPayload().clear();
