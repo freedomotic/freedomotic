@@ -221,7 +221,7 @@ public final class Autodiscovery extends AbstractConsumer {
         if (protocol.trim().equalsIgnoreCase("unknown")) {
             return false; //Multiple object with protocol 'unknown' are allowed
         }
-        return !thingsRepository.findByAddress(protocol, address).isEmpty();
+        return !(thingsRepository.findByAddress(protocol, address) == null);
     }
 
     private boolean thingAlreadyExists(String name) {
