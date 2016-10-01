@@ -18,12 +18,12 @@
  */
 package com.freedomotic.helpers;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -40,12 +40,14 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.net.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.commons.io.IOUtils.toByteArray;
 
 /**
  * @author Enrico Nicoletti
@@ -54,6 +56,7 @@ public class HttpHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(HttpHelper.class.getName());
     private static final int DEFAULT_TIMEOUT = 30_000; //30seconds
+    private static final Charset DEFAULT_UTF8 = Charset.forName("UTF-8");
 
     private DocumentBuilder documentBuilder;
     private XPath xPath;
@@ -161,22 +164,18 @@ public class HttpHelper {
 
         HttpGet httpGet = new HttpGet(asUri(url));
         HttpResponse response = client.execute(httpGet);
-
-        Reader reader = null;
-        try {
-            reader = new InputStreamReader(response.getEntity().getContent());
-
-            StringBuilder buffer = new StringBuilder();
-            int read;
-            char[] cbuf = new char[1024];
-            while ((read = reader.read(cbuf)) != -1) {
-                buffer.append(cbuf, 0, read);
-            }
-            return buffer.toString();
-
-        } finally {
-            IOUtils.closeQuietly(reader);
+        try (InputStream inputStream = response.getEntity().getContent()) {
+            byte[] content = toByteArray(inputStream);
+            return new String(content, determineCharsetName(response));
         }
+    }
+
+    private Charset determineCharsetName(HttpResponse response) {
+        ContentType contentType = ContentType.getLenient(response.getEntity());
+        if (contentType != null && contentType.getCharset() != null) {
+            return contentType.getCharset();
+        }
+        return DEFAULT_UTF8;
     }
 
     private URI asUri(String url) throws IOException {
