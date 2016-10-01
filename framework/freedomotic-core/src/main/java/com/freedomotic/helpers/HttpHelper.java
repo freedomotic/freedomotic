@@ -1,67 +1,63 @@
 /**
- *
  * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
- *
+ * <p>
  * This file is part of Freedomotic
- *
+ * <p>
  * This Program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2, or (at your option) any later version.
- *
+ * <p>
  * This Program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License along with
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.helpers;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.Authenticator;
-import java.net.MalformedURLException;
-import java.net.PasswordAuthentication;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
  * @author Enrico Nicoletti
  */
 public class HttpHelper {
 
+    private static final Logger LOG = LoggerFactory.getLogger(HttpHelper.class.getName());
+    private static final int DEFAULT_TIMEOUT = 30_000; //30seconds
+
     private DocumentBuilder documentBuilder;
     private XPath xPath;
-    private final HttpParams httpParams = new BasicHttpParams();
-    private static final int DEFAULT_TIMEOUT = 30000; //30seconds
-
-    private static final Logger LOG = LoggerFactory.getLogger(HttpHelper.class.getName());
+    private int connectionTimeout = DEFAULT_TIMEOUT;
 
     public HttpHelper() {
         try {
@@ -72,7 +68,6 @@ public class HttpHelper {
         }
         XPathFactory xpathFactory = XPathFactory.newInstance();
         xPath = xpathFactory.newXPath();
-        setConnectionTimeout(DEFAULT_TIMEOUT);
     }
 
     /**
@@ -136,29 +131,36 @@ public class HttpHelper {
         return results;
     }
 
-    public void setConnectionTimeout(int timeout) {
-        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+    /**
+     * Determines the timeout in milliseconds until a connection is established.
+     * A timeout value of zero is interpreted as an infinite timeout.
+     * <br>
+     * See also {@link RequestConfig#getConnectTimeout()}
+     *
+     * @param connectionTimeout timeout in milliseconds
+     */
+    public void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
     }
 
     /**
-     *
      * @return @throws IOException if the URL format is wrong or if cannot read
      * from source
      */
     private String doGet(String url, String username, String password) throws IOException {
 
-        Authenticator.setDefault(new MyAuthenticator(username, password));
+        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
 
-        DefaultHttpClient client = new DefaultHttpClient(httpParams);
-        String decodedUrl;
-        HttpGet request = null;
-        try {
-            decodedUrl = URLDecoder.decode(url, "UTF-8");
-            request = new HttpGet(new URL(decodedUrl).toURI());
-        } catch (URISyntaxException | MalformedURLException ex) {
-            throw new IOException("The URL " + url + "' is not properly formatted: " + ex.getMessage(), ex);
-        }
-        HttpResponse response = client.execute(request);
+        CloseableHttpClient client = HttpClientBuilder.create()
+                .setDefaultCredentialsProvider(credentialsProvider)
+                .setDefaultRequestConfig(RequestConfig.copy(RequestConfig.DEFAULT)
+                        .setConnectTimeout(connectionTimeout)
+                        .build())
+                .build();
+
+        HttpGet httpGet = new HttpGet(asUri(url));
+        HttpResponse response = client.execute(httpGet);
 
         Reader reader = null;
         try {
@@ -177,33 +179,15 @@ public class HttpHelper {
         }
     }
 
-    private class MyAuthenticator extends Authenticator {
-
-        String username;
-        String password;
-
-        public MyAuthenticator(String username, String password) {
-            this.username = username;
-            this.password = password;
+    private URI asUri(String url) throws IOException {
+        URI uri;
+        try {
+            String decodedUrl = URLDecoder.decode(url, "UTF-8");
+            uri = new URL(decodedUrl).toURI();
+        } catch (URISyntaxException | MalformedURLException ex) {
+            throw new IOException("The URL " + url + "' is not properly formatted: " + ex.getMessage(), ex);
         }
-
-        @Override
-        public PasswordAuthentication getPasswordAuthentication() {
-            return (new PasswordAuthentication(username, password.toCharArray()));
-        }
+        return uri;
     }
 
-    /*
-     HttpHelper http = new HttpHelper();
-     try {
-     long start= System.currentTimeMillis();
-     List<String> results = http.queryXml("http://api.openweathermap.org/data/2.5/weather?q=Trento&mode=xml", null, null,
-     "//current/temperature/@value",
-     "//current/temperature/@unit");
-     long end= System.currentTimeMillis();
-     System.out.println("Temperature in Trento: " + results.get(0) + " " + results.get(1) +  " -> " + (end-start));
-     } catch (IOException ex) {
-     System.out.println(ex.getMessage());
-     }
-     */
 }
