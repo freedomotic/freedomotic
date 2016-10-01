@@ -1,7 +1,6 @@
 package com.freedomotic.helpers;
 
 import org.apache.http.HttpStatus;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,16 +34,11 @@ public class HttpHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        httpHelper = new HttpHelper();
         Integer port = mockServerRule.getPort();
-//        port = 9090;
+        mockServerClient = new MockServerClient("localhost", mockServerRule.getPort());
+
+        httpHelper = new HttpHelper();
         baseUrl = "http://localhost:" + port + A_PATH;
-        mockServerClient = new MockServerClient("127.0.0.1", mockServerRule.getPort());
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
     }
 
     @Test
