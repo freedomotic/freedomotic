@@ -9,6 +9,7 @@ import org.mockserver.junit.MockServerRule;
 import org.mockserver.model.Header;
 
 import java.nio.charset.Charset;
+import java.util.List;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -51,6 +52,22 @@ public class HttpHelperTest {
         assertEquals(OK_RESPONSE, content);
     }
 
+    @Test
+    public void xmlResponseCanBeParsed() throws Exception {
+        String xmlResponse = "<xml>" +
+                "<test>" +
+                OK_RESPONSE +
+                "</test>" +
+                "</xml>";
+        respond(SC_OK, xmlResponse);
+
+        String xPath = "//test/child::text()";
+        List<String> xmls = httpHelper.queryXml(baseUrl, A_USERNAME, A_PASSWORD, xPath);
+
+        assertEquals(1, xmls.size());
+        assertEquals(OK_RESPONSE, xmls.get(0));
+    }
+
     private void respondWhenBasicAuthIsGiven(int responseStatusCode, String response) {
         mockServerClient.when(
                 request()
@@ -75,6 +92,19 @@ public class HttpHelperTest {
                         response()
                                 .withStatusCode(HttpStatus.SC_UNAUTHORIZED)
                                 .withHeader(new Header("WWW-Authenticate", "Basic realm=\"Realm\""))
+                );
+    }
+
+    private void respond(int responseStatusCode, String response) {
+        mockServerClient.when(
+                request()
+                        .withMethod("GET")
+                        .withPath(A_PATH)
+        )
+                .respond(
+                        response()
+                                .withStatusCode(responseStatusCode)
+                                .withBody(response)
                 );
     }
 

@@ -39,9 +39,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.net.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class HttpHelper {
      * @throws IOException
      */
     public String retrieveContent(String url) throws IOException {
-        return doGet(url, null, null);
+        return doGetAsString(url, null, null);
     }
 
     /**
@@ -96,7 +96,7 @@ public class HttpHelper {
      * @throws IOException
      */
     public String retrieveContent(String url, String username, String password) throws IOException {
-        return doGet(url, username, password);
+        return doGetAsString(url, username, password);
     }
 
     /**
@@ -110,10 +110,10 @@ public class HttpHelper {
      * @throws IOException
      */
     public List<String> queryXml(String url, String username, String password, String... xpathQueries) throws IOException {
-        String xmlContent = doGet(url, username, password);
+        byte[] xmlContent = doGet(url, username, password);
         List<String> results = new ArrayList<>();
         try {
-            InputSource is = new InputSource(new StringReader(xmlContent));
+            InputSource is = new InputSource(new ByteArrayInputStream(xmlContent));
             Document xmlDocument = documentBuilder.parse(is);
             xmlDocument.getDocumentElement().normalize();
 
@@ -122,7 +122,7 @@ public class HttpHelper {
                 String result = xPath.compile(xpathQuery).evaluate(xmlDocument);
                 // Notify an enpy result to the user
                 if (result == null || result.isEmpty()) {
-                    LOG.warn("XPath query {} produced no results on content: \n{}", new String[]{xpathQuery, xmlContent});
+                    LOG.warn("XPath query {} produced no results on content: \n{}", new String[]{xpathQuery, new String(xmlContent)});
                     result = "";
                 }
                 results.add(result);
@@ -146,28 +146,32 @@ public class HttpHelper {
         this.connectionTimeout = connectionTimeout;
     }
 
-    /**
-     * @return @throws IOException if the URL format is wrong or if cannot read
-     * from source
-     */
-    private String doGet(String url, String username, String password) throws IOException {
+    private byte[] doGet(String url, String username, String password) throws IOException {
+        HttpResponse httpResponse = fireHttpRequest(url, username, password);
+        try (InputStream inputStream = httpResponse.getEntity().getContent()) {
+            return toByteArray(inputStream);
+        }
+    }
 
+    private String doGetAsString(String url, String username, String password) throws IOException {
+        HttpResponse httpResponse = fireHttpRequest(url, username, password);
+        try (InputStream inputStream = httpResponse.getEntity().getContent()) {
+            byte[] content = toByteArray(inputStream);
+            return new String(content, determineCharsetName(httpResponse));
+        }
+    }
+
+    private HttpResponse fireHttpRequest(String url, String username, String password) throws IOException {
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
-
         CloseableHttpClient client = HttpClientBuilder.create()
                 .setDefaultCredentialsProvider(credentialsProvider)
                 .setDefaultRequestConfig(RequestConfig.copy(RequestConfig.DEFAULT)
                         .setConnectTimeout(connectionTimeout)
                         .build())
                 .build();
-
         HttpGet httpGet = new HttpGet(asUri(url));
-        HttpResponse response = client.execute(httpGet);
-        try (InputStream inputStream = response.getEntity().getContent()) {
-            byte[] content = toByteArray(inputStream);
-            return new String(content, determineCharsetName(response));
-        }
+        return client.execute(httpGet);
     }
 
     private Charset determineCharsetName(HttpResponse response) {
