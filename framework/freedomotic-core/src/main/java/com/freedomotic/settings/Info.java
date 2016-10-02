@@ -41,9 +41,9 @@ import org.slf4j.LoggerFactory;
 public class Info {
 
     private static final Logger LOG = LoggerFactory.getLogger(Info.class.getName());
-    public static FrameworkSettings FRAMEWORK = new FrameworkSettings();
-    public static PathSettings PATHS = new PathSettings();
-    public static MessagingSettings MESSAGING = new MessagingSettings();
+    public static final FrameworkSettings FRAMEWORK = new FrameworkSettings();
+    public static final PathSettings PATHS = new PathSettings();
+    public static final MessagingSettings MESSAGING = new MessagingSettings();
 
     @XmlRootElement
     @XmlAccessorType(XmlAccessType.FIELD)
