@@ -221,7 +221,7 @@ public final class Resolver {
                     String script = possibleScript.substring(1); //removing equal sign on the head
 
                     if (js == null) {
-                        LOG.error("Cannot instatiate a JavaScript engine");
+                        LOG.error("Cannot instantiate a JavaScript engine");
                     }
 
                     try {
