@@ -140,6 +140,13 @@
             <artifactId>mockserver-netty</artifactId>
             <version>3.10.4</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <!-- excluded because problems DOM parsing, see https://github.com/freedomotic/freedomotic/pull/183 -->
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
