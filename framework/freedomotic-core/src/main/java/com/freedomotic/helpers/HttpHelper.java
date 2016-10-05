@@ -18,11 +18,16 @@
  */
 package com.freedomotic.helpers;
 
+import com.google.common.collect.ImmutableMap;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -42,10 +47,15 @@ import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.io.IOUtils.toByteArray;
 
@@ -86,6 +96,33 @@ public class HttpHelper {
     }
 
     /**
+     * Post the content to given URL and returns result as byte[]. Post content type should be defined beforehand.
+     *
+     * @param url      of the service
+     * @param content  in byte format that is going to be post
+     * @param username for basic authentication
+     * @param password for basic authentication
+     * @return post result as byte array
+     * @throws IOException
+     */
+    public byte[] post(String url, byte[] content, String username, String password) throws IOException {
+        return post(url, content, username, password, ImmutableMap.<String, String>of());
+    }
+
+    /**
+     * @param url      of the service
+     * @param content  in byte format that is going to be post
+     * @param username for basic authentication
+     * @param password for basic authentication
+     * @param headers  http headers
+     * @return post result as byte array
+     */
+    public byte[] post(String url, byte[] content, String username, String password,
+                       Map<String, String> headers) throws IOException {
+        return doPost(url, content, username, password, headers);
+    }
+
+    /**
      * Get the content of an URL (eg: a webpage) as a string. Content can be
      * HTML, XML or JSON
      *
@@ -102,9 +139,9 @@ public class HttpHelper {
     /**
      * Perform an XPath query on the XML content retrieved from the given URL
      *
-     * @param url The url from wich retrieve the XML content
-     * @param username username if authentication is required. Can be null
-     * @param password password if authentication is required. Can be null
+     * @param url          The url from wich retrieve the XML content
+     * @param username     username if authentication is required. Can be null
+     * @param password     password if authentication is required. Can be null
      * @param xpathQueries any valid xpath query
      * @return
      * @throws IOException
@@ -146,32 +183,52 @@ public class HttpHelper {
         this.connectionTimeout = connectionTimeout;
     }
 
+    private byte[] doPost(String url, byte[] content, String username, String password,
+                          Map<String, String> headers) throws IOException {
+
+        final HttpPost httpPost = new HttpPost(asUri(url));
+        final HttpEntity httpEntity = new ByteArrayEntity(content);
+        httpPost.setEntity(httpEntity);
+
+        for (Map.Entry<String, String> header : headers.entrySet()) {
+            httpPost.setHeader(header.getKey(), header.getValue());
+        }
+
+        final HttpResponse httpResponse = fireHttpRequest(httpPost, username, password);
+        try (InputStream inputStream = httpResponse.getEntity().getContent()) {
+            return toByteArray(inputStream);
+        }
+    }
+
     private byte[] doGet(String url, String username, String password) throws IOException {
-        HttpResponse httpResponse = fireHttpRequest(url, username, password);
+        HttpResponse httpResponse = fireGetRequest(url, username, password);
         try (InputStream inputStream = httpResponse.getEntity().getContent()) {
             return toByteArray(inputStream);
         }
     }
 
     private String doGetAsString(String url, String username, String password) throws IOException {
-        HttpResponse httpResponse = fireHttpRequest(url, username, password);
+        HttpResponse httpResponse = fireGetRequest(url, username, password);
         try (InputStream inputStream = httpResponse.getEntity().getContent()) {
             byte[] content = toByteArray(inputStream);
             return new String(content, determineCharsetName(httpResponse));
         }
     }
 
-    private HttpResponse fireHttpRequest(String url, String username, String password) throws IOException {
-        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    private HttpResponse fireGetRequest(String url, String username, String password) throws IOException {
+        return fireHttpRequest(new HttpGet(asUri(url)), username, password);
+    }
+
+    private HttpResponse fireHttpRequest(HttpRequestBase httpRequest, String username, String password) throws IOException {
+        final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
-        CloseableHttpClient client = HttpClientBuilder.create()
+        final CloseableHttpClient client = HttpClientBuilder.create()
                 .setDefaultCredentialsProvider(credentialsProvider)
                 .setDefaultRequestConfig(RequestConfig.copy(RequestConfig.DEFAULT)
                         .setConnectTimeout(connectionTimeout)
                         .build())
                 .build();
-        HttpGet httpGet = new HttpGet(asUri(url));
-        return client.execute(httpGet);
+        return client.execute(httpRequest);
     }
 
     private Charset determineCharsetName(HttpResponse response) {
