@@ -1,6 +1,7 @@
 package com.freedomotic.helpers;
 
 import org.apache.http.HttpStatus;
+import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,7 +14,9 @@ import java.util.List;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -66,6 +69,23 @@ public class HttpHelperTest {
 
         assertEquals(1, xmls.size());
         assertEquals(OK_RESPONSE, xmls.get(0));
+    }
+
+    @Test
+    public void xmlShouldBePosted() throws Exception {
+        // Given
+        final String requestBody = "<xml><test>data</test></xml>";
+        final String responseBody = String.format("<xml><test>%s</test></xml>", OK_RESPONSE);
+        final byte[] request = requestBody.getBytes("UTF-8");
+        mockServerClient.when(request().withBody(requestBody))
+                .respond(response().withBody(responseBody).withStatusCode(200));
+
+        // When
+        byte[] response = httpHelper.post(baseUrl, request, A_USERNAME, A_PASSWORD);
+
+        // Then
+        assertThat(responseBody, equalTo(new String(response, "UTF-8")));
+
     }
 
     private void respondWhenBasicAuthIsGiven(int responseStatusCode, String response) {
