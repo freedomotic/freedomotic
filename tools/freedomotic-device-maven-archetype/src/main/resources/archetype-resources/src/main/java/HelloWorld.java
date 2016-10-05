@@ -37,65 +37,64 @@ public class HelloWorld extends Protocol {
     final int POLLING_WAIT;
 
     public HelloWorld() {
-        //every plugin needs a name and a manifest XML file
+        // Every plugin needs a name and a manifest XML file.
         super("${artifactId}", "/${artifactId}/manifest.xml");
-        //read a property from the manifest file below which is in
-        //FREEDOMOTIC_FOLDER/plugins/devices/${artifactId}/manifest.xml
+        // Read a property from the manifest file below which is in.
+        // FREEDOMOTIC_FOLDER/plugins/devices/${artifactId}/manifest.xml
         POLLING_WAIT = configuration.getIntProperty("time-between-reads", 2000);
-        //POLLING_WAIT is the value of the property "time-between-reads" or 2000 millisecs,
-        //default value if the property does not exist in the manifest
-        //It controls the interval in milliseconds between the calls of onRun() method
-        //If POLLING_WAIT=-1 onRun() is called just one time after plugin startup (not in a loop)
+        // POLLING_WAIT is the value of the property "time-between-reads" or 2000 millisecs,
+        // default value if the property does not exist in the manifest.
+        // It controls the interval in milliseconds between the calls of onRun() method.
+        // If POLLING_WAIT=-1 onRun() is called just one time after plugin startup (not in a loop).
         setPollingWait(POLLING_WAIT);
-        //IMPORTANT: Initialization operations should be done in the onStart() method not in this contructor
-        //DO NOT ADD CODE HERE!
+        // IMPORTANT: Initialization operations should be done in the onStart() method not in this contructor.
+        // DO NOT ADD CODE HERE!
     }
 
     @Override
     protected void onShowGui() {
         /**
-         * uncomment the line below to add a GUI to this plugin the GUI can be
-         * started with a right-click on plugin list on the desktop frontend
-         * A GUI is useful for example to configure this plugin at runtime
+         * Uncomment the line below to add a GUI to this plugin. The GUI can be
+         * started with a right-click on plugin list in the desktop front-end.
+         * A GUI is useful for example to configure this plugin at runtime.
          */
         //bindGuiToPlugin(new HelloWorldGui(this));
     }
 
     @Override
     protected void onHideGui() {
-        //implement here what to do when the this plugin GUI is closed
-        //for example you can change the plugin description
+        // Implement here what to do when the plugin GUI is closed.
+        // For example you can change the plugin description.
         setDescription("My GUI is now hidden");
-        //or stop the plugin programmatically
-        //this.stop();
+        // Or stop the plugin programmatically.
+        // this.stop();
     }
 
     @Override
-    //This method is always executed in a separate Thread, there is NO NEED to create additional
-    //Threads inside it
+    // This method is always executed in a separate Thread, there is NO NEED to create additional
+    // threads inside it.
     protected void onRun() {
         LOG.info("${artifactId} onRun() logs this message every " + "POLLINGWAIT=" + POLLING_WAIT
                 + "milliseconds");
 
-        //at the end of this method the system waits POLLINGTIME 
-        //before calling it again. The result is this log message is printed
-        //every 2 seconds (2000 millisecs)
+        // At the end of this method the system waits POLLINGTIME before calling it again.
+        // The result is that this log message is printed every 2 seconds (2000 millisecs).
     }
 
     @Override
-    // Executed when this plugin is started
+    // Executed when this plugin is started.
     protected void onStart() {
         LOG.info("${artifactId} plugin is started");
     }
 
     @Override
-    // Executed when this plugin is stopped
+    // Executed when this plugin is stopped.
     protected void onStop() {
         LOG.info("${artifactId} plugin is stopped ");
     }
 
     @Override
-    // Receive commands from freedomotic
+    // Receive commands from freedomotic.
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
         LOG.info("${artifactId} plugin receives a command called " + c.getName() + " with parameters "
@@ -103,14 +102,14 @@ public class HelloWorld extends Protocol {
     }
 
     @Override
-    // Receive events from freedomotic
+    // Receive events from freedomotic.
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected boolean canExecute(Command c) {
-        //don't mind this method for now
+        // Don't mind this method for now.
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
