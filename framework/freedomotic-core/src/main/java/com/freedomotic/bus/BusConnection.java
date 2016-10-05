@@ -112,7 +112,8 @@ class BusConnection extends LifeCycle {
     @Override
     protected void stop() throws Exception {
 
-        LOG.info("Stopping connection");
+        LOG.info("Stopping and closing connection");
         connection.stop();
+        connection.close();
     }
 }
