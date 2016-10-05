@@ -37,7 +37,7 @@ public class HelloWorld extends Protocol {
     final int POLLING_WAIT;
 
     public HelloWorld() {
-        // Every plug-in needs a name and a manifest XML file.
+        // Every plugin needs a name and a manifest XML file.
         super("${artifactId}", "/${artifactId}/manifest.xml");
         // Read a property from the manifest file below which is in.
         // FREEDOMOTIC_FOLDER/plugins/devices/${artifactId}/manifest.xml
@@ -45,7 +45,7 @@ public class HelloWorld extends Protocol {
         // POLLING_WAIT is the value of the property "time-between-reads" or 2000 millisecs,
         // default value if the property does not exist in the manifest.
         // It controls the interval in milliseconds between the calls of onRun() method.
-        // If POLLING_WAIT=-1 onRun() is called just one time after plug-in startup (not in a loop).
+        // If POLLING_WAIT=-1 onRun() is called just one time after plugin startup (not in a loop).
         setPollingWait(POLLING_WAIT);
         // IMPORTANT: Initialization operations should be done in the onStart() method not in this contructor.
         // DO NOT ADD CODE HERE!
@@ -54,19 +54,19 @@ public class HelloWorld extends Protocol {
     @Override
     protected void onShowGui() {
         /**
-         * Uncomment the line below to add a GUI to this plug-in. The GUI can be
-         * started with a right-click on plug-in list in the desktop front-end.
-         * A GUI is useful for example to configure this plug-in at runtime.
+         * Uncomment the line below to add a GUI to this plugin. The GUI can be
+         * started with a right-click on plugin list in the desktop front-end.
+         * A GUI is useful for example to configure this plugin at runtime.
          */
         //bindGuiToPlugin(new HelloWorldGui(this));
     }
 
     @Override
     protected void onHideGui() {
-        // Implement here what to do when the plug-in GUI is closed.
-        // For example you can change the plug-in description.
+        // Implement here what to do when the plugin GUI is closed.
+        // For example you can change the plugin description.
         setDescription("My GUI is now hidden");
-        // Or stop the plug-in programmatically.
+        // Or stop the plugin programmatically.
         // this.stop();
     }
 
@@ -82,22 +82,22 @@ public class HelloWorld extends Protocol {
     }
 
     @Override
-    // Executed when this plug-in is started.
+    // Executed when this plugin is started.
     protected void onStart() {
-        LOG.info("${artifactId} plug-in is started");
+        LOG.info("${artifactId} plugin is started");
     }
 
     @Override
-    // Executed when this plug-in is stopped.
+    // Executed when this plugin is stopped.
     protected void onStop() {
-        LOG.info("${artifactId} plug-in is stopped ");
+        LOG.info("${artifactId} plugin is stopped ");
     }
 
     @Override
     // Receive commands from freedomotic.
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
-        LOG.info("${artifactId} plug-in receives a command called " + c.getName() + " with parameters "
+        LOG.info("${artifactId} plugin receives a command called " + c.getName() + " with parameters "
                 + c.getProperties().toString());
     }
 
