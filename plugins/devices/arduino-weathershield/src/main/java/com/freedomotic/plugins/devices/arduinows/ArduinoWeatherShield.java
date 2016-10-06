@@ -1,18 +1,17 @@
 /**
- *
  * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
- *
+ * <p>
  * This file is part of Freedomotic
- *
+ * <p>
  * This Program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2, or (at your option) any later version.
- *
+ * <p>
  * This Program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License along with
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
@@ -27,11 +26,12 @@ import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.helpers.HttpHelper;
 import com.freedomotic.reactions.Command;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,6 +48,7 @@ public class ArduinoWeatherShield extends Protocol {
     private final int TUPLES_COUNT = configuration.getTuples().size();
     private List<Board> boards = new ArrayList<>();
     private HttpHelper http = new HttpHelper();
+    private int maxFailures = 0;
 
     /**
      *
@@ -80,13 +81,7 @@ public class ArduinoWeatherShield extends Protocol {
     @Override
     protected void onRun() throws PluginRuntimeException {
         for (Board board : boards) {
-            try {
-                readValues(board);
-            } catch (IOException ex) {
-                //TODO: implement a retry to connect mechanism with a max failures counter (in a separate method)
-                throw new PluginRuntimeException("Cannot connect to Arduino Weathershield board at "
-                        + board.getIpAddress() + ":" + board.getPort(), ex);
-            }
+            readValuesWithRetry();
         }
     }
 
@@ -119,6 +114,19 @@ public class ArduinoWeatherShield extends Protocol {
                 notifyReadValues(board, dataSensors);
             } catch (IllegalArgumentException ex) {
                 notifyCriticalError("Error while notifying Arduino Weathershield data", ex);
+            }
+        }
+    }
+
+    private void readValuesWithRetry(Board board, int maxFailures) throws PluginRuntimeException {
+        try {
+            readValues(board);
+        } catch (IOException e) {
+            if (maxFailures > 0) {
+                readValuesWithRetry(board, --maxFailures);
+            } else {
+                throw new PluginRuntimeException("Cannot connect to Arduino Weathershield board at "
+                        + board.getIpAddress() + ":" + board.getPort(), ex);
             }
         }
     }
@@ -207,5 +215,9 @@ public class ArduinoWeatherShield extends Protocol {
         } else {
             return "";
         }
+    }
+
+    private void setMaxFailures(int maxFailures) {
+        this.maxFailures = maxFailures;
     }
 }
