@@ -6,6 +6,7 @@
         <property name="short-name"     value="weathershield"/>
         <property name="delimiter" value=":"/>
         <property name="time-between-read"   value="10000"/>
+        <property name="max-failures" value="0"/>
     </properties>
     <tuples>
         <tuple>

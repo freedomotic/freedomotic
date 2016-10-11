@@ -46,9 +46,9 @@ public class ArduinoWeatherShield extends Protocol {
     private final int POLLING_TIME = configuration.getIntProperty("time-between-reads", 1000);
     private final String DELIMITER = configuration.getStringProperty("delimiter", ":");
     private final int TUPLES_COUNT = configuration.getTuples().size();
+    private final int MAX_FAILURES = configuration.getIntProperty("max-failures", 0);
     private List<Board> boards = new ArrayList<>();
     private HttpHelper http = new HttpHelper();
-    private int maxFailures = 0;
 
     /**
      *
@@ -81,7 +81,7 @@ public class ArduinoWeatherShield extends Protocol {
     @Override
     protected void onRun() throws PluginRuntimeException {
         for (Board board : boards) {
-            readValuesWithRetry();
+            readValuesWithRetry(board, MAX_FAILURES);
         }
     }
 
@@ -215,9 +215,5 @@ public class ArduinoWeatherShield extends Protocol {
         } else {
             return "";
         }
-    }
-
-    private void setMaxFailures(int maxFailures) {
-        this.maxFailures = maxFailures;
     }
 }
