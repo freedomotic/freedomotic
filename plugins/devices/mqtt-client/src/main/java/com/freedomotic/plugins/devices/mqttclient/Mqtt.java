@@ -24,12 +24,12 @@ package com.freedomotic.plugins.devices.mqttclient;
  * @author Mauro Cicolella <mcicolella@libero.it>
  */
 import com.freedomotic.events.ProtocolRead;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class Mqtt implements MqttCallback {
+    private static final Logger LOG = Logger.getLogger(Mqtt.class.getName());
 
     MqttClient4FD pluginRef = null;
     MqttClient myClient;
@@ -72,7 +72,7 @@ public class Mqtt implements MqttCallback {
             myClient.connect(connectionOptions);
             return true;
         } catch (MqttException e) {
-            MqttClient4FD.LOG.severe("Unable to connect to broker " + brokerUrl + " for " + e.getMessage());
+            LOG.severe("Unable to connect to broker " + brokerUrl + " for " + e.getMessage());
             return false;
         }
     }
@@ -81,7 +81,7 @@ public class Mqtt implements MqttCallback {
         try {
             myClient.subscribe(topic, 0);
         } catch (MqttException ex) {
-            MqttClient4FD.LOG.severe("Unable to subscribe topic + " + topic + " for reason " + ex.getLocalizedMessage());
+            LOG.severe("Unable to subscribe topic + " + topic + " for reason " + ex.getLocalizedMessage());
         }
     }
 
@@ -93,7 +93,7 @@ public class Mqtt implements MqttCallback {
         try {
             myClient.publish(topic, messageToPublish);
         } catch (MqttException ex) {
-            MqttClient4FD.LOG.severe("Unable to publish message: " + message + " to " + topic + " for " + ex.getMessage());
+            LOG.severe("Unable to publish message: " + message + " to " + topic + " for " + ex.getMessage());
         }
     }
 
@@ -101,7 +101,7 @@ public class Mqtt implements MqttCallback {
         try {
             myClient.disconnect();
         } catch (Exception e) {
-            MqttClient4FD.LOG.severe(e.getLocalizedMessage());
+            LOG.severe(e.getLocalizedMessage());
         }
     }
 
@@ -111,10 +111,10 @@ public class Mqtt implements MqttCallback {
         String address = null;
         String value = null;
 
-        System.out.println("-------------------------------------------------");
-        System.out.println("| Topic:" + topic);
-        System.out.println("| Message: " + new String(message.getPayload()));
-        System.out.println("-------------------------------------------------");
+        LOG.info("-------------------------------------------------");
+        LOG.info("| Topic:" + topic);
+        LOG.info("| Message: " + new String(message.getPayload()));
+        LOG.info("-------------------------------------------------");
         // create and notify a freedomotic event based on application logic extracting data from mqtt message
         // the event must contain some info as freedomotic object address, value
         // in this example we consider a message in the format objaddress:value
@@ -129,7 +129,7 @@ public class Mqtt implements MqttCallback {
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken imdt) {
-        MqttClient4FD.LOG.info("Message published");
+        LOG.info("Message published");
     }
 
     /**
@@ -139,13 +139,13 @@ public class Mqtt implements MqttCallback {
      */
     @Override
     public void connectionLost(Throwable cause) {
-        MqttClient4FD.LOG.severe("Connection to Mqtt broker lost for " + cause.getCause());
-        MqttClient4FD.LOG.severe("Reconnecting in progress ...");
+        LOG.severe("Connection to Mqtt broker lost for " + cause.getCause());
+        LOG.severe("Reconnecting in progress ...");
         while (!myClient.isConnected()) {
             try {
                 myClient.connect(connectionOptions);
             } catch (MqttException e) {
-                MqttClient4FD.LOG.severe("Unable to connect to broker " + myClient.getServerURI() + " for " + e.getMessage());
+                LOG.severe("Unable to connect to broker " + myClient.getServerURI() + " for " + e.getMessage());
             }
             // set a delay before retrying
         }
