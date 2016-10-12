@@ -20,16 +20,16 @@
 package com.freedomotic.security;
 
 import com.freedomotic.api.Plugin;
-import com.freedomotic.api.Protocol;
 import com.freedomotic.bus.BusService;
-import com.freedomotic.events.AccountEvent;
-import com.freedomotic.events.AccountEvent.AccountActions;
 import com.freedomotic.settings.AppConfig;
 import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+
+import org.apache.shiro.codec.Base64;
+import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.shiro.SecurityUtils;
@@ -279,9 +279,11 @@ class AuthImpl2 implements Auth {
     }
 
     @Override
-    public boolean addUser(String userName, String password, String role) {
+    public boolean addUser(String userName, String password, String salt, String role) {
         if (getUser(userName) == null) {
-            baseRealm.addUser(new User(userName, password, role, this));
+            User user = new User(userName, password, role, this);
+            user.setCredentialsSalt(ByteSource.Util.bytes(Base64.decode(salt)));
+            baseRealm.addUser(user);
             return true;
         }
         return false;

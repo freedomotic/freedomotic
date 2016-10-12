@@ -123,8 +123,16 @@ public interface Auth {
 
     public void save();
 
+    /**
+     * Adds a new user to the realm.
+     * @param userName
+     * @param password hashed password base64 encoded
+     * @param salt base64 encoded random salt
+     * @param role user role
+     * @return true if the user is added or false if the user already exists
+     */
     @RequiresPermissions("auth:users:create")
-    public boolean addUser(String userName, String password, String role);
+    public boolean addUser(String userName, String password, String salt, String role);
 
     @RequiresPermissions("auth:roles:create")
     public boolean addRole(SimpleRole role);
