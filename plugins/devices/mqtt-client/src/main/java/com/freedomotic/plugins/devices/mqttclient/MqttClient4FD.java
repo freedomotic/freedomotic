@@ -30,10 +30,9 @@ import com.freedomotic.reactions.Command;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class MqttClient4FD
-        extends Protocol {
+public class MqttClient4FD extends Protocol {
+    private static final Logger LOG = Logger.getLogger(MqttClient4FD.class.getName());
 
-    public static final Logger LOG = Logger.getLogger(MqttClient4FD.class.getName());
     private String BROKER_URL = configuration.getStringProperty("broker-url", "tcp://test.mosquitto.org:1883");
     private String CLIENT_ID = configuration.getStringProperty("client-id", "freedomotic");
     private String AUTHENTICATION_ENABLED = configuration.getStringProperty("authentication-enabled", "false");
