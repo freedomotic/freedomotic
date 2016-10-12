@@ -37,8 +37,9 @@ import java.net.URLClassLoader;
 import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sound.sampled.AudioInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import marytts.LocalMaryInterface;
 import marytts.MaryInterface;
@@ -49,7 +50,7 @@ import marytts.util.data.audio.AudioPlayer;
 
 public class MaryTTS extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(MaryTTS.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MaryTTS.class.getName());
     private MaryInterface marytts;
     private Voice defaultVoice;
     private Voice voice;
@@ -72,8 +73,8 @@ public class MaryTTS extends Protocol {
             System.setProperty("mary.base", Info.PATHS.PATH_DEVICES_FOLDER + System.getProperty("file.separator") + "marytts");
             marytts = new LocalMaryInterface();
             // print available voices and languages
-            LOG.log(Level.INFO, "Available voices: ''{0}''", marytts.getAvailableVoices());
-            LOG.log(Level.INFO, "Available languages: ''{0}''", marytts.getAvailableLocales());
+            LOG.info("Available voices: ''{0}''", marytts.getAvailableVoices());
+            LOG.info("Available languages: ''{0}''", marytts.getAvailableLocales());
             // set default voice
             defaultVoice = Voice.getVoice("cmu-slt-hsmm");
         } catch (MaryConfigurationException ex) {
@@ -93,10 +94,10 @@ public class MaryTTS extends Protocol {
             try {
                 new MaryTTS.Speaker(message).start();
             } catch (Exception ex) {
-                LOG.log(Level.SEVERE, "Error while speaking message '" + message + "'", ex);
+                LOG.error("Error while speaking message '" + message + "'", ex);
             }
         } else {
-            LOG.log(Level.WARNING, "Impossible to speak. Message is empty");
+            LOG.warn("Impossible to speak. Message is empty");
         }
     }
 
@@ -132,11 +133,11 @@ public class MaryTTS extends Protocol {
         @Override
         public synchronized void run() {
             if (!isVoiceAvailable(VOICE_NAME)) {
-                LOG.log(Level.INFO, "Voice ''{0}'' not found. Using default voice ", VOICE_NAME);
+                LOG.info("Voice ''{0}'' not found. Using default voice ", VOICE_NAME);
                 voice = defaultVoice;
             } else {
                 voice = Voice.getVoice(VOICE_NAME);
-                LOG.log(Level.INFO, "Voice set to ''{0}''", voice.getName());
+                LOG.info("Voice set to ''{0}''", voice.getName());
             }
             try {
                 marytts.setVoice(voice.getName());
@@ -145,9 +146,9 @@ public class MaryTTS extends Protocol {
                 player.start();
                 player.join();
             } catch (SynthesisException ex) {
-                LOG.log(Level.SEVERE, "Error during audio generation", ex);
+                LOG.error("Error during audio generation", ex);
             } catch (InterruptedException ex) {
-                LOG.log(Level.SEVERE, "Error during speaking", ex);
+                LOG.error("Error during speaking", ex);
             } finally {
                 try {
                     if (audio != null) {
