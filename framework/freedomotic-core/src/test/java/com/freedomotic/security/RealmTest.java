@@ -55,7 +55,7 @@ public class RealmTest {
         role.setName("administrators");
         role.add(new WildcardPermission("sys:*"));
         auth.addRole(role);
-        auth.addUser("system", "password", "administrators");
+        auth.addUser("system", "cQY3W9HCU1MpYV16/SVKFeciDoxOOkyR9cgi/XUEHig=", "FZ4hpINh3HLLyYcgQAy/HTWcZbNX/7R3Tn/YYYsXpQ0=" , "administrators");
         auth.getUser("system").setProperty("language", "auto");
     }
 

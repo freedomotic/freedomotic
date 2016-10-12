@@ -25,6 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.shiro.authz.SimpleRole;
@@ -38,9 +41,13 @@ public class UserRealm extends SimpleAccountRealm {
 
     private final static Logger LOG = LoggerFactory.getLogger(UserRealm.class.getCanonicalName());
     public final static String USER_REALM_NAME = "com.freedomotic.security";
+    private final static String PASSWORD_HASHING_ALGORITHM = "SHA-256";
 
     public UserRealm() {
         setName(USER_REALM_NAME);
+        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(PASSWORD_HASHING_ALGORITHM);
+        matcher.setStoredCredentialsHexEncoded(false);
+        setCredentialsMatcher(matcher);
     }
 
     public void addUser(User account) {

@@ -27,6 +27,8 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.apache.shiro.codec.Base64;
+import org.apache.shiro.util.ByteSource;
 import org.slf4j.LoggerFactory;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.slf4j.Logger;
@@ -63,6 +65,9 @@ class UserConverter implements Converter {
         writer.startNode("credentials");
         writer.setValue(user.getCredentials().toString());
         writer.endNode();
+        writer.startNode("salt");
+        writer.setValue(user.getCredentialsSalt().toBase64());
+        writer.endNode();
         writer.startNode("roles");
         for (String r : user.getRoles()) {
             writer.startNode("role");
@@ -97,8 +102,11 @@ class UserConverter implements Converter {
         reader.moveUp(); //end principals
         reader.moveDown(); // credentials
         user = new User(pc, reader.getValue(), Freedomotic.INJECTOR.getInstance(Auth.class));
+        reader.moveUp(); // end credentials
+        reader.moveDown(); //salt
+        user.setCredentialsSalt(ByteSource.Util.bytes(Base64.decode(reader.getValue())));
         reader.moveUp();
-        reader.moveDown(); //roles
+        reader.moveDown();
         while (reader.hasMoreChildren()) {
             reader.moveDown();
             user.addRole(reader.getAttribute("name"));

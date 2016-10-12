@@ -277,7 +277,7 @@ class AuthImpl implements Auth {
     }
 
     @Override
-    public boolean addUser(String userName, String password, String role) {
+    public boolean addUser(String userName, String password, String salt, String role) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
