@@ -73,8 +73,8 @@ public class MaryTTS extends Protocol {
             System.setProperty("mary.base", Info.PATHS.PATH_DEVICES_FOLDER + System.getProperty("file.separator") + "marytts");
             marytts = new LocalMaryInterface();
             // print available voices and languages
-            LOG.info("Available voices: ''{0}''", marytts.getAvailableVoices());
-            LOG.info("Available languages: ''{0}''", marytts.getAvailableLocales());
+            LOG.info("Available voices: ''{}''", marytts.getAvailableVoices());
+            LOG.info("Available languages: ''{}''", marytts.getAvailableLocales());
             // set default voice
             defaultVoice = Voice.getVoice("cmu-slt-hsmm");
         } catch (MaryConfigurationException ex) {
@@ -133,11 +133,11 @@ public class MaryTTS extends Protocol {
         @Override
         public synchronized void run() {
             if (!isVoiceAvailable(VOICE_NAME)) {
-                LOG.info("Voice ''{0}'' not found. Using default voice ", VOICE_NAME);
+                LOG.info("Voice ''{}'' not found. Using default voice ", VOICE_NAME);
                 voice = defaultVoice;
             } else {
                 voice = Voice.getVoice(VOICE_NAME);
-                LOG.info("Voice set to ''{0}''", voice.getName());
+                LOG.info("Voice set to ''{}''", voice.getName());
             }
             try {
                 marytts.setVoice(voice.getName());
