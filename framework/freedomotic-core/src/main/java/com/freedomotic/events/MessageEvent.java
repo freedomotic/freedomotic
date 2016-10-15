@@ -19,9 +19,12 @@
  */
 package com.freedomotic.events;
 
-import com.freedomotic.api.EventTemplate;
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.freedomotic.api.EventTemplate;
 
 /**
  * Channel <b>app.event.sensor.messages.MESSAGE_TYPE</b> informs that
@@ -102,6 +105,30 @@ public class MessageEvent
     public void setTo(String to) {
         this.getPayload().addStatement("message.to", to);
     }
+    
+
+    /**
+     * Sets the path of the message attachment, if any.
+     * 
+     * it is an OPTIONAL property
+     *
+     * @param path
+     */
+    public void setAttachmentPath(String path) {
+        this.getPayload().addStatement("message.attachment", path);
+    }
+    
+    /**
+     * Sets the path of the attached file, if any.
+     * 
+     * it is an OPTIONAL property
+     *
+     * @param file representing the actual attachment
+     */
+    public void setAttachmentPath(File attachment) {
+    	String path = (attachment!=null)?attachment.getAbsolutePath():"";
+        this.getPayload().addStatement("message.attachment", path);
+    }
 
     /**
      *
@@ -126,7 +153,17 @@ public class MessageEvent
     public String getText() {
         return getPayload().getStatementValue("message.text");
     }
+    
+    /**
+     * 
+     * @return the absolute attachment path, if any
+     */
+    public String getAttachmentPath() {
+    	return getPayload().getStatementValue("message.attachment");
+    }
 
+    
+    
     /**
      *
      * @return
