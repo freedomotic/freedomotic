@@ -63,6 +63,12 @@
             <artifactId>mail</artifactId>
             <version>1.4</version>
         </dependency>
+		<dependency>
+    		<groupId>dumbster</groupId>
+    		<artifactId>dumbster</artifactId>
+    		<version>1.6</version>
+    		<scope>test</scope>
+		</dependency>
     </dependencies>
     <build>
         <plugins>
