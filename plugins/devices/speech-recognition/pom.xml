@@ -3,15 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.freedomotic</groupId>
-        <artifactId>freedomotic</artifactId>
+        <artifactId>freedomotic-plugins</artifactId>
         <version>5.6-SNAPSHOT</version>
-        <relativePath>../../../</relativePath>
-    </parent>     
+        <relativePath>../../</relativePath>
+    </parent>    
     <artifactId>speech-recognition</artifactId>
     <packaging>jar</packaging>
     <name>speech-recognition</name>
     <version>3.0</version>
-
     <developers>
         <developer>
             <id>enrico</id>
@@ -33,16 +32,18 @@
         <freedomotic.package.license>GNU GPL2</freedomotic.package.license>
         <freedomotic.package.vendor.name>Enrico</freedomotic.package.vendor.name>
         <freedomotic.package.vendor.surname>Nicoletti</freedomotic.package.vendor.surname>
-        <freedomotic.package.vendor.contact>Nicoletti</freedomotic.package.vendor.contact>
+        <freedomotic.package.vendor.contact>Cicolella</freedomotic.package.vendor.contact>
         <freedomotic.package.vendor.company>Freedomotic</freedomotic.package.vendor.company>
         <freedomotic.package.vendor.nation>it</freedomotic.package.vendor.nation>
         <freedomotic.framework.required.major>5</freedomotic.framework.required.major>
         <freedomotic.framework.required.minor>6</freedomotic.framework.required.minor>
         <freedomotic.framework.required.build>x</freedomotic.framework.required.build>
+        <!--don't like this but works for the moment -->
         <freedomotic.synch.dist.path>../../../framework/freedomotic-core/plugins/</freedomotic.synch.dist.path>
         <freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${project.version}.${freedomotic.package.type}</freedomotic.marketplace.file>
+        <freedomotic.marketplace.username></freedomotic.marketplace.username>
+        <freedomotic.marketplace.password></freedomotic.marketplace.password>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -58,16 +59,15 @@
         <dependency>
             <groupId>edu.cmu.sphinx</groupId>
             <artifactId>sphinx4-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>5prealpha-SNAPSHOT</version>
         </dependency>
         <!-- Default acoustic model -->
         <dependency>
             <groupId>edu.cmu.sphinx</groupId>
             <artifactId>sphinx4-data</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>5prealpha-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>

@@ -1,13 +1,21 @@
-/*
- * Copyright 1999-2004 Carnegie Mellon University.
- * Portions Copyright 2004 Sun Microsystems, Inc.
- * Portions Copyright 2004 Mitsubishi Electric Research Laboratories.
- * All Rights Reserved.  Use is subject to license terms.
+/**
  *
- * See the file "license.terms" for information on usage and
- * redistribution of this file, and for a DISCLAIMER OF ALL
- * WARRANTIES.
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.plugins.sphinx;
 
@@ -16,7 +24,7 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.util.Info;
+import com.freedomotic.settings.Info;
 import edu.cmu.sphinx.api.Configuration;
 import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import edu.cmu.sphinx.api.SpeechResult;
@@ -27,8 +35,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple HelloWorld demo showing a simple speech application built using
@@ -41,6 +49,7 @@ import java.util.logging.Logger;
  */
 public class SpeechRecognition extends Protocol {
 
+    private static final Logger LOG = LoggerFactory.getLogger(SpeechRecognition.class.getName());
     private LiveSpeechRecognizer recognizer;
 
     public SpeechRecognition() {
@@ -52,13 +61,12 @@ public class SpeechRecognition extends Protocol {
         this.setPollingWait(-1); // Disable onRun loop execution
         Configuration sphinxConfiguration = new Configuration();
         // Load model from the jar
-        sphinxConfiguration
-                .setAcousticModelPath("resource:/edu/cmu/sphinx/models/acoustic/wsj");
-        sphinxConfiguration
-                .setDictionaryPath("resource:/edu/cmu/sphinx/models/acoustic/wsj/dict/cmudict.0.6d");
-        sphinxConfiguration
-                .setLanguageModelPath("resource:/edu/cmu/sphinx/models/language/en-us.lm.dmp");
-
+        // Set path to acoustic model
+        sphinxConfiguration.setAcousticModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us");
+        // Set path to dictionary
+        sphinxConfiguration.setDictionaryPath("resource:/edu/cmu/sphinx/models/en-us/cmudict-en-us.dict");
+        // Set language model
+        sphinxConfiguration.setLanguageModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us.lm.bin");
         try {
             recognizer = new LiveSpeechRecognizer(sphinxConfiguration);
             // Start recognition process pruning previously cached data.
@@ -73,6 +81,7 @@ public class SpeechRecognition extends Protocol {
     @Override
     public void onStop() {
         if (recognizer != null) {
+            recognizer.startRecognition(false);
             recognizer.stopRecognition();
         }
     }
@@ -133,9 +142,8 @@ public class SpeechRecognition extends Protocol {
             output.write(buffer.toString());
             output.close();
         } catch (IOException ex) {
-            Logger.getLogger(SpeechRecognition.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getLocalizedMessage());
         }
-
         return buffer.toString();
     }
 }
