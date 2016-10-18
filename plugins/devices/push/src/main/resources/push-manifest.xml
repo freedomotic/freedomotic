@@ -93,6 +93,7 @@
 <!-- optional --><property name="param.v" value=""/><!-- Vibration 1-3 -->
 <!-- optional --><property name="param.u" value=""/><!-- URL or URL Scheme: https://www.pushsafer.com/en/url_schemes -->
 <!-- optional --><property name="param.ut" value=""/><!-- Title of URL -->
+<!-- optional --><property name="param.l" value=""/><!-- Integer number 0-43200: Time in minutes, after which message automatically gets purged. -->
 <!-- optional --><property name="param.p" value=""/><!-- Image Data URL with Base64-encoded string -->
 <!-- optional --><property name="param.p2" value=""/><!--Image 2 Data URL with Base64-encoded string  -->
 <!-- optional --><property name="param.p3" value=""/><!--Image 3 Data URL with Base64-encoded string  -->
