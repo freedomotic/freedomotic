@@ -65,7 +65,7 @@ public class MailerPluginTest {
 	 */
 	@Before
 	public void setUp() {
-		this.attachment = new File(getClass().getResource("attachment.txt").getFile());
+		//this.attachment = new File(getClass().getResource("attachment.txt").getFile());
 	}
 
 	/**

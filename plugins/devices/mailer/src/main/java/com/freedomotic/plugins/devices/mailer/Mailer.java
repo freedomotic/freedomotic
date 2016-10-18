@@ -52,152 +52,170 @@ import com.freedomotic.reactions.Command;
  */
 public final class Mailer extends Protocol {
 
-	/**
-	 *
-	 */
-	public static final Logger LOG = LoggerFactory.getLogger(Mailer.class.getName());
-	final String USERNAME = configuration.getProperty("username");
-	final String PASSWORD = configuration.getProperty("password");
-	private int sentMails;
+    /**
+     *
+     */
+    public static final Logger LOG = LoggerFactory.getLogger(Mailer.class.getName());
+    private final String USERNAME = configuration.getProperty("username");
+    private final String PASSWORD = configuration.getProperty("password");
+    private StringBuilder noAttachmentFound = new StringBuilder();
+    private int sentMails = 0;
 
-	/**
-	 *
-	 */
-	public Mailer() {
-		super("Mailer", "/mailer/mailer-manifest.xml");
-		addEventListener("app.event.sensor.messages.mail");
-	}
-	
-	@Override
-	protected void onRun() {
-		// throw new UnsupportedOperationException("Not supported yet.");
-	}
+    /**
+     *
+     */
+    public Mailer() {
+        super("Mailer", "/mailer/mailer-manifest.xml");
+        addEventListener("app.event.sensor.messages.mail");
+    }
 
-	@Override
-	protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-		String from = c.getProperty("from");
-		if (from == null) {
-			from = "your.home@freedomotic.com";
-		}
-		String to = c.getProperty("to");
-		if (to == null || to.isEmpty()) {
-			to = USERNAME;
-		}
-		String subject = c.getProperty("subject");
-		if (subject == null || subject.isEmpty()) {
-			subject = "A notification from Freedomotic";
-		}
-		final String text = c.getProperty("message");
+    @Override
+    protected void onRun() {
+        // throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-		try {
-			send(from, to, subject, text, this.buildAttachmentFromAbsolutePath(c.getProperty("attachment")));
-		} catch (MessagingException ex) {
-			this.notifyCriticalError("Error while sending email '" + subject + "' to '" + to + "' for "
-					+ Freedomotic.getStackTraceInfo(ex));
-		}
+    @Override
+    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
+        String from = c.getProperty("from");
+        if (from == null) {
+            from = "your.home@freedomotic.com";
+        }
+        String to = c.getProperty("to");
+        if (to == null || to.isEmpty()) {
+            to = USERNAME;
+        }
+        String subject = c.getProperty("subject");
+        if (subject == null || subject.isEmpty()) {
+            subject = "A notification from Freedomotic";
+        }
+        final String text = c.getProperty("message");
 
-	}
+        try {
+            send(from, to, subject, text, this.buildAttachmentFromAbsolutePath(c.getProperty("attachment")));
+        } catch (MessagingException ex) {
+            this.notifyCriticalError("Error while sending email '" + subject + "' to '" + to + "' for "
+                    + Freedomotic.getStackTraceInfo(ex));
+        }
 
-	private File buildAttachmentFromAbsolutePath(String path) {
-		if (path == null || path.isEmpty())
-			return null;
+    }
 
-		File attachment = new File(path);
+    /**
+     * Returns the attachment file.
+     * 
+     * @param path of the attachment file
+     * @return the file or null if it doesn't exist
+     */
+    private File buildAttachmentFromAbsolutePath(String path) {
+        if (path == null || path.isEmpty()) {
+            return null;
+        }
 
-		if (attachment.exists())
-			return attachment;
-		else {
-			this.notifyCriticalError("Error while retrieving mail attachment, no existing file at path " + path);
-			return null;
-		}
-	}
+        File attachment = new File(path);
 
-	/**
-	 * Sends the mail with an attachment, if any.
-	 *
-	 * @param from
-	 *            mail sender
-	 * @param to
-	 *            mail receiver
-	 * @param subject
-	 *            mail subject
-	 * @param text
-	 *            mail body
-	 * @param attached file
-	 *            mail attachment, if any
-	 *            
-	 * @throws AddressException
-	 * @throws MessagingException
-	 * @throws IOException
-	 */
-	private void send(String from, String to, String subject, String text, File attachment)
-			throws AddressException, MessagingException, IOException {
-		Properties props = new Properties();
-		props.put("mail.smtp.auth", configuration.getProperty("mail.smtp.auth"));
-		if (configuration.getProperty("mail.smtp.connection").equalsIgnoreCase("TLS")) {
-			props.put("mail.smtp.starttls.enable", "true");
-		} else {
-			props.put("mail.smtp.socketFactory.port", configuration.getProperty("mail.smtp.port"));
-			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		}
-		props.put("mail.smtp.host", configuration.getProperty("mail.smtp.host"));
-		props.put("mail.smtp.port", configuration.getProperty("mail.smtp.port"));
+        if (attachment.exists()) {
+            return attachment;
+        } else {
+            LOG.warn("Error while retrieving mail attachment, no existing file at path '{}'", path);
+            noAttachmentFound.append(path);
+            noAttachmentFound.append("\n");
+            return null;
+        }
+    }
 
-		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-			@Override
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(USERNAME, PASSWORD);
-			}
-		});
+    /**
+     * Sends the mail with an attachment, if any.
+     *
+     * @param from mail sender
+     * @param to mail receiver
+     * @param subject mail subject
+     * @param text mail body
+     * @param attached file mail attachment, if any
+     *
+     * @throws AddressException
+     * @throws MessagingException
+     * @throws IOException
+     */
+    private void send(String from, String to, String subject, String text, File attachment)
+            throws AddressException, MessagingException, IOException {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", configuration.getProperty("mail.smtp.auth"));
+        if (configuration.getProperty("mail.smtp.connection").equalsIgnoreCase("TLS")) {
+            props.put("mail.smtp.starttls.enable", "true");
+        } else {
+            props.put("mail.smtp.socketFactory.port", configuration.getProperty("mail.smtp.port"));
+            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        }
+        props.put("mail.smtp.host", configuration.getProperty("mail.smtp.host"));
+        props.put("mail.smtp.port", configuration.getProperty("mail.smtp.port"));
 
-		Message message = new MimeMessage(session);
-		message.setFrom(new InternetAddress(from));
-		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-		message.setSubject(subject);
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(USERNAME, PASSWORD);
+            }
+        });
 
-		if (attachment != null) {
-			MimeBodyPart textMsg = new MimeBodyPart();
-			textMsg.setText(text);
-			MimeBodyPart attachedFile = new MimeBodyPart();
-			attachedFile.attachFile(attachment);
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(from));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+        message.setSubject(subject);
 
-			Multipart mp = new MimeMultipart();
-			mp.addBodyPart(textMsg);
-			mp.addBodyPart(attachedFile);
-			message.setContent(mp);
-		}
-		
-		else {
-			message.setText(text);
-		}
+        if (attachment != null) {
+            MimeBodyPart textMsg = new MimeBodyPart();
+            textMsg.setText(text);
+            MimeBodyPart attachedFile = new MimeBodyPart();
+            attachedFile.attachFile(attachment);
 
-		message.setSentDate(new Date());
+            Multipart mp = new MimeMultipart();
+            mp.addBodyPart(textMsg);
+            mp.addBodyPart(attachedFile);
+            message.setContent(mp);
+        } else {
+            if (noAttachmentFound.length() > 0) {
+                text += "\nAttachment(s) not found: " + noAttachmentFound;
+                message.setText(text);
+            }
+        }
 
-		Transport.send(message);
-		sentMails++;
-		setDescription(sentMails + " emails sent");
-	}
-	
-	private void sendWithAttachment(String from, String to, String subject, String text, String attachmentPath)
-			throws AddressException, MessagingException, IOException {
-		File attachment = this.buildAttachmentFromAbsolutePath(attachmentPath);
-		this.send(from, to, subject, text, attachment);
-	}
+        message.setSentDate(new Date());
 
-	@Override
-	protected boolean canExecute(Command c) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+        Transport.send(message);
+        sentMails++;
+        setDescription(sentMails + " emails sent");
+    }
 
-	@Override
-	protected void onEvent(EventTemplate event) {
-		if (event instanceof MessageEvent) {
-			MessageEvent mail = (MessageEvent) event;
-			try {
-				this.sendWithAttachment(mail.getFrom(), mail.getTo(), null, mail.getText(), mail.getAttachmentPath());
-			} catch (Exception ex) {
-				this.notifyCriticalError("Error while sending email to " + mail.getTo() + ": " + ex.getMessage());
-			}
-		}
-	}
+    /**
+     * Sends an email with attachment.
+     * 
+     * @param from source address
+     * @param to destination address
+     * @param subject mail subject
+     * @param text mail text
+     * @param attachmentPath path of the attachment file
+     * @throws AddressException 
+     * @throws MessagingException
+     * @throws IOException 
+     */
+    private void sendWithAttachment(String from, String to, String subject, String text, String attachmentPath)
+            throws AddressException, MessagingException, IOException {
+        File attachment = this.buildAttachmentFromAbsolutePath(attachmentPath);
+        this.send(from, to, subject, text, attachment);
+    }
+
+    @Override
+    protected boolean canExecute(Command c) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected void onEvent(EventTemplate event) {
+        if (event instanceof MessageEvent) {
+            MessageEvent mail = (MessageEvent) event;
+            try {
+                this.sendWithAttachment(mail.getFrom(), mail.getTo(), null, mail.getText(), mail.getAttachmentPath());
+            } catch (Exception ex) {
+                this.notifyCriticalError("Error while sending email to " + mail.getTo() + ": " + ex.getMessage());
+            }
+        }
+    }
 }
