@@ -1,0 +1,14 @@
+<command>
+    <name>Notify event by Telegram</name>
+    <receiver>app.actuators.social.telegram-bot.in</receiver>
+    <description>sends a Telegram message</description>
+    <hardwareLevel>false</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <editable>false</editable>
+    <properties>
+        <properties>
+            <property name="message" value="Event notified: @event.description"/>
+        </properties>
+    </properties>
+</command>
