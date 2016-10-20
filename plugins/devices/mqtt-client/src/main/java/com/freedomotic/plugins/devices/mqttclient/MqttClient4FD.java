@@ -22,16 +22,18 @@
  */
 package com.freedomotic.plugins.devices.mqttclient;
 
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import java.io.IOException;
-import java.util.logging.Logger;
 
 public class MqttClient4FD extends Protocol {
-    private static final Logger LOG = Logger.getLogger(MqttClient4FD.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MqttClient4FD.class.getName());
 
     private String BROKER_URL = configuration.getStringProperty("broker-url", "tcp://test.mosquitto.org:1883");
     private String CLIENT_ID = configuration.getStringProperty("client-id", "freedomotic");
