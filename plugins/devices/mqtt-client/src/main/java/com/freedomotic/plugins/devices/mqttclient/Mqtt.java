@@ -19,17 +19,23 @@
  */
 package com.freedomotic.plugins.devices.mqttclient;
 
-/**
- *
- * @author Mauro Cicolella <mcicolella@libero.it>
- */
-import com.freedomotic.events.ProtocolRead;
-import java.util.logging.Logger;
-import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.freedomotic.events.ProtocolRead;
+
+/**
+* @author Mauro Cicolella <mcicolella@libero.it>
+*/
 public class Mqtt implements MqttCallback {
-    private static final Logger LOG = Logger.getLogger(Mqtt.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Mqtt.class.getName());
 
     MqttClient4FD pluginRef = null;
     MqttClient myClient;
@@ -72,7 +78,7 @@ public class Mqtt implements MqttCallback {
             myClient.connect(connectionOptions);
             return true;
         } catch (MqttException e) {
-            LOG.severe("Unable to connect to broker " + brokerUrl + " for " + e.getMessage());
+            LOG.error("Unable to connect to broker " + brokerUrl + " for " + e.getMessage());
             return false;
         }
     }
@@ -81,7 +87,7 @@ public class Mqtt implements MqttCallback {
         try {
             myClient.subscribe(topic, 0);
         } catch (MqttException ex) {
-            LOG.severe("Unable to subscribe topic + " + topic + " for reason " + ex.getLocalizedMessage());
+            LOG.error("Unable to subscribe topic + " + topic + " for reason " + ex.getLocalizedMessage());
         }
     }
 
@@ -93,7 +99,7 @@ public class Mqtt implements MqttCallback {
         try {
             myClient.publish(topic, messageToPublish);
         } catch (MqttException ex) {
-            LOG.severe("Unable to publish message: " + message + " to " + topic + " for " + ex.getMessage());
+            LOG.error("Unable to publish message: " + message + " to " + topic + " for " + ex.getMessage());
         }
     }
 
@@ -101,7 +107,7 @@ public class Mqtt implements MqttCallback {
         try {
             myClient.disconnect();
         } catch (Exception e) {
-            LOG.severe(e.getLocalizedMessage());
+            LOG.error(e.getLocalizedMessage());
         }
     }
 
@@ -139,13 +145,13 @@ public class Mqtt implements MqttCallback {
      */
     @Override
     public void connectionLost(Throwable cause) {
-        LOG.severe("Connection to Mqtt broker lost for " + cause.getCause());
-        LOG.severe("Reconnecting in progress ...");
+        LOG.error("Connection to Mqtt broker lost for " + cause.getCause());
+        LOG.error("Reconnecting in progress ...");
         while (!myClient.isConnected()) {
             try {
                 myClient.connect(connectionOptions);
             } catch (MqttException e) {
-                LOG.severe("Unable to connect to broker " + myClient.getServerURI() + " for " + e.getMessage());
+                LOG.error("Unable to connect to broker " + myClient.getServerURI() + " for " + e.getMessage());
             }
             // set a delay before retrying
         }
