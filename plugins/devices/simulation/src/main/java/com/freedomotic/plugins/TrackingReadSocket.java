@@ -28,6 +28,11 @@ import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.GenericPerson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,8 +41,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -45,7 +48,8 @@ import java.util.logging.Logger;
  */
 public class TrackingReadSocket extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(TrackingReadSocket.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TrackingReadSocket.class);
+    private static final Marker FATAL = MarkerFactory.getMarker("FATAL");
     private ServerSocket serverSocket;
     private OutputStream out;
     private final boolean connected = false;
@@ -77,7 +81,7 @@ public class TrackingReadSocket extends Protocol {
             serverSocket = new ServerSocket();
             serverSocket.setReuseAddress(true);
             serverSocket.bind(new InetSocketAddress(PORT));
-            LOG.log(Level.INFO, "Start listening on server socket " + serverSocket.getInetAddress() + ":" + serverSocket.getLocalPort());
+            LOG.info("Start listening on server socket " + serverSocket.getInetAddress() + ":" + serverSocket.getLocalPort());
         } catch (IOException ioe) {
             throw ioe;
         }
@@ -99,7 +103,7 @@ public class TrackingReadSocket extends Protocol {
             movePerson(id, location);
 
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, "Error while parsing client input." + "\n" + in + "\ntoken count: "
+            LOG.error(FATAL,"Error while parsing client input." + "\n" + in + "\ntoken count: "
                     + tokenizer.countTokens());
         }
     }
@@ -128,7 +132,7 @@ public class TrackingReadSocket extends Protocol {
                 Thread t = new Thread(clientConnection);
                 t.start();
             } catch (IOException ioe) {
-                LOG.log(Level.SEVERE, "IOException on socket listen: " + ioe);
+                LOG.error(FATAL, "IOException on socket listen: " + ioe);
             }
         }
     }
@@ -162,7 +166,7 @@ public class TrackingReadSocket extends Protocol {
 
         ClientInputReader(Socket client) {
             this.client = client;
-            LOG.log(Level.INFO, "New client connected to server on " + client.getInetAddress());
+            LOG.info("New client connected to server on " + client.getInetAddress());
         }
 
         public void run() {
@@ -172,14 +176,14 @@ public class TrackingReadSocket extends Protocol {
                 PrintStream out = new PrintStream(client.getOutputStream());
 
                 while (((line = in.readLine()) != null) && !line.equals(".") && isRunning()) {
-                    LOG.log(Level.INFO, "Readed from socket: " + line);
+                    LOG.info("Readed from socket: " + line);
                     parseInput(line);
                 }
 
-                LOG.log(Level.INFO, "Closing socket connection " + client.getInetAddress());
+                LOG.info("Closing socket connection " + client.getInetAddress());
                 client.close();
             } catch (IOException ioe) {
-                LOG.log(Level.SEVERE, "IOException on socket listen: " + ioe);
+                LOG.error(FATAL, "IOException on socket listen: " + ioe);
                 ioe.printStackTrace();
             }
         }

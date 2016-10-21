@@ -24,12 +24,14 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.events.LocationEvent;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.geometry.FreedomPoint;
+import com.freedomotic.reactions.Command;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.GenericPerson;
-import com.freedomotic.reactions.Command;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.Random;
-import java.util.logging.Logger;
 
 /**
  *
@@ -37,7 +39,7 @@ import java.util.logging.Logger;
  */
 public class TrackingRandomPosition extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(TrackingRandomPosition.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TrackingRandomPosition.class);
 
     public TrackingRandomPosition() {
         super("Tracking Simulator (Random)", "/simulation/tracking-simulator-random.xml");
