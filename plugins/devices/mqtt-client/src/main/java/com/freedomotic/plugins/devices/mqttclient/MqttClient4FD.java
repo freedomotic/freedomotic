@@ -29,10 +29,12 @@ import org.slf4j.LoggerFactory;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
+import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 
 public class MqttClient4FD extends Protocol {
+
     private static final Logger LOG = LoggerFactory.getLogger(MqttClient4FD.class.getName());
 
     private String BROKER_URL = configuration.getStringProperty("broker-url", "tcp://test.mosquitto.org:1883");
@@ -65,17 +67,17 @@ public class MqttClient4FD extends Protocol {
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart() throws PluginStartupException {
         mqttClient = new Mqtt(this);
         connected = mqttClient.startClient(BROKER_URL, CLIENT_ID, SET_CLEAN_SESSION, SET_KEEP_ALIVE_INTERVAL, AUTHENTICATION_ENABLED, USERNAME, PASSWORD);
         if (connected) {
             setDescription("Connected to " + BROKER_URL);
-            mqttClient.subscribeTopic(configuration.getStringProperty("topic", "true"));
-            // this message is used in debug mode - please remove
-            mqttClient.publish(configuration.getStringProperty("topic", "true"), "obj1:1", 0, 0);
+            // subscribe all topics in <tuples></tuples> section
+            for (int i = 0; i < configuration.getTuples().size(); i++) {
+                mqttClient.subscribeTopic(configuration.getTuples().getProperty(i, "topic-name"));
+            }
         } else {
-            // plugin stopped
-            this.stop();
+            throw new PluginStartupException("Not connected. Please check");
         }
     }
 
@@ -91,10 +93,10 @@ public class MqttClient4FD extends Protocol {
     @Override
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
-        String topic = c.getProperty("topic");
-        String message = c.getProperty("message");
-        Integer subQoS = Integer.parseInt(c.getProperty("sub-qos"));
-        Integer pubQoS = Integer.parseInt(c.getProperty("pub-qos"));
+        String topic = c.getProperty("mqtt.topic");
+        String message = c.getProperty("mqtt.message");
+        Integer subQoS = Integer.parseInt(c.getProperty("mqtt.sub-qos"));
+        Integer pubQoS = Integer.parseInt(c.getProperty("mqtt.pub-qos"));
         mqttClient.publish(topic, message, subQoS, pubQoS);
     }
 

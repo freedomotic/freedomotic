@@ -12,8 +12,16 @@
         <property name="authentication-enabled" value="false"/>
         <property name="username" value="admin"/>
         <property name="password" value="admin"/>
-        <property name="topic" value="testtopic/1"/>
     </properties>
+    <tuples>
+        <!-- TOPIC CONFIGURATION -->
+        <tuple>
+            <property name="topic-name" value="testtopic/1"/>
+        </tuple>
+        <tuple>
+            <property name="topic-name" value="testtopic/2"/>
+        </tuple>
+    </tuples>
 </config>
 
                 
