@@ -256,6 +256,7 @@
                     <aggregate>true</aggregate>
                     <show>public</show>
                     <nohelp>true</nohelp>
+                    <destDir>javadoc</destDir>
                     <header>jTransfo, ${project.version}</header>
                     <footer>jTransfo, ${project.version}</footer>
                     <doctitle>jTransfo, ${project.version}</doctitle>
