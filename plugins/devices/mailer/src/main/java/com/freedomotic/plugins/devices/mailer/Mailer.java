@@ -101,7 +101,7 @@ public final class Mailer extends Protocol {
 
     /**
      * Returns the attachment file.
-     * 
+     *
      * @param path of the attachment file
      * @return the file or null if it doesn't exist
      */
@@ -186,15 +186,15 @@ public final class Mailer extends Protocol {
 
     /**
      * Sends an email with attachment.
-     * 
+     *
      * @param from source address
      * @param to destination address
      * @param subject mail subject
      * @param text mail text
      * @param attachmentPath path of the attachment file
-     * @throws AddressException 
+     * @throws AddressException
      * @throws MessagingException
-     * @throws IOException 
+     * @throws IOException
      */
     private void sendWithAttachment(String from, String to, String subject, String text, String attachmentPath)
             throws AddressException, MessagingException, IOException {
@@ -209,12 +209,27 @@ public final class Mailer extends Protocol {
 
     @Override
     protected void onEvent(EventTemplate event) {
-        if (event instanceof MessageEvent) {
+        // filter only mail related events
+        if (event instanceof MessageEvent && event.getProperty("message.type").equalsIgnoreCase("mail")) {
             MessageEvent mail = (MessageEvent) event;
+            String from = null;
+            String to = null;
+            // set correctly sender and destination address
+            // if not present consider the deafault
+            if (mail.getFrom() == null || mail.getFrom().isEmpty()) {
+                from = "yourhome@freedomotic.com";
+            } else {
+                from = mail.getFrom();
+            }
+            if (mail.getTo() == null || mail.getTo().isEmpty()) {
+                to = USERNAME;
+            } else {
+                to = mail.getTo();
+            }
             try {
-                this.sendWithAttachment(mail.getFrom(), mail.getTo(), null, mail.getText(), mail.getAttachmentPath());
+                this.sendWithAttachment(from, to, null, mail.getText(), mail.getAttachmentPath());
             } catch (Exception ex) {
-                this.notifyCriticalError("Error while sending email to " + mail.getTo() + ": " + ex.getMessage());
+                this.notifyCriticalError("Error while sending email to '" + mail.getTo() + "' for " + ex.getMessage());
             }
         }
     }
