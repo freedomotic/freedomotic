@@ -1,4 +1,4 @@
-#Fri Feb 12 16:57:49 GMT 2016
+#Sun Oct 23 20:41:30 CEST 2016
 KEY_LOGGER_POPUP=false
 KEY_SAVE_LOG_TO_FILE=OFF  
 KEY_MESSAGES_TTL=5000
@@ -17,3 +17,5 @@ P2P_CLUSTER_NAME=freedomotic-commander
 KEY_COLORED_PEOPLE=false
 KEY_JAVACOM_LIB=../ext
 KEY_RESOURCES_PATH=/data/resources/
+ADMIN_SENDING_ADDRESS=issue.reporter@freedomotic.com
+ADMIN_RECIPIENT_ADDRESS=error.box@freedomotic.com

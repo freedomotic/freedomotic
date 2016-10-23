@@ -19,41 +19,6 @@
  */
 package com.freedomotic.app;
 
-import com.freedomotic.settings.AppConfig;
-import com.freedomotic.api.Client;
-import com.freedomotic.api.EventTemplate;
-import com.freedomotic.bus.BootStatus;
-import com.freedomotic.bus.BusConsumer;
-import com.freedomotic.bus.BusMessagesListener;
-import com.freedomotic.bus.BusService;
-import com.freedomotic.core.Autodiscovery;
-import com.freedomotic.core.SynchManager;
-import com.freedomotic.core.TopologyManager;
-import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentRepository;
-import com.freedomotic.events.PluginHasChanged;
-import com.freedomotic.events.PluginHasChanged.PluginActions;
-import com.freedomotic.exceptions.RepositoryException;
-import com.freedomotic.exceptions.FreedomoticException;
-import com.freedomotic.exceptions.PluginLoadingException;
-import com.freedomotic.i18n.I18n;
-import com.freedomotic.marketplace.ClassPathUpdater;
-import com.freedomotic.marketplace.IPluginCategory;
-import com.freedomotic.marketplace.MarketPlaceService;
-import com.freedomotic.nlp.CommandsNlpService;
-import com.freedomotic.things.ThingRepository;
-import com.freedomotic.plugins.ClientStorage;
-import com.freedomotic.plugins.PluginsManager;
-import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandRepository;
-import com.freedomotic.reactions.ReactionRepository;
-import com.freedomotic.reactions.TriggerRepository;
-import com.freedomotic.security.Auth;
-import com.freedomotic.security.UserRealm;
-import com.freedomotic.settings.Info;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
 import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.io.File;
@@ -64,14 +29,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
-import org.slf4j.Logger;
 import java.util.logging.LogManager;
-import org.slf4j.LoggerFactory;
+
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -79,7 +43,44 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.SubjectThreadState;
 import org.apache.shiro.util.ThreadState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
+import com.freedomotic.api.Client;
+import com.freedomotic.api.EventTemplate;
+import com.freedomotic.bus.BootStatus;
+import com.freedomotic.bus.BusConsumer;
+import com.freedomotic.bus.BusMessagesListener;
+import com.freedomotic.bus.BusService;
+import com.freedomotic.core.Autodiscovery;
+import com.freedomotic.core.SynchManager;
+import com.freedomotic.core.TopologyManager;
+import com.freedomotic.environment.EnvironmentRepository;
+import com.freedomotic.events.PluginHasChanged;
+import com.freedomotic.events.PluginHasChanged.PluginActions;
+import com.freedomotic.exceptions.FreedomoticException;
+import com.freedomotic.exceptions.PluginLoadingException;
+import com.freedomotic.exceptions.RepositoryException;
+import com.freedomotic.i18n.I18n;
+import com.freedomotic.marketplace.ClassPathUpdater;
+import com.freedomotic.marketplace.IPluginCategory;
+import com.freedomotic.marketplace.MarketPlaceService;
+import com.freedomotic.nlp.CommandsNlpService;
+import com.freedomotic.plugins.ClientStorage;
+import com.freedomotic.plugins.PluginsManager;
+import com.freedomotic.reactions.Command;
+import com.freedomotic.reactions.CommandRepository;
+import com.freedomotic.reactions.ReactionRepository;
+import com.freedomotic.reactions.TriggerRepository;
+import com.freedomotic.security.Auth;
+import com.freedomotic.security.UserRealm;
+import com.freedomotic.settings.AppConfig;
+import com.freedomotic.settings.Info;
+import com.freedomotic.things.ThingRepository;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 /**
  * This is the starting class of the project
@@ -112,9 +113,11 @@ public class Freedomotic implements BusConsumer {
     private BusMessagesListener listener;
     // TODO remove static modifier once static methods sendEvent & sendCommand are erased.
     private static BusService busService;
+	private static boolean logToFile;
     private final CommandRepository commandRepository;
     private final ReactionRepository reactionRepository;
     private final Autodiscovery autodiscovery;
+    private static final String LOG_PATH = Info.PATHS.PATH_WORKDIR + "/log/freedomotic.log";
 
     /**
      *
@@ -225,31 +228,7 @@ public class Freedomotic implements BusConsumer {
             kill(currentStatus.getCode());
         }
 
-        /**
-         * ******************************************************************
-         * Starting the logger and popup it in the browser
-         * *****************************************************************
-         */
-        if (!config.getStringProperty("KEY_SAVE_LOG_TO_FILE", "OFF").trim().equalsIgnoreCase("OFF")) {
-            try {
-                PatternLayout layout = new PatternLayout("%d{HH:mm:ss.SSS} %-5p [%t] (%F:%L) %m%n");
-                RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, Info.PATHS.PATH_WORKDIR + "/log/freedomotic.log");
-                rollingFileAppender.setMaxBackupIndex(5);
-                rollingFileAppender.setMaxFileSize("500KB");
-                org.apache.log4j.Logger proxyLogger = org.apache.log4j.Logger.getRootLogger();
-                proxyLogger.setLevel(org.apache.log4j.Level.toLevel(config.getStringProperty("KEY_SAVE_LOG_TO_FILE", "OFF")));
-                proxyLogger.setAdditivity(false);
-                proxyLogger.addAppender(rollingFileAppender);
-
-                if ((config.getBooleanProperty("KEY_LOGGER_POPUP", true) == true)
-                        && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
-                    java.awt.Desktop.getDesktop()
-                            .browse(new File(Info.PATHS.PATH_WORKDIR + "/log/freedomotic.log").toURI());
-                }
-            } catch (IOException ex) {
-                LOG.error(ex.getMessage());
-            }
-        }
+        
 
         /**
          * ******************************************************************
@@ -373,8 +352,63 @@ public class Freedomotic implements BusConsumer {
     public static String getInstanceID() {
         return INSTANCE_ID;
     }
+    
+    /**
+     * It enables the feature to log on files.
+     * 
+     * @return true if the log to file engine starts properly, false otherwise.
+     */
+    protected boolean enableLogToFile() {
+    	
+    	String saveToLogConfigParam = config.getStringProperty("KEY_SAVE_LOG_TO_FILE", "OFF").trim();
+    	
+        if (!"OFF".equalsIgnoreCase(saveToLogConfigParam)) {
+            try {
+                PatternLayout layout = new PatternLayout("%d{HH:mm:ss.SSS} %-5p [%t] (%F:%L) %m%n");
+                RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, LOG_PATH);
+                rollingFileAppender.setMaxBackupIndex(5);
+                rollingFileAppender.setMaxFileSize("500KB");
+                org.apache.log4j.Logger proxyLogger = org.apache.log4j.Logger.getRootLogger();
+                proxyLogger.setLevel(org.apache.log4j.Level.toLevel(saveToLogConfigParam));
+                proxyLogger.setAdditivity(false);
+                proxyLogger.addAppender(rollingFileAppender);
 
-    // FIXME This shouldn't be done through this method
+                if (config.getBooleanProperty("KEY_LOGGER_POPUP", true)
+                        && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
+                    java.awt.Desktop.getDesktop()
+                            .browse(new File(LOG_PATH).toURI());
+                }
+                
+              Freedomotic.setLogToFile(true);  
+              
+            } catch (IOException ex) {
+                LOG.error(ex.getMessage());
+            }
+        }
+        
+        else {
+        	LOG.info("This Freedomotic configuration does not require a \"log to file\" feature.");
+        }
+        return Freedomotic.isLogToFileEnabled();
+    }
+
+    /*
+     * This private method updates the value of the static variable logToFile, that represents a flag stating if the
+     * current instance of Freedomotic comes with the logging to file feature
+     */
+    private static void setLogToFile(boolean active) {
+		logToFile = active;
+	}
+    
+    /**
+     * This method returns true if the log to file feature has been enabled, false otherwise
+     * @return boolean
+     */
+    public static boolean isLogToFileEnabled() {
+		return logToFile;
+	}
+
+	// FIXME This shouldn't be done through this method
     /**
      *
      * @param event
@@ -421,6 +455,7 @@ public class Freedomotic implements BusConsumer {
             INJECTOR = Guice.createInjector(new FreedomoticInjector());
             Freedomotic freedomotic = INJECTOR.getInstance(Freedomotic.class);
             //start freedomotic
+            freedomotic.enableLogToFile();
             freedomotic.start();
         } catch (FreedomoticException ex) {
             LOG.error(ex.getMessage());
@@ -548,4 +583,12 @@ public class Freedomotic implements BusConsumer {
 
         return sw.toString();
     }
+
+    /**
+     * It returns the actual path of the log file
+     * @return the log path
+     */
+	public static String logPath() {
+		return LOG_PATH;
+	}
 }
