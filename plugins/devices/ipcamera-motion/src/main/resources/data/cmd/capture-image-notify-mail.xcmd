@@ -1,0 +1,16 @@
+<command>
+    <name>Capture image from an IpCamera and notify by mail</name>
+    <receiver>app.actuators.motion.ipcamera-motion.in</receiver>
+    <description>Capture image from an IpCamera</description>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="command" value="CAPTURE-IMAGE-NOTIFY-MAIL"/>
+            <property name="camera-name" value="@event.camera-name"/>
+            <property name="message" value="Event from @event.camera-name"/>
+            <property name="to-address" value="to@test.com"/>
+            <property name="from-address" value="from@test.com"/>
+     	</properties>
+    </properties>
+</command>

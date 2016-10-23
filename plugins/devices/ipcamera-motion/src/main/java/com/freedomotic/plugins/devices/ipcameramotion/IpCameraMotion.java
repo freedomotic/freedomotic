@@ -22,6 +22,7 @@ package com.freedomotic.plugins.devices.ipcameramotion;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.events.GenericEvent;
+import com.freedomotic.events.MessageEvent;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
@@ -59,7 +60,7 @@ public class IpCameraMotion
     private List<WebcamPanel> panels;
     private List<WebcamMotionDetector> detectors;
     private ProtocolRead event;
-    
+
     static {
         Webcam.setDriver(new IpCamDriver(new IpCamStorage(Info.PATHS.PATH_DEVICES_FOLDER + "/ipcamera-motion/" + "cameras.xml")));
     }
@@ -121,6 +122,18 @@ public class IpCameraMotion
             case "CAPTURE-IMAGE":
                 LOG.debug("Command capture image " + c.getProperty("camera-name"));
                 captureImage(c.getProperty("camera-name"));
+                break;
+            case "CAPTURE-IMAGE-NOTIFY-MAIL":
+                LOG.debug("Command capture image and notify mail " + c.getProperty("camera-name"));
+                String capturedImagePath = captureImage(c.getProperty("camera-name"));
+                // notify a MessageEvent of "mail" type with the capture image absolute path
+                // this event will be managed by Mailer plugin to attach the image
+                MessageEvent event = new MessageEvent(null, c.getProperty("message"));
+                event.setType("mail");
+                event.setTo(c.getProperty("to-address"));
+                event.setFrom(c.getProperty("from-address"));
+                event.setAttachmentPath(capturedImagePath);
+                notifyEvent(event);
                 break;
 
         }
@@ -236,20 +249,25 @@ public class IpCameraMotion
         }
     }
 
-    private void captureImage(String cameraName) {
+    private String captureImage(String cameraName) {
         Webcam webcam = getCameraByName(cameraName);
+        File capturedImage = null;
         if (webcam != null) {
             webcam.open(true);
             BufferedImage image = webcam.getImage();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy_HH-mm-ss");
             String dateStr = dateFormat.format(new Date());
+            capturedImage = new File(Info.PATHS.PATH_DEVICES_FOLDER + "/ipcamera-motion/data/captured-images/" + webcam.getName() + "_" + dateStr + ".jpg");
             // JPG is circa 10x smaller than the same image in PNG
             try {
-                ImageIO.write(image, "JPG", new File(Info.PATHS.PATH_DEVICES_FOLDER + "/ipcamera-motion/data/captured-images/" + webcam.getName() + "_" + dateStr + ".jpg"));
+                ImageIO.write(image, "JPG", capturedImage);
+
             } catch (IOException ex) {
                 LOG.error("Error during image capture from camera " + cameraName + " for: " + ex.getMessage());
+                return null;
             }
         }
+        return capturedImage.getAbsolutePath();
     }
 
     /**
