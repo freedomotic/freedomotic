@@ -20,25 +20,6 @@
  */
 package com.freedomotic.jfrontend;
 
-import com.freedomotic.api.API;
-import com.freedomotic.api.Plugin;
-import com.freedomotic.app.Freedomotic;
-import com.freedomotic.core.ResourcesManager;
-import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.Room;
-import com.freedomotic.environment.ZoneLogic;
-import com.freedomotic.events.GenericEvent;
-import com.freedomotic.exceptions.RepositoryException;
-import com.freedomotic.jfrontend.utils.OpenDialogFileFilter;
-import com.freedomotic.jfrontend.utils.TipOfTheDay;
-import com.freedomotic.model.environment.Zone;
-import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.plugins.ObjectPluginPlaceholder;
-import com.freedomotic.reactions.Command;
-import com.freedomotic.security.Auth;
-import com.freedomotic.i18n.ComboLanguage;
-import com.freedomotic.i18n.I18n;
-import com.freedomotic.settings.Info;
 import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -58,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Vector;
+
 import javax.swing.AbstractListModel;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -70,8 +52,30 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.freedomotic.api.API;
+import com.freedomotic.api.Client;
+import com.freedomotic.api.Plugin;
+import com.freedomotic.app.Freedomotic;
+import com.freedomotic.core.ResourcesManager;
+import com.freedomotic.environment.EnvironmentLogic;
+import com.freedomotic.environment.Room;
+import com.freedomotic.environment.ZoneLogic;
+import com.freedomotic.events.GenericEvent;
+import com.freedomotic.exceptions.RepositoryException;
+import com.freedomotic.i18n.ComboLanguage;
+import com.freedomotic.i18n.I18n;
+import com.freedomotic.jfrontend.utils.OpenDialogFileFilter;
+import com.freedomotic.jfrontend.utils.TipOfTheDay;
+import com.freedomotic.model.environment.Zone;
+import com.freedomotic.plugins.ObjectPluginPlaceholder;
+import com.freedomotic.reactions.Command;
+import com.freedomotic.security.Auth;
+import com.freedomotic.settings.Info;
+import com.freedomotic.things.EnvObjectLogic;
 
 /**
  *
@@ -1374,7 +1378,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
     }//GEN-LAST:event_formWindowClosed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void openGoogleForm() {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
         String url = "https://goo.gl/CC65By";
         if (Desktop.isDesktopSupported()) {
@@ -1392,6 +1396,52 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             JOptionPane.showMessageDialog(this, i18n.msg("goto") + url);
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+    
+    private void sendLogByMail() {
+    	java.util.List<Client> clients = (java.util.List<Client>) this.getPlugin().getApi().getClients("plugin");
+    	
+    	boolean isMailerActive = false;
+    	
+    	for(Client plugin:clients) {
+    		if("Mailer".equalsIgnoreCase(plugin.getName().trim()) && plugin.isRunning()) {
+    				isMailerActive = true;
+    		}
+    	}
+    	
+    	if(Freedomotic.isLogToFileEnabled() && isMailerActive) {
+            Command c = new Command();
+            c.setName("Mailer");
+            c.setReceiver("app.actuators.messaging.mail.in");
+            c.setProperty("from", master.getApi().getConfig().getStringProperty("ADMIN_SENDING_ADDRESS", "issue.reporter@freedomotic.com"));
+            c.setProperty("to", master.getApi().getConfig().getStringProperty("ADMIN_RECIPIENT_ADDRESS", "admin@freedomotic.com"));
+            c.setProperty("message", "Here you are with the log received from an user");
+            c.setProperty("subject", "Log sent by MainWindow");
+            c.setProperty("attachment", Freedomotic.logPath());
+            master.notifyCommand(c);
+            JOptionPane.showMessageDialog(this, i18n.msg("log_sent"));
+    	}
+    	
+    	else {
+    		JOptionPane.showMessageDialog(this, i18n.msg("no_log_sent"));
+    	}
+    }
+    
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
+		String[] buttons = { i18n.msg("form_compilation"), i18n.msg("send_log"), i18n.msg("delete") };
+		int option = JOptionPane.showOptionDialog(null, i18n.msg("report_issue_dialog"), i18n.msg("report_issue"),
+				JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[2]);
+		switch (option) {
+		case 0:
+			this.openGoogleForm();
+			break;
+		case 1:
+			this.sendLogByMail();
+			break;
+		default:
+			break;
+		}
+    }
+    
 
     private void updateStrings() {
         mnuOpenNew.setText(i18n.msg("file"));
