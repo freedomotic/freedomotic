@@ -274,7 +274,7 @@
                     <checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}</checkinComment>
                     <content>${project.reporting.outputDirectory}/apidocs</content>
                     <skipDeletedFiles>true</skipDeletedFiles>
-                    <pubScmUrl>scm:git:git@github.com:Helltux/freedomotic.git</pubScmUrl> <!-- set the user for push on fork -->
+                    <pubScmUrl>scm:git:git@github.com:freedomotic/freedomotic.git</pubScmUrl> <!-- set the user for push on fork -->
                     <scmBranch>gh-pages</scmBranch> <!-- branch with static site -->
                 </configuration>
             </plugin>
