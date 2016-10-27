@@ -18,6 +18,7 @@
         <module>plugins/objects/base-things</module>
         <module>plugins/devices/frontend-java</module>
         <module>plugins/devices/essential</module>
+        <module>plugins/devices/mailer</module>
         <module>plugins/devices/simulation</module>
         <module>plugins/devices/restapi-v3</module>
         <module>plugins/devices/webserver</module>
