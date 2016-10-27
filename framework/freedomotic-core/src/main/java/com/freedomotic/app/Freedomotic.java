@@ -36,6 +36,7 @@ import java.util.logging.LogManager;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
+import com.freedomotic.util.PeriodicSave;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -117,6 +118,7 @@ public class Freedomotic implements BusConsumer {
     private final CommandRepository commandRepository;
     private final ReactionRepository reactionRepository;
     private final Autodiscovery autodiscovery;
+    private String savedDataRoot;
     private static final String LOG_PATH = Info.PATHS.PATH_WORKDIR + "/log/freedomotic.log";
 
     /**
@@ -343,6 +345,15 @@ public class Freedomotic implements BusConsumer {
         Runtime runtime = Runtime.getRuntime();
         LOG.info("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
         LOG.info("Freedomotic startup completed");
+
+        setDataRootPath();
+        activatePeriodicSave();
+    }
+
+    private void activatePeriodicSave() {
+        PeriodicSave periodicSave = new PeriodicSave(savedDataRoot);
+        periodicSave.delegateRepositories(triggerRepository, commandRepository, reactionRepository);
+        periodicSave.startExecutorService();
     }
 
     /**
@@ -515,14 +526,6 @@ public class Freedomotic implements BusConsumer {
         config.save();
         auth.save();
 
-        String savedDataRoot;
-
-        if (config.getBooleanProperty("KEY_OVERRIDE_REACTIONS_ON_EXIT", false) == true) {
-            savedDataRoot = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
-        } else {
-            savedDataRoot = Info.PATHS.PATH_WORKDIR + "/testSave/data";
-        }
-
         triggerRepository.saveTriggers(new File(savedDataRoot + "/trg"));
         commandRepository.saveCommands(new File(savedDataRoot + "/cmd"));
         reactionRepository.saveReactions(new File(savedDataRoot + "/rea"));
@@ -550,6 +553,14 @@ public class Freedomotic implements BusConsumer {
         }
 
         System.exit(0);
+    }
+
+    private void setDataRootPath() {
+        if (config.getBooleanProperty("KEY_OVERRIDE_REACTIONS_ON_EXIT", false)) {
+            savedDataRoot = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
+        } else {
+            savedDataRoot = Info.PATHS.PATH_WORKDIR + "/testSave/data";
+        }
     }
 
     /**
