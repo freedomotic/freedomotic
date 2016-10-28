@@ -15,13 +15,16 @@ import java.util.concurrent.*;
 public class PeriodicSave {
     private static final Logger LOG = LoggerFactory.getLogger(PeriodicSave.class.getName());
 
+    private ScheduledExecutorService executorService;
     private TriggerRepository triggerRepository;
     private CommandRepository commandRepository;
     private ReactionRepository reactionRepository;
     private String savedDataRoot;
+    private int executionInterval;
 
-    public PeriodicSave(String savedDataRoot) {
+    public PeriodicSave(String savedDataRoot, int executionInterval) {
         this.savedDataRoot = savedDataRoot;
+        this.executionInterval = executionInterval;
     }
 
     public void delegateRepositories(TriggerRepository triggerRepository, CommandRepository commandRepository,
@@ -31,12 +34,10 @@ public class PeriodicSave {
         this.reactionRepository = reactionRepository;
     }
 
-    // TODO: get delays as configuration property from config.xml (e.g. data-saving-interval)
     public void startExecutorService() {
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executorService = Executors.newSingleThreadScheduledExecutor();
         long initDelay = 15;
-        long delay = 15;
-        executor.scheduleWithFixedDelay(runnable, initDelay, delay, TimeUnit.MINUTES);
+        executorService.scheduleWithFixedDelay(runnable, initDelay, executionInterval, TimeUnit.MINUTES);
     }
 
     private Runnable runnable = new Runnable() {
@@ -47,4 +48,8 @@ public class PeriodicSave {
             reactionRepository.saveReactions(new File(savedDataRoot + "/rea"));
         }
     };
+
+    public void shutDown() {
+        executorService.shutdown();
+    }
 }

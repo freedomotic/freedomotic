@@ -351,9 +351,13 @@ public class Freedomotic implements BusConsumer {
     }
 
     private void activatePeriodicSave() {
-        PeriodicSave periodicSave = new PeriodicSave(savedDataRoot);
-        periodicSave.delegateRepositories(triggerRepository, commandRepository, reactionRepository);
-        periodicSave.startExecutorService();
+        // TODO: temporarily SAVE_DATA_PERIODICALLY is set to false until on/off feature of this property is implemented
+        if ("true".equals(config.getProperty("SAVE_DATA_PERIODICALLY"))) {
+            int executionInterval = Integer.parseInt(config.getProperty("DATA_SAVING_INTERVAL"));
+            final PeriodicSave periodicSave = new PeriodicSave(savedDataRoot, executionInterval);
+            periodicSave.delegateRepositories(triggerRepository, commandRepository, reactionRepository);
+            periodicSave.startExecutorService();
+        }
     }
 
     /**
