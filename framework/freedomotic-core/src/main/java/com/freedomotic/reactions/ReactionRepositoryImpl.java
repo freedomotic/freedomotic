@@ -31,6 +31,9 @@ import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
+
+import static com.freedomotic.util.FileOperations.writeSummaryFile;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
@@ -83,6 +86,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
         try {
             LOG.info("Saving reactions to file in {}", folder.getAbsolutePath());
+            StringBuffer summaryContent = new StringBuffer();
             for (Reaction reaction : list) {
                 String uuid = reaction.getUuid();
                 if ((uuid == null) || uuid.isEmpty()) {
@@ -91,7 +95,12 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                 String fileName = reaction.getUuid() + ".xrea";
                 File file = new File(folder + "/" + fileName);
                 FreedomXStream.toXML(reaction, file);
+				summaryContent.append(reaction.getUuid()).append("\t\t\t").append(reaction.toString()).append("\t\t\t")
+						.append(reaction.getDescription()).append("\n");
             }
+            
+            writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #Reaction \t\t\t #Description\n", summaryContent.toString());
+            
         } catch (Exception e) {
             LOG.error("Error while saving reations", e);
         }
@@ -144,10 +153,6 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         File[] files = folder.listFiles(objectFileFileter);
 
         try {
-            StringBuilder summary = new StringBuilder();
-            //print an header for the index.txt file
-            summary.append("#Filename \t\t #Reaction \t\t\t #Description").append("\n");
-
             if (files != null) {
                 for (File file : files) {
                     Reaction reaction = null;
@@ -187,17 +192,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                     if (reaction.getCommands().isEmpty()) {
                         LOG.warn("Reaction {} has no valid commands. Maybe related objects are missing or not configured properly.", reaction.toString());
                     }
-
-                    summary.append(reaction.getUuid()).append("\t\t\t").append(reaction.toString())
-                            .append("\t\t\t").append(reaction.getDescription()).append("\n");
                 }
-
-                //writing a summary .txt file with the list of commands in this folder
-                FileWriter fstream = new FileWriter(folder + "/index.txt");
-                BufferedWriter indexfile = new BufferedWriter(fstream);
-                indexfile.write(summary.toString());
-                //Close the output stream
-                indexfile.close();
             } else {
                 LOG.debug("No reactions to load from this folder {}", folder.toString());
             }

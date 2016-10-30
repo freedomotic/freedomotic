@@ -28,6 +28,9 @@ import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
+
+import static com.freedomotic.util.FileOperations.writeSummaryFile;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
@@ -81,6 +84,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
 
         try {
             LOG.info("Saving triggers to file in {}", folder.getAbsolutePath());
+            StringBuffer summaryContent = new StringBuffer();
             for (Trigger trigger : list) {
                 if (trigger.isToPersist()) {
                     String uuid = trigger.getUUID();
@@ -93,7 +97,13 @@ class TriggerRepositoryImpl implements TriggerRepository {
                     File file = new File(folder + "/" + fileName);
                     FreedomXStream.toXML(trigger, file);
                 }
+                
+                summaryContent.append(trigger.getUUID()).append("\t\t").append(trigger.getName()).append("\t\t\t")
+                .append(trigger.getChannel()).append("\n");
             }
+            
+            writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #TriggerName \t\t\t #ListenedChannel\n", summaryContent.toString());
+            
         } catch (Exception e) {
             LOG.error("Error while saving triggers ", e);
         }
@@ -153,9 +163,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
         File[] files = folder.listFiles(objectFileFileter);
 
         try {
-            StringBuilder summary = new StringBuilder();
-            //print an header for the index.txt file
-            summary.append("#Filename \t\t #TriggerName \t\t\t #ListenedChannel").append("\n");
+           
 
             if (files != null) {
                 for (File file : files) {
@@ -202,17 +210,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                     } else {
                         LOG.warn("Trigger '{}' is already in the list", trigger.getName());
                     }
-
-                    summary.append(trigger.getUUID()).append("\t\t").append(trigger.getName()).append("\t\t\t")
-                            .append(trigger.getChannel()).append("\n");
                 }
-
-                //writing a summary .txt file with the list of commands in this folder
-                FileWriter fstream = new FileWriter(folder + "/index.txt");
-                BufferedWriter indexfile = new BufferedWriter(fstream);
-                indexfile.write(summary.toString());
-                //close the output stream
-                indexfile.close();
             } else {
                 LOG.info("No triggers to load from this folder {}", folder.toString());
             }
