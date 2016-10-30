@@ -25,6 +25,7 @@ import com.freedomotic.persistence.DataUpgradeService;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.settings.Info;
+import com.freedomotic.util.FileOperations;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
@@ -46,6 +47,7 @@ import java.util.Properties;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static com.freedomotic.util.FileOperations.writeSummaryFile;
 
 /**
  *
@@ -218,13 +220,9 @@ class CommandRepositoryImpl implements CommandRepository {
         files = folder.listFiles(objectFileFileter);
 
         if (files != null) {
-            FileWriter fstream = null;
-
+          
             try {
-                StringBuilder summary = new StringBuilder();
-                //print an header for the index.txt file
-                summary.append("#Filename \t\t #CommandName \t\t\t #Destination").append("\n");
-
+                
                 for (File file : files) {
                     Command command = null;
                     String xml;
@@ -265,27 +263,13 @@ class CommandRepositoryImpl implements CommandRepository {
                             add(command);
                         }
 
-                        summary.append(file.getName()).append("\t\t").append(command.getName())
-                                .append("\t\t\t").append(command.getReceiver()).append("\n");
                     } catch (CannotResolveClassException e) {
                         LOG.error("Cannot unserialize command due to unrecognized class ''{}'' in \n{}", new Object[]{e.getMessage(), xml});
                     }
                 }
 
-                fstream = new FileWriter(folder + "/index.txt");
-
-                BufferedWriter indexfile = new BufferedWriter(fstream);
-                indexfile.write(summary.toString());
-                //Close the output stream
-                indexfile.close();
             } catch (Exception ex) {
                 LOG.error("Error while loading command", ex);
-            } finally {
-                try {
-                    fstream.close();
-                } catch (IOException ex) {
-                    //do nothing
-                }
             }
         } else {
             LOG.debug("No commands to load from this folder {}", folder.toString());
@@ -314,6 +298,7 @@ class CommandRepositoryImpl implements CommandRepository {
 
         try {
             LOG.info("Saving commands to file in " + folder.getAbsolutePath());
+            StringBuffer summaryContent = new StringBuffer();
             for (Command c : userCommands.values()) {
                 if (c.isEditable()) {
                     String uuid = c.getUuid();
@@ -325,8 +310,13 @@ class CommandRepositoryImpl implements CommandRepository {
                     String fileName = c.getUuid() + ".xcmd";
                     File file = new File(folder + "/" + fileName);
                     FreedomXStream.toXML(c, file);
+                    summaryContent.append(fileName).append("\t\t").append(c.getName())
+                    .append("\t\t\t").append(c.getReceiver()).append("\n");
                 }
             }
+            
+            writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #CommandName \t\t\t #Destination\n", summaryContent.toString());
+            
         } catch (Exception e) {
             LOG.error("Error while saving commands to " + folder.getAbsolutePath(), e);
         }

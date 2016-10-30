@@ -36,6 +36,8 @@ import com.freedomotic.util.SerialClone;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 
+import static com.freedomotic.util.FileOperations.writeSummaryFile;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -107,6 +109,8 @@ class ThingRepositoryImpl implements ThingRepository {
         }
 
         deleteObjectFiles(folder);
+        
+        StringBuffer summaryContent = new StringBuffer();
 
         for (EnvObjectLogic envObject : objectList.values()) {
             String uuid = envObject.getPojo().getUUID();
@@ -115,16 +119,17 @@ class ThingRepositoryImpl implements ThingRepository {
                 envObject.getPojo().setUUID(UUID.randomUUID().toString());
             }
 
-            //REGRESSION
-//                if ((envObject.getPojo().getEnvironmentID() == null)
-//                        || envObject.getPojo().getEnvironmentID().isEmpty()) {
-//                    envObject.getPojo()
-//                            .setEnvironmentID(EnvironmentPersistence.getEnvironments().get(0).getPojo().getUUID());
-//                }
             String fileName = envObject.getPojo().getUUID() + ".xobj";
             File file = new File(folder + "/" + fileName);
             FreedomXStream.toXML(envObject.getPojo(), file);
+            summaryContent.append(fileName).append("\t\t").append(envObject.getPojo().getName()).append("\n");
         }
+        
+        try {
+			writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #ThingName\n", summaryContent.toString());
+		} catch (IOException e) {
+			LOG.error("Something went wrong while creating the index file for things.", e);
+		}
     }
 
     private static void deleteObjectFiles(File folder) throws RepositoryException {
