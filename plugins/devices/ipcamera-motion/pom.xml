@@ -50,10 +50,6 @@
             <id>Sonatype OSS Snapshot Repository</id>
             <url>http://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
-        <repository>
-            <id>xuggle repo</id>
-            <url>http://xuggle.googlecode.com/svn/trunk/repo/share/java/</url>
-        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -70,12 +66,23 @@
         <dependency>
             <groupId>com.github.sarxos</groupId>
             <artifactId>webcam-capture</artifactId>
-            <version>0.3.11-SNAPSHOT</version>
+            <version>0.3.12-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpmime</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.sarxos</groupId>
             <artifactId>webcam-capture-driver-ipcam</artifactId>
-            <version>0.3.11-SNAPSHOT</version>
+            <version>0.3.12-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.2</version>
         </dependency>
     </dependencies>
 
