@@ -43,6 +43,7 @@
         </dependency>
     </dependencies>
     <build>
+    <pluginManagement>
         <plugins>     
             <plugin>
                 <groupId>org.apache.openjpa</groupId>
@@ -86,5 +87,6 @@
                 </executions>
             </plugin>
         </plugins>
+    </pluginManagement>
     </build>
 </project>
