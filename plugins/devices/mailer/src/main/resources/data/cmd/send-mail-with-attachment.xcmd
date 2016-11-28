@@ -9,7 +9,7 @@
     <properties>
         <properties>
             <property name="subject" value="A notification from your home"/>
-            <property name="message" value="Event notified: @event.description"/>
+            <property name="message" value="Event notified: @current.object.name clicked"/>
             <property name="attachment" value="/home/mauro/Desktop/fd/plugins/devices/mailer/data/cmd/index.txt"/>
         </properties>
     </properties>

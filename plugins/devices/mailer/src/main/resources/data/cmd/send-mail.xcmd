@@ -9,7 +9,8 @@
     <properties>
         <properties>
             <property name="subject" value="A notification from your home"/>
-            <property name="message" value="Event notified: @event.description"/>
+            <property name="message" value="Event notified: thing @current.object.name clicked"/>
+            <property name="attachment" value="no-attachment"/>
         </properties>
     </properties>
 </command>

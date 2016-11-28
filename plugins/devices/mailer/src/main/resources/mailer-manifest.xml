@@ -1,7 +1,6 @@
-
 <config>
     <properties>
-        <property name="description" value="Sends emails"/>
+        <property name="description" value="Sends notifications by email"/>
         <property name="category" value="messaging"/>
         <property name="short-name" value="mail"/>
         <property name="startup-time" value="on load"/>
