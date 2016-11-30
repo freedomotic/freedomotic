@@ -1,0 +1,14 @@
+<config>
+    <properties>
+        <property name="description" value="Detects user's presence by ip"/>
+        <property name="category" value="utilities"/>
+        <property name="short-name" value="presence-detection"/>
+        <property name="protocol.name" value="presence-detection"/>
+        <property name="startup-time" value="on load"/>
+        <property name="detection-method" value="ip"/>
+        <property name="polling-time" value="10000"/>
+        <property name="max-failed-requests" value="90"/>
+    </properties>
+</config>
+
+                
