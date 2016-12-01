@@ -2,12 +2,9 @@
 
 Hello and thanks for your interest in our project!
 
-## Git repository is an SDK
+## Developer documentation
 
-The GIT repository is a complete SDK with all you need to code and test your Freedomotic plugins. Once compiled for the first time open the freedomotic-core project with your favourite IDE and start it to try Freedomotic.
-
-To develop your own plugin you can start from the "hello-world" example project included in GIT_ROOT/plugins/devices/hello-world. Open it in your IDE, make some changes and compile. It will be automatically installed into the freedomotic runtime (freedomotic-core project). Just start freedomotic-core to try your latest changes.
-
+If you are a developer and want to contribute please check our [documentation](http://freedomotic-developer-manual.readthedocs.io).
 
 ## Reporting issues
 
