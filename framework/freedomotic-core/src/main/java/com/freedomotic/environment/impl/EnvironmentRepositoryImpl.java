@@ -19,6 +19,7 @@
  */
 package com.freedomotic.environment.impl;
 
+import com.freedomotic.exceptions.FreedomoticException;
 import com.freedomotic.settings.AppConfig;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
@@ -115,7 +116,9 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(findAll().get(0).getObjectFolder());
         for (EnvObjectLogic thing : loadedThings) {
             // stores the thing in repository. Important, otherwise it will be not visible in the environment
-            thingsRepository.create(thing);
+            if (!thingsRepository.create(thing)) {
+                throw new RepositoryException("Bootstrap failed. Could not create " + thing);
+            }
         }
     }
 
