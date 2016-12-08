@@ -115,7 +115,7 @@
                   <Component id="txtNlpText" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="6" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="btnCancel" min="-2" max="-2" attributes="0"/>
                   <Component id="txtResult" min="-2" pref="24" max="-2" attributes="0"/>

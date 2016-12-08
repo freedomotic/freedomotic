@@ -42,7 +42,7 @@ import java.util.StringTokenizer;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class TrackingReadSocket extends Protocol {
 

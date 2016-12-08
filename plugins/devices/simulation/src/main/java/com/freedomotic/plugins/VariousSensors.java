@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -30,7 +29,7 @@ import java.io.IOException;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class VariousSensors extends Protocol {
 
@@ -84,6 +83,10 @@ public class VariousSensors extends Protocol {
         }).start();
     }
 
+    /**
+     * 
+     * @param text 
+     */
     public void executeNlpCommand(String text) {
         final Command nlpCommand = new Command();
         nlpCommand.setName("Recognize text with NLP");

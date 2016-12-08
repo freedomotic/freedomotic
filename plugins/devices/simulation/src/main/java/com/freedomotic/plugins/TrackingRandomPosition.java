@@ -35,7 +35,7 @@ import java.util.Random;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class TrackingRandomPosition extends Protocol {
 
