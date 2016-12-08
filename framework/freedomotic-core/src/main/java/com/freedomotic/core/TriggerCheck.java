@@ -123,14 +123,16 @@ public class TriggerCheck {
     }
 
     private void applySensorNotification(Trigger resolved, final EventTemplate event) {
-        String protocol;
-        String address;
+        String protocol = null;
+        String address = null;
         EnvObjectLogic affectedObject = null;
 
-        //join device: add the object on the map if not already there
-        //join device requires to know 'object.class' and 'object.name' properties
-        protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
-        address = resolved.getPayload().getStatements("event.address").get(0).getValue();
+        if (!(resolved.getPayload().getStatements("event.protocol").isEmpty() && resolved.getPayload().getStatements("event.address").isEmpty())) {
+            //join device: add the object on the map if not already there
+            //join device requires to know 'object.class' and 'object.name' properties
+            protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
+            address = resolved.getPayload().getStatements("event.address").get(0).getValue();
+        }
 
         if ((protocol != null) && (address != null)) {
             String clazz = event.getProperty("object.class");
@@ -172,7 +174,6 @@ public class TriggerCheck {
 
     private void executeTriggeredAutomations(final Trigger trigger, final EventTemplate event) {
         Runnable automation = new Runnable() {
-
             @Override
             public void run() {
 
