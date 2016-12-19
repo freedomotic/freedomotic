@@ -4,6 +4,7 @@
         <property name="category" value="social"/>
         <property name="short-name" value="telegram-bot"/>
         <property name="protocol.name" value="telegram-bot"/>
+        <property name="startup-time" value="on load"/>
         <property name="bot-token" value="******"/>
         <property name="bot-username" value="******"/>
         <property name="chat-id" value="******"/>

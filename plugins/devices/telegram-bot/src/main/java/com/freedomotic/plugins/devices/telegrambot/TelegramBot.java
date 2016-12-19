@@ -90,7 +90,17 @@ public class TelegramBot
     @Override
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
-        fdBotHandler.sendMessageToChannel(CHAT_ID, c.getProperty("message"));
+        switch (c.getProperty("command")) {
+
+            case "send-message":
+                fdBotHandler.sendMessageToChannel(CHAT_ID, c.getProperty("message"));
+                break;
+                
+            case "send-photo":
+                fdBotHandler.sendPhotoToChannel(CHAT_ID, c.getProperty("message"), c.getProperty("photo-path"));
+                break;    
+
+        }
     }
 
     @Override
