@@ -40,7 +40,9 @@ import io.moquette.server.config.MemoryConfig;
 import java.io.File;
 import java.io.IOException;
 import static java.util.Arrays.asList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +60,7 @@ public class MQTTBroker
     private Server mqttBroker;
     private IConfig config;
     private List<? extends InterceptHandler> userHandlers;
+    private Map<String, MqttTopic> topics = new HashMap<String, MqttTopic>();
 
     /**
      *
@@ -81,6 +84,9 @@ public class MQTTBroker
 
     @Override
     protected void onStart() throws PluginStartupException {
+
+        // load topics from manifest file
+        loadTopics();
 
         mqttBroker = new Server();
         Properties props = new Properties();
@@ -139,14 +145,24 @@ public class MQTTBroker
     }
 
     /**
-     *  Sends a Freedomotic event.
+     * Sends a Freedomotic event.
+     *
      * @param topic mqtt publishing topic
-     * @param value  message payload
+     * @param value message payload
      */
-    private void sendEvent(String topic, String value) {
+    private void sendEvent(String topic, String payload) {
         ProtocolRead event = new ProtocolRead(this, "mqtt-broker", topic);
         event.addProperty("mqtt.topic", topic);
-        event.addProperty("mqtt.value", value);
+
+        // check if there is a tuple for this topic
+        MqttTopic mqttTopic = topics.get(topic);
+        if (mqttTopic != null) {
+            String[] fields = payload.split(mqttTopic.getFieldsDelimiter());
+            for (int i = 0; i < mqttTopic.getNumberOfFields(); i++) {
+                event.addProperty("mqtt.payload.field" + (i + 1), fields[i]);
+            }
+        }
+        event.addProperty("mqtt.payload", payload);
         notifyEvent(event);
     }
 
@@ -159,9 +175,27 @@ public class MQTTBroker
         @Override
         public void onPublish(InterceptPublishMessage msg) {
             String topic = msg.getTopicName();
-            String value = new String(msg.getPayload().array());
-            LOG.info("Received on topic: [{}] content: [{}]", topic, value);
-            sendEvent(topic, value);
+            String payload = new String(msg.getPayload().array());
+            LOG.info("Received on topic: [{}] content: [{}]", topic, payload);
+            sendEvent(topic, payload);
+        }
+    }
+
+    /**
+     *
+     */
+    private void loadTopics() {
+
+        for (int i = 0; i < configuration.getTuples().size(); i++) {
+            String topicPath;
+            String fieldsDelimiter;
+            Integer numberOfFields;
+
+            topicPath = configuration.getTuples().getStringProperty(i, "topic-path", "");
+            fieldsDelimiter = configuration.getTuples().getStringProperty(i, "fields-delimiter", "");
+            numberOfFields = configuration.getTuples().getIntProperty(i, "number-of-fields", 0);
+            MqttTopic mqttTopic = new MqttTopic(topicPath, numberOfFields, fieldsDelimiter);
+            topics.put(mqttTopic.getTopicPath(), mqttTopic);
         }
     }
 }

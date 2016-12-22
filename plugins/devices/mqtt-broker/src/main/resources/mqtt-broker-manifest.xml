@@ -10,9 +10,9 @@
     </properties>
     <tuples>
         <tuple>
-            <property name="Name" value="Thermometer1"/>
-            <property name="Address" value="1111"/>
-            <property name="Topic" value="/"/>
+            <property name="topic-path" value="freedomotic/thermostat1"/>
+            <property name="number-of-fields" value="2"/>
+            <property name="fields-delimiter" value=":"/>
         </tuple>
     </tuples>
 </config>
