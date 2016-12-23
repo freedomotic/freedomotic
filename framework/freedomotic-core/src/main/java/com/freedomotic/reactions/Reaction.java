@@ -17,24 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-//Copyright 2009 Enrico Nicoletti
-//eMail: enrico.nicoletti84@gmail.com
-//
-//This file is part of EventEngine.
-//
-//EventEngine is free software; you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation; either version 2 of the License, or
-//any later version.
-//
-//EventEngine is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with EventEngine; if not, write to the Free Software
-//Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package com.freedomotic.reactions;
 
 import com.freedomotic.core.Condition;
@@ -71,9 +53,9 @@ public final class Reaction
 
     /**
      *
-     * @param trigger
-     * @param conditions
-     * @param commands
+     * @param trigger the trigger of the new reaction
+     * @param conditions the list of additional conditions of the new reaction
+     * @param commands the list of commands of the new reaction
      */
     public Reaction(Trigger trigger, List<Condition> conditions, List<Command> commands) {
         this.uuid = UUID.randomUUID().toString();
@@ -81,6 +63,12 @@ public final class Reaction
         create(trigger, commands);
     }
 
+    /**
+     * 
+     * @param triggerName the trigger of the new reaction
+     * @param conditions the list of additional conditions of the new reaction
+     * @param commands the list of commands of the new reaction
+     */
     public Reaction(String triggerName, List<Condition> conditions, List<Command> commands) {
         Trigger t = TriggerRepositoryImpl.getTrigger(triggerName);
         this.uuid = UUID.randomUUID().toString();
@@ -90,8 +78,8 @@ public final class Reaction
 
     /**
      *
-     * @param trigger
-     * @param commands
+     * @param trigger the trigger of the new reaction
+     * @param commands the list of commands of the new reaction
      */
     public Reaction(String trigger, List<Command> commands) {
         Trigger t = TriggerRepositoryImpl.getTrigger(trigger);
@@ -100,23 +88,24 @@ public final class Reaction
 
     /**
      *
-     * @param trigger
-     * @param commands
+     * @param trigger the trigger of the new reaction
+     * @param commands the list of commands of the new reaction
      */
     public Reaction(Trigger trigger, List<Command> commands) {
         create(trigger, commands);
     }
 
     /**
-     *
-     * @param trigger
+     * Creates a reaction without commands.
+     * 
+     * @param trigger the trigger of the new reaction
      */
     public Reaction(Trigger trigger) {
         this.trigger = trigger;
     }
 
     /**
-     * creates a single command reaction
+     * Creates a single command reaction.
      *
      * @param trigger the trigger of the new reaction
      * @param command the command performed when the reaction is triggered
@@ -139,6 +128,13 @@ public final class Reaction
 //        }
 //        create(trigger, tmpSequences);
 //    }
+    
+    /**
+     * Creates a new reaction.
+     * 
+     * @param trigger the trigger of the new reaction
+     * @param commands the list of commands of the new reaction
+     */
     private void create(Trigger trigger, List<Command> commands) {
         this.uuid = UUID.randomUUID().toString();
         if ((trigger != null) && (commands != null)) {
@@ -149,22 +145,23 @@ public final class Reaction
     }
 
     /**
-     *
-     * @return
+     * Returns the trigger of the reaction.
+     * 
+     * @return the trigger of the reaction
      */
     public Trigger getTrigger() {
         return trigger;
     }
 
     /**
-     *
-     * @return
+     * Returns the list of the reaction commands.
+     * 
+     * @return the list of the reaction commands
      */
     public List<Command> getCommands() {
         if (commands == null) {
             setCommands(new ArrayList<Command>());
         }
-
         return commands;
     }
 
@@ -177,6 +174,11 @@ public final class Reaction
         return getShortDescription();
     }
 
+    /**
+     *  Creates a short description of the reaction.
+     * 
+     * @return the short description of the reaction
+     */
     private String buildShortDescription() {
         StringBuilder b = new StringBuilder();
         b.append("WHEN  [");
@@ -216,6 +218,11 @@ public final class Reaction
         return b.toString();
     }
 
+    /**
+     * Creates a reaction description.
+     * 
+     * @return the reaction description 
+     */
     private String buildDescription() {
         StringBuilder b = new StringBuilder();
 
@@ -240,16 +247,18 @@ public final class Reaction
     }
 
     /**
-     *
-     * @return
+     * Returns the reaction description.
+     * 
+     * @return the reaction description
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     *
-     * @return
+     * Returns the list of additional conditions.
+     * 
+     * @return the list of additional conditions
      */
     public List<Condition> getConditions() {
         return conditions;
@@ -293,8 +302,9 @@ public final class Reaction
     }
 
     /**
-     *
-     * @param trigger
+     * Sets the trigger of the reaction.
+     *  
+     * @param trigger the trigger to set
      */
     public void setTrigger(Trigger trigger) {
         this.trigger = trigger;
@@ -302,7 +312,8 @@ public final class Reaction
     }
 
     /**
-     *
+     * Creates the short and long descriptions.
+     * 
      */
     public void setChanged() {
         setDescription(buildDescription());
@@ -310,8 +321,9 @@ public final class Reaction
     }
 
     /**
-     *
-     * @return
+     * Checks if the reaction has a trigger.
+     * 
+     * @return true if the reaction has a trigger, false otherwise
      */
     public boolean hasTrigger() {
         if (trigger != null) {
@@ -322,20 +334,26 @@ public final class Reaction
     }
 
     /**
-     * @param conditions the conditions to set
+     * Sets the additional conditions.
+     * 
+     * @param conditions the additional conditions to set
      */
     public void setConditions(List<Condition> conditions) {
         this.conditions = conditions;
     }
 
     /**
-     * @return the uuid
+     * Returns the reaction uuid.
+     * 
+     * @return the reaction uuid
      */
     public String getUuid() {
         return uuid;
     }
 
     /**
+     * Sets the reaction uuid.
+     *      * 
      * @param uuid the uuid to set
      */
     public void setUuid(String uuid) {
@@ -343,6 +361,8 @@ public final class Reaction
     }
 
     /**
+     * Sets the list of commands.
+     * 
      * @param commands the commands to set
      */
     public void setCommands(List<Command> commands) {
@@ -350,6 +370,8 @@ public final class Reaction
     }
 
     /**
+     * Sets the reaction description.
+     * 
      * @param description the description to set
      */
     public void setDescription(String description) {
@@ -357,7 +379,9 @@ public final class Reaction
     }
 
     /**
-     * @return the shortDescription
+     * Returns the reaction short description.
+     * 
+     * @return the reaction short description
      */
     public String getShortDescription() {
         shortDescription = buildShortDescription();
@@ -365,7 +389,9 @@ public final class Reaction
     }
 
     /**
-     * @param shortDescription the shortDescription to set
+     * Sets the reaction short description.
+     * 
+     * @param shortDescription the short description to set
      */
     public void setShortDescription(String shortDescription) {
         this.shortDescription = shortDescription;
@@ -381,10 +407,22 @@ public final class Reaction
         return r;
     }
 
+    /**
+     * Adds a command.
+     * 
+     * @param c the command to add
+     * @return 
+     */
     public boolean addCommand(Command c) {
         return commands.add(c);
     }
 
+    /**
+     * Removes a command.
+     * 
+     * @param c the command to remove
+     * @return 
+     */
     public boolean removeCommand(Command c) {
         return commands.remove(c);
     }
