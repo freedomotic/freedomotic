@@ -22,12 +22,10 @@ package com.freedomotic.plugins.devices.ipcameramotion;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.events.GenericEvent;
-import com.freedomotic.events.MessageEvent;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.settings.Info;
 import com.github.sarxos.webcam.*;
 import com.github.sarxos.webcam.ds.ipcam.*;
@@ -176,7 +174,6 @@ public class IpCameraMotion
     private void loadCameras() throws MalformedURLException {
 
         gui.setLayout(new GridLayout(0, 3, 1, 1));
-        //panels = new ArrayList<WebcamPanel>();
         for (Webcam webcam : Webcam.getWebcams()) {
             // TODO set panel dimensions as config parameters
             WebcamPanel panel = new WebcamPanel(webcam, new Dimension(PANEL_WIDTH, PANEL_HEIGHT), false);
@@ -191,13 +188,6 @@ public class IpCameraMotion
             WebcamDevice device = webcam.getDevice();
             URL url = ((IpCamDevice) device).getURL();
 
-            // notify event to create IpCamera thing
-            //event = new ProtocolRead(this, "ipcamera-motion", url.toString());
-            //event.addProperty("object.class", "IpCamera");
-            //event.addProperty("object.name", webcam.getName());
-            //event.addProperty("autodiscovery.allow-clones", "false");
-            //notifyEvent(event);
-
             final Webcam refWebcam = webcam;
             final WebcamPanel refPanel = panel;
 
@@ -206,7 +196,6 @@ public class IpCameraMotion
             // webcam will be open in asynchronouns mode:
             // webcam.open() = synchronouse mode, getImage() is blocking
             // webcam.open(true) = asynchronous mode, getImage() is non-blocking (return immediately, but may return old image)
-
             Thread t = new Thread() {
                 @Override
                 public void run() {
@@ -224,7 +213,8 @@ public class IpCameraMotion
     }
 
     /**
-     *
+     * This class implements a listener for Webcam motion
+     * 
      */
     private class DetectMotion implements WebcamMotionListener {
 
@@ -243,7 +233,6 @@ public class IpCameraMotion
 
                 // open webcam and start motion detector in parallel, by doing this in new thread GUI will
                 // not be blocked for the time when webcam is being initialized
-
                 Thread t = new Thread() {
                     @Override
                     public void run() {
