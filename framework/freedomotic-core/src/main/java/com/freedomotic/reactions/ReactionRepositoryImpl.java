@@ -19,12 +19,9 @@
  */
 package com.freedomotic.reactions;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
-import com.freedomotic.model.environment.Environment;
 import com.freedomotic.persistence.DataUpgradeService;
-import com.freedomotic.persistence.Repository;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.settings.Info;
@@ -34,11 +31,9 @@ import com.thoughtworks.xstream.XStreamException;
 
 import static com.freedomotic.util.FileOperations.writeSummaryFile;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,8 +52,8 @@ import org.slf4j.LoggerFactory;
 public class ReactionRepositoryImpl implements ReactionRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReactionRepositoryImpl.class.getName());
-
-    private static final List<Reaction> list = new ArrayList<Reaction>(); //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
+    //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
+    private static final List<Reaction> list = new ArrayList<Reaction>();
     private final DataUpgradeService dataUpgradeService;
 
     @Inject
@@ -73,19 +68,19 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      */
     public void saveReactions(File folder) {
         if (list.isEmpty()) {
-            LOG.warn("There are no reactions to persist, {} will not be altered.", folder.getAbsolutePath());
+            LOG.warn("There are no reactions to persist, folder ''{}'' will not be altered.", folder.getAbsolutePath());
             return;
         }
 
         if (!folder.isDirectory()) {
-            LOG.warn("{} is not a valid reaction folder. Skipped", folder.getAbsoluteFile());
+            LOG.warn("''{}'' is not a valid reaction folder. Skipped", folder.getAbsoluteFile());
             return;
         }
 
         deleteReactionFiles(folder);
 
         try {
-            LOG.info("Saving reactions to file in {}", folder.getAbsolutePath());
+            LOG.info("Saving reactions to file into ''{}''", folder.getAbsolutePath());
             StringBuffer summaryContent = new StringBuffer();
             for (Reaction reaction : list) {
                 String uuid = reaction.getUuid();
@@ -95,12 +90,12 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                 String fileName = reaction.getUuid() + ".xrea";
                 File file = new File(folder + "/" + fileName);
                 FreedomXStream.toXML(reaction, file);
-				summaryContent.append(reaction.getUuid()).append("\t\t\t").append(reaction.toString()).append("\t\t\t")
-						.append(reaction.getDescription()).append("\n");
+                summaryContent.append(reaction.getUuid()).append("\t\t\t").append(reaction.toString()).append("\t\t\t")
+                        .append(reaction.getDescription()).append("\n");
             }
-            
+
             writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #Reaction \t\t\t #Description\n", summaryContent.toString());
-            
+
         } catch (Exception e) {
             LOG.error("Error while saving reations", e);
         }
@@ -177,7 +172,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                         reaction = (Reaction) xstream.fromXML(xml);
 
                     } catch (DataUpgradeException dataUpgradeException) {
-                        throw new RepositoryException("Cannot upgrade Reaction file " + file.getAbsolutePath(), dataUpgradeException);
+                        throw new RepositoryException("Cannot upgrade reaction file " + file.getAbsolutePath(), dataUpgradeException);
                     } catch (XStreamException e) {
                         throw new RepositoryException("XML parsing error. Readed XML is \n" + xml, e);
                     }
@@ -185,19 +180,19 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                     if (reaction.getTrigger() != null && reaction.getTrigger().getName() != null) {
                         add(reaction);
                     } else {
-                        LOG.error("Cannot add reaction {}: it has empty Trigger", file.getName());
+                        LOG.error("Cannot add reaction ''{}'': it has an empty trigger", file.getName());
                         continue;
                     }
 
                     if (reaction.getCommands().isEmpty()) {
-                        LOG.warn("Reaction {} has no valid commands. Maybe related objects are missing or not configured properly.", reaction.toString());
+                        LOG.warn("Reaction ''{}'' has no valid commands. Maybe related objects are missing or not configured properly", reaction.toString());
                     }
                 }
             } else {
-                LOG.debug("No reactions to load from this folder {}", folder.toString());
+                LOG.debug("No reactions to load from the folder ''{}''", folder.toString());
             }
         } catch (Exception e) {
-            LOG.error("Exception while loading reaction in {}", new Object[]{folder.getAbsolutePath()}, e);
+            LOG.error("Exception while loading reactions from ''{}''", new Object[]{folder.getAbsolutePath()}, e);
         }
     }
 
@@ -284,9 +279,9 @@ public class ReactionRepositoryImpl implements ReactionRepository {
     }
 
     /**
-     * Returns the number of Reactions. 
-     * 
-     * @return the number of reactions 
+     * Returns the number of Reactions.
+     *
+     * @return the number of reactions
      */
     public int size() {
         return list.size();
@@ -294,7 +289,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
     /**
      * Checks if a reaction exists.
-     * 
+     *
      * @param input the reaction to check
      * @return true if the reaction exists, false otherwise
      */
@@ -312,9 +307,8 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
     @Override
     public List<Reaction> findAll() {
-        //return Collections.unmodifiableList(list);
         Collections.sort(list, new ReactionNameComparator());
-        return (list);
+        return Collections.unmodifiableList(list);
     }
 
     @Override
@@ -396,6 +390,10 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         }
     }
 
+    /**
+     * This class compares two reactions given their names.
+     * 
+     */
     class ReactionNameComparator implements Comparator<Reaction> {
 
         @Override
