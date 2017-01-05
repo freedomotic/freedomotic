@@ -43,9 +43,10 @@ public class PeriodicSave {
     private int executionInterval;
 
     /**
-     *
-     * @param savedDataRoot
-     * @param executionInterval
+     * Saves periodically commands, triggers and reactions to file.
+     * 
+     * @param savedDataRoot folder to save files
+     * @param executionInterval saving time interval
      */
     public PeriodicSave(String savedDataRoot, int executionInterval) {
         this.savedDataRoot = savedDataRoot;
@@ -76,7 +77,7 @@ public class PeriodicSave {
 
     private Runnable runnable = new Runnable() {
         public void run() {
-            LOG.info("Periodic save of triggers, commands and reactions");
+            LOG.info("Periodic saving of triggers, commands and reactions");
             triggerRepository.saveTriggers(new File(savedDataRoot + "/trg"));
             commandRepository.saveCommands(new File(savedDataRoot + "/cmd"));
             reactionRepository.saveReactions(new File(savedDataRoot + "/rea"));

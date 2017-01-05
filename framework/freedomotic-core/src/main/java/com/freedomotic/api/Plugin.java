@@ -179,7 +179,7 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
-     * Notifies an error on console/logfile and shows a callout on the frontend.
+     * Notifies an error on console/logfile and shows a callout on the jfrontend.
      *
      * @param message the error message
      */
@@ -194,6 +194,12 @@ public class Plugin implements Client, BusConsumer {
         busService.send(callout);
     }
 
+    /**
+     * Notifies a critical error on console/logfile, shows a callout on the jfrontend
+     * and stops the plugin.
+     *
+     * @param message the error message
+     */
     public void notifyCriticalError(String message) {
         //Log the error on console/logfiles
         LOG.warn(message);
@@ -247,8 +253,9 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
-     *
-     * @return
+     * Returns the read queue.
+     * 
+     * @return queue the plugin listen to
      */
     public final String getReadQueue() {
         return listenOn;
@@ -491,11 +498,20 @@ public class Plugin implements Client, BusConsumer {
 
     }
 
+    /**
+     * 
+     * 
+     */
     private void register() {
         listener = new BusMessagesListener(this, getBusService());
         listener.consumeCommandFrom(getCommandsChannelToListen());
     }
 
+    /**
+     * 
+     * 
+     * @return 
+     */
     private String getCommandsChannelToListen() {
         String defaultQueue = ACTUATORS_QUEUE_DOMAIN + category + "." + shortName;
         String customizedQueue = ACTUATORS_QUEUE_DOMAIN + listenOn;

@@ -119,6 +119,11 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         }
     }
 
+    /**
+     *
+     *
+     * @return @throws RepositoryException
+     */
     private File getDefaultEnvironmentFolder() throws RepositoryException {
         String envFilePath = appConfig.getProperty("KEY_ROOM_XML_PATH");
         File envFile = new File(Info.PATHS.PATH_ENVIRONMENTS_FOLDER + "/" + envFilePath);
@@ -151,7 +156,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     public void saveEnvironmentsToFolder(File folder) throws RepositoryException {
 
         if (environments.isEmpty()) {
-            LOG.warn("There is no environment to persist. {} will not be altered.", folder.getAbsolutePath());
+            LOG.warn("There is no environment to persist. Folder ''{}'' will not be altered", folder.getAbsolutePath());
             return;
         }
         if (folder.exists() && !folder.isDirectory()) {
@@ -178,12 +183,18 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             try {
                 thingsRepository.saveAll(findAll().get(0).getObjectFolder());
             } catch (RepositoryException ex) {
-                LOG.error("Cannot save objects in {}", findAll().get(0).getObjectFolder().getAbsolutePath());
+                LOG.error("Cannot save objects into ''{}''", findAll().get(0).getObjectFolder().getAbsolutePath());
             }
         }
 
     }
 
+    /**
+     * 
+     * 
+     * @param folder
+     * @throws RepositoryException 
+     */
     private static void deleteEnvFiles(File folder)
             throws RepositoryException {
         if ((folder == null) || !folder.isDirectory()) {
@@ -227,7 +238,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @Deprecated
     private boolean loadEnvironmentsFromDir(File folder, boolean makeUnique) throws RepositoryException {
         if (folder == null) {
-            throw new RepositoryException("Cannot load enviornments from a null folder");
+            throw new RepositoryException("Cannot load environments from a null folder");
         }
         environments.clear();
 
@@ -260,7 +271,8 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     }
 
     /**
-     * Add an environment. You can use EnvObjectPersistance.MAKE_UNIQUE to
+     * Adds an environment.
+     * You can use EnvObjectPersistance.MAKE_UNIQUE to
      * create an object that will surely be unique. Beware this means it is
      * created with defensive copy of the object in input and name, protocol,
      * address and UUID are reset to a default value.
@@ -292,7 +304,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             pojoCopy.setUUID(""); // force to assign a new random and unique UUID
             // force to assign a new random and unique UUID to every zone
             for (Zone z : pojoCopy.getZones()) {
-               z.setUuid(UUID.randomUUID().toString());
+                z.setUuid(UUID.randomUUID().toString());
             }
 
             //should be the last called after using setters on envLogic.getPojo()
@@ -341,6 +353,13 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         }
     }
 
+    /**
+     * Saves an environment to file.
+     * 
+     * @param env environment to save
+     * @param file file to save the environment
+     * @throws IOException 
+     */
     private void save(EnvironmentLogic env, File file) throws IOException {
         try {
             EnvironmentPersistence environmentPersistence = environmentPersistenceFactory.create(file.getParentFile());
@@ -360,7 +379,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @RequiresPermissions("environments:save")
     @Override
     public void saveAs(EnvironmentLogic env, File folder) throws IOException {
-        LOG.info("Serializing new environment to " + folder);
+        LOG.info("Serializing new environment to ''{}''", folder);
         save(env, new File(folder + "/" + env.getPojo().getUUID() + ".xenv"));
     }
 
