@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.io.IOUtils.toByteArray;
+import org.apache.http.impl.client.HttpClients;
 
 /**
  * @author Enrico Nicoletti
@@ -96,10 +97,11 @@ public class HttpHelper {
     }
 
     /**
-     * Post the content to given URL and returns result as byte[]. Post content type should be defined beforehand.
+     * Post the content to given URL and returns result as byte[]. Post content
+     * type should be defined beforehand.
      *
-     * @param url      of the service
-     * @param content  in byte format that is going to be post
+     * @param url of the service
+     * @param content in byte format that is going to be post
      * @param username for basic authentication
      * @param password for basic authentication
      * @return post result as byte array
@@ -110,15 +112,15 @@ public class HttpHelper {
     }
 
     /**
-     * @param url      of the service
-     * @param content  in byte format that is going to be post
+     * @param url of the service
+     * @param content in byte format that is going to be post
      * @param username for basic authentication
      * @param password for basic authentication
-     * @param headers  http headers
+     * @param headers http headers
      * @return post result as byte array
      */
     public byte[] post(String url, byte[] content, String username, String password,
-                       Map<String, String> headers) throws IOException {
+            Map<String, String> headers) throws IOException {
         return doPost(url, content, username, password, headers);
     }
 
@@ -139,9 +141,9 @@ public class HttpHelper {
     /**
      * Perform an XPath query on the XML content retrieved from the given URL
      *
-     * @param url          The url from wich retrieve the XML content
-     * @param username     username if authentication is required. Can be null
-     * @param password     password if authentication is required. Can be null
+     * @param url The url from wich retrieve the XML content
+     * @param username username if authentication is required. Can be null
+     * @param password password if authentication is required. Can be null
      * @param xpathQueries any valid xpath query
      * @return
      * @throws IOException
@@ -183,8 +185,19 @@ public class HttpHelper {
         this.connectionTimeout = connectionTimeout;
     }
 
+    /**
+     * 
+     * 
+     * @param url
+     * @param content
+     * @param username
+     * @param password
+     * @param headers
+     * @return
+     * @throws IOException 
+     */
     private byte[] doPost(String url, byte[] content, String username, String password,
-                          Map<String, String> headers) throws IOException {
+            Map<String, String> headers) throws IOException {
 
         final HttpPost httpPost = new HttpPost(asUri(url));
         final HttpEntity httpEntity = new ByteArrayEntity(content);
@@ -200,6 +213,15 @@ public class HttpHelper {
         }
     }
 
+    /**
+     * 
+     * 
+     * @param url
+     * @param username
+     * @param password
+     * @return
+     * @throws IOException 
+     */
     private byte[] doGet(String url, String username, String password) throws IOException {
         HttpResponse httpResponse = fireGetRequest(url, username, password);
         try (InputStream inputStream = httpResponse.getEntity().getContent()) {
@@ -207,6 +229,15 @@ public class HttpHelper {
         }
     }
 
+    /**
+     * 
+     * 
+     * @param url
+     * @param username
+     * @param password
+     * @return
+     * @throws IOException 
+     */
     private String doGetAsString(String url, String username, String password) throws IOException {
         HttpResponse httpResponse = fireGetRequest(url, username, password);
         try (InputStream inputStream = httpResponse.getEntity().getContent()) {
@@ -215,22 +246,51 @@ public class HttpHelper {
         }
     }
 
+    /**
+     * 
+     * 
+     * @param url
+     * @param username
+     * @param password
+     * @return
+     * @throws IOException 
+     */
     private HttpResponse fireGetRequest(String url, String username, String password) throws IOException {
         return fireHttpRequest(new HttpGet(asUri(url)), username, password);
     }
 
+    /**
+     * 
+     * 
+     * @param httpRequest
+     * @param username
+     * @param password
+     * @return
+     * @throws IOException 
+     */
     private HttpResponse fireHttpRequest(HttpRequestBase httpRequest, String username, String password) throws IOException {
-        final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
-        final CloseableHttpClient client = HttpClientBuilder.create()
-                .setDefaultCredentialsProvider(credentialsProvider)
-                .setDefaultRequestConfig(RequestConfig.copy(RequestConfig.DEFAULT)
-                        .setConnectTimeout(connectionTimeout)
-                        .build())
-                .build();
+
+        HttpClientBuilder builder = HttpClients.custom().useSystemProperties();
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(connectionTimeout).build();
+        builder.setDefaultRequestConfig(requestConfig);
+
+        if ((username != null) && (password != null)) {
+            final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+            builder.setDefaultCredentialsProvider(credentialsProvider);
+
+        }
+
+        final CloseableHttpClient client = builder.build();
         return client.execute(httpRequest);
     }
 
+    /**
+     * 
+     * 
+     * @param response
+     * @return 
+     */
     private Charset determineCharsetName(HttpResponse response) {
         ContentType contentType = ContentType.getLenient(response.getEntity());
         if (contentType != null && contentType.getCharset() != null) {
@@ -239,6 +299,13 @@ public class HttpHelper {
         return DEFAULT_UTF8;
     }
 
+    /**
+     * 
+     * 
+     * @param url
+     * @return
+     * @throws IOException 
+     */
     private URI asUri(String url) throws IOException {
         URI uri;
         try {
