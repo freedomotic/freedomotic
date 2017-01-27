@@ -19,7 +19,6 @@ KEY_JAVACOM_LIB=../ext
 KEY_RESOURCES_PATH=/data/resources/
 ADMIN_SENDING_ADDRESS=issue.reporter@freedomotic.com
 ADMIN_RECIPIENT_ADDRESS=mauro@freedomotic.com
-ADMIN_RECIPIENT_ADDRESS=error.box@freedomotic.com
 SAVE_DATA_PERIODICALLY=false
 DATA_SAVING_INTERVAL=15
 
