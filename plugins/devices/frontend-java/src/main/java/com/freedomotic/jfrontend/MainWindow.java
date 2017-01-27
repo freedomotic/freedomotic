@@ -53,6 +53,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1114,7 +1116,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuBackgroundActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuBackgroundActionPerformed
 
-        final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + "/resources/");
+        final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + File.separator + "resources"+ File.separator+"system"+File.separator+"map"+File.separator);
         OpenDialogFileFilter filter = new OpenDialogFileFilter();
         filter.addExtension("png");
         filter.addExtension("jpeg");
@@ -1129,12 +1131,28 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             File file = fc.getSelectedFile();
             //This is where a real application would open the file.
             LOG.info("Opening {}", file.getAbsolutePath());
-            drawer.getCurrEnv().getPojo().setBackgroundImage(file.getName());
+            file = this.moveBackgroundFile(file);
+            drawer.getCurrEnv().getPojo().setBackgroundImage(file.getAbsolutePath());
             drawer.setNeedRepaint(true);
             frameMap.validate();
         }
     }//GEN-LAST:event_mnuBackgroundActionPerformed
 
+    private File moveBackgroundFile(File backgroundImage) {
+    	File resourcesFolder = new File(Info.PATHS.PATH_DATA_FOLDER + File.separator + "resources"+ File.separator+"system"+File.separator+"map");
+    
+    	if(backgroundImage.exists() && resourcesFolder.isDirectory() && !(new File(resourcesFolder, backgroundImage.getName()).exists())) {
+    		try {
+				FileUtils.copyFileToDirectory(backgroundImage, resourcesFolder);
+				backgroundImage = new File(resourcesFolder,backgroundImage.getName());
+			} catch (IOException e) {
+				 LOG.error(e.getMessage(),e);
+			}
+    	}
+    	
+    	return backgroundImage;
+    }
+    
     private void mnuRoomBackgroundActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuRoomBackgroundActionPerformed
 
         ZoneLogic zone = drawer.getSelectedZone();

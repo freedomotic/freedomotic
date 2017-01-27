@@ -35,6 +35,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
@@ -86,8 +88,18 @@ public final class ResourcesManager {
                 //get the unresized image from cache or disk
                 try {
                     img = imagesCache.get(imageName);
-                } catch (Exception e) {
-                    return null;
+                } catch (ExecutionException e) {
+                    try {
+                    	File imageFile = new File(imageName);
+                    	if(imageFile.exists()) {
+                    		img = ImageIO.read(imageFile);
+                    		imagesCache.put(imageFile.getName(), img);
+                    	}
+                    	else
+                    		return null;
+                    } catch(IOException er) {
+                    	return null;
+                    }
                 }
                 // Resize and cache
                 if (img.getWidth() != width && img.getHeight() != height) {
@@ -101,7 +113,7 @@ public final class ResourcesManager {
             return null;
         }
     }
-
+    
     /**
      *
      * @param imageName
