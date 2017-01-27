@@ -68,19 +68,19 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      */
     public void saveReactions(File folder) {
         if (list.isEmpty()) {
-            LOG.warn("There are no reactions to persist, folder ''{}'' will not be altered.", folder.getAbsolutePath());
+            LOG.warn("There are no reactions to persist, folder \"{}\" will not be altered.", folder.getAbsolutePath());
             return;
         }
 
         if (!folder.isDirectory()) {
-            LOG.warn("''{}'' is not a valid reaction folder. Skipped", folder.getAbsoluteFile());
+            LOG.warn("\"{}\" is not a valid reaction folder. Skipped", folder.getAbsoluteFile());
             return;
         }
 
         deleteReactionFiles(folder);
 
         try {
-            LOG.info("Saving reactions to file into ''{}''", folder.getAbsolutePath());
+            LOG.info("Saving reactions to file into \"{}\"", folder.getAbsolutePath());
             StringBuffer summaryContent = new StringBuffer();
             for (Reaction reaction : list) {
                 String uuid = reaction.getUuid();
@@ -180,19 +180,19 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                     if (reaction.getTrigger() != null && reaction.getTrigger().getName() != null) {
                         add(reaction);
                     } else {
-                        LOG.error("Cannot add reaction ''{}'': it has an empty trigger", file.getName());
+                        LOG.error("Cannot add reaction \"{}\": it has an empty trigger", file.getName());
                         continue;
                     }
 
                     if (reaction.getCommands().isEmpty()) {
-                        LOG.warn("Reaction ''{}'' has no valid commands. Maybe related objects are missing or not configured properly", reaction.toString());
+                        LOG.warn("Reaction \"{}\" has no valid commands. Maybe related objects are missing or not configured properly", reaction.toString());
                     }
                 }
             } else {
-                LOG.debug("No reactions to load from the folder ''{}''", folder.toString());
+                LOG.debug("No reactions to load from the folder \"{}\"", folder.toString());
             }
         } catch (Exception e) {
-            LOG.error("Exception while loading reactions from ''{}''", new Object[]{folder.getAbsolutePath()}, e);
+            LOG.error("Exception while loading reactions from \"{}\"", new Object[]{folder.getAbsolutePath()}, e);
         }
     }
 

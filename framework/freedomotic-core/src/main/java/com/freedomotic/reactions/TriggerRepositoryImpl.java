@@ -68,12 +68,12 @@ class TriggerRepositoryImpl implements TriggerRepository {
     @Override
     public void saveTriggers(File folder) {
         if (list.isEmpty()) {
-            LOG.warn("There are no triggers to persist, folder ''{}'' will not be altered", folder.getAbsolutePath());
+            LOG.warn("There are no triggers to persist, folder \"{}\" will not be altered", folder.getAbsolutePath());
             return;
         }
 
         if (!folder.isDirectory()) {
-            LOG.warn("''{}'' is not a valid trigger folder. Skipped", folder.getAbsoluteFile());
+            LOG.warn("\"{}\" is not a valid trigger folder. Skipped", folder.getAbsoluteFile());
             return;
         }
 
@@ -81,7 +81,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
         deleteTriggerFiles(folder);
 
         try {
-            LOG.info("Saving triggers to file into ''{}''", folder.getAbsolutePath());
+            LOG.info("Saving triggers to file into \"{}\"", folder.getAbsolutePath());
             StringBuffer summaryContent = new StringBuffer();
             for (Trigger trigger : list) {
                 if (trigger.isToPersist()) {
@@ -205,11 +205,11 @@ class TriggerRepositoryImpl implements TriggerRepository {
                             list.add(trigger); //only in the list not registred. I will be registred only if used in mapping
                         }
                     } else {
-                        LOG.warn("Trigger ''{}'' is already in the list", trigger.getName());
+                        LOG.warn("Trigger \"{}\" is already in the list", trigger.getName());
                     }
                 }
             } else {
-                LOG.info("No triggers to load from the folder ''{}''", folder.toString());
+                LOG.info("No triggers to load from the folder \"{}\"", folder.toString());
             }
         } catch (Exception e) {
             LOG.error("Exception while loading this trigger ", e);
@@ -229,7 +229,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             t.register();
             int postSize = TriggerRepositoryImpl.size();
             if (!(postSize == (preSize + 1))) {
-                LOG.error("Error while adding and registering trigger ''{}''", t.getName());
+                LOG.error("Error while adding and registering trigger \"{}\"", t.getName());
             }
         } else {
             //this trigger is already in the list
@@ -262,7 +262,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             int postSize = TriggerRepositoryImpl.size();
 
             if (!(postSize == (preSize + 1))) {
-                LOG.error("Error while adding trigger ''{}''", t.getName());
+                LOG.error("Error while adding trigger \"{}\"", t.getName());
             }
         }
     }
@@ -281,10 +281,10 @@ class TriggerRepositoryImpl implements TriggerRepository {
             int postSize = TriggerRepositoryImpl.size();
 
             if (!(postSize == (preSize - 1))) {
-                LOG.error("Error while removing trigger ''{}''", t.getName());
+                LOG.error("Error while removing trigger \"{}\"", t.getName());
             }
         } catch (Exception e) {
-            LOG.error("Error while unregistering trigger ''{}''", t.getName(), e);
+            LOG.error("Error while unregistering trigger \"{}\"", t.getName(), e);
         }
     }
 
@@ -305,7 +305,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                 return trigger;
             }
         }
-        LOG.warn("Searching for a trigger named ''{}'' but it doesn't exist", name);
+        LOG.warn("Searching for a trigger named \"{}\" but it doesn't exist", name);
         return null;
     }
 
@@ -406,7 +406,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             add(item);
             return true;
         } catch (Exception e) {
-            LOG.error("Cannot add trigger ''{}''" + item.getName(), e);
+            LOG.error("Cannot add trigger \"{}\"" + item.getName(), e);
             return false;
         }
     }
@@ -444,12 +444,12 @@ class TriggerRepositoryImpl implements TriggerRepository {
                 try {
                     data.register();
                 } catch (Exception f) {
-                    LOG.warn("Cannot register trigger ''{}''", data.getName(), f);
+                    LOG.warn("Cannot register trigger \"{}\"", data.getName(), f);
                 }
                 return data;
             }
         } catch (Exception e) {
-            LOG.error("Error while modifying trigger ''{}''" + data.getName(), e);
+            LOG.error("Error while modifying trigger \"{}\"" + data.getName(), e);
             return null;
         }
     }
@@ -463,7 +463,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
     public Trigger copy(Trigger trg) {
         try {
             Trigger t = findOne(trg.getUUID()).clone();
-            t.setName("Copy of trigger ''" + t.getName() + "''");
+            t.setName("Copy of trigger " + t.getName());
             create(t);
             return t;
         } catch (Exception e) {

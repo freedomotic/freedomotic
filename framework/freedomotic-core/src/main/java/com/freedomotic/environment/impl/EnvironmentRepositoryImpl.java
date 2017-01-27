@@ -136,12 +136,12 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
         if (!folder.exists()) {
             throw new RepositoryException(
-                    "Folder " + folder + " do not exists. Cannot load default "
-                    + "environment from " + envFile.getAbsolutePath().toString());
+                    "Folder \"" + folder + "\" doesn't exist. Cannot load default "
+                    + "environment from \"" + envFile.getAbsolutePath().toString() +"\"");
         } else if (!folder.isDirectory()) {
             throw new RepositoryException(
-                    "Environment folder " + folder.getAbsolutePath()
-                    + " is supposed to be a directory");
+                    "Environment folder \"" + folder.getAbsolutePath()
+                    + "\" is supposed to be a directory");
         }
         return folder;
     }
@@ -156,11 +156,11 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     public void saveEnvironmentsToFolder(File folder) throws RepositoryException {
 
         if (environments.isEmpty()) {
-            LOG.warn("There is no environment to persist. Folder ''{}'' will not be altered", folder.getAbsolutePath());
+            LOG.warn("There is no environment to persist. Folder \"{}\" will not be altered", folder.getAbsolutePath());
             return;
         }
         if (folder.exists() && !folder.isDirectory()) {
-            throw new RepositoryException(folder.getAbsoluteFile() + " is not a valid environment folder. Skipped");
+            throw new RepositoryException("\"" + folder.getAbsoluteFile() + "\" is not a valid environment folder. Skipped");
         }
         try {
             for (EnvironmentLogic environment : environments) {
@@ -183,7 +183,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             try {
                 thingsRepository.saveAll(findAll().get(0).getObjectFolder());
             } catch (RepositoryException ex) {
-                LOG.error("Cannot save objects into ''{}''", findAll().get(0).getObjectFolder().getAbsolutePath());
+                LOG.error("Cannot save objects into \"{}\"", findAll().get(0).getObjectFolder().getAbsolutePath());
             }
         }
 
@@ -379,7 +379,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @RequiresPermissions("environments:save")
     @Override
     public void saveAs(EnvironmentLogic env, File folder) throws IOException {
-        LOG.info("Serializing new environment to ''{}''", folder);
+        LOG.info("Serializing new environment to \"{}\"", folder);
         save(env, new File(folder + "/" + env.getPojo().getUUID() + ".xenv"));
     }
 
@@ -420,7 +420,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
         envLogic.setPojo(pojo);
         envLogic.setSource(file);
-        LOG.info("Environment '" + envLogic.getPojo().getName() + "' loaded");
+        LOG.info("Environment \"" + envLogic.getPojo().getName() + "\" loaded");
         return envLogic;
     }
 

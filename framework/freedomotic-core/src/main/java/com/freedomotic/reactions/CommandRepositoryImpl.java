@@ -284,7 +284,7 @@ class CommandRepositoryImpl implements CommandRepository {
     public void saveCommands(File folder) {
 
         if (userCommands.isEmpty()) {
-            LOG.warn("There are no commands to persist, {} will not be altered.", folder.getAbsolutePath());
+            LOG.warn("There are no commands to persist, \"{}\" will not be altered.", folder.getAbsolutePath());
             return;
         }
 
@@ -297,7 +297,7 @@ class CommandRepositoryImpl implements CommandRepository {
         deleteCommandFiles(folder);
 
         try {
-            LOG.info("Saving commands to file in " + folder.getAbsolutePath());
+            LOG.info("Saving commands to file into \"" + folder.getAbsolutePath() + "\"");
             StringBuffer summaryContent = new StringBuffer();
             for (Command c : userCommands.values()) {
                 if (c.isEditable()) {
@@ -318,10 +318,14 @@ class CommandRepositoryImpl implements CommandRepository {
             writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #CommandName \t\t\t #Destination\n", summaryContent.toString());
             
         } catch (Exception e) {
-            LOG.error("Error while saving commands to " + folder.getAbsolutePath(), e);
+            LOG.error("Error while saving commands to \"" + folder.getAbsolutePath() + "\"", e);
         }
     }
 
+    /**
+     * 
+     * @param folder 
+     */
     private static void deleteCommandFiles(File folder) {
         File[] files = folder.listFiles();
 

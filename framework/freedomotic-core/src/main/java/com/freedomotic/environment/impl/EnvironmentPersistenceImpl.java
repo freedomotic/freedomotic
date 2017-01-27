@@ -92,7 +92,7 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
             return pojo;
 
         } catch (DataUpgradeException dataUpgradeException) {
-            throw new RepositoryException("Cannot upgrade environment file " + file.getAbsolutePath(), dataUpgradeException);
+            throw new RepositoryException("Cannot upgrade environment file \"" + file.getAbsolutePath() + "\"", dataUpgradeException);
         } catch (XStreamException e) {
             throw new RepositoryException("XML parsing error. Readed XML is \n" + xml, e);
         }
@@ -209,9 +209,9 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
         for (Zone zone : env.getZones()) {
             zone.setObjects(null);
         }
-        LOG.info("Serializing environment to ''{}''", file);
+        LOG.info("Serializing environment to \"{}\"", file);
         FreedomXStream.toXML(env, file);
-        LOG.info("Application environment ''{}'' successfully serialized", env.getName());
+        LOG.info("Application environment \"{}\" successfully serialized", env.getName());
     }
 
 }
