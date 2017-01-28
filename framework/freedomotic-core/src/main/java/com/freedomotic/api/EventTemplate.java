@@ -48,8 +48,7 @@ public class EventTemplate implements Serializable {
     private final String uuid = UUID.randomUUID().toString();
     private final String type = "event";
     
-
-    @XStreamOmitField
+	@XStreamOmitField
     private static final Logger LOG = LoggerFactory.getLogger(EventTemplate.class.getName());
 
     protected void generateEventPayload() {
@@ -217,5 +216,11 @@ public class EventTemplate implements Serializable {
 		return this.uuid;
 	}
     
+	/**
+	 * @return the type of this class
+	 */
+	public String getType() {
+		return type;
+	}
     
 }

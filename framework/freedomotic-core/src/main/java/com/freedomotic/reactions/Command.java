@@ -87,7 +87,7 @@ public final class Command implements Serializable, Cloneable {
     private boolean executed;
     @XmlElement(name = "props")
     private Config properties = new Config();
-    private final String type = this.getClass().getSimpleName().toLowerCase();
+    private final String type = "command";
 
     /**
      *
