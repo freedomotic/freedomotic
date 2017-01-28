@@ -87,12 +87,14 @@ public final class Command implements Serializable, Cloneable {
     private boolean executed;
     @XmlElement(name = "props")
     private Config properties = new Config();
+    private final String type = this.getClass().getSimpleName().toLowerCase();
 
     /**
      *
      */
     public Command() {
         this.uuid = UUID.randomUUID().toString();
+        this.properties.setProperty("type", type);
         if (isHardwareLevel()) { //an hardware level command
             setEditable(false); //it has not to be stored in root/data folder
         }
@@ -510,4 +512,11 @@ public final class Command implements Serializable, Cloneable {
     public void setReplyTimeout(int timeout) {
         this.timeout = timeout;
     }
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
 }
