@@ -19,22 +19,6 @@
  */
 package com.freedomotic.environment.impl;
 
-import com.freedomotic.settings.AppConfig;
-import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.EnvironmentRepository;
-import com.freedomotic.exceptions.RepositoryException;
-import com.freedomotic.model.environment.Environment;
-import com.freedomotic.model.environment.Zone;
-import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.ThingRepository;
-import com.freedomotic.persistence.FreedomXStream;
-import com.freedomotic.persistence.XmlPreprocessor;
-import com.freedomotic.settings.Info;
-import com.freedomotic.util.SerialClone;
-import com.freedomotic.util.UidGenerator;
-import com.google.inject.Inject;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -42,9 +26,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+
+import com.freedomotic.environment.EnvironmentLogic;
+import com.freedomotic.environment.EnvironmentRepository;
+import com.freedomotic.exceptions.RepositoryException;
+import com.freedomotic.model.environment.Environment;
+import com.freedomotic.model.environment.Zone;
+import com.freedomotic.persistence.FreedomXStream;
+import com.freedomotic.persistence.XmlPreprocessor;
+import com.freedomotic.settings.AppConfig;
+import com.freedomotic.settings.Info;
+import com.freedomotic.things.EnvObjectLogic;
+import com.freedomotic.things.ThingRepository;
+import com.freedomotic.util.SerialClone;
+import com.freedomotic.util.UidGenerator;
+import com.google.inject.Inject;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 
 /**
  * Repository to manage the {@link Environment} loaded from filesystem
@@ -59,6 +62,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     private final AppConfig appConfig;
     private final EnvironmentPersistenceFactory environmentPersistenceFactory;
     private final ThingRepository thingsRepository;
+    private File defaultEnvironmentFolder;
 
     // The Environments cache
     private static final List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
@@ -85,7 +89,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
     @Override
     public void initFromDefaultFolder() throws RepositoryException {
-        File defaultEnvironmentFolder = getDefaultEnvironmentFolder();
+        this.defaultEnvironmentFolder = getDefaultEnvironmentFolder();
         this.init(defaultEnvironmentFolder);
     }
 
@@ -334,7 +338,28 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         }
 
         environments.remove(input);
+        this.removeEnvironmentFile(input.getSource());
         input.clear();
+    }
+    
+    private boolean removeEnvironmentFile(File environmentFile) {
+    	if(environmentFile==null) {
+    		LOG.warn("No file defined in this environment, so no deletion occurs.");
+    		return false;	
+    	}
+    	
+    	if(environmentFile.exists())
+			try {
+				FileUtils.forceDelete(environmentFile);
+				return true;
+			} catch (IOException e) {
+				LOG.warn("Error while removing file {}, please try manually.", environmentFile.getAbsolutePath());
+				return false;
+			}
+		else {
+    		LOG.warn("File {} does not exist", environmentFile.getAbsolutePath());
+    		return false;
+    	}
     }
 
     /**
@@ -490,6 +515,17 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @Override
     @RequiresPermissions("environments:delete")
     public boolean delete(EnvironmentLogic item) {
+    	
+    	 if (environments.isEmpty()) {
+             LOG.warn("There are no environments to delete!");
+             return false;
+         }
+   	 
+    	 if(item.getSource()!=null && environments.contains(item) && this.defaultEnvironmentFolder.getAbsolutePath().equalsIgnoreCase(item.getSource().getParent())) {
+    		 LOG.info("Environments within default folder cannot be deleted {}", item.getSource().getAbsolutePath());
+    		 return false;
+    	 }
+    	
         try {
             remove(item);
             return true;
