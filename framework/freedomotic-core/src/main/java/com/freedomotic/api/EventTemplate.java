@@ -46,6 +46,8 @@ public class EventTemplate implements Serializable {
     protected boolean isValid;
     private long creation;
     private final String uuid = UUID.randomUUID().toString();
+    private final String type = "event";
+    
 
     @XStreamOmitField
     private static final Logger LOG = LoggerFactory.getLogger(EventTemplate.class.getName());
@@ -165,6 +167,7 @@ public class EventTemplate implements Serializable {
             payload.addStatement("sender",
                     getSender());
             payload.addStatement("uuid", this.uuid);
+            payload.addStatement("type", this.type);
         } catch (Exception e) {
             LOG.error("Error while generating default data for event", e);
         }
