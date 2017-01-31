@@ -76,7 +76,7 @@ public class AutomationsEditor extends Protocol {
             if (!list.isEmpty()) {
                 command = list.get(0);
             } else {
-                throw new RuntimeException("No commands found with name " + c.getProperty("editable"));
+                throw new RuntimeException("No commands found with name \"" + c.getProperty("editable") + "\"");
             }
 //            ReactionList reactionList = new ReactionList(this);
             CustomizeCommand cc = new CustomizeCommand(getApi().getI18n(), command, commandRepository);
