@@ -62,7 +62,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     private final AppConfig appConfig;
     private final EnvironmentPersistenceFactory environmentPersistenceFactory;
     private final ThingRepository thingsRepository;
-    private File defaultEnvironmentFolder;
+    private File defaultEnvironmentFile;
 
     // The Environments cache
     private static final List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
@@ -89,7 +89,11 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
     @Override
     public void initFromDefaultFolder() throws RepositoryException {
-        this.defaultEnvironmentFolder = getDefaultEnvironmentFolder();
+    	
+    	String envFilePath = appConfig.getProperty("KEY_ROOM_XML_PATH");
+        this.defaultEnvironmentFile = new File(Info.PATHS.PATH_ENVIRONMENTS_FOLDER + File.separator + envFilePath);
+    	
+        File defaultEnvironmentFolder = getDefaultEnvironmentFolder();
         this.init(defaultEnvironmentFolder);
     }
 
@@ -129,9 +133,8 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
      * @return @throws RepositoryException
      */
     private File getDefaultEnvironmentFolder() throws RepositoryException {
-        String envFilePath = appConfig.getProperty("KEY_ROOM_XML_PATH");
-        File envFile = new File(Info.PATHS.PATH_ENVIRONMENTS_FOLDER + "/" + envFilePath);
-        File folder = envFile.getParentFile();
+  
+        File folder = this.defaultEnvironmentFile.getParentFile();
 
         if (folder == null) {
             throw new RepositoryException("Application configuration does not specify the default environment to load."
@@ -141,7 +144,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         if (!folder.exists()) {
             throw new RepositoryException(
                     "Folder \"" + folder + "\" doesn't exist. Cannot load default "
-                    + "environment from \"" + envFile.getAbsolutePath().toString() +"\"");
+                    + "environment from \"" + this.defaultEnvironmentFile.getAbsolutePath() +"\"");
         } else if (!folder.isDirectory()) {
             throw new RepositoryException(
                     "Environment folder \"" + folder.getAbsolutePath()
@@ -521,8 +524,8 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
              return false;
          }
    	 
-    	 if(item.getSource()!=null && environments.contains(item) && this.defaultEnvironmentFolder.getAbsolutePath().equalsIgnoreCase(item.getSource().getParent())) {
-    		 LOG.info("Environments within default folder cannot be deleted {}", item.getSource().getAbsolutePath());
+    	 if(item.getSource()!=null && environments.contains(item) && this.defaultEnvironmentFile.getAbsolutePath().equalsIgnoreCase(item.getSource().getAbsolutePath())) {
+    		 LOG.info("Default environment cannot be deleted {}", item.getSource().getAbsolutePath());
     		 return false;
     	 }
     	
