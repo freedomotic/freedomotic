@@ -173,7 +173,7 @@ public class Plugin implements Client, BusConsumer {
                         PluginActions.DESCRIPTION);
                 busService.send(event);
             } catch (Exception e) {
-                LOG.warn("Cannot notify new plugin description for " + getName(), e);
+                LOG.warn("Cannot notify new plugin description for \"" + getName() + "\"", e);
             }
         }
     }

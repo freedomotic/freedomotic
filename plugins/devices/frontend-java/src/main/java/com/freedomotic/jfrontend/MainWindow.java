@@ -941,7 +941,7 @@ public class MainWindow
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             file = fc.getSelectedFile();
-            LOG.info("Opening {}", file.getAbsolutePath());
+            LOG.info("Opening \"{}\"", file.getAbsolutePath());
 
             try {
                 api.environments().init(file);
@@ -1130,7 +1130,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             //This is where a real application would open the file.
-            LOG.info("Opening {}", file.getAbsolutePath());
+            LOG.info("Opening \"{}\"", file.getAbsolutePath());
             file = this.moveBackgroundFile(file);
             drawer.getCurrEnv().getPojo().setBackgroundImage(file.getAbsolutePath());
             drawer.setNeedRepaint(true);
