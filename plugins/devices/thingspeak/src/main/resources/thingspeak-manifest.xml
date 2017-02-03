@@ -1,0 +1,22 @@
+<config>
+    <properties>
+        <property name="description" value="A simple client for ThingSpeak platform"/>
+        <property name="category" value="protocol"/>
+        <property name="short-name" value="thingspeak"/>
+        <property name="startup-time" value="on load"/>
+        <property name="polling-time" value="60000"/>
+        <property name="api-key" value="set-api-key"/>
+     </properties>
+    <tuples>
+        <!-- CHANNELS & FIELDS CONFIGURATION (TO BE CONFIGURED) -->
+        <tuple>
+            <property name="thing-name" value="Thermometer"/>
+            <property name="thing-behavior" value="temperature"/>
+            <property name="thingspeak-channel" value="220917"/>
+            <property name="thingspeak-field" value="1"/>
+        </tuple>
+        
+    </tuples>
+</config>
+
+                
