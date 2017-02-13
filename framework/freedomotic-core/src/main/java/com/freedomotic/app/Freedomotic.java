@@ -114,7 +114,7 @@ public class Freedomotic implements BusConsumer {
     private BusMessagesListener listener;
     // TODO remove static modifier once static methods sendEvent & sendCommand are erased.
     private static BusService busService;
-	private static boolean logToFile;
+    private static boolean logToFile;
     private final CommandRepository commandRepository;
     private final ReactionRepository reactionRepository;
     private final Autodiscovery autodiscovery;
@@ -230,8 +230,6 @@ public class Freedomotic implements BusConsumer {
             kill(currentStatus.getCode());
         }
 
-        
-
         /**
          * ******************************************************************
          * Create data backup folder (FEATURE DISABLED!!!)
@@ -244,21 +242,6 @@ public class Freedomotic implements BusConsumer {
 //                logger.warning("unable to saveAll a backup copy of application data " + getStackTraceInfo(ex));
 //            }
 //        }
-        /**
-         * ******************************************************************
-         * Shows the freedomotic website if stated in the config file
-         * *****************************************************************
-         */
-        if (config.getBooleanProperty("KEY_SHOW_WEBSITE_ON_STARTUP", false)) {
-            try {
-                java.awt.Desktop.getDesktop().browse(new URI("www.freedomotic.com"));
-            } catch (URISyntaxException ex) {
-                LOG.error(ex.getMessage());
-            } catch (IOException ex) {
-                LOG.error(ex.getMessage());
-            }
-        }
-
         /**
          * ******************************************************************
          * Dynamically load all plugins
@@ -350,6 +333,9 @@ public class Freedomotic implements BusConsumer {
         activatePeriodicSave();
     }
 
+    /**
+     *
+     */
     private void activatePeriodicSave() {
         // TODO: temporarily SAVE_DATA_PERIODICALLY is set to false until on/off feature of this property is implemented
         if ("true".equals(config.getProperty("SAVE_DATA_PERIODICALLY"))) {
@@ -367,16 +353,16 @@ public class Freedomotic implements BusConsumer {
     public static String getInstanceID() {
         return INSTANCE_ID;
     }
-    
+
     /**
-     * It enables the feature to log on files.
-     * 
+     * Enables logging on files.
+     *
      * @return true if the log to file engine starts properly, false otherwise.
      */
     protected boolean enableLogToFile() {
-    	
-    	String saveToLogConfigParam = config.getStringProperty("KEY_SAVE_LOG_TO_FILE", "OFF").trim();
-    	
+
+        String saveToLogConfigParam = config.getStringProperty("KEY_SAVE_LOG_TO_FILE", "OFF").trim();
+
         if (!"OFF".equalsIgnoreCase(saveToLogConfigParam)) {
             try {
                 PatternLayout layout = new PatternLayout("%d{HH:mm:ss.SSS} %-5p [%t] (%F:%L) %m%n");
@@ -393,37 +379,36 @@ public class Freedomotic implements BusConsumer {
                     java.awt.Desktop.getDesktop()
                             .browse(new File(LOG_PATH).toURI());
                 }
-                
-              Freedomotic.setLogToFile(true);  
-              
+
+                Freedomotic.setLogToFile(true);
+
             } catch (IOException ex) {
                 LOG.error(ex.getMessage());
             }
-        }
-        
-        else {
-        	LOG.info("This Freedomotic configuration does not require a \"log to file\" feature.");
+        } else {
+            LOG.info("This Freedomotic configuration does not require a \"log to file\" feature.");
         }
         return Freedomotic.isLogToFileEnabled();
     }
 
     /*
-     * This private method updates the value of the static variable logToFile, that represents a flag stating if the
+     * Updates the value of the static variable logToFile, that represents a flag stating if the
      * current instance of Freedomotic comes with the logging to file feature
      */
     private static void setLogToFile(boolean active) {
-		logToFile = active;
-	}
-    
+        logToFile = active;
+    }
+
     /**
-     * This method returns true if the log to file feature has been enabled, false otherwise
-     * @return boolean
+     * Checks if the log to file is enabled
+     *
+     * @return boolean true if the log to file is enabled, false otherwise
      */
     public static boolean isLogToFileEnabled() {
-		return logToFile;
-	}
+        return logToFile;
+    }
 
-	// FIXME This shouldn't be done through this method
+    // FIXME This shouldn't be done through this method
     /**
      *
      * @param event
@@ -445,8 +430,7 @@ public class Freedomotic implements BusConsumer {
     }
 
     /**
-     * Main entry point of Freedomotic.
-     * All starts from here.
+     * Main entry point of Freedomotic. All starts from here.
      *
      * @param args
      */
@@ -553,12 +537,15 @@ public class Freedomotic implements BusConsumer {
             //    }
             // }
         } catch (RepositoryException ex) {
-            LOG.error("Cannot save environment to folder {} due to {}", new Object[]{folder, ex.getCause()});
+            LOG.error("Cannot save environment to folder \"{}\" due to \"{}\"", new Object[]{folder, ex.getCause()});
         }
 
         System.exit(0);
     }
 
+    /**
+     * 
+     */
     private void setDataRootPath() {
         if (config.getBooleanProperty("KEY_OVERRIDE_REACTIONS_ON_EXIT", false)) {
             savedDataRoot = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
@@ -600,10 +587,11 @@ public class Freedomotic implements BusConsumer {
     }
 
     /**
-     * It returns the actual path of the log file
+     * Returns the current path of the log file
+     *
      * @return the log path
      */
-	public static String logPath() {
-		return LOG_PATH;
-	}
+    public static String logPath() {
+        return LOG_PATH;
+    }
 }
