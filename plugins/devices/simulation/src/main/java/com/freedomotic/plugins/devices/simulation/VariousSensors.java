@@ -17,13 +17,13 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins;
+package com.freedomotic.plugins.devices.simulation;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
-import com.freedomotic.plugins.gui.VariousSensorsGui;
+import com.freedomotic.plugins.devices.simulation.gui.VariousSensorsGui;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
 

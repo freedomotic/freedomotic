@@ -17,12 +17,12 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins.fromfile;
+package com.freedomotic.plugins.devices.simulation.fromfile;
 
 import com.freedomotic.events.LocationEvent;
 import com.freedomotic.model.geometry.FreedomPoint;
-import com.freedomotic.plugins.Coordinate;
-import com.freedomotic.plugins.TrackingReadFile;
+import com.freedomotic.plugins.devices.simulation.Coordinate;
+import com.freedomotic.plugins.devices.simulation.TrackingReadFile;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.GenericPerson;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class WorkerThread
      *
      * @param master plugin instance
      * @param coord new position coordinates
-     * @param iterations number of iterations to do
+     * @param iterations number of iterations
      * 
      */
     public WorkerThread(TrackingReadFile master, ArrayList<Coordinate> coord, int iterations) {
@@ -70,7 +70,7 @@ public class WorkerThread
                             GenericPerson person = (GenericPerson) object;
                             FreedomPoint location = new FreedomPoint(c.getX(), c.getY());
                             LocationEvent event = new LocationEvent(this, person.getPojo().getUUID(), location);
-                            master.getLog().info("User '{}' moved to {}", c.getUserId(), location.toString());
+                            master.getLog().info("User \"{}\" moved to ({}) position", c.getUserId(), location.toString());
                                        master.notifyEvent(event);
                         }
                         try {

@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins;
+package com.freedomotic.plugins.devices.simulation;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
@@ -40,12 +40,18 @@ import java.util.Random;
 public class TrackingRandomPosition extends Protocol {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrackingRandomPosition.class);
+    private final int SLEEP_TIME = configuration.getIntProperty("sleep-time", 1000);
 
     public TrackingRandomPosition() {
         super("Tracking Simulator (Random)", "/simulation/tracking-simulator-random.xml");
-        setPollingWait(2000);
+        setPollingWait(SLEEP_TIME);
     }
 
+    /**
+     * Generates a random position (x,y).
+     * 
+     * @return a point on the map
+     */
     private FreedomPoint randomLocation() {
         int x;
         int y;

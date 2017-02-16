@@ -17,7 +17,7 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package com.freedomotic.plugins;
+package com.freedomotic.plugins.devices.simulation;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
@@ -39,6 +39,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 
 /**
  *
@@ -50,9 +51,9 @@ public class TrackingReadSocket extends Protocol {
     private ServerSocket serverSocket;
     private OutputStream out;
     private final boolean connected = false;
-    private final int PORT = configuration.getIntProperty("socket-server-port", 7777);
-    private final int SLEEP_TIME = configuration.getIntProperty("sleep-time", 1000);
+    private final int SOCKET_SERVER_PORT = configuration.getIntProperty("socket-server-port", 7777);
     private final int MAX_CONNECTIONS = configuration.getIntProperty("max-connections", -1);
+    private final String STOP_CONNECTION_CHAR = configuration.getStringProperty("stop-connection-char", ".");
 
     /**
      *
@@ -60,7 +61,7 @@ public class TrackingReadSocket extends Protocol {
     public TrackingReadSocket() {
         super("Tracking Simulator (Read Socket)", "/simulation/tracking-simulator-read-socket.xml");
         setDescription("Simulates tracking system. Positions read from a socket (port:"
-                + PORT + ")");
+                + SOCKET_SERVER_PORT + ")");
         setPollingWait(-1);
     }
 
@@ -69,21 +70,31 @@ public class TrackingReadSocket extends Protocol {
         try {
             createServerSocket();
         } catch (IOException ioe) {
-            throw new PluginStartupException("IOException on socket listen: {}", ioe);
+            throw new PluginStartupException("IOException on socket listening: \"{}\"", ioe);
         }
     }
 
+    /**
+     * Creates a server socket.
+     *
+     * @throws IOException
+     */
     private void createServerSocket() throws IOException {
         try {
             serverSocket = new ServerSocket();
             serverSocket.setReuseAddress(true);
-            serverSocket.bind(new InetSocketAddress(PORT));
-            LOG.info("Start listening on server socket {}:{}", serverSocket.getInetAddress(), serverSocket.getLocalPort());
+            serverSocket.bind(new InetSocketAddress(SOCKET_SERVER_PORT));
+            LOG.info("Start listening to server socket \"{}:{}\"", serverSocket.getInetAddress(), serverSocket.getLocalPort());
         } catch (IOException ioe) {
             throw ioe;
         }
     }
 
+    /**
+     * Parses the string input.
+     *
+     * @param in input string to parse
+     */
     private void parseInput(String in) {
         int id = 0;
         int x = -1;
@@ -104,10 +115,15 @@ public class TrackingReadSocket extends Protocol {
         }
     }
 
-    // user ID must be associated to object address field
-    private void movePerson(int ID, FreedomPoint location) {
+    /**
+     * Moves a 'Person' thing to a specific location.
+     *
+     * @param userId user's id associated to its address field
+     * @param location new location
+     */
+    private void movePerson(int userId, FreedomPoint location) {
         for (EnvObjectLogic object : getApi().things().findAll()) {
-            if ((object instanceof GenericPerson) && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(String.valueOf(ID)))) {
+            if ((object instanceof GenericPerson) && (object.getPojo().getPhisicalAddress().equalsIgnoreCase(String.valueOf(userId)))) {
                 GenericPerson person = (GenericPerson) object;
                 LocationEvent event = new LocationEvent(this, person.getPojo().getUUID(), location);
                 notifyEvent(event);
@@ -124,17 +140,21 @@ public class TrackingReadSocket extends Protocol {
                 ClientInputReader clientConnection;
                 Socket clientSocket = serverSocket.accept();
                 clientConnection = new ClientInputReader(clientSocket);
-
                 Thread t = new Thread(clientConnection);
                 t.start();
             } catch (IOException ioe) {
-                LOG.error("IOException on socket listen: {}", ioe);
+                LOG.error("IOException on socket listen: \"{}\"", ioe);
             }
         }
     }
 
     @Override
     public void onStop() {
+        try {
+            serverSocket.close();
+        } catch (IOException ex) {
+            LOG.error("IOException on socket closing: \"{}\"", ex);
+        }
     }
 
     @Override
@@ -153,6 +173,11 @@ public class TrackingReadSocket extends Protocol {
         //do nothing
     }
 
+    /**
+     * This class reads data input from clients until "stop-connection-char" is
+     * received.
+     *
+     */
     private class ClientInputReader
             implements Runnable {
 
@@ -162,7 +187,7 @@ public class TrackingReadSocket extends Protocol {
 
         ClientInputReader(Socket client) {
             this.client = client;
-            LOG.info("New client connected to server on {}", client.getInetAddress());
+            LOG.info("New client connected to server on \"{}\"", client.getInetAddress());
         }
 
         public void run() {
@@ -171,15 +196,15 @@ public class TrackingReadSocket extends Protocol {
                 DataInputStream in = new DataInputStream(client.getInputStream());
                 PrintStream out = new PrintStream(client.getOutputStream());
 
-                while (((line = in.readLine()) != null) && !line.equals(".") && isRunning()) {
-                    LOG.info("Readed from socket: {}", line);
+                while (((line = in.readLine()) != null) && !line.equals(STOP_CONNECTION_CHAR) && isRunning()) {
+                    LOG.info("Readed from socket: \"{}\"", line);
                     parseInput(line);
                 }
 
-                LOG.info("Closing socket connection {}", client.getInetAddress());
+                LOG.info("Closing socket connection \"{}\"", client.getInetAddress());
                 client.close();
             } catch (IOException ioe) {
-                LOG.error("IOException on socket listen: {}", ioe);
+                LOG.error("IOException on socket listening: \"{}\"", ioe);
                 ioe.printStackTrace();
             }
         }
