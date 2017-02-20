@@ -8,6 +8,8 @@
         <property name="bot-token" value="******"/>
         <property name="bot-username" value="******"/>
         <property name="chat-id" value="******"/>
+        <property name="enable-i18n" value="true"/>
+
     </properties>
 </config>
 

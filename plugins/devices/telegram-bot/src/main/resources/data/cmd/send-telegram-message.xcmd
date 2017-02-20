@@ -1,7 +1,7 @@
 <command>
     <name>Notify event by Telegram</name>
     <receiver>app.actuators.social.telegram-bot.in</receiver>
-    <description>sends a Telegram message</description>
+    <description>notifies an event by Telegram</description>
     <hardwareLevel>false</hardwareLevel>
     <delay>0</delay>
     <timeout>0</timeout>

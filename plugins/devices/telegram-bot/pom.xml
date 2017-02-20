@@ -65,7 +65,7 @@
         <dependency>
 	    <groupId>com.github.rubenlagus</groupId>
 	    <artifactId>TelegramBots</artifactId>
-	    <version>v2.4.0</version>
+	    <version>v2.4.4.4</version>
 	</dependency>
     </dependencies>
 
