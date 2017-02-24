@@ -1254,7 +1254,22 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuPluginConfigureActionPerformed
 
     private void mnuTutorialActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuTutorialActionPerformed
-        new TipOfTheDay(master);
+       
+        String url = "http://freedomotic-user-manual.readthedocs.io/";
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+                try {
+                    URI uri = new URI(url); // url is a string containing the URL
+                    desktop.browse(uri);
+                } catch (IOException | URISyntaxException ex) {
+                    LOG.error(ex.getLocalizedMessage());
+                }
+            }
+        } else {
+            //open popup with link
+            JOptionPane.showMessageDialog(this, i18n.msg("goto") + url);
+        }
     }//GEN-LAST:event_mnuTutorialActionPerformed
 
     private void mnuSelectEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSelectEnvironmentActionPerformed
