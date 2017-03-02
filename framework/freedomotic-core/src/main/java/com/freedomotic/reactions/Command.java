@@ -87,20 +87,23 @@ public final class Command implements Serializable, Cloneable {
     private boolean executed;
     @XmlElement(name = "props")
     private Config properties = new Config();
+    private final String type = "command";
 
     /**
      *
      */
     public Command() {
         this.uuid = UUID.randomUUID().toString();
+        this.properties.setProperty("type", type);
         if (isHardwareLevel()) { //an hardware level command
-            setEditable(false); //it has not to me stored in root/data folder
+            setEditable(false); //it has not to be stored in root/data folder
         }
     }
 
     /**
+     * Gets the tags associated to the command.
      *
-     * @return
+     * @return a set of tags
      */
     public HashSet<String> getTags() {
         if (tags == null) {
@@ -112,16 +115,18 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
+     * Sets the tags associated to the command.
      *
-     * @param tags
+     * @param tags the tags to associate
      */
     public void setTags(HashSet<String> tags) {
         this.tags = tags;
     }
 
     /**
+     * Returns a command description.
      *
-     * @return
+     * @return the string description
      */
     public String getDescription() {
         if (description == null) {
@@ -132,16 +137,18 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
+     * Sets a command description.
      *
-     * @param description
+     * @param description the command description
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
+     * Gets the command uuid.
      *
-     * @return
+     * @return the command uuid
      */
     public String getUuid() {
         if (uuid == null || uuid.trim().equals("")) {
@@ -151,22 +158,26 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
+     * Sets the command uuid.
      *
-     * @param uuid
+     * @param uuid the command uuid to set
      */
     public void setUUID(String uuid) {
         this.uuid = uuid;
     }
 
     /**
+     * Checks it is a hardware level command. This type of command can't be used
+     * in reactions but only linked to an object action
      *
-     * @return
+     * @return true if it's a hardware level command, false otherwise
      */
     public boolean isHardwareLevel() {
         return hardwareLevel;
     }
 
     /**
+     * Sets the command as hardware level one or not.
      *
      * @param hardwareLevel
      */
@@ -175,14 +186,16 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
+     * Checks if the command is persisted.
      *
-     * @return
+     * @return true if the command is persisted, false otherwise
      */
     public boolean isEditable() {
         return editable;
     }
 
     /**
+     * Sets the command persistence.
      *
      * @param persistence
      */
@@ -207,8 +220,9 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
+     * Gets a "behavior" property.
      *
-     * @return
+     * @return the string property
      */
     @XmlTransient
     public String getBehavior() {
@@ -216,25 +230,24 @@ public final class Command implements Serializable, Cloneable {
             return properties.getProperty("behavior");
         } else {
             LOG.warn("Undefined property 'behavior' in command '" + this.getName() + "'");
-
             return "undefined-behavior";
         }
     }
 
     /**
-     * Get the value of a property
+     * Gets the value of a property.
      *
-     * @param key
-     * @return The value of the key or null if not found
+     * @param key the property key
+     * @return the value of the key or null if not found
      */
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
 
     /**
-     * Get a boolean property with a fallback default value
+     * Gets a boolean property with a fallback default value.
      *
-     * @param key the String key
+     * @param key the string key
      * @param defaultValue the value to use if the given key does not exists
      * @return the property value or the default value if the key doesn't exists
      */
@@ -255,9 +268,10 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
-     *
-     * @param key
-     * @param value
+     * Sets a property value.
+     * 
+     * @param key the string key (empty or null values not allowed)
+     * @param value the value associated to the property (empty or null values not allowed)
      */
     public void setProperty(String key, String value) {
         if (key == null || key.isEmpty() || value == null || value.isEmpty()) {
@@ -269,18 +283,19 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
-     *
-     * @return
+     * Gets the command properties.
+     *  
+     * @return the command properties
      */
     public Config getProperties() {
         return properties;
     }
 
     /**
-     * Creates an oredred list reading the command properties writed in format
-     * "parameter[AN_INT_FROM_0_TO_999]" other properties format are ignored
-     * (not added to the returned List) The indexs must be contiguous
-     * (1,2,3,...) for example:
+     * Creates an ordered list reading the command properties written in the format
+     * "parameter[AN_INT_FROM_0_TO_999]". Other properties formats are ignored
+     * (not added to the returned List.) The indexes must be contiguous
+     * (1,2,3,...). For example:
      *
      * <p>
      * <li>parameter[0] = foo<li> <li>parameter[1] = bar</li>
@@ -315,8 +330,9 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
-     *
-     * @return
+     * Gets the command delay.
+     * 
+     * @return the command delay
      */
     public int getDelay() {
         if (delay > 0) {
@@ -327,66 +343,73 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
-     *
-     * @param delay
+     * Sets the command delay.
+     * 
+     * @param delay the delay to set
      */
     public void setDelay(int delay) {
         this.delay = delay;
     }
 
     /**
-     *
-     * @return
+     * Gets the command name.
+     * 
+     * @return the command name
      */
     public String getName() {
         return name;
     }
 
     /**
-     *
-     * @param name
+     * Sets the command name.
+     * 
+     * @param name the name to set
      */
     public void setName(String name) {
         this.name = name.trim();
     }
 
     /**
-     *
-     * @return
+     * Gets the channel the command listens to.
+     * 
+     * @return the channel the command listens to
      */
     public String getReceiver() {
         return receiver;
     }
 
     /**
-     *
-     * @param receiver
+     * Sets the channel the command listens to.
+     * 
+     * @param receiver the channel to set
      */
     public void setReceiver(String receiver) {
         this.receiver = receiver;
     }
 
     /**
-     *
-     * @param value
+     * Sets the command as "executed".
+     * 
+     * @param value the "executed" value
      */
     public void setExecuted(boolean value) {
         executed = value;
     }
 
     /**
-     *
-     * @return
+     * Gets the command "executed" state.
+     * 
+     * @return true if the command has been executed, false otherwise
      */
     public boolean isExecuted() {
         return executed;
     }
 
     /**
-     * Two commands are considered equals if they have the same name
+     * Two commands are considered equals if they have the same name.
      *
-     * @param obj
-     * @return
+     * @param obj the object to compare
+     * @return true it the two commands are equal, false otherwise
      */
     @Override
     public boolean equals(Object obj) {
@@ -420,8 +443,10 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
-     *
-     * @return @throws CloneNotSupportedException
+     * Creates a clone of the command.
+     * 
+     * @return a clone of the command
+     * @throws CloneNotSupportedException
      */
     @Override
     public Command clone()
@@ -448,7 +473,8 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
-     *
+     * Cleares all variables.
+     * 
      */
     public void destroy() {
         name = null;
@@ -460,7 +486,8 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
-     *
+     * 
+     * 
      * @return
      */
     @Override
@@ -469,18 +496,27 @@ public final class Command implements Serializable, Cloneable {
     }
 
     /**
-     *
-     * @return
+     * Gets the command reply timeout.
+     * 
+     * @return the command reply timeout
      */
     public int getReplyTimeout() {
         return timeout;
     }
 
     /**
-     *
-     * @param timeout
+     * Sets the command reply timeout.
+     * 
+     * @param timeout the timeout to set 
      */
     public void setReplyTimeout(int timeout) {
         this.timeout = timeout;
     }
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
 }

@@ -606,4 +606,11 @@ public class Freedomotic implements BusConsumer {
 	public static String logPath() {
 		return LOG_PATH;
 	}
+	
+	public static UUID getInstanceIdAsUUID() {
+		 if ((INSTANCE_ID == null) || (INSTANCE_ID.isEmpty())) {
+	            INSTANCE_ID = UUID.randomUUID().toString();
+	     };
+	     return UUID.fromString(INSTANCE_ID);
+	}
 }

@@ -1,0 +1,20 @@
+{"namespace": "com.freedomotic.plugins.devices.persistence.model.avro",
+ "type": "record",
+ "name": "FreedomoticData",
+ "fields": [
+     {"name": "name", "type": ["string", "null"]},
+     {"name": "uuid", "type": "string"},
+     {"name": "datetime", "type": "long"},
+     {"name": "properties", "type": {
+     						"type":"array", "items": {
+                    							"name":"Property",
+                    							"type":"record",
+                    							"fields":[
+                        								{"name":"key", "type":"string"},
+                        								{"name":"value", "type":["string", "null"]}
+                    									]
+                								}
+                					}
+      }
+ ]
+}

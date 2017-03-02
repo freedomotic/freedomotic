@@ -28,6 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +45,10 @@ public class EventTemplate implements Serializable {
     protected Payload payload = new Payload();
     protected boolean isValid;
     private long creation;
-
-    @XStreamOmitField
+    private final String uuid = UUID.randomUUID().toString();
+    private final String type = "event";
+    
+	@XStreamOmitField
     private static final Logger LOG = LoggerFactory.getLogger(EventTemplate.class.getName());
 
     protected void generateEventPayload() {
@@ -161,6 +165,8 @@ public class EventTemplate implements Serializable {
             //adding event.sender to event payload. So it can be used by trigger
             payload.addStatement("sender",
                     getSender());
+            payload.addStatement("uuid", this.uuid);
+            payload.addStatement("type", this.type);
         } catch (Exception e) {
             LOG.error("Error while generating default data for event", e);
         }
@@ -202,4 +208,19 @@ public class EventTemplate implements Serializable {
     public String toString() {
         return getEventName();
     }
+
+	/**
+	 * @return the uuid
+	 */
+	public String getUuid() {
+		return this.uuid;
+	}
+    
+	/**
+	 * @return the type of this class
+	 */
+	public String getType() {
+		return type;
+	}
+    
 }
