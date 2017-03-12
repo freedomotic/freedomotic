@@ -592,4 +592,13 @@ public class Freedomotic implements BusConsumer {
     public static String logPath() {
         return LOG_PATH;
     }
+    
+    /**
+     * Given the current Freedomotic instance id, 
+     * it returns an UUID object representing the identifier.
+     * @return freedomotic instance id as UUID.
+     */
+	public static UUID getInstanceIdAsUUID() {
+		return UUID.fromString(INSTANCE_ID);
+	}
 }
