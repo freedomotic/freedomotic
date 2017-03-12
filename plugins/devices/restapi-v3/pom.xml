@@ -36,7 +36,7 @@
         <freedomotic.package.vendor.company>Freedomotic</freedomotic.package.vendor.company>
         <freedomotic.package.vendor.nation>net</freedomotic.package.vendor.nation>
         <freedomotic.framework.required.major>5</freedomotic.framework.required.major>
-        <freedomotic.framework.required.minor>5</freedomotic.framework.required.minor>
+        <freedomotic.framework.required.minor>6</freedomotic.framework.required.minor>
         <freedomotic.framework.required.build>x</freedomotic.framework.required.build>
         <!--don't like this but works for the moment -->
         <freedomotic.synch.dist.path>../../../framework/freedomotic-core/plugins/</freedomotic.synch.dist.path>
@@ -121,7 +121,7 @@
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
-            <version>1.2.4</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject.extensions</groupId>

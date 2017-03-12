@@ -1,7 +1,0 @@
-<com.freedomotic.reactions.Reaction>
-  <trigger>When a Chart Object is clicked</trigger>
-  <sequence>
-    <command>Ask data from the harvester</command> 
-    <command>JFrontend Graph Data Charts</command>
-  </sequence>
-</com.freedomotic.reactions.Reaction>

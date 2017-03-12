@@ -62,7 +62,7 @@ public class RestAPIv3 extends Protocol {
     public static DefaultWebSecurityManager defaultWebSecurityManager;
 
     public RestAPIv3() {
-        super("RestAPI-v3", "/restapi-v3/restapiv3-manifest.xml");
+        super("RestAPI v3", "/restapi-v3/restapiv3-manifest.xml");
         setPollingWait(-1);
         // Create the preconfigured security manager
         createDefaultWebSecurityManager();

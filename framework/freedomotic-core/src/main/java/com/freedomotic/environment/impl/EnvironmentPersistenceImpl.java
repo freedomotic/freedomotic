@@ -92,7 +92,7 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
             return pojo;
 
         } catch (DataUpgradeException dataUpgradeException) {
-            throw new RepositoryException("Cannot upgrade Environment file " + file.getAbsolutePath(), dataUpgradeException);
+            throw new RepositoryException("Cannot upgrade environment file \"" + file.getAbsolutePath() + "\"", dataUpgradeException);
         } catch (XStreamException e) {
             throw new RepositoryException("XML parsing error. Readed XML is \n" + xml, e);
         }
@@ -100,7 +100,7 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
 
     /**
      * Persists an environment on filesystem using XStream as serialization
-     * engine (XML)
+     * engine (XML).
      *
      * @param environment
      * @throws RepositoryException
@@ -145,9 +145,9 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
 
     /**
      * Loads an environment from filesystem using XStream as serialization
-     * engine (XML)
+     * engine (XML).
      *
-     * @return an Environment object or null if no environments are found in the
+     * @return an environment object or null if no environments are found in the
      * given folder
      * @throws RepositoryException
      */
@@ -181,6 +181,11 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
         return environments;
     }
 
+    /**
+     * 
+     * 
+     * @param folder 
+     */
     private void verifyFolderStructure(File folder) {
         if (!folder.exists()) {
             folder.mkdirs();
@@ -193,13 +198,20 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
         new File(folder + "/data/resources").mkdir();
     }
 
+    /**
+     * 
+     * 
+     * @param env
+     * @param file
+     * @throws IOException 
+     */
     private void serialize(Environment env, File file) throws IOException {
         for (Zone zone : env.getZones()) {
             zone.setObjects(null);
         }
-        LOG.info("Serializing environment to {}", file);
+        LOG.info("Serializing environment to \"{}\"", file);
         FreedomXStream.toXML(env, file);
-        LOG.info("Application environment {} succesfully serialized", env.getName());
+        LOG.info("Application environment \"{}\" successfully serialized", env.getName());
     }
 
 }

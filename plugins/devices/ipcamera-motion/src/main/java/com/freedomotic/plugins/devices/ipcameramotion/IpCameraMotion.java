@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2015 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -22,12 +22,10 @@ package com.freedomotic.plugins.devices.ipcameramotion;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.events.GenericEvent;
-import com.freedomotic.events.MessageEvent;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.settings.Info;
 import com.github.sarxos.webcam.*;
 import com.github.sarxos.webcam.ds.ipcam.*;
@@ -119,26 +117,41 @@ public class IpCameraMotion
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
         switch (c.getProperty("command")) {
+
             case "CAPTURE-IMAGE":
                 LOG.debug("Command capture image " + c.getProperty("camera-name"));
-                captureImage(c.getProperty("camera-name"));
-                break;
-            case "CAPTURE-IMAGE-NOTIFY-MAIL":
-                LOG.debug("Command capture image and notify mail " + c.getProperty("camera-name"));
                 String capturedImagePath = captureImage(c.getProperty("camera-name"));
-                // notify a MessageEvent of "mail" type with the capture image absolute path
-                // this event will be managed by Mailer plugin to attach the image
-                MessageEvent event = new MessageEvent(null, c.getProperty("message"));
-                event.setType("mail");
-                event.setTo(c.getProperty("to-address"));
-                event.setFrom(c.getProperty("from-address"));
-                event.setAttachmentPath(capturedImagePath);
-                notifyEvent(event);
+                break;
+
+            case "CAPTURE-IMAGE-NOTIFY-MAIL":
+                LOG.debug("Command capture image and notify by mail " + c.getProperty("camera-name"));
+                capturedImagePath = captureImage(c.getProperty("camera-name"));
+                // send a command to Mailer plugin
+                Command mailerCommand = new Command();
+                mailerCommand.setName("Mailer notification");
+                mailerCommand.setReceiver("app.actuators.messaging.mail.in");
+                mailerCommand.setProperty("to", c.getProperty("to-address"));
+                mailerCommand.setProperty("message", c.getProperty("message"));
+                mailerCommand.setProperty("subject", "Notification from IpCamera Motion plugin");
+                mailerCommand.setProperty("attachment", capturedImagePath);
+                notifyCommand(mailerCommand);
+
+                break;
+
+            case "CAPTURE-IMAGE-NOTIFY-TELEGRAM":
+                LOG.debug("Command capture image and notify by Telegram " + c.getProperty("camera-name"));
+                capturedImagePath = captureImage(c.getProperty("camera-name"));
+                // send a command to Telegram Bot plugin
+                Command telegramCommand = new Command();
+                telegramCommand.setName("Telegram notification");
+                telegramCommand.setReceiver("app.actuators.social.telegram-bot.in");
+                telegramCommand.setProperty("message", c.getProperty("message"));
+                telegramCommand.setProperty("attachment", capturedImagePath);
+                notifyCommand(telegramCommand);
                 break;
 
         }
-        LOG.info("IpCamera Motion plugin receives a command called " + c.getName() + " with parameters "
-                + c.getProperties().toString());
+        LOG.info("IpCamera Motion plugin receives a command called {} with parameters {}", c.getName(), c.getProperties().toString());
     }
 
     @Override
@@ -153,10 +166,14 @@ public class IpCameraMotion
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Loads the list of cameras from camera.xml file.
+     *
+     * @throws MalformedURLException
+     */
     private void loadCameras() throws MalformedURLException {
 
         gui.setLayout(new GridLayout(0, 3, 1, 1));
-        //panels = new ArrayList<WebcamPanel>();
         for (Webcam webcam : Webcam.getWebcams()) {
             // TODO set panel dimensions as config parameters
             WebcamPanel panel = new WebcamPanel(webcam, new Dimension(PANEL_WIDTH, PANEL_HEIGHT), false);
@@ -171,13 +188,6 @@ public class IpCameraMotion
             WebcamDevice device = webcam.getDevice();
             URL url = ((IpCamDevice) device).getURL();
 
-            // notify event to create IpCamera thing
-            //event = new ProtocolRead(this, "ipcamera-motion", url.toString());
-            //event.addProperty("object.class", "IpCamera");
-            //event.addProperty("object.name", webcam.getName());
-            //event.addProperty("autodiscovery.allow-clones", "false");
-            //notifyEvent(event);
-
             final Webcam refWebcam = webcam;
             final WebcamPanel refPanel = panel;
 
@@ -186,7 +196,6 @@ public class IpCameraMotion
             // webcam will be open in asynchronouns mode:
             // webcam.open() = synchronouse mode, getImage() is blocking
             // webcam.open(true) = asynchronous mode, getImage() is non-blocking (return immediately, but may return old image)
-
             Thread t = new Thread() {
                 @Override
                 public void run() {
@@ -203,16 +212,19 @@ public class IpCameraMotion
 
     }
 
+    /**
+     * This class implements a listener for Webcam motion
+     * 
+     */
     private class DetectMotion implements WebcamMotionListener {
 
-        //List<WebcamMotionDetector> detectors  = new ArrayList<WebcamMotionDetector>();
         public DetectMotion() {
             for (Webcam webcam : Webcam.getWebcams()) {
 
                 WebcamMotionDetector detector = new WebcamMotionDetector(webcam);
 
                 // 2000 = 1 check per 2 seconds, 0.5 FPS which is the same value as in panel
-                detector.setInterval(DETECTOR_INTERVAL); // move to manifest
+                detector.setInterval(DETECTOR_INTERVAL);
                 detector.addMotionListener(this);
                 detectors.add(detector);
 
@@ -221,7 +233,6 @@ public class IpCameraMotion
 
                 // open webcam and start motion detector in parallel, by doing this in new thread GUI will
                 // not be blocked for the time when webcam is being initialized
-
                 Thread t = new Thread() {
                     @Override
                     public void run() {
@@ -249,6 +260,12 @@ public class IpCameraMotion
         }
     }
 
+    /**
+     * Captures an image when motion is detected.
+     *
+     * @param cameraName camera name
+     * @return the absolute path of the captured image
+     */
     private String captureImage(String cameraName) {
         Webcam webcam = getCameraByName(cameraName);
         File capturedImage = null;
@@ -274,7 +291,7 @@ public class IpCameraMotion
      * This class returns a webcam object from its name
      *
      * @param name
-     * @return
+     * @return a Webcam object
      */
     public Webcam getCameraByName(String name) {
         for (Webcam webcam : Webcam.getWebcams()) {

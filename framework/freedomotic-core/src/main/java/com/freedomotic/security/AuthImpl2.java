@@ -201,7 +201,7 @@ class AuthImpl2 implements Auth {
             try {
                 plugSubject.getSession().setTimeout(-1);
             } catch (Exception e) {
-                LOG.warn("ERROR retrieving session for user {}", plugin.getClassName());
+                LOG.warn("ERROR retrieving session for user \"{}\"", plugin.getClassName());
             }
             return plugSubject.associateWith(action);
         }
@@ -225,7 +225,7 @@ class AuthImpl2 implements Auth {
                 //pluginRealm.addRole(plugrole);
 
             } else {
-                LOG.error("Plugin {} tried to request incorrect privileges", plugin.getName());
+                LOG.error("Plugin \"{}\" tried to request incorrect privileges", plugin.getName());
             }
         }
     }

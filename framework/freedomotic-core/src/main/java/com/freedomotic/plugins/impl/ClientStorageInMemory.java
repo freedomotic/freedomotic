@@ -75,7 +75,7 @@ class ClientStorageInMemory implements ClientStorage {
                                 "Plugin",
                                 "Not compatible with this framework version v" + Info.getVersion());
                 clients.add(client);
-                LOG.warn("Plugin {} is not compatible with this framework version v{}",
+                LOG.warn("Plugin \"{}\" is not compatible with this framework version v{}",
                         new Object[]{c.getName(), Info.getVersion()});
             }
 
@@ -84,7 +84,7 @@ class ClientStorageInMemory implements ClientStorage {
                             c.getName(), PluginActions.ENQUEUE);
             busService.send(event);
             LOG.info(
-                    "Extension ''{}'' added to plugins list.",
+                    "Extension \"{}\" added to plugins list.",
                     c.getName());
         }
     }

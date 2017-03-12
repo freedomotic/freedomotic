@@ -99,13 +99,13 @@ class ThingRepositoryImpl implements ThingRepository {
     @RequiresPermissions("objects:save")
     private static void saveObjects(File folder) throws RepositoryException {
         if (objectList.isEmpty()) {
-            throw new RepositoryException("There are no object to persist, " + folder.getAbsolutePath()
-                    + " will not be altered.");
+            throw new RepositoryException("There are no object to persist, \"" + folder.getAbsolutePath()
+                    + "\" will not be altered.");
         }
 
         if (!folder.isDirectory()) {
             //TODO: create folder tree instead of just complaining
-            throw new RepositoryException(folder.getAbsoluteFile() + " is not a valid object folder. Skipped");
+            throw new RepositoryException("\"" + folder.getAbsoluteFile() + "\" is not a valid object folder. Skipped");
         }
 
         deleteObjectFiles(folder);
@@ -132,6 +132,11 @@ class ThingRepositoryImpl implements ThingRepository {
 		}
     }
 
+    /**
+     * 
+     * @param folder
+     * @throws RepositoryException 
+     */
     private static void deleteObjectFiles(File folder) throws RepositoryException {
         if ((folder == null) || !folder.isDirectory()) {
             throw new IllegalArgumentException("Unable to delete objects files in a null or not valid folder");
@@ -158,7 +163,7 @@ class ThingRepositoryImpl implements ThingRepository {
             boolean deleted = file.delete();
 
             if (!deleted) {
-                throw new RepositoryException("Unable to delete file " + file.getAbsoluteFile());
+                throw new RepositoryException("Unable to delete file \"" + file.getAbsoluteFile() + "\"");
             }
         }
     }
@@ -222,7 +227,7 @@ class ThingRepositoryImpl implements ThingRepository {
     }
 
     /**
-     * Gets the object by name
+     * Gets the object by uuid
      *
      * @param uuid
      * @return
@@ -265,8 +270,8 @@ class ThingRepositoryImpl implements ThingRepository {
             }
         }
 
-        LOG.warn("An object with protocol '" + protocol + "' and address '"
-                + address + "' doesn't exist");
+        LOG.warn("An object with protocol \"" + protocol + "\" and address \""
+                + address + "\" doesn't exist");
 
         return null;
     }
@@ -395,7 +400,7 @@ class ThingRepositoryImpl implements ThingRepository {
             try {
                 envObjectLogic.setChanged(SynchAction.CREATED);
             } catch (Exception e) {
-                LOG.warn("Thing was created, but cannot set it as Changed", e);
+                LOG.warn("Thing was created, but cannot set it as \"Changed\"", e);
             }
         } else {
             throw new RuntimeException("Cannot add the same object more than one time");
@@ -404,6 +409,11 @@ class ThingRepositoryImpl implements ThingRepository {
         return envObjectLogic;
     }
 
+    /**
+     * 
+     * @param name
+     * @return 
+     */
     private String getNextInOrder(String name) {
         String newName = name;
         int i = 0;
@@ -572,18 +582,18 @@ class ThingRepositoryImpl implements ThingRepository {
                 }
                 xml = (String) dataUpgradeService.upgrade(EnvObject.class, xml, fromVersion);
             } catch (DataUpgradeException dataUpgradeException) {
-                throw new RepositoryException("Cannot upgrade Thing file " + file.getAbsolutePath(), dataUpgradeException);
+                throw new RepositoryException("Cannot upgrade Thing file \"" + file.getAbsolutePath() + "\"", dataUpgradeException);
             }
             // Deserialize the object from the upgraded and validated xml
             EnvObject pojo = (EnvObject) xstream.fromXML(xml);
             EnvObjectLogic objectLogic = thingsFactory.create(pojo);
-            LOG.info("Loaded Thing {} [id:{}] of type {}",
+            LOG.info("Loaded Thing {} [id:{}] of type \"{}\"",
                     new Object[]{objectLogic.getPojo().getName(), objectLogic.getPojo().getUUID(), objectLogic.getClass().getCanonicalName()});
             return objectLogic;
         } catch (IOException ex) {
-            throw new RepositoryException("Cannot read Thing file " + file.getAbsolutePath(), ex);
+            throw new RepositoryException("Cannot read Thing file \"" + file.getAbsolutePath() + "\"", ex);
         } catch (XStreamException e) {
-            throw new RepositoryException("Error while deserializing Thing file " + file.getAbsolutePath(), e);
+            throw new RepositoryException("Error while deserializing Thing file \"" + file.getAbsolutePath() + "\"", e);
         }
     }
 

@@ -222,5 +222,6 @@ public class EventTemplate implements Serializable {
 	public String getType() {
 		return type;
 	}
-    
+  
 }
+

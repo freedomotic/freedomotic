@@ -36,7 +36,6 @@ public class Zone
         implements Serializable {
 
     private static final long serialVersionUID = 4668625650384850879L;
-
     private String name;
     private String description;
     private boolean room;
@@ -46,81 +45,89 @@ public class Zone
     private String texture;
     private String uuid;
 
-    /**
-     *
-     * @return
-     */
-    public String getName() {
-        return this.name;
-    }
-
     public Zone() {
         this.uuid = UUID.randomUUID().toString();
     }
 
     /**
+     * Returns the zone name.
      *
-     * @return
+     * @return the zone name
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Returns the zone shape.
+     *
+     * @return the zone shape
      */
     public FreedomPolygon getShape() {
         return this.shape;
     }
 
     /**
+     * Checks if the zone is a room.
      *
-     * @return
+     * @return true if the zone is a room, false otherwise
      */
     public boolean isRoom() {
         return room;
     }
 
     /**
+     * Sets the zone as a room.
      *
-     * @param room
+     * @param room true if the zone is set as room, false otherwise
      */
     public void setAsRoom(boolean room) {
         this.setRoom(room);
     }
 
     /**
+     * Gets the zone description.
      *
-     * @return
+     * @return the zone description
      */
     public String getDescription() {
         if (description == null) {
             description = "";
         }
-
         return description;
     }
 
     /**
+     * Sets the zone description.
      *
-     * @param description
+     * @param description the description to set
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
+     * Gets the zone texture.
      *
-     * @return
+     * @return the texture
      */
     public String getTexture() {
         return texture;
     }
 
     /**
+     * Sets the zone name.
      *
-     * @param name
+     * @param name the zone name to set
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
+     * Setsthe zone shape.
      *
-     * @param shape
+     * @param shape the zone shape to set
      */
     public void setShape(FreedomPolygon shape) {
         this.shape = shape;
@@ -136,8 +143,9 @@ public class Zone
     }
 
     /**
+     * Sets the zone texture.
      *
-     * @param file
+     * @param file the texture path
      */
     public void setTexture(String file) {
         this.texture = file;
@@ -145,21 +153,22 @@ public class Zone
     }
 
     /**
+     * Gets the objets list in the zone.
      *
-     * @return
+     * @return a list of objects
      */
     @XmlTransient
     public ArrayList<EnvObject> getObjects() {
         if (objects == null) {
             objects = new ArrayList<EnvObject>();
         }
-
         return objects;
     }
 
     /**
+     * Sets the list of objects in the zone.
      *
-     * @param objects
+     * @param objects the objects list to set
      */
     public void setObjects(ArrayList<EnvObject> objects) {
         this.objects = objects;
@@ -221,7 +230,9 @@ public class Zone
     }
 
     /**
-     * @return the uuid
+     * Gets the zone uuid.
+     *
+     * @return the uuid of the zone
      */
     public String getUuid() {
         if (uuid == null || uuid.equals("")) {
@@ -231,6 +242,8 @@ public class Zone
     }
 
     /**
+     * Sets the zone uuid.
+     *
      * @param uuid the uuid to set
      */
     public void setUuid(String uuid) {

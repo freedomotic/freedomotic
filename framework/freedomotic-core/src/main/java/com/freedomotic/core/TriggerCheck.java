@@ -91,7 +91,7 @@ public class TriggerCheck {
                 Trigger resolved = resolveTrigger(event, trigger);
 
                 if (resolved.isConsistentWith(event)) {
-                    LOG.debug("[CONSISTENT] hardware level trigger ''{}'' {}''\nconsistent with received event ''{}'' {}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
+                    LOG.debug("[CONSISTENT] hardware level trigger \"{} {}\"\nconsistent with received event \"{}\" \"{}\"", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
                     applySensorNotification(resolved, event);
                     return true;
                 }
@@ -99,7 +99,7 @@ public class TriggerCheck {
                 if (trigger.canFire()) {
                     Trigger resolved = resolveTrigger(event, trigger);
                     if (resolved.isConsistentWith(event)) {
-                        LOG.debug("[CONSISTENT] registered trigger ''{}'' {}''\nconsistent with received event ''{}'' {}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
+                        LOG.debug("[CONSISTENT] registered trigger \"{} {}\"\nconsistent with received event ''{}'' {}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
                         executeTriggeredAutomations(resolved, event);
                         return true;
                     }
@@ -107,7 +107,7 @@ public class TriggerCheck {
             }
 
             //if we are here the trigger is not consistent
-            LOG.debug("[NOT CONSISTENT] registered trigger ''{}'' {}''\nnot consistent with received event ''{}'' {}", new Object[]{trigger.getName(), trigger.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
+            LOG.debug("[NOT CONSISTENT] registered trigger \"{} {}\"\nnot consistent with received event ''{}'' {}", new Object[]{trigger.getName(), trigger.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
 
             return false;
         } catch (Exception e) {
@@ -123,14 +123,16 @@ public class TriggerCheck {
     }
 
     private void applySensorNotification(Trigger resolved, final EventTemplate event) {
-        String protocol;
-        String address;
+        String protocol = null;
+        String address = null;
         EnvObjectLogic affectedObject = null;
 
-        //join device: add the object on the map if not already there
-        //join device requires to know 'object.class' and 'object.name' properties
-        protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
-        address = resolved.getPayload().getStatements("event.address").get(0).getValue();
+        if (!(resolved.getPayload().getStatements("event.protocol").isEmpty() && resolved.getPayload().getStatements("event.address").isEmpty())) {
+            //join device: add the object on the map if not already there
+            //join device requires to know 'object.class' and 'object.name' properties
+            protocol = resolved.getPayload().getStatements("event.protocol").get(0).getValue();
+            address = resolved.getPayload().getStatements("event.address").get(0).getValue();
+        }
 
         if ((protocol != null) && (address != null)) {
             String clazz = event.getProperty("object.class");
@@ -140,7 +142,7 @@ public class TriggerCheck {
             affectedObject = thingsRepository.findByAddress(protocol, address);
 
             if (affectedObject == null) { //there isn't an object with this protocol and address
-                LOG.warn("Found a candidate for things autodiscovery: thing ''{}'' of type ''{}''", new Object[]{name, clazz});
+                LOG.warn("Found a candidate for things autodiscovery: thing \"{}\" of type \"{}\"", new Object[]{name, clazz});
                 if ((clazz != null) && !clazz.isEmpty()) {
                     boolean allowClones;
                     if (autodiscoveryAllowClones.equalsIgnoreCase("false")) {
@@ -161,10 +163,10 @@ public class TriggerCheck {
         if (affectedObject != null && affectedObject.executeTrigger(resolved)) {
             long elapsedTime = System.currentTimeMillis() - event.getCreation();
             LOG.info(
-                    "Sensor notification ''{}'' applied to object ''{}'' in {}ms.",
+                    "Sensor notification \"{}\" applied to thing \"{}\" in {} ms.",
                     new Object[]{resolved.getName(), affectedObject.getPojo().getName(), elapsedTime});
         } else {
-            LOG.warn("Hardware trigger {} is not associated to any object.", resolved.getName());
+            LOG.warn("Hardware trigger \"{}\" is not associated to any thing.", resolved.getName());
         }
         resolved.getPayload().clear();
         event.getPayload().clear();
@@ -172,7 +174,6 @@ public class TriggerCheck {
 
     private void executeTriggeredAutomations(final Trigger trigger, final EventTemplate event) {
         Runnable automation = new Runnable() {
-
             @Override
             public void run() {
 
@@ -187,12 +188,12 @@ public class TriggerCheck {
                     if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {
                         if (!checkAdditionalConditions(reaction)) {
                             LOG.info(
-                                    "Additional conditions test failed in reaction {}", reaction.toString());
+                                    "Additional conditions test failed in reaction \"{}\"", reaction.toString());
                             return;
                         }
                         reactionTrigger.setExecuted();
                         found = true;
-                        LOG.debug("Try to execute reaction {}", reaction.toString());
+                        LOG.debug("Try to execute reaction \"{}\"", reaction.toString());
 
                         try {
                             //executes the commands in sequence (only the first sequence is used) 
@@ -232,18 +233,18 @@ public class TriggerCheck {
                                     if (reply == null) {
                                         command.setExecuted(false);
                                         LOG.warn(
-                                                "Unreceived reply within given time ({}ms) for command {}",
+                                                "Unreceived reply within given time ({} ms) for command \"{}\"",
                                                 new Object[]{command.getReplyTimeout(), command.getName()});
-                                        notifyMessage("Unreceived reply within given time for command " + command.getName());
+                                        notifyMessage("Unreceived reply within given time for command \"" + command.getName() + "\"");
                                     } else {
                                         if (reply.isExecuted()) {
                                             //the reply is executed so mark the origial command as executed as well
                                             command.setExecuted(true);
-                                            LOG.debug("Executed succesfully {}", command.getName());
+                                            LOG.debug("Executed succesfully \"{}\"", command.getName());
                                         } else {
                                             command.setExecuted(false);
-                                            LOG.warn("Unable to execute command {}. Skipping the others", command.getName());
-                                            notifyMessage("Unable to execute command " + command.getName());
+                                            LOG.warn("Unable to execute command \"{}\". Skipping the others", command.getName());
+                                            notifyMessage("Unable to execute command \"" + command.getName() + "\"");
                                             // skip the other commands
                                             return;
                                         }
@@ -255,7 +256,7 @@ public class TriggerCheck {
                             return;
                         }
 
-                        String info = "Executing automation '" + reaction.toString() + "' takes "
+                        String info = "Executing automation \"" + reaction.toString() + "\" takes "
                                 + (System.currentTimeMillis() - event.getCreation()) + "ms.";
                         LOG.info(info);
 
@@ -266,7 +267,7 @@ public class TriggerCheck {
                 }
 
                 if (!found) {
-                    LOG.info("No valid reaction bound to trigger ''{}''", trigger.getName());
+                    LOG.info("No valid reaction bound to trigger \"{}\"", trigger.getName());
                 }
                 trigger.getPayload().clear();
                 event.getPayload().clear();
@@ -308,7 +309,7 @@ public class TriggerCheck {
                     } else {
                         List<EnvObjectLogic> newObject = thingsRepository.findByName(value.substring(value.indexOf("[") + 1, value.indexOf("]")));
                         if (newObject.isEmpty()) {
-                            LOG.warn("Cannot test condition on unexistent object: {}", value.substring(value.indexOf("[") + 1, value.indexOf("]")));
+                            LOG.warn("Cannot test condition on unexistent thing: \"{}\"", value.substring(value.indexOf("[") + 1, value.indexOf("]")));
                             return false;
                         } else {
                             valueBehavior = value.substring(value.indexOf(".") + 1);
@@ -335,7 +336,7 @@ public class TriggerCheck {
                     }
                 } else {
                     // regex fails LOG syntax error
-                    LOG.warn("Cannot test condition on unexistent object: {}", condition.getTarget());
+                    LOG.warn("Cannot test condition on unexistent thing: \"{}\"", condition.getTarget());
                     return false;
                 }
             }

@@ -181,7 +181,7 @@ public final class Mailer extends Protocol {
 
         Transport.send(message);
         sentMails++;
-        setDescription(sentMails + " emails sent");
+        setDescription(sentMails + " email(s) sent");
     }
 
     /**

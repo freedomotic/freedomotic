@@ -27,10 +27,10 @@ import com.freedomotic.reactions.Command;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
-import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.updateshandlers.FreedomoticBotHandlers;
+//import org.telegram.telegrambots.api.methods.send.SendMessage;
 
 /**
  *
@@ -72,8 +72,10 @@ public class TelegramBot
 
     @Override
     protected void onStart() {
+        
+        ApiContextInitializer.init(); 
         telegramBotsApi = new TelegramBotsApi();
-        fdBotHandler = new FreedomoticBotHandlers(BOT_TOKEN, BOT_USERNAME, CHAT_ID);
+        fdBotHandler = new FreedomoticBotHandlers(BOT_TOKEN, BOT_USERNAME, CHAT_ID, this);
         try {
             telegramBotsApi.registerBot(fdBotHandler);
         } catch (TelegramApiException e) {
@@ -84,13 +86,19 @@ public class TelegramBot
 
     @Override
     protected void onStop() {
+        
         LOG.info("Telegram Bot plugin stopped");
     }
 
     @Override
     protected void onCommand(Command c)
             throws IOException, UnableToExecuteException {
-        fdBotHandler.sendMessageToChannel(CHAT_ID, c.getProperty("message"));
+
+        if (!(c.getProperty("attachment") == null && c.getProperty("attachment").isEmpty())) {
+            fdBotHandler.sendPhotoToChannel(CHAT_ID, c.getProperty("message"), c.getProperty("attachment"));
+        } else {
+            fdBotHandler.sendMessageToChannel(CHAT_ID, c.getProperty("message"));
+        }
     }
 
     @Override

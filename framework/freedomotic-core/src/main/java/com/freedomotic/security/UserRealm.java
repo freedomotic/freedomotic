@@ -50,10 +50,18 @@ public class UserRealm extends SimpleAccountRealm {
         setCredentialsMatcher(matcher);
     }
 
+    /**
+     * 
+     * @param account 
+     */
     public void addUser(User account) {
         super.add(account);
     }
 
+    /**
+     * 
+     * @param role 
+     */
     public void addRole(SimpleRole role) {
         super.add(role);
     }
@@ -63,6 +71,10 @@ public class UserRealm extends SimpleAccountRealm {
         return (User) super.getUser(username);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public Map<String, User> getUsers() {
         HashMap<String, User> accounts = new HashMap<String, User>();
         for (String userName : users.keySet()) {
@@ -71,6 +83,10 @@ public class UserRealm extends SimpleAccountRealm {
         return accounts;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public Map<String, SimpleRole> getRoles() {
         return roles;
     }
@@ -80,6 +96,11 @@ public class UserRealm extends SimpleAccountRealm {
         return super.getRole(rolename); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * 
+     * @param file
+     * @return 
+     */
     private int loadRoles(File file) {
         roles.clear();
         XStream xstream = FreedomXStream.getXstream();
@@ -90,14 +111,25 @@ public class UserRealm extends SimpleAccountRealm {
         return 0;
     }
 
+    /**
+     * 
+     * @param file
+     * @return
+     * @throws IOException 
+     */
     private boolean saveRoles(File file) throws IOException {
         SimpleRole[] ra = new SimpleRole[]{};
         ra = getRoles().values().toArray(ra);
-        LOG.info("Serializing roles to {}", file);
+        LOG.info("Serializing roles to \"{}\"", file);
         FreedomXStream.toXML(ra, file);
         return true;
     }
 
+    /**
+     * 
+     * @param file
+     * @return 
+     */
     private int loadUsers(File file) {
         users.clear();
         XStream xstream = FreedomXStream.getXstream();
@@ -108,25 +140,44 @@ public class UserRealm extends SimpleAccountRealm {
         return 0;
     }
 
+    /**
+     * 
+     * @param file
+     * @return
+     * @throws IOException 
+     */
     private boolean saveUsers(File file) throws IOException {
         User[] ua = new User[]{};
         ua = getUsers().values().toArray(ua);
-        LOG.info("Serializing users to {}", file);
+        LOG.info("Serializing users to \"{}\"", file);
         FreedomXStream.toXML(ua, file);
 
         return true;
     }
 
+    /**
+     * 
+     * @param file 
+     */
     public void load(File file) {
         loadRoles(new File(file + "/roles.xml"));
         loadUsers(new File(file + "/users.xml"));
     }
 
+    /**
+     * 
+     * @param file
+     * @throws IOException 
+     */
     public void save(File file) throws IOException {
         saveUsers(new File(file + "/users.xml"));
         saveRoles(new File(file + "/roles.xml"));
     }
 
+    /**
+     * 
+     * @param userName 
+     */
     public void removeUser(String userName) {
         User u = getUser(userName);
         u.setObjectPermissions(null);
@@ -136,6 +187,10 @@ public class UserRealm extends SimpleAccountRealm {
         users.remove(userName);
     }
 
+    /**
+     * 
+     * @param roleName 
+     */
     public void removeRole(String roleName) {
         SimpleRole r = getRole(roleName);
         for (User u : getUsers().values()) {

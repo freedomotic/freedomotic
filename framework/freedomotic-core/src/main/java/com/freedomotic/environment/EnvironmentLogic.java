@@ -213,7 +213,7 @@ public final class EnvironmentLogic {
                 room.init(this);
 
                 if (!zones.contains(room)) {
-                    LOG.info("Adding room " + room);
+                    LOG.info("Adding room \"" + room + "\"");
 
                     this.zones.add(room);
                 } else {
@@ -224,7 +224,7 @@ public final class EnvironmentLogic {
                 zoneLogic.init(this);
 
                 if (!zones.contains(zoneLogic)) {
-                    LOG.info("Adding zone " + zoneLogic);
+                    LOG.info("Adding zone \"" + zoneLogic + "\"");
                     this.zones.add(zoneLogic);
                 } else {
                     LOG.warn("Attempt to add a null or an already existent zone " + zoneLogic);

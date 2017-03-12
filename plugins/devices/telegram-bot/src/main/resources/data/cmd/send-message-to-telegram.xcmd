@@ -1,0 +1,15 @@
+<command>
+    <name>Send a message to Telegram</name>
+    <receiver>app.actuators.social.telegram-bot.in</receiver>
+    <description>sends a message to Telegram</description>
+    <hardwareLevel>false</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <editable>false</editable>
+    <properties>
+        <properties>
+            <property name="command" value="send-message"/>
+            <property name="message" value="A message from Freedomotic"/>
+        </properties>
+    </properties>
+</command>

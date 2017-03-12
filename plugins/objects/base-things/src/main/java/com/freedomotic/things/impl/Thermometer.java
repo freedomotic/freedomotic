@@ -45,22 +45,22 @@ public class Thermometer
         temperature.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set minimum
-            		onRangeValue(temperature.getMin(), params, fireCommand);
-            	} else {
+                    onRangeValue(temperature.getMin(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set maximum
-            		onRangeValue(temperature.getMax(), params, fireCommand);
-            	} else {
+                    onRangeValue(temperature.getMax(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
@@ -87,7 +87,7 @@ public class Thermometer
     }
 
     private void setTemperature(int value) {
-        LOG.config("Setting behavior 'temperature' of object '" + getPojo().getName() + "' to "
+        LOG.config("Setting behavior \"temperature\" of thing \"" + getPojo().getName() + "\" to "
                 + value);
         temperature.setValue(value);
         getPojo().setCurrentRepresentation(0);
@@ -111,5 +111,24 @@ public class Thermometer
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
         triggerRepository.create(clicked);
+
+        Trigger temperatureGreaterThan = new Trigger();
+        temperatureGreaterThan.setName("When " + this.getPojo().getName() + " temperature is greater than 20 C");
+        temperatureGreaterThan.setChannel("app.event.sensor.object.behavior.change");
+        temperatureGreaterThan.getPayload().addStatement("object.name",
+                this.getPojo().getName());
+        temperatureGreaterThan.getPayload().addStatement("AND", "object.behavior." + BEHAVIOR_TEMPERATURE, "GREATER_THAN", "20");
+        temperatureGreaterThan.setPersistence(false);
+        triggerRepository.create(temperatureGreaterThan);
+
+        Trigger temperatureLessThan = new Trigger();
+        temperatureLessThan.setName("When " + this.getPojo().getName() + " temperature is less than 20 C");
+        temperatureLessThan.setChannel("app.event.sensor.object.behavior.change");
+        temperatureLessThan.getPayload().addStatement("object.name",
+                this.getPojo().getName());
+        temperatureLessThan.getPayload().addStatement("AND", "object.behavior." + BEHAVIOR_TEMPERATURE, "LESS_THAN", "20");
+        temperatureLessThan.setPersistence(false);
+        triggerRepository.create(temperatureLessThan);
+
     }
 }

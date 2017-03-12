@@ -113,7 +113,7 @@ public abstract class Protocol extends Plugin {
      */
     public void notifyEvent(EventTemplate ev, String destination) {
         if (isAllowedToSend()) {
-            LOG.debug("Sensor " + this.getName() + " notify event " + ev.getEventName() + ":" + ev.getPayload().toString());
+            LOG.debug("Sensor \"" + this.getName() + "\" notifies event \"" + ev.getEventName() + "\" with payload \"" + ev.getPayload().toString() + "\"");
             getBusService().send(ev, destination);
         }
     }
@@ -125,7 +125,7 @@ public abstract class Protocol extends Plugin {
     public void start() {
         super.start();
         if (isAllowedToStart()) {
-            LOG.info("Starting plugin {}", getName());
+            LOG.info("Starting plugin \"{}\"", getName());
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
@@ -146,7 +146,7 @@ public abstract class Protocol extends Plugin {
                     } catch (Exception e) {
                         setStatus(PluginStatus.FAILED);
                         setDescription("Plugin start FAILED. see logs for details.");
-                        LOG.error("Plugin " + getName() + " start FAILED: " + e.getLocalizedMessage(), e);
+                        LOG.error("Plugin ''" + getName() + "'' starting FAILED: " + e.getLocalizedMessage(), e);
                     }
 
                 }
@@ -162,7 +162,7 @@ public abstract class Protocol extends Plugin {
     public void stop() {
         super.stop();
         if (isRunning()) {
-            LOG.info("Stopping plugin {}", getName());
+            LOG.info("Stopping plugin \"{}\"", getName());
             Runnable action = new Runnable() {
                 @Override
                 public synchronized void run() {
@@ -179,8 +179,8 @@ public abstract class Protocol extends Plugin {
                         setStatus(PluginStatus.STOPPED);
                     } catch (Exception e) {
                         setStatus(PluginStatus.FAILED);
-                        setDescription("Plugin stop FAILED. see logs for details.");
-                        LOG.error("Error stopping " + getName() + ": " + e.getLocalizedMessage(), e);
+                        setDescription("Plugin stopping FAILED. see logs for details.");
+                        LOG.error("Error stopping plugin \"" + getName() + "\": " + e.getLocalizedMessage(), e);
                     }
                 }
             };
@@ -211,7 +211,7 @@ public abstract class Protocol extends Plugin {
     @Override
     public final void onMessage(final ObjectMessage message) {
         if (!isRunning()) {
-            notifyError("Plugin '" + getName() + "' receives a command while is not running. Turn on the plugin first ");
+            notifyError("Plugin \"" + getName() + "\" receives a command while is not running. Turn on the plugin first ");
             return;
         }
 
@@ -222,7 +222,7 @@ public abstract class Protocol extends Plugin {
 
             if (payload instanceof Command) {
                 final Command command = (Command) payload;
-                LOG.info("{} receives command {} with parametes '{''{'{}'}''}'", new Object[]{this.getName(), command.getName(), command.getProperties()});
+                LOG.info("Plugin \"{}\" receives command [{}] with parameters '{''{'{}'}''}'", new Object[]{this.getName(), command.getName(), command.getProperties()});
 
                 Protocol.ActuatorOnCommandRunnable action;
                 lastDestination = message.getJMSReplyTo();
@@ -246,7 +246,8 @@ public abstract class Protocol extends Plugin {
     }
 
     /**
-     *
+     * Sends a command.
+     * 
      * @param command
      * @return
      */
@@ -315,7 +316,7 @@ public abstract class Protocol extends Plugin {
                 command.setExecuted(false);
             } catch (UnableToExecuteException ex) {
                 command.setExecuted(false);
-                LOG.info(getName() + " failed to execute command " + command.getName() + ": " + ex.getMessage());
+                LOG.info("Plugin \"" + getName() + "\" failed to execute command [" + command.getName() + "]: " + ex.getMessage());
             }
 
             // automatic-reply-to-command is used when the plugin executes the command in a

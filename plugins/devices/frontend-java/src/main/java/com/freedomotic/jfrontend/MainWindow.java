@@ -53,6 +53,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -939,7 +941,7 @@ public class MainWindow
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             file = fc.getSelectedFile();
-            LOG.info("Opening {}", file.getAbsolutePath());
+            LOG.info("Opening \"{}\"", file.getAbsolutePath());
 
             try {
                 api.environments().init(file);
@@ -1114,7 +1116,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuBackgroundActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuBackgroundActionPerformed
 
-        final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + "/resources/");
+        final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + File.separator + "resources"+ File.separator+"system"+File.separator+"map"+File.separator);
         OpenDialogFileFilter filter = new OpenDialogFileFilter();
         filter.addExtension("png");
         filter.addExtension("jpeg");
@@ -1128,13 +1130,29 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             //This is where a real application would open the file.
-            LOG.info("Opening {}", file.getAbsolutePath());
-            drawer.getCurrEnv().getPojo().setBackgroundImage(file.getName());
+            LOG.info("Opening \"{}\"", file.getAbsolutePath());
+            file = this.moveBackgroundFile(file);
+            drawer.getCurrEnv().getPojo().setBackgroundImage(file.getAbsolutePath());
             drawer.setNeedRepaint(true);
             frameMap.validate();
         }
     }//GEN-LAST:event_mnuBackgroundActionPerformed
 
+    private File moveBackgroundFile(File backgroundImage) {
+    	File resourcesFolder = new File(Info.PATHS.PATH_DATA_FOLDER + File.separator + "resources"+ File.separator+"system"+File.separator+"map");
+    
+    	if(backgroundImage.exists() && resourcesFolder.isDirectory() && !(new File(resourcesFolder, backgroundImage.getName()).exists())) {
+    		try {
+				FileUtils.copyFileToDirectory(backgroundImage, resourcesFolder);
+				backgroundImage = new File(resourcesFolder,backgroundImage.getName());
+			} catch (IOException e) {
+				 LOG.error(e.getMessage(),e);
+			}
+    	}
+    	
+    	return backgroundImage;
+    }
+    
     private void mnuRoomBackgroundActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuRoomBackgroundActionPerformed
 
         ZoneLogic zone = drawer.getSelectedZone();
@@ -1236,7 +1254,22 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuPluginConfigureActionPerformed
 
     private void mnuTutorialActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuTutorialActionPerformed
-        new TipOfTheDay(master);
+       
+        String url = "http://freedomotic-user-manual.readthedocs.io/";
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+                try {
+                    URI uri = new URI(url); // url is a string containing the URL
+                    desktop.browse(uri);
+                } catch (IOException | URISyntaxException ex) {
+                    LOG.error(ex.getLocalizedMessage());
+                }
+            }
+        } else {
+            //open popup with link
+            JOptionPane.showMessageDialog(this, i18n.msg("goto") + url);
+        }
     }//GEN-LAST:event_mnuTutorialActionPerformed
 
     private void mnuSelectEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSelectEnvironmentActionPerformed
@@ -1415,7 +1448,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             c.setProperty("from", master.getApi().getConfig().getStringProperty("ADMIN_SENDING_ADDRESS", "issue.reporter@freedomotic.com"));
             c.setProperty("to", master.getApi().getConfig().getStringProperty("ADMIN_RECIPIENT_ADDRESS", "admin@freedomotic.com"));
             c.setProperty("message", "Here you are with the log received from an user");
-            c.setProperty("subject", "Log sent by MainWindow");
+            c.setProperty("subject", "Log sent by Freedomotic");
             c.setProperty("attachment", Freedomotic.logPath());
             master.notifyCommand(c);
             JOptionPane.showMessageDialog(this, i18n.msg("log_sent"));

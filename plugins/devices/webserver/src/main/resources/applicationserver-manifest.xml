@@ -1,7 +1,7 @@
 <config>
     <properties>
         <property name="name" value="webserver"/>
-        <property name="description" value="A Jetty Webserver"/>
+        <property name="description" value="A webserver for web application"/>
         <property name="category" value="webserver"/>
         <property name="short-name" value="jetty"/>
         <property name="startup-time" value="on load"/>

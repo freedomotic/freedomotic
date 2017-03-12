@@ -1,0 +1,10 @@
+<config>
+    <properties>
+        <property name="name" value="weather"/>
+        <property name="description" value="It's a weather thing"/>
+        <property name="category" value="category"/>
+        <property name="short-name" value="weather"/>
+    </properties>
+</config>
+
+                
