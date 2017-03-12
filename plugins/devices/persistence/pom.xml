@@ -1,0 +1,222 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.freedomotic</groupId>
+		<artifactId>freedomotic-plugins</artifactId>
+		<version>5.6-SNAPSHOT</version>
+		<relativePath>../../</relativePath>
+	</parent>
+	<artifactId>persistence</artifactId>
+	<packaging>jar</packaging>
+	<name>persistence</name>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<developers>
+		<developer>
+			<id>p3trur0</id>
+			<name>P3trur0</name>
+			<email></email>
+			<organization>Flatmap.it</organization>
+			<organizationUrl>https://flatmap.it</organizationUrl>
+			<properties>
+				<nation>it</nation>
+			</properties>
+			<timezone>-1</timezone>
+		</developer>
+	</developers>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
+		<freedomotic.package.type>device</freedomotic.package.type>
+		<freedomotic.nodeid>36518</freedomotic.nodeid>
+		<freedomotic.package.license>GNU GPL2</freedomotic.package.license>
+		<freedomotic.package.vendor.name>P3trur0</freedomotic.package.vendor.name>
+		<freedomotic.package.vendor.surname>Irp1n0</freedomotic.package.vendor.surname>
+		<freedomotic.package.vendor.contact>P3trur0</freedomotic.package.vendor.contact>
+		<freedomotic.package.vendor.company>Freedomotic</freedomotic.package.vendor.company>
+		<freedomotic.package.vendor.nation>it</freedomotic.package.vendor.nation>
+		<freedomotic.framework.required.major>5</freedomotic.framework.required.major>
+		<freedomotic.framework.required.minor>6</freedomotic.framework.required.minor>
+		<freedomotic.framework.required.build>x</freedomotic.framework.required.build>
+		<!--don't like this but works for the moment -->
+		<freedomotic.synch.dist.path>../../../framework/freedomotic-core/plugins/</freedomotic.synch.dist.path>
+		<freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${project.version}.${freedomotic.package.type}</freedomotic.marketplace.file>
+		<freedomotic.marketplace.username></freedomotic.marketplace.username>
+		<freedomotic.marketplace.password></freedomotic.marketplace.password>
+		<dmp.version>0.18.1</dmp.version> <!-- Docker Maven Plugin version -->
+		<cassandra.version>3.9</cassandra.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.datastax.cassandra</groupId>
+			<artifactId>cassandra-driver-core</artifactId>
+			<version>3.1.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+			<version>1.8.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.twitter</groupId>
+			<artifactId>bijection-avro_2.11</artifactId>
+			<version>0.9.2</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>freedomotic-core</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.avro</groupId>
+				<artifactId>avro-maven-plugin</artifactId>
+				<version>1.8.1</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>schema</goal>
+						</goals>
+						<configuration>
+							<sourceDirectory>${project.basedir}/src/main/resources/avro/</sourceDirectory>
+							<outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>${dmp.version}</version>
+				<configuration>
+					<showLogs>true</showLogs>
+					<logAll>true</logAll>
+					<images>
+						<image>
+							<alias>cassandra</alias>
+							<name>p3trur0/cassandra32:${cassandra.version}</name>
+							<run>
+								<ports>
+									<port>cassandra.host:7000</port>
+								</ports>
+								<network>
+									<mode>host</mode>
+								</network>
+								<wait>
+									<time>20000</time>
+								</wait>
+							</run>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>start</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<project>
+						<reporting>
+							<outputEncoding>UTF-8</outputEncoding>
+						</reporting>
+					</project>
+					<systemPropertyVariables>
+						<CASSANDRA_ADDR>localhost</CASSANDRA_ADDR>
+						<CASSANDRA_PORT>${cassandra.port}</CASSANDRA_PORT>
+					</systemPropertyVariables>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+
+	</build>
+</project>
