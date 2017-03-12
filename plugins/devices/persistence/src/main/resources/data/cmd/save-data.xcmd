@@ -1,0 +1,11 @@
+<command>
+  <name>Persist data on Cassandra</name>
+  <receiver>app.actuators.protocol.persistence.in</receiver>
+  <description>The persistence plugin has registered a new log entry</description>
+  <delay>0</delay>
+  <timeout>10000</timeout>
+  <properties>
+    <properties>        
+    </properties>
+  </properties>
+</command>
