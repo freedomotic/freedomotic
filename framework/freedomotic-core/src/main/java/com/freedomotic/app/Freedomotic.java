@@ -171,12 +171,28 @@ public class Freedomotic implements BusConsumer {
         this.auth = auth;
         this.autodiscovery = autodiscovery;
     }
+    
+    private boolean configureFreedomoticInstanceId() {
+    	if ((INSTANCE_ID == null) || (INSTANCE_ID.isEmpty())) {
+            INSTANCE_ID = config.getStringProperty("INSTANCE_ID", UUID.randomUUID().toString());
+       }
+   	
+    	config.setProperty("INSTANCE_ID", INSTANCE_ID);
+    	
+    	return true;
+    }
 
     /**
      *
      * @throws FreedomoticException
      */
     public void start() throws FreedomoticException {
+    	
+    	
+    	this.configureFreedomoticInstanceId();
+    	
+    	LOG.info("Freedomotic instance ID is "+INSTANCE_ID);
+    	
         // Relocate base data folder according to configuration (if specified in the config file)
         // Do not move it in AppConfigImpl otherwise unit tests will become dependent to the presence of the data folder
         String defaultPath = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
@@ -444,12 +460,6 @@ public class Freedomotic implements BusConsumer {
             INSTANCE_ID = "";
         }
 
-        if ((INSTANCE_ID == null) || (INSTANCE_ID.isEmpty())) {
-            INSTANCE_ID = UUID.randomUUID().toString();
-        }
-
-        LOG.info("Freedomotic instance ID: " + INSTANCE_ID);
-
         try {
             INJECTOR = Guice.createInjector(new FreedomoticInjector());
             Freedomotic freedomotic = INJECTOR.getInstance(Freedomotic.class);
@@ -525,21 +535,11 @@ public class Freedomotic implements BusConsumer {
         try {
             folder = new File(environmentFilePath).getParentFile();
             environmentRepository.saveEnvironmentsToFolder(folder);
-
-            // block moved inside environmentRepository.saveEnvironmentsToFolder()
-            // if (config.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
-            //    File saveDir = null;
-            //    try {
-            //        saveDir = new File(folder + "/data/obj");
-            //        thingsRepository.saveAll(saveDir);
-            //    } catch (RepositoryException ex) {
-            //        LOG.log(Level.SEVERE, "Cannot save objects in {}", saveDir.getAbsolutePath());
-            //    }
-            // }
         } catch (RepositoryException ex) {
             LOG.error("Cannot save environment to folder \"{}\" due to \"{}\"", new Object[]{folder, ex.getCause()});
         }
 
+        LOG.info("Freedomotic instance ID "+INSTANCE_ID+" is shutting down. See you!");
         System.exit(0);
     }
 
@@ -558,7 +558,6 @@ public class Freedomotic implements BusConsumer {
      *
      */
     public static void kill() {
-
         kill(0);
     }
 
@@ -567,7 +566,6 @@ public class Freedomotic implements BusConsumer {
      * @param status
      */
     public static void kill(int status) {
-
         System.exit(status);
     }
 
