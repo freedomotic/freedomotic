@@ -591,7 +591,7 @@ public class Freedomotic implements BusConsumer {
      *
      * @return the log path
      */
-    public static String logPath() {
-        return LOG_PATH;
-    }
+	public static String logPath() {
+		return LOG_PATH;
+	}
 }
