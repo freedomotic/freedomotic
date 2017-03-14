@@ -171,15 +171,18 @@ public class Freedomotic implements BusConsumer {
         this.auth = auth;
         this.autodiscovery = autodiscovery;
     }
-    
+
+    /**
+     * Configures a Freedomotic instance ID
+     *
+     * @return true if the instance ID is configured, false otherwise
+     */
     private boolean configureFreedomoticInstanceId() {
-    	if ((INSTANCE_ID == null) || (INSTANCE_ID.isEmpty())) {
+        if ((INSTANCE_ID == null) || (INSTANCE_ID.isEmpty())) {
             INSTANCE_ID = config.getStringProperty("INSTANCE_ID", UUID.randomUUID().toString());
-       }
-   	
-    	config.setProperty("INSTANCE_ID", INSTANCE_ID);
-    	
-    	return true;
+        }
+        config.setProperty("INSTANCE_ID", INSTANCE_ID);
+        return true;
     }
 
     /**
@@ -187,12 +190,10 @@ public class Freedomotic implements BusConsumer {
      * @throws FreedomoticException
      */
     public void start() throws FreedomoticException {
-    	
-    	
-    	this.configureFreedomoticInstanceId();
-    	
-    	LOG.info("Freedomotic instance ID is "+INSTANCE_ID);
-    	
+
+        this.configureFreedomoticInstanceId();
+        LOG.info("Freedomotic instance ID is \"{}\"", INSTANCE_ID);
+
         // Relocate base data folder according to configuration (if specified in the config file)
         // Do not move it in AppConfigImpl otherwise unit tests will become dependent to the presence of the data folder
         String defaultPath = Info.PATHS.PATH_DATA_FOLDER.getAbsolutePath();
@@ -210,7 +211,7 @@ public class Freedomotic implements BusConsumer {
             SysSubject.getSession().setTimeout(-1);
             ThreadState threadState = new SubjectThreadState(SysSubject);
             threadState.bind();
-            LOG.info("Booting as user:" + auth.getSubject().getPrincipal() + ". Session will last:" + auth.getSubject().getSession().getTimeout());
+            LOG.info("Booting as user \"{}\". Session will last {}", auth.getSubject().getPrincipal(), auth.getSubject().getSession().getTimeout());
         }
 
         String resourcesPath
@@ -266,7 +267,7 @@ public class Freedomotic implements BusConsumer {
         try {
             pluginsManager.loadAllPlugins();
         } catch (PluginLoadingException ex) {
-            LOG.warn("Error while loading all plugins. Impossible to load " + ex.getPluginName(), ex);
+            LOG.warn("Error while loading all plugins. Impossible to load \"{}\" due to \"{}\"", ex.getPluginName(), ex.getCause());
         }
 
         /**
@@ -277,7 +278,7 @@ public class Freedomotic implements BusConsumer {
         try {
             ClassPathUpdater.add(Info.PATHS.PATH_PROVIDERS_FOLDER);
         } catch (IOException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error("Error during loading jars in \"/plugin/providers\" due to {}", ex.getMessage());
         }
 
         /**
@@ -350,6 +351,7 @@ public class Freedomotic implements BusConsumer {
     }
 
     /**
+     * Enables periodic saving of commands, triggers and reactions.
      *
      */
     private void activatePeriodicSave() {
@@ -363,8 +365,9 @@ public class Freedomotic implements BusConsumer {
     }
 
     /**
+     * Gets the Freedomotic instance ID.
      *
-     * @return
+     * @return the Freedomotic instance ID
      */
     public static String getInstanceID() {
         return INSTANCE_ID;
@@ -409,14 +412,14 @@ public class Freedomotic implements BusConsumer {
 
     /*
      * Updates the value of the static variable logToFile, that represents a flag stating if the
-     * current instance of Freedomotic comes with the logging to file feature
+     * current instance of Freedomotic comes with the logging to file feature.
      */
     private static void setLogToFile(boolean active) {
         logToFile = active;
     }
 
     /**
-     * Checks if the log to file is enabled
+     * Checks if the log to file is enabled.
      *
      * @return boolean true if the log to file is enabled, false otherwise
      */
@@ -448,7 +451,7 @@ public class Freedomotic implements BusConsumer {
     /**
      * Main entry point of Freedomotic. All starts from here.
      *
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
 
@@ -467,7 +470,7 @@ public class Freedomotic implements BusConsumer {
             freedomotic.enableLogToFile();
             freedomotic.start();
         } catch (FreedomoticException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error("Error during Freedomotic starting due to {}", ex.getMessage());
             System.exit(1);
         }
     }
@@ -510,8 +513,9 @@ public class Freedomotic implements BusConsumer {
     }
 
     /**
+     * Receives an exit signal and stops Freedomotic.
      *
-     * @param event
+     * @param event received event
      */
     public void onExit(EventTemplate event) {
         LOG.info("Received exit signal...");
@@ -539,12 +543,12 @@ public class Freedomotic implements BusConsumer {
             LOG.error("Cannot save environment to folder \"{}\" due to \"{}\"", new Object[]{folder, ex.getCause()});
         }
 
-        LOG.info("Freedomotic instance ID "+INSTANCE_ID+" is shutting down. See you!");
+        LOG.info("Freedomotic instance ID \"{}\" is shutting down. See you!", INSTANCE_ID);
         System.exit(0);
     }
 
     /**
-     * 
+     *
      */
     private void setDataRootPath() {
         if (config.getBooleanProperty("KEY_OVERRIDE_REACTIONS_ON_EXIT", false)) {
@@ -555,24 +559,27 @@ public class Freedomotic implements BusConsumer {
     }
 
     /**
-     *
+     * Exits with code "0".
+     * 
      */
     public static void kill() {
         kill(0);
     }
 
     /**
-     *
-     * @param status
+     * Esits with a status code.
+     * 
+     * @param status status code
      */
     public static void kill(int status) {
         System.exit(status);
     }
 
     /**
-     *
-     * @param t
-     * @return
+     * Prints a stack trace.
+     * 
+     * @param t the throwable object to print stack trace from
+     * @return a string representing the stack trace
      */
     public static String getStackTraceInfo(Throwable t) {
         StringWriter sw = new StringWriter();
@@ -592,13 +599,14 @@ public class Freedomotic implements BusConsumer {
     public static String logPath() {
         return LOG_PATH;
     }
-    
+
     /**
-     * Given the current Freedomotic instance id, 
-     * it returns an UUID object representing the identifier.
-     * @return freedomotic instance id as UUID.
+     * Given the current Freedomotic instance id, it returns an UUID object
+     * representing the identifier.
+     *
+     * @return Freedomotic instance id as UUID.
      */
-	public static UUID getInstanceIdAsUUID() {
-		return UUID.fromString(INSTANCE_ID);
-	}
+    public static UUID getInstanceIdAsUUID() {
+        return UUID.fromString(INSTANCE_ID);
+    }
 }
