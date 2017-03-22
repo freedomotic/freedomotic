@@ -78,9 +78,11 @@ public class Log4jAppender extends AppenderSkeleton {
 	 * @see org.apache.log4j.AppenderSkeleton#append(org.apache.log4j.spi.LoggingEvent)
 	 */
 	protected void append(LoggingEvent event) {
-		Level windowLevel = window.getPrintableLogger().getLevel();
-		if(event.getLevel().equals(windowLevel))
-		window.append(new Object[] {windowLevel, event.getMessage().toString()});
+		if(window!=null) {
+			Level windowLevel = window.getPrintableLogger().getLevel();
+			if(event.getLevel().equals(windowLevel))
+			window.append(new Object[] {windowLevel, event.getMessage().toString()});
+		}
 	}
 
 	/* (non-Javadoc)
