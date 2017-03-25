@@ -384,11 +384,15 @@ public class Freedomotic implements BusConsumer {
 
         if (!"OFF".equalsIgnoreCase(saveToLogConfigParam)) {
             try {
-                PatternLayout layout = new PatternLayout("%d{HH:mm:ss.SSS} %-5p [%t] (%F:%L) %m%n");
+                PatternLayout layout = new PatternLayout("%d{ISO8601} %-5p [%t] (%F:%L) %m%n");
                 RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, LOG_PATH);
                 rollingFileAppender.setMaxBackupIndex(5);
                 rollingFileAppender.setMaxFileSize("500KB");
                 org.apache.log4j.Logger proxyLogger = org.apache.log4j.Logger.getRootLogger();
+                
+                // disable default.file appender
+                proxyLogger.removeAppender("default.file");
+                
                 proxyLogger.setLevel(org.apache.log4j.Level.toLevel(saveToLogConfigParam));
                 proxyLogger.setAdditivity(false);
                 proxyLogger.addAppender(rollingFileAppender);
@@ -456,7 +460,7 @@ public class Freedomotic implements BusConsumer {
     public static void main(String[] args) {
 
         configureLogging();
-
+        
         try {
             INSTANCE_ID = args[0];
         } catch (Exception e) {
