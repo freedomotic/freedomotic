@@ -380,6 +380,7 @@ public class Freedomotic implements BusConsumer {
      */
     protected boolean enableLogToFile() {
 
+        org.apache.log4j.Logger proxyLogger = org.apache.log4j.Logger.getRootLogger();
         String saveToLogConfigParam = config.getStringProperty("KEY_SAVE_LOG_TO_FILE", "OFF").trim();
 
         if (!"OFF".equalsIgnoreCase(saveToLogConfigParam)) {
@@ -388,28 +389,19 @@ public class Freedomotic implements BusConsumer {
                 RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, LOG_PATH);
                 rollingFileAppender.setMaxBackupIndex(5);
                 rollingFileAppender.setMaxFileSize("500KB");
-                org.apache.log4j.Logger proxyLogger = org.apache.log4j.Logger.getRootLogger();
-                
-                // disable default.file appender
-                proxyLogger.removeAppender("default.file");
-                
                 proxyLogger.setLevel(org.apache.log4j.Level.toLevel(saveToLogConfigParam));
                 proxyLogger.setAdditivity(false);
                 proxyLogger.addAppender(rollingFileAppender);
-
-                if (config.getBooleanProperty("KEY_LOGGER_POPUP", true)
-                        && (java.awt.Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
-                    java.awt.Desktop.getDesktop()
-                            .browse(new File(LOG_PATH).toURI());
-                }
-
+                // disable default.file appender
+                proxyLogger.removeAppender("default.file");
                 Freedomotic.setLogToFile(true);
-
             } catch (IOException ex) {
-                LOG.error(ex.getMessage());
+                LOG.error("Impossible to start logging: \"{}\"", ex.getMessage());
             }
         } else {
             LOG.info("This Freedomotic configuration does not require a \"log to file\" feature.");
+            // disable default.file appender
+            proxyLogger.removeAppender("default.file");
         }
         return Freedomotic.isLogToFileEnabled();
     }
@@ -460,7 +452,7 @@ public class Freedomotic implements BusConsumer {
     public static void main(String[] args) {
 
         configureLogging();
-        
+
         try {
             INSTANCE_ID = args[0];
         } catch (Exception e) {
@@ -564,7 +556,7 @@ public class Freedomotic implements BusConsumer {
 
     /**
      * Exits with code "0".
-     * 
+     *
      */
     public static void kill() {
         kill(0);
@@ -572,7 +564,7 @@ public class Freedomotic implements BusConsumer {
 
     /**
      * Esits with a status code.
-     * 
+     *
      * @param status status code
      */
     public static void kill(int status) {
@@ -581,7 +573,7 @@ public class Freedomotic implements BusConsumer {
 
     /**
      * Prints a stack trace.
-     * 
+     *
      * @param t the throwable object to print stack trace from
      * @return a string representing the stack trace
      */
