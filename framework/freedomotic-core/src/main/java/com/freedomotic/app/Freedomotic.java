@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -36,7 +34,6 @@ import java.util.logging.LogManager;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
-import com.freedomotic.util.PeriodicSave;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -79,6 +76,7 @@ import com.freedomotic.security.UserRealm;
 import com.freedomotic.settings.AppConfig;
 import com.freedomotic.settings.Info;
 import com.freedomotic.things.ThingRepository;
+import com.freedomotic.util.PeriodicSave;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -450,8 +448,8 @@ public class Freedomotic implements BusConsumer {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-
-        configureLogging();
+    	
+    	configureLogging();
 
         try {
             INSTANCE_ID = args[0];
@@ -471,26 +469,28 @@ public class Freedomotic implements BusConsumer {
         }
     }
 
-    /**
-     * Configures java.util.logging (hereafter JUL)
-     *
-     * While Freedomotic is still using JUL, here is configured SLF4J Brigde.
-     *
-     * Thereby now all logging (including third party packages) is done through
-     * SLF4J.
-     */
-    private static void configureLogging() {
-
-        // Remove all handlers in jul (java.util.logging) root logger
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-
-        // Register slf4j handler to jul root logger 
-        SLF4JBridgeHandler.install();
-
-        // Set jul root log level to ALL, because default slf4jbridge handler is INFO.
-        LogManager.getLogManager().getLogger("").setLevel(Level.ALL);
-    }
-
+      /**
+       * Configures java.util.logging (hereafter JUL)
+       *
+       * While Freedomotic is still using JUL, here is configured SLF4J Brigde.
+       *
+       * Thereby now all logging (including third party packages) is done through
+       * SLF4J.
+       */
+      private static void configureLogging() {
+   
+          // Remove all handlers in jul (java.util.logging) root logger
+          SLF4JBridgeHandler.removeHandlersForRootLogger();
+   
+          // Register slf4j handler to jul root logger 
+          SLF4JBridgeHandler.install();
+   
+          // Set jul root log level to ALL, because default slf4jbridge handler is INFO.
+          LogManager.getLogManager().getLogger("").setLevel(Level.ALL);
+      }
+   
+    
+    
     @Override
     public void onMessage(ObjectMessage message) {
 

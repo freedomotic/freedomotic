@@ -19,15 +19,12 @@
  */
 package com.freedomotic.jfrontend;
 
-import com.freedomotic.i18n.I18n;
-import com.freedomotic.util.LogFormatter;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Handler;
-import java.util.logging.Level;
+
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -41,6 +38,12 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import org.apache.log4j.Logger;
+
+import com.freedomotic.i18n.I18n;
+import com.freedomotic.util.LogFormatter;
+import com.google.common.collect.ImmutableMap;
 
 /**
  *
@@ -62,7 +65,7 @@ public class LogWindow extends JFrame {
     JTable table = new JTable(model);
     JTextPane areaDetail = new JTextPane();
     JToggleButton btnStop = new JToggleButton();
-    private final Handler handler;
+    private final Logger printableLogger;
     private final I18n I18n;
 
     /**
@@ -70,10 +73,10 @@ public class LogWindow extends JFrame {
      * @param i18n
      * @param handler
      */
-    public LogWindow(I18n i18n, final Handler handler) {
+    public LogWindow(I18n i18n, final Logger printableLogger) {
         super("Log Window");
         this.I18n = i18n;
-        this.handler = handler;
+        this.printableLogger = printableLogger;
         setSize(600, 400);
         this.setLayout(new BorderLayout());
         areaDetail.setContentType("text/html");
@@ -103,7 +106,7 @@ public class LogWindow extends JFrame {
         cmbLevel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                handler.setLevel(Level.parse(cmbLevel.getSelectedItem().toString()));
+            	printableLogger.setLevel(org.apache.log4j.Level.toLevel(cmbLevel.getSelectedItem().toString()));
             }
         });
         add(new JLabel(I18n.msg("log_level") + ": "), BorderLayout.NORTH);
@@ -145,4 +148,9 @@ public class LogWindow extends JFrame {
             return c;
         }
     }
+    
+    protected Logger getPrintableLogger() {
+    	return this.printableLogger;
+    }
+    
 }
