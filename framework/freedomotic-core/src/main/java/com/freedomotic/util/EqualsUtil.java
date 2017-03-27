@@ -19,9 +19,6 @@
  */
 package com.freedomotic.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Collected methods which allow easy implementation of <code>equals</code>.
  *
@@ -44,8 +41,6 @@ import org.slf4j.LoggerFactory;
  * <code>Arrays.equals</code> methods should be used for array fields.
  */
 public class EqualsUtil {
-
-    private static final Logger LOG = LoggerFactory.getLogger(EqualsUtil.class.getName());
 
     /**
      *

@@ -35,7 +35,6 @@ import com.freedomotic.reactions.Trigger;
 import com.freedomotic.rules.Expression;
 import com.freedomotic.rules.ExpressionFactory;
 import com.google.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -116,12 +115,26 @@ public class TriggerCheck {
         }
     }
 
+    /**
+     * 
+     * 
+     * @param event
+     * @param trigger
+     * @return
+     * @throws VariableResolutionException 
+     */
     private Trigger resolveTrigger(final EventTemplate event, final Trigger trigger) throws VariableResolutionException {
         Resolver resolver = new Resolver();
         resolver.addContext("event.", event.getPayload());
         return resolver.resolve(trigger);
     }
 
+    /**
+     * 
+     * 
+     * @param resolved
+     * @param event 
+     */
     private void applySensorNotification(Trigger resolved, final EventTemplate event) {
         String protocol = null;
         String address = null;
@@ -172,6 +185,12 @@ public class TriggerCheck {
         event.getPayload().clear();
     }
 
+    /**
+     * 
+     * 
+     * @param trigger
+     * @param event 
+     */
     private void executeTriggeredAutomations(final Trigger trigger, final EventTemplate event) {
         Runnable automation = new Runnable() {
             @Override
@@ -240,7 +259,7 @@ public class TriggerCheck {
                                         if (reply.isExecuted()) {
                                             //the reply is executed so mark the origial command as executed as well
                                             command.setExecuted(true);
-                                            LOG.debug("Executed succesfully \"{}\"", command.getName());
+                                            LOG.debug("Executed successfully \"{}\"", command.getName());
                                         } else {
                                             command.setExecuted(false);
                                             LOG.warn("Unable to execute command \"{}\". Skipping the others", command.getName());
@@ -355,6 +374,11 @@ public class TriggerCheck {
         return Pattern.matches(decimalPattern, number);
     }
 
+    /**
+     * 
+     * 
+     * @param message 
+     */
     private void notifyMessage(String message) {
         MessageEvent event = new MessageEvent(this, message);
         event.setType("callout"); //display as callout on frontends

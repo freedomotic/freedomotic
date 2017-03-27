@@ -24,8 +24,6 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.TriggerCheck;
 import com.freedomotic.reactions.Trigger;
 import com.google.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Channel <b>app.event.sensor.protocol.read.PROTOCOL_NAME</b> informs about
@@ -35,8 +33,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class ProtocolRead
         extends EventTemplate {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ProtocolRead.class.getName());
 
     String protocol;
     @Inject

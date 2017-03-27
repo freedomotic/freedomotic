@@ -20,10 +20,6 @@
 package com.freedomotic.events;
 
 import java.io.File;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.freedomotic.api.EventTemplate;
 
 /**
@@ -43,7 +39,6 @@ import com.freedomotic.api.EventTemplate;
 public class MessageEvent
         extends EventTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MessageEvent.class.getName());
     private static final long serialVersionUID = 4733356918386875096L;
 
     /**
@@ -105,11 +100,10 @@ public class MessageEvent
     public void setTo(String to) {
         this.getPayload().addStatement("message.to", to);
     }
-    
 
     /**
      * Sets the path of the message attachment, if any.
-     * 
+     *
      * it is an OPTIONAL property
      *
      * @param path
@@ -117,16 +111,16 @@ public class MessageEvent
     public void setAttachmentPath(String path) {
         this.getPayload().addStatement("message.attachment", path);
     }
-    
+
     /**
      * Sets the path of the attached file, if any.
-     * 
+     *
      * it is an OPTIONAL property
      *
      * @param file representing the actual attachment
      */
     public void setAttachmentPath(File attachment) {
-    	String path = (attachment!=null)?attachment.getAbsolutePath():"";
+        String path = (attachment != null) ? attachment.getAbsolutePath() : "";
         this.getPayload().addStatement("message.attachment", path);
     }
 
@@ -153,17 +147,15 @@ public class MessageEvent
     public String getText() {
         return getPayload().getStatementValue("message.text");
     }
-    
+
     /**
-     * 
+     *
      * @return the absolute attachment path, if any
      */
     public String getAttachmentPath() {
-    	return getPayload().getStatementValue("message.attachment");
+        return getPayload().getStatementValue("message.attachment");
     }
 
-    
-    
     /**
      *
      * @return

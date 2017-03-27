@@ -21,7 +21,6 @@ package com.freedomotic.reactions;
 
 import com.freedomotic.persistence.Repository;
 import java.io.File;
-import java.util.List;
 
 /**
  *

@@ -19,7 +19,6 @@
  */
 package com.freedomotic.core;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.VariableResolutionException;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.reactions.Command;
@@ -62,7 +61,6 @@ import javax.script.ScriptException;
  */
 public final class Resolver {
 
-    // private static final String REFERENCE_DELIMITER = "@";
     private static final Logger LOG = LoggerFactory.getLogger(Resolver.class.getName());
     private List<String> namespaces = new ArrayList<String>();
     private Payload context;
@@ -251,7 +249,7 @@ public final class Resolver {
     }
 
     /**
-     * search in a trigger attribute for a pattern
+     * Searches in a trigger attribute for a pattern
      *
      * @event.VARIABLE_NAME and replace it with the real value from event
      * Payload p
@@ -325,7 +323,7 @@ public final class Resolver {
 
                     if (js.get(key) == null) {
                         LOG.error(
-                                "Script evaluation in trigger ''{}'' has returned a null value, maybe the key ''{}'' is not evaluated properly.",
+                                "Script evaluation in trigger \"{}\" has returned a null value, maybe the key \"{}\" is not evaluated properly.",
                                 new Object[]{trigger.getName(), key});
                     }
 
@@ -344,6 +342,11 @@ public final class Resolver {
         }
     }
 
+    /**
+     * 
+     * 
+     * @param c 
+     */
     private void mergeContextParamsIntoCommand(Command c) {
         //adding  parameters to command parameters with a  prefix
         Iterator<Statement> it = context.iterator();
@@ -353,6 +356,11 @@ public final class Resolver {
         }
     }
 
+    /**
+     * 
+     * 
+     * @param t 
+     */
     private void mergeContextParamsIntoTrigger(Trigger t) {
         //adding  parameters to command parameters with a  prefix
         t.getPayload().merge(context);
@@ -463,6 +471,10 @@ public final class Resolver {
         }
     }
 
+    /**
+     * 
+     * 
+     */
     void clear() {
         namespaces.clear();
         context.clear();

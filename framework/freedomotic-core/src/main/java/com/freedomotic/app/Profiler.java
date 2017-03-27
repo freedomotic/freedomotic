@@ -19,9 +19,6 @@
  */
 package com.freedomotic.app;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Deprecated: switch to AOP instead
  *
@@ -30,7 +27,6 @@ import org.slf4j.LoggerFactory;
 @Deprecated
 public class Profiler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Profiler.class.getName());
     private static final double STARTUP_TIME = System.currentTimeMillis();
     private static int sentEvents;
     private static int sentCommands;

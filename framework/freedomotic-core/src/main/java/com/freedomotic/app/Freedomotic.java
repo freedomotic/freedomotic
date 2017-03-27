@@ -19,23 +19,18 @@
  */
 package com.freedomotic.app;
 
-import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
-
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
-
 import com.freedomotic.util.PeriodicSave;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
@@ -47,7 +42,6 @@ import org.apache.shiro.util.ThreadState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-
 import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.bus.BootStatus;

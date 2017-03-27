@@ -22,8 +22,6 @@ package com.freedomotic.behaviors;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.ListBehavior;
 import java.util.ArrayList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This behavior accepts a string which is an element of the list or "next" or
@@ -36,7 +34,6 @@ import org.slf4j.LoggerFactory;
 public class ListBehaviorLogic
         implements BehaviorLogic {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ListBehaviorLogic.class.getName());
     private ListBehavior data;
     private Listener listener;
     private boolean changed;

@@ -19,7 +19,6 @@
  */
 package com.freedomotic.i18n;
 
-import com.freedomotic.api.Client;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;

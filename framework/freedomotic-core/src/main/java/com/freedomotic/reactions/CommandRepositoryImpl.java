@@ -25,20 +25,15 @@ import com.freedomotic.persistence.DataUpgradeService;
 import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.persistence.XmlPreprocessor;
 import com.freedomotic.settings.Info;
-import com.freedomotic.util.FileOperations;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -77,16 +72,16 @@ class CommandRepositoryImpl implements CommandRepository {
                 if (!userCommands.containsKey(c.getName().trim().toLowerCase())) {
                     userCommands.put(c.getName(),
                             c);
-                    LOG.trace("Added command ''{}'' to the list of user commands", c.getName());
+                    LOG.trace("Added command \"{}\" to the list of user commands", c.getName());
                 } else {
-                    LOG.debug("Command ''{}'' already in the list of user commands. Skipped", c.getName());
+                    LOG.debug("Command \"{}\" already in the list of user commands. Skipped", c.getName());
                 }
             } else if (!hardwareCommands.containsKey(c.getName().trim().toLowerCase())) {
                 hardwareCommands.put(c.getName(),
                         c);
-                LOG.trace("Added command ''{}'' to the list of hardware commands", c.getName());
+                LOG.trace("Added command \"{}\" to the list of hardware commands", c.getName());
             } else {
-                LOG.debug("Command ''{}'' already in the list of hardware commands. Skipped", c.getName());
+                LOG.debug("Command \"{}\" already in the list of hardware commands. Skipped", c.getName());
             }
         } else {
             LOG.warn("Attempt to add a null user command to the list. Skipped");
@@ -189,7 +184,7 @@ class CommandRepositoryImpl implements CommandRepository {
         Command command = hardwareCommands.get(name.trim());
 
         if (command == null) {
-            LOG.error("Missing command ''{}" + "''. "
+            LOG.error("Missing command \"{}\"" + "''. "
                     + "Maybe the related plugin is not installed or cannot be loaded", name);
         }
 
@@ -272,7 +267,7 @@ class CommandRepositoryImpl implements CommandRepository {
                 LOG.error("Error while loading command", ex);
             }
         } else {
-            LOG.debug("No commands to load from this folder {}", folder.toString());
+            LOG.debug("No commands to load from this folder \"{}\"", folder.toString());
         }
     }
 

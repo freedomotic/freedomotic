@@ -20,8 +20,6 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * General purpose event. Use only if no more specific events are present in
@@ -32,7 +30,6 @@ import org.slf4j.LoggerFactory;
  */
 public class GenericEvent extends EventTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GenericEvent.class.getName());
     private static final long serialVersionUID = 6029054631809171990L;
     private String destination = "app.event.sensor";
 
@@ -44,16 +41,13 @@ public class GenericEvent extends EventTemplate {
         this.setSender(source);
     }
 
-    /**
-     *
-     */
     @Override
     protected void generateEventPayload() {
     }
 
     /**
      * Gets the default channel.
-     * 
+     *
      * @return the default channel
      */
     @Override
@@ -63,7 +57,7 @@ public class GenericEvent extends EventTemplate {
 
     /**
      * Sets the channel.
-     * 
+     *
      * @param destination the channel to set
      */
     public void setDestination(String destination) {

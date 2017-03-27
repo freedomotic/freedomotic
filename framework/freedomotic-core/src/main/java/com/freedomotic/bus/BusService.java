@@ -21,7 +21,6 @@ package com.freedomotic.bus;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.reactions.Command;
 import javax.jms.Destination;
-import javax.jms.JMSException;
 import javax.jms.Session;
 
 /**

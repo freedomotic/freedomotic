@@ -19,8 +19,6 @@
  */
 package com.freedomotic.settings;
 
-import com.freedomotic.settings.Info;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -55,7 +53,6 @@ class AppConfigImpl implements AppConfig {
         properties.setProperty(key, value);
     }
 
-  
     @Override
     public String getProperty(String key) {
         String result = properties.getProperty(key);
@@ -79,7 +76,6 @@ class AppConfigImpl implements AppConfig {
         if (result != null) {
             return result;
         } else {
-            //Freedomotic.logger.warning("'" + getXmlFile() + "'  does not contain property '" + key + "'. Using default value '" + defaultValue + "'");
             return defaultValue;
         }
     }
@@ -92,11 +88,9 @@ class AppConfigImpl implements AppConfig {
             if (result != null) {
                 return result;
             } else {
-                //Freedomotic.logger.warning("'" + getXmlFile() + "' does not contain property '" + key + "'. Using default value '" + defaultValue + "'");
                 return defaultValue;
             }
         } catch (NumberFormatException e) {
-            //Freedomotic.logger.info(e.getMessage());
             return defaultValue;
         }
     }
@@ -125,7 +119,6 @@ class AppConfigImpl implements AppConfig {
         if (result != null) {
             return result;
         } else {
-            //Freedomotic.logger.warning("'" + getXmlFile() + "' does not contain property '" + key + "'. Using default value '" + defaultValue + "'");
             return defaultValue;
         }
     }

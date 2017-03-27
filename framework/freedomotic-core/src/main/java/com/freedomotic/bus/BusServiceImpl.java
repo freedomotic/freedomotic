@@ -52,20 +52,18 @@ import org.apache.activemq.command.ActiveMQQueue;
 final class BusServiceImpl extends LifeCycle implements BusService {
 
     private static final Logger LOG = LoggerFactory.getLogger(BusServiceImpl.class.getName());
-
-    //private AppConfig config;
     private BusBroker brokerHolder;
     private BusConnection connectionHolder;
+    private AppConfig conf;
     private Session receiveSession;
     private Session sendSession;
     private Session unlistenedSession;
-    private AppConfig conf;
     private Injector injector;
     protected MessageProducer messageProducer;
 
     @Inject
     public BusServiceImpl(AppConfig config, Injector inj) {
-        //this.config = config;
+     
         if (BootStatus.getCurrentStatus() == BootStatus.STOPPED) {
             conf = config;
             injector = inj;
@@ -74,7 +72,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
                 throw new IllegalStateException("Messaging bus has not yet a valid send session");
             }
         }
-        LOG.info("Messaging bus is " + BootStatus.getCurrentStatus().name());
+        LOG.info("Messaging bus is {}", BootStatus.getCurrentStatus().name());
     }
 
     /**
@@ -104,6 +102,12 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         BootStatus.setCurrentStatus(BootStatus.STARTED);
     }
 
+    /**
+     * 
+     * 
+     * @return
+     * @throws JMSException 
+     */
     private MessageProducer createMessageProducer() throws JMSException {
 
         // null parameter creates a producer with no specified destination
@@ -142,7 +146,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
     /**
      * {@inheritDoc}
      */
-    // TODO Freedomotic.java needs this method publicly visible. A whole repackage is needed.  
+    // TODO Freedomotic.java needs this method publicy visible. A whole repackage is needed.  
     @Override
     public void destroy() {
         super.destroy();
@@ -151,7 +155,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
     /**
      * {@inheritDoc}
      */
-    // TODO Freedomotic.java needs this method publicly visible. A whole repackage is needed.  
+    // TODO Freedomotic.java needs this method publicy visible. A whole repackage is needed.  
     @Override
     public void init() {
         super.init();
@@ -168,6 +172,11 @@ final class BusServiceImpl extends LifeCycle implements BusService {
 
     }
 
+    /**
+     * 
+     * 
+     * @return 
+     */
     private MessageProducer getMessageProducer() {
 
         return messageProducer;
@@ -243,7 +252,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             throw new IllegalArgumentException("Cannot send command '" + command + "', the receiver channel is not specified");
         }
 
-        LOG.info("Sending command ''{}'' to destination ''{}'' with reply timeout {}", new Object[]{command.getName(), command.getReceiver(), command.getReplyTimeout()});
+        LOG.info("Sending command \"{}\" to destination \"{}\" with reply timeout {}", new Object[]{command.getName(), command.getReceiver(), command.getReplyTimeout()});
 
         try {
             ObjectMessage msg = createObjectMessage();
@@ -263,6 +272,15 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         }
     }
 
+    /**
+     *
+     *
+     * @param command
+     * @param currDestination
+     * @param msg
+     * @return
+     * @throws JMSException
+     */
     private Command sendAndForget(final Command command, Queue currDestination, ObjectMessage msg) throws JMSException {
         // send the message immediately without creating temporary
         // queues and consumers on it
@@ -279,6 +297,15 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         return command;
     }
 
+    /**
+     *
+     *
+     * @param command
+     * @param currDestination
+     * @param msg
+     * @return
+     * @throws JMSException
+     */
     private Command sendAndWaitReply(final Command command, Queue currDestination, ObjectMessage msg) throws JMSException {
         // we have to wait an execution reply for an hardware device or
         // an external client
@@ -298,7 +325,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         Profiler.incrementSentCommands();
 
         // the receive() call is blocking
-        LOG.info("Send and await reply to command ''{}'' for {}ms",
+        LOG.info("Send and await reply to command \"{}\" for {} ms",
                 new Object[]{command.getName(), command.getReplyTimeout()});
 
         Message jmsResponse = temporaryConsumer.receive(command.getReplyTimeout());
@@ -355,7 +382,6 @@ final class BusServiceImpl extends LifeCycle implements BusService {
      */
     @Override
     public void send(final EventTemplate ev, final String to) {
-        //LOG.log(Level.INFO, "Sending event ''{}'' to destination ''{}''", new Object[]{ev.toString(), to});
         if (ev == null) {
             throw new IllegalArgumentException("Cannot send a null event");
         }
@@ -367,7 +393,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             msg.setObject(ev);
             msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
 
-            // Generate a new topic if not already exists, otherwire returns the old topic instance
+            // Generate a new topic if not already exists, otherwise returns the old topic instance
             Topic topic = getReceiveSession().createTopic("VirtualTopic." + to);
             getMessageProducer().send(topic, msg);
             Profiler.incrementSentEvents();

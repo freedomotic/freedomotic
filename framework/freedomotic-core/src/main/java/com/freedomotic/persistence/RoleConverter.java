@@ -24,19 +24,15 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.slf4j.LoggerFactory;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleRole;
 import org.apache.shiro.authz.permission.WildcardPermission;
-import org.slf4j.Logger;
 
 /**
  *
  * @author Matteo Mazzoni
  */
 class RoleConverter implements Converter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(RoleConverter.class.getName());
 
     /**
      *

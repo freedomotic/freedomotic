@@ -35,8 +35,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
@@ -150,7 +148,8 @@ public final class ResourcesManager {
     }
 
     /**
-     * Removes any cached element
+     * Removes any cached element.
+     * 
      */
     public static void clear() {
         imagesCache.cleanUp();
@@ -165,6 +164,14 @@ public final class ResourcesManager {
         return resizedImage;
     }
 
+    /**
+     * 
+     * 
+     * @param folder
+     * @param imageName
+     * @return
+     * @throws IOException 
+     */
     private static BufferedImage fetchFromHDD(File folder, String imageName) throws IOException {
         BufferedImage img = null;
         try {
@@ -180,6 +187,9 @@ public final class ResourcesManager {
         return img;
     }
 
+    /**
+     * 
+     */
     private static class DirectoryReader {
 
         File output = null;
@@ -199,6 +209,11 @@ public final class ResourcesManager {
             }
         }
 
+        /**
+         * 
+         * 
+         * @return 
+         */
         public File getFile() {
             return output;
         }

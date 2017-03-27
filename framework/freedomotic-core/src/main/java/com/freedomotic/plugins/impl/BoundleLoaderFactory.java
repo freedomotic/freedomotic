@@ -19,12 +19,9 @@
  */
 package com.freedomotic.plugins.impl;
 
-import com.freedomotic.app.FreedomoticInjector;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.settings.Info;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
-import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -129,6 +125,13 @@ class BoundleLoaderFactory {
         return null;
     }
 
+    /**
+     * 
+     * 
+     * @param jarName
+     * @return
+     * @throws IOException 
+     */
     protected static List<String> getClassesInside(String jarName)
             throws IOException {
         ArrayList<String> classes = new ArrayList<String>(10);
@@ -156,6 +159,14 @@ class BoundleLoaderFactory {
         return classes;
     }
 
+    /**
+     * 
+     * 
+     * @param file
+     * @param name
+     * @return
+     * @throws Exception 
+     */
     protected static Class getClass(File file, String name) throws Exception {
         addURL(file.toURL());
 
@@ -171,6 +182,12 @@ class BoundleLoaderFactory {
         return clazz;
     }
 
+    /**
+     * 
+     * 
+     * @param u
+     * @throws IOException 
+     */
     private static void addURL(URL u)
             throws IOException {
         URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();

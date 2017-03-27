@@ -19,9 +19,6 @@
  */
 package com.freedomotic.environment;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Title: Graph Description: Prova di implementazione di un struttura dati per
  * rappresentare un grafo. Copyright: Copyright (c) 2000 Company: Università
@@ -35,7 +32,6 @@ import org.slf4j.LoggerFactory;
  */
 class GraphEdge implements Comparable<GraphEdge> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GraphEdge.class.getName());
     Object x, y;
     Object value;
 

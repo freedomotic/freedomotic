@@ -21,8 +21,6 @@ package com.freedomotic.behaviors;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.BooleanBehavior;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,7 +28,6 @@ import org.slf4j.LoggerFactory;
  */
 public class BooleanBehaviorLogic implements BehaviorLogic {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BooleanBehaviorLogic.class.getName());
     private final BooleanBehavior data;
     private Listener listener;
     private boolean changed;

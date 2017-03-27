@@ -21,8 +21,6 @@ package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.model.environment.Zone;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -31,7 +29,6 @@ import org.slf4j.LoggerFactory;
 public class LuminosityEvent
         extends EventTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LuminosityEvent.class.getName());
     private static final long serialVersionUID = 1605869382477368794L;
 
     int luminosity;
