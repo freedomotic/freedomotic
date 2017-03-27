@@ -50,15 +50,15 @@ public class Info {
     public static final class FrameworkSettings {
 
         //framework versioning
-        public final Integer FRAMEWORK_MAJOR = 5;
-        public final Integer FRAMEWORK_MINOR = 6;
-        public final Integer FRAMEWORK_BUILD = 0;
-        public final String FRAMEWORK_VERSION_CODENAME = "Commander";
-        public final String FRAMEWORK_RELEASE_DATE = "In Development";
-        public final String FRAMEWORK_LICENSE = "GNU GPL v2";
-        public final String FRAMEWORK_RELEASE_TYPE = "beta";
-        public final String FRAMEWORK_AUTHOR = "Freedomotic Development Team";
-        public final String PROJECT_MAIL = "info@freedomotic.com";
+        public static final Integer FRAMEWORK_MAJOR = 5;
+        public static final Integer FRAMEWORK_MINOR = 6;
+        public static final Integer FRAMEWORK_BUILD = 0;
+        public static final String FRAMEWORK_VERSION_CODENAME = "Commander";
+        public static final String FRAMEWORK_RELEASE_DATE = "In Development";
+        public static final String FRAMEWORK_LICENSE = "GNU GPL v2";
+        public static final String FRAMEWORK_RELEASE_TYPE = "beta";
+        public static final String FRAMEWORK_AUTHOR = "Freedomotic Development Team";
+        public static final String PROJECT_MAIL = "info@freedomotic.com";
     }
 
     @XmlRootElement
@@ -93,26 +93,31 @@ public class Info {
          * public static final String BROKER_DEFAULT = "vm://freedomotic";
          * info about peer brokers http://fusesource.com/docs/broker/5.2/connectivity_guide/N04F73598.04EE2290.html
          */
-        public final String BROKER_DEFAULT_PROTOCOL = "peer";
-        public final String BROKER_DEFAULT_CLUSTER_NAME = "freedomotic";
-        public final String BROKER_DEFAULT_UUID = UUID.randomUUID().toString();
+        public static final String BROKER_DEFAULT_PROTOCOL = "peer";
+        public static final String BROKER_DEFAULT_CLUSTER_NAME = "freedomotic";
+        public static final String BROKER_DEFAULT_UUID = UUID.randomUUID().toString();
 
-        public final int BROKER_PORT = 61616;
+        public static final int BROKER_PORT = 61616;
 
         //port zero mean the first available port
-        public final String BROKER_STOMP = "stomp://0.0.0.0:0";
+        public static final String BROKER_STOMP = "stomp://0.0.0.0:0";
         //port zero mean the first available port
-        public final String BROKER_WEBSOCKET = "ws://0.0.0.0:0";
+        public static final String BROKER_WEBSOCKET = "ws://0.0.0.0:0";
         //default queues
-        public final String CHANNEL_OBJECT_UPDATE = "app.event.object.behavior.change";
-        public final String CHANNEL_ZONE_OCCUPIERS = "app.event.person.zone";
-        public final String CHANNEL_PEOPLE_LOCATION = "app.event.sensor.person.movement.*";
+        public static final String CHANNEL_OBJECT_UPDATE = "app.event.object.behavior.change";
+        public static final String CHANNEL_ZONE_OCCUPIERS = "app.event.person.zone";
+        public static final String CHANNEL_PEOPLE_LOCATION = "app.event.sensor.person.movement.*";
 
-        //behavior proprities
-        public final int BEHAVIOR_MAX_PRIORITY = 9;
-        public final int BEHAVIOR_MIN_PRIORITY = 0;
+        //behavior properties
+        public static final int BEHAVIOR_MAX_PRIORITY = 9;
+        public static final int BEHAVIOR_MIN_PRIORITY = 0;
     }
 
+    /**
+     * 
+     * 
+     * @return 
+     */
     private static String getLocalHost() {
         String address = "";
 
@@ -163,6 +168,11 @@ public class Info {
         return null;
     }
 
+    /**
+     * 
+     * 
+     * @param path 
+     */
     public static void relocateDataPath(File path) {
         if (path == null) {
             throw new IllegalArgumentException("Base data path should point to a not null file");
