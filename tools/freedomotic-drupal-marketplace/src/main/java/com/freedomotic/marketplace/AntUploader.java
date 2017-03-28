@@ -1,6 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.marketplace;
 
@@ -14,13 +29,16 @@ import java.io.IOException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.restlet.data.CookieSetting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class AntUploader extends Task {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AntUploader.class.getName());
     String username;
     String password;
     String nodeid;
@@ -35,7 +53,7 @@ public class AntUploader extends Task {
         String userid = drupal.parseUid(loginJson);
         if (cS != null) {
             //first try to retrieve the plugin from the drupal site
-            System.out.println("Retrieving " + nodeid + " from the marketplace");
+            LOG.info("Retrieving {} from the marketplace", nodeid);
             MarketPlacePlugin2 plugin = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.freedomotic.com/rest/node/" + nodeid);
             if (plugin != null) {
                 try {
@@ -71,7 +89,7 @@ public class AntUploader extends Task {
     public File findFileToUpload(File marketDirectory) {
 
         File[] files = null;
-        System.out.println("Uploading to drupal nodeid " + nodeid + " the file in " + marketDirectory.getAbsolutePath());
+        LOG.info("Uploading to drupal nodeid {} the file in \"{}\"", nodeid, marketDirectory.getAbsolutePath());
         if (marketDirectory.isDirectory()) {
 
             // This filter only returns object files

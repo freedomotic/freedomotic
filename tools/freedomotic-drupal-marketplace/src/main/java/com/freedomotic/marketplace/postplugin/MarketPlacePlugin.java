@@ -1,6 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.freedomotic.marketplace.postplugin;
 
@@ -11,7 +26,7 @@ import java.util.ArrayList;
  * MarketPlace that is retrieved using the Drupal Rest server. At this moment
  * only a few fields are parsed, just the necesary to retrieve the plugin zip
  *
- * @author GGPT
+ * @author Gabriel Pulido de Torres
  */
 public class MarketPlacePlugin {
 
@@ -24,64 +39,18 @@ public class MarketPlacePlugin {
     public static final String OS_WINDOWS = "Windows";
     public static final String OS_MAC = "Mac";
     public static final String OS_SOLARIS = "Solaris";
-//    private String nid;
-//    private String type;
-//    private String language;
-//    private String uid;
-//    private String status;
-//    private String created;
-//    private String changed;
-//    private String comment;
-//    private String promote;
-//    private String moderate;
-//    private String sticky;
-//    private String tnid;
-//    private String translate;    
-//
-//    private String revision_uid;
     private String title;
     private String body; //XML
-////    private String teaser; //XML
-////    private String log;
-//////    private String revision_timestamp;
-//////    private String format;
-////    private String name;
-////    private String picture;
-//    private String data;
     private String path;
     private String field_developer; //TODO check for correct developername
     private String field_status;//list
-////    private String field_forum;
     private String field_description;
     private PluginCategoryEnum field_category;
-////    private String field_icon;
     private ArrayList<String> field_os;
-////    private String filename;
-////    private String field_requires;    
     private MarketPlacePluginFileField field_file; //*** 
     private int field_file_position = 0;
-    //    private String field_screenshot;
-//    private String field_hardware;
-//    private String last_comment_timestamp;
-//    private String last_comment_name;
-//    private String comment_count;
     private ArrayList<String> taxonomy;
-//    private String files; 
-//    private String nodewords; 
-//    private String copyright;
-//    private String dc_contributor;
-//    private String dc_creator;
-//    private String dc_date;
-//    private String dc_title;
-//    private String description;
-//    private String keywords;
-//    private String location;
-//    private String pics_label;
-//    private String revisit_after;
-//    private String robots;
-//    private String uri;
 
-    //private String vid;
     public MarketPlacePlugin() {
     }
 
@@ -92,14 +61,14 @@ public class MarketPlacePlugin {
         pluginData += "\"field_category\":[{\"value\":\"" + getField_category() + "\"}],"
                 + "\"field_developer\":{\"0\":{\"uid\":{\"uid\":\"" + getField_developer() + "\"}}},";
         pluginData += "\"field_status\":[{\"value\":\"" + getField_status() + "\"}],";
-        if (formatFieldOS() != "") {
+        if (!"".equalsIgnoreCase(formatFieldOS())) {
             pluginData += formatFieldOS() + ",";
         }
-        if (formatTaxonomy() != "") {
+        if (!"".equalsIgnoreCase(formatTaxonomy())) {
             pluginData += formatTaxonomy() + ",";
         }
         pluginData += "\"field_description\":[{\"value\":\"" + getField_description() + "\"}],";
-        if (formatFieldFile() != "") {
+        if (!"".equalsIgnoreCase(formatFieldFile())) {
             pluginData += formatFieldFile() + ",";
         }
         pluginData += "\"body\":{\"und\":{\"0\":{\"value\":\"" + getBody() + "\"}}}"
@@ -122,7 +91,7 @@ public class MarketPlacePlugin {
             list += "\"" + s + "\":\"" + s + "\",";
         }
         //remove the last ,
-        if (list != "") {
+        if (!"".equalsIgnoreCase(list)) {
             list = list.substring(0, list.length() - 1);
         } else {
             return "";
