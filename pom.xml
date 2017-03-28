@@ -336,7 +336,7 @@
                             <name>${project.name}</name>
                             <inceptionyear>${project.inceptionYear}</inceptionyear>
                             <!-- TODO: use current year -->
-                            <year>2013</year>
+                            <year>2017</year>
                             <holder>Freedomotic team</holder>
                             <contact>info@freedomotic.com</contact>
                         </properties>
@@ -370,4 +370,13 @@
             </plugins>
         </pluginManagement>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.4</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
