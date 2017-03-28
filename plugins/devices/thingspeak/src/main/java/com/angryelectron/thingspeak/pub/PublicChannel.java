@@ -1,6 +1,5 @@
 /**
- * ThingSpeak Java Client 
- * Copyright 2014, Andrew Bythell <abythell@ieee.org>
+ * ThingSpeak Java Client Copyright 2014, Andrew Bythell <abythell@ieee.org>
  * http://angryelectron.com
  *
  * The ThingSpeak Java Client is free software: you can redistribute it and/or
@@ -16,7 +15,6 @@
  * You should have received a copy of the GNU General Public License along with
  * theThingSpeak Java Client. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.angryelectron.thingspeak.pub;
 
 import java.util.ArrayList;
@@ -25,21 +23,14 @@ import java.util.List;
 
 /**
  * A ThingSpeak public channel listing.
+ *
  * @author abythell
  */
 public class PublicChannel {
-       
-    /**
-     * This class must match the JSON returned by ThingSpeak.
-     */
-    private class Tag {
-        private Integer id;
-        private String name;
-    }
 
     /**
-     * These fields must match the JSON returned by ThingSpeak.  They
-     * are populated by de-serializing a JSON stream using GSON in the
+     * These fields must match the JSON returned by ThingSpeak. They are
+     * populated by de-serializing a JSON stream using GSON in the
      * PublicIterator class.
      */
     private Date created_at;
@@ -53,9 +44,19 @@ public class PublicChannel {
     private Integer ranking;
     private String username;
     private ArrayList<Tag> tags = new ArrayList<>();
-    
+
+    /**
+     * This class must match the JSON returned by ThingSpeak.
+     */
+    private class Tag {
+
+        private Integer id;
+        private String name;
+    }
+
     /**
      * Get channel name.
+     *
      * @return Name.
      */
     public String getName() {
@@ -64,6 +65,7 @@ public class PublicChannel {
 
     /**
      * Get channel creation date.
+     *
      * @return Date.
      */
     public Date getCreatedAt() {
@@ -72,6 +74,7 @@ public class PublicChannel {
 
     /**
      * Get channel description.
+     *
      * @return Description.
      */
     public String getDescription() {
@@ -80,6 +83,7 @@ public class PublicChannel {
 
     /**
      * Get channel elevation.
+     *
      * @return Elevation, or 0.0 if no elevation was set for the channel.
      */
     public Double getElevation() {
@@ -87,7 +91,8 @@ public class PublicChannel {
     }
 
     /**
-     * Get channel id.  The id is required to access the channel's feed.
+     * Get channel id. The id is required to access the channel's feed.
+     *
      * @return Channel id.
      */
     public Integer getId() {
@@ -96,6 +101,7 @@ public class PublicChannel {
 
     /**
      * Get the id of the last entry posted to this channel.
+     *
      * @return Entry id.
      */
     public Integer getLastEntryId() {
@@ -104,6 +110,7 @@ public class PublicChannel {
 
     /**
      * Get the latitude of this channel.
+     *
      * @return Latitude in decimal degrees, or 0.0 if no latitude was set for
      * this channel.
      */
@@ -113,6 +120,7 @@ public class PublicChannel {
 
     /**
      * Get the longitude of this channel.
+     *
      * @return Longitude in decimal degrees, or 0.0 if no longitude was set for
      * this channel.
      */
@@ -121,8 +129,9 @@ public class PublicChannel {
     }
 
     /**
-     * Get the channel's ranking.  It is unclear to the author how rankings
-     * are compiled.
+     * Get the channel's ranking. It is unclear to the author how rankings are
+     * compiled.
+     *
      * @return Rank.
      */
     public Integer getRanking() {
@@ -131,6 +140,7 @@ public class PublicChannel {
 
     /**
      * Get the name of the user who owns this channel.
+     *
      * @return Username.
      */
     public String getUsername() {
@@ -139,7 +149,8 @@ public class PublicChannel {
 
     /**
      * Get the channel's tags.
-     * @return A List of tags, which can be passed to 
+     *
+     * @return A List of tags, which can be passed to
      * {@link PublicChannelCollection#PublicChannelCollection(java.lang.String)}
      * to obtain a list of other public channels containing the same tag.
      */
@@ -150,5 +161,5 @@ public class PublicChannel {
         }
         return list;
     }
-                    
+
 }
