@@ -19,11 +19,9 @@
  */
 package com.freedomotic.plugins;
 
-import org.slf4j.LoggerFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
 
 /**
  *
@@ -31,10 +29,6 @@ import org.slf4j.Logger;
  */
 public class DevicesLoaderTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DevicesLoaderTest.class.getName());
-
-//    private static AddonManager loader;
-//    private static File folder;
     /**
      *
      */

@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import org.slf4j.LoggerFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -34,7 +33,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.slf4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -45,8 +43,6 @@ import org.xml.sax.SAXParseException;
  * @author Enrico Nicoletti
  */
 public class XmlPreprocessor {
-
-    private static final Logger LOG = LoggerFactory.getLogger(XmlPreprocessor.class.getName());
 
     /**
      *

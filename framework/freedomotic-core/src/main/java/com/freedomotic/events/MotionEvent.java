@@ -22,8 +22,6 @@ package com.freedomotic.events;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.geometry.FreedomPoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -32,7 +30,6 @@ import org.slf4j.LoggerFactory;
 public class MotionEvent
         extends EventTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MotionEvent.class.getName());
     private static final long serialVersionUID = 4965942901211451802L;
     private String zoneName;
     private int motionArea;

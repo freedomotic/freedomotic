@@ -24,13 +24,11 @@ import com.freedomotic.persistence.FreedomXStream;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.testutils.GuiceJUnitRunner;
 import com.thoughtworks.xstream.XStream;
-import org.slf4j.LoggerFactory;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
 
 /**
  *
@@ -39,8 +37,6 @@ import org.slf4j.Logger;
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceInjectors({FreedomoticInjector.class})
 public class DOMValidateDTDTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(DOMValidateDTDTest.class.getName());
 
     private static XStream xstream;
     private String file

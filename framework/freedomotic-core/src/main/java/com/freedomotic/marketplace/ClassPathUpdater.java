@@ -26,15 +26,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Allows programs to modify the classpath during runtime.
  */
 public class ClassPathUpdater {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClassPathUpdater.class.getName());
     /**
      * Used to find the method signature.
      */

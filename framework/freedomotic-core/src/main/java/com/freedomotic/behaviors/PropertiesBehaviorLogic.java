@@ -21,8 +21,6 @@ package com.freedomotic.behaviors;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.PropertiesBehavior;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -31,7 +29,6 @@ import org.slf4j.LoggerFactory;
 public class PropertiesBehaviorLogic
         implements BehaviorLogic {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PropertiesBehaviorLogic.class.getName());
     private PropertiesBehavior data;
     private PropertiesBehaviorLogic.Listener listener;
     private boolean changed;

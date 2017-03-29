@@ -25,9 +25,7 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import org.slf4j.Logger;
 import java.util.logging.LogRecord;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -35,8 +33,6 @@ import org.slf4j.LoggerFactory;
  */
 public class LogFormatter
         extends Formatter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(LogFormatter.class.getName());
 
     SimpleDateFormat date = new SimpleDateFormat("HH:mm  ss,S");
 

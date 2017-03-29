@@ -28,16 +28,12 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Enrico Nicoletti
  */
 class TupleConverter implements Converter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TupleConverter.class.getName());
 
     /**
      *

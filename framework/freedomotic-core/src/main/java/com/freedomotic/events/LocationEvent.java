@@ -21,8 +21,6 @@ package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.model.geometry.FreedomPoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A person is detected in a position with coordinates x,y of the environment.
@@ -33,7 +31,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class LocationEvent extends EventTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LocationEvent.class.getName());
     private final String uuid;
     private final int x;
     private final int y;
@@ -92,7 +89,7 @@ public final class LocationEvent extends EventTemplate {
         return y;
     }
 
-   /**
+    /**
      * Gets the Z coordinate of the location.
      *
      * @return the Z coordinate

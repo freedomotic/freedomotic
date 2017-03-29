@@ -19,9 +19,6 @@
  */
 package com.freedomotic.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Generates an unique ID as a progressive int. Used to mark events and command
  * with a numeric unique value
@@ -29,8 +26,6 @@ import org.slf4j.LoggerFactory;
  * @author Enrico Nicoletti
  */
 public class UidGenerator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(UidGenerator.class.getName());
 
     private static int lastId = 0;
 

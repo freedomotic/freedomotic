@@ -40,16 +40,12 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.Queue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Enrico Nicoletti
  */
 public class SerialClone {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SerialClone.class.getName());
 
     /**
      *

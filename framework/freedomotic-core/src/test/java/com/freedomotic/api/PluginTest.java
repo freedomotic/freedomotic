@@ -19,21 +19,17 @@
  */
 package com.freedomotic.api;
 
-import org.slf4j.LoggerFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
 
 /**
  *
  * @author Enrico Nicoletti
  */
 public class PluginTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PluginTest.class.getName());
 
     /**
      *

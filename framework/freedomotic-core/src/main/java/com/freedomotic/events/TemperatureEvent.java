@@ -21,8 +21,6 @@ package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.model.environment.Zone;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -31,7 +29,6 @@ import org.slf4j.LoggerFactory;
 public class TemperatureEvent
         extends EventTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TemperatureEvent.class.getName());
     private static final long serialVersionUID = 2965942901211451802L;
 
     private int temperature;

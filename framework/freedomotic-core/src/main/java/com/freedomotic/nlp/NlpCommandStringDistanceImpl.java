@@ -26,9 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
-import org.slf4j.Logger;
 
 /**
  * Computes Commands similarity ranking usin Damerau-Levenstrin string distance
@@ -39,7 +37,6 @@ import org.slf4j.Logger;
  */
 public class NlpCommandStringDistanceImpl implements NlpCommand {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NlpCommandStringDistanceImpl.class.getName());
     private List<Rank<Command>> ranking;
     private final CommandRepository commandsRepository;
 

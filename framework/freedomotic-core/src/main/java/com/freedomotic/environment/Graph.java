@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Title: Graph Description: Prova di implementazione di un struttura dati per
@@ -48,7 +46,6 @@ import org.slf4j.LoggerFactory;
  */
 class Graph {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Graph.class.getName());
     HashMap nodi;
     int nArchi;
 

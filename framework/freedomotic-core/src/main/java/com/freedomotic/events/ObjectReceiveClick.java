@@ -23,8 +23,6 @@ import com.freedomotic.api.EventTemplate;
 import com.freedomotic.things.EnvObjectLogic;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Channel <b>app.event.sensor.object.behavior.clicked</b> informs that an
@@ -36,7 +34,6 @@ import org.slf4j.LoggerFactory;
 public class ObjectReceiveClick
         extends EventTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ObjectReceiveClick.class.getName());
     private static final long serialVersionUID = 8985824879207319982L;
 
     /**

@@ -31,8 +31,6 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -40,7 +38,6 @@ import org.slf4j.LoggerFactory;
  */
 public class TopologyUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TopologyUtils.class.getName());
     private static final AffineTransform transform = new AffineTransform();
 
     private TopologyUtils() {

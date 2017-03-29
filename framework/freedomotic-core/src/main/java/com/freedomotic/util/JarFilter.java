@@ -21,8 +21,6 @@ package com.freedomotic.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,8 +28,6 @@ import org.slf4j.LoggerFactory;
  */
 public class JarFilter
         implements FilenameFilter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(JarFilter.class.getName());
 
     /**
      *

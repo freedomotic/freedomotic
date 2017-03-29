@@ -26,16 +26,12 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import java.util.HashMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Gabriel Pulido de Torres
  */
 class PropertiesConverter implements Converter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PropertiesConverter.class.getName());
 
     /**
      *

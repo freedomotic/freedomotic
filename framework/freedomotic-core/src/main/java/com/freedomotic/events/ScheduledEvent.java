@@ -20,8 +20,6 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,7 +28,6 @@ import org.slf4j.LoggerFactory;
 public class ScheduledEvent
         extends EventTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ScheduledEvent.class.getName());
     private static final long serialVersionUID = 7508683624189475354L;
 
     /**

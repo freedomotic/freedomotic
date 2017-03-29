@@ -19,17 +19,12 @@
  */
 package com.freedomotic.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  *
  * @author Enrico Nicoletti
  */
 public class RepositoryException
         extends FreedomoticException {
-
-    private static final Logger LOG = LoggerFactory.getLogger(RepositoryException.class.getName());
 
     /**
      * Creates a new instance of <code>DaoLayerException</code> without detail

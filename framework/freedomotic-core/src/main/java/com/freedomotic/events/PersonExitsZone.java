@@ -23,8 +23,6 @@ import com.freedomotic.api.EventTemplate;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.things.GenericPerson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -32,7 +30,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class PersonExitsZone extends EventTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PersonExitsZone.class.getName());
     private final String uuid;
     private final String zoneName;
 

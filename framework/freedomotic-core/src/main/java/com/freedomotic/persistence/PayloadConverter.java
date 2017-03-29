@@ -28,8 +28,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -37,8 +35,6 @@ import org.slf4j.LoggerFactory;
  */
 public class PayloadConverter
         implements Converter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PayloadConverter.class.getName());
 
     /**
      *

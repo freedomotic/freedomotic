@@ -20,8 +20,6 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Channel <b>app.event.sensor.plugin.change</b> informs about plugin related
@@ -32,7 +30,6 @@ import org.slf4j.LoggerFactory;
 public class PluginHasChanged
         extends EventTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PluginHasChanged.class.getName());
     private static final long serialVersionUID = 5203339184820441643L;
 
     /**

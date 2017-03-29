@@ -19,17 +19,12 @@
  */
 package com.freedomotic.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  *
  * @author Enrico Nicoletti
  */
 public class FreedomoticException
         extends Exception {
-
-    private static final Logger LOG = LoggerFactory.getLogger(FreedomoticException.class.getName());
 
     /**
      * Creates a new instance of <code>FreedomoticException</code> without

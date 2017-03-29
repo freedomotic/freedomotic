@@ -21,20 +21,16 @@ package com.freedomotic.persistence;
 
 import com.freedomotic.rules.Payload;
 import com.thoughtworks.xstream.XStream;
-import org.slf4j.LoggerFactory;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
 
 /**
  *
  * @author Enrico Nicoletti
  */
 public class PayloadConverterTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PayloadConverterTest.class.getName());
 
     private static String xml;
     private static XStream xstream;

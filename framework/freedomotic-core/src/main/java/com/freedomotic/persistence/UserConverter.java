@@ -29,17 +29,13 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.util.ByteSource;
-import org.slf4j.LoggerFactory;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.slf4j.Logger;
 
 /**
  *
  * @author Matteo Mazzoni
  */
 class UserConverter implements Converter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(UserConverter.class.getName());
 
     /**
      *
