@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -30,7 +29,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
+//import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Vector;
-
 import javax.swing.AbstractListModel;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -53,11 +51,9 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
@@ -87,19 +83,17 @@ public class MainWindow
         extends javax.swing.JFrame {
 
     private Drawer drawer;
-    //private float referenceRatio;
     private static boolean isFullscreen = false;
     private JavaDesktopFrontend master;
-    JDesktopPane desktopPane;
-    JInternalFrame frameClient;
-    JInternalFrame frameMap;
-    PluginJList lstClients;
-    //JComboBox cmbFilter;
-    boolean editMode;
+    private JDesktopPane desktopPane;
+    private JInternalFrame frameClient;
+    private JInternalFrame frameMap;
+    private PluginJList lstClients;
+    private boolean editMode;
     private final Auth Auth;
     private final API api;
     private final I18n i18n;
-    boolean isAuthenticated = false;
+    private boolean isAuthenticated = false;
     private static final Logger LOG = LoggerFactory.getLogger(JavaDesktopFrontend.class.getName());
 
     /**
@@ -165,9 +159,6 @@ public class MainWindow
                         new File(Info.PATHS.PATH_DATA_FOLDER + "/furn").toString(), ""));
     }
 
-//    public void showTipsOnStartup(boolean show) {
-//        master.configuration.setProperty("show.tips", new Boolean(show).toString());
-//    }
     private class MyDispatcher
             implements KeyEventDispatcher {
 
@@ -1120,7 +1111,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuBackgroundActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuBackgroundActionPerformed
 
-        final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + File.separator + "resources"+ File.separator+"system"+File.separator+"map"+File.separator);
+        final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + File.separator + "resources" + File.separator + "system" + File.separator + "map" + File.separator);
         OpenDialogFileFilter filter = new OpenDialogFileFilter();
         filter.addExtension("png");
         filter.addExtension("jpeg");
@@ -1143,20 +1134,20 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuBackgroundActionPerformed
 
     private File moveBackgroundFile(File backgroundImage) {
-    	File resourcesFolder = new File(Info.PATHS.PATH_DATA_FOLDER + File.separator + "resources"+ File.separator+"system"+File.separator+"map");
-    
-    	if(backgroundImage.exists() && resourcesFolder.isDirectory() && !(new File(resourcesFolder, backgroundImage.getName()).exists())) {
-    		try {
-				FileUtils.copyFileToDirectory(backgroundImage, resourcesFolder);
-				backgroundImage = new File(resourcesFolder,backgroundImage.getName());
-			} catch (IOException e) {
-				 LOG.error(e.getMessage(),e);
-			}
-    	}
-    	
-    	return backgroundImage;
+        File resourcesFolder = new File(Info.PATHS.PATH_DATA_FOLDER + File.separator + "resources" + File.separator + "system" + File.separator + "map");
+
+        if (backgroundImage.exists() && resourcesFolder.isDirectory() && !(new File(resourcesFolder, backgroundImage.getName()).exists())) {
+            try {
+                FileUtils.copyFileToDirectory(backgroundImage, resourcesFolder);
+                backgroundImage = new File(resourcesFolder, backgroundImage.getName());
+            } catch (IOException e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
+
+        return backgroundImage;
     }
-    
+
     private void mnuRoomBackgroundActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuRoomBackgroundActionPerformed
 
         ZoneLogic zone = drawer.getSelectedZone();
@@ -1179,7 +1170,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 //This is where a real application would open the file.
-                LOG.info("Opening " + file.getAbsolutePath());
+                LOG.info("Opening \"{}\"", file.getAbsolutePath());
                 zone.getPojo().setTexture(file.getName());
                 drawer.setNeedRepaint(true);
                 frameMap.validate();
@@ -1196,7 +1187,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         File template
                 = new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/templates/template-square/template-square.xenv");
 
-        LOG.info("Opening " + template.getAbsolutePath());
+        LOG.info("Opening  \"{}\"", template.getAbsolutePath());
         setEnvironment(api.environments().findAll().get(0));
 
         try {
@@ -1258,7 +1249,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuPluginConfigureActionPerformed
 
     private void mnuTutorialActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuTutorialActionPerformed
-       
+
         String url = "http://freedomotic-user-manual.readthedocs.io/";
         if (Desktop.isDesktopSupported()) {
             Desktop desktop = Desktop.getDesktop();
@@ -1433,19 +1424,19 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             JOptionPane.showMessageDialog(this, i18n.msg("goto") + url);
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-    
+
     private void sendLogByMail() {
-    	java.util.List<Client> clients = (java.util.List<Client>) this.getPlugin().getApi().getClients("plugin");
-    	
-    	boolean isMailerActive = false;
-    	
-    	for(Client plugin:clients) {
-    		if("Mailer".equalsIgnoreCase(plugin.getName().trim()) && plugin.isRunning()) {
-    				isMailerActive = true;
-    		}
-    	}
-    	
-    	if(Freedomotic.isLogToFileEnabled() && isMailerActive) {
+        java.util.List<Client> clients = (java.util.List<Client>) this.getPlugin().getApi().getClients("plugin");
+
+        boolean isMailerActive = false;
+
+        for (Client plugin : clients) {
+            if ("Mailer".equalsIgnoreCase(plugin.getName().trim()) && plugin.isRunning()) {
+                isMailerActive = true;
+            }
+        }
+
+        if (Freedomotic.isLogToFileEnabled() && isMailerActive) {
             Command c = new Command();
             c.setName("Mailer");
             c.setReceiver("app.actuators.messaging.mail.in");
@@ -1456,29 +1447,26 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             c.setProperty("attachment", Freedomotic.logPath());
             master.notifyCommand(c);
             JOptionPane.showMessageDialog(this, i18n.msg("log_sent"));
-    	}
-    	
-    	else {
-    		JOptionPane.showMessageDialog(this, i18n.msg("no_log_sent"));
-    	}
+        } else {
+            JOptionPane.showMessageDialog(this, i18n.msg("no_log_sent"));
+        }
     }
-    
+
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
-		String[] buttons = { i18n.msg("form_compilation"), i18n.msg("send_log"), i18n.msg("delete") };
-		int option = JOptionPane.showOptionDialog(null, i18n.msg("report_issue_dialog"), i18n.msg("report_issue"),
-				JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[2]);
-		switch (option) {
-		case 0:
-			this.openGoogleForm();
-			break;
-		case 1:
-			this.sendLogByMail();
-			break;
-		default:
-			break;
-		}
+        String[] buttons = {i18n.msg("form_compilation"), i18n.msg("send_log"), i18n.msg("delete")};
+        int option = JOptionPane.showOptionDialog(null, i18n.msg("report_issue_dialog"), i18n.msg("report_issue"),
+                JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[2]);
+        switch (option) {
+            case 0:
+                this.openGoogleForm();
+                break;
+            case 1:
+                this.sendLogByMail();
+                break;
+            default:
+                break;
+        }
     }
-    
 
     private void updateStrings() {
         mnuOpenNew.setText(i18n.msg("file"));

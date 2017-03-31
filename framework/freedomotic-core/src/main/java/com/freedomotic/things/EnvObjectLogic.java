@@ -263,8 +263,10 @@ public class EnvObjectLogic {
 
             ObjectHasChangedBehavior objectEvent = new ObjectHasChangedBehavior(this, this);
             //send multicast because an event must be received by all triggers registred on the destination channel
-            LOG.debug("Thing \"{}\" changes something in its status (eg: a behavior value)",
-                    this.getPojo().getName());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Thing \"{}\" changes something in its status (eg: a behavior value)",
+                        this.getPojo().getName());
+            }
             busService.send(objectEvent);
         } else {
             changed = false;
@@ -471,14 +473,14 @@ public class EnvObjectLogic {
         for (EnvironmentLogic locEnv : environmentRepository.findAll()) {
             for (ZoneLogic zone : locEnv.getZones()) {
                 if (this.getEnvironment() == locEnv && TopologyUtils.intersects(translatedObject, zone.getPojo().getShape())) {
-                    //DEBUG: System.out.println("object " + getPojo().getName() + " intersects zone " + zone.getPojo().getName());
                     //add to the zones this object belongs
                     zone.getPojo().getObjects().add(this.getPojo());
-                    LOG.debug("Thing \"{}\" is in zone \"{}\"", new Object[]{getPojo().getName(), zone.getPojo().getName()});
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Thing \"{}\" is in zone \"{}\"", new Object[]{getPojo().getName(), zone.getPojo().getName()});
+                    }
                 } else {
                     //remove from the zone
                     zone.getPojo().getObjects().remove(this.getPojo());
-                    //DEBUG: System.out.println("object " + getPojo().getName() + " NOT intersects zone " + zone.getPojo().getName());
                 }
             }
         }
@@ -512,7 +514,6 @@ public class EnvObjectLogic {
             LOG.warn(
                     "No value in hardware trigger \"{}\" to apply to behavior \"{}\" of thing \"{}\"",
                     new Object[]{trigger.getName(), behaviorName, getPojo().getName()});
-
             return false;
         }
 
@@ -570,8 +571,10 @@ public class EnvObjectLogic {
         //resolves developer level command parameters like myObjectName = "@event.object.name" -> myObjectName = "Light 1"
         //in this case the parameter in the userLevelCommand are used as basis for the resolution process (the context)
         //along with the parameters getted from the relative behavior (if exists)
-        LOG.debug("Environment object \"{}\" tries to \"{}\" itself using hardware command \"{}\"",
-                new Object[]{pojo.getName(), action, command.getName()});
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Environment object \"{}\" tries to \"{}\" itself using hardware command \"{}\"",
+                    new Object[]{pojo.getName(), action, command.getName()});
+        }
 
         Resolver resolver = new Resolver();
         //adding a resolution context for object that owns this hardware level command. 'owner.' is the prefix of this context
@@ -612,16 +615,10 @@ public class EnvObjectLogic {
         return false; //command not executed
     }
 
-    /**
-     *
-     */
     protected void createCommands() {
         //default empty implementation
     }
 
-    /**
-     *
-     */
     protected void createTriggers() {
         //default empty implementation
     }

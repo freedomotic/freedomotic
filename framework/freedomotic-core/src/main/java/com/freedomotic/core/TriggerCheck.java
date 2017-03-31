@@ -98,7 +98,9 @@ public class TriggerCheck {
                 if (trigger.canFire()) {
                     Trigger resolved = resolveTrigger(event, trigger);
                     if (resolved.isConsistentWith(event)) {
-                        LOG.debug("[CONSISTENT] registered trigger \"{} {}\"\nconsistent with received event ''{}'' {}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("[CONSISTENT] registered trigger \"{} {}\"\nconsistent with received event ''{}'' {}", new Object[]{resolved.getName(), resolved.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
+                        }
                         executeTriggeredAutomations(resolved, event);
                         return true;
                     }
@@ -106,8 +108,9 @@ public class TriggerCheck {
             }
 
             //if we are here the trigger is not consistent
-            LOG.debug("[NOT CONSISTENT] registered trigger \"{} {}\"\nnot consistent with received event ''{}'' {}", new Object[]{trigger.getName(), trigger.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
-
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[NOT CONSISTENT] registered trigger \"{} {}\"\nnot consistent with received event ''{}'' {}", new Object[]{trigger.getName(), trigger.getPayload().toString(), event.getEventName(), event.getPayload().toString()});
+            }
             return false;
         } catch (Exception e) {
             LOG.error("Error while performing trigger check", e);
@@ -116,12 +119,12 @@ public class TriggerCheck {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @param event
      * @param trigger
      * @return
-     * @throws VariableResolutionException 
+     * @throws VariableResolutionException
      */
     private Trigger resolveTrigger(final EventTemplate event, final Trigger trigger) throws VariableResolutionException {
         Resolver resolver = new Resolver();
@@ -130,10 +133,10 @@ public class TriggerCheck {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @param resolved
-     * @param event 
+     * @param event
      */
     private void applySensorNotification(Trigger resolved, final EventTemplate event) {
         String protocol = null;
@@ -186,10 +189,10 @@ public class TriggerCheck {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @param trigger
-     * @param event 
+     * @param event
      */
     private void executeTriggeredAutomations(final Trigger trigger, final EventTemplate event) {
         Runnable automation = new Runnable() {
@@ -206,8 +209,7 @@ public class TriggerCheck {
                     //found a related reaction. This must be executed
                     if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {
                         if (!checkAdditionalConditions(reaction)) {
-                            LOG.info(
-                                    "Additional conditions test failed in reaction \"{}\"", reaction.toString());
+                            LOG.info("Additional conditions test failed in reaction \"{}\"", reaction.toString());
                             return;
                         }
                         reactionTrigger.setExecuted();
@@ -375,9 +377,9 @@ public class TriggerCheck {
     }
 
     /**
-     * 
-     * 
-     * @param message 
+     *
+     *
+     * @param message
      */
     private void notifyMessage(String message) {
         MessageEvent event = new MessageEvent(this, message);

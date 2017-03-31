@@ -94,7 +94,7 @@ public final class User extends SimpleAccount {
         if (role != null) {
             super.addRole(role.getName());
             addObjectPermissions(role.getPermissions());
-            LOG.info("Adding role {} to user {}: {}", new Object[]{role.getName(), getName(), role.getPermissions()});
+            LOG.info("Adding role \"{}\" to user \"{}\": \"{}\"", new Object[]{role.getName(), getName(), role.getPermissions()});
         } else {
             LOG.error("Cannot find role: {}", roleName);
         }

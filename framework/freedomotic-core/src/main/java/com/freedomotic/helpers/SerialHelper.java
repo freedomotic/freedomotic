@@ -19,6 +19,7 @@
  */
 package com.freedomotic.helpers;
 
+import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jssc.*;
@@ -100,7 +101,7 @@ public class SerialHelper {
      * @throws jssc.SerialPortException
      */
     public boolean write(byte[] bytes) throws SerialPortException {
-        LOG.info("Writing bytes \"{}\" to serial port \"{}\"", new Object[]{bytes.toString(), portName});
+        LOG.info("Writing bytes \"{}\" to serial port \"{}\"", new Object[]{Arrays.toString(bytes), portName});
         return serialPort.writeBytes(bytes);
     }
 
@@ -114,7 +115,7 @@ public class SerialHelper {
         if (serialPortList.length == 0) {
             LOG.error("No serial ports found");
         }
-        return (serialPortList);
+        return serialPortList;
     }
 
     /**

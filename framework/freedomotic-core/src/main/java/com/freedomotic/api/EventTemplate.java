@@ -29,7 +29,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,21 +45,10 @@ public class EventTemplate implements Serializable {
     protected boolean isValid;
     private long creation;
     private final String uuid = UUID.randomUUID().toString();
-    private final String type = "event";
-    
-	@XStreamOmitField
+    private static final String type = "event";
+
+    @XStreamOmitField
     private static final Logger LOG = LoggerFactory.getLogger(EventTemplate.class.getName());
-
-    protected void generateEventPayload() {
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getDefaultDestination() {
-        return "app.event.sensor";
-    }
 
     /**
      *
@@ -76,6 +64,17 @@ public class EventTemplate implements Serializable {
     public EventTemplate(Object source) {
         setSender(source);
         fillPayloadWithDefaults();
+    }
+
+    protected void generateEventPayload() {
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getDefaultDestination() {
+        return "app.event.sensor";
     }
 
     /**
@@ -120,15 +119,9 @@ public class EventTemplate implements Serializable {
         }
     }
 
-//    private void setUid() {
-//        uid = UidGenerator.getNextUid();
-//    }
     private void init() {
         eventName = this.getClass().getSimpleName();
         isValid = true;
-        // setUid();
-        //executed = true; //an event starts as executed as default value if an actuator don't deny it
-        // isExecutable = true;
         creation = System.currentTimeMillis();
     }
 
@@ -209,18 +202,18 @@ public class EventTemplate implements Serializable {
         return getEventName();
     }
 
-	/**
-	 * @return the uuid
-	 */
-	public String getUuid() {
-		return this.uuid;
-	}
-    
-	/**
-	 * @return the type of this class
-	 */
-	public String getType() {
-		return type;
-	}
-    
+    /**
+     * @return the uuid
+     */
+    public String getUuid() {
+        return this.uuid;
+    }
+
+    /**
+     * @return the type of this class
+     */
+    public String getType() {
+        return type;
+    }
+
 }

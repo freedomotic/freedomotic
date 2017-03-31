@@ -113,7 +113,9 @@ public abstract class Protocol extends Plugin {
      */
     public void notifyEvent(EventTemplate ev, String destination) {
         if (isAllowedToSend()) {
-            LOG.debug("Sensor \"" + this.getName() + "\" notifies event \"" + ev.getEventName() + "\" with payload \"" + ev.getPayload().toString() + "\"");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Sensor \"" + this.getName() + "\" notifies event \"" + ev.getEventName() + "\" with payload \"" + ev.getPayload().toString() + "\"");
+            }
             getBusService().send(ev, destination);
         }
     }
@@ -247,7 +249,7 @@ public abstract class Protocol extends Plugin {
 
     /**
      * Sends a command.
-     * 
+     *
      * @param command
      * @return
      */

@@ -74,14 +74,18 @@ class CommandRepositoryImpl implements CommandRepository {
                             c);
                     LOG.trace("Added command \"{}\" to the list of user commands", c.getName());
                 } else {
-                    LOG.debug("Command \"{}\" already in the list of user commands. Skipped", c.getName());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Command \"{}\" already in the list of user commands. Skipped", c.getName());
+                    }
                 }
             } else if (!hardwareCommands.containsKey(c.getName().trim().toLowerCase())) {
                 hardwareCommands.put(c.getName(),
                         c);
                 LOG.trace("Added command \"{}\" to the list of hardware commands", c.getName());
             } else {
-                LOG.debug("Command \"{}\" already in the list of hardware commands. Skipped", c.getName());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Command \"{}\" already in the list of hardware commands. Skipped", c.getName());
+                }
             }
         } else {
             LOG.warn("Attempt to add a null user command to the list. Skipped");
@@ -215,11 +219,11 @@ class CommandRepositoryImpl implements CommandRepository {
         files = folder.listFiles(objectFileFileter);
 
         if (files != null) {
-          
+
             try {
-                
+
                 for (File file : files) {
-                    Command command = null;
+                    Command command;
                     String xml;
                     try {
                         xml = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/command.dtd");
@@ -259,7 +263,7 @@ class CommandRepositoryImpl implements CommandRepository {
                         }
 
                     } catch (CannotResolveClassException e) {
-                        LOG.error("Cannot unserialize command due to unrecognized class ''{}'' in \n{}", new Object[]{e.getMessage(), xml});
+                        LOG.error("Cannot unserialize command due to unrecognized class \"{}\" in \n{}", new Object[]{e.getMessage(), xml});
                     }
                 }
 
@@ -267,7 +271,9 @@ class CommandRepositoryImpl implements CommandRepository {
                 LOG.error("Error while loading command", ex);
             }
         } else {
-            LOG.debug("No commands to load from this folder \"{}\"", folder.toString());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("No commands to load from this folder \"{}\"", folder.toString());
+            }
         }
     }
 
@@ -287,13 +293,11 @@ class CommandRepositoryImpl implements CommandRepository {
             LOG.warn("{} is not a valid command folder. Skipped", folder.getAbsoluteFile());
             return;
         }
-
-        XStream xstream = FreedomXStream.getXstream();
         deleteCommandFiles(folder);
 
         try {
-            LOG.info("Saving commands to file into \"" + folder.getAbsolutePath() + "\"");
-            StringBuffer summaryContent = new StringBuffer();
+            LOG.info("Saving commands to file into \"{}\"", folder.getAbsolutePath());
+            StringBuilder summaryContent = new StringBuilder();
             for (Command c : userCommands.values()) {
                 if (c.isEditable()) {
                     String uuid = c.getUuid();
@@ -306,20 +310,20 @@ class CommandRepositoryImpl implements CommandRepository {
                     File file = new File(folder + "/" + fileName);
                     FreedomXStream.toXML(c, file);
                     summaryContent.append(fileName).append("\t\t").append(c.getName())
-                    .append("\t\t\t").append(c.getReceiver()).append("\n");
+                            .append("\t\t\t").append(c.getReceiver()).append("\n");
                 }
             }
-            
+
             writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #CommandName \t\t\t #Destination\n", summaryContent.toString());
-            
+
         } catch (Exception e) {
             LOG.error("Error while saving commands to \"" + folder.getAbsolutePath() + "\"", e);
         }
     }
 
     /**
-     * 
-     * @param folder 
+     *
+     * @param folder
      */
     private static void deleteCommandFiles(File folder) {
         File[] files = folder.listFiles();

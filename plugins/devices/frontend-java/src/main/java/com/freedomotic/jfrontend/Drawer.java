@@ -42,7 +42,7 @@ public abstract class Drawer extends JPanel {
      */
     public abstract void setNeedRepaint(boolean b);
 
-    void setObjectEditMode(boolean b) {
+    public void setObjectEditMode(boolean b) {
         //throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -74,5 +74,5 @@ public abstract class Drawer extends JPanel {
 
     abstract EnvironmentLogic getCurrEnv();
 
-    abstract void setCurrEnv(EnvironmentLogic env);
+    public abstract void setCurrEnv(EnvironmentLogic env);
 }

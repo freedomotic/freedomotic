@@ -42,10 +42,9 @@ import org.slf4j.LoggerFactory;
 public class CustomizeCommand
         extends javax.swing.JFrame {
 
-    //ReactionList main;
-    Command original;
-    DefaultTableModel model = new DefaultTableModel();
-    JTable table;
+    private Command original;
+    private DefaultTableModel model = new DefaultTableModel();
+    private JTable table;
     private final I18n I18n;
     @Inject
     private ClientStorage clients;

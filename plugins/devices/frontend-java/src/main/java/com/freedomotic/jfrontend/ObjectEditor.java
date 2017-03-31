@@ -55,7 +55,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 import java.util.Map.Entry;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -85,17 +84,15 @@ public class ObjectEditor
     private String oldName;
     private PropertiesPanel_1 commandsControlPanel;
     private PropertiesPanel_1 pnlTriggers;
-    //private PropertiesPanel_1 controlPanel;
-    ReactionsPanel reactionsPanel;
+    private ReactionsPanel reactionsPanel;
     private final NlpCommand nlpCommands;
-
     private static API api = null;
     private static I18n I18n;
 
     /**
      * Creates new form ObjectEditor
      */
-    static void setAPI(API apiL) {
+    public static void setAPI(API apiL) {
         api = apiL;
         I18n = apiL.getI18n();
     }

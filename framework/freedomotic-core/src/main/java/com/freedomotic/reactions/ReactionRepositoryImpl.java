@@ -189,7 +189,9 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                     }
                 }
             } else {
-                LOG.debug("No reactions to load from the folder \"{}\"", folder.toString());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("No reactions to load from the folder \"{}\"", folder.toString());
+                }
             }
         } catch (Exception e) {
             LOG.error("Exception while loading reactions from \"{}\"", new Object[]{folder.getAbsolutePath()}, e);
@@ -212,15 +214,17 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                 }
                 list.add(r);
                 r.setChanged();
-                LOG.debug("Added new reaction {}", r.getDescription());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Added new reaction \"{}\"", r.getDescription());
+                }
             }
         } else {
             // Exists but has no commands
             if (r.getCommands().isEmpty()) {
-                LOG.info("The reaction ''{}'' has no associated commands and will be unloaded.", r.getDescription());
+                LOG.info("The reaction \"{}\" has no associated commands and will be unloaded.", r.getDescription());
                 remove(r);
             }
-            LOG.info("The reaction ''{}'' is already loaded so it is skipped.", r.getDescription());
+            LOG.info("The reaction \"{}\" is already loaded so it is skipped.", r.getDescription());
         }
     }
 
@@ -232,7 +236,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
     public void remove(Reaction input) {
         if (input != null) {
             boolean removed = list.remove(input);
-            LOG.info("Removed reaction {}", input.getDescription());
+            LOG.info("Removed reaction \"{}\"", input.getDescription());
             try {
                 input.getTrigger().unregister();
             } catch (Exception e) {
@@ -240,7 +244,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
             }
 
             if ((!removed) && (list.contains(input))) {
-                LOG.warn("Error while removing Reaction {} from the list", input.getDescription());
+                LOG.warn("Error while removing Reaction \"{}\" from the list", input.getDescription());
             }
         }
     }
@@ -392,7 +396,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
     /**
      * This class compares two reactions given their names.
-     * 
+     *
      */
     class ReactionNameComparator implements Comparator<Reaction> {
 

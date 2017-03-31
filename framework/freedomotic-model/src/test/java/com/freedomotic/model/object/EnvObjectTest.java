@@ -34,12 +34,6 @@ public class EnvObjectTest {
 
     /**
      *
-     */
-    public EnvObjectTest() {
-    }
-
-    /**
-     *
      * @throws Exception
      */
     @BeforeClass
@@ -56,16 +50,10 @@ public class EnvObjectTest {
             throws Exception {
     }
 
-    /**
-     *
-     */
     @Before
     public void setUp() {
     }
 
-    /**
-     *
-     */
     @After
     public void tearDown() {
     }

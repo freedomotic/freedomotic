@@ -305,17 +305,7 @@ public class Freedomotic implements BusConsumer {
         // This should be done after loading all Things plugins otherwise
         // its java class will not be recognized by the system
         environmentRepository.initFromDefaultFolder();
-        // for (EnvironmentLogic env : environmentRepository.findAll()) {
-        // Load all the Things in this environment
-        //    File thingsFolder = env.getObjectFolder();
-        //    List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(thingsFolder);
-        //    for (EnvObjectLogic thing : loadedThings) {
-        //        thing.setEnvironment(env);
-        // Actvates the Thing. Important, otherwise it will be not visible in the environment
-        //        thingsRepository.create(thing);
-        //    }
-        // }
-
+        
         // Loads the entire Reactions system (Trigger + Commands + Reactions)
         triggerRepository.loadTriggers(new File(Info.PATHS.PATH_DATA_FOLDER + "/trg/"));
         commandRepository.loadCommands(new File(Info.PATHS.PATH_DATA_FOLDER + "/cmd/"));

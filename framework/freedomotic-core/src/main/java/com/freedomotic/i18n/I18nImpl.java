@@ -19,9 +19,6 @@
  */
 package com.freedomotic.i18n;
 
-//import com.freedomotic.api.API;
-//import com.freedomotic.api.Client;
-//import com.freedomotic.api.Plugin;
 import com.freedomotic.settings.AppConfig;
 import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
@@ -126,11 +123,11 @@ class I18nImpl implements I18n {
                 String baseName = packageName.split("\\.")[lastSize - 1];
 
                 messages.put(packageName + ":" + loc, ResourceBundle.getBundle(baseName, currentLocale, loader, RB_Control));
-                LOG.info("Adding resourceBundle: package={}, locale={} pointing at {}", new Object[]{packageName, loc, folder.getAbsolutePath()});
+                LOG.info("Adding resourceBundle: package={}, locale={} pointing at \"{}\"", new Object[]{packageName, loc, folder.getAbsolutePath()});
             } catch (MalformedURLException ex) {
-                LOG.error("Cannot find folder while loading resourceBundle for package{}", packageName);
+                LOG.error("Cannot find folder while loading resourceBundle for package \"{}\"", packageName);
             } catch (MissingResourceException ex) {
-                LOG.error("Cannot find resourceBundle files inside folder {} for package{}", new Object[]{packageName, folder.getAbsolutePath()});
+                LOG.error("Cannot find resourceBundle files inside folder \"{}\" for package \"{}\"", new Object[]{packageName, folder.getAbsolutePath()});
             }
         }
 
@@ -154,7 +151,7 @@ class I18nImpl implements I18n {
                 }
 
             } catch (MissingResourceException ex) {
-                LOG.error("Cannot find resourceBundle files inside folder {} for package{}", new Object[]{folder.getAbsolutePath(), packageName});
+                LOG.error("Cannot find resourceBundle files inside folder \"{}\" for package \"{}\"", new Object[]{folder.getAbsolutePath(), packageName});
             }
         }
         return null;

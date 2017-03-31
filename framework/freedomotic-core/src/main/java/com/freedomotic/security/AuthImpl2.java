@@ -53,7 +53,7 @@ class AuthImpl2 implements Auth {
     private static boolean realmInited = false;
     private static final UserRealm baseRealm = new UserRealm();
     private static final PluginRealm pluginRealm = new PluginRealm();
-    private static final ArrayList<Realm> realmCollection = new ArrayList<Realm>();
+    private static final ArrayList<Realm> realmCollection = new ArrayList<>();
     @Inject
     private AppConfig config;
     @Inject
@@ -73,13 +73,12 @@ class AuthImpl2 implements Auth {
      */
     @Override
     public void initBaseRealm() {
-        DefaultSecurityManager securityManager = null;
+        DefaultSecurityManager securityManager;
         if (!realmInited && config.getBooleanProperty("KEY_SECURITY_ENABLE", true)) {
             baseRealm.init();
             pluginRealm.init();
 
             securityManager = new DefaultSecurityManager();
-            //securityManager = injector.getInstance(DefaultSecurityManager.class);
 
             realmCollection.add(baseRealm);
             realmCollection.add(pluginRealm);
@@ -103,25 +102,6 @@ class AuthImpl2 implements Auth {
         return login(subject, pwdString, rememberMe);
     }
 
-    /**
-     *
-     * @param subject
-     * @param password
-     * @return
-     */
-//    @Override
-//    public boolean login(String subject, String password, boolean rememberMe) {
-//        UsernamePasswordToken token = new UsernamePasswordToken(subject, password);
-//        token.setRememberMe(rememberMe);
-//        Subject currentUser = SecurityUtils.getSubject();
-//        currentUser.login(token);
-//        currentUser.getSession().setTimeout(-1);
-//        LOG.log(Level.INFO, "Account ''{}'' is granted for login", subject);
-//        // Notify login with a proper event
-//        AccountEvent loginEvent = new AccountEvent(this, subject, AccountActions.LOGIN);
-//        bus.send(loginEvent);
-//        return true;
-//    }
     @Override
     public boolean login(String subject, String password, boolean rememberMe) {
         UsernamePasswordToken token = new UsernamePasswordToken(subject, password);
@@ -195,7 +175,6 @@ class AuthImpl2 implements Auth {
     public Runnable pluginBindRunnablePrivileges(Plugin plugin, Runnable action) {
 
         if (isInited()) {
-            //LOG.info("Executing privileged for plugin: " + classname);
             PrincipalCollection plugPrincipals = new SimplePrincipalCollection(plugin.getClassName(), pluginRealm.getName());
             Subject plugSubject = new Subject.Builder().principals(plugPrincipals).authenticated(true).buildSubject();
             try {
@@ -219,11 +198,8 @@ class AuthImpl2 implements Auth {
         if (!pluginRealm.accountExists(plugin.getClassName())) {
             // check whether declared permissions correspond the ones requested at runtime
             if (plugin.getConfiguration().getStringProperty("permissions", getPluginDefaultPermission()).equals(permissions)) {
-                LOG.info("Setting permissions for plugin {}: {}", new Object[]{plugin.getClassName(), permissions});
+                LOG.info("Setting permissions for plugin \"{}\": \"{}\"", new Object[]{plugin.getClassName(), permissions});
                 pluginRealm.addPlugin(plugin.getClassName(), permissions);
-                //pluginRealm.addAccount(plugin.getClassName(), UUID.randomUUID().toString(), plugrole);
-                //pluginRealm.addRole(plugrole);
-
             } else {
                 LOG.error("Plugin \"{}\" tried to request incorrect privileges", plugin.getName());
             }
@@ -301,7 +277,7 @@ class AuthImpl2 implements Auth {
     @Override
     public User getCurrentUser() {
         String principalName = getSubject().getPrincipal().toString();
-        return (User) baseRealm.getUser(principalName);
+        return baseRealm.getUser(principalName);
     }
 
     @Override

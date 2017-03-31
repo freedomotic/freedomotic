@@ -115,9 +115,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
 
         // configure
         createdProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        //final int tiemToLive = config.getIntProperty("KEY_MESSAGES_TTL", 1000);
-        //createProducer.setTimeToLive(tiemToLive);
-
+        
         return createdProducer;
     }
 

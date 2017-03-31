@@ -62,7 +62,7 @@ import javax.script.ScriptException;
 public final class Resolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(Resolver.class.getName());
-    private List<String> namespaces = new ArrayList<String>();
+    private List<String> namespaces = new ArrayList<>();
     private Payload context;
 
     /**
@@ -145,7 +145,7 @@ public final class Resolver {
     private List<Command> performSubstitutionInCommands(List<Command> commands) {
         //clone reaction to not affect the original commands with temporary values
         //construct a cloned reaction
-        List<Command> tmp = new ArrayList<Command>();
+        List<Command> tmp = new ArrayList<>();
 
         try {
             for (Command originalCommand : commands) {
@@ -261,8 +261,8 @@ public final class Resolver {
 
         while (it.hasNext()) {
             Statement statement = (Statement) it.next();
-            String key = (String) statement.getAttribute();
-            String propertyValue = (String) statement.getValue();
+            String key = statement.getAttribute();
+            String propertyValue = statement.getValue();
 
             for (final String PREFIX : namespaces) {
                 Pattern pattern = Pattern.compile("@" + PREFIX + "[.A-Za-z0-9_-]*\\b(#)?"); //find any @token
@@ -291,7 +291,6 @@ public final class Resolver {
                     }
 
                     //replace an @token.property with its real value
-                    //System.out.println("Replace all " + tokenKey + " with " + tokenValue + " in " + propertyValue);
                     result.append(tokenValue);
                 }
 
@@ -300,7 +299,7 @@ public final class Resolver {
             }
 
             //all references are replaced with real values in the current statement, now perform scripting
-            String possibleScript = (String) statement.getValue().trim();
+            String possibleScript = statement.getValue().trim();
             boolean success = false;
 
             if (possibleScript.startsWith("=")) {
@@ -343,9 +342,9 @@ public final class Resolver {
     }
 
     /**
-     * 
-     * 
-     * @param c 
+     *
+     *
+     * @param c
      */
     private void mergeContextParamsIntoCommand(Command c) {
         //adding  parameters to command parameters with a  prefix
@@ -357,9 +356,9 @@ public final class Resolver {
     }
 
     /**
-     * 
-     * 
-     * @param t 
+     *
+     *
+     * @param t
      */
     private void mergeContextParamsIntoTrigger(Trigger t) {
         //adding  parameters to command parameters with a  prefix
@@ -395,8 +394,6 @@ public final class Resolver {
             } else {
                 key = entry.getKey().toString();
             }
-
-            //System.out.println("    statement " + PREFIX + key + "=" + entry.getValue().toString());
             context.addStatement(PREFIX + key,
                     entry.getValue().toString());
         }
@@ -430,8 +427,6 @@ public final class Resolver {
             } else {
                 key = entry.getKey().toString();
             }
-
-            //System.out.println("    statement " + PREFIX + key + "=" + entry.getValue().toString());
             context.addStatement(PREFIX + key,
                     entry.getValue().toString());
         }
@@ -472,8 +467,8 @@ public final class Resolver {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      */
     void clear() {
         namespaces.clear();

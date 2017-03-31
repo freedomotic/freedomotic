@@ -85,8 +85,10 @@ class BoundleLoaderObjects implements BoundleLoader {
 
                             if (clazz.getName().startsWith("com.freedomotic.things.")
                                     && !clazz.getName().contains("$")) {
-                                LOG.debug("Found object plugin '" + clazz.getSimpleName().toString()
-                                        + "' in " + path);
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug("Found object plugin \"" + clazz.getSimpleName().toString()
+                                            + "\" in \"" + path + "\"");
+                                }
                             }
                         } catch (Exception ex) {
                             LOG.error("Error loading thing plugin", ex);

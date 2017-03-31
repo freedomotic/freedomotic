@@ -370,39 +370,21 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     public void prepareBackground() {
     }
 
-    /**
-     *
-     */
     public void renderEnvironment() {
     }
 
-    /**
-     *
-     */
     public void renderWalls() {
     }
 
-    /**
-     *
-     */
     public void prepareForeground() {
     }
 
-    /**
-     *
-     */
     public void renderObjects() {
     }
 
-    /**
-     *
-     */
     public void renderPeople() {
     }
 
-    /**
-     *
-     */
     public void renderZones() {
     }
 
@@ -1331,7 +1313,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     }
 
     @Override
-    void setObjectEditMode(boolean state) {
+    public void setObjectEditMode(boolean state) {
         objectEditMode = state;
     }
 

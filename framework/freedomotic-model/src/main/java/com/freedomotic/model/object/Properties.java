@@ -38,7 +38,7 @@ public class Properties implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @XmlElement
-    HashMap<String, String> propertyList;
+    private HashMap<String, String> propertyList;
 
     /**
      *

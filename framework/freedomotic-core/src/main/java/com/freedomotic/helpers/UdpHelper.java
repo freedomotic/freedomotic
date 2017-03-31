@@ -87,7 +87,9 @@ public class UdpHelper {
                     inetAddress,
                     port);
             datagramSocket.send(out_datagramPacket);
-            LOG.debug("Sending UDP packet to {}:{}", new Object[]{serverAddress, serverPort});
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Sending UDP packet to {}:{}", new Object[]{serverAddress, serverPort});
+            }
         } catch (UnknownHostException ex) {
             throw new IOException("Unknown UDP server. Packet not sent", ex);
         } catch (SocketException ex) {
@@ -112,7 +114,9 @@ public class UdpHelper {
             this.serverAddress = serverAddress;
             this.serverPort = serverPort;
             this.consumer = consumer;
-            LOG.debug("UDP server starting on {}:{}", new Object[]{serverAddress, serverPort});
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("UDP server starting on {}:{}", new Object[]{serverAddress, serverPort});
+            }
         }
 
         @Override
@@ -133,7 +137,9 @@ public class UdpHelper {
                     String sourceAddress = inPacket.getAddress().getHostAddress();
                     Integer sourcePort = inPacket.getPort();
                     String data = new String(payload, 0, inPacket.getLength());
-                    LOG.debug("UDP server receives packet from {}:{}", new Object[]{sourceAddress, sourcePort});
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("UDP server receives packet from {}:{}", new Object[]{sourceAddress, sourcePort});
+                    }
                     consumer.onDataAvailable(sourceAddress, sourcePort, data);
                 }
             } catch (IOException e) {

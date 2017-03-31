@@ -44,10 +44,9 @@ import javax.swing.JButton;
  */
 public class ReactionEditor
         extends javax.swing.JPanel {
-    //private PropertiesPanel_1 panel = new PropertiesPanel_1(0, 1);
 
     private Reaction reaction;
-    private List<GuessCommandBox> commandBoxes = new ArrayList<GuessCommandBox>();
+    private List<GuessCommandBox> commandBoxes = new ArrayList<>();
     private Box cmdBox = Box.createVerticalBox();
     private Component parent = null;
     private final I18n I18n;
@@ -117,14 +116,6 @@ public class ReactionEditor
                     c.setReplyTimeout(Integer.MAX_VALUE);
 
                     Freedomotic.sendCommand(c);
-                    //String newTriggerName = reply.getProperty("edited");
-                    //if (newTriggerName == null) {
-                    //    throw new IllegalStateException("Trigger name in reply cannot be null");
-                    //}
-                    //btnTrigger.setName(newTriggerName);
-
-                    //trigger = null;
-                    //setText(INFO_MESSAGE);
                 }
             }
         });
@@ -180,7 +171,7 @@ public class ReactionEditor
       // Variables declaration - do not modify//GEN-BEGIN:variables
       // End of variables declaration//GEN-END:variables
 
-    void onCommandConfirmed(GuessCommandBox box) {
+    public void onCommandConfirmed(GuessCommandBox box) {
         int index = commandBoxes.indexOf(box);
 
         if (index >= reaction.getCommands().size()) { //the last box is now filled
@@ -195,7 +186,7 @@ public class ReactionEditor
         System.out.println("Temporary reaction added :" + reaction.toString());
     }
 
-    void onCommandCleared(GuessCommandBox box) {
+    public void onCommandCleared(GuessCommandBox box) {
         //int index = list.indexOf(box);
         reaction.getCommands().remove(box.getCommand());
         removeBox(box);

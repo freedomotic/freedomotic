@@ -113,10 +113,13 @@ public class Info {
         public static final int BEHAVIOR_MIN_PRIORITY = 0;
     }
 
+    private Info() {
+    }
+
     /**
-     * 
-     * 
-     * @return 
+     *
+     *
+     * @return
      */
     private static String getLocalHost() {
         String address = "";
@@ -164,14 +167,14 @@ public class Info {
         }
 
         LOG.error("Something went wrong when figuring out which is the current workdir. "
-                + "Cannot start freedmotic as a consequence");
+                + "Cannot start Freedomotic as a consequence");
         return null;
     }
 
     /**
-     * 
-     * 
-     * @param path 
+     *
+     *
+     * @param path
      */
     public static void relocateDataPath(File path) {
         if (path == null) {
@@ -312,6 +315,4 @@ public class Info {
 
     }
 
-    private Info() {
-    }
 }

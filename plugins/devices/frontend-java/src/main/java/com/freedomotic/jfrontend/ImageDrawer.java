@@ -38,7 +38,7 @@ import java.util.Queue;
  */
 public class ImageDrawer extends PlainDrawer {
 
-    Protocol master;
+    private Protocol master;
 
     /**
      *

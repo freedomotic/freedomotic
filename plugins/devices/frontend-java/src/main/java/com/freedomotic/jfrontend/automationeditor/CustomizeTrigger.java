@@ -40,9 +40,9 @@ public class CustomizeTrigger
         extends javax.swing.JFrame {
 
     private final static Logger LOG = LoggerFactory.getLogger(CustomizeTrigger.class.getName());
-    Trigger original;
-    DefaultTableModel model = new DefaultTableModel();
-    JTable table;
+    private Trigger original;
+    private DefaultTableModel model = new DefaultTableModel();
+    private JTable table;
     private final I18n I18n;
     private final TriggerRepository triggerRepository;
 

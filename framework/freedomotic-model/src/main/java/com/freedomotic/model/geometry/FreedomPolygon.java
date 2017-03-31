@@ -34,14 +34,9 @@ public class FreedomPolygon
 
     private static final long serialVersionUID = -3740479951903880574L;
 
-    private ArrayList<FreedomPoint> points = new ArrayList<FreedomPoint>();
+    private ArrayList<FreedomPoint> points = new ArrayList<>();
 
-    /**
-     *
-     */
-    public FreedomPolygon() {
-    }
-
+  
     /**
      *
      * @param point
