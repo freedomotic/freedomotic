@@ -27,9 +27,6 @@ import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.GenericPerson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.Random;
 
@@ -39,7 +36,6 @@ import java.util.Random;
  */
 public class TrackingRandomPosition extends Protocol {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TrackingRandomPosition.class);
     private final int SLEEP_TIME = configuration.getIntProperty("sleep-time", 1000);
 
     public TrackingRandomPosition() {
@@ -49,7 +45,7 @@ public class TrackingRandomPosition extends Protocol {
 
     /**
      * Generates a random position (x,y).
-     * 
+     *
      * @return a point on the map
      */
     private FreedomPoint randomLocation() {

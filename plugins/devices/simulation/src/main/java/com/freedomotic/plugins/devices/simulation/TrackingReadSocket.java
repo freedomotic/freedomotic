@@ -30,7 +30,6 @@ import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.GenericPerson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,7 +38,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
 
 /**
  *
@@ -49,8 +47,6 @@ public class TrackingReadSocket extends Protocol {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrackingReadSocket.class);
     private ServerSocket serverSocket;
-    private OutputStream out;
-    private final boolean connected = false;
     private final int SOCKET_SERVER_PORT = configuration.getIntProperty("socket-server-port", 7777);
     private final int MAX_CONNECTIONS = configuration.getIntProperty("max-connections", -1);
     private final String STOP_CONNECTION_CHAR = configuration.getStringProperty("stop-connection-char", ".");

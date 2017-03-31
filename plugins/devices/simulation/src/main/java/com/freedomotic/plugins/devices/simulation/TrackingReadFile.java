@@ -21,12 +21,10 @@ package com.freedomotic.plugins.devices.simulation;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.geometry.FreedomPoint;
-import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.plugins.devices.simulation.fromfile.WorkerThread;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.settings.Info;
@@ -35,7 +33,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -51,8 +48,6 @@ import org.slf4j.LoggerFactory;
 public class TrackingReadFile extends Protocol {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrackingReadFile.class.getName());
-    private OutputStream out;
-    private boolean connected = false;
     private final String DATA_TYPE = configuration.getStringProperty("data-type", "rooms");
     private final int ITERATIONS = configuration.getIntProperty("iterations", 1);
     private ArrayList<WorkerThread> workers = null;
@@ -191,8 +186,6 @@ public class TrackingReadFile extends Protocol {
             }
         }
     }
-
-    
 
     /**
      * Gets the plugin logger.

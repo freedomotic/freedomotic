@@ -35,7 +35,7 @@ import javax.swing.event.ChangeListener;
 public class VariousSensorsGui
         extends javax.swing.JFrame {
 
-    VariousSensors sensor;
+    private VariousSensors sensor;
 
     /**
      * Creates new form VariousSensorsForm

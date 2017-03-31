@@ -35,9 +35,9 @@ import java.util.Iterator;
 public class WorkerThread
         extends Thread {
 
-    ArrayList<Coordinate> coord;
-    TrackingReadFile master;
-    int iterations = 1;
+    private ArrayList<Coordinate> coord;
+    private TrackingReadFile master;
+    private int iterations = 1;
 
     /**
      *
