@@ -17,11 +17,6 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/* * This Program is free software; you can redistribute it and/or modify
-
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.freedomotic.core;
 
 import com.freedomotic.settings.Info;
@@ -45,7 +40,6 @@ import javax.imageio.ImageIO;
  */
 public final class ResourcesManager {
 
-    // private static final Map<String, BufferedImage> CACHE = new HashMap<String, BufferedImage>();
     private static final Logger LOG = LoggerFactory.getLogger(ResourcesManager.class.getName());
     private static final LoadingCache<String, BufferedImage> imagesCache = CacheBuilder.newBuilder()
             .expireAfterAccess(1, TimeUnit.MINUTES)
@@ -73,7 +67,7 @@ public final class ResourcesManager {
     public static BufferedImage getResource(String imageName, int width, int height) {
         try {
             // Resizeing not needed, return standard image
-            if (!(width > 0) || !(height > 0)) {
+            if ((width <= 0) || (height <= 0)) {
                 return imagesCache.get(imageName);
             }
             // Compute the resized image key

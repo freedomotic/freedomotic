@@ -147,7 +147,7 @@ public abstract class Protocol extends Plugin {
                         getBusService().send(event);
                     } catch (Exception e) {
                         setStatus(PluginStatus.FAILED);
-                        setDescription("Plugin start FAILED. see logs for details.");
+                        setDescription("Plugin starting FAILED. see logs for details.");
                         LOG.error("Plugin ''" + getName() + "'' starting FAILED: " + e.getLocalizedMessage(), e);
                     }
 
@@ -325,7 +325,7 @@ public abstract class Protocol extends Plugin {
             // separate thread. In this cases the onCommand() returns immediately (as execution is forked in a thread)
             // and sometimes this is not the intended behavior. Take a look at the Delayer plugin configuration
             // it has to call reply(...) explicitely
-            if ((getConfiguration().getBooleanProperty("automatic-reply-to-commands", true) == true) //default value is true
+            if ((getConfiguration().getBooleanProperty("automatic-reply-to-commands", true)) //default value is true
                     && (command.getReplyTimeout() > 0)) {
                 getBusService().reply(command, reply, correlationID); //sends back the command marked as executed or not
             }

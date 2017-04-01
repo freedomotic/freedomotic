@@ -52,8 +52,9 @@ class CommandRepositoryImpl implements CommandRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(CommandRepositoryImpl.class.getName());
 
-    private static final Map<String, Command> userCommands = new HashMap<String, Command>();
-    private static final Map<String, Command> hardwareCommands = new HashMap<String, Command>();
+    private static final Map<String, Command> userCommands = new HashMap<>();
+    private static final Map<String, Command> hardwareCommands = new HashMap<>();
+    private static final String COMMAND_FILE_EXTENSION = ".xcmd";
     private final DataUpgradeService dataUpgradeService;
 
     @Inject
@@ -208,7 +209,7 @@ class CommandRepositoryImpl implements CommandRepository {
         FileFilter objectFileFileter
                 = new FileFilter() {
                     public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xcmd")) {
+                        if (file.isFile() && file.getName().endsWith(COMMAND_FILE_EXTENSION)) {
                             return true;
                         } else {
                             return false;
@@ -290,7 +291,7 @@ class CommandRepositoryImpl implements CommandRepository {
         }
 
         if (!folder.isDirectory()) {
-            LOG.warn("{} is not a valid command folder. Skipped", folder.getAbsoluteFile());
+            LOG.warn("\"{}\" is not a valid command folder. Skipped", folder.getAbsoluteFile());
             return;
         }
         deleteCommandFiles(folder);
@@ -306,7 +307,7 @@ class CommandRepositoryImpl implements CommandRepository {
                         c.setUUID(UUID.randomUUID().toString());
                     }
 
-                    String fileName = c.getUuid() + ".xcmd";
+                    String fileName = c.getUuid() + COMMAND_FILE_EXTENSION;
                     File file = new File(folder + "/" + fileName);
                     FreedomXStream.toXML(c, file);
                     summaryContent.append(fileName).append("\t\t").append(c.getName())
@@ -332,7 +333,7 @@ class CommandRepositoryImpl implements CommandRepository {
         FileFilter objectFileFileter
                 = new FileFilter() {
                     public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xcmd")) {
+                        if (file.isFile() && file.getName().endsWith(COMMAND_FILE_EXTENSION)) {
                             return true;
                         } else {
                             return false;
@@ -349,7 +350,7 @@ class CommandRepositoryImpl implements CommandRepository {
 
     @Override
     public List<Command> findAll() {
-        List<Command> cl = new ArrayList<Command>(userCommands.values());
+        List<Command> cl = new ArrayList<>(userCommands.values());
         cl.addAll(hardwareCommands.values());
         return cl;
 
@@ -357,7 +358,7 @@ class CommandRepositoryImpl implements CommandRepository {
 
     @Override
     public List<Command> findByName(String name) {
-        List<Command> cl = new ArrayList<Command>();
+        List<Command> cl = new ArrayList<>();
         for (Command c : findAll()) {
             if (c.getName().equalsIgnoreCase(name)) {
                 cl.add(c);

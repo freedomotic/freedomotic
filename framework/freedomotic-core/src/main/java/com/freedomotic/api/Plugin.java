@@ -60,7 +60,7 @@ public class Plugin implements Client, BusConsumer {
     @XmlElement
     private String pluginName;
     @XmlElement
-    private final String type = "Plugin";
+    private static final String type = "Plugin";
     @XmlElement
     private volatile PluginStatus currentPluginStatus = PluginStatus.STOPPED;
     @XmlElement
@@ -179,7 +179,8 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
-     * Notifies an error on console/logfile and shows a callout on the jfrontend.
+     * Notifies an error on console/logfile and shows a callout on the
+     * jfrontend.
      *
      * @param message the error message
      */
@@ -195,8 +196,8 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
-     * Notifies a critical error on console/logfile, shows a callout on the jfrontend
-     * and stops the plugin.
+     * Notifies a critical error on console/logfile, shows a callout on the
+     * jfrontend and stops the plugin.
      *
      * @param message the error message
      */
@@ -254,7 +255,7 @@ public class Plugin implements Client, BusConsumer {
 
     /**
      * Returns the read queue.
-     * 
+     *
      * @return queue the plugin listen to
      */
     public final String getReadQueue() {
@@ -395,7 +396,7 @@ public class Plugin implements Client, BusConsumer {
      */
     @XmlElement(name = "uuid")
     public String getClassName() {
-        return (this.getClass().getSimpleName().toLowerCase());
+        return this.getClass().getSimpleName().toLowerCase();
     }
 
     /**
@@ -418,13 +419,6 @@ public class Plugin implements Client, BusConsumer {
 
     }
 
-//    public boolean isConnected() {
-//        return isConnected;
-//    }
-//
-//    public void setConnected() {
-//        isConnected = true;
-//    }
     /**
      *
      * @param aThat
@@ -492,15 +486,15 @@ public class Plugin implements Client, BusConsumer {
         try {
             configuration = ConfigPersistence.deserialize(manifest);
         } catch (IOException ex) {
-            LOG.error("Missing manifest {} for plugin {}", new Object[]{manifest.toString(), getName()});
+            LOG.error("Missing manifest \"{}\" for plugin \"{}\"", new Object[]{manifest.toString(), getName()});
             setDescription("Missing manifest file " + manifest.toString());
         }
 
     }
 
     /**
-     * 
-     * 
+     *
+     *
      */
     private void register() {
         listener = new BusMessagesListener(this, getBusService());
@@ -508,9 +502,9 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
-     * 
-     * 
-     * @return 
+     *
+     *
+     * @return
      */
     private String getCommandsChannelToListen() {
         String defaultQueue = ACTUATORS_QUEUE_DOMAIN + category + "." + shortName;

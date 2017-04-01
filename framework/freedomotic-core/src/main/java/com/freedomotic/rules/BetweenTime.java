@@ -35,7 +35,7 @@ public class BetweenTime extends BinaryExpression {
 
     private static final String OPERAND = Statement.BETWEEN_TIME;
     private static final Logger LOG = LoggerFactory.getLogger(BetweenTime.class.getName());
-    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
+    private final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
     Date todaysEnd;
     Date tomorrowStart;
 
@@ -92,9 +92,8 @@ public class BetweenTime extends BinaryExpression {
             return time.after(intervalStart.getTime()) && time.before(intervalEnd.getTime());
         } else {
             // the time interval is crossing days boundaries           
-            return (((time.compareTo(intervalStart.getTime()) >= 0) && (time.compareTo(todaysEnd) <= 0))
-                    || ((time.compareTo(tomorrowStart) >= 0) && (time.compareTo(intervalEnd.getTime()) <= 0)));
-
+            return ((time.compareTo(intervalStart.getTime()) >= 0) && (time.compareTo(todaysEnd) <= 0))
+                    || ((time.compareTo(tomorrowStart) >= 0) && (time.compareTo(intervalEnd.getTime()) <= 0));
         }
     }
 

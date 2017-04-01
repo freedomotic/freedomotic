@@ -65,13 +65,13 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
         //filter accepted values
         String value = params.getProperty("value").trim();
 
-        if (value.equalsIgnoreCase("false") || value.equals("0")) {
+        if ("false".equalsIgnoreCase(value) || "0".equalsIgnoreCase(value)) {
             if (this.getValue() != false) { //if is really changed
                 listener.onFalse(params, fireCommand);
             }
         }
 
-        if (value.equalsIgnoreCase("true") || value.equals("1")) {
+        if ("true".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value)) {
             if (this.getValue() != true) { //if is really changed
                 listener.onTrue(params, fireCommand);
             }
@@ -91,12 +91,12 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
     }
 
     private void opposite(Config params, boolean fireCommand) {
-        if (data.getValue() == true) {
+        if (data.getValue()) {
             if (this.getValue() != false) { //if is really changed
                 listener.onFalse(params, fireCommand);
             }
         } else {
-            if (this.getValue() != true) { //if is really changed
+            if (!this.getValue()) { //if is really changed
                 listener.onTrue(params, fireCommand);
             }
         }

@@ -54,15 +54,12 @@ import javax.jms.Topic;
 public class BusMessagesListener implements MessageListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(BusMessagesListener.class.getName());
-
     private BusService busService;
-
     private BusConsumer messageHandler;
-
     private Session session;
 
     // A listener can consume from multiple sources
-    private List<MessageConsumer> consumers = new ArrayList<MessageConsumer>();
+    private List<MessageConsumer> consumers = new ArrayList<>();
 
     /**
      * Constructor

@@ -22,6 +22,7 @@ package com.freedomotic.behaviors;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.ListBehavior;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This behavior accepts a string which is an element of the list or "next" or
@@ -155,7 +156,7 @@ public class ListBehaviorLogic
      *
      * @return
      */
-    public ArrayList<String> getValuesList() {
+    public List<String> getValuesList() {
         return data.getList();
     }
 

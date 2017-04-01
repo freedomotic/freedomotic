@@ -82,13 +82,8 @@ public final class Resolver {
     public Reaction resolve(Reaction reaction) {
 
         if ((context != null) && (reaction != null)) {
-            Reaction clone
-                    = new Reaction(reaction.getTrigger(),
-                            performSubstitutionInCommands(reaction.getCommands()));
-
-            return clone;
+            return (new Reaction(reaction.getTrigger(), performSubstitutionInCommands(reaction.getCommands())));
         }
-
         return null;
     }
 
@@ -367,17 +362,17 @@ public final class Resolver {
 
     /**
      *
-     * @param PREFIX
+     * @param prefix
      * @param aContext
      */
-    public void addContext(final String PREFIX, final Config aContext) {
+    public void addContext(final String prefix, final Config aContext) {
         if (context == null) {
             context = new Payload();
         }
 
         //registering the new prefix
-        if (!namespaces.contains(PREFIX)) {
-            namespaces.add(PREFIX);
+        if (!namespaces.contains(prefix)) {
+            namespaces.add(prefix);
         }
 
         Set entries = aContext.getProperties().entrySet();
@@ -389,29 +384,29 @@ public final class Resolver {
 
             //removing the prefix of the properties if already exists
             //to avoid dublicate prefixes like @event.event.object.name
-            if (entry.getKey().toString().startsWith(PREFIX)) {
-                key = entry.getKey().toString().substring(PREFIX.length());
+            if (entry.getKey().toString().startsWith(prefix)) {
+                key = entry.getKey().toString().substring(prefix.length());
             } else {
                 key = entry.getKey().toString();
             }
-            context.addStatement(PREFIX + key,
+            context.addStatement(prefix + key,
                     entry.getValue().toString());
         }
     }
 
     /**
      *
-     * @param PREFIX
+     * @param prefix
      * @param aContext
      */
-    public void addContext(final String PREFIX, final Map<String, String> aContext) {
+    public void addContext(final String prefix, final Map<String, String> aContext) {
         if (context == null) {
             context = new Payload();
         }
 
         //registering the new prefix
-        if (!namespaces.contains(PREFIX)) {
-            namespaces.add(PREFIX);
+        if (!namespaces.contains(prefix)) {
+            namespaces.add(prefix);
         }
 
         Iterator it = aContext.entrySet().iterator();
@@ -422,29 +417,28 @@ public final class Resolver {
 
             //removing the prefix of the properties if already exists
             //to avoid duplicate prefixes like @event.event.object.name
-            if (entry.getKey().toString().startsWith(PREFIX)) {
-                key = entry.getKey().toString().substring(PREFIX.length());
+            if (entry.getKey().toString().startsWith(prefix)) {
+                key = entry.getKey().toString().substring(prefix.length());
             } else {
                 key = entry.getKey().toString();
             }
-            context.addStatement(PREFIX + key,
-                    entry.getValue().toString());
+            context.addStatement(prefix + key, entry.getValue().toString());
         }
     }
 
     /**
      *
-     * @param PREFIX
+     * @param prefix
      * @param aContext
      */
-    public void addContext(final String PREFIX, final Payload aContext) {
+    public void addContext(final String prefix, final Payload aContext) {
         if (context == null) {
             context = new Payload();
         }
 
         //registering the new prefix
-        if (!namespaces.contains(PREFIX)) {
-            namespaces.add(PREFIX);
+        if (!namespaces.contains(prefix)) {
+            namespaces.add(prefix);
         }
 
         // get an hold on the statements list mutex to avoid others to use it
@@ -456,12 +450,12 @@ public final class Resolver {
                 Statement statement = (Statement) it.next();
                 //removing the prefix of the properties if already exists
                 //to avoid dublicate prefixes like @event.event.object.name
-                if (statement.getAttribute().startsWith(PREFIX)) {
-                    key = statement.getAttribute().substring(PREFIX.length());
+                if (statement.getAttribute().startsWith(prefix)) {
+                    key = statement.getAttribute().substring(prefix.length());
                 } else {
                     key = statement.getAttribute();
                 }
-                context.addStatement(PREFIX + key, statement.getValue());
+                context.addStatement(prefix + key, statement.getValue());
             }
         }
     }

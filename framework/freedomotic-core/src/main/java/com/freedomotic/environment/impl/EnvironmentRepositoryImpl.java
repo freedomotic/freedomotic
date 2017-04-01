@@ -26,12 +26,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.EnvironmentRepository;
 import com.freedomotic.exceptions.RepositoryException;
@@ -63,10 +61,10 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     private final EnvironmentPersistenceFactory environmentPersistenceFactory;
     private final ThingRepository thingsRepository;
     private File defaultEnvironmentFile;
+    private static final String ENVIRONMENT_FILE_EXTENSION = ".xenv";
 
     // The Environments cache
-    private static final List<EnvironmentLogic> environments = new ArrayList<EnvironmentLogic>();
-    // private static boolean initialized = false;
+    private static final List<EnvironmentLogic> environments = new ArrayList<>();
 
     /**
      * Creates a new repository
@@ -89,10 +87,10 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
     @Override
     public void initFromDefaultFolder() throws RepositoryException {
-    	
-    	String envFilePath = appConfig.getProperty("KEY_ROOM_XML_PATH");
+
+        String envFilePath = appConfig.getProperty("KEY_ROOM_XML_PATH");
         this.defaultEnvironmentFile = new File(Info.PATHS.PATH_ENVIRONMENTS_FOLDER + File.separator + envFilePath);
-    	
+
         File defaultEnvironmentFolder = getDefaultEnvironmentFolder();
         this.init(defaultEnvironmentFolder);
     }
@@ -105,21 +103,18 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
      */
     @Override
     public synchronized void init(File folder) throws RepositoryException {
-        // if (initialized) {
-        //     LOG.warn("Environment repository is already initialized. Skip initialization phase");
-        //     return;
-        // }
+
         EnvironmentPersistence environmentPersistence = environmentPersistenceFactory.create(folder);
         Collection<Environment> loadedPojo = environmentPersistence.loadAll();
         this.deleteAll();
         for (Environment env : loadedPojo) {
             EnvironmentLogic envLogic = new EnvironmentLogic();
             envLogic.setPojo(env);
-            envLogic.setSource(new File(folder + "/" + env.getUUID() + ".xenv"));
+            envLogic.setSource(new File(folder + "/" + env.getUUID() + ENVIRONMENT_FILE_EXTENSION));
             // activate this environment
             this.create(envLogic);
         }
-        // EnvironmentRepositoryImpl.initialized = true;
+
         List<EnvObjectLogic> loadedThings = thingsRepository.loadAll(findAll().get(0).getObjectFolder());
         for (EnvObjectLogic thing : loadedThings) {
             // stores the thing in repository. Important, otherwise it will be not visible in the environment
@@ -133,7 +128,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
      * @return @throws RepositoryException
      */
     private File getDefaultEnvironmentFolder() throws RepositoryException {
-  
+
         File folder = this.defaultEnvironmentFile.getParentFile();
 
         if (folder == null) {
@@ -144,7 +139,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         if (!folder.exists()) {
             throw new RepositoryException(
                     "Folder \"" + folder + "\" doesn't exist. Cannot load default "
-                    + "environment from \"" + this.defaultEnvironmentFile.getAbsolutePath() +"\"");
+                    + "environment from \"" + this.defaultEnvironmentFile.getAbsolutePath() + "\"");
         } else if (!folder.isDirectory()) {
             throw new RepositoryException(
                     "Environment folder \"" + folder.getAbsolutePath()
@@ -177,7 +172,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
                     environment.getPojo().setUUID(UUID.randomUUID().toString());
                 }
 
-                String fileName = environment.getPojo().getUUID() + ".xenv";
+                String fileName = environment.getPojo().getUUID() + ENVIRONMENT_FILE_EXTENSION;
                 save(environment,
                         new File(folder + "/" + fileName));
             }
@@ -186,7 +181,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         }
 
         // save environment's things
-        if (appConfig.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false) == true) {
+        if (appConfig.getBooleanProperty("KEY_OVERRIDE_OBJECTS_ON_EXIT", false)) {
             try {
                 thingsRepository.saveAll(findAll().get(0).getObjectFolder());
             } catch (RepositoryException ex) {
@@ -197,10 +192,10 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @param folder
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     private static void deleteEnvFiles(File folder)
             throws RepositoryException {
@@ -213,7 +208,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
                 = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xenv")) {
+                        if (file.isFile() && file.getName().endsWith(ENVIRONMENT_FILE_EXTENSION)) {
                             return true;
                         } else {
                             return false;
@@ -253,7 +248,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         FileFilter envFileFilter = new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return file.isFile() && file.getName().endsWith(".xenv");
+                return file.isFile() && file.getName().endsWith(ENVIRONMENT_FILE_EXTENSION);
             }
         };
 
@@ -269,7 +264,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
                 LOG.warn("Cannot add environment from file " + file.getAbsolutePath());
             }
         }
-        //createFolderStructure(folder);
+
         // Load all objects in this environment
         thingsRepository.loadAll(EnvironmentRepositoryImpl.getEnvironments().get(0).getObjectFolder());
 
@@ -278,8 +273,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     }
 
     /**
-     * Adds an environment.
-     * You can use EnvObjectPersistance.MAKE_UNIQUE to
+     * Adds an environment. You can use EnvObjectPersistance.MAKE_UNIQUE to
      * create an object that will surely be unique. Beware this means it is
      * created with defensive copy of the object in input and name, protocol,
      * address and UUID are reset to a default value.
@@ -319,13 +313,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         }
 
         envLogic.init();
-        //  if (!envList.contains(envLogic)) {
         environments.add(envLogic);
-
-        //envLogic.setChanged(true);
-        //  } else {
-        //      throw new RuntimeException("Cannot add the same environment more than one time");
-        //  }
         return envLogic;
     }
 
@@ -344,25 +332,25 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         this.removeEnvironmentFile(input.getSource());
         input.clear();
     }
-    
+
     private boolean removeEnvironmentFile(File environmentFile) {
-    	if(environmentFile==null) {
-    		LOG.warn("No file defined in this environment, so no deletion occurs.");
-    		return false;	
-    	}
-    	
-    	if(environmentFile.exists())
-			try {
-				FileUtils.forceDelete(environmentFile);
-				return true;
-			} catch (IOException e) {
-				LOG.warn("Error while removing file {}, please try manually.", environmentFile.getAbsolutePath());
-				return false;
-			}
-		else {
-    		LOG.warn("File {} does not exist", environmentFile.getAbsolutePath());
-    		return false;
-    	}
+        if (environmentFile == null) {
+            LOG.warn("No file defined in this environment, so no deletion occurs.");
+            return false;
+        }
+
+        if (environmentFile.exists()) {
+            try {
+                FileUtils.forceDelete(environmentFile);
+                return true;
+            } catch (IOException e) {
+                LOG.warn("Error while removing file \"{}\", please try manually.", environmentFile.getAbsolutePath());
+                return false;
+            }
+        } else {
+            LOG.warn("File \"{}\" does not exist", environmentFile.getAbsolutePath());
+            return false;
+        }
     }
 
     /**
@@ -383,10 +371,10 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
     /**
      * Saves an environment to file.
-     * 
+     *
      * @param env environment to save
      * @param file file to save the environment
-     * @throws IOException 
+     * @throws IOException
      */
     private void save(EnvironmentLogic env, File file) throws IOException {
         try {
@@ -408,7 +396,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @Override
     public void saveAs(EnvironmentLogic env, File folder) throws IOException {
         LOG.info("Serializing new environment to \"{}\"", folder);
-        save(env, new File(folder + "/" + env.getPojo().getUUID() + ".xenv"));
+        save(env, new File(folder + "/" + env.getPojo().getUUID() + ENVIRONMENT_FILE_EXTENSION));
     }
 
     /**
@@ -420,7 +408,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @Deprecated
     @Override
     public EnvironmentLogic loadEnvironmentFromFile(final File file) throws RepositoryException {
-        LOG.info("Loading environment from file " + file.getAbsolutePath());
+        LOG.info("Loading environment from file \"{}\"", file.getAbsolutePath());
         XStream xstream = FreedomXStream.getXstream();
 
         //validate the object against a predefined DTD
@@ -489,7 +477,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @Override
     @RequiresPermissions("environments:read")
     public List<EnvironmentLogic> findByName(String name) {
-        List<EnvironmentLogic> el = new ArrayList<EnvironmentLogic>();
+        List<EnvironmentLogic> el = new ArrayList<>();
         for (EnvironmentLogic e : findAll()) {
             if (e.getPojo().getName().equalsIgnoreCase(name)) {
                 el.add(e);
@@ -518,17 +506,17 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @Override
     @RequiresPermissions("environments:delete")
     public boolean delete(EnvironmentLogic item) {
-    	
-    	 if (environments.isEmpty()) {
-             LOG.warn("There are no environments to delete!");
-             return false;
-         }
-   	 
-    	 if(item.getSource()!=null && environments.contains(item) && this.defaultEnvironmentFile.getAbsolutePath().equalsIgnoreCase(item.getSource().getAbsolutePath())) {
-    		 LOG.info("Default environment cannot be deleted {}", item.getSource().getAbsolutePath());
-    		 return false;
-    	 }
-    	
+
+        if (environments.isEmpty()) {
+            LOG.warn("There are no environments to delete");
+            return false;
+        }
+
+        if (item.getSource() != null && environments.contains(item) && this.defaultEnvironmentFile.getAbsolutePath().equalsIgnoreCase(item.getSource().getAbsolutePath())) {
+            LOG.info("Default environment cannot be deleted \"{}\"", item.getSource().getAbsolutePath());
+            return false;
+        }
+
         try {
             remove(item);
             return true;

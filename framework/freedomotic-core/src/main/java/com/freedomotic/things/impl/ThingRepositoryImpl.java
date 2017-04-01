@@ -35,9 +35,7 @@ import com.freedomotic.settings.Info;
 import com.freedomotic.util.SerialClone;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
-
 import static com.freedomotic.util.FileOperations.writeSummaryFile;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -52,9 +50,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.inject.Inject;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +62,8 @@ import org.slf4j.LoggerFactory;
 class ThingRepositoryImpl implements ThingRepository {
 
     public static final boolean MAKE_UNIQUE = true;
-
     public static final boolean MAKE_NOT_UNIQUE = false;
+    public static final String OBJECT_FILE_EXTENSION = ".xobj";
     private static final Map<String, EnvObjectLogic> objectList = new HashMap<>();
     private static final Logger LOG = LoggerFactory.getLogger(ThingRepositoryImpl.class.getName());
     // Dependencies
@@ -109,8 +105,8 @@ class ThingRepositoryImpl implements ThingRepository {
         }
 
         deleteObjectFiles(folder);
-        
-        StringBuffer summaryContent = new StringBuffer();
+
+        StringBuilder summaryContent = new StringBuilder();
 
         for (EnvObjectLogic envObject : objectList.values()) {
             String uuid = envObject.getPojo().getUUID();
@@ -119,23 +115,23 @@ class ThingRepositoryImpl implements ThingRepository {
                 envObject.getPojo().setUUID(UUID.randomUUID().toString());
             }
 
-            String fileName = envObject.getPojo().getUUID() + ".xobj";
+            String fileName = envObject.getPojo().getUUID() + OBJECT_FILE_EXTENSION;
             File file = new File(folder + "/" + fileName);
             FreedomXStream.toXML(envObject.getPojo(), file);
             summaryContent.append(fileName).append("\t\t").append(envObject.getPojo().getName()).append("\n");
         }
-        
+
         try {
-			writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #ThingName\n", summaryContent.toString());
-		} catch (IOException e) {
-			LOG.error("Something went wrong while creating the index file for things.", e);
-		}
+            writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #ThingName\n", summaryContent.toString());
+        } catch (IOException e) {
+            LOG.error("Something went wrong while creating the index file for things.", e);
+        }
     }
 
     /**
-     * 
+     *
      * @param folder
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     private static void deleteObjectFiles(File folder) throws RepositoryException {
         if ((folder == null) || !folder.isDirectory()) {
@@ -149,7 +145,7 @@ class ThingRepositoryImpl implements ThingRepository {
                 = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xobj")) {
+                        if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
                             return true;
                         } else {
                             return false;
@@ -204,13 +200,13 @@ class ThingRepositoryImpl implements ThingRepository {
      */
     @RequiresPermissions("objects:read")
     private static ArrayList<EnvObjectLogic> getObjectByTags(String tags) {
-        ArrayList<EnvObjectLogic> results = new ArrayList<EnvObjectLogic>();
+        ArrayList<EnvObjectLogic> results = new ArrayList<>();
         // split tags string
         String[] tagList = tags.split(",");
 
         // search every object for at least one tag 
         for (EnvObjectLogic obj : objectList.values()) {
-            Set<String> tagSet = new HashSet<String>();
+            Set<String> tagSet = new HashSet<>();
 
             for (String tag : tagList) {
                 if (!tag.trim().isEmpty()) {
@@ -284,7 +280,7 @@ class ThingRepositoryImpl implements ThingRepository {
      */
     @RequiresPermissions("objects:read")
     private static ArrayList<EnvObjectLogic> getObjectByProtocol(String protocol) {
-        ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
+        ArrayList<EnvObjectLogic> list = new ArrayList<>();
         for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()) // && auth.isPermitted("objects:read:" + object.getPojo().getUUID())
@@ -304,7 +300,7 @@ class ThingRepositoryImpl implements ThingRepository {
      */
     @RequiresPermissions("objects:read")
     private static ArrayList<EnvObjectLogic> getObjectByEnvironment(String uuid) {
-        ArrayList<EnvObjectLogic> list = new ArrayList<EnvObjectLogic>();
+        ArrayList<EnvObjectLogic> list = new ArrayList<>();
         for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getEnvironmentID().equalsIgnoreCase(uuid) //&& auth.isPermitted("objects:read:" + object.getPojo().getUUID().substring(0, 7))
@@ -338,7 +334,7 @@ class ThingRepositoryImpl implements ThingRepository {
     }
 
     private static List<String> getObjectsNames() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         for (EnvObjectLogic obj : objectList.values()) {
             list.add(obj.getPojo().getName());
         }
@@ -410,9 +406,9 @@ class ThingRepositoryImpl implements ThingRepository {
     }
 
     /**
-     * 
+     *
      * @param name
-     * @return 
+     * @return
      */
     private String getNextInOrder(String name) {
         String newName = name;
@@ -444,7 +440,7 @@ class ThingRepositoryImpl implements ThingRepository {
     @Override
     @RequiresPermissions("objects:read")
     public List<EnvObjectLogic> findAll() {
-        List<EnvObjectLogic> el = new ArrayList<EnvObjectLogic>();
+        List<EnvObjectLogic> el = new ArrayList<>();
         el.addAll(objectList.values());
         return el;
     }
@@ -452,7 +448,7 @@ class ThingRepositoryImpl implements ThingRepository {
     @Override
     @RequiresPermissions("objects:read")
     public List<EnvObjectLogic> findByName(String name) {
-        List<EnvObjectLogic> el = new ArrayList<EnvObjectLogic>();
+        List<EnvObjectLogic> el = new ArrayList<>();
         for (EnvObjectLogic e : findAll()) {
             if (e.getPojo().getName().equalsIgnoreCase(name)) {
                 el.add(e);
@@ -560,7 +556,10 @@ class ThingRepositoryImpl implements ThingRepository {
         }
 
         // Configure the deserialization engine
-        LOG.debug("Loading Thing from file " + file.getAbsolutePath());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Loading Thing from file \"{}\"", file.getAbsolutePath());
+        }
+
         XStream xstream = FreedomXStream.getXstream();
 
         // Validate the object against a predefined DTD
@@ -587,7 +586,7 @@ class ThingRepositoryImpl implements ThingRepository {
             // Deserialize the object from the upgraded and validated xml
             EnvObject pojo = (EnvObject) xstream.fromXML(xml);
             EnvObjectLogic objectLogic = thingsFactory.create(pojo);
-            LOG.info("Loaded Thing {} [id:{}] of type \"{}\"",
+            LOG.info("Loaded Thing \"{}\" [id:{}] of type \"{}\"",
                     new Object[]{objectLogic.getPojo().getName(), objectLogic.getPojo().getUUID(), objectLogic.getClass().getCanonicalName()});
             return objectLogic;
         } catch (IOException ex) {
@@ -600,14 +599,14 @@ class ThingRepositoryImpl implements ThingRepository {
     @Override
     public List<EnvObjectLogic> loadAll(File folder) throws RepositoryException {
         this.deleteAll();
-        List<EnvObjectLogic> results = new ArrayList<EnvObjectLogic>();
+        List<EnvObjectLogic> results = new ArrayList<>();
 
         // This filter only returns object files
         FileFilter objectFileFilter
                 = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xobj")) {
+                        if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
                             return true;
                         } else {
                             return false;

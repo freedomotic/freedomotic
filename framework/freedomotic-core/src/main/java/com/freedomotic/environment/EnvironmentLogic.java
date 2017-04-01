@@ -41,7 +41,7 @@ public final class EnvironmentLogic {
 
     private Graph graph = null;
     private Environment pojo = null;
-    private List<ZoneLogic> zones = new ArrayList<ZoneLogic>();
+    private List<ZoneLogic> zones = new ArrayList<>();
     private File source = null;
 
     /**
@@ -92,7 +92,7 @@ public final class EnvironmentLogic {
      */
     @RequiresPermissions("environments:read")
     public List<Room> getRooms() {
-        List<Room> rooms = new ArrayList<Room>();
+        List<Room> rooms = new ArrayList<>();
 
         for (ZoneLogic zone : getZones()) {
             if (zone instanceof Room) {
@@ -213,11 +213,11 @@ public final class EnvironmentLogic {
                 room.init(this);
 
                 if (!zones.contains(room)) {
-                    LOG.info("Adding room \"" + room + "\"");
+                    LOG.info("Adding room \"{}\"", room);
 
                     this.zones.add(room);
                 } else {
-                    LOG.warn("Attempt to add a null or an already existent room " + room);
+                    LOG.warn("Attempt to add a null or an already existent room \"{}\"", room);
                 }
             } else {
                 ZoneLogic zoneLogic = new ZoneLogic(z);

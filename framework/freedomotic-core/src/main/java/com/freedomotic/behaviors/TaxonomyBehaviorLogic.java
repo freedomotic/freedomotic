@@ -88,7 +88,7 @@ public class TaxonomyBehaviorLogic
         String item = params.getProperty("item").trim();
         String value = params.getProperty("value").trim();
 
-        if (value.equalsIgnoreCase("add") && !data.getSelected().contains(item)) {
+        if ("add".equalsIgnoreCase(value) && !data.getSelected().contains(item)) {
             //add the element id not already here
             listener.onAdd(params, fireCommand);
         } else {
@@ -96,13 +96,13 @@ public class TaxonomyBehaviorLogic
                 setUnselected(item);
                 listener.onRemove(params, fireCommand);
             } else {
-                if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("selected") || value.equals("1")) {
+                if ("true".equalsIgnoreCase(value) || "selected".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value)) {
                     setSelected(item);
                     listener.onSelection(params, fireCommand);
                 } else {
-                    if (value.equalsIgnoreCase("false")
-                            || value.equalsIgnoreCase("unselected")
-                            || value.equals("0")) {
+                    if ("false".equalsIgnoreCase(value)
+                            || "unselected".equalsIgnoreCase(value)
+                            || "0".equalsIgnoreCase(value)) {
                         setUnselected(item);
                         listener.onUnselection(params, fireCommand);
                     }

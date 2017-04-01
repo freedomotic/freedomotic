@@ -28,9 +28,7 @@ import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
-
 import static com.freedomotic.util.FileOperations.writeSummaryFile;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -52,8 +50,9 @@ import org.slf4j.LoggerFactory;
 class TriggerRepositoryImpl implements TriggerRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(TriggerRepositoryImpl.class.getName());
-    private static ArrayList<Trigger> list = new ArrayList<Trigger>();
+    private static ArrayList<Trigger> list = new ArrayList<>();
     private final DataUpgradeService dataUpgradeService;
+    private static final String TRIGGER_FILE_EXTENSION = ".xtrg";
 
     @Inject
     public TriggerRepositoryImpl(DataUpgradeService dataUpgradeService) {
@@ -77,12 +76,11 @@ class TriggerRepositoryImpl implements TriggerRepository {
             return;
         }
 
-        XStream xstream = FreedomXStream.getXstream();
         deleteTriggerFiles(folder);
 
         try {
             LOG.info("Saving triggers to file into \"{}\"", folder.getAbsolutePath());
-            StringBuffer summaryContent = new StringBuffer();
+            StringBuilder summaryContent = new StringBuilder();
             for (Trigger trigger : list) {
                 if (trigger.isToPersist()) {
                     String uuid = trigger.getUUID();
@@ -91,7 +89,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                         trigger.setUUID(UUID.randomUUID().toString());
                     }
 
-                    String fileName = trigger.getUUID() + ".xtrg";
+                    String fileName = trigger.getUUID() + TRIGGER_FILE_EXTENSION;
                     File file = new File(folder + "/" + fileName);
                     FreedomXStream.toXML(trigger, file);
                 }
@@ -118,7 +116,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
         FileFilter objectFileFilter
                 = new FileFilter() {
                     public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xtrg")) {
+                        if (file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION)) {
                             return true;
                         } else {
                             return false;
@@ -136,7 +134,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
      * @return
      */
     @Deprecated
-    public static ArrayList<Trigger> getTriggers() {
+    public static List<Trigger> getTriggers() {
         return list;
     }
 
@@ -154,7 +152,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                 = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
-                        return file.isFile() && file.getName().endsWith(".xtrg");
+                        return file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION);
                     }
                 };
 
@@ -228,7 +226,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             list.add(t);
             t.register();
             int postSize = TriggerRepositoryImpl.size();
-            if (!(postSize == (preSize + 1))) {
+            if (postSize != (preSize + 1)) {
                 LOG.error("Error while adding and registering trigger \"{}\"", t.getName());
             }
         } else {
@@ -261,7 +259,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
 
             int postSize = TriggerRepositoryImpl.size();
 
-            if (!(postSize == (preSize + 1))) {
+            if (postSize != (preSize + 1)) {
                 LOG.error("Error while adding trigger \"{}\"", t.getName());
             }
         }
@@ -280,7 +278,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             list.remove(t);
             int postSize = TriggerRepositoryImpl.size();
 
-            if (!(postSize == (preSize - 1))) {
+            if (postSize != (preSize - 1)) {
                 LOG.error("Error while removing trigger \"{}\"", t.getName());
             }
         } catch (Exception e) {
@@ -375,7 +373,6 @@ class TriggerRepositoryImpl implements TriggerRepository {
     @Override
     public List<Trigger> findAll() {
         Collections.sort(list, new TriggerNameComparator());
-        //return getTriggers();
         return list;
     }
 
@@ -386,7 +383,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
      */
     @Override
     public List<Trigger> findByName(String name) {
-        List<Trigger> tl = new ArrayList<Trigger>();
+        List<Trigger> tl = new ArrayList<>();
         for (Trigger t : findAll()) {
             if (t.getName().equalsIgnoreCase(name)) {
                 tl.add(t);

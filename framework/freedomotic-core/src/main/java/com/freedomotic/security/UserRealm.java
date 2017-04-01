@@ -25,8 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +38,8 @@ import org.apache.shiro.realm.SimpleAccountRealm;
 public class UserRealm extends SimpleAccountRealm {
 
     private final static Logger LOG = LoggerFactory.getLogger(UserRealm.class.getCanonicalName());
-    public final static String USER_REALM_NAME = "com.freedomotic.security";
     private final static String PASSWORD_HASHING_ALGORITHM = "SHA-256";
+    public final static String USER_REALM_NAME = "com.freedomotic.security";
 
     public UserRealm() {
         setName(USER_REALM_NAME);
@@ -51,16 +49,16 @@ public class UserRealm extends SimpleAccountRealm {
     }
 
     /**
-     * 
-     * @param account 
+     *
+     * @param account
      */
     public void addUser(User account) {
         super.add(account);
     }
 
     /**
-     * 
-     * @param role 
+     *
+     * @param role
      */
     public void addRole(SimpleRole role) {
         super.add(role);
@@ -72,11 +70,11 @@ public class UserRealm extends SimpleAccountRealm {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public Map<String, User> getUsers() {
-        HashMap<String, User> accounts = new HashMap<String, User>();
+        HashMap<String, User> accounts = new HashMap<>();
         for (String userName : users.keySet()) {
             accounts.put(userName, (User) users.get(userName));
         }
@@ -84,8 +82,8 @@ public class UserRealm extends SimpleAccountRealm {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public Map<String, SimpleRole> getRoles() {
         return roles;
@@ -97,9 +95,9 @@ public class UserRealm extends SimpleAccountRealm {
     }
 
     /**
-     * 
+     *
      * @param file
-     * @return 
+     * @return
      */
     private int loadRoles(File file) {
         roles.clear();
@@ -112,10 +110,10 @@ public class UserRealm extends SimpleAccountRealm {
     }
 
     /**
-     * 
+     *
      * @param file
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean saveRoles(File file) throws IOException {
         SimpleRole[] ra = new SimpleRole[]{};
@@ -126,9 +124,9 @@ public class UserRealm extends SimpleAccountRealm {
     }
 
     /**
-     * 
+     *
      * @param file
-     * @return 
+     * @return
      */
     private int loadUsers(File file) {
         users.clear();
@@ -141,10 +139,10 @@ public class UserRealm extends SimpleAccountRealm {
     }
 
     /**
-     * 
+     *
      * @param file
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean saveUsers(File file) throws IOException {
         User[] ua = new User[]{};
@@ -156,8 +154,8 @@ public class UserRealm extends SimpleAccountRealm {
     }
 
     /**
-     * 
-     * @param file 
+     *
+     * @param file
      */
     public void load(File file) {
         loadRoles(new File(file + "/roles.xml"));
@@ -165,9 +163,9 @@ public class UserRealm extends SimpleAccountRealm {
     }
 
     /**
-     * 
+     *
      * @param file
-     * @throws IOException 
+     * @throws IOException
      */
     public void save(File file) throws IOException {
         saveUsers(new File(file + "/users.xml"));
@@ -175,8 +173,8 @@ public class UserRealm extends SimpleAccountRealm {
     }
 
     /**
-     * 
-     * @param userName 
+     *
+     * @param userName
      */
     public void removeUser(String userName) {
         User u = getUser(userName);
@@ -188,11 +186,10 @@ public class UserRealm extends SimpleAccountRealm {
     }
 
     /**
-     * 
-     * @param roleName 
+     *
+     * @param roleName
      */
     public void removeRole(String roleName) {
-        SimpleRole r = getRole(roleName);
         for (User u : getUsers().values()) {
             u.removeRole(roleName);
             u.setObjectPermissions(null);

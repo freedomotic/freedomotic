@@ -92,8 +92,8 @@ class PluginsManagerImpl implements PluginsManager {
      * @throws com.freedomotic.exceptions.PluginLoadingException
      */
     @Override
-    public void loadAllPlugins(int TYPE) throws PluginLoadingException {
-        List<BoundleLoader> boundleLoaders = new BoundleLoaderFactory().getBoundleLoaders(TYPE);
+    public void loadAllPlugins(int type) throws PluginLoadingException {
+        List<BoundleLoader> boundleLoaders = new BoundleLoaderFactory().getBoundleLoaders(type);
 
         for (BoundleLoader boundleLoader : boundleLoaders) {
             //a jar package can contain more that one plugin
@@ -109,7 +109,7 @@ class PluginsManagerImpl implements PluginsManager {
      */
     @Override
     public void loadAllPlugins() throws PluginLoadingException {
-        List<BoundleLoader> boundleLoaders = new ArrayList<BoundleLoader>();
+        List<BoundleLoader> boundleLoaders = new ArrayList<>();
         BoundleLoaderFactory boundleLoaderFactory = new BoundleLoaderFactory();
         boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_EVENT));
         boundleLoaders.addAll(boundleLoaderFactory.getBoundleLoaders(TYPE_OBJECT));
@@ -166,7 +166,7 @@ class PluginsManagerImpl implements PluginsManager {
         try {
             String url = fromURL.toString();
 
-            if (url.lastIndexOf("&") > -1) {
+            if (url.lastIndexOf('&') > -1) {
                 //remove any parameter (starts with '&' char) at the end of url
                 url = url.substring(0,
                         url.lastIndexOf('&'));
@@ -195,11 +195,10 @@ class PluginsManagerImpl implements PluginsManager {
                 unzipAndDelete(zipFile);
                 loadSingleBoundle(new File(Info.PATHS.PATH_OBJECTS_FOLDER + "/" + pluginName));
             } else {
-                LOG.warn("No installable Freedomotic plugins at URL " + fromURL);
+                LOG.warn("No installable Freedomotic plugins at URL \"{}\"", fromURL);
             }
         } catch (Exception ex) {
             LOG.error("Error while installing boundle downloaded from " + fromURL, ex);
-
             return false; //not done
         }
 
@@ -249,7 +248,7 @@ class PluginsManagerImpl implements PluginsManager {
     }
 
     private boolean unzipAndDelete(File zipFile) {
-        LOG.info("Uncompressing plugin archive " + zipFile);
+        LOG.info("Uncompressing plugin archive  \"{}\"", zipFile);
 
         try {
             Unzip.unzip(zipFile.toString());
@@ -263,7 +262,7 @@ class PluginsManagerImpl implements PluginsManager {
         try {
             zipFile.delete();
         } catch (Exception e) {
-            LOG.info("Unable to delete compressed file " + zipFile.toString());
+            LOG.info("Unable to delete compressed file \"{}\"", zipFile.toString());
         }
 
         return true; //done
@@ -317,7 +316,9 @@ class PluginsManagerImpl implements PluginsManager {
                 }
             }
         } else {
-            LOG.debug("No object templates to load from {}", templatesFolder.getAbsolutePath());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("No object templates to load from \"{}\"", templatesFolder.getAbsolutePath());
+            }
         }
     }
 
@@ -350,7 +351,9 @@ class PluginsManagerImpl implements PluginsManager {
                 }
             }
         } catch (FileNotFoundException foundEx) {
-            LOG.debug("No file to copy in " + source);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("No file to copy in \"{}\"", source);
+            }
         } catch (IOException ex) {
             LOG.warn("Error while coping resources", ex);
         } finally {

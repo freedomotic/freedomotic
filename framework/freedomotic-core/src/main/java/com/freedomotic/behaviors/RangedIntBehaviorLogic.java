@@ -155,19 +155,19 @@ public class RangedIntBehaviorLogic
                 }
             }
         } catch (NumberFormatException numberFormatException) {
-            LOG.warn("Paramenter 'value = " + params.getProperty("value").trim() + "' in "
+            LOG.warn("Parameter 'value = " + params.getProperty("value").trim() + "' in "
                     + this.getName() + " behavior is not an integer.");
         }
 
-        if (input.equalsIgnoreCase("next")) {
+        if ("next".equalsIgnoreCase(input)) {
             parsed = getValue() + getStep();
         }
 
-        if (input.equalsIgnoreCase("previous")) {
+        if ("previous".equalsIgnoreCase(input)) {
             parsed = getValue() - getStep();
         }
 
-        if (input.equalsIgnoreCase("opposite")) {
+        if ("opposite".equalsIgnoreCase(input)) {
             //opposite value not allowed for this behavior. Inform the user.
         }
 
@@ -178,16 +178,16 @@ public class RangedIntBehaviorLogic
         if (getValue() != tmpValue) {
             if (tmpValue <= getMin()) {
                 params.setProperty("value",
-                        Integer.valueOf(getMin()).toString());
+                        Integer.toString(getMin()));
                 params.setProperty("value.original",
-                        Integer.valueOf(tmpValue).toString());
+                        Integer.toString(tmpValue));
                 listener.onLowerBoundValue(params, fireCommand);
             } else {
                 if (tmpValue >= getMax()) {
                     params.setProperty("value",
                             String.valueOf(getMax()));
                     params.setProperty("value.original",
-                            Integer.valueOf(tmpValue).toString());
+                            Integer.toString(tmpValue));
                     listener.onUpperBoundValue(params, fireCommand);
                 } else {
                     listener.onRangeValue(tmpValue, params, fireCommand);

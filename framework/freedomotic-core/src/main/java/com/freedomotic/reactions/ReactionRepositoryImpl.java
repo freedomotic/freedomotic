@@ -28,9 +28,7 @@ import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
-
 import static com.freedomotic.util.FileOperations.writeSummaryFile;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -53,7 +51,8 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReactionRepositoryImpl.class.getName());
     //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
-    private static final List<Reaction> list = new ArrayList<Reaction>();
+    private static final List<Reaction> list = new ArrayList<>();
+    private static final String REACTION_FILE_EXTENSION = ".xrea";
     private final DataUpgradeService dataUpgradeService;
 
     @Inject
@@ -81,13 +80,13 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
         try {
             LOG.info("Saving reactions to file into \"{}\"", folder.getAbsolutePath());
-            StringBuffer summaryContent = new StringBuffer();
+            StringBuilder summaryContent = new StringBuilder();
             for (Reaction reaction : list) {
                 String uuid = reaction.getUuid();
                 if ((uuid == null) || uuid.isEmpty()) {
                     reaction.setUuid(UUID.randomUUID().toString());
                 }
-                String fileName = reaction.getUuid() + ".xrea";
+                String fileName = reaction.getUuid() + REACTION_FILE_EXTENSION;
                 File file = new File(folder + "/" + fileName);
                 FreedomXStream.toXML(reaction, file);
                 summaryContent.append(reaction.getUuid()).append("\t\t\t").append(reaction.toString()).append("\t\t\t")
@@ -114,7 +113,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                 = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
-                        return file.isFile() && file.getName().endsWith(".xrea");
+                        return file.isFile() && file.getName().endsWith(REACTION_FILE_EXTENSION);
                     }
                 };
 
@@ -137,7 +136,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         FileFilter objectFileFileter
                 = new FileFilter() {
                     public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(".xrea")) {
+                        if (file.isFile() && file.getName().endsWith(REACTION_FILE_EXTENSION)) {
                             return true;
                         } else {
                             return false;
