@@ -32,7 +32,7 @@ public class AccountEvent extends EventTemplate {
     public enum AccountActions {
 
         CREATED, DELETED, BANNED, LOGIN, LOGOUT
-    };
+    }
 
     public AccountEvent(Object source, String accountSubject, AccountActions action) {
         payload.addStatement("account.subject", accountSubject);

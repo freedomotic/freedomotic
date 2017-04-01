@@ -17,15 +17,12 @@
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.freedomotic.core;
 
 import com.freedomotic.api.AbstractConsumer;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.exceptions.UnableToExecuteException;
@@ -100,7 +97,7 @@ public final class Autodiscovery extends AbstractConsumer {
         try {
             join(clazz, name, protocol, address, allowClones);
         } catch (RepositoryException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
     }
 
@@ -122,25 +119,25 @@ public final class Autodiscovery extends AbstractConsumer {
     protected EnvObjectLogic join(String clazz, String name, String protocol, String address, boolean allowClones) throws RepositoryException {
         // Check if autodiscovery can be applied
         if (thingAlreadyExists(protocol, address)) {
-            LOG.info("A thing with protocol ''{}'' and address ''{}'' already exists in the environment. Autodiscovery exits without changes", new Object[]{protocol, address});
+            LOG.info("A thing with protocol \"{}\" and address \"{}\" already exists in the environment. Autodiscovery exits without changes", new Object[]{protocol, address});
             return null;
         }
 
         // If not allowed to clone an Thing
         if (!allowClones && thingAlreadyExists(name)) {
-            LOG.info("A thing with name ''{}'' already exists in the environment. Autodiscovery exits without changes because property 'autodiscovery.allow-clones' property is ''{}'' for the received command", new Object[]{name, allowClones});
+            LOG.info("A thing with name \"{}\" already exists in the environment. Autodiscovery exits without changes because property 'autodiscovery.allow-clones' property is ''{}'' for the received command", new Object[]{name, allowClones});
             return null;
         }
 
         // Check if the requested Thing template is loaded
         ObjectPluginPlaceholder thingTemplate = (ObjectPluginPlaceholder) clientStorage.get(clazz);
         if (thingTemplate == null) {
-            LOG.warn("Autodiscovery error: doesn't exist an object class called ''{}''", clazz);
+            LOG.warn("Autodiscovery error: doesn't exist an object class called \"{}\"", clazz);
             return null;
         }
 
         // Start the new Thing creation
-        LOG.warn("Autodiscovery request for an object called ''{}'' of type ''{}''", new Object[]{name, clazz});
+        LOG.warn("Autodiscovery request for an object called \"{}\" of type \"{}\"", new Object[]{name, clazz});
         File templateFile = thingTemplate.getTemplate();
         EnvObjectLogic loaded = thingsRepository.load(templateFile);
 
@@ -160,7 +157,7 @@ public final class Autodiscovery extends AbstractConsumer {
         loaded.getPojo().setActAs("");
         loaded.setRandomLocation();
         configureOptionalMapping(protocol, clazz, loaded);
-        LOG.info("Autodiscovery adds a thing called ''{}'' of type ''{}''",
+        LOG.info("Autodiscovery adds a thing called \"{}\" of type \"{}\"",
                 new Object[]{loaded.getPojo().getName(), clazz});
         return loaded;
     }

@@ -19,11 +19,14 @@
  */
 package com.freedomotic.plugins;
 
+import com.freedomotic.app.Freedomotic;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * THIS IS CURRENTLY NOT USED A parent-last classloader that will try the child
@@ -31,6 +34,7 @@ import java.net.URLClassLoader;
  */
 public class PluginIsolatedClassloader extends ClassLoader {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PluginIsolatedClassloader.class.getName());
     private ChildURLClassLoader childClassLoader;
 
     /**
@@ -72,11 +76,12 @@ public class PluginIsolatedClassloader extends ClassLoader {
             throws ClassNotFoundException {
         try {
 
-            System.out.println("Isolated classloader try to load class " + name);
+            LOG.info("Isolated classloader tries to load class \"{}\"", name);
             // first try to find a class inside the child classloader
             return childClassLoader.findClass(name);
         } catch (ClassNotFoundException e) {
             // didn't find it, try the parent
+            LOG.error(Freedomotic.getStackTraceInfo(e));
             return super.loadClass(name, resolve);
         }
     }
@@ -103,12 +108,12 @@ public class PluginIsolatedClassloader extends ClassLoader {
                 // 1. is this class already loaded?
                 Class cls = super.findLoadedClass(name);
                 if (cls != null) {
-                    System.out.println("Class " + name + " is already loaded by " + cls.getClassLoader().toString());
+                    LOG.info("Class " + name + " is already loaded by " + cls.getClassLoader().toString());
                     return cls;
                 }
 
                 if (name.contains("org.slf4j")) {
-                    System.out.println("Cannot load logging libraries. Delegate to parent");
+                    LOG.error("Cannot load logging libraries. Delegate to parent");
                     return realParent.loadClass(name);
                 }
 
@@ -117,6 +122,7 @@ public class PluginIsolatedClassloader extends ClassLoader {
             } catch (ClassNotFoundException e) {
                 // if that fails, ask real parent classloader to load the
                 // class (give up)
+                LOG.error(Freedomotic.getStackTraceInfo(e));
                 return realParent.loadClass(name);
             }
         }

@@ -151,7 +151,7 @@ public final class Command implements Serializable, Cloneable {
      * @return the command uuid
      */
     public String getUuid() {
-        if (uuid == null || uuid.trim().equals("")) {
+        if (uuid == null || "".equals(uuid.trim())) {
             uuid = UUID.randomUUID().toString();
         }
         return uuid;
@@ -255,10 +255,10 @@ public final class Command implements Serializable, Cloneable {
         String result = properties.getProperty(key);
 
         if (result != null) {
-            if (result.trim().equalsIgnoreCase("true")) {
+            if ("true".equalsIgnoreCase(result.trim())) {
                 return true;
             } else {
-                if (result.trim().equalsIgnoreCase("false")) {
+                if ("false".equalsIgnoreCase(result.trim())) {
                     return false;
                 }
             }

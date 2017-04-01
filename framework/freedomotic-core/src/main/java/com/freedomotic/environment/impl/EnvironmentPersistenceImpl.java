@@ -37,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -50,9 +51,7 @@ import org.slf4j.LoggerFactory;
 class EnvironmentPersistenceImpl implements EnvironmentPersistence {
 
     private static final Logger LOG = LoggerFactory.getLogger(EnvironmentPersistenceImpl.class.getName());
-
     private final File directory;
-    private boolean savedAsNewEnvironment;
     private final DataUpgradeService dataUpgradeService;
 
     @Inject
@@ -87,10 +86,7 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
                 fromVersion = "5.5.0";
             }
             xml = (String) dataUpgradeService.upgrade(Environment.class, xml, fromVersion);
-            Environment pojo = (Environment) xstream.fromXML(xml);
-
-            return pojo;
-
+            return (Environment) xstream.fromXML(xml);
         } catch (DataUpgradeException dataUpgradeException) {
             throw new RepositoryException("Cannot upgrade environment file \"" + file.getAbsolutePath() + "\"", dataUpgradeException);
         } catch (XStreamException e) {
@@ -139,15 +135,14 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
         if ((uuid == null) || uuid.isEmpty()) {
             environment.setUUID(UUID.randomUUID().toString());
         }
-        String fileName = environment.getUUID() + ".xenv";
-        return fileName;
+        return environment.getUUID() + ".xenv";
     }
 
     /**
      * Loads an environment from filesystem using XStream as serialization
      * engine (XML).
      *
-     * @return an environment object or null if no environments are found in the
+     * @return an environment object or an empty collection if no environments are found in the
      * given folder
      * @throws RepositoryException
      */
@@ -168,7 +163,7 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
 
         File[] files = directory.listFiles(envFileFilter);
 
-        List<Environment> environments = new ArrayList<Environment>();
+        List<Environment> environments = new ArrayList<>();
         for (File file : files) {
             environments.add(deserialize(file));
         }
@@ -176,15 +171,15 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
         verifyFolderStructure(directory);
 
         if (environments.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return environments;
     }
 
     /**
-     * 
-     * 
-     * @param folder 
+     *
+     *
+     * @param folder
      */
     private void verifyFolderStructure(File folder) {
         if (!folder.exists()) {
@@ -199,11 +194,11 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @param env
      * @param file
-     * @throws IOException 
+     * @throws IOException
      */
     private void serialize(Environment env, File file) throws IOException {
         for (Zone zone : env.getZones()) {

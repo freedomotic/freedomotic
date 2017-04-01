@@ -21,7 +21,6 @@ package com.freedomotic.behaviors;
 
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.ListBehavior;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,11 +65,11 @@ public class ListBehaviorLogic
         //we have to check if value is a suitable choice according to a list of possibilities (check if it exists)
         String parsed = params.getProperty("value").trim();
 
-        if (parsed.equalsIgnoreCase("next")) {
+        if ("next".equalsIgnoreCase(parsed)) {
             next(params, fireCommand);
         }
 
-        if (parsed.equalsIgnoreCase("previous")) {
+        if ("previous".equalsIgnoreCase(parsed)) {
             previous(params, fireCommand);
         }
 

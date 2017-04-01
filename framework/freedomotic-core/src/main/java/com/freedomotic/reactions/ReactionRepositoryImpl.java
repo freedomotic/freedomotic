@@ -19,6 +19,7 @@
  */
 package com.freedomotic.reactions;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.persistence.DataUpgradeService;
@@ -164,6 +165,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                             dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
                             fromVersion = dataProperties.getProperty("data.version");
                         } catch (IOException iOException) {
+                            LOG.error(Freedomotic.getStackTraceInfo(iOException));
                             // Fallback to a default version for older version without that properties file
                             fromVersion = "5.5.0";
                         }

@@ -19,6 +19,7 @@
  */
 package com.freedomotic.core;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.settings.Info;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -82,15 +83,16 @@ public final class ResourcesManager {
                     img = imagesCache.get(imageName);
                 } catch (ExecutionException e) {
                     try {
-                    	File imageFile = new File(imageName);
-                    	if(imageFile.exists()) {
-                    		img = ImageIO.read(imageFile);
-                    		imagesCache.put(imageFile.getName(), img);
-                    	}
-                    	else
-                    		return null;
-                    } catch(IOException er) {
-                    	return null;
+                        File imageFile = new File(imageName);
+                        if (imageFile.exists()) {
+                            img = ImageIO.read(imageFile);
+                            imagesCache.put(imageFile.getName(), img);
+                        } else {
+                            return null;
+                        }
+                    } catch (IOException er) {
+                        LOG.error(Freedomotic.getStackTraceInfo(er));
+                        return null;
                     }
                 }
                 // Resize and cache
@@ -105,7 +107,7 @@ public final class ResourcesManager {
             return null;
         }
     }
-    
+
     /**
      *
      * @param imageName
@@ -143,7 +145,7 @@ public final class ResourcesManager {
 
     /**
      * Removes any cached element.
-     * 
+     *
      */
     public static void clear() {
         imagesCache.cleanUp();
@@ -159,12 +161,12 @@ public final class ResourcesManager {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @param folder
      * @param imageName
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     private static BufferedImage fetchFromHDD(File folder, String imageName) throws IOException {
         BufferedImage img = null;
@@ -182,7 +184,7 @@ public final class ResourcesManager {
     }
 
     /**
-     * 
+     *
      */
     private static class DirectoryReader {
 
@@ -204,9 +206,9 @@ public final class ResourcesManager {
         }
 
         /**
-         * 
-         * 
-         * @return 
+         *
+         *
+         * @return
          */
         public File getFile() {
             return output;

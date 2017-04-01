@@ -85,7 +85,7 @@ public class BusMessagesListener implements MessageListener {
         try {
             this.session = busService.createSession();
         } catch (Exception ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
     }
 

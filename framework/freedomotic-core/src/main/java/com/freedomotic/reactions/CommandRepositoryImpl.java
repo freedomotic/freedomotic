@@ -19,6 +19,7 @@
  */
 package com.freedomotic.reactions;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.persistence.DataUpgradeService;
@@ -192,7 +193,6 @@ class CommandRepositoryImpl implements CommandRepository {
             LOG.error("Missing command \"{}\"" + "''. "
                     + "Maybe the related plugin is not installed or cannot be loaded", name);
         }
-
         return command;
     }
 
@@ -229,6 +229,7 @@ class CommandRepositoryImpl implements CommandRepository {
                     try {
                         xml = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/command.dtd");
                     } catch (IOException ex) {
+                        LOG.error(Freedomotic.getStackTraceInfo(ex));
                         continue;
                     }
                     try {
@@ -238,6 +239,7 @@ class CommandRepositoryImpl implements CommandRepository {
                             dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
                             fromVersion = dataProperties.getProperty("data.version");
                         } catch (IOException iOException) {
+                            LOG.error(Freedomotic.getStackTraceInfo(iOException));
                             // Fallback to a default version for older version without that properties file
                             fromVersion = "5.5.0";
                         }
@@ -378,6 +380,7 @@ class CommandRepositoryImpl implements CommandRepository {
             add(item);
             return true;
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
             return false;
         }
     }
@@ -388,6 +391,7 @@ class CommandRepositoryImpl implements CommandRepository {
             remove(item);
             return true;
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
             return false;
         }
     }
@@ -405,6 +409,7 @@ class CommandRepositoryImpl implements CommandRepository {
             add(data);
             return data;
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
             return null;
         }
     }
@@ -417,6 +422,7 @@ class CommandRepositoryImpl implements CommandRepository {
             add(c);
             return c;
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
             return null;
         }
     }
@@ -428,6 +434,7 @@ class CommandRepositoryImpl implements CommandRepository {
                 delete(c);
             }
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         } finally {
             hardwareCommands.clear();
             userCommands.clear();

@@ -19,6 +19,7 @@
  */
 package com.freedomotic.security;
 
+import com.freedomotic.app.Freedomotic;
 import java.util.Collection;
 import java.util.Properties;
 import java.util.Set;
@@ -96,7 +97,7 @@ public final class User extends SimpleAccount {
             addObjectPermissions(role.getPermissions());
             LOG.info("Adding role \"{}\" to user \"{}\": \"{}\"", new Object[]{role.getName(), getName(), role.getPermissions()});
         } else {
-            LOG.error("Cannot find role: {}", roleName);
+            LOG.error("Cannot find role: \"{}\"", roleName);
         }
     }
 
@@ -104,6 +105,7 @@ public final class User extends SimpleAccount {
         try {
             getObjectPermissions().removeAll(auth.getRole(roleName).getPermissions());
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
 
         }
         getRoles().remove(roleName);

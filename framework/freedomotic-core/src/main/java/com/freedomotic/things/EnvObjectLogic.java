@@ -65,9 +65,8 @@ public class EnvObjectLogic {
     private static final Logger LOG = LoggerFactory.getLogger(EnvObjectLogic.class.getName());
     private EnvObject pojo;
     private boolean changed;
-    // private String message;
     private Map<String, Command> commandsMapping; //mapping between action name -> hardware command instance
-    private Map<String, BehaviorLogic> behaviors = new HashMap<String, BehaviorLogic>();
+    private Map<String, BehaviorLogic> behaviors = new HashMap<>();
     private EnvironmentLogic environment;
 
     @Inject
@@ -138,7 +137,7 @@ public class EnvObjectLogic {
      */
     @RequiresPermissions("objects:read")
     public Map<String, String> getExposedBehaviors() {
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, String> result = new HashMap<>();
         for (BehaviorLogic behavior : getBehaviors()) {
             result.put("object.behavior." + behavior.getName(),
                     behavior.getValueAsString());
@@ -258,7 +257,7 @@ public class EnvObjectLogic {
      */
     @RequiresPermissions("objects:update")
     public synchronized void setChanged(boolean value) {
-        if (value == true) {
+        if (value) {
             this.changed = true;
 
             ObjectHasChangedBehavior objectEvent = new ObjectHasChangedBehavior(this, this);
@@ -328,7 +327,7 @@ public class EnvObjectLogic {
         pojo.initTags();
         createCommands();
         createTriggers();
-        commandsMapping = new HashMap<String, Command>();
+        commandsMapping = new HashMap<>();
         cacheDeveloperLevelCommand();
         // assign object to an environment
         this.setEnvironment(environmentRepository.findOne(pojo.getEnvironmentID()));
@@ -466,8 +465,7 @@ public class EnvObjectLogic {
         int yoffset = getPojo().getCurrentRepresentation().getOffset().getY();
 
         //now apply offset to the shape
-        FreedomPolygon translatedObject
-                = (FreedomPolygon) TopologyUtils.translate((FreedomPolygon) shape, xoffset, yoffset);
+        FreedomPolygon translatedObject = TopologyUtils.translate((FreedomPolygon) shape, xoffset, yoffset);
 
         //REGRESSION
         for (EnvironmentLogic locEnv : environmentRepository.findAll()) {
@@ -499,7 +497,6 @@ public class EnvObjectLogic {
         String behaviorName = getBehaviorNameMappedToTrigger(trigger.getName());
         // If missing because it's not an hardware trigger check if it is specified in the trigger itself
         if (behaviorName == null) {
-            //LOG.error("Hardware trigger '" + t.getName() + "' is not bound to any action of object " + this.getPojo().getName());
             //check if the behavior name is written in the trigger
             behaviorName = trigger.getPayload().getStatements("behavior.name").isEmpty()
                     ? "" : trigger.getPayload().getStatements("behavior.name").get(0).getValue();
@@ -549,7 +546,7 @@ public class EnvObjectLogic {
     protected final boolean executeCommand(final String action, final Config params) {
         LOG.debug("Executing action \"{}\" of thing \"{}\"", new Object[]{action, getPojo().getName()});
 
-        if (getPojo().getActAs().equalsIgnoreCase("virtual")) {
+        if ("virtual".equalsIgnoreCase(getPojo().getActAs())) {
             //it's a virtual object like a button, not needed real execution of a command
             LOG.info(
                     "The thing \"{}\" act as virtual device so its hardware commands are not executed.",
@@ -588,7 +585,7 @@ public class EnvObjectLogic {
             Command result;
             //mark the command as not executed if it is supposed to not return
             //an execution state value
-            if (Boolean.valueOf(command.getProperty("send-and-forget")) == true) {
+            if (Boolean.valueOf(command.getProperty("send-and-forget"))) {
                 LOG.info("Command \"{}\" is \"send-and-forget\". No execution result will be catched from plugin''s reply", resolvedCommand.getName());
                 resolvedCommand.setReplyTimeout(-1); //disable reply request
                 Freedomotic.sendCommand(resolvedCommand);
@@ -668,7 +665,7 @@ public class EnvObjectLogic {
 
     private void cacheDeveloperLevelCommand() {
         if (commandsMapping == null) {
-            commandsMapping = new HashMap<String, Command>();
+            commandsMapping = new HashMap<>();
         }
 
         for (String action : pojo.getActions().stringPropertyNames()) {

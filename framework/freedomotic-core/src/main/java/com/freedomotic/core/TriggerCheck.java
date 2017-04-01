@@ -20,6 +20,7 @@
 package com.freedomotic.core;
 
 import com.freedomotic.api.EventTemplate;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.exceptions.VariableResolutionException;
@@ -161,7 +162,7 @@ public class TriggerCheck {
                 LOG.warn("Found a candidate for things autodiscovery: thing \"{}\" of type \"{}\"", new Object[]{name, clazz});
                 if ((clazz != null) && !clazz.isEmpty()) {
                     boolean allowClones;
-                    if (autodiscoveryAllowClones.equalsIgnoreCase("false")) {
+                    if ("false".equalsIgnoreCase(autodiscoveryAllowClones)) {
                         allowClones = false;
                     } else {
                         allowClones = true;
@@ -169,7 +170,7 @@ public class TriggerCheck {
                     try {
                         affectedObject = autodiscovery.join(clazz, name, protocol, address, allowClones);
                     } catch (RepositoryException ex) {
-                        LOG.error(ex.getMessage());
+                        LOG.error(Freedomotic.getStackTraceInfo(ex));
                     }
                 }
             }
@@ -214,8 +215,9 @@ public class TriggerCheck {
                         }
                         reactionTrigger.setExecuted();
                         found = true;
-                        LOG.debug("Try to execute reaction \"{}\"", reaction.toString());
-
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Try to execute reaction \"{}\"", reaction.toString());
+                        }
                         try {
                             //executes the commands in sequence (only the first sequence is used) 
                             //if more then one sequence is needed it can be done with two reactions with the same trigger
@@ -322,18 +324,18 @@ public class TriggerCheck {
                 if (m.find()) {
                     // in this case we consider the target object behavior 
                     if (value.startsWith("[]")) {
-                        valueBehavior = value.substring(value.indexOf(".") + 1);
+                        valueBehavior = value.substring(value.indexOf('.') + 1);
                         behavior = object.getBehavior(valueBehavior);
                         if (behavior != null) {
                             value = behavior.getValueAsString();
                         }
                     } else {
-                        List<EnvObjectLogic> newObject = thingsRepository.findByName(value.substring(value.indexOf("[") + 1, value.indexOf("]")));
+                        List<EnvObjectLogic> newObject = thingsRepository.findByName(value.substring(value.indexOf('[') + 1, value.indexOf(']')));
                         if (newObject.isEmpty()) {
-                            LOG.warn("Cannot test condition on unexistent thing: \"{}\"", value.substring(value.indexOf("[") + 1, value.indexOf("]")));
+                            LOG.warn("Cannot test condition on unexistent thing: \"{}\"", value.substring(value.indexOf('[') + 1, value.indexOf(']')));
                             return false;
                         } else {
-                            valueBehavior = value.substring(value.indexOf(".") + 1);
+                            valueBehavior = value.substring(value.indexOf('.') + 1);
                             behavior = newObject.get(0).getBehavior(valueBehavior);
                             if (behavior != null) {
                                 value = behavior.getValueAsString();
@@ -343,14 +345,14 @@ public class TriggerCheck {
                         }
                     }
                     // if attributeValue and value are float and operand not "EQUALS" we must convert them to integer
-                    if ((isDecimalNumber(attributeValue) || isDecimalNumber(value)) && !(operand.equalsIgnoreCase("EQUALS"))) {
+                    if ((isDecimalNumber(attributeValue) || isDecimalNumber(value)) && !("EQUALS".equalsIgnoreCase(operand))) {
                         attributeValue = String.valueOf((int) Float.parseFloat(attributeValue) * 10);
                         value = String.valueOf((int) (Float.parseFloat(value) * 10));
                     }
                     ExpressionFactory factory = new ExpressionFactory<>();
                     Expression exp = factory.createExpression(attributeValue, operand, value);
                     boolean eval = (boolean) exp.evaluate();
-                    if (statement.getLogical().equalsIgnoreCase("AND")) {
+                    if ("AND".equalsIgnoreCase(statement.getLogical())) {
                         result = result && eval;
                     } else {
                         result = result || eval;

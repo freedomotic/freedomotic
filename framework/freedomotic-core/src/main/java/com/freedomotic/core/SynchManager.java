@@ -104,7 +104,7 @@ public class SynchManager implements BusConsumer {
             if (value != null && !value.isEmpty()) {
                 Config conf = new Config();
                 conf.setProperty("value", value);
-                LOG.info("Synch thing {} behavior {} to {} notified by {}",
+                LOG.info("Synch thing \"{}\" behavior \"{}\" to \"{}\" notified by \"{}\"",
                         new Object[]{obj.getPojo().getName(), b.getName(), value});
                 obj.getBehavior(b.getName()).filterParams(conf, false);
             }
@@ -114,7 +114,7 @@ public class SynchManager implements BusConsumer {
         try {
             int locationX = Integer.parseInt(event.getProperty("object.location.x"));
             int locationY = Integer.parseInt(event.getProperty("object.location.y"));
-            LOG.info("Synch thing {} location to {},{}",
+            LOG.info("Synch thing \"{}\" location to {},{}",
                     new Object[]{obj.getPojo().getName(), locationX, locationY});
             obj.synchLocation(locationX, locationY);
         } catch (NumberFormatException numberFormatException) {

@@ -19,6 +19,7 @@
  */
 package com.freedomotic.reactions;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.persistence.DataUpgradeService;
@@ -168,6 +169,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                         //validate the object against a predefined DTD
                         xml = XmlPreprocessor.validate(file, Info.PATHS.PATH_CONFIG_FOLDER + "/validator/trigger.dtd");
                     } catch (IOException e) {
+                        LOG.error(Freedomotic.getStackTraceInfo(e));
                         continue;
                     }
                     try {
@@ -177,6 +179,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                             dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
                             fromVersion = dataProperties.getProperty("data.version");
                         } catch (IOException iOException) {
+                            LOG.error(Freedomotic.getStackTraceInfo(iOException));  
                             // fallback to a default version for older version without that properties file
                             fromVersion = "5.5.0";
                         }

@@ -19,6 +19,7 @@
  */
 package com.freedomotic.things.impl;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.SynchAction;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.exceptions.DataUpgradeException;
@@ -622,7 +623,7 @@ class ThingRepositoryImpl implements ThingRepository {
                     EnvObjectLogic loaded = load(file);
                     results.add(loaded);
                 } catch (RepositoryException ex) {
-                    LOG.warn(ex.getMessage());
+                    LOG.error(Freedomotic.getStackTraceInfo(ex));
                 }
             }
         }

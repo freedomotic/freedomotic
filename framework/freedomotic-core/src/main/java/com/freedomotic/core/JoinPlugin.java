@@ -44,7 +44,7 @@ public class JoinPlugin
     private static final String MESSAGING_CHANNEL = "app.objects.create";
     private static BusMessagesListener listener;
 
-	//dependency
+    //dependency
     private ClientStorage clientStorage;
     private BusService busService;
 
@@ -74,7 +74,7 @@ public class JoinPlugin
             Config manifest = (Config) message.getObject();
             Plugin plugin = new Plugin(manifest.getProperty("name"), manifest);
             clientStorage.add(plugin);
-            LOG.info("Enqueued remote plugin " + plugin.getName());
+            LOG.info("Enqueued remote plugin \"{}\"", plugin.getName());
         } catch (JMSException ex) {
             LOG.error("Join Plugin receives a not valid plugin manifest");
         }

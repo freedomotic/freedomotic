@@ -380,7 +380,7 @@ public class Freedomotic implements BusConsumer {
                 proxyLogger.removeAppender("default.file");
                 Freedomotic.setLogToFile(true);
             } catch (IOException ex) {
-                LOG.error("Impossible to start logging: \"{}\"", ex.getMessage());
+                LOG.error("Impossible to start logging: \"{}\"", Freedomotic.getStackTraceInfo(ex));
             }
         } else {
             LOG.info("This Freedomotic configuration does not require a \"log to file\" feature.");

@@ -39,7 +39,7 @@ public final class Payload implements Serializable {
 
     @XmlTransient
     private static final long serialVersionUID = -5799483105084939108L;
-    private final List<Statement> payload = Collections.synchronizedList(new ArrayList<Statement>());
+    private final List<Statement> payloadLst = Collections.synchronizedList(new ArrayList<Statement>());
 
     /**
      *
@@ -49,8 +49,7 @@ public final class Payload implements Serializable {
      * @param value
      * @throws NullPointerException
      */
-    public void addStatement(String logical, String attribute, String operand, String value)
-            throws NullPointerException {
+    public void addStatement(String logical, String attribute, String operand, String value) {
         enqueueStatement(new Statement().create(logical, attribute, operand, value));
     }
 
@@ -80,8 +79,8 @@ public final class Payload implements Serializable {
      * @param s
      */
     public void enqueueStatement(Statement s) {
-        if ((s != null) && !payload.contains(s)) {
-            payload.add(s);
+        if ((s != null) && !payloadLst.contains(s)) {
+            payloadLst.add(s);
         }
     }
 
@@ -90,7 +89,7 @@ public final class Payload implements Serializable {
      * @return
      */
     public int size() {
-        return payload.size();
+        return payloadLst.size();
     }
 
     /**
@@ -104,7 +103,7 @@ public final class Payload implements Serializable {
 
         if (obj instanceof Payload) {
             Payload eventPayload = (Payload) obj;
-            Iterator<Statement> it = payload.iterator();
+            Iterator<Statement> it = payloadLst.iterator();
 
             //check all statement for consistency
             while (it.hasNext()) {
@@ -144,13 +143,10 @@ public final class Payload implements Serializable {
                          */
                         if (eventStatement != null) {
                             //is setting a value must be not used to filter
-                            if (triggerStatement.getLogical().equalsIgnoreCase("SET")) {
+                            if ("SET".equalsIgnoreCase(triggerStatement.getLogical())) {
                                 return true;
                             } else {
-                                boolean isStatementConsistent
-                                        = isStatementConsistent(triggerStatement.getOperand(), triggerStatement.getValue(),
-                                                eventStatement.getValue());
-
+                                boolean isStatementConsistent = isStatementConsistent(triggerStatement.getOperand(), triggerStatement.getValue(), eventStatement.getValue());
                                 if (triggerStatement.getLogical().equalsIgnoreCase(Statement.AND)) {
                                     payloadConsistence = payloadConsistence && isStatementConsistent; //true AND true; false AND true; false AND false; true AND false
                                 } else {
@@ -177,7 +173,7 @@ public final class Payload implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = (67 * hash) + ((this.payload != null) ? this.payload.hashCode() : 0);
+        hash = (67 * hash) + ((this.payloadLst != null) ? this.payloadLst.hashCode() : 0);
 
         return hash;
     }
@@ -194,10 +190,10 @@ public final class Payload implements Serializable {
      * @return
      */
     public List<Statement> getStatements(String attribute) {
-        ArrayList<Statement> statements = new ArrayList<Statement>();
+        ArrayList<Statement> statements = new ArrayList<>();
 
-        synchronized (payload) {
-            for (Statement i : payload) {
+        synchronized (payloadLst) {
+            for (Statement i : payloadLst) {
                 if (i.getAttribute().equalsIgnoreCase(attribute)) {
                     statements.add(i);
                 }
@@ -208,7 +204,7 @@ public final class Payload implements Serializable {
     }
 
     public List<Statement> getStatements() {
-        return payload;
+        return payloadLst;
     }
 
     /**
@@ -234,7 +230,7 @@ public final class Payload implements Serializable {
      * @return
      */
     public Iterator<Statement> iterator() {
-        return payload.iterator();
+        return payloadLst.iterator();
     }
 
     /**
@@ -242,7 +238,7 @@ public final class Payload implements Serializable {
      * @param anotherPayload
      */
     public void merge(Payload anotherPayload) {
-        payload.addAll(anotherPayload.payload);
+        payloadLst.addAll(anotherPayload.payloadLst);
     }
 
     /**
@@ -251,27 +247,13 @@ public final class Payload implements Serializable {
      */
     @Override
     public String toString() {
-//        StringBuilder buffer = new StringBuilder();
-//        Iterator<Statement> it = payload.iterator();
-//        buffer.append("{{");
-//        boolean first = true;
-//        while (it.hasNext()) {
-//            Statement s = it.next();
-//            if (first) {
-//                buffer.append(s.toString());
-//                first = false;
-//            } else {
-//                buffer.append("; ").append(s.toString());
-//            }
-//        }
-//        buffer.append("}}");
-        return "";//buffer.toString();
+        return "";
     }
 
     /**
      *
      */
     public void clear() {
-        payload.clear();
+        payloadLst.clear();
     }
 }

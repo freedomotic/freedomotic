@@ -19,6 +19,7 @@
  */
 package com.freedomotic.things;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;
 import com.google.inject.Inject;
@@ -64,9 +65,9 @@ public class ThingFactory {
                 logic.setPojo(pojo);
                 injector.injectMembers(logic);
             } catch (InstantiationException ex) {
-                LOG.error(ex.getMessage());
+                LOG.error(Freedomotic.getStackTraceInfo(ex));
             } catch (IllegalAccessException ex) {
-                LOG.error(ex.getMessage());
+                LOG.error(Freedomotic.getStackTraceInfo(ex));
             }
 
             return logic;

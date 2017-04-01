@@ -19,6 +19,7 @@
  */
 package com.freedomotic.environment.impl;
 
+import com.freedomotic.app.Freedomotic;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -185,7 +186,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             try {
                 thingsRepository.saveAll(findAll().get(0).getObjectFolder());
             } catch (RepositoryException ex) {
-                LOG.error("Cannot save objects into \"{}\"", findAll().get(0).getObjectFolder().getAbsolutePath());
+                LOG.error("Cannot save objects into \"{}\"", findAll().get(0).getObjectFolder().getAbsolutePath(), Freedomotic.getStackTraceInfo(ex));
             }
         }
 
@@ -261,7 +262,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
                     add(envLogic, false);
                 }
             } catch (RepositoryException re) {
-                LOG.warn("Cannot add environment from file " + file.getAbsolutePath());
+                LOG.error("Cannot add environment from file \"{}\"", file.getAbsolutePath(), Freedomotic.getStackTraceInfo(re));
             }
         }
 
@@ -344,7 +345,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
                 FileUtils.forceDelete(environmentFile);
                 return true;
             } catch (IOException e) {
-                LOG.warn("Error while removing file \"{}\", please try manually.", environmentFile.getAbsolutePath());
+                LOG.warn("Error while removing file \"{}\", please try manually.", environmentFile.getAbsolutePath(), Freedomotic.getStackTraceInfo(e));
                 return false;
             }
         } else {
@@ -364,6 +365,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
                 delete(el);
             }
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         } finally {
             environments.clear();
         }
@@ -381,7 +383,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             EnvironmentPersistence environmentPersistence = environmentPersistenceFactory.create(file.getParentFile());
             environmentPersistence.persist(env.getPojo());
         } catch (RepositoryException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
 
     }
@@ -499,6 +501,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             add(item, false);
             return true;
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
             return false;
         }
     }
@@ -521,6 +524,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             remove(item);
             return true;
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
             return false;
         }
     }
@@ -540,6 +544,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
             create(data);
             return data;
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
             return null;
         }
 
