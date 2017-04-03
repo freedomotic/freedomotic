@@ -188,9 +188,9 @@ public final class ResourcesManager {
      */
     private static class DirectoryReader {
 
-        File output = null;
+        private File output = null;
 
-        void find(File folder, String fileName) {
+        private void find(File folder, String fileName) {
             if (folder.isFile()) {
                 if (folder.getName().equalsIgnoreCase(fileName)) {
                     output = folder; //the fileName is found

@@ -34,7 +34,7 @@ import com.google.inject.Inject;
 public final class ProtocolRead
         extends EventTemplate {
 
-    String protocol;
+    private String protocol;
     @Inject
     private TriggerCheck triggerCheck;
 

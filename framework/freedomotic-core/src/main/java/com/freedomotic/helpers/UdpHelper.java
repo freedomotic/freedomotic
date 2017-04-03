@@ -106,9 +106,9 @@ public class UdpHelper {
      */
     private static class UDPThreadServer extends Thread {
 
-        String serverAddress;
-        int serverPort;
-        UdpListener consumer;
+        private String serverAddress;
+        private int serverPort;
+        private UdpListener consumer;
 
         UDPThreadServer(String serverAddress, int serverPort, final UdpListener consumer) {
             this.serverAddress = serverAddress;

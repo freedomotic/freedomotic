@@ -201,9 +201,9 @@ public class Freedomotic implements BusConsumer {
         auth.load();
         if (auth.isInited()) {
             PrincipalCollection principals = new SimplePrincipalCollection("system", UserRealm.USER_REALM_NAME);
-            Subject SysSubject = new Subject.Builder().principals(principals).buildSubject();
-            SysSubject.getSession().setTimeout(-1);
-            ThreadState threadState = new SubjectThreadState(SysSubject);
+            Subject sysSubject = new Subject.Builder().principals(principals).buildSubject();
+            sysSubject.getSession().setTimeout(-1);
+            ThreadState threadState = new SubjectThreadState(sysSubject);
             threadState.bind();
             LOG.info("Booting as user \"{}\". Session will last {}", auth.getSubject().getPrincipal(), auth.getSubject().getSession().getTimeout());
         }
@@ -243,25 +243,13 @@ public class Freedomotic implements BusConsumer {
 
         /**
          * ******************************************************************
-         * Create data backup folder (FEATURE DISABLED!!!)
-         * *****************************************************************
-         */
-//        if (getConfig().getBooleanProperty("KEY_BACKUP_DATA_BEFORE_START", true) == true) {
-//            try {
-//                CopyFile.copy(new File(Info.getDatafilePath()), new File(Info.getApplicationPath() + "/backup"));
-//            } catch (Exception ex) {
-//                logger.warning("unable to saveAll a backup copy of application data " + getStackTraceInfo(ex));
-//            }
-//        }
-        /**
-         * ******************************************************************
          * Dynamically load all plugins
          * *****************************************************************
          */
         try {
             pluginsManager.loadAllPlugins();
         } catch (PluginLoadingException ex) {
-            LOG.warn("Error while loading all plugins. Impossible to load \"{}\" due to \"{}\"", ex.getPluginName(), ex.getCause());
+            LOG.warn("Error while loading all plugins. Impossible to load \"{}\" due to \"{}\"", ex.getPluginName(), Freedomotic.getStackTraceInfo(ex));
         }
 
         /**
@@ -272,7 +260,7 @@ public class Freedomotic implements BusConsumer {
         try {
             ClassPathUpdater.add(Info.PATHS.PATH_PROVIDERS_FOLDER);
         } catch (IOException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
-            LOG.error("Error during loading jars in \"/plugin/providers\" due to {}", ex.getMessage());
+            LOG.error("Error during loading jars in \"/plugin/providers\" due to {}", Freedomotic.getStackTraceInfo(ex));
         }
 
         /**
@@ -297,7 +285,7 @@ public class Freedomotic implements BusConsumer {
                     }
                 });
             } catch (Exception e) {
-                LOG.warn("Unable to cache plugins package from marketplace");
+                LOG.warn("Unable to cache plugins package from marketplace", Freedomotic.getStackTraceInfo(e));
             }
         }
 
@@ -315,7 +303,7 @@ public class Freedomotic implements BusConsumer {
         for (Client plugin : clientStorage.getClients()) {
             String startupTime = plugin.getConfiguration().getStringProperty("startup-time", "undefined");
 
-            if (startupTime.equalsIgnoreCase("on load")) {
+            if ("on load".equalsIgnoreCase(startupTime)) {
                 plugin.start();
 
                 PluginHasChanged event = new PluginHasChanged(this,
@@ -450,7 +438,7 @@ public class Freedomotic implements BusConsumer {
             freedomotic.enableLogToFile();
             freedomotic.start();
         } catch (FreedomoticException ex) {
-            LOG.error("Error during Freedomotic starting due to {}", ex.getMessage());
+            LOG.error("Error during Freedomotic starting due to {}", Freedomotic.getStackTraceInfo(ex));
             System.exit(1);
         }
     }
@@ -488,7 +476,7 @@ public class Freedomotic implements BusConsumer {
                 onExit(event);
             }
         } catch (JMSException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
     }
 
@@ -520,7 +508,7 @@ public class Freedomotic implements BusConsumer {
             folder = new File(environmentFilePath).getParentFile();
             environmentRepository.saveEnvironmentsToFolder(folder);
         } catch (RepositoryException ex) {
-            LOG.error("Cannot save environment to folder \"{}\" due to \"{}\"", new Object[]{folder, ex.getCause()});
+            LOG.error("Cannot save environment to folder \"{}\" due to \"{}\"", new Object[]{folder, Freedomotic.getStackTraceInfo(ex)});
         }
 
         LOG.info("Freedomotic instance ID \"{}\" is shutting down. See you!", INSTANCE_ID);

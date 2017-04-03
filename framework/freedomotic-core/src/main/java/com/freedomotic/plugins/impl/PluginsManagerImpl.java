@@ -68,7 +68,7 @@ class PluginsManagerImpl implements PluginsManager {
     private final ReactionRepository reactionRepository;
 
     @Inject
-    Injector injector;
+    private Injector injector;
 
     @Inject
     PluginsManagerImpl(

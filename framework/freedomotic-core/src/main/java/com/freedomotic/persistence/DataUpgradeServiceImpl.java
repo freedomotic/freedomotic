@@ -53,7 +53,7 @@ class DataUpgradeServiceImpl implements DataUpgradeService<String> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataUpgradeServiceImpl.class.getCanonicalName());
     // Cache the loaded transformations
-    Map<File, Source> sources = new HashMap<>();
+    private Map<File, Source> sources = new HashMap<>();
 
     /**
      * {@inheritDoc}
@@ -65,7 +65,7 @@ class DataUpgradeServiceImpl implements DataUpgradeService<String> {
             LOG.debug("Given data are already consistent with the most recent framework version. No XML transformation was performed");
             return xml;
         } else {
-            LOG.info("Upgrading data of type {} from version {} to version {}",
+            LOG.info("Upgrading data of type \"{}\" from version {} to version {}",
                     new Object[]{type.getCanonicalName(), fromVersion, Info.getVersion()});
         }
 

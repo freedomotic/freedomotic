@@ -81,7 +81,7 @@ public final class PluginJList extends JList {
                 Point p = e.getPoint();
                 int i = locationToIndex(p);
                 java.util.List<Client> clients = (java.util.List<Client>) getApi().getClients(getFilter());
-                Client client = (Client) clients.get(i);
+                Client client = clients.get(i);
 
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     if (e.getClickCount() == 2) {
@@ -118,14 +118,14 @@ public final class PluginJList extends JList {
                 Point p = e.getPoint();
                 int i = locationToIndex(p);
                 java.util.List<Client> clients = (java.util.List<Client>) getApi().getClients(getFilter());
-                final Client client = (Client) clients.get(i);
+                final Client client = clients.get(i);
                 JPopupMenu menu = new JPopupMenu();
                 JMenuItem mnuConfigure = null;
 
                 if (client.getType().equalsIgnoreCase("plugin")) {
                     mnuConfigure = new JMenuItem("Configure " + client.getName());
                 } else {
-                    if (client.getType().equalsIgnoreCase("object")) {
+                    if ("object".equalsIgnoreCase(client.getType())) {
                         mnuConfigure = new JMenuItem("Add " + client.getName() + " Object");
                     } else {
                         mnuConfigure = new JMenuItem("Placeholder menu");
@@ -145,7 +145,7 @@ public final class PluginJList extends JList {
                             ObjectPluginPlaceholder objp = (ObjectPluginPlaceholder) client;
 
                             if (parent instanceof MainWindow) {
-                                MainWindow mw = (MainWindow) parent;
+                                MainWindow mw = parent;
                                 objp.startOnEnv(mw.getDrawer().getCurrEnv()); //adds the object to the environment
                             }
                         }
@@ -288,12 +288,9 @@ public final class PluginJList extends JList {
                 boolean cellHasFocus) {
             Component component = (Component) value;
             component.setBackground(isSelected ? list.getSelectionBackground()
-                    : /*
-                     * list.getBackground()
-                     */ getListBackground(list, value, index, isSelected, cellHasFocus));
+                    : getListBackground(list, value, index, isSelected, cellHasFocus));
             component.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
 
-            //setFont(list.getFont());
             return component;
         }
 

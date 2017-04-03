@@ -57,13 +57,10 @@ public class EnvironmentPersistenceTest {
     private static final Logger LOG = LoggerFactory.getLogger(DataUpgradeServiceImplTest.class.getName());
 
     @Inject
-    API api;
+    private API api;
 
-    static boolean hasDataDir = false;
-    static boolean canPerformTest = false;
-
-    public EnvironmentPersistenceTest() {
-    }
+    private static boolean hasDataDir = false;
+    private static boolean canPerformTest = false;
 
     @BeforeClass
     public static void setUpClass() {
@@ -190,8 +187,8 @@ public class EnvironmentPersistenceTest {
 
         abstract class MyFileVisitor implements FileVisitor<Path> {
 
-            boolean isFirst = true;
-            Path ptr;
+            public boolean isFirst = true;
+            public Path ptr;
         }
 
         MyFileVisitor copyVisitor = new MyFileVisitor() {

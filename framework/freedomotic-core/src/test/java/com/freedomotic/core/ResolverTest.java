@@ -40,12 +40,6 @@ public class ResolverTest {
 
     /**
      *
-     */
-    public ResolverTest() {
-    }
-
-    /**
-     *
      * @throws Exception
      */
     @BeforeClass
@@ -78,7 +72,7 @@ public class ResolverTest {
      *
      */
     @Test
-    public void testResolve_Command() {
+    public void testResolveCommand() {
         System.out.println("Commands resolving a set of references mixed with text like 'temperature is @event.temperature'");
         Command c = new Command();
         c.setName("say something using TTS");
@@ -125,7 +119,7 @@ public class ResolverTest {
      *
      */
     @Test
-    public void testResolve_Trigger() {
+    public void testResolveTrigger() {
         System.out.println("Triggers resolving a set of references mixed with text like 'temperature is @event.temperature'");
         Trigger c = new Trigger();
         c.setName("say something using TTS");
@@ -152,7 +146,6 @@ public class ResolverTest {
         } catch (VariableResolutionException ex) {
             Assert.fail(ex.getMessage());
         }
-        XStream x = new XStream();
         assertEquals("25", result.getPayload().getStatements("zero").get(0).getValue());
         assertEquals("temperature is 25.", result.getPayload().getStatements("one").get(0).getValue());
         assertEquals("temperature is 25celsius degree.", result.getPayload().getStatements("two").get(0).getValue());

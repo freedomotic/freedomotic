@@ -79,10 +79,6 @@ class PropertiesConverter implements Converter {
      */
     @Override
     public boolean canConvert(Class type) {
-        if (type == Properties.class) {
-            return true;
-        }
-
-        return false;
+        return (type == Properties.class);
     }
 }

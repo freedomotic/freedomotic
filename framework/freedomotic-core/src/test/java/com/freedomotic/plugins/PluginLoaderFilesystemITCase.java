@@ -42,18 +42,12 @@ public class PluginLoaderFilesystemITCase {
 
     //saves the loaded plugins in memory
     @Inject
-    ClientStorage storage;
+    private ClientStorage storage;
     //loads plugin from local filesystem
     @Inject
-    PluginsManager loader;
+    private PluginsManager loader;
 
     private static File boundlePath;
-
-    /**
-     *
-     */
-    public PluginLoaderFilesystemITCase() {
-    }
 
     /**
      *

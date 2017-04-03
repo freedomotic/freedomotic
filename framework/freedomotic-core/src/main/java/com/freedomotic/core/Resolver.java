@@ -464,7 +464,7 @@ public final class Resolver {
      *
      *
      */
-    void clear() {
+    private void clear() {
         namespaces.clear();
         context.clear();
     }

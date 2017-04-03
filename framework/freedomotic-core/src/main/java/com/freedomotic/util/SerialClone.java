@@ -83,7 +83,7 @@ public class SerialClone {
     private static class CloneOutput
             extends ObjectOutputStream {
 
-        Queue<Class<?>> classQueue = new LinkedList<Class<?>>();
+        private Queue<Class<?>> classQueue = new LinkedList<Class<?>>();
 
         CloneOutput(OutputStream out)
                 throws IOException {

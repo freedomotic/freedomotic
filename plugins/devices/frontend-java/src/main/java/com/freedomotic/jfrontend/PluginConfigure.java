@@ -22,6 +22,7 @@ package com.freedomotic.jfrontend;
 import com.freedomotic.api.API;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
 import java.awt.Dimension;
@@ -52,7 +53,7 @@ public class PluginConfigure
     private final API api;
 
     private PluginsManager pluginsManager;
-    private static HashMap<Plugin, String> predefined = new HashMap<Plugin, String>();
+    private static HashMap<Plugin, String> predefined = new HashMap<>();
     private static final Logger LOG = LoggerFactory.getLogger(PluginConfigure.class.getName());
 
     /**
@@ -78,6 +79,7 @@ public class PluginConfigure
         try {
             cmbPlugin.setSelectedIndex(0);
         } catch (Exception e) {
+            Freedomotic.getStackTraceInfo(e);
         }
 
         setPreferredSize(new Dimension(650, 550));
@@ -143,11 +145,10 @@ public class PluginConfigure
             bis.close();
             dis.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Freedomotic.getStackTraceInfo(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            Freedomotic.getStackTraceInfo(e);
         }
-
         return buff.toString();
     }
 
@@ -157,8 +158,9 @@ public class PluginConfigure
         FileWriter fstream = new FileWriter(file);
         BufferedWriter out = new BufferedWriter(fstream);
         out.write(text);
-        //Close the output stream
+        //Close the streams
         out.close();
+        fstream.close();
     }
 
     private void rollbackConfiguration() {
@@ -291,7 +293,7 @@ public class PluginConfigure
                 this.dispose();
             }
         } catch (Exception ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 

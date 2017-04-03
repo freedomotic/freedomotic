@@ -37,12 +37,6 @@ public class TopologyUtilsTest {
     /**
      *
      */
-    public TopologyUtilsTest() {
-    }
-
-    /**
-     *
-     */
     @BeforeClass
     public static void setUpClass() {
     }

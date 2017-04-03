@@ -48,6 +48,7 @@ import org.apache.shiro.util.ThreadState;
  */
 class AuthImpl implements Auth {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AuthImpl.class.getName());
     private final static String BASE_REALM_NAME = "com.freedomotic.security";
     private final static String PLUGIN_REALM_NAME = "com.freedomotic.plugins.security";
     private boolean realmInited = false;
@@ -56,7 +57,7 @@ class AuthImpl implements Auth {
     private String DEFAULT_PERMISSION = "*";
     private ArrayList<Realm> realmCollection = new ArrayList<Realm>();
     @Inject
-    AppConfig config;
+    private AppConfig config;
 
     /**
      *
@@ -266,7 +267,6 @@ class AuthImpl implements Auth {
         }
         return false;
     }
-    private static final Logger LOG = LoggerFactory.getLogger(AuthImpl.class.getName());
 
     @Override
     public void load() {

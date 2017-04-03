@@ -25,7 +25,7 @@ package com.freedomotic.exceptions;
  */
 public class PluginLoadingException extends FreedomoticException {
 
-    String pluginName;
+    private String pluginName;
 
     /**
      * Creates a new instance of <code>PluginLoadingException</code> without

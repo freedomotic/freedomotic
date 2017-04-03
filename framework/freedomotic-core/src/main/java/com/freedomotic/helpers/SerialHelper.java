@@ -42,7 +42,7 @@ public class SerialHelper {
     private String portName;
     private String readTerminator = "";
     private int readChunkSize = -1;
-    StringBuilder readBuffer = new StringBuilder();
+    private StringBuilder readBuffer = new StringBuilder();
 
     /**
      * Accepts default parameters and change only the port name. The connect()
@@ -59,7 +59,6 @@ public class SerialHelper {
     public SerialHelper(final String portName, int baudRate, int dataBits, int stopBits, int parity, final SerialPortListener consumer) throws SerialPortException {
         this.portName = portName;
         serialPort = new SerialPort(this.portName);
-        boolean isOpen = serialPort.openPort();
         serialPort.addEventListener(new SerialPortEventListener() {
 
             @Override

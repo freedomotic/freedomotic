@@ -20,6 +20,7 @@
 package com.freedomotic.core;
 
 import com.freedomotic.api.Plugin;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
@@ -48,7 +49,7 @@ public class JoinPlugin
     private ClientStorage clientStorage;
     private BusService busService;
 
-    static String getMessagingChannel() {
+    private static String getMessagingChannel() {
         return MESSAGING_CHANNEL;
     }
 
@@ -76,7 +77,7 @@ public class JoinPlugin
             clientStorage.add(plugin);
             LOG.info("Enqueued remote plugin \"{}\"", plugin.getName());
         } catch (JMSException ex) {
-            LOG.error("Join Plugin receives a not valid plugin manifest");
+            LOG.error("Join Plugin receives a not valid plugin manifest", Freedomotic.getStackTraceInfo(ex));
         }
     }
 }

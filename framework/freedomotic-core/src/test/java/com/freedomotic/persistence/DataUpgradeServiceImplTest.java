@@ -47,7 +47,7 @@ public class DataUpgradeServiceImplTest {
     private static final Logger LOG = LoggerFactory.getLogger(DataUpgradeServiceImplTest.class.getName());
 
     @Inject
-    DataUpgradeService dataUpgradeService;
+    private DataUpgradeService dataUpgradeService;
 
     public DataUpgradeServiceImplTest() {
     }
@@ -84,7 +84,7 @@ public class DataUpgradeServiceImplTest {
         // Convert resulting xml into an object
         XStream xstream = FreedomXStream.getXstream();
         EnvObject thing = (EnvObject) xstream.fromXML(result);
-        LOG.info("Loaded from upgraded XML: " + thing);
+        LOG.info("Loaded from upgraded XML: {}", thing);
         Assert.assertNotNull(thing);
         //TODO: would be good to test if the two XML are equivalent but there are
         //a lot of possible variations: 

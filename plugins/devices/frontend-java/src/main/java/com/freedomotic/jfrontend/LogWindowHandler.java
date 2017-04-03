@@ -78,6 +78,7 @@ public class LogWindowHandler extends Handler {
      */
     @Override
     public void close() {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -85,5 +86,6 @@ public class LogWindowHandler extends Handler {
      */
     @Override
     public void flush() {
+        throw new UnsupportedOperationException();
     }
 }

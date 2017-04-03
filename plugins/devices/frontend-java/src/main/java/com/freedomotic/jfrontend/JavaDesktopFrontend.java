@@ -50,7 +50,7 @@ public class JavaDesktopFrontend extends Protocol {
 
     private MainWindow window;
     private Drawer drawer;
-    private final Map<String, GraphPanel> graphs = new HashMap<String, GraphPanel>();
+    private final Map<String, GraphPanel> graphs = new HashMap<>();
     private SplashLogin sl;
     private boolean init = false;
 
@@ -71,7 +71,6 @@ public class JavaDesktopFrontend extends Protocol {
             window.setVisible(false);
             window.dispose();
             window = null;
-            //listDrawer = null;
             drawer = null;
             for (GraphPanel pg : graphs.values()) {
                 pg.dispose();
@@ -122,7 +121,7 @@ public class JavaDesktopFrontend extends Protocol {
             sl = null;
         }
 
-        LOG.info("JFrontend running as user: {}", getApi().getAuth().getPrincipal());
+        LOG.info("JFrontend running as user: \"{}\"", getApi().getAuth().getPrincipal());
     }
 
     /**
@@ -140,13 +139,13 @@ public class JavaDesktopFrontend extends Protocol {
      */
     protected Drawer createRenderer(EnvironmentLogic env) {
         try {
-            if (env.getPojo().getRenderer().equalsIgnoreCase("photo")) {
+            if ("photo".equalsIgnoreCase(env.getPojo().getRenderer())) {
                 drawer = new PhotoDrawer(this);
                 drawer.setCurrEnv(env);
-            } else if (env.getPojo().getRenderer().equalsIgnoreCase("image")) {
+            } else if ("image".equalsIgnoreCase(env.getPojo().getRenderer())) {
                 drawer = new ImageDrawer(this);
                 drawer.setCurrEnv(env);
-            } else if (env.getPojo().getRenderer().equalsIgnoreCase("plain")) {
+            } else if ("plain".equalsIgnoreCase(env.getPojo().getRenderer())) {
                 drawer = new PlainDrawer(this);
                 drawer.setCurrEnv(env);
             } else {
@@ -154,8 +153,7 @@ public class JavaDesktopFrontend extends Protocol {
                 drawer.setCurrEnv(env);
             }
         } catch (Exception e) {
-            LOG.error("Error while initializing a drawer in desktop frontend.");
-            e.printStackTrace();
+            LOG.error("Error while initializing a drawer in desktop frontend ", Freedomotic.getStackTraceInfo(e));
         }
 
         if (drawer instanceof Renderer) {
@@ -173,9 +171,9 @@ public class JavaDesktopFrontend extends Protocol {
         if (callout != null) {
             Callout callout1 = new Callout(this.getClass().getCanonicalName(), "info", callout, 0, 0, 0, 0);
             drawer.createCallout(callout1);
-        } else if (c.getProperty("command") != null && c.getProperty("command").equals("GRAPH-DATA")) { // show GUI
+        } else if (c.getProperty("command") != null && "GRAPH-DATA".equalsIgnoreCase(c.getProperty("command"))) { // show GUI
             // get related object from address
-            EnvObjectLogic obj = (EnvObjectLogic) getApi().things().findByAddress("harvester", c.getProperty("event.object.address"));
+            EnvObjectLogic obj = getApi().things().findByAddress("harvester", c.getProperty("event.object.address"));
             // open GraphWindow related to the object
             if (obj != null && obj.getBehavior("data") != null) { // has a 'data' behavior
                 if (!obj.getBehavior("data").getValueAsString().isEmpty()) {
@@ -187,8 +185,6 @@ public class JavaDesktopFrontend extends Protocol {
                         graphs.put(obj.getPojo().getUUID(), gw);
                     }
                 }
-
-                //sendBack(c);
             }
         } else {
             EventQueue.invokeLater(new Runnable() {
@@ -200,21 +196,18 @@ public class JavaDesktopFrontend extends Protocol {
                             //Custom button text
                             if (c.getProperty("options") != null) {
                                 Object[] options = c.getProperty("options").split(";");
-                                int n
-                                        = JOptionPane.showOptionDialog(window,
-                                                c.getProperty("question"),
-                                                "Please reply within "
-                                                + (int) (c.getReplyTimeout() / 1000)
-                                                + " seconds",
-                                                JOptionPane.YES_NO_CANCEL_OPTION,
-                                                JOptionPane.QUESTION_MESSAGE,
-                                                null,
-                                                options,
-                                                options[2]);
-                                c.setProperty("result",
-                                        options[n].toString());
+                                int n = JOptionPane.showOptionDialog(window,
+                                        c.getProperty("question"),
+                                        "Please reply within "
+                                        + (c.getReplyTimeout() / 1000)
+                                        + " seconds",
+                                        JOptionPane.YES_NO_CANCEL_OPTION,
+                                        JOptionPane.QUESTION_MESSAGE,
+                                        null,
+                                        options,
+                                        options[2]);
+                                c.setProperty("result", options[n].toString());
                             }
-
                             reply(c);
                         }
                     }).start();

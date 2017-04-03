@@ -48,6 +48,9 @@ public class Profiler {
     private static int dequeuedReactions;
     private static int[][] scores = new int[1000][4];
 
+    private Profiler() {
+    }
+
     static void incrementMissedDeadlines() {
         missedDeadlines++;
     }
@@ -239,6 +242,4 @@ public class Profiler {
 //        }
     }
 
-    private Profiler() {
-    }
 }

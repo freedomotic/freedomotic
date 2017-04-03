@@ -1,17 +1,14 @@
 package com.freedomotic.helpers;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.junit.MockServerRule;
 import org.mockserver.model.Header;
-
 import java.nio.charset.Charset;
 import java.util.List;
-
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.CoreMatchers.equalTo;

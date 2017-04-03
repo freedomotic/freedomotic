@@ -46,8 +46,8 @@ import java.util.Set;
  */
 class Graph {
 
-    HashMap nodi;
-    int nArchi;
+    private HashMap nodi;
+    private int nArchi;
 
     /**
      *

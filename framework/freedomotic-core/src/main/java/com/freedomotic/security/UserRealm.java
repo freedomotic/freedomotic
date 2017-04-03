@@ -37,10 +37,10 @@ import org.apache.shiro.realm.SimpleAccountRealm;
  */
 public class UserRealm extends SimpleAccountRealm {
 
+    public final static String USER_REALM_NAME = "com.freedomotic.security";
     private final static Logger LOG = LoggerFactory.getLogger(UserRealm.class.getCanonicalName());
     private final static String PASSWORD_HASHING_ALGORITHM = "SHA-256";
-    public final static String USER_REALM_NAME = "com.freedomotic.security";
-
+       
     public UserRealm() {
         setName(USER_REALM_NAME);
         HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(PASSWORD_HASHING_ALGORITHM);

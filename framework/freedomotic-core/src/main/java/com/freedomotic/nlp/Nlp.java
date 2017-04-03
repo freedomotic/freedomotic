@@ -55,8 +55,8 @@ public interface Nlp<T> {
      */
     public class Rank<T> {
 
-        int similarity;
-        T cmd;
+        private int similarity;
+        private T cmd;
 
         /**
          *

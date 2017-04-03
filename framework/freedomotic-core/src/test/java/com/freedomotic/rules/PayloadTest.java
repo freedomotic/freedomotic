@@ -39,12 +39,6 @@ public class PayloadTest {
 
     /**
      *
-     */
-    public PayloadTest() {
-    }
-
-    /**
-     *
      * @throws Exception
      */
     @BeforeClass
@@ -97,8 +91,8 @@ public class PayloadTest {
         assertEquals(payload.getStatements(attribute).get(0).getAttribute(), attribute);
         assertEquals(payload.getStatements(attribute).get(0).getValue(), value);
         //no null references
-        Assert.assertNotNull(payload.getStatements(attribute).get(0));
-        Assert.assertNotNull(payload.getStatements(attribute).get(0));
+        assertNotNull(payload.getStatements(attribute).get(0));
+        assertNotNull(payload.getStatements(attribute).get(0));
     }
 
     /**
@@ -143,7 +137,7 @@ public class PayloadTest {
 
         //compare trigger with events
         boolean result = trigger.equals(event);
-        Assert.assertTrue("1 is greater than 0", result);
+        assertTrue("1 is greater than 0", result);
     }
 
     @Test
@@ -165,7 +159,7 @@ public class PayloadTest {
 
         //compare trigger with events
         boolean result = trigger.equals(event);
-        Assert.assertTrue(result);
+        assertTrue(result);
     }
 
     /**

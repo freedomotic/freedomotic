@@ -470,11 +470,7 @@ class ThingRepositoryImpl implements ThingRepository {
         try {
             int preSize = objectList.size();
             add(item, false);
-            if (preSize + 1 == objectList.size()) {
-                return true;
-            } else {
-                return false;
-            }
+            return (preSize + 1 == objectList.size());
         } catch (Exception e) {
             LOG.error("Cannot create object", e);
             return false;

@@ -36,8 +36,8 @@ public class BetweenTime extends BinaryExpression {
     private static final String OPERAND = Statement.BETWEEN_TIME;
     private static final Logger LOG = LoggerFactory.getLogger(BetweenTime.class.getName());
     private final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
-    Date todaysEnd;
-    Date tomorrowStart;
+    private Date todaysEnd;
+    private Date tomorrowStart;
 
     @Override
     public String getOperand() {

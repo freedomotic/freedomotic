@@ -29,8 +29,6 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
-import javax.jms.JMSException;
-import javax.jms.ObjectMessage;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -158,7 +156,7 @@ public class BusServiceTest {
         command.setReceiver("wait.for.reply.here");
         command.setReplyTimeout(10000); //wait reply for ten seconds
         Command result = busService.send(command);
-        LOG.info("Received reply command is ''{}'' executed={}", new Object[]{result, result.isExecuted()});
+        LOG.info("Received reply command is \"{}\" executed = \"{}\"", new Object[]{result, result.isExecuted()});
         //the reply should have the property addedd by the listener
         assertTrue("Command reply was received", result.getProperty("receiver-reply").equals("OK"));
     }

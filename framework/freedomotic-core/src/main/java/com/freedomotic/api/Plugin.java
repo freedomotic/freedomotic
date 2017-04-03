@@ -52,9 +52,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.NONE)
 public class Plugin implements Client, BusConsumer {
 
-    final static int SAME_VERSION = 0;
-    final static int FIRST_IS_OLDER = -1;
-    final static int LAST_IS_OLDER = 1;
+    private final static int SAME_VERSION = 0;
+    private final static int FIRST_IS_OLDER = -1;
+    private final static int LAST_IS_OLDER = 1;
     private static final String ACTUATORS_QUEUE_DOMAIN = "app.actuators.";
     private static final Logger LOG = LoggerFactory.getLogger(Plugin.class.getName());
     @XmlElement

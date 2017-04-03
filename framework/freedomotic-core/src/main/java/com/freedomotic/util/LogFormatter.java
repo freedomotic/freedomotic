@@ -34,7 +34,7 @@ import java.util.logging.LogRecord;
 public class LogFormatter
         extends Formatter {
 
-    SimpleDateFormat date = new SimpleDateFormat("HH:mm  ss,S");
+    private SimpleDateFormat date = new SimpleDateFormat("HH:mm  ss,S");
 
     /**
      *

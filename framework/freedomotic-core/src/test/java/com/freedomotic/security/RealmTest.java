@@ -43,9 +43,9 @@ import org.junit.runner.RunWith;
 public class RealmTest {
 
     @Inject
-    AppConfig config;
+    private AppConfig config;
     @Inject
-    AuthImpl2 auth;
+    private AuthImpl2 auth;
 
     @Before
     public void prepare() {
@@ -60,7 +60,7 @@ public class RealmTest {
     }
 
     @Test
-    public void TestRole() {
+    public void testRole() {
         assertEquals(1, auth.getRoles().size());
         assertEquals("administrators", auth.getRole("administrators").getName());
         Permission[] p = new Permission[]{};
@@ -69,14 +69,14 @@ public class RealmTest {
     }
 
     @Test
-    public void TestUserData() {
+    public void testUserData() {
         assertEquals(1, auth.getUsers().size());
         assertEquals("auto", auth.getUser("system").getProperty("language"));
         assertEquals(null, auth.getUser("system").getProperty("pipp"));
     }
 
     @Test
-    public void TestUserRoles() {
+    public void testUserRoles() {
         PrincipalCollection principals = new SimplePrincipalCollection("system", UserRealm.USER_REALM_NAME);
         Subject SysSubject = new Subject.Builder().principals(principals).buildSubject();
         assertEquals("user is SYSTEM ", "system", SysSubject.getPrincipal());
@@ -85,7 +85,7 @@ public class RealmTest {
     }
 
     @Test
-    public void TestLogin() {
+    public void testLogin() {
         auth.logout();
         assertEquals("Testing anonymous user prior to authenticate", false, auth.getSubject().isAuthenticated());
         auth.login("system", "password", true);
@@ -96,7 +96,7 @@ public class RealmTest {
     }
 
     @Test
-    public void TestUserRoleToPermissions() {
+    public void testUserRoleToPermissions() {
         auth.logout();
         auth.login("system", "password", true);
         assertEquals("Checking whether 'system' user is permitted 'sys:*'", true, auth.getSubject().isPermitted("sys:*"));

@@ -19,6 +19,7 @@
  */
 package com.freedomotic.jfrontend;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.things.EnvObjectLogic;
 import java.awt.Color;
@@ -55,11 +56,9 @@ public class WidgetTest {
             Graphics2D canvas = resource.createGraphics();
             canvas.setColor(Color.red);
             canvas.fillRect(0, 0, (int) 10, (int) resource.getHeight());
-
-            //ResourcesManager.addResource(name, canvas);
             return resource;
         } catch (Exception e) {
-            e.printStackTrace();
+            Freedomotic.getStackTraceInfo(e);
         }
 
         return null;

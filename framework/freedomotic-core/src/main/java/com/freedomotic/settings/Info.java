@@ -67,17 +67,14 @@ public class Info {
 
         //framework base paths
         public File PATH_WORKDIR = Info.getWorkdir();
-
         public final File PATH_CONFIG_FOLDER = new File(PATH_WORKDIR + "/config/");
         public File PATH_DATA_FOLDER = new File(PATH_WORKDIR + "/data/");
         public File PATH_RESOURCES_FOLDER = new File(PATH_DATA_FOLDER + "/resources/");
         public File PATH_ENVIRONMENTS_FOLDER = new File(PATH_DATA_FOLDER + "/furn/");
-
         public final File PATH_PLUGINS_FOLDER = new File(PATH_WORKDIR + "/plugins/");
         public final File PATH_DEVICES_FOLDER = new File(PATH_PLUGINS_FOLDER + "/devices/");
         public final File PATH_OBJECTS_FOLDER = new File(PATH_PLUGINS_FOLDER + "/objects/");
         public final File PATH_EVENTS_FOLDER = new File(PATH_PLUGINS_FOLDER + "/events/");
-
         public final File PATH_PROVIDERS_FOLDER = new File(PATH_PLUGINS_FOLDER + "/providers/");
     }
 
