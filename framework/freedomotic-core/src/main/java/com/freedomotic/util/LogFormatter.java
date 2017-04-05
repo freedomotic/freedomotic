@@ -38,13 +38,6 @@ public class LogFormatter
 
     /**
      *
-     */
-    public LogFormatter() {
-        super();
-    }
-
-    /**
-     *
      * @param record
      * @return
      */

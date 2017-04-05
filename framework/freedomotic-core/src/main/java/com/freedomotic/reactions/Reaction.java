@@ -64,7 +64,7 @@ public final class Reaction
     }
 
     /**
-     * 
+     *
      * @param triggerName the trigger of the new reaction
      * @param conditions the list of additional conditions of the new reaction
      * @param commands the list of commands of the new reaction
@@ -97,7 +97,7 @@ public final class Reaction
 
     /**
      * Creates a reaction without commands.
-     * 
+     *
      * @param trigger the trigger of the new reaction
      */
     public Reaction(Trigger trigger) {
@@ -128,10 +128,9 @@ public final class Reaction
 //        }
 //        create(trigger, tmpSequences);
 //    }
-    
     /**
      * Creates a new reaction.
-     * 
+     *
      * @param trigger the trigger of the new reaction
      * @param commands the list of commands of the new reaction
      */
@@ -146,7 +145,7 @@ public final class Reaction
 
     /**
      * Returns the trigger of the reaction.
-     * 
+     *
      * @return the trigger of the reaction
      */
     public Trigger getTrigger() {
@@ -155,7 +154,7 @@ public final class Reaction
 
     /**
      * Returns the list of the reaction commands.
-     * 
+     *
      * @return the list of the reaction commands
      */
     public List<Command> getCommands() {
@@ -175,8 +174,8 @@ public final class Reaction
     }
 
     /**
-     *  Creates a short description of the reaction.
-     * 
+     * Creates a short description of the reaction.
+     *
      * @return the short description of the reaction
      */
     private String buildShortDescription() {
@@ -220,8 +219,8 @@ public final class Reaction
 
     /**
      * Creates a reaction description.
-     * 
-     * @return the reaction description 
+     *
+     * @return the reaction description
      */
     private String buildDescription() {
         StringBuilder b = new StringBuilder();
@@ -248,7 +247,7 @@ public final class Reaction
 
     /**
      * Returns the reaction description.
-     * 
+     *
      * @return the reaction description
      */
     public String getDescription() {
@@ -257,7 +256,7 @@ public final class Reaction
 
     /**
      * Returns the list of additional conditions.
-     * 
+     *
      * @return the list of additional conditions
      */
     public List<Condition> getConditions() {
@@ -303,7 +302,7 @@ public final class Reaction
 
     /**
      * Sets the trigger of the reaction.
-     *  
+     *
      * @param trigger the trigger to set
      */
     public void setTrigger(Trigger trigger) {
@@ -313,7 +312,7 @@ public final class Reaction
 
     /**
      * Creates the short and long descriptions.
-     * 
+     *
      */
     public void setChanged() {
         setDescription(buildDescription());
@@ -322,20 +321,16 @@ public final class Reaction
 
     /**
      * Checks if the reaction has a trigger.
-     * 
+     *
      * @return true if the reaction has a trigger, false otherwise
      */
     public boolean hasTrigger() {
-        if (trigger != null) {
-            return true;
-        }
-
-        return false;
+        return (trigger != null);
     }
 
     /**
      * Sets the additional conditions.
-     * 
+     *
      * @param conditions the additional conditions to set
      */
     public void setConditions(List<Condition> conditions) {
@@ -344,7 +339,7 @@ public final class Reaction
 
     /**
      * Returns the reaction uuid.
-     * 
+     *
      * @return the reaction uuid
      */
     public String getUuid() {
@@ -352,9 +347,7 @@ public final class Reaction
     }
 
     /**
-     * Sets the reaction uuid.
-     *      * 
-     * @param uuid the uuid to set
+     * Sets the reaction uuid. * @param uuid the uuid to set
      */
     public void setUuid(String uuid) {
         this.uuid = uuid;
@@ -362,7 +355,7 @@ public final class Reaction
 
     /**
      * Sets the list of commands.
-     * 
+     *
      * @param commands the commands to set
      */
     public void setCommands(List<Command> commands) {
@@ -371,7 +364,7 @@ public final class Reaction
 
     /**
      * Sets the reaction description.
-     * 
+     *
      * @param description the description to set
      */
     public void setDescription(String description) {
@@ -380,7 +373,7 @@ public final class Reaction
 
     /**
      * Returns the reaction short description.
-     * 
+     *
      * @return the reaction short description
      */
     public String getShortDescription() {
@@ -390,7 +383,7 @@ public final class Reaction
 
     /**
      * Sets the reaction short description.
-     * 
+     *
      * @param shortDescription the short description to set
      */
     public void setShortDescription(String shortDescription) {
@@ -409,9 +402,9 @@ public final class Reaction
 
     /**
      * Adds a command.
-     * 
+     *
      * @param c the command to add
-     * @return 
+     * @return
      */
     public boolean addCommand(Command c) {
         return commands.add(c);
@@ -419,9 +412,9 @@ public final class Reaction
 
     /**
      * Removes a command.
-     * 
+     *
      * @param c the command to remove
-     * @return 
+     * @return
      */
     public boolean removeCommand(Command c) {
         return commands.remove(c);

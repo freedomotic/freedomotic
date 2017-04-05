@@ -29,6 +29,21 @@ public interface BehaviorLogic {
 
     /**
      *
+     */
+    public final String VALUE_OPPOSITE = "opposite";
+
+    /**
+     *
+     */
+    public final String VALUE_PREVIOUS = "previous";
+
+    /**
+     *
+     */
+    public final String VALUE_NEXT = "next";
+
+    /**
+     *
      * @param params
      * @param fireCommand
      */
@@ -82,18 +97,4 @@ public interface BehaviorLogic {
      */
     public String getValueAsString();
 
-    /**
-     *
-     */
-    public final String VALUE_OPPOSITE = "opposite";
-
-    /**
-     *
-     */
-    public final String VALUE_PREVIOUS = "previous";
-
-    /**
-     *
-     */
-    public final String VALUE_NEXT = "next";
 }

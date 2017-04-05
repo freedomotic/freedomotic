@@ -20,6 +20,7 @@
 package com.freedomotic.jfrontend;
 
 import com.freedomotic.api.API;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.settings.Info;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -59,9 +60,9 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
     }
 
     private String readConfiguration(File file) {
-        FileInputStream fis;
-        BufferedInputStream bis;
-        DataInputStream dis;
+        FileInputStream fis = null;
+        BufferedInputStream bis = null;
+        DataInputStream dis = null;
         StringBuilder buff = new StringBuilder();
 
         try {
@@ -85,10 +86,11 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
             dis.close();
 
         } catch (FileNotFoundException e) {
-            LOG.error("File {} not found. A new file will be created.", file.getAbsolutePath());            
+            LOG.error("File \"{}\" not found. A new file will be created", file.getAbsolutePath());
+            Freedomotic.getStackTraceInfo(e);
         } catch (IOException e) {
-            e.printStackTrace();
-        }
+            Freedomotic.getStackTraceInfo(e);
+        }         
         return buff.toString();
     }
 
@@ -99,6 +101,7 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
         out.write(text);
         //Close the output stream
         out.close();
+        fstream.close();
     }
 
     /**

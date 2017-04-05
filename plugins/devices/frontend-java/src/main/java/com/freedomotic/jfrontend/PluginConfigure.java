@@ -148,9 +148,15 @@ public class PluginConfigure
             Freedomotic.getStackTraceInfo(e);
         } catch (IOException e) {
             Freedomotic.getStackTraceInfo(e);
+        } finally {
+            
         }
-        return buff.toString();
-    }
+            return buff.toString();
+        }
+
+    
+
+    
 
     private void saveConfiguration(File file, String text)
             throws IOException {

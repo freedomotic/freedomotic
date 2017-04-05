@@ -19,6 +19,7 @@
  */
 package com.freedomotic.i18n;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.settings.AppConfig;
 import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
@@ -46,6 +47,16 @@ import org.slf4j.LoggerFactory;
  */
 class I18nImpl implements I18n {
 
+    private static final Logger LOG = LoggerFactory.getLogger(I18n.class.getName());
+    private static final CustomSecurityManager customSecurityManager = new CustomSecurityManager();
+    private Locale currentLocale;
+    private final HashMap<String, ResourceBundle> messages;
+    private final UTF8control rbControl;
+    private static final ArrayList<Locale> locales = new ArrayList<>();
+    private final AppConfig config;
+    private final HashMap<String, File> packageBundleDir;
+    private static final Locale fallBackLocale = Locale.ENGLISH;
+
     private static class CustomSecurityManager extends SecurityManager {
 
         public Class<?> getCallerClass() {
@@ -53,24 +64,13 @@ class I18nImpl implements I18n {
         }
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(I18n.class.getName());
-    private static final CustomSecurityManager customSecurityManager = new CustomSecurityManager();
-
-    private Locale currentLocale;
-    private final HashMap<String, ResourceBundle> messages;
-    private final UTF8control RB_Control;
-    private static final ArrayList<Locale> locales = new ArrayList<Locale>();
-    private final AppConfig config;
-    private final HashMap<String, File> packageBundleDir;
-    private final Locale fallBackLocale = Locale.ENGLISH;
-
     @Inject
     public I18nImpl(AppConfig config) {
         this.config = config;
         currentLocale = Locale.getDefault();
-        messages = new HashMap<String, ResourceBundle>();
-        RB_Control = new UTF8control();
-        packageBundleDir = new HashMap<String, File>();
+        messages = new HashMap<>();
+        rbControl = new UTF8control();
+        packageBundleDir = new HashMap<>();
         // add mapping for base strings
         packageBundleDir.put("com.freedomotic", new File(Info.PATHS.PATH_WORKDIR + "/i18n"));
     }
@@ -97,9 +97,7 @@ class I18nImpl implements I18n {
                 break;
             }
         }
-//        if (folder == null) {
         folder = packageBundleDir.get("com.freedomotic");
-//        }
         return msg(folder, "com.freedomotic", key, fields, false, currentLocale);
     }
 
@@ -122,12 +120,12 @@ class I18nImpl implements I18n {
                 int lastSize = packageName.split("\\.").length;
                 String baseName = packageName.split("\\.")[lastSize - 1];
 
-                messages.put(packageName + ":" + loc, ResourceBundle.getBundle(baseName, currentLocale, loader, RB_Control));
+                messages.put(packageName + ":" + loc, ResourceBundle.getBundle(baseName, currentLocale, loader, rbControl));
                 LOG.info("Adding resourceBundle: package={}, locale={} pointing at \"{}\"", new Object[]{packageName, loc, folder.getAbsolutePath()});
             } catch (MalformedURLException ex) {
                 LOG.error("Cannot find folder while loading resourceBundle for package \"{}\"", packageName);
             } catch (MissingResourceException ex) {
-                LOG.error("Cannot find resourceBundle files inside folder \"{}\" for package \"{}\"", new Object[]{packageName, folder.getAbsolutePath()});
+                LOG.error("Cannot find resourceBundle files inside folder \"{}\" for package \"{}\"", new Object[]{packageName, folder.getAbsolutePath()}, Freedomotic.getStackTraceInfo(ex));
             }
         }
 
@@ -151,7 +149,7 @@ class I18nImpl implements I18n {
                 }
 
             } catch (MissingResourceException ex) {
-                LOG.error("Cannot find resourceBundle files inside folder \"{}\" for package \"{}\"", new Object[]{folder.getAbsolutePath(), packageName});
+                LOG.error("Cannot find resourceBundle files inside folder \"{}\" for package \"{}\"", new Object[]{folder.getAbsolutePath(), packageName}, Freedomotic.getStackTraceInfo(ex));
             }
         }
         return null;
@@ -224,9 +222,8 @@ class I18nImpl implements I18n {
 
     @Override
     public void setDefaultLocale(String loc) {
-        //if (loc.equals("no") || loc.equals("false")){
         currentLocale = null;
-        if (loc == null || loc.isEmpty() || loc.equals("auto") || loc.equals("yes") || loc.equals("true")) {
+        if (loc == null || loc.isEmpty() || "auto".equals(loc) || "yes".equals(loc) || "true".equals(loc)) {
             currentLocale = Locale.getDefault();
             config.put("KEY_ENABLE_I18N", "auto");
         } else if (loc.length() >= 5) {

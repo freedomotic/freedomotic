@@ -61,7 +61,9 @@ public class DamerauLevenshtein {
 
     private void setupMatrix() {
         int cost = -1;
-        int del, sub, ins;
+        int del;
+        int sub;
+        int ins;
 
         matrix = new int[compOne.length() + 1][compTwo.length() + 1];
 

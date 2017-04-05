@@ -47,8 +47,8 @@ import org.slf4j.LoggerFactory;
 class ClientStorageInMemory implements ClientStorage {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientStorageInMemory.class.getName());
-    private static final List<Client> clients = new ArrayList<Client>();
-    //It works because this class is created by guice and the injector is automatically available in thi case
+    private static final List<Client> clients = new ArrayList<>();
+    //It works because this class is created by guice and the injector is automatically available in this case
     @Inject
     private Injector injector;
     @Inject
@@ -83,9 +83,7 @@ class ClientStorageInMemory implements ClientStorage {
                     = new PluginHasChanged(ClientStorageInMemory.class,
                             c.getName(), PluginActions.ENQUEUE);
             busService.send(event);
-            LOG.info(
-                    "Extension \"{}\" added to plugins list.",
-                    c.getName());
+            LOG.info("Extension \"{}\" added to plugins list.", c.getName());
         }
     }
 
@@ -144,7 +142,7 @@ class ClientStorageInMemory implements ClientStorage {
      */
     @Override
     public List<Client> getClients(String filterType) {
-        List<Client> tmp = new ArrayList<Client>();
+        List<Client> tmp = new ArrayList<>();
         for (Client client : clients) {
             if (client.getType().equalsIgnoreCase(filterType)) {
                 tmp.add(client);
@@ -272,7 +270,6 @@ class ClientStorageInMemory implements ClientStorage {
      * is older then str1
      */
     private int getOldestVersion(String str1, String str2) {
-        //System.out.println("VERSION: " + str1 + " - " + str2);
         String MAX = Integer.toString(Integer.MAX_VALUE).toString();
         str1 = str1.replaceAll("x", MAX);
         str2 = str2.replaceAll("x", MAX);
@@ -322,7 +319,7 @@ class ClientStorageInMemory implements ClientStorage {
 
                     @Override
                     public String getName() {
-                        return "Cannot start " + simpleName;
+                        return "Cannot start \"" + simpleName + "\"";
                     }
 
                     @Override

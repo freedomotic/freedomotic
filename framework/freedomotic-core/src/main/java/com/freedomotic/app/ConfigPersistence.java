@@ -57,8 +57,8 @@ public class ConfigPersistence {
      * @throws ConversionException
      */
     public static Config deserialize(File file)
-            throws IOException, ConversionException {
-        LOG.info("Deserializing manifest from " + file.getAbsolutePath());
+            throws IOException {
+        LOG.info("Deserializing manifest from \"{}\"", file.getAbsolutePath());
 
         XStream xstream = FreedomXStream.getXstream();
         xstream.autodetectAnnotations(true);
@@ -84,10 +84,13 @@ public class ConfigPersistence {
 
             return c;
         } catch (FileNotFoundException ex) {
-            LOG.warn("Error while deserializing configuration from " + file.getAbsolutePath(), ex);
+            LOG.warn("Error while deserializing configuration from \"{}\"", file.getAbsolutePath(), Freedomotic.getStackTraceInfo(ex));
         } finally {
             if (myInput != null) {
                 myInput.close();
+            }
+            if (fin != null) {
+             fin.close();
             }
         }
 

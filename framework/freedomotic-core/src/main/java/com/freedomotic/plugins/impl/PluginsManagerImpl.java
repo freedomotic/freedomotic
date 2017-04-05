@@ -198,7 +198,7 @@ class PluginsManagerImpl implements PluginsManager {
                 LOG.warn("No installable Freedomotic plugins at URL \"{}\"", fromURL);
             }
         } catch (Exception ex) {
-            LOG.error("Error while installing boundle downloaded from " + fromURL, ex);
+            LOG.error("Error while installing boundle downloaded from \"{}\"", fromURL, ex);
             return false; //not done
         }
 
@@ -213,7 +213,7 @@ class PluginsManagerImpl implements PluginsManager {
             File boundleRootFolder = toBeUninstalled.getFile().getParentFile();
 
             // Find boundle companions (they also should be stopped and removed)
-            List<Plugin> uninstallCandidates = new ArrayList<Plugin>();
+            List<Plugin> uninstallCandidates = new ArrayList<>();
             for (Client tmp : clientStorage.getClients()) {
                 if (tmp instanceof Plugin) {
                     Plugin boundleCompanion = (Plugin) tmp;

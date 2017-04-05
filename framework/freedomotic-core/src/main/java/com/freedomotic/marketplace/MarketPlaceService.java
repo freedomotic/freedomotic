@@ -60,7 +60,7 @@ public class MarketPlaceService {
                 }
             });
         } catch (Exception e) {
-            LOG.error("Error initializing marketplace service", e);
+            LOG.error("Error initializing marketplace service", Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -90,7 +90,7 @@ public class MarketPlaceService {
                 packageList.addAll(market.getAvailablePackages());
             }
         } catch (Exception e) {
-            LOG.error("Error downloading the packages list", e);
+            LOG.error("Error downloading the packages list", Freedomotic.getStackTraceInfo(e));
         }
 
         return packageList;
@@ -111,7 +111,7 @@ public class MarketPlaceService {
                 packageList.addAll(market.getAvailablePackages(category));
             }
         } catch (Exception e) {
-            LOG.error("Error downloading the packages list for category " + category.getName(), e);
+            LOG.error("Error downloading the packages list for category \"{}\"", category.getName(), Freedomotic.getStackTraceInfo(e));
         }
 
         return packageList;
@@ -131,7 +131,7 @@ public class MarketPlaceService {
                 categoryList.addAll(market.getAvailableCategories());
             }
         } catch (Exception e) {
-            LOG.error("Error downloading the marketplace categories list", e);
+            LOG.error("Error downloading the marketplace categories list", Freedomotic.getStackTraceInfo(e));
         }
 
         return categoryList;

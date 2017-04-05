@@ -56,9 +56,7 @@ class AuthImpl2 implements Auth {
     private static final ArrayList<Realm> realmCollection = new ArrayList<>();
     @Inject
     private AppConfig config;
-    @Inject
-    private BusService bus;
-
+  
     /**
      *
      * @return

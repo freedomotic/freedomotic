@@ -22,7 +22,6 @@ package com.freedomotic.plugins.impl;
 import com.freedomotic.api.Client;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.PluginLoadingException;
-import com.freedomotic.plugins.impl.BoundleLoader;
 import com.freedomotic.util.JarFilter;
 import java.io.File;
 import java.io.IOException;
@@ -73,7 +72,7 @@ class BoundleLoaderObjects implements BoundleLoader {
                     try {
                         classNames = BoundleLoaderFactory.getClassesInside(jar.getAbsolutePath());
                     } catch (IOException ex) {
-                        LOG.error("Error loading classes", ex);
+                        LOG.error("Error loading classes", Freedomotic.getStackTraceInfo(ex));
                     }
 
                     for (String className : classNames) {
@@ -91,13 +90,13 @@ class BoundleLoaderObjects implements BoundleLoader {
                                 }
                             }
                         } catch (Exception ex) {
-                            LOG.error("Error loading thing plugin", ex);
+                            LOG.error("Error loading thing plugin", Freedomotic.getStackTraceInfo(ex));
                         }
                     }
                 }
             }
         } else {
-            LOG.warn("No object can be found in folder " + pluginFolder.getAbsolutePath());
+            LOG.warn("No object can be found in folder \"{}\"", pluginFolder.getAbsolutePath());
         }
 
         return results;
