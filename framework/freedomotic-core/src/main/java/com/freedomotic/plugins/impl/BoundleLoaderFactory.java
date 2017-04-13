@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -43,7 +44,7 @@ import org.slf4j.LoggerFactory;
 class BoundleLoaderFactory {
     // Parameters
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(BoundleLoaderFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BoundleLoaderFactory.class.getName());
     private static final Class[] PARAMETERS = new Class[]{URL.class};
 
     BoundleLoaderFactory() {
@@ -134,7 +135,7 @@ class BoundleLoaderFactory {
      */
     protected static List<String> getClassesInside(String jarName)
             throws IOException {
-        ArrayList<String> classes = new ArrayList<String>(10);
+        ArrayList<String> classes = new ArrayList<>(10);
         JarInputStream jarFile = new JarInputStream(new FileInputStream(jarName));
         JarEntry jarEntry;
 
@@ -151,7 +152,7 @@ class BoundleLoaderFactory {
                 }
             }
         } catch (IOException ex) {
-            LoggerFactory.getLogger(BoundleLoaderFactory.class).warn(ex.getMessage());
+            LOG.warn(Freedomotic.getStackTraceInfo(ex));
         } finally {
             jarFile.close();
         }
@@ -179,6 +180,9 @@ class BoundleLoaderFactory {
         clazzLoader = new URLClassLoader(new URL[]{url});
         clazz = clazzLoader.loadClass(name);
 
+        // close the classloader
+        clazzLoader.close();
+        
         return clazz;
     }
 
@@ -206,7 +210,7 @@ class BoundleLoaderFactory {
             method.setAccessible(true);
             method.invoke(sysLoader,
                     new Object[]{u});
-        } catch (Throwable t) {
+        } catch (Exception t) {
             LOG.error(Freedomotic.getStackTraceInfo(t));
             throw new IOException("Error, could not add URL to system classloader");
         }

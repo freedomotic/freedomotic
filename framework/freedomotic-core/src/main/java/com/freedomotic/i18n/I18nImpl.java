@@ -38,6 +38,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +53,7 @@ class I18nImpl implements I18n {
     private Locale currentLocale;
     private final HashMap<String, ResourceBundle> messages;
     private final UTF8control rbControl;
+    private final String FREEDOMOTIC_PACKAGE = "com.freedomotic";
     private static final ArrayList<Locale> locales = new ArrayList<>();
     private final AppConfig config;
     private final HashMap<String, File> packageBundleDir;
@@ -72,7 +74,7 @@ class I18nImpl implements I18n {
         rbControl = new UTF8control();
         packageBundleDir = new HashMap<>();
         // add mapping for base strings
-        packageBundleDir.put("com.freedomotic", new File(Info.PATHS.PATH_WORKDIR + "/i18n"));
+        packageBundleDir.put(FREEDOMOTIC_PACKAGE, new File(Info.PATHS.PATH_WORKDIR + "/i18n"));
     }
 
     /*
@@ -97,8 +99,8 @@ class I18nImpl implements I18n {
                 break;
             }
         }
-        folder = packageBundleDir.get("com.freedomotic");
-        return msg(folder, "com.freedomotic", key, fields, false, currentLocale);
+        folder = packageBundleDir.get(FREEDOMOTIC_PACKAGE);
+        return msg(folder, FREEDOMOTIC_PACKAGE, key, fields, false, currentLocale);
     }
 
     private String msg(File folder, String packageName, String key, Object[] fields, boolean reThrow, Locale locale) {
@@ -111,21 +113,26 @@ class I18nImpl implements I18n {
 
         // cerca in messages (ed eventualmente aggiungi) la risorsa per il package e la lingua
         if (!messages.containsKey(packageName + ":" + loc)) {
+            URLClassLoader loader = null;
             try {
-
-                ClassLoader loader;
                 URL[] urls = {folder.toURI().toURL()};
                 loader = new URLClassLoader(urls);
-
                 int lastSize = packageName.split("\\.").length;
                 String baseName = packageName.split("\\.")[lastSize - 1];
-
                 messages.put(packageName + ":" + loc, ResourceBundle.getBundle(baseName, currentLocale, loader, rbControl));
                 LOG.info("Adding resourceBundle: package={}, locale={} pointing at \"{}\"", new Object[]{packageName, loc, folder.getAbsolutePath()});
             } catch (MalformedURLException ex) {
                 LOG.error("Cannot find folder while loading resourceBundle for package \"{}\"", packageName);
             } catch (MissingResourceException ex) {
                 LOG.error("Cannot find resourceBundle files inside folder \"{}\" for package \"{}\"", new Object[]{packageName, folder.getAbsolutePath()}, Freedomotic.getStackTraceInfo(ex));
+            } finally {
+                if (loader != null) {
+                    try {
+                        loader.close();
+                    } catch (IOException ex) {
+                        LOG.error("Error closing URLClassLoader: {}", Freedomotic.getStackTraceInfo(ex));
+                    }
+                }
             }
         }
 
@@ -156,19 +163,22 @@ class I18nImpl implements I18n {
     }
 
     @Override
-    public String msg(String key) {
+    public String msg(String key
+    ) {
         String caller = customSecurityManager.getCallerClass().getPackage().getName();
         return msg(caller, key, null);
     }
 
     @Override
-    public String msg(String key, Object[] fields) {
+    public String msg(String key, Object[] fields
+    ) {
         String caller = customSecurityManager.getCallerClass().getPackage().getName();
         return msg(caller, key, fields);
     }
 
     @Override
-    public void registerBundleTranslations(String packageName, File i18nFolder) {
+    public void registerBundleTranslations(String packageName, File i18nFolder
+    ) {
         if (!packageBundleDir.containsKey(packageName)) {
             packageBundleDir.put(packageName, i18nFolder);
         }

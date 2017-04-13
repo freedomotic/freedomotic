@@ -121,17 +121,11 @@ public class PluginConfigure
     }
 
     private String readConfiguration(File file) {
-        FileInputStream fis;
-        BufferedInputStream bis;
-        DataInputStream dis;
         StringBuilder buff = new StringBuilder();
 
-        try {
-            fis = new FileInputStream(file);
-
-            // Here BufferedInputStream is added for fast reading.
-            bis = new BufferedInputStream(fis);
-            dis = new DataInputStream(bis);
+        try (FileInputStream fis = new FileInputStream(file);
+                BufferedInputStream bis = new BufferedInputStream(fis);
+                DataInputStream dis = new DataInputStream(bis);) {
 
             // dis.available() returns 0 if the file does not have more lines.
             while (dis.available() != 0) {
@@ -139,24 +133,13 @@ public class PluginConfigure
                 // the console.
                 buff.append(dis.readLine()).append("\n");
             }
-
-            // dispose all the resources after using them.
-            fis.close();
-            bis.close();
-            dis.close();
         } catch (FileNotFoundException e) {
             Freedomotic.getStackTraceInfo(e);
         } catch (IOException e) {
             Freedomotic.getStackTraceInfo(e);
-        } finally {
-            
         }
-            return buff.toString();
-        }
-
-    
-
-    
+        return buff.toString();
+    }
 
     private void saveConfiguration(File file, String text)
             throws IOException {

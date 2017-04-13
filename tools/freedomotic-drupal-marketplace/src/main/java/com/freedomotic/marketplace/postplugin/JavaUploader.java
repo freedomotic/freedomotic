@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -51,32 +50,6 @@ public class JavaUploader {
     public static final String DRUPALPATH = "http://www.freedomotic.com/";
 
     /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-
-        //change this for real username and password        
-        //String loginJson = login("username", "password");
-        //CookieSetting cS = parseCookie(loginJson);
-        //String uid = parseUid(loginJson);
-
-        //String test = postTaxonomySelectNodes("151",0);        
-        //List<MarketPlacePlugin2> testlist = DrupalRestHelper.retrievePluginsByCategory("151");
-        MarketPlacePlugin2 pluginTest = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.freedomotic.com/rest/node/1196");
-//        MarketPlacePlugin2 pluginTest = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.freedomotic.com/rest/node/394");
-//        putPlugin(cS, "394", pluginTest); 
-//        String nid = "394";
-        //if (cS != null) {
-        //String nid = postPlugin(cS, plugin);
-        //String fid = postFile(cS, uid, "/home/gpt/Desarrollo/", "testfile1.zip");            
-        //MarketPlacePluginFileField fileField = new MarketPlacePluginFileField(fid, "file asociated by code");
-        //MarketPlaceFile fileField = postFile(cS, uid, "/home/gpt/Desarrollo/", "testfile1.zip", true);
-        //plugin.setField_file(fileField);
-        //putPlugin(cS, nid, plugin);
-        //}        
-    }
-
-    /**
      * Obtains the user id from the login Json response
      *
      * @param loginResponse Drupal Json response to a login
@@ -87,12 +60,11 @@ public class JavaUploader {
             JsonReader reader = new JsonReader(new StringReader(loginResponse));
             reader.beginObject();
             String name = reader.nextName();
-            while (!name.equals("user")) {
+            while (!"user".equalsIgnoreCase(name)) {
                 reader.nextString();
                 name = reader.nextName();
             }
             reader.beginObject();
-            name = reader.nextName();
             String value = reader.nextString();
             reader.close();
             return value;
@@ -108,20 +80,20 @@ public class JavaUploader {
      */
     public static CookieSetting parseCookie(String loginResponse) {
         try {
-            String session_id = "";
-            String session_name = "";
+            String sessionId = "";
+            String sessionName = "";
             JsonReader reader = new JsonReader(new StringReader(loginResponse));
             reader.beginObject();
             String name = reader.nextName();
-            if (name.equals("sessid")) {
-                session_id = reader.nextString();
+            if ("sessid".equalsIgnoreCase(name)) {
+                sessionId = reader.nextString();
             }
             name = reader.nextName();
-            if (name.equals("session_name")) {
-                session_name = reader.nextString();
+            if ("session_name".equalsIgnoreCase(name)) {
+                sessionName = reader.nextString();
             }
             reader.close();
-            return new CookieSetting(0, session_name, session_id);
+            return new CookieSetting(0, sessionName, sessionId);
         } catch (IOException ex) {
             Logger.getLogger(JavaUploader.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -141,7 +113,6 @@ public class JavaUploader {
         String jsonData = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
         JsonRepresentation jsonRep = new JsonRepresentation(jsonData);
         cr.setMethod(Method.POST);
-        Representation rep = cr.post(jsonRep);
         Response resp = cr.getResponse();
         if (resp.getStatus().isSuccess()) {
             try {
@@ -216,7 +187,7 @@ public class JavaUploader {
                 }
             }
         } catch (ResourceException resourceException) {
-           // Freedomotic.logger.warning(resourceException.toString());
+            // Freedomotic.logger.warning(resourceException.toString());
         }
         return "";
     }
@@ -233,22 +204,6 @@ public class JavaUploader {
         ClientResource cr2 = new ClientResource(DRUPALPATH + "/rest/node");
         cr2.getRequest().getCookies().add(cS);
         String pluginData = plugin.toJson();
-//        String pluginData = "{\"node\":"
-//                + "{\"type\":\"plugin\","
-//                + "\"title\":\""+plugin.getTitle()+"\","
-//                + "\"language\":\"und\","
-//                //+ "\"field_category\":[{\"value\":\""+plugin.getField_category()+"\"}],"
-//                + "\"field_category\":{\"0\":{\"value\":\""+plugin.getField_category()+"\"}},"
-//                + "\"field_plugin_category\":{\"0\":{\"value\":\"151\"}},"
-//                + "\"field_developer\":{\"0\":{\"uid\":{\"uid\":\"gpulido\"}}},"
-//                + "\"field_status\":[{\"value\":\""+plugin.getField_status()+"\"}],"
-//                + "\"field_os\":{\"value\":{\"Linux\":\"Linux\",\"Windows\":\"Windows\"}},"
-//                + "\"taxonomy\":{\"tags\":{\"2\":\"modbus gabriel\"}},"
-//                + "\"field_description\":[{\"value\":\"Test of autocreated plugin.\"}],"
-//                + "\"field_file\":{\"0\":{\"fid\":\"318\",\"data\":{\"description\":\"FileNameDescription\"}}},"
-//                + "\"body\":{\"und\":{\"0\":{\"value\":\"This is the body of my node\"}}}"
-//                + "}"
-//                + "}";
 
         cr2.setMethod(Method.POST);
 
@@ -299,7 +254,6 @@ public class JavaUploader {
         pluginData += plugin.formatFieldOS() + ",";
         pluginData += "\"field_category\":{\"0\":{\"value\":\"" + plugin.getField_category() + "\"}},";
         pluginData += "\"field_plugin_category\":{\"0\":{\"value\":\"151\"}}";
-
 
         //pluginData += "\"field_plugin_category\":[{\"value\":\"151\"},{\"value\":null},{\"value\":null},{\"value\":null},{\"value\":null}]" +",";        
         //pluginData += plugin.formatFieldCategory();
@@ -417,20 +371,24 @@ public class JavaUploader {
     //Helper method to transform a File to a byte[]
     public static byte[] fileToByteArray(File file) throws FileNotFoundException {
         FileInputStream fis = new FileInputStream(file);
-        //System.out.println(file.exists() + "!!");
-        //InputStream in = resource.openStream();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] buf = new byte[1024];
         try {
             for (int readNum; (readNum = fis.read(buf)) != -1;) {
                 bos.write(buf, 0, readNum); //no doubt here is 0
                 //Writes len bytes from the specified byte array starting at offset off to this byte array output stream.
-                //System.out.println("read " + readNum + " bytes,");
             }
         } catch (IOException ex) {
             //Logger.getLogger(genJpeg.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(JavaUploader.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
         return bos.toByteArray();
-
     }
 }

@@ -21,6 +21,7 @@ package com.freedomotic.webserver;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import java.io.File;
@@ -39,8 +40,6 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 /**
  *
  * @author Gabriel Pulido de Torres
@@ -51,8 +50,8 @@ public class ApplicationServer extends Protocol {
 
 //TODO: read from config file
     int port;// = 8080;
-    String webapp_dir;
-    String war_file;
+    String webappDir;
+    String warFile;
     public static final String WEBAPP_CTX = "/";
     public static Server server;
     private static boolean enableSSL;
@@ -65,8 +64,8 @@ public class ApplicationServer extends Protocol {
         super("Application Server", "/webserver/applicationserver-manifest.xml");
 
         port = configuration.getIntProperty("PORT", 8080);
-        webapp_dir = configuration.getStringProperty("WEBAPP_DIR", "/webapps/gwt_client");
-        war_file = configuration.getStringProperty("WAR_FILE", "");
+        webappDir = configuration.getStringProperty("WEBAPP_DIR", "/webapps/gwt_client");
+        warFile = configuration.getStringProperty("WAR_FILE", "");
         enableSSL = configuration.getBooleanProperty("ENABLE_SSL", true);
         sslPort = configuration.getIntProperty("SSL_PORT", 8443);
         keystorePassword = configuration.getStringProperty("KEYSTORE_PASSWORD", "password");
@@ -78,10 +77,10 @@ public class ApplicationServer extends Protocol {
 
     @Override
     public void onStart() {
-        String dir = new File(this.getFile().getParent() + File.separator + webapp_dir).getAbsolutePath();
+        String dir = new File(this.getFile().getParent() + File.separator + webappDir).getAbsolutePath();
 
         server = new Server(port);
-        LOG.info("Webserver now listens on port " + port);
+        LOG.info("Webserver now listens on port {}", port);
         if (enableSSL) {
             KeyStore ks;
             String keyStorePath = this.getFile().getParent() + "/data/" + keystoreFile;
@@ -98,39 +97,32 @@ public class ApplicationServer extends Protocol {
 
                 SSLConnector.setPort(sslPort);
                 SSLConnector.setMaxIdleTime(30000);
-                LOG.info("Webserver now listens on SLL port " + sslPort);
+                LOG.info("Webserver now listens on SLL port {}", sslPort);
                 server.addConnector(SSLConnector);
             } catch (Exception ex) {
-                LOG.error("Cannot load java keystore for reason: ", ex.getLocalizedMessage());
+                LOG.error("Cannot load java keystore for reason: ", Freedomotic.getStackTraceInfo(ex));
             }
 
         }
-//        WebAppContext context = new WebAppContext();        
-//        context.setDescriptor(dir+"/WEB-INF/web.xml");
-//        context.setResourceBase(dir);
-//        context.setContextPath(WEBAPP_CTX);
-//        context.setParentLoaderPriority(true);  
-//        server.setHandler(context);
 
-
-        if (!war_file.isEmpty()) {
+        if (!warFile.isEmpty()) {
             try {
                 WebAppContext webapp = new WebAppContext();
                 webapp.setContextPath(WEBAPP_CTX);
-                webapp.setWar(dir + "/" + war_file);
+                webapp.setWar(dir + "/" + warFile);
                 server.setHandler(webapp);
 
                 //print the URL to visit as plugin description
                 InetAddress addr = InetAddress.getLocalHost();
                 String hostname = addr.getHostName();
                 //strip away the '.war' extension and put all togheter
-                URL url = new URL("http://" + hostname + ":" + port + "/" + war_file.substring(0, war_file.lastIndexOf(".")));
+                URL url = new URL("http://" + hostname + ":" + port + "/" + warFile.substring(0, warFile.lastIndexOf(".")));
                 setDescription("Visit " + url.toString());
                 server.start();
             } catch (FileNotFoundException nf) {
-                LOG.warn("Cannot find WAR file " + war_file + " into directory " + dir);
+                LOG.warn("Cannot find WAR file " + warFile + " into directory " + dir);
             } catch (Exception ex) {
-                LOG.error("Generic exception",ex);
+                LOG.error("Generic exception",Freedomotic.getStackTraceInfo(ex));
             }
         } else {
             try {
@@ -141,7 +133,7 @@ public class ApplicationServer extends Protocol {
                 server.setHandler(context);
                 server.start();
             } catch (Exception ex) {
-                LOG.error(null, ex);
+                LOG.error(Freedomotic.getStackTraceInfo(ex));
             }
         }
 
@@ -153,7 +145,7 @@ public class ApplicationServer extends Protocol {
             server.stop();
             setDescription(configuration.getStringProperty("description", this.getName()));
         } catch (Exception ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
 
     }

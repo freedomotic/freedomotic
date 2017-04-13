@@ -19,6 +19,7 @@
  */
 package com.freedomotic.core;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
@@ -56,7 +57,7 @@ import javax.jms.ObjectMessage;
  * behavior is applied to the single object or all objects of the same type as
  * described by the command parameters. </p>
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public final class BehaviorManager implements BusConsumer {
 
@@ -93,7 +94,7 @@ public final class BehaviorManager implements BusConsumer {
         try {
             jmsObject = message.getObject();
         } catch (JMSException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
 
         if (jmsObject instanceof Command) {
@@ -129,11 +130,11 @@ public final class BehaviorManager implements BusConsumer {
         String includeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_INCLUDETAGS);
         String excludeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_EXCLUDETAGS);
         if (includeTags != null || excludeTags != null) {
-            List<String> newList = new ArrayList<String>();
+            List<String> newList = new ArrayList<>();
             // prepare includ set
             includeTags += "";
             String tags[] = includeTags.split(",");
-            Set<String> includeSearch = new HashSet<String>();
+            Set<String> includeSearch = new HashSet<>();
             for (String tag : tags) {
                 if (!tag.isEmpty()) {
                     includeSearch.add(tag.trim());
@@ -142,15 +143,15 @@ public final class BehaviorManager implements BusConsumer {
             //prepare exclude set (remove tags listed in include set too)
             excludeTags += "";
             tags = excludeTags.split(",");
-            Set<String> excludeSearch = new HashSet<String>();
+            Set<String> excludeSearch = new HashSet<>();
             for (String tag : tags) {
                 if (!tag.isEmpty() && !includeSearch.contains(tag)) {
                     excludeSearch.add(tag.trim());
                 }
             }
 
-            Set<String> testSet = new HashSet<String>();
-            Set<String> extestSet = new HashSet<String>();
+            Set<String> testSet = new HashSet<>();
+            Set<String> extestSet = new HashSet<>();
 
             for (EnvObjectLogic object : thingsRepository.findAll()) {
                 final EnvObject pojo = object.getPojo();
@@ -173,7 +174,7 @@ public final class BehaviorManager implements BusConsumer {
                 }
 
                 if (apply) {
-                    LOG.info("Filter by tag affects object " + pojo.getName());
+                    LOG.info("Filter by tag affects object \"{}\"", pojo.getName());
                     newList.add(pojo.getName());
                 }
             }
@@ -187,7 +188,7 @@ public final class BehaviorManager implements BusConsumer {
         String objectClass = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS);
 
         if (objectClass != null) {
-            List<String> newList = new ArrayList<String>();
+            List<String> newList = new ArrayList<>();
             String regex = "^" + objectClass.replace(".", "\\.") + ".*";
             Pattern pattern = Pattern.compile(regex);
 
@@ -197,7 +198,7 @@ public final class BehaviorManager implements BusConsumer {
                 final Matcher matcher = pattern.matcher(pojo.getType());
 
                 if (matcher.matches()) {
-                    LOG.info("Filter by class affects object " + pojo.getName());
+                    LOG.info("Filter by class affects object \"{}\"", pojo.getName());
                     newList.add(pojo.getName());
                 }
             }
@@ -211,14 +212,14 @@ public final class BehaviorManager implements BusConsumer {
         String zoneName = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_ZONE);
 
         if (zoneName != null) {
-            List<String> newList = new ArrayList<String>();
+            List<String> newList = new ArrayList<>();
 
             //Search for the 'object.zone' name in all environments
             for (EnvironmentLogic env : environmentRepository.findAll()) {
                 if (zoneName != null) {
                     ZoneLogic z = env.getZone(zoneName);
                     for (EnvObject obj : z.getPojo().getObjects()) {
-                        LOG.info("Filter by zone affects object " + obj.getName());
+                        LOG.info("Filter by zone affects object \"{}\"", obj.getName());
                         newList.add(obj.getName());
                     }
                 }
@@ -247,8 +248,8 @@ public final class BehaviorManager implements BusConsumer {
                 if (behavior != null) {
 
                     LOG.info(
-                            "User level command ''{}'' request changing behavior {} of object ''{}'' "
-                            + "from value ''{}'' to value ''{}''",
+                            "User level command \"{}\" request changing behavior \"{}\" of object \"{}\" "
+                            + "from value \"{}\" to value \"{}\"",
                             new Object[]{userLevelCommand.getName(), behavior.getName(), thing.getPojo().getName(), behavior.getValueAsString(), userLevelCommand.getProperties().getProperty("value")});
 
                     // true means a command must be fired
@@ -256,8 +257,8 @@ public final class BehaviorManager implements BusConsumer {
 
                 } else {
                     LOG.warn(
-                            "Behavior ''{}'' is not a valid behavior for object ''{}''. "
-                            + "Please check ''behavior'' parameter spelling in command {}",
+                            "Behavior \"{}\" is not a valid behavior for object \"{}\". "
+                            + "Please check ''behavior'' parameter spelling in command \"{}\"",
                             new Object[]{behaviorName, thing.getPojo().getName(), userLevelCommand.getName()});
                 }
             }
@@ -302,7 +303,7 @@ public final class BehaviorManager implements BusConsumer {
                     Command clonedOne = userLevelCommand.clone();
                     applyToCategory(clonedOne);
                 } catch (CloneNotSupportedException ex) {
-                    LOG.error(ex.getMessage());
+                    LOG.error(Freedomotic.getStackTraceInfo(ex));
                 }
             }
         }
@@ -325,12 +326,12 @@ public final class BehaviorManager implements BusConsumer {
             }
 
         } catch (JMSException ex) {
-            LOG.error("Error while sending reply to " + command.getName(), ex);
+            LOG.error("Error while sending reply to \"{}\"", command.getName(), ex);
         }
     }
 
     private List<String> getObjectsNames() {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (EnvObjectLogic thing : thingsRepository.findAll()) {
             names.add(thing.getPojo().getName());
         }

@@ -20,11 +20,14 @@
 package com.freedomotic.events;
 
 import com.freedomotic.api.EventTemplate;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.things.EnvObjectLogic;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Channel <b>app.event.sensor.object.behavior.change</b> informs that an object
@@ -42,6 +45,8 @@ import java.util.Map.Entry;
 public class ObjectHasChangedBehavior extends EventTemplate {
 
     private static final long serialVersionUID = 6892968576173017195L;
+    private static final Logger LOG = LoggerFactory.getLogger(ObjectHasChangedBehavior.class.getName());
+  
 
     /**
      *
@@ -55,7 +60,7 @@ public class ObjectHasChangedBehavior extends EventTemplate {
         Iterator<Entry<String, String>> it = obj.getExposedProperties().entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, String> entry = it.next();
-            payload.addStatement(entry.getKey().toString(), entry.getValue().toString());
+            payload.addStatement(entry.getKey(), entry.getValue());
         }
 
         //add the list of changed behaviors
@@ -79,6 +84,7 @@ public class ObjectHasChangedBehavior extends EventTemplate {
             }
         } catch (Exception e) {
             //best effort, location can be null
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 

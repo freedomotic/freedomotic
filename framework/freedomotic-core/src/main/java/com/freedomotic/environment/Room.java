@@ -80,11 +80,11 @@ public class Room
         super.init(env);
 
         if (gates == null) {
-            gates = new ArrayList<GenericGate>();
+            gates = new ArrayList<>();
         }
 
         if (reachable == null) {
-            reachable = new ArrayList<Room>();
+            reachable = new ArrayList<>();
         }
 
         getPojo().setAsRoom(true);
@@ -98,8 +98,8 @@ public class Room
         //reset current links
         reachable.clear();
 
-        LinkedBlockingQueue<Room> queue = new LinkedBlockingQueue<Room>();
-        ArrayList<GraphEdge> visited = new ArrayList<GraphEdge>();
+        LinkedBlockingQueue<Room> queue = new LinkedBlockingQueue<>();
+        ArrayList<GraphEdge> visited = new ArrayList<>();
         queue.add(this);
 
         while (!queue.isEmpty()) {

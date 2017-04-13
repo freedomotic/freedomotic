@@ -51,9 +51,8 @@ class TupleConverter implements Converter {
             writer.startNode("tuple");
             for (Map.Entry<String, String> entry : entrySet) {
                 writer.startNode("property");
-                // TODO unnecessary explicit .toString() invocation
-                writer.addAttribute("name", entry.getKey().toString());
-                writer.addAttribute("value", entry.getValue().toString());
+                writer.addAttribute("name", entry.getKey());
+                writer.addAttribute("value", entry.getValue());
                 writer.endNode();
             }
 
@@ -74,7 +73,7 @@ class TupleConverter implements Converter {
         //starts from root <tuples>
         while (reader.hasMoreChildren()) {
             reader.moveDown(); //goes down to <tuple>
-            HashMap<String, String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<>();
             //reads properties on the same level
             while (reader.hasMoreChildren()) {
                 reader.moveDown();

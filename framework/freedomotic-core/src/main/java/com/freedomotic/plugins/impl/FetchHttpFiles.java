@@ -38,23 +38,6 @@ class FetchHttpFiles {
 
     private static final Logger LOG = LoggerFactory.getLogger(FetchHttpFiles.class.getName());
 
-//    public static void downloadAll(URL httpUrl, File destFolder) {
-//        try {
-//            //File destFolder = new File(destFolder);
-//            ApacheURLLister lister = new ApacheURLLister();
-//            // this list of URLs objects
-//            List files = lister.listAll(httpUrl);
-//            LOG.info("list file is complete.." + files);
-//            for (Iterator iter = files.iterator(); iter.hasNext();) {
-//                URL fileUrl = (URL) iter.next();
-//                LOG.info("file: " + fileUrl);
-//                download(fileUrl, destFolder);
-//            }
-//            LOG.info("download is complete..");
-//        } catch (Exception e) {
-//            LOG.error(Freedomotic.getStackTraceInfo(e));
-//        }
-//    }
     /**
      *
      * @param url
@@ -65,14 +48,12 @@ class FetchHttpFiles {
      */
     public static boolean download(URL url, File destFolder, String filename)
             throws Exception {
-        //File sourceFile = new File(url.getPath());
-        //File destinationFile = new File(destFolder.getPath() + "/" + sourceFile.getName());
+        
         File destinationFile = new File(destFolder.getPath() + "/" + filename);
-        LOG.info("  Download started");
-        LOG.info("    Source folder:      " + url);
-        LOG.info("    Destination folder: " + destinationFile);
+        LOG.info("Download started");
+        LOG.info("Source folder: {}", url);
+        LOG.info("Destination folder: {}", destinationFile);
 
-        //destination.getParentFile().mkdirs();
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
 

@@ -21,6 +21,7 @@ package com.freedomotic.plugins.impl;
 
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.exceptions.PluginLoadingException;
 import com.freedomotic.i18n.I18n;
@@ -45,6 +46,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -262,7 +264,7 @@ class PluginsManagerImpl implements PluginsManager {
         try {
             zipFile.delete();
         } catch (Exception e) {
-            LOG.info("Unable to delete compressed file \"{}\"", zipFile.toString());
+            LOG.error("Unable to delete compressed file \"{}\"", zipFile.toString(), Freedomotic.getStackTraceInfo(e));
         }
 
         return true; //done
@@ -352,22 +354,26 @@ class PluginsManagerImpl implements PluginsManager {
             }
         } catch (FileNotFoundException foundEx) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("No file to copy in \"{}\"", source);
+                LOG.debug("No file to copy in \"{}\"", source, Freedomotic.getStackTraceInfo(foundEx));
             }
         } catch (IOException ex) {
-            LOG.warn("Error while coping resources", ex);
+            LOG.warn("Error while copying resources", Freedomotic.getStackTraceInfo(ex));
         } finally {
-            try {
-                if (input != null) {
+            if (input != null) {
+                try {
                     input.close();
+                } catch (IOException ex) {
+                    LOG.error(Freedomotic.getStackTraceInfo(ex));
                 }
-
-                if (output != null) {
-                    output.close();
-                }
-            } catch (IOException e) {
-                //second catch block
             }
+            if (output != null) {
+                try {
+                    output.close();
+                } catch (IOException ex) {
+                    LOG.error(Freedomotic.getStackTraceInfo(ex));
+                }
+            }
+
         }
     }
 

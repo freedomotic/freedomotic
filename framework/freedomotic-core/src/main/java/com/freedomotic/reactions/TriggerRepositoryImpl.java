@@ -467,6 +467,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             create(t);
             return t;
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
             return null;
         }
     }

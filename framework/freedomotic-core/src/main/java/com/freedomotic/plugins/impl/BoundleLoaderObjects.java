@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 class BoundleLoaderObjects implements BoundleLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(BoundleLoaderObjects.class.getName());
-    ;
     private File path;
 
     BoundleLoaderObjects(File path) {
@@ -53,7 +52,7 @@ class BoundleLoaderObjects implements BoundleLoader {
     public List<Client> loadBoundle()
             throws PluginLoadingException {
         File pluginFolder = new File(path.getAbsolutePath());
-        List<Client> results = new ArrayList<Client>();
+        List<Client> results = new ArrayList<>();
 
         if (pluginFolder.isFile()) {
             //return an empty list
@@ -85,8 +84,7 @@ class BoundleLoaderObjects implements BoundleLoader {
                             if (clazz.getName().startsWith("com.freedomotic.things.")
                                     && !clazz.getName().contains("$")) {
                                 if (LOG.isDebugEnabled()) {
-                                    LOG.debug("Found object plugin \"" + clazz.getSimpleName().toString()
-                                            + "\" in \"" + path + "\"");
+                                    LOG.debug("Found object plugin \"{}\" in \"{}\"", new Object[]{clazz.getSimpleName(), path});
                                 }
                             }
                         } catch (Exception ex) {

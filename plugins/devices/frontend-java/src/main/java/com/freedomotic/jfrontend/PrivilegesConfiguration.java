@@ -60,17 +60,12 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
     }
 
     private String readConfiguration(File file) {
-        FileInputStream fis = null;
-        BufferedInputStream bis = null;
-        DataInputStream dis = null;
+
         StringBuilder buff = new StringBuilder();
 
-        try {
-            fis = new FileInputStream(file);
-
-            // Here BufferedInputStream is added for fast reading.
-            bis = new BufferedInputStream(fis);
-            dis = new DataInputStream(bis);
+        try (FileInputStream fis = new FileInputStream(file);
+                BufferedInputStream bis = new BufferedInputStream(fis);
+                DataInputStream dis = new DataInputStream(bis);) {
 
             // dis.available() returns 0 if the file does not have more lines.
             while (dis.available() != 0) {
@@ -79,29 +74,21 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
                 // the console.
                 buff.append(dis.readLine()).append("\n");
             }
-
-            // dispose all the resources after using them.
-            fis.close();
-            bis.close();
-            dis.close();
-
         } catch (FileNotFoundException e) {
             LOG.error("File \"{}\" not found. A new file will be created", file.getAbsolutePath());
             Freedomotic.getStackTraceInfo(e);
         } catch (IOException e) {
             Freedomotic.getStackTraceInfo(e);
-        }         
+        }
         return buff.toString();
     }
 
     private void saveConfiguration(File file, String text) throws IOException {
         // Create file 
-        FileWriter fstream = new FileWriter(file);
-        BufferedWriter out = new BufferedWriter(fstream);
-        out.write(text);
-        //Close the output stream
-        out.close();
-        fstream.close();
+        try (FileWriter fstream = new FileWriter(file);
+                BufferedWriter out = new BufferedWriter(fstream);) {
+            out.write(text);
+        }
     }
 
     /**
@@ -176,7 +163,7 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
         try {
             saveConfiguration(write, txtArea.getText());
         } catch (IOException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed

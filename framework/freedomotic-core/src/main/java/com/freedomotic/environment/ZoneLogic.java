@@ -55,11 +55,10 @@ import org.slf4j.Logger;
  */
 public class ZoneLogic {
 
-    //private BusService busService;
     private Zone pojo;
     private Ownership owner = new LastOutStrategy();
-    private final List<GenericPerson> occupiers = new ArrayList<GenericPerson>();
-    private EnvironmentLogic FatherEnv = null;
+    private final List<GenericPerson> occupiers = new ArrayList<>();
+    private EnvironmentLogic fatherEnv = null;
     private Ownership ownershipStrategy;
     private static final Logger LOG = LoggerFactory.getLogger(ZoneLogic.class.getName());
 
@@ -73,7 +72,7 @@ public class ZoneLogic {
 
     @RequiresPermissions("zones:read")
     public EnvironmentLogic getEnv() {
-        return this.FatherEnv;
+        return this.fatherEnv;
     }
 
     /**
@@ -97,7 +96,7 @@ public class ZoneLogic {
         try {
             return occupiers.contains(g);
         } catch (Exception e) {
-            LOG.info("This zone have no occupiers or null reference in occupiers of Zone class");
+            LOG.error("This zone have no occupiers or null reference in occupiers of Zone class", Freedomotic.getStackTraceInfo(e));
             return false;
         }
     }
@@ -193,7 +192,7 @@ public class ZoneLogic {
      */
     @RequiresPermissions("zones:read")
     protected void init(EnvironmentLogic env) {
-        this.FatherEnv = env;
+        this.fatherEnv = env;
     }
 
     /**

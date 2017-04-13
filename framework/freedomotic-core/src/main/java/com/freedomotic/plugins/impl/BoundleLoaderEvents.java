@@ -47,7 +47,7 @@ class BoundleLoaderEvents implements BoundleLoader {
     public List<Client> loadBoundle()
             throws PluginLoadingException {
         File dir = new File(path.getAbsolutePath());
-        List<Client> results = new ArrayList<Client>();
+        List<Client> results = new ArrayList<>();
 
         if (dir.isFile()) {
             //return an empty list
@@ -69,8 +69,7 @@ class BoundleLoaderEvents implements BoundleLoader {
                         for (String className : classNames) {
                             String name = className.substring(0, className.length() - 6);
                             Class clazz = BoundleLoaderFactory.getClass(jar, name);
-                            Class superclass = clazz.getSuperclass();
-
+          
                             try {
                                 Client plugin = (Client) clazz.newInstance();
                                 results.add(plugin);

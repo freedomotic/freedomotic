@@ -43,7 +43,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlElement;
@@ -79,7 +81,7 @@ public final class Command implements Serializable, Cloneable {
     private int timeout;
     private String description;
     private String stopIf;
-    private HashSet<String> tags = new HashSet<String>();
+    private HashSet<String> tags = new HashSet<>();
     //by default a command is userLevel, this means that can be used in reactions.
     //Hardware level commands cannot be used in reactions but only linked to an object action
     private boolean hardwareLevel;
@@ -105,9 +107,9 @@ public final class Command implements Serializable, Cloneable {
      *
      * @return a set of tags
      */
-    public HashSet<String> getTags() {
+    public Set<String> getTags() {
         if (tags == null) {
-            tags = new HashSet<String>();
+            tags = new HashSet<>();
             tags.addAll(Arrays.asList(getName().toLowerCase().split(" ")));
         }
 
@@ -309,8 +311,8 @@ public final class Command implements Serializable, Cloneable {
      * @return an ordered ArrayList<String> of command parameter values
      */
     @XmlTransient
-    public ArrayList<String> getParametersAsList() {
-        ArrayList<String> output = new ArrayList<String>();
+    public List<String> getParametersAsList() {
+        ArrayList<String> output = new ArrayList<>();
 
         //99 is the max num of elements in list
         for (int i = 0; i < 99; i++) {

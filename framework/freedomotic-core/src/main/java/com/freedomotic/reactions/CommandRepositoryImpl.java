@@ -64,7 +64,8 @@ class CommandRepositoryImpl implements CommandRepository {
     }
 
     /**
-     *
+     * @deprecated
+     * 
      * @param c
      */
     @Deprecated
@@ -95,7 +96,8 @@ class CommandRepositoryImpl implements CommandRepository {
     }
 
     /**
-     *
+     * @deprecated
+     * 
      * @param input
      */
     @Deprecated
@@ -116,7 +118,8 @@ class CommandRepositoryImpl implements CommandRepository {
     }
 
     /**
-     *
+     * @deprecated
+     * 
      * @return
      */
     @Deprecated
@@ -125,7 +128,8 @@ class CommandRepositoryImpl implements CommandRepository {
     }
 
     /**
-     *
+     * @deprecated
+     * 
      * @param name
      * @return
      */
@@ -143,7 +147,8 @@ class CommandRepositoryImpl implements CommandRepository {
     }
 
     /**
-     *
+     * @deprecated
+     * 
      * @param uuid
      * @return
      */
@@ -181,7 +186,8 @@ class CommandRepositoryImpl implements CommandRepository {
     }
 
     /**
-     *
+     * @deprecated
+     * 
      * @param name
      * @return
      */
@@ -271,7 +277,7 @@ class CommandRepositoryImpl implements CommandRepository {
                 }
 
             } catch (Exception ex) {
-                LOG.error("Error while loading command", ex);
+                LOG.error("Error while loading command", Freedomotic.getStackTraceInfo(ex));
             }
         } else {
             if (LOG.isDebugEnabled()) {

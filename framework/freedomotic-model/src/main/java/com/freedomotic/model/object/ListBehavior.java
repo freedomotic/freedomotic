@@ -20,6 +20,7 @@
 package com.freedomotic.model.object;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -31,7 +32,7 @@ public class ListBehavior
     private static final long serialVersionUID = 8375501744412227268L;
 
     private int selected;
-    private ArrayList<String> list = new ArrayList<String>();
+    private ArrayList<String> list = new ArrayList<>();
 
     /**
      *
@@ -63,14 +64,14 @@ public class ListBehavior
      * @return
      */
     public String getSelected() {
-        return (String) list.get(selected);
+        return list.get(selected);
     }
 
     /**
      *
      * @return
      */
-    public ArrayList<String> getList() {
+    public List<String> getList() {
         return list;
     }
 
@@ -127,6 +128,6 @@ public class ListBehavior
      */
     @Override
     public String toString() {
-        return list.get(selected).toString();
+        return list.get(selected);
     }
 }

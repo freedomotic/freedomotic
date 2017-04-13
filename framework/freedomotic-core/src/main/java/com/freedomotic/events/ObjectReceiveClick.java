@@ -59,11 +59,11 @@ public class ObjectReceiveClick
      */
     public ObjectReceiveClick(Object source, EnvObjectLogic obj, String click) {
         this.setSender(source);
-        payload.addStatement("click", click.toString());
+        payload.addStatement("click", click);
         Iterator<Entry<String, String>> it = obj.getExposedProperties().entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, String> entry = it.next();
-            payload.addStatement(entry.getKey().toString(), entry.getValue().toString());
+            payload.addStatement(entry.getKey(), entry.getValue());
         }
     }
 

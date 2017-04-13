@@ -24,6 +24,7 @@ package com.freedomotic.util;
  * http://stackoverflow.com/questions/981578/how-to-unzip-files-recursively-in-java
  * all credits to respective authors
  */
+import com.freedomotic.app.Freedomotic;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -44,6 +45,9 @@ public class Unzip {
 
     private static final Logger LOG = LoggerFactory.getLogger(Unzip.class.getName());
 
+    private Unzip() {
+    }
+
     /**
      *
      * @param zipFile
@@ -57,17 +61,16 @@ public class Unzip {
 
         ZipFile zip = new ZipFile(file);
         String newPath = zipFile.substring(0, zipFile.length() - 4);
-//simulates the unzip here feature
-        newPath
-                = newPath.substring(0,
-                        newPath.lastIndexOf(File.separator));
+        //simulates the unzip here feature
+        newPath = newPath.substring(0, newPath.lastIndexOf(File.separator));
 
         Enumeration<? extends ZipEntry> zipFileEntries = zip.entries();
-
+        zip.close();
+        
         // Process each entry
         while (zipFileEntries.hasMoreElements()) {
             // grab a zip file entry
-            ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
+            ZipEntry entry = zipFileEntries.nextElement();
             String currentEntry = entry.getName();
             File destFile = new File(newPath, currentEntry);
             File destinationParent = destFile.getParentFile();
@@ -76,6 +79,7 @@ public class Unzip {
             destinationParent.mkdirs();
             BufferedOutputStream dest = null;
             BufferedInputStream is = null;
+            FileOutputStream fos = null;
             try {
                 if (!entry.isDirectory()) {
                     is = new BufferedInputStream(zip.getInputStream(entry));
@@ -85,7 +89,7 @@ public class Unzip {
                     byte[] data = new byte[BUFFER];
 
                     // write the current file to disk
-                    FileOutputStream fos = new FileOutputStream(destFile);
+                    fos = new FileOutputStream(destFile);
                     dest = new BufferedOutputStream(fos, BUFFER);
 
                     // read and write until last byte is encountered
@@ -95,7 +99,7 @@ public class Unzip {
 
                 }
             } catch (IOException ex) {
-                LOG.error(ex.getMessage());
+                LOG.error(Freedomotic.getStackTraceInfo(ex));
             } finally {
                 if (dest != null) {
                     dest.flush();
@@ -103,6 +107,9 @@ public class Unzip {
                 }
                 if (is != null) {
                     is.close();
+                }
+                if (fos != null) {
+                    fos.close();
                 }
             }
 
@@ -113,6 +120,4 @@ public class Unzip {
         }
     }
 
-    private Unzip() {
-    }
 }
