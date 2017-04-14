@@ -38,6 +38,9 @@ class FetchHttpFiles {
 
     private static final Logger LOG = LoggerFactory.getLogger(FetchHttpFiles.class.getName());
 
+    private FetchHttpFiles() {
+    }
+    
     /**
      *
      * @param url
@@ -48,7 +51,7 @@ class FetchHttpFiles {
      */
     public static boolean download(URL url, File destFolder, String filename)
             throws Exception {
-        
+
         File destinationFile = new File(destFolder.getPath() + "/" + filename);
         LOG.info("Download started");
         LOG.info("Source folder: {}", url);
@@ -69,32 +72,23 @@ class FetchHttpFiles {
                 bos.write(i);
             }
         } finally {
-            if (bis != null) {
-                try {
+            try {
+                if (bis != null) {
                     bis.close();
-                } catch (IOException ioe) {
-                    LOG.error(Freedomotic.getStackTraceInfo(ioe));
-
-                    return false;
                 }
-            }
-
-            if (bos != null) {
-                try {
+                if (bos != null) {
                     bos.close();
-                } catch (IOException ioe) {
-                    LOG.error(Freedomotic.getStackTraceInfo(ioe));
-
-                    return false;
                 }
+            } catch (IOException ioe) {
+                LOG.error(Freedomotic.getStackTraceInfo(ioe));
+                return false;
             }
         }
-
-        LOG.info("  Download completed");
-
+        LOG.info("Download completed");
         return true;
     }
 
+    //TODO check plugin version
 //    public static boolean checkVersion(Plugin plugin, Config server) {
 //        boolean updated = false;
 //        String name = Plugin.normalizeName(plugin.getName());
@@ -164,6 +158,5 @@ class FetchHttpFiles {
 //            }
 //        }
 //    }
-    private FetchHttpFiles() {
-    }
+    
 }

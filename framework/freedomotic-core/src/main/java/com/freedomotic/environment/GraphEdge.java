@@ -32,13 +32,14 @@ package com.freedomotic.environment;
  */
 class GraphEdge implements Comparable<GraphEdge> {
 
-    public Object x, y;
+    public Object x;
+    public Object y;
     public Object value;
 
     /**
      *
      */
-    public boolean visitato;
+    private boolean visitato;
 
     /**
      *

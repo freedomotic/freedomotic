@@ -38,7 +38,7 @@ public class PluginIsolatedClassloader extends ClassLoader {
     private ChildURLClassLoader childClassLoader;
 
     /**
-     * Accepts a folder containing a set of jar files to load
+     * Accepts a folder containing a set of jar files to load.
      *
      * @param jarDir
      */
@@ -108,7 +108,7 @@ public class PluginIsolatedClassloader extends ClassLoader {
                 // 1. is this class already loaded?
                 Class cls = super.findLoadedClass(name);
                 if (cls != null) {
-                    LOG.info("Class " + name + " is already loaded by " + cls.getClassLoader().toString());
+                    LOG.info("Class {} is already loaded by {}", name, cls.getClassLoader().toString());
                     return cls;
                 }
 

@@ -386,7 +386,7 @@ class ThingRepositoryImpl implements ThingRepository {
             try {
                 envObjectLogic = thingsFactory.create(pojoCopy);
             } catch (RepositoryException ex) {
-                LOG.warn(ex.getMessage());
+                LOG.warn(Freedomotic.getStackTraceInfo(ex));
             }
         }
 
@@ -397,7 +397,7 @@ class ThingRepositoryImpl implements ThingRepository {
             try {
                 envObjectLogic.setChanged(SynchAction.CREATED);
             } catch (Exception e) {
-                LOG.warn("Thing was created, but cannot set it as \"Changed\"", e);
+                LOG.warn("Thing created but cannot set it as \"Changed\"", e);
             }
         } else {
             throw new RuntimeException("Cannot add the same object more than one time");
@@ -433,6 +433,7 @@ class ThingRepositoryImpl implements ThingRepository {
                 delete(el);
             }
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         } finally {
             objectList.clear();
         }
@@ -491,7 +492,7 @@ class ThingRepositoryImpl implements ThingRepository {
             try {
                 eol.setChanged(SynchAction.DELETED); //force repainting on frontends clients
             } catch (Exception e) {
-                LOG.warn("Cannot notify object changes");
+                LOG.warn("Cannot notify object changes", e);
             }
             eol.destroy();
             return true;
@@ -510,6 +511,7 @@ class ThingRepositoryImpl implements ThingRepository {
             create(data);
             return data;
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
             return null;
         }
     }
@@ -573,6 +575,7 @@ class ThingRepositoryImpl implements ThingRepository {
                     dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
                     fromVersion = dataProperties.getProperty("data.version");
                 } catch (IOException iOException) {
+                    LOG.error(Freedomotic.getStackTraceInfo(iOException));
                     // Fallback to a default version for older version without that properties file
                     fromVersion = "5.5.0";
                 }

@@ -23,7 +23,6 @@ import com.freedomotic.rules.Statement;
 import com.freedomotic.rules.Payload;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.app.Profiler;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
@@ -55,7 +54,6 @@ public final class Trigger implements BusConsumer, Cloneable {
     private String name;
     private String description;
     private String uuid;
-    //private EventTemplate action;
     //TODO: the action is the queue getted from the default queue of the event
     //we need also the possibility to point to the channel with a string
     private String channel;
@@ -91,7 +89,7 @@ public final class Trigger implements BusConsumer, Cloneable {
      */
     public void register() {
         Freedomotic.INJECTOR.injectMembers(this);
-        LOG.info("Registering the trigger named '" + getName() + "'");
+        LOG.info("Registering the trigger named \"{}\"", getName());
         listener = new BusMessagesListener(this, busService);
         listener.consumeEventFrom(channel);
         numberOfExecutions = 0;
@@ -400,7 +398,6 @@ public final class Trigger implements BusConsumer, Cloneable {
 
             checker.check(event, this);
             long end = System.currentTimeMillis();
-            Profiler.appendTriggerCheckingTime(end - start);
         }
     }
 

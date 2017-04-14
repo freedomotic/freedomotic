@@ -77,7 +77,7 @@ public class PluginHasChanged
          *
          */
         DEQUEUE
-    };
+    }
 
     /**
      *
@@ -96,6 +96,7 @@ public class PluginHasChanged
      */
     @Override
     protected void generateEventPayload() {
+        // do nothing
     }
 
     /**

@@ -82,6 +82,7 @@ public final class ResourcesManager {
                 try {
                     img = imagesCache.get(imageName);
                 } catch (ExecutionException e) {
+                    LOG.error(Freedomotic.getStackTraceInfo(e));
                     try {
                         File imageFile = new File(imageName);
                         if (imageFile.exists()) {
@@ -103,7 +104,7 @@ public final class ResourcesManager {
                 return img;
             }
         } catch (ExecutionException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
             return null;
         }
     }
@@ -117,7 +118,7 @@ public final class ResourcesManager {
         try {
             return imagesCache.get(imageName);
         } catch (ExecutionException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
             return null;
         }
     }

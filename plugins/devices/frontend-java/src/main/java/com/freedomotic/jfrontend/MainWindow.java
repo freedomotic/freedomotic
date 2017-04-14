@@ -29,7 +29,6 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-//import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
@@ -74,6 +73,7 @@ import com.freedomotic.reactions.Command;
 import com.freedomotic.security.Auth;
 import com.freedomotic.settings.Info;
 import com.freedomotic.things.EnvObjectLogic;
+import java.util.List;
 
 /**
  *
@@ -209,18 +209,19 @@ public class MainWindow
         try {
             this.getContentPane().removeAll();
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
-            LOG.error("Cannot find system look&feel\n", ex.toString());
+            LOG.error("Cannot find system look&feel\n", Freedomotic.getStackTraceInfo(ex));
         } catch (InstantiationException ex) {
-            LOG.error("Cannot instantiate system look&feel\n", ex.toString());
+            LOG.error("Cannot instantiate system look&feel\n", Freedomotic.getStackTraceInfo(ex));
         } catch (IllegalAccessException ex) {
-            LOG.error("Illegal access to system look&feel\n", ex.toString());
+            LOG.error("Illegal access to system look&feel\n", Freedomotic.getStackTraceInfo(ex));
         } catch (UnsupportedLookAndFeelException ex) {
-            LOG.error("Unsupported system look&feel\n", ex.toString());
+            LOG.error("Unsupported system look&feel\n", Freedomotic.getStackTraceInfo(ex));
         }
 
         setDefaultLookAndFeelDecorated(true);
@@ -375,6 +376,7 @@ public class MainWindow
         try {
             frameMap.setMaximum(true);
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -405,6 +407,7 @@ public class MainWindow
                 frameClient.hide();
             }
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -422,8 +425,6 @@ public class MainWindow
         frameMap.setResizable(true);
         setMapTitle(i18n.msg("not_inited") + i18n.msg("inited"));
         desktopPane.add(frameMap, javax.swing.JLayeredPane.DEFAULT_LAYER);
-//        referenceRatio = new Float(prevEnv.getPojo().getWidth() / new Float(prevEnv.getPojo().getWidth()));
-
     }
 
     /**
@@ -447,7 +448,7 @@ public class MainWindow
         try {
             envName = drawer.getCurrEnv().getSource().getParentFile().getName() + "/";
         } catch (Exception e) {
-            //do nothing, this is not important
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
         frameMap.setTitle(i18n.msg("environment") + ": " + envName + name);
 
@@ -456,9 +457,9 @@ public class MainWindow
     class StringListModel
             extends AbstractListModel {
 
-        private java.util.List<String> list;
+        private List<String> list;
 
-        public StringListModel(ArrayList<String> strings) {
+        public StringListModel(List<String> strings) {
             list = strings;
         }
 
@@ -1053,7 +1054,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 master.getApi().environments().saveEnvironmentsToFolder(folder);
 
             } catch (Exception ex) {
-                LOG.error(ex.getMessage());
+                LOG.error(Freedomotic.getStackTraceInfo(ex));
             }
         } else {
             LOG.info(i18n.msg("canceled_by_user"));
@@ -1062,7 +1063,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuObjectEditModeActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuObjectEditModeActionPerformed
 
-        if (mnuObjectEditMode.getState() == true) {
+        if (mnuObjectEditMode.getState()) {
             //in edit objects mode
             //deactivate room edit mode
             drawer.setRoomEditMode(false);
@@ -1141,7 +1142,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 FileUtils.copyFileToDirectory(backgroundImage, resourcesFolder);
                 backgroundImage = new File(resourcesFolder, backgroundImage.getName());
             } catch (IOException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error(Freedomotic.getStackTraceInfo(e));
             }
         }
 
@@ -1195,7 +1196,6 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             EnvironmentLogic enL = api.environments().loadEnvironmentFromFile(template);
 
             if (enL != null) {
-                //EnvObjectPersistence.loadObjects(EnvironmentPersistence.getEnvironments().get(0).getObjectFolder(), false);
                 final JFileChooser fc = new JFileChooser(oldEnv.getParentFile().getParentFile());
                 fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 fc.setDialogTitle(api.getI18n().msg("select_env_folder_save"));
@@ -1258,7 +1258,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                     URI uri = new URI(url); // url is a string containing the URL
                     desktop.browse(uri);
                 } catch (IOException | URISyntaxException ex) {
-                    LOG.error(ex.getLocalizedMessage());
+                    LOG.error(Freedomotic.getStackTraceInfo(ex));
                 }
             }
         } else {
@@ -1325,7 +1325,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         JLabel confirmLbl = new JLabel(i18n.msg("confirm_env_delete"));
         JLabel selectLbl = new JLabel(i18n.msg("select_env_to_reassing_objects"));
 
-        ArrayList<Object> possibilities = new ArrayList<Object>();
+        ArrayList<Object> possibilities = new ArrayList<>();
         possibilities.add(i18n.msg("delete_envobj_alongside_environment"));
         possibilities.addAll(api.environments().findAll());
         possibilities.remove(oldenv);
@@ -1375,7 +1375,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     private void mnuLanguageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLanguageActionPerformed
         //JDK 1,7 version: JComboBox<i18n.ComboLanguage> combo = new JComboBox<i18n.ComboLanguage>(I18n.getAvailableLocales());
         //JDK 1.6 version: next line
-        Vector<ComboLanguage> languages = new Vector<ComboLanguage>();
+        Vector<ComboLanguage> languages = new Vector<>();
         for (Locale loc : i18n.getAvailableLocales()) {
             languages.add(new ComboLanguage(loc.getDisplayCountry(i18n.getDefaultLocale()) + " - " + loc.getDisplayLanguage(loc), loc.toString(), loc));
         }
@@ -1416,7 +1416,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                     URI uri = new URI(url); // url is a string containing the URL
                     desktop.browse(uri);
                 } catch (IOException | URISyntaxException ex) {
-                    LOG.error(ex.getLocalizedMessage());
+                    LOG.error(Freedomotic.getStackTraceInfo(ex));
                 }
             }
         } else {

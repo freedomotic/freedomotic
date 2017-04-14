@@ -76,7 +76,7 @@ public class SynchManager implements BusConsumer {
                     try {
                         thing = thingFactory.create(synchThingRequest.getThing());
                     } catch (RepositoryException ex) {
-                        LOG.error(ex.getMessage());
+                        LOG.error(Freedomotic.getStackTraceInfo(ex));
                     }
                     // A new thing was created in another instance
                     if (synchThingRequest.getProperty(SynchAction.KEY_SYNCH_ACTION)
@@ -91,7 +91,7 @@ public class SynchManager implements BusConsumer {
                 }
             }
         } catch (JMSException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
 
     }

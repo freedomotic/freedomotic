@@ -20,7 +20,7 @@
 package com.freedomotic.security;
 
 import com.freedomotic.api.Plugin;
-import com.freedomotic.bus.BusService;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.settings.AppConfig;
 import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
@@ -110,7 +110,7 @@ class AuthImpl2 implements Auth {
             currentUser.getSession().setTimeout(-1);
             return true;
         } catch (Exception e) {
-            LOG.warn(e.getLocalizedMessage());
+            LOG.warn(Freedomotic.getStackTraceInfo(e));
             return false;
         }
     }
