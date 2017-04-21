@@ -65,7 +65,6 @@ public class Unzip {
         newPath = newPath.substring(0, newPath.lastIndexOf(File.separator));
 
         Enumeration<? extends ZipEntry> zipFileEntries = zip.entries();
-        zip.close();
         
         // Process each entry
         while (zipFileEntries.hasMoreElements()) {
