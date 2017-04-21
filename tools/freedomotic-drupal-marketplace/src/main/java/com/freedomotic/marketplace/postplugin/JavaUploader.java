@@ -22,6 +22,7 @@ package com.freedomotic.marketplace.postplugin;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.freedomotic.marketplace.util.DrupalRestHelper;
 import com.freedomotic.marketplace.util.MarketPlaceFile;
 import com.freedomotic.marketplace.util.MarketPlacePlugin2;
 import java.io.*;
@@ -39,7 +40,6 @@ import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
  */
 public class JavaUploader {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(JavaUploader.class.getName());
     public static final String DRUPALPATH = "http://www.freedomotic.com/";
 
     /**
@@ -70,7 +69,7 @@ public class JavaUploader {
             reader.close();
             return value;
         } catch (IOException ex) {
-            LOG.error(ex.getMessage());
+            Logger.getLogger(JavaUploader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
 
@@ -96,7 +95,7 @@ public class JavaUploader {
             reader.close();
             return new CookieSetting(0, sessionName, sessionId);
         } catch (IOException ex) {
-            LOG.error(ex.getMessage());
+            Logger.getLogger(JavaUploader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -112,16 +111,18 @@ public class JavaUploader {
 
         ClientResource cr = new ClientResource(DRUPALPATH + "/rest/user/login");
         String jsonData = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
+        JsonRepresentation jsonRep = new JsonRepresentation(jsonData);
         cr.setMethod(Method.POST);
         Response resp = cr.getResponse();
         if (resp.getStatus().isSuccess()) {
             try {
                 return resp.getEntity().getText();
+
             } catch (IOException e) {
-                LOG.error("IOException: ", e.getMessage());
+                System.out.println("IOException: " + e.getMessage());
             }
         } else {
-            LOG.info(resp.getStatus().getName());
+            System.out.println(resp.getStatus().getName());
         }
         return null;
     }
@@ -136,6 +137,7 @@ public class JavaUploader {
         String text = "{\"vid\":\"" + vocabularyNumber + "\"}";
 
         cr2.setMethod(Method.POST);
+        Representation rep2 = cr2.post(new JsonRepresentation(text));
         Response resp = cr2.getResponse();
         String jsonResponse = "";
         String nid = "";
@@ -145,10 +147,10 @@ public class JavaUploader {
                 System.out.println(jsonResponse);
                 return jsonResponse;
             } catch (IOException e) {
-                LOG.error("IOException: ", e.getMessage());
+                System.out.println("IOException: " + e.getMessage());
             }
         } else {
-            LOG.info(resp.getStatus().getName());
+            System.out.println(resp.getStatus().getName());
         }
         return "";
     }
@@ -168,6 +170,7 @@ public class JavaUploader {
             cr2.setMethod(Method.POST);
             JsonRepresentation jsonRepresentation = new JsonRepresentation(text);
             if (jsonRepresentation != null) {
+                Representation rep2 = cr2.post(jsonRepresentation);
                 Response resp = cr2.getResponse();
                 String jsonResponse = "";
                 String nid = "";
@@ -204,6 +207,7 @@ public class JavaUploader {
 
         cr2.setMethod(Method.POST);
 
+        Representation rep2 = cr2.post(new JsonRepresentation(pluginData));
         Response resp = cr2.getResponse();
         String jsonResponse = "";
         String nid = "";
@@ -250,8 +254,13 @@ public class JavaUploader {
         pluginData += plugin.formatFieldOS() + ",";
         pluginData += "\"field_category\":{\"0\":{\"value\":\"" + plugin.getField_category() + "\"}},";
         pluginData += "\"field_plugin_category\":{\"0\":{\"value\":\"151\"}}";
+
+        //pluginData += "\"field_plugin_category\":[{\"value\":\"151\"},{\"value\":null},{\"value\":null},{\"value\":null},{\"value\":null}]" +",";        
+        //pluginData += plugin.formatFieldCategory();
         pluginData += plugin.formatFieldFile();
         pluginData += "}";
+        //+ "}";
+        Representation rep = pluginResource.put(new JsonRepresentation(pluginData));
         Response resp2 = pluginResource.getResponse();
         if (resp2.getStatus().isSuccess()) {
             try {
@@ -288,6 +297,7 @@ public class JavaUploader {
                 + plugin.formatFieldFile()
                 + "}";
         System.out.println("PluginData " + pluginData);
+        Representation rep = pluginResource.put(new JsonRepresentation(pluginData));
         Response resp2 = pluginResource.getResponse();
         if (resp2.getStatus().isSuccess()) {
             try {
@@ -322,6 +332,7 @@ public class JavaUploader {
         testFileResource.setNext(client);
         testFileResource.getRequest().getCookies().add(cS);
 
+        //   File zipFile = new File("/home/gpt/Desarrollo/testfile1.zip");
         File zipFile = new File(pathName + "/" + name);
         int size = (int) zipFile.length();
         String base64String = Base64.encode(fileToByteArray(zipFile), false);
@@ -333,8 +344,9 @@ public class JavaUploader {
                 + "}";
         testFileResource.setMethod(Method.POST);
 
+        Representation rep2 = testFileResource.post(new JsonRepresentation(fileData));
         Response resp = testFileResource.getResponse();
-
+        // {"fid":"320","uri":"http://freedomotic.com/rest/file/320"}     
         String jsonResponse = "";
         String fid = "";
         if (resp.getStatus().isSuccess()) {
@@ -348,10 +360,10 @@ public class JavaUploader {
                 pluginFile.setFilename(name);
                 return pluginFile;
             } catch (IOException e) {
-                LOG.error("IOException: ", e.getMessage());
+                System.out.println("IOException: " + e.getMessage());
             }
         } else {
-            LOG.info(resp.getStatus().getName());
+            System.out.println(resp.getStatus().getName());
         }
         return null;
     }
@@ -367,12 +379,14 @@ public class JavaUploader {
                 //Writes len bytes from the specified byte array starting at offset off to this byte array output stream.
             }
         } catch (IOException ex) {
-            LOG.error(ex.getMessage());
+            //Logger.getLogger(genJpeg.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            try {
-                fis.close();
-            } catch (IOException ex) {
-                LOG.error(ex.getMessage());
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(JavaUploader.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         return bos.toByteArray();

@@ -19,7 +19,6 @@
  */
 package com.freedomotic.api;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.PluginRuntimeException;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.exceptions.PluginShutdownException;
@@ -243,7 +242,7 @@ public abstract class Protocol extends Plugin {
                 }
             }
         } catch (JMSException ex) {
-            LOG.error(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(ex.getLocalizedMessage());
 
         }
     }
@@ -291,7 +290,7 @@ public abstract class Protocol extends Plugin {
                 // a command is supposed executed if the plugin doesen't say the contrary
                 onEvent(event);
             } catch (Exception ex) {
-                LOG.error(Freedomotic.getStackTraceInfo(ex));
+                LOG.error(ex.getLocalizedMessage());
             }
         }
     }
@@ -315,11 +314,11 @@ public abstract class Protocol extends Plugin {
                 command.setExecuted(true);
                 onCommand(command);
             } catch (IOException ex) {
-                LOG.error(Freedomotic.getStackTraceInfo(ex));
+                LOG.error(ex.getLocalizedMessage());
                 command.setExecuted(false);
             } catch (UnableToExecuteException ex) {
                 command.setExecuted(false);
-                LOG.error("Plugin \"" + getName() + "\" failed to execute command [" + command.getName() + "]: " + Freedomotic.getStackTraceInfo(ex));
+                LOG.info("Plugin \"" + getName() + "\" failed to execute command [" + command.getName() + "]: " + ex.getMessage());
             }
 
             // automatic-reply-to-command is used when the plugin executes the command in a
@@ -350,7 +349,7 @@ public abstract class Protocol extends Plugin {
                                 }
                             }
                         } catch (InterruptedException e) {
-                            LOG.error(Freedomotic.getStackTraceInfo(e));
+                            // TODO do Log?
                         }
                         onRun();
                     }

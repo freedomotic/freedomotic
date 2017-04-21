@@ -19,7 +19,6 @@
  */
 package com.freedomotic.environment.impl;
 
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.environment.Environment;
@@ -83,7 +82,6 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
                 dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
                 fromVersion = dataProperties.getProperty("data.version");
             } catch (IOException iOException) {
-                LOG.error(Freedomotic.getStackTraceInfo(iOException));
                 // Fallback to a default version for older version without that properties file
                 fromVersion = "5.5.0";
             }

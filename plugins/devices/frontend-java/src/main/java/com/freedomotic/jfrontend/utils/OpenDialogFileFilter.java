@@ -64,6 +64,8 @@ import javax.swing.filechooser.FileFilter;
 public class OpenDialogFileFilter
         extends FileFilter {
 
+    private static String TYPE_UNKNOWN = "Type Unknown";
+    private static String HIDDEN_FILE = "Hidden File";
     private Hashtable filters = null;
     private String description = null;
     private String fullDescription = null;
@@ -172,6 +174,7 @@ public class OpenDialogFileFilter
             if ((extension != null) && (filters.get(getExtension(f)) != null)) {
                 return true;
             }
+            ;
         }
 
         return false;
@@ -193,6 +196,7 @@ public class OpenDialogFileFilter
             if ((i > 0) && (i < (filename.length() - 1))) {
                 return filename.substring(i + 1).toLowerCase();
             }
+            ;
         }
 
         return null;

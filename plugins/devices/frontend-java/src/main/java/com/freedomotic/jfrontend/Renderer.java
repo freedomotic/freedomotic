@@ -104,20 +104,20 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
      *
      */
     public static final int LOW_OPACITY = 120;
-    private static Map<ZoneLogic, Color> zoneColors = new HashMap<>();
-    private final I18n i18n;
+    private static Map<ZoneLogic, Color> zoneColors = new HashMap<ZoneLogic, Color>();
+    private final I18n I18n;
 
     /**
      *
      */
     protected Color backgroundColor;
     private EnvObjectLogic selectedObject;
-    private ArrayList<Indicator> indicators = new ArrayList<>();
-    private HashMap<String, Shape> cachedShapes = new HashMap<>();
+    private ArrayList<Indicator> indicators = new ArrayList<Indicator>();
+    private HashMap<String, Shape> cachedShapes = new HashMap<String, Shape>();
     private boolean inDrag;
     private boolean roomEditMode = false;
     private FreedomPoint originalHandleLocation = null;
-    private ArrayList<Handle> handles = new ArrayList<>();
+    private ArrayList<Handle> handles = new ArrayList<Handle>();
     private ZoneLogic selectedZone;
 
     /**
@@ -130,7 +130,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     private EnvironmentLogic currEnv;
     private BufferedImage background;
 
-    private Map<EnvObjectLogic, ObjectEditor> objEditorPanels = new HashMap<>();
+    private Map<EnvObjectLogic, ObjectEditor> objEditorPanels = new HashMap<EnvObjectLogic, ObjectEditor>();
 
     /**
      *
@@ -138,9 +138,9 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
      */
     public Renderer(JavaDesktopFrontend master) {
         this.plugin = master;
-        this.i18n = plugin.getApi().getI18n();
-        environmentWidth = getEnvironments().get(0).getPojo().getWidth();
-        environmentHeight = getEnvironments().get(0).getPojo().getHeight();
+        this.I18n = plugin.getApi().getI18n();
+        environmentWidth = (int) getEnvironments().get(0).getPojo().getWidth();
+        environmentHeight = (int) getEnvironments().get(0).getPojo().getHeight();
         CANVAS_WIDTH = environmentWidth + (BORDER_X * 2);
         CANVAS_HEIGHT = environmentHeight + (BORDER_Y * 2);
         backgroundColor = TopologyUtils.convertColorToAWT(getEnvironments().get(0).getPojo().getBackgroundColor());
@@ -205,7 +205,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                         objEditorPanels.remove(o);
                     }
                 } catch (Exception ex) {
-                    LOG.error("Cannot unload object editor frame", Freedomotic.getStackTraceInfo(ex));
+                    LOG.error("Cannot unload object editor frame", ex);
                 }
             }
         });
@@ -368,31 +368,24 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
      *
      */
     public void prepareBackground() {
-        throw new UnsupportedOperationException();
     }
 
     public void renderEnvironment() {
-        throw new UnsupportedOperationException();
     }
 
     public void renderWalls() {
-        throw new UnsupportedOperationException();
     }
 
     public void prepareForeground() {
-        throw new UnsupportedOperationException();
     }
 
     public void renderObjects() {
-        throw new UnsupportedOperationException();
     }
 
     public void renderPeople() {
-        throw new UnsupportedOperationException();
     }
 
     public void renderZones() {
-        throw new UnsupportedOperationException();
     }
 
     /**
@@ -400,7 +393,6 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
      * @param obj
      */
     public void mouseEntersObject(EnvObjectLogic obj) {
-        throw new UnsupportedOperationException();
     }
 
     /**
@@ -408,7 +400,6 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
      * @param obj
      */
     public void mouseExitsObject(EnvObjectLogic obj) {
-        throw new UnsupportedOperationException();
     }
 
     /**
@@ -416,7 +407,6 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
      * @param obj
      */
     public void mouseClickObject(EnvObjectLogic obj) {
-        throw new UnsupportedOperationException();
     }
 
     private void paintEnvironmentLayer(Graphics g) {
@@ -469,6 +459,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         Graphics2D g2 = setRenderingQuality(g);
         super.paintComponent(g2);
 
+        //long start = System.currentTimeMillis();
         if (backgroundChanged) {
             backgroundChanged = false;
 
@@ -495,6 +486,8 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         renderCalloutsLayer();
         restoreTransformContext();
 
+        //long end = System.currentTimeMillis();
+        //Freedomotic.logger.severe("Repainting process takes " + (end-start) + "ms");
     }
 
     private Graphics2D setRenderingQuality(Graphics g) {
@@ -529,7 +522,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
             for (Callout callout : calloutsUpdater.getPrintableCallouts()) {
                 //display multiple info callouts on different lines
                 if (callout.getGroup().equalsIgnoreCase("info")) {
-                    offset = numOfInfoLines * 50;
+                    offset = (numOfInfoLines * 50);
                     numOfInfoLines++;
                     drawString(callout.getText(),
                             (int) callout.getPosition().getX(),
@@ -598,7 +591,6 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         try {
             graph2D.setTransform(originalRenderingContext);
         } catch (Exception e) {
-            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -623,8 +615,8 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         panelTransform = tmpGraph.getTransform();
 
         AffineTransform newAt = (AffineTransform) (panelTransform.clone());
-        int x = obj.getCurrentRepresentation().getOffset().getX();
-        int y = obj.getCurrentRepresentation().getOffset().getY();
+        int x = (int) obj.getCurrentRepresentation().getOffset().getX();
+        int y = (int) obj.getCurrentRepresentation().getOffset().getY();
         newAt.translate(x, y);
         newAt.rotate(Math.toRadians(obj.getCurrentRepresentation().getRotation()));
         tmpGraph.setTransform(newAt);
@@ -869,7 +861,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 Point mouse = toRealCoords(p);
                 onZone = TopologyUtils.contains(zone.getPojo().getShape(),
                         new FreedomPoint((int) mouse.getX(), (int) mouse.getY()));
-                if (onZone) {
+                if (onZone == true) {
                     return zone;
                 }
             }
@@ -887,7 +879,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         Point mouse = toRealCoords(p);
 
         for (Handle handle : handles) {
-            Rectangle rect = handle.getHandle();
+            Rectangle rect = (Rectangle) handle.getHandle();
 
             if (rect.contains(mouse)) {
                 return handle;
@@ -998,7 +990,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 ZoneLogic zone = mouseOnZone(e.getPoint());
                 if (zone != null) {
                     Callout callout = new Callout(this.getClass().getCanonicalName(), "info",
-                            i18n.msg("room_zone_selected") + " [" + zone.getPojo().getName() + "]", 50, 150, 0, -1);
+                            I18n.msg("room_zone_selected") + " [" + zone.getPojo().getName() + "]", 50, 150, 0, -1);
                     createCallout(callout);
                     setSelectedZone(zone);
                 } else {
@@ -1025,7 +1017,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 Handle entry = (Handle) it.next();
                 entry.setSelected(false);
 
-                Rectangle handle = entry.getHandle();
+                Rectangle handle = (Rectangle) entry.getHandle();
 
                 if (handle.contains(mouse)) {
                     entry.setSelected(true);
@@ -1062,12 +1054,13 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         dragDiff = null;
         selectedObject = null;
         originalHandleLocation = null;
+        //removeIndicators();
         rebuildShapesCache();
         setNeedRepaint(true);
     }
 
     private List<ZoneLogic> overlappedRooms(ZoneLogic zone) {
-        List<ZoneLogic> overlapped = new ArrayList<>();
+        List<ZoneLogic> overlapped = new ArrayList<ZoneLogic>();
         Area currentZoneArea = new Area(TopologyUtils.convertToAWT(zone.getPojo().getShape()));
         for (Room r : currEnv.getRooms()) {
             if (!r.equals(selectedZone)) {
@@ -1225,7 +1218,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
             Iterator<FreedomPoint> it = forZone.getPojo().getShape().getPoints().iterator();
 
             while (it.hasNext()) {
-                FreedomPoint corner = it.next();
+                FreedomPoint corner = (FreedomPoint) it.next();
                 handles.add(new Handle(forZone, corner));
             }
         } else {
@@ -1233,7 +1226,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 Iterator<FreedomPoint> it = zone.getPojo().getShape().getPoints().iterator();
 
                 while (it.hasNext()) {
-                    FreedomPoint corner = it.next();
+                    FreedomPoint corner = (FreedomPoint) it.next();
                     handles.add(new Handle(zone, corner));
                 }
             }
@@ -1267,12 +1260,12 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
 
         if (roomEditMode) {
             Callout callout = new Callout(this.getClass().getCanonicalName(), "info",
-                    i18n.msg("environment_editing_instructions") + ":\n"
-                    + "- " + i18n.msg("environment_editing_instructions_add_new_room") + "\n"
-                    + "- " + i18n.msg("environment_editing_instructions_change_room_shape") + "\n"
-                    + "- " + i18n.msg("environment_editing_instructions_remove_room") + "\n"
-                    + "- " + i18n.msg("environment_editing_instructions_create_draggable_point") + "\n"
-                    + "- " + i18n.msg("environment_editing_instructions_delete_draggable_point") + "\n", 100, 200, 0, -1);
+                    I18n.msg("environment_editing_instructions") + ":\n"
+                    + "- " + I18n.msg("environment_editing_instructions_add_new_room") + "\n"
+                    + "- " + I18n.msg("environment_editing_instructions_change_room_shape") + "\n"
+                    + "- " + I18n.msg("environment_editing_instructions_remove_room") + "\n"
+                    + "- " + I18n.msg("environment_editing_instructions_create_draggable_point") + "\n"
+                    + "- " + I18n.msg("environment_editing_instructions_delete_draggable_point") + "\n", 100, 200, 0, -1);
             createCallout(callout);
             createHandles(null);
             //find the first room and select it
@@ -1340,6 +1333,8 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
 
         // nextInt is normally exclusive of the top value,
         // so add 1 to make it inclusive
-        return rand.nextInt((max - min) + 1) + min;
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
     }
 }

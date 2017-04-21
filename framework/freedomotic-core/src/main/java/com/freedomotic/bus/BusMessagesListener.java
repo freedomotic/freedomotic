@@ -20,6 +20,7 @@
 package com.freedomotic.bus;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.app.Profiler;
 import com.freedomotic.util.UidGenerator;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -96,10 +97,13 @@ public class BusMessagesListener implements MessageListener {
     @Override
     public final void onMessage(Message message) {
 
+        Profiler.incrementReceivedEvents();
+
         if (message instanceof ObjectMessage) {
             final ObjectMessage objectMessage = (ObjectMessage) message;
             messageHandler.onMessage(objectMessage);
         } else {
+
             LOG.error("Message received by " + this.getClass().getSimpleName()
                     + " is not an object message, is a "
                     + message.getClass().getCanonicalName());
@@ -182,7 +186,7 @@ public class BusMessagesListener implements MessageListener {
             Iterator it = consumers.iterator();
             while (it.hasNext()) {
                 MessageConsumer consumer = (MessageConsumer) it.next();
-                LOG.info("Closing bus connection for \"{}\"", messageHandler.getClass().getSimpleName());
+                LOG.info("Closing bus connection for {}", messageHandler.getClass().getSimpleName());
                 consumer.close();
                 it.remove();
             }
