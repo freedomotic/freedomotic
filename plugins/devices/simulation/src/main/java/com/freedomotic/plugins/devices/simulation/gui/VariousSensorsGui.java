@@ -25,6 +25,7 @@ import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.events.TemperatureEvent;
 import com.freedomotic.plugins.devices.simulation.VariousSensors;
 import com.freedomotic.reactions.Command;
+import javax.swing.JFrame;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -33,9 +34,9 @@ import javax.swing.event.ChangeListener;
  * @author Enrico Nicoletti
  */
 public class VariousSensorsGui
-        extends javax.swing.JFrame {
+        extends JFrame {
 
-    private VariousSensors sensor;
+    private transient VariousSensors sensor;
 
     /**
      * Creates new form VariousSensorsForm

@@ -35,7 +35,8 @@ public class Utils {
      * @return the coordinates of the center
      */
     public static FreedomPoint getPolygonCenter(FreedomPolygon input) {
-        double x = 0, y = 0;
+        double x = 0;
+        double y = 0;
         for (FreedomPoint v : input.getPoints()) {
             x += v.getX();
             y += v.getY();
@@ -44,5 +45,4 @@ public class Utils {
         y /= input.getPoints().size();
         return new FreedomPoint((int) x, (int) y);
     }
-    
 }

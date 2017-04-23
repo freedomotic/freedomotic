@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -100,12 +99,11 @@ public class TrackingReadSocket extends Protocol {
 
         try {
             tokenizer = new StringTokenizer(in);
-            id = new Integer(tokenizer.nextToken()).intValue();
-            x = new Integer(tokenizer.nextToken()).intValue();
-            y = new Integer(tokenizer.nextToken()).intValue();
+            id = Integer.parseInt(tokenizer.nextToken());
+            x = Integer.parseInt(tokenizer.nextToken());
+            y = Integer.parseInt(tokenizer.nextToken());
             location = new FreedomPoint(x, y);
             movePerson(id, location);
-
         } catch (Exception ex) {
             LOG.error("Error while parsing client input. \n {} \ntoken count: {}", in, tokenizer.countTokens());
         }
@@ -131,7 +129,7 @@ public class TrackingReadSocket extends Protocol {
     protected void onRun() {
         int i = 0;
 
-        while (((i++ < MAX_CONNECTIONS) || (MAX_CONNECTIONS == -1))) {
+        while ((i++ < MAX_CONNECTIONS) || (MAX_CONNECTIONS == -1)) {
             try {
                 ClientInputReader clientConnection;
                 Socket clientSocket = serverSocket.accept();
@@ -178,8 +176,6 @@ public class TrackingReadSocket extends Protocol {
             implements Runnable {
 
         private Socket client;
-        private String line;
-        private String input;
 
         ClientInputReader(Socket client) {
             this.client = client;
@@ -188,9 +184,9 @@ public class TrackingReadSocket extends Protocol {
 
         public void run() {
             try {
+                String line;
                 // Get input from the client
                 DataInputStream in = new DataInputStream(client.getInputStream());
-                PrintStream out = new PrintStream(client.getOutputStream());
 
                 while (((line = in.readLine()) != null) && !line.equals(STOP_CONNECTION_CHAR) && isRunning()) {
                     LOG.info("Readed from socket: \"{}\"", line);
@@ -201,7 +197,6 @@ public class TrackingReadSocket extends Protocol {
                 client.close();
             } catch (IOException ioe) {
                 LOG.error("IOException on socket listening: \"{}\"", ioe);
-                ioe.printStackTrace();
             }
         }
     }

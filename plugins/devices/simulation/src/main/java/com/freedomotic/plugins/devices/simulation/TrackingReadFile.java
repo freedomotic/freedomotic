@@ -64,7 +64,7 @@ public class TrackingReadFile extends Protocol {
     @Override
     public void onStart() throws PluginStartupException {
         try {
-            workers = new ArrayList<WorkerThread>();
+            workers = new ArrayList<>();
 
             File dir = new File(Info.PATHS.PATH_DEVICES_FOLDER + "/simulation/data/motes");
             String[] extensions = new String[]{"mote"};
@@ -101,7 +101,7 @@ public class TrackingReadFile extends Protocol {
      */
     private void readMoteFileCoordinates(File f) {
         FileReader fr = null;
-        ArrayList<Coordinate> coord = new ArrayList<Coordinate>();
+        ArrayList<Coordinate> coord = new ArrayList<>();
         String userId = FilenameUtils.removeExtension(f.getName());
 
         try {
@@ -131,7 +131,9 @@ public class TrackingReadFile extends Protocol {
             LOG.error("IOException: ", ex);
         } finally {
             try {
-                fr.close();
+                if (fr != null) {
+                    fr.close();
+                }
             } catch (IOException ex) {
                 LOG.error("IOException: ", ex);
             }
@@ -145,7 +147,7 @@ public class TrackingReadFile extends Protocol {
      */
     private void readMoteFileRooms(File f) {
         FileReader fr = null;
-        ArrayList<Coordinate> coord = new ArrayList<Coordinate>();
+        ArrayList<Coordinate> coord = new ArrayList<>();
         String userId = FilenameUtils.removeExtension(f.getName());
 
         try {
@@ -159,7 +161,7 @@ public class TrackingReadFile extends Protocol {
                 String roomName = st.nextToken();
                 LOG.info("Mote \"{}\" coordinate added \"{}\"", userId, line);
                 ZoneLogic zone = getApi().environments().findAll().get(0).getZone(roomName);
-                if (!(zone == null)) {
+                if (zone != null) {
                     FreedomPoint roomCenterCoordinate = Utils.getPolygonCenter(zone.getPojo().getShape());
                     Coordinate c = new Coordinate();
                     c.setUserId(userId);
@@ -180,7 +182,9 @@ public class TrackingReadFile extends Protocol {
             LOG.error("IOException: ", ex);
         } finally {
             try {
-                fr.close();
+                if (fr != null) {
+                    fr.close();
+                }
             } catch (IOException ex) {
                 LOG.error("IOException: ", ex);
             }

@@ -19,6 +19,7 @@
  */
 package com.freedomotic.plugins.devices.simulation.fromfile;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.LocationEvent;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.plugins.devices.simulation.Coordinate;
@@ -76,6 +77,7 @@ public class WorkerThread
                         try {
                             WorkerThread.sleep(c.getTime());
                         } catch (InterruptedException interruptedException) {
+                            master.getLog().error(Freedomotic.getStackTraceInfo(interruptedException));
                         }
                     }
                 }

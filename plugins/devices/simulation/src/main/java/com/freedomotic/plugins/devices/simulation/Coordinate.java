@@ -25,7 +25,6 @@ package com.freedomotic.plugins.devices.simulation;
  */
 public class Coordinate {
 
-    //private int id;
     private int x;
     private int y;
     private int time;
@@ -51,17 +50,16 @@ public class Coordinate {
 
     /**
      * Gets the time.
-     *  
+     *
      * @return the time
      */
     public int getTime() {
         return time;
     }
 
-    
     /**
      * Gets user's id.
-     * 
+     *
      * @return user's id
      */
     public String getUserId() {
@@ -70,7 +68,7 @@ public class Coordinate {
 
     /**
      * Sets x coordinate.
-     * 
+     *
      * @param x
      */
     public void setX(int x) {
@@ -79,8 +77,8 @@ public class Coordinate {
 
     /**
      * Sets y coordinate.
-     * 
-     * @param y  y coordinate
+     *
+     * @param y y coordinate
      */
     public void setY(int y) {
         this.y = y;
@@ -88,14 +86,13 @@ public class Coordinate {
 
     /**
      * Sets the sleep time.
-     * 
-     * @param time time to set 
+     *
+     * @param time time to set
      */
     public void setTime(int time) {
         this.time = time;
     }
 
-    
     /**
      * Sets user's id.
      *
