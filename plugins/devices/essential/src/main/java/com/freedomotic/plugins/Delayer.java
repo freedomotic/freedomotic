@@ -32,7 +32,7 @@ import java.util.TimerTask;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class Delayer
         extends Protocol {
@@ -92,6 +92,6 @@ public class Delayer
 
     @Override
     protected void onRun() {
-        // throw new UnsupportedOperationException("Not supported yet.");
+        // do nothing
     }
 }

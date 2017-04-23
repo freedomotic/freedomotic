@@ -117,9 +117,9 @@ public class CronSchedule {
         // Iterate over entries
         for (int i = 0; i < parts.length; i++) {
             // Decide what time value is set and create it
-            if (parts[i].indexOf("/") > 0) {
+            if (parts[i].indexOf('/') > 0) {
                 result[i] = new TimeSteps(parts[i]);
-            } else if (parts[i].indexOf("-") > 0) {
+            } else if (parts[i].indexOf('-') > 0) {
                 result[i] = new TimeRange(parts[i]);
             } else if (parts[i].equals("*")) {
                 result[i] = new TimeAll();
@@ -442,7 +442,7 @@ public class CronSchedule {
          * @param range
          */
         public TimeRange(String range) {
-            int dashPos = range.indexOf("-");
+            int dashPos = range.indexOf('-');
             setStartValue(Integer.parseInt(range.substring(0, dashPos)));
             setEndValue(Integer.parseInt(range.substring(dashPos + 1)));
         }
@@ -520,12 +520,12 @@ public class CronSchedule {
          * @param def
          */
         public TimeSteps(String def) {
-            int divPos = def.indexOf("/");
+            int divPos = def.indexOf('/');
             String r = def.substring(0, divPos);
 
             if (r.equals("*")) {
                 setRange(new TimeAll());
-            } else if (r.indexOf("-") > 0) {
+            } else if (r.indexOf('-') > 0) {
                 setRange(new TimeRange(r));
             } else {
                 throw new IllegalArgumentException("Invalid range: " + def);

@@ -1,42 +1,40 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.plugins;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class Successful extends Protocol {
 
-    private Boolean powered = true;
+    private static final Logger LOG = LoggerFactory.getLogger(Successful.class.getName());
 
     /**
      *
@@ -50,7 +48,7 @@ public class Successful extends Protocol {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Successful.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
 
         c.setExecuted(true);
@@ -63,27 +61,7 @@ public class Successful extends Protocol {
 
     @Override
     protected void onRun() {
-        //DISABLED: sends a fake sensor read event. Used for testing
-//        ProtocolRead event = new ProtocolRead(this, "test", "test");
-//        event.getPayload().addStatement("object.class", "Light");
-//        event.getPayload().addStatement("object.name", "myLight");
-//        event.getPayload().addStatement("value",
-//                powered.toString());
-//        //invert the value for the next round
-//        notifyEvent(event);
-//
-//        if (powered) {
-//            powered = false;
-//        } else {
-//            powered = true;
-//        }
-//
-//        //wait two seconds before sending another event
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(VariousSensors.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        // do nothing
     }
 
     @Override

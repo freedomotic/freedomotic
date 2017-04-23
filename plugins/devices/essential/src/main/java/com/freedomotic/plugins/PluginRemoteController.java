@@ -22,19 +22,20 @@ package com.freedomotic.plugins;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class PluginRemoteController extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(PluginRemoteController.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(PluginRemoteController.class.getName());
 
     /**
      *
@@ -74,14 +75,14 @@ public class PluginRemoteController extends Protocol {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.error(Freedomotic.getStackTraceInfo(ex));
                     }
                     plugin.start();
                 }
             }
 
         } else {
-            LOG.log(Level.WARNING, "Impossible to act on plugin {0}", c.getProperty("plugin"));
+            LOG.warn("Impossible to act on plugin \"{}\"", c.getProperty("plugin"));
         }
     }
 

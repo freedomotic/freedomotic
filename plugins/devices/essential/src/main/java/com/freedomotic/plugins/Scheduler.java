@@ -34,13 +34,12 @@ import java.util.TimerTask;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class Scheduler
         extends Protocol {
 
     private int TIMER_RESOLUTION = 1000;
-    private int lastSentMinute = -1;
     private Timer timer;
     private Awake awake;
 
