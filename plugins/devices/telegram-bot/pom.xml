@@ -44,12 +44,6 @@
         <freedomotic.marketplace.username></freedomotic.marketplace.username>
         <freedomotic.marketplace.password></freedomotic.marketplace.password>
     </properties>
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -63,12 +57,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-	    <groupId>com.github.rubenlagus</groupId>
-	    <artifactId>TelegramBots</artifactId>
-	    <version>v2.4.4.4</version>
-	</dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>2.4.4.5</version>
+        </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>

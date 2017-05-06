@@ -44,7 +44,6 @@ import com.freedomotic.things.EnvObjectLogic;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import org.slf4j.Logger;
@@ -221,7 +220,7 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
                     case "stop":
                         start = false;
                         startStr = "stopped";
-                        if (action.equals("start")) {
+                        if ("start".equalsIgnoreCase(startStr)) {
                             start = true;
                             startStr = "started";
                         }
@@ -269,14 +268,13 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
                             callbackquery.getMessage().getMessageId(),
                             markup);
                 }
-            } else if (section.equals("things")) {
-
+            } else if ("things".equalsIgnoreCase(action)) {
                 InlineKeyboardMarkup markup = null;
-                if (action.equals("back")) {
+                if ("back".equalsIgnoreCase(action)) {
                     markup = this.getThingView(Integer.parseInt(target), 1);
-                } else if (action.equals("next")) {
+                } else if ("next".equalsIgnoreCase(action)) {
                     markup = this.getThingView(Integer.parseInt(target), 2);
-                } else if (action.equals("text")) {
+                } else if ("text".equalsIgnoreCase(action)) {
                     try {
                         this.sendAnswerCallbackQuery("Please use one of the given actions below, instead.", false, callbackquery);
                     } catch (TelegramApiException e) {
@@ -300,7 +298,7 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
                     }
-                } else if (action.equals("status")) {
+                } else if ("status".equalsIgnoreCase(action)) {
                     String response = "";
                     response = this.getThingStatus(data[3]);
                     try {
@@ -309,7 +307,6 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
                         e.printStackTrace();
                     }
                 }
-
                 if (markup == null) {
                     try {
                         this.sendAnswerCallbackQuery(i18n.msg("index_out_of_range"), false, callbackquery);
@@ -323,23 +320,20 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
                             callbackquery.getMessage().getMessageId(),
                             markup);
                 }
-
-            } else if (section.equals("languages")) {
-
+            } else if ("languages".equalsIgnoreCase(section)) {
                 InlineKeyboardMarkup markup = null;
-                if (action.equals("back")) {
+                if ("back".equalsIgnoreCase(action)) {
                     markup = this.getLanguageView(Integer.parseInt(target), 1);
-                } else if (action.equals("next")) {
+                } else if ("next".equalsIgnoreCase(action)) {
                     markup = this.getLanguageView(Integer.parseInt(target), 2);
-                } else if (action.equals("text")) {
+                } else if ("text".equalsIgnoreCase(action)) {
                     try {
                         this.sendAnswerCallbackQuery("Please use one of the given actions below, instead.", false, callbackquery);
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
                     }
-                } else if (action.equals("set")) {
-                    boolean response = false;
-                    response = this.setLanguage(data[3]);
+                } else if ("set".equalsIgnoreCase(action)) {
+                    boolean response = this.setLanguage(data[3]);
                     String responseStr = i18n.msg("error_request");
                     if (response) {
                         responseStr = "Language changed!";
@@ -365,17 +359,15 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
                             callbackquery.getMessage().getMessageId(),
                             markup);
                 }
-
-            } else if (section.equals("rooms")) {
-
+            } else if ("rooms".equalsIgnoreCase(section)) {
                 InlineKeyboardMarkup markup = null;
-                if (action.equals("back")) {
+                if ("back".equalsIgnoreCase(action)) {
                     markup = this.getRoomView(Integer.parseInt(target), 1);
-                } else if (action.equals("next")) {
+                } else if ("next".equalsIgnoreCase(action)) {
                     markup = this.getRoomView(Integer.parseInt(target), 2);
-                } else if (action.equals("things-list")) {
+                } else if ("things-list".equalsIgnoreCase(action)) {
                     markup = this.getRoomThingView(0, -1, String.valueOf(data[3]));
-                } else if (action.equals("text")) {
+                } else if ("text".equalsIgnoreCase(action)) {
                     try {
                         this.sendAnswerCallbackQuery("Please use one of the given actions below, instead.", false, callbackquery);
                     } catch (TelegramApiException e) {
@@ -395,15 +387,13 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
                             callbackquery.getMessage().getMessageId(),
                             markup);
                 }
-
-            } else if (section.equals("rooms-things")) {
-
+            } else if ("rooms-things".equalsIgnoreCase(section)) {
                 InlineKeyboardMarkup markup = null;
-                if (action.equals("back")) {
+                if ("back".equalsIgnoreCase(action)) {
                     markup = this.getRoomThingView(Integer.parseInt(target), 1, String.valueOf(data[3]));
-                } else if (action.equals("next")) {
+                } else if ("next".equalsIgnoreCase(action)) {
                     markup = this.getRoomThingView(Integer.parseInt(target), 2, String.valueOf(data[3]));
-                } else if (action.equals("click")) {
+                } else if ("click".equalsIgnoreCase(action)) {
                     boolean response = false;
                     try {
                         response = this.clickThing(data[3]);
@@ -419,7 +409,7 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
                     }
-                } else if (action.equals("text")) {
+                } else if ("text".equalsIgnoreCase(action)) {
                     try {
                         this.sendAnswerCallbackQuery("Please use one of the given actions below, instead.", false, callbackquery);
                     } catch (TelegramApiException e) {
@@ -458,6 +448,7 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
             Freedomotic.sendEvent(event);
             return true;
         } catch (Exception e) {
+            LOG.error("Error clicking on a thing", e);
             return false;
         }
     }
@@ -816,7 +807,7 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
         try {
             sendMessage(sendMessagerequest);
         } catch (TelegramApiException e) {
-            LOG.error("Error sending Telegram message", e.getLocalizedMessage());
+            LOG.error("Error sending Telegram message", e);
         }
     }
 
@@ -903,7 +894,6 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
         List<Locale> languagesList;
 
         languagesList = api.getI18n().getAvailableLocales();
-        // Collections.sort(languagesList);
 
         /*
          * action = 1 -> back
@@ -1073,7 +1063,7 @@ public class FreedomoticBotHandlers extends TelegramLongPollingBot {
             sendPhoto(sendPhotoRequest);
             sendMessageToChannel(chatID, message);
         } catch (TelegramApiException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error("Error sending a photo", ex);
         }
 
     }
