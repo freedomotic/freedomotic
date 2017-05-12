@@ -138,7 +138,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.6.5</version>
+                <version>1.7.25</version>
                 <scope>compile</scope>
             </dependency>
             <!-- add util logging to slf4j bridge to classpath -->
@@ -153,7 +153,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>1.6.5</version>
+                <version>1.7.25</version>
                 <scope>runtime</scope>
             </dependency>
             <!-- add log4j to classpath -->
@@ -161,13 +161,13 @@
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
-                <version>1.2.16</version>
+                <version>1.2.17</version>
             </dependency>
             <!-- Another slf4j implementation -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.1.2</version>
+                <version>1.2.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
