@@ -412,7 +412,7 @@ public class CronSchedule {
          * @return 
          */
         public String toString() {
-            return "" + getValue();
+            return Integer.toString(getValue());
         }
     }
 

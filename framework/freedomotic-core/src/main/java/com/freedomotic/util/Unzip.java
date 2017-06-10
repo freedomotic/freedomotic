@@ -54,9 +54,9 @@ public class Unzip {
      * @throws ZipException
      * @throws IOException
      */
-    static public void unzip(String zipFile) throws ZipException, IOException {
+    static public void unzip(String zipFile) throws IOException {
 
-        int BUFFER = 2048;
+        final int BUFFER = 2048;
         File file = new File(zipFile);
 
         ZipFile zip = new ZipFile(file);
@@ -65,7 +65,7 @@ public class Unzip {
         newPath = newPath.substring(0, newPath.lastIndexOf(File.separator));
 
         Enumeration<? extends ZipEntry> zipFileEntries = zip.entries();
-        
+
         // Process each entry
         while (zipFileEntries.hasMoreElements()) {
             // grab a zip file entry
@@ -115,6 +115,9 @@ public class Unzip {
             if (currentEntry.endsWith(".zip")) {
                 // found a zip file, try to open
                 unzip(destFile.getAbsolutePath());
+                if (zip != null) {
+                    zip.close();
+                }
             }
         }
     }
