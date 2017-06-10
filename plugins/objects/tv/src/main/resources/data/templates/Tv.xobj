@@ -1,11 +1,11 @@
-<com.freedomotic.model.object.EnvObject>
+<object>
   <name>TV</name>
-  <description>A Pionner 5090H TV</description>
-  <actAs>button</actAs>
+  <description>A TV thing</description>
+  <actAs>virtual</actAs>
   <type>EnvObject.ElectricDevice.TV</type>
   <hierarchy>com.freedomotic.things.impl.TV</hierarchy>
-  <protocol>pioneer-kuro</protocol>
-  <phisicalAddress>pioneer-kuro</phisicalAddress>
+  <protocol>unknown</protocol>
+  <phisicalAddress>unknown</phisicalAddress>
   <behaviors>
     <com.freedomotic.model.object.BooleanBehavior>
       <name>powered</name>
@@ -102,9 +102,9 @@
       <borderColor>#000000</borderColor>
       <shape class="polygon">
         <point x="0" y="0"/>
-        <point x="41" y="0"/>
-        <point x="41" y="41"/>
-        <point x="0" y="41"/>
+        <point x="75" y="0"/>
+        <point x="75" y="75"/>
+        <point x="0" y="75"/>
       </shape>
     </view>
     <view>
@@ -118,30 +118,30 @@
       <borderColor>#000000</borderColor>
       <shape class="polygon">
         <point x="0" y="0"/>
-        <point x="41" y="0"/>
-        <point x="41" y="41"/>
-        <point x="0" y="41"/>
+        <point x="75" y="0"/>
+        <point x="75" y="75"/>
+        <point x="0" y="75"/>
       </shape>
     </view>
   </representation>
   <actions>
-    <property name="set input" value="Set Input KuroTV object"/>
-    <property name="turn off" value="Switch OFF KuroTV object"/>
-    <property name="mute on" value="Mute ON KuroTV object"/>
-    <property name="set screenmode" value="Set Screen Mode KuroTV object"/>
-    <property name="set channel" value="Set Digital Terrestrial Channel KuroTV object"/>
-    <property name="set avselection" value="Set AV Selection KuroTV object"/>
-    <property name="mute off" value="Mute OFF KuroTV object"/>
-    <property name="turn on" value="Switch ON KuroTV object"/>
-    <property name="set volume" value="Set Volume KuroTV object"/>
+    <property name="set input" value="Execute it successfully"/>
+    <property name="turn off" value="Execute it successfully"/>
+    <property name="mute on" value="Execute it successfully"/>
+    <property name="set screenmode" value="Execute it successfully"/>
+    <property name="set channel" value="Execute it successfully"/>
+    <property name="set avselection" value="Execute it successfully"/>
+    <property name="mute off" value="Execute it successfully"/>
+    <property name="turn on" value="Execute it successfully"/>
+    <property name="set volume" value="Execute it successfully"/>
   </actions>
   <triggers>
-    <property name="Pioneer Kuro Tv powered changed" value="powered"/>
-    <property name="Pioneer Kuro Tv Screen Mode changed" value="screenmode"/>
-    <property name="Pioneer Kuro Tv mute changed" value="muted"/>
-    <property name="Pioneer Kuro Tv input changed" value="input"/>
-    <property name="Pioneer Kuro Tv AV selection changed" value="avselection"/>
-    <property name="Pioneer Kuro Tv volume changed" value="volume"/>
+    <property name="" value="powered"/>
+    <property name="" value="screenmode"/>
+    <property name="" value="muted"/>
+    <property name="" value="input"/>
+    <property name="" value="avselection"/>
+    <property name="" value="volume"/>
   </triggers>
   <currentRepresentation>1</currentRepresentation>
-</com.freedomotic.model.object.EnvObject>
+</object>

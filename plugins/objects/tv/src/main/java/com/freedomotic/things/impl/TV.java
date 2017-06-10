@@ -33,15 +33,15 @@ import com.freedomotic.reactions.Command;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 
 public class TV extends ElectricDevice {
 
     public RangedIntBehaviorLogic volume;
-    public RangedIntBehaviorLogic channel; //Maybe the channell is not a behavior. Only an action. 
-    //(In the Kuro TV can't ask to the current channel
-    public ListBehaviorLogic input; // I defined it as a RangedIt because each TV model has its own inputs   
+    public RangedIntBehaviorLogic channel; //Maybe the channel is not a behavior but only an action. 
+    // In the Kuro TV you can't ask the current channel
+    public ListBehaviorLogic input; // Defined as a RangedIt because each TV model has its own inputs   
     public BooleanBehaviorLogic muted;
     public ListBehaviorLogic avSelection;
     public ListBehaviorLogic screenMode;
@@ -278,7 +278,7 @@ public class TV extends ElectricDevice {
     }
 
     public void setMuteOn() {
-        if (muted.getValue() != true) {
+        if (!muted.getValue()) {
             muted.setValue(true);
             setChanged(true);
         }
@@ -294,7 +294,7 @@ public class TV extends ElectricDevice {
     }
 
     public void setMuteOff() {
-        if (muted.getValue() != false) {
+        if (muted.getValue()) {
             muted.setValue(false);
             setChanged(true);
         }
