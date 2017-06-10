@@ -56,7 +56,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     private String description;
     private String uuid;
     //private EventTemplate action;
-    //TODO: the action is the queue getted from the default queue of the event
+    //TODO: the action is the queue got from the default queue of the event
     //we need also the possibility to point to the channel with a string
     private String channel;
     private Payload payload = new Payload();
@@ -91,7 +91,7 @@ public final class Trigger implements BusConsumer, Cloneable {
      */
     public void register() {
         Freedomotic.INJECTOR.injectMembers(this);
-        LOG.info("Registering the trigger named '" + getName() + "'");
+        LOG.info("Registering the trigger named \"{}\"", getName());
         listener = new BusMessagesListener(this, busService);
         listener.consumeEventFrom(channel);
         numberOfExecutions = 0;
@@ -139,7 +139,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
-     *
+     *   
      * @param channel
      */
     public void setChannel(String channel) {
@@ -160,8 +160,9 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
+     * Gets max number of trigger executions.
      *
-     * @return
+     * @return max number of trigger executions
      */
     public long getMaxExecutions() {
         if (maxExecutions <= 0) {
@@ -188,8 +189,9 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
+     * Sets number of trigger executions.
      *
-     * @param numberOfExecutions
+     * @param numberOfExecutions number of trigger executions
      */
     public void setNumberOfExecutions(long numberOfExecutions) {
         this.numberOfExecutions = numberOfExecutions;
@@ -215,8 +217,9 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
+     * Sets trigger payload.
      *
-     * @param p
+     * @param p trigger payload to set
      */
     public void setPayload(Payload p) {
         this.payload = p;
@@ -245,9 +248,10 @@ public final class Trigger implements BusConsumer, Cloneable {
                 DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy kk:mm:ss.SSS");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(wakeup);
-                LOG.info("Trigger " + getName() + " is suspended until "
-                        + formatter.format(calendar.getTime()));
-
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Trigger " + getName() + " is suspended until "
+                            + formatter.format(calendar.getTime()));
+                }
                 //it is currently suspended
                 return false;
             }
@@ -274,16 +278,18 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
+     * Gets trigger priority.
      *
-     * @return
+     * @return trigger priority
      */
     public int getPriority() {
         return priority;
     }
 
     /**
+     * Sets trigger priority.
      *
-     * @param priority
+     * @param priority trigger priority to set
      */
     public void setPriority(int priority) {
         this.priority = priority;
@@ -298,28 +304,30 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
+     * Gets trigger description.
      *
-     * @return
+     * @return trigger description
      */
     public String getDescription() {
         if ((description == null) || (description.isEmpty())) {
             description = name;
         }
-
         return description;
     }
 
     /**
+     * Gets trigger channel.
      *
-     * @return
+     * @return trigger channel
      */
     public String getChannel() {
         return channel;
     }
 
     /**
+     * Gets trigger payload.
      *
-     * @return
+     * @return trigger payload
      */
     public Payload getPayload() {
         return payload;
