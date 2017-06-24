@@ -50,9 +50,9 @@ class FetchHttpFiles {
             throws Exception {
         
         File destinationFile = new File(destFolder.getPath() + "/" + filename);
-        LOG.info("Download started");
-        LOG.info("Source folder: {}", url);
-        LOG.info("Destination folder: {}", destinationFile);
+        LOG.info("Plugin download started");
+        LOG.info("Source folder: \"{}\"", url);
+        LOG.info("Destination folder: \"{}\"", destinationFile);
 
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
@@ -90,8 +90,7 @@ class FetchHttpFiles {
             }
         }
 
-        LOG.info("  Download completed");
-
+        LOG.info("Plugin download completed");
         return true;
     }
 

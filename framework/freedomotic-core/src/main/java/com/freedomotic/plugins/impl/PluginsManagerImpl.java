@@ -46,7 +46,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -229,7 +228,7 @@ class PluginsManagerImpl implements PluginsManager {
 
             // Stop, remove and uninstall all plugins in the same boundle as client
             for (Plugin plugin : uninstallCandidates) {
-                LOG.info("Uninstalling plugin " + plugin.getName() + " from boundle" + boundleRootFolder.getAbsolutePath());
+                LOG.info("Uninstalling plugin \"{}\" from boundle \"{}\"", plugin.getName(), boundleRootFolder.getAbsolutePath());
                 plugin.stop();
                 clientStorage.remove(plugin);
             }
@@ -239,11 +238,11 @@ class PluginsManagerImpl implements PluginsManager {
                 FileUtils.deleteDirectory(boundleRootFolder);
                 isDeleted = true;
             } catch (IOException ex) {
-                LOG.error("Error while unistalling plugin boundle " + boundleRootFolder.getAbsolutePath(), ex);
+                LOG.error("Error while unistalling plugin boundle \"{}\"", boundleRootFolder.getAbsolutePath(), ex);
             }
 
         } else {
-            LOG.warn("Cannot uninstall " + client.getName() + " it is not a filesystem plugin");
+            LOG.warn("Cannot uninstall \"{}\". It is not a filesystem plugin", client.getName());
         }
 
         return isDeleted;
@@ -255,7 +254,7 @@ class PluginsManagerImpl implements PluginsManager {
         try {
             Unzip.unzip(zipFile.toString());
         } catch (Exception e) {
-            LOG.error("Error while unzipping boundle " + zipFile.getAbsolutePath(), e);
+            LOG.error("Error while unzipping boundle \"{}\"", zipFile.getAbsolutePath(), e);
 
             return false;
         }
@@ -292,7 +291,7 @@ class PluginsManagerImpl implements PluginsManager {
         File templatesFolder = new File(directory + "/data/templates/");
 
         if (templatesFolder.exists()) {
-            LOG.info("Loading object templates from {}", templatesFolder.getAbsolutePath());
+            LOG.info("Loading object templates from \"{}\"", templatesFolder.getAbsolutePath());
             //for every envobject class a placeholder is created
             File[] templates
                     = templatesFolder.listFiles(new FilenameFilter() {

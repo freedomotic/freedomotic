@@ -214,18 +214,18 @@ public class Freedomotic implements BusConsumer {
         LOG.info("\nOS: " + System.getProperty("os.name") + "\n" + i18n.msg("architecture") + ": "
                 + System.getProperty("os.arch") + "\n" + "OS Version: " + System.getProperty("os.version")
                 + "\n" + i18n.msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
-                + System.getProperty("java.home") + "\n" + "Java Library Path: {"
-                + System.getProperty("java.library.path") + "}\n" + "Program path: "
+                + System.getProperty("java.home") + "\n" + "Java Library Path: "
+                + System.getProperty("java.library.path") + "\n" + "Program path: "
                 + System.getProperty("user.dir") + "\n" + "Java Version: " + System.getProperty("java.version")
                 + "\n" + "Resources Path: " + resourcesPath);
 
         //check if topology manager is initiated
         if (topologyManager == null) {
-            throw new IllegalStateException("Topology manager has not started");
+            throw new IllegalStateException("Topology manager not started");
         }
 
         if (synchManager == null) {
-            throw new IllegalStateException("Synch manager has not started");
+            throw new IllegalStateException("Synch manager not started");
         }
 
         // register listener
@@ -315,7 +315,7 @@ public class Freedomotic implements BusConsumer {
 
         double MB = 1024 * 1024;
         Runtime runtime = Runtime.getRuntime();
-        LOG.info("Used Memory:" + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
+        LOG.info("Used Memory: " + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
         LOG.info("Freedomotic startup completed");
 
         setDataRootPath();

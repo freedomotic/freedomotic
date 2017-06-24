@@ -186,7 +186,7 @@ public class BusMessagesListener implements MessageListener {
             Iterator it = consumers.iterator();
             while (it.hasNext()) {
                 MessageConsumer consumer = (MessageConsumer) it.next();
-                LOG.info("Closing bus connection for {}", messageHandler.getClass().getSimpleName());
+                LOG.info("Closing bus connection for \"{}\"", messageHandler.getClass().getSimpleName());
                 consumer.close();
                 it.remove();
             }
