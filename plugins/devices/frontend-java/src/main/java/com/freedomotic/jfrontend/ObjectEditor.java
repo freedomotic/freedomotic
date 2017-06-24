@@ -45,7 +45,6 @@ import com.freedomotic.i18n.I18n;
 import com.freedomotic.nlp.NlpCommand;
 import com.freedomotic.settings.Info;
 import com.google.common.collect.Iterators;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -292,7 +291,6 @@ public class ObjectEditor
                             Config params = new Config();
                             params.setProperty("value",
                                     String.valueOf(slider.getValue()));
-                            System.out.println("Slider value: " + slider.getValue());
                             rb.filterParams(params, true);
                         }
 
@@ -811,20 +809,7 @@ public class ObjectEditor
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnCreateObjectCopyActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnCreateObjectCopyActionPerformed
-        //        EnvObject pojoCopy = null;
-        //
-        //        pojoCopy = SerialClone.clone(object.getPojo());
-        //
-        //        pojoCopy.setName(object.getPojo().getName() + UidGenerator.getNextStringUid());
-        //        pojoCopy.setProtocol(object.getPojo().getProtocol());
-        //        pojoCopy.setPhisicalAddress("unknown");
-        //        for (Representation view : pojoCopy.getRepresentations()) {
-        //            view.setOffset(0, 0);
-        //        }
-        //        EnvObjectLogic envObjectLogic = EnvObjectFactory.save(pojoCopy);
-        //        envObjectLogic.getPojo().setUUID("");
         api.things().copy(object);
-        //object.setChanged(true);
         this.dispose();
     }//GEN-LAST:event_btnCreateObjectCopyActionPerformed
 

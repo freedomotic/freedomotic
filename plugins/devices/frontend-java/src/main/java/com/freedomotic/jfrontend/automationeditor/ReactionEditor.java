@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.JButton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -45,6 +47,7 @@ import javax.swing.JButton;
 public class ReactionEditor
         extends javax.swing.JPanel {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ReactionEditor.class.getName());
     private Reaction reaction;
     private List<GuessCommandBox> commandBoxes = new ArrayList<>();
     private Box cmdBox = Box.createVerticalBox();
@@ -183,7 +186,7 @@ public class ReactionEditor
         }
 
         reaction.setChanged();
-        System.out.println("Temporary reaction added :" + reaction.toString());
+        LOG.info("Temporary reaction \"{}\" added", reaction.toString());
     }
 
     public void onCommandCleared(GuessCommandBox box) {
@@ -196,7 +199,7 @@ public class ReactionEditor
         }
 
         reaction.setChanged();
-        System.out.println("Temporary reaction removed :" + reaction.toString());
+        LOG.info("Temporary reaction \"{}\" removed", reaction.toString());
     }
 
     /**

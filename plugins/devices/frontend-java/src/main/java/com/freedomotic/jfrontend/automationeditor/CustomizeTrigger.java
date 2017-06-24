@@ -375,7 +375,7 @@ public class CustomizeTrigger
             LOG.info("Trigger added correctly [{} triggers]", postSize);
             this.dispose();
         } else {
-            LOG.warn("Error while adding a trigger in trigger editor");
+            LOG.warn("Error while adding a trigger in Trigger Editor");
         }
 
         //to be sure it can be saved on hard drive
@@ -387,7 +387,7 @@ public class CustomizeTrigger
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnDeleteActionPerformed
-        System.out.println("Trying to remove a trigger from the list");
+        LOG.info("Trying to remove a trigger from the list");
         triggerRepository.delete(original);
         this.dispose();
     }//GEN-LAST:event_btnDeleteActionPerformed
