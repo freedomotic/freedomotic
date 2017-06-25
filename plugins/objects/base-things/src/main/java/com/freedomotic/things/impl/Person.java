@@ -30,14 +30,16 @@ import com.freedomotic.behaviors.BooleanBehaviorLogic;
 import com.freedomotic.behaviors.ListBehaviorLogic;
 import com.freedomotic.behaviors.PropertiesBehaviorLogic;
 import com.freedomotic.reactions.Trigger;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class Person extends GenericPerson {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Person.class.getName());
     protected BooleanBehaviorLogic present;
     protected ListBehaviorLogic activity;
     protected PropertiesBehaviorLogic properties;
@@ -68,8 +70,8 @@ public class Person extends GenericPerson {
                 String oldActivity = activity.getSelected();
                 //in "value" property is stored the name of the new selection. It is a value from the list for sure and it is not the current one, already checked.
                 activity.setSelected(params.getProperty("value"));
-                LOG.severe("Person '" + getPojo().getName()
-                        + "' has changed its activity from " + oldActivity + " to "
+                LOG.error("Person \"" + getPojo().getName()
+                        + "\"' has changed its activity from " + oldActivity + " to "
                         + activity.getSelected());
                 setChanged(true);
             }
@@ -81,8 +83,8 @@ public class Person extends GenericPerson {
             public void propertyChanged(String key, String newValue, Config params, boolean fireCommand) {
                 //in "value" property is stored the name of the new selection. It is a value from the list for sure and it is not the current one, already checked.
                 // properties.setProperty(key, newValue);
-                LOG.severe("Person '" + getPojo().getName()
-                        + "' has changed its property from " + params.getProperty(key) + " to "
+                LOG.error("Person \"" + getPojo().getName()
+                        + "\" has changed its property from " + params.getProperty(key) + " to "
                         + newValue);
                 setChanged(true);
             }
@@ -143,5 +145,4 @@ public class Person extends GenericPerson {
         triggerRepository.create(login);
         triggerRepository.create(logout);
     }
-    private static final Logger LOG = Logger.getLogger(Person.class.getName());
-}
+  }
