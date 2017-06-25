@@ -43,7 +43,6 @@ public class RGBLight extends Light {
         //linking this property with the behavior defined in the XML
         red = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_RED));
         red.addListener(new RangedIntBehaviorLogic.Listener() {
-
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 executeRed(red.getMin(), params);
@@ -64,7 +63,6 @@ public class RGBLight extends Light {
 
         green = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_GREEN));
         green.addListener(new RangedIntBehaviorLogic.Listener() {
-
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 executeGreen(green.getMin(), params);
@@ -85,7 +83,6 @@ public class RGBLight extends Light {
 
         blue = new RangedIntBehaviorLogic((RangedIntBehavior) getPojo().getBehavior(BEHAVIOR_BLUE));
         blue.addListener(new RangedIntBehaviorLogic.Listener() {
-
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 executeBlue(blue.getMin(), params);
@@ -175,8 +172,7 @@ public class RGBLight extends Light {
         b.setName("Increase " + getPojo().getName() + " red");
         b.setDescription("increases " + getPojo().getName() + " red of one step");
         b.setReceiver("app.events.sensors.behavior.request.objects");
-        b.setProperty("object",
-                getPojo().getName());
+        b.setProperty("object", getPojo().getName());
         b.setProperty("behavior", BEHAVIOR_RED);
         b.setProperty("value", Behavior.VALUE_NEXT);
 
@@ -184,8 +180,7 @@ public class RGBLight extends Light {
         c.setName("Decrease " + getPojo().getName() + " red");
         c.setDescription("decreases " + getPojo().getName() + " red of one step");
         c.setReceiver("app.events.sensors.behavior.request.objects");
-        c.setProperty("object",
-                getPojo().getName());
+        c.setProperty("object", getPojo().getName());
         c.setProperty("behavior", BEHAVIOR_RED);
         c.setProperty("value", Behavior.VALUE_PREVIOUS);
 
@@ -225,8 +220,7 @@ public class RGBLight extends Light {
         h.setName("Set " + getPojo().getName() + " green to 50%");
         h.setDescription("the light " + getPojo().getName() + " changes its green value");
         h.setReceiver("app.events.sensors.behavior.request.objects");
-        h.setProperty("object",
-                getPojo().getName());
+        h.setProperty("object", getPojo().getName());
         h.setProperty("behavior", BEHAVIOR_GREEN);
         h.setProperty("value", "50");
 
@@ -234,8 +228,7 @@ public class RGBLight extends Light {
         i.setName("Increase " + getPojo().getName() + " green");
         i.setDescription("increases " + getPojo().getName() + " green of one step");
         i.setReceiver("app.events.sensors.behavior.request.objects");
-        i.setProperty("object",
-                getPojo().getName());
+        i.setProperty("object", getPojo().getName());
         i.setProperty("behavior", BEHAVIOR_GREEN);
         i.setProperty("value", Behavior.VALUE_NEXT);
 
@@ -243,8 +236,7 @@ public class RGBLight extends Light {
         l.setName("Decrease " + getPojo().getName() + " green");
         l.setDescription("decreases " + getPojo().getName() + " green of one step");
         l.setReceiver("app.events.sensors.behavior.request.objects");
-        l.setProperty("object",
-                getPojo().getName());
+        l.setProperty("object", getPojo().getName());
         l.setProperty("behavior", BEHAVIOR_GREEN);
         l.setProperty("value", Behavior.VALUE_PREVIOUS);
 
@@ -284,8 +276,7 @@ public class RGBLight extends Light {
         q.setName("Set " + getPojo().getName() + " blue to 50%");
         q.setDescription("the light " + getPojo().getName() + " changes its blue value");
         q.setReceiver("app.events.sensors.behavior.request.objects");
-        q.setProperty("object",
-                getPojo().getName());
+        q.setProperty("object", getPojo().getName());
         q.setProperty("behavior", BEHAVIOR_BLUE);
         q.setProperty("value", "50");
 
@@ -293,8 +284,7 @@ public class RGBLight extends Light {
         r.setName("Increase " + getPojo().getName() + " blue");
         r.setDescription("increases " + getPojo().getName() + " blue of one step");
         r.setReceiver("app.events.sensors.behavior.request.objects");
-        r.setProperty("object",
-                getPojo().getName());
+        r.setProperty("object", getPojo().getName());
         r.setProperty("behavior", BEHAVIOR_BLUE);
         r.setProperty("value", Behavior.VALUE_NEXT);
 
@@ -302,8 +292,7 @@ public class RGBLight extends Light {
         s.setName("Decrease " + getPojo().getName() + " blue");
         s.setDescription("decreases " + getPojo().getName() + " blue of one step");
         s.setReceiver("app.events.sensors.behavior.request.objects");
-        s.setProperty("object",
-                getPojo().getName());
+        s.setProperty("object", getPojo().getName());
         s.setProperty("behavior", BEHAVIOR_BLUE);
         s.setProperty("value", Behavior.VALUE_PREVIOUS);
 

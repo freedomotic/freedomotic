@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -27,7 +26,7 @@ import com.freedomotic.reactions.Command;
 
 /**
  *
- * @author gpt
+ * @author Gabriel Pulido de Torres
  */
 public class StepperMotor
         extends ElectricDevice {
@@ -45,23 +44,23 @@ public class StepperMotor
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOff(params);
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set minimum                	
-            		onRangeValue(position.getMin(), params, fireCommand);
-            	} else {
+                    onRangeValue(position.getMin(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
                 //turnPowerOn(params);
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set maximum                	
-            		onRangeValue(position.getMax(), params, fireCommand);
-            	} else {
+                    onRangeValue(position.getMax(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
@@ -124,8 +123,7 @@ public class StepperMotor
         a.setName("Set " + getPojo().getName() + " position to 50%");
         a.setDescription("the StepperMotor " + getPojo().getName() + " changes its position to 50%");
         a.setReceiver("app.events.sensors.behavior.request.objects");
-        a.setProperty("object",
-                getPojo().getName());
+        a.setProperty("object", getPojo().getName());
         a.setProperty("behavior", "position");
         a.setProperty("value", "50");
 
@@ -133,8 +131,7 @@ public class StepperMotor
         b.setName(getPojo().getName() + " position up");
         b.setDescription("increases " + getPojo().getName() + " position of one step");
         b.setReceiver("app.events.sensors.behavior.request.objects");
-        b.setProperty("object",
-                getPojo().getName());
+        b.setProperty("object", getPojo().getName());
         b.setProperty("behavior", "position");
         b.setProperty("value", "next");
 
@@ -142,8 +139,7 @@ public class StepperMotor
         c.setName(getPojo().getName() + " position down");
         c.setDescription("decreases " + getPojo().getName() + " position of one step");
         c.setReceiver("app.events.sensors.behavior.request.objects");
-        c.setProperty("object",
-                getPojo().getName());
+        c.setProperty("object", getPojo().getName());
         c.setProperty("behavior", "position");
         c.setProperty("value", "previous");
 

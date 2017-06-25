@@ -1,7 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -35,18 +34,19 @@ import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.util.TopologyUtils;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 public class Gate extends EnvObjectLogic implements GenericGate {
-    //suppose from and to are always reflexive from->to; to->from
+    //suppose 'from' and 'to' are always reflexive from->to; to->from
 
+    private static final Logger LOG = LoggerFactory.getLogger(Gate.class.getName());
     private Room from;
     private Room to;
-
     protected RangedIntBehaviorLogic openness;
     protected BooleanBehaviorLogic open;
     protected final static String BEHAVIOR_OPEN = "open";
@@ -235,9 +235,8 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         to = null;
 
         //REGRESSION
-        FreedomPolygon objShape
-                = TopologyUtils.rotate(TopologyUtils.translate(pojoShape, xoffset, yoffset),
-                        (int) representation.getRotation());
+        FreedomPolygon objShape = TopologyUtils.rotate(TopologyUtils.translate(pojoShape, xoffset, yoffset),
+                (int) representation.getRotation());
         EnvironmentLogic env = environmentRepository.findOne(getPojo().getEnvironmentID());
 
         if (env != null) {
@@ -253,8 +252,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
                 }
             }
         } else {
-            LOG.severe("The gate '" + getPojo().getName()
-                    + "' is not linked to any any environment");
+            LOG.error("The gate \"{}\" is not linked to any any environment", getPojo().getName());
         }
 
         if (to != from) {
@@ -264,14 +262,14 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         } else {
             //the gate interects two equals zones
             if (from != null) {
-                LOG.warning("The gate '" + getPojo().getName() + "' connects the same zones ["
+                LOG.warn("The gate \"" + getPojo().getName() + "\" connects the same zones ["
                         + from.getPojo().getName() + "; " + to.getPojo().getName()
-                        + "]. This is not possible.");
+                        + "]. This is not possible");
             }
         }
 
         //notify if the passage connect two rooms
-        LOG.config("The gate '" + getPojo().getName() + "' connects " + from + " to " + to);
+        LOG.info("The gate \"" + getPojo().getName() + "\" connects [" + from + "] to [" + to + "]");
     }
 
     /**
@@ -283,8 +281,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         a.setName("Set " + getPojo().getName() + " openness to 50%");
         a.setDescription("the " + getPojo().getName() + " changes its openness");
         a.setReceiver("app.events.sensors.behavior.request.objects");
-        a.setProperty("object",
-                getPojo().getName());
+        a.setProperty("object", getPojo().getName());
         a.setProperty("behavior", BEHAVIOR_OPENNESS);
         a.setProperty("value", "50");
 
@@ -292,8 +289,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         b.setName("Increase " + getPojo().getName() + " openness");
         b.setDescription("increases " + getPojo().getName() + " openness of one step");
         b.setReceiver("app.events.sensors.behavior.request.objects");
-        b.setProperty("object",
-                getPojo().getName());
+        b.setProperty("object", getPojo().getName());
         b.setProperty("behavior", BEHAVIOR_OPENNESS);
         b.setProperty("value", "next");
 
@@ -301,8 +297,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         c.setName("Decrease " + getPojo().getName() + " openness");
         c.setDescription("decreases " + getPojo().getName() + " openness of one step");
         c.setReceiver("app.events.sensors.behavior.request.objects");
-        c.setProperty("object",
-                getPojo().getName());
+        c.setProperty("object", getPojo().getName());
         c.setProperty("behavior", BEHAVIOR_OPENNESS);
         c.setProperty("value", "previous");
 
@@ -342,8 +337,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         h.setName("Open " + getPojo().getName());
         h.setDescription(getPojo().getSimpleType() + " opens");
         h.setReceiver("app.events.sensors.behavior.request.objects");
-        h.setProperty("object",
-                getPojo().getName());
+        h.setProperty("object", getPojo().getName());
         h.setProperty("behavior", BEHAVIOR_OPEN);
         h.setProperty("value", "true");
 
@@ -351,8 +345,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         i.setName("Close " + getPojo().getName());
         i.setDescription(getPojo().getSimpleType() + " closes");
         i.setReceiver("app.events.sensors.behavior.request.objects");
-        i.setProperty("object",
-                getPojo().getName());
+        i.setProperty("object", getPojo().getName());
         i.setProperty("behavior", BEHAVIOR_OPEN);
         i.setProperty("value", "false");
 
@@ -360,8 +353,7 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         l.setName("Switch " + getPojo().getName() + " open state");
         l.setDescription("closes/opens " + getPojo().getName());
         l.setReceiver("app.events.sensors.behavior.request.objects");
-        l.setProperty("object",
-                getPojo().getName());
+        l.setProperty("object", getPojo().getName());
         l.setProperty("behavior", BEHAVIOR_OPEN);
         l.setProperty("value", "opposite");
 
@@ -412,27 +404,23 @@ public class Gate extends EnvObjectLogic implements GenericGate {
         Trigger clicked = new Trigger();
         clicked.setName("When " + this.getPojo().getName() + " is clicked");
         clicked.setChannel("app.event.sensor.object.behavior.clicked");
-        clicked.getPayload().addStatement("object.name",
-                this.getPojo().getName());
+        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
         clicked.getPayload().addStatement("click", "SINGLE_CLICK");
 
         Trigger turnsOpen = new Trigger();
         turnsOpen.setName(this.getPojo().getName() + " becomes open");
         turnsOpen.setChannel("app.event.sensor.object.behavior.change");
-        turnsOpen.getPayload().addStatement("object.name",
-                this.getPojo().getName());
+        turnsOpen.getPayload().addStatement("object.name", this.getPojo().getName());
         turnsOpen.getPayload().addStatement("object.behavior." + BEHAVIOR_OPEN, "true");
 
         Trigger turnsClosed = new Trigger();
         turnsClosed.setName(this.getPojo().getName() + " becomes closed");
         turnsClosed.setChannel("app.event.sensor.object.behavior.change");
-        turnsClosed.getPayload().addStatement("object.name",
-                this.getPojo().getName());
+        turnsClosed.getPayload().addStatement("object.name", this.getPojo().getName());
         turnsClosed.getPayload().addStatement("object.behavior." + BEHAVIOR_OPEN, "false");
 
         triggerRepository.create(clicked);
         triggerRepository.create(turnsOpen);
         triggerRepository.create(turnsClosed);
     }
-    private static final Logger LOG = Logger.getLogger(Gate.class.getName());
 }

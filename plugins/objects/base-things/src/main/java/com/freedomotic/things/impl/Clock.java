@@ -25,7 +25,7 @@ import com.freedomotic.reactions.Trigger;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class Clock
         extends EnvObjectLogic {

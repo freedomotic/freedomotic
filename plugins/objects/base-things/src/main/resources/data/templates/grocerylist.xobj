@@ -27,7 +27,7 @@
       <intersecable>false</intersecable>
       <offset x="0" y="0"/>
       <rotation>0.0</rotation>
-      <icon>grocerylist.gif</icon>
+      <icon>grocerylist.png</icon>
       <fillColor>#000000</fillColor>
       <textColor>#000000</textColor>
       <borderColor>#000000</borderColor>

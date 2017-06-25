@@ -1,37 +1,34 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
- * http://freedomotic.com
+ * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Freedomotic; see the file COPYING.  If not, see
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package com.freedomotic.things.impl;
 
-import com.freedomotic.things.impl.ElectricDevice;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PowerMeter
         extends ElectricDevice {
 
-    private static final Logger LOG = Logger.getLogger(GenericSensor.class.getName()); 
+    private static final Logger LOG = LoggerFactory.getLogger(GenericSensor.class.getName());
     private RangedIntBehaviorLogic current;
     private RangedIntBehaviorLogic voltage;
     private RangedIntBehaviorLogic power;
@@ -45,22 +42,22 @@ public class PowerMeter
         current.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
-//ok here, just trying to set minimum                	
-            		onRangeValue(current.getMin(), params, fireCommand);
-            	} else {
-//there is an hardware read error
-            	}
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                    //ok here, just trying to set minimum                	
+                    onRangeValue(current.getMin(), params, fireCommand);
+                } else {
+                    //there is an hardware read error
+                }
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set maximum                	
-            		onRangeValue(current.getMax(), params, fireCommand);
-            	} else {
+                    onRangeValue(current.getMax(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
@@ -79,22 +76,22 @@ public class PowerMeter
         voltage.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set minimum                	
-            		onRangeValue(voltage.getMin(), params, fireCommand);
-            	} else {
+                    onRangeValue(voltage.getMin(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set maximum                	
-            		onRangeValue(voltage.getMax(), params, fireCommand);
-            	} else {
+                    onRangeValue(voltage.getMax(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
@@ -113,22 +110,22 @@ public class PowerMeter
         power.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set minimum                	
-            		onRangeValue(power.getMin(), params, fireCommand);
-            	} else {
+                    onRangeValue(power.getMin(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set maximum                	
-            		onRangeValue(power.getMax(), params, fireCommand);
-            	} else {
+                    onRangeValue(power.getMax(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
@@ -147,22 +144,22 @@ public class PowerMeter
         powerFactor.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set minimum                	
-            		onRangeValue(powerFactor.getMin(), params, fireCommand);
-            	} else {
+                    onRangeValue(powerFactor.getMin(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set maximum                	
-            		onRangeValue(powerFactor.getMax(), params, fireCommand);
-            	} else {
+                    onRangeValue(powerFactor.getMax(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
@@ -181,22 +178,22 @@ public class PowerMeter
         energy.addListener(new RangedIntBehaviorLogic.Listener() {
             @Override
             public void onLowerBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set minimum                	
-            		onRangeValue(energy.getMin(), params, fireCommand);
-            	} else {
+                    onRangeValue(energy.getMin(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
             public void onUpperBoundValue(Config params, boolean fireCommand) {
-            	if (params.getProperty("value.original").equals(params.getProperty("value"))) {
+                if (params.getProperty("value.original").equals(params.getProperty("value"))) {
 //ok here, just trying to set maximum                	
-            		onRangeValue(energy.getMax(), params, fireCommand);
-            	} else {
+                    onRangeValue(energy.getMax(), params, fireCommand);
+                } else {
 //there is an hardware read error
-            	}
+                }
             }
 
             @Override
@@ -225,7 +222,7 @@ public class PowerMeter
     }
 
     private void setCurrent(int value) {
-        LOG.config("Setting behavior 'current' of object '" + getPojo().getName() + "' to "
+        LOG.info("Setting behavior \"current\" of thing \"" + getPojo().getName() + "\" to "
                 + value);
         current.setValue(value);
         getPojo().setCurrentRepresentation(0);
@@ -243,7 +240,7 @@ public class PowerMeter
     }
 
     private void setVoltage(int value) {
-        LOG.config("Setting behavior 'voltage' of object '" + getPojo().getName() + "' to "
+        LOG.info("Setting behavior \"voltage\" of thing \"" + getPojo().getName() + "\" to "
                 + value);
         voltage.setValue(value);
         getPojo().setCurrentRepresentation(0);
@@ -261,7 +258,7 @@ public class PowerMeter
     }
 
     private void setPower(int value) {
-        LOG.info("Setting behavior 'power' of object '" + getPojo().getName() + "' to " + value);
+        LOG.info("Setting behavior \"power\" of thing \"" + getPojo().getName() + "\" to " + value);
         power.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);
@@ -278,7 +275,7 @@ public class PowerMeter
     }
 
     private void setPowerFactor(int value) {
-        LOG.config("Setting behavior 'power-factor' of object '" + getPojo().getName() + "' to "
+        LOG.info("Setting behavior \"power-factor\" of thing \"" + getPojo().getName() + "\"' to "
                 + value);
         powerFactor.setValue(value);
         getPojo().setCurrentRepresentation(0);
@@ -296,7 +293,7 @@ public class PowerMeter
     }
 
     private void setEnergy(int value) {
-        LOG.info("Setting behavior 'energy' of object '" + getPojo().getName() + "' to " + value);
+        LOG.info("Setting behavior \"energy\" of thing \"" + getPojo().getName() + "\" to " + value);
         energy.setValue(value);
         getPojo().setCurrentRepresentation(0);
         setChanged(true);

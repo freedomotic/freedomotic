@@ -26,7 +26,7 @@ import com.freedomotic.things.EnvObjectLogic;
 
 /**
  *
- * @author Enrico
+ * @author Enrico Nicoletti
  */
 
 public class Decoration

@@ -31,7 +31,7 @@
     <view>
       <tangible>true</tangible>
       <intersecable>false</intersecable>
-      <offset x="125" y="297"/>
+      <offset x="0" y="0"/>
       <rotation>0.0</rotation>
       <icon>door.png</icon>
       <fillColor>#eee9e9</fillColor>
@@ -41,9 +41,9 @@
       <scaleY>0.0</scaleY>
       <shape class="polygon">
         <point x="0" y="0"/>
-        <point x="60" y="0"/>
-        <point x="60" y="8"/>
-        <point x="0" y="8"/>
+        <point x="64" y="0"/>
+        <point x="64" y="64"/>
+        <point x="0" y="64"/>
       </shape>
     </view>
     <view>

@@ -25,16 +25,17 @@ import com.freedomotic.model.object.RangedIntBehavior;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.behaviors.RangedIntBehaviorLogic;
 import com.freedomotic.reactions.Trigger;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class Thermometer
         extends EnvObjectLogic {
 
-    private static final Logger LOG = Logger.getLogger(Thermometer.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Thermometer.class.getName());
     private RangedIntBehaviorLogic temperature;
     private static final String BEHAVIOR_TEMPERATURE = "temperature";
 
@@ -87,7 +88,7 @@ public class Thermometer
     }
 
     private void setTemperature(int value) {
-        LOG.config("Setting behavior \"temperature\" of thing \"" + getPojo().getName() + "\" to "
+        LOG.info("Setting behavior \"temperature\" of thing \"" + getPojo().getName() + "\" to "
                 + value);
         temperature.setValue(value);
         getPojo().setCurrentRepresentation(0);
@@ -106,8 +107,7 @@ public class Thermometer
         Trigger clicked = new Trigger();
         clicked.setName("When " + this.getPojo().getName() + " is clicked");
         clicked.setChannel("app.event.sensor.object.behavior.clicked");
-        clicked.getPayload().addStatement("object.name",
-                this.getPojo().getName());
+        clicked.getPayload().addStatement("object.name", this.getPojo().getName());
         clicked.getPayload().addStatement("click", ObjectReceiveClick.SINGLE_CLICK);
         clicked.setPersistence(false);
         triggerRepository.create(clicked);
@@ -115,8 +115,7 @@ public class Thermometer
         Trigger temperatureGreaterThan = new Trigger();
         temperatureGreaterThan.setName("When " + this.getPojo().getName() + " temperature is greater than 20 C");
         temperatureGreaterThan.setChannel("app.event.sensor.object.behavior.change");
-        temperatureGreaterThan.getPayload().addStatement("object.name",
-                this.getPojo().getName());
+        temperatureGreaterThan.getPayload().addStatement("object.name", this.getPojo().getName());
         temperatureGreaterThan.getPayload().addStatement("AND", "object.behavior." + BEHAVIOR_TEMPERATURE, "GREATER_THAN", "20");
         temperatureGreaterThan.setPersistence(false);
         triggerRepository.create(temperatureGreaterThan);
@@ -124,8 +123,7 @@ public class Thermometer
         Trigger temperatureLessThan = new Trigger();
         temperatureLessThan.setName("When " + this.getPojo().getName() + " temperature is less than 20 C");
         temperatureLessThan.setChannel("app.event.sensor.object.behavior.change");
-        temperatureLessThan.getPayload().addStatement("object.name",
-                this.getPojo().getName());
+        temperatureLessThan.getPayload().addStatement("object.name", this.getPojo().getName());
         temperatureLessThan.getPayload().addStatement("AND", "object.behavior." + BEHAVIOR_TEMPERATURE, "LESS_THAN", "20");
         temperatureLessThan.setPersistence(false);
         triggerRepository.create(temperatureLessThan);

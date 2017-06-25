@@ -26,7 +26,7 @@ import com.freedomotic.behaviors.TaxonomyBehaviorLogic;
 
 /**
  *
- * @author enrico
+ * @author Enrico Nicoletti
  */
 public class Wishlist
         extends EnvObjectLogic {
