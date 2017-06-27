@@ -29,6 +29,8 @@ import com.freedomotic.api.EventTemplate;
  */
 public class AccountEvent extends EventTemplate {
 
+    private final String DEFAULT_DESTINATION = "app.event.sensor.account.change";
+
     public enum AccountActions {
 
         CREATED, DELETED, BANNED, LOGIN, LOGOUT
@@ -53,7 +55,7 @@ public class AccountEvent extends EventTemplate {
      */
     @Override
     public String getDefaultDestination() {
-        return "app.event.sensor.account.change";
+        return DEFAULT_DESTINATION;
     }
 
 }

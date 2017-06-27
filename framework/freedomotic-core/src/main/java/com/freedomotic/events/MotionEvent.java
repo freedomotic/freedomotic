@@ -31,6 +31,7 @@ public class MotionEvent
         extends EventTemplate {
 
     private static final long serialVersionUID = 4965942901211451802L;
+    private final String DEFAULT_DESTINATION = "app.event.sensor.motion";
     private String zoneName;
     private int motionArea;
     private int centerOfGravity;
@@ -171,7 +172,7 @@ public class MotionEvent
      */
     @Override
     public String getDefaultDestination() {
-        return "app.event.sensor.motion";
+        return DEFAULT_DESTINATION;
     }
 
     /**

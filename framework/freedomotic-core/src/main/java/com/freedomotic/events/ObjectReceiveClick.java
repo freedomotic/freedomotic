@@ -35,6 +35,7 @@ public class ObjectReceiveClick
         extends EventTemplate {
 
     private static final long serialVersionUID = 8985824879207319982L;
+    private final String DEFAULT_DESTINATION = "app.event.sensor.object.behavior.clicked";
 
     /**
      *
@@ -80,6 +81,6 @@ public class ObjectReceiveClick
      */
     @Override
     public String getDefaultDestination() {
-        return "app.event.sensor.object.behavior.clicked";
+        return DEFAULT_DESTINATION;
     }
 }

@@ -46,7 +46,7 @@ public class ObjectHasChangedBehavior extends EventTemplate {
 
     private static final long serialVersionUID = 6892968576173017195L;
     private static final Logger LOG = LoggerFactory.getLogger(ObjectHasChangedBehavior.class.getName());
-  
+    private final String DEFAULT_DESTINATION = "app.event.sensor.object.behavior.change";
 
     /**
      *
@@ -98,6 +98,6 @@ public class ObjectHasChangedBehavior extends EventTemplate {
      */
     @Override
     public String getDefaultDestination() {
-        return "app.event.sensor.object.behavior.change";
+        return DEFAULT_DESTINATION;
     }
 }

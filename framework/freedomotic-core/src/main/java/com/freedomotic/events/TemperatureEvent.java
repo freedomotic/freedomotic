@@ -30,6 +30,7 @@ public class TemperatureEvent
         extends EventTemplate {
 
     private static final long serialVersionUID = 2965942901211451802L;
+    private final String DEFAULT_DESTINATION = "app.event.sensor.temperature";
 
     private int temperature;
     private String zone;
@@ -70,6 +71,6 @@ public class TemperatureEvent
      */
     @Override
     public String getDefaultDestination() {
-        return "app.event.sensor.temperature";
+        return DEFAULT_DESTINATION;
     }
 }

@@ -30,6 +30,7 @@ import com.freedomotic.things.GenericPerson;
  */
 public final class PersonExitsZone extends EventTemplate {
 
+    private final String DEFAULT_DESTINATION = "app.event.sensor.person.zone.exit";
     private final String uuid;
     private final String zoneName;
 
@@ -47,7 +48,7 @@ public final class PersonExitsZone extends EventTemplate {
 
     @Override
     public String getDefaultDestination() {
-        return "app.event.sensor.person.zone.exit";
+        return DEFAULT_DESTINATION;
     }
 
     public String getPersonId() {

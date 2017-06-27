@@ -29,6 +29,8 @@ import com.freedomotic.model.environment.Zone;
 public class LuminosityEvent
         extends EventTemplate {
 
+    private final String DEFAULT_DESTINATION = "app.event.sensor.luminosity";
+
     private static final long serialVersionUID = 1605869382477368794L;
     private int luminosity;
     private String zone;
@@ -70,6 +72,6 @@ public class LuminosityEvent
      */
     @Override
     public String getDefaultDestination() {
-        return "app.event.sensor.luminosity";
+        return DEFAULT_DESTINATION;
     }
 }

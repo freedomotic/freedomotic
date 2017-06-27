@@ -31,7 +31,7 @@ import com.freedomotic.api.EventTemplate;
 public class GenericEvent extends EventTemplate {
 
     private static final long serialVersionUID = 6029054631809171990L;
-    private String destination = "app.event.sensor";
+    private String DEFAULT_DESTINATION = "app.event.sensor";
 
     /**
      *
@@ -52,7 +52,7 @@ public class GenericEvent extends EventTemplate {
      */
     @Override
     public String getDefaultDestination() {
-        return destination;
+        return DEFAULT_DESTINATION;
     }
 
     /**
@@ -61,6 +61,6 @@ public class GenericEvent extends EventTemplate {
      * @param destination the channel to set
      */
     public void setDestination(String destination) {
-        this.destination = destination;
+        this.DEFAULT_DESTINATION = destination;
     }
 }

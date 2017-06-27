@@ -31,6 +31,7 @@ public class PluginHasChanged
         extends EventTemplate {
 
     private static final long serialVersionUID = 5203339184820441643L;
+    private final String DEFAULT_DESTINATION = "app.event.sensor.plugin.change";
 
     /**
      *
@@ -87,8 +88,7 @@ public class PluginHasChanged
      */
     public PluginHasChanged(Object source, String pluginName, PluginActions action) {
         payload.addStatement("plugin", pluginName);
-        payload.addStatement("action",
-                action.toString());
+        payload.addStatement("action", action.toString());
     }
 
     /**
@@ -104,6 +104,6 @@ public class PluginHasChanged
      */
     @Override
     public String getDefaultDestination() {
-        return "app.event.sensor.plugin.change";
+        return DEFAULT_DESTINATION;
     }
 }

@@ -33,6 +33,7 @@ public class ZoneHasChanged
         extends EventTemplate {
 
     private static final long serialVersionUID = -2676123835322299252L;
+    private final String DEFAULT_DESTINATION = "app.event.sensor.environment.zone.change";
 
     /**
      *
@@ -44,15 +45,7 @@ public class ZoneHasChanged
         payload.addStatement("zone.name", zone.getName());
         payload.addStatement("zone.description", zone.getDescription());
         payload.addStatement("zone.uuid", zone.getUuid());
-        //TODO: just a reminder for this property
-        //    Room room = null; 
-        //    if (room != null) {
-        //        payload.addStatement("zone.type", "room");
-        //    } else {
-
         payload.addStatement("zone.type", "zone");
-
-        //    }
     }
 
     /**
@@ -68,6 +61,6 @@ public class ZoneHasChanged
      */
     @Override
     public String getDefaultDestination() {
-        return "app.event.sensor.environment.zone.change";
+        return DEFAULT_DESTINATION;
     }
 }

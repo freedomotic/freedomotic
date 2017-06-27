@@ -29,6 +29,7 @@ public class ScheduledEvent
         extends EventTemplate {
 
     private static final long serialVersionUID = 7508683624189475354L;
+    private final String DEFAULT_DESTINATION = "app.event.sensor.calendar.event.schedule";
 
     /**
      *
@@ -60,6 +61,6 @@ public class ScheduledEvent
      */
     @Override
     public String getDefaultDestination() {
-        return "app.event.sensor.calendar.event.schedule";
+        return DEFAULT_DESTINATION;
     }
 }
