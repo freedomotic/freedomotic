@@ -87,8 +87,8 @@ public class PluginHasChanged
      * @param action
      */
     public PluginHasChanged(Object source, String pluginName, PluginActions action) {
-        payload.addStatement("plugin", pluginName);
-        payload.addStatement("action", action.toString());
+        payload.addStatement("plugin.name", pluginName);
+        payload.addStatement("plugin.action", action.toString());
     }
 
     /**

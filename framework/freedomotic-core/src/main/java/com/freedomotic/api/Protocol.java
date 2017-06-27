@@ -144,11 +144,15 @@ public abstract class Protocol extends Plugin {
                         sensorThread.start();
                         setStatus(PluginStatus.RUNNING);
                         PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
+                        event.getPayload().addStatement("plugin.status", getStatus());
                         getBusService().send(event);
                     } catch (Exception e) {
                         setStatus(PluginStatus.FAILED);
                         setDescription("Plugin starting FAILED. see logs for details.");
-                        LOG.error("Plugin ''" + getName() + "'' starting FAILED: " + e.getLocalizedMessage(), e);
+                        LOG.error("Plugin \"" + getName() + "\" starting FAILED: " + e.getLocalizedMessage(), e);
+                        PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
+                        event.getPayload().addStatement("plugin.status", getStatus());
+                        getBusService().send(event);
                     }
 
                 }
@@ -176,13 +180,17 @@ public abstract class Protocol extends Plugin {
                             notifyError(shutdownEx.getMessage());
                         }
                         sensorThread = null;
-                        PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
-                        getBusService().send(event);
                         setStatus(PluginStatus.STOPPED);
+                        PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.STOP);
+                        event.getPayload().addStatement("plugin.status", getStatus());
+                        getBusService().send(event);
                     } catch (Exception e) {
                         setStatus(PluginStatus.FAILED);
                         setDescription("Plugin stopping FAILED. see logs for details.");
                         LOG.error("Error stopping plugin \"" + getName() + "\": " + e.getLocalizedMessage(), e);
+                        PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
+                        event.getPayload().addStatement("plugin.status", getStatus());
+                        getBusService().send(event);
                     }
                 }
             };

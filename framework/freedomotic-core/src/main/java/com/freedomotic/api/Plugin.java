@@ -211,6 +211,9 @@ public class Plugin implements Client, BusConsumer {
         setDescription(message);
         //plugin is now set as STOPPED, but should be marked as FAILED
         currentPluginStatus = PluginStatus.FAILED;
+        PluginHasChanged event = new PluginHasChanged(this, getName(), PluginHasChanged.PluginActions.START);
+        event.getPayload().addStatement("plugin.status", getStatus());
+        getBusService().send(event);
     }
 
     /**
