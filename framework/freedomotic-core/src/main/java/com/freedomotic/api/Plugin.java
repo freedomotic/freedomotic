@@ -62,7 +62,6 @@ public class Plugin implements Client, BusConsumer {
     private volatile PluginStatus currentPluginStatus = PluginStatus.STOPPED;
     @XmlElement
     public Config configuration;
-    @Deprecated
     protected JFrame gui;
     @XmlElement
     protected String description;
@@ -133,8 +132,9 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Returns the API reference.
      *
-     * @return
+     * @return the API reference
      */
     public API getApi() {
         return api;
@@ -165,9 +165,7 @@ public class Plugin implements Client, BusConsumer {
             this.description = description;
 
             try {
-                PluginHasChanged event = new PluginHasChanged(this,
-                        this.getName(),
-                        PluginActions.DESCRIPTION);
+                PluginHasChanged event = new PluginHasChanged(this, this.getName(), PluginActions.DESCRIPTION);
                 busService.send(event);
             } catch (Exception e) {
                 LOG.warn("Cannot notify new plugin description for \"" + getName() + "\"", e);
@@ -196,7 +194,7 @@ public class Plugin implements Client, BusConsumer {
      * Notifies a critical error on console/logfile, shows a callout on the
      * jfrontend and stops the plugin.
      *
-     * @param message the error message
+     * @param message the error message to print
      */
     public void notifyCriticalError(String message) {
         //Log the error on console/logfiles
@@ -242,8 +240,9 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Gets the plugin configuration.
      *
-     * @return
+     * @return the plugin configuration
      */
     @Override
     public final Config getConfiguration() {
@@ -287,8 +286,9 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Binds the GUI to the plugin (used by JFrontend)
      *
-     * @param window
+     * @param window GUI jframe to bind
      */
     public void bindGuiToPlugin(JFrame window) {
         gui = window;
@@ -297,10 +297,9 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
-     *
+     * Shows the plugin GUI (used by JFrontend)
      */
     @Override
-    @Deprecated
     public void showGui() {
         if (!isRunning()) {
             start();
@@ -311,15 +310,14 @@ public class Plugin implements Client, BusConsumer {
         if (gui != null) {
             gui.setVisible(true);
         } else {
-            LOG.warn("ERROR: plugin gui is null");
+            LOG.error("Plugin GUI is null");
         }
     }
 
     /**
-     *
+     * Hides the plugin GUI (used by JFrontend)
      */
     @Override
-    @Deprecated
     public void hideGui() {
         onHideGui();
 
@@ -490,7 +488,7 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
-     *
+     * Registers a bus messages listener.
      *
      */
     private void register() {
@@ -499,9 +497,9 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Gets the command channel to listen.
      *
-     *
-     * @return
+     * @return the command channel to listen
      */
     private String getCommandsChannelToListen() {
         String defaultQueue = ACTUATORS_QUEUE_DOMAIN + category + "." + shortName;
@@ -509,7 +507,6 @@ public class Plugin implements Client, BusConsumer {
 
         if (getReadQueue().equalsIgnoreCase("undefined")) {
             listenOn = defaultQueue + ".in";
-
             return listenOn;
         } else {
             return customizedQueue;
@@ -519,14 +516,12 @@ public class Plugin implements Client, BusConsumer {
     /**
      *
      */
-    @Deprecated
     protected void onShowGui() {
     }
 
     /**
      *
      */
-    @Deprecated
     protected void onHideGui() {
     }
 
@@ -547,6 +542,7 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Returns the plugin name.
      *
      * @return the plugin name
      */
@@ -556,12 +552,18 @@ public class Plugin implements Client, BusConsumer {
     }
 
     /**
+     * Loads plugin permissions from manifest file.
      *
      */
     public void loadPermissionsFromManifest() {
         getApi().getAuth().setPluginPrivileges(this, configuration.getStringProperty("permissions", getApi().getAuth().getPluginDefaultPermission()));
     }
 
+    /**
+     * Gets the bus service.
+     *
+     * @return the bus service
+     */
     public BusService getBusService() {
         return busService;
     }
