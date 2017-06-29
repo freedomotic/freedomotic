@@ -80,6 +80,12 @@
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>${jersey.version}</version>
         </dependency>
+         <!-- Jersey guava support to repackaged Guava classes-->
+        <dependency>
+   	 		<groupId>org.glassfish.jersey.bundles.repackaged</groupId>
+    		<artifactId>jersey-guava</artifactId>
+    		<version>${jersey.version}</version>
+		</dependency>
         <dependency>
             <groupId>com.wordnik</groupId>
             <artifactId>swagger-jaxrs_2.11</artifactId>
