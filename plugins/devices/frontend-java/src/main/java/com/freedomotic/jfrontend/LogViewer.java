@@ -19,15 +19,16 @@
  */
 package com.freedomotic.jfrontend;
 
+import java.io.IOException;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
-import java.io.IOException;
-import java.util.logging.Filter;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -38,7 +39,7 @@ public class LogViewer extends Protocol {
     //get root logger
     private static final Logger logger = Logger.getLogger("com.freedomotic");
 
-    private LogWindowHandler handler = null;
+    private Log4jAppender handler = null;
 
     /**
      *
@@ -55,20 +56,10 @@ public class LogViewer extends Protocol {
 
     @Override
     protected void onStart() {
-        handler = LogWindowHandler.getInstance(getApi().getI18n());
-        handler.setFilter(new Filter() {
-            @Override
-            public boolean isLoggable(LogRecord record) {
-                //logs every message
-                return true;
-            }
-        });
-        handler.setLevel(Level.ALL);
-        logger.addHandler(handler);
-        //IMPORTANT!!!!
-        logger.setLevel(Level.ALL);
+    	logger.setLevel(Level.ALL);
+        handler = Log4jAppender.getInstance(getApi().getI18n(), logger);
+        logger.addAppender(handler);
         bindGuiToPlugin(handler.window);
-//        showGui();
     }
 
     @Override
@@ -76,7 +67,7 @@ public class LogViewer extends Protocol {
         //free memory
         hideGui();
         gui = null;
-        logger.removeHandler(handler);
+        logger.removeAppender(handler);
         handler = null;
     }
 
