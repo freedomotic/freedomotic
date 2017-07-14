@@ -59,7 +59,7 @@
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots</artifactId>
-            <version>2.4.4.5</version>
+            <version>3.1.2</version>
         </dependency>
     </dependencies>
     <build>

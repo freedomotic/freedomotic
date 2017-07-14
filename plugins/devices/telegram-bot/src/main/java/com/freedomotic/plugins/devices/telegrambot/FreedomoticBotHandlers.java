@@ -37,7 +37,6 @@ import com.freedomotic.environment.Room;
 import com.freedomotic.events.ObjectReceiveClick;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.model.environment.Zone;
-import com.freedomotic.model.object.Behavior;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.things.EnvObjectLogic;
@@ -62,15 +61,15 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 public class FreedomoticBotHandlers extends TelegramLongPollingBot {
 
     private static final Logger LOG = LoggerFactory.getLogger(FreedomoticBotHandlers.class.getName());
-    private String botToken;
-    private String botUsername;
-    private String chatID;
-    final private String START = "✅ ";
-    final private String STOP = "⛔️ ";
-    final private String DELETE = "🚫 ";
-    final private String BACK = "⬅️ ";
-    final private String NEXT = "➡️ ";
-    final private API api;
+    private final String botToken;
+    private final String botUsername;
+    private final String chatID;
+    private final String START = "✅ ";
+    private final String STOP = "⛔️ ";
+    private final String DELETE = "🚫 ";
+    private final String BACK = "⬅️ ";
+    private final String NEXT = "➡️ ";
+    private final API api;
     private final I18n i18n;
 
     private enum excludedPlugins {

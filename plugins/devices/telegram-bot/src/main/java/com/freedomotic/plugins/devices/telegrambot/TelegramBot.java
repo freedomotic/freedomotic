@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
+import org.telegram.telegrambots.generics.BotSession;
 //import org.telegram.telegrambots.api.methods.send.SendMessage;
 
 /**
@@ -45,6 +46,7 @@ public class TelegramBot
     private final String BOT_USERNAME = configuration.getStringProperty("bot-username", "<bot-username>");
     private final String CHAT_ID = configuration.getStringProperty("chat-id", "<chat-id>");
     private TelegramBotsApi telegramBotsApi;
+    private BotSession botSession;
     private FreedomoticBotHandlers fdBotHandler;
 
     /**
@@ -72,12 +74,12 @@ public class TelegramBot
 
     @Override
     protected void onStart() {
-        
-        ApiContextInitializer.init(); 
+
+        ApiContextInitializer.init();
         telegramBotsApi = new TelegramBotsApi();
         fdBotHandler = new FreedomoticBotHandlers(BOT_TOKEN, BOT_USERNAME, CHAT_ID, this);
         try {
-            telegramBotsApi.registerBot(fdBotHandler);
+            botSession = telegramBotsApi.registerBot(fdBotHandler);
         } catch (TelegramApiException e) {
             LOG.error("TelegramApi Exception ", Freedomotic.getStackTraceInfo(e));
         }
@@ -87,6 +89,14 @@ public class TelegramBot
     @Override
     protected void onStop() {
         
+        try {
+            if (botSession != null) {
+                botSession.stop();
+                botSession = null;
+            }
+        } catch (Exception e) {
+            LOG.error("Catch exception", e);
+        }
         LOG.info("Telegram Bot plugin stopped");
     }
 
