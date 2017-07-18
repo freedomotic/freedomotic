@@ -75,8 +75,7 @@ class ClientStorageInMemory implements ClientStorage {
                                 "Plugin",
                                 "Not compatible with this framework version v" + Info.getVersion());
                 clients.add(client);
-                LOG.warn("Plugin \"{}\" is not compatible with this framework version v{}",
-                        new Object[]{c.getName(), Info.getVersion()});
+                LOG.warn("Plugin \"{}\" is not compatible with this framework version v{}", c.getName(), Info.getVersion());
             }
 
             PluginHasChanged event
@@ -229,29 +228,18 @@ class ClientStorageInMemory implements ClientStorage {
 
         //checking framework version compatibility
         //required version must be older (or equal) then current version
-        if (requiredMajor == Info.getMajor()) {
-            if ((getOldestVersion(requiredMajor + "." + requiredMinor + "." + requiredBuild,
-                    Info.getVersion()) <= 0)) {
-                return true;
-            }
-        }
-
-        return false;
+        return requiredMajor == Info.getMajor() && getOldestVersion(requiredMajor + "." + requiredMinor + "." + requiredBuild, Info.getVersion()) <= 0;
     }
 
     private int getVersionProperty(Properties properties, String key) {
-        //if property is not specified returns Integer.MAX_VALUE so it never match
+        //if property is not specified returns Integer.MAX_VALUE so it never matches
         //if is a string returns 0 to match any value with "x"
         try {
             int value;
-
             if (properties.getProperty(key).equalsIgnoreCase("x")) {
                 value = 0;
             } else {
-                value
-                        = Integer.parseInt(properties.getProperty(
-                                        key,
-                                        new Integer(Integer.MAX_VALUE).toString()));
+                value = Integer.parseInt(properties.getProperty(key, Integer.toString(Integer.MAX_VALUE)));
             }
 
             return value;
@@ -264,18 +252,18 @@ class ClientStorageInMemory implements ClientStorage {
      * Calculates the oldest version between two version string
      * MAJOR.MINOR.BUILD (eg: 5.3.1)
      *
-     * @param str1 first version string 5.3.0
-     * @param str2 second version string 5.3.1
+     * @param clientVersion first version string 5.3.0
+     * @param infoVersion second version string 5.3.1
      * @return -1 if str1 is older then str2, 0 if str1 equals str2, 1 if str2
      * is older then str1
      */
-    private int getOldestVersion(String str1, String str2) {
-        String MAX = Integer.toString(Integer.MAX_VALUE).toString();
-        str1 = str1.replaceAll("x", MAX);
-        str2 = str2.replaceAll("x", MAX);
+    private int getOldestVersion(String clientVersion, String infoVersion) {
+        String maxInteger = Integer.toString(Integer.MAX_VALUE);
+        String val1 = clientVersion.replaceAll("x", maxInteger);
+        String val2 = infoVersion.replaceAll("x", maxInteger);
 
-        String[] vals1 = str1.split("\\.");
-        String[] vals2 = str2.split("\\.");
+        String[] vals1 = val1.split("\\.");
+        String[] vals2 = val2.split("\\.");
         int i = 0;
 
         while ((i < vals1.length) && (i < vals2.length) && vals1[i].equals(vals2[i])) {
@@ -283,14 +271,10 @@ class ClientStorageInMemory implements ClientStorage {
         }
 
         if ((i < vals1.length) && (i < vals2.length)) {
-            int diff = new Integer(vals1[i]).compareTo(new Integer(vals2[i]));
-
-            return (diff < 0) ? (-1) : ((diff == 0) ? 0 : 1);
+            return Integer.compare(new Integer(vals1[i]), new Integer(vals2[i]));
         }
-
-        int result = (vals1.length < vals2.length) ? (-1) : ((vals1.length == vals2.length) ? 0 : 1);
-
-        return result;
+        
+        return Integer.compare(vals1.length, vals2.length);
     }
 
     /**
@@ -329,10 +313,12 @@ class ClientStorageInMemory implements ClientStorage {
 
                     @Override
                     public void start() {
+                    	LOG.debug("start placeholder");
                     }
 
                     @Override
                     public void stop() {
+                    	LOG.debug("stop placeholder");
                     }
 
                     @Override
@@ -342,10 +328,12 @@ class ClientStorageInMemory implements ClientStorage {
 
                     @Override
                     public void showGui() {
+                    	LOG.debug("Show GUI placeholder");
                     }
 
                     @Override
                     public void hideGui() {
+                    	LOG.debug("Hide GUI placeholder");
                     }
                 };
 
