@@ -35,6 +35,8 @@ import com.freedomotic.settings.Info;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.jms.ObjectMessage;
@@ -463,8 +465,10 @@ public class Plugin implements Client, BusConsumer {
 
     private void init() {
         if (configuration == null) {
-            //try to load it from file
-            deserializeManifest(path);
+        	if(path!=null) 
+        		deserializeManifest(path);
+        	else
+        		configuration = new Config();
         }
         description = configuration.getStringProperty("description", "Missing plugin manifest");
         setDescription(description);
