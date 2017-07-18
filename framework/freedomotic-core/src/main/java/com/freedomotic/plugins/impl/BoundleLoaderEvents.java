@@ -19,16 +19,17 @@
  */
 package com.freedomotic.plugins.impl;
 
-import com.freedomotic.api.Client;
-import com.freedomotic.app.Freedomotic;
-import com.freedomotic.exceptions.PluginLoadingException;
-import com.freedomotic.plugins.impl.BoundleLoader;
-import com.freedomotic.util.JarFilter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.freedomotic.api.Client;
+import com.freedomotic.app.Freedomotic;
+import com.freedomotic.exceptions.PluginLoadingException;
+import com.freedomotic.util.JarFilter;
 
 /**
  *
@@ -44,8 +45,7 @@ class BoundleLoaderEvents implements BoundleLoader {
     }
 
     @Override
-    public List<Client> loadBoundle()
-            throws PluginLoadingException {
+    public List<Client> loadBoundle() throws PluginLoadingException {
         File dir = new File(path.getAbsolutePath());
         List<Client> results = new ArrayList<>();
 
@@ -60,33 +60,43 @@ class BoundleLoaderEvents implements BoundleLoader {
         if (jarList != null) {
             //the list of files in the jar
             for (File jar : jarList) {
-                if (jar.isFile()) {
-                    List<String> classNames = null;
-
-                    try {
-                        classNames = BoundleLoaderFactory.getClassesInside(jar.getAbsolutePath());
-
-                        for (String className : classNames) {
-                            String name = className.substring(0, className.length() - 6);
-                            Class clazz = BoundleLoaderFactory.getClass(jar, name);
-          
-                            try {
-                                Client plugin = (Client) clazz.newInstance();
-                                results.add(plugin);
-                            } catch (Exception exception) {
-                                LOG.info("Exception raised while loading this event. Skip it.");
-                                LOG.error(Freedomotic.getStackTraceInfo(exception));
-                            }
-                        }
-                    } catch (Exception ex) {
-                        LOG.error(Freedomotic.getStackTraceInfo(ex));
-                    }
-                }
+            	results.addAll(this.getClientsFromJar(jar));
             }
         }
 
         return results;
     }
+    
+    private List<Client> getClientsFromJar(File jar) {
+    	List<Client> clients = new ArrayList<>();
+    	if (jar.isFile()) {
+            List<String> classNames = null;
+            try {
+                classNames = BoundleLoaderFactory.getClassesInside(jar.getAbsolutePath());
+                for (String className : classNames) {
+                    String name = className.substring(0, className.length() - 6);
+                    Class<?> clazz = BoundleLoaderFactory.getClass(jar, name); 
+                    Client client = this.loadClient(clazz);
+                    if(client!=null)
+                    	clients.add(client);
+                }
+            } catch (Exception ex) {
+                LOG.error(Freedomotic.getStackTraceInfo(ex));
+            }
+        } 	
+    	return clients;
+    }
+    
+    
+    private Client loadClient(Class<?> clazz) {
+  	  try {
+            return (Client) clazz.newInstance(); //later it gets injected by guice
+        } catch (Exception ex) {
+        	LOG.info("Exception raised while loading this event. Skip it.");
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
+           return null;
+        }
+  }
 
     @Override
     public File getPath() {

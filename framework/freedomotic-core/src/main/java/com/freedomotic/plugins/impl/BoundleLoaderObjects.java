@@ -65,39 +65,37 @@ class BoundleLoaderObjects implements BoundleLoader {
         if (jarList != null) {
             //the list of files in the jar
             for (File jar : jarList) {
-                if (jar.isFile()) {
-                    List<String> classNames = null;
-
-                    try {
-                        classNames = BoundleLoaderFactory.getClassesInside(jar.getAbsolutePath());
-                    } catch (IOException ex) {
-                        LOG.error("Error loading classes", Freedomotic.getStackTraceInfo(ex));
-                    }
-
-                    for (String className : classNames) {
-                        String name = className.substring(0, className.length() - 6);
-                        Class clazz;
-
-                        try {
-                            clazz = BoundleLoaderFactory.getClass(jar, name);
-
-                            if (clazz.getName().startsWith("com.freedomotic.things.")
-                                    && !clazz.getName().contains("$")) {
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug("Found object plugin \"{}\" in \"{}\"", new Object[]{clazz.getSimpleName(), path});
-                                }
-                            }
-                        } catch (Exception ex) {
-                            LOG.error("Error loading thing plugin", Freedomotic.getStackTraceInfo(ex));
-                        }
-                    }
-                }
+                this.loadJar(jar);
             }
         } else {
             LOG.warn("No object can be found in folder \"{}\"", pluginFolder.getAbsolutePath());
         }
-
         return results;
+    }
+    
+    private void loadJar(File jar) {
+    	if (jar.isFile()) {
+            List<String> classNames = null;
+
+            try {
+                classNames = BoundleLoaderFactory.getClassesInside(jar.getAbsolutePath());
+            } catch (IOException ex) {
+                LOG.error("Error loading classes", Freedomotic.getStackTraceInfo(ex));
+            }
+
+            for (String className : classNames) {
+                String name = className.substring(0, className.length() - 6);
+                Class<?> clazz;
+                try {
+                    clazz = BoundleLoaderFactory.getClass(jar, name);
+                    if (clazz.getName().startsWith("com.freedomotic.things.") && !clazz.getName().contains("$")) {
+                    	LOG.debug("Found object plugin \"{}\" in \"{}\"", clazz.getSimpleName(), path);
+                    }
+                } catch (Exception ex) {
+                    LOG.error("Error loading thing plugin", Freedomotic.getStackTraceInfo(ex));
+                }
+            }
+        }
     }
 
     @Override

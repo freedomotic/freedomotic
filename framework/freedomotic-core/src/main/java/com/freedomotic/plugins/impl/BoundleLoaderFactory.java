@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -166,24 +167,24 @@ class BoundleLoaderFactory {
      * @param file
      * @param name
      * @return
-     * @throws Exception 
+     * @throws IOException 
+     * @throws MalformedURLException 
+     * @throws ClassNotFoundException 
      */
-    protected static Class getClass(File file, String name) throws Exception {
-        addURL(file.toURL());
+    @SuppressWarnings("rawtypes")
+	protected static Class getClass(File file, String name) throws IOException, ClassNotFoundException {
 
-        URLClassLoader clazzLoader;
+        addURL(file.toURI().toURL());
+
         Class clazz;
         String filePath = file.getAbsolutePath();
         filePath = "jar:file://" + filePath + "!/";
-
-        URL url = new File(filePath).toURL();
-        clazzLoader = new URLClassLoader(new URL[]{url});
-        clazz = clazzLoader.loadClass(name);
-
-        // close the classloader
-        clazzLoader.close();
+        URL url = new File(filePath).toURI().toURL();
         
-        return clazz;
+        try (URLClassLoader clazzLoader = new URLClassLoader(new URL[]{url})) {
+        	clazz = clazzLoader.loadClass(name);
+        	return clazz;
+        }
     }
 
     /**
@@ -208,8 +209,7 @@ class BoundleLoaderFactory {
         try {
             Method method = sysclass.getDeclaredMethod("addURL", PARAMETERS);
             method.setAccessible(true);
-            method.invoke(sysLoader,
-                    new Object[]{u});
+            method.invoke(sysLoader, u);
         } catch (Exception t) {
             LOG.error(Freedomotic.getStackTraceInfo(t));
             throw new IOException("Error, could not add URL to system classloader");

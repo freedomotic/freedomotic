@@ -19,11 +19,28 @@
  */
 package com.freedomotic.plugins.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.exceptions.PluginLoadingException;
+import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.plugins.ClientStorage;
 import com.freedomotic.plugins.PluginsManager;
@@ -34,22 +51,6 @@ import com.freedomotic.settings.Info;
 import com.freedomotic.util.Unzip;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.regex.Pattern;
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An helper class that uses an internal DAO pattern to addBoundle plugins of
@@ -67,6 +68,10 @@ class PluginsManagerImpl implements PluginsManager {
     private final I18n i18n;
     private final CommandRepository commandRepository;
     private final ReactionRepository reactionRepository;
+    
+    private static final String MAJOR = "framework.required.major";
+    private static final String MINOR = "framework.required.minor";
+    private static final String BUILD = "framework.required.build";
 
     @Inject
     private Injector injector;
@@ -183,18 +188,18 @@ class PluginsManagerImpl implements PluginsManager {
 
             //get the zip from the url and copy in plugin/device folder
             if (filename.endsWith(".device")) {
-                File zipFile = new File(Info.PATHS.PATH_DEVICES_FOLDER + "/" + filename);
+                File zipFile = new File(Info.PATHS.PATH_DEVICES_FOLDER, filename);
                 FetchHttpFiles.download(fromURL, Info.PATHS.PATH_DEVICES_FOLDER, filename);
                 unzipAndDelete(zipFile);
-                loadSingleBoundle(new File(Info.PATHS.PATH_DEVICES_FOLDER + "/" + pluginName));
+                loadSingleBoundle(new File(Info.PATHS.PATH_DEVICES_FOLDER, pluginName));
             } else if (filename.endsWith(".object")) {
                 FetchHttpFiles.download(fromURL,
                         new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/objects"),
                         filename);
 
-                File zipFile = new File(Info.PATHS.PATH_PLUGINS_FOLDER + "/objects/" + filename);
+                File zipFile = new File(Info.PATHS.PATH_PLUGINS_FOLDER + File.separator + "objects", filename);
                 unzipAndDelete(zipFile);
-                loadSingleBoundle(new File(Info.PATHS.PATH_OBJECTS_FOLDER + "/" + pluginName));
+                loadSingleBoundle(new File(Info.PATHS.PATH_OBJECTS_FOLDER, pluginName));
             } else {
                 LOG.warn("No installable Freedomotic plugins at URL \"{}\"", fromURL);
             }
@@ -255,18 +260,16 @@ class PluginsManagerImpl implements PluginsManager {
             Unzip.unzip(zipFile.toString());
         } catch (Exception e) {
             LOG.error("Error while unzipping boundle \"{}\"", zipFile.getAbsolutePath(), e);
-
             return false;
         }
 
         //remove zip file
         try {
-            zipFile.delete();
+            return zipFile.delete();
         } catch (Exception e) {
             LOG.error("Unable to delete compressed file \"{}\"", zipFile.toString(), Freedomotic.getStackTraceInfo(e));
+            return false;
         }
-
-        return true; //done
     }
 
     /**
@@ -293,14 +296,7 @@ class PluginsManagerImpl implements PluginsManager {
         if (templatesFolder.exists()) {
             LOG.info("Loading object templates from \"{}\"", templatesFolder.getAbsolutePath());
             //for every envobject class a placeholder is created
-            File[] templates
-                    = templatesFolder.listFiles(new FilenameFilter() {
-                        @Override
-                        public boolean accept(File dir, String name) {
-                            return (name.endsWith(".xobj"));
-                        }
-                    });
-
+            File[] templates = templatesFolder.listFiles((dir, name) -> name.endsWith(".xobj"));
             for (File template : templates) {
                 Client placeholder;
 
@@ -323,26 +319,20 @@ class PluginsManagerImpl implements PluginsManager {
         }
     }
 
-    private void recursiveCopy(File source, File target) {
-        InputStream input = null;
-        OutputStream output = null;
+    private void recursiveCopy(File source, File target) {	
+    	 if (source.isDirectory()) {
+             if (!target.exists()) {
+                 target.mkdir();
+             }
 
-        try {
-            if (source.isDirectory()) {
-                if (!target.exists()) {
-                    target.mkdir();
-                }
-
-                String[] children = source.list();
-
-                for (int i = 0; i < children.length; i++) {
-                    recursiveCopy(new File(source, children[i]),
-                            new File(target, children[i]));
-                }
-            } else {
-                input = new FileInputStream(source);
-                output = new FileOutputStream(target);
-
+             String[] children = source.list();
+             for (int i = 0; i < children.length; i++) {
+                 recursiveCopy(new File(source, children[i]), new File(target, children[i]));
+             }
+         }
+    	 
+    	 else try(InputStream input = new FileInputStream(source); 
+    			 OutputStream output = new FileOutputStream(target);) {
                 // Copy the bits from instream to outstream
                 byte[] buf = new byte[1024];
                 int len;
@@ -350,29 +340,13 @@ class PluginsManagerImpl implements PluginsManager {
                 while ((len = input.read(buf)) > 0) {
                     output.write(buf, 0, len);
                 }
-            }
+            
         } catch (FileNotFoundException foundEx) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("No file to copy in \"{}\"", source, Freedomotic.getStackTraceInfo(foundEx));
             }
         } catch (IOException ex) {
             LOG.warn("Error while copying resources", Freedomotic.getStackTraceInfo(ex));
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException ex) {
-                    LOG.error(Freedomotic.getStackTraceInfo(ex));
-                }
-            }
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (IOException ex) {
-                    LOG.error(Freedomotic.getStackTraceInfo(ex));
-                }
-            }
-
         }
     }
 
@@ -380,32 +354,20 @@ class PluginsManagerImpl implements PluginsManager {
             throws IOException {
         //seach for a file called PACKAGE
         Properties packageFile = new Properties();
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(new File(pluginFolder + "/PACKAGE"));
+        try(FileInputStream fis = new FileInputStream(new File(pluginFolder + "/PACKAGE"));) {  
             packageFile.load(fis);
             fis.close();
-        } finally {
-            if (fis != null) {
-                fis.close();
-            }
         }
         //merges data found in file PACKGE to the the configuration of every single plugin in this package
-        client.getConfiguration().setProperty("package.name",
-                packageFile.getProperty("package.name"));
-        client.getConfiguration().setProperty("package.nodeid",
-                packageFile.getProperty("package.nodeid"));
-        client.getConfiguration()
-                .setProperty("framework.required.version",
-                        packageFile.getProperty("framework.required.major") + "."
-                        + packageFile.getProperty("framework.required.minor") + "."
-                        + packageFile.getProperty("framework.required.build"));
-        client.getConfiguration().setProperty("framework.required.major",
-                packageFile.getProperty("framework.required.major"));
-        client.getConfiguration().setProperty("framework.required.minor",
-                packageFile.getProperty("framework.required.minor"));
-        client.getConfiguration().setProperty("framework.required.build",
-                packageFile.getProperty("framework.required.build"));
+        client.getConfiguration().setProperty("package.name", packageFile.getProperty("package.name"));
+        client.getConfiguration().setProperty("package.nodeid", packageFile.getProperty("package.nodeid"));
+        client.getConfiguration().setProperty("framework.required.version",
+                        packageFile.getProperty(MAJOR) + "."
+                        + packageFile.getProperty(MINOR) + "."
+                        + packageFile.getProperty(BUILD));
+        client.getConfiguration().setProperty(MAJOR, packageFile.getProperty(MAJOR));
+        client.getConfiguration().setProperty(MINOR, packageFile.getProperty(MINOR));
+        client.getConfiguration().setProperty(BUILD,packageFile.getProperty(BUILD));
 
         //TODO: add also the other properties
         return client;
