@@ -19,8 +19,19 @@
  */
 package com.freedomotic.api;
 
-import com.freedomotic.exceptions.PluginShutdownException;
-import com.freedomotic.exceptions.PluginStartupException;
+import java.io.File;
+import java.io.IOException;
+
+import javax.jms.ObjectMessage;
+import javax.swing.JFrame;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.freedomotic.app.ConfigPersistence;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
@@ -29,20 +40,12 @@ import com.freedomotic.bus.BusService;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.events.PluginHasChanged;
 import com.freedomotic.events.PluginHasChanged.PluginActions;
+import com.freedomotic.exceptions.PluginShutdownException;
+import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.model.ds.Config;
-import com.freedomotic.util.EqualsUtil;
 import com.freedomotic.settings.Info;
+import com.freedomotic.util.EqualsUtil;
 import com.google.inject.Inject;
-import java.io.File;
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import javax.jms.ObjectMessage;
-import javax.swing.JFrame;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -463,8 +466,12 @@ public class Plugin implements Client, BusConsumer {
 
     private void init() {
         if (configuration == null) {
-            //try to load it from file
-            deserializeManifest(path);
+        	if(path!=null) 
+        		deserializeManifest(path);
+        	else {
+        		LOG.warn("No file path has been provided for configuration initialization, so here an empty configuration is created.");
+        		configuration = new Config();
+        	}
         }
         description = configuration.getStringProperty("description", "Missing plugin manifest");
         setDescription(description);
