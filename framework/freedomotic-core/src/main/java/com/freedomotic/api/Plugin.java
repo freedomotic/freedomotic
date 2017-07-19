@@ -60,7 +60,7 @@ public class Plugin implements Client, BusConsumer {
     @XmlElement
     private String pluginName;
     @XmlElement
-    private static final String type = "Plugin";
+    private static final String TYPE = "Plugin";
     @XmlElement
     private volatile PluginStatus currentPluginStatus = PluginStatus.STOPPED;
     @XmlElement
@@ -84,6 +84,8 @@ public class Plugin implements Client, BusConsumer {
     private File path;
 
     protected BusMessagesListener listener;
+    
+    private final static String UNDEFINED = "undefined";
 
     @Inject
     private API api;
@@ -120,6 +122,7 @@ public class Plugin implements Client, BusConsumer {
      * @param manifest the manifest config file
      */
     public Plugin(String pluginName, Config manifest) {
+    	LOG.info("Plugin constructed using configuration manifest {}", manifest.toString());
         Freedomotic.INJECTOR.injectMembers(this);
         setName(pluginName);
         init();
@@ -148,6 +151,7 @@ public class Plugin implements Client, BusConsumer {
      * @throws com.freedomotic.exceptions.PluginStartupException
      */
     protected void onStart() throws PluginStartupException {
+    	LOG.info("Plugin onStart invoked, empty method");
     }
 
     /**
@@ -155,6 +159,7 @@ public class Plugin implements Client, BusConsumer {
      * @throws com.freedomotic.exceptions.PluginShutdownException
      */
     protected void onStop() throws PluginShutdownException {
+    	LOG.info("Plugin onStop invoked, empty method");
     }
 
     /**
@@ -189,7 +194,7 @@ public class Plugin implements Client, BusConsumer {
         MessageEvent callout = new MessageEvent(this, message);
         callout.setType("callout"); //display as callout on frontends
         callout.setLevel("warning");
-        callout.setExpiration(10 * 1000);//message lasts 10 seconds
+        callout.setExpiration(10000);//message lasts 10 seconds
         busService.send(callout);
     }
 
@@ -206,7 +211,7 @@ public class Plugin implements Client, BusConsumer {
         MessageEvent callout = new MessageEvent(this, message);
         callout.setType("callout"); //display as callout on frontends
         callout.setLevel("warning");
-        callout.setExpiration(10 * 1000);//message lasts 10 seconds
+        callout.setExpiration(10000);//message lasts 10 seconds
         busService.send(callout);
         //stop this plugin
         stop();
@@ -358,7 +363,7 @@ public class Plugin implements Client, BusConsumer {
      */
     @Override
     public String getType() {
-        return type;
+        return TYPE;
     }
 
     /**
@@ -432,18 +437,10 @@ public class Plugin implements Client, BusConsumer {
             return true;
         }
 
-        //use instanceof instead of getClass here for two reasons
-        //1. if need be, it can match any supertype, and not just one class;
-        //2. it renders an explict check for "that == null" redundant, since
-        //it does the check for null already - "null instanceof [type]" always
-        //returns false. (See Effective Java by Joshua Bloch.)
         if (!(aThat instanceof Plugin)) {
             return false;
         }
 
-        //Alternative to the above line :
-        //if ( aThat == null || aThat.getClass() != this.getClass() ) return false;
-        //cast to native object is now safe
         Plugin that = (Plugin) aThat;
 
         //now a proper field-by-field evaluation can be made
@@ -475,10 +472,10 @@ public class Plugin implements Client, BusConsumer {
         }
         description = configuration.getStringProperty("description", "Missing plugin manifest");
         setDescription(description);
-        category = configuration.getStringProperty("category", "undefined");
-        shortName = configuration.getStringProperty("short-name", "undefined");
-        listenOn = configuration.getStringProperty("listen-on", "undefined");
-        sendOn = configuration.getStringProperty("send-on", "undefined");
+        category = configuration.getStringProperty("category", UNDEFINED);
+        shortName = configuration.getStringProperty("short-name", UNDEFINED);
+        listenOn = configuration.getStringProperty("listen-on", UNDEFINED);
+        sendOn = configuration.getStringProperty("send-on", UNDEFINED);
         register();
     }
 
@@ -491,7 +488,7 @@ public class Plugin implements Client, BusConsumer {
         try {
             configuration = ConfigPersistence.deserialize(manifest);
         } catch (IOException ex) {
-            LOG.error("Missing manifest \"{}\" for plugin \"{}\"", new Object[]{manifest.toString(), getName()});
+            LOG.error("Missing manifest \"{}\" for plugin \"{}\"", manifest.toString(), getName());
             setDescription("Missing manifest file " + manifest.toString());
         }
 
@@ -515,7 +512,7 @@ public class Plugin implements Client, BusConsumer {
         String defaultQueue = ACTUATORS_QUEUE_DOMAIN + category + "." + shortName;
         String customizedQueue = ACTUATORS_QUEUE_DOMAIN + listenOn;
 
-        if (getReadQueue().equalsIgnoreCase("undefined")) {
+        if (getReadQueue().equalsIgnoreCase(UNDEFINED)) {
             listenOn = defaultQueue + ".in";
             return listenOn;
         } else {
