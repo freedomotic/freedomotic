@@ -34,10 +34,8 @@ import io.moquette.interception.AbstractInterceptHandler;
 import io.moquette.interception.InterceptHandler;
 import io.moquette.interception.messages.InterceptPublishMessage;
 import io.moquette.server.Server;
-import io.moquette.server.config.ClasspathConfig;
 import io.moquette.server.config.IConfig;
 import io.moquette.server.config.MemoryConfig;
-import java.io.File;
 import java.io.IOException;
 import static java.util.Arrays.asList;
 import java.util.HashMap;
@@ -51,21 +49,21 @@ import org.slf4j.LoggerFactory;
  *
  * @author Mauro Cicolella
  */
-public class MQTTBroker
+public class MqttBroker
         extends Protocol {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MQTTBroker.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MqttBroker.class.getName());
     private final String BROKER_HOST = configuration.getStringProperty("broker-host", "0.0.0.0");
     private final Integer BROKER_PORT = configuration.getIntProperty("broker-port", 1883);
     private Server mqttBroker;
     private IConfig config;
     private List<? extends InterceptHandler> userHandlers;
-    private Map<String, MqttTopic> topics = new HashMap<String, MqttTopic>();
+    private Map<String, MqttTopic> topics = new HashMap<>();
 
     /**
      *
      */
-    public MQTTBroker() {
+    public MqttBroker() {
         super("MQTT broker", "/mqtt-broker/mqtt-broker-manifest.xml");
         setPollingWait(-1); // onRun() disabled
     }
@@ -107,24 +105,15 @@ public class MQTTBroker
             throw new PluginStartupException("Plugin can't start for an IOException.", ex);
         }
         setDescription("MQTT broker listening to " + config.getProperty(BrokerConstants.HOST_PROPERTY_NAME) + ":" + config.getProperty(BrokerConstants.PORT_PROPERTY_NAME));
-        LOG.info("MQTT broker started");
+        LOG.info("MQTT broker plugin started");
 
-        // bind a shutdown hook
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                LOG.info("Stopping MQTT broker");
-                mqttBroker.stopServer();
-                LOG.info("MQTT broker stopped");
-            }
-        });
     }
 
     @Override
     protected void onStop() {
         mqttBroker.stopServer();
         setDescription("MQTT broker stopped");
-        LOG.info("MQTT broker stopped");
+        LOG.info("MQTT broker plugin stopped");
     }
 
     @Override
@@ -179,10 +168,19 @@ public class MQTTBroker
             LOG.info("Received on topic: [{}] content: [{}]", topic, payload);
             sendEvent(topic, payload);
         }
+
+        @Override
+        public String getID() {
+            return "FreedomoticPublisherListener";
+        }
+
+               
     }
 
     /**
-     *
+     * Loads topics from manifest file and populates a map.
+     * It's used to update things with multiple behaviors on the same mqtt topic.
+     * 
      */
     private void loadTopics() {
 
