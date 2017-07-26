@@ -36,7 +36,18 @@ import io.moquette.interception.messages.InterceptPublishMessage;
 import io.moquette.server.Server;
 import io.moquette.server.config.IConfig;
 import io.moquette.server.config.MemoryConfig;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.util.ByteProcessor;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
+import java.nio.channels.GatheringByteChannel;
+import java.nio.channels.ScatteringByteChannel;
+import java.nio.charset.Charset;
 import static java.util.Arrays.asList;
 import java.util.HashMap;
 import java.util.List;
@@ -164,7 +175,10 @@ public class MqttBroker
         @Override
         public void onPublish(InterceptPublishMessage msg) {
             String topic = msg.getTopicName();
-            String payload = new String(msg.getPayload().array());
+            ByteBuf buffer = msg.getPayload();
+            byte[] bytes = new byte[buffer.readableBytes()];
+            buffer.readBytes(bytes);
+            String payload = new String(bytes);
             LOG.info("Received on topic: [{}] content: [{}]", topic, payload);
             sendEvent(topic, payload);
         }
@@ -174,13 +188,12 @@ public class MqttBroker
             return "FreedomoticPublisherListener";
         }
 
-               
     }
 
     /**
-     * Loads topics from manifest file and populates a map.
-     * It's used to update things with multiple behaviors on the same mqtt topic.
-     * 
+     * Loads topics from manifest file and populates a map. It's used to update
+     * things with multiple behaviors on the same mqtt topic.
+     *
      */
     private void loadTopics() {
 
