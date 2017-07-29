@@ -23,20 +23,21 @@ import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.events.LocationEvent;
 import com.freedomotic.exceptions.PluginStartupException;
-import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.GenericPerson;
+import java.io.BufferedReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -49,6 +50,8 @@ public class TrackingReadSocket extends Protocol {
     private final int SOCKET_SERVER_PORT = configuration.getIntProperty("socket-server-port", 7777);
     private final int MAX_CONNECTIONS = configuration.getIntProperty("max-connections", -1);
     private final String STOP_CONNECTION_CHAR = configuration.getStringProperty("stop-connection-char", ".");
+    private final String DATA_TYPE = configuration.getStringProperty("data-type", "coordinates");
+    private AtomicInteger activeConnections;
 
     /**
      *
@@ -65,7 +68,7 @@ public class TrackingReadSocket extends Protocol {
         try {
             createServerSocket();
         } catch (IOException ioe) {
-            throw new PluginStartupException("IOException on socket listening: \"{}\"", ioe);
+            throw new PluginStartupException("IOException on server socket creating: \"{}\"", ioe);
         }
     }
 
@@ -76,36 +79,13 @@ public class TrackingReadSocket extends Protocol {
      */
     private void createServerSocket() throws IOException {
         try {
+            activeConnections = new AtomicInteger();
             serverSocket = new ServerSocket();
             serverSocket.setReuseAddress(true);
             serverSocket.bind(new InetSocketAddress(SOCKET_SERVER_PORT));
             LOG.info("Start listening to server socket \"{}:{}\"", serverSocket.getInetAddress(), serverSocket.getLocalPort());
         } catch (IOException ioe) {
-            throw ioe;
-        }
-    }
-
-    /**
-     * Parses the string input.
-     *
-     * @param in input string to parse
-     */
-    private void parseInput(String in) {
-        int id = 0;
-        int x = -1;
-        int y = -1;
-        FreedomPoint location;
-        StringTokenizer tokenizer = null;
-
-        try {
-            tokenizer = new StringTokenizer(in);
-            id = Integer.parseInt(tokenizer.nextToken());
-            x = Integer.parseInt(tokenizer.nextToken());
-            y = Integer.parseInt(tokenizer.nextToken());
-            location = new FreedomPoint(x, y);
-            movePerson(id, location);
-        } catch (Exception ex) {
-            LOG.error("Error while parsing client input. \n {} \ntoken count: {}", in, tokenizer.countTokens());
+            LOG.error("IOException on server socket creating: \"{}\"", ioe);
         }
     }
 
@@ -121,23 +101,30 @@ public class TrackingReadSocket extends Protocol {
                 GenericPerson person = (GenericPerson) object;
                 LocationEvent event = new LocationEvent(this, person.getPojo().getUUID(), location);
                 notifyEvent(event);
+                LOG.info("Moving Person thing with address \"{}\" to ({}) coordinates", userId, location.toString());
+                return;
             }
         }
+        LOG.error("No Person thing found with physical address \"{}\". Skipped movement", userId);
     }
 
     @Override
     protected void onRun() {
-        int i = 0;
 
-        while ((i++ < MAX_CONNECTIONS) || (MAX_CONNECTIONS == -1)) {
-            try {
-                ClientInputReader clientConnection;
-                Socket clientSocket = serverSocket.accept();
-                clientConnection = new ClientInputReader(clientSocket);
-                Thread t = new Thread(clientConnection);
-                t.start();
-            } catch (IOException ioe) {
-                LOG.error("IOException on socket listen: \"{}\"", ioe);
+        while ((activeConnections.get() < MAX_CONNECTIONS) || (MAX_CONNECTIONS == -1)) {
+            if (!serverSocket.isClosed()) {
+                try {
+                    ClientInputReader clientConnection;
+                    Socket clientSocket = serverSocket.accept();
+                    clientConnection = new ClientInputReader(clientSocket);
+                    Thread t = new Thread(clientConnection);
+                    t.start();
+                } catch (SocketException e) {
+                    //thrown when server.close() is called and the socket server is waiting on accept
+                    LOG.error("Server SocketException: " + e.getMessage());
+                } catch (IOException ioe) {
+                    LOG.error("IOException on socket listen: ", ioe);
+                }
             }
         }
     }
@@ -152,8 +139,8 @@ public class TrackingReadSocket extends Protocol {
     }
 
     @Override
-    protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        //do nothing
+    protected void onCommand(Command c) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -164,7 +151,7 @@ public class TrackingReadSocket extends Protocol {
 
     @Override
     protected void onEvent(EventTemplate event) {
-        //do nothing
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -175,26 +162,52 @@ public class TrackingReadSocket extends Protocol {
     private class ClientInputReader
             implements Runnable {
 
-        private Socket client;
+        private final Socket client;
 
         ClientInputReader(Socket client) {
             this.client = client;
-            LOG.info("New client connected to server on \"{}\"", client.getInetAddress());
+            LOG.info("New client connected to server on \"{}\". Currently {} active connection(s)", client.getInetAddress(), activeConnections.incrementAndGet());
+        }
+
+        /**
+         * Parses the string input in coordinates form.
+         *
+         * @param in input string to parse
+         */
+        private void parseInputAsCoordinates(String in) {
+            int id = 0;
+            int x = -1;
+            int y = -1;
+            StringTokenizer tokenizer = new StringTokenizer(in);
+            FreedomPoint location;
+
+            try {
+                id = Integer.parseInt(tokenizer.nextToken());
+                x = Integer.parseInt(tokenizer.nextToken());
+                y = Integer.parseInt(tokenizer.nextToken());
+                location = new FreedomPoint(x, y);
+                movePerson(id, location);
+            } catch (Exception ex) {
+                LOG.error("Error while parsing client input: {}\n token count: {}", in, tokenizer.countTokens());
+            }
         }
 
         public void run() {
             try {
                 String line;
                 // Get input from the client
-                DataInputStream in = new DataInputStream(client.getInputStream());
+                BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
                 while (((line = in.readLine()) != null) && !line.equals(STOP_CONNECTION_CHAR) && isRunning()) {
                     LOG.info("Readed from socket: \"{}\"", line);
-                    parseInput(line);
+                    switch (DATA_TYPE) {
+                        case "coordinates":
+                            parseInputAsCoordinates(line);
+                            break;
+                    }
                 }
-
-                LOG.info("Closing socket connection \"{}\"", client.getInetAddress());
                 client.close();
+                LOG.info("Closing socket connection \"{}\". Currently {} active connection(s)", client.getInetAddress(), activeConnections.decrementAndGet());
             } catch (IOException ioe) {
                 LOG.error("IOException on socket listening: \"{}\"", ioe);
             }
