@@ -151,7 +151,7 @@ public class Plugin implements Client, BusConsumer {
      * @throws com.freedomotic.exceptions.PluginStartupException
      */
     protected void onStart() throws PluginStartupException {
-    	LOG.info("Plugin onStart invoked, empty method");
+    	LOG.debug("Plugin onStart invoked, empty method");
     }
 
     /**
@@ -159,7 +159,7 @@ public class Plugin implements Client, BusConsumer {
      * @throws com.freedomotic.exceptions.PluginShutdownException
      */
     protected void onStop() throws PluginShutdownException {
-    	LOG.info("Plugin onStop invoked, empty method");
+    	LOG.debug("Plugin onStop invoked, empty method");
     }
 
     /**

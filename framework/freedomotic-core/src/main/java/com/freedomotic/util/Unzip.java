@@ -59,14 +59,14 @@ public class Unzip {
     public static void unzip(String zipFile) throws IOException {
     	
     	if(StringUtils.isEmpty(zipFile)) {
-    		LOG.error("File path not provided, no unzipping perfomed");
+    		LOG.error("File path not provided, no unzipping performed");
     		return;
     	}
 
         File file = new File(zipFile);
         
         if(!file.exists()) {
-    		LOG.error("File not existing, no unzipping perfomed");
+    		LOG.error("File not existing, no unzipping performed");
     		return;
     	}
 
