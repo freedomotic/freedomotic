@@ -21,6 +21,7 @@ package com.freedomotic.plugins.devices.simulation;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
+import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.events.LocationEvent;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.model.geometry.FreedomPoint;
@@ -49,6 +50,7 @@ public class TrackingReadSocket extends Protocol {
     private ServerSocket serverSocket;
     private final int SOCKET_SERVER_PORT = configuration.getIntProperty("socket-server-port", 7777);
     private final int MAX_CONNECTIONS = configuration.getIntProperty("max-connections", -1);
+    private final String FIELD_DELIMITER = configuration.getStringProperty("field-delimiter", ",");
     private final String STOP_CONNECTION_CHAR = configuration.getStringProperty("stop-connection-char", ".");
     private final String DATA_TYPE = configuration.getStringProperty("data-type", "coordinates");
     private AtomicInteger activeConnections;
@@ -178,17 +180,46 @@ public class TrackingReadSocket extends Protocol {
             int id = 0;
             int x = -1;
             int y = -1;
-            StringTokenizer tokenizer = new StringTokenizer(in);
+            int tokenCounter = 0;
+            StringTokenizer tokenizer = new StringTokenizer(in, FIELD_DELIMITER);
             FreedomPoint location;
 
             try {
+                tokenCounter = tokenizer.countTokens();
                 id = Integer.parseInt(tokenizer.nextToken());
                 x = Integer.parseInt(tokenizer.nextToken());
                 y = Integer.parseInt(tokenizer.nextToken());
                 location = new FreedomPoint(x, y);
                 movePerson(id, location);
             } catch (Exception ex) {
-                LOG.error("Error while parsing client input: {}\n token count: {}", in, tokenizer.countTokens());
+                LOG.error("Error while parsing client input: \"{}\". Token count: {}", in, tokenCounter);
+            }
+        }
+
+        /**
+         * Parses the string input in rooms form.
+         *
+         * @param in input string to parse
+         */
+        private void parseInputAsRooms(String in) {
+            int id = 0;
+            int tokenCounter = 0;
+            String roomName;
+            StringTokenizer tokenizer = new StringTokenizer(in, FIELD_DELIMITER);
+
+            try {
+                tokenCounter = tokenizer.countTokens();
+                id = Integer.parseInt(tokenizer.nextToken());
+                roomName = tokenizer.nextToken();
+                ZoneLogic zone = getApi().environments().findAll().get(0).getZone(roomName);
+                if (zone != null) {
+                    FreedomPoint roomCenterCoordinate = Utils.getPolygonCenter(zone.getPojo().getShape());
+                    movePerson(id, roomCenterCoordinate);
+                } else {
+                    LOG.warn("Room \"{}\" not found.", roomName);
+                }
+            } catch (Exception ex) {
+                LOG.error("Error while parsing client input: \"{}\". Token count: {}", in, tokenCounter);
             }
         }
 
@@ -204,12 +235,21 @@ public class TrackingReadSocket extends Protocol {
                         case "coordinates":
                             parseInputAsCoordinates(line);
                             break;
+
+                        case "rooms":
+                            parseInputAsRooms(line);
+                            break;
+
+                        default:
+                            throw new PluginStartupException("<data-type> property wrong in manifest file");
                     }
                 }
                 client.close();
                 LOG.info("Closing socket connection \"{}\". Currently {} active connection(s)", client.getInetAddress(), activeConnections.decrementAndGet());
             } catch (IOException ioe) {
                 LOG.error("IOException on socket listening: \"{}\"", ioe);
+            } catch (PluginStartupException ex) {
+                LOG.error("TrackingReadSocket startup exception: ", ex);
             }
         }
     }

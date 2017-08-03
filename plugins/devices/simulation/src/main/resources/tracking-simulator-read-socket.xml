@@ -5,6 +5,7 @@
         <property name="short-name" value="socket"/>
         <property name="socket-server-port" value="7777"/>
         <property name="max-connections" value="-1"/>
+        <property name="filed-delimiter" value=","/>
         <property name="stop-connection-char" value="."/>
         <property name="data-type" value="coordinates"/>
     </properties>
