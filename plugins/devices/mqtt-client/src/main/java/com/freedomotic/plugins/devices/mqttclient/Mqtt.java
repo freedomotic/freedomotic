@@ -30,26 +30,27 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.freedomotic.events.ProtocolRead;
+import java.util.logging.Level;
 
 /**
  * @author Mauro Cicolella
  */
 public class Mqtt implements MqttCallback {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(Mqtt.class.getName());
-    
+
     MqttClient4FD pluginRef = null;
     MqttClient myClient;
     MqttConnectOptions connectionOptions;
     MemoryPersistence persistence = new MemoryPersistence();
-    
+
     Mqtt(MqttClient4FD pluginRef) {
         this.pluginRef = pluginRef;
     }
 
     /**
      *
-     * startClient Class entry point
+     * Class entry point
      *
      * @param brokerUrl
      * @param clientID
@@ -62,9 +63,9 @@ public class Mqtt implements MqttCallback {
      *
      */
     public boolean startClient(String brokerUrl, String clientID, String setCleanSession, Integer setKeepAliveInterval, String authenticationEnabled, String username, String password) {
-        
+
         MqttConnectOptions connectionOptions = new MqttConnectOptions();
-        
+
         connectionOptions.setCleanSession(Boolean.parseBoolean(setCleanSession));
         connectionOptions.setKeepAliveInterval(setKeepAliveInterval);
         // authentication requires username and password
@@ -92,9 +93,9 @@ public class Mqtt implements MqttCallback {
     public void subscribeTopic(String topic) {
         try {
             myClient.subscribe(topic, 0);
-            LOG.info("Subscribed topic '{}'",topic);
+            LOG.info("Subscribed topic \"{}\"", topic);
         } catch (MqttException ex) {
-            LOG.error("Unable to subscribe topic '{}' for {}", topic, ex);
+            LOG.error("Unable to subscribe topic \"{}\" for {}", topic, ex);
         }
     }
 
@@ -106,14 +107,14 @@ public class Mqtt implements MqttCallback {
      * @param pubQoS
      */
     public void publish(String topic, String message, int subQoS, int pubQoS) {
-        
+
         MqttMessage messageToPublish = new MqttMessage(message.getBytes());
         messageToPublish.setQos(pubQoS);
         messageToPublish.setRetained(false);
         try {
             myClient.publish(topic, messageToPublish);
         } catch (MqttException ex) {
-            LOG.error("Unable to publish message: '" + message + "' to " + topic + " for " + ex.getMessage());
+            LOG.error("Unable to publish message: \"{}\" to \"{}\"", message, topic);
         }
     }
 
@@ -139,8 +140,8 @@ public class Mqtt implements MqttCallback {
         String protocol = "mqtt-client";
         String address = topic;
         String payload = new String(message.getPayload());
-        
-        LOG.info("Received message '{}' on topic '{}'", payload, topic);
+
+        LOG.info("Received message \"{}\" on topic \"{}\"", payload, topic);
         // create and notify a Freedomotic event 
         // the object address is equal to "topic"
         ProtocolRead event = new ProtocolRead(this, protocol, topic);
@@ -155,19 +156,24 @@ public class Mqtt implements MqttCallback {
      */
     @Override
     public void deliveryComplete(IMqttDeliveryToken imdt) {
-        LOG.info("Message published");
+        try {
+            LOG.info("Message \"{}\" published on \"{}\" topic", imdt.getMessage().toString(), imdt.getTopics());
+        } catch (MqttException ex) {
+            LOG.error(ex.getMessage());
+        }
     }
 
     /**
      *
      * This callback is invoked upon loosing the MQTT connection.
+     * The client tries to reconnect.
      *
      * @param cause
      */
     @Override
     public void connectionLost(Throwable cause) {
         LOG.error("Connection to Mqtt broker lost for {}", cause.getCause());
-        LOG.error("Reconnecting in progress ...");
+        LOG.info("Reconnecting in progress ...");
         while (!myClient.isConnected()) {
             try {
                 myClient.connect(connectionOptions);
@@ -176,6 +182,6 @@ public class Mqtt implements MqttCallback {
             }
             // set a delay before retrying
         }
-        
+
     }
 }

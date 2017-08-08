@@ -23,10 +23,8 @@
 package com.freedomotic.plugins.devices.mqttclient;
 
 import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.PluginStartupException;
@@ -37,18 +35,17 @@ public class MqttClient4FD extends Protocol {
 
     private static final Logger LOG = LoggerFactory.getLogger(MqttClient4FD.class.getName());
 
-    private String BROKER_URL = configuration.getStringProperty("broker-url", "tcp://test.mosquitto.org:1883");
-    private String CLIENT_ID = configuration.getStringProperty("client-id", "freedomotic");
-    private String AUTHENTICATION_ENABLED = configuration.getStringProperty("authentication-enabled", "false");
-    private String USERNAME = configuration.getStringProperty("username", "admin");
-    private String PASSWORD = configuration.getStringProperty("password", "admin");
-    private String SET_CLEAN_SESSION = configuration.getStringProperty("set-clean-session", "true");
-    private Integer SET_KEEP_ALIVE_INTERVAL = configuration.getIntProperty("set-keep-alive-interval", 600);
+    private final String BROKER_URL = configuration.getStringProperty("broker-url", "tcp://test.mosquitto.org:1883");
+    private final String CLIENT_ID = configuration.getStringProperty("client-id", "freedomotic");
+    private final String AUTHENTICATION_ENABLED = configuration.getStringProperty("authentication-enabled", "false");
+    private final String USERNAME = configuration.getStringProperty("username", "admin");
+    private final String PASSWORD = configuration.getStringProperty("password", "admin");
+    private final String SET_CLEAN_SESSION = configuration.getStringProperty("set-clean-session", "true");
+    private final Integer SET_KEEP_ALIVE_INTERVAL = configuration.getIntProperty("set-keep-alive-interval", 600);
     private Boolean connected = false;
     private Mqtt mqttClient = null;
 
     public MqttClient4FD() {
-        //every plugin needs a name and a manifest XML file
         super("MQTT Client", "/mqtt-client/mqtt-client-manifest.xml");
         setPollingWait(-1); //onRun() disabled
     }
@@ -87,7 +84,7 @@ public class MqttClient4FD extends Protocol {
             mqttClient.disconnect();
             setDescription("Mqtt Client disconnected");
         }
-        LOG.info("Mqtt Client stopped");
+        LOG.info("Mqtt Client plugin stopped");
     }
 
     @Override

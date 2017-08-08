@@ -3,9 +3,9 @@
         <property name="description" value="A simple client for MQTT protocol"/>
         <property name="category" value="protocol"/>
         <property name="short-name" value="mqtt-client"/>
-        <property name="protocol.name" value="mqtt-client"/>
-        <property name="startup-time"   value="on load"/>
-        <property name="broker-url" value="tcp://test.mosquitto.org:1883"/>
+        <property name="protocol.name"value="mqtt-client"/>
+        <property name="startup-time" value="on load"/>
+        <property name="broker-url" value="tcp://broker.hivemq.com:1883"/>
         <property name="client-id" value="freedomotic"/>
         <property name="set-clean-session" value="false"/>
         <property name="set-keep-alive-interval" value="600"/>

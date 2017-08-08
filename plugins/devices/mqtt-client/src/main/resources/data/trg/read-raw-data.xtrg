@@ -1,6 +1,6 @@
 <trigger>
-    <name>Mqtt client reads a state change</name>
-    <description>Mqtt client reads relay state change</description>
+    <name>Mqtt client reads raw data</name>
+    <description>Mqtt client reads raw data</description>
     <channel>app.event.sensor.protocol.read.mqtt-client</channel>
     <payload>
         <payload>

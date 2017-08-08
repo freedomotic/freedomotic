@@ -7,7 +7,7 @@
     <timeout>0</timeout>
     <properties>
         <properties>
-            <property name="mqtt.topic" value="testtopic/1"/>
+            <property name="mqtt.topic" value="@owner.object.address"/>
             <property name="mqtt.message" value="message to send"/>
             <property name="mqtt.sub-qos" value="0"/>
             <property name="mqtt.pub-qos" value="0"/>

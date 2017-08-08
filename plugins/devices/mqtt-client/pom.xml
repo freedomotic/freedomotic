@@ -45,12 +45,6 @@
         <freedomotic.marketplace.username></freedomotic.marketplace.username>
         <freedomotic.marketplace.password></freedomotic.marketplace.password>
     </properties>
-    <repositories>
-        <repository>
-            <id>Eclipse Paho Repo</id>
-            <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -65,8 +59,8 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.paho</groupId>
-            <artifactId>mqtt-client</artifactId>
-            <version>0.4.0</version>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <version>1.1.1</version>
         </dependency>
     </dependencies>
 
