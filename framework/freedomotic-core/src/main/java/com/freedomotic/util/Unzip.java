@@ -46,9 +46,10 @@ import java.util.zip.ZipFile;
 public class Unzip {
 
     private static final Logger LOG = LoggerFactory.getLogger(Unzip.class.getName());
-    private static final int  BUFFER = 2048;
+    private static final int BUFFER = 2048;
 
-    private Unzip() {}
+    private Unzip() {
+    }
 
     /**
      *
@@ -57,18 +58,18 @@ public class Unzip {
      * @throws IOException
      */
     public static void unzip(String zipFile) throws IOException {
-    	
-    	if(StringUtils.isEmpty(zipFile)) {
-    		LOG.error("File path not provided, no unzipping performed");
-    		return;
-    	}
+
+        if (StringUtils.isEmpty(zipFile)) {
+            LOG.error("File path not provided, no unzipping performed");
+            return;
+        }
 
         File file = new File(zipFile);
-        
-        if(!file.exists()) {
-    		LOG.error("File not existing, no unzipping performed");
-    		return;
-    	}
+
+        if (!file.exists()) {
+            LOG.error("File not existing, no unzipping performed");
+            return;
+        }
 
         ZipFile zip = new ZipFile(file);
         String newPath = zipFile.substring(0, zipFile.length() - 4);
@@ -87,11 +88,12 @@ public class Unzip {
 
             // create the parent directory structure if needed
             destinationParent.mkdirs();
-           
-            try(BufferedInputStream is = new BufferedInputStream(zip.getInputStream(entry));
-            	FileOutputStream fos = new FileOutputStream(destFile);
-            	BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);) {
-                if (!entry.isDirectory()) {
+
+            if (!entry.isDirectory()) {
+                try (BufferedInputStream is = new BufferedInputStream(zip.getInputStream(entry));
+                        FileOutputStream fos = new FileOutputStream(destFile);
+                        BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);) {
+
                     int currentByte;
 
                     // establish buffer for writing file
@@ -101,11 +103,11 @@ public class Unzip {
                     while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
                         dest.write(data, 0, currentByte);
                     }
+                } catch (IOException ex) {
+                    LOG.error(Freedomotic.getStackTraceInfo(ex));
                 }
-            } catch (IOException ex) {
-                LOG.error(Freedomotic.getStackTraceInfo(ex));
-            } 
-            
+            }
+
             if (currentEntry.endsWith(".zip")) {
                 // found a zip file, try to open
                 unzip(destFile.getAbsolutePath());
