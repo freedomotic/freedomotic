@@ -27,7 +27,6 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
@@ -65,7 +64,7 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
             @ApiParam(value = "ID of item to update", required = true)
             @PathParam("id") String UUID,
             T s) {
-        if (api.getAuth().isPermitted(authContext + ":update:" + UUID)) {
+        if (API.getAuth().isPermitted(authContext + ":update:" + UUID)) {
             try {
                 LOG.info("Acquiring modified element");
                 T z = doUpdate(UUID, s);
@@ -81,7 +80,7 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
                 return Response.notModified().build();
             }
         }
-        throw new ForbiddenException("User " + api.getAuth().getSubject().getPrincipal() + " cannot modify " + authContext + " " + UUID);
+        throw new ForbiddenException("User " + API.getAuth().getSubject().getPrincipal() + " cannot modify " + authContext + " " + UUID);
     }
 
     /**
@@ -100,7 +99,7 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
     @Override
     public Response create(T s) throws URISyntaxException {
 
-        if (api.getAuth().isPermitted(authContext + ":create")) {
+        if (API.getAuth().isPermitted(authContext + ":create")) {
             try {
                 return Response.created(doCreate(s)).build();
             } catch (URISyntaxException e) {
@@ -108,7 +107,7 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
                 return Response.serverError().build();
             }
         }
-        throw new ForbiddenException("User " + api.getAuth().getSubject().getPrincipal() + " cannot create any " + authContext);
+        throw new ForbiddenException("User " + API.getAuth().getSubject().getPrincipal() + " cannot create any " + authContext);
     }
 
     /**
@@ -126,14 +125,14 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
     public Response delete(
             @ApiParam(value = "ID of item to delete", required = true)
             @PathParam("id") String UUID) {
-        if (api.getAuth().isPermitted(authContext + ":create") && api.getAuth().isPermitted(authContext + ":read:" + UUID)) {
+        if (API.getAuth().isPermitted(authContext + ":create") && API.getAuth().isPermitted(authContext + ":read:" + UUID)) {
             if (doDelete(UUID)) {
                 return Response.ok().build();
             } else {
                 throw new ItemNotFoundException("Cannot find item: " + UUID);
             }
         }
-        throw new ForbiddenException("User " + api.getAuth().getSubject().getPrincipal() + " cannot copy " + authContext + " with UUID " + UUID);
+        throw new ForbiddenException("User " + API.getAuth().getSubject().getPrincipal() + " cannot copy " + authContext + " with UUID " + UUID);
     }
 
     @Override

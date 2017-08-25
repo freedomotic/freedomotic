@@ -49,7 +49,7 @@ public abstract class AbstractReadOnlyResource<T> implements ResourceReadOnlyInt
 
     public static final Logger LOG = LoggerFactory.getLogger(AbstractReadOnlyResource.class.getName());
     protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
-    protected final static API api = INJECTOR.getInstance(API.class);
+    protected final static API API = INJECTOR.getInstance(API.class);
     protected String authContext = "*";
 
     /**
@@ -71,10 +71,10 @@ public abstract class AbstractReadOnlyResource<T> implements ResourceReadOnlyInt
     @ApiOperation(value = "Get a list of items", position = 10)
     @Override
     public Response list() {
-        if (api.getAuth().isPermitted(authContext + ":read")) {
+        if (API.getAuth().isPermitted(authContext + ":read")) {
             return Response.ok(prepareList()).build();
         }
-        throw new ForbiddenException("user: " + api.getAuth().getSubject().getPrincipal() + " cannot read any" + authContext);
+        throw new ForbiddenException("user: " + API.getAuth().getSubject().getPrincipal() + " cannot read any" + authContext);
     }
 
     /**
@@ -92,14 +92,14 @@ public abstract class AbstractReadOnlyResource<T> implements ResourceReadOnlyInt
     public Response get(
             @ApiParam(value = "ID of item to fetch", required = true)
             @PathParam("id") String UUID) {
-        if (api.getAuth().isPermitted(authContext + ":read:" + UUID)) {
+        if (API.getAuth().isPermitted(authContext + ":read:" + UUID)) {
             T item = prepareSingle(UUID);
             if (item != null) {
                 return Response.ok(item).build();
             }
             throw new ItemNotFoundException("Cannot find item: " + UUID);
         }
-        throw new ForbiddenException("User " + api.getAuth().getSubject().getPrincipal() + " cannot read " + authContext + " " + UUID);
+        throw new ForbiddenException("User " + API.getAuth().getSubject().getPrincipal() + " cannot read " + authContext + " " + UUID);
     }
 
     /**

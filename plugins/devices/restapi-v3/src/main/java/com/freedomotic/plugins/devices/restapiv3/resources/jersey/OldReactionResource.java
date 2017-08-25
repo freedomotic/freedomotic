@@ -37,15 +37,15 @@ public class OldReactionResource extends AbstractResource<Reaction> {
 
     @Override
     protected URI doCreate(Reaction o) throws URISyntaxException {
-        api.reactions().create(o);
+        API.reactions().create(o);
         return createUri(o.getUuid());
     }
 
     @Override
     protected boolean doDelete(String UUID) {
-        Reaction r = api.reactions().findOne(UUID);
+        Reaction r = API.reactions().findOne(UUID);
         if (r != null) {
-            api.reactions().delete(r);
+            API.reactions().delete(r);
             return true;
         }
         return false;
@@ -54,23 +54,23 @@ public class OldReactionResource extends AbstractResource<Reaction> {
     @Override
     protected Reaction doUpdate(String uuid, Reaction o) {
         o.setUuid(uuid);
-        return api.reactions().modify(uuid, o);
+        return API.reactions().modify(uuid, o);
     }
 
     @Override
     protected List<Reaction> prepareList() {
-        return api.reactions().findAll();
+        return API.reactions().findAll();
     }
 
     @Override
     protected Reaction prepareSingle(String uuid) {
-        return api.reactions().findOne(uuid);
+        return API.reactions().findOne(uuid);
     }
 
     @Override
     protected URI doCopy(String UUID) {
-        Reaction found = api.reactions().findOne(UUID);
-        Reaction r = api.reactions().copy(found);
+        Reaction found = API.reactions().findOne(UUID);
+        Reaction r = API.reactions().copy(found);
         return createUri(UUID);
     }
 

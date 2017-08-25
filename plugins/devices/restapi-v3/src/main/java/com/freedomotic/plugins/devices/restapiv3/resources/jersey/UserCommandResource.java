@@ -37,12 +37,12 @@ import javax.ws.rs.core.Response;
  * @author Matteo Mazzoni
  */
 @Path("commands/user")
-@Api(value = "userCommands", description = "Operations on user commands", position = 5)
+@Api(value = "userCommands", description = "Operations on user's commands", position = 5)
 public class UserCommandResource extends AbstractResource<Command> {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List all user commands", position = 10)
+    @ApiOperation(value = "List all user's commands", position = 10)
     @Override
     public Response list() {
         return super.list();
@@ -54,7 +54,7 @@ public class UserCommandResource extends AbstractResource<Command> {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Get an user's command", position = 20)
+    @ApiOperation(value = "Get a user's command", position = 20)
     @Path("/{id}")
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "User's command not found")
@@ -69,7 +69,7 @@ public class UserCommandResource extends AbstractResource<Command> {
     @Override
     @DELETE
     @Path("/{id}")
-    @ApiOperation(value = "Delete an user's command", position = 50)
+    @ApiOperation(value = "Delete a user's command", position = 50)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "User's command not found")
     })
@@ -93,7 +93,7 @@ public class UserCommandResource extends AbstractResource<Command> {
     @ApiResponses(value = {
         @ApiResponse(code = 304, message = "User's command not modified")
     })
-    @ApiOperation(value = "Update an user's command", position = 40)
+    @ApiOperation(value = "Update a user's command", position = 40)
     public Response update(
             @ApiParam(value = "UUID of user's command to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
             @PathParam("id") String UUID, Command s) {
@@ -125,41 +125,41 @@ public class UserCommandResource extends AbstractResource<Command> {
     @Override
     protected URI doCreate(Command c) throws URISyntaxException {
         c.setHardwareLevel(false);
-        api.commands().create(c);
+        API.commands().create(c);
         return createUri(c.getUuid());
     }
 
     @Override
     protected boolean doDelete(String UUID) {
-        return api.commands().delete(UUID);
+        return API.commands().delete(UUID);
     }
 
     @Override
     protected Command doUpdate(String uuid, Command c) {
         c.setUUID(uuid);
-        return api.commands().modify(uuid, c);
+        return API.commands().modify(uuid, c);
     }
 
     @Override
     protected List<Command> prepareList() {
-        List<Command> cl = new ArrayList<Command>();
-        cl.addAll(api.commands().findUserCommands());
+        List<Command> cl = new ArrayList<>();
+        cl.addAll(API.commands().findUserCommands());
         return cl;
     }
 
     @Override
     protected Command prepareSingle(String uuid) {
-        return api.commands().findOne(uuid);
+        return API.commands().findOne(uuid);
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}/run")
-    @ApiOperation("Fire an user's command")
+    @ApiOperation("Fire a user's command")
     public Response fire(
             @ApiParam(value = "UUID of user's command to execute", required = true)
             @PathParam("id") String UUID) {
-        Command c = api.commands().findOne(UUID);
+        Command c = API.commands().findOne(UUID);
         if (c != null) {
             return fire(c);
         }
@@ -184,8 +184,8 @@ public class UserCommandResource extends AbstractResource<Command> {
 
     @Override
     protected URI doCopy(String uuid) {
-        Command found = api.commands().findOne(uuid);
-        Command c = api.commands().copy(found);
+        Command found = API.commands().findOne(uuid);
+        Command c = API.commands().copy(found);
         return createUri(c.getUuid());
     }
 

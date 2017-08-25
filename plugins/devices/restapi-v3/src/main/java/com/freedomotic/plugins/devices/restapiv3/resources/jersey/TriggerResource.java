@@ -25,14 +25,13 @@ import com.wordnik.swagger.annotations.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.logging.Level;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 @Path("triggers")
 @Api(value = "/triggers", description = "Operations on triggers", position = 4)
@@ -120,7 +119,7 @@ public class TriggerResource extends AbstractResource<Trigger> {
     
     @Override
     protected URI doCreate(Trigger o) throws URISyntaxException {
-        api.triggers().create(o);
+        API.triggers().create(o);
         try {
             o.register();
         } catch (Exception e) {
@@ -131,29 +130,29 @@ public class TriggerResource extends AbstractResource<Trigger> {
 
     @Override
     protected boolean doDelete(String UUID) {
-        return api.triggers().delete(UUID);
+        return API.triggers().delete(UUID);
     }
 
     @Override
     protected Trigger doUpdate(String uuid, Trigger o) {
         o.setUUID(uuid);
-        return api.triggers().modify(uuid, o);
+        return API.triggers().modify(uuid, o);
     }
 
     @Override
     protected List<Trigger> prepareList() {
-        return api.triggers().findAll();
+        return API.triggers().findAll();
     }
 
     @Override
     protected Trigger prepareSingle(String uuid) {
-        return api.triggers().findOne(uuid);
+        return API.triggers().findOne(uuid);
     }
 
     @Override
     protected URI doCopy(String UUID) {
-        Trigger found = api.triggers().findOne(UUID);
-        Trigger t = api.triggers().copy(found);
+        Trigger found = API.triggers().findOne(UUID);
+        Trigger t = API.triggers().copy(found);
         try {
             t.register();
         } catch (Exception e) {

@@ -51,7 +51,7 @@ import javax.ws.rs.core.UriBuilder;
 @Api(value = "/resources", description = "Retrieve images and other binary resource", position = 10)
 public class ImageResource {
 
-    private final Map<String, File> cache = new HashMap<String, File>();
+    private final Map<String, File> cache = new HashMap<>();
 
     protected File prepareSingle(String fileName) {
         File cached = cache.get(fileName);
@@ -93,7 +93,6 @@ public class ImageResource {
         if (imageFile.getPath().startsWith(Info.PATHS.PATH_RESOURCES_FOLDER.getPath())) {
             path = imageFile.getPath().substring((Info.PATHS.PATH_RESOURCES_FOLDER.getPath()).length());
             path = path.replace('\\', '/');
-            //System.out.println("RESTAPI path: " + path);
         }
         if (path != null) {
             URI newPath = UriBuilder.fromPath("/res").path(path).build();

@@ -40,7 +40,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -149,16 +148,16 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
     @Override
     protected List<EnvObject> prepareList() {
-        List<EnvObject> objects = new ArrayList<EnvObject>();
+        List<EnvObject> objects = new ArrayList<>();
         if (envUUID == null) {
-            for (EnvObjectLogic objLogic : api.things().findAll()) {
+            for (EnvObjectLogic objLogic : API.things().findAll()) {
                 objects.add(objLogic.getPojo());
             }
         } else {
             if (roomUUID != null && !roomUUID.isEmpty()) {
-                objects.addAll(api.environments().findOne(envUUID).getZoneByUuid(roomUUID).getPojo().getObjects());
+                objects.addAll(API.environments().findOne(envUUID).getZoneByUuid(roomUUID).getPojo().getObjects());
             } else {
-                for (EnvObjectLogic objLogic : api.things().findByEnvironment(envUUID)) {
+                for (EnvObjectLogic objLogic : API.things().findByEnvironment(envUUID)) {
                     objects.add(objLogic.getPojo());
                 }
             }
@@ -168,7 +167,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
     @Override
     protected EnvObject prepareSingle(String uuid) {
-        EnvObjectLogic el = api.things().findOne(uuid);
+        EnvObjectLogic el = API.things().findOne(uuid);
         if (el != null) {
             return el.getPojo();
         } else {
@@ -178,21 +177,21 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
     @Override
     protected boolean doDelete(String UUID) {
-        return api.things().delete(UUID);
+        return API.things().delete(UUID);
     }
 
     @Override
     protected EnvObject doUpdate(String uuid, EnvObject eo) {
         try {
             eo.setUUID(uuid);
-            EnvObjectLogic el = api.thingsFactory().create(eo);
-            if (api.things().modify(uuid, el) != null) {
+            EnvObjectLogic el = API.thingsFactory().create(eo);
+            if (API.things().modify(uuid, el) != null) {
                 return eo;
             } else {
                 return null;
             }
         } catch (Exception e) {
-            LOG.error("Cannot modify thing {}", eo.getName(), e);
+            LOG.error("Cannot modify thing \"{}\"", eo.getName(), e);
             return null;
         }
 
@@ -202,8 +201,8 @@ public class ThingResource extends AbstractResource<EnvObject> {
     protected URI doCreate(EnvObject eo) throws URISyntaxException {
         EnvObjectLogic el;
         try {
-            el = api.thingsFactory().create(eo);
-            api.things().create(el);
+            el = API.thingsFactory().create(eo);
+            API.things().create(el);
             return createUri(el.getPojo().getUUID());
         } catch (RepositoryException ex) {
             LOG.error(ex.getMessage());
@@ -214,8 +213,8 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
     @Override
     protected URI doCopy(String UUID) {
-        EnvObjectLogic thing = api.things().findOne(UUID);
-        EnvObjectLogic thingCopy = api.things().copy(thing);
+        EnvObjectLogic thing = API.things().findOne(UUID);
+        EnvObjectLogic thingCopy = API.things().copy(thing);
         return createUri(thingCopy.getPojo().getUUID());
     }
 
@@ -226,7 +225,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
             @ApiParam(value = "UUID of thing to click", required = true)
             @PathParam("id") String UUID) {
         try {
-            EnvObjectLogic el = api.things().findOne(UUID);
+            EnvObjectLogic el = API.things().findOne(UUID);
             ObjectReceiveClick event = new ObjectReceiveClick(this, el, ObjectReceiveClick.SINGLE_CLICK);
             Freedomotic.sendEvent(event);
             return Response.accepted().build();
@@ -243,7 +242,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
             @ApiParam(value = "Left offset", required = true) @PathParam("x") int x,
             @ApiParam(value = "Top offset", required = true) @PathParam("y") int y) {
 
-        EnvObjectLogic el = api.things().findOne(UUID);
+        EnvObjectLogic el = API.things().findOne(UUID);
         try {
             el.setLocation(x, y);
             return Response.accepted().build();
@@ -285,7 +284,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
     @Path("/templates")
     @ApiOperation(value = "List all thing templates")
     public Response listTemplates() {
-        List<EnvObject> templates = new ArrayList<EnvObject>();
+        List<EnvObject> templates = new ArrayList<>();
         for (Client c : clientStorage.getClients("object")) {
             ObjectPluginPlaceholder opp = (ObjectPluginPlaceholder) c;
             templates.add(opp.getObject().getPojo());
@@ -333,12 +332,12 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
         public BehaviorResource(String objUUID) {
             this.objUUID = objUUID;
-            this.obj = api.things().findOne(objUUID);
+            this.obj = API.things().findOne(objUUID);
         }
 
         @Override
         protected URI doCopy(String UUID) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException("Not supported yet."); 
         }
 
         @Override

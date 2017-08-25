@@ -19,7 +19,6 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
-import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.freedomotic.plugins.devices.restapiv3.representations.UserRepresentation;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.security.User;
@@ -56,7 +55,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
 
     @Override
     protected URI doCopy(String UUID) {
-        User u = api.getAuth().getUser(UUID);
+        User u = API.getAuth().getUser(UUID);
         UserRepresentation ur = new UserRepresentation(u);
         ur.setName("copyOf" + ur.getName());
         ur.setPassword("");
@@ -87,14 +86,14 @@ public class UserResource extends AbstractResource<UserRepresentation> {
 
     @Override
     protected URI doCreate(UserRepresentation o) throws URISyntaxException {
-        User u = new User(o.getName(), o.getPassword(), api.getAuth());
+        User u = new User(o.getName(), o.getPassword(), API.getAuth());
         u.setRoles(o.getRoles());
         for (Object key : o.getProperties().keySet()) {
             u.setProperty(key.toString(), o.getProperties().getProperty(key.toString()));
         }
-        UserRealm ur = (UserRealm) api.getAuth().getUserRealm();
+        UserRealm ur = (UserRealm) API.getAuth().getUserRealm();
         ur.addUser(u);
-        if (api.getAuth().getUser(o.getName()) != null) {
+        if (API.getAuth().getUser(o.getName()) != null) {
             return createUri(o.getName());
         }
         return null;
@@ -115,8 +114,8 @@ public class UserResource extends AbstractResource<UserRepresentation> {
 
     @Override
     protected boolean doDelete(String UUID) {
-        if (!api.getAuth().getCurrentUser().getName().equals(UUID)) {
-            return api.getAuth().deleteUser(UUID);
+        if (!API.getAuth().getCurrentUser().getName().equals(UUID)) {
+            return API.getAuth().deleteUser(UUID);
         } else {
             throw new ForbiddenException("Users cannot delete themselves!!");
         }
@@ -147,7 +146,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     protected UserRepresentation doUpdate(String uuid, UserRepresentation o) {
         o.setName(uuid);
         try {
-            User u = api.getAuth().getUser(uuid);
+            User u = API.getAuth().getUser(uuid);
             u.setRoles(o.getRoles());
             u.getProperties().clear();
             if (o.getPassword() != null && !o.getPassword().isEmpty()) {
@@ -166,7 +165,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     @Override
     protected List<UserRepresentation> prepareList() {
         ArrayList<UserRepresentation> ul = new ArrayList<UserRepresentation>();
-        for (User u : api.getAuth().getUsers().values()) {
+        for (User u : API.getAuth().getUsers().values()) {
             ul.add(new UserRepresentation(u));
         }
         return ul;
@@ -192,7 +191,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
 
     @Override
     protected UserRepresentation prepareSingle(String uuid) {
-        User u = api.getAuth().getUser(uuid);
+        User u = API.getAuth().getUser(uuid);
         return (u == null) ? null : new UserRepresentation(u);
     }
 
@@ -201,7 +200,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Get current user", position = 0)
     public Response getCurrentUser() {
-        return Response.seeOther(createUri(api.getAuth().getCurrentUser().getName())).build();
+        return Response.seeOther(createUri(API.getAuth().getCurrentUser().getName())).build();
     }
 
     @POST
@@ -209,7 +208,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Get current user", position = 0)
     public Response logout() {
-        api.getAuth().logout();
+        API.getAuth().logout();
         return Response.accepted().build();
     }
 
@@ -222,7 +221,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
             @FormParam("name") String name,
             @FormParam("password") String password,
             @FormParam("rememberMe") boolean rememberMe) {
-        if (api.getAuth().login(name, password, rememberMe)) {
+        if (API.getAuth().login(name, password, rememberMe)) {
             return Response.ok().build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -252,7 +251,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
             @PathParam("id") String userName,
             @ApiParam(value = "Action to check user's permission against", required = true)
             @PathParam("action") String action) {
-        if (api.getAuth().getUser(userName).isPermitted(action)) {
+        if (API.getAuth().getUser(userName).isPermitted(action)) {
             return Response.ok().build();
         } else {
             return Response.status(Response.Status.FORBIDDEN).build();
@@ -267,7 +266,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
 
         public UserRoleResource(String userName) {
             this.userName = userName;
-            this.user = api.getAuth().getUser(userName);
+            this.user = API.getAuth().getUser(userName);
         }
 
         @GET
@@ -307,7 +306,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
 
         public PropertyResource(String userName) {
             this.userName = userName;
-            this.user = api.getAuth().getUser(userName);
+            this.user = API.getAuth().getUser(userName);
         }
 
         @GET

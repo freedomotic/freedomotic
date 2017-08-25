@@ -44,21 +44,7 @@ import javax.ws.rs.core.Response;
 @Api(value = "plugins", description = "Operations on plugins", position = 7)
 public class PluginResource extends AbstractResource<Plugin> {
 
-    @Override
-    protected URI doCreate(Plugin o) throws URISyntaxException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected boolean doDelete(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected Plugin doUpdate(String uuid, Plugin o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+  
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all installed plugins", position = 10)
@@ -87,8 +73,8 @@ public class PluginResource extends AbstractResource<Plugin> {
 
     @Override
     protected List<Plugin> prepareList() {
-        List<Plugin> plugins = new ArrayList<Plugin>();
-        for (Client c : api.getClients("plugin")) {
+        List<Plugin> plugins = new ArrayList<>();
+        for (Client c : API.getClients("plugin")) {
             plugins.add((Plugin) c);
         }
         return plugins;
@@ -96,7 +82,7 @@ public class PluginResource extends AbstractResource<Plugin> {
 
     @Override
     protected Plugin prepareSingle(String name) {
-        for (Client c : api.getClients("plugin")) {
+        for (Client c : API.getClients("plugin")) {
             Plugin plug = (Plugin) c;
             if (plug.getClassName().equalsIgnoreCase(name)) {
                 return plug;
@@ -109,14 +95,16 @@ public class PluginResource extends AbstractResource<Plugin> {
     @ApiOperation("Start a plugin")
     @Path("/{id}/start")
     @ApiResponses(value = {
-        @ApiResponse(code = 404, message = "Plugin not found"),
-        @ApiResponse(code = 202, message = "Plugin started"),
+        @ApiResponse(code = 404, message = "Plugin not found")
+        ,
+        @ApiResponse(code = 202, message = "Plugin started")
+        ,
         @ApiResponse(code = 304, message = "Plugin not started")
     })
     public Response start(
             @PathParam("id")
             @ApiParam(value = "Classname of plugin", required = true) String name) {
-        if (!api.getAuth().isPermitted("sys:plugins:start:" + name)) {
+        if (!API.getAuth().isPermitted("sys:plugins:start:" + name)) {
             throw new ForbiddenException();
         }
         Plugin p = prepareSingle(name);
@@ -135,15 +123,17 @@ public class PluginResource extends AbstractResource<Plugin> {
     @Path("/{id}/stop")
     @ApiOperation("Stop a plugin")
     @ApiResponses(value = {
-        @ApiResponse(code = 404, message = "Plugin not found"),
-        @ApiResponse(code = 202, message = "Plugin stopped"),
+        @ApiResponse(code = 404, message = "Plugin not found")
+        ,
+        @ApiResponse(code = 202, message = "Plugin stopped")
+        ,
         @ApiResponse(code = 304, message = "Plugin not stopped")
     })
     public Response stop(
             @PathParam("id")
             @ApiParam(value = "Classname of plugin", required = true) String name
     ) {
-        if (!api.getAuth().isPermitted("sys:plugins:stop:" + name)) {
+        if (!API.getAuth().isPermitted("sys:plugins:stop:" + name)) {
             throw new ForbiddenException();
         }
         Plugin p = prepareSingle(name);
@@ -159,8 +149,22 @@ public class PluginResource extends AbstractResource<Plugin> {
     }
 
     @Override
-    protected URI doCopy(String UUID
-    ) {
+    protected URI doCopy(String UUID) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected URI doCreate(Plugin o) throws URISyntaxException {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    protected boolean doDelete(String UUID) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    protected Plugin doUpdate(String UUID, Plugin o) {
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
 }

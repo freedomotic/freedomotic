@@ -19,7 +19,6 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
-import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.freedomotic.plugins.devices.restapiv3.representations.RoleRepresentation;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.security.User;
@@ -41,10 +40,10 @@ public class RoleResource extends AbstractResource<RoleRepresentation> {
 
     @Override
     protected URI doCopy(String UUID) {
-        SimpleRole sr = api.getAuth().getRole(UUID);
+        SimpleRole sr = API.getAuth().getRole(UUID);
         if (sr != null) {
             SimpleRole s2 = new SimpleRole("CopyOf-" + sr.getName(), sr.getPermissions());
-            api.getAuth().addRole(s2);
+            API.getAuth().addRole(s2);
             return createUri(s2.getName());
         }
         return null;
@@ -52,8 +51,8 @@ public class RoleResource extends AbstractResource<RoleRepresentation> {
 
     @Override
     protected URI doCreate(RoleRepresentation o) throws URISyntaxException {
-        if (api.getAuth().getRole(o.getName()) == null) {
-            api.getAuth().addRole(o.asSimpleRole());
+        if (API.getAuth().getRole(o.getName()) == null) {
+            API.getAuth().addRole(o.asSimpleRole());
             return createUri(o.getName());
         } else {
             return null;
@@ -62,23 +61,23 @@ public class RoleResource extends AbstractResource<RoleRepresentation> {
 
     @Override
     protected boolean doDelete(String UUID) {
-        api.getAuth().deleteRole(UUID);
+        API.getAuth().deleteRole(UUID);
         return true;
     }
 
     @Override
     protected RoleRepresentation doUpdate(String uuid, RoleRepresentation o) {
         o.setName(uuid);
-        SimpleRole sr = api.getAuth().getRole(o.getName());
+        SimpleRole sr = API.getAuth().getRole(o.getName());
         if (sr != null) {
-            List<User> users = new ArrayList<User>();
-            for (User u : api.getAuth().getUsers().values()) {
+            List<User> users = new ArrayList<>();
+            for (User u : API.getAuth().getUsers().values()) {
                 if (u.getRoles().contains(o.getName())) {
                     users.add(u);
                 }
             }
-            api.getAuth().deleteRole(o.getName());
-            api.getAuth().addRole(o.asSimpleRole());
+            API.getAuth().deleteRole(o.getName());
+            API.getAuth().addRole(o.asSimpleRole());
             for (User u : users) {
                 u.addRole(o.getName());
             }
@@ -89,8 +88,8 @@ public class RoleResource extends AbstractResource<RoleRepresentation> {
 
     @Override
     protected List<RoleRepresentation> prepareList() {
-        List<RoleRepresentation> rr = new ArrayList<RoleRepresentation>();
-        for (SimpleRole r : api.getAuth().getRoles().values()) {
+        List<RoleRepresentation> rr = new ArrayList<>();
+        for (SimpleRole r : API.getAuth().getRoles().values()) {
             rr.add(new RoleRepresentation(r));
         }
         return rr;
@@ -98,7 +97,7 @@ public class RoleResource extends AbstractResource<RoleRepresentation> {
 
     @Override
     protected RoleRepresentation prepareSingle(String uuid) {
-        SimpleRole sr = api.getAuth().getRole(uuid);
+        SimpleRole sr = API.getAuth().getRole(uuid);
         if (sr != null) {
             return new RoleRepresentation(sr);
         }

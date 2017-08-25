@@ -124,8 +124,8 @@ public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Override
     protected List<Environment> prepareList() {
-        List<Environment> environments = new ArrayList<Environment>();
-        for (EnvironmentLogic log : api.environments().findAll()) {
+        List<Environment> environments = new ArrayList<>();
+        for (EnvironmentLogic log : API.environments().findAll()) {
             environments.add(log.getPojo());
         }
         return environments;
@@ -133,7 +133,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Override
     protected Environment prepareSingle(String uuid) {
-        EnvironmentLogic el = api.environments().findOne(uuid);
+        EnvironmentLogic el = API.environments().findOne(uuid);
         if (el != null) {
             return el.getPojo();
         }
@@ -142,9 +142,9 @@ public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Override
     protected boolean doDelete(String UUID) {
-        EnvironmentLogic env = api.environments().findOne(UUID);
+        EnvironmentLogic env = API.environments().findOne(UUID);
         if (env != null) {
-            return api.environments().delete(UUID);
+            return API.environments().delete(UUID);
         } else {
             return false;
         }
@@ -154,7 +154,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
     protected URI doCreate(Environment eo) throws URISyntaxException {
         EnvironmentLogic el = INJECTOR.getInstance(EnvironmentLogic.class);
         el.setPojo(eo);
-        api.environments().create(el);
+        API.environments().create(el);
         return createUri(el.getPojo().getUUID());
     }
 
@@ -163,7 +163,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
         EnvironmentLogic el = INJECTOR.getInstance(EnvironmentLogic.class);
         eo.setUUID(UUID);
         el.setPojo(eo);
-        if (api.environments().modify(UUID, el) != null) {
+        if (API.environments().modify(UUID, el) != null) {
             return el.getPojo();
         } else {
             return null;
@@ -186,8 +186,8 @@ public class EnvironmentResource extends AbstractResource<Environment> {
 
     @Override
     protected URI doCopy(String UUID) {
-        EnvironmentLogic found = api.environments().findOne(UUID);
-        EnvironmentLogic el = api.environments().copy(found);
+        EnvironmentLogic found = API.environments().findOne(UUID);
+        EnvironmentLogic el = API.environments().copy(found);
         return createUri(el.getPojo().getUUID());
     }
 }

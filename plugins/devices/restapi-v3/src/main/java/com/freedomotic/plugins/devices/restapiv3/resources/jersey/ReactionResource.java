@@ -135,19 +135,19 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
         if (o.getUuid() != null && !o.getUuid().isEmpty()) {
             r.setUuid(o.getUuid());
         }
-        r.setTrigger(api.triggers().findOne(o.getTriggerUuid()));
+        r.setTrigger(API.triggers().findOne(o.getTriggerUuid()));
         for (HashMap<String, String> c : o.getCommands()) {
-            r.getCommands().add(api.commands().findOne(c.get("uuid")));
+            r.getCommands().add(API.commands().findOne(c.get("uuid")));
         }
         r.setConditions(o.getConditions());
         r.setChanged();
-        api.reactions().create(r);
+        API.reactions().create(r);
         return createUri(r.getUuid());
     }
 
     @Override
     protected boolean doDelete(String UUID) {
-        return api.reactions().delete(UUID);
+        return API.reactions().delete(UUID);
     }
 
     @Override
@@ -164,8 +164,8 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
 
     @Override
     protected List<ReactionRepresentation> prepareList() {
-        ArrayList<ReactionRepresentation> list = new ArrayList<ReactionRepresentation>();
-        for (Reaction r : api.reactions().findAll()) {
+        ArrayList<ReactionRepresentation> list = new ArrayList<>();
+        for (Reaction r : API.reactions().findAll()) {
             list.add(new ReactionRepresentation(r));
         }
         return list;
@@ -173,7 +173,7 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
 
     @Override
     protected ReactionRepresentation prepareSingle(String uuid) {
-        Reaction r = api.reactions().findOne(uuid);
+        Reaction r = API.reactions().findOne(uuid);
         if (r != null) {
             return new ReactionRepresentation(r);
         }

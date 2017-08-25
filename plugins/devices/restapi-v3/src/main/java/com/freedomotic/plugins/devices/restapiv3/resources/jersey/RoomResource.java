@@ -48,13 +48,13 @@ public class RoomResource extends AbstractResource<Zone> {
     public RoomResource() {
         authContext = "rooms";
         // set env and envUUID to the current environment
-        this.env = api.environments().findAll().get(0);
+        this.env = API.environments().findAll().get(0);
         this.envUUID = env.getPojo().getUUID();
     }
 
     protected RoomResource(String envUUID) {
         this.envUUID = envUUID;
-        this.env = api.environments().findOne(envUUID);
+        this.env = API.environments().findOne(envUUID);
     }
 
     @GET
@@ -166,7 +166,7 @@ public class RoomResource extends AbstractResource<Zone> {
 
     @Override
     protected List<Zone> prepareList() {
-        List<Zone> rl = new ArrayList<Zone>();
+        List<Zone> rl = new ArrayList<>();
         for (Room r : this.env.getRooms()) {
             rl.add(r.getPojo());
         }

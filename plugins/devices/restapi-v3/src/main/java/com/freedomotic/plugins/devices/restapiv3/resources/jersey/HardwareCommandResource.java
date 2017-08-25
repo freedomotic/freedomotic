@@ -123,37 +123,37 @@ public class HardwareCommandResource extends AbstractResource<Command> {
     @Override
     protected URI doCreate(Command c) throws URISyntaxException {
         c.setHardwareLevel(true);
-        api.commands().create(c);
+        API.commands().create(c);
         return createUri(c.getUuid());
     }
 
     @Override
     protected boolean doDelete(String UUID) {
-        return api.commands().delete(UUID);
+        return API.commands().delete(UUID);
     }
 
     @Override
     protected Command doUpdate(String uuid, Command c) {
         c.setUUID(uuid);
-        return api.commands().modify(uuid, c);
+        return API.commands().modify(uuid, c);
     }
 
     @Override
     protected List<Command> prepareList() {
-        List<Command> cl = new ArrayList<Command>();
-        cl.addAll(api.commands().findHardwareCommands());
+        List<Command> cl = new ArrayList<>();
+        cl.addAll(API.commands().findHardwareCommands());
         return cl;
     }
 
     @Override
     protected Command prepareSingle(String uuid) {
-        return api.commands().findOne(uuid);
+        return API.commands().findOne(uuid);
     }
 
     @Override
     protected URI doCopy(String uuid) {
-        Command found = api.commands().findOne(uuid);
-        Command c = api.commands().copy(found);
+        Command found = API.commands().findOne(uuid);
+        Command c = API.commands().copy(found);
         return createUri(c.getUuid());
     }
 }
