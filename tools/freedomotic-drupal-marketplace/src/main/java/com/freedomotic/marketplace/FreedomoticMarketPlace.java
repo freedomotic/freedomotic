@@ -22,9 +22,8 @@ package com.freedomotic.marketplace;
 
 import com.freedomotic.marketplace.util.DrupalRestHelper;
 import org.openide.util.lookup.ServiceProvider;
-
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -40,14 +39,14 @@ public final class FreedomoticMarketPlace implements IMarketPlace {
     private final ArrayList<IPluginCategory> categoryList;
 
     public FreedomoticMarketPlace() {
-        packageList = new ArrayList<IPluginPackage>();
-        categoryList = new ArrayList<IPluginCategory>();
+        packageList = new ArrayList<>();
+        categoryList = new ArrayList<>();
         updateCategoryList();
 
     }
 
     @Override
-    public ArrayList<IPluginPackage> getAvailablePackages() {
+    public List<IPluginPackage> getAvailablePackages() {
         return packageList;
     }
 
@@ -58,13 +57,13 @@ public final class FreedomoticMarketPlace implements IMarketPlace {
     }
 
     @Override
-    public ArrayList<IPluginCategory> getAvailableCategories() {
+    public List<IPluginCategory> getAvailableCategories() {
         return categoryList;
     }
 
     @Override
     @XmlTransient
-    public ArrayList<IPluginPackage> getAvailablePackages(IPluginCategory category) {
+    public List<IPluginPackage> getAvailablePackages(IPluginCategory category) {
         return (ArrayList<IPluginPackage>) category.listPlugins();
     }
 
@@ -72,13 +71,5 @@ public final class FreedomoticMarketPlace implements IMarketPlace {
     public void updateCategoryList() {
         categoryList.clear();
         categoryList.addAll(DrupalRestHelper.retrieveCategories());
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-        FreedomoticMarketPlace market = new FreedomoticMarketPlace();
-
     }
 }

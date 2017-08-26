@@ -42,13 +42,13 @@ public class MarketPlacePlugin {
     private String title;
     private String body; //XML
     private String path;
-    private String field_developer; //TODO check for correct developername
-    private String field_status;//list
-    private String field_description;
-    private PluginCategoryEnum field_category;
-    private ArrayList<String> field_os;
-    private MarketPlacePluginFileField field_file; //*** 
-    private int field_file_position = 0;
+    private String fieldDeveloper; //TODO check for correct developername
+    private String fieldStatus;//list
+    private String fieldDescription;
+    private PluginCategoryEnum fieldCategory;
+    private ArrayList<String> fieldOs;
+    private MarketPlacePluginFileField fieldFile; //*** 
+    private int fieldFilePosition = 0;
     private ArrayList<String> taxonomy;
 
     public MarketPlacePlugin() {
@@ -87,7 +87,7 @@ public class MarketPlacePlugin {
 
     public String formatFieldOS() {
         String list = "";
-        for (String s : field_os) {
+        for (String s : fieldOs) {
             list += "\"" + s + "\":\"" + s + "\",";
         }
         //remove the last ,
@@ -116,8 +116,8 @@ public class MarketPlacePlugin {
 
     //At this moment we only mantain one file on the plugin
     public String formatFieldFile() {
-        if (field_file != null) {
-            return "\"field_file\":{\"" + field_file_position + "\":{" + field_file.formatFile() + "}}";
+        if (fieldFile != null) {
+            return "\"field_file\":{\"" + fieldFilePosition + "\":{" + fieldFile.formatFile() + "}}";
         } else {
             return "";
         }
@@ -125,7 +125,7 @@ public class MarketPlacePlugin {
     //At this moment we only mantain one file on the plugin
 
     public String formatFieldCategory() {
-        if (field_category != null) {
+        if (fieldCategory != null) {
             return "\"field_category\":[{\"value\":\"" + getField_category() + "\"}]";
         } else {
             return "";
@@ -178,70 +178,70 @@ public class MarketPlacePlugin {
      * @return the field_developer
      */
     public String getField_developer() {
-        return field_developer;
+        return fieldDeveloper;
     }
 
     /**
      * @param field_developer the field_developer to set
      */
     public void setField_developer(String field_developer) {
-        this.field_developer = field_developer;
+        this.fieldDeveloper = field_developer;
     }
 
     /**
      * @return the field_status
      */
     public String getField_status() {
-        return field_status;
+        return fieldStatus;
     }
 
     /**
      * @return the field_description
      */
     public String getField_description() {
-        return field_description;
+        return fieldDescription;
     }
 
     /**
      * @return the field_category
      */
     public PluginCategoryEnum getField_category() {
-        return field_category;
+        return fieldCategory;
     }
 
     /**
      * @param field_status the field_status to set
      */
     public void setField_status(String field_status) {
-        this.field_status = field_status;
+        this.fieldStatus = field_status;
     }
 
     /**
      * @param field_description the field_description to set
      */
     public void setField_description(String field_description) {
-        this.field_description = field_description;
+        this.fieldDescription = field_description;
     }
 
     /**
      * @param field_category the field_category to set
      */
     public void setField_category(PluginCategoryEnum field_category) {
-        this.field_category = field_category;
+        this.fieldCategory = field_category;
     }
 
     public void addField_os(String os) {
-        if (field_os == null) {
-            field_os = new ArrayList<String>();
+        if (fieldOs == null) {
+            fieldOs = new ArrayList<>();
         }
-        if (!field_os.contains(os)) {
-            field_os.add(os);
+        if (!fieldOs.contains(os)) {
+            fieldOs.add(os);
         }
     }
 
     public void removeField_os(String os) {
-        if (field_os.contains(os)) {
-            field_os.remove(os);
+        if (fieldOs.contains(os)) {
+            fieldOs.remove(os);
         }
     }
 
@@ -250,16 +250,17 @@ public class MarketPlacePlugin {
     }
 
     /**
-     * @param field_file the field_file to set
+     * @param fieldFile the field_file to set
+     * @param position
      */
-    public void setField_file(MarketPlacePluginFileField field_file, int position) {
-        this.field_file = field_file;
-        this.field_file_position = position;
+    public void setField_file(MarketPlacePluginFileField fieldFile, int position) {
+        this.fieldFile = fieldFile;
+        this.fieldFilePosition = position;
     }
 
     public void addTaxonomyWord(String word) {
         if (taxonomy == null) {
-            taxonomy = new ArrayList<String>();
+            taxonomy = new ArrayList<>();
         }
         if (!taxonomy.contains(word)) {
             taxonomy.add(word);

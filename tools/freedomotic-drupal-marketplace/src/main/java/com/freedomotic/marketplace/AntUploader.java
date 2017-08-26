@@ -48,32 +48,29 @@ public class AntUploader extends Task {
     public void execute() {
         JavaUploader drupal = new JavaUploader();
         //change this for real username and password
-        String loginJson = drupal.login(username, password);
-        CookieSetting cS = drupal.parseCookie(loginJson);
-        String userid = drupal.parseUid(loginJson);
+        String loginJson = JavaUploader.login(username, password);
+        CookieSetting cS = JavaUploader.parseCookie(loginJson);
+        String userid = JavaUploader.parseUid(loginJson);
         if (cS != null) {
             //first try to retrieve the plugin from the drupal site
-            LOG.info("Retrieving {} from the marketplace", nodeid);
+            LOG.info("Retrieving node {} from the marketplace", nodeid);
             MarketPlacePlugin2 plugin = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.freedomotic.com/rest/node/" + nodeid);
             if (plugin != null) {
                 try {
                     File marketDirectory = new File(attachment);
                     File fileToUpload = findFileToUpload(marketDirectory);
                     if (fileToUpload != null) {
-
-                        MarketPlaceFile pluginFile = drupal.postFile(cS, userid, marketDirectory.getAbsolutePath(), fileToUpload.getName());
+                        MarketPlaceFile pluginFile = JavaUploader.postFile(cS, userid, marketDirectory.getAbsolutePath(), fileToUpload.getName());
                         plugin.addFile(pluginFile);
-                        drupal.putPlugin(cS, nodeid, plugin);
-
+                        JavaUploader.putPlugin(cS, nodeid, plugin);
                     } else {
-                        throw new BuildException("No marketplace files in folder " + marketDirectory);
+                        throw new BuildException("No marketplace files in folder \"" + marketDirectory + "\"");
                     }
                 } catch (IOException ex) {
                     throw new BuildException("Cannot find attachment file. " + ex.getMessage());
                 }
             } else {
-                throw new BuildException("There no exist a plugin with id: " + nodeid);
-
+                throw new BuildException("There isn't a plugin with id: " + nodeid);
             }
         }
 
@@ -87,44 +84,35 @@ public class AntUploader extends Task {
      * @return
      */
     public File findFileToUpload(File marketDirectory) {
-
         File[] files = null;
+       
         LOG.info("Uploading to drupal nodeid {} the file in \"{}\"", nodeid, marketDirectory.getAbsolutePath());
         if (marketDirectory.isDirectory()) {
-
             // This filter only returns object files
-            FileFilter objectFileFileter = new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    if (file.isFile()
-                            && (file.getName().endsWith(".device")
-                            || file.getName().endsWith(".object")
-                            || file.getName().endsWith(".event"))) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
+            FileFilter objectFileFilter = (File file) -> {
+                return (file.isFile()
+                        && (file.getName().endsWith(".device")
+                        || file.getName().endsWith(".object")
+                        || file.getName().endsWith(".event")));
             };
-            files = marketDirectory.listFiles(objectFileFileter);
+            files = marketDirectory.listFiles(objectFileFilter);
         } else {
-            throw new BuildException(marketDirectory + " is not a folder");
+            throw new BuildException("\"" + marketDirectory + "\" is not a folder");
         }
-        File fileToUpload = files[0]; //get first file in folder according to filtering rules
-        return fileToUpload;
+        return files[0]; //get first file in folder according to filtering rules
     }
 
     public String extractVersion(String filename) {
         //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
         //only 5.2.x-1.212 is needed
         //remove extension
-        filename = filename.substring(0, filename.lastIndexOf("."));
-        String[] tokens = filename.split("-");
+        String pluginFilename = filename.substring(0, filename.lastIndexOf('.'));
+        String[] tokens = pluginFilename.split("-");
         //3 tokens expected
         if (tokens.length == 3) {
             return tokens[1] + "-" + tokens[2];
         } else {
-            return filename;
+            return pluginFilename;
         }
     }
 
