@@ -100,15 +100,11 @@ public class TrackingReadFile extends Protocol {
      * @param f file of coordinates
      */
     private void readMoteFileCoordinates(File f) {
-        FileReader fr = null;
         ArrayList<Coordinate> coord = new ArrayList<>();
         String userId = FilenameUtils.removeExtension(f.getName());
 
-        try {
+        try (FileReader fr = new FileReader(f); BufferedReader br = new BufferedReader(fr);) {
             LOG.info("Reading coordinates from file \"{}\"", f.getAbsolutePath());
-            fr = new FileReader(f);
-
-            BufferedReader br = new BufferedReader(fr);
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -122,21 +118,12 @@ public class TrackingReadFile extends Protocol {
                 c.setTime(new Integer(st.nextToken()));
                 coord.add(c);
             }
-            fr.close();
             WorkerThread wt = new WorkerThread(this, coord, ITERATIONS);
             workers.add(wt);
         } catch (FileNotFoundException ex) {
             LOG.error("Coordinates file not found for mote \"{}\"", userId);
         } catch (IOException ex) {
             LOG.error("IOException: ", ex);
-        } finally {
-            try {
-                if (fr != null) {
-                    fr.close();
-                }
-            } catch (IOException ex) {
-                LOG.error("IOException: ", ex);
-            }
         }
     }
 
