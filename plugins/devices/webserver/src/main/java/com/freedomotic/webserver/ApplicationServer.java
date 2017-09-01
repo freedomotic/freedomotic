@@ -49,28 +49,19 @@ public class ApplicationServer extends Protocol {
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationServer.class.getName());
 
 //TODO: read from config file
-    int port;// = 8080;
-    String webappDir;
-    String warFile;
-    public static final String WEBAPP_CTX = "/";
-    public static Server server;
-    private static boolean enableSSL;
-    private static int sslPort;
-    private static String keystorePassword;
-    private static String keystoreFile;
-    private static String keystoreType;
+    private static final String WEBAPP_CTX = "/";
+    private static Server server;
+    private final int port = configuration.getIntProperty("PORT", 8080);
+    private final String webappDir = configuration.getStringProperty("WEBAPP_DIR", "/webapps/gwt_client");
+    private final String warFile = configuration.getStringProperty("WAR_FILE", "");
+    private final boolean enableSSL = configuration.getBooleanProperty("ENABLE_SSL", true);
+    private final int sslPort = configuration.getIntProperty("SSL_PORT", 8443);
+    private final String keystorePassword = configuration.getStringProperty("KEYSTORE_PASSWORD", "password");
+    private final String keystoreFile = configuration.getStringProperty("KEYSTORE_FILE", "keystore");
+    private final String keystoreType = configuration.getStringProperty("KEYSTORE_TYPE", "JKS");
 
     public ApplicationServer() {
         super("Application Server", "/webserver/applicationserver-manifest.xml");
-
-        port = configuration.getIntProperty("PORT", 8080);
-        webappDir = configuration.getStringProperty("WEBAPP_DIR", "/webapps/gwt_client");
-        warFile = configuration.getStringProperty("WAR_FILE", "");
-        enableSSL = configuration.getBooleanProperty("ENABLE_SSL", true);
-        sslPort = configuration.getIntProperty("SSL_PORT", 8443);
-        keystorePassword = configuration.getStringProperty("KEYSTORE_PASSWORD", "password");
-        keystoreFile = configuration.getStringProperty("KEYSTORE_FILE", "keystore");
-        keystoreType = configuration.getStringProperty("KEYSTORE_TYPE", "JKS");
 
         //TODO: check that the war file is correct.
     }
@@ -84,21 +75,20 @@ public class ApplicationServer extends Protocol {
         if (enableSSL) {
             KeyStore ks;
             String keyStorePath = this.getFile().getParent() + "/data/" + keystoreFile;
-            try {
+            try(FileInputStream is = new FileInputStream(keyStorePath);)  {
                 ks = KeyStore.getInstance(keystoreType);
-                ks.load(new FileInputStream(keyStorePath), keystorePassword.toCharArray());
-
+                ks.load(is, keystorePassword.toCharArray());
                 SslContextFactory sslContextFactory = new SslContextFactory();
                 sslContextFactory.setKeyStore(ks);
                 sslContextFactory.setKeyStorePassword(keystorePassword);
                 sslContextFactory.setKeyStoreType(keystoreType);
 
-                SslSocketConnector SSLConnector = new SslSocketConnector(sslContextFactory);
+                SslSocketConnector sslConnector = new SslSocketConnector(sslContextFactory);
 
-                SSLConnector.setPort(sslPort);
-                SSLConnector.setMaxIdleTime(30000);
-                LOG.info("Webserver now listens on SLL port {}", sslPort);
-                server.addConnector(SSLConnector);
+                sslConnector.setPort(sslPort);
+                sslConnector.setMaxIdleTime(30000);
+                LOG.info("Webserver now listens on SSL port {}", sslPort);
+                server.addConnector(sslConnector);
             } catch (Exception ex) {
                 LOG.error("Cannot load java keystore for reason: ", Freedomotic.getStackTraceInfo(ex));
             }
@@ -109,26 +99,26 @@ public class ApplicationServer extends Protocol {
             try {
                 WebAppContext webapp = new WebAppContext();
                 webapp.setContextPath(WEBAPP_CTX);
-                webapp.setWar(dir + "/" + warFile);
+                webapp.setWar(dir + WEBAPP_CTX + warFile);
                 server.setHandler(webapp);
 
                 //print the URL to visit as plugin description
                 InetAddress addr = InetAddress.getLocalHost();
                 String hostname = addr.getHostName();
                 //strip away the '.war' extension and put all togheter
-                URL url = new URL("http://" + hostname + ":" + port + "/" + warFile.substring(0, warFile.lastIndexOf(".")));
+                URL url = new URL("http://" + hostname + ":" + port + WEBAPP_CTX + warFile.substring(0, warFile.lastIndexOf('.')));
                 setDescription("Visit " + url.toString());
                 server.start();
             } catch (FileNotFoundException nf) {
-                LOG.warn("Cannot find WAR file " + warFile + " into directory " + dir);
+                LOG.warn("Cannot find WAR file {} into directory {}", warFile, dir);
             } catch (Exception ex) {
-                LOG.error("Generic exception",Freedomotic.getStackTraceInfo(ex));
+                LOG.error("Generic exception", Freedomotic.getStackTraceInfo(ex));
             }
         } else {
             try {
                 ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-                context.setContextPath("/");
-                context.setResourceBase(new File(dir + "/").getAbsolutePath());
+                context.setContextPath(WEBAPP_CTX);
+                context.setResourceBase(new File(dir + WEBAPP_CTX).getAbsolutePath());
                 context.addServlet(DefaultServlet.class, "/*");
                 server.setHandler(context);
                 server.start();
@@ -152,7 +142,7 @@ public class ApplicationServer extends Protocol {
 
     @Override
     protected void onRun() {
-        // throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
