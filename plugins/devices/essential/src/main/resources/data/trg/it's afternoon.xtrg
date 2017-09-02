@@ -1,6 +1,6 @@
 <trigger>
   <name>It&apos;s afternoon</name>
-  <description>it is night (it starts at 22:00)</description>
+  <description>it is afternoon (between 13:00 and 19:00)</description>
   <uuid>3a612c7a-ee61-4b44-bd05-eb9604584365</uuid>
   <channel>app.event.sensor.calendar.event.schedule</channel>
   <payload>
