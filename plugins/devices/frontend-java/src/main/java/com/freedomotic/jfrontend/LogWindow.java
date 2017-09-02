@@ -24,7 +24,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,9 +37,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-
 import org.apache.log4j.Logger;
-
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.util.LogFormatter;
 
@@ -50,9 +47,9 @@ import com.freedomotic.util.LogFormatter;
  */
 public class LogWindow extends JFrame {
 
-    int MAX_TABLE_ROWS = 100;
-    DefaultTableModel model = new DefaultTableModel();
-    String[] levels = {
+    private final int MAX_TABLE_ROWS = 100;
+    private DefaultTableModel model = new DefaultTableModel();
+    private String[] levels = {
         "ALL",
         "TRACE",
         "DEBUG",
@@ -60,12 +57,12 @@ public class LogWindow extends JFrame {
         "WARN",
         "ERROR",
         "OFF",};
-    JComboBox cmbLevel = new JComboBox(levels);
-    JTable table = new JTable(model);
-    JTextPane areaDetail = new JTextPane();
-    JToggleButton btnStop = new JToggleButton();
-    private final Logger printableLogger;
-    private final I18n I18n;
+    private JComboBox cmbLevel = new JComboBox(levels);
+    private JTable table = new JTable(model);
+    private JTextPane areaDetail = new JTextPane();
+    private JToggleButton btnStop = new JToggleButton();
+    private final transient Logger printableLogger;
+    private final transient I18n i18n;
 
     /**
      *
@@ -74,26 +71,23 @@ public class LogWindow extends JFrame {
      */
     public LogWindow(I18n i18n, final Logger printableLogger) {
         super("Log Window");
-        this.I18n = i18n;
+        this.i18n = i18n;
         this.printableLogger = printableLogger;
         setSize(600, 400);
         this.setLayout(new BorderLayout());
         areaDetail.setContentType("text/html");
-        model.addColumn(I18n.msg("log_level"));
-        model.addColumn(I18n.msg("message"));
+        model.addColumn(i18n.msg("log_level"));
+        model.addColumn(i18n.msg("message"));
         table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         table.setDefaultRenderer(Object.class, new CustomRenderer());
         ListSelectionModel selectionModel = table.getSelectionModel();
         selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        selectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (table.getSelectedRow() != -1) {
-                        String text = table.getValueAt(table.getSelectedRow(), 1).toString();
-                        if (text != null && !text.isEmpty()) {
-                            areaDetail.setText("<html>" + LogFormatter.formatTextToHTML(text) + "</html>");
-                        }
+        selectionModel.addListSelectionListener((ListSelectionEvent e) -> {
+            if (!e.getValueIsAdjusting()) {
+                if (table.getSelectedRow() != -1) {
+                    String text = table.getValueAt(table.getSelectedRow(), 1).toString();
+                    if (text != null && !text.isEmpty()) {
+                        areaDetail.setText("<html>" + LogFormatter.formatTextToHTML(text) + "</html>");
                     }
                 }
             }
@@ -106,7 +100,7 @@ public class LogWindow extends JFrame {
             	printableLogger.setLevel(org.apache.log4j.Level.toLevel(cmbLevel.getSelectedItem().toString()));
             }
         });
-        add(new JLabel(I18n.msg("log_level") + ": "), BorderLayout.NORTH);
+        add(new JLabel(i18n.msg("log_level") + ": "), BorderLayout.NORTH);
         cmbLevel.setEditable(false);
         add(cmbLevel, BorderLayout.NORTH);
         add(new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
