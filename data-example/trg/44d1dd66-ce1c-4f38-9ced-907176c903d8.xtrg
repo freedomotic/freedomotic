@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<trigger>
+  <name>When a temperature has changed</name>
+  <description>When a temperature has changed</description>
+  <uuid>44d1dd66-ce1c-4f38-9ced-907176c903d8</uuid>
+  <channel>app.event.sensor.object.behavior.change</channel>
+  <payload>
+    <payload>
+      <statement>
+        <logical>AND</logical>
+        <attribute>object.type</attribute>
+        <operand>EQUALS</operand>
+        <value>EnvObject.Thermometer</value>
+      </statement>
+      <statement>
+        <logical>OR</logical>
+        <attribute>object.type</attribute>
+        <operand>EQUALS</operand>
+        <value>EnvObject.Thermostat</value>
+      </statement>
+    </payload>
+  </payload>
+  <suspensionTime>0</suspensionTime>
+  <hardwareLevel>false</hardwareLevel>
+  <persistence>true</persistence>
+  <delay>0</delay>
+  <priority>0</priority>
+  <maxExecutions>-1</maxExecutions>
+  <numberOfExecutions>3</numberOfExecutions>
+</trigger>
