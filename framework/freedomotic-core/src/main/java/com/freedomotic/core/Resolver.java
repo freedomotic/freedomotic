@@ -213,23 +213,8 @@ public final class Resolver {
                     ScriptEngine js = mgr.getEngineByName("JavaScript");
                     String script = possibleScript.substring(1); //removing equal sign on the head
 
-                    if (js == null) {
-                        LOG.error("Cannot instantiate a JavaScript engine");
-                    }
-
-                    try {
-                        js.eval(script);
-                    } catch (ScriptException scriptException) {
-                        LOG.error(scriptException.getMessage());
-                    }
-
-                    if (js.get(key) == null) {
-                        LOG.error(
-                                "Script evaluation has returned a null value, maybe the key ''{}'' is not evaluated properly.",
-                                key);
-                    }
-
-                    aProperty.setValue(js.get(key).toString());
+                    String evaluatedKey = this.scriptEvaluation(js, script, key);
+                    aProperty.setValue(evaluatedKey);
                     success = true;
                 } catch (Exception ex) {
                     success = false;
@@ -242,7 +227,7 @@ public final class Resolver {
             }
         }
     }
-
+    
     /**
      * Searches in a trigger attribute for a pattern
      *
@@ -305,23 +290,8 @@ public final class Resolver {
                     //removing equal sign on the head
                     String script = possibleScript.substring(1);
 
-                    if (js == null) {
-                        LOG.error("Cannot instatiate a JavaScript engine");
-                    }
-
-                    try {
-                        js.eval(script);
-                    } catch (ScriptException scriptException) {
-                        LOG.error(scriptException.getMessage());
-                    }
-
-                    if (js.get(key) == null) {
-                        LOG.error(
-                                "Script evaluation in trigger \"{}\" has returned a null value, maybe the key \"{}\" is not evaluated properly.",
-                                new Object[]{trigger.getName(), key});
-                    }
-
-                    statement.setValue(js.get(key).toString());
+                    String evaluatedKey = this.scriptEvaluation(js, script, key);
+                    statement.setValue(evaluatedKey);
                     success = true;
                 } catch (Exception ex) {
                     success = false;
@@ -335,6 +305,26 @@ public final class Resolver {
             }
         }
     }
+    
+    private String scriptEvaluation(ScriptEngine js, String script, String key) {
+    	if (js == null) {
+            LOG.error("Cannot instantiate a JavaScript engine");
+            return null;
+        }
+
+        try {
+            js.eval(script);
+        } catch (ScriptException scriptException) {
+            LOG.error(scriptException.getMessage());
+        }
+
+        if (js.get(key) == null) {
+            LOG.error("Script evaluation has returned a null value, maybe the key ''{}'' is not evaluated properly.", key);
+            return null;
+        }
+        
+        return js.get(key).toString();
+   }
 
     /**
      *
