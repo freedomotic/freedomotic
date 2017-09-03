@@ -45,19 +45,17 @@ public class TopologyManager implements BusConsumer {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopologyManager.class.getName());
     private static final String LISTEN_CHANNEL = "app.event.sensor.person.movement.detected";
-    private static BusMessagesListener listener;
+    private BusMessagesListener listener;
 
     // Dependencies
     private final EnvironmentRepository environmentRepository;
-    private final BusService busService;
     private final ThingRepository thingsRepository;
 
     @Inject
     TopologyManager(BusService busService, ThingRepository thingsRepository, EnvironmentRepository environmentRepository) {
-        this.busService = busService;
         this.environmentRepository = environmentRepository;
         this.thingsRepository = thingsRepository;
-        listener = new BusMessagesListener(this, busService);
+        this.listener = new BusMessagesListener(this, busService);
         listener.consumeEventFrom(LISTEN_CHANNEL);
     }
 

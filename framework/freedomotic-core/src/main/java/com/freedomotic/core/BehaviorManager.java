@@ -19,30 +19,34 @@
  */
 package com.freedomotic.core;
 
-import com.freedomotic.app.Freedomotic;
-import com.freedomotic.bus.BusConsumer;
-import com.freedomotic.bus.BusMessagesListener;
-import com.freedomotic.bus.BusService;
-import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.environment.ZoneLogic;
-import com.freedomotic.model.object.EnvObject;
-import com.freedomotic.behaviors.BehaviorLogic;
-import com.freedomotic.environment.EnvironmentRepository;
-import com.freedomotic.things.EnvObjectLogic;
-import com.freedomotic.things.ThingRepository;
-import com.freedomotic.reactions.Command;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.freedomotic.app.Freedomotic;
+import com.freedomotic.behaviors.BehaviorLogic;
+import com.freedomotic.bus.BusConsumer;
+import com.freedomotic.bus.BusMessagesListener;
+import com.freedomotic.bus.BusService;
+import com.freedomotic.environment.EnvironmentLogic;
+import com.freedomotic.environment.EnvironmentRepository;
+import com.freedomotic.environment.ZoneLogic;
+import com.freedomotic.model.object.EnvObject;
+import com.freedomotic.reactions.Command;
+import com.freedomotic.things.EnvObjectLogic;
+import com.freedomotic.things.ThingRepository;
 
 /**
  * Translates a generic request like 'turn on light 1' into a series of hardware
@@ -75,21 +79,12 @@ public final class BehaviorManager implements BusConsumer {
         this.busService = busService;
         this.thingsRepository = thingsRepository;
         this.environmentRepository = environmentRepository;
-        register();
-    }
-
-    /**
-     * Register one or more channels to listen to
-     */
-    private void register() {
         listener = new BusMessagesListener(this, busService);
         listener.consumeCommandFrom(getMessagingChannel());
     }
 
     @Override
     public final void onMessage(final ObjectMessage message) {
-
-        // TODO LCG Boiler plate code, move this idiom to an abstract superclass.
         Object jmsObject = null;
         try {
             jmsObject = message.getObject();
@@ -125,31 +120,18 @@ public final class BehaviorManager implements BusConsumer {
             applyToSingleObject(userLevelCommand);
         }
     }
-
+ 
     private List<String> filterByTags(Command userLevelCommand, List<String> origList) {
         String includeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_INCLUDETAGS);
         String excludeTags = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_EXCLUDETAGS);
         if (includeTags != null || excludeTags != null) {
             List<String> newList = new ArrayList<>();
-            // prepare includ set
             includeTags += "";
-            String tags[] = includeTags.split(",");
-            Set<String> includeSearch = new HashSet<>();
-            for (String tag : tags) {
-                if (!tag.isEmpty()) {
-                    includeSearch.add(tag.trim());
-                }
-            }
-            //prepare exclude set (remove tags listed in include set too)
             excludeTags += "";
-            tags = excludeTags.split(",");
-            Set<String> excludeSearch = new HashSet<>();
-            for (String tag : tags) {
-                if (!tag.isEmpty() && !includeSearch.contains(tag)) {
-                    excludeSearch.add(tag.trim());
-                }
-            }
-
+            
+            Set<String> includeSearch = this.prepareSearchSet(includeTags, tag -> !tag.isEmpty());
+            Set<String> excludeSearch = this.prepareSearchSet(excludeTags, tag -> !tag.isEmpty() && !includeSearch.contains(tag));
+           
             Set<String> testSet = new HashSet<>();
             Set<String> extestSet = new HashSet<>();
 
@@ -183,6 +165,18 @@ public final class BehaviorManager implements BusConsumer {
         }
         return origList;
     }
+    
+    private Set<String> prepareSearchSet(String inputTags, Predicate<String> condition) {
+    	String[] tags = inputTags.split(",");
+        Set<String> searchSet = new HashSet<>();
+        for (String tag : tags) {
+            if (condition.test(tag)) {
+                searchSet.add(tag.trim());
+            }
+        }
+        
+        return searchSet;
+    }
 
     private List<String> filterByObjClass(Command userLevelCommand, List<String> origList) {
         String objectClass = userLevelCommand.getProperty(Command.PROPERTY_OBJECT_CLASS);
@@ -215,14 +209,12 @@ public final class BehaviorManager implements BusConsumer {
             List<String> newList = new ArrayList<>();
 
             //Search for the 'object.zone' name in all environments
-            for (EnvironmentLogic env : environmentRepository.findAll()) {
-                if (zoneName != null) {
+            for (EnvironmentLogic env : environmentRepository.findAll()) {  
                     ZoneLogic z = env.getZone(zoneName);
                     for (EnvObject obj : z.getPojo().getObjects()) {
                         LOG.info("Filter by zone affects object \"{}\"", obj.getName());
                         newList.add(obj.getName());
                     }
-                }
             }
             // Filter out the objects wich are not affected
             origList.retainAll(newList);
@@ -250,7 +242,7 @@ public final class BehaviorManager implements BusConsumer {
                     LOG.info(
                             "User level command \"{}\" request changing behavior \"{}\" of object \"{}\" "
                             + "from value \"{}\" to value \"{}\"",
-                            new Object[]{userLevelCommand.getName(), behavior.getName(), thing.getPojo().getName(), behavior.getValueAsString(), userLevelCommand.getProperties().getProperty("value")});
+                            userLevelCommand.getName(), behavior.getName(), thing.getPojo().getName(), behavior.getValueAsString(), userLevelCommand.getProperties().getProperty("value"));
 
                     // true means a command must be fired
                     behavior.filterParams(userLevelCommand.getProperties(), true);
@@ -259,14 +251,14 @@ public final class BehaviorManager implements BusConsumer {
                     LOG.warn(
                             "Behavior \"{}\" is not a valid behavior for object \"{}\". "
                             + "Please check ''behavior'' parameter spelling in command \"{}\"",
-                            new Object[]{behaviorName, thing.getPojo().getName(), userLevelCommand.getName()});
+                            behaviorName, thing.getPojo().getName(), userLevelCommand.getName());
                 }
             }
         } else {
             LOG.warn("Object ''{}"
                     + "'' don''t exist in this environment. "
                     + "Please check ''object'' parameter spelling in command {}",
-                    new Object[]{userLevelCommand.getProperty(Command.PROPERTY_OBJECT), userLevelCommand.getName()});
+                    userLevelCommand.getProperty(Command.PROPERTY_OBJECT), userLevelCommand.getName());
         }
 
     }
