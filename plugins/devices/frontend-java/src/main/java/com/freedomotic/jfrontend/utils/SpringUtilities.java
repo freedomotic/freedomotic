@@ -30,13 +30,12 @@
  */
 package com.freedomotic.jfrontend.utils;
 
-import com.freedomotic.app.Freedomotic;
-import com.freedomotic.jfrontend.MarketPlaceForm;
 import java.awt.Component;
 import java.awt.Container;
-import java.util.logging.Logger;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A 1.4 file that provides utility methods for creating form- or grid-style
@@ -45,7 +44,7 @@ import javax.swing.SpringLayout;
  */
 public class SpringUtilities {
 
-    private static final Logger LOG = Logger.getLogger(SpringUtilities.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(SpringUtilities.class.getName());
 
     /**
      * A debugging utility that prints to stdout the component's minimum,
@@ -79,7 +78,7 @@ public class SpringUtilities {
         try {
             layout = (SpringLayout) parent.getLayout();
         } catch (ClassCastException exc) {
-            LOG.warning("The first argument to makeGrid must use SpringLayout.");
+            LOG.warn("The first argument to makeGrid must use SpringLayout.");
             return;
         }
 
@@ -180,7 +179,7 @@ public class SpringUtilities {
         try {
             layout = (SpringLayout) parent.getLayout();
         } catch (ClassCastException exc) {
-            LOG.warning("The first argument to makeCompactGrid must use SpringLayout.");
+            LOG.warn("The first argument to makeCompactGrid must use SpringLayout.");
             return;
         }
 

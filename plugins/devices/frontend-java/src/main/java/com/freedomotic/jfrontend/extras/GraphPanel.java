@@ -31,8 +31,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -49,6 +47,8 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.RectangleInsets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -56,12 +56,13 @@ import org.jfree.ui.RectangleInsets;
  */
 public class GraphPanel extends javax.swing.JFrame {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GraphPanel.class.getName());
     private UsageDataFrame points = new UsageDataFrame();
-    private EnvObjectLogic obj;
+    private transient EnvObjectLogic obj;
     private TimeSeries series;
     private JFreeChart chart;
     private String title;
-    private Protocol master;
+    private transient Protocol master;
 
     /**
      * Creates new form GraphWindow
@@ -84,7 +85,6 @@ public class GraphPanel extends javax.swing.JFrame {
      *
      */
     public final void reDraw() {
-        //  String JSON = obj.getBehavior("data").getValueAsString();
         DataBehaviorLogic dbl = (DataBehaviorLogic) obj.getBehavior("data");
         if (dbl.isChanged()) {
             this.points.setData(dbl.getData());
@@ -264,7 +264,7 @@ public class GraphPanel extends javax.swing.JFrame {
                 master.notifyCommand(cloned);
 
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(GraphPanel.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.error(ex.getMessage());
             }
         }
 
@@ -298,7 +298,7 @@ public class GraphPanel extends javax.swing.JFrame {
 
         for (UsageData d : points.getData()) {
             Date resultdate = d.getDateTime();
-            Millisecond ms_read = new Millisecond(resultdate);
+            Millisecond msRead = new Millisecond(resultdate);
             int poweredValue = -1;
             if (d.getObjBehavior().equalsIgnoreCase("powered")) {
                 poweredValue = d.getObjValue().equalsIgnoreCase("true") ? 1 : 0;
@@ -309,7 +309,7 @@ public class GraphPanel extends javax.swing.JFrame {
                     poweredValue = -1;
                 }
             }
-            series.addOrUpdate(ms_read, poweredValue);
+            series.addOrUpdate(msRead, poweredValue);
         }
 
         XYDataset xyDataset = new TimeSeriesCollection(series);
@@ -378,9 +378,9 @@ public class GraphPanel extends javax.swing.JFrame {
      */
     public void addDataFromEvent(EventTemplate ev) {
         Date d = new Date(ev.getCreation());
-        Millisecond ms_read = new Millisecond(d);
+        Millisecond msRead = new Millisecond(d);
         int valut = ev.getProperty("object.behavior.powered").equalsIgnoreCase("true") ? 1 : 0;
-        series.addOrUpdate(ms_read, valut);
+        series.addOrUpdate(msRead, valut);
         chart.fireChartChanged();
 
     }
@@ -430,8 +430,9 @@ public class GraphPanel extends javax.swing.JFrame {
                     return item.getObjBehavior();
                 case 5:
                     return item.getObjValue();
+                default:
+                    return null;
             }
-            return null;
         }
 
         /**

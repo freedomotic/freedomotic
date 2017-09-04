@@ -37,8 +37,8 @@ public class TipOfTheDay
         extends javax.swing.JFrame {
 
     private static final Logger LOG = LoggerFactory.getLogger(TipOfTheDay.class.getName());
-    private Plugin main;
-    private static String PAGE = "http://www.freedomotic.com/help/index.html";
+    private transient Plugin main;
+    private static final String PAGE = "http://www.freedomotic.com/help/index.html";
 
     /**
      * Creates new form TipOfTheDay
@@ -53,15 +53,12 @@ public class TipOfTheDay
             browser.setPage(new URL(PAGE));
             browser.setEditable(false);
             ToolTipManager.sharedInstance().registerComponent(browser);
-            browser.addHyperlinkListener(new HyperlinkListener() {
-                @Override
-                public void hyperlinkUpdate(HyperlinkEvent e) {
-                    if (HyperlinkEvent.EventType.ACTIVATED == e.getEventType()) {
-                        try {
-                            browser.setPage(e.getURL());
-                        } catch (IOException e1) {
-                            LOG.warn("Cannot open {} for reason: {} {}", new Object[]{PAGE, e1.getClass().getSimpleName(), e1.getLocalizedMessage()});
-                        }
+            browser.addHyperlinkListener((HyperlinkEvent e) -> {
+                if (HyperlinkEvent.EventType.ACTIVATED == e.getEventType()) {
+                    try {
+                        browser.setPage(e.getURL());
+                    } catch (IOException e1) {
+                        LOG.warn("Cannot open {} for reason: {} {}", PAGE, e1.getClass().getSimpleName(), e1.getLocalizedMessage());
                     }
                 }
             });
@@ -70,7 +67,7 @@ public class TipOfTheDay
             pack();
             setVisible(true);
         } catch (IOException ex) {
-            LOG.warn("Cannot open {} for reason: {} {}", new Object[]{PAGE, ex.getClass().getSimpleName(), ex.getLocalizedMessage()});
+            LOG.warn("Cannot open {} for reason: {} {}", PAGE, ex.getClass().getSimpleName(), ex.getLocalizedMessage());
         }
     }
 

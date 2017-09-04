@@ -52,10 +52,10 @@ public class ReactionEditor
     private List<GuessCommandBox> commandBoxes = new ArrayList<>();
     private Box cmdBox = Box.createVerticalBox();
     private Component parent = null;
-    private final I18n I18n;
-    private NlpCommand nlpCommands;
-    private CommandRepository commandRepository;
-    private ReactionRepository reactionRepository;
+    private final transient I18n I18n;
+    private transient NlpCommand nlpCommands;
+    private transient CommandRepository commandRepository;
+    private transient ReactionRepository reactionRepository;
 
     /**
      * Creates new form ReactionEditor
@@ -103,34 +103,27 @@ public class ReactionEditor
         //add trigger widget
         final Trigger trigger = reaction.getTrigger();
         final JButton btnTrigger = new JButton(trigger.getName());
-        //btnTrigger.setEnabled(false);
         btnTrigger.setToolTipText(trigger.getDescription());
         btnTrigger.setPreferredSize(new Dimension(300, 30));
-        btnTrigger.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if (trigger != null) {
-                    Command c = new Command();
-                    c.setName("Edit a trigger");
-                    c.setReceiver("app.actuators.nlautomationseditor.nlautomationseditor.in");
-                    c.setProperty("editor", "trigger");
-                    c.setProperty("editable",
-                            trigger.getName()); //the default choice
-                    c.setReplyTimeout(Integer.MAX_VALUE);
+        btnTrigger.addActionListener((ActionEvent ae) -> {
+            if (trigger != null) {
+                Command c = new Command();
+                c.setName("Edit a trigger");
+                c.setReceiver("app.actuators.nlautomationseditor.nlautomationseditor.in");
+                c.setProperty("editor", "trigger");
+                c.setProperty("editable",
+                        trigger.getName()); //the default choice
+                c.setReplyTimeout(Integer.MAX_VALUE);
 
-                    Freedomotic.sendCommand(c);
-                }
+                Freedomotic.sendCommand(c);
             }
         });
         this.add(btnTrigger, BorderLayout.WEST);
         this.add(cmdBox, BorderLayout.EAST);
 
         //add commands widget
-        int i = 0;
-
         for (Command command : reaction.getCommands()) {
             GuessCommandBox box = new GuessCommandBox(I18n, this, nlpCommands, commandRepository, command);
-
             addBox(box);
         }
 
@@ -190,14 +183,11 @@ public class ReactionEditor
     }
 
     public void onCommandCleared(GuessCommandBox box) {
-        //int index = list.indexOf(box);
         reaction.getCommands().remove(box.getCommand());
         removeBox(box);
-
         if (commandBoxes.size() <= reaction.getCommands().size()) {
             addEmptyBox();
         }
-
         reaction.setChanged();
         LOG.info("Temporary reaction \"{}\" removed", reaction.toString());
     }

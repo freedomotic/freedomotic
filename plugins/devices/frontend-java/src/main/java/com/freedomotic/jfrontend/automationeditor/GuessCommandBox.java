@@ -50,14 +50,14 @@ public class GuessCommandBox
 
     private Command command = null;
     private ReactionEditor editor;
-    private NlpCommand nlpCommands;
+    private transient NlpCommand nlpCommands;
     private final JButton btnAdd = new JButton();
     private final JButton btnCustomize;
     private final GuessCommandBox me = this;
     private final String ERROR_MESSAGE;
     private final String INFO_MESSAGE;
-    private final I18n I18n;
-    private CommandRepository commandRepository;
+    private final transient I18n I18n;
+    private transient CommandRepository commandRepository;
 
     /**
      *
@@ -125,44 +125,35 @@ public class GuessCommandBox
 
         KeyListener keyListener
                 = new KeyAdapter() {
-                    @Override
-                    public void keyTyped(KeyEvent evt) {
-                        command = null;
-                        setForeground(Color.black);
+            @Override
+            public void keyTyped(KeyEvent evt) {
+                command = null;
+                setForeground(Color.black);
 
-                        //for (String line : lines) {
-                        List<Nlp.Rank<Command>> mostSimilar = null;
-                        try {
-                            mostSimilar = nlpCommands.computeSimilarity(getText(), 10);
-                        } catch (NoResultsException noResultsException) {
-                            //do nothing if there are no results
-                        }
+                //for (String line : lines) {
+                List<Nlp.Rank<Command>> mostSimilar = null;
+                try {
+                    mostSimilar = nlpCommands.computeSimilarity(getText(), 10);
+                } catch (NoResultsException noResultsException) {
+                    //do nothing if there are no results
+                }
+                JPopupMenu menu = new JPopupMenu();
+                for (final Nlp.Rank<Command> rank : mostSimilar) {
+                    JMenuItem menuItem = new JMenuItem(rank.getElement().toString());
+                    menuItem.addActionListener((ActionEvent e) -> {
+                        command = rank.getElement();
+                        setText(command.getName());
+                    });
+                    menu.add(menuItem);
+                }
 
-                        //Command command = mostSimilar.get(0).getCommand();
-                        //txtInput.setText(txtInput.getText().replace(line, command.getName()));
-                        JPopupMenu menu = new JPopupMenu();
-
-                        //command = mostSimilar.get(0).getCommand();
-                        for (final Nlp.Rank<Command> rank : mostSimilar) {
-                            JMenuItem menuItem = new JMenuItem(rank.getElement().toString());
-                            menuItem.addActionListener(new ActionListener() {
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    command = rank.getElement();
-                                    setText(command.getName());
-                                }
-                            });
-                            menu.add(menuItem);
-                        }
-
-                        menu.show(evt.getComponent(),
-                                evt.getComponent().getX() + (getText().length() * 10),
-                                evt.getComponent().getY());
-                        requestFocus();
-
-                        new JComboBox();
-                    }
-                };
+                menu.show(evt.getComponent(),
+                        evt.getComponent().getX() + (getText().length() * 10),
+                        evt.getComponent().getY());
+                requestFocus();
+                new JComboBox();
+            }
+        };
 
         this.addKeyListener(keyListener);
 
@@ -175,51 +166,44 @@ public class GuessCommandBox
         }
 
         this.add(btnAdd);
-        btnAdd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if (isEnabled()) {
-                    Command command;
-                    List<Command> list = commandRepository.findByName(getText());
-                    if (!list.isEmpty()) {
-                        command = list.get(0);
-                    } else {
-                        throw new RuntimeException("No commands found with name " + getText());
-                    }
-
-                    if (command != null) {
-                        setEnabled(false);
-                        btnAdd.setText(I18n.msg("remove"));
-                        editor.onCommandConfirmed(me);
-                    } else {
-                        setForeground(Color.red);
-                        setText(ERROR_MESSAGE);
-                    }
+        btnAdd.addActionListener((ActionEvent ae) -> {
+            if (isEnabled()) {
+                Command command1;
+                List<Command> list = commandRepository.findByName(getText());
+                if (!list.isEmpty()) {
+                    command1 = list.get(0);
                 } else {
-                    setEnabled(true);
-                    btnAdd.setText(I18n.msg("confirm"));
-                    editor.onCommandCleared(me);
-                    command = null;
-                    setText(INFO_MESSAGE);
+                    throw new RuntimeException("No commands found with name " + getText());
                 }
+                if (command1 != null) {
+                    setEnabled(false);
+                    btnAdd.setText(I18n.msg("remove"));
+                    editor.onCommandConfirmed(me);
+                } else {
+                    setForeground(Color.red);
+                    setText(ERROR_MESSAGE);
+                }
+            } else {
+                setEnabled(true);
+                btnAdd.setText(I18n.msg("confirm"));
+                editor.onCommandCleared(me);
+                command = null;
+                setText(INFO_MESSAGE);
             }
         });
 
         this.add(btnCustomize);
-        btnCustomize.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if (command != null) {
-                    Command c = new Command();
-                    c.setName("Edit a command");
-                    c.setReceiver("app.actuators.nlautomationseditor.nlautomationseditor.in");
-                    c.setProperty("editor", "command");
-                    c.setProperty("editable",
-                            command.getName()); //the default choice
-                    Freedomotic.sendCommand(c);
-                    command = null;
-                    setText(INFO_MESSAGE);
-                }
+        btnCustomize.addActionListener((ActionEvent ae) -> {
+            if (command != null) {
+                Command c = new Command();
+                c.setName("Edit a command");
+                c.setReceiver("app.actuators.nlautomationseditor.nlautomationseditor.in");
+                c.setProperty("editor", "command");
+                c.setProperty("editable",
+                        command.getName()); //the default choice
+                Freedomotic.sendCommand(c);
+                command = null;
+                setText(INFO_MESSAGE);
             }
         });
     }

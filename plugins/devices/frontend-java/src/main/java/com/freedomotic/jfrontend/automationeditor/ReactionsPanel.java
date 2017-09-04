@@ -42,14 +42,14 @@ import javax.swing.JSeparator;
 public class ReactionsPanel
         extends JPanel {
 
-    private AutomationsEditor plugin;
+    private transient AutomationsEditor plugin;
     private JPanel panel = new JPanel();
     private JScrollPane scrollPane;
-    private final I18n I18n;
-    private NlpCommand nlpCommands;
-    private TriggerRepository triggerRepository;
-    private ReactionRepository reactionRepository;
-    private CommandRepository commandRepository;
+    private final transient I18n I18n;
+    private transient NlpCommand nlpCommands;
+    private transient TriggerRepository triggerRepository;
+    private transient ReactionRepository reactionRepository;
+    private transient CommandRepository commandRepository;
 
     /**
      * Creates new form ReactionList

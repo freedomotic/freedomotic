@@ -78,7 +78,6 @@ public class AutomationsEditor extends Protocol {
             } else {
                 throw new RuntimeException("No commands found with name \"" + c.getProperty("editable") + "\"");
             }
-//            ReactionList reactionList = new ReactionList(this);
             CustomizeCommand cc = new CustomizeCommand(getApi().getI18n(), command, commandRepository);
             cc.setVisible(true);
             cc.addWindowListener(new WindowAdapter() {
@@ -90,7 +89,6 @@ public class AutomationsEditor extends Protocol {
         } else {
             if (c.getProperty("editor").equalsIgnoreCase("trigger")) {
                 Trigger trigger = getApi().triggers().findByName(c.getProperty("editable")).get(0);
-                //ReactionList reactionList = new ReactionList(this);
                 CustomizeTrigger ct = new CustomizeTrigger(getApi().getI18n(), trigger, triggerRepository);
                 ct.setVisible(true);
                 ct.addWindowListener(new WindowAdapter() {
@@ -113,6 +111,7 @@ public class AutomationsEditor extends Protocol {
      */
     @Override
     public void onStart() {
+        // do nothing
     }
 
     /**
@@ -131,17 +130,14 @@ public class AutomationsEditor extends Protocol {
         frame.setContentPane(panel);
 
         JButton ok = new JButton(getApi().getI18n().msg("ok"));
-        ok.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                for (Component component : panel.getPanel().getComponents()) {
-                    if (component instanceof ReactionEditor) {
-                        ReactionEditor editor = (ReactionEditor) component;
-                        editor.finalizeEditing();
-                    }
+        ok.addActionListener((ActionEvent e) -> {
+            for (Component component : panel.getPanel().getComponents()) {
+                if (component instanceof ReactionEditor) {
+                    ReactionEditor editor = (ReactionEditor) component;
+                    editor.finalizeEditing();
                 }
-                frame.dispose();
             }
+            frame.dispose();
         });
         frame.add(ok, BorderLayout.SOUTH);
         frame.pack();
@@ -167,6 +163,7 @@ public class AutomationsEditor extends Protocol {
 
     @Override
     protected void onRun() {
+        // do nothing
     }
 
     @Override

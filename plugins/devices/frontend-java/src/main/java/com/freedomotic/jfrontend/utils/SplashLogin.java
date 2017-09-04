@@ -33,9 +33,9 @@ import javax.swing.Timer;
  */
 public class SplashLogin extends javax.swing.JFrame {
 
-    private API api;
-    private I18n I18n;
-    private JavaDesktopFrontend master;
+    private transient API api;
+    private transient I18n I18n;
+    private transient JavaDesktopFrontend master;
 
     /**
      *
@@ -74,17 +74,14 @@ public class SplashLogin extends javax.swing.JFrame {
         password.setEnabled(false);
         msgBox.setText(I18n.msg("trying_sso_msg"));
 
-        ActionListener taskPerformer = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                if (api.getConfig().getBooleanProperty("KEY_ENABLE_SSO", false)
-                        && api.getAuth().bindFakeUser(System.getProperty("user.name"))) {
-                    master.createMainWindow();
-                } else {
-                    msgBox.setText(api.getI18n().msg("login_disclaimer"));
-                    username.setEnabled(true);
-                    password.setEnabled(true);
-                }
+        ActionListener taskPerformer = (ActionEvent evt) -> {
+            if (api.getConfig().getBooleanProperty("KEY_ENABLE_SSO", false)
+                    && api.getAuth().bindFakeUser(System.getProperty("user.name"))) {
+                master.createMainWindow();
+            } else {
+                msgBox.setText(api.getI18n().msg("login_disclaimer"));
+                username.setEnabled(true);
+                password.setEnabled(true);
             }
         };
         Timer doSSO = new Timer(3000, taskPerformer);

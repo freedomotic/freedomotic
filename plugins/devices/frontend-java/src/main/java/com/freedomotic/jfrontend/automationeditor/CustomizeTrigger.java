@@ -40,11 +40,11 @@ public class CustomizeTrigger
         extends javax.swing.JFrame {
 
     private final static Logger LOG = LoggerFactory.getLogger(CustomizeTrigger.class.getName());
-    private Trigger original;
+    private transient Trigger original;
     private DefaultTableModel model = new DefaultTableModel();
     private JTable table;
-    private final I18n I18n;
-    private final TriggerRepository triggerRepository;
+    private final transient I18n I18n;
+    private final transient TriggerRepository triggerRepository;
 
     /**
      * Creates new form CustomizeEvent

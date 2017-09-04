@@ -42,14 +42,14 @@ import org.slf4j.LoggerFactory;
 public class CustomizeCommand
         extends javax.swing.JFrame {
 
+    private final static Logger LOG = LoggerFactory.getLogger(CustomizeCommand.class.getName());
     private Command original;
     private DefaultTableModel model = new DefaultTableModel();
     private JTable table;
-    private final I18n I18n;
+    private final transient I18n I18n;
     @Inject
-    private ClientStorage clients;
-    private final CommandRepository commandRepository;
-    private final static Logger LOG = LoggerFactory.getLogger(CustomizeCommand.class.getName());
+    private transient ClientStorage clients;
+    private transient final CommandRepository commandRepository;
 
     /**
      * Creates new form CustomizeEvent
@@ -111,16 +111,16 @@ public class CustomizeCommand
         } else {
             c.setReceiver(original.getReceiver());
         }
-
-        LOG.debug("Receiver for {} is: {}", c.getName(), c.getReceiver());
-
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Receiver for \"{}\" is \"{}\"", c.getName(), c.getReceiver());
+        }
         for (int r = 0; r < model.getRowCount(); r++) {
             c.setProperty(model.getValueAt(r, 0).toString(),
                     model.getValueAt(r, 1).toString());
         }
-
-        LOG.debug(c.getProperties().toString());
-
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(c.getProperties().toString());
+        }
         return c;
     }
 
@@ -318,8 +318,6 @@ public class CustomizeCommand
         } else {
             LOG.error("Error while adding a command");
         }
-
-//        main.setTargetCommand(c);
         this.dispose();
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -345,15 +343,12 @@ public class CustomizeCommand
         } else {
             LOG.error("Error while edit a command");
         }
-
-//        main.setTargetCommand(newCommand);
         this.dispose();
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_btnDeleteActionPerformed
         LOG.info("Trying to remove a command from the list");
         commandRepository.delete(original);
-//        main.updateData();
         this.dispose();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
