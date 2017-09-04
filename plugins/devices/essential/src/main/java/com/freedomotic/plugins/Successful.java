@@ -49,8 +49,8 @@ public class Successful extends Protocol {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
             LOG.error(Freedomotic.getStackTraceInfo(ex));
+            Thread.currentThread().interrupt();
         }
-
         c.setExecuted(true);
     }
 

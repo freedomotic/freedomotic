@@ -31,7 +31,7 @@ import com.freedomotic.plugins.Scheduler;
 public class ClockForm
         extends javax.swing.JFrame {
 
-    private Scheduler plugin;
+    private transient Scheduler plugin;
 
     /**
      * Creates a new form ClockForm.
