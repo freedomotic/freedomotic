@@ -15,7 +15,7 @@ Requirements:
 - **Any OS** with java support _(Linux, Windows, Mac, Solaris ...)_
 
 Development status:
-- **Current released version**: 5.6.0 'Commander RC3' (released on 1 Jul 2016)
+- **Current released version**: 5.6.0 'Commander RC4' (released on 16 Aug 2017)
 - **Version in development (HEAD of this repository)**: 5.6.0 'Commander'
 
 
