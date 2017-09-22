@@ -1,0 +1,19 @@
+#!/bin/bash
+# A simple shell script to install Freedomotic on Raspberry Pi
+# Last Change: 20/09/2017
+
+FREEDOMOTIC_LINK="https://sourceforge.net/projects/freedomotic/files/freedomotic-commander-5.6.0-rc4.zip"
+FOLDER_NAME="freedomotic-commander-5.6.0-rc4"
+
+echo "Remove old installation files (if any) and create a new installation folder (~/Desktop/$FOLDER_NAME)" 
+rm -r ~/Desktop/$FOLDER_NAME
+cd ~/Desktop/
+echo "Downloading Freedomotic..."
+wget $FREEDOMOTIC_LINK --no-check-certificate
+sudo apt-get install unzip
+unzip $FOLDER_NAME.zip -d .
+#echo "Removing jfrontend..."
+#rm -r ~/Desktop/$FOLDER_NAME/plugins/devices/frontend-java
+cd $FOLDER_NAME
+echo "Starting Freedomotic..."
+sh freedomotic.sh
