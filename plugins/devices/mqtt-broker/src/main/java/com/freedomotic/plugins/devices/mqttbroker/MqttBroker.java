@@ -37,17 +37,7 @@ import io.moquette.server.Server;
 import io.moquette.server.config.IConfig;
 import io.moquette.server.config.MemoryConfig;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.util.ByteProcessor;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.FileChannel;
-import java.nio.channels.GatheringByteChannel;
-import java.nio.channels.ScatteringByteChannel;
-import java.nio.charset.Charset;
 import static java.util.Arrays.asList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,7 +107,6 @@ public class MqttBroker
         }
         setDescription("MQTT broker listening to " + config.getProperty(BrokerConstants.HOST_PROPERTY_NAME) + ":" + config.getProperty(BrokerConstants.PORT_PROPERTY_NAME));
         LOG.info("MQTT broker plugin started");
-
     }
 
     @Override
@@ -162,7 +151,7 @@ public class MqttBroker
                 event.addProperty("mqtt.payload.field" + (i + 1), fields[i]);
             }
         }
-        event.addProperty("mqtt.payload", payload);
+        event.addProperty("mqtt.payload", payload.trim());
         notifyEvent(event);
     }
 
@@ -179,7 +168,7 @@ public class MqttBroker
             byte[] bytes = new byte[buffer.readableBytes()];
             buffer.readBytes(bytes);
             String payload = new String(bytes);
-            LOG.info("Received on topic: [{}] content: [{}]", topic, payload);
+            LOG.info("Received on topic [{}] payload [{}]", topic, payload);
             sendEvent(topic, payload);
         }
 
@@ -187,7 +176,6 @@ public class MqttBroker
         public String getID() {
             return "FreedomoticPublisherListener";
         }
-
     }
 
     /**

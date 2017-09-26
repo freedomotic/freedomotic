@@ -1,6 +1,6 @@
 <trigger>
-    <name>MQTT reads a value</name>
-    <description>MQTT reads a value</description>
+    <name>MQTT reads raw data</name>
+    <description>MQTT reads raw data</description>
     <channel>app.event.sensor.protocol.read.mqtt-broker</channel>
     <payload>
         <payload>
@@ -14,7 +14,7 @@
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
                 <operand>EQUALS</operand>
-                <value>@event.mqtt.value</value>
+                <value>@event.mqtt.payload</value>
             </statement>
         </payload>
     </payload>
