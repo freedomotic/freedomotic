@@ -1,0 +1,11 @@
+<command>
+  <name>Save data on InfluxDB</name>
+  <receiver>app.actuators.persistence.influxdb.in</receiver>
+  <description>Save data on InfluxDB</description>
+  <delay>0</delay>
+  <timeout>10000</timeout>
+  <properties>
+    <properties>        
+    </properties>
+  </properties>
+</command>

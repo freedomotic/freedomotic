@@ -1,0 +1,16 @@
+<config>
+    <properties>
+        <property name="description" value="Data persistence on InfluxDB"/>
+        <property name="category" value="persistence"/>
+        <property name="short-name" value="influxdb"/>
+        <property name="startup-time" value="on load"/>
+        
+        <property name="db-url" value="http://127.0.0.1:8086"/>
+        <property name="db-name" value="freedomotic"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+        <property name="retention-policy" value="autogen"/>
+    </properties>
+</config>
+
+                
