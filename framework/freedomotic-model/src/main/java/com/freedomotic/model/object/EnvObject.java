@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -42,6 +43,7 @@ import javax.xml.bind.annotation.XmlType;
 public class EnvObject implements Serializable {
 
     private static final long serialVersionUID = -7253889516478184321L;
+    private static final String UNKNOWN_VALUE = "unknown";
 
     private String name;
     private String description;
@@ -51,8 +53,8 @@ public class EnvObject implements Serializable {
     private String hierarchy;
     private String protocol;
     private String phisicalAddress;
-    private final List<Behavior> behaviors = new ArrayList<Behavior>();
-    private final List<Representation> representation = new ArrayList<Representation>();
+    private final List<Behavior> behaviors = new ArrayList<>();
+    private final List<Representation> representation = new ArrayList<>();
     private Set<String> tags;
     private final Properties actions = new Properties();
     private Properties triggers = new Properties();
@@ -61,7 +63,7 @@ public class EnvObject implements Serializable {
 
     /**
      *
-     * @return
+     * @return uuid
      */
     public String getEnvironmentID() {
         return this.envUUID;
@@ -77,7 +79,7 @@ public class EnvObject implements Serializable {
 
     /**
      *
-     * @return
+     * @return actions
      */
     public Properties getActions() {
         return actions;
@@ -85,7 +87,7 @@ public class EnvObject implements Serializable {
 
     /**
      *
-     * @return
+     * @return triggers
      */
     public Properties getTriggers() {
         if (triggers == null) {
@@ -183,7 +185,7 @@ public class EnvObject implements Serializable {
      */
     public String getProtocol() {
         if ((protocol == null) || (protocol.isEmpty())) {
-            protocol = "unknown";
+            protocol = UNKNOWN_VALUE;
         }
 
         return protocol;
@@ -201,8 +203,8 @@ public class EnvObject implements Serializable {
      *
      * @return
      */
-    public ArrayList<Behavior> getActiveBehaviors() {
-        ArrayList<Behavior> activeBehaviors = new ArrayList<Behavior>();
+    public List<Behavior> getActiveBehaviors() {
+        ArrayList<Behavior> activeBehaviors = new ArrayList<>();
         for (Behavior behavior : behaviors) {
             if (behavior.isActive()) {
                 activeBehaviors.add(behavior);
@@ -288,7 +290,7 @@ public class EnvObject implements Serializable {
      */
     public String getPhisicalAddress() {
         if ((phisicalAddress == null) || (phisicalAddress.isEmpty())) {
-            phisicalAddress = "unknown";
+            phisicalAddress = UNKNOWN_VALUE;
         }
 
         return phisicalAddress.trim();
@@ -317,8 +319,8 @@ public class EnvObject implements Serializable {
      *
      * @return a set of key/values of object properties
      */
-    public HashMap<String, String> getExposedProperties() {
-        HashMap<String, String> result = new HashMap<String, String>();
+    public Map<String, String> getExposedProperties() {
+        HashMap<String, String> result = new HashMap<>();
         result.put("object.name", getName());
         result.put("object.address", getPhisicalAddress());
         result.put("object.protocol", getProtocol());
@@ -336,7 +338,7 @@ public class EnvObject implements Serializable {
     public String getSimpleType() {
         //get the part of the string after the last dot characher
         //eg: 'EnvObject.ElectricDevice.Light' -> returns 'light'
-        return getType().substring(getType().lastIndexOf(".") + 1).trim().toLowerCase();
+        return getType().substring(getType().lastIndexOf('.') + 1).trim().toLowerCase();
     }
 
     /**
@@ -361,12 +363,8 @@ public class EnvObject implements Serializable {
             //otherwise are the same object despite of the different name
             if ((this.getPhisicalAddress().equalsIgnoreCase(other.getPhisicalAddress()))
                     && (this.getProtocol().equalsIgnoreCase(other.getProtocol()))) {
-                if ((this.getPhisicalAddress().equalsIgnoreCase("unknown"))
-                        || (this.getProtocol().equalsIgnoreCase("unknown"))) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return (!this.getPhisicalAddress().equalsIgnoreCase(UNKNOWN_VALUE))
+                        && (!this.getProtocol().equalsIgnoreCase(UNKNOWN_VALUE));
             } else {
                 return false;
             }
@@ -412,7 +410,7 @@ public class EnvObject implements Serializable {
         StringBuilder tagString = new StringBuilder();
         Boolean morethanone = false;
         for (String tag : getTagsList()) {
-            if (tag.trim() != "") {
+            if (!tag.equals("")) {
                 if (morethanone) {
                     tagString.append(",");
                 }
