@@ -19,6 +19,7 @@
  */
 package com.freedomotic.environment;
 
+import com.freedomotic.app.Freedomotic;
 import com.freedomotic.model.environment.Environment;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.model.geometry.FreedomPolygon;
@@ -48,7 +49,7 @@ public final class EnvironmentLogic {
      * Instantiation is disabled outside this package.
      */
     public EnvironmentLogic() {
-
+        // Default constructor
     }
 
     /**
@@ -141,31 +142,6 @@ public final class EnvironmentLogic {
 
         zone.init(this);
 
-        //REGRESSION
-//        if (zone.getPojo().isRoom()) {
-//            Room room = (Room) zone;
-//            room.init(this);
-//            Iterator<EnvObjectLogic> it = api.things().findAll().iterator();
-//            //check if this rooms has gates
-//            while (it.hasNext()) {
-//                EnvObjectLogic obj = it.next();
-//                if (obj instanceof GenericGate) {
-//                    GenericGate gate = (GenericGate) obj;
-//                    gate.evaluateGate();
-//                }
-//            }
-//            try {
-//                room.setChanged();
-//            } catch (Exception e) {
-//                LOG.warn("Cannot notify room changes");
-//            }
-//        } else {
-//            try {
-//                zone.setChanged();
-//            } catch (Exception e) {
-//                LOG.warn("Cannot notify room changes");
-//            }
-//        }
     }
 
     /**
@@ -191,6 +167,7 @@ public final class EnvironmentLogic {
             zones.clear();
             zones = null;
         } catch (Exception e) {
+            LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 
@@ -203,7 +180,7 @@ public final class EnvironmentLogic {
         graph = new Graph(); //the graph data structure that describes how rooms are connected through gates
 
         if (zones == null) {
-            zones = new ArrayList<ZoneLogic>();
+            zones = new ArrayList<>();
         }
 
         for (Zone z : getPojo().getZones()) {
@@ -224,10 +201,10 @@ public final class EnvironmentLogic {
                 zoneLogic.init(this);
 
                 if (!zones.contains(zoneLogic)) {
-                    LOG.info("Adding zone \"" + zoneLogic + "\"");
+                    LOG.info("Adding zone \"{}\"", zoneLogic);
                     this.zones.add(zoneLogic);
                 } else {
-                    LOG.warn("Attempt to add a null or an already existent zone " + zoneLogic);
+                    LOG.warn("Attempt to add a null or an already existent zone \"{}\"", zoneLogic);
                 }
             }
         }
