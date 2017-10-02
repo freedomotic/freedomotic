@@ -21,10 +21,11 @@ package com.freedomotic.plugins;
 
 import com.freedomotic.app.Freedomotic;
 import java.io.File;
-import java.io.FileFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import com.freedomotic.exceptions.FreedomoticRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,25 +35,27 @@ import org.slf4j.LoggerFactory;
  */
 public class PluginIsolatedClassloader extends ClassLoader {
 
+    /**
+     * Class logger
+     */
     private static final Logger LOG = LoggerFactory.getLogger(PluginIsolatedClassloader.class.getName());
+
+    /**
+     * Child class loader
+     */
     private ChildURLClassLoader childClassLoader;
 
     /**
      * Accepts a folder containing a set of jar files to load
      *
-     * @param jarDir
+     * @param jarDir JAR directory
      */
     public PluginIsolatedClassloader(String jarDir) {
         super(Thread.currentThread().getContextClassLoader());
-        // search for JAR files in the given directory
-        FileFilter jarFilter = new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith(".jar");
-            }
-        };
+
         // create URL for each JAR file found
-        File[] jarFiles = new File(jarDir).listFiles(jarFilter);
+        File[] jarFiles = new File(jarDir).listFiles((File pathname) ->
+                pathname.getName().endsWith(".jar"));
         URL[] urls;
         if (null != jarFiles) {
             urls = new URL[jarFiles.length];
@@ -60,8 +63,8 @@ public class PluginIsolatedClassloader extends ClassLoader {
                 try {
                     urls[i] = jarFiles[i].toURI().toURL();
                 } catch (MalformedURLException e) {
-                    throw new RuntimeException(
-                            "Could not get URL for JAR file: " + jarFiles[i], e);
+                    throw new FreedomoticRuntimeException(
+                            "Could not get URL for JAR file: " + jarFiles[i]);
                 }
             }
         } else {
@@ -87,15 +90,14 @@ public class PluginIsolatedClassloader extends ClassLoader {
     }
 
     /**
-     * This class delegates (child then parent) for the findClass method for a
-     * URLClassLoader. Need this because findClass is protected in
-     * URLClassLoader
+     * Delegates (child then parent) for the {@link URLClassLoader#findClass(String)} method.
+     * Needed because findClass is protected in URLClassLoader
      */
     private class ChildURLClassLoader extends URLClassLoader {
 
         private ClassLoader realParent;
 
-        public ChildURLClassLoader(URL[] urls, ClassLoader realParent) {
+        ChildURLClassLoader(URL[] urls, ClassLoader realParent) {
             // pass null as parent so upward delegation disabled for first
             // findClass call
             super(urls, null);
@@ -108,7 +110,7 @@ public class PluginIsolatedClassloader extends ClassLoader {
                 // 1. is this class already loaded?
                 Class cls = super.findLoadedClass(name);
                 if (cls != null) {
-                    LOG.info("Class " + name + " is already loaded by " + cls.getClassLoader().toString());
+                    LOG.info("Class \"{}\" is already loaded by \"{}\"", name, cls.getClassLoader().toString());
                     return cls;
                 }
 
