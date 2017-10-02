@@ -366,16 +366,17 @@ public class TriggerCheck {
     	return String.valueOf((int) Float.parseFloat(value) * 10);
     }
     
-    private String getCurrentValueFromBehavior(String value, EnvObjectLogic object) throws FreedomoticException {
-    	Matcher m = PATTERN.matcher(value);	
+    private String getCurrentValueFromBehavior(String currValue, EnvObjectLogic object) throws FreedomoticException {
+    	String currentValue = currValue;
+    	Matcher m = PATTERN.matcher(currentValue);	
         if (m.find()) {
         	BehaviorLogic behavior = null;
-        	String valueBehavior = value.substring(value.indexOf('.') + 1);
+        	String valueBehavior = currentValue.substring(currentValue.indexOf('.') + 1);
             // in this case we consider the target object behavior 
-            if (value.startsWith("[]")) {
+            if (currentValue.startsWith("[]")) {
                 behavior = object.getBehavior(valueBehavior);
             } else {
-            	String thingName = value.substring(value.indexOf('[') + 1, value.indexOf(']'));
+            	String thingName = currentValue.substring(currentValue.indexOf('[') + 1, currentValue.indexOf(']'));
                 List<EnvObjectLogic> newObject = thingsRepository.findByName(thingName); 
                 if (newObject.isEmpty() || newObject.get(0).getBehavior(valueBehavior)==null) {
                     throw new FreedomoticException("Cannot test condition on unexistent thing: "+thingName);
@@ -385,10 +386,10 @@ public class TriggerCheck {
             }
             
             if (behavior != null) {
-                value = behavior.getValueAsString();
+            	currentValue = behavior.getValueAsString();
             }
         } 
-        return value;
+        return currentValue;
     }
     
     private boolean executeBooleanExpression(boolean isAndCondition, boolean result, boolean eval) {
