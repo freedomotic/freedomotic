@@ -36,11 +36,12 @@ import com.freedomotic.api.EventTemplate;
  *
  * @author Enrico Nicoletti
  */
-public class MessageEvent
-        extends EventTemplate {
+public class MessageEvent extends EventTemplate {
 
     private static final long serialVersionUID = 4733356918386875096L;
-
+    private static final String MESSAGE_TYPE = "message.type";
+    private static final String MESSAGE_LEVEL = "message.level";
+    private static final String MESSAGE_ATTACHMENT = "message.attachment";
     /**
      *
      * @param source
@@ -50,9 +51,9 @@ public class MessageEvent
         super(source);
         this.getPayload().addStatement("message.text", message);
         //set a default message type
-        this.getPayload().addStatement("message.type", "callout");
+        this.getPayload().addStatement(MESSAGE_TYPE, "callout");
         //set a default message level
-        this.getPayload().addStatement("message.level", "info");
+        this.getPayload().addStatement(MESSAGE_LEVEL, "info");
     }
 
     /**
@@ -64,11 +65,11 @@ public class MessageEvent
      * @param type
      */
     public void setType(String type) {
-        this.getPayload().addStatement("message.type", type);
+        this.getPayload().addStatement(MESSAGE_TYPE, type);
     }
 
     public void setLevel(String level) {
-        this.getPayload().addStatement("message.level", level);
+        this.getPayload().addStatement(MESSAGE_LEVEL, level);
     }
 
     /**
@@ -77,8 +78,7 @@ public class MessageEvent
      * @param expires
      */
     public void setExpiration(long expires) {
-        this.getPayload().addStatement("message.expires",
-                new Long(expires).toString());
+        this.getPayload().addStatement("message.expires", Long.toString(expires));
     }
 
     /**
@@ -109,7 +109,7 @@ public class MessageEvent
      * @param path
      */
     public void setAttachmentPath(String path) {
-        this.getPayload().addStatement("message.attachment", path);
+        this.getPayload().addStatement(MESSAGE_ATTACHMENT, path);
     }
 
     /**
@@ -121,7 +121,7 @@ public class MessageEvent
      */
     public void setAttachmentPath(File attachment) {
         String path = (attachment != null) ? attachment.getAbsolutePath() : "";
-        this.getPayload().addStatement("message.attachment", path);
+        this.getPayload().addStatement(MESSAGE_ATTACHMENT, path);
     }
 
     /**
@@ -153,7 +153,7 @@ public class MessageEvent
      * @return the absolute attachment path, if any
      */
     public String getAttachmentPath() {
-        return getPayload().getStatementValue("message.attachment");
+        return getPayload().getStatementValue(MESSAGE_ATTACHMENT);
     }
 
     /**
@@ -164,12 +164,11 @@ public class MessageEvent
     public String getDefaultDestination() {
         //adds the type to channel definition only if is not empty
         String type = "";
-
         try {
-            type = "." + getPayload().getStatements("message.type").get(0).getValue().toLowerCase().trim();
+            type = "." + getPayload().getStatements(MESSAGE_TYPE).get(0).getValue().toLowerCase().trim();
         } catch (Exception e) {
+        	type = "";
         }
-
         return "app.event.sensor.messages" + type;
     }
 }
