@@ -23,9 +23,9 @@ import com.freedomotic.rules.Payload;
 import com.freedomotic.rules.Statement;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -129,32 +129,32 @@ public class EventTemplate implements Serializable {
         init();
 
         try {
-            Calendar rightNow = Calendar.getInstance();
+            LocalDateTime rightNow = LocalDateTime.now();
             //adding date and time data
             payload.addStatement("date.day.name",
-                    rightNow.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.UK));
+                    rightNow.getDayOfWeek().getDisplayName(TextStyle.FULL,Locale.UK));
             payload.addStatement("date.day",
-                    rightNow.get(Calendar.DAY_OF_MONTH));
+                    rightNow.getDayOfMonth());
             payload.addStatement("date.month.name",
-                    rightNow.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.UK));
-            payload.addStatement("date.month", rightNow.get(Calendar.MONTH) + 1);
+                    rightNow.getMonth().getDisplayName(TextStyle.FULL,Locale.UK));
+            payload.addStatement("date.month", rightNow.getMonthValue());
             payload.addStatement("date.year",
-                    rightNow.get(Calendar.YEAR));
+                    rightNow.getYear());
             payload.addStatement("date.dow",
-                    rightNow.get(Calendar.DAY_OF_WEEK));
+                    rightNow.getDayOfWeek().getValue());
             payload.addStatement("time.hour",
-                    rightNow.get(Calendar.HOUR_OF_DAY));
+                    rightNow.getHour());
             payload.addStatement("time.minute",
-                    rightNow.get(Calendar.MINUTE));
+                    rightNow.getMinute());
             payload.addStatement("time.second",
-                    rightNow.get(Calendar.SECOND));
+                    rightNow.getSecond());
 
-            DateFormat datefmt = new SimpleDateFormat("yyyyMMdd");
-            DateFormat timefmt = new SimpleDateFormat("HHmmss");
+            DateTimeFormatter datefmt = DateTimeFormatter.ofPattern("yyyyMMdd");
+            DateTimeFormatter timefmt = DateTimeFormatter.ofPattern("HHmmss");
             payload.addStatement("time",
-                    timefmt.format(rightNow.getTime()));
+                    timefmt.format(rightNow));
             payload.addStatement("date",
-                    datefmt.format(rightNow.getTime()));
+                    datefmt.format(rightNow));
             //adding event.sender to event payload. So it can be used by trigger
             payload.addStatement("sender",
                     getSender());

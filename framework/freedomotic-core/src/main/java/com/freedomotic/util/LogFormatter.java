@@ -20,8 +20,9 @@
 package com.freedomotic.util;
 
 import com.freedomotic.settings.Info;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -34,8 +35,7 @@ import java.util.logging.LogRecord;
 public class LogFormatter
         extends Formatter {
 
-    private SimpleDateFormat date = new SimpleDateFormat("HH:mm  ss,S");
-
+    private DateTimeFormatter date = DateTimeFormatter.ofPattern("HH:mm  ss,S");
     /**
      *
      * @param record
@@ -43,7 +43,7 @@ public class LogFormatter
      */
     @Override
     public String format(LogRecord record) {
-        return ("<tr bgcolor=\"" + getColor(record.getLevel().intValue()) + "\"><td>" + date.format(record.getMillis()) + " "
+        return ("<tr bgcolor=\"" + getColor(record.getLevel().intValue()) + "\"><td>" + date.format(Instant.ofEpochMilli(record.getMillis())) + " "
                 + getShortClassName(record.getSourceClassName()) + "</font></td><td>"
                 + formatTextToHTML(formatMessage(record)) + "</font></td></tr>\n");
     }
@@ -108,7 +108,7 @@ public class LogFormatter
      */
     @Override
     public String getHead(Handler h) {
-        return ("<html>\n  " + "<body>\n" + "<h1>Freedomotic Developers Log - " + new Date().toString() + "</h1>"
+        return ("<html>\n  " + "<body>\n" + "<h1>Freedomotic Developers Log - " + LocalTime.now().format(DateTimeFormatter.ofPattern("dow mon dd hh:mm:ss zzz yyyy")) + "</h1>"
                 + "<h2>Press F5 to update the page while Freedomotic is running</h2>"
                 + "<div>Here is the logger of Freedomotic. It is mainly usefull for developers. We are currently in beta so it is enabled by default.</div>"
                 + "<div>You can get a more user/configurator perspective on the project website at <a href=\"http://www.freedomotic.com\">http://www.freedomotic.com/</a>.</div>"
