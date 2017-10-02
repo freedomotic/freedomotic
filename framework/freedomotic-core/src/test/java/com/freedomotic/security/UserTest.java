@@ -21,8 +21,6 @@ package com.freedomotic.security;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
 import org.apache.shiro.authz.SimpleRole;
 import org.apache.shiro.authz.permission.WildcardPermission;
 import org.junit.Before;
