@@ -20,17 +20,14 @@
 package com.freedomotic.jfrontend;
 
 import com.freedomotic.api.Protocol;
+import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
-import com.freedomotic.model.geometry.FreedomPoint;
-import com.freedomotic.behaviors.BehaviorLogic;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.util.TopologyUtils;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Polygon;
+
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.Queue;
 
 /**
  *
@@ -38,15 +35,15 @@ import java.util.Queue;
  */
 public class ImageDrawer extends PlainDrawer {
 
-    private Protocol master;
+    private Protocol masterProtocol;
 
     /**
      *
-     * @param master
+     * @param masterProcotol
      */
-    public ImageDrawer(JavaDesktopFrontend master) {
-        super(master);
-        this.master = master;
+    public ImageDrawer(JavaDesktopFrontend masterProcotol) {
+        super(masterProcotol);
+        this.masterProtocol = masterProcotol;
     }
 
     /**
@@ -54,6 +51,10 @@ public class ImageDrawer extends PlainDrawer {
      */
     @Override
     public void renderWalls() {
+        /*
+         * This method should not be invoked from ImageDrawer class.
+         * Throwing an UnsupportedOperationException, however, is not recommended due to backwards compatibility
+        */
     }
 
     /**
@@ -61,24 +62,24 @@ public class ImageDrawer extends PlainDrawer {
      */
     @Override
     public void renderObjects() {
-        for (EnvObjectLogic obj : master.getApi().things().findByEnvironment(getCurrEnv())) {
-            renderSingleObject(obj);
-        }
+        masterProtocol
+                .getApi()
+                .things()
+                .findByEnvironment(getCurrEnv())
+                .forEach(this::renderSingleObject);
     }
 
     /**
      *
      * @param obj
      */
-    public void renderSingleObject(EnvObjectLogic obj) {
+    private void renderSingleObject(EnvObjectLogic obj) {
         if (obj != null) {
             setTransformContextFor(obj.getPojo());
 
             if ((obj.getPojo().getCurrentRepresentation().getIcon() != null)
                     && !obj.getPojo().getCurrentRepresentation().getIcon().equalsIgnoreCase("")) {
                 try {
-                    //WidgetTest widget = new WidgetTest(obj);
-                    //paintImage(widget.draw());
                     paintImage(obj.getPojo());
                 } catch (RuntimeException e) {
                     drawPlainObject(obj);
@@ -89,46 +90,8 @@ public class ImageDrawer extends PlainDrawer {
                 drawPlainObject(obj);
             }
 
-            //paintObjectDescription(obj);
             invalidateAnyTransform();
         }
-    }
-
-    private void drawTrace(int[] xTrace, int[] yTrace, Color color) {
-        getContext().setColor(color);
-
-        int num = (int) Math.min(xTrace.length, yTrace.length);
-        getContext().drawPolyline(xTrace, yTrace, num);
-    }
-
-    private int[] getXTrace(Queue<FreedomPoint> trace) {
-        int size = trace.size();
-        int[] xPoints = new int[size];
-        int i = 0;
-
-        for (FreedomPoint p : trace) {
-            if (i < size) {
-                xPoints[i] = (int) p.getX();
-                i++;
-            }
-        }
-
-        return xPoints;
-    }
-
-    private int[] getYTrace(Queue<FreedomPoint> trace) {
-        int size = trace.size();
-        int[] yPoints = new int[size];
-        int i = 0;
-
-        for (FreedomPoint p : trace) {
-            if (i < size) {
-                yPoints[i] = (int) p.getY();
-                i++;
-            }
-        }
-
-        return yPoints;
     }
 
     /**
@@ -143,24 +106,10 @@ public class ImageDrawer extends PlainDrawer {
                         pol);
 
                 if (zone instanceof Room) {
-                    Room room = (Room) zone;
                     drawRoomObject(pol);
                 }
             }
         }
-    }
-
-    /**
-     *
-     * @param x
-     * @param y
-     * @param icon
-     */
-    protected void paintPersonAvatar(int x, int y, String icon) {
-        paintImageCentredOnCoords(icon,
-                x,
-                y,
-                new Dimension(60, 60));
     }
 
     /**
@@ -175,9 +124,6 @@ public class ImageDrawer extends PlainDrawer {
 
     private void paintObjectDescription(EnvObjectLogic obj) {
         StringBuilder description = new StringBuilder();
-//        if (!obj.getMessage().isEmpty()) {
-//            description.append(obj.getMessage()).append("\n");
-//        }
         description.append(obj.getPojo().getName()).append("\n");
         description.append(obj.getPojo().getDescription()).append("\n");
 
@@ -195,10 +141,7 @@ public class ImageDrawer extends PlainDrawer {
         int y = (int) box.getY() + 10;
         Callout callout
                 = new Callout(obj.getPojo().getName(), "object.description",
-                        description.toString(), x, y, 0.0f, 2000);
-//        if (!obj.getMessage().isEmpty()) {
-//            callout.setColor(Color.red.darker());
-//        }
+                description.toString(), x, y, 0.0f, 2000);
         createCallout(callout);
         setNeedRepaint(true);
     }
@@ -213,21 +156,4 @@ public class ImageDrawer extends PlainDrawer {
         removeIndicators();
     }
 
-    /**
-     *
-     * @param obj
-     */
-    @Override
-    public void mouseClickObject(EnvObjectLogic obj) {
-        super.mouseClickObject(obj);
-    }
-
-    /**
-     *
-     * @param obj
-     */
-    @Override
-    public void mouseRightClickObject(EnvObjectLogic obj) {
-        super.mouseRightClickObject(obj);
-    }
 }
