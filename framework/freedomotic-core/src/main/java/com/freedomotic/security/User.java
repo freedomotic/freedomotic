@@ -19,16 +19,17 @@
  */
 package com.freedomotic.security;
 
-import com.freedomotic.app.Freedomotic;
-import java.util.Collection;
 import java.util.Properties;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleRole;
 import org.apache.shiro.authz.permission.WildcardPermission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.freedomotic.app.Freedomotic;
 
 /**
  *
@@ -36,11 +37,13 @@ import org.apache.shiro.authz.permission.WildcardPermission;
  */
 public final class User extends SimpleAccount {
 
-    private static final Logger LOG = LoggerFactory.getLogger(User.class.getName());
+	private static final long serialVersionUID = 1L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(User.class.getName());
 
     private final Properties properties = new Properties();
 
-    private final Auth auth;
+    private final transient Auth auth;
 
     public User(Object principal, Object credentials, String roleName, Auth auth) {
         this(principal, credentials, auth);
@@ -69,11 +72,6 @@ public final class User extends SimpleAccount {
     }
 
     @Override
-    public Collection<String> getRoles() {
-        return super.getRoles();
-    }
-
-    @Override
     public void setRoles(Set<String> roles) {
         for (String roleName : roles) {
             SimpleRole role = auth.getRole(roleName);
@@ -95,7 +93,7 @@ public final class User extends SimpleAccount {
         if (role != null) {
             super.addRole(role.getName());
             addObjectPermissions(role.getPermissions());
-            LOG.info("Adding role \"{}\" to user \"{}\": \"{}\"", new Object[]{role.getName(), getName(), role.getPermissions()});
+            LOG.info("Adding role \"{}\" to user \"{}\": \"{}\"", role.getName(), getName(), role.getPermissions());
         } else {
             LOG.error("Cannot find role: \"{}\"", roleName);
         }
@@ -119,4 +117,23 @@ public final class User extends SimpleAccount {
         }
         return false;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		return prime * result + properties.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return (properties.equals(other.properties));
+	}
 }
