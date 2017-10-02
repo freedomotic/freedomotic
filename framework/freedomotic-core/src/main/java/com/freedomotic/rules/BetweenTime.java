@@ -18,8 +18,17 @@
  */
 package com.freedomotic.rules;
 
+<<<<<<< HEAD
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+=======
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Objects;
+>>>>>>> refs/remotes/freedomotic/master
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +40,13 @@ public class BetweenTime extends BinaryExpression {
 
     private static final String OPERAND = Statement.BETWEEN_TIME;
     private static final Logger LOG = LoggerFactory.getLogger(BetweenTime.class.getName());
+<<<<<<< HEAD
     private final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
+=======
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
+    private Date todaysEnd;
+    private Date tomorrowStart;
+>>>>>>> refs/remotes/freedomotic/master
 
     @Override
     public String getOperand() {
@@ -51,8 +66,16 @@ public class BetweenTime extends BinaryExpression {
         LocalTime time;
         // Parse the date which is supposed to be in between of the interval
         try {
+<<<<<<< HEAD
             time = LocalTime.parse(this.getLeft(), TIME_FORMAT);
         } catch (DateTimeException ex) {
+=======
+            time = TIME_FORMAT.parse(this.getLeft());
+            if (Objects.isNull(time)) {
+                return false;
+            }
+        } catch (ParseException ex) {
+>>>>>>> refs/remotes/freedomotic/master
             LOG.warn("Cannot parse hours " + getLeft() + ", valid format is HH:mm:ss", ex);
             return false;
         }
