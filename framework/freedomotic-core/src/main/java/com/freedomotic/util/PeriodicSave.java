@@ -75,13 +75,11 @@ public class PeriodicSave {
         executorService.scheduleWithFixedDelay(runnable, initDelay, executionInterval, TimeUnit.MINUTES);
     }
 
-    private Runnable runnable = new Runnable() {
-        public void run() {
+    private Runnable runnable = () -> {
             LOG.info("Periodic saving of triggers, commands and reactions");
             triggerRepository.saveTriggers(new File(savedDataRoot + "/trg"));
             commandRepository.saveCommands(new File(savedDataRoot + "/cmd"));
             reactionRepository.saveReactions(new File(savedDataRoot + "/rea"));
-        }
     };
 
     /**
