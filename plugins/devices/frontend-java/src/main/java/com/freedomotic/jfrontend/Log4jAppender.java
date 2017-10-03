@@ -37,7 +37,7 @@ import com.freedomotic.i18n.I18n;
 public class Log4jAppender extends AppenderSkeleton {
 	
 	/** Reference to graphical plugin Swing Frame. */
-	public static final LogWindow window = null;
+	public LogWindow window = null;
 	
 	/** Reference to log4j Logger. */
 	private Logger logger = null;
