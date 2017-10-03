@@ -29,10 +29,9 @@ import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.core.TriggerCheck;
 import com.google.inject.Inject;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -246,11 +245,12 @@ public final class Trigger implements BusConsumer, Cloneable {
             long now = System.currentTimeMillis();
 
             if (now < wakeup) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy kk:mm:ss.SSS");
-                LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(wakeup), ZoneId.systemDefault());
+                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy kk:mm:ss.SSS");
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(wakeup);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Trigger " + getName() + " is suspended until "
-                            + localDateTime.format(formatter));
+                            + formatter.format(calendar.getTime()));
                 }
                 //it is currently suspended
                 return false;
