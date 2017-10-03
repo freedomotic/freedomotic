@@ -54,7 +54,7 @@ public class PeriodicSave {
     }
 
     /**
-     *
+     * Load the required Repositories
      * @param triggerRepository
      * @param commandRepository
      * @param reactionRepository
@@ -67,7 +67,7 @@ public class PeriodicSave {
     }
 
     /**
-     *
+     * Start executor service for periodic saving of commands, triggers and reactions.
      */
     public void startExecutorService() {
         executorService = Executors.newSingleThreadScheduledExecutor();
@@ -83,7 +83,7 @@ public class PeriodicSave {
     };
 
     /**
-     *
+     * Stop executor service for periodic saving of commands, triggers and reactions.
      */
     public void shutDown() {
         executorService.shutdown();
