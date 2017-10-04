@@ -295,11 +295,7 @@ class AuthImpl2 implements Auth {
 
     @Override
     public void save() {
-        try {
-            baseRealm.save(Info.PATHS.PATH_CONFIG_FOLDER);
-        } catch (IOException ex) {
-            LOG.error(ex.getMessage());
-        }
+        baseRealm.save(Info.PATHS.PATH_CONFIG_FOLDER);
     }
 
     @Override

@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.shiro.authz.SimpleRole;
 import org.apache.shiro.authz.permission.WildcardPermission;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,10 +64,9 @@ public class UserTest {
         auth.getUser("system").setProperty("language", "auto");
         assertEquals("auto", user.getProperty("language"));
         
-        assertEquals(null, user.getProperty("pipp"));
-        user.setProperty("pipp", "popp");
-        assertEquals("popp", user.getProperty("pipp"));
-        user.setProperty("pipp", "null");
+        assertEquals(null, user.getProperty("example"));
+        user.setProperty("example", "popp");
+        assertEquals("popp", user.getProperty("example"));
         
         assertEquals("system", user.getName());
     }
@@ -80,6 +80,5 @@ public class UserTest {
     	user.addRole("administrators");
     	assertEquals(1, user.getRoles().size());
     }
-
-    
+     
 }
