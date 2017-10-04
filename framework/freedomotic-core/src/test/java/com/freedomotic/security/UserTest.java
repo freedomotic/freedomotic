@@ -55,22 +55,7 @@ public class UserTest {
         auth.addRole(role);
         auth.addUser("system", "cQY3W9HCU1MpYV16/SVKFeciDoxOOkyR9cgi/XUEHig=", "FZ4hpINh3HLLyYcgQAy/HTWcZbNX/7R3Tn/YYYsXpQ0=" , "administrators");
     }
-
-    @Test
-    public void testUserData() {
-        User user = auth.getUser("system");
-        //change property on the auth and see how it reflects on the user itself
-        auth.getUser("system").setProperty("language", "auto");
-        assertEquals("auto", user.getProperty("language"));
-        
-        assertEquals(null, user.getProperty("pipp"));
-        user.setProperty("pipp", "popp");
-        assertEquals("popp", user.getProperty("pipp"));
-        user.setProperty("pipp", "null");
-        
-        assertEquals("system", user.getName());
-    }
-    
+ 
     @Test
     public void rolesManagement() {
     	User user = auth.getUser("system");
@@ -80,6 +65,5 @@ public class UserTest {
     	user.addRole("administrators");
     	assertEquals(1, user.getRoles().size());
     }
-
-    
+     
 }

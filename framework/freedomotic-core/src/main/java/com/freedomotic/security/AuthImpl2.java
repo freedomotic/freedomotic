@@ -19,29 +19,28 @@
  */
 package com.freedomotic.security;
 
-import com.freedomotic.api.Plugin;
-import com.freedomotic.bus.BusService;
-import com.freedomotic.settings.AppConfig;
-import com.freedomotic.settings.Info;
-import com.google.inject.Inject;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.apache.shiro.codec.Base64;
-import org.apache.shiro.util.ByteSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.SimpleRole;
+import org.apache.shiro.codec.Base64;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.SubjectThreadState;
+import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.ThreadState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.freedomotic.api.Plugin;
+import com.freedomotic.settings.AppConfig;
+import com.freedomotic.settings.Info;
+import com.google.inject.Inject;
 
 /**
  *
@@ -295,11 +294,7 @@ class AuthImpl2 implements Auth {
 
     @Override
     public void save() {
-        try {
-            baseRealm.save(Info.PATHS.PATH_CONFIG_FOLDER);
-        } catch (IOException ex) {
-            LOG.error(ex.getMessage());
-        }
+        baseRealm.save(Info.PATHS.PATH_CONFIG_FOLDER);
     }
 
     @Override
