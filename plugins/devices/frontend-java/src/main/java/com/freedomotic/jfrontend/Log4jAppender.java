@@ -89,7 +89,9 @@ public class Log4jAppender extends AppenderSkeleton {
 	/* (non-Javadoc)
 	 * @see org.apache.log4j.Appender#close()
 	 */
-	public void close() {}
+	public void close() {
+		// No implementation
+	}
 
 	/* (non-Javadoc)
 	 * @see org.apache.log4j.Appender#requiresLayout()
