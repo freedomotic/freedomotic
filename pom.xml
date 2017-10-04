@@ -252,6 +252,28 @@
             <additionalparam>-Xdoclint:none</additionalparam>
           </properties>
         </profile>
+
+        <profile>
+            <id>ci</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.marvinformatics.formatter</groupId>
+                        <artifactId>formatter-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>validate</id>
+                                <goals>
+                                    <goal>validate</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
     
     <build>
@@ -294,6 +316,31 @@
                 <configuration>
                     <runOrder>hourly</runOrder>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.marvinformatics.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>1.9.0</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <sourceDirectory>${project.basedir}</sourceDirectory>
+                    <excludes>
+                        <exclude>**/*.js</exclude>
+                        <exclude>**/target/**</exclude>
+                    </excludes>
+                    <lineEnding>LF</lineEnding>
+                    <configFile>${project.basedir}/src/config/formatter/eclipse-java-google-style.xml</configFile>
+                    <configJsFile>${project.basedir}/src/config/formatter/eclipse-java-google-style.xml</configJsFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>format</id>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>   
         
