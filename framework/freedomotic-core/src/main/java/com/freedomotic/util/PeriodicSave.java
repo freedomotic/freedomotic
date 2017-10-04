@@ -41,6 +41,7 @@ public class PeriodicSave {
     private ReactionRepository reactionRepository;
     private String savedDataRoot;
     private int executionInterval;
+    private Runnable runnable;
 
     /**
      * Saves periodically commands, triggers and reactions to file.
@@ -51,6 +52,13 @@ public class PeriodicSave {
     public PeriodicSave(String savedDataRoot, int executionInterval) {
         this.savedDataRoot = savedDataRoot;
         this.executionInterval = executionInterval;
+
+        runnable = () -> {
+            LOG.info("Periodic saving of triggers, commands and reactions");
+            triggerRepository.saveTriggers(new File(savedDataRoot + "/trg"));
+            commandRepository.saveCommands(new File(savedDataRoot + "/cmd"));
+            reactionRepository.saveReactions(new File(savedDataRoot + "/rea"));
+    	};
     }
 
     /**
@@ -74,13 +82,6 @@ public class PeriodicSave {
         long initDelay = 5; //first saving after 5 minutes
         executorService.scheduleWithFixedDelay(runnable, initDelay, executionInterval, TimeUnit.MINUTES);
     }
-
-    private Runnable runnable = () -> {
-            LOG.info("Periodic saving of triggers, commands and reactions");
-            triggerRepository.saveTriggers(new File(savedDataRoot + "/trg"));
-            commandRepository.saveCommands(new File(savedDataRoot + "/cmd"));
-            reactionRepository.saveReactions(new File(savedDataRoot + "/rea"));
-    };
 
     /**
      * Stop executor service for periodic saving of commands, triggers and reactions.
