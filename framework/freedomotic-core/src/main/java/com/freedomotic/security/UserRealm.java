@@ -19,185 +19,226 @@
  */
 package com.freedomotic.security;
 
-import com.freedomotic.persistence.FreedomXStream;
-import com.thoughtworks.xstream.XStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.shiro.authz.SimpleRole;
 import org.apache.shiro.realm.SimpleAccountRealm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.freedomotic.persistence.FreedomXStream;
+import com.thoughtworks.xstream.XStream;
 
 /**
- *
+ * An extension of the SimpleAccountRealm class defined in Shiro dependency. It
+ * defines the Security Realm for Freedomotic users.
+ * 
+ * @see org.apache.shiro.realm.SimpleAccountRealm
+ * 
  * @author Matteo Mazzoni
  */
 public class UserRealm extends SimpleAccountRealm {
 
-    public final static String USER_REALM_NAME = "com.freedomotic.security";
-    private final static Logger LOG = LoggerFactory.getLogger(UserRealm.class.getCanonicalName());
-    private final static String PASSWORD_HASHING_ALGORITHM = "SHA-256";
-       
-    public UserRealm() {
-        setName(USER_REALM_NAME);
-        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(PASSWORD_HASHING_ALGORITHM);
-        matcher.setStoredCredentialsHexEncoded(false);
-        setCredentialsMatcher(matcher);
-    }
+	/**
+	 * Name of the Freedomotic Users realm
+	 */
+	public static final String USER_REALM_NAME = "com.freedomotic.security";
+	private static final Logger LOG = LoggerFactory.getLogger(UserRealm.class.getCanonicalName());
 
-    /**
-     *
-     * @param account
-     */
-    public void addUser(User account) {
-        super.add(account);
-    }
+	/**
+	 * Builds an instance of UserRealm and instantiates an HashedCredentialMatcher
+	 * 
+	 * @return an instance of UserRealm
+	 */
+	public UserRealm() {
+		setName(USER_REALM_NAME);
+		HashedCredentialsMatcher matcher = new HashedCredentialsMatcher("SHA-256");
+		matcher.setStoredCredentialsHexEncoded(false);
+		setCredentialsMatcher(matcher);
+	}
 
-    /**
-     *
-     * @param role
-     */
-    public void addRole(SimpleRole role) {
-        super.add(role);
-    }
+	/**
+	 * Adds the account parameter to this realm
+	 * 
+	 * @param account
+	 */
+	public void addUser(User account) {
+		super.add(account);
+	}
 
-    @Override
-    public User getUser(String username) {
-        return (User) super.getUser(username);
-    }
+	/**
+	 * Adds the role parameter to this realm
+	 * 
+	 * @param role
+	 */
+	public void addRole(SimpleRole role) {
+		super.add(role);
+	}
 
-    /**
-     *
-     * @return
-     */
-    public Map<String, User> getUsers() {
-        HashMap<String, User> accounts = new HashMap<>();
-        for (String userName : users.keySet()) {
-            accounts.put(userName, (User) users.get(userName));
-        }
-        return accounts;
-    }
+	/**
+	 * Removes the user identified by the username from this current realm
+	 * 
+	 * @param username
+	 */
+	public void removeUser(String username) {
+		User u = getUser(username);
+		u.setObjectPermissions(null);
+		u.getRoles().clear();
+		u.setCredentialsExpired(true);
+		u.setLocked(true);
+		users.remove(username);
+	}
 
-    /**
-     *
-     * @return
-     */
-    public Map<String, SimpleRole> getRoles() {
-        return roles;
-    }
+	/**
+	 * Removes the role identified by the rolename from this current realm
+	 * 
+	 * @param rolename
+	 */
+	public void removeRole(String rolename) {
+		for (User u : getUsers().values()) {
+			u.removeRole(rolename);
+			u.setObjectPermissions(null);
+			for (String rs : u.getRoles()) {
+				SimpleRole nr = getRole(rs);
+				u.addObjectPermissions(nr.getPermissions());
+			}
+		}
+		getRoles().remove(rolename);
+	}
 
-    @Override
-    public SimpleRole getRole(String rolename) {
-        return super.getRole(rolename); //To change body of generated methods, choose Tools | Templates.
-    }
+	/**
+	 * Returns the User identified by the username passed as parameter.
+	 * 
+	 * @return User identified by the username
+	 */
+	@Override
+	public User getUser(String username) {
+		return (User) super.getUser(username);
+	}
 
-    /**
-     *
-     * @param file
-     * @return
-     */
-    private int loadRoles(File file) {
-        roles.clear();
-        XStream xstream = FreedomXStream.getXstream();
-        SimpleRole[] ra = (SimpleRole[]) xstream.fromXML(file);
-        for (SimpleRole r : ra) {
-            roles.put(r.getName(), r);
-        }
-        return 0;
-    }
+	/**
+	 * Returns the SimpleRole identified by the rolename passed as parameter.
+	 * 
+	 * @return SimpleRole identified by the rolename
+	 */
+	@Override
+	public SimpleRole getRole(String rolename) {
+		return super.getRole(rolename);
+	}
 
-    /**
-     *
-     * @param file
-     * @return
-     * @throws IOException
-     */
-    private boolean saveRoles(File file) throws IOException {
-        SimpleRole[] ra = new SimpleRole[]{};
-        ra = getRoles().values().toArray(ra);
-        LOG.info("Serializing roles to \"{}\"", file);
-        FreedomXStream.toXML(ra, file);
-        return true;
-    }
+	/**
+	 * Returns all the users currently defined for this UserRealm
+	 * 
+	 * @return the map of users
+	 */
+	public Map<String, User> getUsers() {
+		HashMap<String, User> accounts = new HashMap<>();
+		for (Map.Entry<String, SimpleAccount> user : users.entrySet()) {
+			accounts.put(user.getKey(), (User) user.getValue());
+		}
+		return accounts;
+	}
 
-    /**
-     *
-     * @param file
-     * @return
-     */
-    private int loadUsers(File file) {
-        users.clear();
-        XStream xstream = FreedomXStream.getXstream();
-        User[] ua = (User[]) xstream.fromXML(file);
-        for (User user : ua) {
-            users.put(user.getPrincipals().getPrimaryPrincipal().toString(), user);
-        }
-        return 0;
-    }
+	/**
+	 * Returns all the roles currently defined for this UserRealm
+	 * 
+	 * @return the map of roles
+	 */
+	public Map<String, SimpleRole> getRoles() {
+		return roles;
+	}
+	
+	/**
+	 * Loads all the users and roles contained in the directory. <b>WARNING: the
+	 * files in the directory must be names respectively <code>roles.xml</code> and
+	 * <code>users.xml</code>
+	 * 
+	 * @param directory
+	 *            containing the data
+	 */
+	public void load(File directory) {
+		loadRoles(new File(directory, "roles.xml"));
+		loadUsers(new File(directory, "users.xml"));
+	}
 
-    /**
-     *
-     * @param file
-     * @return
-     * @throws IOException
-     */
-    private boolean saveUsers(File file) throws IOException {
-        User[] ua = new User[]{};
-        ua = getUsers().values().toArray(ua);
-        LOG.info("Serializing users to \"{}\"", file);
-        FreedomXStream.toXML(ua, file);
+	/**
+	 * SAves all the users and roles of this realm in the directory. <b>WARNING: the
+	 * files saved in the directory will be named respectively
+	 * <code>roles.xml</code> and <code>users.xml</code>
+	 * 
+	 * @param directory
+	 *            containing the data
+	 */
+	public void save(File directory) {
+		saveUsers(new File(directory, "users.xml"));
+		saveRoles(new File(directory, "roles.xml"));
+	}
 
-        return true;
-    }
+	/*
+	 * Loads all the roles contained in the file and puts them in this realm
+	 * 
+	 * @param file
+	 * @return 0 if the operation goes well
+	 */
+	private int loadRoles(File file) {
+		roles.clear();
+		XStream xstream = FreedomXStream.getXstream();
+		SimpleRole[] ra = (SimpleRole[]) xstream.fromXML(file);
+		for (SimpleRole r : ra) {
+			roles.put(r.getName(), r);
+		}
+		return 0;
+	}
 
-    /**
-     *
-     * @param file
-     */
-    public void load(File file) {
-        loadRoles(new File(file + "/roles.xml"));
-        loadUsers(new File(file + "/users.xml"));
-    }
+	/*
+	 * Persists all the roles of this realm in the file
+	 * 
+	 * @param file
+	 *            where the roles are persisted
+	 * @return true if the operation goes well
+	 */
+	private boolean saveRoles(File file) {
+		SimpleRole[] ra = new SimpleRole[] {};
+		ra = getRoles().values().toArray(ra);
+		LOG.info("Serializing roles to \"{}\"", file);
+		FreedomXStream.toXML(ra, file);
+		return true;
+	}
 
-    /**
-     *
-     * @param file
-     * @throws IOException
-     */
-    public void save(File file) throws IOException {
-        saveUsers(new File(file + "/users.xml"));
-        saveRoles(new File(file + "/roles.xml"));
-    }
+	/*
+	 * Loads all the users contained in the file and puts them in this realm
+	 * 
+	 * @param file
+	 * @return 0 if the operation goes well
+	 */
+	private int loadUsers(File file) {
+		users.clear();
+		XStream xstream = FreedomXStream.getXstream();
+		User[] ua = (User[]) xstream.fromXML(file);
+		for (User user : ua) {
+			users.put(user.getPrincipals().getPrimaryPrincipal().toString(), user);
+		}
+		return 0;
+	}
 
-    /**
-     *
-     * @param userName
-     */
-    public void removeUser(String userName) {
-        User u = getUser(userName);
-        u.setObjectPermissions(null);
-        u.getRoles().clear();
-        u.setCredentialsExpired(true);
-        u.setLocked(true);
-        users.remove(userName);
-    }
+	/*
+	 * Persists all the roles of this realm in the file
+	 * 
+	 * @param file
+	 *            where the roles are persisted
+	 * @return true if the operation goes well
+	 * @throws IOException
+	 */
+	private boolean saveUsers(File file) {
+		User[] ua = new User[] {};
+		ua = getUsers().values().toArray(ua);
+		LOG.info("Serializing users to \"{}\"", file);
+		FreedomXStream.toXML(ua, file);
 
-    /**
-     *
-     * @param roleName
-     */
-    public void removeRole(String roleName) {
-        for (User u : getUsers().values()) {
-            u.removeRole(roleName);
-            u.setObjectPermissions(null);
-            for (String rs : u.getRoles()) {
-                SimpleRole nr = getRole(rs);
-                u.addObjectPermissions(nr.getPermissions());
-            }
-        }
-        getRoles().remove(roleName);
-    }
+		return true;
+	}
 }
