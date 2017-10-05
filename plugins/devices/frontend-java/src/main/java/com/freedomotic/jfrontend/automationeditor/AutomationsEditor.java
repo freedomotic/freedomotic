@@ -1,19 +1,18 @@
 /**
- *
  * Copyright (c) 2009-2016 Freedomotic team
  * http://freedomotic.com
- *
+ * <p>
  * This file is part of Freedomotic
- *
+ * <p>
  * This Program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2, or (at your option) any later version.
- *
+ * <p>
  * This Program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License along with
  * Freedomotic; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
@@ -30,6 +29,7 @@ import com.freedomotic.reactions.ReactionRepository;
 import com.freedomotic.reactions.Trigger;
 import com.freedomotic.reactions.TriggerRepository;
 import com.google.inject.Inject;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -43,10 +43,19 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 /**
+ * AutomationsEditor is the gui for managing the automations.
+ * It is one frame with many triggers in it and commands that will
+ * happen when the case triggers. Its get its trigger form the trigger
+ * repository and the commands from the command Repository.
  *
  * @author Enrico Nicoletti
  */
 public class AutomationsEditor extends Protocol {
+
+    private static final String AUTOMATIONS_EDITOR = "Automations Editor";
+    private static final String MANIFEST = "/frontend-java/automations-editor.xml";
+    private static final int WIDTH = 700;
+    private static final int HEIGHT = 600;
 
     @Inject
     private NlpCommand nlpCommands;
@@ -61,53 +70,14 @@ public class AutomationsEditor extends Protocol {
     private JFrame frame;
 
     /**
-     *
+     * Create a new Protocol with the plugin for Automations Editor.
      */
     public AutomationsEditor() {
-        super("Automations Editor", "/frontend-java/automations-editor.xml");
-    }
-
-    @Override
-    protected void onCommand(Command c)
-            throws IOException, UnableToExecuteException {
-        if (c.getProperty("editor").equalsIgnoreCase("command")) {
-            Command command;
-            List<Command> list = commandRepository.findByName(c.getProperty("editable"));
-            if (!list.isEmpty()) {
-                command = list.get(0);
-            } else {
-                throw new RuntimeException("No commands found with name \"" + c.getProperty("editable") + "\"");
-            }
-            CustomizeCommand cc = new CustomizeCommand(getApi().getI18n(), command, commandRepository);
-            cc.setVisible(true);
-            cc.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    refreshMainView();
-                }
-            });
-        } else {
-            if (c.getProperty("editor").equalsIgnoreCase("trigger")) {
-                Trigger trigger = getApi().triggers().findByName(c.getProperty("editable")).get(0);
-                CustomizeTrigger ct = new CustomizeTrigger(getApi().getI18n(), trigger, triggerRepository);
-                ct.setVisible(true);
-                ct.addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowClosed(WindowEvent e) {
-                        refreshMainView();
-                    }
-                });
-            }
-        }
-    }
-
-    private void refreshMainView() {
-        frame.dispose();
-        this.showGui();
+        super(AUTOMATIONS_EDITOR, MANIFEST);
     }
 
     /**
-     *
+     * on start does nothing see onShowGui for more information about this class.
      */
     @Override
     public void onStart() {
@@ -115,6 +85,11 @@ public class AutomationsEditor extends Protocol {
     }
 
     /**
+     * Builds the gui of AutomationsEditor, a frame with a ReactionsPanel and an ok button.
+     * ReactionsPanel have component according to the nlpCommands,
+     * triggerRepository, commandRepository and the reactionRepository .
+     * Each component is a test case by some trigger and near it you have the commands
+     * that will happen to each specific trigger.
      *
      */
     @Override
@@ -124,13 +99,13 @@ public class AutomationsEditor extends Protocol {
         }
         frame = new JFrame();
         frame.setTitle(getApi().getI18n().msg("manage") + getApi().getI18n().msg("automations"));
-        frame.setPreferredSize(new Dimension(700, 600));
+        frame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
         panel = new ReactionsPanel(this, nlpCommands, triggerRepository, commandRepository, reactionRepository);
         frame.setContentPane(panel);
 
-        JButton ok = new JButton(getApi().getI18n().msg("ok"));
-        ok.addActionListener((ActionEvent e) -> {
+        JButton save = new JButton(getApi().getI18n().msg("save"));
+        save.addActionListener((ActionEvent e) -> {
             for (Component component : panel.getPanel().getComponents()) {
                 if (component instanceof ReactionEditor) {
                     ReactionEditor editor = (ReactionEditor) component;
@@ -139,13 +114,13 @@ public class AutomationsEditor extends Protocol {
             }
             frame.dispose();
         });
-        frame.add(ok, BorderLayout.SOUTH);
+        frame.add(save, BorderLayout.SOUTH);
         frame.pack();
         bindGuiToPlugin(frame);
     }
 
     /**
-     *
+     *  dispose the gui.
      */
     @Override
     public void onStop() {
@@ -153,6 +128,41 @@ public class AutomationsEditor extends Protocol {
         try {
             gui.dispose();
         } catch (Exception e) {
+        }
+    }
+
+    @Override
+    protected void onCommand(Command command)
+            throws IOException, UnableToExecuteException {
+        if (command.getProperty("editor").equalsIgnoreCase("command")) {
+            List<Command> editableCommands = commandRepository.findByName(command.getProperty("editable"));
+
+            if (!editableCommands.isEmpty()) {
+                command = editableCommands.get(0);
+            } else {
+                throw new UnableToExecuteException("No commands found with name \"" + command.getProperty("editable") + "\"");
+            }
+
+            CustomizeCommand customizeCommand = new CustomizeCommand(getApi().getI18n(), command, commandRepository);
+            customizeCommand.setVisible(true);
+            customizeCommand.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    refreshMainView();
+                }
+            });
+        } else {
+            if (command.getProperty("editor").equalsIgnoreCase("trigger")) {
+                Trigger trigger = getApi().triggers().findByName(command.getProperty("editable")).get(0);
+                CustomizeTrigger ct = new CustomizeTrigger(getApi().getI18n(), trigger, triggerRepository);
+                ct.setVisible(true);
+                ct.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        refreshMainView();
+                    }
+                });
+            }
         }
     }
 
@@ -169,5 +179,10 @@ public class AutomationsEditor extends Protocol {
     @Override
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private void refreshMainView() {
+        frame.dispose();
+        this.showGui();
     }
 }
