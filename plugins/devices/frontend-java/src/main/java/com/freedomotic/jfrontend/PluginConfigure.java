@@ -43,11 +43,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * This class is the gui to edit the plugins.
  * @author Enrico Nicoletti
  */
-public class PluginConfigure
-        extends javax.swing.JFrame {
+public class PluginConfigure extends javax.swing.JFrame {
 
     private ClientStorage clients;
     private final API api;
@@ -59,7 +58,7 @@ public class PluginConfigure
     /**
      * Creates new form PluginConfigure
      *
-     * @param api
+     * @param api the api that is selected for the plugin
      */
     public PluginConfigure(API api) {
         this.api = api;
@@ -88,9 +87,9 @@ public class PluginConfigure
     }
 
     /**
-     *
-     * @param api
-     * @param showClient
+     * set the configurtion for the plugin.
+     * @param api the api to set to the plugin.
+     * @param showClient to set selected plugin
      */
     public PluginConfigure(API api, Client showClient) {
         this(api);
