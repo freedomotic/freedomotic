@@ -30,6 +30,8 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MqttClient4FD extends Protocol {
 
@@ -43,10 +45,12 @@ public class MqttClient4FD extends Protocol {
     private final String SET_CLEAN_SESSION = configuration.getStringProperty("set-clean-session", "true");
     private final Integer SET_KEEP_ALIVE_INTERVAL = configuration.getIntProperty("set-keep-alive-interval", 600);
     private Boolean connected = false;
+    private final Set<String> topics;
     private Mqtt mqttClient = null;
 
     public MqttClient4FD() {
         super("MQTT Client", "/mqtt-client/mqtt-client-manifest.xml");
+        this.topics = new HashSet<>();
         setPollingWait(-1); //onRun() disabled
     }
 
@@ -65,14 +69,13 @@ public class MqttClient4FD extends Protocol {
 
     @Override
     protected void onStart() throws PluginStartupException {
+        loadTopicsToSubscribe();
         mqttClient = new Mqtt(this);
         connected = mqttClient.startClient(BROKER_URL, CLIENT_ID, SET_CLEAN_SESSION, SET_KEEP_ALIVE_INTERVAL, AUTHENTICATION_ENABLED, USERNAME, PASSWORD);
         if (connected) {
             setDescription("Connected to " + BROKER_URL);
-            // subscribe all topics in <tuples></tuples> section
-            for (int i = 0; i < configuration.getTuples().size(); i++) {
-                mqttClient.subscribeTopic(configuration.getTuples().getProperty(i, "topic-name"));
-            }
+            LOG.info("Connected to MQTT broker {}", BROKER_URL);
+            subscribeTopics();
         } else {
             throw new PluginStartupException("Not connected. Please check");
         }
@@ -107,5 +110,25 @@ public class MqttClient4FD extends Protocol {
     protected void onEvent(EventTemplate event) {
         //don't mind this method for now
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * Load all topics in <tuples></tuples> section of plugin manifest file.
+     *
+     */
+    private void loadTopicsToSubscribe() {
+        for (int i = 0; i < configuration.getTuples().size(); i++) {
+            topics.add(configuration.getTuples().getProperty(i, "topic-name"));
+        }
+    }
+
+    /**
+     * Subscribes to all loaded topics.
+     *
+     */
+    public void subscribeTopics() {
+        topics.forEach((topic) -> {
+            mqttClient.subscribeTopic(topic);
+        });
     }
 }

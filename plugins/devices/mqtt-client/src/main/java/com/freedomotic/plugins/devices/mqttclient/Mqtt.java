@@ -81,26 +81,28 @@ public class Mqtt implements MqttCallback {
             myClient.connect(connectionOptions);
             return true;
         } catch (MqttException e) {
-            LOG.error("Unable to connect to broker {} for {}", brokerUrl, e.getMessage());
+            LOG.error("Unable to connect to MQTT broker {} for {}", brokerUrl, e.getMessage());
             return false;
         }
     }
 
     /**
-     *
+     * Subscribes to a topic.
+     * 
      * @param topic
      */
     public void subscribeTopic(String topic) {
         try {
             myClient.subscribe(topic, 0);
-            LOG.info("Subscribed topic \"{}\"", topic);
+            LOG.info("Subscribed MQTT topic \"{}\"", topic);
         } catch (MqttException ex) {
-            LOG.error("Unable to subscribe topic \"{}\" for {}", topic, ex);
+            LOG.error("Unable to subscribe MQTT topic \"{}\" for {}", topic, ex);
         }
     }
 
     /**
-     *
+     * Publishes a message on a topic.
+     * 
      * @param topic
      * @param message
      * @param subQoS
@@ -119,18 +121,20 @@ public class Mqtt implements MqttCallback {
     }
 
     /**
-     *
+     * Disconnects from MQTT broker.
+     * 
      */
     public void disconnect() {
         try {
             myClient.disconnect();
-        } catch (Exception e) {
+        } catch (MqttException e) {
             LOG.error(Freedomotic.getStackTraceInfo(e));
         }
     }
 
     /**
-     *
+     * This callback is invoked when a message has been publish on the topic.
+     * 
      * @param topic
      * @param message
      * @throws Exception
@@ -151,7 +155,8 @@ public class Mqtt implements MqttCallback {
     }
 
     /**
-     *
+     * This callback is invoked when a message delivery is completed.
+     * 
      * @param imdt
      */
     @Override
@@ -165,23 +170,28 @@ public class Mqtt implements MqttCallback {
 
     /**
      *
-     * This callback is invoked upon loosing the MQTT connection.
-     * The client tries to reconnect.
+     * This callback is invoked upon loosing the MQTT connection. The client
+     * tries to reconnect.
      *
      * @param cause
      */
     @Override
     public void connectionLost(Throwable cause) {
-        LOG.error("Connection to Mqtt broker lost for {}", cause.getCause());
-        LOG.info("Reconnecting in progress ...");
+        LOG.error("Connection to MQTT broker lost for {}", cause.getCause());
         while (!myClient.isConnected()) {
             try {
+                LOG.info("Reconnecting to MQTT broker in progress ...");
                 myClient.connect(connectionOptions);
             } catch (MqttException e) {
-                LOG.error("Unable to connect to broker {}", myClient.getServerURI() + " for " + e.getMessage());
+                LOG.error("Unable to connect to MQTT broker {}", myClient.getServerURI());
             }
-            // set a delay before retrying
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                LOG.error(ex.getMessage());
+            }
         }
-
+        LOG.info("Reconnected to MQTT broker");
+        pluginRef.subscribeTopics();
     }
 }
