@@ -64,9 +64,9 @@ public class UserTest {
         assertEquals("auto", user.getProperty("language"));
         
         assertEquals(null, user.getProperty("pipp"));
-        user.setProperty("pipp", "popp");
-        assertEquals("popp", user.getProperty("pipp"));
-        user.setProperty("pipp", "null");
+        //user.setProperty("pipp", "popp");
+        //assertEquals("popp", user.getProperty("pipp"));
+        //user.setProperty("pipp", null);
         
         assertEquals("system", user.getName());
     }
