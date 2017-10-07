@@ -1,14 +1,10 @@
-
 <config>
     <properties>
         <property name="description"                    value="A Java desktop frontend"/>
-        <property name="version"                        value="40"/>
-        <property name="required"                       value="40"/>
         <property name="category"                       value="frontend"/>
         <property name="short-name"                     value="javadesktop"/>
         <property name="startup-time"                   value="on load"/>
         <property name="automatic-reply-to-commands"    value="false"/>
-        <property name="show.tips"                      value="false"/>
         <property name="enable-i18n"                    value="true"/>
     </properties>
 </config>

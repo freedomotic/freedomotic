@@ -29,7 +29,6 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-//import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
@@ -74,6 +73,7 @@ import com.freedomotic.reactions.Command;
 import com.freedomotic.security.Auth;
 import com.freedomotic.settings.Info;
 import com.freedomotic.things.EnvObjectLogic;
+import java.util.List;
 
 /**
  *
@@ -83,16 +83,16 @@ public class MainWindow
         extends javax.swing.JFrame {
 
     private Drawer drawer;
-    private static boolean isFullscreen = false;
-    private JavaDesktopFrontend master;
+    private boolean isFullscreen = false;
+    private transient JavaDesktopFrontend master;
     private JDesktopPane desktopPane;
     private JInternalFrame frameClient;
     private JInternalFrame frameMap;
     private PluginJList lstClients;
     private boolean editMode;
-    private final Auth Auth;
-    private final API api;
-    private final I18n i18n;
+    private final transient Auth auth;
+    private final transient API api;
+    private final transient I18n i18n;
     private boolean isAuthenticated = false;
     private static final Logger LOG = LoggerFactory.getLogger(JavaDesktopFrontend.class.getName());
 
@@ -115,7 +115,7 @@ public class MainWindow
         UIManager.put("OptionPane.cancelButtonText", i18n.msg("cancel"));
         this.master = master;
         this.api = master.getApi();
-        this.Auth = api.getAuth();
+        this.auth = api.getAuth();
         ObjectEditor.setAPI(api);
 
         setWindowedMode();
@@ -130,23 +130,20 @@ public class MainWindow
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(new MyDispatcher());
 
-        if (master.configuration.getBooleanProperty("show.tips", true)) {
-            new TipOfTheDay(master);
-        }
     }
 
     private void updateMenusPermissions() {
-        mnuSwitchUser.setEnabled(Auth.isInited());
-        mnuNewEnvironment.setEnabled(Auth.isPermitted("environments:create"));
-        mnuOpenEnvironment.setEnabled(Auth.isPermitted("environments:load"));
-        frameMap.setVisible(Auth.isPermitted("environments:read"));
-        mnuSave.setEnabled(Auth.isPermitted("environments:save"));
-        mnuSaveAs.setEnabled(Auth.isPermitted("environments:save"));
-        mnuRenameEnvironment.setEnabled(Auth.isPermitted("environments:update"));
-        mnuPluginConfigure.setEnabled(Auth.isPermitted("plugins:update"));
-        mnuPluginList.setEnabled(Auth.isPermitted("plugins:read"));
-        frameClient.setVisible(Auth.isPermitted("plugins:read"));
-        mnuPrivileges.setEnabled(Auth.isPermitted("auth:privileges:read") || Auth.isPermitted("auth:privileges:update"));
+        mnuSwitchUser.setEnabled(auth.isInited());
+        mnuNewEnvironment.setEnabled(auth.isPermitted("environments:create"));
+        mnuOpenEnvironment.setEnabled(auth.isPermitted("environments:load"));
+        frameMap.setVisible(auth.isPermitted("environments:read"));
+        mnuSave.setEnabled(auth.isPermitted("environments:save"));
+        mnuSaveAs.setEnabled(auth.isPermitted("environments:save"));
+        mnuRenameEnvironment.setEnabled(auth.isPermitted("environments:update"));
+        mnuPluginConfigure.setEnabled(auth.isPermitted("plugins:update"));
+        mnuPluginList.setEnabled(auth.isPermitted("plugins:read"));
+        frameClient.setVisible(auth.isPermitted("plugins:read"));
+        mnuPrivileges.setEnabled(auth.isPermitted("auth:privileges:read") || auth.isPermitted("auth:privileges:update"));
         mnuSelectEnvironment.setEnabled(master.getApi().environments().findAll().size() > 1);
     }
 
@@ -209,6 +206,7 @@ public class MainWindow
         try {
             this.getContentPane().removeAll();
         } catch (Exception e) {
+            LOG.error("Set window mode exception {}", e.getMessage());
         }
 
         try {
@@ -244,7 +242,7 @@ public class MainWindow
         desktopPane.add(frameMap);
         desktopPane.add(frameClient);
         frameClient.moveToFront();
-        frameClient.setVisible(Auth.isPermitted("plugins:read"));
+        frameClient.setVisible(auth.isPermitted("plugins:read"));
         desktopPane.moveToFront(this);
         this.getContentPane().add(desktopPane);
 
@@ -278,8 +276,8 @@ public class MainWindow
         optimizeFramesDimension();
         drawer.repaint();
         lstClients.update();
-        frameClient.setVisible(Auth.isPermitted("plugins:read"));
-        frameMap.setVisible(Auth.isPermitted("environments:read"));
+        frameClient.setVisible(auth.isPermitted("plugins:read"));
+        frameMap.setVisible(auth.isPermitted("environments:read"));
         setEditMode(false);
         this.setVisible(true);
         isFullscreen = false;
@@ -327,6 +325,9 @@ public class MainWindow
 
     }
 
+    /**
+     *
+     */
     private void logUser() {
         // send command to restart java frontend
         Command c = new Command();
@@ -338,6 +339,10 @@ public class MainWindow
         master.notifyCommand(c);
     }
 
+    /**
+     *
+     * @param renderer
+     */
     private void changeRenderer(String renderer) {
         drawer.getCurrEnv().getPojo().setRenderer(renderer.toLowerCase());
         master.getMainWindow().setWindowedMode();
@@ -375,6 +380,7 @@ public class MainWindow
         try {
             frameMap.setMaximum(true);
         } catch (Exception e) {
+            LOG.error("Maximize map exception {}", e.getMessage());
         }
     }
 
@@ -447,7 +453,7 @@ public class MainWindow
         try {
             envName = drawer.getCurrEnv().getSource().getParentFile().getName() + "/";
         } catch (Exception e) {
-            //do nothing, this is not important
+            LOG.error("Error setting Map title {}", e.getMessage());
         }
         frameMap.setTitle(i18n.msg("environment") + ": " + envName + name);
 
@@ -456,9 +462,9 @@ public class MainWindow
     class StringListModel
             extends AbstractListModel {
 
-        private java.util.List<String> list;
+        private List<String> list;
 
-        public StringListModel(ArrayList<String> strings) {
+        public StringListModel(List<String> strings) {
             list = strings;
         }
 
@@ -890,7 +896,7 @@ public class MainWindow
 
     private void submnuHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submnuHelpActionPerformed
 
-        String runningUser = ((Auth.getPrincipal() == null) ? "\n" : i18n.msg("running_as_user") + ": " + Auth.getPrincipal() + "\n");
+        String runningUser = ((auth.getPrincipal() == null) ? "\n" : i18n.msg("running_as_user") + ": " + auth.getPrincipal() + "\n");
         JOptionPane.showMessageDialog(this, ""
                 //+ I18n.msg("running_as_user") + ": " + Auth.getPrincipal() + "\n"
                 + runningUser
@@ -926,17 +932,10 @@ public class MainWindow
         final JFileChooser fc = new JFileChooser(Info.PATHS.PATH_DATA_FOLDER + "/furn/");
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         File file = null;
-        // OpenDialogFileFilter filter = new OpenDialogFileFilter();
-        // filter.addExtension("xenv");
-        // filter.setDescription("Freedomotic XML Environment file");
-        // fc.addChoosableFileFilter(filter);
-        // fc.setFileFilter(filter);
-
         int returnVal = fc.showOpenDialog(this);
-
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             file = fc.getSelectedFile();
-            LOG.info("Opening \"{}\"", file.getAbsolutePath());
+            LOG.info("Opening environment file \"{}\"", file.getAbsolutePath());
 
             try {
                 api.environments().init(file);
@@ -975,7 +974,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuRoomEditModeActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuRoomEditModeActionPerformed
 
-        if (mnuRoomEditMode.getState() == true) {
+        if (mnuRoomEditMode.getState()) {
             drawer.setObjectEditMode(false);
             mnuObjectEditMode.setSelected(drawer.getRoomEditMode());
             setEditMode(true);
@@ -1062,7 +1061,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     private void mnuObjectEditModeActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuObjectEditModeActionPerformed
 
-        if (mnuObjectEditMode.getState() == true) {
+        if (mnuObjectEditMode.getState()) {
             //in edit objects mode
             //deactivate room edit mode
             drawer.setRoomEditMode(false);
@@ -1133,6 +1132,11 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         }
     }//GEN-LAST:event_mnuBackgroundActionPerformed
 
+    /**
+     *
+     * @param backgroundImage
+     * @return
+     */
     private File moveBackgroundFile(File backgroundImage) {
         File resourcesFolder = new File(Info.PATHS.PATH_DATA_FOLDER + File.separator + "resources" + File.separator + "system" + File.separator + "map");
 
@@ -1144,10 +1148,13 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
                 LOG.error(e.getMessage(), e);
             }
         }
-
         return backgroundImage;
     }
 
+    /**
+     *
+     * @param evt
+     */
     private void mnuRoomBackgroundActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuRoomBackgroundActionPerformed
 
         ZoneLogic zone = drawer.getSelectedZone();
@@ -1170,7 +1177,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 //This is where a real application would open the file.
-                LOG.info("Opening \"{}\"", file.getAbsolutePath());
+                LOG.info("Opening room background file \"{}\"", file.getAbsolutePath());
                 zone.getPojo().setTexture(file.getName());
                 drawer.setNeedRepaint(true);
                 frameMap.validate();
@@ -1178,6 +1185,10 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         }
     }//GEN-LAST:event_mnuRoomBackgroundActionPerformed
 
+    /**
+     * 
+     * @param evt 
+     */
     private void mnuNewEnvironmentActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuNewEnvironmentActionPerformed
         // we are about to make changes to environments: we'd better save current status
         mnuSaveActionPerformed(null);
@@ -1187,7 +1198,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         File template
                 = new File(Info.PATHS.PATH_DATA_FOLDER + "/furn/templates/template-square/template-square.xenv");
 
-        LOG.info("Opening  \"{}\"", template.getAbsolutePath());
+        LOG.info("Opening new environment template file \"{}\"", template.getAbsolutePath());
         setEnvironment(api.environments().findAll().get(0));
 
         try {
@@ -1230,6 +1241,10 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         setWindowedMode();
     }//GEN-LAST:event_mnuNewEnvironmentActionPerformed
 
+    /**
+     * 
+     * @param evt 
+     */
     private void mnuSaveActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_mnuSaveActionPerformed
 
         String environmentFilePath
@@ -1238,9 +1253,8 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         try {
             api.environments().saveEnvironmentsToFolder(new File(environmentFilePath).getParentFile());
         } catch (RepositoryException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Cannot save environment at "
-                    + new File(environmentFilePath).getAbsolutePath());
+            JOptionPane.showMessageDialog(this, "Cannot save environment at \""
+                    + new File(environmentFilePath).getAbsolutePath() + "\"");
         }
     }//GEN-LAST:event_mnuSaveActionPerformed
 
@@ -1268,7 +1282,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_mnuTutorialActionPerformed
 
     private void mnuSelectEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSelectEnvironmentActionPerformed
-        if (Auth.isPermitted("environments:read")) {
+        if (auth.isPermitted("environments:read")) {
 
             if (api.environments().findAll().size() == 1) {
                 drawer.setCurrEnv(api.environments().findAll().get(0));
@@ -1294,6 +1308,10 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         }
     }//GEN-LAST:event_mnuSelectEnvironmentActionPerformed
 
+    /**
+     * 
+     * @param evt 
+     */
     private void mnuAddDuplicateEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAddDuplicateEnvironmentActionPerformed
         EnvironmentLogic newEnv = api.environments().copy(drawer.getCurrEnv());
         String input = JOptionPane.showInputDialog(this, i18n.msg("enter_new_name_for_env") + newEnv.getPojo().getName(), i18n.msg("environment_duplicate_popup_title"), JOptionPane.QUESTION_MESSAGE);
@@ -1307,6 +1325,10 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         checkDeletableEnvironments();
     }//GEN-LAST:event_mnuAddDuplicateEnvironmentActionPerformed
 
+    /**
+     * 
+     * @param evt 
+     */
     private void mnuRenameEnvironmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRenameEnvironmentActionPerformed
         String input = JOptionPane.showInputDialog(this, i18n.msg("enter_new_name_for_env", new Object[]{drawer.getCurrEnv().getPojo().getName()}), i18n.msg("environment_rename_popup_title"), JOptionPane.QUESTION_MESSAGE);
         if (input != null) {
@@ -1319,13 +1341,17 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         }
     }//GEN-LAST:event_mnuRenameEnvironmentActionPerformed
 
+    /**
+     * 
+     * @param evt 
+     */
     private void mnuDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuDeleteActionPerformed
         EnvironmentLogic oldenv = drawer.getCurrEnv();
 
         JLabel confirmLbl = new JLabel(i18n.msg("confirm_env_delete"));
         JLabel selectLbl = new JLabel(i18n.msg("select_env_to_reassing_objects"));
 
-        ArrayList<Object> possibilities = new ArrayList<Object>();
+        List<Object> possibilities = new ArrayList<>();
         possibilities.add(i18n.msg("delete_envobj_alongside_environment"));
         possibilities.addAll(api.environments().findAll());
         possibilities.remove(oldenv);
@@ -1367,11 +1393,19 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         logUser();
     }//GEN-LAST:event_mnuSwitchUserActionPerformed
 
+    /**
+     * 
+     * @param evt 
+     */
     private void mnuPrivilegesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPrivilegesActionPerformed
         // TODO add your handling code here:
         new PrivilegesConfiguration(api);
     }//GEN-LAST:event_mnuPrivilegesActionPerformed
 
+    /**
+     * 
+     * @param evt 
+     */
     private void mnuLanguageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLanguageActionPerformed
         //JDK 1,7 version: JComboBox<i18n.ComboLanguage> combo = new JComboBox<i18n.ComboLanguage>(I18n.getAvailableLocales());
         //JDK 1.6 version: next line
@@ -1406,6 +1440,9 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
     }//GEN-LAST:event_formWindowClosed
 
+    /**
+     * 
+     */
     private void openGoogleForm() {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
         String url = "https://goo.gl/CC65By";
@@ -1425,8 +1462,11 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    /**
+     * 
+     */
     private void sendLogByMail() {
-        java.util.List<Client> clients = (java.util.List<Client>) this.getPlugin().getApi().getClients("plugin");
+        List<Client> clients = (List<Client>) this.getPlugin().getApi().getClients("plugin");
 
         boolean isMailerActive = false;
 
@@ -1452,6 +1492,10 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
         }
     }
 
+    /**
+     * 
+     * @param evt 
+     */
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         String[] buttons = {i18n.msg("form_compilation"), i18n.msg("send_log"), i18n.msg("delete")};
         int option = JOptionPane.showOptionDialog(null, i18n.msg("report_issue_dialog"), i18n.msg("report_issue"),
