@@ -22,8 +22,10 @@
 
 package com.freedomotic.plugins;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 
 /**
  * Provides cron-like scheduling information. This class implements cron-like
@@ -38,13 +40,18 @@ import java.util.GregorianCalendar;
  * http://techblog.ralph-schuster.eu/2008/02/01/handling-unix-cron-like-information-in-java/
  */
 public class CronSchedule {
-
-    /**
-     * Types being used. This array defines the types and their indices.
-     */
-    protected static int[] TYPES =
-            new int[]{Calendar.MINUTE, Calendar.HOUR_OF_DAY, Calendar.DAY_OF_MONTH, Calendar.MONTH, Calendar.DAY_OF_WEEK};
-    private AbstractTimeValue[][] timeValues = new AbstractTimeValue[TYPES.length][];
+	
+	/** Maps the values to field types. */
+	private static final ChronoField[] VALUE_TYPES = new ChronoField[] {
+		ChronoField.MINUTE_OF_HOUR,
+		ChronoField.HOUR_OF_DAY,
+		ChronoField.DAY_OF_MONTH,
+		ChronoField.MONTH_OF_YEAR,
+		ChronoField.DAY_OF_WEEK
+	};
+	
+	/** Values in the expression. */
+	private final AbstractTimeValue[][] values = new AbstractTimeValue[VALUE_TYPES.length][];
 
     /**
      * Default constructor Constructor with all terms set to "*".
@@ -73,11 +80,11 @@ public class CronSchedule {
      * @param dow - day of week definition
      */
     public CronSchedule(String min, String hour, String dom, String mon, String dow) {
-        set(Calendar.MINUTE, min);
-        set(Calendar.HOUR_OF_DAY, hour);
-        set(Calendar.DAY_OF_MONTH, dom);
-        set(Calendar.MONTH, mon);
-        set(Calendar.DAY_OF_WEEK, dow);
+        set(ChronoField.MINUTE_OF_HOUR, min);
+        set(ChronoField.HOUR_OF_DAY, hour);
+        set(ChronoField.DAY_OF_MONTH, dom);
+        set(ChronoField.MONTH_OF_YEAR, mon);
+        set(ChronoField.DAY_OF_WEEK, dow);
     }
 
     /**
@@ -89,30 +96,30 @@ public class CronSchedule {
      * @return characters following the cron definition.
      */
     public String set(String schedule) {
-        String[] parts = schedule.split(" ", TYPES.length + 1);
+        final String[] parts = schedule.split(" ", VALUE_TYPES.length + 1);
 
-        if (parts.length < TYPES.length) {
+        if (parts.length < VALUE_TYPES.length) {
             throw new IllegalArgumentException("Invalid cron format: " + schedule);
         }
 
-        for (int i = 0; i < TYPES.length; i++) {
-            set(getType(i),
+        for (int i = 0; i < VALUE_TYPES.length; i++) {
+            set(VALUE_TYPES[i],
                     parts[i]);
         }
 
-        return (parts.length > TYPES.length) ? parts[TYPES.length] : null;
+        return (parts.length > VALUE_TYPES.length) ? parts[VALUE_TYPES.length] : null;
     }
 
     /**
      * Sets the time values accordingly
      *
-     * @param type - Calendar constant to define what values will be set
+     * @param field - {@link ChronoField} to define what values will be set
      * @param values - comma-separated list of definitions for that type
      */
-    public void set(int type, String values) {
+    public void set(final ChronoField field, final String values) {
         // Split the values
-        String[] parts = values.split(",");
-        AbstractTimeValue[] result = new AbstractTimeValue[parts.length];
+        final String[] parts = values.split(",");
+        final AbstractTimeValue[] result = new AbstractTimeValue[parts.length];
 
         // Iterate over entries
         for (int i = 0; i < parts.length; i++) {
@@ -129,7 +136,7 @@ public class CronSchedule {
         }
 
         // Save the array
-        set(type, result);
+        set(field, result);
     }
 
     /**
@@ -138,8 +145,8 @@ public class CronSchedule {
      * @param type - Calendar constant defining the time type
      * @param values - values to be set
      */
-    protected void set(int type, AbstractTimeValue[] values) {
-        timeValues[getIndex(type)] = values;
+    private final void set(final ChronoField field, AbstractTimeValue[] values) {
+        this.values[getIndex(field)] = values;
     }
 
     /**
@@ -148,8 +155,8 @@ public class CronSchedule {
      * @param type - Calendar constant defining the type
      * @return time value definitions
      */
-    protected AbstractTimeValue[] getValues(int type) {
-        return timeValues[getIndex(type)];
+    protected final AbstractTimeValue[] getValues(final ChronoField type) {
+        return this.values[getIndex(type)];
     }
 
     /**
@@ -158,7 +165,7 @@ public class CronSchedule {
      * @param type - Calendar constant defining time type
      * @return cron-like definition
      */
-    public String get(int type) {
+    public final String get(final ChronoField type) {
         AbstractTimeValue[] values = getValues(type);
         StringBuilder buff = new StringBuilder();
 
@@ -171,14 +178,16 @@ public class CronSchedule {
 
     /**
      * Returns the cron-like definition of the schedule.
-     * @return 
+     * 
+     * @return 	The {@link String} representation of this {@link CronSchedule}.
      */
     @Override
     public String toString() {
         StringBuilder buff = new StringBuilder();
 
-        for (int i = 0; i < TYPES.length; i++) {
-            buff.append(" ").append(get(getType(i)));
+        for (int i = 0; i < VALUE_TYPES.length; i++) {
+        	final ChronoField field = VALUE_TYPES[i];
+            buff.append(" ").append(get(field));
         }
 
         return buff.toString().trim();
@@ -191,19 +200,19 @@ public class CronSchedule {
      * @param timeStamp - time in ms since Epoch time
      * @return true when schedule matches
      */
-    public boolean matches(long timeStamp) {
-        return matches(getCalendar(timeStamp));
+    public final boolean matches(final long timeStamp) {
+        return matches(LocalDateTime.from(Instant.ofEpochMilli(timeStamp)));
     }
 
     /**
      * Checks whether given timestamp matches with defined schedule. This is
      * default check method. All criteria must be met including seconds to be 0.
      *
-     * @param cal - calendar date
+     * @param instant - The {@link Instant}.
      * @return true when schedule matches
      */
-    public boolean matches(Calendar cal) {
-        return isMinute(cal) && (cal.get(Calendar.SECOND) == 0);
+    public final boolean matches(final LocalDateTime instant) {
+        return isMinute(instant) && (instant.get(ChronoField.SECOND_OF_MINUTE) == 0);
     }
 
     /**
@@ -214,31 +223,30 @@ public class CronSchedule {
      * @param timeStamp - time in ms since Epoch time
      * @return true when schedule matches
      */
-    public boolean isMinute(long timeStamp) {
-        return isMinute(getCalendar(timeStamp));
+    public final boolean isMinute(final long timeStamp) {
+        return isMinute(LocalDateTime.from(Instant.ofEpochMilli(timeStamp)));
     }
 
     /**
      * Checks whether given calendar date matches with defined schedule. This
      * method can be used when seconds are not relevant for matching.
      *
-     * @param cal - calendar date
+     * @param instant - calendar date
      * @return true when schedule matches
      */
-    public boolean isMinute(Calendar cal) {
-        return matches(Calendar.MINUTE, cal) && isHour(cal);
+    public final boolean isMinute(final LocalDateTime instant) {
+        return matches(ChronoField.MINUTE_OF_HOUR, instant) && isHour(instant);
     }
 
     /**
      * Checks whether given timestamp matches with defined hour schedule. This
      * method can be used when minute definition is not relevant for matching.
      *
-     * @param timeStamp
-     * @param timestamp - time in ms since Epoch time
+     * @param timeStamp - time in ms since Epoch time
      * @return true when schedule matches
      */
-    public boolean isHour(long timeStamp) {
-        return isHour(getCalendar(timeStamp));
+    public final boolean isHour(long timeStamp) {
+        return isHour(LocalDateTime.from(Instant.ofEpochMilli(timeStamp)));
     }
 
     /**
@@ -246,11 +254,11 @@ public class CronSchedule {
      * This method can be used when minute definition is not relevant for
      * matching.
      *
-     * @param cal - calendar date
+     * @param instant - calendar date
      * @return true when schedule matches
      */
-    public boolean isHour(Calendar cal) {
-        return matches(Calendar.HOUR_OF_DAY, cal) && isDay(cal);
+    public final boolean isHour(final LocalDateTime instant) {
+        return matches(ChronoField.HOUR_OF_DAY, instant) && isDay(instant);
     }
 
     /**
@@ -258,12 +266,11 @@ public class CronSchedule {
      * method can be used when minute and hour definitions are not relevant for
      * matching.
      *
-     * @param timeStamp
-     * @param timestamp - time in ms since Epoch time
+     * @param timeStamp - time in ms since Epoch time
      * @return true when schedule matches
      */
-    public boolean isDay(long timeStamp) {
-        return isDay(getCalendar(timeStamp));
+    public final boolean isDay(final long timeStamp) {
+        return isDay(LocalDateTime.from(Instant.ofEpochMilli(timeStamp)));
     }
 
     /**
@@ -271,26 +278,27 @@ public class CronSchedule {
      * This method can be used when minute and hour definitions are not relevant
      * for matching.
      *
-     * @param cal - calendar date
+     * @param instant 		The {@link Instant}.
      * @return true when schedule matches
      */
-    public boolean isDay(Calendar cal) {
-        return matches(Calendar.DAY_OF_WEEK, cal) && matches(Calendar.DAY_OF_MONTH, cal)
-                && matches(Calendar.MONTH, cal);
+    public final boolean isDay(final LocalDateTime instant) {
+        return matches(ChronoField.DAY_OF_WEEK, instant) 
+        	   && matches(ChronoField.DAY_OF_MONTH, instant)
+               && matches(ChronoField.MONTH_OF_YEAR, instant);
     }
 
     /**
-     * Checks whether specific schedule definition matches against the given
-     * calendar date.
-     *
-     * @param type - Calendar constant defining time type to check for
-     * @param calendar - calendar representing the date to check
-     * @return true when definition matches
+     * Checks if this expression matches a particular field of the given instant.
+     * 
+     * @param 	field		The {@link TemporalField}.
+     * @param 	instant		The {@link LocalDateTime} to check against.
+     * 
+     * @return	<code>true</code> if the given {@link TemporalField} of the {@link LocalDateTime} matches this expression.
      */
-    protected boolean matches(int type, Calendar calendar) {
+    private final boolean matches(final TemporalField field, final LocalDateTime instant) {
         // get the definitions and the comparison value
-        AbstractTimeValue[] defs = timeValues[getIndex(type)];
-        int value = calendar.get(type);
+        AbstractTimeValue[] defs = this.values[getIndex(field)];
+        int value = instant.get(field);
 
         // Any of the criteria must be met
         for (int i = 0; i < defs.length; i++) {
@@ -303,42 +311,19 @@ public class CronSchedule {
     }
 
     /**
-     * Creates the calendar for a timestamp.
-     *
-     * @param timeStamp - timestamp
-     * @return calendar
-     */
-    protected Calendar getCalendar(long timeStamp) {
-        Calendar rc = new GregorianCalendar();
-        rc.setTimeInMillis(timeStamp);
-
-        return rc;
-    }
-
-    /**
-     * Returns the type at the specified index
-     *
-     * @param index - index
-     * @return Calendar constant of type
-     */
-    protected static int getType(int index) {
-        return TYPES[index];
-    }
-
-    /**
      * Returns the index for the specified Calendar type.
      *
      * @param type - Calendar constant for type
      * @return internal index
      */
-    protected static int getIndex(int type) {
-        for (int i = 0; i < TYPES.length; i++) {
-            if (TYPES[i] == type) {
+    private static final int getIndex(final TemporalField field) {
+        for (int i = 0; i < VALUE_TYPES.length; i++) {
+            if (VALUE_TYPES[i] == field) {
                 return i;
             }
         }
 
-        throw new IllegalArgumentException("No such time type: " + type);
+        throw new IllegalArgumentException("No such time field: " + field);
     }
 
     /**
@@ -387,7 +372,7 @@ public class CronSchedule {
          * @return the value
          */
         public int getValue() {
-            return value;
+            return this.value;
         }
 
         /**
@@ -409,7 +394,8 @@ public class CronSchedule {
 
         /**
          * Returns cron-like string of this definition.
-         * @return 
+         * 
+         * @return 	The {@link String} representation.
          */
         public String toString() {
             return Integer.toString(getValue());
@@ -451,7 +437,7 @@ public class CronSchedule {
          * @return the endValue
          */
         public int getEndValue() {
-            return endValue;
+            return this.endValue;
         }
 
         /**
@@ -465,7 +451,7 @@ public class CronSchedule {
          * @return the startValue
          */
         public int getStartValue() {
-            return startValue;
+            return this.startValue;
         }
 
         /**
@@ -487,7 +473,8 @@ public class CronSchedule {
 
         /**
          * Returns cron-like string of this definition.
-         * @return 
+         * 
+         * @return 	The {@link String} representation.
          */
         public String toString() {
             return getStartValue() + "-" + getEndValue();
@@ -554,7 +541,7 @@ public class CronSchedule {
          * @return the range
          */
         public AbstractTimeValue getRange() {
-            return range;
+            return this.range;
         }
 
         /**
@@ -568,7 +555,7 @@ public class CronSchedule {
          * @return the steps
          */
         public int getSteps() {
-            return steps;
+            return this.steps;
         }
 
         /**
@@ -580,7 +567,8 @@ public class CronSchedule {
 
         /**
          * Returns cron-like string of this definition.
-         * @return 
+         * 
+         * @return 	The {@link String} representation.
          */
         public String toString() {
             return getRange() + "/" + getSteps();
@@ -613,7 +601,8 @@ public class CronSchedule {
 
         /**
          * Returns cron-like string of this definition.
-         * @return 
+         * 
+         * @return 	The {@link String} representation.
          */
         public String toString() {
             return "*";
