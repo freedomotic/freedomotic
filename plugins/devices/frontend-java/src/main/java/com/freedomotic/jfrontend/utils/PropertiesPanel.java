@@ -11,7 +11,7 @@ import javax.swing.SpringLayout;
  *
  * @author Enrico Nicoletti
  */
-public class PropertiesPanel_1
+public class PropertiesPanel
         extends javax.swing.JPanel {
 
     private ArrayList<Component> table;
@@ -25,7 +25,7 @@ public class PropertiesPanel_1
      * @param rows
      * @param cols
      */
-    public PropertiesPanel_1(int rows, int cols) {
+    public PropertiesPanel(int rows, int cols) {
         initComponents();
         this.setVisible(true);
         this.setPreferredSize(new Dimension(500, 500));
@@ -145,15 +145,19 @@ public class PropertiesPanel_1
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents(  )
-    {
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout( this );
-        this.setLayout( layout );
-        layout.setHorizontalGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                                         .addGap( 0, 400, Short.MAX_VALUE ) );
-        layout.setVerticalGroup( layout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                                       .addGap( 0, 296, Short.MAX_VALUE ) );
-    } // </editor-fold>//GEN-END:initComponents
-      // Variables declaration - do not modify//GEN-BEGIN:variables
-      // End of variables declaration//GEN-END:variables
+    private void initComponents() {
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 296, Short.MAX_VALUE)
+        );
+    }// </editor-fold>//GEN-END:initComponents
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // End of variables declaration//GEN-END:variables
 }

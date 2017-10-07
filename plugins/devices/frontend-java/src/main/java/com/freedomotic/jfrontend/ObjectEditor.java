@@ -26,7 +26,7 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.jfrontend.automationeditor.ReactionEditor;
 import com.freedomotic.jfrontend.automationeditor.ReactionsPanel;
 import com.freedomotic.jfrontend.utils.CheckBoxList;
-import com.freedomotic.jfrontend.utils.PropertiesPanel_1;
+import com.freedomotic.jfrontend.utils.PropertiesPanel;
 import com.freedomotic.jfrontend.utils.SliderPopup;
 import com.freedomotic.model.ds.Config;
 import com.freedomotic.model.object.Behavior;
@@ -81,8 +81,8 @@ public class ObjectEditor
 
     private EnvObjectLogic object;
     private String oldName;
-    private PropertiesPanel_1 commandsControlPanel;
-    private PropertiesPanel_1 pnlTriggers;
+    private PropertiesPanel commandsControlPanel;
+    private PropertiesPanel pnlTriggers;
     private ReactionsPanel reactionsPanel;
     private final NlpCommand nlpCommands;
     private static API api = null;
@@ -927,7 +927,7 @@ public class ObjectEditor
     // End of variables declaration//GEN-END:variables
     private void populateCommandsTab() {
         //addAndRegister a properties panel
-        commandsControlPanel = new PropertiesPanel_1(0, 2);
+        commandsControlPanel = new PropertiesPanel(0, 2);
         tabCommandsConfig.setName(I18n.msg("actions"));
         tabCommandsConfig.add(commandsControlPanel);
 
@@ -976,7 +976,7 @@ public class ObjectEditor
 
     private void populateTriggersTab() {
         //addAndRegister a properties panel
-        pnlTriggers = new PropertiesPanel_1(0, 2);
+        pnlTriggers = new PropertiesPanel(0, 2);
         tabTriggersConfig.setName(I18n.msg("data_sources"));
         tabTriggersConfig.add(pnlTriggers);
 

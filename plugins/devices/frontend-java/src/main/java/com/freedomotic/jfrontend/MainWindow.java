@@ -66,7 +66,6 @@ import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.i18n.ComboLanguage;
 import com.freedomotic.i18n.I18n;
 import com.freedomotic.jfrontend.utils.OpenDialogFileFilter;
-import com.freedomotic.jfrontend.utils.TipOfTheDay;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.reactions.Command;

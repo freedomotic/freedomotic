@@ -17,7 +17,7 @@ import org.junit.Test;
  */
 public class PropertiesPanel_1Test {
 
-    static PropertiesPanel_1 panel;
+    static PropertiesPanel panel;
     static Trigger trigger;
     static Trigger result;
 
@@ -38,7 +38,7 @@ public class PropertiesPanel_1Test {
         trigger.getPayload().addStatement("property1", "value1");
         trigger.getPayload().addStatement("property2", "value2");
         trigger.getPayload().addStatement("property3", "value3");
-        panel = new PropertiesPanel_1(trigger.getPayload().size(),
+        panel = new PropertiesPanel(trigger.getPayload().size(),
                 4);
 
         Iterator it = trigger.getPayload().iterator();
