@@ -25,23 +25,23 @@ import javax.ws.rs.core.Response;
 /**
  *
  * @author Matteo Mazzoni
- * @param <T>
+ * @param <T> the type of element that is used in the resource
  */
-public interface ResourceInterface<T> extends ResourceReadOnlyInterface<T> {
+public interface ResourceInterface<T> extends ResourceReadOnlyInterface {
 
     @Override
     public Response list();
 
     @Override
-    public Response get(String UUID);
+    public Response get(String uuid);
 
-    public Response delete(String UUID);
+    public Response delete(String uuid);
 
-    public Response copy(String UUID);
+    public Response copy(String uuid);
 
-    public Response create(T s) throws URISyntaxException;
+    public Response create(T s);
 
-    public Response update(String UUID, T s);
+    public Response update(String uuid, T s);
 
     @Override
     public Response options();

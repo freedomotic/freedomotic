@@ -102,7 +102,6 @@ public class TriggerResource extends AbstractResource<Trigger> {
      *
      * @param s
      * @return
-     * @throws URISyntaxException
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -112,7 +111,7 @@ public class TriggerResource extends AbstractResource<Trigger> {
         @ApiResponse(code = 201, message = "New trigger added")
     })
     @Override
-    public Response create(Trigger s) throws URISyntaxException {
+    public Response create(Trigger s) {
         return super.create(s);
     }
     

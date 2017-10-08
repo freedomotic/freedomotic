@@ -108,7 +108,6 @@ public class EnvironmentResource extends AbstractResource<Environment> {
      *
      * @param s
      * @return
-     * @throws URISyntaxException
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -118,7 +117,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
         @ApiResponse(code = 201, message = "New environment added")
     })
     @Override
-    public Response create(Environment s) throws URISyntaxException {
+    public Response create(Environment s) {
         return super.create(s);
     }
 

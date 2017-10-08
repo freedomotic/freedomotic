@@ -70,7 +70,6 @@ public class UserResource extends AbstractResource<UserRepresentation> {
      *
      * @param s
      * @return
-     * @throws URISyntaxException
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -80,7 +79,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
         @ApiResponse(code = 201, message = "New user added")
     })
     @Override
-    public Response create(UserRepresentation s) throws URISyntaxException {
+    public Response create(UserRepresentation s) {
         return super.create(s);
     }
 
