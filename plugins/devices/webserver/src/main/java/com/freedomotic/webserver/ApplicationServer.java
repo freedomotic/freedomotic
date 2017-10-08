@@ -66,69 +66,30 @@ public class ApplicationServer extends Protocol {
         //TODO: check that the war file is correct.
     }
 
+    /**
+     * start the web server . if enable ssl is on then with ssl.
+     */
     @Override
     public void onStart() {
         String dir = new File(this.getFile().getParent() + File.separator + webappDir).getAbsolutePath();
-
         server = new Server(port);
         LOG.info("Webserver now listens on port {}", port);
+
         if (enableSSL) {
-            KeyStore ks;
-            String keyStorePath = this.getFile().getParent() + "/data/" + keystoreFile;
-            try(FileInputStream is = new FileInputStream(keyStorePath);)  {
-                ks = KeyStore.getInstance(keystoreType);
-                ks.load(is, keystorePassword.toCharArray());
-                SslContextFactory sslContextFactory = new SslContextFactory();
-                sslContextFactory.setKeyStore(ks);
-                sslContextFactory.setKeyStorePassword(keystorePassword);
-                sslContextFactory.setKeyStoreType(keystoreType);
-
-                SslSocketConnector sslConnector = new SslSocketConnector(sslContextFactory);
-
-                sslConnector.setPort(sslPort);
-                sslConnector.setMaxIdleTime(30000);
-                LOG.info("Webserver now listens on SSL port {}", sslPort);
-                server.addConnector(sslConnector);
-            } catch (Exception ex) {
-                LOG.error("Cannot load java keystore for reason: ", Freedomotic.getStackTraceInfo(ex));
-            }
-
+            enableSSL();
         }
 
         if (!warFile.isEmpty()) {
-            try {
-                WebAppContext webapp = new WebAppContext();
-                webapp.setContextPath(WEBAPP_CTX);
-                webapp.setWar(dir + WEBAPP_CTX + warFile);
-                server.setHandler(webapp);
-
-                //print the URL to visit as plugin description
-                InetAddress addr = InetAddress.getLocalHost();
-                String hostname = addr.getHostName();
-                //strip away the '.war' extension and put all togheter
-                URL url = new URL("http://" + hostname + ":" + port + WEBAPP_CTX + warFile.substring(0, warFile.lastIndexOf('.')));
-                setDescription("Visit " + url.toString());
-                server.start();
-            } catch (FileNotFoundException nf) {
-                LOG.warn("Cannot find WAR file {} into directory {}", warFile, dir);
-            } catch (Exception ex) {
-                LOG.error("Generic exception", Freedomotic.getStackTraceInfo(ex));
-            }
+            startServerWithWarFile(dir);
         } else {
-            try {
-                ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-                context.setContextPath(WEBAPP_CTX);
-                context.setResourceBase(new File(dir + WEBAPP_CTX).getAbsolutePath());
-                context.addServlet(DefaultServlet.class, "/*");
-                server.setHandler(context);
-                server.start();
-            } catch (Exception ex) {
-                LOG.error(Freedomotic.getStackTraceInfo(ex));
-            }
+            startServerWithoutWarfile(dir);
         }
 
     }
 
+    /**
+     * stop the sever.
+     */
     @Override
     public void onStop() {
         try {
@@ -158,5 +119,58 @@ public class ApplicationServer extends Protocol {
     @Override
     protected void onEvent(EventTemplate event) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private void enableSSL() {
+        String keyStorePath = this.getFile().getParent() + "/data/" + keystoreFile;
+        try(FileInputStream keyStoreInputStream = new FileInputStream(keyStorePath))  {
+            KeyStore keyStore = KeyStore.getInstance(keystoreType);
+            keyStore.load(keyStoreInputStream, keystorePassword.toCharArray());
+            SslContextFactory sslContextFactory = new SslContextFactory();
+            sslContextFactory.setKeyStore(keyStore);
+            sslContextFactory.setKeyStorePassword(keystorePassword);
+            sslContextFactory.setKeyStoreType(keystoreType);
+            SslSocketConnector sslConnector = new SslSocketConnector(sslContextFactory);
+            sslConnector.setPort(sslPort);
+            sslConnector.setMaxIdleTime(30000);
+            LOG.info("Webserver now listens on SSL port {}", sslPort);
+            server.addConnector(sslConnector);
+        } catch (Exception ex) {
+            LOG.error("Cannot load java keystore for reason: ", Freedomotic.getStackTraceInfo(ex));
+        }
+    }
+
+    private void startServerWithWarFile(String dir) {
+        try {
+            WebAppContext webapp = new WebAppContext();
+            webapp.setContextPath(WEBAPP_CTX);
+            webapp.setWar(dir + WEBAPP_CTX + warFile);
+            server.setHandler(webapp);
+
+            //print the URL to visit as plugin description
+            InetAddress addr = InetAddress.getLocalHost();
+            String hostname = addr.getHostName();
+            //strip away the '.war' extension and put all together
+            URL url = new URL("http://" + hostname + ":" + port + WEBAPP_CTX + warFile.substring(0, warFile.lastIndexOf('.')));
+            setDescription("Visit " + url.toString());
+            server.start();
+        } catch (FileNotFoundException nf) {
+            LOG.warn("Cannot find WAR file {} into directory {}", warFile, dir);
+        } catch (Exception ex) {
+            LOG.error("Generic exception", Freedomotic.getStackTraceInfo(ex));
+        }
+    }
+
+    private void startServerWithoutWarfile(String dir) {
+        try {
+            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+            context.setContextPath(WEBAPP_CTX);
+            context.setResourceBase(new File(dir + WEBAPP_CTX).getAbsolutePath());
+            context.addServlet(DefaultServlet.class, "/*");
+            server.setHandler(context);
+            server.start();
+        } catch (Exception ex) {
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
+        }
     }
 }
