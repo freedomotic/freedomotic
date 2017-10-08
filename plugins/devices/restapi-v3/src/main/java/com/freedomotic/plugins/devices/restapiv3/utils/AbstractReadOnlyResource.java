@@ -43,14 +43,16 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author Matteo Mazzoni
- * @param <T>
+ * @param <T> the type of element that is used in the resource
  */
-public abstract class AbstractReadOnlyResource<T> implements ResourceReadOnlyInterface<T> {
+public abstract class AbstractReadOnlyResource<T> implements ResourceReadOnlyInterface {
 
     public static final Logger LOG = LoggerFactory.getLogger(AbstractReadOnlyResource.class.getName());
-    protected final static Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
-    protected final static API API = INJECTOR.getInstance(API.class);
+    protected static final Injector INJECTOR = Guice.createInjector(new FreedomoticInjector());
+    protected static final API API = INJECTOR.getInstance(API.class);
     protected String authContext = "*";
+
+    protected static final String USER_LITERAL = "User ";
 
     /**
      *
@@ -63,8 +65,7 @@ public abstract class AbstractReadOnlyResource<T> implements ResourceReadOnlyInt
     }
 
     /**
-     *
-     * @return
+     * Get a list of items
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -74,12 +75,13 @@ public abstract class AbstractReadOnlyResource<T> implements ResourceReadOnlyInt
         if (API.getAuth().isPermitted(authContext + ":read")) {
             return Response.ok(prepareList()).build();
         }
-        throw new ForbiddenException("user: " + API.getAuth().getSubject().getPrincipal() + " cannot read any" + authContext);
+        throw new ForbiddenException(USER_LITERAL + API.getAuth().getSubject().getPrincipal() + " cannot read any" + authContext);
     }
 
     /**
-     * @param UUID
-     * @return
+     * Get a single item by id
+     * 
+     * @param uuid id of item to fetch
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -91,28 +93,28 @@ public abstract class AbstractReadOnlyResource<T> implements ResourceReadOnlyInt
     @Override
     public Response get(
             @ApiParam(value = "ID of item to fetch", required = true)
-            @PathParam("id") String UUID) {
-        if (API.getAuth().isPermitted(authContext + ":read:" + UUID)) {
-            T item = prepareSingle(UUID);
+            @PathParam("id") String uuid) {
+        if (API.getAuth().isPermitted(authContext + ":read:" + uuid)) {
+            T item = prepareSingle(uuid);
             if (item != null) {
                 return Response.ok(item).build();
             }
-            throw new ItemNotFoundException("Cannot find item: " + UUID);
+            throw new ItemNotFoundException("Cannot find item: " + uuid);
         }
-        throw new ForbiddenException("User " + API.getAuth().getSubject().getPrincipal() + " cannot read " + authContext + " " + UUID);
+        throw new ForbiddenException(USER_LITERAL + API.getAuth().getSubject().getPrincipal() + " cannot read " + authContext + " " + uuid);
     }
 
     /**
      *
      * @return
      */
-    abstract protected List<T> prepareList();
+    protected abstract List<T> prepareList();
 
     /**
      *
      * @param uuid
      * @return
      */
-    abstract protected T prepareSingle(String uuid);
+    protected abstract T prepareSingle(String uuid);
 
 }

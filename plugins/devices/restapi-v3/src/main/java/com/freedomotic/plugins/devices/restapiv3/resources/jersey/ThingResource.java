@@ -132,7 +132,6 @@ public class ThingResource extends AbstractResource<EnvObject> {
      *
      * @param s
      * @return
-     * @throws URISyntaxException
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -142,7 +141,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
         @ApiResponse(code = 201, message = "New thing created")
     })
     @Override
-    public Response create(EnvObject s) throws URISyntaxException {
+    public Response create(EnvObject s) {
         return super.create(s);
     }
 

@@ -104,7 +104,6 @@ public class UserCommandResource extends AbstractResource<Command> {
      *
      * @param s
      * @return
-     * @throws URISyntaxException
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -114,7 +113,7 @@ public class UserCommandResource extends AbstractResource<Command> {
         @ApiResponse(code = 201, message = "New user's command added")
     })
     @Override
-    public Response create(Command s) throws URISyntaxException {
+    public Response create(Command s) {
         return super.create(s);
     }
 

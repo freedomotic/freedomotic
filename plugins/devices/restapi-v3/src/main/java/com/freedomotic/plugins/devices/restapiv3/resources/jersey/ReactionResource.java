@@ -104,7 +104,6 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
      *
      * @param s
      * @return
-     * @throws URISyntaxException
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -114,7 +113,7 @@ public class ReactionResource extends AbstractResource<ReactionRepresentation> {
         @ApiResponse(code = 201, message = "New reaction added")
     })
     @Override
-    public Response create(ReactionRepresentation s) throws URISyntaxException {
+    public Response create(ReactionRepresentation s) {
         return super.create(s);
     }
 

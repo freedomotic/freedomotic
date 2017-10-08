@@ -121,7 +121,6 @@ public class RoomResource extends AbstractResource<Zone> {
      *
      * @param s
      * @return
-     * @throws URISyntaxException
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -131,7 +130,7 @@ public class RoomResource extends AbstractResource<Zone> {
         @ApiResponse(code = 201, message = "New room added")
     })
     @Override
-    public Response create(Zone s) throws URISyntaxException {
+    public Response create(Zone s) {
         return super.create(s);
     }
 

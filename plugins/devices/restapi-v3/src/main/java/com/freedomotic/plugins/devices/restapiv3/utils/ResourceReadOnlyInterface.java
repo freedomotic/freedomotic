@@ -24,13 +24,12 @@ import javax.ws.rs.core.Response;
 /**
  *
  * @author Matteo Mazzoni
- * @param <T>
  */
-public interface ResourceReadOnlyInterface<T> {
+public interface ResourceReadOnlyInterface {
 
     public Response list();
 
-    public Response get(String UUID);
+    public Response get(String uuid);
 
     public Response options();
 

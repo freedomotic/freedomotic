@@ -46,8 +46,9 @@ import javax.ws.rs.core.UriBuilder;
 public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> implements ResourceInterface<T> {
 
     /**
+     * Update an item by ID
      *
-     * @param UUID
+     * @param uuid id of item to update
      * @param s
      * @return
      */
@@ -62,32 +63,31 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
     @ApiOperation(value = "Update an item", position = 40)
     public Response update(
             @ApiParam(value = "ID of item to update", required = true)
-            @PathParam("id") String UUID,
+            @PathParam("id") String uuid,
             T s) {
-        if (API.getAuth().isPermitted(authContext + ":update:" + UUID)) {
+        if (API.getAuth().isPermitted(authContext + ":update:" + uuid)) {
             try {
                 LOG.info("Acquiring modified element");
-                T z = doUpdate(UUID, s);
+                T z = doUpdate(uuid, s);
                 if (z != null) {
                     LOG.info("Everything was correctly computed");
                     return Response.ok().build();
-                } else {
-                    LOG.info("There was a error, so nothing's changed");
-                    return Response.notModified().build();
                 }
+                LOG.info("There was a error, so nothing's changed");
+                return Response.notModified().build();
             } catch (Exception e) {
                 LOG.error("Cannot update an item", e);
                 return Response.notModified().build();
             }
         }
-        throw new ForbiddenException("User " + API.getAuth().getSubject().getPrincipal() + " cannot modify " + authContext + " " + UUID);
+        throw new ForbiddenException(USER_LITERAL + API.getAuth().getSubject().getPrincipal() + " cannot modify " + authContext + " " + uuid);
     }
 
     /**
+     * Create a new item
      *
      * @param s
      * @return
-     * @throws URISyntaxException
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -97,8 +97,7 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
         @ApiResponse(code = 201, message = "New item created")
     })
     @Override
-    public Response create(T s) throws URISyntaxException {
-
+    public Response create(T s) {
         if (API.getAuth().isPermitted(authContext + ":create")) {
             try {
                 return Response.created(doCreate(s)).build();
@@ -107,12 +106,13 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
                 return Response.serverError().build();
             }
         }
-        throw new ForbiddenException("User " + API.getAuth().getSubject().getPrincipal() + " cannot create any " + authContext);
+        throw new ForbiddenException(USER_LITERAL + API.getAuth().getSubject().getPrincipal() + " cannot create any " + authContext);
     }
 
     /**
+     * Delete an item by id
      *
-     * @param UUID
+     * @param uuid id of item to delete
      * @return
      */
     @Override
@@ -124,17 +124,21 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
     })
     public Response delete(
             @ApiParam(value = "ID of item to delete", required = true)
-            @PathParam("id") String UUID) {
-        if (API.getAuth().isPermitted(authContext + ":create") && API.getAuth().isPermitted(authContext + ":read:" + UUID)) {
-            if (doDelete(UUID)) {
+            @PathParam("id") String uuid) {
+        if (API.getAuth().isPermitted(authContext + ":create") && API.getAuth().isPermitted(authContext + ":read:" + uuid)) {
+            if (doDelete(uuid)) {
                 return Response.ok().build();
-            } else {
-                throw new ItemNotFoundException("Cannot find item: " + UUID);
             }
+            throw new ItemNotFoundException("Cannot find item: " + uuid);
         }
-        throw new ForbiddenException("User " + API.getAuth().getSubject().getPrincipal() + " cannot copy " + authContext + " with UUID " + UUID);
+        throw new ForbiddenException(USER_LITERAL + API.getAuth().getSubject().getPrincipal() + " cannot copy " + authContext + " with UUID " + uuid);
     }
 
+    /*
+     * Copy an item by id
+     * 
+     * @param uuid id of item to copy
+     */
     @Override
     @POST
     @Path("/{id}/copy")
@@ -144,13 +148,12 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
     })
     public Response copy(
             @ApiParam(value = "ID of item to copy", required = true)
-            @PathParam("id") String UUID) {
-        URI ref = doCopy(UUID);
+            @PathParam("id") String uuid) {
+        URI ref = doCopy(uuid);
         if (ref != null) {
             return Response.created(ref).build();
-        } else {
-            throw new ItemNotFoundException("Cannot find item: " + UUID);
         }
+        throw new ItemNotFoundException("Cannot find item: " + uuid);
 
     }
 
@@ -160,10 +163,10 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
 
     /**
      *
-     * @param UUID
+     * @param uuid
      * @return
      */
-    abstract protected URI doCopy(String UUID);
+    abstract protected URI doCopy(String uuid);
 
     /**
      *
@@ -171,19 +174,19 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
      * @return
      * @throws URISyntaxException
      */
-    abstract protected URI doCreate(T o) throws URISyntaxException;
+    protected abstract URI doCreate(T o) throws URISyntaxException;
 
     /**
      *
-     * @param UUID
+     * @param uuid
      * @return
      */
-    abstract protected boolean doDelete(String UUID);
+    protected abstract boolean doDelete(String uuid);
 
     /**
      *
      * @param o
      * @return
      */
-    abstract protected T doUpdate(String UUID, T o);
+    protected abstract T doUpdate(String uuid, T o);
 }
