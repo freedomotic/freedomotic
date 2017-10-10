@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
 
 /**
+ * Class responsible for adding and finding resources.
  *
  * @author Enrico Nicoletti
  */
@@ -45,25 +46,15 @@ public final class ResourcesManager {
     private static final LoadingCache<String, BufferedImage> imagesCache = CacheBuilder.newBuilder()
             .expireAfterAccess(1, TimeUnit.MINUTES)
             .weakValues()
-            .build(new CacheLoader<String, BufferedImage>() {
-                @Override
-                public BufferedImage load(String imageName) throws Exception {
-                    //loads image from disk searching it recursively in a given folder
-                    BufferedImage img = fetchFromHDD(Info.PATHS.PATH_RESOURCES_FOLDER, imageName);
-                    if (img != null) {
-                        return img;
-                    } else {
-                        throw new IOException("Cannot recursively find image " + imageName + " in " + Info.PATHS.PATH_RESOURCES_FOLDER);
-                    }
-                }
-            });
+            .build(new ImageCacheLoader());
 
     /**
+     * Gets image resource given by name and performs resizing to requested width and height.
      *
-     * @param imageName
-     * @param width
-     * @param height
-     * @return
+     * @param imageName the name of the image
+     * @param width requested width of the image, if <= 0 then no resizing is performed
+     * @param height requested height of the image, if <= 0 then no resizing is performed
+     * @return image data or null when cannot find image by name of some error occurred
      */
     public static BufferedImage getResource(String imageName, int width, int height) {
         try {
@@ -78,22 +69,9 @@ public final class ResourcesManager {
             if (img != null) {
                 return img;
             } else {
-                //get the unresized image from cache or disk
-                try {
-                    img = imagesCache.get(imageName);
-                } catch (ExecutionException e) {
-                    try {
-                        File imageFile = new File(imageName);
-                        if (imageFile.exists()) {
-                            img = ImageIO.read(imageFile);
-                            imagesCache.put(imageFile.getName(), img);
-                        } else {
-                            return null;
-                        }
-                    } catch (IOException er) {
-                        LOG.error(Freedomotic.getStackTraceInfo(er));
-                        return null;
-                    }
+                img = getUnresizedImageFromCacheOrDisk(imageName);
+                if (img == null) {
+                    return null;
                 }
                 // Resize and cache
                 if (img.getWidth() != width && img.getHeight() != height) {
@@ -108,10 +86,35 @@ public final class ResourcesManager {
         }
     }
 
+    private static BufferedImage getUnresizedImageFromCacheOrDisk(final String imageName) {
+        try {
+            return imagesCache.get(imageName);
+        } catch (ExecutionException e) {
+            return getUnresizedImageFromDisk(imageName);
+        }
+    }
+
+    private static BufferedImage getUnresizedImageFromDisk(final String imageName) {
+        try {
+            File imageFile = new File(imageName);
+            if (imageFile.exists()) {
+                BufferedImage img = ImageIO.read(imageFile);
+                imagesCache.put(imageFile.getName(), img);
+                return img;
+            } else {
+                return null;
+            }
+        } catch (IOException er) {
+            LOG.error(Freedomotic.getStackTraceInfo(er));
+            return null;
+        }
+    }
+
     /**
+     * Gets image resource given by name.
      *
-     * @param imageName
-     * @return
+     * @param imageName the name of the image
+     * @return image data or null when cannot find image by name of some error occurred
      */
     public static synchronized BufferedImage getResource(String imageName) {
         try {
@@ -123,10 +126,11 @@ public final class ResourcesManager {
     }
 
     /**
+     * Gets file given by file name seeking recursively inside folder and subfolders.
      *
-     * @param folder
-     * @param fileName
-     * @return
+     * @param folder the folder where searching for a file is started
+     * @param fileName the name of file to search
+     * @return file or null when cannot find
      */
     public static File getFile(File folder, String fileName) {
         DirectoryReader dirReader = new DirectoryReader();
@@ -135,9 +139,10 @@ public final class ResourcesManager {
     }
 
     /**
+     * Adds image to {@link ResourcesManager} under the name given by imageName.
      *
-     * @param imageName
-     * @param image
+     * @param imageName the name of the image resource
+     * @param image image data
      */
     public static synchronized void addResource(String imageName, BufferedImage image) {
         imagesCache.put(imageName, image);
@@ -161,30 +166,7 @@ public final class ResourcesManager {
     }
 
     /**
-     *
-     *
-     * @param folder
-     * @param imageName
-     * @return
-     * @throws IOException
-     */
-    private static BufferedImage fetchFromHDD(File folder, String imageName) throws IOException {
-        BufferedImage img = null;
-        try {
-            DirectoryReader dirReader = new DirectoryReader();
-            dirReader.find(folder, imageName);
-            File file = dirReader.getFile();
-            if (file != null) {
-                img = ImageIO.read(file);
-            }
-        } catch (IOException ex) {
-            throw new IOException();
-        }
-        return img;
-    }
-
-    /**
-     *
+     * Helper class that allows to recursively seeking for a file.
      */
     private static class DirectoryReader {
 
@@ -206,12 +188,52 @@ public final class ResourcesManager {
         }
 
         /**
+         * Gets the result of seeking the file.
          *
-         *
-         * @return
+         * @return file or null when file cannot be found
          */
         public File getFile() {
             return output;
+        }
+    }
+
+    /**
+     * Helper class that contains a method used when trying to access resource that is not available in
+     * {@link ResourcesManager} cache.
+     */
+    private static class ImageCacheLoader extends CacheLoader<String, BufferedImage> {
+        @Override
+        public BufferedImage load(String imageName) throws Exception {
+            //loads image from disk searching it recursively in a given folder
+            BufferedImage img = fetchFromHDD(Info.PATHS.PATH_RESOURCES_FOLDER, imageName);
+            if (img != null) {
+                return img;
+            } else {
+                throw new IOException("Cannot recursively find image " + imageName + " in " + Info.PATHS.PATH_RESOURCES_FOLDER);
+            }
+        }
+
+        /**
+         * Fetches image from HDD.
+         *
+         * @param folder the start folder when searching for a image should start
+         * @param imageName the name of the image
+         * @return image data
+         * @throws IOException
+         */
+        private BufferedImage fetchFromHDD(File folder, String imageName) throws IOException {
+            BufferedImage img = null;
+            try {
+                DirectoryReader dirReader = new DirectoryReader();
+                dirReader.find(folder, imageName);
+                File file = dirReader.getFile();
+                if (file != null) {
+                    img = ImageIO.read(file);
+                }
+            } catch (IOException ex) {
+                throw new IOException();
+            }
+            return img;
         }
     }
 
