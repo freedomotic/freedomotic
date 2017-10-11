@@ -27,7 +27,7 @@ import jssc.*;
 /**
  * Provides connection to serial ports and handles serial port reading and
  * writing. One or more SerialPortListener can be registered to receive a copy
- * of the data read from serial
+ * of the data read from serial.
  *
  * To use this class make your client class to implement the SerialPortListener
  * interface and pass a 'this' reference in the constructor of
@@ -59,26 +59,31 @@ public class SerialHelper {
     public SerialHelper(final String portName, int baudRate, int dataBits, int stopBits, int parity, final SerialPortListener consumer) throws SerialPortException {
         this.portName = portName;
         serialPort = new SerialPort(this.portName);
-        serialPort.addEventListener(new SerialPortEventListener() {
-
-            @Override
-            public void serialEvent(SerialPortEvent event) {
-                if (event.isRXCHAR()) {
-
-                    if (event.getEventValue() > 0) {
-                        try {
-                            readBuffer.append(new String(serialPort.readBytes()));
-                        } catch (SerialPortException ex) {
-                            LOG.warn(ex.getMessage());
-                        }
-                    }
-                    LOG.info("Received message \"{}\" from serial port \"{}\"", new Object[]{readBuffer.toString(), portName});
-                    sendReadData(consumer);
-                }
-            }
-        });
+        serialPort.addEventListener( event -> handleEvent(portName, consumer, event));
         serialPort.setParams(baudRate, dataBits, stopBits, parity);
     }
+
+	/**
+	 * Handles an event coming from a serial input.
+	 * 
+	 * @param portName serial port name
+	 * @param consumer serial port listener
+	 * @param event event to deal with
+	 */
+	private void handleEvent(final String portName, final SerialPortListener consumer, SerialPortEvent event) {
+		if (event.isRXCHAR()) {
+
+            if (event.getEventValue() > 0) {
+                try {
+                    readBuffer.append(new String(serialPort.readBytes()));
+                } catch (SerialPortException ex) {
+                    LOG.warn(ex.getMessage());
+                }
+            }
+            LOG.info("Received message \"{}\" from serial port \"{}\"", readBuffer.toString(), portName);
+            sendReadData(consumer);
+        }
+	}
 
     /**
      * Sends a string message to the device.
@@ -88,19 +93,19 @@ public class SerialHelper {
      * @throws jssc.SerialPortException
      */
     public boolean write(String message) throws SerialPortException {
-        LOG.info("Writing \"{}\" to serial port \"{}\"", new Object[]{message, portName});
+        LOG.info("Writing \"{}\" to serial port \"{}\"", message, portName);
         return serialPort.writeString(message);
     }
 
     /**
-     * Sends a bytes message to the device
+     * Sends a bytes message to the device.
      *
      * @param bytes the message to send
      * @return
      * @throws jssc.SerialPortException
      */
     public boolean write(byte[] bytes) throws SerialPortException {
-        LOG.info("Writing bytes \"{}\" to serial port \"{}\"", new Object[]{Arrays.toString(bytes), portName});
+        LOG.info("Writing bytes \"{}\" to serial port \"{}\"", Arrays.toString(bytes), portName);
         return serialPort.writeBytes(bytes);
     }
 
@@ -118,7 +123,7 @@ public class SerialHelper {
     }
 
     /**
-     * Returns port name
+     * Returns port name.
      *
      * @return portName the port name
      */
@@ -127,7 +132,7 @@ public class SerialHelper {
     }
 
     /**
-     * Returns port status
+     * Returns port status.
      *
      * @return isOpened true if the port is opened, false otherwise
      */
@@ -136,9 +141,9 @@ public class SerialHelper {
     }
 
     /**
-     * Disconnects the port
+     * Disconnects the port.
      *
-     * @return
+     * @return true if deconnected, false instead
      */
     public boolean disconnect() {
         try {
@@ -150,9 +155,9 @@ public class SerialHelper {
     }
 
     /**
-     * Sets port DTR
+     * Sets port DTR.
      *
-     * @param enabled
+     * @param enabled DTR flag value
      */
     public void setDTR(boolean enabled) {
         try {
@@ -163,9 +168,9 @@ public class SerialHelper {
     }
 
     /**
-     * Sets port RTS
+     * Sets port RTS.
      *
-     * @param enabled
+     * @param enabled RTS flag value
      */
     public void setRTS(boolean enabled) {
         try {
@@ -176,7 +181,7 @@ public class SerialHelper {
     }
 
     /**
-     * Sets chunck terminator
+     * Sets chunck terminator.
      *
      * @param readTerminator the terminator symbol used for data splitting
      */
@@ -187,7 +192,7 @@ public class SerialHelper {
     }
 
     /**
-     * Sets chunck size
+     * Sets chunck size.
      *
      * @param chunkSize the chunck size used for data splitting
      */
@@ -198,7 +203,7 @@ public class SerialHelper {
     }
 
     /**
-     * Sends read data to the listener
+     * Sends read data to the listener.
      *
      * @param consumer serial port listener
      */
@@ -214,22 +219,19 @@ public class SerialHelper {
                 bufferContent = bufferContent.substring(endOfTerminator);
                 consumer.onDataAvailable(chunk);
             }
+        } else if (readChunkSize > 0) {
+        	// consume chunks of the given size
+        	while (readChunkSize > 0 && bufferContent.length() >= readChunkSize) {
+        		String chunk = bufferContent.substring(0, readChunkSize);
+        		//remove this chunk of data from bufferContent
+        		bufferContent = bufferContent.substring(readChunkSize);
+        		consumer.onDataAvailable(chunk);
+        	}
         } else {
-            if (readChunkSize > 0) {
-                // consume chunks of the given size
-                while (readChunkSize > 0 && bufferContent.length() >= readChunkSize) {
-                    String chunk = bufferContent.substring(0, readChunkSize);
-                    //remove this chunk of data from bufferContent
-                    bufferContent = bufferContent.substring(readChunkSize);
-                    consumer.onDataAvailable(chunk);
-
-                }
-            } else {
-                // no splitting, send it just as readed
-                consumer.onDataAvailable(bufferContent);
-                //clear from sent text
-                bufferContent = "";
-            }
+        	// no splitting, send it just as readed
+        	consumer.onDataAvailable(bufferContent);
+        	//clear from sent text
+        	bufferContent = "";
         }
 
         // Clear the buffer for sent text
