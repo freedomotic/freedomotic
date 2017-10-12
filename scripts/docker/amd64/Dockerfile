@@ -16,4 +16,6 @@ VOLUME /srv/freedomotic/data /srv/freedomotic/plugins
 
 EXPOSE 9111 8090
 
+HEALTHCHECK --interval=10m --timeout=3s --start-period=10s CMD curl -fI http://localhost:8090 || exit 1
+
 ENTRYPOINT /srv/freedomotic/freedomotic.sh -D FOREGROUND
