@@ -450,7 +450,9 @@ public class MainWindow
     public void setMapTitle(String name) {
         String envName = "";
         try {
-            envName = drawer.getCurrEnv().getSource().getParentFile().getName() + "/";
+            if (drawer != null) {
+                envName = drawer.getCurrEnv().getSource().getParentFile().getName() + "/";
+            }
         } catch (Exception e) {
             LOG.error("Error setting Map title {}", e.getMessage());
         }
