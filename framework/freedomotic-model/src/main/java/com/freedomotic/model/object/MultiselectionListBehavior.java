@@ -33,8 +33,8 @@ public class MultiselectionListBehavior
 
     private static final long serialVersionUID = -7839150128393354068L;
 
-    private final ArrayList<String> list = new ArrayList<String>();
-    private final List<String> selected = new ArrayList<String>();
+    private final ArrayList<String> list = new ArrayList<>();
+    private final List<String> selected = new ArrayList<>();
 
     /**
      *
@@ -84,7 +84,7 @@ public class MultiselectionListBehavior
      * @return
      */
     public List<String> getSelected() {
-        List<String> tmp = new ArrayList<String>();
+        List<String> tmp = new ArrayList<>();
 
         for (String item : list) {
             if (selected.contains(item)) {
@@ -168,5 +168,24 @@ public class MultiselectionListBehavior
      */
     public List<String> getList() {
         return list;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        MultiselectionListBehavior that = (MultiselectionListBehavior) o;
+
+        return list.equals(that.list) && selected.equals(that.selected);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + list.hashCode();
+        result = 31 * result + selected.hashCode();
+        return result;
     }
 }

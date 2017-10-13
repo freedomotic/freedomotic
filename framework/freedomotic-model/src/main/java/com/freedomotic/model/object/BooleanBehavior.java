@@ -36,12 +36,12 @@ public class BooleanBehavior
     /**
      *
      */
-    public final static String VALUE_TRUE = "true";
+    public static final String VALUE_TRUE = "true";
 
     /**
      *
      */
-    public final static String VALUE_FALSE = "false";
+    public static final String VALUE_FALSE = "false";
 
     /**
      *
@@ -57,7 +57,7 @@ public class BooleanBehavior
      */
     @Override
     public String toString() {
-        return new Boolean(value).toString();
+        return Boolean.toString(value);
     }
 
     /**
@@ -68,5 +68,23 @@ public class BooleanBehavior
         //activate this behavior if it was unactivated
         setActive(true);
         value = inputValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        BooleanBehavior that = (BooleanBehavior) o;
+
+        return value == that.value;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (value ? 1 : 0);
+        return result;
     }
 }

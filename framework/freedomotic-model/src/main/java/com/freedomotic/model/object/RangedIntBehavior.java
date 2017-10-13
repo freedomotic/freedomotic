@@ -47,7 +47,7 @@ public class RangedIntBehavior
             return String.valueOf(value);
         }
 
-        return new Double((double) value / (double) getScale()).toString();
+        return Double.toString((double) value / (double) getScale());
     }
 
     /**
@@ -130,5 +130,31 @@ public class RangedIntBehavior
      */
     public void setStep(int step) {
         this.step = step;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        RangedIntBehavior that = (RangedIntBehavior) o;
+
+        return value == that.value
+                && max == that.max
+                && min == that.min
+                && scale == that.scale
+                && step == that.step;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + value;
+        result = 31 * result + max;
+        result = 31 * result + min;
+        result = 31 * result + scale;
+        result = 31 * result + step;
+        return result;
     }
 }
