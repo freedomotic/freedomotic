@@ -23,7 +23,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 /**
- *
+ * Guice module for support i18n logic
+ * 
  * @author Enrico Nicoletti
  */
 public class InjectorI18n extends AbstractModule {

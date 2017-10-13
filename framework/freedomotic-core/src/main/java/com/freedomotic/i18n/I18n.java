@@ -20,54 +20,51 @@
 package com.freedomotic.i18n;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
- *
+ * For Freedomotic core: translations are inside /i18n/Freedomotic.properties
+ * For Plugin: translations are inside plugins/_plugin_type_/_plugin_package_/i18n/_package_last_part_.properties
+ * 
  * @author Matteo Mazzoni
  */
 public interface I18n {
 
     /**
      *
-     * @return
+     * @return a list of available locales
      */
-    ArrayList<Locale> getAvailableLocales();
+    List<Locale> getAvailableLocales();
 
     // should be replaced by user specific Locale
     /**
-     *
-     * @return @deprecated
+     * @deprecated
+     * @return a default locale
      */
     @Deprecated
     Locale getDefaultLocale();
 
-    /*
-     * For Freedomotic core: translations are inside /i18n/Freedomotic.properties
-     * For Plugin: translations are inside plugins/_plugin_type_/_plugin_package_/i18n/_package_last_part_.properties
-     */
-    //String msg(String packageName, String key, Object[] fields);
     /**
-     *
+     * Get a translated message by specified key
      * @param key
-     * @return
+     * @return a translated message by key
      */
     String msg(String key);
 
     /**
-     *
+     * Get a translated message by specified key and uses it to format the given fields
      * @param key
-     * @param fields
-     * @return
+     * @param fields object(s) to format
+     * @return a translated and formatted message by key
      */
     String msg(String key, Object[] fields);
 
     /**
      *
-     * @param loc
+     * @param locale
      */
-    void setDefaultLocale(String loc);
+    void setDefaultLocale(String locale);
 
     /**
      *

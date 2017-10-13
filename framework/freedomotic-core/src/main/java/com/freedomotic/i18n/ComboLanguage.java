@@ -25,37 +25,56 @@ import java.util.Locale;
  *
  * @author Matteo Mazzoni
  */
-public class ComboLanguage implements Comparable {
+public class ComboLanguage implements Comparable<ComboLanguage> {
 
-    private String descr;
+    private String description;
     private String value;
-    private Locale loc;
+    private Locale locale;
 
-    public ComboLanguage(String descr, String value, Locale loc) {
-        this.descr = descr;
+    public ComboLanguage(String description, String value, Locale locale) {
+        this.description = description;
         this.value = value;
-        this.loc = loc;
+        this.locale = locale;
     }
 
     /**
-     *
-     * @return
+     * @return description - a string representation of the object
      */
     @Override
     public String toString() {
-        return descr;
+        return description;
     }
 
     /**
-     *
-     * @return
+     * @return value
      */
     public String getValue() {
         return value;
     }
 
-    @Override
-    public int compareTo(Object o) {
-        return this.descr.compareTo(o.toString());
+    /**
+     * @return locale
+     */
+    public Locale getLocale() {
+        return locale;
     }
+
+    @Override
+    public int compareTo(ComboLanguage other) {
+        return description.compareTo(other.toString());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if ((obj == null) || (getClass() != obj.getClass())) {
+            return false;
+        }
+
+        final ComboLanguage other = (ComboLanguage) obj;
+        return (description != null ? description.equals(other.toString()) : other.toString() == null);
+    }
+
 }
