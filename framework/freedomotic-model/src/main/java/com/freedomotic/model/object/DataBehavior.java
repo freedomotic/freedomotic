@@ -20,6 +20,9 @@
 package com.freedomotic.model.object;
 
 import com.freedomotic.model.charting.UsageData;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -30,21 +33,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class DataBehavior extends Behavior {
 
-    private List<UsageData> data;
+    private ArrayList<UsageData> data;
 
     /**
      *
      * @param data
      */
-    public void setData(List<UsageData> data) {
-        this.data = data;
+    public void setData(Collection<UsageData> data) {
+        this.data = new ArrayList<>(data);
     }
 
     /**
      *
      * @param data
      */
-    public void addData(List<UsageData> data) {
+    public void addData(Collection<UsageData> data) {
         this.data.addAll(data);
     }
 
@@ -56,4 +59,21 @@ public class DataBehavior extends Behavior {
         return data;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        DataBehavior that = (DataBehavior) o;
+
+        return data == null ? that.data == null : data.equals(that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (data != null ? data.hashCode() : 0);
+        return result;
+    }
 }

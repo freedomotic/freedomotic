@@ -22,7 +22,6 @@ package com.freedomotic.model.object;
 import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.geometry.FreedomShape;
 import java.io.Serializable;
-import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -32,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Enrico
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
+@XmlAccessorType
 public class Representation
         implements Serializable {
 
@@ -217,11 +216,7 @@ public class Representation
      */
     @XmlTransient
     public boolean isFilled() {
-        if (fillColor != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return fillColor != null;
     }
 
     /**
@@ -230,11 +225,7 @@ public class Representation
      */
     @XmlTransient
     public boolean isBordered() {
-        if (borderColor != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return borderColor != null;
     }
 
     /**

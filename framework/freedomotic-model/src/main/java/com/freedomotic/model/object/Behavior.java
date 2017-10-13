@@ -43,19 +43,19 @@ public abstract class Behavior
     private boolean readOnly;
 
     /**
-     *
+     * Command to switch value to opposite (for example open -> closed)
      */
-    public final static String VALUE_OPPOSITE = "opposite";
+    public static final String VALUE_OPPOSITE = "opposite";
 
     /**
-     *
+     * Command to switch value to next in list (for example brightness 1 -> 2 -> 3)
      */
-    public final static String VALUE_NEXT = "next";
+    public static final String VALUE_NEXT = "next";
 
     /**
-     *
+     * Command to switch value to previous in list (for example brightness 3 -> 2 -> 1)
      */
-    public final static String VALUE_PREVIOUS = "previous";
+    public static final String VALUE_PREVIOUS = "previous";
 
     /**
      *
@@ -146,11 +146,7 @@ public abstract class Behavior
 
         final Behavior other = (Behavior) obj;
 
-        if ((this.name == null) ? (other.name != null) : (!this.name.equals(other.name))) {
-            return false;
-        }
-
-        return true;
+        return (this.name == null) ? other.name == null : this.name.equals(other.name);
     }
 
     /**

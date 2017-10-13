@@ -21,6 +21,7 @@ package com.freedomotic.model.object;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -44,15 +45,15 @@ public class Properties implements Serializable {
      *
      */
     public Properties() {
-        propertyList = new HashMap<String, String>();
+        propertyList = new HashMap<>();
     }
 
     /**
      *
      * @param prop
      */
-    public Properties(HashMap<String, String> prop) {
-        propertyList = prop;
+    public Properties(Map<String, String> prop) {
+        propertyList = new HashMap<>(prop);
     }
 
     /**

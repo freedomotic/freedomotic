@@ -19,6 +19,7 @@
  */
 package com.freedomotic.model.charting;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,7 +40,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "noDate", query = "SELECT x FROM harvester x WHERE x.objbehavior LIKE :behavior AND x.objaddress LIKE :address AND x.objvalue LIKE :value"),
     @NamedQuery(name = "rangedPowered", query = "SELECT x.* , min(y.datetime) as offtime FROM harvester x, harvester y WHERE  (x.datetime >= :startDate AND x.datetime <= :stopDate) AND x.objbehavior = 'powered' AND x.objaddress LIKE :address AND x.objvalue = 'true' AND x.objprotocol LIKE '%' and y.objname = x.objname AND y.objbehavior = x.objbehavior AND y.objvalue = 'false' AND y.datetime > x.datetime GROUP by x.datetime order by x.datetime, y.datetime")
 })
-public class UsageData implements Cloneable {
+public class UsageData implements Cloneable, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,22 +55,31 @@ public class UsageData implements Cloneable {
     String uuid;
 
     /**
+     * @deprecated Use copy constructor.
      *
-     * @return
+     * @return a clone of this UserData
      */
     @Override
+    @Deprecated
     public UsageData clone() {
-        UsageData cloned = new UsageData();
-        cloned.setObjName(this.objaddress);
-        cloned.setObjProtocol(this.objprotocol);
-        cloned.setObjName(this.objname);
-        cloned.setDateTime(this.datetime);
-        cloned.setUuid(this.uuid);
-        return cloned;
+        return new UsageData(this);
     }
 
     /**
+     * Copy constructor.
      *
+     * @param source - source UsageData object to make a copy of
+     */
+    public UsageData(UsageData source) {
+        this.objname = source.objaddress;
+        this.objprotocol = source.objprotocol;
+        this.objname = source.objname;
+        this.datetime = source.datetime;
+        this.uuid = source.uuid;
+    }
+
+    /**
+     * Default constructor.
      */
     public UsageData() {
     }
