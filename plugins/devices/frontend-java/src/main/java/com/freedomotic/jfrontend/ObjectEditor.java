@@ -79,12 +79,12 @@ import javax.swing.event.ChangeListener;
 public class ObjectEditor
         extends javax.swing.JFrame {
 
-    private EnvObjectLogic object;
+    private transient EnvObjectLogic object;
     private String oldName;
     private PropertiesPanel commandsControlPanel;
     private PropertiesPanel pnlTriggers;
     private ReactionsPanel reactionsPanel;
-    private final NlpCommand nlpCommands;
+    private final transient NlpCommand nlpCommands;
     private static API api = null;
     private static I18n I18n;
 
@@ -124,18 +124,18 @@ public class ObjectEditor
         populateEnvironment();
         txtAddress.setText(pojo.getPhisicalAddress());
 
-        Integer x = (int) pojo.getCurrentRepresentation().getOffset().getX();
-        Integer y = (int) pojo.getCurrentRepresentation().getOffset().getY();
+        Integer x = pojo.getCurrentRepresentation().getOffset().getX();
+        Integer y = pojo.getCurrentRepresentation().getOffset().getY();
         Integer rotation = (int) pojo.getCurrentRepresentation().getRotation();
         SpinnerModel modelX
                 = new SpinnerNumberModel(0, //initial value
                         -100, //min
-                        (int) obj.getEnvironment().getPojo().getWidth() + 100, //max= env dimension + 1 meter
+                        obj.getEnvironment().getPojo().getWidth() + 100, //max= env dimension + 1 meter
                         1); //step
         SpinnerModel modelY
                 = new SpinnerNumberModel(0, //initial value
                         -100, //min
-                        (int) obj.getEnvironment().getPojo().getWidth() + 100, //max
+                        obj.getEnvironment().getPojo().getWidth() + 100, //max
                         1); //step
         spnX.setModel(modelX);
         spnY.setModel(modelY);
@@ -143,25 +143,23 @@ public class ObjectEditor
         spnY.setValue((Integer) y);
 
         SpinnerModel scaleWidthModel
-                = new SpinnerNumberModel(new Double(pojo.getCurrentRepresentation().getScaleX()), //initial value
-                        new Double(0.1), //min
-                        new Double(10.0), //max
-                        new Double(0.1)); //step
+                = new SpinnerNumberModel(Double.valueOf(pojo.getCurrentRepresentation().getScaleX()), //initial value
+                        Double.valueOf("0.1"), //min
+                        Double.valueOf("10.0"), //max
+                        Double.valueOf("0.1")); //step
         spnScaleWidth.setModel(scaleWidthModel);
 
         SpinnerModel scaleHeightModel
-                = new SpinnerNumberModel(new Double(pojo.getCurrentRepresentation().getScaleY()), //initial value
-                        new Double(0.1), //min
-                        new Double(10.0), //max
-                        new Double(0.1)); //step
+                = new SpinnerNumberModel(Double.valueOf(pojo.getCurrentRepresentation().getScaleY()), //initial value
+                        Double.valueOf("0.1"), //min
+                        Double.valueOf("10.0"), //max
+                        Double.valueOf("0.1")); //step
         spnScaleHeight.setModel(scaleHeightModel);
         spnRotation.setValue(rotation);
 
-        tabObjectEditor.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                if (tabObjectEditor.getSelectedComponent().equals(tabAutomations)) {
-                    populateAutomationsTab();
-                }
+        tabObjectEditor.addChangeListener((ChangeEvent e) -> {
+            if (tabObjectEditor.getSelectedComponent().equals(tabAutomations)) {
+                populateAutomationsTab();
             }
         });
 
@@ -195,10 +193,12 @@ public class ObjectEditor
         return object;
     }
 
+    /**
+     *
+     */
     private void populateControlPanel() {
         tabControls.removeAll();
 
-        //tabControls.setLayout(new BoxLayout(tabControls, BoxLayout.PAGE_AXIS));
         tabControls.setLayout(new GridLayout(Iterators.size(object.getBehaviors().iterator()), 1));
 
         for (Behavior behavior : object.getPojo().getBehaviors()) {
@@ -221,18 +221,15 @@ public class ObjectEditor
                 rowPanel.add(label);
                 rowPanel.add(button);
                 tabControls.add(rowPanel);
-                button.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        Config params = new Config();
-                        params.setProperty("value", Boolean.toString(!bb.getValue()));
-                        bb.filterParams(params, true);
+                button.addActionListener((ActionEvent e) -> {
+                    Config params = new Config();
+                    params.setProperty("value", Boolean.toString(!bb.getValue()));
+                    bb.filterParams(params, true);
 
-                        if (bb.getValue()) {
-                            button.setText(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName() + " ", I18n.msg("false")}));
-                        } else {
-                            button.setText(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName() + " ", I18n.msg("true")}));
-                        }
+                    if (bb.getValue()) {
+                        button.setText(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName() + " ", I18n.msg("false")}));
+                    } else {
+                        button.setText(I18n.msg("set_PROPERTY_VALUE", new Object[]{bb.getName() + " ", I18n.msg("true")}));
                     }
                 });
                 button.setEnabled(!b.isReadOnly());
@@ -253,8 +250,6 @@ public class ObjectEditor
                 if (step == 0) {
                     step = 1;
                 }
-                //slider.setMajorTickSpacing(rb.getScale() * 10);
-                //slider.setMinorTickSpacing(rb.getStep());
                 if ((rb.getMax() - rb.getMin()) / step < 10000) {
                     slider.setMajorTickSpacing(step);
                     slider.setSnapToTicks(true);
@@ -275,30 +270,27 @@ public class ObjectEditor
                 if (!b.isReadOnly()) {
                     slider.addMouseListener(new SliderPopup(slider, rb));
                 }
-                slider.addChangeListener(new ChangeListener() {
-                    @Override
-                    public void stateChanged(ChangeEvent e) {
-                        if (!slider.getValueIsAdjusting()) {
-                            if (!slider.getSnapToTicks()) {
-                                // SnapToTicks disabled, snap to RangedIntBehavior step (round down to closest)
-                                int snapValue = slider.getValue() / rb.getStep() * rb.getStep();
-                                if (slider.getValue() != snapValue) {
-                                    slider.setValue(snapValue);
-                                    return;
-                                }
+                slider.addChangeListener((ChangeEvent e) -> {
+                    if (!slider.getValueIsAdjusting()) {
+                        if (!slider.getSnapToTicks()) {
+                            // SnapToTicks disabled, snap to RangedIntBehavior step (round down to closest)
+                            int snapValue = slider.getValue() / rb.getStep() * rb.getStep();
+                            if (slider.getValue() != snapValue) {
+                                slider.setValue(snapValue);
+                                return;
                             }
-
-                            Config params = new Config();
-                            params.setProperty("value",
-                                    String.valueOf(slider.getValue()));
-                            rb.filterParams(params, true);
                         }
 
-                        if (rb.getScale() != 1) {
-                            doubleValue.setText(new Double((double) slider.getValue() / rb.getScale()).toString());
-                        } else {
-                            doubleValue.setText(new Integer(slider.getValue()).toString());
-                        }
+                        Config params = new Config();
+                        params.setProperty("value",
+                                String.valueOf(slider.getValue()));
+                        rb.filterParams(params, true);
+                    }
+
+                    if (rb.getScale() != 1) {
+                        doubleValue.setText(Double.toString(slider.getValue() / rb.getScale()));
+                    } else {
+                        doubleValue.setText(Integer.toString(slider.getValue()));
                     }
                 });
                 slider.setEnabled(!b.isReadOnly());
@@ -319,13 +311,10 @@ public class ObjectEditor
                 rowPanel.add(label);
                 rowPanel.add(comboBox);
                 tabControls.add(rowPanel);
-                comboBox.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        Config params = new Config();
-                        params.setProperty("value", (String) comboBox.getSelectedItem());
-                        lb.filterParams(params, true);
-                    }
+                comboBox.addActionListener((ActionEvent e) -> {
+                    Config params = new Config();
+                    params.setProperty("value", (String) comboBox.getSelectedItem());
+                    lb.filterParams(params, true);
                 });
                 comboBox.setEnabled(!b.isReadOnly());
             }
@@ -775,13 +764,7 @@ public class ObjectEditor
     private void spnScaleWidthStateChanged(javax.swing.event.ChangeEvent evt)    {//GEN-FIRST:event_spnScaleWidthStateChanged
 
         Representation rep = object.getPojo().getCurrentRepresentation();
-//        Shape shape = AWTConverter.convertToAWT(rep.getShape(), 1.5, 1.5);
-//                new Double(spnScaleWidth.getValue().toString()).doubleValue(), 
-//                new Double(spnScaleHeight.getValue().toString()).doubleValue());
-        rep.setScaleX(new Double(spnScaleWidth.getValue().toString()).doubleValue());
-
-        //rep.setScaleX(new Double(spnScaleWidth.getValue().toString()).doubleValue());
-        //object.setChanged(true);
+        rep.setScaleX(Double.parseDouble(spnScaleWidth.getValue().toString()));
     }//GEN-LAST:event_spnScaleWidthStateChanged
 
     private void spnScaleHeightStateChanged(javax.swing.event.ChangeEvent evt)    {//GEN-FIRST:event_spnScaleHeightStateChanged
@@ -846,6 +829,9 @@ public class ObjectEditor
         }
     }
 
+    /**
+     * 
+     */
     private void changeCurrentRepresentation() {
         try {
             Representation b = object.getPojo().getCurrentRepresentation();
@@ -860,6 +846,9 @@ public class ObjectEditor
         }
     }
 
+    /**
+     * 
+     */
     private void saveRepresentationChanges() {
         if (chkAllRepresentations.isSelected()) {
             changeAllRepresentations();
@@ -868,6 +857,9 @@ public class ObjectEditor
         }
     }
 
+    /**
+     * 
+     */
     private void changeAllRepresentations() {
         try {
             for (Representation b : this.object.getPojo().getRepresentations()) {
@@ -925,6 +917,10 @@ public class ObjectEditor
     private javax.swing.JComboBox txtProtocol;
     private javax.swing.JTextField txtTags;
     // End of variables declaration//GEN-END:variables
+    
+    /**
+     * 
+     */
     private void populateCommandsTab() {
         //addAndRegister a properties panel
         commandsControlPanel = new PropertiesPanel(0, 2);
@@ -945,7 +941,7 @@ public class ObjectEditor
             final JComboBox cmbCommand = new JComboBox();
             cmbCommand.setModel(allHardwareCommands);
 
-            EnvObjectLogic objLogic = (EnvObjectLogic) object;
+            EnvObjectLogic objLogic = object;
             Command relatedCommand = objLogic.getHardwareCommand(action);
 
             if (relatedCommand != null) {
@@ -955,25 +951,24 @@ public class ObjectEditor
                 cmbCommand.setSelectedIndex(-1); //no mapping
             }
 
-            cmbCommand.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Command command = (Command) cmbCommand.getSelectedItem();
-                    object.setAction(action, command);
-                }
+            cmbCommand.addActionListener((ActionEvent e) -> {
+                Command command = (Command) cmbCommand.getSelectedItem();
+                object.setAction(action, command);
             });
             commandsControlPanel.addRow();
 
             JLabel lblAction = new JLabel(action + ": ");
             commandsControlPanel.addElement(lblAction, row, 0);
             commandsControlPanel.addElement(cmbCommand, row, 1);
-            //lblAction.setPreferredSize(new Dimension(350, 30));
             row++;
         }
 
         commandsControlPanel.layoutPanel();
     }
 
+    /**
+     * 
+     */
     private void populateTriggersTab() {
         //addAndRegister a properties panel
         pnlTriggers = new PropertiesPanel(0, 2);
@@ -1022,28 +1017,27 @@ public class ObjectEditor
             }
 
             //addAndRegister a listener on trigger combobox item selection
-            comboSelectTrigger.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    object.addTriggerMapping((Trigger) comboSelectTrigger.getSelectedItem(),
-                            behavior.getName());
-                    tabTriggersConfig.removeAll();
-                    pnlTriggers = null;
-                    populateTriggersTab();
-                }
+            comboSelectTrigger.addActionListener((ActionEvent e) -> {
+                object.addTriggerMapping((Trigger) comboSelectTrigger.getSelectedItem(),
+                        behavior.getName());
+                tabTriggersConfig.removeAll();
+                pnlTriggers = null;
+                populateTriggersTab();
             });
 
             JLabel behaviorLabel = new JLabel(behavior.getName() + ": ");
             pnlTriggers.addRow();
             pnlTriggers.addElement(behaviorLabel, row, 0);
             pnlTriggers.addElement(comboSelectTrigger, row, 1);
-            //comboSelectTrigger.setPreferredSize(new Dimension(350, 30));
             row++;
         }
 
         pnlTriggers.layoutPanel();
     }
 
+    /**
+     * 
+     */
     private void populateAutomationsTab() {
         tabAutomations.removeAll();
         tabAutomations.setLayout(new BorderLayout());
@@ -1052,6 +1046,9 @@ public class ObjectEditor
         tabAutomations.validate();
     }
 
+    /**
+     * 
+     */
     private void populateProtocol() {
         txtProtocol.addItem("unknown");
 
@@ -1070,6 +1067,9 @@ public class ObjectEditor
         }
     }
 
+    /**
+     * 
+     */
     private void populateEnvironment() {
         for (EnvironmentLogic env : api.environments().findAll()) {
             environmentComboBox.addItem(env);
@@ -1078,6 +1078,10 @@ public class ObjectEditor
         environmentComboBox.setSelectedItem(object.getEnvironment());
     }
 
+    /**
+     * 
+     * @param b 
+     */
     private void populateMultiselectionList(BehaviorLogic b) {
         final TaxonomyBehaviorLogic lb = (TaxonomyBehaviorLogic) b;
         JLabel label = new JLabel(b.getName() + ":");
@@ -1098,16 +1102,14 @@ public class ObjectEditor
         });
 
         JButton btnRemove = new JButton(I18n.msg("remove"));
-        btnRemove.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!newItem.getText().isEmpty()) {
-                    Config params = new Config();
-                    params.setProperty("item",
-                            newItem.getText());
-                    params.setProperty("value", "remove");
-                    lb.filterParams(params, true);
-                    refreshMultiselectionList(lb, list);
-                }
+        btnRemove.addActionListener((ActionEvent e) -> {
+            if (!newItem.getText().isEmpty()) {
+                Config params = new Config();
+                params.setProperty("item",
+                        newItem.getText());
+                params.setProperty("value", "remove");
+                lb.filterParams(params, true);
+                refreshMultiselectionList(lb, list);
             }
         });
         refreshMultiselectionList(lb, list);
@@ -1122,6 +1124,11 @@ public class ObjectEditor
         tabControls.validate();
     }
 
+    /**
+     * 
+     * @param source
+     * @param list 
+     */
     private void refreshMultiselectionList(final TaxonomyBehaviorLogic source, CheckBoxList list) {
         final DefaultListModel model = new DefaultListModel();
 
@@ -1130,15 +1137,13 @@ public class ObjectEditor
 
             if (!model.contains(box)) { //no duplicates allowed
                 box.setSelected(source.getSelected().contains(item));
-                box.addChangeListener(new ChangeListener() {
-                    public void stateChanged(ChangeEvent e) {
-                        Config params = new Config();
-                        params.setProperty("item",
-                                box.getText());
-                        params.setProperty("value",
-                                new Boolean(box.isSelected()).toString());
-                        source.filterParams(params, true);
-                    }
+                box.addChangeListener((ChangeEvent e) -> {
+                    Config params = new Config();
+                    params.setProperty("item",
+                            box.getText());
+                    params.setProperty("value",
+                            Boolean.toString(box.isSelected()));
+                    source.filterParams(params, true);
                 });
                 model.addElement(box);
             }
@@ -1148,6 +1153,9 @@ public class ObjectEditor
         tabControls.validate();
     }
 
+    /**
+     * 
+     */
     private void enableControls() {
         Auth auth = api.getAuth();
         txtDescription.setEnabled(auth.isPermitted("objects:update"));
@@ -1165,6 +1173,11 @@ public class ObjectEditor
         btnDelete.setEnabled(auth.isPermitted("objects:delete"));
     }
 
+    /**
+     * 
+     * @param b
+     * @return 
+     */
     private String getBehaviorLabel(BehaviorLogic b) {
         String label = "";
         if (b.getDescription() != null && !b.getDescription().isEmpty()) {
