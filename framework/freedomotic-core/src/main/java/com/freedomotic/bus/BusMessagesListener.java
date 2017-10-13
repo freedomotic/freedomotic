@@ -20,7 +20,6 @@
 package com.freedomotic.bus;
 
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.app.Profiler;
 import com.freedomotic.util.UidGenerator;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,7 +61,7 @@ public class BusMessagesListener implements MessageListener {
     private List<MessageConsumer> consumers = new ArrayList<>();
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param busConsumer
      * @param busService
@@ -90,14 +89,12 @@ public class BusMessagesListener implements MessageListener {
     }
 
     /**
-     * Passes a message to the listener
+     * Passes a message to the listener.
      *
      * @param message
      */
     @Override
     public final void onMessage(Message message) {
-
-        Profiler.incrementReceivedEvents();
 
         if (message instanceof ObjectMessage) {
             final ObjectMessage objectMessage = (ObjectMessage) message;
@@ -119,7 +116,7 @@ public class BusMessagesListener implements MessageListener {
     }
 
     /**
-     * Registers on a command queue
+     * Registers on a command queue.
      *
      * @param queueName Queue name
      */

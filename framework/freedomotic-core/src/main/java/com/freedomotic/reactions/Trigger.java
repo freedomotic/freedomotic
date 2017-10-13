@@ -23,7 +23,6 @@ import com.freedomotic.rules.Statement;
 import com.freedomotic.rules.Payload;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.app.Profiler;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
@@ -139,7 +138,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
-     *   
+     *
      * @param channel
      */
     public void setChannel(String channel) {
@@ -408,7 +407,6 @@ public final class Trigger implements BusConsumer, Cloneable {
 
             checker.check(event, this);
             long end = System.currentTimeMillis();
-            Profiler.appendTriggerCheckingTime(end - start);
         }
     }
 

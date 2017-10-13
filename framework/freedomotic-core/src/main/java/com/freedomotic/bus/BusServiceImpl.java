@@ -21,7 +21,6 @@ package com.freedomotic.bus;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.app.Freedomotic;
-import com.freedomotic.app.Profiler;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.settings.AppConfig;
 import com.google.inject.Injector;
@@ -63,7 +62,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
 
     @Inject
     public BusServiceImpl(AppConfig config, Injector inj) {
-     
+
         if (BootStatus.getCurrentStatus() == BootStatus.STOPPED) {
             conf = config;
             injector = inj;
@@ -103,10 +102,9 @@ final class BusServiceImpl extends LifeCycle implements BusService {
     }
 
     /**
-     * 
-     * 
-     * @return
-     * @throws JMSException 
+     *
+     *
+     * @return @throws JMSException
      */
     private MessageProducer createMessageProducer() throws JMSException {
 
@@ -115,7 +113,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
 
         // configure
         createdProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        
+
         return createdProducer;
     }
 
@@ -171,9 +169,9 @@ final class BusServiceImpl extends LifeCycle implements BusService {
     }
 
     /**
-     * 
-     * 
-     * @return 
+     *
+     *
+     * @return
      */
     private MessageProducer getMessageProducer() {
 
@@ -230,9 +228,8 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             msg.setJMSDestination(destination);
             msg.setJMSCorrelationID(correlationID);
             msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
-            LOG.info("Sending reply to command ''{}'' on {}", new Object[]{command.getName(), msg.getJMSDestination()});
+            LOG.info("Sending reply to command \"{}\" on {}", new Object[]{command.getName(), msg.getJMSDestination()});
             getMessageProducer().send(destination, msg); //Always pass the destination, otherwise it complains
-            Profiler.incrementSentReplies();
         } catch (JMSException jmse) {
             LOG.error(Freedomotic.getStackTraceInfo(jmse));
         }
@@ -286,8 +283,6 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         final MessageProducer messageProducer = this.getMessageProducer();
         messageProducer.send(currDestination, msg);
 
-        Profiler.incrementSentCommands();
-
         command.setExecuted(true);
 
         // always say it is executed (it's not sure but the caller is
@@ -320,8 +315,6 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         final MessageProducer currMessageProducer = this.getMessageProducer();
         currMessageProducer.send(currDestination, msg);
 
-        Profiler.incrementSentCommands();
-
         // the receive() call is blocking
         LOG.info("Send and await reply to command \"{}\" for {} ms",
                 new Object[]{command.getName(), command.getReplyTimeout()});
@@ -331,7 +324,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         //cleanup after receiving
         //temporaryConsumer.close();
         //temporaryQueue.delete();
-        //TODO: commented as sometimes genenerates a "cannot publish on deleted queue" exception
+        //TODO: commented as sometimes generates a "cannot publish on deleted queue" exception
         //check n the documentation if a temporary queue with no consumers
         //is automatically deleted
         if (jmsResponse != null) {
@@ -342,22 +335,19 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             // TODO unchecked cast!
             Command reply = (Command) objMessage.getObject();
 
-            LOG.info("Reply to command '"
-                    + command.getName() + "' is received. Result property inside this command is "
+            LOG.info("Reply to command \""
+                    + command.getName() + "\" is received. Result property inside this command is "
                     + reply.getProperty("result")
                     + ". It is used to pass data to the next command, can be empty or even null.");
-
-            Profiler.incrementReceivedReplies();
 
             return reply;
 
         } else {
 
-            LOG.info("Command '" + command.getName()
-                    + "' timed out after " + command.getReplyTimeout()
+            LOG.info("Command \"" + command.getName()
+                    + "\" timed out after " + command.getReplyTimeout()
                     + "ms");
 
-            Profiler.incrementTimeoutedReplies();
         }
 
         // mark as failed
@@ -394,7 +384,6 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             // Generate a new topic if not already exists, otherwise returns the old topic instance
             Topic topic = getReceiveSession().createTopic("VirtualTopic." + to);
             getMessageProducer().send(topic, msg);
-            Profiler.incrementSentEvents();
 
         } catch (JMSException ex) {
 
