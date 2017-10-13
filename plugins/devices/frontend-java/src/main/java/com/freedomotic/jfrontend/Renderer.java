@@ -410,33 +410,26 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
                 this.getHeight());
         graph2D.scale(widthRescale, heightRescale);
 
-        try {
-            //translating the environment to mach the trasparent area in wall image
-            graph2D.translate(BORDER_X, BORDER_Y);
-            prepareBackground();
-            renderEnvironment();
-            renderZones();
-            prepareForeground();
+        //translating the environment to mach the trasparent area in wall image
+        graph2D.translate(BORDER_X, BORDER_Y);
+        prepareBackground();
+        renderEnvironment();
+        renderZones();
+        prepareForeground();
 
-            //go to point 0,0
-            graph2D.translate(-BORDER_X, -BORDER_Y);
-            //render the wall image
-            renderWalls();
-            graph2D.translate(BORDER_X, BORDER_Y);
+        //go to point 0,0
+        graph2D.translate(-BORDER_X, -BORDER_Y);
+        //render the wall image
+        renderWalls();
+        graph2D.translate(BORDER_X, BORDER_Y);
 
-            if (!roomEditMode) {
-                //selection markers
-                renderIndicators();
-                renderObjects();
-            } else {
-                renderIndicators();
-                renderHandles();
-            }
-        } catch (Exception e) {
-            LOG.error("Error while painting environment");
-            LOG.error(Freedomotic.getStackTraceInfo(e));
-        } finally {
-            restoreTransformContext();
+        if (!roomEditMode) {
+            //selection markers
+            renderIndicators();
+            renderObjects();
+        } else {
+            renderIndicators();
+            renderHandles();
         }
     }
 
@@ -453,13 +446,11 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
             backgroundChanged = false;
 
             Runnable painting = () -> {
-              BufferedImage bkg = createDrawableCanvas();
-              if(bkg!=null) {
-            	  paintEnvironmentLayer(setRenderingQuality(bkg.createGraphics()));
-            	  backgroundImage = bkg;
-               }
-              else
-            	  LOG.warn("createDrawableCanvas returned an empty background so we stay with the previous one!");
+                try {
+                    backgroundImage = renderBackground();
+                } catch (Exception e) {
+                    LOG.error("Failed to render a new background", e);
+                }
              };
             
             synchronized (this) {
@@ -476,6 +467,15 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         renderPeople();
         renderCalloutsLayer();
         restoreTransformContext();
+    }
+
+    private BufferedImage renderBackground() {
+        BufferedImage img = new BufferedImage(
+                    getWidth(),
+                    getHeight(),
+                    BufferedImage.TYPE_INT_ARGB);
+        paintEnvironmentLayer(setRenderingQuality(img.createGraphics()));
+        return img;
     }
 
     private Graphics2D setRenderingQuality(Graphics g) {
@@ -578,7 +578,7 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         try {
             graph2D.setTransform(originalRenderingContext);
         } catch (Exception e) {
-        	LOG.error("Error while store transform context!");
+        	LOG.error("Error while store transform context!", e);
         }
     }
 
@@ -614,18 +614,6 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
     protected void invalidateAnyTransform() {
         Graphics2D tmpGraph = (Graphics2D) getContext();
         tmpGraph.setTransform(panelTransform);
-    }
-
-    private BufferedImage createDrawableCanvas() {
-        BufferedImage img = null;
-        try {
-            img = new BufferedImage(getWidth(),
-                    getHeight(),
-                    BufferedImage.TYPE_INT_ARGB);
-        } catch (Exception e) {
-            LOG.error(Freedomotic.getStackTraceInfo(e));
-        }
-        return img;
     }
 
     /**
