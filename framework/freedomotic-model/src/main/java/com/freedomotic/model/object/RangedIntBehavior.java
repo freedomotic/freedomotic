@@ -47,7 +47,7 @@ public class RangedIntBehavior
             return String.valueOf(value);
         }
 
-        return new Double((double) value / (double) getScale()).toString();
+        return Double.valueOf(((double) value / (double) getScale())).toString();
     }
 
     /**

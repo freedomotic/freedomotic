@@ -57,7 +57,7 @@ public class BooleanBehavior
      */
     @Override
     public String toString() {
-        return new Boolean(value).toString();
+        return Boolean.valueOf(value).toString();
     }
 
     /**

@@ -189,12 +189,7 @@ public class Config
     public double getDoubleProperty(String key, double defaultValue) {
         Double result = Double.parseDouble(properties.getProperty(key));
 
-        if (result != null) {
-            return result;
-        } else {
-            //LOG.warn("'" + getXmlFile() + "' does not contain property '" + key + "'. Using default value '" + defaultValue + "'");
-            return defaultValue;
-        }
+        return result;
     }
 
     /**
