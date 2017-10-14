@@ -43,8 +43,8 @@ public class LessEqualThan extends BinaryExpression {
     @Override
     public Boolean evaluate() {
         try {
-            Integer intRightValue = new Integer(getRight());
-            Integer intLeftValue = new Integer(getLeft());
+            Integer intRightValue = Integer.valueOf(getRight());
+            Integer intLeftValue = Integer.valueOf(getLeft());
 
             return intLeftValue <= intRightValue;
         } catch (NumberFormatException nfe) {

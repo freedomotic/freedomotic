@@ -78,8 +78,8 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
         try {
             Properties dataProperties = new Properties();
             String fromVersion;
-            try {
-                dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
+            try (FileInputStream fis = new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties"))){
+                dataProperties.load(fis);
                 fromVersion = dataProperties.getProperty("data.version");
             } catch (IOException iOException) {
                 // Fallback to a default version for older version without that properties file
@@ -104,7 +104,9 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
     @Override
     public void persist(Environment environment)
             throws RepositoryException {
-        directory.mkdirs();
+        if (!directory.mkdirs()){
+        	throw new RepositoryException("Unable to create dir "+directory.getName());
+        }
         if (!directory.isDirectory()) {
             throw new RepositoryException(directory.getAbsoluteFile() + " is not a valid environment folder. Skipped");
         }
@@ -126,8 +128,11 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
     @Override
     public void delete(Environment environment)
             throws RepositoryException {
-        File deleteMe = new File(directory + "/" + getEnvFilename(environment));
-        deleteMe.delete();
+    	String dir = directory + "/" + getEnvFilename(environment);
+        File deleteMe = new File(dir);
+        if(!deleteMe.delete()){
+        	throw new RepositoryException("Unable to delete "+dir);
+        }
     }
 
     private String getEnvFilename(Environment environment) {

@@ -569,8 +569,8 @@ class ThingRepositoryImpl implements ThingRepository {
             try {
                 Properties dataProperties = new Properties();
                 String fromVersion;
-                try {
-                    dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
+                try (FileInputStream fis = new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties"))){
+                    dataProperties.load(fis);
                     fromVersion = dataProperties.getProperty("data.version");
                 } catch (IOException iOException) {
                     // Fallback to a default version for older version without that properties file

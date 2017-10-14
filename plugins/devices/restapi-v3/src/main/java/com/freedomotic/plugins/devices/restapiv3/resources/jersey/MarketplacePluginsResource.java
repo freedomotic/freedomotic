@@ -103,9 +103,6 @@ public class MarketplacePluginsResource extends AbstractReadOnlyResource<IPlugin
             @PathParam("id") String uuid) {
         IPluginPackage p = prepareSingle(uuid);
         String url = p.getFilePath(Info.getMajor() + "." + Info.getMinor());
-        if (p == null) {
-            throw new ItemNotFoundException(uuid);
-        }
         try {
             API.getPluginManager().installBoundle(new URL(url));
         } catch (MalformedURLException ex) {

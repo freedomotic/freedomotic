@@ -101,11 +101,6 @@ public class TopologyUtils {
         return awtColor;
     }
 
-    private static Point convertToAWT(FreedomPoint fPoint) {
-        return new Point(fPoint.getX(),
-                fPoint.getY());
-    }
-
     private static Ellipse2D convertToAWT(FreedomEllipse fEllipse) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
