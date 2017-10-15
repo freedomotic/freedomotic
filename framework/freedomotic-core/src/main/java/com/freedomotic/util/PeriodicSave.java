@@ -54,10 +54,11 @@ public class PeriodicSave {
     }
 
     /**
+     * Delegate the repositories.
      *
-     * @param triggerRepository
-     * @param commandRepository
-     * @param reactionRepository
+     * @param triggerRepository the trigger repository
+     * @param commandRepository the command repository
+     * @param reactionRepository the reaction repository
      */
     public void delegateRepositories(TriggerRepository triggerRepository, CommandRepository commandRepository,
             ReactionRepository reactionRepository) {
@@ -67,25 +68,21 @@ public class PeriodicSave {
     }
 
     /**
-     *
+     * Start the executor service with a scheduled, fixed delay of 5 minutes.
      */
     public void startExecutorService() {
         executorService = Executors.newSingleThreadScheduledExecutor();
         long initDelay = 5; //first saving after 5 minutes
-        executorService.scheduleWithFixedDelay(runnable, initDelay, executionInterval, TimeUnit.MINUTES);
-    }
-
-    private Runnable runnable = new Runnable() {
-        public void run() {
+        executorService.scheduleWithFixedDelay(() -> {
             LOG.info("Periodic saving of triggers, commands and reactions");
             triggerRepository.saveTriggers(new File(savedDataRoot + "/trg"));
             commandRepository.saveCommands(new File(savedDataRoot + "/cmd"));
             reactionRepository.saveReactions(new File(savedDataRoot + "/rea"));
-        }
-    };
+        }, initDelay, executionInterval, TimeUnit.MINUTES);
+    }
 
     /**
-     *
+     * Shut down the executor service.
      */
     public void shutDown() {
         executorService.shutdown();
