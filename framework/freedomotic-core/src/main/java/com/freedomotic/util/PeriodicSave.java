@@ -41,6 +41,7 @@ public class PeriodicSave {
     private ReactionRepository reactionRepository;
     private String savedDataRoot;
     private int executionInterval;
+    private Runnable runnable;
 
     /**
      * Saves periodically commands, triggers and reactions to file.
@@ -51,10 +52,17 @@ public class PeriodicSave {
     public PeriodicSave(String savedDataRoot, int executionInterval) {
         this.savedDataRoot = savedDataRoot;
         this.executionInterval = executionInterval;
+
+        runnable = () -> {
+            LOG.info("Periodic saving of triggers, commands and reactions");
+            triggerRepository.saveTriggers(new File(savedDataRoot + "/trg"));
+            commandRepository.saveCommands(new File(savedDataRoot + "/cmd"));
+            reactionRepository.saveReactions(new File(savedDataRoot + "/rea"));
+    	};
     }
 
     /**
-     *
+     * Load the required Repositories
      * @param triggerRepository
      * @param commandRepository
      * @param reactionRepository
@@ -67,7 +75,7 @@ public class PeriodicSave {
     }
 
     /**
-     *
+     * Start executor service for periodic saving of commands, triggers and reactions.
      */
     public void startExecutorService() {
         executorService = Executors.newSingleThreadScheduledExecutor();
@@ -75,17 +83,8 @@ public class PeriodicSave {
         executorService.scheduleWithFixedDelay(runnable, initDelay, executionInterval, TimeUnit.MINUTES);
     }
 
-    private Runnable runnable = new Runnable() {
-        public void run() {
-            LOG.info("Periodic saving of triggers, commands and reactions");
-            triggerRepository.saveTriggers(new File(savedDataRoot + "/trg"));
-            commandRepository.saveCommands(new File(savedDataRoot + "/cmd"));
-            reactionRepository.saveReactions(new File(savedDataRoot + "/rea"));
-        }
-    };
-
     /**
-     *
+     * Stop executor service for periodic saving of commands, triggers and reactions.
      */
     public void shutDown() {
         executorService.shutdown();
