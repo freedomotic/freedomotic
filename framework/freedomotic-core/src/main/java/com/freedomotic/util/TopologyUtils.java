@@ -25,7 +25,6 @@ import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.geometry.FreedomShape;
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;

@@ -334,14 +334,6 @@ class ThingRepositoryImpl implements ThingRepository {
         input.destroy(); //free memory
     }
 
-    private static List<String> getObjectsNames() {
-        List<String> list = new ArrayList<>();
-        for (EnvObjectLogic obj : objectList.values()) {
-            list.add(obj.getPojo().getName());
-        }
-        return list;
-    }
-
     /**
      * Add an object to the environment. You can use
      * EnvObjectPersistnce.MAKE_UNIQUE to saveAll an object that will surely be

@@ -180,8 +180,7 @@ class AppConfigImpl implements AppConfig {
             properties.load(fis);
         } catch (IOException ex) {
             LOG.error(ex.getMessage());
-        } finally {
-		}
+        } 
         return this;
     }
 

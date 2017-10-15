@@ -324,10 +324,8 @@ class PluginsManagerImpl implements PluginsManager {
 
     private void recursiveCopy(File source, File target) {	
     	 if (source.isDirectory()) {
-             if (!target.exists()) {
-                 if(!target.mkdir()){
-                     LOG.warn("Error in creating targetDir "+target.getPath());
-                 }
+             if (!target.exists() && !target.mkdir()){
+                 LOG.warn("Error in creating targetDir "+target.getPath());
              }
 
              String[] children = source.list();
