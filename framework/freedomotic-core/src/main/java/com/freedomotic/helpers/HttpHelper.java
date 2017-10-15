@@ -86,7 +86,7 @@ public class HttpHelper {
 
     /**
      * Get the content of an URL (eg: a webpage) as a string. Content can be
-     * HTML, XML or JSON
+     * HTML, XML or JSON.
      *
      * @param url
      * @return
@@ -126,7 +126,7 @@ public class HttpHelper {
 
     /**
      * Get the content of an URL (eg: a webpage) as a string. Content can be
-     * HTML, XML or JSON
+     * HTML, XML or JSON.
      *
      * @param url
      * @param username
@@ -139,7 +139,7 @@ public class HttpHelper {
     }
 
     /**
-     * Perform an XPath query on the XML content retrieved from the given URL
+     * Perform an XPath query on the XML content retrieved from the given URL.
      *
      * @param url The url from wich retrieve the XML content
      * @param username username if authentication is required. Can be null
@@ -159,9 +159,9 @@ public class HttpHelper {
             //xpathQuery  contains the xpath expression to be applied on the retrieved content
             for (String xpathQuery : xpathQueries) {
                 String result = xPath.compile(xpathQuery).evaluate(xmlDocument);
-                // Notify an enpy result to the user
+                // Notify an empty result to the user
                 if (result == null || result.isEmpty()) {
-                    LOG.warn("XPath query {} produced no results on content: \n{}", new String[]{xpathQuery, new String(xmlContent)});
+                    LOG.warn("XPath query {} produced no results on content: \n{}", xpathQuery, new String(xmlContent));
                     result = "";
                 }
                 results.add(result);
