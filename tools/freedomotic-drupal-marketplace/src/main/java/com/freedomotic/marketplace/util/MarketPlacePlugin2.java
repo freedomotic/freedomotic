@@ -209,7 +209,6 @@ public class MarketPlacePlugin2 implements IPluginPackage {
 
     public String formatFieldPluginCategory() {
         String jsonString = "";
-        String s = "";
         //we are assuming that the Plugin is well formed 
         //(ie, has at least one correct Plugin category)
         jsonString += "\"field_plugin_category\":{\"value\":{";

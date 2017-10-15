@@ -23,10 +23,7 @@ import com.serotonin.modbus4j.serial.*;
 import com.serotonin.modbus4j.ModbusFactory;
 import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.ip.IpParameters;
-import com.serotonin.modbus4j.serial.SerialMaster;
-//import gnu.io.SerialPort;
 import com.freedomotic.model.ds.Config;
-//import net.wimpi.modbus.util.SerialParameters;
 
 /**
  *

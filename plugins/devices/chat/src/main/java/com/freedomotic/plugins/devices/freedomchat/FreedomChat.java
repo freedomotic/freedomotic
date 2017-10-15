@@ -53,7 +53,7 @@ public class FreedomChat extends Protocol {
     public static String ACCEPTED = "Just wait and see.";
     public static String NOT_ACCEPTED = "";
     
-    final int POLLING_WAIT;
+    private final int POLLING_WAIT;
     private String hostname;
     private int port;
     private String username;
@@ -63,7 +63,7 @@ public class FreedomChat extends Protocol {
     private boolean useSkype;
     private boolean useXMPP;
     private boolean manualHostname;
-    XMPPConnection conn;
+    private XMPPConnection conn;
     private ChatMessageAdapter chatListener;
 
 

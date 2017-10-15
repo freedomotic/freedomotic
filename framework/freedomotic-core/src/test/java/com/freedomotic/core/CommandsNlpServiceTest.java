@@ -52,9 +52,6 @@ public class CommandsNlpServiceTest {
     @Inject
     NlpCommand nlpCommand;
 
-    public CommandsNlpServiceTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
     }

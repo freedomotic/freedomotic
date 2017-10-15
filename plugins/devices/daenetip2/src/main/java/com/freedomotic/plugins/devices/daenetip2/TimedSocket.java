@@ -164,11 +164,7 @@ public class TimedSocket {
 
         // Did an error occur?
         public boolean isError() {
-            if (m_exception == null) {
-                return false;
-            } else {
-                return true;
-            }
+            return m_exception == null ? false : true;
         }
 
         // Get socket
