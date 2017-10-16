@@ -93,11 +93,7 @@ public class FreedomPoint implements Serializable {
         if (object instanceof FreedomPoint) {
             FreedomPoint point = (FreedomPoint) object;
 
-            if ((point.getX() == this.getX()) && (point.getY() == this.getY())) {
-                return true;
-            } else {
-                return false;
-            }
+            return (point.getX() == this.getX()) && (point.getY() == this.getY());
         }
 
         return false;

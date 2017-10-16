@@ -112,19 +112,10 @@ class TriggerRepositoryImpl implements TriggerRepository {
      * @param folder the folder containing all the triggers to delete
      */
     private static void deleteTriggerFiles(File folder) {
-        File[] files = folder.listFiles();
         // this filter only returns triggers files
         FileFilter objectFileFilter
-                = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
-        files = folder.listFiles(objectFileFilter);
+                = file -> file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION);
+        File[] files = folder.listFiles(objectFileFilter);
         for (File file : files) {
             file.delete();
         }
@@ -150,12 +141,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
 
         // this filter only returns triggers files
         FileFilter objectFileFileter
-                = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        return file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION);
-                    }
-                };
+                = file -> file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION);
 
         File[] files = folder.listFiles(objectFileFileter);
 
@@ -318,9 +304,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
     @Deprecated
     public static Trigger getTrigger(Trigger input) {
         if (input != null) {
-            for (Iterator it = list.iterator(); it.hasNext();) {
-                Trigger trigger = (Trigger) it.next();
-
+            for (Trigger trigger : list) {
                 if (trigger.equals(input)) {
                     return trigger;
                 }
@@ -375,7 +359,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
 
     @Override
     public List<Trigger> findAll() {
-        Collections.sort(list, new TriggerNameComparator());
+        list.sort(new TriggerNameComparator());
         return list;
     }
 

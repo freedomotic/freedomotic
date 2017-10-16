@@ -67,19 +67,14 @@ public class TrackingReadSocket extends Protocol {
 
     @Override
     public void onStart() throws PluginStartupException {
-        try {
-            createServerSocket();
-        } catch (IOException ioe) {
-            throw new PluginStartupException("IOException on server socket creating: \"{}\"", ioe);
-        }
+        createServerSocket();
     }
 
     /**
      * Creates a server socket.
      *
-     * @throws IOException
      */
-    private void createServerSocket() throws IOException {
+    private void createServerSocket() {
         try {
             activeConnections = new AtomicInteger();
             serverSocket = new ServerSocket();

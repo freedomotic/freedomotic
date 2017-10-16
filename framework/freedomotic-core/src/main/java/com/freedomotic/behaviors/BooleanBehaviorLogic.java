@@ -42,14 +42,14 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
          * @param params
          * @param fireCommand
          */
-        public void onTrue(Config params, boolean fireCommand);
+        void onTrue(Config params, boolean fireCommand);
 
         /**
          *
          * @param params
          * @param fireCommand
          */
-        public void onFalse(Config params, boolean fireCommand);
+        void onFalse(Config params, boolean fireCommand);
     }
 
     /**
@@ -66,13 +66,13 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
         String value = params.getProperty("value").trim();
 
         if ("false".equalsIgnoreCase(value) || "0".equalsIgnoreCase(value)) {
-            if (this.getValue() != false) { //if is really changed
+            if (this.getValue()) { //if is really changed
                 listener.onFalse(params, fireCommand);
             }
         }
 
         if ("true".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value)) {
-            if (this.getValue() != true) { //if is really changed
+            if (!this.getValue()) { //if is really changed
                 listener.onTrue(params, fireCommand);
             }
         }
@@ -92,7 +92,7 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
 
     private void opposite(Config params, boolean fireCommand) {
         if (data.getValue()) {
-            if (this.getValue() != false) { //if is really changed
+            if (this.getValue()) { //if is really changed
                 listener.onFalse(params, fireCommand);
             }
         } else {
@@ -164,11 +164,7 @@ public class BooleanBehaviorLogic implements BehaviorLogic {
 
         final BooleanBehaviorLogic other = (BooleanBehaviorLogic) obj;
 
-        if ((this.data != other.data) && ((this.data == null) || !this.data.equals(other.data))) {
-            return false;
-        }
-
-        return true;
+        return (this.data == other.data) || ((this.data != null) && this.data.equals(other.data));
     }
 
     /**

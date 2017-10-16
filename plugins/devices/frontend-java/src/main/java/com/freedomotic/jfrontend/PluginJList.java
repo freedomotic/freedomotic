@@ -132,22 +132,18 @@ public final class PluginJList extends JList {
                     }
                 }
 
-                mnuConfigure.addActionListener(new ActionListener() {
+                mnuConfigure.addActionListener(e1 -> {
+                    if (client.getType().equalsIgnoreCase("plugin")) {
+                        client.start();
+                        client.showGui();
+                        update();
+                    }
 
-                    public void actionPerformed(ActionEvent e) {
-                        if (client.getType().equalsIgnoreCase("plugin")) {
-                            client.start();
-                            client.showGui();
-                            update();
-                        }
+                    if (client.getType().equalsIgnoreCase("object")) {
+                        ObjectPluginPlaceholder objp = (ObjectPluginPlaceholder) client;
 
-                        if (client.getType().equalsIgnoreCase("object")) {
-                            ObjectPluginPlaceholder objp = (ObjectPluginPlaceholder) client;
-
-                            if (parent instanceof MainWindow) {
-                                MainWindow mw = parent;
-                                objp.startOnEnv(mw.getDrawer().getCurrEnv()); //adds the object to the environment
-                            }
+                        if (parent != null) {
+                            objp.startOnEnv(parent.getDrawer().getCurrEnv()); //adds the object to the environment
                         }
                     }
                 });

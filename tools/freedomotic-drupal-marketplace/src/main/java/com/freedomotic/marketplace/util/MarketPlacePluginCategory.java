@@ -36,7 +36,7 @@ public class MarketPlacePluginCategory implements IPluginCategory {
     private String name;
     private String description;
     private String uri;
-    private transient List<IPluginPackage> plugins = new ArrayList<IPluginPackage>();
+    private transient List<IPluginPackage> plugins = new ArrayList<>();
 
     /**
      * @return the tid

@@ -56,7 +56,7 @@ public enum BootStatus {
 
     private static final Logger LOG = LoggerFactory.getLogger(BootStatus.class.getName());
 
-    private static final Map<Integer, BootStatus> lookup = new HashMap<Integer, BootStatus>();
+    private static final Map<Integer, BootStatus> lookup = new HashMap<>();
     private static final EnumSet<BootStatus> initStatuses = EnumSet.of(STOPPED, BOOTING);
     private static final EnumSet<BootStatus> destroyStatuses = EnumSet.of(STOPPED, STOPPING);
 
@@ -64,15 +64,12 @@ public enum BootStatus {
     private static Throwable throwable;
 
     static {
-
-        for (BootStatus s : EnumSet.allOf(BootStatus.class)) {
-            lookup.put(s.getCode(), s);
-        }
+        EnumSet.allOf(BootStatus.class).forEach(bootStatus -> lookup.put(bootStatus.getCode(), bootStatus));
     }
 
     private int code;
 
-    private BootStatus(int code) {
+    BootStatus(int code) {
 
         this.code = code;
     }

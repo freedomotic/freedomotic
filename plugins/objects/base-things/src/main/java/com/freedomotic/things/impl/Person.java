@@ -64,30 +64,24 @@ public class Person extends GenericPerson {
         });
 
         activity = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior(BEHAVIOR_ACTIVITY));
-        activity.addListener(new ListBehaviorLogic.Listener() {
-            @Override
-            public void selectedChanged(Config params, boolean fireCommand) {
-                String oldActivity = activity.getSelected();
-                //in "value" property is stored the name of the new selection. It is a value from the list for sure and it is not the current one, already checked.
-                activity.setSelected(params.getProperty("value"));
-                LOG.error("Person \"" + getPojo().getName()
-                        + "\"' has changed its activity from " + oldActivity + " to "
-                        + activity.getSelected());
-                setChanged(true);
-            }
+        activity.addListener((params, fireCommand) -> {
+            String oldActivity = activity.getSelected();
+            //in "value" property is stored the name of the new selection. It is a value from the list for sure and it is not the current one, already checked.
+            activity.setSelected(params.getProperty("value"));
+            LOG.error("Person \"" + getPojo().getName()
+                    + "\"' has changed its activity from " + oldActivity + " to "
+                    + activity.getSelected());
+            setChanged(true);
         });
 
         properties = new PropertiesBehaviorLogic((PropertiesBehavior) getPojo().getBehavior(BEHAVIOR_PROPERTIES));
-        properties.addListener(new PropertiesBehaviorLogic.Listener() {
-            @Override
-            public void propertyChanged(String key, String newValue, Config params, boolean fireCommand) {
-                //in "value" property is stored the name of the new selection. It is a value from the list for sure and it is not the current one, already checked.
-                // properties.setProperty(key, newValue);
-                LOG.error("Person \"" + getPojo().getName()
-                        + "\" has changed its property from " + params.getProperty(key) + " to "
-                        + newValue);
-                setChanged(true);
-            }
+        properties.addListener((key, newValue, params, fireCommand) -> {
+            //in "value" property is stored the name of the new selection. It is a value from the list for sure and it is not the current one, already checked.
+            // properties.setProperty(key, newValue);
+            LOG.error("Person \"" + getPojo().getName()
+                    + "\" has changed its property from " + params.getProperty(key) + " to "
+                    + newValue);
+            setChanged(true);
         });
 
         //register this behavior to the superclass to make it visible to it

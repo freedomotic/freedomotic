@@ -48,7 +48,7 @@ public class ListBehaviorLogic
          * @param params
          * @param fireCommand
          */
-        public void selectedChanged(final Config params, boolean fireCommand);
+        void selectedChanged(final Config params, boolean fireCommand);
     }
 
     /**

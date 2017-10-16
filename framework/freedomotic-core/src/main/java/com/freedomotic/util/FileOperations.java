@@ -80,7 +80,7 @@ public class FileOperations {
         }
 
         try (FileWriter fstream = new FileWriter(summaryFile);
-                BufferedWriter indexfile = new BufferedWriter(fstream);) {
+                BufferedWriter indexfile = new BufferedWriter(fstream)) {
             indexfile.write(header);
             indexfile.append(content);
             return summaryFile;

@@ -394,11 +394,7 @@ public class ObjectEditor
 
         jLabel14.setText(I18n.msg("name")+":");
 
-        txtName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNameActionPerformed(evt);
-            }
-        });
+        txtName.addActionListener(this::txtNameActionPerformed);
 
         jLabel15.setText(I18n.msg("description")+":");
 
@@ -410,44 +406,24 @@ public class ObjectEditor
         jLabel3.setText(I18n.msg("plugins_more_info"));
 
         btnCreateObjectCopy.setText(I18n.msg("create_a_copy"));
-        btnCreateObjectCopy.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateObjectCopyActionPerformed(evt);
-            }
-        });
+        btnCreateObjectCopy.addActionListener(this::btnCreateObjectCopyActionPerformed);
 
         btnDelete.setText(I18n.msg("delete")+I18n.msg("object"));
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
+        btnDelete.addActionListener(this::btnDeleteActionPerformed);
 
         btnVirtual.setText(I18n.msg("is_virtual_object"));
-        btnVirtual.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVirtualActionPerformed(evt);
-            }
-        });
+        btnVirtual.addActionListener(this::btnVirtualActionPerformed);
 
         jLabel8.setText("Tags");
 
         txtTags.setText("txtTags");
-        txtTags.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTagsActionPerformed(evt);
-            }
-        });
+        txtTags.addActionListener(this::txtTagsActionPerformed);
 
         UUIDlbl.setText("UUID");
 
         UUIDtxt.setEditable(false);
         UUIDtxt.setText("<UUID>");
-        UUIDtxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                UUIDtxtActionPerformed(evt);
-            }
-        });
+        UUIDtxt.addActionListener(this::UUIDtxtActionPerformed);
 
         javax.swing.GroupLayout tabPropertiesLayout = new javax.swing.GroupLayout(tabProperties);
         tabProperties.setLayout(tabPropertiesLayout);
@@ -531,53 +507,25 @@ public class ObjectEditor
 
         jLabel11.setText(I18n.msg("position_X",new Object[]{"X"})+":");
 
-        spnX.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spnXStateChanged(evt);
-            }
-        });
+        spnX.addChangeListener(this::spnXStateChanged);
 
         jLabel12.setText(I18n.msg("position_X",new Object[]{"Y"})+":");
 
-        spnY.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spnYStateChanged(evt);
-            }
-        });
+        spnY.addChangeListener(this::spnYStateChanged);
 
-        spnRotation.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spnRotationStateChanged(evt);
-            }
-        });
+        spnRotation.addChangeListener(this::spnRotationStateChanged);
 
         jLabel13.setText(I18n.msg("rotation")+ ":");
 
         chkAllRepresentations.setText(I18n.msg("apply_changes_all_representations"));
-        chkAllRepresentations.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkAllRepresentationsActionPerformed(evt);
-            }
-        });
+        chkAllRepresentations.addActionListener(this::chkAllRepresentationsActionPerformed);
 
         btnChangeImage.setText(I18n.msg("change_X",new Object[]{I18n.msg("image")}));
-        btnChangeImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChangeImageActionPerformed(evt);
-            }
-        });
+        btnChangeImage.addActionListener(this::btnChangeImageActionPerformed);
 
-        spnScaleWidth.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spnScaleWidthStateChanged(evt);
-            }
-        });
+        spnScaleWidth.addChangeListener(this::spnScaleWidthStateChanged);
 
-        spnScaleHeight.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spnScaleHeightStateChanged(evt);
-            }
-        });
+        spnScaleHeight.addChangeListener(this::spnScaleHeightStateChanged);
 
         jLabel4.setText(I18n.msg("width")+":");
 
@@ -664,19 +612,11 @@ public class ObjectEditor
         jPanel1.add(tabObjectEditor);
 
         btnOk.setText(I18n.msg("ok"));
-        btnOk.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOkActionPerformed(evt);
-            }
-        });
+        btnOk.addActionListener(this::btnOkActionPerformed);
         pnlFrameButtons.add(btnOk);
 
         btnCancel.setText(I18n.msg("cancel"));
-        btnCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelActionPerformed(evt);
-            }
-        });
+        btnCancel.addActionListener(this::btnCancelActionPerformed);
         pnlFrameButtons.add(btnCancel);
 
         jPanel1.add(pnlFrameButtons);
@@ -1088,16 +1028,14 @@ public class ObjectEditor
         final CheckBoxList list = new CheckBoxList();
         final JTextField newItem = new JTextField(I18n.msg("add_new_item"));
         JButton btnAdd = new JButton(I18n.msg("add"));
-        btnAdd.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!newItem.getText().isEmpty()) {
-                    Config params = new Config();
-                    params.setProperty("item",
-                            newItem.getText());
-                    params.setProperty("value", "add");
-                    lb.filterParams(params, true);
-                    refreshMultiselectionList(lb, list);
-                }
+        btnAdd.addActionListener(e -> {
+            if (!newItem.getText().isEmpty()) {
+                Config params = new Config();
+                params.setProperty("item",
+                        newItem.getText());
+                params.setProperty("value", "add");
+                lb.filterParams(params, true);
+                refreshMultiselectionList(lb, list);
             }
         });
 

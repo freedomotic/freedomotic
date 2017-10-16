@@ -29,7 +29,7 @@ import java.io.File;
 public interface ReactionRepository extends Repository<Reaction> {
 
     //TODO: remove it, here just for refactoring
-    public void loadReactions(File folder);
+    void loadReactions(File folder);
 
-    public void saveReactions(File folder);
+    void saveReactions(File folder);
 }

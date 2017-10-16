@@ -64,9 +64,7 @@ public class ThingFactory {
                 logic = (EnvObjectLogic) clazz.newInstance();
                 logic.setPojo(pojo);
                 injector.injectMembers(logic);
-            } catch (InstantiationException ex) {
-                LOG.error(Freedomotic.getStackTraceInfo(ex));
-            } catch (IllegalAccessException ex) {
+            } catch (InstantiationException | IllegalAccessException ex) {
                 LOG.error(Freedomotic.getStackTraceInfo(ex));
             }
 

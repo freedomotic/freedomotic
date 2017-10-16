@@ -244,9 +244,8 @@ class I18nImpl implements I18n {
         final String bundlename = "freedomotic";
         locales.clear();
         File root = new File(Info.PATHS.PATH_WORKDIR + "/i18n");
-        File[] files = root.listFiles((File dir, String name) -> {
-            return name.matches("^" + bundlename + "(_\\w{2}(_\\w{2})?)?\\.properties$");
-        });
+        File[] files = root.listFiles((File dir, String name) ->
+                name.matches("^" + bundlename + "(_\\w{2}(_\\w{2})?)?\\.properties$"));
 
         for (File file : files) {
             String value = file.getName().replaceAll("^" + bundlename + "(_)?|\\.properties$", "");

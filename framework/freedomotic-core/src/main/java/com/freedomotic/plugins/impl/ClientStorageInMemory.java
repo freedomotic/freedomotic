@@ -112,8 +112,7 @@ class ClientStorageInMemory implements ClientStorage {
      */
     @Override
     public List<Client> getClients() {
-        Collections.sort(clients,
-                new ClientNameComparator());
+        clients.sort(new ClientNameComparator());
 
         return Collections.unmodifiableList(clients);
     }
@@ -148,8 +147,7 @@ class ClientStorageInMemory implements ClientStorage {
             }
         }
 
-        Collections.sort(tmp,
-                new ClientNameComparator());
+        tmp.sort(new ClientNameComparator());
 
         return Collections.unmodifiableList(tmp);
     }

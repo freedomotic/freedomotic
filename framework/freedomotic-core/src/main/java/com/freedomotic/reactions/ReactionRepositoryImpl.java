@@ -107,18 +107,11 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      * @param folder the folder to save the files from
      */
     private void deleteReactionFiles(File folder) {
-        File[] files;
-
         // This filter only returns object files
         FileFilter objectFileFileter
-                = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        return file.isFile() && file.getName().endsWith(REACTION_FILE_EXTENSION);
-                    }
-                };
+                = file -> file.isFile() && file.getName().endsWith(REACTION_FILE_EXTENSION);
 
-        files = folder.listFiles(objectFileFileter);
+        File[] files = folder.listFiles(objectFileFileter);
 
         for (File file : files) {
             file.delete();
@@ -135,15 +128,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
         // This filter only returns object files
         FileFilter objectFileFileter
-                = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(REACTION_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+                = file -> file.isFile() && file.getName().endsWith(REACTION_FILE_EXTENSION);
 
         File[] files = folder.listFiles(objectFileFileter);
 
@@ -300,8 +285,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      */
     public boolean exists(Reaction input) {
         if (input != null) {
-            for (Iterator<Reaction> it = list.iterator(); it.hasNext();) {
-                Reaction reaction = it.next();
+            for (Reaction reaction : list) {
                 if (input.equals(reaction)) {
                     return true;
                 }
@@ -312,7 +296,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
     @Override
     public List<Reaction> findAll() {
-        Collections.sort(list, new ReactionNameComparator());
+        list.sort(new ReactionNameComparator());
         return Collections.unmodifiableList(list);
     }
 

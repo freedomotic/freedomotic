@@ -35,7 +35,7 @@ public class UserRepresentation {
 
     private String name;
     private String password;
-    private Set<String> roles = new HashSet<String>();
+    private Set<String> roles = new HashSet<>();
     @XmlElement(name = "props")
     private Properties properties;
 

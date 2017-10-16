@@ -163,7 +163,7 @@ public class UserResource extends AbstractResource<UserRepresentation> {
 
     @Override
     protected List<UserRepresentation> prepareList() {
-        ArrayList<UserRepresentation> ul = new ArrayList<UserRepresentation>();
+        ArrayList<UserRepresentation> ul = new ArrayList<>();
         for (User u : API.getAuth().getUsers().values()) {
             ul.add(new UserRepresentation(u));
         }

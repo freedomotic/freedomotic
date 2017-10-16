@@ -105,13 +105,7 @@ public class XmlPreprocessor {
             documentBuilder.parse(new InputSource(new StringReader(writer.toString())));
 
             return writer.toString();
-        } catch (SAXException ex) {
-            throw new RuntimeException(ex);
-        } catch (ParserConfigurationException ex) {
-            throw new RuntimeException(ex);
-        } catch (TransformerConfigurationException ex) {
-            throw new RuntimeException(ex);
-        } catch (TransformerException ex) {
+        } catch (SAXException | ParserConfigurationException | TransformerException ex) {
             throw new RuntimeException(ex);
         }
     }

@@ -115,8 +115,8 @@ class ReactionConverter implements Converter {
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
         //Trigger t;
-        List<Condition> conditions = new ArrayList<Condition>();
-        ArrayList<Command> list = new ArrayList<Command>();
+        List<Condition> conditions = new ArrayList<>();
+        ArrayList<Command> list = new ArrayList<>();
 
         reader.moveDown(); //goes down to <trigger>
         String triggerName = reader.getValue();
@@ -134,7 +134,7 @@ class ReactionConverter implements Converter {
                 condition.setTarget(reader.getValue().trim());
                 reader.moveUp(); //move up to condition
                 //parse statement
-                ArrayList<String> statementValues = new ArrayList<String>();
+                ArrayList<String> statementValues = new ArrayList<>();
                 reader.moveDown(); //move down to statement
                 while (reader.hasMoreChildren()) { //childs of statement (logical, attribute, ...)
                     reader.moveDown(); //move down to statement property

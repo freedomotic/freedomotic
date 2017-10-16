@@ -151,13 +151,7 @@ public class CustomizeCommand
         setDefaultCloseOperation( javax.swing.WindowConstants.DISPOSE_ON_CLOSE );
 
         btnSave.setText( I18n.msg( "save_as_new" ) );
-        btnSave.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnSaveActionPerformed( evt );
-                }
-            } );
+        btnSave.addActionListener(this::btnSaveActionPerformed);
 
         jLabel1.setText( I18n.msg( "name" ) + ":" );
 
@@ -166,13 +160,7 @@ public class CustomizeCommand
         jLabel3.setText( I18n.msg( "parameters" ) + ":" );
 
         btnEdit.setText( I18n.msg( "save_changes" ) );
-        btnEdit.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnEditActionPerformed( evt );
-                }
-            } );
+        btnEdit.addActionListener(this::btnEditActionPerformed);
 
         cmbReceiver.setEnabled( false );
 
@@ -180,23 +168,11 @@ public class CustomizeCommand
         txtReceiver.setEnabled( false );
 
         btnChangeReceiver.setText( I18n.msg( "change" ) );
-        btnChangeReceiver.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnChangeReceiverActionPerformed( evt );
-                }
-            } );
+        btnChangeReceiver.addActionListener(this::btnChangeReceiverActionPerformed);
 
         btnDelete.setText( I18n.msg( "delete_X",
                                      new Object[] { I18n.msg( "command" ) } ) );
-        btnDelete.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnDeleteActionPerformed( evt );
-                }
-            } );
+        btnDelete.addActionListener(this::btnDeleteActionPerformed);
 
         jScrollPane1.setVerticalScrollBarPolicy( javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 
@@ -205,13 +181,7 @@ public class CustomizeCommand
 
         txtAddRow.setText( I18n.msg( "add_X",
                                      new Object[] { I18n.msg( "parameter" ) } ) );
-        txtAddRow.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    txtAddRowActionPerformed( evt );
-                }
-            } );
+        txtAddRow.addActionListener(this::txtAddRowActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout( getContentPane(  ) );
         getContentPane(  ).setLayout( layout );

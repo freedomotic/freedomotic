@@ -65,7 +65,7 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
 
         try (FileInputStream fis = new FileInputStream(file);
                 BufferedInputStream bis = new BufferedInputStream(fis);
-                DataInputStream dis = new DataInputStream(bis);) {
+                DataInputStream dis = new DataInputStream(bis)) {
 
             // dis.available() returns 0 if the file does not have more lines.
             while (dis.available() != 0) {
@@ -86,7 +86,7 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
     private void saveConfiguration(File file, String text) throws IOException {
         // Create file 
         try (FileWriter fstream = new FileWriter(file);
-                BufferedWriter out = new BufferedWriter(fstream);) {
+                BufferedWriter out = new BufferedWriter(fstream)) {
             out.write(text);
         }
     }
@@ -114,18 +114,10 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
         });
 
         jButton1.setText(api.getI18n().msg("save"));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         jButton2.setText(api.getI18n().msg("cancel"));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
         jScrollPane1.setViewportView(txtArea);
 

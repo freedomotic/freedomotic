@@ -120,7 +120,7 @@ public class JavaUploader {
                 LOG.error("IOException: {}", e.getMessage());
             }
         } else {
-            LOG.info(resp.getStatus().getName());
+            LOG.info(resp.getStatus().getReasonPhrase());
         }
         return null;
     }
@@ -148,7 +148,7 @@ public class JavaUploader {
                 LOG.error("IOException: {}", e.getMessage());
             }
         } else {
-            LOG.info(resp.getStatus().getName());
+            LOG.info(resp.getStatus().getReasonPhrase());
         }
         return "";
     }
@@ -181,7 +181,7 @@ public class JavaUploader {
                         LOG.error("IOException: {}", e.getMessage());
                     }
                 } else {
-                    LOG.info(resp.getStatus().getName());
+                    LOG.info(resp.getStatus().getReasonPhrase());
                 }
             }
         } catch (ResourceException resourceException) {
@@ -225,7 +225,7 @@ public class JavaUploader {
                 LOG.error("IOException: {}", e.getMessage());
             }
         } else {
-            LOG.info(resp.getStatus().getName());
+            LOG.info(resp.getStatus().getReasonPhrase());
         }
         return nid;
 
@@ -263,7 +263,7 @@ public class JavaUploader {
                 LOG.error("IOException: {}", e.getMessage());
             }
         } else {
-            LOG.info(resp2.getStatus().getName());
+            LOG.info(resp2.getStatus().getReasonPhrase());
         }
     }
 
@@ -316,7 +316,7 @@ public class JavaUploader {
                 LOG.error("IOException: {}", e.getMessage());
             }
         } else {
-            LOG.info(resp.getStatus().getName());
+            LOG.info(resp.getStatus().getReasonPhrase());
         }
         return null;
     }

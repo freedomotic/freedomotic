@@ -28,24 +28,24 @@ import java.util.List;
  */
 public interface Repository<T> {
 
-    public List<T> findAll();
+    List<T> findAll();
 
     // TODO: it's supposed name is a unique identifier, should return a single object
-    public List<T> findByName(String name);
+    List<T> findByName(String name);
 
-    public T findOne(String uuid);
+    T findOne(String uuid);
 
-    public boolean create(T item);  //TODO: refactor in T save(T item)
+    boolean create(T item);  //TODO: refactor in T save(T item)
 
-    public boolean delete(T item);
+    boolean delete(T item);
 
-    public boolean delete(String uuid);
+    boolean delete(String uuid);
 
-    public T modify(String uuid, T data);
+    T modify(String uuid, T data);
 
-    public T copy(T data);
+    T copy(T data);
 
-    public void deleteAll();
+    void deleteAll();
 
     //TODO: public long count();
     //TODO: public boolean exists(String uuid);

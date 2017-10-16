@@ -82,7 +82,7 @@ public class PayloadConverter
         while (reader.hasMoreChildren()) { //<statements> are the childs of payload
             reader.moveDown();
 
-            ArrayList<String> statementValues = new ArrayList<String>();
+            ArrayList<String> statementValues = new ArrayList<>();
 
             while (reader.hasMoreChildren()) { //childs of statement (logical, attribute, ...)
                 reader.moveDown();

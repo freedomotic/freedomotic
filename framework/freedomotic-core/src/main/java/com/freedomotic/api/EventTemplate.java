@@ -125,7 +125,7 @@ public class EventTemplate implements Serializable {
         creation = System.currentTimeMillis();
     }
 
-    private final void fillPayloadWithDefaults() {
+    private void fillPayloadWithDefaults() {
         init();
 
         try {

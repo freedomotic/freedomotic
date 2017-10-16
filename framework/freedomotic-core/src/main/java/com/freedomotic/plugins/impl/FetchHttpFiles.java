@@ -60,7 +60,7 @@ class FetchHttpFiles {
         boolean result = false;
 
 		try (BufferedInputStream bis = new BufferedInputStream(urlc.getInputStream());
-			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(destinationFile.getPath()));) {  
+			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(destinationFile.getPath()))) {
             int i;
 
             while ((i = bis.read()) != -1) {

@@ -94,12 +94,7 @@ public class LogWindow extends JFrame {
         });
         setColumnWidth(table.getColumnModel().getColumn(0), 70);
         cmbLevel.setSelectedItem("ALL");
-        cmbLevel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	printableLogger.setLevel(org.apache.log4j.Level.toLevel(cmbLevel.getSelectedItem().toString()));
-            }
-        });
+        cmbLevel.addActionListener(e -> printableLogger.setLevel(org.apache.log4j.Level.toLevel(cmbLevel.getSelectedItem().toString())));
         add(new JLabel(i18n.msg("log_level") + ": "), BorderLayout.NORTH);
         cmbLevel.setEditable(false);
         add(cmbLevel, BorderLayout.NORTH);

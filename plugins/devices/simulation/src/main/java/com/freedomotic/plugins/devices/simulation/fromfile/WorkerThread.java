@@ -63,11 +63,7 @@ public class WorkerThread extends Thread {
     }
 
     private void doAllCoordinatesEvents() {
-        Iterator coordinateIterator = coord.iterator();
-
-        while (coordinateIterator.hasNext()) {
-            Coordinate coordinate = (Coordinate) coordinateIterator.next();
-
+        for (Coordinate coordinate : coord) {
             if (coordinate != null) {
                 for (EnvObjectLogic person : master.getApi().things().findByName(coordinate.getUserId())) {
                     if (person instanceof GenericPerson) {

@@ -62,23 +62,20 @@ public class VariousSensors extends Protocol {
         c.setProperty("options", "Yes, it's good; No, it sucks; I don't know");
         c.setReplyTimeout(10000); //10 seconds
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                VariousSensorsGui guiHook = (VariousSensorsGui) gui;
-                Command reply = send(c);
+        new Thread(() -> {
+            VariousSensorsGui guiHook = (VariousSensorsGui) gui;
+            Command reply = send(c);
 
-                if (reply != null) {
-                    String userInput = reply.getProperty("result");
+            if (reply != null) {
+                String userInput = reply.getProperty("result");
 
-                    if (userInput != null) {
-                        guiHook.updateDescription("The reply to the test question is " + userInput);
-                    } else {
-                        guiHook.updateDescription("The user has not responded to the question within the given time");
-                    }
+                if (userInput != null) {
+                    guiHook.updateDescription("The reply to the test question is " + userInput);
                 } else {
-                    guiHook.updateDescription("Unreceived reply within given timeout (10 seconds)");
+                    guiHook.updateDescription("The user has not responded to the question within the given time");
                 }
+            } else {
+                guiHook.updateDescription("Unreceived reply within given timeout (10 seconds)");
             }
         }).start();
     }
@@ -95,23 +92,20 @@ public class VariousSensors extends Protocol {
         nlpCommand.setProperty("text", text);
         nlpCommand.setReplyTimeout(10000);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                VariousSensorsGui guiHook = (VariousSensorsGui) gui;
-                Command reply = send(nlpCommand);
+        new Thread(() -> {
+            VariousSensorsGui guiHook = (VariousSensorsGui) gui;
+            Command reply = send(nlpCommand);
 
-                if (reply != null) {
-                    String executedCommand = reply.getProperty("result");
+            if (reply != null) {
+                String executedCommand = reply.getProperty("result");
 
-                    if (executedCommand != null) {
-                        guiHook.updateDescription("Recognized command: " + executedCommand);
-                    } else {
-                        guiHook.updateDescription("No similar command exists");
-                    }
+                if (executedCommand != null) {
+                    guiHook.updateDescription("Recognized command: " + executedCommand);
                 } else {
-                    guiHook.updateDescription("Unreceived reply within given timeout (10 seconds)");
+                    guiHook.updateDescription("No similar command exists");
                 }
+            } else {
+                guiHook.updateDescription("Unreceived reply within given timeout (10 seconds)");
             }
         }).start();
     }
@@ -127,11 +121,7 @@ public class VariousSensors extends Protocol {
         //invert the value for the next round
         notifyEvent(event);
 
-        if (powered) {
-            powered = false;
-        } else {
-            powered = true;
-        }
+        powered = !powered;
 
         //wait two seconds before sending another event
         try {

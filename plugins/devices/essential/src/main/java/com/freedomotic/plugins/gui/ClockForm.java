@@ -60,13 +60,7 @@ public class ClockForm
 
         jLabel1.setText( "Timer Resolution (millisec):" );
 
-        spnResolution.addChangeListener( new javax.swing.event.ChangeListener(  )
-            {
-                public void stateChanged( javax.swing.event.ChangeEvent evt )
-                {
-                    spnResolutionStateChanged( evt );
-                }
-            } );
+        spnResolution.addChangeListener(this::spnResolutionStateChanged);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout( getContentPane(  ) );
         getContentPane(  ).setLayout( layout );

@@ -35,20 +35,20 @@ public interface Auth {
     /**
      *
      */
-    public void initBaseRealm();
+    void initBaseRealm();
 
     /**
      *
      * @return
      */
-    public boolean isInited();
+    boolean isInited();
 
     /**
      *
      * @param key
      * @return
      */
-    public boolean isPermitted(String key);
+    boolean isPermitted(String key);
 
     /**
      *
@@ -56,7 +56,7 @@ public interface Auth {
      * @param password
      * @return
      */
-    public boolean login(String subject, char[] password, boolean rememberMe);
+    boolean login(String subject, char[] password, boolean rememberMe);
 
     /**
      *
@@ -65,51 +65,51 @@ public interface Auth {
      * @param rememberMe
      * @return
      */
-    public boolean login(String subject, String password, boolean rememberMe);
+    boolean login(String subject, String password, boolean rememberMe);
 
     /**
      *
      */
-    public void logout();
-
-    /**
-     *
-     * @return
-     */
-    public Subject getSubject();
+    void logout();
 
     /**
      *
      * @return
      */
-    public Object getPrincipal();
+    Subject getSubject();
+
+    /**
+     *
+     * @return
+     */
+    Object getPrincipal();
 
     /**
      *
      * @param plugin
      * @param action
      */
-    public Runnable pluginBindRunnablePrivileges(Plugin plugin, Runnable action);
+    Runnable pluginBindRunnablePrivileges(Plugin plugin, Runnable action);
 
     /**
      *
      * @param plugin
      * @param permissions
      */
-    public void setPluginPrivileges(Plugin plugin, String permissions);
+    void setPluginPrivileges(Plugin plugin, String permissions);
 
     /**
      *
      * @return
      */
-    public String getPluginDefaultPermission();
+    String getPluginDefaultPermission();
 
     /**
      *
      * @param rm
      */
     @RequiresPermissions("auth:realms:create")
-    public void addRealm(Realm rm);
+    void addRealm(Realm rm);
 
     /**
      *
@@ -117,11 +117,11 @@ public interface Auth {
      * @return
      */
     @RequiresPermissions("auth:fakeUser")
-    public boolean bindFakeUser(String userName);
+    boolean bindFakeUser(String userName);
 
-    public void load();
+    void load();
 
-    public void save();
+    void save();
 
     /**
      * Adds a new user to the realm.
@@ -132,30 +132,30 @@ public interface Auth {
      * @return true if the user is added or false if the user already exists
      */
     @RequiresPermissions("auth:users:create")
-    public boolean addUser(String userName, String password, String salt, String role);
+    boolean addUser(String userName, String password, String salt, String role);
 
     @RequiresPermissions("auth:roles:create")
-    public boolean addRole(SimpleRole role);
+    boolean addRole(SimpleRole role);
 
-    public User getCurrentUser();
-
-    @RequiresPermissions("auth:users:read")
-    public User getUser(String username);
+    User getCurrentUser();
 
     @RequiresPermissions("auth:users:read")
-    public Map<String, User> getUsers();
+    User getUser(String username);
+
+    @RequiresPermissions("auth:users:read")
+    Map<String, User> getUsers();
 
     @RequiresPermissions("auth:roles:read")
-    public SimpleRole getRole(String name);
+    SimpleRole getRole(String name);
 
     @RequiresPermissions("auth:roles:read")
-    public Map<String, SimpleRole> getRoles();
+    Map<String, SimpleRole> getRoles();
 
     @RequiresPermissions("auth:users:delete")
-    public boolean deleteUser(String userName);
+    boolean deleteUser(String userName);
 
     @RequiresPermissions("auth:roles:delete")
-    public boolean deleteRole(String roleName);
+    boolean deleteRole(String roleName);
 
-    public Realm getUserRealm();
+    Realm getUserRealm();
 }

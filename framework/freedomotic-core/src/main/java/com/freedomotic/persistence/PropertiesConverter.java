@@ -60,7 +60,7 @@ class PropertiesConverter implements Converter {
      */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
-        HashMap<String, String> propertiesHashMap = new HashMap<String, String>();
+        HashMap<String, String> propertiesHashMap = new HashMap<>();
 
         while (reader.hasMoreChildren()) {
             reader.moveDown();

@@ -31,18 +31,18 @@ import java.util.List;
  */
 public interface ThingRepository extends Repository<EnvObjectLogic> {
 
-    public List<EnvObjectLogic> findByEnvironment(EnvironmentLogic env);
+    List<EnvObjectLogic> findByEnvironment(EnvironmentLogic env);
 
-    public List<EnvObjectLogic> findByEnvironment(String uuid);
+    List<EnvObjectLogic> findByEnvironment(String uuid);
 
-    public List<EnvObjectLogic> findByProtocol(String protocolName);
+    List<EnvObjectLogic> findByProtocol(String protocolName);
 
-    public EnvObjectLogic findByAddress(String protocol, String address);
+    EnvObjectLogic findByAddress(String protocol, String address);
 
     //TODO: temporary for refactoring, should be removed
-    public EnvObjectLogic load(File file) throws RepositoryException;
+    EnvObjectLogic load(File file) throws RepositoryException;
 
-    public List<EnvObjectLogic> loadAll(File folder) throws RepositoryException;
+    List<EnvObjectLogic> loadAll(File folder) throws RepositoryException;
 
-    public void saveAll(File folder) throws RepositoryException;
+    void saveAll(File folder) throws RepositoryException;
 }

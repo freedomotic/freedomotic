@@ -200,14 +200,9 @@ public class EnvObjectLogic {
         }
 
         //parameters in input are ok, continue...
-        Iterator<Entry<String, String>> it = pojo.getTriggers().entrySet().iterator();
         //remove old references if any
-        while (it.hasNext()) {
-            Entry<String, String> e = it.next();
-            if (e.getValue().equals(behaviorName)) {
-                it.remove(); //remove the old value that had to be updated
-            }
-        }
+        //remove the old value that had to be updated
+        pojo.getTriggers().entrySet().removeIf(e -> e.getValue().equals(behaviorName));
 
         pojo.getTriggers().setProperty(trigger.getName(), behaviorName);
         LOG.info("Trigger mapping in thing \"{}\": behavior \"{}\" is now associated to trigger named \"{}\"",

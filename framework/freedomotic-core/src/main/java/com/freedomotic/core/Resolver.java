@@ -365,23 +365,10 @@ public final class Resolver {
             namespaces.add(prefix);
         }
 
-        Set entries = aContext.getProperties().entrySet();
-        Iterator it = entries.iterator();
-
-        while (it.hasNext()) {
-            String key;
-            Map.Entry entry = (Map.Entry) it.next();
-
-            //removing the prefix of the properties if already exists
-            //to avoid dublicate prefixes like @event.event.object.name
-            if (entry.getKey().toString().startsWith(prefix)) {
-                key = entry.getKey().toString().substring(prefix.length());
-            } else {
-                key = entry.getKey().toString();
-            }
-            context.addStatement(prefix + key,
-                    entry.getValue().toString());
-        }
+        aContext.getProperties().forEach((key, value) -> {
+            String keyWithPrefix = key.toString().startsWith(prefix) ? key.toString() : prefix + key.toString();
+            context.addStatement(keyWithPrefix, value.toString());
+        });
     }
 
     /**
@@ -399,21 +386,10 @@ public final class Resolver {
             namespaces.add(prefix);
         }
 
-        Iterator it = aContext.entrySet().iterator();
-
-        while (it.hasNext()) {
-            String key;
-            Entry entry = (Entry) it.next();
-
-            //removing the prefix of the properties if already exists
-            //to avoid duplicate prefixes like @event.event.object.name
-            if (entry.getKey().toString().startsWith(prefix)) {
-                key = entry.getKey().toString().substring(prefix.length());
-            } else {
-                key = entry.getKey().toString();
-            }
-            context.addStatement(prefix + key, entry.getValue().toString());
-        }
+        aContext.forEach((key, value) -> {
+            String keyWithPrefix = key.startsWith(prefix) ? key : prefix + key;
+            context.addStatement(keyWithPrefix, value);
+        });
     }
 
     /**

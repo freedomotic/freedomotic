@@ -1,15 +1,17 @@
 
 package com.freedomotic.jfrontend.utils;
 
+import com.freedomotic.reactions.Trigger;
 import com.freedomotic.rules.Payload;
 import com.freedomotic.rules.Statement;
-import com.freedomotic.reactions.Trigger;
-import java.util.Iterator;
-import javax.swing.JTextField;
-import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import javax.swing.*;
+import java.util.Iterator;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -132,6 +134,6 @@ public class PropertiesPanel_1Test {
         result.setDescription(trigger.getDescription());
         result.setPersistence(true);
         result.setPayload(p);
-        Assert.assertEquals(result, trigger);
+        assertEquals(result, trigger);
     }
 }

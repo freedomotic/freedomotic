@@ -80,9 +80,7 @@ public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
         for (int i = 0; i < classes.length; i++) {
             try {
                 modules[i] = (Module) (classes[i]).newInstance();
-            } catch (InstantiationException e) {
-                throw new InitializationError(e);
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 throw new InitializationError(e);
             }
         }

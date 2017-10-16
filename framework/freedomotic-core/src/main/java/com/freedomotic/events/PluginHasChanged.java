@@ -78,7 +78,7 @@ public class PluginHasChanged
          *
          */
         DEQUEUE
-    };
+    }
 
     /**
      *

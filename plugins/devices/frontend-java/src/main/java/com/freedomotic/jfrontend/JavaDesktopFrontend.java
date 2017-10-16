@@ -187,32 +187,24 @@ public class JavaDesktopFrontend extends Protocol {
                 }
             }
         } else {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Custom button text
-                            if (c.getProperty("options") != null) {
-                                Object[] options = c.getProperty("options").split(";");
-                                int n = JOptionPane.showOptionDialog(window,
-                                        c.getProperty("question"),
-                                        "Please reply within "
-                                        + (c.getReplyTimeout() / 1000)
-                                        + " seconds",
-                                        JOptionPane.YES_NO_CANCEL_OPTION,
-                                        JOptionPane.QUESTION_MESSAGE,
-                                        null,
-                                        options,
-                                        options[2]);
-                                c.setProperty("result", options[n].toString());
-                            }
-                            reply(c);
-                        }
-                    }).start();
+            EventQueue.invokeLater(() -> new Thread(() -> {
+                //Custom button text
+                if (c.getProperty("options") != null) {
+                    Object[] options = c.getProperty("options").split(";");
+                    int n = JOptionPane.showOptionDialog(window,
+                            c.getProperty("question"),
+                            "Please reply within "
+                            + (c.getReplyTimeout() / 1000)
+                            + " seconds",
+                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            options,
+                            options[2]);
+                    c.setProperty("result", options[n].toString());
                 }
-            });
+                reply(c);
+            }).start());
         }
     }
 

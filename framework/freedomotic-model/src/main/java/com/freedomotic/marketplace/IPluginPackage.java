@@ -34,17 +34,17 @@ public interface IPluginPackage {
     /**
      * @return the title
      */
-    public String getTitle();
+    String getTitle();
 
     /**
      * @return the uri
      */
-    public String getURI();
+    String getURI();
 
     /**
      * @return the path
      */
-    public String getFilePath();
+    String getFilePath();
 
     /**
      * Returns the path of the file matching the core version Empty string if it
@@ -52,20 +52,20 @@ public interface IPluginPackage {
      *
      * @return
      */
-    public String getFilePath(String version);
+    String getFilePath(String version);
 
     /**
      * @return the type
      */
-    public String getType();
+    String getType();
 
     /**
      * @return the description
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * @return the icon
      */
-    public ImageIcon getIcon();
+    ImageIcon getIcon();
 }

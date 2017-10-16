@@ -38,9 +38,9 @@ public final class Reaction
     private static final long serialVersionUID = -5474545571527398625L;
     private Trigger trigger = new Trigger();
     //list of optional conditions
-    private List<Condition> conditions = new ArrayList<Condition>();
+    private List<Condition> conditions = new ArrayList<>();
     private String uuid;
-    private List<Command> commands = new ArrayList<Command>();
+    private List<Command> commands = new ArrayList<>();
     private String description;
     private String shortDescription;
 
@@ -111,7 +111,7 @@ public final class Reaction
      * @param command the command performed when the reaction is triggered
      */
     public Reaction(Trigger trigger, Command command) {
-        ArrayList<Command> tmp = new ArrayList<Command>();
+        ArrayList<Command> tmp = new ArrayList<>();
         tmp.add(command);
         create(trigger, tmp);
     }
@@ -159,7 +159,7 @@ public final class Reaction
      */
     public List<Command> getCommands() {
         if (commands == null) {
-            setCommands(new ArrayList<Command>());
+            setCommands(new ArrayList<>());
         }
         return commands;
     }
@@ -280,12 +280,8 @@ public final class Reaction
 
         final Reaction other = (Reaction) obj;
 
-        if ((this.getShortDescription() == null) ? (other.getShortDescription() != null)
-                : (!this.shortDescription.equals(other.shortDescription))) {
-            return false;
-        }
-
-        return true;
+        return (this.getShortDescription() == null) ? (other.getShortDescription() == null)
+                : (this.shortDescription.equals(other.shortDescription));
     }
 
     /**

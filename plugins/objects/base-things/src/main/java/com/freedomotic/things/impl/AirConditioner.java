@@ -106,13 +106,7 @@ public class AirConditioner extends ElectricDevice {
 
         // Sets the conditioning mode (auto, dry, cool, heat, fan, humidity ...)
         conditioningMode = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior(BEHAVIOR_CONDITIONING_MODE));
-        conditioningMode.addListener(new ListBehaviorLogic.Listener() {
-
-            @Override
-            public void selectedChanged(Config params, boolean fireCommand) {
-                setConditioningMode(params.getProperty("value"), params, fireCommand);
-            }
-        });
+        conditioningMode.addListener((params, fireCommand) -> setConditioningMode(params.getProperty("value"), params, fireCommand));
 
 
         //register new behaviors to the superclass to make it visible to it

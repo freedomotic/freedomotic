@@ -30,20 +30,20 @@ import javax.ws.rs.core.Response;
 public interface ResourceInterface<T> extends ResourceReadOnlyInterface {
 
     @Override
-    public Response list();
+    Response list();
 
     @Override
-    public Response get(String uuid);
+    Response get(String uuid);
 
-    public Response delete(String uuid);
+    Response delete(String uuid);
 
-    public Response copy(String uuid);
+    Response copy(String uuid);
 
-    public Response create(T s);
+    Response create(T s);
 
-    public Response update(String uuid, T s);
+    Response update(String uuid, T s);
 
     @Override
-    public Response options();
+    Response options();
 
 }

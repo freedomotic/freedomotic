@@ -59,22 +59,18 @@ public class SerialHelper {
     public SerialHelper(final String portName, int baudRate, int dataBits, int stopBits, int parity, final SerialPortListener consumer) throws SerialPortException {
         this.portName = portName;
         serialPort = new SerialPort(this.portName);
-        serialPort.addEventListener(new SerialPortEventListener() {
+        serialPort.addEventListener(event -> {
+            if (event.isRXCHAR()) {
 
-            @Override
-            public void serialEvent(SerialPortEvent event) {
-                if (event.isRXCHAR()) {
-
-                    if (event.getEventValue() > 0) {
-                        try {
-                            readBuffer.append(new String(serialPort.readBytes()));
-                        } catch (SerialPortException ex) {
-                            LOG.warn(ex.getMessage());
-                        }
+                if (event.getEventValue() > 0) {
+                    try {
+                        readBuffer.append(new String(serialPort.readBytes()));
+                    } catch (SerialPortException ex) {
+                        LOG.warn(ex.getMessage());
                     }
-                    LOG.info("Received message \"{}\" from serial port \"{}\"", new Object[]{readBuffer.toString(), portName});
-                    sendReadData(consumer);
                 }
+                LOG.info("Received message \"{}\" from serial port \"{}\"", new Object[]{readBuffer.toString(), portName});
+                sendReadData(consumer);
             }
         });
         serialPort.setParams(baudRate, dataBits, stopBits, parity);

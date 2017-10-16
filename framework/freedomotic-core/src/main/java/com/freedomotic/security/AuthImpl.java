@@ -55,7 +55,7 @@ class AuthImpl implements Auth {
     private PropertiesRealm baseRealm = new PropertiesRealm();
     private SimpleAccountRealm pluginRealm = new SimpleAccountRealm(PLUGIN_REALM_NAME);
     private String DEFAULT_PERMISSION = "*";
-    private ArrayList<Realm> realmCollection = new ArrayList<Realm>();
+    private ArrayList<Realm> realmCollection = new ArrayList<>();
     @Inject
     private AppConfig config;
 

@@ -45,7 +45,7 @@ public class PropertiesBehaviorLogic
          * @param params
          * @param fireCommand
          */
-        public void propertyChanged(String key, String value, Config params, boolean fireCommand);
+        void propertyChanged(String key, String value, Config params, boolean fireCommand);
     }
 
     /**

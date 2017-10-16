@@ -125,7 +125,7 @@ class AppConfigImpl implements AppConfig {
 
     @Override
     public ArrayList<URL> getUrlListProperty(String key) {
-        ArrayList<URL> list = new ArrayList<URL>();
+        ArrayList<URL> list = new ArrayList<>();
         String s = getStringProperty(key, "");
         StringTokenizer t = new StringTokenizer(s, " ");
 
@@ -144,7 +144,7 @@ class AppConfigImpl implements AppConfig {
 
     @Override
     public ArrayList<String> getPathListProperty(String key) {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         String s = getStringProperty(key, "");
         StringTokenizer t = new StringTokenizer(s, " ");
 

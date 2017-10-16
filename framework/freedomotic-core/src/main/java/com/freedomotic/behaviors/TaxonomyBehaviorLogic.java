@@ -49,28 +49,28 @@ public class TaxonomyBehaviorLogic
          * @param params
          * @param fireCommand
          */
-        public void onSelection(final Config params, boolean fireCommand);
+        void onSelection(final Config params, boolean fireCommand);
 
         /**
          *
          * @param params
          * @param fireCommand
          */
-        public void onUnselection(final Config params, boolean fireCommand);
+        void onUnselection(final Config params, boolean fireCommand);
 
         /**
          *
          * @param params
          * @param fireCommand
          */
-        public void onAdd(final Config params, boolean fireCommand);
+        void onAdd(final Config params, boolean fireCommand);
 
         /**
          *
          * @param params
          * @param fireCommand
          */
-        public void onRemove(final Config params, boolean fireCommand);
+        void onRemove(final Config params, boolean fireCommand);
     }
 
     /**

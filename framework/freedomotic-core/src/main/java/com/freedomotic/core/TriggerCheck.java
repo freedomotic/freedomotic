@@ -191,7 +191,7 @@ public class TriggerCheck {
         if (affectedObject == null) { //there isn't an object with this protocol and address
             LOG.warn("Found a candidate for things autodiscovery: thing \"{}\" of type \"{}\"", name, clazz);
             if ((clazz != null) && !clazz.isEmpty()) {
-                boolean allowClones = ("false".equalsIgnoreCase(autodiscoveryAllowClones))?false:true;
+                boolean allowClones = !"false".equalsIgnoreCase(autodiscoveryAllowClones);
                 try {
                     affectedObject = autodiscovery.join(clazz, name, protocol, address, allowClones);
                 } catch (RepositoryException ex) {
@@ -211,10 +211,8 @@ public class TriggerCheck {
     private void executeTriggeredAutomations(final Trigger trigger, final EventTemplate event) {
         AUTOMATION_EXECUTOR.execute(() -> {
             //Searching for reactions using this trigger
-        	Iterator<Reaction> reactIterator = new CopyOnWriteArrayList<Reaction>(reactionRepository.findAll()).listIterator();
-        	
-            while (reactIterator.hasNext()) {
-            	Reaction reaction = reactIterator.next();
+
+            for (Reaction reaction : new CopyOnWriteArrayList<>(reactionRepository.findAll())) {
                 Trigger reactionTrigger = reaction.getTrigger();
                 //found a related reaction. This must be executed
                 if (trigger.equals(reactionTrigger) && !reaction.getCommands().isEmpty()) {
@@ -223,18 +221,18 @@ public class TriggerCheck {
                         return;
                     }
                     reactionTrigger.setExecuted();
-                  
+
                     LOG.debug("Try to execute reaction \"{}\"", reaction.toString());
-                      
+
                     //executes the commands in sequence (only the first sequence is used) 
                     //if more then one sequence is needed it can be done with two reactions with the same trigger
                     Resolver commandResolver = new Resolver();
                     event.getPayload().addStatement("description", trigger.getDescription()); //embedd the trigger description to the event payload
                     commandResolver.addContext("event.", event.getPayload());
 
-                    if(!this.processReactionCommands(event, reaction, commandResolver))
-                    	return;
-                    
+                    if (!this.processReactionCommands(event, reaction, commandResolver))
+                        return;
+
                     String info = "Executing automation \"" + reaction.toString() + "\" takes "
                             + (System.currentTimeMillis() - event.getCreation()) + "ms.";
                     LOG.info(info);
@@ -242,10 +240,8 @@ public class TriggerCheck {
                     MessageEvent message = new MessageEvent(null, info);
                     message.setType("callout"); //display as callout on frontends
                     busService.send(message);
-                }
-                
-                else {
-                	LOG.info("No valid reaction {} bound to trigger \"{}\"", reaction.getShortDescription(), trigger.getName());
+                } else {
+                    LOG.info("No valid reaction {} bound to trigger \"{}\"", reaction.getShortDescription(), trigger.getName());
                 }
             }
 

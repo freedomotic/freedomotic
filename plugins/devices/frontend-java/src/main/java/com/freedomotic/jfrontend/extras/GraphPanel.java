@@ -154,22 +154,14 @@ public class GraphPanel extends javax.swing.JFrame {
         jLabel2.setText("End Date");
 
         jButton1.setText("Apply filters");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         jSpinnerStartDate.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(), null, null, java.util.Calendar.SECOND));
 
         jSpinnerStopDate.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(), null, null, java.util.Calendar.SECOND));
 
         jButton2.setText("Redraw");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
         jComboGranularity.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Year", "Month", "Day", "Hour", "Minute", "Second" }));
         jComboGranularity.setSelectedIndex(3);

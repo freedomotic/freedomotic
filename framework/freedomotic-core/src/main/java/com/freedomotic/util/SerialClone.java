@@ -56,9 +56,7 @@ public class SerialClone {
     public static <T> T clone(T x) {
         try {
             return cloneX(x);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -83,7 +81,7 @@ public class SerialClone {
     private static class CloneOutput
             extends ObjectOutputStream {
 
-        private Queue<Class<?>> classQueue = new LinkedList<Class<?>>();
+        private Queue<Class<?>> classQueue = new LinkedList<>();
 
         CloneOutput(OutputStream out)
                 throws IOException {

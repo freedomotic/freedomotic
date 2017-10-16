@@ -63,11 +63,9 @@ public class ListDrawer extends Renderer {
         super(master);
         this.master = master;
         cmbZone.removeAllItems();
-        cmbZone.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ZoneLogic zone = (ZoneLogic) cmbZone.getSelectedItem();
-                enlistObjects(zone);
-            }
+        cmbZone.addActionListener(e -> {
+            ZoneLogic zone = (ZoneLogic) cmbZone.getSelectedItem();
+            enlistObjects(zone);
         });
         this.setLayout(new BorderLayout());
         this.setBackground(Color.white);
@@ -126,11 +124,9 @@ public class ListDrawer extends Renderer {
                 panel.add(lblName);
                 //a configuration button with a listener
                 JButton btnConfig = new JButton("Configure");
-                btnConfig.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        ObjectEditor objectEditor = new ObjectEditor(obj);
-                        objectEditor.setVisible(true);
-                    }
+                btnConfig.addActionListener(e -> {
+                    ObjectEditor objectEditor = new ObjectEditor(obj);
+                    objectEditor.setVisible(true);
                 });
                 panel.add(btnConfig);
                 row++;
@@ -169,9 +165,7 @@ public class ListDrawer extends Renderer {
                         48,
                         48); //-1 means no resizeing
 
-                ImageIcon icon = new ImageIcon(img);
-
-                return icon;
+                return new ImageIcon(img);
             }
         }
 

@@ -203,11 +203,7 @@ public class Zone
 
         final Zone other = (Zone) obj;
 
-        if ((this.name == null) ? (other.name != null) : (!this.name.equalsIgnoreCase(other.name))) {
-            return false;
-        }
-
-        return true;
+        return (this.name == null) ? (other.name == null) : (this.name.equalsIgnoreCase(other.name));
     }
 
     /**

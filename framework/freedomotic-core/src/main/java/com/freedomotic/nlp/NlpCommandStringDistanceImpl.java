@@ -55,7 +55,7 @@ public class NlpCommandStringDistanceImpl implements NlpCommand {
     public List<Rank<Command>> computeSimilarity(String inputText, int maxResults) throws NoResultsException {
         ranking = new ArrayList<>();
         buildRanking(inputText);
-        Collections.sort(ranking, new DescendingRankComparator());
+        ranking.sort(new DescendingRankComparator());
 
 //        for (Rank<Command> r : ranking) {
 //            if (r.getSimilarity() > 0) {

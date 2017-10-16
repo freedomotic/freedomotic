@@ -27,10 +27,10 @@ import javax.ws.rs.core.Response;
  */
 public interface ResourceReadOnlyInterface {
 
-    public Response list();
+    Response list();
 
-    public Response get(String uuid);
+    Response get(String uuid);
 
-    public Response options();
+    Response options();
 
 }

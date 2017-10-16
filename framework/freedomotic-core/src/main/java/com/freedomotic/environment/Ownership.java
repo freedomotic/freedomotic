@@ -49,12 +49,12 @@ public interface Ownership {
      * @param z
      * @return
      */
-    abstract boolean canTriggerReactionsOnEnter(ZoneLogic z);
+    boolean canTriggerReactionsOnEnter(ZoneLogic z);
 
     /**
      *
      * @param z
      * @return
      */
-    abstract boolean canTriggerReactionsOnExit(ZoneLogic z);
+    boolean canTriggerReactionsOnExit(ZoneLogic z);
 }

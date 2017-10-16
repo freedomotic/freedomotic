@@ -139,28 +139,21 @@ class ThingRepositoryImpl implements ThingRepository {
             throw new IllegalArgumentException("Unable to delete objects files in a null or not valid folder");
         }
 
-        File[] files = folder.listFiles();
+        File[] files;
 
         // This filter only returns object files
         FileFilter objectFileFileter
-                = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+                = file -> file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION);
 
         files = folder.listFiles(objectFileFileter);
 
-        for (File file : files) {
-            boolean deleted = file.delete();
+        if (files != null) {
+            for (File file : files) {
+                boolean deleted = file.delete();
 
-            if (!deleted) {
-                throw new RepositoryException("Unable to delete file \"" + file.getAbsoluteFile() + "\"");
+                if (!deleted) {
+                    throw new RepositoryException("Unable to delete file \"" + file.getAbsoluteFile() + "\"");
+                }
             }
         }
     }
@@ -600,16 +593,7 @@ class ThingRepositoryImpl implements ThingRepository {
 
         // This filter only returns object files
         FileFilter objectFileFilter
-                = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+                = file -> file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION);
 
         File[] files = folder.listFiles(objectFileFilter);
 

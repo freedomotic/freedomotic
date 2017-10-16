@@ -29,7 +29,7 @@ import java.io.File;
 public interface TriggerRepository extends Repository<Trigger> {
 
     //TODO: remove from here
-    public void loadTriggers(File folder);
+    void loadTriggers(File folder);
 
-    public void saveTriggers(File folder);
+    void saveTriggers(File folder);
 }

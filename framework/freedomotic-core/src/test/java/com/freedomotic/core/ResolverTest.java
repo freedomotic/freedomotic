@@ -97,9 +97,7 @@ public class ResolverTest {
         Command result = new Command();
         try {
             result = resolver.resolve(c);
-        } catch (CloneNotSupportedException ex) {
-            Assert.fail(ex.getMessage());
-        } catch (VariableResolutionException ex) {
+        } catch (CloneNotSupportedException | VariableResolutionException ex) {
             Assert.fail(ex.getMessage());
         }
         assertEquals("25", result.getProperty("zero"));

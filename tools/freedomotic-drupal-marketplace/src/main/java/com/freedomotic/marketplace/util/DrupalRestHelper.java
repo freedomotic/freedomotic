@@ -53,7 +53,7 @@ public class DrupalRestHelper {
 
     public static List<IPluginPackage> retrieveAllPlugins() {
 
-        List<IPluginPackage> pluginPackageList = new ArrayList<IPluginPackage>();
+        List<IPluginPackage> pluginPackageList = new ArrayList<>();
         ArrayList<MarketPlacePluginResume> resumes = retrieveResumes();
         for (MarketPlacePluginResume mpr : resumes) {
             if (mpr.getUri() != null) {
@@ -76,16 +76,14 @@ public class DrupalRestHelper {
             //TODO: scale the same from both dimensions
             Image newimg = img.getScaledInstance(64, 64, java.awt.Image.SCALE_SMOOTH);
             imageIcon = new ImageIcon(newimg);
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(DrupalRestHelper.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (URISyntaxException | IOException ex) {
             Logger.getLogger(DrupalRestHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
         return imageIcon;
     }
 
     protected static ArrayList<MarketPlacePluginResume> retrieveResumes() {
-        ArrayList<MarketPlacePluginResume> pluginList = new ArrayList<MarketPlacePluginResume>();
+        ArrayList<MarketPlacePluginResume> pluginList = new ArrayList<>();
         try {
             ClientResource cr = new ClientResource(DRUPALSCHEMA + "://" + DRUPALPATH + "/rest/node?parameters[type]=plugin");
             Representation test2 = cr.get();
@@ -102,7 +100,7 @@ public class DrupalRestHelper {
     }
 
     public static ArrayList<MarketPlacePluginCategory> retrieveCategories() {
-        ArrayList<MarketPlacePluginCategory> categoryList = new ArrayList<MarketPlacePluginCategory>();
+        ArrayList<MarketPlacePluginCategory> categoryList = new ArrayList<>();
         String jsonData = JavaUploader.postTaxonomyGetTree("5");
         Gson gson = new Gson();
         Type collectionType = new TypeToken<ArrayList<MarketPlacePluginCategory>>() {
@@ -112,11 +110,11 @@ public class DrupalRestHelper {
     }
 
     public static ArrayList<MarketPlacePlugin2> retrievePluginsByCategory(String categoryId) {
-        ArrayList<MarketPlacePlugin2> pluginPackageList = new ArrayList<MarketPlacePlugin2>();
+        ArrayList<MarketPlacePlugin2> pluginPackageList = new ArrayList<>();
         int page = 0;
         boolean newData = true;
         String previousJsonData = "EMPTY";
-        ArrayList<MarketPlacePlugin2> pagePluginPackageList = new ArrayList<MarketPlacePlugin2>();
+        ArrayList<MarketPlacePlugin2> pagePluginPackageList = new ArrayList<>();
         while (newData) {
             String jsonData = "";
             try {

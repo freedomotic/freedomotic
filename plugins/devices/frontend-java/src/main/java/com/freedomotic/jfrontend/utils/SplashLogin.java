@@ -113,24 +113,12 @@ public class SplashLogin extends javax.swing.JFrame {
         setResizable(false);
 
         btnLogin.setText(I18n .msg("login"));
-        btnLogin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoginActionPerformed(evt);
-            }
-        });
+        btnLogin.addActionListener(this::btnLoginActionPerformed);
 
         btnExit.setText(I18n.msg("exit"));
-        btnExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExitActionPerformed(evt);
-            }
-        });
+        btnExit.addActionListener(this::btnExitActionPerformed);
 
-        username.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                usernameActionPerformed(evt);
-            }
-        });
+        username.addActionListener(this::usernameActionPerformed);
 
         logo.setToolTipText("");
         logo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -214,14 +202,11 @@ public class SplashLogin extends javax.swing.JFrame {
             password.setEnabled(false);
             msgBox.setText(I18n.msg("incorrect_login_msg"));
 
-            ActionListener taskPerformer = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    setDefaultLoginData();
-                    msgBox.setText(api.getI18n().msg("login_disclaimer"));
-                    username.setEnabled(true);
-                    password.setEnabled(true);
-                }
+            ActionListener taskPerformer = ae -> {
+                setDefaultLoginData();
+                msgBox.setText(api.getI18n().msg("login_disclaimer"));
+                username.setEnabled(true);
+                password.setEnabled(true);
             };
             Timer doWaitForNewLogin = new Timer(4000, taskPerformer);
             doWaitForNewLogin.setRepeats(false);

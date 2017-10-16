@@ -30,5 +30,5 @@ import java.io.File;
  */
 interface EnvironmentPersistenceFactory {
 
-    public EnvironmentPersistence create(File directory);
+    EnvironmentPersistence create(File directory);
 }

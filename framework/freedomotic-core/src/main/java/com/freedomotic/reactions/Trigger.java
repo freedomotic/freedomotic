@@ -151,11 +151,7 @@ public final class Trigger implements BusConsumer, Cloneable {
      * @return
      */
     public boolean isConsistentWith(EventTemplate event) {
-        if (getPayload().equals(event.getPayload())) {
-            return true;
-        } else {
-            return false;
-        }
+        return getPayload().equals(event.getPayload());
     }
 
     /**
@@ -366,11 +362,7 @@ public final class Trigger implements BusConsumer, Cloneable {
 
         final Trigger other = (Trigger) obj;
 
-        if ((this.name == null) ? (other.name != null) : (!this.name.equalsIgnoreCase(other.name))) {
-            return false;
-        }
-
-        return true;
+        return (this.name == null) ? (other.name == null) : (this.name.equalsIgnoreCase(other.name));
     }
 
     /**

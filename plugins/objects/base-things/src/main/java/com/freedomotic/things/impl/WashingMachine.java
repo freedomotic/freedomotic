@@ -128,23 +128,11 @@ public class WashingMachine extends ElectricDevice {
         // Sets the washing program (whites, wool, ...)
         // TODO: This behavior should contain temperature, spinning rpm, duration, cycles list data for each program (as washing machine presets)
         washingProgram = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior(BEHAVIOR_WASHING_PROGRAM));
-        washingProgram.addListener(new ListBehaviorLogic.Listener() {
-
-            @Override
-            public void selectedChanged(Config params, boolean fireCommand) {
-                setWashingProgram(params.getProperty("value"), params, fireCommand);
-            }
-        });
+        washingProgram.addListener((params, fireCommand) -> setWashingProgram(params.getProperty("value"), params, fireCommand));
 
         // Controls the current cycle whitin a washing program (ready, washing, rinsing, spinning, finished)
         washingCycle = new ListBehaviorLogic((ListBehavior) getPojo().getBehavior(BEHAVIOR_WASHING_CYCLE));
-        washingCycle.addListener(new ListBehaviorLogic.Listener() {
-
-            @Override
-            public void selectedChanged(Config params, boolean fireCommand) {
-                setWashingCycle(params.getProperty("value"), params, fireCommand);
-            }
-        });
+        washingCycle.addListener((params, fireCommand) -> setWashingCycle(params.getProperty("value"), params, fireCommand));
 
         //register new behaviors to the superclass to make it visible to it
         registerBehavior(washing);

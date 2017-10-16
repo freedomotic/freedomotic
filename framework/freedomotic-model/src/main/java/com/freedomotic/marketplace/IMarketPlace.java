@@ -53,10 +53,10 @@ public interface IMarketPlace {
     /**
      *
      */
-    public void updateAllPackageList();
+    void updateAllPackageList();
 
     /**
      *
      */
-    public void updateCategoryList();
+    void updateCategoryList();
 }

@@ -34,7 +34,7 @@ import org.apache.shiro.authz.permission.WildcardPermission;
 public class RoleRepresentation {
 
     private String name;
-    private final List<String> permissions = new ArrayList<String>();
+    private final List<String> permissions = new ArrayList<>();
 
     public RoleRepresentation() {
     }

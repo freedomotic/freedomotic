@@ -46,14 +46,14 @@ public class RangedIntBehaviorLogic
          * @param params
          * @param fireCommand
          */
-        public void onLowerBoundValue(Config params, boolean fireCommand);
+        void onLowerBoundValue(Config params, boolean fireCommand);
 
         /**
          *
          * @param params
          * @param fireCommand
          */
-        public void onUpperBoundValue(Config params, boolean fireCommand);
+        void onUpperBoundValue(Config params, boolean fireCommand);
 
         /**
          *
@@ -61,7 +61,7 @@ public class RangedIntBehaviorLogic
          * @param params
          * @param fireCommand
          */
-        public void onRangeValue(int rangeValue, Config params, boolean fireCommand);
+        void onRangeValue(int rangeValue, Config params, boolean fireCommand);
     }
 
     /**
@@ -233,11 +233,7 @@ public class RangedIntBehaviorLogic
 
         final RangedIntBehaviorLogic other = (RangedIntBehaviorLogic) obj;
 
-        if ((this.data != other.data) && ((this.data == null) || !this.data.equals(other.data))) {
-            return false;
-        }
-
-        return true;
+        return (this.data == other.data) || ((this.data != null) && this.data.equals(other.data));
     }
 
     /**

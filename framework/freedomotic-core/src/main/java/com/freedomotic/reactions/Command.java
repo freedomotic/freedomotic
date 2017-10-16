@@ -425,11 +425,7 @@ public final class Command implements Serializable, Cloneable {
 
         final Command other = (Command) obj;
 
-        if ((this.name == null) ? (other.name != null) : (!this.name.equals(other.name))) {
-            return false;
-        }
-
-        return true;
+        return (this.name == null) ? (other.name == null) : (this.name.equals(other.name));
     }
 
     /**
@@ -464,10 +460,9 @@ public final class Command implements Serializable, Cloneable {
         clonedCmd.setExecuted(executed);
         clonedCmd.setHardwareLevel(hardwareLevel);
         Iterator<Entry<Object, Object>> it = getProperties().entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<Object, Object> e = it.next();
-            clonedCmd.setProperty(e.getKey().toString(), e.getValue().toString()); //adding the original command properties to its clone
-        }
+
+        getProperties().entrySet().forEach(entry ->
+                clonedCmd.setProperty(entry.getKey().toString(), entry.getValue().toString()));
 
         clonedCmd.properties.setXmlFile(this.getName());
 

@@ -326,13 +326,13 @@ class PluginsManagerImpl implements PluginsManager {
              }
 
              String[] children = source.list();
-             for (int i = 0; i < children.length; i++) {
-                 recursiveCopy(new File(source, children[i]), new File(target, children[i]));
+             for (String aChildren : children) {
+                 recursiveCopy(new File(source, aChildren), new File(target, aChildren));
              }
          }
     	 
     	 else try(InputStream input = new FileInputStream(source); 
-    			 OutputStream output = new FileOutputStream(target);) {
+    			 OutputStream output = new FileOutputStream(target)) {
                 // Copy the bits from instream to outstream
                 byte[] buf = new byte[1024];
                 int len;
@@ -354,7 +354,7 @@ class PluginsManagerImpl implements PluginsManager {
             throws IOException {
         //seach for a file called PACKAGE
         Properties packageFile = new Properties();
-        try(FileInputStream fis = new FileInputStream(new File(pluginFolder + "/PACKAGE"));) {  
+        try(FileInputStream fis = new FileInputStream(new File(pluginFolder + "/PACKAGE"))) {
             packageFile.load(fis);
             fis.close();
         }

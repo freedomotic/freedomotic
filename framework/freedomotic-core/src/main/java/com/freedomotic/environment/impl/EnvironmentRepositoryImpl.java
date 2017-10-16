@@ -206,16 +206,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
 
         // this filter only returns thing files
         FileFilter objectFileFileter
-                = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(ENVIRONMENT_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+                = file -> file.isFile() && file.getName().endsWith(ENVIRONMENT_FILE_EXTENSION);
 
         File[] files = folder.listFiles(objectFileFileter);
 
@@ -246,12 +237,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
         environments.clear();
 
         // This filter only returns env files
-        FileFilter envFileFilter = new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return file.isFile() && file.getName().endsWith(ENVIRONMENT_FILE_EXTENSION);
-            }
-        };
+        FileFilter envFileFilter = file -> file.isFile() && file.getName().endsWith(ENVIRONMENT_FILE_EXTENSION);
 
         File[] files = folder.listFiles(envFileFilter);
 

@@ -140,9 +140,9 @@ public class OpenDialogFileFilter
     public OpenDialogFileFilter(String[] filters, String description) {
         this();
 
-        for (int i = 0; i < filters.length; i++) {
+        for (String filter : filters) {
             // add filters one by one
-            addExtension(filters[i]);
+            addExtension(filter);
         }
 
         if (description != null) {

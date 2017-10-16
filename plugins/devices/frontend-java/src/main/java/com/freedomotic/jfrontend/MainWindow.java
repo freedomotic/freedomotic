@@ -596,63 +596,35 @@ public class MainWindow
         });
 
         mnuOpenNew.setText(i18n.msg("file"));
-        mnuOpenNew.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuOpenNewActionPerformed(evt);
-            }
-        });
+        mnuOpenNew.addActionListener(this::mnuOpenNewActionPerformed);
 
         mnuNewEnvironment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         mnuNewEnvironment.setText(i18n.msg("new") + i18n.msg("environment"));
-        mnuNewEnvironment.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuNewEnvironmentActionPerformed(evt);
-            }
-        });
+        mnuNewEnvironment.addActionListener(this::mnuNewEnvironmentActionPerformed);
         mnuOpenNew.add(mnuNewEnvironment);
 
         mnuOpenEnvironment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         mnuOpenEnvironment.setText(i18n.msg("open") + i18n.msg("environment"));
-        mnuOpenEnvironment.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuOpenEnvironmentActionPerformed(evt);
-            }
-        });
+        mnuOpenEnvironment.addActionListener(this::mnuOpenEnvironmentActionPerformed);
         mnuOpenNew.add(mnuOpenEnvironment);
 
         mnuSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         mnuSave.setText(i18n.msg("save") + i18n.msg("environment"));
-        mnuSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuSaveActionPerformed(evt);
-            }
-        });
+        mnuSave.addActionListener(this::mnuSaveActionPerformed);
         mnuOpenNew.add(mnuSave);
 
         mnuSaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSaveAs.setText(i18n.msg("save_X_as",new Object[]{i18n.msg("environment")}));
-        mnuSaveAs.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuSaveAsActionPerformed(evt);
-            }
-        });
+        mnuSaveAs.addActionListener(this::mnuSaveAsActionPerformed);
         mnuOpenNew.add(mnuSaveAs);
         mnuOpenNew.add(jSeparator1);
 
         mnuSwitchUser.setText(i18n.msg("change_user"));
-        mnuSwitchUser.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuSwitchUserActionPerformed(evt);
-            }
-        });
+        mnuSwitchUser.addActionListener(this::mnuSwitchUserActionPerformed);
         mnuOpenNew.add(mnuSwitchUser);
 
         mnuExit.setText(i18n.msg("exit"));
-        mnuExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuExitActionPerformed(evt);
-            }
-        });
+        mnuExit.addActionListener(this::mnuExitActionPerformed);
         mnuOpenNew.add(mnuExit);
 
         menuBar.add(mnuOpenNew);
@@ -661,100 +633,56 @@ public class MainWindow
 
         mnuSelectEnvironment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
         mnuSelectEnvironment.setText(i18n.msg("select_X",new Object[]{i18n.msg("area_floor")}));
-        mnuSelectEnvironment.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuSelectEnvironmentActionPerformed(evt);
-            }
-        });
+        mnuSelectEnvironment.addActionListener(this::mnuSelectEnvironmentActionPerformed);
         mnuEditMode.add(mnuSelectEnvironment);
 
         jMenu4.setText(i18n.msg("area_floor"));
 
         mnuRenameEnvironment.setText(i18n.msg("rename"));
-        mnuRenameEnvironment.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuRenameEnvironmentActionPerformed(evt);
-            }
-        });
+        mnuRenameEnvironment.addActionListener(this::mnuRenameEnvironmentActionPerformed);
         jMenu4.add(mnuRenameEnvironment);
 
         mnuAddDuplicateEnvironment.setText(i18n.msg("add")+"/"+i18n.msg("duplicate"));
-        mnuAddDuplicateEnvironment.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuAddDuplicateEnvironmentActionPerformed(evt);
-            }
-        });
+        mnuAddDuplicateEnvironment.addActionListener(this::mnuAddDuplicateEnvironmentActionPerformed);
         jMenu4.add(mnuAddDuplicateEnvironment);
 
         mnuChangeRenderer.setText(i18n.msg("change_X",new Object[]{i18n.msg("renderer")}));
-        mnuChangeRenderer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuChangeRendererActionPerformed(evt);
-            }
-        });
+        mnuChangeRenderer.addActionListener(this::mnuChangeRendererActionPerformed);
         jMenu4.add(mnuChangeRenderer);
 
         mnuBackground.setText(i18n.msg("change_X",new Object[]{i18n.msg("background")}));
-        mnuBackground.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuBackgroundActionPerformed(evt);
-            }
-        });
+        mnuBackground.addActionListener(this::mnuBackgroundActionPerformed);
         jMenu4.add(mnuBackground);
 
         mnuDelete.setText(i18n.msg("delete"));
-        mnuDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuDeleteActionPerformed(evt);
-            }
-        });
+        mnuDelete.addActionListener(this::mnuDeleteActionPerformed);
         jMenu4.add(mnuDelete);
 
         mnuEditMode.add(jMenu4);
 
         mnuRoomEditMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         mnuRoomEditMode.setText(i18n.msg("X_edit_mode",new Object[]{i18n.msg("rooms")}));
-        mnuRoomEditMode.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuRoomEditModeActionPerformed(evt);
-            }
-        });
+        mnuRoomEditMode.addActionListener(this::mnuRoomEditModeActionPerformed);
         mnuEditMode.add(mnuRoomEditMode);
 
         jMenu3.setText(i18n.msg("rooms"));
 
         mnuRenameRoom.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
         mnuRenameRoom.setText(i18n.msg("rename") + i18n.msg("room"));
-        mnuRenameRoom.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuRenameRoomActionPerformed(evt);
-            }
-        });
+        mnuRenameRoom.addActionListener(this::mnuRenameRoomActionPerformed);
         jMenu3.add(mnuRenameRoom);
 
         mnuAddRoom.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
         mnuAddRoom.setText(i18n.msg("add") + i18n.msg("room"));
-        mnuAddRoom.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuAddRoomActionPerformed(evt);
-            }
-        });
+        mnuAddRoom.addActionListener(this::mnuAddRoomActionPerformed);
         jMenu3.add(mnuAddRoom);
 
         mnuRoomBackground.setText(i18n.msg("change_X",new Object[]{i18n.msg("background")}));
-        mnuRoomBackground.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuRoomBackgroundActionPerformed(evt);
-            }
-        });
+        mnuRoomBackground.addActionListener(this::mnuRoomBackgroundActionPerformed);
         jMenu3.add(mnuRoomBackground);
 
         mnuRemoveRoom.setText(i18n.msg("remove") + i18n.msg("room"));
-        mnuRemoveRoom.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuRemoveRoomActionPerformed(evt);
-            }
-        });
+        mnuRemoveRoom.addActionListener(this::mnuRemoveRoomActionPerformed);
         jMenu3.add(mnuRemoveRoom);
 
         mnuEditMode.add(jMenu3);
@@ -765,11 +693,7 @@ public class MainWindow
 
         mnuObjectEditMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
         mnuObjectEditMode.setText(i18n.msg("X_edit_mode",new Object[]{i18n.msg("objects")}));
-        mnuObjectEditMode.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuObjectEditModeActionPerformed(evt);
-            }
-        });
+        mnuObjectEditMode.addActionListener(this::mnuObjectEditModeActionPerformed);
         mnuObjects.add(mnuObjectEditMode);
 
         menuBar.add(mnuObjects);
@@ -778,11 +702,7 @@ public class MainWindow
 
         mnuAutomations.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, 0));
         mnuAutomations.setText(i18n.msg("manage") + i18n.msg("automations"));
-        mnuAutomations.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuAutomationsActionPerformed(evt);
-            }
-        });
+        mnuAutomations.addActionListener(this::mnuAutomationsActionPerformed);
         jMenu2.add(mnuAutomations);
 
         menuBar.add(jMenu2);
@@ -791,19 +711,11 @@ public class MainWindow
 
         jCheckBoxMarket.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, 0));
         jCheckBoxMarket.setText(i18n.msg("install_from_marketplace"));
-        jCheckBoxMarket.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxMarketActionPerformed(evt);
-            }
-        });
+        jCheckBoxMarket.addActionListener(this::jCheckBoxMarketActionPerformed);
         jMenu1.add(jCheckBoxMarket);
 
         mnuPluginConfigure.setText(i18n.msg("configure"));
-        mnuPluginConfigure.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuPluginConfigureActionPerformed(evt);
-            }
-        });
+        mnuPluginConfigure.addActionListener(this::mnuPluginConfigureActionPerformed);
         jMenu1.add(mnuPluginConfigure);
 
         menuBar.add(jMenu1);
@@ -811,19 +723,11 @@ public class MainWindow
         jMenu5.setText(i18n.msg("settings"));
 
         mnuLanguage.setText(i18n.msg("language"));
-        mnuLanguage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLanguageActionPerformed(evt);
-            }
-        });
+        mnuLanguage.addActionListener(this::mnuLanguageActionPerformed);
         jMenu5.add(mnuLanguage);
 
         mnuPrivileges.setText(i18n.msg("privileges"));
-        mnuPrivileges.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuPrivilegesActionPerformed(evt);
-            }
-        });
+        mnuPrivileges.addActionListener(this::mnuPrivilegesActionPerformed);
         jMenu5.add(mnuPrivileges);
 
         menuBar.add(jMenu5);
@@ -832,20 +736,12 @@ public class MainWindow
 
         mnuPluginList.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
         mnuPluginList.setText(i18n.msg("X_list",new Object[]{i18n.msg("plugins")}));
-        mnuPluginList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuPluginListActionPerformed(evt);
-            }
-        });
+        mnuPluginList.addActionListener(this::mnuPluginListActionPerformed);
         mnuWindow.add(mnuPluginList);
 
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, 0));
         jMenuItem3.setText(i18n.msg("fullscreen"));
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
-            }
-        });
+        jMenuItem3.addActionListener(this::jMenuItem3ActionPerformed);
         mnuWindow.add(jMenuItem3);
 
         menuBar.add(mnuWindow);
@@ -853,29 +749,17 @@ public class MainWindow
         mnuHelp.setText(i18n.msg("help"));
 
         mnuTutorial.setText(i18n.msg("tutorial"));
-        mnuTutorial.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuTutorialActionPerformed(evt);
-            }
-        });
+        mnuTutorial.addActionListener(this::mnuTutorialActionPerformed);
         mnuHelp.add(mnuTutorial);
 
         jMenuItem1.setText(master.getApi().getI18n().msg("report_issue")
         );
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
+        jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
         mnuHelp.add(jMenuItem1);
 
         submnuHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         submnuHelp.setText(i18n.msg("about"));
-        submnuHelp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                submnuHelpActionPerformed(evt);
-            }
-        });
+        submnuHelp.addActionListener(this::submnuHelpActionPerformed);
         mnuHelp.add(submnuHelp);
 
         menuBar.add(mnuHelp);
@@ -1410,7 +1294,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     private void mnuLanguageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLanguageActionPerformed
         //JDK 1,7 version: JComboBox<i18n.ComboLanguage> combo = new JComboBox<i18n.ComboLanguage>(I18n.getAvailableLocales());
         //JDK 1.6 version: next line
-        Vector<ComboLanguage> languages = new Vector<ComboLanguage>();
+        Vector<ComboLanguage> languages = new Vector<>();
         for (Locale loc : i18n.getAvailableLocales()) {
             languages.add(new ComboLanguage(loc.getDisplayCountry(i18n.getDefaultLocale()) + " - " + loc.getDisplayLanguage(loc), loc.toString(), loc));
         }

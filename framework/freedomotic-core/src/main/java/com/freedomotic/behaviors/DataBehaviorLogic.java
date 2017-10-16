@@ -52,7 +52,7 @@ public class DataBehaviorLogic implements BehaviorLogic {
          * @param params
          * @param fireCommand
          */
-        public void onReceiveData(Config params, boolean fireCommand);
+        void onReceiveData(Config params, boolean fireCommand);
 
     }
 

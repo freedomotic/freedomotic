@@ -769,11 +769,11 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
         //draw single lines
         y += (BORDER - 27);
 
-        for (int j = 0; j < lines.length; j++) {
-            if (!lines[j].trim().isEmpty()) {
+        for (String line : lines) {
+            if (!line.trim().isEmpty()) {
                 y += 27;
                 localGraph.setColor(Color.white);
-                localGraph.drawString(lines[j], x + BORDER, y);
+                localGraph.drawString(line, x + BORDER, y);
             }
         }
 
@@ -1180,18 +1180,13 @@ public class Renderer extends Drawer implements MouseListener, MouseMotionListen
 
         if (forZone != null) { //create for all zones
 
-            Iterator<FreedomPoint> it = forZone.getPojo().getShape().getPoints().iterator();
-
-            while (it.hasNext()) {
-                FreedomPoint corner = it.next();
+            for (FreedomPoint corner : forZone.getPojo().getShape().getPoints()) {
                 handles.add(new Handle(forZone, corner));
             }
         } else {
             for (ZoneLogic zone : currEnv.getZones()) {
-                Iterator<FreedomPoint> it = zone.getPojo().getShape().getPoints().iterator();
 
-                while (it.hasNext()) {
-                    FreedomPoint corner = it.next();
+                for (FreedomPoint corner : zone.getPojo().getShape().getPoints()) {
                     handles.add(new Handle(zone, corner));
                 }
             }

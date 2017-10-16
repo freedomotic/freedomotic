@@ -94,10 +94,9 @@ public class MarketPlacePlugin2 implements IPluginPackage {
                         && marketPlaceFile.getFilename().contains(version)) {
                     //freedomotic website link will be something like that
                     //http://freedomotic.com/sites/all/modules/pubdlcnt/pubdlcnt.php?file=http://freedomotic.com/sites/default/files/com.freedomotic.mailer-5.4.x-1.6.device&nid=1197
-                    String path = "http://www.freedomotic.com/sites/all/modules/pubdlcnt/pubdlcnt.php?file="
+                    return "http://www.freedomotic.com/sites/all/modules/pubdlcnt/pubdlcnt.php?file="
                             + marketPlaceFile.getFilepath()
                             + "&nid=671";
-                    return path;
                 }
             }
         }
@@ -125,7 +124,7 @@ public class MarketPlacePlugin2 implements IPluginPackage {
 
     public ArrayList<MarketPlaceFile> getFiles() {
         if (field_file == null) {
-            return new ArrayList<MarketPlaceFile>();
+            return new ArrayList<>();
         } else {
             field_file.removeAll(Collections.singleton(null));
             return field_file;
@@ -300,7 +299,7 @@ public class MarketPlacePlugin2 implements IPluginPackage {
 
     public ArrayList<MarketPlaceFile> getIcons() {
         if (field_icon == null) {
-            return new ArrayList<MarketPlaceFile>();
+            return new ArrayList<>();
         } else {
             field_icon.removeAll(Collections.singleton(null));
             return field_icon;

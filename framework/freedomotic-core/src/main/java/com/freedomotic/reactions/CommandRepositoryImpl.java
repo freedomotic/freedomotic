@@ -209,21 +209,12 @@ class CommandRepositoryImpl implements CommandRepository {
     @Override
     public void loadCommands(File folder) {
         XStream xstream = FreedomXStream.getXstream();
-        File[] files = folder.listFiles();
 
         // This filter only returns object files
         FileFilter objectFileFileter
-                = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(COMMAND_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+                = file -> file.isFile() && file.getName().endsWith(COMMAND_FILE_EXTENSION);
 
-        files = folder.listFiles(objectFileFileter);
+        File[] files = folder.listFiles(objectFileFileter);
 
         if (files != null) {
 
@@ -339,15 +330,7 @@ class CommandRepositoryImpl implements CommandRepository {
 
         // This filter only returns object files
         FileFilter objectFileFileter
-                = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(COMMAND_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+                = file -> file.isFile() && file.getName().endsWith(COMMAND_FILE_EXTENSION);
 
         files = folder.listFiles(objectFileFileter);
 

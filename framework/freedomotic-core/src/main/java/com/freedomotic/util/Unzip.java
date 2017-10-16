@@ -70,7 +70,7 @@ public class Unzip {
             return;
         }
 
-        try (ZipFile zip = new ZipFile(file);) {
+        try (ZipFile zip = new ZipFile(file)) {
             String newPath = zipFile.substring(0, zipFile.length() - 4);
             //simulates the unzip here feature
             newPath = newPath.substring(0, newPath.lastIndexOf(File.separator));
@@ -91,7 +91,7 @@ public class Unzip {
                 if (!entry.isDirectory()) {
                     try (BufferedInputStream is = new BufferedInputStream(zip.getInputStream(entry));
                             FileOutputStream fos = new FileOutputStream(destFile);
-                            BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);) {
+                            BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER)) {
 
                         int currentByte;
 

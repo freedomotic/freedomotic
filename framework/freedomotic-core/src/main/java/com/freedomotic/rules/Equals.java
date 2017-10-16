@@ -42,10 +42,6 @@ public class Equals extends BinaryExpression {
      */
     @Override
     public Boolean evaluate() {
-        if (getLeft().equalsIgnoreCase(getRight())
-                || (getRight().equals(Statement.ANY))) {
-            return true;
-        }
-        return false;
+        return getLeft().equalsIgnoreCase(getRight()) || (getRight().equals(Statement.ANY));
     }
 }

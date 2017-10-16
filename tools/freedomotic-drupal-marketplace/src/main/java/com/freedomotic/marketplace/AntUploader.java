@@ -89,12 +89,10 @@ public class AntUploader extends Task {
         LOG.info("Uploading to drupal nodeid {} the file in \"{}\"", nodeid, marketDirectory.getAbsolutePath());
         if (marketDirectory.isDirectory()) {
             // This filter only returns object files
-            FileFilter objectFileFilter = (File file) -> {
-                return (file.isFile()
-                        && (file.getName().endsWith(".device")
-                        || file.getName().endsWith(".object")
-                        || file.getName().endsWith(".event")));
-            };
+            FileFilter objectFileFilter = (File file) -> (file.isFile()
+                    && (file.getName().endsWith(".device")
+                    || file.getName().endsWith(".object")
+                    || file.getName().endsWith(".event")));
             files = marketDirectory.listFiles(objectFileFilter);
         } else {
             throw new BuildException("\"" + marketDirectory + "\" is not a folder");

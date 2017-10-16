@@ -57,11 +57,7 @@ public class ObjectHasChangedBehavior extends EventTemplate {
         super(source);
 
         //add default object properties
-        Iterator<Entry<String, String>> it = obj.getExposedProperties().entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<String, String> entry = it.next();
-            payload.addStatement(entry.getKey(), entry.getValue());
-        }
+        obj.getExposedProperties().forEach((key, value) -> payload.addStatement(key, value));
 
         //add the list of changed behaviors
         payload.addStatement("object.currentRepresentation",

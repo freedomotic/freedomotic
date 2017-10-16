@@ -103,7 +103,7 @@ public class TrackingReadFile extends Protocol {
         ArrayList<Coordinate> coord = new ArrayList<>();
         String userId = FilenameUtils.removeExtension(f.getName());
 
-        try (FileReader fr = new FileReader(f); BufferedReader br = new BufferedReader(fr);) {
+        try (FileReader fr = new FileReader(f); BufferedReader br = new BufferedReader(fr)) {
             LOG.info("Reading coordinates from file \"{}\"", f.getAbsolutePath());
             String line;
 
@@ -136,7 +136,7 @@ public class TrackingReadFile extends Protocol {
         ArrayList<Coordinate> coord = new ArrayList<>();
         String userId = FilenameUtils.removeExtension(f.getName());
 
-        try (FileReader fr = new FileReader(f); BufferedReader br = new BufferedReader(fr);) {
+        try (FileReader fr = new FileReader(f); BufferedReader br = new BufferedReader(fr)) {
             LOG.info("Reading coordinates from file \"{}\"", f.getAbsolutePath());
             String line;
             while ((line = br.readLine()) != null) {

@@ -49,16 +49,10 @@ public class MarketPlaceService {
     private MarketPlaceService() {
         try {
             marketPlaceLookup = Lookup.getDefault();
-            marketPlaceTemplate = new Template<IMarketPlace>(IMarketPlace.class);
+            marketPlaceTemplate = new Template<>(IMarketPlace.class);
             marketPlaceResults = marketPlaceLookup.lookup(marketPlaceTemplate);
             marketPlaces = marketPlaceResults.allInstances();
-            marketPlaceResults.addLookupListener(new LookupListener() {
-
-                @Override
-                public void resultChanged(LookupEvent e) {
-                    LOG.error("Lookup has changed");
-                }
-            });
+            marketPlaceResults.addLookupListener(e -> LOG.error("Lookup has changed"));
         } catch (Exception e) {
             LOG.error("Error initializing marketplace service", Freedomotic.getStackTraceInfo(e));
         }
@@ -84,7 +78,7 @@ public class MarketPlaceService {
         ArrayList<IPluginPackage> packageList = null;
 
         try {
-            packageList = new ArrayList<IPluginPackage>();
+            packageList = new ArrayList<>();
 
             for (IMarketPlace market : marketPlaces) {
                 packageList.addAll(market.getAvailablePackages());
@@ -105,7 +99,7 @@ public class MarketPlaceService {
         ArrayList<IPluginPackage> packageList = null;
 
         try {
-            packageList = new ArrayList<IPluginPackage>();
+            packageList = new ArrayList<>();
 
             for (IMarketPlace market : marketPlaces) {
                 packageList.addAll(market.getAvailablePackages(category));
@@ -125,7 +119,7 @@ public class MarketPlaceService {
         ArrayList<IPluginCategory> categoryList = null;
 
         try {
-            categoryList = new ArrayList<IPluginCategory>();
+            categoryList = new ArrayList<>();
 
             for (IMarketPlace market : marketPlaces) {
                 categoryList.addAll(market.getAvailableCategories());
@@ -138,7 +132,7 @@ public class MarketPlaceService {
     }
 
     public ArrayList<IMarketPlace> getProviders() {
-        ArrayList<IMarketPlace> markets = new ArrayList<IMarketPlace>();
+        ArrayList<IMarketPlace> markets = new ArrayList<>();
         markets.addAll(marketPlaces);
         return markets;
     }

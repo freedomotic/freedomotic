@@ -30,71 +30,71 @@ public interface BehaviorLogic {
     /**
      *
      */
-    public final String VALUE_OPPOSITE = "opposite";
+    String VALUE_OPPOSITE = "opposite";
 
     /**
      *
      */
-    public final String VALUE_PREVIOUS = "previous";
+    String VALUE_PREVIOUS = "previous";
 
     /**
      *
      */
-    public final String VALUE_NEXT = "next";
+    String VALUE_NEXT = "next";
 
     /**
      *
      * @param params
      * @param fireCommand
      */
-    public void filterParams(final Config params, boolean fireCommand);
+    void filterParams(final Config params, boolean fireCommand);
 
     /**
      *
      * @return
      */
-    public String getName();
+    String getName();
 
     /**
      *
      * @return
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      *
      * @return
      */
-    public boolean isChanged();
+    boolean isChanged();
 
     /**
      *
      * @param value
      */
-    public void setChanged(boolean value);
+    void setChanged(boolean value);
 
     /**
      *
      * @return
      */
-    public boolean isActive();
+    boolean isActive();
 
     /**
      *
      * @return
      */
-    public boolean isReadOnly();
+    boolean isReadOnly();
 
     /**
      *
      * @param value
      */
-    public void setReadOnly(boolean value);
+    void setReadOnly(boolean value);
 
     /**
      *
      * @return
      */
-    public String getValueAsString();
+    String getValueAsString();
 
 }

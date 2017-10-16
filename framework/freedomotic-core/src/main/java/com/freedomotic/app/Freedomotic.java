@@ -270,20 +270,12 @@ public class Freedomotic implements BusConsumer {
          */
         if (config.getBooleanProperty("CACHE_MARKETPLACE_ON_STARTUP", false)) {
             try {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                LOG.info("Starting marketplace service");
+                EventQueue.invokeLater(() -> new Thread(() -> {
+                    LOG.info("Starting marketplace service");
 
-                                MarketPlaceService mps = MarketPlaceService.getInstance();
-                                onlinePluginCategories = mps.getCategoryList();
-                            }
-                        }).start();
-                    }
-                });
+                    MarketPlaceService mps = MarketPlaceService.getInstance();
+                    onlinePluginCategories = mps.getCategoryList();
+                }).start());
             } catch (Exception e) {
                 LOG.warn("Unable to cache plugins package from marketplace", Freedomotic.getStackTraceInfo(e));
             }

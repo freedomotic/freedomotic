@@ -31,7 +31,7 @@ public class PropertiesPanel
         this.setPreferredSize(new Dimension(500, 500));
         this.rows = rows;
         this.cols = cols;
-        table = new ArrayList<Component>();
+        table = new ArrayList<>();
         this.setLayout(new SpringLayout());
     }
 

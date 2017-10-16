@@ -53,7 +53,7 @@ public interface Nlp<T> {
      *
      * @param <T>
      */
-    public class Rank<T> {
+    class Rank<T> {
 
         private int similarity;
         private T cmd;
@@ -85,7 +85,7 @@ public interface Nlp<T> {
         }
     }
 
-    public class DescendingRankComparator implements Comparator<Rank> {
+    class DescendingRankComparator implements Comparator<Rank> {
 
         @Override
         public int compare(Rank ob1, Rank ob2) {

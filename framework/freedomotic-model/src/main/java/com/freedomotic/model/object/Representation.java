@@ -217,11 +217,7 @@ public class Representation
      */
     @XmlTransient
     public boolean isFilled() {
-        if (fillColor != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return fillColor != null;
     }
 
     /**
@@ -230,11 +226,7 @@ public class Representation
      */
     @XmlTransient
     public boolean isBordered() {
-        if (borderColor != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return borderColor != null;
     }
 
     /**

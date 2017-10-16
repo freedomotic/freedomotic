@@ -103,12 +103,9 @@ public final class Payload implements Serializable {
 
         if (obj instanceof Payload) {
             Payload eventPayload = (Payload) obj;
-            Iterator<Statement> it = payloadLst.iterator();
 
             //check all statement for consistency
-            while (it.hasNext()) {
-                Statement triggerStatement = it.next();
-
+            for (Statement triggerStatement : payloadLst) {
                 // at this stage the trigger has already all the event.* properties embedded (shoud be skipped)
                 if (triggerStatement.getAttribute().startsWith("event.")) {
                     //skip this iteration, and continue with the next statement

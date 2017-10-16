@@ -180,8 +180,8 @@ public final class ResourcesManager {
             } else if (folder.isDirectory()) { //a subdirectory
                 File[] listOfFiles = folder.listFiles();
                 if (listOfFiles != null) {
-                    for (int i = 0; i < listOfFiles.length; i++) {
-                        find(listOfFiles[i], fileName);
+                    for (File file : listOfFiles) {
+                        find(file, fileName);
                     }
                 }
             }

@@ -34,5 +34,5 @@ public interface BusConsumer {
      *
      * @param message
      */
-    public void onMessage(ObjectMessage message);
+    void onMessage(ObjectMessage message);
 }

@@ -31,12 +31,12 @@ public interface GenericDataIface extends Serializable {
      *
      * @return
      */
-    public GenericDataIface clone();
+    GenericDataIface clone();
 
     /**
      *
      * @return
      */
-    public String toJSON();
+    String toJSON();
 
 }

@@ -25,9 +25,8 @@ import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.events.TemperatureEvent;
 import com.freedomotic.plugins.devices.simulation.VariousSensors;
 import com.freedomotic.reactions.Command;
-import javax.swing.JFrame;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
+import javax.swing.*;
 
 /**
  *
@@ -46,25 +45,19 @@ public class VariousSensorsGui
     public VariousSensorsGui(VariousSensors sensors) {
         this.sensor = sensors;
         initComponents();
-        sldLuminosity.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (!sldLuminosity.getValueIsAdjusting()) {
-                    notifyLuminosityEvent(sldLuminosity.getValue());
-                    updateDescription("Selected temperature is " + sldTemperature.getValue()
-                            + "°C. Selected Luminosity is " + sldLuminosity.getValue() + "%.");
-                }
+        sldLuminosity.addChangeListener(e -> {
+            if (!sldLuminosity.getValueIsAdjusting()) {
+                notifyLuminosityEvent(sldLuminosity.getValue());
+                updateDescription("Selected temperature is " + sldTemperature.getValue()
+                        + "°C. Selected Luminosity is " + sldLuminosity.getValue() + "%.");
             }
         });
 
-        sldTemperature.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (!sldTemperature.getValueIsAdjusting()) {
-                    notifyTemperatureEvent(sldTemperature.getValue());
-                    updateDescription("Selected temperature is " + sldTemperature.getValue()
-                            + "°C. Selected Luminosity is " + sldLuminosity.getValue() + "%.");
-                }
+        sldTemperature.addChangeListener(e -> {
+            if (!sldTemperature.getValueIsAdjusting()) {
+                notifyTemperatureEvent(sldTemperature.getValue());
+                updateDescription("Selected temperature is " + sldTemperature.getValue()
+                        + "°C. Selected Luminosity is " + sldLuminosity.getValue() + "%.");
             }
         });
     }
@@ -132,11 +125,7 @@ public class VariousSensorsGui
         sldLuminosity.setPaintTicks(true);
         sldLuminosity.setSnapToTicks(true);
         sldLuminosity.setValue(70);
-        sldLuminosity.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                sldLuminosityStateChanged(evt);
-            }
-        });
+        sldLuminosity.addChangeListener(evt -> sldLuminosityStateChanged(evt));
 
         jLabel2.setText("Temperature (-10°C to +40°C)");
 
@@ -151,54 +140,30 @@ public class VariousSensorsGui
         txtResult.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
 
         btnCancel.setText("Cancel");
-        btnCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelActionPerformed(evt);
-            }
-        });
+        btnCancel.addActionListener(this::btnCancelActionPerformed);
 
         jButton1.setText("Do it");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         lblAsk.setText("Use 'User Input' plugin to ask someting to the user");
 
         jButton2.setText("Do it");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
         jLabel3.setText("Use 'Plugin remote controller' to show or hide a plugin gui");
 
         btnJoinDevice.setText("Do it");
-        btnJoinDevice.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnJoinDeviceActionPerformed(evt);
-            }
-        });
+        btnJoinDevice.addActionListener(this::btnJoinDeviceActionPerformed);
 
         jLabel4.setText("Add a new object using 'JoinDevice' command");
 
         btnBypassTriggerSystem.setText("Do it");
-        btnBypassTriggerSystem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBypassTriggerSystemActionPerformed(evt);
-            }
-        });
+        btnBypassTriggerSystem.addActionListener(this::btnBypassTriggerSystemActionPerformed);
 
         jLabel5.setText("Change an object behavior bypassing trigger system");
 
         btnSendNlpText.setText("Send");
-        btnSendNlpText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSendNlpTextActionPerformed(evt);
-            }
-        });
+        btnSendNlpText.addActionListener(this::btnSendNlpTextActionPerformed);
 
         jLabel6.setText("Execute free-text commands");
 

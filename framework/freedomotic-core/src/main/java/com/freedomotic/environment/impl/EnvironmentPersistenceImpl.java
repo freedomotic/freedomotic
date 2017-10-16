@@ -154,12 +154,7 @@ class EnvironmentPersistenceImpl implements EnvironmentPersistence {
 
         // This filter only returns env files
         FileFilter envFileFilter
-                = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        return file.isFile() && file.getName().endsWith(".xenv");
-                    }
-                };
+                = file -> file.isFile() && file.getName().endsWith(".xenv");
 
         File[] files = directory.listFiles(envFileFilter);
 

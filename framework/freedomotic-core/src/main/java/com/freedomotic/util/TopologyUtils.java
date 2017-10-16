@@ -266,8 +266,8 @@ public class TopologyUtils {
      * @return true if inside, false if on border or outside
      */
     public static boolean contains(FreedomShape fShape, FreedomPoint fPoint) {
-        ArrayList<Float> lx = new ArrayList<Float>();
-        ArrayList<Float> ly = new ArrayList<Float>();
+        ArrayList<Float> lx = new ArrayList<>();
+        ArrayList<Float> ly = new ArrayList<>();
         int verticesNum = 0;
         float px = fPoint.getX();
         float py = fPoint.getY();

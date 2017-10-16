@@ -78,19 +78,11 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         this.setPreferredSize(new Dimension(800, 600));
         initComponents();
         cmbCategory.setEnabled(false);
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        MarketPlaceService mps = MarketPlaceService.getInstance();
-                        pluginCategoryList = mps.getCategoryList();
-                        retrieveCategories();
-                    }
-                }).start();
-            }
-        });
+        EventQueue.invokeLater(() -> new Thread(() -> {
+            MarketPlaceService mps = MarketPlaceService.getInstance();
+            pluginCategoryList = mps.getCategoryList();
+            retrieveCategories();
+        }).start());
     }
 
     /**
@@ -98,7 +90,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
      */
     public final void retrieveCategories() {
         cmbCategory.setEnabled(false);
-        Collections.sort(pluginCategoryList, CatComp);
+        pluginCategoryList.sort(CatComp);
 
         for (IPluginCategory pc : pluginCategoryList) {
             //do not use pc.retrievePluginsInfo() here
@@ -107,12 +99,9 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         }
 
         //add listener to category selection changes
-        cmbCategory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int index = cmbCategory.getSelectedIndex();
-                retrievePlugins(pluginCategoryList.get(index));
-            }
+        cmbCategory.addActionListener(e -> {
+            int index = cmbCategory.getSelectedIndex();
+            retrievePlugins(pluginCategoryList.get(index));
         });
 
         //force to retrive plugins for first category
@@ -138,43 +127,35 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         pnlMain.removeAll();
         pnlMain.setBackground(Color.white);
         pnlMain.repaint();
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            String path = Info.PATHS.PATH_RESOURCES_FOLDER.toString();
+        EventQueue.invokeLater(() -> new Thread(() -> {
+            try {
+                String path = Info.PATHS.PATH_RESOURCES_FOLDER.toString();
 
-                            if (category.retrievePluginsInfo() == null) {
-                                return;
-                            }
+                if (category.retrievePluginsInfo() == null) {
+                    return;
+                }
 
-                            Collections.sort(category.retrievePluginsInfo(), PackComp);
+                Collections.sort(category.retrievePluginsInfo(), PackComp);
 
-                            //TODO: use package images.
-                            ImageIcon pluginIcon
-                                    = new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
-                            int row = 0;
+                //TODO: use package images.
+                ImageIcon pluginIcon
+                        = new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
+                int row = 0;
 
-                            for (final IPluginPackage pp : category.retrievePluginsInfo()) {
-                                renderBoundle(pp, pluginIcon);
-                                row++;
-                            }
+                for (final IPluginPackage pp : category.retrievePluginsInfo()) {
+                    renderBoundle(pp, pluginIcon);
+                    row++;
+                }
 
-                            SpringUtilities.makeCompactGrid(pnlMain, row, 4, //rows, cols
-                                    5, 5, //initX, initY
-                                    5, 5); //xPad, yPad
-                            politeWaitingMessage(false);
-                            pnlMain.repaint();
-                        } catch (Exception e) {
-                            LOG.warn(Freedomotic.getStackTraceInfo(e));
-                        }
-                    }
-                }).start();
+                SpringUtilities.makeCompactGrid(pnlMain, row, 4, //rows, cols
+                        5, 5, //initX, initY
+                        5, 5); //xPad, yPad
+                politeWaitingMessage(false);
+                pnlMain.repaint();
+            } catch (Exception e) {
+                LOG.warn(Freedomotic.getStackTraceInfo(e));
             }
-        });
+        }).start());
     }
 
     private void renderBoundle(final IPluginPackage pp, ImageIcon iconPlugin) {
@@ -214,23 +195,15 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         }
 
         if (btnAction != null) {
-            btnAction.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    installPackage(pp);
-                }
-            });
+            btnAction.addActionListener(e -> installPackage(pp));
         }
 
         JButton btnMore = new JButton(I18n.msg("more_info"));
-        btnMore.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    browse(new URI(pp.getURI()));
-                } catch (URISyntaxException ex) {
-                    LOG.error(ex.getMessage());
-                }
+        btnMore.addActionListener(e -> {
+            try {
+                browse(new URI(pp.getURI()));
+            } catch (URISyntaxException ex) {
+                LOG.error(ex.getMessage());
             }
         });
 

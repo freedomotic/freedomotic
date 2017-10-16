@@ -34,19 +34,19 @@ public interface IPluginCategory {
     /**
      * @return the id
      */
-    public Integer getId();
+    Integer getId();
 
     /**
      * @return the name
      */
-    public String getName();
+    String getName();
 
     /**
      * Retrieve the updated list of plugin from online Marketplace provider
      *
      * @return the updated list of plugins
      */
-    public List<IPluginPackage> retrievePluginsInfo();
+    List<IPluginPackage> retrievePluginsInfo();
 
     /**
      * Get the cached list of plugins (may need to call retrievePluginsInfo()
@@ -54,5 +54,5 @@ public interface IPluginCategory {
      *
      * @return the current list of plugins
      */
-    public List<IPluginPackage> listPlugins();
+    List<IPluginPackage> listPlugins();
 }

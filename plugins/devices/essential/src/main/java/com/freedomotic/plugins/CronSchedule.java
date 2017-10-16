@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalField;
+import java.util.stream.Stream;
 
 /**
  * Provides cron-like scheduling information. This class implements cron-like
@@ -145,7 +146,7 @@ public class CronSchedule {
      * @param type - Calendar constant defining the time type
      * @param values - values to be set
      */
-    private final void set(final ChronoField field, AbstractTimeValue[] values) {
+    private void set(final ChronoField field, AbstractTimeValue[] values) {
         this.values[getIndex(field)] = values;
     }
 
@@ -169,8 +170,8 @@ public class CronSchedule {
         AbstractTimeValue[] values = getValues(type);
         StringBuilder buff = new StringBuilder();
 
-        for (int i = 0; i < values.length; i++) {
-            buff.append(",").append(values[i].toString());
+        for (AbstractTimeValue value : values) {
+            buff.append(",").append(value.toString());
         }
 
         return buff.substring(1);
@@ -185,8 +186,7 @@ public class CronSchedule {
     public String toString() {
         StringBuilder buff = new StringBuilder();
 
-        for (int i = 0; i < VALUE_TYPES.length; i++) {
-        	final ChronoField field = VALUE_TYPES[i];
+        for (final ChronoField field : VALUE_TYPES) {
             buff.append(" ").append(get(field));
         }
 
@@ -295,14 +295,14 @@ public class CronSchedule {
      * 
      * @return	<code>true</code> if the given {@link TemporalField} of the {@link LocalDateTime} matches this expression.
      */
-    private final boolean matches(final TemporalField field, final LocalDateTime instant) {
+    private boolean matches(final TemporalField field, final LocalDateTime instant) {
         // get the definitions and the comparison value
         AbstractTimeValue[] defs = this.values[getIndex(field)];
         int value = instant.get(field);
 
         // Any of the criteria must be met
-        for (int i = 0; i < defs.length; i++) {
-            if (defs[i].matches(value)) {
+        for (AbstractTimeValue timeValue : defs) {
+            if (timeValue.matches(value)) {
                 return true;
             }
         }
@@ -316,7 +316,7 @@ public class CronSchedule {
      * @param type - Calendar constant for type
      * @return internal index
      */
-    private static final int getIndex(final TemporalField field) {
+    private static int getIndex(final TemporalField field) {
         for (int i = 0; i < VALUE_TYPES.length; i++) {
             if (VALUE_TYPES[i] == field) {
                 return i;

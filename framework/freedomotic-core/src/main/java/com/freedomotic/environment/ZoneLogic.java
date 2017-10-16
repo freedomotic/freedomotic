@@ -213,11 +213,7 @@ public class ZoneLogic {
 
         final ZoneLogic other = (ZoneLogic) obj;
 
-        if ((this.pojo != other.pojo) && ((this.pojo == null) || !this.pojo.equals(other.pojo))) {
-            return false;
-        }
-
-        return true;
+        return (this.pojo == other.pojo) || ((this.pojo != null) && this.pojo.equals(other.pojo));
     }
 
     /**

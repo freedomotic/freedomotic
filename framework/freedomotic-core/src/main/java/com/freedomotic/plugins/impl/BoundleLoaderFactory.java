@@ -137,10 +137,9 @@ class BoundleLoaderFactory {
     protected static List<String> getClassesInside(String jarName)
             throws IOException {
         ArrayList<String> classes = new ArrayList<>(10);
-        JarInputStream jarFile = new JarInputStream(new FileInputStream(jarName));
         JarEntry jarEntry;
 
-        try {
+        try (JarInputStream jarFile = new JarInputStream(new FileInputStream(jarName))) {
             while (true) {
                 jarEntry = jarFile.getNextJarEntry();
 
@@ -154,8 +153,6 @@ class BoundleLoaderFactory {
             }
         } catch (IOException ex) {
             LOG.warn(Freedomotic.getStackTraceInfo(ex));
-        } finally {
-            jarFile.close();
         }
 
         return classes;
@@ -198,8 +195,8 @@ class BoundleLoaderFactory {
         URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
         URL[] urls = sysLoader.getURLs();
 
-        for (int i = 0; i < urls.length; i++) {
-            if (urls[i].toString().equalsIgnoreCase(u.toString())) {
+        for (URL url : urls) {
+            if (url.toString().equalsIgnoreCase(u.toString())) {
                 return;
             }
         }

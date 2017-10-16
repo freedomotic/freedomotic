@@ -31,69 +31,69 @@ public interface Client {
      *
      * @param name
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      *
      * @return
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      *
      * @param description
      */
-    public void setDescription(String description);
+    void setDescription(String description);
 
     /**
      *
      * @return
      */
-    public Config getConfiguration();
+    Config getConfiguration();
 
     /**
      *
      * @return
      */
-    public String getName();
+    String getName();
 
     /**
      *
      * @return
      */
-    public String getType();
+    String getType();
 
     /**
      *
      */
-    public void start();
+    void start();
 
     /**
      *
      */
-    public void stop();
+    void stop();
 
     /**
      * Completely unloads a plugin destroying all the locked resources (eg:
      * messaging channel)
      */
-    public void destroy();
+    void destroy();
 
     /**
      *
      * @return
      */
-    public boolean isRunning();
+    boolean isRunning();
 
     /**
      *
      */
     @Deprecated
-    public void showGui();
+    void showGui();
 
     /**
      *
      */
     @Deprecated
-    public void hideGui();
+    void hideGui();
 }

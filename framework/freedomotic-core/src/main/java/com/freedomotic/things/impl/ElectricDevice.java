@@ -157,7 +157,7 @@ public class ElectricDevice extends EnvObjectLogic {
         LOG.info("Setting behavior \"powered\" of thing \"{}\" to \"true\"", getPojo().getName());
 
         //if not already on
-        if (powered.getValue() != true) {
+        if (!powered.getValue()) {
             //setting the object as powered
             powered.setValue(true);
             //setting the second view from the XML list (the one with the on light bulb image)
@@ -170,7 +170,7 @@ public class ElectricDevice extends EnvObjectLogic {
         LOG.info("Setting behavior \"powered\" of thing \"{}\" to \"false\"", getPojo().getName());
 
         //if not already off
-        if (powered.getValue() != false) {
+        if (powered.getValue()) {
             powered.setValue(false);
             getPojo().setCurrentRepresentation(0);
             setChanged(true);

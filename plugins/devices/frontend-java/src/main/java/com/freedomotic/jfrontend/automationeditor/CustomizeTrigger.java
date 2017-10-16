@@ -168,13 +168,7 @@ public class CustomizeTrigger
         setDefaultCloseOperation( javax.swing.WindowConstants.DISPOSE_ON_CLOSE );
 
         btnSave.setText( I18n.msg( "save_as_new" ) + I18n.msg( "trigger" ) );
-        btnSave.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnSaveActionPerformed( evt );
-                }
-            } );
+        btnSave.addActionListener(this::btnSaveActionPerformed);
 
         jLabel1.setText( I18n.msg( "name" ) + ":" );
 
@@ -183,22 +177,10 @@ public class CustomizeTrigger
         lblExplanation.setText( I18n.msg( "fire_trigger_if_event_msg" ) + ":" );
 
         btnEdit.setText( I18n.msg( "save" ) );
-        btnEdit.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnEditActionPerformed( evt );
-                }
-            } );
+        btnEdit.addActionListener(this::btnEditActionPerformed);
 
         btnDelete.setText( I18n.msg( "delete" ) + I18n.msg( "trigger" ) );
-        btnDelete.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnDeleteActionPerformed( evt );
-                }
-            } );
+        btnDelete.addActionListener(this::btnDeleteActionPerformed);
 
         jScrollPane1.setVerticalScrollBarPolicy( javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 
@@ -207,13 +189,7 @@ public class CustomizeTrigger
 
         btnAddRow.setText( I18n.msg( "add_X",
                                      new Object[] { I18n.msg( "statement" ) } ) );
-        btnAddRow.addActionListener( new java.awt.event.ActionListener(  )
-            {
-                public void actionPerformed( java.awt.event.ActionEvent evt )
-                {
-                    btnAddRowActionPerformed( evt );
-                }
-            } );
+        btnAddRow.addActionListener(this::btnAddRowActionPerformed);
 
         lblTemplateWarning.setText( I18n.msg( "trigger_is_template_msg" ) );
 
