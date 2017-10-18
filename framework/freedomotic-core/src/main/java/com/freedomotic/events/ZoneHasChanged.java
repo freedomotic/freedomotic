@@ -33,7 +33,7 @@ public class ZoneHasChanged
         extends EventTemplate {
 
     private static final long serialVersionUID = -2676123835322299252L;
-    private final String DEFAULT_DESTINATION = "app.event.sensor.environment.zone.change";
+    private static final String DEFAULT_DESTINATION = "app.event.sensor.environment.zone.change";
 
     /**
      *

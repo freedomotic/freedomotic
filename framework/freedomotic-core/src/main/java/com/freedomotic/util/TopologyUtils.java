@@ -25,7 +25,6 @@ import com.freedomotic.model.geometry.FreedomPoint;
 import com.freedomotic.model.geometry.FreedomPolygon;
 import com.freedomotic.model.geometry.FreedomShape;
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -99,11 +98,6 @@ public class TopologyUtils {
                 color.getAlpha());
 
         return awtColor;
-    }
-
-    private static Point convertToAWT(FreedomPoint fPoint) {
-        return new Point(fPoint.getX(),
-                fPoint.getY());
     }
 
     private static Ellipse2D convertToAWT(FreedomEllipse fEllipse) {

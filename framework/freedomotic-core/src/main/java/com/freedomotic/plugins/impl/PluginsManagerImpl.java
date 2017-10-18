@@ -287,8 +287,11 @@ class PluginsManagerImpl implements PluginsManager {
         reactionRepository.loadReactions(new File(directory + "/data/rea"));
 
         //create ad-hoc subfolders of temp
-        File destination = new File(Info.PATHS.PATH_RESOURCES_FOLDER + "/temp/" + directory.getName());
-        destination.mkdir();
+        String dirName= Info.PATHS.PATH_RESOURCES_FOLDER + "/temp/" + directory.getName();
+        File destination = new File(dirName);
+        if (!destination.mkdir()){
+        	throw new PluginLoadingException("Unable to create dir : "+dirName);
+        }
         recursiveCopy(new File(directory + "/data/resources"), destination);
 
         File templatesFolder = new File(directory + "/data/templates/");
@@ -321,8 +324,8 @@ class PluginsManagerImpl implements PluginsManager {
 
     private void recursiveCopy(File source, File target) {	
     	 if (source.isDirectory()) {
-             if (!target.exists()) {
-                 target.mkdir();
+             if (!target.exists() && !target.mkdir()){
+                 LOG.warn("Error in creating targetDir "+target.getPath());
              }
 
              String[] children = source.list();

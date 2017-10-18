@@ -22,7 +22,6 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 import com.freedomotic.marketplace.IPluginCategory;
 import com.freedomotic.marketplace.IPluginPackage;
 import com.freedomotic.marketplace.MarketPlaceService;
-import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractReadOnlyResource;
 import com.freedomotic.settings.Info;
 import com.wordnik.swagger.annotations.Api;
@@ -103,9 +102,6 @@ public class MarketplacePluginsResource extends AbstractReadOnlyResource<IPlugin
             @PathParam("id") String uuid) {
         IPluginPackage p = prepareSingle(uuid);
         String url = p.getFilePath(Info.getMajor() + "." + Info.getMinor());
-        if (p == null) {
-            throw new ItemNotFoundException(uuid);
-        }
         try {
             API.getPluginManager().installBoundle(new URL(url));
         } catch (MalformedURLException ex) {

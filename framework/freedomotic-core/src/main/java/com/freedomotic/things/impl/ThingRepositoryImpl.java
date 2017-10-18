@@ -334,14 +334,6 @@ class ThingRepositoryImpl implements ThingRepository {
         input.destroy(); //free memory
     }
 
-    private static List<String> getObjectsNames() {
-        List<String> list = new ArrayList<>();
-        for (EnvObjectLogic obj : objectList.values()) {
-            list.add(obj.getPojo().getName());
-        }
-        return list;
-    }
-
     /**
      * Add an object to the environment. You can use
      * EnvObjectPersistnce.MAKE_UNIQUE to saveAll an object that will surely be
@@ -569,8 +561,8 @@ class ThingRepositoryImpl implements ThingRepository {
             try {
                 Properties dataProperties = new Properties();
                 String fromVersion;
-                try {
-                    dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
+                try (FileInputStream fis = new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties"))){
+                    dataProperties.load(fis);
                     fromVersion = dataProperties.getProperty("data.version");
                 } catch (IOException iOException) {
                     // Fallback to a default version for older version without that properties file

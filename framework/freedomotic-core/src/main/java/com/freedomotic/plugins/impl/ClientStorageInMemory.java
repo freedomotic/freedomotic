@@ -271,7 +271,7 @@ class ClientStorageInMemory implements ClientStorage {
         }
 
         if ((i < vals1.length) && (i < vals2.length)) {
-            return Integer.compare(new Integer(vals1[i]), new Integer(vals2[i]));
+            return Integer.compare(Integer.valueOf(vals1[i]), Integer.valueOf(vals2[i]));
         }
         
         return Integer.compare(vals1.length, vals2.length);

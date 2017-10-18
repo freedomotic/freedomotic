@@ -26,7 +26,6 @@ package com.freedomotic.plugins.devices.PioneerKuro;
 import com.freedomotic.serial.SerialConnectionProvider;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;

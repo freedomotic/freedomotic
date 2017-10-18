@@ -86,7 +86,9 @@ public class Unzip {
                 File destinationParent = destFile.getParentFile();
 
                 // create the parent directory structure if needed
-                destinationParent.mkdirs();
+                if (!destinationParent.mkdirs()){
+                	throw new IOException("Impossible to create dir: "+destinationParent);
+                }
 
                 if (!entry.isDirectory()) {
                     try (BufferedInputStream is = new BufferedInputStream(zip.getInputStream(entry));

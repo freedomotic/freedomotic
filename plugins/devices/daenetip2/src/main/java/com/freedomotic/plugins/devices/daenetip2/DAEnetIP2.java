@@ -108,17 +108,6 @@ public class DAEnetIP2 extends Protocol {
         }
     }
 
-    private void disconnect() {
-        // close streams and socket
-        try {
-            inputStream.close();
-            outputStream.close();
-            socket.close();
-        } catch (Exception ex) {
-            //do nothing. Best effort
-        }
-    }
-
     /**
      * Sensor side
      */
@@ -175,7 +164,6 @@ public class DAEnetIP2 extends Protocol {
         if (!(Integer.valueOf(P3Status) == board.getP3Status())) {
             System.out.println("P3 status changed");
             BigInteger P3StatusBi = new BigInteger(P3Status);
-            String behavior = null;
             for (int i = 0; i < 8; i++) {
                 Boolean newStatusBit = P3StatusBi.testBit(i);
                 int j = i + 1;
@@ -192,7 +180,7 @@ public class DAEnetIP2 extends Protocol {
         }
 
         P5Status = snmpRequest.SNMP_GET(board.getIpAddress(), board.getSnmpPort(), SNMP_OID + "." + P5_STATUS_OID, board.getReadWriteCommunity());
-        if (!(Integer.valueOf(P5Status) == board.getP5Status())) {
+        if (Integer.valueOf(P5Status) != board.getP5Status()) {
             System.out.println("P5 status changed");
             BigInteger P5StatusBi = new BigInteger(P5Status);
             String behavior = null;

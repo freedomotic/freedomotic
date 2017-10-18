@@ -33,6 +33,9 @@ public class MainGUI extends javax.swing.JFrame {
 
     GoogleSpeech plugin;
     File temp = null;
+    protected Microphone microphone = new Microphone(AudioFileFormat.Type.WAVE);
+    protected AePlayWave aePlayWave;
+    
 
     /**
      * Creates new form MainGUI
@@ -219,8 +222,6 @@ public class MainGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    protected Microphone microphone = new Microphone(AudioFileFormat.Type.WAVE);
-    protected AePlayWave aePlayWave;
 
     private void playSynthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playSynthActionPerformed
         setSynthStatus("Playing...");

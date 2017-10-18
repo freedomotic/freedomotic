@@ -31,7 +31,7 @@ public class PluginHasChanged
         extends EventTemplate {
 
     private static final long serialVersionUID = 5203339184820441643L;
-    private final String DEFAULT_DESTINATION = "app.event.sensor.plugin.change";
+    private static final String DEFAULT_DESTINATION = "app.event.sensor.plugin.change";
 
     /**
      *

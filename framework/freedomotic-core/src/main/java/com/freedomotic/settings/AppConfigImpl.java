@@ -85,11 +85,7 @@ class AppConfigImpl implements AppConfig {
         try {
             Integer result = Integer.parseInt(properties.getProperty(key));
 
-            if (result != null) {
-                return result;
-            } else {
-                return defaultValue;
-            }
+            return result;
         } catch (NumberFormatException e) {
             return defaultValue;
         }
@@ -116,11 +112,7 @@ class AppConfigImpl implements AppConfig {
     public double getDoubleProperty(String key, double defaultValue) {
         Double result = Double.parseDouble(properties.getProperty(key));
 
-        if (result != null) {
-            return result;
-        } else {
-            return defaultValue;
-        }
+        return result;
     }
 
     @Override
@@ -184,18 +176,18 @@ class AppConfigImpl implements AppConfig {
 
     @Override
     public final AppConfig load() {
-        try {
-            properties.load(new FileInputStream(Info.PATHS.PATH_CONFIG_FOLDER + "/config.xml"));
+        try (FileInputStream fis = new FileInputStream(Info.PATHS.PATH_CONFIG_FOLDER + "/config.xml")){
+            properties.load(fis);
         } catch (IOException ex) {
             LOG.error(ex.getMessage());
-        }
+        } 
         return this;
     }
 
     @Override
     public void save() {
-        try {
-            properties.store(new FileOutputStream(Info.PATHS.PATH_CONFIG_FOLDER + "/config.xml"), null);
+        try (FileOutputStream fos = new FileOutputStream(Info.PATHS.PATH_CONFIG_FOLDER + "/config.xml")){
+            properties.store(fos, null);
         } catch (IOException ex) {
             LOG.error(ex.getMessage());
         }

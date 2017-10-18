@@ -391,7 +391,6 @@ public final class Trigger implements BusConsumer, Cloneable {
      */
     @Override
     public void onMessage(ObjectMessage message) {
-        long start = System.currentTimeMillis();
         Object payload = null;
 
         try {
@@ -406,7 +405,6 @@ public final class Trigger implements BusConsumer, Cloneable {
                     + "' on channel " + this.getChannel());
 
             checker.check(event, this);
-            long end = System.currentTimeMillis();
         }
     }
 

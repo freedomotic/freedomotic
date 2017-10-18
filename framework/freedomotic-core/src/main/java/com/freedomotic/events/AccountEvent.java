@@ -29,7 +29,7 @@ import com.freedomotic.api.EventTemplate;
  */
 public class AccountEvent extends EventTemplate {
 
-    private final String DEFAULT_DESTINATION = "app.event.sensor.account.change";
+    private static final String DEFAULT_DESTINATION = "app.event.sensor.account.change";
 
     public enum AccountActions {
 

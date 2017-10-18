@@ -46,7 +46,7 @@ public class UidGenerator {
     public static String getNextStringUid() {
         lastId++;
 
-        return Integer.valueOf(lastId).toString();
+        return new Integer(lastId).toString();
     }
 
     private UidGenerator() {
