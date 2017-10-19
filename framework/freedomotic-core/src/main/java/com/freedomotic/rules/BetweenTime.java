@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -37,14 +37,9 @@ public class BetweenTime extends BinaryExpression {
 
     private static final String OPERAND = Statement.BETWEEN_TIME;
     private static final Logger LOG = LoggerFactory.getLogger(BetweenTime.class.getName());
-    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
+    private final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
     private Date todaysEnd;
     private Date tomorrowStart;
-
-    @Override
-    public String getOperand() {
-        return OPERAND;
-    }
 
     // left is an hour in form HH:MM::SS
     //right is a time interval in form HH:MM::SS-HH:MM::SS
@@ -60,17 +55,22 @@ public class BetweenTime extends BinaryExpression {
     }
 
     @Override
-    public Boolean evaluate() {
+    public String getOperand() {
+        return OPERAND;
+    }
 
+    @Override
+    public Boolean evaluate() {
         Date time = null;
         // Parse the date which is supposed to be in between of the interval
         try {
             time = TIME_FORMAT.parse(this.getLeft());
-            if (Objects.isNull(time)) {
-                return false;
-            }
         } catch (ParseException ex) {
             LOG.warn("Cannot parse hours " + getLeft() + ", valid format is HH:mm:ss", ex);
+        }
+
+        if (Objects.isNull(time)) {
+            return false;
         }
 
         // Parse the hour interval HH:mm:ss-HH:mm:ss
@@ -101,5 +101,4 @@ public class BetweenTime extends BinaryExpression {
                     || ((time.compareTo(tomorrowStart) >= 0) && (time.compareTo(intervalEnd.getTime()) <= 0));
         }
     }
-
 }
