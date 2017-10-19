@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -20,14 +20,15 @@
 package com.freedomotic.marketplace.util;
 
 import com.freedomotic.marketplace.IPluginPackage;
-import java.util.ArrayList;
-import java.util.Collections;
-import javax.swing.ImageIcon;
 
+import javax.swing.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * New version of the POJO that represents a plugin.
@@ -53,10 +54,7 @@ public class MarketPlacePlugin2 implements IPluginPackage {
     private ArrayList<MarketPlaceFile> field_file;
     private String uri;
     private String type;
-    //private String body; //XML
-    //private String path; 
-    //private ArrayList<String> taxonomy;
-    //Fields not parsed
+
     @XmlTransient
     private transient ImageIcon icon;
 
@@ -70,16 +68,16 @@ public class MarketPlacePlugin2 implements IPluginPackage {
         return "http://www.freedomotic.com/node/" + nid;
     }
 
+    /**
+     * @deprecated
+     * @return the path
+     */
     @Override
     @Deprecated
     @XmlTransient
     public String getFilePath() {
-        if (field_file != null) {
-            if (field_file.size() > 0) {
-                if (field_file.get(0) != null) {
-                    return field_file.get(0).getFilepath();
-                }
-            }
+        if (field_file != null && !field_file.isEmpty() && field_file.get(0) != null) {
+            return field_file.get(0).getFilepath();
         }
         return "";
     }
@@ -88,28 +86,31 @@ public class MarketPlacePlugin2 implements IPluginPackage {
     public String getFilePath(String version) {
         if (field_file != null) {
             for (MarketPlaceFile marketPlaceFile : field_file) {
-                //TODO: change for a regular expresion to match the version
+                //TODO: change for a regular expression to match the version
                 if (marketPlaceFile != null
                         && marketPlaceFile.getFilename() != null
                         && marketPlaceFile.getFilename().contains(version)) {
                     //freedomotic website link will be something like that
                     //http://freedomotic.com/sites/all/modules/pubdlcnt/pubdlcnt.php?file=http://freedomotic.com/sites/default/files/com.freedomotic.mailer-5.4.x-1.6.device&nid=1197
-                    String path = "http://www.freedomotic.com/sites/all/modules/pubdlcnt/pubdlcnt.php?file="
+                    return "http://www.freedomotic.com/sites/all/modules/pubdlcnt/pubdlcnt.php?file="
                             + marketPlaceFile.getFilepath()
                             + "&nid=671";
-                    return path;
                 }
             }
         }
         return "";
     }
 
+    /**
+     * Get the file index by a version
+     * @return
+     */
     public int getFileIndexByVersion(String version) {
         int i = -1;
         if (field_file != null) {
             for (MarketPlaceFile marketPlaceFile : field_file) {
                 i++;
-                //TODO: change for a regular expresion to match the version
+                //TODO: change for a regular expression to match the version
                 if (marketPlaceFile.getFilename().contains(version)) {
                     return i;
                 }
@@ -123,9 +124,13 @@ public class MarketPlacePlugin2 implements IPluginPackage {
         return field_file.size();
     }
 
-    public ArrayList<MarketPlaceFile> getFiles() {
+    /**
+     * Return the field file list
+     * @return
+     */
+    public List<MarketPlaceFile> getFiles() {
         if (field_file == null) {
-            return new ArrayList<MarketPlaceFile>();
+            return new ArrayList<>();
         } else {
             field_file.removeAll(Collections.singleton(null));
             return field_file;
@@ -147,7 +152,7 @@ public class MarketPlacePlugin2 implements IPluginPackage {
     public ImageIcon getIcon() {
         if (icon == null) {
             if (field_icon != null
-                    && field_icon.size() > 0
+                    && !field_icon.isEmpty()
                     && field_icon.get(0) != null) {
                 icon = DrupalRestHelper.retrieveImageIcon("/" + field_icon.get(0).getRelativeFilepath());
             } else {
@@ -158,7 +163,6 @@ public class MarketPlacePlugin2 implements IPluginPackage {
     }
 
     /**
-     *
      * Adds a file to the plugin, taking into account the core versions and name
      */
     public void addFile(MarketPlaceFile file) {
@@ -185,96 +189,119 @@ public class MarketPlacePlugin2 implements IPluginPackage {
 
     }
 
+    /**
+     * Return the base data
+     * @return
+     */
     public String formatBaseData() {
         return "\"type\":\"" + type + "\","
                 + "\"language\":\"und\"";
     }
 
+    /**
+     * Return the field category in the JSON format
+     * @return
+     */
     public String formatFieldCategory() {
-        String jsonString = "";
+        StringBuilder jsonString = new StringBuilder();
         for (int i = 0; i < field_category.size(); i++) {
             if (i == 0) {
-                jsonString += "\"field_category\":{";
+                jsonString.append("\"field_category\":{");
             }
-            jsonString += "\"" + i + "\":" + field_category.get(i).formatValue();
+            jsonString.append("\"" + i + "\":" + field_category.get(i).formatValue());
             if (i != field_category.size() - 1) {
-                jsonString += ",";
+                jsonString.append(",");
             }
             if (i == field_category.size() - 1) {
-                jsonString += "}";
+                jsonString.append("}");
             }
         }
-        return jsonString;
+        return jsonString.toString();
     }
 
+    /**
+     * Return the field plugin in the JSON format
+     * @return
+     */
     public String formatFieldPluginCategory() {
-        String jsonString = "";
-        String s = "";
-        //we are assuming that the Plugin is well formed 
+        StringBuilder jsonString = new StringBuilder();
+        //we are assuming that the Plugin is well formed
         //(ie, has at least one correct Plugin category)
-        jsonString += "\"field_plugin_category\":{\"value\":{";
+        jsonString.append("\"field_plugin_category\":{\"value\":{");
         boolean first = true;
         for (MarketPlaceValue value : field_plugin_category) {
 
             if (value.getValue() != null) {
                 if (!first) {
-                    jsonString += ",";
+                    jsonString.append(",");
                 }
-                jsonString += value.formatValueAsListElement();
+                jsonString.append(value.formatValueAsListElement());
                 first = false;
             }
         }
 
-        jsonString += "}}";
-        return jsonString;
+        jsonString.append("}}");
+        return jsonString.toString();
     }
 
+    /**
+     * Return the field OS in the JSON format
+     * @return
+     */
     public String formatFieldOS() {
-        String jsonString = "";
-        String s = "";
+        StringBuilder jsonString = new StringBuilder();
+        String s = null;
         for (int i = 0; i < field_os.size(); i++) {
             if (i == 0) {
-                jsonString += "\"field_os\":{\"value\":{";
+                jsonString.append("\"field_os\":{\"value\":{");
             }
             s = field_os.get(i).getValue();
-            //jsonString+="\""+i+"\":"+field_os.get(i).formatValue();
-            jsonString += "\"" + s + "\":\"" + s + "\"";
+            jsonString.append("\"" + s + "\":\"" + s + "\"");
             if (i != field_os.size() - 1) {
-                jsonString += ",";
+                jsonString.append(",");
             }
             if (i == field_os.size() - 1) {
-                jsonString += "}}";
+                jsonString.append("}}");
             }
         }
-        return jsonString;
 
+        return jsonString.toString();
     }
 
+    /**
+     * Return the field file in the JSON format
+     * @return
+     */
     public String formatFieldFile() {
-        String jsonString = "";
-        ArrayList<MarketPlaceFile> files = getFiles();
+        StringBuilder jsonString = new StringBuilder();
+        List<MarketPlaceFile> files = getFiles();
         for (int i = 0; i < files.size(); i++) {
             MarketPlaceFile pluginFile = files.get(i);
             pluginFile.setDescription(extractVersion(pluginFile.getFilename()));
             if (i == 0) {
-                jsonString += "\"field_file\":{";
+                jsonString.append("\"field_file\":{");
             }
-            jsonString += "\"" + i + "\":{" + pluginFile.formatFile() + "}";
+            jsonString.append("\"" + i + "\":{" + pluginFile.formatFile() + "}");
             if (i != files.size() - 1) {
-                jsonString += ",";
+                jsonString.append(",");
             }
             if (i == files.size() - 1) {
-                jsonString += "}";
+                jsonString.append("}");
             }
         }
-        return jsonString;
+        return jsonString.toString();
     }
 
+    /**
+     * Return the core plugin version part of the filename
+     * @param filename
+     * @return
+     */
     public static String extractCorePluginVersion(String filename) {
         //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
-        //only 5.2.x-1.212 is needed
+        //only 5.2.x is needed
         //remove extension
-        filename = filename.substring(0, filename.lastIndexOf("."));
+        filename = filename.substring(0, filename.lastIndexOf('.'));
         String[] tokens = filename.split("-");
         //3 tokens expected
         if (tokens.length == 3) {
@@ -284,11 +311,16 @@ public class MarketPlacePlugin2 implements IPluginPackage {
         }
     }
 
+    /**
+     * Return the version part of the filename
+     * @param filename
+     * @return
+     */
     public static String extractVersion(String filename) {
         //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
         //only 5.2.x-1.212 is needed
         //remove extension
-        filename = filename.substring(0, filename.lastIndexOf("."));
+        filename = filename.substring(0, filename.lastIndexOf('.'));
         String[] tokens = filename.split("-");
         //3 tokens expected
         if (tokens.length == 3) {
@@ -298,9 +330,13 @@ public class MarketPlacePlugin2 implements IPluginPackage {
         }
     }
 
-    public ArrayList<MarketPlaceFile> getIcons() {
+    /**
+     * Return the Icons
+     * @return
+     */
+    public List<MarketPlaceFile> getIcons() {
         if (field_icon == null) {
-            return new ArrayList<MarketPlaceFile>();
+            return new ArrayList<>();
         } else {
             field_icon.removeAll(Collections.singleton(null));
             return field_icon;
