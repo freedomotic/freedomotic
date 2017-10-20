@@ -70,6 +70,7 @@ public class TimerThread extends Thread {
             try {
                 Thread.sleep(time);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 //pluginRef.getLogger().log(Level.INFO, "Thread timeout interrotto!");
                 break;
                 //e.printStackTrace();

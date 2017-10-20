@@ -196,6 +196,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
             Logger.getLogger(ProgettiHwSwEthv2.class.getName()).log(Level.SEVERE, null, ex);
+            Thread.currentThread().interrupt();
         }
     }
 

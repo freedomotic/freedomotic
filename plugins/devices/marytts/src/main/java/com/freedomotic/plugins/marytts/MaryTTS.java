@@ -149,6 +149,7 @@ public class MaryTTS extends Protocol {
                 LOG.error("Error during audio generation", ex);
             } catch (InterruptedException ex) {
                 LOG.error("Error during speaking", ex);
+                Thread.currentThread().interrupt();
             } finally {
                 try {
                     if (audio != null) {

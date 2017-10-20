@@ -357,7 +357,8 @@ public abstract class Protocol extends Plugin {
                                 }
                             }
                         } catch (InterruptedException e) {
-                            // TODO do Log?
+                            LOG.warn("Interrupted exception: ", e);
+                            Thread.currentThread().interrupt();
                         }
                         onRun();
                     }

@@ -86,9 +86,8 @@ public class SocketMonitorManager {
             outputMon = new PrintWriter(socketMon.getOutputStream(), true);
             //pluginRef.getLogger().log(Level.INFO, "Mon: Print Writer creato");
         } catch (IOException e) {
-            pluginRef.getLogger().error("Mon: Impossibile connettersi con host " + ip + "\n");
+            pluginRef.getLogger().error("Mon: Impossibile connettersi con host " + ip, e);
             this.disconnect();
-            //e.printStackTrace();
         }
 
         if (socketMon != null) {  //se abbiamo aperto la socket
@@ -99,8 +98,8 @@ public class SocketMonitorManager {
                 try {
                     readThMon.join();
                 } catch (InterruptedException e1) {
-                    pluginRef.getLogger().debug("Mon: ----- ERRORE readThread.join() durante la connect:");
-                    e1.printStackTrace();
+                    pluginRef.getLogger().debug("Mon: ----- ERRORE readThread.join() durante la connect:", e1);
+                    Thread.currentThread().interrupt();
                 }
 
                 //VARI STATI POSSIBILI: (se tutto va bene vengono svolti in cascata)
@@ -210,8 +209,7 @@ public class SocketMonitorManager {
                 //pluginRef.getLogger().log(Level.CONFIG, "--- Chiusa sessione monitor con il server.");
                 pluginRef.getLogger().debug("MON: Socket monitor chiusa correttamente-----\n");
             } catch (IOException e) {
-                pluginRef.getLogger().debug("MON: Errore chiusura Socket: <GestioneSocketMonitor>");
-                e.printStackTrace();
+                pluginRef.getLogger().debug("MON: Errore chiusura Socket: <GestioneSocketMonitor>", e);
             }
         }
     }

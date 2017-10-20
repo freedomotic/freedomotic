@@ -94,6 +94,7 @@ public class WorkerThread extends Thread {
             WorkerThread.sleep(coordinate.getTime());
         } catch (InterruptedException interruptedException) {
             master.getLog().error(Freedomotic.getStackTraceInfo(interruptedException));
+            Thread.currentThread().interrupt();
         }
     }
 }
