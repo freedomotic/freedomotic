@@ -83,27 +83,27 @@ public class ThingResource extends AbstractResource<EnvObject> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Get a thing", position = 20)
-    @Path("/{id}")
+    @Path("/{thing_id}")
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Thing not found")
     })
     @Override
     public Response get(
             @ApiParam(value = "UUID of thing to fetch (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
-            @PathParam("id") String UUID) {
+            @PathParam("thing_id") String UUID) {
         return super.get(UUID);
     }
 
     @Override
     @DELETE
-    @Path("/{id}")
+    @Path("/{thing_id}")
     @ApiOperation(value = "Delete a thing", position = 50)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Thing not found")
     })
     public Response delete(
             @ApiParam(value = "UUID of thing to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
-            @PathParam("id") String UUID) {
+            @PathParam("thing_id") String UUID) {
         return super.delete(UUID);
     }
 
@@ -115,7 +115,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
      */
     @Override
     @PUT
-    @Path("/{id}")
+    @Path("/{thing_id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
@@ -124,7 +124,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
     @ApiOperation(value = "Update a thing", position = 40)
     public Response update(
             @ApiParam(value = "UUID of thing to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
-            @PathParam("id") String UUID, EnvObject s) {
+            @PathParam("thing_id") String UUID, EnvObject s) {
         return super.update(UUID, s);
     }
 
@@ -218,11 +218,11 @@ public class ThingResource extends AbstractResource<EnvObject> {
     }
 
     @POST
-    @Path("/{id}/click")
+    @Path("/{thing_id}/click")
     @ApiOperation(value = "Send a ObjectClickEvent for related thing")
     public Response click(
             @ApiParam(value = "UUID of thing to click", required = true)
-            @PathParam("id") String UUID) {
+            @PathParam("thing_id") String UUID) {
         try {
             EnvObjectLogic el = API.things().findOne(UUID);
             ObjectReceiveClick event = new ObjectReceiveClick(this, el, ObjectReceiveClick.SINGLE_CLICK);
@@ -234,10 +234,10 @@ public class ThingResource extends AbstractResource<EnvObject> {
     }
 
     @POST
-    @Path("/{id}/move/{x}/{y}")
+    @Path("/{thing_id}/move/{x}/{y}")
     @ApiOperation(value = "Move a thing to another position")
     public Response move(
-            @ApiParam(value = "UUID of thing to move", required = true) @PathParam("id") String UUID,
+            @ApiParam(value = "UUID of thing to move", required = true) @PathParam("thing_id") String UUID,
             @ApiParam(value = "Left offset", required = true) @PathParam("x") int x,
             @ApiParam(value = "Top offset", required = true) @PathParam("y") int y) {
 
@@ -254,11 +254,11 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{id}/behaviorchange/{bid}/{value}")
+    @Path("/{thing_id}/behaviorchange/{bid}/{value}")
     @ApiOperation("Fire a behavior change request, using provided data")
     public Response behaviorChange(
             @ApiParam(value = "UUID of thing to click", required = true)
-            @PathParam("id") String UUID,
+            @PathParam("thing_id") String UUID,
             @ApiParam(value = "name of behavior", required = true)
             @PathParam("bid") String behavior,
             @ApiParam(value = "desired value of behavior", required = true)
@@ -315,10 +315,10 @@ public class ThingResource extends AbstractResource<EnvObject> {
      * @param UUID
      * @return
      */
-    @Path("/{id}/behaviors")
+    @Path("/{thing_id}/behaviors")
     public BehaviorResource behaviors(
             @ApiParam(value = "UUID of thing to fetch behaviors from", required = true)
-            @PathParam("id") String UUID) {
+            @PathParam("thing_id") String UUID) {
         return new BehaviorResource(UUID);
     }
 

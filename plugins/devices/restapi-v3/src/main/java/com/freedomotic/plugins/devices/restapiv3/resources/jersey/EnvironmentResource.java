@@ -55,27 +55,27 @@ public class EnvironmentResource extends AbstractResource<Environment> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Get an environment", position = 20)
-    @Path("/{id}")
+    @Path("/{env_id}")
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Environment not found")
     })
     @Override
     public Response get(
             @ApiParam(value = "UUID of environment to fetch (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
-            @PathParam("id") String UUID) {
+            @PathParam("env_id") String UUID) {
         return super.get(UUID);
     }
 
     @Override
     @DELETE
-    @Path("/{id}")
+    @Path("/{env_id}")
     @ApiOperation(value = "Delete an environment", position = 50)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Environment not found")
     })
     public Response delete(
             @ApiParam(value = "UUID of environment to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
-            @PathParam("id") String UUID) {
+            @PathParam("env_id") String UUID) {
         return super.delete(UUID);
     }
 
@@ -91,7 +91,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
      */
     @Override
     @PUT
-    @Path("/{id}")
+    @Path("/{env_id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
@@ -100,7 +100,7 @@ public class EnvironmentResource extends AbstractResource<Environment> {
     @ApiOperation(value = "Update an environment", position = 40)
     public Response update(
             @ApiParam(value = "UUID of environment to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
-            @PathParam("id") String UUID, Environment s) {
+            @PathParam("env_id") String UUID, Environment s) {
         return super.update(UUID, s);
     }
 
@@ -169,17 +169,17 @@ public class EnvironmentResource extends AbstractResource<Environment> {
         }
     }
 
-    @Path("/{id}/rooms")
+    @Path("/{env_id}/rooms")
     public RoomResource rooms(
             @ApiParam(value = "UUID of environment to fetch rooms from (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
-            @PathParam("id") String UUID) {
+            @PathParam("env_id") String UUID) {
         return new RoomResource(UUID);
     }
 
-    @Path("/{id}/things")
+    @Path("/{env_id}/things")
     public ThingResource things(
             @ApiParam(value = "UUID of environment to fetch things from (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
-            @PathParam("id") String UUID) {
+            @PathParam("env_id") String UUID) {
         return new ThingResource(UUID);
     }
 

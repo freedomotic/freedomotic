@@ -87,10 +87,10 @@ public class MarketplaceProvidersResource extends AbstractReadOnlyResource<IMark
     @ApiOperation(value = "Show info about specific provider")
     @Produces(MediaType.APPLICATION_JSON)
     @Override
-    @Path("/{id}")
+    @Path("/{provider_id}")
     public Response get(
             @ApiParam(value = "Index of marketplace provider", required = true)
-            @PathParam("id") String uuid) {
+            @PathParam("provider_id") String uuid) {
         return super.get(uuid);
     }
 
@@ -106,28 +106,28 @@ public class MarketplaceProvidersResource extends AbstractReadOnlyResource<IMark
         return mps.getProviders().get(id);
     }
 
-    @Path("/{id}/categories")
+    @Path("/{provider_id}/categories")
     public MarketplaceCategoryResource listCategories(
             @ApiParam(value = "Index of marketplace provider", required = true)
-            @PathParam("id") int id) {
+            @PathParam("provider_id") int id) {
         check(id);
         return new MarketplaceCategoryResource((ArrayList<IPluginCategory>) mps.getProviders().get(id).getAvailableCategories());
     }
 
-    @Path("/{id}/plugins")
+    @Path("/{provider_id}/plugins")
     public MarketplacePluginsResource listPluginsFromProvider(
             @ApiParam(value = "Index of marketplace provider", required = true)
-            @PathParam("id") int id) {
+            @PathParam("provider_id") int id) {
         check(id);
         return new MarketplacePluginsResource((ArrayList<IPluginPackage>) mps.getProviders().get(id).getAvailablePackages());
     }
 
     @POST
-    @Path("/{id}/update")
+    @Path("/{provider_id}/update")
     @ApiOperation(value = "Update provider's data - reload data from it")
     public Response update(
             @ApiParam(value = "Index of marketplace provider", required = true)
-            @PathParam("id") int id) {
+            @PathParam("provider_id") int id) {
         check(id);
         for (IPluginCategory cat : mps.getProviders().get(id).getAvailableCategories()) {
             cat.retrievePluginsInfo();
@@ -136,11 +136,11 @@ public class MarketplaceProvidersResource extends AbstractReadOnlyResource<IMark
     }
 
     @POST
-    @Path("/{id}/upgrade")
+    @Path("/{provider_id}/upgrade")
     @ApiOperation(value = "Upgrade plugins with most recent version available on a marketplace")
     public Response upgrade(
             @ApiParam(value = "Index of marketplace provider", required = true)
-            @PathParam("id") int id) {
+            @PathParam("provider_id") int id) {
         for (Client c : api.getClients("plugin")) {
             Plugin p = (Plugin) c;
             for (IPluginPackage pp : mps.getProviders().get(id).getAvailablePackages()) {
@@ -167,14 +167,14 @@ public class MarketplaceProvidersResource extends AbstractReadOnlyResource<IMark
     }
 
     @POST
-    @Path("/{id}/plugins/install/{nid}")
+    @Path("/{provider_id}/plugins/install/{nid}")
     @ApiOperation(value = "Download and install a plugin, given its node id")
     @ApiResponses(value = {
         @ApiResponse(code = 202, message = "Plugin installation succeded")
     })
     @Produces(MediaType.APPLICATION_JSON)
     public Response installPlugin(@ApiParam(value = "Index of marketplace provider", required = true)
-            @PathParam("id") int id,
+            @PathParam("provider_id") int id,
             @ApiParam(value = "Node id of plugin to install - this is a id relative to selected provider", required = true)
             @PathParam("nid") String nid) {
         boolean done = false;
