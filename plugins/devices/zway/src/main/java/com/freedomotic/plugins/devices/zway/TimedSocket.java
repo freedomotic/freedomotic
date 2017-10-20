@@ -73,6 +73,7 @@ public class TimedSocket {
                     // Sleep for a short period of time
                     Thread.sleep(POLL_DELAY);
                 } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
                 }
 
                 // Increment timer

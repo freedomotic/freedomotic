@@ -146,7 +146,8 @@ public class HwgSte extends Protocol {
             try {
                 Thread.sleep(POLLING_TIME);
             } catch (InterruptedException ex) {
-                LOG.error(ex.getMessage());
+                LOG.error(ex.getMessage(), ex);
+                Thread.currentThread().interrupt();
             }
         }
     }

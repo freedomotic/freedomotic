@@ -103,8 +103,8 @@ public class CommandsSocketManager {
                 try {
                     readTh.join(); //aspetto di aver letto --> verrà copiata in responseLine
                 } catch (InterruptedException e1) {
-                    pluginRef.getLogger().error("----- ERRORE readThread.join() durante la connect:");
-                    e1.printStackTrace();
+                    pluginRef.getLogger().error("----- ERRORE readThread.join() durante la connect:", e1);
+                    Thread.currentThread().interrupt();
                 }
                 //riempito responseLine, a seconda
                 //dello stato in cui sono nel'handshake mi comporto diversamente
@@ -212,8 +212,7 @@ public class CommandsSocketManager {
                 pluginRef.getLogger().debug("-----Socket chiusa correttamente-----");
                 pluginRef.getLogger().debug("--- Chiusa sessione comandi con il server.");
             } catch (IOException e) {
-                pluginRef.getLogger().debug("Errore Socket: <GestioneSocketComandi>");
-                e.printStackTrace();
+                pluginRef.getLogger().debug("Errore Socket: <GestioneSocketComandi>", e);
             }
         }
     }
@@ -237,8 +236,7 @@ public class CommandsSocketManager {
             }
         } catch (Exception e) {
             pluginRef.getLogger().error("ERRORE nella creazione dell'oggetto OpenWebNet " + comandoOpen);
-            pluginRef.getLogger().error("Eccezione in GestioneSocketComandi durante la creazione del'oggetto OpenWebNet");
-            e.printStackTrace();
+            pluginRef.getLogger().error("Eccezione in GestioneSocketComandi durante la creazione del'oggetto OpenWebNet", e);
         }
 
         //3.1 invia il messaggio open e rimane in attesa della risposta (ACK/NACK) del server
@@ -254,8 +252,8 @@ public class CommandsSocketManager {
             try {
                 readTh.join();
             } catch (InterruptedException e1) {
-                pluginRef.getLogger().error("----- ERRORE readThread.join() durante l'invio comando:");
-                e1.printStackTrace();
+                pluginRef.getLogger().error("----- ERRORE readThread.join() durante l'invio comando:", e1);
+                Thread.currentThread().interrupt();
             }
 
             //3.2 la risposta può essere ACK(*#*1##) o NACK(*#*0##)

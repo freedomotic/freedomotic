@@ -156,7 +156,8 @@ public class Zibase extends Protocol {
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
-            LOG.error(ex.getLocalizedMessage());
+            LOG.error(ex.getLocalizedMessage(), ex);
+            Thread.currentThread().interrupt();
         }
     }
 
