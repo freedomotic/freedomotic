@@ -59,22 +59,18 @@ public class SerialHelper {
     public SerialHelper(final String portName, int baudRate, int dataBits, int stopBits, int parity, final SerialPortListener consumer) throws SerialPortException {
         this.portName = portName;
         serialPort = new SerialPort(this.portName);
-        serialPort.addEventListener(new SerialPortEventListener() {
+        serialPort.addEventListener(event -> {
+            if (event.isRXCHAR()) {
 
-            @Override
-            public void serialEvent(SerialPortEvent event) {
-                if (event.isRXCHAR()) {
-
-                    if (event.getEventValue() > 0) {
-                        try {
-                            readBuffer.append(new String(serialPort.readBytes()));
-                        } catch (SerialPortException ex) {
-                            LOG.warn(ex.getMessage());
-                        }
+                if (event.getEventValue() > 0) {
+                    try {
+                        readBuffer.append(new String(serialPort.readBytes()));
+                    } catch (SerialPortException ex) {
+                        LOG.warn(ex.getMessage());
                     }
-                    LOG.info("Received message \"{}\" from serial port \"{}\"", new Object[]{readBuffer.toString(), portName});
-                    sendReadData(consumer);
                 }
+                LOG.info("Received message \"{}\" from serial port \"{}\"", readBuffer.toString(), portName);
+                sendReadData(consumer);
             }
         });
         serialPort.setParams(baudRate, dataBits, stopBits, parity);
@@ -84,23 +80,23 @@ public class SerialHelper {
      * Sends a string message to the device.
      *
      * @param message the message to send
-     * @return true if executed succesfully, false otherwise
+     * @return true if executed successfully, false otherwise
      * @throws jssc.SerialPortException
      */
     public boolean write(String message) throws SerialPortException {
-        LOG.info("Writing \"{}\" to serial port \"{}\"", new Object[]{message, portName});
+        LOG.info("Writing \"{}\" to serial port \"{}\"", message, portName);
         return serialPort.writeString(message);
     }
 
     /**
-     * Sends a bytes message to the device
+     * Sends a bytes message to the device.
      *
      * @param bytes the message to send
      * @return
      * @throws jssc.SerialPortException
      */
     public boolean write(byte[] bytes) throws SerialPortException {
-        LOG.info("Writing bytes \"{}\" to serial port \"{}\"", new Object[]{Arrays.toString(bytes), portName});
+        LOG.info("Writing bytes \"{}\" to serial port \"{}\"", Arrays.toString(bytes), portName);
         return serialPort.writeBytes(bytes);
     }
 
@@ -118,7 +114,7 @@ public class SerialHelper {
     }
 
     /**
-     * Returns port name
+     * Returns port name.
      *
      * @return portName the port name
      */
@@ -127,7 +123,7 @@ public class SerialHelper {
     }
 
     /**
-     * Returns port status
+     * Returns port status.
      *
      * @return isOpened true if the port is opened, false otherwise
      */
@@ -136,7 +132,7 @@ public class SerialHelper {
     }
 
     /**
-     * Disconnects the port
+     * Disconnects the port.
      *
      * @return
      */
@@ -150,7 +146,7 @@ public class SerialHelper {
     }
 
     /**
-     * Sets port DTR
+     * Sets port DTR.
      *
      * @param enabled
      */
@@ -163,7 +159,7 @@ public class SerialHelper {
     }
 
     /**
-     * Sets port RTS
+     * Sets port RTS.
      *
      * @param enabled
      */
@@ -176,7 +172,7 @@ public class SerialHelper {
     }
 
     /**
-     * Sets chunck terminator
+     * Sets chunk terminator.
      *
      * @param readTerminator the terminator symbol used for data splitting
      */
@@ -187,9 +183,9 @@ public class SerialHelper {
     }
 
     /**
-     * Sets chunck size
+     * Sets chunk size.
      *
-     * @param chunkSize the chunck size used for data splitting
+     * @param chunkSize the chunk size used for data splitting
      */
     public void setChunkSize(int chunkSize) {
         this.readChunkSize = chunkSize;
@@ -198,7 +194,7 @@ public class SerialHelper {
     }
 
     /**
-     * Sends read data to the listener
+     * Sends read data to the listener.
      *
      * @param consumer serial port listener
      */
@@ -225,7 +221,7 @@ public class SerialHelper {
 
                 }
             } else {
-                // no splitting, send it just as readed
+                // no splitting, send it just as read
                 consumer.onDataAvailable(bufferContent);
                 //clear from sent text
                 bufferContent = "";
