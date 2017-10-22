@@ -22,7 +22,7 @@ package com.freedomotic.persistence;
 import com.freedomotic.exceptions.DataUpgradeException;
 
 /**
- * Upgrades the data making them compatible with the current version
+ * Upgrades the data making them compatible with the current version.
  *
  * @author Enrico Nicoletti
  * @param <T> The type of data to upgrade
@@ -30,7 +30,7 @@ import com.freedomotic.exceptions.DataUpgradeException;
 public interface DataUpgradeService<T> {
 
     /**
-     * Returns an upgraded object
+     * Returns an upgraded object.
      *
      * @param classType Pass a the dataObject class to check if a suitable
      * upgrader can be instantiated

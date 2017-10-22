@@ -23,11 +23,15 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 /**
- *
+ * Configuration of the persistence
+ * 
  * @author Enrico Nicoletti
  */
 public class InjectorPersistence extends AbstractModule {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void configure() {
         bind(DataUpgradeService.class).to(DataUpgradeServiceImpl.class).in(Singleton.class);

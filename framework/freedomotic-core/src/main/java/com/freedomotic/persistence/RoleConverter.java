@@ -29,16 +29,14 @@ import org.apache.shiro.authz.SimpleRole;
 import org.apache.shiro.authz.permission.WildcardPermission;
 
 /**
+ * Manages the serialization of Role objects.
  *
  * @author Matteo Mazzoni
  */
 class RoleConverter implements Converter {
 
     /**
-     *
-     * @param o
-     * @param writer
-     * @param mc
+     *{@inheritDoc}}
      */
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
@@ -58,10 +56,7 @@ class RoleConverter implements Converter {
     }
 
     /**
-     *
-     * @param reader
-     * @param uc
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
@@ -81,12 +76,10 @@ class RoleConverter implements Converter {
     }
 
     /**
-     *
-     * @param type
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public boolean canConvert(Class type) {
-        return (type == SimpleRole.class);
+        return type == SimpleRole.class;
     }
 }

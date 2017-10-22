@@ -23,32 +23,44 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.freedomotic.exceptions.FreedomoticRuntimeException;
+
 /**
+ * XML preprocessor tool.
  *
  * @author Enrico Nicoletti
  */
 public class XmlPreprocessor {
-
+    
+	/**
+	 * Private constructor of XmlPreprocessor class disabling instantiation.
+	 */
+    private XmlPreprocessor() {
+        //disable instantiation
+    }
+	
     /**
-     *
-     * @param xmlFile
-     * @param absolutePathToDtd
-     * @return
+     * Validate an xml file against a DTD file.
+     * 
+     * @param xmlFile file to validate
+     * @param absolutePathToDtd path of the DTD file
+     * @return validation result
      * @throws IOException
      */
     public static String validate(File xmlFile, String absolutePathToDtd) throws IOException {
@@ -65,11 +77,9 @@ public class XmlPreprocessor {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer transformer = tf.newTransformer();
 
-            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,
-                    new File(absolutePathToDtd).getAbsolutePath());
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, new File(absolutePathToDtd).getAbsolutePath());
 
             // Add the current framework version on top of the data
-            //transformer.setOutputProperty(OutputKeys.VERSION, Info.getVersion());
             StringWriter writer = new StringWriter();
             StreamResult result = new StreamResult(writer);
             transformer.transform(source, result);
@@ -83,21 +93,18 @@ public class XmlPreprocessor {
                 public void fatalError(SAXParseException fatal)
                         throws SAXException {
                     //enable when validator feature is fully implemented
-                    //LOG.warn(fatal.getMessage());
                 }
 
                 @Override
                 public void error(SAXParseException e)
                         throws SAXParseException {
                     //enable when validator feature is fully implemented
-                    //LOG.warn("Error at line " + e.getLineNumber() + ". " + e.getMessage());
                 }
 
                 @Override
                 public void warning(SAXParseException err)
                         throws SAXParseException {
                     //enable when validator feature is fully implemented
-                    //LOG.warn("Warning at line " + err.getLineNumber() + ". " + err.getMessage());
                 }
             });
             //finally parse the result. 
@@ -105,14 +112,8 @@ public class XmlPreprocessor {
             documentBuilder.parse(new InputSource(new StringReader(writer.toString())));
 
             return writer.toString();
-        } catch (SAXException ex) {
-            throw new RuntimeException(ex);
-        } catch (ParserConfigurationException ex) {
-            throw new RuntimeException(ex);
-        } catch (TransformerConfigurationException ex) {
-            throw new RuntimeException(ex);
-        } catch (TransformerException ex) {
-            throw new RuntimeException(ex);
+        } catch (SAXException | ParserConfigurationException | TransformerException  ex) {
+            throw new FreedomoticRuntimeException( ex.getMessage(), ex);
         }
     }
 

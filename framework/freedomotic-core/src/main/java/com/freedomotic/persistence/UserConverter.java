@@ -32,16 +32,14 @@ import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 
 /**
+ * Manages the serialization of User objects.
  *
  * @author Matteo Mazzoni
  */
 class UserConverter implements Converter {
 
     /**
-     *
-     * @param o
-     * @param writer
-     * @param mc
+     *{@inheritDoc}}
      */
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
@@ -78,10 +76,7 @@ class UserConverter implements Converter {
     }
 
     /**
-     *
-     * @param reader
-     * @param uc
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
@@ -120,9 +115,7 @@ class UserConverter implements Converter {
     }
 
     /**
-     *
-     * @param type
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public boolean canConvert(Class type) {
