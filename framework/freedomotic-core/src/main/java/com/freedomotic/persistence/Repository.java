@@ -22,33 +22,77 @@ package com.freedomotic.persistence;
 import java.util.List;
 
 /**
- *
+ * Generic repository of freedomotics objects.
  * @author Matteo Mazzoni
- * @param <T>
+ * @param <T> class the repository is dedicated to
  */
 public interface Repository<T> {
 
-    public List<T> findAll();
+    /**
+     * Finds all the entries of <T>
+     * @return list of all found objects
+     */
+    List<T> findAll();
 
-    // TODO: it's supposed name is a unique identifier, should return a single object
-    public List<T> findByName(String name);
+    /**
+     * Find all objects having the name provided.
+     * @param name value to match
+     * @return list of all found objects TODO: it's supposed name is a unique identifier, should return a single object
+     */
+    List<T> findByName(String name);
 
-    public T findOne(String uuid);
+    /**
+     * Find an object from its uuid.
+     * @param uuid value to match
+     * @return the found objects if present
+     */
+    T findOne(String uuid);
 
-    public boolean create(T item);  //TODO: refactor in T save(T item)
+    
+    /**
+     * Save the provided object.
+     * @param item object to save
+     * @return true if OK, false instead
+     * TODO: refactor in T save(T item)
+     */
+    boolean create(T item);
 
-    public boolean delete(T item);
+    /**
+     * Delete the provided object.
+     * @param item object to delete
+     * @return true if OK, false instead
+     */
+    boolean delete(T item);
 
-    public boolean delete(String uuid);
+    /**
+     * Delete the object identified by an uuid.
+     * @param uuid reference of the object to delete
+     * @return true if done, false instead
+     */
+    boolean delete(String uuid);
 
-    public T modify(String uuid, T data);
+    /**
+     * Replace with other data, the content of the object referenced by an uuid.
+     * @param uuid reference of the object to update
+     * @param data data to save
+     * @return true if OK, false instead
+     */
+    T modify(String uuid, T data);
 
-    public T copy(T data);
+    /**
+     * Copy a <T> object.
+     * @param data information to copy
+     * @return the copied data
+     */
+    T copy(T data);
 
-    public void deleteAll();
+    /**
+     * Delete all the <T> objects
+     */
+    void deleteAll();
 
-    //TODO: public long count();
-    //TODO: public boolean exists(String uuid);
-    //TODO: public void flush();
-    //TODO: T saveAndFlush(T arg0)
+    //TODO: add a long count() method
+    //TODO: add a boolean exists(String uuid) method
+    //TODO: add a void flush() method
+    //TODO: add a T saveAndFlush(T arg0) method
 }

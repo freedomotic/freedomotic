@@ -19,8 +19,10 @@
  */
 package com.freedomotic.persistence;
 
+import com.freedomotic.persistence.util.MarshalUtil;
 import com.freedomotic.rules.Statement;
 import com.freedomotic.core.Condition;
+import com.freedomotic.exceptions.FreedomoticRuntimeException;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.reactions.CommandRepository;
 import com.freedomotic.reactions.Reaction;
@@ -29,24 +31,29 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
+ * Manages the serialization of Reaction objects.
  *
  * @author Enrico Nicoletti
  */
 class ReactionConverter implements Converter {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DataUpgradeServiceImpl.class.getCanonicalName());
+    
     @Inject
     private CommandRepository commandRepository;
 
     /**
-     *
-     * @param o
-     * @param writer
-     * @param mc
+     *{@inheritDoc}}
      */
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
@@ -69,21 +76,7 @@ class ReactionConverter implements Converter {
                     writer.endNode();
                     //end target
                     //start statement
-                    Statement statement = c.getStatement();
-                    writer.startNode("statement");
-                    writer.startNode("logical");
-                    writer.setValue(statement.getLogical());
-                    writer.endNode(); //</logical>
-                    writer.startNode("attribute");
-                    writer.setValue(statement.getAttribute());
-                    writer.endNode(); //</attribute>
-                    writer.startNode("operand");
-                    writer.setValue(statement.getOperand());
-                    writer.endNode(); //</operand>
-                    writer.startNode("value");
-                    writer.setValue(statement.getValue());
-                    writer.endNode(); //</value>
-                    writer.endNode();
+                    MarshalUtil.writeNode(writer, c.getStatement());
                     //end statement
                     writer.endNode();
                     //end condition
@@ -107,20 +100,15 @@ class ReactionConverter implements Converter {
     }
 
     /**
-     *
-     * @param reader
-     * @param uc
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
-        //Trigger t;
-        List<Condition> conditions = new ArrayList<Condition>();
-        ArrayList<Command> list = new ArrayList<Command>();
+        List<Condition> conditions = new ArrayList<>();
+        ArrayList<Command> list = new ArrayList<>();
 
         reader.moveDown(); //goes down to <trigger>
         String triggerName = reader.getValue();
-        //t = TriggerPersistence.getTrigger(triggerName.trim());
         reader.moveUp(); //up to root
 
         //go down to conditions or sequence
@@ -134,11 +122,11 @@ class ReactionConverter implements Converter {
                 condition.setTarget(reader.getValue().trim());
                 reader.moveUp(); //move up to condition
                 //parse statement
-                ArrayList<String> statementValues = new ArrayList<String>();
+                ArrayList<String> statementValues = new ArrayList<>();
                 reader.moveDown(); //move down to statement
                 while (reader.hasMoreChildren()) { //childs of statement (logical, attribute, ...)
                     reader.moveDown(); //move down to statement property
-                    System.out.println("    " + reader.getValue().trim());
+                    LOG.info("    {}", reader.getValue().trim());
                     statementValues.add(reader.getValue());
                     reader.moveUp(); //move up to statement
                 }
@@ -161,7 +149,7 @@ class ReactionConverter implements Converter {
             if (!commands.isEmpty()) {
                 list.add(commands.get(0));
             } else {
-                throw new RuntimeException("Cannot find command named " + reader.getValue().trim());
+                throw new FreedomoticRuntimeException("Cannot find command named " + reader.getValue().trim());
             }
             reader.moveUp(); //move up to sequence
         }
@@ -170,9 +158,7 @@ class ReactionConverter implements Converter {
     }
 
     /**
-     *
-     * @param type
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public boolean canConvert(Class type) {

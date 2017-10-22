@@ -19,6 +19,7 @@
  */
 package com.freedomotic.persistence;
 
+import com.freedomotic.persistence.util.MarshalUtil;
 import com.freedomotic.rules.Payload;
 import com.freedomotic.rules.Statement;
 import com.thoughtworks.xstream.converters.Converter;
@@ -26,21 +27,19 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- *
+ * Manages the serialization of Payload objects
+ * 
  * @author Enrico Nicoletti
  */
-public class PayloadConverter
-        implements Converter {
+public class PayloadConverter implements Converter {
 
     /**
-     *
-     * @param o
-     * @param writer
-     * @param mc
+     *{@inheritDoc}}
      */
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
@@ -48,31 +47,14 @@ public class PayloadConverter
         writer.startNode("payload");
         Iterator<Statement> it = payload.iterator();
         while (it.hasNext()) {
-            Statement statement = it.next();
-            writer.startNode("statement");
-            writer.startNode("logical");
-            writer.setValue(statement.getLogical());
-            writer.endNode(); //</logical>
-            writer.startNode("attribute");
-            writer.setValue(statement.getAttribute());
-            writer.endNode(); //</attribute>
-            writer.startNode("operand");
-            writer.setValue(statement.getOperand());
-            writer.endNode(); //</operand>
-            writer.startNode("value");
-            writer.setValue(statement.getValue());
-            writer.endNode(); //</value>
-            writer.endNode(); //</com.freedomotic.reactions.Statement>
+            MarshalUtil.writeNode(writer, it.next());
         }
 
         writer.endNode(); //</payload>
     }
 
     /**
-     *
-     * @param reader
-     * @param uc
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
@@ -82,7 +64,7 @@ public class PayloadConverter
         while (reader.hasMoreChildren()) { //<statements> are the childs of payload
             reader.moveDown();
 
-            ArrayList<String> statementValues = new ArrayList<String>();
+            ArrayList<String> statementValues = new ArrayList<>();
 
             while (reader.hasMoreChildren()) { //childs of statement (logical, attribute, ...)
                 reader.moveDown();
@@ -103,9 +85,7 @@ public class PayloadConverter
     }
 
     /**
-     *
-     * @param clazz
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public boolean canConvert(Class clazz) {

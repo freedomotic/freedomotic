@@ -46,11 +46,11 @@ import java.nio.charset.Charset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
-import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.SimpleRole;
 
 /**
- *
+ * Serialization engine object.
+ *  
  * @author Gabriel Pulido de Torres
  */
 public class FreedomXStream {
@@ -61,11 +61,19 @@ public class FreedomXStream {
     @Inject
     private static ReactionConverter reactionConverter;
 
+    
+	/**
+	 * Private constructor of FreedomXStream class disabling instantiation.
+	 */
+    private FreedomXStream() {
+        //disable instantiation
+    }
+    
     /**
      * Creates a new fully configured serialization engine object which can be
-     * used to convert java instances into text (xml, json [not yet supported])
+     * used to convert java instances into text (xml, json [not yet supported]).
      *
-     * @return
+     * @return the serialization engine
      */
     public static XStream getXstream() {
         if (xstream == null) {
@@ -129,36 +137,37 @@ public class FreedomXStream {
         return xstream;
     }
 
+	/**
+	 * Serialize an object to file.
+	 * @param object input to serialize
+	 * @param file file to be written
+	 * @return true if processing is ok, false instead
+	 */
     public static boolean toXML(Object object, File file) {
-        XStream serializer = getXstream();
-        OutputStream outputStream = null;
-        Writer writer = null;
+    	XStream serializer = getXstream();
 
-        try {
-            outputStream = new FileOutputStream(file);
-            writer = new OutputStreamWriter(outputStream, Charset.forName("UTF-8"));
-            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-            serializer.toXML(object, writer);
-        } catch (Exception exp) {
-            LOG.error("Error while serializing instance to disk", exp);
-        } finally {
-            IOUtils.closeQuietly(writer);
-            IOUtils.closeQuietly(outputStream);
-        }
+    	try (OutputStream outputStream = new FileOutputStream(file);
+    			Writer writer = new OutputStreamWriter(outputStream, Charset.forName("UTF-8"))) {
+    		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+    		serializer.toXML(object, writer);
+    	} catch (Exception exp) {
+    		LOG.error("Error while serializing instance to disk", exp);
+    		//TODO Shouldn't the returned value be false ?
+    	}
 
-        return true;
+    	return true;
     }
 
     /**
+     * Returns a serialization engine object. 
      *
-     * @return
+     * @return the serialization engine
+     * @see com.freedomotic.persistence.FreedomXStream#getXStream()
+     * @deprecated TODO Define when that method will be deleted 
      */
     @Deprecated
     public static XStream getEnviromentXstream() {
         return getXstream();
     }
 
-    private FreedomXStream() {
-        //disable instantiation
-    }
 }

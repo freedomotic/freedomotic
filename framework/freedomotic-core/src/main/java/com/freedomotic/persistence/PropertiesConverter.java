@@ -28,16 +28,14 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import java.util.HashMap;
 
 /**
- *
- * @author Gabriel Pulido de Torres
+ * Manages the serialization of Properties objects.
+ * 
+ * @author Enrico Nicoletti
  */
 class PropertiesConverter implements Converter {
 
     /**
-     *
-     * @param o
-     * @param writer
-     * @param mc
+     *{@inheritDoc}}
      */
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
@@ -53,14 +51,11 @@ class PropertiesConverter implements Converter {
     }
 
     /**
-     *
-     * @param reader
-     * @param uc
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
-        HashMap<String, String> propertiesHashMap = new HashMap<String, String>();
+        HashMap<String, String> propertiesHashMap = new HashMap<>();
 
         while (reader.hasMoreChildren()) {
             reader.moveDown();
@@ -73,9 +68,7 @@ class PropertiesConverter implements Converter {
     }
 
     /**
-     *
-     * @param type
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public boolean canConvert(Class type) {
