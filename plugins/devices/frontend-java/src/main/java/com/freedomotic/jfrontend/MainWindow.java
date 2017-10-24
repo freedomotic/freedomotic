@@ -1500,7 +1500,7 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         String[] buttons = {i18n.msg("form_compilation"), i18n.msg("send_log"), i18n.msg("delete")};
         int option = JOptionPane.showOptionDialog(null, i18n.msg("report_issue_dialog"), i18n.msg("report_issue"),
-                JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[2]);
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null, buttons, buttons[2]);
         switch (option) {
             case 0:
                 this.openGoogleForm();
