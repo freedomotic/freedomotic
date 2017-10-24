@@ -99,7 +99,7 @@ class Graph {
 
             while (arcoIncidenteI.hasNext()) {
                 a = (GraphEdge) arcoIncidenteI.next();
-                y = (a.x.equals(x)) ? a.y : a.x;
+                y = (a.getX().equals(x)) ? a.getY() : a.getX();
 
                 if (((HashSet) nodi.get(y)).remove(a)) {
                     nArchi--;
@@ -145,7 +145,7 @@ class Graph {
      * @return
      */
     public boolean add(GraphEdge a) {
-        return add(a.x, a.y, a.value);
+        return add(a.getX(), a.getY(), a.getValue());
     }
 
     /**
@@ -170,9 +170,9 @@ class Graph {
         boolean flag = false;
         boolean flag1 = false;
 
-        if (nodi.containsKey(a.x) && nodi.containsKey(a.y)) {
-            flag = ((HashSet) nodi.get(a.x)).remove(a);
-            flag1 = ((HashSet) nodi.get(a.y)).remove(a);
+        if (nodi.containsKey(a.getX()) && nodi.containsKey(a.getY())) {
+            flag = ((HashSet) nodi.get(a.getX())).remove(a);
+            flag1 = ((HashSet) nodi.get(a.getY())).remove(a);
         }
 
         return flag || flag1;
