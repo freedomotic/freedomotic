@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
 class DataUpgradeServiceImpl implements DataUpgradeService<String> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataUpgradeServiceImpl.class.getCanonicalName());
+    
     // Cache the loaded transformations
     private Map<File, Source> sources = new HashMap<>();
 
@@ -65,8 +66,7 @@ class DataUpgradeServiceImpl implements DataUpgradeService<String> {
             LOG.debug("Given data are already consistent with the most recent framework version. No XML transformation was performed");
             return xml;
         } else {
-            LOG.info("Upgrading data of type \"{}\" from version {} to version {}",
-                    new Object[]{type.getCanonicalName(), fromVersion, Info.getVersion()});
+            LOG.info("Upgrading data of type \"{}\" from version {} to version {}", type.getCanonicalName(), fromVersion, Info.getVersion());
         }
 
         String upgradedXml;
@@ -94,15 +94,15 @@ class DataUpgradeServiceImpl implements DataUpgradeService<String> {
     }
 
     /**
-     * Upgrades a xml content to the current framework version
+     * Upgrades a xml content to the current framework version.
      *
-     * @param input
-     * @param xsltAlgorithm
-     * @return
+     * @param input xml string describing a content from a non current version 
+     * @param xsltAlgorithm algorithm to use for transformation
+     * @return xml content formatted with the current framework version
      * @throws TransformerConfigurationException
      * @throws TransformerException
      */
-    private String upgradeContent(String input, Source xsltAlgorithm) throws TransformerConfigurationException, TransformerException {
+    private String upgradeContent(String input, Source xsltAlgorithm) throws TransformerException {
         // Load all the needed resources
         StreamSource streamSource = new StreamSource(new StringReader(input));
         StreamResult streamResult = new StreamResult(new StringWriter());

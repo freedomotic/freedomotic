@@ -188,7 +188,8 @@ public class Mqtt implements MqttCallback {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
-                LOG.error(ex.getMessage());
+                LOG.error(ex.getMessage(), ex);
+                Thread.currentThread().interrupt();
             }
         }
         LOG.info("Reconnected to MQTT broker");

@@ -156,6 +156,7 @@ public class DAEnetIP2 extends Protocol {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
             LOG.error(ex.getLocalizedMessage());
+            Thread.currentThread().interrupt();
         }
     }
 

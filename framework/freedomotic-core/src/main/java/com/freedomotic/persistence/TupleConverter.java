@@ -30,16 +30,14 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Manages the serialization of Tuple objects.
  *
  * @author Enrico Nicoletti
  */
 class TupleConverter implements Converter {
 
     /**
-     *
-     * @param o
-     * @param writer
-     * @param mc
+     *{@inheritDoc}}
      */
     @Override
     public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
@@ -61,10 +59,7 @@ class TupleConverter implements Converter {
     }
 
     /**
-     *
-     * @param reader
-     * @param uc
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
@@ -90,9 +85,7 @@ class TupleConverter implements Converter {
     }
 
     /**
-     *
-     * @param clazz
-     * @return
+     *{@inheritDoc}}
      */
     @Override
     public boolean canConvert(Class clazz) {

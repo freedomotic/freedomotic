@@ -28,7 +28,6 @@ import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.freedomotic.plugins.devices.modbus.gateways.ModbusMasterGateway;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
-import com.freedomotic.app.Freedomotic;
 import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
@@ -103,7 +102,8 @@ public class Modbus extends Protocol {
             }
             Thread.sleep(pollingTime);
         } catch (InterruptedException ex) {
-            LOG.error(ex.getLocalizedMessage());
+            LOG.error(ex.getLocalizedMessage(), ex);
+            Thread.currentThread().interrupt();
         }
     }
 

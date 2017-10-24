@@ -16,13 +16,11 @@ import com.darkprograms.speech.recognizer.Recognizer;
 import com.darkprograms.speech.synthesiser.Synthesiser;
 import com.darkprograms.speech.util.AePlayWave;
 import com.freedomotic.googlespeech.GoogleSpeech;
-import com.freedomotic.util.Info;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioFileFormat;
-import javax.swing.JFileChooser;
 import javazoom.jl.player.Player;
 
 /**
@@ -247,6 +245,7 @@ public class MainGUI extends javax.swing.JFrame {
              Thread.sleep(plugin.RECORD_TIME);
         } catch (InterruptedException ex) {
             Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+            Thread.currentThread().interrupt();
         }
         microphone.close();
         new Thread(new RecognizeThread()).start();

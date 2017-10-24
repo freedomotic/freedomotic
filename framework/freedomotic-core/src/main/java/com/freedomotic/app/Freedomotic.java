@@ -90,6 +90,7 @@ public class Freedomotic implements BusConsumer {
     /**
      * Should NOT be used. Reserved for una tantum internal freedomotic core use
      * only!!
+     * TODO Maybe make that field private and provide a method with the right javadoc
      */
     @Deprecated
     public static Injector INJECTOR;
