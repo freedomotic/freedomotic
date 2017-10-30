@@ -19,28 +19,30 @@
  */
 package com.freedomotic.reactions;
 
-import com.freedomotic.rules.Statement;
-import com.freedomotic.rules.Payload;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.bus.BusConsumer;
 import com.freedomotic.bus.BusMessagesListener;
 import com.freedomotic.bus.BusService;
 import com.freedomotic.core.TriggerCheck;
+import com.freedomotic.exceptions.FreedomoticRuntimeException;
+import com.freedomotic.rules.Payload;
+import com.freedomotic.rules.Statement;
 import com.google.inject.Inject;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.UUID;
 
 /**
  *
@@ -79,14 +81,14 @@ public final class Trigger implements BusConsumer, Cloneable {
     private BusService busService;
 
     /**
-     *
+     * Default constructor.
      */
     public Trigger() {
         this.uuid = UUID.randomUUID().toString();
     }
 
     /**
-     *
+     * Registers the trigger
      */
     public void register() {
         Freedomotic.INJECTOR.injectMembers(this);
@@ -98,70 +100,73 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
+     * Sets name of the trigger.
      *
-     * @param name
+     * @param name name to trim and set.
      */
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
     }
 
     /**
+     * Gets hardware level of the trigger.
      *
-     * @return
+     * @return hardware level.
      */
     public boolean isHardwareLevel() {
         return hardwareLevel;
     }
 
     /**
+     * Sets hardware level of the trigger.
      *
-     * @param hardwareLevel
+     * @param hardwareLevel hardware level to set
      */
     public void setIsHardwareLevel(boolean hardwareLevel) {
         this.hardwareLevel = hardwareLevel;
     }
 
     /**
+     * Sets the description of the trigger.
      *
-     * @param sender
+     * @param description description to set.
      */
-    public void setDescription(String sender) {
-        this.description = sender;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
+     * Sets the channel based on event default destination.
      *
-     * @param event
+     * @param event provider of channel.
      */
     public void setChannel(EventTemplate event) {
         this.channel = event.getDefaultDestination();
     }
 
     /**
+     * Sets the channel of the trigger.
      *
-     * @param channel
+     * @param channel channel to set.
      */
     public void setChannel(String channel) {
         this.channel = channel;
     }
 
     /**
+     * Checks if payload is consistent with given event's payload.
      *
-     * @param event
-     * @return
+     * @param event given event with payload.
+     * @return true if payload is consistent with given event's payload.
      */
     public boolean isConsistentWith(EventTemplate event) {
-        if (getPayload().equals(event.getPayload())) {
-            return true;
-        } else {
-            return false;
-        }
+        return getPayload().equals(event.getPayload());
     }
 
     /**
      * Gets max number of trigger executions.
      *
-     * @return max number of trigger executions
+     * @return max number of trigger executions.
      */
     public long getMaxExecutions() {
         if (maxExecutions <= 0) {
@@ -172,16 +177,18 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
+     * Sets max number of trigger executions.
      *
-     * @param maxExecutions
+     * @param maxExecutions max number of executions.
      */
     public void setMaxExecutions(long maxExecutions) {
         this.maxExecutions = maxExecutions;
     }
 
     /**
+     * Gets number of executions of the trigger.
      *
-     * @return
+     * @return number of executions of the trigger.
      */
     public long getNumberOfExecutions() {
         return numberOfExecutions;
@@ -190,26 +197,25 @@ public final class Trigger implements BusConsumer, Cloneable {
     /**
      * Sets number of trigger executions.
      *
-     * @param numberOfExecutions number of trigger executions
+     * @param numberOfExecutions number of trigger executions.
      */
     public void setNumberOfExecutions(long numberOfExecutions) {
         this.numberOfExecutions = numberOfExecutions;
     }
 
     /**
+     * Gets suspension time of the trigger.
      *
-     * @return
+     * @return suspension time.
      */
     public long getSuspensionTime() {
-//        if (suspensionTime <= 0) {
-//            suspensionTime = 100; //a minimal default suspension to control flooding
-//        }
         return suspensionTime;
     }
 
     /**
+     * Sets suspension time of the trigger.
      *
-     * @param suspensionTime
+     * @param suspensionTime suspension time to set.
      */
     public void setSuspensionTime(long suspensionTime) {
         this.suspensionTime = suspensionTime;
@@ -218,24 +224,21 @@ public final class Trigger implements BusConsumer, Cloneable {
     /**
      * Sets trigger payload.
      *
-     * @param p trigger payload to set
+     * @param payload trigger payload to set.
      */
-    public void setPayload(Payload p) {
-        this.payload = p;
+    public void setPayload(Payload payload) {
+        this.payload = payload;
     }
 
     //can be moved to a stategy pattern
     /**
-     *
-     * @return
+     * Checks whether the trigger can fire.
+     * @return true if trigger can fire.
      */
     public boolean canFire() {
         //num of executions < max executions
-        if (getMaxExecutions() > -1) { //not unlimited
-
-            if (getNumberOfExecutions() >= getMaxExecutions()) {
-                return false;
-            }
+        if (getMaxExecutions() > -1 && getNumberOfExecutions() >= getMaxExecutions()) { //not unlimited
+            return false;
         }
 
         if (getNumberOfExecutions() > 0) { //if is not the first time it executes
@@ -261,7 +264,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
-     *
+     * Increments the number of trigger executions and updates the suspensionStart.
      */
     public synchronized void setExecuted() {
         suspensionStart = System.currentTimeMillis();
@@ -269,8 +272,8 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
-     *
-     * @param delay
+     * Sets delay of the trigger.
+     * @param delay delay to set.
      */
     public void setDelay(int delay) {
         this.delay = delay;
@@ -279,7 +282,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     /**
      * Gets trigger priority.
      *
-     * @return trigger priority
+     * @return trigger priority.
      */
     public int getPriority() {
         return priority;
@@ -288,15 +291,16 @@ public final class Trigger implements BusConsumer, Cloneable {
     /**
      * Sets trigger priority.
      *
-     * @param priority trigger priority to set
+     * @param priority trigger priority to set.
      */
     public void setPriority(int priority) {
         this.priority = priority;
     }
 
     /**
+     * Gets name of the trigger.
      *
-     * @return
+     * @return name of the trigger.
      */
     public String getName() {
         return name;
@@ -305,7 +309,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     /**
      * Gets trigger description.
      *
-     * @return trigger description
+     * @return trigger description.
      */
     public String getDescription() {
         if ((description == null) || (description.isEmpty())) {
@@ -317,7 +321,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     /**
      * Gets trigger channel.
      *
-     * @return trigger channel
+     * @return trigger channel.
      */
     public String getChannel() {
         return channel;
@@ -326,34 +330,26 @@ public final class Trigger implements BusConsumer, Cloneable {
     /**
      * Gets trigger payload.
      *
-     * @return trigger payload
+     * @return trigger payload.
      */
     public Payload getPayload() {
         return payload;
     }
 
     /**
+     * Gets delay of the trigger.
      *
-     * @return
+     * @return delay of the trigger.
      */
     public int getDelay() {
         return delay;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String toString() {
         return getName();
     }
 
-    /**
-     *
-     * @param obj
-     * @return
-     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -366,17 +362,9 @@ public final class Trigger implements BusConsumer, Cloneable {
 
         final Trigger other = (Trigger) obj;
 
-        if ((this.name == null) ? (other.name != null) : (!this.name.equalsIgnoreCase(other.name))) {
-            return false;
-        }
-
-        return true;
+        return (this.name == null) ? (other.name == null) : (this.name.equalsIgnoreCase(other.name));
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -391,40 +379,44 @@ public final class Trigger implements BusConsumer, Cloneable {
      */
     @Override
     public void onMessage(ObjectMessage message) {
-        long start = System.currentTimeMillis();
-        Object payload = null;
+        Object msgPayload = null;
 
         try {
-            payload = message.getObject();
+            msgPayload = message.getObject();
         } catch (JMSException ex) {
             LOG.error(ex.getMessage());
         }
 
-        if (payload instanceof EventTemplate) {
-            EventTemplate event = (EventTemplate) payload;
+        if (msgPayload instanceof EventTemplate) {
+            EventTemplate event = (EventTemplate) msgPayload;
             LOG.debug("Trigger '" + this.getName() + "' filters event '" + event.getEventName()
                     + "' on channel " + this.getChannel());
 
             checker.check(event, this);
-            long end = System.currentTimeMillis();
         }
     }
 
     /**
-     *
-     * @return
+     * Clones the trigger.
+     * @return the cloned trigger.
      */
     @Override
     public Trigger clone() {
-        Trigger clone = new Trigger();
-        clone.setName(getName());
-        clone.setDescription(getDescription());
+        Trigger clone;
+
+        try {
+            clone = (Trigger) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new FreedomoticRuntimeException("Clone failed.");
+        }
+
+        clone.setUUID(UUID.randomUUID().toString());
 
         Payload clonePayload = new Payload();
         Iterator<Statement> it = getPayload().iterator();
 
         while (it.hasNext()) {
-            Statement original = (Statement) it.next();
+            Statement original = it.next();
             clonePayload.addStatement(original.getLogical(),
                     original.getAttribute(),
                     original.getOperand(),
@@ -432,18 +424,13 @@ public final class Trigger implements BusConsumer, Cloneable {
         }
 
         clone.setPayload(clonePayload);
-        clone.setIsHardwareLevel(isHardwareLevel());
-        clone.setMaxExecutions(getMaxExecutions());
-        clone.setNumberOfExecutions(getNumberOfExecutions());
-        clone.setSuspensionTime(getSuspensionTime());
-        clone.suspensionStart = this.suspensionStart;
         clone.setPriority(0);
 
         return clone;
     }
 
     /**
-     *
+     * Unregisters the trigger.
      */
     public void unregister() {
         if (listener != null) {
@@ -452,8 +439,9 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
+     * Gets the UUID of the trigger.
      *
-     * @return
+     * @return UUID of the trigger.
      */
     public String getUUID() {
         if (uuid == null) {
@@ -463,24 +451,27 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
+     * Sets the UUID of the trigger.
      *
-     * @param uuid
+     * @param uuid UUID of the trigger.
      */
     public void setUUID(String uuid) {
         this.uuid = uuid;
     }
 
     /**
+     * Sets whether trigger should be persisted.
      *
-     * @param persist
+     * @param persist true if trigger should be persisted.
      */
     public void setPersistence(boolean persist) {
         this.persistence = persist;
     }
 
     /**
+     * Gets whether the trigger should be persisted.
      *
-     * @return
+     * @return true if trigger should be persisted
      */
     public boolean isToPersist() {
         return persistence;
