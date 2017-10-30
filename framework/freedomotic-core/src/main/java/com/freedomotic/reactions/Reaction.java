@@ -36,11 +36,11 @@ public final class Reaction
         implements Serializable {
 
     private static final long serialVersionUID = -5474545571527398625L;
-    private Trigger trigger = new Trigger();
+    private transient Trigger trigger = new Trigger();
     //list of optional conditions
-    private List<Condition> conditions = new ArrayList<Condition>();
+    private transient List<Condition> conditions = new ArrayList<>();
     private String uuid;
-    private List<Command> commands = new ArrayList<Command>();
+    private List<Command> commands = new ArrayList<>();
     private String description;
     private String shortDescription;
 
@@ -111,23 +111,11 @@ public final class Reaction
      * @param command the command performed when the reaction is triggered
      */
     public Reaction(Trigger trigger, Command command) {
-        ArrayList<Command> tmp = new ArrayList<Command>();
+        ArrayList<Command> tmp = new ArrayList<>();
         tmp.add(command);
         create(trigger, tmp);
     }
 
-//    public Reaction(Trigger trigger, String commandsList) {
-//        String[] lines = commandsList.split("\n");
-//        ArrayList<CommandSequence> tmpSequences = new ArrayList<CommandSequence>();
-//        for (String line : lines) {
-//            CommandSequence seq = new CommandSequence();
-//            for (String string : Arrays.asList(line.split(","))) {
-//                seq.append(CommandPersistence.getCommand(string));
-//            }
-//            tmpSequences.add(seq);
-//        }
-//        create(trigger, tmpSequences);
-//    }
     /**
      * Creates a new reaction.
      *
@@ -280,12 +268,8 @@ public final class Reaction
 
         final Reaction other = (Reaction) obj;
 
-        if ((this.getShortDescription() == null) ? (other.getShortDescription() != null)
-                : (!this.shortDescription.equals(other.shortDescription))) {
-            return false;
-        }
-
-        return true;
+        return (this.getShortDescription() == null && other.getShortDescription() == null) 
+                || this.shortDescription.equals(other.shortDescription);
     }
 
     /**
@@ -394,7 +378,6 @@ public final class Reaction
     protected Object clone() throws CloneNotSupportedException {
         Reaction r = new Reaction();
         r.setCommands(this.getCommands());
-        //r.setConditions(this.getConditions());
         r.setTrigger(this.getTrigger());
 
         return r;
