@@ -26,12 +26,16 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
+
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+
 import com.freedomotic.util.PeriodicSave;
+
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -42,6 +46,7 @@ import org.apache.shiro.util.ThreadState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
 import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.bus.BootStatus;
@@ -78,7 +83,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 /**
- * This is the starting class of the project
+ * This is the starting class of the Freedomotic project.
  *
  * @author Enrico Nicoletti
  */
@@ -86,7 +91,8 @@ public class Freedomotic implements BusConsumer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Freedomotic.class.getName());
     public static String INSTANCE_ID;
-    public static ArrayList<IPluginCategory> onlinePluginCategories;
+    private static List<IPluginCategory> onlinePluginCategories;
+    
     /**
      * Should NOT be used. Reserved for una tantum internal freedomotic core use
      * only!!
@@ -96,42 +102,46 @@ public class Freedomotic implements BusConsumer {
     public static Injector INJECTOR;
     //dependencies
     private final EnvironmentRepository environmentRepository;
-    private final ThingRepository thingsRepository;
     private final TriggerRepository triggerRepository;
     private final TopologyManager topologyManager;
     private final SynchManager synchManager;
-    private final CommandsNlpService commandsNlpService;
     private final ClientStorage clientStorage;
     private final PluginsManager pluginsManager;
     private AppConfig config;
     private final Auth auth;
     private final I18n i18n;
-    private BusMessagesListener listener;
     // TODO remove static modifier once static methods sendEvent & sendCommand are erased.
     private static BusService busService;
     private static boolean logToFile;
     private final CommandRepository commandRepository;
     private final ReactionRepository reactionRepository;
-    private final Autodiscovery autodiscovery;
     private String savedDataRoot;
     private static final String LOG_PATH = Info.PATHS.PATH_WORKDIR + "/log/freedomotic.log";
+	private static final double MB = 1024.0 * 1024.0;
+
+	/**
+	 * TODO remove those variables if they would never be used
+	 */
+    private final ThingRepository thingsRepository;
+    private final CommandsNlpService commandsNlpService;
+    private final Autodiscovery autodiscovery;
 
     /**
-     *
-     * @param auth
-     * @param pluginsLoader
-     * @param environmentRepository
-     * @param thingsRepository
-     * @param triggerRepository
-     * @param commandRepository
-     * @param clientStorage
-     * @param commandsNlpService
-     * @param config
-     * @param i18n
-     * @param busService
-     * @param topologyManager
-     * @param synchManager
-     * @param autodiscovery
+     *Constructor of Freedomotic objects.
+     * @param auth authentication object
+     * @param pluginsLoader plugin manager
+     * @param environmentRepository repository of the environment
+     * @param thingsRepository repository of things
+     * @param triggerRepository repository of triggers
+     * @param commandRepository repository of commands
+     * @param clientStorage client storage
+     * @param commandsNlpService nop commande service
+     * @param config Application configuration
+     * @param i18n internationalization
+     * @param busService bus service
+     * @param topologyManager topology manager
+     * @param synchManager Sync Manager
+     * @param autodiscovery auto discovery
      */
     @Inject
     public Freedomotic(
@@ -156,7 +166,7 @@ public class Freedomotic implements BusConsumer {
         this.triggerRepository = triggerRepository;
         this.commandRepository = commandRepository;
         this.reactionRepository = reactionRepository;
-        this.busService = busService;
+        Freedomotic.busService = busService;
         this.commandsNlpService = commandsNlpService;
         this.topologyManager = topologyManager;
         this.synchManager = synchManager;
@@ -168,20 +178,29 @@ public class Freedomotic implements BusConsumer {
     }
 
     /**
-     * Configures a Freedomotic instance ID
+     * Configures a Freedomotic instance ID.
      *
      * @return true if the instance ID is configured, false otherwise
      */
     private boolean configureFreedomoticInstanceId() {
-        if ((INSTANCE_ID == null) || (INSTANCE_ID.isEmpty())) {
-            INSTANCE_ID = config.getStringProperty("INSTANCE_ID", UUID.randomUUID().toString());
-        }
+        setInstanceId(config.getStringProperty("INSTANCE_ID", UUID.randomUUID().toString()));
         config.setProperty("INSTANCE_ID", INSTANCE_ID);
         return true;
     }
 
+	/**
+	 * Return the Freedomotic instance id or build it with a synchronized.
+	 * @return the freedomotic instance id
+	 */
+	private static synchronized boolean setInstanceId(String instanceId) {
+		if ((INSTANCE_ID == null) || (INSTANCE_ID.isEmpty())) {
+            INSTANCE_ID = instanceId;
+        }
+        return true;
+	}
+
     /**
-     *
+     * Start the Freedomotic instance
      * @throws FreedomoticException
      */
     public void start() throws FreedomoticException {
@@ -209,16 +228,12 @@ public class Freedomotic implements BusConsumer {
             LOG.info("Booting as user \"{}\". Session will last {}", auth.getSubject().getPrincipal(), auth.getSubject().getSession().getTimeout());
         }
 
-        String resourcesPath
-                = new File(Info.PATHS.PATH_WORKDIR
-                        + config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
-        LOG.info("\nOS: " + System.getProperty("os.name") + "\n" + i18n.msg("architecture") + ": "
-                + System.getProperty("os.arch") + "\n" + "OS Version: " + System.getProperty("os.version")
-                + "\n" + i18n.msg("user") + ": " + System.getProperty("user.name") + "\n" + "Java Home: "
-                + System.getProperty("java.home") + "\n" + "Java Library Path: "
-                + System.getProperty("java.library.path") + "\n" + "Program path: "
-                + System.getProperty("user.dir") + "\n" + "Java Version: " + System.getProperty("java.version")
-                + "\n" + "Resources Path: " + resourcesPath);
+		String resourcesPath = new File(Info.PATHS.PATH_WORKDIR	+ config.getStringProperty("KEY_RESOURCES_PATH", "/build/classes/it/freedom/resources/")).getPath();
+		LOG.info("\nOS: {}\n{}: {}\nOS Version: {}\n{}: {}\n" + "Java Home: {}\n" + "Java Library Path: {}\n"
+				+ "Program path: {}\n" + "Java Version: {}\nResources Path: {}", 
+				System.getProperty("os.name"), i18n.msg("architecture"), System.getProperty("os.arch"), System.getProperty("os.version"),
+				i18n.msg("user"), System.getProperty("user.name"), System.getProperty("java.home"),	System.getProperty("java.library.path"), 
+				System.getProperty("user.dir"),	System.getProperty("java.version"), resourcesPath);
 
         //check if topology manager is initiated
         if (topologyManager == null) {
@@ -230,15 +245,14 @@ public class Freedomotic implements BusConsumer {
         }
 
         // register listener
-        this.listener = new BusMessagesListener(this, busService);
+        BusMessagesListener listener = new BusMessagesListener(this, busService);
         // this class is a BusConsumer too
         // listen for exit signal (an event) and call onExit method if received
         listener.consumeEventFrom("app.event.system.exit");
 
         // Stop on initialization error.
         final BootStatus currentStatus = BootStatus.getCurrentStatus();
-        if (!BootStatus.STARTED.equals(currentStatus)) {
-
+        if (BootStatus.STARTED != currentStatus) {
             kill(currentStatus.getCode());
         }
 
@@ -269,26 +283,19 @@ public class Freedomotic implements BusConsumer {
          * Cache online plugins
          * *****************************************************************
          */
-        if (config.getBooleanProperty("CACHE_MARKETPLACE_ON_STARTUP", false)) {
-            try {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                LOG.info("Starting marketplace service");
-
-                                MarketPlaceService mps = MarketPlaceService.getInstance();
-                                onlinePluginCategories = mps.getCategoryList();
-                            }
-                        }).start();
-                    }
-                });
-            } catch (Exception e) {
-                LOG.warn("Unable to cache plugins package from marketplace", Freedomotic.getStackTraceInfo(e));
-            }
-        }
+		if (config.getBooleanProperty("CACHE_MARKETPLACE_ON_STARTUP", false)) {
+			try {
+				EventQueue.invokeLater(() -> new Thread(new Runnable() {
+					@Override
+					public void run() {
+						LOG.info("Starting marketplace service");
+						Freedomotic.setOnlinePluginCategories(MarketPlaceService.getInstance().getCategoryList());
+					}
+				}).start());
+			} catch (Exception e) {
+				LOG.warn("Unable to cache plugins package from marketplace", Freedomotic.getStackTraceInfo(e));
+			}
+		}
 
         // Bootstrap Things in the environments
         // This should be done after loading all Things plugins otherwise
@@ -314,9 +321,8 @@ public class Freedomotic implements BusConsumer {
             }
         }
 
-        double MB = 1024 * 1024;
         Runtime runtime = Runtime.getRuntime();
-        LOG.info("Used Memory: " + ((runtime.totalMemory() - runtime.freeMemory()) / MB));
+        LOG.info("Used Memory: {}", (runtime.totalMemory() - runtime.freeMemory()) / MB);
         LOG.info("Freedomotic startup completed");
 
         setDataRootPath();
@@ -324,11 +330,27 @@ public class Freedomotic implements BusConsumer {
     }
 
     /**
+     * Sets the online plugin categories.
+     * @param categoryList list of plugin to set
+     */
+    protected synchronized static void setOnlinePluginCategories(ArrayList<IPluginCategory> categoryList) {
+		onlinePluginCategories = categoryList;
+	}
+
+    /**
+     * Get the list of plugin categories.
+     * @return list of plugin category
+     */
+    protected static List<IPluginCategory> getOnlinePluginCategories() {
+		return onlinePluginCategories;
+	}
+
+	/**
      * Enables periodic saving of commands, triggers and reactions.
-     *
      */
     private void activatePeriodicSave() {
         // TODO: temporarily SAVE_DATA_PERIODICALLY is set to false until on/off feature of this property is implemented
+    	// TODO: Use BooleanUtils.toBoolean
         if ("true".equals(config.getProperty("SAVE_DATA_PERIODICALLY"))) {
             int executionInterval = Integer.parseInt(config.getProperty("DATA_SAVING_INTERVAL"));
             final PeriodicSave periodicSave = new PeriodicSave(savedDataRoot, executionInterval);
@@ -396,21 +418,23 @@ public class Freedomotic implements BusConsumer {
         return logToFile;
     }
 
-    // FIXME This shouldn't be done through this method
     /**
-     *
-     * @param event
+     *Sends the event template
+     * @param event event tot sen
+    // FIXME This shouldn't be done through this method
      */
     @Deprecated
     public static void sendEvent(EventTemplate event) {
         busService.send(event);
     }
 
-    // FIXME This shouldn't be done through this method
+
     /**
      *
      * @param command
      * @return
+     * @deprecated
+     * FIXME This shouldn't be done through this method
      */
     @Deprecated
     public static Command sendCommand(final Command command) {
@@ -464,6 +488,9 @@ public class Freedomotic implements BusConsumer {
         LogManager.getLogManager().getLogger("").setLevel(Level.ALL);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onMessage(ObjectMessage message) {
 
@@ -509,7 +536,7 @@ public class Freedomotic implements BusConsumer {
             folder = new File(environmentFilePath).getParentFile();
             environmentRepository.saveEnvironmentsToFolder(folder);
         } catch (RepositoryException ex) {
-            LOG.error("Cannot save environment to folder \"{}\" due to \"{}\"", new Object[]{folder, Freedomotic.getStackTraceInfo(ex)});
+            LOG.error("Cannot save environment to folder \"{}\" due to \"{}\"", folder, Freedomotic.getStackTraceInfo(ex));
         }
 
         LOG.info("Freedomotic instance ID \"{}\" is shutting down. See you!", INSTANCE_ID);
@@ -517,7 +544,7 @@ public class Freedomotic implements BusConsumer {
     }
 
     /**
-     *
+     * Set the data root path.
      */
     private void setDataRootPath() {
         if (config.getBooleanProperty("KEY_OVERRIDE_REACTIONS_ON_EXIT", false)) {
@@ -561,7 +588,7 @@ public class Freedomotic implements BusConsumer {
     }
 
     /**
-     * Returns the current path of the log file
+     * Returns the current path of the log file.
      *
      * @return the log path
      */
