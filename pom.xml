@@ -252,6 +252,28 @@
             <additionalparam>-Xdoclint:none</additionalparam>
           </properties>
         </profile>
+        <profile>
+          <id>qulice</id>
+            <build>
+              <plugins>
+                <plugin>
+                  <groupId>com.qulice</groupId>
+                  <artifactId>qulice-maven-plugin</artifactId>
+                  <version>0.17</version>
+                  <configuration>
+                      <license>file:${user.dir}/LICENSE.GPL</license>
+                  </configuration>
+                  <executions>
+                      <execution>
+                          <goals>
+                              <goal>check</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+                </plugin>
+              </plugins>
+            </build>
+        </profile>
     </profiles>
     
     <build>
