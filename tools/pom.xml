@@ -1,25 +1,51 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>freedomotic-tools</artifactId>
-    <name>Freedomotic Tools</name>
-    <description>Freedomotic non vital support tools and helpers</description>
-    <url>http://freedomotic.com</url>
-    <inceptionYear>2009</inceptionYear>
-    <packaging>pom</packaging>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>freedomotic-tools</artifactId>
+	<name>Freedomotic Tools</name>
+	<description>Freedomotic non vital support tools and helpers</description>
+	<url>http://freedomotic.com</url>
+	<inceptionYear>2009</inceptionYear>
+	<packaging>pom</packaging>
 
-    <parent>
-        <groupId>com.freedomotic</groupId>
-        <artifactId>freedomotic</artifactId>
-        <version>5.6-SNAPSHOT</version>
-        <relativePath>../</relativePath>
-    </parent>
-    
-    <properties>
-        <freedomotic.basedir>${basedir}/..</freedomotic.basedir>
-        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-    </properties>
+	<parent>
+		<groupId>com.freedomotic</groupId>
+		<artifactId>freedomotic</artifactId>
+		<version>5.6-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+
+	<properties>
+		<freedomotic.basedir>${basedir}/..</freedomotic.basedir>
+		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>qulice</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.qulice</groupId>
+						<artifactId>qulice-maven-plugin</artifactId>
+						<version>0.17</version>
+						<configuration>
+							<license>file:${user.dir}/LICENSE.GPL</license>
+							<skip>true</skip>
+						</configuration>
+
+						<executions>
+							<execution>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
