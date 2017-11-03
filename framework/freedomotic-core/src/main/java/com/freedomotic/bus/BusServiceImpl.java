@@ -227,7 +227,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             msg.setObject(command);
             msg.setJMSDestination(destination);
             msg.setJMSCorrelationID(correlationID);
-            msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
+            msg.setStringProperty("provenance", Freedomotic.getInstanceID());
             LOG.info("Sending reply to command \"{}\" on {}", new Object[]{command.getName(), msg.getJMSDestination()});
             getMessageProducer().send(destination, msg); //Always pass the destination, otherwise it complains
         } catch (JMSException jmse) {
@@ -252,7 +252,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
         try {
             ObjectMessage msg = createObjectMessage();
             msg.setObject(command);
-            msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
+            msg.setStringProperty("provenance", Freedomotic.getInstanceID());
 
             Queue currDestination = new ActiveMQQueue(command.getReceiver());
             if (command.getReplyTimeout() > 0) {
@@ -317,7 +317,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
 
         // the receive() call is blocking
         LOG.info("Send and await reply to command \"{}\" for {} ms",
-                new Object[]{command.getName(), command.getReplyTimeout()});
+                command.getName(), command.getReplyTimeout());
 
         Message jmsResponse = temporaryConsumer.receive(command.getReplyTimeout());
 
@@ -379,7 +379,7 @@ final class BusServiceImpl extends LifeCycle implements BusService {
             ObjectMessage msg = createObjectMessage();
 
             msg.setObject(ev);
-            msg.setStringProperty("provenance", Freedomotic.INSTANCE_ID);
+            msg.setStringProperty("provenance", Freedomotic.getInstanceID());
 
             // Generate a new topic if not already exists, otherwise returns the old topic instance
             Topic topic = getReceiveSession().createTopic("VirtualTopic." + to);

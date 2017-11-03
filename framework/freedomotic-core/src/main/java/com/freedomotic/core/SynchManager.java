@@ -66,7 +66,7 @@ public class SynchManager implements BusConsumer {
         try {
             // Skip if the message comes from the same freedomotic instance
             // We don't want to notify changes to ourself
-            if (!message.getStringProperty(KEY_PROVENANCE).equals(Freedomotic.INSTANCE_ID)) {
+            if (!message.getStringProperty(KEY_PROVENANCE).equals(Freedomotic.getInstanceID())) {
                 Object jmsObject = message.getObject();
                 if (jmsObject instanceof ObjectHasChangedBehavior) {
                     synchronizeLocalThing((ObjectHasChangedBehavior) jmsObject);
