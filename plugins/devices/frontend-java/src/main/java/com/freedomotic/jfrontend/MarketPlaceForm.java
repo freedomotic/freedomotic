@@ -42,8 +42,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SpringLayout;
@@ -54,11 +56,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author Gabriel Pulido de Torres
  */
-public class MarketPlaceForm extends javax.swing.JFrame {
+@SuppressWarnings("squid:S1948") //We are not planning to serialize UI components
+public class MarketPlaceForm extends JFrame {
 
     private static final Logger LOG = LoggerFactory.getLogger(MarketPlaceForm.class.getName());
 
-    ArrayList<IPluginCategory> pluginCategoryList;
+    List<IPluginCategory> pluginCategoryList;
     private static final IPlugCatComparator CatComp = new IPlugCatComparator();
     private static final IPlugPackComparator PackComp = new IPlugPackComparator();
     private final I18n I18n;
@@ -67,7 +70,7 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     private final PluginsManager pluginsManager;
 
     /**
-     * Creates new form MarketPlaceForm
+     * Creates a new form MarketPlaceForm.
      *
      * @param api
      */
@@ -78,22 +81,17 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         this.setPreferredSize(new Dimension(800, 600));
         initComponents();
         cmbCategory.setEnabled(false);
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        MarketPlaceService mps = MarketPlaceService.getInstance();
-                        pluginCategoryList = mps.getCategoryList();
-                        retrieveCategories();
-                    }
-                }).start();
-            }
+        EventQueue.invokeLater(() -> {
+            new Thread(() -> {
+                MarketPlaceService mps = MarketPlaceService.getInstance();
+                pluginCategoryList = mps.getCategoryList();
+                retrieveCategories();
+            }).start();
         });
     }
 
     /**
+     * Retrieves the list of plugin categories.
      *
      */
     public final void retrieveCategories() {
@@ -107,12 +105,9 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         }
 
         //add listener to category selection changes
-        cmbCategory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int index = cmbCategory.getSelectedIndex();
-                retrievePlugins(pluginCategoryList.get(index));
-            }
+        cmbCategory.addActionListener((ActionEvent e) -> {
+            int index = cmbCategory.getSelectedIndex();
+            retrievePlugins(pluginCategoryList.get(index));
         });
 
         //force to retrive plugins for first category
@@ -121,6 +116,10 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * 
+     * @param isActive 
+     */
     private void politeWaitingMessage(boolean isActive) {
         jProgressBar1.setVisible(isActive);
         txtInfo.setVisible(isActive);
@@ -138,45 +137,44 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         pnlMain.removeAll();
         pnlMain.setBackground(Color.white);
         pnlMain.repaint();
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            String path = Info.PATHS.PATH_RESOURCES_FOLDER.toString();
+        EventQueue.invokeLater(() -> {
+            new Thread(() -> {
+                try {
+                    String path = Info.PATHS.PATH_RESOURCES_FOLDER.toString();
 
-                            if (category.retrievePluginsInfo() == null) {
-                                return;
-                            }
-
-                            Collections.sort(category.retrievePluginsInfo(), PackComp);
-
-                            //TODO: use package images.
-                            ImageIcon pluginIcon
-                                    = new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
-                            int row = 0;
-
-                            for (final IPluginPackage pp : category.retrievePluginsInfo()) {
-                                renderBoundle(pp, pluginIcon);
-                                row++;
-                            }
-
-                            SpringUtilities.makeCompactGrid(pnlMain, row, 4, //rows, cols
-                                    5, 5, //initX, initY
-                                    5, 5); //xPad, yPad
-                            politeWaitingMessage(false);
-                            pnlMain.repaint();
-                        } catch (Exception e) {
-                            LOG.warn(Freedomotic.getStackTraceInfo(e));
-                        }
+                    if (category.retrievePluginsInfo() == null) {
+                        return;
                     }
-                }).start();
-            }
+
+                    Collections.sort(category.retrievePluginsInfo(), PackComp);
+
+                    //TODO: use package images.
+                    ImageIcon pluginIcon
+                            = new ImageIcon(path + File.separatorChar + "plug.png", "Icon");
+                    int row = 0;
+
+                    for (final IPluginPackage pp : category.retrievePluginsInfo()) {
+                        renderBoundle(pp, pluginIcon);
+                        row++;
+                    }
+
+                    SpringUtilities.makeCompactGrid(pnlMain, row, 4, //rows, cols
+                            5, 5, //initX, initY
+                            5, 5); //xPad, yPad
+                    politeWaitingMessage(false);
+                    pnlMain.repaint();
+                } catch (Exception e) {
+                    LOG.warn(Freedomotic.getStackTraceInfo(e));
+                }
+            }).start();
         });
     }
 
+    /**
+     * 
+     * @param pp
+     * @param iconPlugin 
+     */
     private void renderBoundle(final IPluginPackage pp, ImageIcon iconPlugin) {
         JLabel lblIcon;
 
@@ -194,43 +192,30 @@ public class MarketPlaceForm extends javax.swing.JFrame {
                 && pp.getTitle() != null) {
             String version = extractVersion(new File(pp.getFilePath(freedomoticVersion)).getName());
             int result = clients.compareVersions(pp.getTitle(), version);
-            //System.out.println("COMPARE VERSIONS: "+new File(pp.getFilePath()).getName().toString() + " " + version + " = "+result);
             if (result == -1) { //older version or not yet installed
-                //btnAction = new JButton(pp.getTitle() + " (Install version " + version + ")");
                 btnAction = new JButton(I18n.msg("install"));
             } else {
                 if (result == 1) { //newer version
-                    //btnAction = new JButton(pp.getTitle() + " (Update from " + version + " to " + version + ")");
                     btnAction = new JButton(I18n.msg("update"));
                 }
             }
         } else {
             lblName
-                    = new JLabel(I18n.msg(
-                                    "X_unavailable",
-                                    new Object[]{
-                                        pp.getTitle()
-                                    }));
+                    = new JLabel(I18n.msg("X_unavailable", new Object[]{pp.getTitle()}));
         }
 
         if (btnAction != null) {
-            btnAction.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    installPackage(pp);
-                }
+            btnAction.addActionListener((ActionEvent e) -> {
+                installPackage(pp);
             });
         }
 
         JButton btnMore = new JButton(I18n.msg("more_info"));
-        btnMore.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    browse(new URI(pp.getURI()));
-                } catch (URISyntaxException ex) {
-                    LOG.error(ex.getMessage());
-                }
+        btnMore.addActionListener((ActionEvent e) -> {
+            try {
+                browse(new URI(pp.getURI()));
+            } catch (URISyntaxException ex) {
+                LOG.error(ex.getMessage());
             }
         });
 
@@ -249,13 +234,16 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * 
+     * @param filename
+     * @return 
+     */
     private String extractVersion(String filename) {
         //suppose filename is something like it.nicoletti.test-5.2.x-1.212.device
         //only 5.2.x-1.212 is needed
         //remove extension
-        filename
-                = filename.substring(0,
-                        filename.lastIndexOf("."));
+        filename = filename.substring(0, filename.lastIndexOf('.'));
 
         String[] tokens = filename.split("-");
 
@@ -267,14 +255,16 @@ public class MarketPlaceForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * 
+     * @param pp 
+     */
     private void installPackage(IPluginPackage pp) {
         String freedomoticVersion = Info.getMajor() + "." + Info.getMinor();
 
         if (pp.getFilePath(freedomoticVersion) == null) {
-            JOptionPane.showMessageDialog(this,
-                    I18n.msg(
-                            "warn_plugin_X_unavailable",
-                            new Object[]{pp.getTitle(), pp.getURI()}));
+            JOptionPane.showMessageDialog(this, I18n.msg("warn_plugin_X_unavailable",
+                    new Object[]{pp.getTitle(), pp.getURI()}));
 
             return;
         }
@@ -304,36 +294,40 @@ public class MarketPlaceForm extends javax.swing.JFrame {
 
         Runnable task;
         final String string = pp.getFilePath(freedomoticVersion);
-        LOG.info("Download string: {}", string);
+        LOG.info("Download string: \"{}\"", string);
         task
                 = new Runnable() {
-                    boolean done = false;
+            boolean done = false;
 
-                    @Override
-                    public void run() {
-                        try {
-                            done = pluginsManager.installBoundle(new URL(string));
-                        } catch (MalformedURLException ex) {
-                            done = false;
-                            LOG.error(ex.getMessage());
-                        }
+            @Override
+            public void run() {
+                try {
+                    done = pluginsManager.installBoundle(new URL(string));
+                } catch (MalformedURLException ex) {
+                    done = false;
+                    LOG.error(ex.getMessage());
+                }
 
-                        if (!done) {
-                            JOptionPane.showMessageDialog(null,
-                                    I18n.msg("info_download_failed"),
-                                    I18n.msg("title_download_failed"),
-                                    JOptionPane.INFORMATION_MESSAGE);
-                        } else {
-                            JOptionPane.showMessageDialog(null,
-                                    I18n.msg("info_package_install_completed"),
-                                    I18n.msg("title_install_completed"),
-                                    JOptionPane.INFORMATION_MESSAGE);
-                        }
-                    }
-                };
+                if (!done) {
+                    JOptionPane.showMessageDialog(null,
+                            I18n.msg("info_download_failed"),
+                            I18n.msg("title_download_failed"),
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            I18n.msg("info_package_install_completed"),
+                            I18n.msg("title_install_completed"),
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        };
         task.run();
     }
 
+    /**
+     * 
+     * @param uri 
+     */
     private void browse(URI uri) {
         if (!java.awt.Desktop.isDesktopSupported()) {
             JOptionPane.showInputDialog(
@@ -346,13 +340,14 @@ public class MarketPlaceForm extends javax.swing.JFrame {
             try {
                 java.awt.Desktop.getDesktop().browse(uri);
             } catch (Exception e) {
-                System.err.println(e.getMessage());
+                LOG.error(e.getMessage());
             }
         }
     }
 
     /**
-     * Order plugin categories by name
+     * Sorts plugin categories by name.
+     * 
      */
     public static class IPlugCatComparator implements Comparator<IPluginCategory> {
 
@@ -363,7 +358,8 @@ public class MarketPlaceForm extends javax.swing.JFrame {
     }
 
     /**
-     * Order plugin buoudles by name
+     * Sorts plugin boundles by name.
+     * 
      */
     public static class IPlugPackComparator implements Comparator<IPluginPackage> {
 
