@@ -1,16 +1,16 @@
-FROM openjdk:8-jre
+FROM openjdk:8-jre-alpine
 LABEL freedomotic.version="5.6.0"
-MAINTAINER Matteo Mazzoni <matteo@freedomotic.com> 
+MAINTAINER Matteo Mazzoni <matteo@freedomotic.com>
 
 ENV FREEDOMOTIC_URL="http://teamcity.jetbrains.com/guestAuth/repository/download/bt1177/.lastSuccessful/freedomotic-5.6.0-%7Bbuild.number%7D.zip"
 
-RUN apt-get update \
+RUN apk add --no-cache wget curl \
     && wget "${FREEDOMOTIC_URL}" -O latest.zip \
+    && apk del wget \
     && unzip latest.zip -d /srv/ \
     && rm latest.zip \
     && mv /srv/freedom* /srv/freedomotic \
-    && rm -rf /srv/freedomotic/plugins/devices/frontend-java \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /srv/freedomotic/plugins/devices/frontend-java
 
 VOLUME /srv/freedomotic/data /srv/freedomotic/plugins
 
