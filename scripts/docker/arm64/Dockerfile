@@ -43,9 +43,11 @@ RUN wget ${FREEDOMOTIC_URL} -O latest.zip && \
     mv /srv/freedom* /srv/freedomotic && \
     rm -rf /srv/freedomotic/plugins/devices/frontend-java
 
-VOLUME /srv/freedomotic/data
+VOLUME /srv/freedomotic/data /srv/freedomotic/plugins
 
-EXPOSE 9111 8090
+EXPOSE 9111 8090 
+
+HEALTHCHECK --interval=5m --timeout=3s --start-period=10s CMD curl -fI http://localhost:8090 || exit 1
 
 ENTRYPOINT /srv/freedomotic/freedomotic.sh -D FOREGROUND
 
