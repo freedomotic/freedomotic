@@ -20,6 +20,7 @@
 package com.freedomotic.i18n;
 
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  *
@@ -75,6 +76,13 @@ public class ComboLanguage implements Comparable<ComboLanguage> {
 
         final ComboLanguage other = (ComboLanguage) obj;
         return (description != null ? description.equals(other.toString()) : other.toString() == null);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 41 * hash + Objects.hashCode(this.description);
+        return hash;
     }
 
 }

@@ -31,7 +31,7 @@ import com.freedomotic.model.geometry.FreedomPoint;
  */
 public final class LocationEvent extends EventTemplate {
 
-    private final String DEFAULT_DESTINATION = "app.event.sensor.person.movement.detected";
+    private static final String DEFAULT_DESTINATION = "app.event.sensor.person.movement.detected";
     private final String uuid;
     private final int x;
     private final int y;

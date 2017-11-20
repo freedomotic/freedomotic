@@ -30,7 +30,7 @@ import com.freedomotic.things.GenericPerson;
  */
 public final class PersonEntersZone extends EventTemplate {
     
-    private final String DEFAULT_DESTINATION = "app.event.sensor.person.zone.enter";
+    private static final String DEFAULT_DESTINATION = "app.event.sensor.person.zone.enter";
     private final String uuid;
     private final String zoneName;
 

@@ -31,7 +31,7 @@ import com.freedomotic.api.EventTemplate;
 public class GenericEvent extends EventTemplate {
 
     private static final long serialVersionUID = 6029054631809171990L;
-    private String DEFAULT_DESTINATION = "app.event.sensor";
+    private static String DEFAULT_DESTINATION = "app.event.sensor";
 
     /**
      *
