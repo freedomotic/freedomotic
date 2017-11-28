@@ -50,7 +50,7 @@ public class JavaUploader {
     public static final String DRUPALPATH = "http://www.freedomotic.com/";
 
     /**
-     * Obtains the user id from the login JSON response
+     * Obtains the user id from the login Json response
      *
      * @param loginResponse Drupal Json response to a login
      * @return the uid of the user that matches the login
@@ -110,6 +110,7 @@ public class JavaUploader {
     public static String login(String username, String password) {
 
         ClientResource cr = new ClientResource(DRUPALPATH + "/rest/user/login");
+        String jsonData = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
         cr.setMethod(Method.POST);
         Response resp = cr.getResponse();
         if (resp.getStatus().isSuccess()) {
@@ -135,6 +136,7 @@ public class JavaUploader {
         String text = "{\"vid\":\"" + vocabularyNumber + "\"}";
 
         cr2.setMethod(Method.POST);
+        Representation rep2 = cr2.post(new JsonRepresentation(text));
         Response resp = cr2.getResponse();
         String jsonResponse = "";
         if (resp.getStatus().isSuccess()) {
@@ -166,6 +168,7 @@ public class JavaUploader {
             cr2.setMethod(Method.POST);
             JsonRepresentation jsonRepresentation = new JsonRepresentation(text);
             if (jsonRepresentation != null) {
+                Representation rep2 = cr2.post(jsonRepresentation);
                 Response resp = cr2.getResponse();
                 String jsonResponse = "";
                 String nid = "";
@@ -199,7 +202,10 @@ public class JavaUploader {
         ClientResource cr2 = new ClientResource(DRUPALPATH + "/rest/node");
         cr2.getRequest().getCookies().add(cS);
         String pluginData = plugin.toJson();
+
         cr2.setMethod(Method.POST);
+
+        Representation rep2 = cr2.post(new JsonRepresentation(pluginData));
         Response resp = cr2.getResponse();
         String jsonResponse = "";
         String nid = "";
@@ -248,6 +254,7 @@ public class JavaUploader {
                 + plugin.formatFieldFile()
                 + "}";
         LOG.info("PluginData {}", pluginData);
+        Representation rep = pluginResource.put(new JsonRepresentation(pluginData));
         Response resp2 = pluginResource.getResponse();
         if (resp2.getStatus().isSuccess()) {
             try {
@@ -291,8 +298,10 @@ public class JavaUploader {
                 + "}";
         testFileResource.setMethod(Method.POST);
 
+        Representation rep2 = testFileResource.post(new JsonRepresentation(fileData));
         Response resp = testFileResource.getResponse();
         String jsonResponse = "";
+        String fid = "";
         if (resp.getStatus().isSuccess()) {
             try {
                 jsonResponse = resp.getEntity().getText();
@@ -312,15 +321,7 @@ public class JavaUploader {
         return null;
     }
 
-    /**
-     *
-     * Helper method to transform a File to a byte
-     *
-     *
-     * @param file
-     * @return 
-     * @throws java.io.FileNotFoundException
-     */
+    //Helper method to transform a File to a byte[]
     public static byte[] fileToByteArray(File file) throws FileNotFoundException {
         FileInputStream fis = new FileInputStream(file);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -333,10 +334,12 @@ public class JavaUploader {
         } catch (IOException ex) {
             LOG.error(ex.getMessage());
         } finally {
-            try {
-                fis.close();
-            } catch (IOException ex) {
-                LOG.error(ex.getMessage());
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException ex) {
+                    LOG.error(ex.getMessage());
+                }
             }
         }
         return bos.toByteArray();
