@@ -28,7 +28,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
         <freedomotic.package.type>device</freedomotic.package.type>
-        <freedomotic.nodeid></freedomotic.nodeid>
+        <freedomotic.nodeid>36524</freedomotic.nodeid>
         <freedomotic.package.license>GNU GPL2</freedomotic.package.license>
         <freedomotic.package.vendor.name>freedomotic</freedomotic.package.vendor.name>
         <freedomotic.package.vendor.surname></freedomotic.package.vendor.surname>

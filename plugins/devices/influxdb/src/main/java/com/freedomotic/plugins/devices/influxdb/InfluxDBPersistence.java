@@ -22,6 +22,7 @@ package com.freedomotic.plugins.devices.influxdb;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.exceptions.FreedomoticRuntimeException;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
@@ -71,7 +72,7 @@ public class InfluxDBPersistence
 
     @Override
     protected void onRun() {
-
+        // disabled
     }
 
     @Override
@@ -101,7 +102,7 @@ public class InfluxDBPersistence
             if (c.getProperty("command") == null || c.getProperty("command").isEmpty() || c.getProperty("command").equalsIgnoreCase("SAVE-DATA")) {
                 saveData(c);
             } else if (c.getProperty("command").equals("EXTRACT-DATA")) { //extract data
-
+                // TODO add data extraction procedure
             }
         }
 
@@ -154,7 +155,7 @@ public class InfluxDBPersistence
                 LOG.error("Database server InfluxDB not responding. Please check your configuration and/or connection");
                 connected = false;
             }
-        } catch (RuntimeException e) {
+        } catch (FreedomoticRuntimeException e) {
             connected = false;
             LOG.error("Impossible to connect to database server InfluxDB for {}", e.getMessage());
         }
@@ -231,6 +232,7 @@ public class InfluxDBPersistence
 
             default:
                 convertedValue = value;
+                break;
         }
         return convertedValue;
     }

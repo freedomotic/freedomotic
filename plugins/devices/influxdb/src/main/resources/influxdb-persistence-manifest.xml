@@ -5,6 +5,7 @@
         <property name="short-name" value="influxdb"/>
         <property name="startup-time" value="on load"/>
         
+        <!-- INFLUXDB CONFIGURATION -->
         <property name="db-url" value="http://127.0.0.1:8086"/>
         <property name="db-name" value="freedomotic"/>
         <property name="username" value="root"/>
