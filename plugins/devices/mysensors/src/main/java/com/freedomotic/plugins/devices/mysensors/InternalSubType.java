@@ -22,7 +22,7 @@ package com.freedomotic.plugins.devices.mysensors;
 
 /**
  *
- * @author mauro
+ * @author Mauro Cicolella
  */
 public enum InternalSubType {
 
@@ -41,6 +41,7 @@ public enum InternalSubType {
     I_SKETCH_VERSION("Optional sketch version that can be reported to keep track of the version of sensor in the Controller GUI."),
     I_REBOOT("Used by OTA firmware updates. Request for node to reboot."),
     I_GATEWAY_READY("Send by gateway to controller when startup is complete.");
+    
     private String description;
     private static InternalSubType[] values = null;
 

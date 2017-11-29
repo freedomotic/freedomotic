@@ -28,49 +28,48 @@ import com.freedomotic.events.ProtocolRead;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.helpers.SerialHelper;
-import com.freedomotic.helpers.SerialPortListener;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.things.EnvObjectLogic;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jssc.SerialPortException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MySensors extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(MySensors.class.getName());
-    // Type of message
+    private static final Logger LOG = LoggerFactory.getLogger(MySensors.class.getName());
+
+    // Types of message
     private final String PRESENTATION = "0";
-    private final String SET_VARIABLE = "1";
-    private final String REQ_VARIABLE = "2";
+    private final String SET = "1";
+    private final String REQ = "2";
     private final String INTERNAL = "3";
-    private final String STREAM = "3";
-    private String PORTNAME = configuration.getStringProperty("serial.port", "/dev/ttyACM0");
-    private Integer BAUDRATE = configuration.getIntProperty("serial.baudrate", 9600);
-    private Integer DATABITS = configuration.getIntProperty("serial.databits", 8);
-    private Integer PARITY = configuration.getIntProperty("serial.parity", 0);
-    private Integer STOPBITS = configuration.getIntProperty("serial.stopbits", 1);
+    private final String STREAM = "4";
+
+    private final String PORTNAME = configuration.getStringProperty("serial.port", "/dev/ttyACM0");
+    private final Integer BAUDRATE;
+    private final Integer DATABITS = configuration.getIntProperty("serial.databits", 8);
+    private final Integer PARITY = configuration.getIntProperty("serial.parity", 0);
+    private final Integer STOPBITS = configuration.getIntProperty("serial.stopbits", 1);
     private SerialHelper serial;
-    Map<String, String> deviceNodeIDTable = new HashMap<>();
+    private final Map<String, String> deviceNodeIDTable = new HashMap<>();
 
     public MySensors() {
         super("MySensors", "/mysensors/mysensors-manifest.xml");
+        this.BAUDRATE = configuration.getIntProperty("serial.baudrate", 9600);
         setPollingWait(-1); //disables polling
-       }
+    }
 
     @Override
     public void onStart() throws PluginStartupException {
         loadConfiguredObjects();
         try {
-            serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, new SerialPortListener() {
-                @Override
-                public void onDataAvailable(String data) {
-                    LOG.log(Level.INFO, "MySensors received ''{0}'' ", data);
-                    manageMessage(data);
-                }
+            serial = new SerialHelper(PORTNAME, BAUDRATE, DATABITS, STOPBITS, PARITY, (String data) -> {
+                LOG.info("MySensors received message \"{}\"", data);
+                manageMessage(data);
             });
             serial.setChunkTerminator("\n");
         } catch (SerialPortException ex) {
@@ -88,7 +87,7 @@ public class MySensors extends Protocol {
             if (serial.disconnect()) {
                 serial = null;
             } else {
-                LOG.log(Level.WARNING, "Impossible to disconnect from ''{0}'' ", serial.getPortName());
+                LOG.warn("Impossible to disconnect from \"{}\"", serial.getPortName());
             }
         }
     }
@@ -114,49 +113,63 @@ public class MySensors extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Manages messages received from the serial connection.
+     *
+     * @param data
+     */
     private void manageMessage(String data) {
         String nodeID;
         String childSensorID;
-        String messageType;
+        String command;
         String ack;
-        String subType;
+        String type;
         String payload;
         String[] message = data.split(";");
 
-        if (message.length >= 5) {
+        if (message.length >= 6) {
             nodeID = message[0];
             childSensorID = message[1];
-            messageType = message[2];
+            command = message[2];
             ack = message[3];
-            subType = message[4];
+            type = message[4];
             payload = message[5];
 
-
-            switch (messageType) {
+            switch (command) {
 
                 case INTERNAL:
-                    manageInternalMessage(nodeID, childSensorID, ack, subType, payload);
+                    manageInternalMessage(nodeID, childSensorID, ack, type, payload);
                     break;
 
-                case SET_VARIABLE:
-                    manageSetMessage(nodeID, childSensorID, ack, subType, payload);
+                case SET:
+                    manageSetMessage(nodeID, childSensorID, ack, type, payload);
                     break;
 
             }
         } else {
-            LOG.log(Level.WARNING, "Data format incorrect");
+            LOG.warn("Data format incorrect");
         }
     }
 
+    /**
+     * Manages 'SET' messages.
+     * 
+     * 
+     * @param nodeID
+     * @param childSensorID
+     * @param ack
+     * @param subType
+     * @param payload
+     */
     private void manageSetMessage(String nodeID, String childSensorID, String ack, String subType, String payload) {
 
-        ProtocolRead event = new ProtocolRead(this, "mysensors", nodeID + ";" + childSensorID);
+        ProtocolRead event = new ProtocolRead(this, "mysensors", nodeID + ":" + childSensorID);
         String subTypeName = SetReqSubType.fromInt(Integer.valueOf(subType)).toString();
         String objectClass = configuration.getProperty(subTypeName);
         if (objectClass != null) {
             event.addProperty("object.class", objectClass);
             event.addProperty("object.name", objectClass + " " + nodeID + ":" + childSensorID);
-            LOG.info("Created object " + objectClass + " with address " + nodeID + ":" + childSensorID);
+            LOG.info("Created thing \"{}\" with address {}:{}", objectClass, nodeID, childSensorID);
         }
         // adds isOn property only for lights
         if (subType.equalsIgnoreCase("V_LIGHT")) {
@@ -169,10 +182,16 @@ public class MySensors extends Protocol {
         event.addProperty("sensor.value", payload);
         this.notifyEvent(event);
 
-
-
     }
 
+    /**
+     *
+     * @param nodeID
+     * @param childSensorID
+     * @param ack
+     * @param subType
+     * @param payload
+     */
     private void manageInternalMessage(String nodeID, String childSensorID, String ack, String subType, String payload) {
         InternalSubType internalSubType = InternalSubType.I_ID_REQUEST;
         switch (internalSubType) {
@@ -181,31 +200,45 @@ public class MySensors extends Protocol {
                     // get a new available nodeID
                     String newNodeID = getAvailableNodeID();
                     if (!newNodeID.equalsIgnoreCase("-1")) {
-                        LOG.log(Level.INFO, "Node-ID assigned ''{0}'' ", newNodeID);
+                        LOG.info("Node-ID assigned: {}", newNodeID);
                         sendMessage(nodeID, childSensorID, INTERNAL, ack, subType, newNodeID);
                     } else {
-                        LOG.log(Level.WARNING, "No more Node-ID available");
+                        LOG.warn("No more Node-ID available");
                     }
                 }
                 break;
-
-
-
         }
     }
 
+    /**
+     * Sends a message to MySensors gateway using the serial connection.
+     *
+     * @param nodeID
+     * @param childSensorID
+     * @param messageType
+     * @param ack
+     * @param subType
+     * @param payload
+     */
     private void sendMessage(String nodeID, String childSensorID, String messageType, String ack, String subType, String payload) {
         InternalSubType internalSubType = InternalSubType.I_ID_REQUEST;
         StringBuilder messageToSend = new StringBuilder();
-        messageToSend.append(nodeID).append(";").append(childSensorID).append(";").append(messageType).append(";").append(ack).append(";").append(internalSubType.I_ID_RESPONSE).append(";").append(payload).append("\n");
+        messageToSend.append(nodeID)
+                .append(";")
+                .append(childSensorID).append(";")
+                .append(messageType).append(";")
+                .append(ack).append(";")
+                .append(InternalSubType.I_ID_RESPONSE)
+                .append(";").append(payload)
+                .append("\n");
+
         writeSerialData(messageToSend.toString());
     }
 
     /**
-     * Returns an available NodeID for AUTO-id feature
+     * Returns an available NodeID for AUTO-id feature.
      *
-     * @return
-     * @throws Exception
+     * @return an integer between 1 and 253, -1 if no NodeID is available
      */
     private String getAvailableNodeID() {
         boolean addressAvailable = false;
@@ -225,10 +258,10 @@ public class MySensors extends Protocol {
 
     /* 
      * Creates a list of configured objects in Freedomotic to determine the next
-     * available nodeID for AUTO-ID feature
+     * available nodeID for 'AUTO-ID' feature.
      */
     private void loadConfiguredObjects() {
-        ArrayList<EnvObjectLogic> configuredObjects = (ArrayList<EnvObjectLogic>) getApi().things().findByProtocol("mysensors");
+        List<EnvObjectLogic> configuredObjects = (List<EnvObjectLogic>) getApi().things().findByProtocol("mysensors");
         for (EnvObjectLogic obj : configuredObjects) {
             String phisicalAddress = obj.getPojo().getPhisicalAddress();
             String[] addrComponents = phisicalAddress.split("\n");
@@ -237,12 +270,17 @@ public class MySensors extends Protocol {
 
     }
 
+    /**
+     * Writes data on the serial connection.
+     *
+     * @param data data to write
+     */
     private void writeSerialData(String data) {
         try {
-            LOG.log(Level.INFO, "Sending ''{0}'' to MySensors gateway", data);
+            LOG.info("Sending \"{}\" to MySensors gateway", data);
             serial.write(data);
         } catch (SerialPortException ex) {
-            LOG.log(Level.SEVERE, "Impossible to write on serial for " + ex.getLocalizedMessage());
+            LOG.error("Impossible to write on serial for {}" + ex.getLocalizedMessage());
         }
     }
 }

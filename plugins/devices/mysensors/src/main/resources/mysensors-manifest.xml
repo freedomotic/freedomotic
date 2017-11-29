@@ -14,7 +14,7 @@
         <property name="serial.parity" value="0"/>
         <property name="serial.stopbits" value="1"/>
        
-       <!-- MAPPING SENSORS - FREEDOMOTIC OBJECTS CLASS --> 
+       <!-- MAPPING SENSORS - FREEDOMOTIC THINGS CLASS --> 
         <property name="V_LIGHT" value="Light"/>
         <property name="V_TEMP" value="Thermometer"/>
         <property name="V_HUM" value="Hygrometer"/>

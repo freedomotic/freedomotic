@@ -22,7 +22,7 @@ package com.freedomotic.plugins.devices.mysensors;
 
 /**
  *
- * @author mauro
+ * @author Mauro Cicolella
  */
 public enum SetReqSubType {
 
@@ -66,6 +66,7 @@ public enum SetReqSubType {
     V_DUST_LEVEL("Dust level"),
     V_VOLTAGE("Voltage level"),
     V_CURRENT("Current level");
+    
     private String description;
     private static SetReqSubType[] values = null;
 

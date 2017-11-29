@@ -22,7 +22,7 @@ package com.freedomotic.plugins.devices.mysensors;
 
 /**
  *
- * @author mauro
+ * @author Mauro Cicolella
  */
 public enum PresentationSubType {
 
@@ -52,6 +52,7 @@ public enum PresentationSubType {
     S_CUSTOM("Use this for custom sensors where no other fits."),
     S_DUST("Dust level sensor"),
     S_SCENE_CONTROLLER("Scene controller device");
+    
     private String description;
     private static PresentationSubType[] values = null;
 
