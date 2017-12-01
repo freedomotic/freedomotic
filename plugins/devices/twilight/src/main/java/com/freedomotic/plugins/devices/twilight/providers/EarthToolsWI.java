@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -40,8 +40,8 @@ import org.xml.sax.SAXException;
 public class EarthToolsWI implements WeatherInfo {
 
     private static final Logger LOG = LoggerFactory.getLogger(EarthToolsWI.class.getCanonicalName());
-    private String latitude;
-    private String longitude;
+    private final String latitude;
+    private final String longitude;
     private DateTime nextSunrise;
     private DateTime nextSunset;
 
@@ -73,6 +73,7 @@ public class EarthToolsWI implements WeatherInfo {
         return nextSunrise;
     }
 
+    
     private Document getXMLStatusFile(int dom, int moy, int zone, int dst) throws MalformedURLException, SAXException, IOException {
         //get the xml file from the socket connection
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -102,21 +103,21 @@ public class EarthToolsWI implements WeatherInfo {
         DateTime dt = new DateTime();
         int dst = dt.getZone().isStandardOffset(dt.getMillis()) ? 0 : 1;
         int offset = dt.getZone().getStandardOffset(dt.getMillis()) / 3600000;
-        //LOG.log(Level.INFO, "Current TIME: {0}/{1} {2} DST: {3}", new Object[]{dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst});
         Document doc = getXMLStatusFile(dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst);
+     
         //parse xml 
         if (doc != null) {
             Node sunriseNode = doc.getElementsByTagName("sunrise").item(0);
             Node sunsetNode = doc.getElementsByTagName("sunset").item(0);
-            // compara con l'ora attuale
+            
+            // compare with the current time
             String srTime[] = sunriseNode.getFirstChild().getNodeValue().split(":");
             String ssTime[] = sunsetNode.getFirstChild().getNodeValue().split(":");
             nextSunrise = new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
                     Integer.parseInt(srTime[0]), Integer.parseInt(srTime[1]), Integer.parseInt(srTime[2]));
             nextSunset = new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
                     Integer.parseInt(ssTime[0]), Integer.parseInt(ssTime[1]), Integer.parseInt(ssTime[2]));
-            LOG.info("Sunrise at: {} Sunset at: {}", new Object[]{nextSunrise, nextSunset});
-
+            LOG.info("Sunrise at: {} Sunset at: {}", nextSunrise, nextSunset);
             return true;
         } else {
             return false;

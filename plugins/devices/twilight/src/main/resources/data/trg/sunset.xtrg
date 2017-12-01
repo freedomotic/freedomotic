@@ -1,11 +1,11 @@
-<com.freedomotic.reactions.Trigger>
+<trigger>
     <name>At sunset</name>
     <description>When the sun sets</description>
     <channel>app.event.sensor.calendar.event.twilight</channel>   
     <delay>0</delay>
     <payload>
         <payload>
- <statement>
+            <statement>
                 <logical>AND</logical>
                 <attribute>isSunset</attribute>
                 <operand>EQUALS</operand>
@@ -13,4 +13,4 @@
             </statement>
         </payload>
     </payload>
-</com.freedomotic.reactions.Trigger>
+</trigger>

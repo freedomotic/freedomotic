@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -20,6 +20,7 @@
 package com.freedomotic.plugins.devices.twilight;
 
 import org.joda.time.DateTime;
+
 
 /**
  *

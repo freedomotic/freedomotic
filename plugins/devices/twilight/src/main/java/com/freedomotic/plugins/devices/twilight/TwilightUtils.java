@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -19,7 +19,6 @@
  */
 package com.freedomotic.plugins.devices.twilight;
 
-import com.freedomotic.plugins.devices.twilight.WeatherInfo;
 import com.freedomotic.events.GenericEvent;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -30,8 +29,8 @@ import org.joda.time.Duration;
  */
 public class TwilightUtils {
 
-    private int POLLING_WAIT;
-    private WeatherInfo provider;
+    private final int POLLING_WAIT;
+    private final WeatherInfo provider;
 
     /**
      *
@@ -49,28 +48,23 @@ public class TwilightUtils {
      * @return
      */
     public GenericEvent prepareEvent(DateTime ref) {
-        // DateTime ref = DateTime.now();
         DateTime sunsetTime = provider.getNextSunset();
         DateTime sunriseTime = provider.getNextSunrise();
 
         while (sunsetTime.isBefore(ref) && sunriseTime.isBefore(ref)) {
             if (sunsetTime.isBefore(sunriseTime)) {
-
-                // dopo il tramonto: aggiorna data prissima alba
-                sunsetTime
-                        = sunsetTime.plusDays(1);
+                // after the sunrise: update next sunset
+                sunsetTime = sunsetTime.plusDays(1);
             } else {
-
-                // dopo il tramonto: aggiorna data prissima alba
-                sunriseTime
-                        = sunriseTime.plusDays(1);
+                // after the sunset: update next sunrise
+                sunriseTime = sunriseTime.plusDays(1);
             }
         }
 
         Duration toSunset = sunsetTime.isAfter(ref) ? new Duration(ref, sunsetTime) : new Duration(sunsetTime, ref);
         Duration toSunrise = sunriseTime.isAfter(ref) ? new Duration(ref, sunriseTime) : new Duration(sunriseTime, ref);
 
-        // genera evento: 
+        // create the event 
         GenericEvent ev = new GenericEvent(getClass());
         ev.setDestination("app.event.sensor.calendar.event.twilight");
 
@@ -82,21 +76,19 @@ public class TwilightUtils {
             ev.addProperty("isSunrise", "true");
         }
         if (ref.isBefore(sunriseTime)) {
-            // prima dell'alba
+            // before sunrise
             ev.addProperty("beforeSunrise", Long.toString(toSunrise.getStandardMinutes()));
         } else if (ref.isAfter(sunriseTime)) {
-            // dopo l'alba, 
+            // after sunrise 
             ev.addProperty("afterSunrise", Long.toString(toSunrise.getStandardMinutes()));
         }
-
         if (ref.isBefore(sunsetTime)) {
-            // prima del tramonto
+            // before sunset
             ev.addProperty("beforeSunset", Long.toString(toSunset.getStandardMinutes()));
         } else if (ref.isAfter(sunsetTime)) {
-            // dopo il tramonto
+            // after sunset
             ev.addProperty("afterSunset", Long.toString(toSunset.getStandardMinutes()));
         }
         return ev;
     }
-
 }

@@ -1,15 +1,16 @@
 <config>
     <properties>
         <property name="name" value="twilight"/>
-        <property name="description" value="Sends events regarding sunrise and sunset"/>
-        <property name="version" value="1.0.0"/>
-        <property name="required" value="5.1.0"/>
+        <property name="description" value="Sends events about sunrise and sunset"/>
         <property name="category" value="logging"/>
         <property name="short-name" value="twilight"/>
         <property name="startup-time" value="on load"/>
         <property name="polling-time" value="30000"/>
+        
+        <!-- coordinates of your location -->
         <property name="latitude" value="43.7776"/>
         <property name="longitude" value="11.0233"/>
+        
         <!-- available providers: earthtools, openweathermap -->
         <property name="provider" value="openweathermap"/>
     </properties>

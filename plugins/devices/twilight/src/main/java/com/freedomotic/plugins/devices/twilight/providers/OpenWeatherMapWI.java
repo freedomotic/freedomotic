@@ -1,3 +1,23 @@
+/**
+ *
+ * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
+ *
+ * This file is part of Freedomotic
+ *
+ * This Program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
+ *
+ * This Program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Freedomotic; see the file COPYING. If not, see
+ * <http://www.gnu.org/licenses/>.
+ *
+ */
 package com.freedomotic.plugins.devices.twilight.providers;
 
 import com.freedomotic.plugins.devices.twilight.WeatherInfo;
@@ -16,24 +36,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author Matteo Mazzoni/**
- *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
- *
- * This file is part of Freedomotic
- *
- * This Program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2, or (at your option) any later version.
- *
- * This Program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along with
- * Freedomotic; see the file COPYING. If not, see
- * <http://www.gnu.org/licenses/>.
+ * @author Matteo Mazzoni
  */
 public class OpenWeatherMapWI implements WeatherInfo {
 
@@ -98,18 +101,17 @@ public class OpenWeatherMapWI implements WeatherInfo {
         DateTime dt = new DateTime();
         int dst = dt.getZone().isStandardOffset(dt.getMillis()) ? 0 : 1;
         int offset = dt.getZone().getStandardOffset(dt.getMillis()) / 3600000;
-        //LOG.log(Level.INFO, "Current TIME: {0}/{1} {2} DST: {3}", new Object[]{dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst});
         Document doc = getXMLStatusFile(dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst);
+
         //parse xml 
         if (doc != null) {
             Node sunriseNode = doc.getElementsByTagName("sun").item(0).getAttributes().getNamedItem("rise");
             Node sunsetNode = doc.getElementsByTagName("sun").item(0).getAttributes().getNamedItem("set");
-            // compara con l'ora attuale
 
+            // compare with the current time
             nextSunrise = new DateTime(sunriseNode.getNodeValue()).plusHours(offset);
             nextSunset = new DateTime(sunsetNode.getNodeValue()).plusHours(offset);
-            LOG.info("Sunrise at: {} Sunset at: {}", new Object[]{nextSunrise, nextSunset});
-
+            LOG.info("Sunrise at: {} Sunset at: {}", nextSunrise, nextSunset);
             return true;
         } else {
             return false;

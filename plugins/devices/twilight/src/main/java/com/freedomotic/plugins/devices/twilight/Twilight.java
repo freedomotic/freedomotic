@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -21,6 +21,7 @@ package com.freedomotic.plugins.devices.twilight;
 
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
+import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.plugins.devices.twilight.providers.EarthToolsWI;
@@ -37,50 +38,45 @@ import org.slf4j.LoggerFactory;
 public class Twilight extends Protocol {
 
     private static final Logger LOG = LoggerFactory.getLogger(Twilight.class.getName());
-    private int POLLING_WAIT;
-    private String Latitude;
-    private String Longitude;
-    private TwilightUtils TLU;
-    private WeatherInfo provider;
-    private String providerName;
+    private final int POLLING_WAIT;
+    private final String Latitude;
+    private final String Longitude;
+    private final TwilightUtils TLU;
+    private final WeatherInfo provider;
+    private final String providerName;
 
     /**
      *
      */
     public Twilight() {
-        //every plugin needs a name and a manifest XML file
         super("Twilight", "/twilight/twilight-manifest.xml");
-        //read a property from the manifest file below which is in
-        //FREEDOMOTIC_FOLDER/plugins/devices/it.freedomotic.hello/hello-world.xml
         POLLING_WAIT = configuration.getIntProperty("polling-time", 10000);
         Latitude = configuration.getStringProperty("latitude", "0.0");
         Longitude = configuration.getStringProperty("longitude", "0.0");
         providerName = configuration.getStringProperty("provider", "openweathermap");
-        if (providerName.equalsIgnoreCase("openweathermap")) {
-            provider = new OpenWeatherMapWI(Latitude, Longitude);
-        } else {
-            provider = new EarthToolsWI(Latitude, Longitude);
+
+        switch (providerName) {
+
+            case "openweathermap":
+                provider = new OpenWeatherMapWI(Latitude, Longitude);
+                break;
+
+            default:
+                provider = new EarthToolsWI(Latitude, Longitude);
         }
+
         TLU = new TwilightUtils(POLLING_WAIT, provider);
-        //default value if the property does not exist in the manifest
-        setPollingWait(-1); //millisecs interval between hardware device status reads
+        setPollingWait(-1); // disabled onRun()
     }
 
     @Override
     protected void onShowGui() {
-        /**
-         * uncomment the line below to add a GUI to this plugin the GUI can be
-         * started with a right-click on plugin list on the desktop frontend
-         * (it.freedomotic.jfrontend plugin)
-         */
-        //bindGuiToPlugin(new HelloWorldGui(this));
+        // no GUI is used
     }
 
     @Override
     protected void onHideGui() {
-        //implement here what to do when the this plugin GUI is closed
-        //for example you can change the plugin description
-        setDescription("My GUI is now hidden");
+        // no GUI is used
     }
 
     @Override
@@ -92,21 +88,20 @@ public class Twilight extends Protocol {
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart() throws PluginStartupException {
         try {
             LOG.info("Twilight plugin started");
             provider.updateData();
             setPollingWait(POLLING_WAIT);
             setDescription("Sunrise: " + provider.getNextSunrise().toLocalTime() + " Sunset: " + provider.getNextSunset().toLocalTime());
         } catch (Exception ex) {
-            LOG.error(ex.getMessage());
-            stop();
+            throw new PluginStartupException("Error retrieving data from provider {}", ex);
         }
     }
 
     @Override
     protected void onStop() {
-        LOG.info("Twilight plugin is stopped ");
+        LOG.info("Twilight plugin stopped ");
         setPollingWait(-1);
     }
 
