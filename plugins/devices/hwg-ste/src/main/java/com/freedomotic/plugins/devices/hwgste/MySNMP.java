@@ -19,18 +19,31 @@
  */
 package com.freedomotic.plugins.devices.hwgste;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.event.ResponseEvent;
+import org.snmp4j.event.ResponseListener;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.smi.*;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-public class MYSNMP {
+public class MySNMP {
 
-    public String SNMP_GET(HwgSte pluginRef, String ipAddress, int port, String strOID, String community) {
+    private static final Logger LOG = LoggerFactory.getLogger(MySNMP.class.getName());
+
+    /**
+     *
+     * @param ipAddress
+     * @param port
+     * @param strOID
+     * @param community
+     * @return
+     */
+    public String SnmpGet(String ipAddress, int port, String strOID, String community) {
         String strResponse = "";
         ResponseEvent response;
         Snmp snmp;
@@ -56,20 +69,64 @@ public class MYSNMP {
                     PDU pduresponse = response.getResponse();
                     strResponse = pduresponse.getVariableBindings().firstElement().toString();
                     if (strResponse.contains("=")) {
-                        String strNewResponse[] = null;
-                        int len = strResponse.indexOf("=");
-                        strNewResponse = strResponse.split("=");
-                        //System.out.println("The SNMP response to the OID requested is : " + strNewResponse[1]); //FOR DEBUG
+                        String[] strNewResponse = strResponse.split("=");
                         strResponse = strNewResponse[1].trim();
                     }
                 }
             } else {
-                pluginRef.getLogger().error("TimeOut occured");
+                LOG.error("TimeOut occured");
             }
             snmp.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return strResponse;
+    }
+
+    /**
+     *
+     * @param ipAddress
+     * @param port
+     * @param strOID
+     * @param value
+     * @param community
+     */
+    public void SnmpSet(String ipAddress, int port, String strOID, String value, String community) {
+        String address = ipAddress + "/" + port;
+        Address tHost = GenericAddress.parse(address);
+        Snmp snmp;
+        try {
+            TransportMapping transport = new DefaultUdpTransportMapping();
+            snmp = new Snmp(transport);
+            transport.listen();
+            CommunityTarget target = new CommunityTarget();
+            target.setCommunity(new OctetString(community));
+            target.setAddress(tHost);
+            target.setRetries(2);
+            target.setTimeout(5000);
+            target.setVersion(SnmpConstants.version1); //Set the correct SNMP version here
+            PDU pdu = new PDU();
+            //Depending on the MIB attribute type, appropriate casting can be done here
+            pdu.add(new VariableBinding(new OID(strOID), new Integer32(Integer.valueOf(value))));
+            pdu.setType(PDU.SET);
+            ResponseListener listener = new ResponseListener() {
+
+                @Override
+                public void onResponse(ResponseEvent event) {
+                    PDU strResponse;
+                    String result;
+                    ((Snmp) event.getSource()).cancel(event.getRequest(), this);
+                    strResponse = event.getResponse();
+                    if (strResponse != null) {
+                        result = strResponse.getErrorStatusText();
+                        LOG.debug("SET status is {}", result);
+                    }
+                }
+            };
+            snmp.send(pdu, target, null, listener);
+            snmp.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
