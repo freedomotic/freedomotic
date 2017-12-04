@@ -7,7 +7,10 @@
         <property name="short-name"     value="hwgste"/>
         <property name="address-delimiter" value=":"/>
         <property name="startup-time"   value="on load"/>
+        <property name="enable-autoconfiguration" value="true"/>
         <property name="snmp-port" value="161"/>
+        
+        <!-- SNMP configuration --> 
         <property name="snmp-oid" value="1.3.6.1.4.1.21796.4"/>
         <property name="snmp-community" value="public"/>
         <property name="sensor-name-request" value="1.3.1.2"/>
@@ -19,8 +22,8 @@
     </properties>
     <tuples>
         <tuple>
-            <property name="object.class" value="Thermostat"/>
-            <property name="temperature" value="HWg-STE reads celsius temperature"/>
+            <property name="object.class" value="Thermometer"/>
+            <property name="temperature" value="HWg-STE reads temperature"/>
         </tuple>
         <tuple>
             <property name="object.class" value="Hygrometer"/>
@@ -28,10 +31,10 @@
         </tuple>
         <!-- DEVICES CONFIGURATION -->
         <tuple>
+            <property name="alias" value="board1"/>
             <property name="ip-to-query" value="ste.hwg.cz"/>
             <property name="port-to-query" value="80"/>
-            <property name="relay-number" value="8"/>
-            <property name="sensors-number" value="2"/>
+            <property name="sensors-number" value="1"/>
         </tuple>
     </tuples>
 </config>

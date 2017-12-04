@@ -1,15 +1,9 @@
 <trigger>
-    <name>HWg-STE reads fahrenheit temperature</name>
-    <description>HWg-STE reads fahrenheit temperature</description>
+    <name>HWg-STE reads temperature</name>
+    <description>HWg-STE reads temperature</description>
     <channel>app.event.sensor.protocol.read.hwgste</channel>
     <payload>
         <payload>
-            <statement>
-                <logical>AND</logical>
-                <attribute>@event.sensor.unit</attribute>
-                <operand>EQUALS</operand>
-                <value>F</value>
-            </statement>
             <statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>
