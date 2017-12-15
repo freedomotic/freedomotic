@@ -61,7 +61,12 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>4.1.0</version>
+            <version>4.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ftdi</groupId>
+            <artifactId>java-ftdi</artifactId>
+            <version>0.2.5</version>
         </dependency>
     </dependencies>
     <build>
@@ -77,7 +82,7 @@
                 </excludes>
             </resource>
             <!-- resource processsing with a different output directory
-                 for everything except data.xml, README and PACKAGE -->
+            for everything except data.xml, README and PACKAGE -->
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
@@ -85,7 +90,7 @@
                     <include>*.xml</include>
                 </includes>
                 <!-- relative to target/classes
-                     i.e. ${project.build.outputDirectory} -->
+                i.e. ${project.build.outputDirectory} -->
                 <targetPath>../${project.artifactId}</targetPath>
             </resource>
             <resource>
@@ -96,7 +101,7 @@
                 </includes>
                 <filtering>true</filtering>
                 <!-- relative to target/classes
-                     i.e. ${project.build.outputDirectory} -->
+                i.e. ${project.build.outputDirectory} -->
                 <targetPath>../${project.artifactId}</targetPath>
             </resource>
         </resources>
