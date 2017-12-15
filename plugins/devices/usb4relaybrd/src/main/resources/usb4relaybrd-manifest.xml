@@ -5,7 +5,7 @@
         <property name="category"  value="protocol"/>
         <property name="protocol.name" value="usb4relaybrd"/>
         <property name="short-name" value="usb4relaybrd"/>
-        <property name="time-between-reads" value="1000"/>
+        <property name="polling-time" value="1000"/>
     </properties>
     <tuples>
         <tuple>
