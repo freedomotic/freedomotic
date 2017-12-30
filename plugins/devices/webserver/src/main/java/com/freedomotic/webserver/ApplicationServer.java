@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -48,17 +48,18 @@ public class ApplicationServer extends Protocol {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationServer.class.getName());
 
-//TODO: read from config file
     private static final String WEBAPP_CTX = "/";
     private static Server server;
-    private final int port = configuration.getIntProperty("PORT", 8080);
-    private final String webappDir = configuration.getStringProperty("WEBAPP_DIR", "/webapps/gwt_client");
-    private final String warFile = configuration.getStringProperty("WAR_FILE", "");
-    private final boolean enableSSL = configuration.getBooleanProperty("ENABLE_SSL", true);
-    private final int sslPort = configuration.getIntProperty("SSL_PORT", 8443);
-    private final String keystorePassword = configuration.getStringProperty("KEYSTORE_PASSWORD", "password");
-    private final String keystoreFile = configuration.getStringProperty("KEYSTORE_FILE", "keystore");
-    private final String keystoreType = configuration.getStringProperty("KEYSTORE_TYPE", "JKS");
+    private final int webserverPort = configuration.getIntProperty("webserver-port", 8080);
+    private final String webappDir = configuration.getStringProperty("webapp-dir", "/webapps/gwt_client");
+    private final String warFile = configuration.getStringProperty("war-file", "");
+
+    // SSL configuration
+    private final boolean enableSSL = configuration.getBooleanProperty("enable-ssl", true);
+    private final int sslPort = configuration.getIntProperty("ssl-port", 8443);
+    private final String keystorePassword = configuration.getStringProperty("keystore-password", "password");
+    private final String keystoreFile = configuration.getStringProperty("keystore-file", "keystore");
+    private final String keystoreType = configuration.getStringProperty("keystore-type", "JKS");
 
     public ApplicationServer() {
         super("Application Server", "/webserver/applicationserver-manifest.xml");
@@ -67,13 +68,14 @@ public class ApplicationServer extends Protocol {
     }
 
     /**
-     * start the web server . if enable ssl is on then with ssl.
+     * Starts the web server using SSL if enabled.
+     *
      */
     @Override
     public void onStart() {
         String dir = new File(this.getFile().getParent() + File.separator + webappDir).getAbsolutePath();
-        server = new Server(port);
-        LOG.info("Webserver now listens on port {}", port);
+        server = new Server(webserverPort);
+        LOG.info("Webserver now listens on port {}", webserverPort);
 
         if (enableSSL) {
             enableSSL();
@@ -87,9 +89,6 @@ public class ApplicationServer extends Protocol {
 
     }
 
-    /**
-     * stop the sever.
-     */
     @Override
     public void onStop() {
         try {
@@ -121,9 +120,13 @@ public class ApplicationServer extends Protocol {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Enables SSL
+     * 
+     */
     private void enableSSL() {
         String keyStorePath = this.getFile().getParent() + "/data/" + keystoreFile;
-        try(FileInputStream keyStoreInputStream = new FileInputStream(keyStorePath))  {
+        try (FileInputStream keyStoreInputStream = new FileInputStream(keyStorePath)) {
             KeyStore keyStore = KeyStore.getInstance(keystoreType);
             keyStore.load(keyStoreInputStream, keystorePassword.toCharArray());
             SslContextFactory sslContextFactory = new SslContextFactory();
@@ -140,6 +143,11 @@ public class ApplicationServer extends Protocol {
         }
     }
 
+    /**
+     * Starts a webserver with a .war file containing the web application.
+     * 
+     * @param dir
+     */
     private void startServerWithWarFile(String dir) {
         try {
             WebAppContext webapp = new WebAppContext();
@@ -151,8 +159,8 @@ public class ApplicationServer extends Protocol {
             InetAddress addr = InetAddress.getLocalHost();
             String hostname = addr.getHostName();
             //strip away the '.war' extension and put all together
-            URL url = new URL("http://" + hostname + ":" + port + WEBAPP_CTX + warFile.substring(0, warFile.lastIndexOf('.')));
-            setDescription("Visit " + url.toString());
+            URL url = new URL("http://" + hostname + ":" + webserverPort + WEBAPP_CTX + warFile.substring(0, warFile.lastIndexOf('.')));
+            setDescription("Go to " + url.toString());
             server.start();
         } catch (FileNotFoundException nf) {
             LOG.warn("Cannot find WAR file {} into directory {}", warFile, dir);
@@ -161,6 +169,12 @@ public class ApplicationServer extends Protocol {
         }
     }
 
+    /**
+     * Starts a webserver without a .war file.
+     * The web application is included into a specific folder.
+     *
+     * @param dir
+     */
     private void startServerWithoutWarfile(String dir) {
         try {
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);

@@ -1,21 +1,22 @@
 <config>
     <properties>
         <property name="name" value="webserver"/>
-        <property name="description" value="A webserver for web application"/>
+        <property name="description" value="A webserver for managing web applications"/>
         <property name="category" value="webserver"/>
         <property name="short-name" value="jetty"/>
         <property name="startup-time" value="on load"/>
-        <property name="PORT" value="8090"/>
-        <property name="ENABLE_SSL" value="false"/>
-        <property name="KEYSTORE_FILE" value="keystore"/>
-        <property name="KEYSTORE_TYPE" value="JKS"/>
-        <property name="KEYSTORE_PASWORD" value="password"/>
-        <property name="SSL_PORT" value="9443"/>
+        <property name="webserver-port" value="8090"/>
+        <property name="enable-ssl" value="false"/>
+        <property name="keystore-file" value="keystore"/>
+        <property name="keystore-type" value="JKS"/>
+        <property name="keystore-password" value="password"/>
+        <property name="ssl-port" value="9443"/>
 
-        <property name="WEBAPP_DIR" value="/data/fd-polymer-webapp"/> 
-<!-- or ENABLE THIS BLOCK FOR LOADING A WAR FILE
-        <property name="WEBAPP_DIR" value="/data/webapps/gwt_client"/>
-        <property name="WAR_FILE" value="Freedomotic.war"/> 
+        <property name="webapp-dir" value="/data/fd-polymer-webapp"/> 
+        
+<!--    ENABLE THIS BLOCK FOR LOADING A WAR FILE
+        <property name="webapp-dir" value="/data/gwt_client"/>
+        <property name="war-file" value="Freedomotic.war"/> 
 -->
         <property name="permissions" value="*"/>
     </properties>
