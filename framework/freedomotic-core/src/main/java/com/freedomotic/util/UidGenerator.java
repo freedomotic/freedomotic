@@ -21,7 +21,7 @@ package com.freedomotic.util;
 
 /**
  * Generates an unique ID as a progressive int. Used to mark events and command
- * with a numeric unique value
+ * with a numeric unique value.
  *
  * @author Enrico Nicoletti
  */
@@ -30,23 +30,23 @@ public class UidGenerator {
     private static int lastId = 0;
 
     /**
-     *
-     * @return
+     * Returns next ID as int.
+     * 
+     * @return next ID as int
      */
     public static int getNextUid() {
         lastId++;
-
         return lastId;
     }
 
     /**
-     *
-     * @return
+     * Returns next ID as String.
+     * 
+     * @return next ID as String
      */
     public static String getNextStringUid() {
         lastId++;
-
-        return Integer.valueOf(lastId).toString();
+        return Integer.toString(lastId);
     }
 
     private UidGenerator() {

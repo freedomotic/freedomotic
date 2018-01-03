@@ -43,11 +43,11 @@ public class GreaterEqualThan extends BinaryExpression {
     @Override
     public Boolean evaluate() {
         try {
-            Integer intRightValue = new Integer(getRight());
-            Integer intLeftValue = new Integer(getLeft());
+            Integer intRightValue = Integer.valueOf(getRight());
+            Integer intLeftValue = Integer.valueOf(getLeft());
             return intLeftValue >= intRightValue;
         } catch (NumberFormatException nfe) {
-            LOG.warn(OPERATOR + " operator can be applied only to integer values");
+            LOG.warn("{} operator can be applied only to integer values", OPERATOR);
             return false;
         }
     }
