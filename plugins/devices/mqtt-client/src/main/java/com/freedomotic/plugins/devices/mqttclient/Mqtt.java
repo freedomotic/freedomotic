@@ -30,7 +30,6 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.freedomotic.events.ProtocolRead;
-import java.util.logging.Level;
 
 /**
  * @author Mauro Cicolella
@@ -162,7 +161,7 @@ public class Mqtt implements MqttCallback {
     @Override
     public void deliveryComplete(IMqttDeliveryToken imdt) {
         try {
-            LOG.info("Message \"{}\" published on \"{}\" topic", imdt.getMessage().toString(), imdt.getTopics());
+            LOG.info("Message \"{}\" published on {} topic", imdt.getMessage().toString(), imdt.getTopics());
         } catch (MqttException ex) {
             LOG.error(ex.getMessage());
         }

@@ -18,7 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 /*
- * @author Mauro Cicolella <mcicolella@libero.it>
+ * @author Mauro Cicolella 
  */
 package com.freedomotic.plugins.devices.mqttclient;
 
@@ -27,6 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Protocol;
+import com.freedomotic.events.MessageEvent;
+import com.freedomotic.events.ObjectHasChangedBehavior;
+import com.freedomotic.events.PluginHasChanged;
+import com.freedomotic.events.ZoneHasChanged;
 import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.reactions.Command;
@@ -44,6 +48,17 @@ public class MqttClient4FD extends Protocol {
     private final String PASSWORD = configuration.getStringProperty("password", "admin");
     private final String SET_CLEAN_SESSION = configuration.getStringProperty("set-clean-session", "true");
     private final Integer SET_KEEP_ALIVE_INTERVAL = configuration.getIntProperty("set-keep-alive-interval", 600);
+
+    // events publishing configuration
+    private final String ENABLE_EVENTS_PUBLISHING = configuration.getStringProperty("enable-events-publishing", "true");
+    private final Integer MQTT_PUBLISH_QOS = configuration.getIntProperty("mqtt-publish-qos", 0);
+    private final Integer MQTT_SUBSCRIBE_QOS = configuration.getIntProperty("mqtt-subscribe-qos", 0);
+    private final String DATA_FORMAT = configuration.getStringProperty("data-format", "raw");
+    private final String OBJECT_CHANGED_EVENT_TOPIC = "/freedomotic/events/objectChanged";
+    private final String ZONE_CHANGED_EVENT_TOPIC = "/freedomotic/events/zoneChanged";
+    private final String PLUGIN_CHANGED_EVENT_TOPIC = "/freedomotic/events/pluginChanged";
+    private final String MESSAGE_EVENT_TOPIC = "/freedomotic/events/message";
+
     private Boolean connected = false;
     private final Set<String> topics;
     private Mqtt mqttClient = null;
@@ -56,15 +71,17 @@ public class MqttClient4FD extends Protocol {
 
     @Override
     protected void onShowGui() {
-        //bindGuiToPlugin(new HelloWorldGui(this));
+        // no GUI supported
     }
 
     @Override
     protected void onHideGui() {
+        // no GUI supported
     }
 
     @Override
     protected void onRun() {
+        // polling disabled
     }
 
     @Override
@@ -79,6 +96,15 @@ public class MqttClient4FD extends Protocol {
         } else {
             throw new PluginStartupException("Not connected. Please check");
         }
+
+        // events listeners
+        if ("true".equalsIgnoreCase(ENABLE_EVENTS_PUBLISHING)) {
+            addEventListener("app.event.sensor.object.behavior.change");
+            addEventListener("app.event.sensor.environment.zone.change");
+            addEventListener("app.event.sensor.plugin.change");
+            addEventListener("app.event.sensor.messages.callout");
+        }
+
     }
 
     @Override
@@ -108,8 +134,31 @@ public class MqttClient4FD extends Protocol {
 
     @Override
     protected void onEvent(EventTemplate event) {
-        //don't mind this method for now
-        throw new UnsupportedOperationException("Not supported yet.");
+        String message = "";
+
+        if ("true".equalsIgnoreCase(ENABLE_EVENTS_PUBLISHING)) {
+           
+            switch (DATA_FORMAT) {
+
+                case "json":
+                    break;
+
+                default:
+                    message = event.getPayload().getStatements().toString();
+            }
+
+            //publish events on specific topics
+            if (event instanceof ObjectHasChangedBehavior) {
+                mqttClient.publish(OBJECT_CHANGED_EVENT_TOPIC, message, MQTT_SUBSCRIBE_QOS, MQTT_PUBLISH_QOS);
+            } else if (event instanceof ZoneHasChanged) {
+                mqttClient.publish(ZONE_CHANGED_EVENT_TOPIC, message, MQTT_SUBSCRIBE_QOS, MQTT_PUBLISH_QOS);
+            } else if (event instanceof PluginHasChanged) {
+                mqttClient.publish(PLUGIN_CHANGED_EVENT_TOPIC, message, MQTT_SUBSCRIBE_QOS, MQTT_PUBLISH_QOS);
+            } else if (event instanceof MessageEvent) {
+                mqttClient.publish(MESSAGE_EVENT_TOPIC, message, MQTT_SUBSCRIBE_QOS, MQTT_PUBLISH_QOS);
+            }
+
+        }
     }
 
     /**

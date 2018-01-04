@@ -5,6 +5,7 @@
         <property name="short-name" value="mqtt-client"/>
         <property name="protocol.name"value="mqtt-client"/>
         <property name="startup-time" value="on load"/>
+        <!-- MQTT CONFIGURATION -->
         <property name="broker-url" value="tcp://broker.hivemq.com:1883"/>
         <property name="client-id" value="freedomotic"/>
         <property name="set-clean-session" value="false"/>
@@ -12,9 +13,14 @@
         <property name="authentication-enabled" value="false"/>
         <property name="username" value="admin"/>
         <property name="password" value="admin"/>
+        <!-- EVENTS PUBLISHING CONFIGURATION -->
+        <property name="enable-events-publishing" value="true"/>    
+        <property name="data-format" value="raw"/>    
+        <property name="mqtt-subscribe-qos" value="0"/>
+        <property name="mqtt-publish-qos" value="0"/>   
     </properties>
     <tuples>
-        <!-- TOPIC CONFIGURATION -->
+        <!-- TOPICS TO SUBSCRIBE -->
         <tuple>
             <property name="topic-name" value="testtopic/1"/>
         </tuple>
