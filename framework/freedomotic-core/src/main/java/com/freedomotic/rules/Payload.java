@@ -19,6 +19,7 @@
  */
 package com.freedomotic.rules;
 
+import com.google.gson.Gson;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +40,7 @@ public final class Payload implements Serializable {
 
     @XmlTransient
     private static final long serialVersionUID = -5799483105084939108L;
-    private final List<Statement> payloadLst = Collections.synchronizedList(new ArrayList<Statement>());
+    private final List<Statement> payloadLst = Collections.synchronizedList(new ArrayList<>());
 
     /**
      *
@@ -47,7 +48,6 @@ public final class Payload implements Serializable {
      * @param attribute
      * @param operand
      * @param value
-     * @throws NullPointerException
      */
     public void addStatement(String logical, String attribute, String operand, String value) {
         enqueueStatement(new Statement().create(logical, attribute, operand, value));
@@ -75,8 +75,9 @@ public final class Payload implements Serializable {
     }
 
     /**
-     *
-     * @param s
+     * Adds a statement to the payload.
+     * 
+     * @param s statement to add
      */
     public void enqueueStatement(Statement s) {
         if ((s != null) && !payloadLst.contains(s)) {
@@ -85,7 +86,8 @@ public final class Payload implements Serializable {
     }
 
     /**
-     *
+     * Returns the number of statements.
+     * 
      * @return
      */
     public int size() {
@@ -137,9 +139,9 @@ public final class Payload implements Serializable {
                 } else {
                     for (Statement eventStatement : filteredEventStatements) {
                         /*
-                         * TODO: waring, supports only operand equal in event
-                         * compared to equal, morethen, lessthen in triggers.
-                         * Refacor with a strategy pattern.
+                         * TODO: waring, supports only operand EQUAL in events
+                         * compared to EQUAL, MORE THAN, LESS THAN in triggers.
+                         * Refactor with a strategy pattern.
                          */
                         if (eventStatement != null) {
                             //is setting a value must be not used to filter
@@ -178,6 +180,14 @@ public final class Payload implements Serializable {
         return hash;
     }
 
+    /**
+     * Checks the statements consistency.
+     * 
+     * @param triggerOperand
+     * @param triggerValue
+     * @param eventValue
+     * @return 
+     */
     private static boolean isStatementConsistent(String triggerOperand, String triggerValue, String eventValue) {
         ExpressionFactory factory = new ExpressionFactory<>();
         Expression exp = factory.createExpression(eventValue, triggerOperand, triggerValue);
@@ -185,26 +195,38 @@ public final class Payload implements Serializable {
     }
 
     /**
-     *
+     * Gets a list of statements given an attribute.
+     * 
      * @param attribute
-     * @return
+     * @return a list of statements
      */
     public List<Statement> getStatements(String attribute) {
-        ArrayList<Statement> statements = new ArrayList<>();
+        List<Statement> statements = new ArrayList<>();
 
         synchronized (payloadLst) {
-            for (Statement i : payloadLst) {
-                if (i.getAttribute().equalsIgnoreCase(attribute)) {
-                    statements.add(i);
-                }
-            }
+            payloadLst.stream().filter((i) -> (i.getAttribute().equalsIgnoreCase(attribute))).forEachOrdered((i) -> {
+                statements.add(i);
+            });
         }
-
         return statements;
     }
 
+    /**
+     * Gets the list of statements.
+     * 
+     * @return the list of statements
+     */
     public List<Statement> getStatements() {
         return payloadLst;
+    }
+    
+    /**
+     * Gets the statements in JSON format.
+     * 
+     * @return 
+     */
+    public String getStatementsAsJson() {
+        return new Gson().toJson(payloadLst);
     }
 
     /**
@@ -212,7 +234,7 @@ public final class Payload implements Serializable {
      * statement with the same key. This method returns the first occurrence
      * only.
      *
-     * @param attribute is the key of the statement
+     * @param attribute the key of the statement
      * @return the String value of the statement
      */
     public String getStatementValue(String attribute) {
