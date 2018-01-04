@@ -137,10 +137,11 @@ public class MqttClient4FD extends Protocol {
         String message = "";
 
         if ("true".equalsIgnoreCase(ENABLE_EVENTS_PUBLISHING)) {
-           
+
             switch (DATA_FORMAT) {
 
                 case "json":
+                    message = event.getPayload().getStatementsAsJson();
                     break;
 
                 default:
