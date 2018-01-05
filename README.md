@@ -1,5 +1,6 @@
 Freedomotic
 =================================
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/48aa004c305547b7bda625f78a8363c0)](https://www.codacy.com/app/mcicolella/freedomotic?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=freedomotic/freedomotic&amp;utm_campaign=Badge_Grade)
 [![Code Triagers Badge](https://www.codetriage.com/freedomotic/freedomotic/badges/users.svg)](https://www.codetriage.com/freedomotic/freedomotic)
 [![](https://dockerbuildbadges.quelltext.eu/status.svg?organization=freedomotic&repository=freedomotic)](https://hub.docker.com/r/freedomotic/freedomotic/builds/) 
 
