@@ -1,6 +1,7 @@
 Freedomotic
 =================================
 [![Code Triagers Badge](https://www.codetriage.com/freedomotic/freedomotic/badges/users.svg)](https://www.codetriage.com/freedomotic/freedomotic)
+[![](https://dockerbuildbadges.quelltext.eu/status.svg?organization=freedomotic&repository=freedomotic)](https://hub.docker.com/r/freedomotic/freedomotic/builds/) 
 
 Official website is http://freedomotic.com
 
