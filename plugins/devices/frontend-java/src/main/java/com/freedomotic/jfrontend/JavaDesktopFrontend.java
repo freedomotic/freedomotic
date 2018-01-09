@@ -53,12 +53,14 @@ public class JavaDesktopFrontend extends Protocol {
     private final Map<String, GraphPanel> graphs = new HashMap<>();
     private SplashLogin sl;
     private boolean init = false;
+    
+    public final String ENABLE_SENSORS_WIDGET = configuration.getStringProperty("enable-sensors-widget", "false");
 
     /**
      *
      */
     public JavaDesktopFrontend() {
-        super("Desktop Frontend", "/frontend-java/desktop-frontend.xml");
+        super("JFrontend", "/frontend-java/desktop-frontend.xml");
         setPollingWait(-1); //disable threaded execution of onRun()
     }
 
@@ -140,10 +142,10 @@ public class JavaDesktopFrontend extends Protocol {
     protected Drawer createRenderer(EnvironmentLogic env) {
         try {
             if ("photo".equalsIgnoreCase(env.getPojo().getRenderer())) {
-                drawer = new PhotoDrawer(this);
+                drawer = new PhotoDrawer(this, ENABLE_SENSORS_WIDGET);
                 drawer.setCurrEnv(env);
             } else if ("image".equalsIgnoreCase(env.getPojo().getRenderer())) {
-                drawer = new ImageDrawer(this);
+                drawer = new ImageDrawer(this, ENABLE_SENSORS_WIDGET);
                 drawer.setCurrEnv(env);
             } else if ("plain".equalsIgnoreCase(env.getPojo().getRenderer())) {
                 drawer = new PlainDrawer(this);
@@ -153,7 +155,7 @@ public class JavaDesktopFrontend extends Protocol {
                 drawer.setCurrEnv(env);
             }
         } catch (Exception e) {
-            LOG.error("Error while initializing a drawer in desktop frontend ", Freedomotic.getStackTraceInfo(e));
+            LOG.error("Error while initializing a drawer in Jfrontend ", Freedomotic.getStackTraceInfo(e));
         }
 
         if (drawer instanceof Renderer) {
