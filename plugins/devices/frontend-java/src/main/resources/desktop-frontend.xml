@@ -1,10 +1,11 @@
 <config>
     <properties>
-        <property name="description"                    value="A Java desktop frontend"/>
-        <property name="category"                       value="frontend"/>
-        <property name="short-name"                     value="javadesktop"/>
-        <property name="startup-time"                   value="on load"/>
-        <property name="automatic-reply-to-commands"    value="false"/>
-        <property name="enable-i18n"                    value="true"/>
+        <property name="description" value="A Java desktop frontend"/>
+        <property name="category" value="frontend"/>
+        <property name="short-name" value="javadesktop"/>
+        <property name="startup-time" value="on load"/>
+        <property name="automatic-reply-to-commands" value="false"/>
+        <property name="enable-i18n" value="true"/>
+        <property name="enable-sensors-widget" value="true"/>
     </properties>
 </config>

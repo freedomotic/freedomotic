@@ -36,14 +36,17 @@ import java.awt.geom.Rectangle2D;
 public class ImageDrawer extends PlainDrawer {
 
     private Protocol masterProtocol;
+    private String enableSensorsWidget;
+    
 
     /**
      *
-     * @param masterProcotol
+     * @param masterProtocol
      */
-    public ImageDrawer(JavaDesktopFrontend masterProcotol) {
-        super(masterProcotol);
-        this.masterProtocol = masterProcotol;
+    public ImageDrawer(JavaDesktopFrontend masterProtocol, String enableSensorsWidget) {
+        super(masterProtocol);
+        this.masterProtocol = masterProtocol;
+        this.enableSensorsWidget = enableSensorsWidget;
     }
 
     /**
@@ -54,7 +57,7 @@ public class ImageDrawer extends PlainDrawer {
         /*
          * This method should not be invoked from ImageDrawer class.
          * Throwing an UnsupportedOperationException, however, is not recommended due to backwards compatibility
-        */
+         */
     }
 
     /**
@@ -80,7 +83,12 @@ public class ImageDrawer extends PlainDrawer {
             if ((obj.getPojo().getCurrentRepresentation().getIcon() != null)
                     && !obj.getPojo().getCurrentRepresentation().getIcon().equalsIgnoreCase("")) {
                 try {
-                    paintImage(obj.getPojo());
+                    if ("true".equalsIgnoreCase(enableSensorsWidget)) {
+                        Widget widget = new Widget(obj);
+                        paintImage(widget.draw());
+                    } else {
+                        paintImage(obj.getPojo());
+                    }
                 } catch (RuntimeException e) {
                     drawPlainObject(obj);
                 } finally {
@@ -141,7 +149,7 @@ public class ImageDrawer extends PlainDrawer {
         int y = (int) box.getY() + 10;
         Callout callout
                 = new Callout(obj.getPojo().getName(), "object.description",
-                description.toString(), x, y, 0.0f, 2000);
+                        description.toString(), x, y, 0.0f, 2000);
         createCallout(callout);
         setNeedRepaint(true);
     }

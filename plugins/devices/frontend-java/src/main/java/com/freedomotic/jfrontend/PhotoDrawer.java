@@ -40,8 +40,8 @@ public class PhotoDrawer extends ImageDrawer {
      *
      * @param master
      */
-    public PhotoDrawer(JavaDesktopFrontend master) {
-        super(master);
+    public PhotoDrawer(JavaDesktopFrontend master, String enableSensorsWidget) {
+        super(master, enableSensorsWidget);
     }
 
     /**
