@@ -25,17 +25,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
-
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
-
 import com.freedomotic.util.PeriodicSave;
-
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -46,7 +42,6 @@ import org.apache.shiro.util.ThreadState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-
 import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.bus.BootStatus;
@@ -90,7 +85,7 @@ import com.google.inject.Injector;
 public class Freedomotic implements BusConsumer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Freedomotic.class.getName());
-    private static String INSTANCE_ID;
+    private static String KEY_INSTANCE_ID;
     private static List<IPluginCategory> onlinePluginCategories;
 
     /**
@@ -180,19 +175,19 @@ public class Freedomotic implements BusConsumer {
      * @return true if the instance ID is configured, false otherwise
      */
     private boolean configureFreedomoticInstanceId() {
-        setInstanceId(config.getStringProperty("INSTANCE_ID", UUID.randomUUID().toString()));
-        config.setProperty("INSTANCE_ID", INSTANCE_ID);
+        setInstanceId(config.getStringProperty("KEY_INSTANCE_ID", UUID.randomUUID().toString()));
+        config.setProperty("KEY_INSTANCE_ID", KEY_INSTANCE_ID);
         return true;
     }
 
     /**
      * Return the Freedomotic instance id or build it with a synchronized.
      *
-     * @return the freedomotic instance id
+     * @return the Freedomotic instance id
      */
     private static synchronized boolean setInstanceId(String instanceId) {
-        if ((INSTANCE_ID == null) || (INSTANCE_ID.isEmpty())) {
-            INSTANCE_ID = instanceId;
+        if ((KEY_INSTANCE_ID == null) || (KEY_INSTANCE_ID.isEmpty())) {
+            KEY_INSTANCE_ID = instanceId;
         }
         return true;
     }
@@ -205,7 +200,7 @@ public class Freedomotic implements BusConsumer {
     public void start() throws FreedomoticException {
 
         this.configureFreedomoticInstanceId();
-        LOG.info("Freedomotic instance ID is \"{}\"", INSTANCE_ID);
+        LOG.info("Freedomotic instance ID is \"{}\"", KEY_INSTANCE_ID);
 
         // Relocate base data folder according to configuration (if specified in the config file)
         // Do not move it in AppConfigImpl otherwise unit tests will become dependent to the presence of the data folder
@@ -282,7 +277,7 @@ public class Freedomotic implements BusConsumer {
          * Cache online plugins
          * *****************************************************************
          */
-        if (config.getBooleanProperty("CACHE_MARKETPLACE_ON_STARTUP", false)) {
+        if (config.getBooleanProperty("KEY_CACHE_MARKETPLACE_ON_STARTUP", false)) {
             try {
                 EventQueue.invokeLater(() -> new Thread(() -> {
                     LOG.info("Starting marketplace service");
@@ -347,10 +342,9 @@ public class Freedomotic implements BusConsumer {
      * Enables periodic saving of commands, triggers and reactions.
      */
     private void activatePeriodicSave() {
-        // TODO: temporarily SAVE_DATA_PERIODICALLY is set to false until on/off feature of this property is implemented
         // TODO: Use BooleanUtils.toBoolean
-        if ("true".equals(config.getProperty("SAVE_DATA_PERIODICALLY"))) {
-            int executionInterval = Integer.parseInt(config.getProperty("DATA_SAVING_INTERVAL"));
+        if ("true".equals(config.getProperty("KEY_SAVE_DATA_PERIODICALLY"))) {
+            int executionInterval = Integer.parseInt(config.getProperty("KEY_DATA_SAVING_INTERVAL"));
             final PeriodicSave periodicSave = new PeriodicSave(savedDataRoot, executionInterval);
             periodicSave.delegateRepositories(triggerRepository, commandRepository, reactionRepository);
             periodicSave.startExecutorService();
@@ -363,7 +357,7 @@ public class Freedomotic implements BusConsumer {
      * @return the Freedomotic instance ID
      */
     public static String getInstanceID() {
-        return INSTANCE_ID;
+        return KEY_INSTANCE_ID;
     }
 
     /**
@@ -449,9 +443,9 @@ public class Freedomotic implements BusConsumer {
         configureLogging();
 
         try {
-            INSTANCE_ID = args[0];
+            KEY_INSTANCE_ID = args[0];
         } catch (Exception e) {
-            INSTANCE_ID = "";
+            KEY_INSTANCE_ID = "";
         }
 
         try {
@@ -538,7 +532,7 @@ public class Freedomotic implements BusConsumer {
             LOG.error("Cannot save environment to folder \"{}\" due to \"{}\"", folder, Freedomotic.getStackTraceInfo(ex));
         }
 
-        LOG.info("Freedomotic instance ID \"{}\" is shutting down. See you!", INSTANCE_ID);
+        LOG.info("Freedomotic instance ID \"{}\" is shutting down. See you!", KEY_INSTANCE_ID);
         System.exit(0);
     }
 
@@ -602,7 +596,7 @@ public class Freedomotic implements BusConsumer {
      * @return Freedomotic instance id as UUID
      */
     public static UUID getInstanceIdAsUUID() {
-        return UUID.fromString(INSTANCE_ID);
+        return UUID.fromString(KEY_INSTANCE_ID);
     }
 
 }

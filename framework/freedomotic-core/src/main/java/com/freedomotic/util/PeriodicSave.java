@@ -24,7 +24,6 @@ import com.freedomotic.reactions.ReactionRepository;
 import com.freedomotic.reactions.TriggerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.util.concurrent.*;
 

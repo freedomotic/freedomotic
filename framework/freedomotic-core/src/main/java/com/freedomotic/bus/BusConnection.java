@@ -56,12 +56,12 @@ class BusConnection extends LifeCycle {
     private ActiveMQConnectionFactory createFactory() {
 
         // connect to the embedded broker defined above
-        String P2P_BROKER_URL = config.getStringProperty("BROKER_PROTOCOL", Info.MESSAGING.BROKER_DEFAULT_PROTOCOL)
+        String KEY_P2P_BROKER_URL = config.getStringProperty("BROKER_PROTOCOL", Info.MESSAGING.BROKER_DEFAULT_PROTOCOL)
                 + "://"
-                + config.getStringProperty("P2P_CLUSTER_NAME", Info.MESSAGING.BROKER_DEFAULT_CLUSTER_NAME)
+                + config.getStringProperty("KEY_P2P_CLUSTER_NAME", Info.MESSAGING.BROKER_DEFAULT_CLUSTER_NAME)
                 + "/" + Info.MESSAGING.BROKER_DEFAULT_UUID;
-        LOG.info("P2P Connection on " + P2P_BROKER_URL);
-        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(P2P_BROKER_URL);
+        LOG.info("P2P Connection on " + KEY_P2P_BROKER_URL);
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(KEY_P2P_BROKER_URL);
 
         // tuned for performances
         // http://activemq.apache.org/performance-tuning.html
