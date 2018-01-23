@@ -1,9 +1,15 @@
 <trigger>
-    <name>ProgettiHwSwEthV2 reads a temperature input</name>
-    <description>ProgettiHwSwEthV2 reads a temperature input</description>
+    <name>ProgettiHwSwEthV2 reads a temperature value</name>
+    <description>ProgettiHwSwEthV2 reads a temperature value</description>
     <channel>app.event.sensor.protocol.read.phwswethv2</channel>
     <payload>
         <payload>
+            <statement> 
+	        <logical>AND</logical> 	
+                <attribute>address</attribute>
+ 	        <operand>REGEX</operand> 
+	        <value>^(.*):(temp.*)$</value> 
+            </statement>
             <statement>
                 <logical>SET</logical>
                 <attribute>behaviorValue</attribute>

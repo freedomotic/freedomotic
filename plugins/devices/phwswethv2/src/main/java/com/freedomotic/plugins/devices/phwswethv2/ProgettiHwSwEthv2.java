@@ -29,36 +29,36 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 public class ProgettiHwSwEthv2 extends Protocol {
 
-    private static final Logger LOG = Logger.getLogger(ProgettiHwSwEthv2.class.getName());
-    private static ArrayList<Board> boards = null;
-    private Map<String, Board> devices = new HashMap<String, Board>();
+    private static final Logger LOG = LoggerFactory.getLogger(ProgettiHwSwEthv2.class.getName());
+    private static List<Board> boards;
+    private Map<String, Board> devices;
     private Set<String> keySet = null;
-    private static int BOARD_NUMBER = 1;
-    private static int POLLING_TIME = 1000;
     private Socket socket = null;
     private DataOutputStream outputStream = null;
     private BufferedReader inputStream = null;
     private String[] address = null;
-    private int SOCKET_TIMEOUT = configuration.getIntProperty("socket-timeout", 1000);
-    private String GET_STATUS_URL = configuration.getStringProperty("get-status-url", "status.xml");
-    private String CHANGE_STATE_RELAY_URL = configuration.getStringProperty("change-state-relay-url", "forms.htm?led");
-    private String TOGGLE_RELAY_URL = configuration.getStringProperty("toggle-relay-url", "toggle.cgi?toggle=");
+    private final int BOARD_NUMBER = configuration.getTuples().size();
+    private final int POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
+    private final int SOCKET_TIMEOUT = configuration.getIntProperty("socket-timeout", 1000);
+    private final String GET_STATUS_URL = configuration.getStringProperty("get-status-url", "status.xml");
+    private final String CHANGE_STATE_RELAY_URL = configuration.getStringProperty("change-state-relay-url", "forms.htm?led");
+    private final String TOGGLE_RELAY_URL = configuration.getStringProperty("toggle-relay-url", "toggle.cgi?toggle=");
 
     /**
      * Initializations
@@ -70,10 +70,10 @@ public class ProgettiHwSwEthv2 extends Protocol {
 
     private void loadBoards() {
         if (boards == null) {
-            boards = new ArrayList<Board>();
+            boards = new ArrayList<>();
         }
         if (devices == null) {
-            devices = new HashMap<String, Board>();
+            devices = new HashMap<>();
         }
         setDescription("Reading status changes from"); //empty description
         for (int i = 0; i < BOARD_NUMBER; i++) {
@@ -135,7 +135,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
      */
     private boolean connect(String address, int port) {
 
-        LOG.info("Trying to connect to ProgettiHwSw board on address " + address + ':' + port);
+        LOG.info("Trying to connect to ProgettiHwSw board on address {}:{}", address, port);
         try {
             //TimedSocket is a non-blocking socket with timeout on exception
             socket = TimedSocket.getSocket(address, port, SOCKET_TIMEOUT);
@@ -144,7 +144,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
             outputStream = new DataOutputStream(buffOut);
             return true;
         } catch (IOException e) {
-            LOG.severe("Unable to connect to host " + address + " on port " + port);
+            LOG.info("Unable to connect to host {}:{}", address, port);
             return false;
         }
     }
@@ -165,8 +165,6 @@ public class ProgettiHwSwEthv2 extends Protocol {
      */
     @Override
     public void onStart() {
-        POLLING_TIME = configuration.getIntProperty("polling-time", 1000);
-        BOARD_NUMBER = configuration.getTuples().size();
         setPollingWait(POLLING_TIME);
         loadBoards();
         // select all boards in the devices hashmap to evaluate their status
@@ -189,13 +187,12 @@ public class ProgettiHwSwEthv2 extends Protocol {
     protected void onRun() {
         for (String key : keySet) {
             Board board = devices.get(key);
-            //System.out.println("Richiesta per "+board.getAlias());
             evaluateDiffs(getXMLStatusFile(board), board);
         }
         try {
             Thread.sleep(POLLING_TIME);
         } catch (InterruptedException ex) {
-            Logger.getLogger(ProgettiHwSwEthv2.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
             Thread.currentThread().interrupt();
         }
     }
@@ -208,7 +205,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
         try {
             dBuilder = dbFactory.newDocumentBuilder();
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(ProgettiHwSwEthv2.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage());
         }
         Document doc = null;
         String statusFileURL = null;
@@ -227,7 +224,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
                         + Integer.toString(b.getPort()) + "/" + GET_STATUS_URL;
             }
 
-            LOG.info("ProgettiHwSwEth gets relay status from file " + statusFileURL);
+            LOG.info("ProgettiHwSwEth gets relay status from file \"{}\"", statusFileURL);
             doc = dBuilder.parse(new URL(statusFileURL).openStream());
             doc.getDocumentElement().normalize();
         } catch (ConnectException connEx) {
@@ -237,12 +234,12 @@ public class ProgettiHwSwEthv2 extends Protocol {
         } catch (SAXException ex) {
             disconnect();
             this.stop();
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         } catch (Exception ex) {
             disconnect();
             this.stop();
             setDescription("Unable to connect to " + statusFileURL);
-            LOG.severe(Freedomotic.getStackTraceInfo(ex));
+            LOG.error(Freedomotic.getStackTraceInfo(ex));
         }
         return doc;
 
@@ -271,7 +268,8 @@ public class ProgettiHwSwEthv2 extends Protocol {
         for (int i = startingRelay; i < nl; i++) {
             try {
                 String tagName = tag + HexIntConverter.convert(i);
-                // control for storing value
+                // check stored values
+
                 if (tag.equalsIgnoreCase(board.getLedTag())) {
                     if (!(board.getRelayStatus(i) == Integer.parseInt(doc.getElementsByTagName(tagName).item(0).getTextContent()))) {
                         sendChanges(i, board, doc.getElementsByTagName(tagName).item(0).getTextContent(), tag);
@@ -298,12 +296,11 @@ public class ProgettiHwSwEthv2 extends Protocol {
                 }
             } catch (DOMException dOMException) {
                 //do nothing
-                LOG.severe("DOMException " + dOMException);
-            } catch (NumberFormatException numberFormatException) {
-                //do nothing
-            } catch (NullPointerException ex) {
+                LOG.error("DOMException " + dOMException);
+            } catch (NumberFormatException | NullPointerException numberFormatException) {
                 //do nothing
             }
+            //do nothing
         }
     }
 
@@ -312,9 +309,9 @@ public class ProgettiHwSwEthv2 extends Protocol {
         if (board.getStartingRelay() == 0) {
             relayLine++;
         }
-        //reconstruct freedomotic object address
+        //reconstruct Freedomotic object address
         String address = board.getAlias() + ":" + relayLine + ":" + tag;
-        LOG.info("Sending ProgettiHwSw protocol read event for object address '" + address + "'. It's readed status is " + status);
+        LOG.info("Sending ProgettiHwSw protocol read event for object address \"{}\". It's read status is \"{}\"", address, status);
         //building the event
         ProtocolRead event = new ProtocolRead(this, "phwswethv2", address); //IP:PORT:RELAYLINE
         // relay lines - status=0 -> off; status=1 -> on
@@ -329,7 +326,7 @@ public class ProgettiHwSwEthv2 extends Protocol {
                     event.addProperty("object.name", address);
                 }
             }
-        } else // digital inputs status = up -> off/open; status = dn -> on/closed
+        } else // digital input status = up -> off/open; status = dn -> on/closed
         if (tag.equalsIgnoreCase(board.getDigitalInputTag())) {
             if (status.equalsIgnoreCase("up")) {
                 event.addProperty("isOn", "false");
@@ -339,12 +336,12 @@ public class ProgettiHwSwEthv2 extends Protocol {
                 event.addProperty("isOpen", "false");
             }
 
-        } else // temperature inputs value = float/number
+        } else // temperature value = float/number
         if (tag.equalsIgnoreCase(board.getTempTag())) {
             event.addProperty("sensor.temperature", status);
 
         } else {
-            // analog inputs status = 0 -> off; status > 0 -> on
+            // analog input status = 0 -> off; status > 0 -> on
             if (tag.equalsIgnoreCase(board.getAnalogInputTag())) {
                 if (status.equalsIgnoreCase("0")) {
                     event.addProperty("isOn", "false");
@@ -356,12 +353,9 @@ public class ProgettiHwSwEthv2 extends Protocol {
 
         }
         //publish the event on the messaging bus
-        this.notifyEvent(event);
+        notifyEvent(event);
     }
 
-    /**
-     * Actuator side
-     */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
         String delimiter = configuration.getProperty("address-delimiter");
@@ -398,20 +392,20 @@ public class ProgettiHwSwEthv2 extends Protocol {
                 url = new URL("http://" + board.getIpAddress() + ":" + board.getPort() + "/" + CHANGE_STATE_RELAY_URL + relayNumber + "=" + c.getProperty("status"));
                 urlConnection = url.openConnection();
             }
-            LOG.info("Freedomotic sends the command " + url);
+            LOG.info("Freedomotic sends the command \"{}\"", url);
             InputStream is = urlConnection.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             int numCharsRead;
             char[] charArray = new char[1024];
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             while ((numCharsRead = isr.read(charArray)) > 0) {
                 sb.append(charArray, 0, numCharsRead);
             }
             String result = sb.toString();
         } catch (MalformedURLException e) {
-            LOG.severe("Change relay status malformed URL " + e.toString());
+            LOG.error("Change relay status malformed URL {}", e.toString());
         } catch (IOException e) {
-            LOG.severe("Change relay status IOexception" + e.toString());
+            LOG.error("Change relay status IOException {}", e.toString());
         }
     }
 
@@ -440,20 +434,20 @@ public class ProgettiHwSwEthv2 extends Protocol {
                 url = new URL("http://" + board.getIpAddress() + ":" + board.getPort() + "/" + TOGGLE_RELAY_URL + relayLine);
                 urlConnection = url.openConnection();
             }
-            LOG.info("Freedomotic sends the command " + url);
+            LOG.info("Freedomotic sends the command \"{}\"", url);
             InputStream is = urlConnection.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             int numCharsRead;
             char[] charArray = new char[1024];
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             while ((numCharsRead = isr.read(charArray)) > 0) {
                 sb.append(charArray, 0, numCharsRead);
             }
             String result = sb.toString();
         } catch (MalformedURLException e) {
-            LOG.severe("Change relay status malformed URL " + e.toString());
+            LOG.error("Change relay status malformed URL {}", e.toString());
         } catch (IOException e) {
-            LOG.severe("Change relay status IOexception" + e.toString());
+            LOG.error("Change relay status IOException {}", e.toString());
         }
     }
 
