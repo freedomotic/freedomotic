@@ -58,6 +58,16 @@ Now the repository is ready to work with.
 As an alternative you can start **freedomotic-core** project from your favourite IDE.
     
 
+Demo
+====
+
+An online demo is kindly hosted for free by [DigitalOcean](https://www.digitalocean.com/).
+
+Go to
+- [API demo](http://174.138.4.3:9111/)
+- [Web client Polymer](http://174.138.4.3:8090/)
+
+
 Getting help
 ============
 
