@@ -1481,8 +1481,8 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             Command c = new Command();
             c.setName("Mailer");
             c.setReceiver("app.actuators.messaging.mail.in");
-            c.setProperty("from", master.getApi().getConfig().getStringProperty("ADMIN_SENDING_ADDRESS", "issue.reporter@freedomotic.com"));
-            c.setProperty("to", master.getApi().getConfig().getStringProperty("ADMIN_RECIPIENT_ADDRESS", "admin@freedomotic.com"));
+            c.setProperty("from", master.getApi().getConfig().getStringProperty("KEY_ADMIN_SENDING_ADDRESS", "issue.reporter@freedomotic.com"));
+            c.setProperty("to", master.getApi().getConfig().getStringProperty("KEY_ADMIN_RECIPIENT_ADDRESS", "admin@freedomotic.com"));
             c.setProperty("message", "Here you are with the log received from an user");
             c.setProperty("subject", "Log sent by Freedomotic");
             c.setProperty("attachment", Freedomotic.logPath());
