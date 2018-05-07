@@ -38,11 +38,11 @@ import jssc.*;
 public class SerialHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(SerialHelper.class.getName());
-    private SerialPort serialPort;
-    private String portName;
+    private final SerialPort serialPort;
+    private final String portName;
     private String readTerminator = "";
     private int readChunkSize = -1;
-    private StringBuilder readBuffer = new StringBuilder();
+    private final StringBuilder readBuffer = new StringBuilder();
 
     /**
      * Accepts default parameters and change only the port name. The connect()
@@ -59,19 +59,20 @@ public class SerialHelper {
     public SerialHelper(final String portName, int baudRate, int dataBits, int stopBits, int parity, final SerialPortListener consumer) throws SerialPortException {
         this.portName = portName;
         serialPort = new SerialPort(this.portName);
-        serialPort.addEventListener( event -> handleEvent(portName, consumer, event));
+        serialPort.openPort();
+        serialPort.addEventListener(event -> handleEvent(portName, consumer, event));
         serialPort.setParams(baudRate, dataBits, stopBits, parity);
     }
 
-	/**
-	 * Handles an event coming from a serial input.
-	 * 
-	 * @param portName serial port name
-	 * @param consumer serial port listener
-	 * @param event event to deal with
-	 */
-	private void handleEvent(final String portName, final SerialPortListener consumer, SerialPortEvent event) {
-		if (event.isRXCHAR()) {
+    /**
+     * Handles an event coming from a serial input.
+     *
+     * @param portName serial port name
+     * @param consumer serial port listener
+     * @param event event to deal with
+     */
+    private void handleEvent(final String portName, final SerialPortListener consumer, SerialPortEvent event) {
+        if (event.isRXCHAR()) {
 
             if (event.getEventValue() > 0) {
                 try {
@@ -83,7 +84,7 @@ public class SerialHelper {
             LOG.info("Received message \"{}\" from serial port \"{}\"", readBuffer.toString(), portName);
             sendReadData(consumer);
         }
-	}
+    }
 
     /**
      * Sends a string message to the device.
@@ -220,18 +221,18 @@ public class SerialHelper {
                 consumer.onDataAvailable(chunk);
             }
         } else if (readChunkSize > 0) {
-        	// consume chunks of the given size
-        	while (readChunkSize > 0 && bufferContent.length() >= readChunkSize) {
-        		String chunk = bufferContent.substring(0, readChunkSize);
-        		//remove this chunk of data from bufferContent
-        		bufferContent = bufferContent.substring(readChunkSize);
-        		consumer.onDataAvailable(chunk);
-        	}
+            // consume chunks of the given size
+            while (readChunkSize > 0 && bufferContent.length() >= readChunkSize) {
+                String chunk = bufferContent.substring(0, readChunkSize);
+                //remove this chunk of data from bufferContent
+                bufferContent = bufferContent.substring(readChunkSize);
+                consumer.onDataAvailable(chunk);
+            }
         } else {
-        	// no splitting, send it just as readed
-        	consumer.onDataAvailable(bufferContent);
-        	//clear from sent text
-        	bufferContent = "";
+            // no splitting, send it just as readed
+            consumer.onDataAvailable(bufferContent);
+            //clear from sent text
+            bufferContent = "";
         }
 
         // Clear the buffer for sent text
