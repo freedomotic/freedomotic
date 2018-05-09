@@ -53,7 +53,7 @@ public class AtmospherePluginChangeResource extends AbstractWSResource {
         if (api != null) {
             for (Client c : api.getClients("plugin")) {
                 Plugin p = (Plugin) c;
-                if (p.getName().equalsIgnoreCase(message.getPayload().getStatementValue("plugin"))) {
+                if (p.getName().equalsIgnoreCase(message.getPayload().getStatementValue("plugin.name"))) {
                     try {
                         BroadcasterFactory.getDefault()
                                 .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmospherePluginChangeResource.PATH)
