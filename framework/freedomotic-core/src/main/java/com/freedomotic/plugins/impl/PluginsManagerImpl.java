@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -68,7 +68,7 @@ class PluginsManagerImpl implements PluginsManager {
     private final I18n i18n;
     private final CommandRepository commandRepository;
     private final ReactionRepository reactionRepository;
-    
+
     private static final String MAJOR = "framework.required.major";
     private static final String MINOR = "framework.required.minor";
     private static final String BUILD = "framework.required.build";
@@ -168,7 +168,6 @@ class PluginsManagerImpl implements PluginsManager {
 
     @Override
     public boolean installBoundle(URL fromURL) {
-
         try {
             String url = fromURL.toString();
 
@@ -207,7 +206,6 @@ class PluginsManagerImpl implements PluginsManager {
             LOG.error("Error while installing boundle downloaded from \"{}\"", fromURL, ex);
             return false; //not done
         }
-
         return true;
     }
 
@@ -249,16 +247,21 @@ class PluginsManagerImpl implements PluginsManager {
         } else {
             LOG.warn("Cannot uninstall \"{}\". It is not a filesystem plugin", client.getName());
         }
-
         return isDeleted;
     }
 
+    /**
+     *
+     *
+     * @param zipFile
+     * @return
+     */
     private boolean unzipAndDelete(File zipFile) {
         LOG.info("Uncompressing plugin archive  \"{}\"", zipFile);
 
         try {
             Unzip.unzip(zipFile.toString());
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Error while unzipping boundle \"{}\"", zipFile.getAbsolutePath(), e);
             return false;
         }
@@ -319,20 +322,25 @@ class PluginsManagerImpl implements PluginsManager {
         }
     }
 
-    private void recursiveCopy(File source, File target) {	
-    	 if (source.isDirectory()) {
-             if (!target.exists()) {
-                 target.mkdir();
-             }
+    /**
+     *
+     *
+     * @param source
+     * @param target
+     */
+    private void recursiveCopy(File source, File target) {
+        if (source.isDirectory()) {
+            if (!target.exists()) {
+                target.mkdir();
+            }
 
-             String[] children = source.list();
-             for (int i = 0; i < children.length; i++) {
-                 recursiveCopy(new File(source, children[i]), new File(target, children[i]));
-             }
-         }
-    	 
-    	 else try(InputStream input = new FileInputStream(source); 
-    			 OutputStream output = new FileOutputStream(target);) {
+            String[] children = source.list();
+            for (int i = 0; i < children.length; i++) {
+                recursiveCopy(new File(source, children[i]), new File(target, children[i]));
+            }
+        } else {
+            try (InputStream input = new FileInputStream(source);
+                    OutputStream output = new FileOutputStream(target);) {
                 // Copy the bits from instream to outstream
                 byte[] buf = new byte[1024];
                 int len;
@@ -340,21 +348,30 @@ class PluginsManagerImpl implements PluginsManager {
                 while ((len = input.read(buf)) > 0) {
                     output.write(buf, 0, len);
                 }
-            
-        } catch (FileNotFoundException foundEx) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("No file to copy in \"{}\"", source, Freedomotic.getStackTraceInfo(foundEx));
+
+            } catch (FileNotFoundException foundEx) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("No file to copy in \"{}\"", source, Freedomotic.getStackTraceInfo(foundEx));
+                }
+            } catch (IOException ex) {
+                LOG.warn("Error while copying resources", Freedomotic.getStackTraceInfo(ex));
             }
-        } catch (IOException ex) {
-            LOG.warn("Error while copying resources", Freedomotic.getStackTraceInfo(ex));
         }
     }
 
+    /**
+     *
+     *
+     * @param client
+     * @param pluginFolder
+     * @return
+     * @throws IOException
+     */
     private Client mergePackageConfiguration(Client client, File pluginFolder)
             throws IOException {
         //seach for a file called PACKAGE
         Properties packageFile = new Properties();
-        try(FileInputStream fis = new FileInputStream(new File(pluginFolder + "/PACKAGE"));) {  
+        try (FileInputStream fis = new FileInputStream(new File(pluginFolder + "/PACKAGE"));) {
             packageFile.load(fis);
             fis.close();
         }
@@ -362,12 +379,12 @@ class PluginsManagerImpl implements PluginsManager {
         client.getConfiguration().setProperty("package.name", packageFile.getProperty("package.name"));
         client.getConfiguration().setProperty("package.nodeid", packageFile.getProperty("package.nodeid"));
         client.getConfiguration().setProperty("framework.required.version",
-                        packageFile.getProperty(MAJOR) + "."
-                        + packageFile.getProperty(MINOR) + "."
-                        + packageFile.getProperty(BUILD));
+                packageFile.getProperty(MAJOR) + "."
+                + packageFile.getProperty(MINOR) + "."
+                + packageFile.getProperty(BUILD));
         client.getConfiguration().setProperty(MAJOR, packageFile.getProperty(MAJOR));
         client.getConfiguration().setProperty(MINOR, packageFile.getProperty(MINOR));
-        client.getConfiguration().setProperty(BUILD,packageFile.getProperty(BUILD));
+        client.getConfiguration().setProperty(BUILD, packageFile.getProperty(BUILD));
 
         //TODO: add also the other properties
         return client;

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -70,19 +70,14 @@ class ClientStorageInMemory implements ClientStorage {
             if (isCompatible(c)) {
                 clients.add(c);
             } else {
-                Client client
-                        = createPluginPlaceholder(c.getName(),
-                                "Plugin",
-                                "Not compatible with this framework version v" + Info.getVersion());
+                Client client = createPluginPlaceholder(c.getName(), "Plugin", "Not compatible with this framework version v" + Info.getVersion());
                 clients.add(client);
                 LOG.warn("Plugin \"{}\" is not compatible with this framework version v{}", c.getName(), Info.getVersion());
             }
 
-            PluginHasChanged event
-                    = new PluginHasChanged(ClientStorageInMemory.class,
-                            c.getName(), PluginActions.ENQUEUE);
+            PluginHasChanged event = new PluginHasChanged(ClientStorageInMemory.class, c.getName(), PluginActions.ENQUEUE);
             busService.send(event);
-            LOG.info("Extension \"{}\" added to plugins list.", c.getName());
+            LOG.info("Extension \"{}\" added to plugins list", c.getName());
         }
     }
 
@@ -99,10 +94,9 @@ class ClientStorageInMemory implements ClientStorage {
             c.destroy();
             clients.remove(c);
 
-            PluginHasChanged event
-                    = new PluginHasChanged(ClientStorageInMemory.class,
-                            c.getName(), PluginActions.DEQUEUE);
+            PluginHasChanged event = new PluginHasChanged(ClientStorageInMemory.class, c.getName(), PluginActions.DEQUEUE);
             busService.send(event);
+            LOG.info("Extension \"{}\" removed from plugins list", c.getName());
         }
     }
 
@@ -112,8 +106,7 @@ class ClientStorageInMemory implements ClientStorage {
      */
     @Override
     public List<Client> getClients() {
-        Collections.sort(clients,
-                new ClientNameComparator());
+        Collections.sort(clients, new ClientNameComparator());
 
         return Collections.unmodifiableList(clients);
     }
@@ -148,8 +141,7 @@ class ClientStorageInMemory implements ClientStorage {
             }
         }
 
-        Collections.sort(tmp,
-                new ClientNameComparator());
+        Collections.sort(tmp, new ClientNameComparator());
 
         return Collections.unmodifiableList(tmp);
     }
@@ -231,6 +223,13 @@ class ClientStorageInMemory implements ClientStorage {
         return requiredMajor == Info.getMajor() && getOldestVersion(requiredMajor + "." + requiredMinor + "." + requiredBuild, Info.getVersion()) <= 0;
     }
 
+    /**
+     *
+     *
+     * @param properties
+     * @param key
+     * @return
+     */
     private int getVersionProperty(Properties properties, String key) {
         //if property is not specified returns Integer.MAX_VALUE so it never matches
         //if is a string returns 0 to match any value with "x"
@@ -273,7 +272,7 @@ class ClientStorageInMemory implements ClientStorage {
         if ((i < vals1.length) && (i < vals2.length)) {
             return Integer.compare(new Integer(vals1[i]), new Integer(vals2[i]));
         }
-        
+
         return Integer.compare(vals1.length, vals2.length);
     }
 
@@ -292,50 +291,50 @@ class ClientStorageInMemory implements ClientStorage {
     public Plugin createPluginPlaceholder(final String simpleName, final String type, final String description) {
         final Plugin placeholder
                 = new Plugin(simpleName) {
-                    @Override
-                    public String getDescription() {
-                        if (description == null) {
-                            return "Plugin Unavailable. Error on loading";
-                        } else {
-                            return description;
-                        }
-                    }
+            @Override
+            public String getDescription() {
+                if (description == null) {
+                    return "Plugin Unavailable. Error on loading";
+                } else {
+                    return description;
+                }
+            }
 
-                    @Override
-                    public String getName() {
-                        return "Cannot start \"" + simpleName + "\"";
-                    }
+            @Override
+            public String getName() {
+                return "Cannot start \"" + simpleName + "\"";
+            }
 
-                    @Override
-                    public String getType() {
-                        return type;
-                    }
+            @Override
+            public String getType() {
+                return type;
+            }
 
-                    @Override
-                    public void start() {
-                    	LOG.debug("start placeholder");
-                    }
+            @Override
+            public void start() {
+                LOG.debug("start placeholder");
+            }
 
-                    @Override
-                    public void stop() {
-                    	LOG.debug("stop placeholder");
-                    }
+            @Override
+            public void stop() {
+                LOG.debug("stop placeholder");
+            }
 
-                    @Override
-                    public boolean isRunning() {
-                        return false;
-                    }
+            @Override
+            public boolean isRunning() {
+                return false;
+            }
 
-                    @Override
-                    public void showGui() {
-                    	LOG.debug("Show GUI placeholder");
-                    }
+            @Override
+            public void showGui() {
+                LOG.debug("Show GUI placeholder");
+            }
 
-                    @Override
-                    public void hideGui() {
-                    	LOG.debug("Hide GUI placeholder");
-                    }
-                };
+            @Override
+            public void hideGui() {
+                LOG.debug("Hide GUI placeholder");
+            }
+        };
 
         placeholder.setDescription(description);
         placeholder.configuration = new Config();
