@@ -38,9 +38,9 @@ public final class Reaction
     private static final long serialVersionUID = -5474545571527398625L;
     private Trigger trigger = new Trigger();
     //list of optional conditions
-    private List<Condition> conditions = new ArrayList<Condition>();
+    private List<Condition> conditions = new ArrayList<>();
     private String uuid;
-    private List<Command> commands = new ArrayList<Command>();
+    private List<Command> commands = new ArrayList<>();
     private String description;
     private String shortDescription;
 
@@ -111,7 +111,7 @@ public final class Reaction
      * @param command the command performed when the reaction is triggered
      */
     public Reaction(Trigger trigger, Command command) {
-        ArrayList<Command> tmp = new ArrayList<Command>();
+        List<Command> tmp = new ArrayList<>();
         tmp.add(command);
         create(trigger, tmp);
     }
@@ -159,7 +159,7 @@ public final class Reaction
      */
     public List<Command> getCommands() {
         if (commands == null) {
-            setCommands(new ArrayList<Command>());
+            setCommands(new ArrayList<>());
         }
         return commands;
     }
@@ -185,14 +185,14 @@ public final class Reaction
         b.append("] ");
 
         if ((conditions != null) && (!conditions.isEmpty())) {
-            for (Condition c : conditions) {
+            conditions.forEach((c) -> {
                 b.append(c.getStatement().getLogical())
                         .append(" [")
                         .append(c.getTarget()).append(" ")
                         .append(c.getStatement().getAttribute()).append(" ")
                         .append(c.getStatement().getOperand()).append(" ")
                         .append(c.getStatement().getValue()).append("] ");
-            }
+            });
         }
 
         b.append(" THEN ");
@@ -347,7 +347,8 @@ public final class Reaction
     }
 
     /**
-     * Sets the reaction uuid. * @param uuid the uuid to set
+     * Sets the reaction uuid. 
+     * @param uuid the uuid to set
      */
     public void setUuid(String uuid) {
         this.uuid = uuid;

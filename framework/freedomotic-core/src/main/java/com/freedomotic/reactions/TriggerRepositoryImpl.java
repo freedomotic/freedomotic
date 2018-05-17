@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 class TriggerRepositoryImpl implements TriggerRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(TriggerRepositoryImpl.class.getName());
-    private static ArrayList<Trigger> list = new ArrayList<>();
+    private static List<Trigger> list = new ArrayList<>();
     private final DataUpgradeService dataUpgradeService;
     private static final String TRIGGER_FILE_EXTENSION = ".xtrg";
 
@@ -82,7 +82,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
         try {
             LOG.info("Saving triggers to file into \"{}\"", folder.getAbsolutePath());
             StringBuilder summaryContent = new StringBuilder();
-            for (Trigger trigger : list) {
+            list.stream().map((trigger) -> {
                 if (trigger.isToPersist()) {
                     String uuid = trigger.getUUID();
 
@@ -94,10 +94,11 @@ class TriggerRepositoryImpl implements TriggerRepository {
                     File file = new File(folder + "/" + fileName);
                     FreedomXStream.toXML(trigger, file);
                 }
-
+                return trigger;
+            }).forEachOrdered((trigger) -> {
                 summaryContent.append(trigger.getUUID()).append("\t\t").append(trigger.getName()).append("\t\t\t")
                         .append(trigger.getChannel()).append("\n");
-            }
+            });
 
             writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #TriggerName \t\t\t #ListenedChannel\n", summaryContent.toString());
 
@@ -116,14 +117,14 @@ class TriggerRepositoryImpl implements TriggerRepository {
         // this filter only returns triggers files
         FileFilter objectFileFilter
                 = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+            public boolean accept(File file) {
+                if (file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
         files = folder.listFiles(objectFileFilter);
         for (File file : files) {
             file.delete();
@@ -149,15 +150,15 @@ class TriggerRepositoryImpl implements TriggerRepository {
         XStream xstream = FreedomXStream.getXstream();
 
         // this filter only returns triggers files
-        FileFilter objectFileFileter
+        FileFilter objectFileFilter
                 = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        return file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION);
-                    }
-                };
+            @Override
+            public boolean accept(File file) {
+                return file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION);
+            }
+        };
 
-        File[] files = folder.listFiles(objectFileFileter);
+        File[] files = folder.listFiles(objectFileFilter);
 
         try {
 
@@ -179,7 +180,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                             dataProperties.load(new FileInputStream(new File(Info.PATHS.PATH_DATA_FOLDER + "/data.properties")));
                             fromVersion = dataProperties.getProperty("data.version");
                         } catch (IOException iOException) {
-                            LOG.error(Freedomotic.getStackTraceInfo(iOException));  
+                            LOG.error(Freedomotic.getStackTraceInfo(iOException));
                             // fallback to a default version for older version without that properties file
                             fromVersion = "5.5.0";
                         }
@@ -295,7 +296,6 @@ class TriggerRepositoryImpl implements TriggerRepository {
      * @param name
      * @return a trigger with the name (ignore-case) as the String in input
      */
-    @Deprecated
     public static Trigger getTrigger(String name) {
         if ((name == null) || (name.trim().isEmpty())) {
             return null;
@@ -387,11 +387,9 @@ class TriggerRepositoryImpl implements TriggerRepository {
     @Override
     public List<Trigger> findByName(String name) {
         List<Trigger> tl = new ArrayList<>();
-        for (Trigger t : findAll()) {
-            if (t.getName().equalsIgnoreCase(name)) {
-                tl.add(t);
-            }
-        }
+        findAll().stream().filter((t) -> (t.getName().equalsIgnoreCase(name))).forEachOrdered((t) -> {
+            tl.add(t);
+        });
         return tl;
     }
 
@@ -479,9 +477,9 @@ class TriggerRepositoryImpl implements TriggerRepository {
     @Override
     public void deleteAll() {
         try {
-            for (Trigger t : findAll()) {
+            findAll().forEach((t) -> {
                 delete(t);
-            }
+            });
         } catch (Exception e) {
         } finally {
             list.clear();

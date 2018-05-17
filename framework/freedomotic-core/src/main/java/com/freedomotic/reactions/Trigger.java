@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -233,6 +233,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     //can be moved to a stategy pattern
     /**
      * Checks whether the trigger can fire.
+     *
      * @return true if trigger can fire.
      */
     public boolean canFire() {
@@ -251,7 +252,7 @@ public final class Trigger implements BusConsumer, Cloneable {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(wakeup);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Trigger " + getName() + " is suspended until "
+                    LOG.debug("Trigger \"" + getName() + "\" is suspended until "
                             + formatter.format(calendar.getTime()));
                 }
                 //it is currently suspended
@@ -264,7 +265,8 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
-     * Increments the number of trigger executions and updates the suspensionStart.
+     * Increments the number of trigger executions and updates the
+     * suspensionStart.
      */
     public synchronized void setExecuted() {
         suspensionStart = System.currentTimeMillis();
@@ -273,6 +275,7 @@ public final class Trigger implements BusConsumer, Cloneable {
 
     /**
      * Sets delay of the trigger.
+     *
      * @param delay delay to set.
      */
     public void setDelay(int delay) {
@@ -374,7 +377,7 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /*
-     * Performs the Trigger check comparing the received event with itself (this
+     * Performs the trigger check comparing the received event with itself (this
      * trigger)
      */
     @Override
@@ -389,15 +392,15 @@ public final class Trigger implements BusConsumer, Cloneable {
 
         if (msgPayload instanceof EventTemplate) {
             EventTemplate event = (EventTemplate) msgPayload;
-            LOG.debug("Trigger '" + this.getName() + "' filters event '" + event.getEventName()
-                    + "' on channel " + this.getChannel());
-
+            LOG.debug("Trigger \"" + this.getName() + "\" filters event \"" + event.getEventName()
+                    + "\" on channel \"" + this.getChannel() + "\"");
             checker.check(event, this);
         }
     }
 
     /**
      * Clones the trigger.
+     *
      * @return the cloned trigger.
      */
     @Override
@@ -469,9 +472,9 @@ public final class Trigger implements BusConsumer, Cloneable {
     }
 
     /**
-     * Gets whether the trigger should be persisted.
+     * Gets if the trigger should be persisted.
      *
-     * @return true if trigger should be persisted
+     * @return true if trigger should be persisted, false otherwise
      */
     public boolean isToPersist() {
         return persistence;
