@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -23,7 +23,7 @@ package com.freedomotic.plugins.devices.mqttbroker;
  *
  * @author Mauro Cicolella
  */
-public class MqttTopic {
+public final class MqttTopic {
 
     String topicPath = null;
     String fieldsDelimiter = null;
