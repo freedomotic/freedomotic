@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -37,6 +37,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author Matteo Mazzoni
  */
+
+@SuppressWarnings("squid:S1948") //We are not planning to serialize UI components
+
 public class PrivilegesConfiguration extends javax.swing.JFrame {
 
     private static final Logger LOG = LoggerFactory.getLogger(PrivilegesConfiguration.class.getName());
@@ -59,6 +62,12 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
         setVisible(true);
     }
 
+    /**
+     * 
+     * 
+     * @param file
+     * @return 
+     */
     private String readConfiguration(File file) {
 
         StringBuilder buff = new StringBuilder();
@@ -83,6 +92,13 @@ public class PrivilegesConfiguration extends javax.swing.JFrame {
         return buff.toString();
     }
 
+    /**
+     * 
+     * 
+     * @param file
+     * @param text
+     * @throws IOException 
+     */
     private void saveConfiguration(File file, String text) throws IOException {
         // Create file 
         try (FileWriter fstream = new FileWriter(file);

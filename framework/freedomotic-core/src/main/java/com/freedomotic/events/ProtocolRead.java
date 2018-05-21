@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -31,8 +31,9 @@ import com.google.inject.Inject;
  *
  * @author Enrico Nicoletti
  */
-public final class ProtocolRead
-        extends EventTemplate {
+@SuppressWarnings("squid:S1948") //We are not planning to serialize UI components
+
+public final class ProtocolRead extends EventTemplate {
 
     private String protocol;
     @Inject

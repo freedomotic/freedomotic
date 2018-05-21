@@ -49,6 +49,9 @@ import javax.swing.SpringLayout;
  *
  * @author Enrico Nicoletti
  */
+
+@SuppressWarnings("squid:S1948") //We are not planning to serialize UI components
+
 public class ListDrawer extends Renderer {
 
     JComboBox cmbZone = new JComboBox();
@@ -63,11 +66,9 @@ public class ListDrawer extends Renderer {
         super(master);
         this.master = master;
         cmbZone.removeAllItems();
-        cmbZone.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ZoneLogic zone = (ZoneLogic) cmbZone.getSelectedItem();
-                enlistObjects(zone);
-            }
+        cmbZone.addActionListener((ActionEvent e) -> {
+            ZoneLogic zone = (ZoneLogic) cmbZone.getSelectedItem();
+            enlistObjects(zone);
         });
         this.setLayout(new BorderLayout());
         this.setBackground(Color.white);
@@ -82,12 +83,21 @@ public class ListDrawer extends Renderer {
         validate();
     }
 
+    /**
+     * 
+     * 
+     */
     private void enlistZones() {
         for (ZoneLogic zone : getCurrEnv().getZones()) {
             cmbZone.addItem(zone);
         }
     }
 
+    /**
+     * 
+     * 
+     * @param zone 
+     */
     private void enlistObjects(ZoneLogic zone) {
         panel.removeAll();
         panel.updateUI();
@@ -126,11 +136,9 @@ public class ListDrawer extends Renderer {
                 panel.add(lblName);
                 //a configuration button with a listener
                 JButton btnConfig = new JButton("Configure");
-                btnConfig.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        ObjectEditor objectEditor = new ObjectEditor(obj);
-                        objectEditor.setVisible(true);
-                    }
+                btnConfig.addActionListener((ActionEvent e) -> {
+                    ObjectEditor objectEditor = new ObjectEditor(obj);
+                    objectEditor.setVisible(true);
                 });
                 panel.add(btnConfig);
                 row++;
@@ -144,6 +152,12 @@ public class ListDrawer extends Renderer {
         validate();
     }
 
+    /**
+     * 
+     * 
+     * @param obj
+     * @return 
+     */
     private String getCompleteDescription(EnvObjectLogic obj) {
         StringBuilder description = new StringBuilder();
         description.append(obj.getPojo().getDescription()).append("\n");
@@ -160,12 +174,17 @@ public class ListDrawer extends Renderer {
         return description.toString();
     }
 
+    /**
+     * 
+     * 
+     * @param obj
+     * @return 
+     */
     private ImageIcon renderSingleObject(EnvObject obj) {
         if (obj != null) {
             if ((obj.getCurrentRepresentation().getIcon() != null)
                     && !obj.getCurrentRepresentation().getIcon().equalsIgnoreCase("")) {
-                BufferedImage img = null;
-                img = ResourcesManager.getResource(obj.getCurrentRepresentation().getIcon(),
+                BufferedImage img = ResourcesManager.getResource(obj.getCurrentRepresentation().getIcon(),
                         48,
                         48); //-1 means no resizeing
 
@@ -174,7 +193,6 @@ public class ListDrawer extends Renderer {
                 return icon;
             }
         }
-
         return null;
     }
 
@@ -182,6 +200,7 @@ public class ListDrawer extends Renderer {
      *
      * @param obj
      */
+    @Override
     public void mouseClickObject(EnvObjectLogic obj) {
         ObjectReceiveClick event = new ObjectReceiveClick(this, obj, ObjectReceiveClick.SINGLE_CLICK);
         Freedomotic.sendEvent(event);

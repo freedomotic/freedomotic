@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -37,6 +37,9 @@ import java.util.Queue;
  *
  * @author Enrico Nicoletti
  */
+
+@SuppressWarnings("squid:S1948") //We are not planning to serialize UI components
+
 public class PlainDrawer
         extends Renderer {
 
@@ -146,6 +149,13 @@ public class PlainDrawer
         }
     }
 
+    /**
+     * 
+     * 
+     * @param xTrace
+     * @param yTrace
+     * @param color 
+     */
     private void drawTrace(int[] xTrace, int[] yTrace, Color color) {
         getContext().setColor(color);
 
@@ -153,6 +163,12 @@ public class PlainDrawer
         getContext().drawPolyline(xTrace, yTrace, num);
     }
 
+    /**
+     * 
+     * 
+     * @param trace
+     * @return 
+     */
     private int[] getXTrace(Queue<FreedomPoint> trace) {
         int size = trace.size();
         int[] xPoints = new int[size];
@@ -168,6 +184,12 @@ public class PlainDrawer
         return xPoints;
     }
 
+    /**
+     * 
+     * 
+     * @param trace
+     * @return 
+     */
     private int[] getYTrace(Queue<FreedomPoint> trace) {
         int size = trace.size();
         int[] yPoints = new int[size];

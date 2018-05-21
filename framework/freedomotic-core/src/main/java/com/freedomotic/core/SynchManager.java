@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -96,6 +96,11 @@ public class SynchManager implements BusConsumer {
 
     }
 
+    /**
+     * 
+     * 
+     * @param event 
+     */
     private void synchronizeLocalThing(ObjectHasChangedBehavior event) {
         // Synchronize changed behaviors
         EnvObjectLogic obj = thingsRepository.findOne(event.getProperty("object.uuid"));
@@ -105,7 +110,7 @@ public class SynchManager implements BusConsumer {
                 Config conf = new Config();
                 conf.setProperty("value", value);
                 LOG.info("Synch thing \"{}\" behavior \"{}\" to \"{}\" notified by \"{}\"",
-                        new Object[]{obj.getPojo().getName(), b.getName(), value});
+                        new Object[]{obj.getPojo().getName(), b.getName(), value, event.getProperty("sender")});
                 obj.getBehavior(b.getName()).filterParams(conf, false);
             }
         }

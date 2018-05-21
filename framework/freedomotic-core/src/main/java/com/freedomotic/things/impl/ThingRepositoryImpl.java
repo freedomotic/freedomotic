@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -23,6 +23,7 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.SynchAction;
 import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.exceptions.DataUpgradeException;
+import com.freedomotic.exceptions.FreedomoticRuntimeException;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;
 import com.freedomotic.model.object.Representation;
@@ -144,15 +145,15 @@ class ThingRepositoryImpl implements ThingRepository {
         // This filter only returns object files
         FileFilter objectFileFileter
                 = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+            @Override
+            public boolean accept(File file) {
+                if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
 
         files = folder.listFiles(objectFileFileter);
 
@@ -280,8 +281,8 @@ class ThingRepositoryImpl implements ThingRepository {
      * @return
      */
     @RequiresPermissions("objects:read")
-    private static ArrayList<EnvObjectLogic> getObjectByProtocol(String protocol) {
-        ArrayList<EnvObjectLogic> list = new ArrayList<>();
+    private static List<EnvObjectLogic> getObjectByProtocol(String protocol) {
+        List<EnvObjectLogic> list = new ArrayList<>();
         for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getProtocol().equalsIgnoreCase(protocol.trim()) // && auth.isPermitted("objects:read:" + object.getPojo().getUUID())
@@ -300,8 +301,8 @@ class ThingRepositoryImpl implements ThingRepository {
      * @return
      */
     @RequiresPermissions("objects:read")
-    private static ArrayList<EnvObjectLogic> getObjectByEnvironment(String uuid) {
-        ArrayList<EnvObjectLogic> list = new ArrayList<>();
+    private static List<EnvObjectLogic> getObjectByEnvironment(String uuid) {
+        List<EnvObjectLogic> list = new ArrayList<>();
         for (Iterator<EnvObjectLogic> it = ThingRepositoryImpl.iterator(); it.hasNext();) {
             EnvObjectLogic object = it.next();
             if (object.getPojo().getEnvironmentID().equalsIgnoreCase(uuid) //&& auth.isPermitted("objects:read:" + object.getPojo().getUUID().substring(0, 7))
@@ -334,6 +335,11 @@ class ThingRepositoryImpl implements ThingRepository {
         input.destroy(); //free memory
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     private static List<String> getObjectsNames() {
         List<String> list = new ArrayList<>();
         for (EnvObjectLogic obj : objectList.values()) {
@@ -400,9 +406,8 @@ class ThingRepositoryImpl implements ThingRepository {
                 LOG.warn("Thing was created, but cannot set it as \"Changed\"", e);
             }
         } else {
-            throw new RuntimeException("Cannot add the same object more than one time");
+            throw new FreedomoticRuntimeException("Cannot add the same object more than one time");
         }
-
         return envObjectLogic;
     }
 
@@ -496,7 +501,7 @@ class ThingRepositoryImpl implements ThingRepository {
             eol.destroy();
             return true;
         } catch (Exception e) {
-            LOG.error("Cannot delete object" + uuid, e);
+            LOG.error("Cannot delete object \"{}\"", uuid, e);
             return false;
         }
     }
@@ -599,17 +604,16 @@ class ThingRepositoryImpl implements ThingRepository {
         List<EnvObjectLogic> results = new ArrayList<>();
 
         // This filter only returns object files
-        FileFilter objectFileFilter
-                = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
+        FileFilter objectFileFilter = new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
 
         File[] files = folder.listFiles(objectFileFilter);
 

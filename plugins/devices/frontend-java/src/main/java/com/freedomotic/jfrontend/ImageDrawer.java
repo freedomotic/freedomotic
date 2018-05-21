@@ -33,6 +33,9 @@ import java.awt.geom.Rectangle2D;
  *
  * @author Enrico Nicoletti
  */
+
+@SuppressWarnings("squid:S1948") //We are not planning to serialize UI components
+
 public class ImageDrawer extends PlainDrawer {
 
     private Protocol masterProtocol;

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -31,6 +31,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Enrico Nicoletti
  */
+
+@SuppressWarnings("squid:S1948") //We are not planning to serialize UI components
+
 @XmlRootElement
 public final class Reaction
         implements Serializable {

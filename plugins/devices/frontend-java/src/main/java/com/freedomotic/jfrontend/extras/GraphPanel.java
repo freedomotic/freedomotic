@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -24,6 +24,7 @@ import com.freedomotic.api.Protocol;
 import com.freedomotic.model.charting.UsageData;
 import com.freedomotic.model.charting.UsageDataFrame;
 import com.freedomotic.behaviors.DataBehaviorLogic;
+import com.freedomotic.exceptions.FreedomoticRuntimeException;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.reactions.Command;
 import java.awt.Color;
@@ -250,7 +251,7 @@ public class GraphPanel extends javax.swing.JFrame {
         if (!list.isEmpty()) {
             command = list.get(0);
         } else {
-            throw new RuntimeException("No commands found with the specified name");
+            throw new FreedomoticRuntimeException("No commands found with the specified name");
         }
 
         Command cloned;

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -119,13 +119,17 @@ public class EventTemplate implements Serializable {
         }
     }
 
+    /**
+     *
+     *
+     */
     private void init() {
         eventName = this.getClass().getSimpleName();
         isValid = true;
         creation = System.currentTimeMillis();
     }
 
-    private final void fillPayloadWithDefaults() {
+    private void fillPayloadWithDefaults() {
         init();
 
         try {
@@ -156,8 +160,7 @@ public class EventTemplate implements Serializable {
             payload.addStatement("date",
                     datefmt.format(rightNow.getTime()));
             //adding event.sender to event payload. So it can be used by trigger
-            payload.addStatement("sender",
-                    getSender());
+            payload.addStatement("sender", getSender());
             payload.addStatement("uuid", this.uuid);
             payload.addStatement("type", this.type);
         } catch (Exception e) {
@@ -165,6 +168,11 @@ public class EventTemplate implements Serializable {
         }
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     private String getSender() {
         try {
             if (sender != null) {
@@ -203,6 +211,7 @@ public class EventTemplate implements Serializable {
     }
 
     /**
+     *
      * @return the uuid
      */
     public String getUuid() {

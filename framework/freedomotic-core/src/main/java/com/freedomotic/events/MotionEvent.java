@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -27,6 +27,9 @@ import com.freedomotic.model.geometry.FreedomPoint;
  *
  * @author Mauro Cicolella
  */
+
+@SuppressWarnings("squid:S1948") //We are not planning to serialize UI components
+
 public class MotionEvent
         extends EventTemplate {
 

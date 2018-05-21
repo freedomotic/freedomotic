@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -20,6 +20,7 @@
 package com.freedomotic.jfrontend.automationeditor;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.exceptions.FreedomoticRuntimeException;
 import com.freedomotic.exceptions.NoResultsException;
 import com.freedomotic.reactions.Command;
 import com.freedomotic.i18n.I18n;
@@ -30,7 +31,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -173,7 +173,7 @@ public class GuessCommandBox
                 if (!list.isEmpty()) {
                     command1 = list.get(0);
                 } else {
-                    throw new RuntimeException("No commands found with name " + getText());
+                    throw new FreedomoticRuntimeException("No commands found with name " + getText());
                 }
                 if (command1 != null) {
                     setEnabled(false);
