@@ -45,11 +45,15 @@ public class OpenWeatherMapWI implements WeatherInfo {
     private final String longitude;
     private DateTime nextSunrise;
     private DateTime nextSunset;
+    private String nextHumidity;
+    private String nextPressure; 
 
     /**
      *
      * @param latitude
      * @param longitude
+     * @param humidity
+     * @param pressure
      */
     public OpenWeatherMapWI(String latitude, String longitude) {
         this.latitude = latitude;
@@ -72,6 +76,24 @@ public class OpenWeatherMapWI implements WeatherInfo {
     @Override
     public DateTime getNextSunrise() {
         return nextSunrise;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getNextHumidity(){
+        return nextHumidity;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getNextPressure(){
+        return nextPressure;
     }
 
     private Document getXMLStatusFile(int dom, int moy, int zone, int dst) throws MalformedURLException, SAXException, IOException {
@@ -107,11 +129,15 @@ public class OpenWeatherMapWI implements WeatherInfo {
         if (doc != null) {
             Node sunriseNode = doc.getElementsByTagName("sun").item(0).getAttributes().getNamedItem("rise");
             Node sunsetNode = doc.getElementsByTagName("sun").item(0).getAttributes().getNamedItem("set");
+            Node humidityNode = doc.getElementsByTagName("humidity").item(0).getAttributes().getNamedItem("value");
+            Node pressureNode = doc.getElementsByTagName("pressure").item(0).getAttributes().getNamedItem("value");
 
             // compare with the current time
             nextSunrise = new DateTime(sunriseNode.getNodeValue()).plusHours(offset);
             nextSunset = new DateTime(sunsetNode.getNodeValue()).plusHours(offset);
-            LOG.info("Sunrise at: {} Sunset at: {}", nextSunrise, nextSunset);
+            nextHumidity = humidityNode.getNodeValue();
+            nextPressure = pressureNode.getNodeValue();
+            LOG.info("Sunrise at: {} Sunset at: {} Humidity is: {} Pressure is {}", nextSunrise, nextSunset, nextHumidity, getNextPressure);
             return true;
         } else {
             return false;
@@ -135,4 +161,23 @@ public class OpenWeatherMapWI implements WeatherInfo {
     public void setNextSunrise(DateTime sunrise) {
         nextSunrise = sunrise;
     }
+
+    /**
+     *
+     * @param humidity
+     */
+    @Override
+    public void setNextHumidity(String humidity) {
+        nextHumidity = humidity;
+    }
+
+    /**
+     *
+     * @param pressure
+     */
+    @Override
+    public void setNextPressure(String pressure) {
+        nextPressure = pressure;
+    }
+
 }

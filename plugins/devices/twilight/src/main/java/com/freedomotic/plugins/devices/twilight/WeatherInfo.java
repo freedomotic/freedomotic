@@ -42,6 +42,18 @@ public interface WeatherInfo {
 
     /**
      *
+     * @return
+     */
+    String getNextHumidity();
+
+    /**
+     *
+     * @return
+     */
+    String getNextPressure();
+
+    /**
+     *
      * @return @throws Exception
      */
     boolean updateData() throws Exception;
@@ -57,5 +69,17 @@ public interface WeatherInfo {
      * @param sunrise
      */
     void setNextSunrise(DateTime sunrise);
+
+    /**
+     *
+     * @param sunrise
+     */
+    void setNextHumidity(String humidity);
+
+    /**
+     *
+     * @param sunrise
+     */
+    void setNextPressure(String pressure);
 
 }

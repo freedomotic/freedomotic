@@ -44,6 +44,8 @@ public class EarthToolsWI implements WeatherInfo {
     private final String longitude;
     private DateTime nextSunrise;
     private DateTime nextSunset;
+    private String nextHumidity;
+    private String nextPressure; 
 
     /**
      *
@@ -55,7 +57,7 @@ public class EarthToolsWI implements WeatherInfo {
         this.longitude = longitude;
     }
 
-    /**
+     /**
      *
      * @return
      */
@@ -73,6 +75,23 @@ public class EarthToolsWI implements WeatherInfo {
         return nextSunrise;
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getNextHumidity(){
+        return nextHumidity;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getNextPressure(){
+        return nextPressure;
+    }
     
     private Document getXMLStatusFile(int dom, int moy, int zone, int dst) throws MalformedURLException, SAXException, IOException {
         //get the xml file from the socket connection
@@ -117,7 +136,7 @@ public class EarthToolsWI implements WeatherInfo {
                     Integer.parseInt(srTime[0]), Integer.parseInt(srTime[1]), Integer.parseInt(srTime[2]));
             nextSunset = new DateTime(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth(),
                     Integer.parseInt(ssTime[0]), Integer.parseInt(ssTime[1]), Integer.parseInt(ssTime[2]));
-            LOG.info("Sunrise at: {} Sunset at: {}", nextSunrise, nextSunset);
+            LOG.info("Sunrise at: {} Sunset at: {} Humidity is: {} Pressure is {}", nextSunrise, nextSunset, nextHumidity, getNextPressure);
             return true;
         } else {
             return false;
@@ -140,6 +159,24 @@ public class EarthToolsWI implements WeatherInfo {
     @Override
     public void setNextSunrise(DateTime sunrise) {
         nextSunrise = sunrise;
+    }
+
+    /**
+     *
+     * @param humidity
+     */
+    @Override
+    public void setNextHumidity(String humidity) {
+        nextHumidity = humidity;
+    }
+
+    /**
+     *
+     * @param pressure
+     */
+    @Override
+    public void setNextPressure(String pressure) {
+        nextPressure = pressure;
     }
 
 }

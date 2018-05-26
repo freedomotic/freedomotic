@@ -93,7 +93,7 @@ public class Twilight extends Protocol {
             LOG.info("Twilight plugin started");
             provider.updateData();
             setPollingWait(POLLING_WAIT);
-            setDescription("Sunrise: " + provider.getNextSunrise().toLocalTime() + " Sunset: " + provider.getNextSunset().toLocalTime());
+            setDescription("Sunrise: " + provider.getNextSunrise().toLocalTime() + " Sunset: " + provider.getNextSunset().toLocalTime() + " Humidity: " + provider.getNextHumidity() "% "+ " Pressure: " + provider.getNextPressure() + " hPa");
         } catch (Exception ex) {
             throw new PluginStartupException("Error retrieving data from provider {}", ex);
         }
@@ -111,7 +111,7 @@ public class Twilight extends Protocol {
         if (command.equals("Update Twilight Data")) {
             try {
                 provider.updateData();
-                setDescription("Sunrise: " + provider.getNextSunrise().toLocalTime() + " Sunset: " + provider.getNextSunset().toLocalTime());
+                setDescription("Sunrise: " + provider.getNextSunrise().toLocalTime() + " Sunset: " + provider.getNextSunset().toLocalTime() + " Humidity: " + provider.getNextHumidity() "% "+ " Pressure: " + provider.getNextPressure() + " hPa");
             } catch (Exception ex) {
                 LOG.error(ex.getMessage());
             }

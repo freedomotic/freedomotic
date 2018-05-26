@@ -50,6 +50,8 @@ public class TwilightUtils {
     public GenericEvent prepareEvent(DateTime ref) {
         DateTime sunsetTime = provider.getNextSunset();
         DateTime sunriseTime = provider.getNextSunrise();
+        String humidity = provider.getNextHumidity();
+        String pressure = provider.getNextPressure();
 
         while (sunsetTime.isBefore(ref) && sunriseTime.isBefore(ref)) {
             if (sunsetTime.isBefore(sunriseTime)) {
@@ -89,6 +91,8 @@ public class TwilightUtils {
             // after sunset
             ev.addProperty("afterSunset", Long.toString(toSunset.getStandardMinutes()));
         }
+        ev.addProperty("humidity", humidity);
+        ev.addProperty("pressure", pressure);
         return ev;
     }
 }
