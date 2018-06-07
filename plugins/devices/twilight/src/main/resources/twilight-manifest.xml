@@ -8,8 +8,8 @@
         <property name="polling-time" value="30000"/>
         
         <!-- coordinates of your location -->
-        <property name="latitude" value="43.7776"/>
-        <property name="longitude" value="11.0233"/>
+        <property name="latitude" value="-20.4697"/>
+        <property name="longitude" value="-54.6201"/>
         
         <!-- available providers: earthtools, openweathermap -->
         <property name="provider" value="openweathermap"/>
