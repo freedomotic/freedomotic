@@ -52,6 +52,12 @@ public interface WeatherInfo {
      */
     String getNextPressure();
 
+     /**
+     *
+     * @return
+     */
+    String getNextTemperature();
+
     /**
      *
      * @return @throws Exception
@@ -81,5 +87,11 @@ public interface WeatherInfo {
      * @param sunrise
      */
     void setNextPressure(String pressure);
+
+    /**
+     *
+     * @param sunrise
+     */
+    void setNextTemperature(String temperature);
 
 }

@@ -91,6 +91,15 @@ public class EarthToolsWI implements WeatherInfo {
         return "-1";
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getNextTemperature(){
+        return "-1";
+    }
+
 
     
     private Document getXMLStatusFile(int dom, int moy, int zone, int dst) throws MalformedURLException, SAXException, IOException {
@@ -175,6 +184,14 @@ public class EarthToolsWI implements WeatherInfo {
      */
     @Override
     public void setNextPressure(String pressure) {
+    }
+
+    /**
+     *
+     * @param pressure
+     */
+    @Override
+    public void setNextTemperature(String temperature) {
     }
 
 }

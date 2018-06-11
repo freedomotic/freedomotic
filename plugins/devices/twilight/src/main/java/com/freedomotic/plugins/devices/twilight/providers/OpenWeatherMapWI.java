@@ -47,6 +47,7 @@ public class OpenWeatherMapWI implements WeatherInfo {
     private DateTime nextSunset;
     private String nextHumidity;
     private String nextPressure; 
+    private String nextTemperature;
 
     /**
      *
@@ -96,6 +97,15 @@ public class OpenWeatherMapWI implements WeatherInfo {
         return nextPressure;
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getNextTemperature(){
+        return nextTemperature;
+    }
+
     private Document getXMLStatusFile(int dom, int moy, int zone, int dst) throws MalformedURLException, SAXException, IOException {
         //get the xml file from the socket connection
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -131,13 +141,15 @@ public class OpenWeatherMapWI implements WeatherInfo {
             Node sunsetNode = doc.getElementsByTagName("sun").item(0).getAttributes().getNamedItem("set");
             Node humidityNode = doc.getElementsByTagName("humidity").item(0).getAttributes().getNamedItem("value");
             Node pressureNode = doc.getElementsByTagName("pressure").item(0).getAttributes().getNamedItem("value");
+            Node temperatureNode = doc.getElementsByTagName("temperature").item(0).getAttributes().getNamedItem("value");
 
             // compare with the current time
             nextSunrise = new DateTime(sunriseNode.getNodeValue()).plusHours(offset);
             nextSunset = new DateTime(sunsetNode.getNodeValue()).plusHours(offset);
             nextHumidity = humidityNode.getNodeValue();
             nextPressure = pressureNode.getNodeValue();
-            LOG.info("Sunrise at: {} Sunset at: {} Humidity is: {} Pressure is {}", nextSunrise, nextSunset, nextHumidity, nextPressure);
+            nextTemperature = temperatureNode.getNodeValue();
+            LOG.info("Sunrise at: {} Sunset at: {} Humidity is: {} Pressure: is {} Temperature: is {}", nextSunrise, nextSunset, nextHumidity, nextPressure, nextTemperature);
             return true;
         } else {
             return false;
@@ -178,6 +190,15 @@ public class OpenWeatherMapWI implements WeatherInfo {
     @Override
     public void setNextPressure(String pressure) {
         nextPressure = pressure;
+    }
+
+    /**
+     *
+     * @param pressure
+     */
+    @Override
+    public void setNextTemperature(String temperature) {
+        nextTemperature = temperature;
     }
 
 }

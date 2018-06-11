@@ -52,6 +52,7 @@ public class TwilightUtils {
         DateTime sunriseTime = provider.getNextSunrise();
         String humidity = provider.getNextHumidity();
         String pressure = provider.getNextPressure();
+        String temperature = provider.getNextTemperature();
 
         while (sunsetTime.isBefore(ref) && sunriseTime.isBefore(ref)) {
             if (sunsetTime.isBefore(sunriseTime)) {
@@ -93,6 +94,7 @@ public class TwilightUtils {
         }
         ev.addProperty("humidity", humidity);
         ev.addProperty("pressure", pressure);
+        ev.addProperty("temperature", temperature);
         return ev;
     }
 }
