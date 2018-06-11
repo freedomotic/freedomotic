@@ -73,6 +73,25 @@ public class EarthToolsWI implements WeatherInfo {
         return nextSunrise;
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getNextHumidity(){
+        return "-1";
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getNextPressure(){
+        return "-1";
+    }
+
+
     
     private Document getXMLStatusFile(int dom, int moy, int zone, int dst) throws MalformedURLException, SAXException, IOException {
         //get the xml file from the socket connection
@@ -140,6 +159,22 @@ public class EarthToolsWI implements WeatherInfo {
     @Override
     public void setNextSunrise(DateTime sunrise) {
         nextSunrise = sunrise;
+    }
+
+        /**
+     *
+     * @param humidity
+     */
+    @Override
+    public void setNextHumidity(String humidity) {
+    }
+
+    /**
+     *
+     * @param pressure
+     */
+    @Override
+    public void setNextPressure(String pressure) {
     }
 
 }

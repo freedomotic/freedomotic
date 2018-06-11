@@ -38,12 +38,10 @@ public class TwilightTest {
 
     private static TwilightUtils twu;
     private static WeatherInfo provider;
-    private static WeatherInfo provider_alt;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
         provider = new OpenWeatherMapWI("43.567", "11.021");
-        provider_alt = new EarthToolsWI("43.567", "11.021");
         twu = new TwilightUtils(10000, provider);
         
        }
@@ -51,10 +49,7 @@ public class TwilightTest {
     @Test
     public void updateTest() throws Exception{
         provider.updateData();
-        System.out.println(provider.getClass().getCanonicalName() + " Sunrise: " + provider.getNextSunrise().toString() +" - Sunset: "+ provider.getNextSunset() );
-        provider_alt.updateData();
-        System.out.println(provider_alt.getClass().getCanonicalName() + " Sunrise: " + provider_alt.getNextSunrise().toString() +" - Sunset: "+ provider_alt.getNextSunset() );
-        
+        System.out.println(provider.getClass().getCanonicalName() + " Sunrise: " + provider.getNextSunrise().toString() +" - Sunset: "+ provider.getNextSunset() );      
     }
     
     @Test
