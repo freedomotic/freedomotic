@@ -49,7 +49,7 @@ public class TwilightTest {
     @Test
     public void updateTest() throws Exception{
         provider.updateData();
-        System.out.println(provider.getClass().getCanonicalName() + " Sunrise: " + provider.getNextSunrise().toString() +" - Sunset: "+ provider.getNextSunset() );      
+        System.out.println(provider.getClass().getCanonicalName() + " Sunrise: " + provider.getNextSunrise().toString() +" - Sunset: "+ provider.getNextSunset()+" - Humidity: " + provider.getNextHumidity()+" - Pressure: "+provider.getNextPressure()+" - Temperature: "+provider.getNextTemperature());      
     }
     
     @Test
@@ -138,5 +138,26 @@ public class TwilightTest {
         Assert.assertEquals("", twPostSunset.getProperty("isSunrise"));
         Assert.assertEquals("", twPostSunset.getProperty("afterSunrise"));
         Assert.assertEquals("719", twPostSunset.getProperty("beforeSunrise"));
+    }
+
+    @Test
+    public void testHumidity() {
+        DateTime sunset = new DateTime(2018,6,19, 17,0);
+        GenericEvent twAtSunset = twu.prepareEvent(sunset);
+        Assert.assertEquals("true", twAtSunset.getProperty("humidity"));        
+    }
+
+    @Test
+    public void testPressure() {
+        DateTime sunset = new DateTime(2018,6,19, 17,0);
+        GenericEvent twAtSunset = twu.prepareEvent(sunset);
+        Assert.assertEquals("true", twAtSunset.getProperty("pressure"));        
+    }
+
+    @Test
+    public void testTemperature() {
+        DateTime sunset = new DateTime(2018,6,19, 17,0);
+        GenericEvent twAtSunset = twu.prepareEvent(sunset);
+        Assert.assertEquals("true", twAtSunset.getProperty("temperature"));        
     }
 }

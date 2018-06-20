@@ -149,7 +149,7 @@ public class OpenWeatherMapWI implements WeatherInfo {
             nextHumidity = humidityNode.getNodeValue();
             nextPressure = pressureNode.getNodeValue();
             nextTemperature = temperatureNode.getNodeValue();
-            LOG.info("Sunrise at: {} Sunset at: {} Humidity is: {} Pressure: is {} Temperature: is {}", nextSunrise, nextSunset, nextHumidity, nextPressure, nextTemperature);
+            LOG.info("Sunrise at: {} Sunset at: {} Humidity is: {} Pressure is: {} Temperature is: {}", nextSunrise, nextSunset, nextHumidity, nextPressure, nextTemperature);
             return true;
         } else {
             return false;
