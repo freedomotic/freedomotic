@@ -44,7 +44,6 @@ import javax.ws.rs.core.Response;
 @Api(value = "plugins", description = "Operations on plugins", position = 7)
 public class PluginResource extends AbstractResource<Plugin> {
 
-  
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all installed plugins", position = 10)
@@ -150,21 +149,21 @@ public class PluginResource extends AbstractResource<Plugin> {
 
     @Override
     protected URI doCopy(String UUID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected URI doCreate(Plugin o) throws URISyntaxException {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected boolean doDelete(String UUID) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected Plugin doUpdate(String UUID, Plugin o) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

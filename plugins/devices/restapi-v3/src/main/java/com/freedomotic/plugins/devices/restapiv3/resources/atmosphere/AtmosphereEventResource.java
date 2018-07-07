@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author Mauro Cicolella
  */
 @Path(AtmosphereEventResource.PATH)
-@Api(value = "ws_event", description = "WS for receiving event notifications", position = 10)
+@Api(value = "ws_event", description = "WS for receiving event notifications", position = 50)
 @AtmosphereService(
         dispatch = false,
         interceptors = {AtmosphereResourceLifecycleInterceptor.class},
@@ -52,13 +52,11 @@ import org.slf4j.LoggerFactory;
 public class AtmosphereEventResource extends AbstractWSResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(AtmosphereEventResource.class.getName());
-
     public final static String PATH = "event";
 
     @Override
     public void broadcast(EventTemplate message) {
         if (api != null) {
-            String msg = "";
             String msgType = "";
             String payload = "";
 
@@ -79,50 +77,34 @@ public class AtmosphereEventResource extends AbstractWSResource {
             } else if (message instanceof ZoneHasChanged) {
                 msgType = "zone-changed";
             } else if (message instanceof PluginHasChanged) {
+                payload = message.getPayload().getStatementValue("plugin.name");
+                if (api != null) {
+                    for (Client client : api.getClients("plugin")) {
+                        Plugin plugin = (Plugin) client;
+                        if (plugin.getName().equalsIgnoreCase(message.getPayload().getStatementValue("plugin.name"))) {
+                            try {
+                                payload = om.writeValueAsString(plugin);
+                            } catch (JsonProcessingException ex) {
+                                LOG.error("Error processing Json data", ex);
+                            }
+                        }
+                    }
+                }
                 switch (message.getProperty("plugin.action")) {
                     case "START":
                         msgType = "plugin-started";
-                        if (api != null) {
-                            for (Client client : api.getClients("plugin")) {
-                                Plugin plugin = (Plugin) client;
-                                if (plugin.getName().equalsIgnoreCase(message.getPayload().getStatementValue("plugin.name"))) {
-                                    payload = plugin.toString();
-                                }
-                            }
-                        }
                         break;
 
                     case "STOP":
                         msgType = "plugin-stopped";
-                        if (api != null) {
-                            for (Client client : api.getClients("plugin")) {
-                                Plugin plugin = (Plugin) client;
-                                if (plugin.getName().equalsIgnoreCase(message.getPayload().getStatementValue("plugin.name"))) {
-                                    payload = plugin.toString();
-                                }
-                            }
-                        }
                         break;
 
                     case "ENQUEUE":
                         msgType = "plugin-installed";
-                        if (api != null) {
-                            for (Client client : api.getClients("plugin")) {
-                                Plugin plugin = (Plugin) client;
-                                if (plugin.getName().equalsIgnoreCase(message.getPayload().getStatementValue("plugin.name"))) {
-                                    try {
-                                        payload = om.writeValueAsString(plugin);
-                                    } catch (JsonProcessingException ex) {
-                                        LOG.error("Error processing Json data", ex);
-                                    }
-                                }
-                            }
-                        }
                         break;
 
                     case "DEQUEUE":
                         msgType = "plugin-uninstalled";
-                        payload = message.getPayload().getStatementValue("plugin.name");
                         break;
                 }
             } else if (message instanceof MessageEvent) {
@@ -133,15 +115,11 @@ public class AtmosphereEventResource extends AbstractWSResource {
                     LOG.error("Error processing Json data", ex);
                 }
             }
-
             // broadcast message
-            try {
-                BroadcasterFactory
-                        .getDefault()
-                        .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereEventResource.PATH)
-                        .broadcast(om.writeValueAsString(msgType + "#" + payload));
-            } catch (JsonProcessingException ex) {
-            }
+            BroadcasterFactory
+                    .getDefault()
+                    .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereEventResource.PATH)
+                    .broadcast(msgType + "#" + payload);
         }
     }
 }
