@@ -54,11 +54,11 @@ public class ReactionHasChanged
     /**
      *
      * @param source
-     * @param reactionName
+     * @param reactionUuid
      * @param action
      */
-    public ReactionHasChanged(Object source, String reactionName, ReactionActions action) {
-        payload.addStatement("reaction.name", reactionName);
+    public ReactionHasChanged(Object source, String reactionUuid, ReactionActions action) {
+        payload.addStatement("reaction.uuid", reactionUuid);
         payload.addStatement("reaction.action", action.toString());
     }
 
