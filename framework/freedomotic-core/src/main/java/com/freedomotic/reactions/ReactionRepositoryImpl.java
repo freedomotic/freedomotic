@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -20,6 +20,7 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.events.ReactionHasChanged;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.persistence.DataUpgradeService;
@@ -52,7 +53,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReactionRepositoryImpl.class.getName());
     //for persistence purposes. ELEMENTS CANNOT BE MODIFIED OUTSIDE THIS CLASS
-    private static final List<Reaction> list = new ArrayList<>();
+    private static final List<Reaction> REACTIONS_LIST = new ArrayList<>();
     private static final String REACTION_FILE_EXTENSION = ".xrea";
     private final DataUpgradeService dataUpgradeService;
 
@@ -66,8 +67,9 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      *
      * @param folder the folder where to save the files
      */
+    @Override
     public void saveReactions(File folder) {
-        if (list.isEmpty()) {
+        if (REACTIONS_LIST.isEmpty()) {
             LOG.warn("There are no reactions to persist, folder \"{}\" will not be altered.", folder.getAbsolutePath());
             return;
         }
@@ -82,21 +84,25 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         try {
             LOG.info("Saving reactions to file into \"{}\"", folder.getAbsolutePath());
             StringBuilder summaryContent = new StringBuilder();
-            for (Reaction reaction : list) {
+            REACTIONS_LIST.stream().map((reaction) -> {
                 String uuid = reaction.getUuid();
                 if ((uuid == null) || uuid.isEmpty()) {
                     reaction.setUuid(UUID.randomUUID().toString());
                 }
+                return reaction;
+            }).map((reaction) -> {
                 String fileName = reaction.getUuid() + REACTION_FILE_EXTENSION;
                 File file = new File(folder + "/" + fileName);
                 FreedomXStream.toXML(reaction, file);
+                return reaction;
+            }).forEachOrdered((reaction) -> {
                 summaryContent.append(reaction.getUuid()).append("\t\t\t").append(reaction.toString()).append("\t\t\t")
                         .append(reaction.getDescription()).append("\n");
-            }
+            });
 
             writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #Reaction \t\t\t #Description\n", summaryContent.toString());
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Error while saving reations", e);
         }
     }
@@ -110,15 +116,10 @@ public class ReactionRepositoryImpl implements ReactionRepository {
         File[] files;
 
         // This filter only returns object files
-        FileFilter objectFileFileter
-                = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        return file.isFile() && file.getName().endsWith(REACTION_FILE_EXTENSION);
-                    }
-                };
+        FileFilter objectFileFilter
+                = (File file) -> file.isFile() && file.getName().endsWith(REACTION_FILE_EXTENSION);
 
-        files = folder.listFiles(objectFileFileter);
+        files = folder.listFiles(objectFileFilter);
 
         for (File file : files) {
             file.delete();
@@ -130,22 +131,21 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      *
      * @param folder the folder to load reaction files from
      */
+    @Override
     public synchronized void loadReactions(File folder) {
         XStream xstream = FreedomXStream.getXstream();
 
         // This filter only returns object files
-        FileFilter objectFileFileter
-                = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(REACTION_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+        FileFilter objectFileFilter
+                = (File file) -> {
+                    if (file.isFile() && file.getName().endsWith(REACTION_FILE_EXTENSION)) {
+                        return true;
+                    } else {
+                        return false;
                     }
                 };
 
-        File[] files = folder.listFiles(objectFileFileter);
+        File[] files = folder.listFiles(objectFileFilter);
 
         try {
             if (files != null) {
@@ -194,7 +194,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                     LOG.debug("No reactions to load from the folder \"{}\"", folder.toString());
                 }
             }
-        } catch (Exception e) {
+        } catch (RepositoryException e) {
             LOG.error("Exception while loading reactions from \"{}\"", new Object[]{folder.getAbsolutePath()}, e);
         }
     }
@@ -203,7 +203,6 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      *
      * @param r
      */
-    @Deprecated
     public void add(Reaction r) {
         if (!exists(r)) { //if not already loaded
             //if it's a new reaction validate it's commands
@@ -213,8 +212,9 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                 } catch (Exception e) {
                     LOG.warn("Cannot register trigger");
                 }
-                list.add(r);
+                REACTIONS_LIST.add(r);
                 r.setChanged();
+                ReactionHasChanged event = new ReactionHasChanged(this, r.getUuid(), ReactionHasChanged.ReactionActions.ADD);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Added new reaction \"{}\"", r.getDescription());
                 }
@@ -233,19 +233,19 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      *
      * @param input
      */
-    @Deprecated
     public void remove(Reaction input) {
         if (input != null) {
-            boolean removed = list.remove(input);
-            LOG.info("Removed reaction \"{}\"", input.getDescription());
+            boolean removed = REACTIONS_LIST.remove(input);
             try {
                 input.getTrigger().unregister();
             } catch (Exception e) {
                 LOG.warn("Cannot unregister trigger");
             }
-
-            if ((!removed) && (list.contains(input))) {
+            if ((!removed) && (REACTIONS_LIST.contains(input))) {
                 LOG.warn("Error while removing Reaction \"{}\" from the list", input.getDescription());
+            } else {
+                LOG.info("Removed reaction \"{}\"", input.getDescription());
+                ReactionHasChanged event = new ReactionHasChanged(this, input.getUuid(), ReactionHasChanged.ReactionActions.REMOVE);
             }
         }
     }
@@ -256,16 +256,15 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      */
     @Deprecated
     public Iterator<Reaction> iterator() {
-        return list.iterator();
+        return REACTIONS_LIST.iterator();
     }
 
     /**
      *
      * @return
      */
-    @Deprecated
     public List<Reaction> getReactions() {
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(REACTIONS_LIST);
     }
 
     /**
@@ -273,9 +272,8 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      * @param uuid
      * @return
      */
-    @Deprecated
     public Reaction getReaction(String uuid) {
-        for (Reaction r : list) {
+        for (Reaction r : REACTIONS_LIST) {
             if (r.getUuid().equalsIgnoreCase(uuid)) {
                 return r;
             }
@@ -289,7 +287,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      * @return the number of reactions
      */
     public int size() {
-        return list.size();
+        return REACTIONS_LIST.size();
     }
 
     /**
@@ -300,11 +298,8 @@ public class ReactionRepositoryImpl implements ReactionRepository {
      */
     public boolean exists(Reaction input) {
         if (input != null) {
-            for (Iterator<Reaction> it = list.iterator(); it.hasNext();) {
-                Reaction reaction = it.next();
-                if (input.equals(reaction)) {
-                    return true;
-                }
+            if (REACTIONS_LIST.stream().anyMatch((reaction) -> (input.equals(reaction)))) {
+                return true;
             }
         }
         return false;
@@ -312,19 +307,18 @@ public class ReactionRepositoryImpl implements ReactionRepository {
 
     @Override
     public List<Reaction> findAll() {
-        Collections.sort(list, new ReactionNameComparator());
-        return Collections.unmodifiableList(list);
+        Collections.sort(REACTIONS_LIST, new ReactionNameComparator());
+        return Collections.unmodifiableList(REACTIONS_LIST);
     }
 
     @Override
     public List<Reaction> findByName(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
     }
 
     @Override
     public Reaction findOne(String uuid) {
-        for (Reaction r : list) {
+        for (Reaction r : REACTIONS_LIST) {
             if (r.getUuid().equalsIgnoreCase(uuid)) {
                 return r;
             }
@@ -377,7 +371,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
             Reaction newOne = (Reaction) r.clone();
             create(newOne);
             return newOne;
-        } catch (Exception e) {
+        } catch (CloneNotSupportedException e) {
             LOG.error("Cannot copy reaction", e);
             return null;
         }
@@ -386,12 +380,12 @@ public class ReactionRepositoryImpl implements ReactionRepository {
     @Override
     public void deleteAll() {
         try {
-            for (Reaction r : findAll()) {
+            findAll().forEach((r) -> {
                 delete(r);
-            }
+            });
         } catch (Exception e) {
         } finally {
-            list.clear();
+            REACTIONS_LIST.clear();
         }
     }
 
