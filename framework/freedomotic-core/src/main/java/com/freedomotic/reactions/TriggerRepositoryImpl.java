@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -20,6 +20,7 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.events.TriggerHasChanged;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.persistence.DataUpgradeService;
@@ -51,7 +52,7 @@ import org.slf4j.LoggerFactory;
 class TriggerRepositoryImpl implements TriggerRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(TriggerRepositoryImpl.class.getName());
-    private static List<Trigger> list = new ArrayList<>();
+    private static final List<Trigger> TRIGGERS_LIST = new ArrayList<>();
     private final DataUpgradeService dataUpgradeService;
     private static final String TRIGGER_FILE_EXTENSION = ".xtrg";
 
@@ -67,7 +68,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
      */
     @Override
     public void saveTriggers(File folder) {
-        if (list.isEmpty()) {
+        if (TRIGGERS_LIST.isEmpty()) {
             LOG.warn("There are no triggers to persist, folder \"{}\" will not be altered", folder.getAbsolutePath());
             return;
         }
@@ -82,7 +83,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
         try {
             LOG.info("Saving triggers to file into \"{}\"", folder.getAbsolutePath());
             StringBuilder summaryContent = new StringBuilder();
-            list.stream().map((trigger) -> {
+            TRIGGERS_LIST.stream().map((trigger) -> {
                 if (trigger.isToPersist()) {
                     String uuid = trigger.getUUID();
 
@@ -102,7 +103,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
 
             writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #TriggerName \t\t\t #ListenedChannel\n", summaryContent.toString());
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Error while saving triggers ", e);
         }
     }
@@ -116,15 +117,13 @@ class TriggerRepositoryImpl implements TriggerRepository {
         File[] files = folder.listFiles();
         // this filter only returns triggers files
         FileFilter objectFileFilter
-                = new FileFilter() {
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+                = (File file) -> {
+                    if (file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                };
         files = folder.listFiles(objectFileFilter);
         for (File file : files) {
             file.delete();
@@ -135,9 +134,8 @@ class TriggerRepositoryImpl implements TriggerRepository {
      *
      * @return
      */
-    @Deprecated
     public static List<Trigger> getTriggers() {
-        return list;
+        return TRIGGERS_LIST;
     }
 
     /**
@@ -151,12 +149,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
 
         // this filter only returns triggers files
         FileFilter objectFileFilter
-                = new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION);
-            }
-        };
+                = (File file) -> file.isFile() && file.getName().endsWith(TRIGGER_FILE_EXTENSION);
 
         File[] files = folder.listFiles(objectFileFilter);
 
@@ -193,7 +186,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                         throw new RepositoryException("XML parsing error. Readed XML is \n" + xml, e);
                     }
                     //addAndRegister trigger to the list if it is not a duplicate
-                    if (!list.contains(trigger)) {
+                    if (!TRIGGERS_LIST.contains(trigger)) {
                         if (trigger.isHardwareLevel()) {
                             trigger.setPersistence(false); //it has not to me stored in root/data folder
                             addAndRegister(trigger); //in the list and start listening
@@ -204,7 +197,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                                 trigger.setPersistence(true); //not hardware trigger and not plugin related
                             }
 
-                            list.add(trigger); //only in the list not registred. I will be registred only if used in mapping
+                            TRIGGERS_LIST.add(trigger); //only in the list not registred. I will be registred only if used in mapping
                         }
                     } else {
                         LOG.warn("Trigger \"{}\" is already in the list", trigger.getName());
@@ -213,7 +206,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             } else {
                 LOG.info("No triggers to load from the folder \"{}\"", folder.toString());
             }
-        } catch (Exception e) {
+        } catch (RepositoryException e) {
             LOG.error("Exception while loading this trigger ", e);
         }
     }
@@ -226,8 +219,8 @@ class TriggerRepositoryImpl implements TriggerRepository {
     public static synchronized void addAndRegister(Trigger t) {
         int preSize = TriggerRepositoryImpl.size();
 
-        if (!list.contains(t)) {
-            list.add(t);
+        if (!TRIGGERS_LIST.contains(t)) {
+            TRIGGERS_LIST.add(t);
             t.register();
             int postSize = TriggerRepositoryImpl.size();
             if (postSize != (preSize + 1)) {
@@ -235,9 +228,9 @@ class TriggerRepositoryImpl implements TriggerRepository {
             }
         } else {
             //this trigger is already in the list
-            int old = list.indexOf(t);
-            list.get(old).unregister();
-            list.set(old, t);
+            int old = TRIGGERS_LIST.indexOf(t);
+            TRIGGERS_LIST.get(old).unregister();
+            TRIGGERS_LIST.set(old, t);
             t.register();
         }
 
@@ -252,13 +245,14 @@ class TriggerRepositoryImpl implements TriggerRepository {
         if (t != null) {
             int preSize = TriggerRepositoryImpl.size();
 
-            if (!list.contains(t)) {
-                list.add(t);
+            if (!TRIGGERS_LIST.contains(t)) {
+                TRIGGERS_LIST.add(t);
+                TriggerHasChanged event = new TriggerHasChanged(null, t.getUUID(), TriggerHasChanged.TriggerActions.ADD);
             } else {
                 //this trigger is already in the list
-                int old = list.indexOf(t);
-                list.get(old).unregister();
-                list.set(old, t);
+                int old = TRIGGERS_LIST.indexOf(t);
+                TRIGGERS_LIST.get(old).unregister();
+                TRIGGERS_LIST.set(old, t);
             }
 
             int postSize = TriggerRepositoryImpl.size();
@@ -279,11 +273,13 @@ class TriggerRepositoryImpl implements TriggerRepository {
 
         try {
             t.unregister();
-            list.remove(t);
+            TRIGGERS_LIST.remove(t);
             int postSize = TriggerRepositoryImpl.size();
 
             if (postSize != (preSize - 1)) {
                 LOG.error("Error while removing trigger \"{}\"", t.getName());
+            } else {
+                TriggerHasChanged event = new TriggerHasChanged(null, t.getUUID(), TriggerHasChanged.TriggerActions.REMOVE);
             }
         } catch (Exception e) {
             LOG.error("Error while unregistering trigger \"{}\"", t.getName(), e);
@@ -301,7 +297,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             return null;
         }
 
-        for (Trigger trigger : list) {
+        for (Trigger trigger : TRIGGERS_LIST) {
             if (trigger.getName().equalsIgnoreCase(name.trim())) {
                 return trigger;
             }
@@ -318,7 +314,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
     @Deprecated
     public static Trigger getTrigger(Trigger input) {
         if (input != null) {
-            for (Iterator it = list.iterator(); it.hasNext();) {
+            for (Iterator it = TRIGGERS_LIST.iterator(); it.hasNext();) {
                 Trigger trigger = (Trigger) it.next();
 
                 if (trigger.equals(input)) {
@@ -337,7 +333,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
      */
     @Deprecated
     public static Trigger getTrigger(int i) {
-        return list.get(i);
+        return TRIGGERS_LIST.get(i);
     }
 
     /**
@@ -345,9 +341,8 @@ class TriggerRepositoryImpl implements TriggerRepository {
      * @param uuid
      * @return
      */
-    @Deprecated
     public static Trigger getTriggerByUUID(String uuid) {
-        for (Trigger t : list) {
+        for (Trigger t : TRIGGERS_LIST) {
             if (t.getUUID().equalsIgnoreCase(uuid)) {
                 return t;
             }
@@ -361,7 +356,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
      */
     @Deprecated
     public static Iterator<Trigger> iterator() {
-        return list.iterator();
+        return TRIGGERS_LIST.iterator();
     }
 
     /**
@@ -370,13 +365,13 @@ class TriggerRepositoryImpl implements TriggerRepository {
      * @return number of triggers
      */
     public static int size() {
-        return list.size();
+        return TRIGGERS_LIST.size();
     }
 
     @Override
     public List<Trigger> findAll() {
-        Collections.sort(list, new TriggerNameComparator());
-        return list;
+        Collections.sort(TRIGGERS_LIST, new TriggerNameComparator());
+        return TRIGGERS_LIST;
     }
 
     /**
@@ -482,7 +477,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             });
         } catch (Exception e) {
         } finally {
-            list.clear();
+            TRIGGERS_LIST.clear();
         }
     }
 
