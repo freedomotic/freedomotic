@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -20,6 +20,7 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.events.CommandHasChanged;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.persistence.DataUpgradeService;
@@ -53,8 +54,8 @@ class CommandRepositoryImpl implements CommandRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(CommandRepositoryImpl.class.getName());
 
-    private static final Map<String, Command> userCommands = new HashMap<>();
-    private static final Map<String, Command> hardwareCommands = new HashMap<>();
+    private static final Map<String, Command> USER_COMMANDS = new HashMap<>();
+    private static final Map<String, Command> HARDWARE_COMMANDS = new HashMap<>();
     private static final String COMMAND_FILE_EXTENSION = ".xcmd";
     private final DataUpgradeService dataUpgradeService;
 
@@ -64,16 +65,14 @@ class CommandRepositoryImpl implements CommandRepository {
     }
 
     /**
-     * @deprecated
-     * 
+     *
      * @param c
      */
-    @Deprecated
     public static void add(Command c) {
         if (c != null) {
             if (!c.isHardwareLevel()) {
-                if (!userCommands.containsKey(c.getName().trim().toLowerCase())) {
-                    userCommands.put(c.getName(),
+                if (!USER_COMMANDS.containsKey(c.getName().trim().toLowerCase())) {
+                    USER_COMMANDS.put(c.getName(),
                             c);
                     LOG.trace("Added command \"{}\" to the list of user commands", c.getName());
                 } else {
@@ -81,8 +80,8 @@ class CommandRepositoryImpl implements CommandRepository {
                         LOG.debug("Command \"{}\" already in the list of user commands. Skipped", c.getName());
                     }
                 }
-            } else if (!hardwareCommands.containsKey(c.getName().trim().toLowerCase())) {
-                hardwareCommands.put(c.getName(),
+            } else if (!HARDWARE_COMMANDS.containsKey(c.getName().trim().toLowerCase())) {
+                HARDWARE_COMMANDS.put(c.getName(),
                         c);
                 LOG.trace("Added command \"{}\" to the list of hardware commands", c.getName());
             } else {
@@ -97,15 +96,14 @@ class CommandRepositoryImpl implements CommandRepository {
 
     /**
      * @deprecated
-     * 
+     *
      * @param input
      */
-    @Deprecated
     public static void remove(Command input) {
         if (input.isHardwareLevel()) {
-            hardwareCommands.remove(input.getName());
+            HARDWARE_COMMANDS.remove(input.getName());
         } else {
-            userCommands.remove(input.getName());
+            USER_COMMANDS.remove(input.getName());
         }
     }
 
@@ -114,28 +112,28 @@ class CommandRepositoryImpl implements CommandRepository {
      * @return
      */
     public static int size() {
-        return userCommands.size();
+        return USER_COMMANDS.size();
     }
 
     /**
      * @deprecated
-     * 
+     *
      * @return
      */
     @Deprecated
     public static Iterator<Command> iterator() {
-        return userCommands.values().iterator();
+        return USER_COMMANDS.values().iterator();
     }
 
     /**
      * @deprecated
-     * 
+     *
      * @param name
      * @return
      */
     @Deprecated
     public static Command getCommand(String name) {
-        Command command = userCommands.get(name.trim());
+        Command command = USER_COMMANDS.get(name.trim());
 
         if (command != null) {
             return command;
@@ -148,18 +146,18 @@ class CommandRepositoryImpl implements CommandRepository {
 
     /**
      * @deprecated
-     * 
+     *
      * @param uuid
      * @return
      */
     @Deprecated
     public static Command getCommandByUUID(String uuid) {
-        for (Command c : userCommands.values()) {
+        for (Command c : USER_COMMANDS.values()) {
             if (c.getUuid().equalsIgnoreCase(uuid)) {
                 return c;
             }
         }
-        for (Command c : hardwareCommands.values()) {
+        for (Command c : HARDWARE_COMMANDS.values()) {
             if (c.getUuid().equalsIgnoreCase(uuid)) {
                 return c;
             }
@@ -173,7 +171,7 @@ class CommandRepositoryImpl implements CommandRepository {
      */
     @Override
     public List<Command> findHardwareCommands() {
-        return new ArrayList(hardwareCommands.values());
+        return new ArrayList(HARDWARE_COMMANDS.values());
     }
 
     /**
@@ -182,18 +180,18 @@ class CommandRepositoryImpl implements CommandRepository {
      */
     @Override
     public List<Command> findUserCommands() {
-        return new ArrayList(userCommands.values());
+        return new ArrayList(USER_COMMANDS.values());
     }
 
     /**
      * @deprecated
-     * 
+     *
      * @param name
      * @return
      */
     @Deprecated
     public static Command getHardwareCommand(String name) {
-        Command command = hardwareCommands.get(name.trim());
+        Command command = HARDWARE_COMMANDS.get(name.trim());
 
         if (command == null) {
             LOG.error("Missing command \"{}\"" + "''. "
@@ -212,18 +210,16 @@ class CommandRepositoryImpl implements CommandRepository {
         File[] files = folder.listFiles();
 
         // This filter only returns object files
-        FileFilter objectFileFileter
-                = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(COMMAND_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+        FileFilter objectFileFilter
+                = (File file) -> {
+                    if (file.isFile() && file.getName().endsWith(COMMAND_FILE_EXTENSION)) {
+                        return true;
+                    } else {
+                        return false;
                     }
                 };
 
-        files = folder.listFiles(objectFileFileter);
+        files = folder.listFiles(objectFileFilter);
 
         if (files != null) {
 
@@ -260,7 +256,7 @@ class CommandRepositoryImpl implements CommandRepository {
                     try {
 
                         if (command.isHardwareLevel()) { //an hardware level command
-                            hardwareCommands.put(command.getName(),
+                            HARDWARE_COMMANDS.put(command.getName(),
                                     command);
                         } else { //a user level commmand
 
@@ -276,7 +272,7 @@ class CommandRepositoryImpl implements CommandRepository {
                     }
                 }
 
-            } catch (Exception ex) {
+            } catch (RepositoryException ex) {
                 LOG.error("Error while loading command", Freedomotic.getStackTraceInfo(ex));
             }
         } else {
@@ -293,7 +289,7 @@ class CommandRepositoryImpl implements CommandRepository {
     @Override
     public void saveCommands(File folder) {
 
-        if (userCommands.isEmpty()) {
+        if (USER_COMMANDS.isEmpty()) {
             LOG.warn("There are no commands to persist, \"{}\" will not be altered.", folder.getAbsolutePath());
             return;
         }
@@ -307,25 +303,23 @@ class CommandRepositoryImpl implements CommandRepository {
         try {
             LOG.info("Saving commands to file into \"{}\"", folder.getAbsolutePath());
             StringBuilder summaryContent = new StringBuilder();
-            for (Command c : userCommands.values()) {
-                if (c.isEditable()) {
-                    String uuid = c.getUuid();
-
-                    if ((uuid == null) || uuid.isEmpty()) {
-                        c.setUUID(UUID.randomUUID().toString());
-                    }
-
-                    String fileName = c.getUuid() + COMMAND_FILE_EXTENSION;
-                    File file = new File(folder + "/" + fileName);
-                    FreedomXStream.toXML(c, file);
-                    summaryContent.append(fileName).append("\t\t").append(c.getName())
-                            .append("\t\t\t").append(c.getReceiver()).append("\n");
+            USER_COMMANDS.values().stream().filter((c) -> (c.isEditable())).map((c) -> {
+                String uuid = c.getUuid();
+                if ((uuid == null) || uuid.isEmpty()) {
+                    c.setUUID(UUID.randomUUID().toString());
                 }
-            }
+                return c;
+            }).forEachOrdered((c) -> {
+                String fileName = c.getUuid() + COMMAND_FILE_EXTENSION;
+                File file = new File(folder + "/" + fileName);
+                FreedomXStream.toXML(c, file);
+                summaryContent.append(fileName).append("\t\t").append(c.getName())
+                        .append("\t\t\t").append(c.getReceiver()).append("\n");
+            });
 
             writeSummaryFile(new File(folder, "index.txt"), "#Filename \t\t #CommandName \t\t\t #Destination\n", summaryContent.toString());
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Error while saving commands to \"" + folder.getAbsolutePath() + "\"", e);
         }
     }
@@ -338,18 +332,12 @@ class CommandRepositoryImpl implements CommandRepository {
         File[] files = folder.listFiles();
 
         // This filter only returns object files
-        FileFilter objectFileFileter
-                = new FileFilter() {
-                    public boolean accept(File file) {
-                        if (file.isFile() && file.getName().endsWith(COMMAND_FILE_EXTENSION)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
+        FileFilter objectFileFilter
+                = (File file) -> {
+                    return file.isFile() && file.getName().endsWith(COMMAND_FILE_EXTENSION);
                 };
 
-        files = folder.listFiles(objectFileFileter);
+        files = folder.listFiles(objectFileFilter);
 
         for (File file : files) {
             file.delete();
@@ -358,8 +346,8 @@ class CommandRepositoryImpl implements CommandRepository {
 
     @Override
     public List<Command> findAll() {
-        List<Command> cl = new ArrayList<>(userCommands.values());
-        cl.addAll(hardwareCommands.values());
+        List<Command> cl = new ArrayList<>(USER_COMMANDS.values());
+        cl.addAll(HARDWARE_COMMANDS.values());
         return cl;
 
     }
@@ -367,11 +355,9 @@ class CommandRepositoryImpl implements CommandRepository {
     @Override
     public List<Command> findByName(String name) {
         List<Command> cl = new ArrayList<>();
-        for (Command c : findAll()) {
-            if (c.getName().equalsIgnoreCase(name)) {
-                cl.add(c);
-            }
-        }
+        findAll().stream().filter((c) -> (c.getName().equalsIgnoreCase(name))).forEachOrdered((c) -> {
+            cl.add(c);
+        });
         return cl;
     }
 
@@ -384,6 +370,7 @@ class CommandRepositoryImpl implements CommandRepository {
     public boolean create(Command item) {
         try {
             add(item);
+            CommandHasChanged event = new CommandHasChanged(this, item.getName(), CommandHasChanged.CommandActions.ADD);
             return true;
         } catch (Exception e) {
             LOG.error(Freedomotic.getStackTraceInfo(e));
@@ -395,6 +382,7 @@ class CommandRepositoryImpl implements CommandRepository {
     public boolean delete(Command item) {
         try {
             remove(item);
+            CommandHasChanged event = new CommandHasChanged(this, item.getName(), CommandHasChanged.CommandActions.REMOVE);
             return true;
         } catch (Exception e) {
             LOG.error(Freedomotic.getStackTraceInfo(e));
@@ -427,7 +415,7 @@ class CommandRepositoryImpl implements CommandRepository {
             c.setName("Copy of " + c.getName());
             add(c);
             return c;
-        } catch (Exception e) {
+        } catch (CloneNotSupportedException e) {
             LOG.error(Freedomotic.getStackTraceInfo(e));
             return null;
         }
@@ -436,14 +424,14 @@ class CommandRepositoryImpl implements CommandRepository {
     @Override
     public void deleteAll() {
         try {
-            for (Command c : findAll()) {
+            findAll().forEach((c) -> {
                 delete(c);
-            }
+            });
         } catch (Exception e) {
             LOG.error(Freedomotic.getStackTraceInfo(e));
         } finally {
-            hardwareCommands.clear();
-            userCommands.clear();
+            HARDWARE_COMMANDS.clear();
+            USER_COMMANDS.clear();
         }
     }
 
