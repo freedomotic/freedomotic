@@ -20,6 +20,7 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.bus.BusService;
 import com.freedomotic.events.CommandHasChanged;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
@@ -60,6 +61,9 @@ class CommandRepositoryImpl implements CommandRepository {
     private final DataUpgradeService dataUpgradeService;
 
     @Inject
+    private BusService busService;
+
+    @Inject
     public CommandRepositoryImpl(DataUpgradeService dataUpgradeService) {
         this.dataUpgradeService = dataUpgradeService;
     }
@@ -72,8 +76,7 @@ class CommandRepositoryImpl implements CommandRepository {
         if (c != null) {
             if (!c.isHardwareLevel()) {
                 if (!USER_COMMANDS.containsKey(c.getName().trim().toLowerCase())) {
-                    USER_COMMANDS.put(c.getName(),
-                            c);
+                    USER_COMMANDS.put(c.getName(), c);
                     LOG.trace("Added command \"{}\" to the list of user commands", c.getName());
                 } else {
                     if (LOG.isDebugEnabled()) {
@@ -371,6 +374,7 @@ class CommandRepositoryImpl implements CommandRepository {
         try {
             add(item);
             CommandHasChanged event = new CommandHasChanged(this, item.getName(), CommandHasChanged.CommandActions.ADD);
+            busService.send(event);
             return true;
         } catch (Exception e) {
             LOG.error(Freedomotic.getStackTraceInfo(e));
@@ -383,6 +387,7 @@ class CommandRepositoryImpl implements CommandRepository {
         try {
             remove(item);
             CommandHasChanged event = new CommandHasChanged(this, item.getName(), CommandHasChanged.CommandActions.REMOVE);
+            //busService.send(event);
             return true;
         } catch (Exception e) {
             LOG.error(Freedomotic.getStackTraceInfo(e));

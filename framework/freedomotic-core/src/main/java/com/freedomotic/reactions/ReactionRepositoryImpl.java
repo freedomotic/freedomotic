@@ -20,6 +20,7 @@
 package com.freedomotic.reactions;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.bus.BusService;
 import com.freedomotic.events.ReactionHasChanged;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.RepositoryException;
@@ -56,6 +57,9 @@ public class ReactionRepositoryImpl implements ReactionRepository {
     private static final List<Reaction> REACTIONS_LIST = new ArrayList<>();
     private static final String REACTION_FILE_EXTENSION = ".xrea";
     private final DataUpgradeService dataUpgradeService;
+
+    @Inject
+    private BusService busService;
 
     @Inject
     public ReactionRepositoryImpl(DataUpgradeService dataUpgradeService) {
@@ -215,6 +219,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
                 REACTIONS_LIST.add(r);
                 r.setChanged();
                 ReactionHasChanged event = new ReactionHasChanged(this, r.getUuid(), ReactionHasChanged.ReactionActions.ADD);
+                busService.send(event);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Added new reaction \"{}\"", r.getDescription());
                 }
@@ -246,6 +251,7 @@ public class ReactionRepositoryImpl implements ReactionRepository {
             } else {
                 LOG.info("Removed reaction \"{}\"", input.getDescription());
                 ReactionHasChanged event = new ReactionHasChanged(this, input.getUuid(), ReactionHasChanged.ReactionActions.REMOVE);
+                // busService.send(event);
             }
         }
     }

@@ -104,6 +104,7 @@ public final class Reaction
      * @param trigger the trigger of the new reaction
      */
     public Reaction(Trigger trigger) {
+        this.uuid = UUID.randomUUID().toString();
         this.trigger = trigger;
     }
 

@@ -98,7 +98,10 @@ public class RestAPIv3 extends Protocol {
         addEventListener("app.event.sensor.environment.zone.change");
         addEventListener("app.event.sensor.plugin.change");
         addEventListener("app.event.sensor.messages.callout");
-
+        addEventListener("app.event.sensor.command.change");
+        addEventListener("app.event.sensor.reaction.change");
+        addEventListener("app.event.sensor.trigger.change");
+        
     }
 
     @Override
