@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -21,7 +21,7 @@ package com.freedomotic.plugins.devices.restapiv3.test;
 
 /**
  *
- * @author matteo
+ * @author Matteo Mazzoni
  */
 import com.freedomotic.api.API;
 import com.freedomotic.app.FreedomoticInjector;
@@ -102,10 +102,10 @@ public abstract class AbstractTest<Z> extends JerseyTest {
         getApi().triggers().deleteAll();
         getApi().reactions().deleteAll();
         getApi().things().deleteAll();
-        for (String roleName : getApi().getAuth().getRoles().keySet()){
+        for (String roleName : getApi().getAuth().getRoles().keySet()) {
             getApi().getAuth().deleteRole(roleName);
         }
-        super.tearDown(); //To change body of generated methods, choose Tools | Templates.
+        super.tearDown();
     }
 
     @Test

@@ -23,9 +23,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.freedomotic.api.Client;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.api.Plugin;
+import com.freedomotic.events.CommandHasChanged;
 import com.freedomotic.events.MessageEvent;
 import com.freedomotic.events.ObjectHasChangedBehavior;
 import com.freedomotic.events.PluginHasChanged;
+import com.freedomotic.events.ReactionHasChanged;
+import com.freedomotic.events.TriggerHasChanged;
 import com.freedomotic.events.ZoneHasChanged;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.plugins.devices.restapiv3.representations.MessageCalloutRepresentation;
@@ -74,8 +77,52 @@ public class AtmosphereEventResource extends AbstractWSResource {
                     }
                 }
                 msgType = "object-changed";
+            } else if (message instanceof CommandHasChanged) {
+                switch (message.getProperty("command.action")) {
+                    case "ADD":
+                        msgType = "command-added";
+                        break;
+
+                    case "REMOVE":
+                        msgType = "command-removed";
+                        break;
+
+                    case "MODIFY":
+                        msgType = "command-edited";
+                        break;
+                }
+            } else if (message instanceof ReactionHasChanged) {
+                payload = message.getProperty("reaction.uuid");
+                switch (message.getProperty("reaction.action")) {
+                    case "ADD":
+                        msgType = "reaction-added";
+                        break;
+
+                    case "REMOVE":
+                        msgType = "reaction-removed";
+                        break;
+
+                    case "MODIFY":
+                        msgType = "reaction-edited";
+                        break;
+                }
+            } else if (message instanceof TriggerHasChanged) {
+                switch (message.getProperty("trigger.action")) {
+                    case "ADD":
+                        msgType = "trigger-added";
+                        break;
+
+                    case "REMOVE":
+                        msgType = "trigger-removed";
+                        break;
+
+                    case "MODIFY":
+                        msgType = "trigger-edited";
+                        break;
+                }
             } else if (message instanceof ZoneHasChanged) {
                 msgType = "zone-changed";
+
             } else if (message instanceof PluginHasChanged) {
                 payload = message.getPayload().getStatementValue("plugin.name");
                 if (api != null) {

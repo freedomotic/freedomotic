@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -119,7 +119,7 @@ public final class RestJettyServer extends Server {
         if (master.configuration.getBooleanProperty("enable-cors", false)) {
             FilterHolder corsFilterHolder = new FilterHolder(CrossOriginFilter.class);
             corsFilterHolder.setInitParameter("allowedOrigins", master.configuration.getStringProperty("Access-Control-Allow-Origin", "*"));
-            corsFilterHolder.setInitParameter("allowedMethods", master.configuration.getStringProperty("Access-Control-Allow-Methods", "GET,PUT,HEAD,POST,DELETE"));
+            corsFilterHolder.setInitParameter("allowedMethods", master.configuration.getStringProperty("Access-Control-Allow-Methods", "GET,PUT,HEAD,POST,DELETE,OPTIONS"));
             corsFilterHolder.setInitParameter("allowedHeaders",
                     master.configuration.getStringProperty("Access-Control-Allow-Headers",
                             "Accept,Accept-Version,Authorization,Content-Length,Content-MD5,Content-Type,Date,"

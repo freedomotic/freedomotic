@@ -248,6 +248,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
             if (!TRIGGERS_LIST.contains(t)) {
                 TRIGGERS_LIST.add(t);
                 TriggerHasChanged event = new TriggerHasChanged(null, t.getUUID(), TriggerHasChanged.TriggerActions.ADD);
+                // Freedomotic.sendEvent(event);
             } else {
                 //this trigger is already in the list
                 int old = TRIGGERS_LIST.indexOf(t);
@@ -280,6 +281,7 @@ class TriggerRepositoryImpl implements TriggerRepository {
                 LOG.error("Error while removing trigger \"{}\"", t.getName());
             } else {
                 TriggerHasChanged event = new TriggerHasChanged(null, t.getUUID(), TriggerHasChanged.TriggerActions.REMOVE);
+                Freedomotic.sendEvent(event);
             }
         } catch (Exception e) {
             LOG.error("Error while unregistering trigger \"{}\"", t.getName(), e);

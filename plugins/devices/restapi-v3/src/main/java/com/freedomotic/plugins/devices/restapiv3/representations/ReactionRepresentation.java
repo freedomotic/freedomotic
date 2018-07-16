@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2018 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *
@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ReactionRepresentation {
 
-    private List<Condition> conditions = new ArrayList<Condition>();
+    private List<Condition> conditions = new ArrayList<>();
 
     public List<Condition> getConditions() {
         return conditions;
@@ -111,7 +111,7 @@ public class ReactionRepresentation {
         this.triggerURI = UriBuilder.fromResource(TriggerResource.class).path(r.getTrigger().getUUID()).build().toString();
         this.triggerUuid = r.getTrigger().getUUID();
         for (Command c : r.getCommands()) {
-            HashMap<String, String> hm = new HashMap<String, String>();
+            HashMap<String, String> hm = new HashMap<>();
             hm.put("uuid", c.getUuid());
             hm.put("uri", UriBuilder.fromResource(UserCommandResource.class).path(c.getUuid()).build().toString());
             commands.add(hm);
