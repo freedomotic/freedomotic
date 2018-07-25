@@ -22,15 +22,16 @@
     </com.freedomotic.model.object.RangedIntBehavior>
     <com.freedomotic.model.object.RangedIntBehavior>
       <name>setpoint</name>
-      <active>false</active>
-      <priority>0</priority>
+      <description></description>
+      <active>true</active>
+      <priority>-1</priority>
       <readOnly>false</readOnly>
-      <value>0</value>
-      <max>0</max>
-      <min>0</min>
-      <scale>1</scale>
+      <value>240</value>
+      <max>1000</max>
+      <min>-600</min>
       <step>1</step>
-    </com.freedomotic.model.object.RangedIntBehavior>
+      <scale>10</scale> 
+  </com.freedomotic.model.object.RangedIntBehavior>
   </behaviors>
   <representation>
     <view>
