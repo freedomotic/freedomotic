@@ -1,47 +1,55 @@
-FROM resin/armv7hf-debian-qemu
+# This Dockerfile uses Docker Multi-Stage Builds
+# See https://docs.docker.com/engine/userguide/eng-image/multistage-build/
+# Requires Docker v17.05
 
-RUN [ "cross-build-start" ]
+## Base image for build and runtime
+FROM arm32v7/openjdk:8-jre-slim AS base
 
-MAINTAINER Matteo Mazzoni <matteo@freedomotic.com> 
+LABEL freedomotic.version="5.6.0" \
+      maintainer="Matteo Mazzoni <matteo@freedomotic.com>"
 
-# Set download urls
-ENV FREEDOMOTIC_URL="http://teamcity.jetbrains.com/guestAuth/repository/download/bt1177/.lastSuccessful/freedomotic-5.6.0-%7Bbuild.number%7D.zip"
-ENV JAVA_URL="https://www.azul.com/downloads/zulu/zdk-8-ga-linux_aarch32hf.tar.gz"
+# Set workdir
+WORKDIR /srv
 
-# Set variables
-ENV \
-    JAVA_HOME="/usr/lib/java-8"
-    
-# Install basepackages
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y \
-      ca-certificates \
-      locales \
-      locales-all \
-      netbase \
-      unzip \
-      wget \
-      && rm -rf /var/lib/apt/lists/*
-
-# Set locales
-ENV \
+# Freedomotic release artifact location
+ENV FREEDOMOTIC_URL="http://teamcity.jetbrains.com/guestAuth/repository/download/bt1177/.lastSuccessful/freedomotic-5.6.0-%7Bbuild.number%7D.zip" \
+    DEBIAN_FRONTEND=noninteractive \
     LC_ALL=en_US.UTF-8 \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8
 
-# Install java
-RUN wget -nv -O /tmp/java.tar.gz ${JAVA_URL} && \
-    mkdir ${JAVA_HOME} && \
-    tar -xvf /tmp/java.tar.gz --strip-components=1 -C ${JAVA_HOME} && \
-    update-alternatives --install /usr/bin/java java ${JAVA_HOME}/bin/java 50 && \
-    update-alternatives --install /usr/bin/javac javac ${JAVA_HOME}/bin/javac 50
+# Copy required bins for cross-build on Dockerhub
+# See https://medium.com/@kurt.stam/building-aarch64-arm-containers-on-dockerhub-d2d7c975215c
+COPY --from=resin/armv7hf-debian:stretch /usr/bin/cross-build-* /usr/bin/
+COPY --from=resin/armv7hf-debian:stretch /usr/bin/*arm* /usr/bin/
+COPY --from=resin/armv7hf-debian:stretch /usr/bin/resin-xbuild /usr/bin/
 
-# Install Freedomotic
-RUN wget ${FREEDOMOTIC_URL} -O latest.zip && \
-    unzip latest.zip -d /srv/ && \
-    rm latest.zip &&\
-    mv /srv/freedom* /srv/freedomotic && \
-    rm -rf /srv/freedomotic/plugins/devices/frontend-java
+RUN [ "cross-build-start" ]
+
+# Install build/run packages
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+      curl \
+      ca-certificates \
+      && apt-get clean \
+      && rm -rf /var/lib/apt/lists/*
+
+## Build image
+FROM base AS build
+
+# Install build packages
+#RUN apt-get update && apt-get install -yq --no-install-recommends \
+#      unzip
+
+# Download and install Freedomotic
+RUN curl -sL -o /tmp/latest.zip "${FREEDOMOTIC_URL}"
+RUN unzip /tmp/latest.zip -d /srv/
+RUN mv /srv/freedom* /srv/freedomotic \
+    && rm -rf /srv/freedomotic/plugins/devices/frontend-java
+
+## Runtime image
+FROM base AS runtime
+# Copy application and artifacts from build image
+COPY --from=build /srv/ /srv/
 
 VOLUME /srv/freedomotic/data /srv/freedomotic/plugins
 
@@ -51,5 +59,4 @@ HEALTHCHECK --interval=5m --timeout=3s --start-period=10s CMD curl -fI http://lo
 
 ENTRYPOINT /srv/freedomotic/freedomotic.sh -D FOREGROUND
 
-RUN [ "cross-build-end" ] 
-
+RUN [ "cross-build-end" ]
