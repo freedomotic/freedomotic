@@ -34,6 +34,8 @@ import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.plugins.devices.restapiv3.representations.MessageCalloutRepresentation;
 import com.freedomotic.things.EnvObjectLogic;
 import com.wordnik.swagger.annotations.Api;
+
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -56,6 +58,9 @@ public class AtmosphereEventResource extends AbstractWSResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(AtmosphereEventResource.class.getName());
     public final static String PATH = "event";
+
+    @Inject
+    private BroadcasterFactory factory;
 
     @Override
     public void broadcast(EventTemplate message) {
@@ -163,8 +168,7 @@ public class AtmosphereEventResource extends AbstractWSResource {
                 }
             }
             // broadcast message
-            BroadcasterFactory
-                    .getDefault()
+            factory
                     .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereEventResource.PATH)
                     .broadcast(msgType + "#" + payload);
         }

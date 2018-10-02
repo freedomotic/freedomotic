@@ -24,6 +24,8 @@ import com.freedomotic.api.EventTemplate;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.things.EnvObjectLogic;
 import com.wordnik.swagger.annotations.Api;
+
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -48,6 +50,9 @@ public class AtmosphereObjectChangeResource extends AbstractWSResource {
 
     public final static String PATH = "objectchange";
 
+    @Inject
+    private BroadcasterFactory factory;
+
     @Override
     public void broadcast(EventTemplate message) {
         if (api != null) {
@@ -59,8 +64,7 @@ public class AtmosphereObjectChangeResource extends AbstractWSResource {
                 } else {
                     msg = om.writeValueAsString(t.getPojo());
                 }
-                BroadcasterFactory
-                        .getDefault()
+                factory
                         .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereObjectChangeResource.PATH)
                         .broadcast(msg);
             } catch (JsonProcessingException ex) {
