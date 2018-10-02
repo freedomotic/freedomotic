@@ -25,6 +25,8 @@ import com.freedomotic.environment.EnvironmentLogic;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.wordnik.swagger.annotations.Api;
+
+import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import org.atmosphere.client.TrackMessageSizeInterceptor;
@@ -47,6 +49,9 @@ public class AtmosphereZoneChangeResource extends AbstractWSResource {
 
     public final static String PATH = "zonechange";
 
+    @Inject
+    private BroadcasterFactory factory;
+
     @POST
     @Override
     public void broadcast(EventTemplate message) {
@@ -55,7 +60,7 @@ public class AtmosphereZoneChangeResource extends AbstractWSResource {
                 ZoneLogic z = e.getZone(message.getPayload().getStatementValue("zone.name"));
                 if (z != null) {
                     try {
-                        BroadcasterFactory.getDefault()
+                        factory
                                 .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereZoneChangeResource.PATH)
                                 .broadcast(
                                         om.writeValueAsString(z));
