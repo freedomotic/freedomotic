@@ -28,11 +28,10 @@ import com.wordnik.swagger.annotations.Api;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
 
 import org.atmosphere.client.TrackMessageSizeInterceptor;
 import org.atmosphere.config.service.AtmosphereService;
-import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.cpr.Universe;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
 
 /**
@@ -50,9 +49,6 @@ public class AtmospherePluginChangeResource extends AbstractWSResource {
 
     public final static String PATH = "pluginchange";
 
-    @Context
-    private BroadcasterFactory factory;
-
     @POST
     @Override
     public void broadcast(EventTemplate message) {
@@ -61,7 +57,7 @@ public class AtmospherePluginChangeResource extends AbstractWSResource {
                 Plugin p = (Plugin) c;
                 if (p.getName().equalsIgnoreCase(message.getPayload().getStatementValue("plugin.name"))) {
                     try {
-                        factory
+                        Universe.broadcasterFactory()
                                 .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmospherePluginChangeResource.PATH)
                                 .broadcast(om.writeValueAsString(p));
                     } catch (JsonProcessingException ex) {

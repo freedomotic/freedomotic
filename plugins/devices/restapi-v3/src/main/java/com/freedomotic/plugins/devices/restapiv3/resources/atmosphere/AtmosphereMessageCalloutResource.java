@@ -26,10 +26,9 @@ import com.freedomotic.plugins.devices.restapiv3.representations.MessageCalloutR
 import com.wordnik.swagger.annotations.Api;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
 
 import org.atmosphere.config.service.AtmosphereService;
-import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.cpr.Universe;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,16 +50,13 @@ public class AtmosphereMessageCalloutResource extends AbstractWSResource {
 
     public final static String PATH = "messagecallout";
 
-    @Context
-    private BroadcasterFactory factory;
-
     @Override
     public void broadcast(EventTemplate message) {
         if (api != null) {
             String msg;
             try {
                 msg = om.writeValueAsString(new MessageCalloutRepresentation(message.getProperty("message.text")));
-                factory
+                Universe.broadcasterFactory()
                         .lookup("/" + RestAPIv3.API_VERSION + "/ws/" + AtmosphereMessageCalloutResource.PATH)
                         .broadcast(msg);
             } catch (JsonProcessingException ex) {
