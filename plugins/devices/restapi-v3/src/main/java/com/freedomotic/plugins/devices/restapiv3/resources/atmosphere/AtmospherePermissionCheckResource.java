@@ -33,7 +33,6 @@ import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.plugins.devices.restapiv3.representations.PermissionCheckRepresentation;
 import com.freedomotic.security.User;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.wordnik.swagger.annotations.Api;
 import javax.servlet.http.HttpServletRequest;

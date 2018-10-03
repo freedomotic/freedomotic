@@ -35,8 +35,9 @@ import com.freedomotic.plugins.devices.restapiv3.representations.MessageCalloutR
 import com.freedomotic.things.EnvObjectLogic;
 import com.wordnik.swagger.annotations.Api;
 
-import javax.inject.Inject;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
@@ -59,7 +60,7 @@ public class AtmosphereEventResource extends AbstractWSResource {
     private static final Logger LOG = LoggerFactory.getLogger(AtmosphereEventResource.class.getName());
     public final static String PATH = "event";
 
-    @Inject
+    @Context
     private BroadcasterFactory factory;
 
     @Override

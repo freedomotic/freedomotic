@@ -29,6 +29,8 @@ import com.wordnik.swagger.annotations.Api;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+
 import org.atmosphere.client.TrackMessageSizeInterceptor;
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -49,7 +51,7 @@ public class AtmospherePluginChangeResource extends AbstractWSResource {
 
     public final static String PATH = "pluginchange";
 
-    @Inject
+    @Context
     private BroadcasterFactory factory;
 
     @POST

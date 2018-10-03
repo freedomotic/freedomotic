@@ -25,8 +25,9 @@ import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.plugins.devices.restapiv3.representations.MessageCalloutRepresentation;
 import com.wordnik.swagger.annotations.Api;
 
-import javax.inject.Inject;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
@@ -50,7 +51,7 @@ public class AtmosphereMessageCalloutResource extends AbstractWSResource {
 
     public final static String PATH = "messagecallout";
 
-    @Inject
+    @Context
     private BroadcasterFactory factory;
 
     @Override
