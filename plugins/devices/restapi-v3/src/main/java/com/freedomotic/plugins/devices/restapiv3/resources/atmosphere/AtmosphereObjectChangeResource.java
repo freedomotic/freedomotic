@@ -25,8 +25,9 @@ import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.things.EnvObjectLogic;
 import com.wordnik.swagger.annotations.Api;
 
-import javax.inject.Inject;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
@@ -50,7 +51,7 @@ public class AtmosphereObjectChangeResource extends AbstractWSResource {
 
     public final static String PATH = "objectchange";
 
-    @Inject
+    @Context
     private BroadcasterFactory factory;
 
     @Override
