@@ -26,7 +26,6 @@ import com.freedomotic.api.Plugin;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.wordnik.swagger.annotations.Api;
 
-import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
