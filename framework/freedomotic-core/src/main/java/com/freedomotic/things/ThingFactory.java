@@ -57,7 +57,7 @@ public class ThingFactory {
         }
 
         try {
-            URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+            ClassLoader classLoader =  ClassLoader.getSystemClassLoader();
             Class<?> clazz = classLoader.loadClass(pojo.getHierarchy()); //eg: com.freedomotic.things.impl.ElectricDevice
             EnvObjectLogic logic = null;
             try {
