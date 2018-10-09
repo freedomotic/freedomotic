@@ -21,11 +21,11 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.core.ResourcesManager;
 import com.freedomotic.settings.Info;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Api;
 import java.io.File;
 import java.net.URI;
 import java.util.HashMap;

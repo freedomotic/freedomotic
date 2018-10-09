@@ -21,10 +21,10 @@ package com.freedomotic.plugins.devices.restapiv3.utils;
 
 import com.freedomotic.plugins.devices.restapiv3.filters.ForbiddenException;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.ws.rs.Consumes;
@@ -136,7 +136,7 @@ public abstract class AbstractResource<T> extends AbstractReadOnlyResource<T> im
 
     /*
      * Copy an item by id
-     * 
+     *
      * @param uuid id of item to copy
      */
     @Override

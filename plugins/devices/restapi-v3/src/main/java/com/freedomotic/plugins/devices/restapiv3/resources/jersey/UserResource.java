@@ -23,11 +23,11 @@ import com.freedomotic.plugins.devices.restapiv3.representations.UserRepresentat
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.security.User;
 import com.freedomotic.security.UserRealm;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;

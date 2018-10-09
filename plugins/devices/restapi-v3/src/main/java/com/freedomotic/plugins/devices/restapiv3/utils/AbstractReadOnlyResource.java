@@ -25,10 +25,10 @@ import com.freedomotic.plugins.devices.restapiv3.filters.ForbiddenException;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
@@ -80,7 +80,7 @@ public abstract class AbstractReadOnlyResource<T> implements ResourceReadOnlyInt
 
     /**
      * Get a single item by id
-     * 
+     *
      * @param uuid id of item to fetch
      */
     @GET

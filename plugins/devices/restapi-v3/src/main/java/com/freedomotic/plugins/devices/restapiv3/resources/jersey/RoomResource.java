@@ -24,7 +24,7 @@ import com.freedomotic.environment.Room;
 import com.freedomotic.environment.ZoneLogic;
 import com.freedomotic.model.environment.Zone;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
-import com.wordnik.swagger.annotations.*;
+import io.swagger.annotations.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;

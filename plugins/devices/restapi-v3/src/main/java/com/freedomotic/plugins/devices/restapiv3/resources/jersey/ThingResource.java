@@ -31,11 +31,11 @@ import com.freedomotic.plugins.ObjectPluginPlaceholder;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.freedomotic.reactions.Command;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -336,7 +336,7 @@ public class ThingResource extends AbstractResource<EnvObject> {
 
         @Override
         protected URI doCopy(String UUID) {
-            throw new UnsupportedOperationException("Not supported yet."); 
+            throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override

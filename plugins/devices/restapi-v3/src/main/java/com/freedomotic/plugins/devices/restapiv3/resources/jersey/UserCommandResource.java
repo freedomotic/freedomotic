@@ -23,7 +23,7 @@ import com.freedomotic.app.Freedomotic;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.reactions.Command;
-import com.wordnik.swagger.annotations.*;
+import io.swagger.annotations.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
