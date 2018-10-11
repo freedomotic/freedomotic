@@ -22,11 +22,11 @@ package com.freedomotic.things.impl;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.SynchAction;
 import com.freedomotic.environment.EnvironmentLogic;
+import com.freedomotic.events.ObjectHasChanged;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.FreedomoticRuntimeException;
 import com.freedomotic.exceptions.RepositoryException;
 import com.freedomotic.model.object.EnvObject;
-import com.freedomotic.model.object.Representation;
 import com.freedomotic.things.EnvObjectLogic;
 import com.freedomotic.things.ThingFactory;
 import com.freedomotic.things.ThingRepository;
@@ -66,7 +66,7 @@ class ThingRepositoryImpl implements ThingRepository {
     public static final boolean MAKE_UNIQUE = true;
     public static final boolean MAKE_NOT_UNIQUE = false;
     public static final String OBJECT_FILE_EXTENSION = ".xobj";
-    private static final Map<String, EnvObjectLogic> objectList = new HashMap<>();
+    private static final Map<String, EnvObjectLogic> OBJECT_LIST = new HashMap<>();
     private static final Logger LOG = LoggerFactory.getLogger(ThingRepositoryImpl.class.getName());
     // Dependencies
     private final ThingFactory thingsFactory;
@@ -86,7 +86,7 @@ class ThingRepositoryImpl implements ThingRepository {
     @Deprecated
     @RequiresPermissions("objects:read")
     private static Collection<EnvObjectLogic> getObjectList() {
-        return objectList.values();
+        return OBJECT_LIST.values();
     }
 
     /**
@@ -96,7 +96,7 @@ class ThingRepositoryImpl implements ThingRepository {
      */
     @RequiresPermissions("objects:save")
     private static void saveObjects(File folder) throws RepositoryException {
-        if (objectList.isEmpty()) {
+        if (OBJECT_LIST.isEmpty()) {
             throw new RepositoryException("There are no object to persist, \"" + folder.getAbsolutePath()
                     + "\" will not be altered.");
         }
@@ -110,7 +110,7 @@ class ThingRepositoryImpl implements ThingRepository {
 
         StringBuilder summaryContent = new StringBuilder();
 
-        for (EnvObjectLogic envObject : objectList.values()) {
+        for (EnvObjectLogic envObject : OBJECT_LIST.values()) {
             String uuid = envObject.getPojo().getUUID();
 
             if ((uuid == null) || uuid.isEmpty()) {
@@ -143,19 +143,16 @@ class ThingRepositoryImpl implements ThingRepository {
         File[] files = folder.listFiles();
 
         // This filter only returns object files
-        FileFilter objectFileFileter
-                = new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+        FileFilter objectFileFilter
+                = (File file) -> {
+                    if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                };
 
-        files = folder.listFiles(objectFileFileter);
+        files = folder.listFiles(objectFileFilter);
 
         for (File file : files) {
             boolean deleted = file.delete();
@@ -173,11 +170,11 @@ class ThingRepositoryImpl implements ThingRepository {
     @Deprecated
     @RequiresPermissions("objects:read")
     private static Iterator<EnvObjectLogic> iterator() {
-        return objectList.values().iterator();
+        return OBJECT_LIST.values().iterator();
     }
 
     /**
-     * Gets the object by name
+     * Gets the object by name.
      *
      * @param name
      * @return
@@ -201,15 +198,14 @@ class ThingRepositoryImpl implements ThingRepository {
      * @return
      */
     @RequiresPermissions("objects:read")
-    private static ArrayList<EnvObjectLogic> getObjectByTags(String tags) {
-        ArrayList<EnvObjectLogic> results = new ArrayList<>();
+    private static List<EnvObjectLogic> getObjectByTags(String tags) {
+        List<EnvObjectLogic> results = new ArrayList<>();
         // split tags string
         String[] tagList = tags.split(",");
 
-        // search every object for at least one tag 
-        for (EnvObjectLogic obj : objectList.values()) {
+        // search every object for at least one tag
+        OBJECT_LIST.values().forEach((obj) -> {
             Set<String> tagSet = new HashSet<>();
-
             for (String tag : tagList) {
                 if (!tag.trim().isEmpty()) {
                     tagSet.add(tag.trim());
@@ -220,12 +216,12 @@ class ThingRepositoryImpl implements ThingRepository {
             if (prevCount > tagSet.size()) {
                 results.add(obj);
             }
-        }
+        });
         return results;
     }
 
     /**
-     * Gets the object by uuid
+     * Gets the object by uuid.
      *
      * @param uuid
      * @return
@@ -295,7 +291,7 @@ class ThingRepositoryImpl implements ThingRepository {
     }
 
     /**
-     * Gets the object by its environment
+     * Gets the object by its environment.
      *
      * @param uuid
      * @return
@@ -320,7 +316,7 @@ class ThingRepositoryImpl implements ThingRepository {
      */
     @RequiresPermissions("objects:read")
     private static int size() {
-        return objectList.size();
+        return OBJECT_LIST.size();
     }
 
     /**
@@ -330,7 +326,7 @@ class ThingRepositoryImpl implements ThingRepository {
     @Deprecated
     @RequiresPermissions("objects:delete")
     private static void remove(EnvObjectLogic input) {
-        objectList.remove(input.getPojo().getUUID());
+        OBJECT_LIST.remove(input.getPojo().getUUID());
         input.setChanged(true); //force repainting on frontends clients
         input.destroy(); //free memory
     }
@@ -342,15 +338,15 @@ class ThingRepositoryImpl implements ThingRepository {
      */
     private static List<String> getObjectsNames() {
         List<String> list = new ArrayList<>();
-        for (EnvObjectLogic obj : objectList.values()) {
+        OBJECT_LIST.values().forEach((obj) -> {
             list.add(obj.getPojo().getName());
-        }
+        });
         return list;
     }
 
     /**
      * Add an object to the environment. You can use
-     * EnvObjectPersistnce.MAKE_UNIQUE to saveAll an object that will surely be
+     * EnvObjectPersistance.MAKE_UNIQUE to saveAll an object that will surely be
      * unique. Beware this means it is created with defensive copy of the object
      * in input and name, protocol, address and UUID are reset to a default
      * value.
@@ -360,7 +356,6 @@ class ThingRepositoryImpl implements ThingRepository {
      * reference to the object in input.
      * @return A pointer to the newly created environment object
      */
-    @Deprecated
     @RequiresPermissions("objects:create")
     private EnvObjectLogic add(final EnvObjectLogic obj, final boolean MAKE_UNIQUE) {
         if ((obj == null)) {
@@ -383,10 +378,12 @@ class ThingRepositoryImpl implements ThingRepository {
             pojoCopy.setName(getNextInOrder(obj.getPojo().getName()));
             pojoCopy.setProtocol(obj.getPojo().getProtocol());
             pojoCopy.setPhisicalAddress("unknown");
-            for (Representation rep : pojoCopy.getRepresentations()) {
+            pojoCopy.getRepresentations().stream().map((rep) -> {
                 rep.getOffset().setX(obj.getPojo().getCurrentRepresentation().getOffset().getX() + 30);
+                return rep;
+            }).forEachOrdered((rep) -> {
                 rep.getOffset().setY(obj.getPojo().getCurrentRepresentation().getOffset().getY() + 30);
-            }
+            });
             pojoCopy.setUUID(UUID.randomUUID().toString());
 
             try {
@@ -398,8 +395,8 @@ class ThingRepositoryImpl implements ThingRepository {
 
         envObjectLogic.init();
 
-        if (!objectList.containsValue(envObjectLogic)) {
-            objectList.put(envObjectLogic.getPojo().getUUID(), envObjectLogic);
+        if (!OBJECT_LIST.containsValue(envObjectLogic)) {
+            OBJECT_LIST.put(envObjectLogic.getPojo().getUUID(), envObjectLogic);
             try {
                 envObjectLogic.setChanged(SynchAction.CREATED);
             } catch (Exception e) {
@@ -408,6 +405,8 @@ class ThingRepositoryImpl implements ThingRepository {
         } else {
             throw new FreedomoticRuntimeException("Cannot add the same object more than one time");
         }
+        ObjectHasChanged event = new ObjectHasChanged(null, envObjectLogic.getPojo().getUUID(), ObjectHasChanged.ObjectActions.ADD);
+        Freedomotic.sendEvent(event);
         return envObjectLogic;
     }
 
@@ -434,12 +433,12 @@ class ThingRepositoryImpl implements ThingRepository {
     @Override
     public void deleteAll() {
         try {
-            for (EnvObjectLogic el : objectList.values()) {
+            OBJECT_LIST.values().forEach((el) -> {
                 delete(el);
-            }
+            });
         } catch (Exception e) {
         } finally {
-            objectList.clear();
+            OBJECT_LIST.clear();
         }
     }
 
@@ -447,7 +446,7 @@ class ThingRepositoryImpl implements ThingRepository {
     @RequiresPermissions("objects:read")
     public List<EnvObjectLogic> findAll() {
         List<EnvObjectLogic> el = new ArrayList<>();
-        el.addAll(objectList.values());
+        el.addAll(OBJECT_LIST.values());
         return el;
     }
 
@@ -455,11 +454,9 @@ class ThingRepositoryImpl implements ThingRepository {
     @RequiresPermissions("objects:read")
     public List<EnvObjectLogic> findByName(String name) {
         List<EnvObjectLogic> el = new ArrayList<>();
-        for (EnvObjectLogic e : findAll()) {
-            if (e.getPojo().getName().equalsIgnoreCase(name)) {
-                el.add(e);
-            }
-        }
+        findAll().stream().filter((e) -> (e.getPojo().getName().equalsIgnoreCase(name))).forEachOrdered((e) -> {
+            el.add(e);
+        });
         return el;
     }
 
@@ -473,9 +470,9 @@ class ThingRepositoryImpl implements ThingRepository {
     @RequiresPermissions("objects:create")
     public boolean create(EnvObjectLogic item) {
         try {
-            int preSize = objectList.size();
+            int preSize = OBJECT_LIST.size();
             add(item, false);
-            return (preSize + 1 == objectList.size());
+            return (preSize + 1 == OBJECT_LIST.size());
         } catch (Exception e) {
             LOG.error("Cannot create object", e);
             return false;
@@ -492,13 +489,16 @@ class ThingRepositoryImpl implements ThingRepository {
     @RequiresPermissions("objects:delete")
     public boolean delete(String uuid) {
         try {
-            EnvObjectLogic eol = objectList.remove(uuid);
+            EnvObjectLogic eol = OBJECT_LIST.remove(uuid);
             try {
                 eol.setChanged(SynchAction.DELETED); //force repainting on frontends clients
             } catch (Exception e) {
                 LOG.warn("Cannot notify object changes");
             }
+            String objUuid = eol.getPojo().getUUID();
             eol.destroy();
+            ObjectHasChanged event = new ObjectHasChanged(null, objUuid, ObjectHasChanged.ObjectActions.REMOVE);
+            Freedomotic.sendEvent(event);
             return true;
         } catch (Exception e) {
             LOG.error("Cannot delete object \"{}\"", uuid, e);
@@ -604,14 +604,11 @@ class ThingRepositoryImpl implements ThingRepository {
         List<EnvObjectLogic> results = new ArrayList<>();
 
         // This filter only returns object files
-        FileFilter objectFileFilter = new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
-                    return true;
-                } else {
-                    return false;
-                }
+        FileFilter objectFileFilter = (File file) -> {
+            if (file.isFile() && file.getName().endsWith(OBJECT_FILE_EXTENSION)) {
+                return true;
+            } else {
+                return false;
             }
         };
 
