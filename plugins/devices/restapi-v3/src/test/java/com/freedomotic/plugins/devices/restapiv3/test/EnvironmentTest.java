@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team
+ * Copyright (c) 2009-2018 Freedomotic team
  * http://freedomotic.com
  *
  * This file is part of Freedomotic

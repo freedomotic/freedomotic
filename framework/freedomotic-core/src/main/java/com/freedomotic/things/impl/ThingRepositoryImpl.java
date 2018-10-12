@@ -405,8 +405,8 @@ class ThingRepositoryImpl implements ThingRepository {
         } else {
             throw new FreedomoticRuntimeException("Cannot add the same object more than one time");
         }
-        ObjectHasChanged event = new ObjectHasChanged(null, envObjectLogic.getPojo().getUUID(), ObjectHasChanged.ObjectActions.ADD);
-        Freedomotic.sendEvent(event);
+        // ObjectHasChanged event = new ObjectHasChanged(null, envObjectLogic.getPojo().getUUID(), ObjectHasChanged.ObjectActions.ADD);
+        // Freedomotic.sendEvent(event);
         return envObjectLogic;
     }
 
@@ -497,8 +497,8 @@ class ThingRepositoryImpl implements ThingRepository {
             }
             String objUuid = eol.getPojo().getUUID();
             eol.destroy();
-            ObjectHasChanged event = new ObjectHasChanged(null, objUuid, ObjectHasChanged.ObjectActions.REMOVE);
-            Freedomotic.sendEvent(event);
+            // ObjectHasChanged event = new ObjectHasChanged(null, objUuid, ObjectHasChanged.ObjectActions.REMOVE);
+            // Freedomotic.sendEvent(event);
             return true;
         } catch (Exception e) {
             LOG.error("Cannot delete object \"{}\"", uuid, e);
