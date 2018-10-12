@@ -1,24 +1,3 @@
-/**
- *
- * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
- *
- * This file is part of Freedomotic
- *
- * This Program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2, or (at your option) any later version.
- *
- * This Program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along with
- * Freedomotic; see the file COPYING. If not, see
- * <http://www.gnu.org/licenses/>.
- *
- */
-
 package com.freedomotic.plugins.devices.twilight;
 import com.freedomotic.events.GenericEvent;
 import com.freedomotic.plugins.devices.twilight.providers.EarthToolsWI;
@@ -28,22 +7,14 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- *
- * @author Matteo Mazzoni 
- */
-
-
 public class TwilightTest {
 
     private static TwilightUtils twu;
     private static WeatherInfo provider;
-    private static WeatherInfo provider_alt;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
         provider = new OpenWeatherMapWI("43.567", "11.021");
-        provider_alt = new EarthToolsWI("43.567", "11.021");
         twu = new TwilightUtils(10000, provider);
         
        }
@@ -51,10 +22,7 @@ public class TwilightTest {
     @Test
     public void updateTest() throws Exception{
         provider.updateData();
-        System.out.println(provider.getClass().getCanonicalName() + " Sunrise: " + provider.getNextSunrise().toString() +" - Sunset: "+ provider.getNextSunset() );
-        provider_alt.updateData();
-        System.out.println(provider_alt.getClass().getCanonicalName() + " Sunrise: " + provider_alt.getNextSunrise().toString() +" - Sunset: "+ provider_alt.getNextSunset() );
-        
+        System.out.println(provider.getClass().getCanonicalName() + " Sunrise: " + provider.getNextSunrise().toString() +" - Sunset: "+ provider.getNextSunset()+" - Humidity: " + provider.getNextHumidity()+" - Pressure: "+provider.getNextPressure()+" - Temperature: "+provider.getNextTemperature());      
     }
     
     @Test
@@ -143,5 +111,26 @@ public class TwilightTest {
         Assert.assertEquals("", twPostSunset.getProperty("isSunrise"));
         Assert.assertEquals("", twPostSunset.getProperty("afterSunrise"));
         Assert.assertEquals("719", twPostSunset.getProperty("beforeSunrise"));
+    }
+
+    @Test
+    public void testHumidity() {
+        DateTime sunset = new DateTime(2018,6,19, 17,0);
+        GenericEvent twAtSunset = twu.prepareEvent(sunset);
+        Assert.assertEquals("true", twAtSunset.getProperty("humidity"));        
+    }
+
+    @Test
+    public void testPressure() {
+        DateTime sunset = new DateTime(2018,6,19, 17,0);
+        GenericEvent twAtSunset = twu.prepareEvent(sunset);
+        Assert.assertEquals("true", twAtSunset.getProperty("pressure"));        
+    }
+
+    @Test
+    public void testTemperature() {
+        DateTime sunset = new DateTime(2018,6,19, 17,0);
+        GenericEvent twAtSunset = twu.prepareEvent(sunset);
+        Assert.assertEquals("true", twAtSunset.getProperty("temperature"));        
     }
 }

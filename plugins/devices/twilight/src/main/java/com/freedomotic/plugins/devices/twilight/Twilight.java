@@ -1,22 +1,3 @@
-/**
- *
- * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
- *
- * This file is part of Freedomotic
- *
- * This Program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2, or (at your option) any later version.
- *
- * This Program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along with
- * Freedomotic; see the file COPYING. If not, see
- * <http://www.gnu.org/licenses/>.
- */
 package com.freedomotic.plugins.devices.twilight;
 
 import com.freedomotic.api.EventTemplate;
@@ -31,10 +12,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Matteo Mazzoni
- */
 public class Twilight extends Protocol {
 
     private static final Logger LOG = LoggerFactory.getLogger(Twilight.class.getName());
@@ -93,7 +70,7 @@ public class Twilight extends Protocol {
             LOG.info("Twilight plugin started");
             provider.updateData();
             setPollingWait(POLLING_WAIT);
-            setDescription("Sunrise: " + provider.getNextSunrise().toLocalTime() + " Sunset: " + provider.getNextSunset().toLocalTime());
+            setDescription("Sunrise: " + provider.getNextSunrise().toLocalTime() + " Sunset: " + provider.getNextSunset().toLocalTime() + " Humidity: " + provider.getNextHumidity() + "% "+ " Pressure: " + provider.getNextPressure() + " hPa" + " Temperature: " + provider.getNextTemperature() + "ºC");
         } catch (Exception ex) {
             throw new PluginStartupException("Error retrieving data from provider {}", ex);
         }
@@ -111,7 +88,7 @@ public class Twilight extends Protocol {
         if (command.equals("Update Twilight Data")) {
             try {
                 provider.updateData();
-                setDescription("Sunrise: " + provider.getNextSunrise().toLocalTime() + " Sunset: " + provider.getNextSunset().toLocalTime());
+                setDescription("Sunrise: " + provider.getNextSunrise().toLocalTime() + " Sunset: " + provider.getNextSunset().toLocalTime() + " Humidity: " + provider.getNextHumidity() + "% "+ " Pressure: " + provider.getNextPressure() + " hPa" + " Temperature: " + provider.getNextTemperature() + "ºC");
             } catch (Exception ex) {
                 LOG.error(ex.getMessage());
             }

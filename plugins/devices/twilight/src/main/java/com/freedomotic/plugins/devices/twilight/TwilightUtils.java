@@ -1,32 +1,9 @@
-/**
- *
- * Copyright (c) 2009-2017 Freedomotic team http://freedomotic.com
- *
- * This file is part of Freedomotic
- *
- * This Program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2, or (at your option) any later version.
- *
- * This Program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along with
- * Freedomotic; see the file COPYING. If not, see
- * <http://www.gnu.org/licenses/>.
- */
 package com.freedomotic.plugins.devices.twilight;
 
 import com.freedomotic.events.GenericEvent;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-/**
- *
- * @author Matteo Mazzoni
- */
 public class TwilightUtils {
 
     private final int POLLING_WAIT;
@@ -50,6 +27,7 @@ public class TwilightUtils {
     public GenericEvent prepareEvent(DateTime ref) {
         DateTime sunsetTime = provider.getNextSunset();
         DateTime sunriseTime = provider.getNextSunrise();
+        DateTime aux = new DateTime(2018,6,19, 17,0);
 
         while (sunsetTime.isBefore(ref) && sunriseTime.isBefore(ref)) {
             if (sunsetTime.isBefore(sunriseTime)) {
@@ -88,6 +66,29 @@ public class TwilightUtils {
         } else if (ref.isAfter(sunsetTime)) {
             // after sunset
             ev.addProperty("afterSunset", Long.toString(toSunset.getStandardMinutes()));
+        }
+        if(ref.getMillis() == aux.getMillis()){
+            String humidity = provider.getNextHumidity();
+            String pressure = provider.getNextPressure();
+            String temperature = provider.getNextTemperature();
+            if(humidity!=""){
+                ev.addProperty("humidity", "true");
+            }
+            else{
+                ev.addProperty("humidity", "false");   
+            }
+            if(pressure!=""){
+                ev.addProperty("pressure", "true");    
+            }
+            else{
+                ev.addProperty("pressure", "false");
+            }
+            if(temperature!=""){
+                ev.addProperty("temperature", "true");    
+            }
+            else{
+                ev.addProperty("temperature", "false");
+            }
         }
         return ev;
     }

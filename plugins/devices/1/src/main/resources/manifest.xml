@@ -1,0 +1,9 @@
+<config>
+    <properties>
+        <property name="description"                       value="A simple plugin to start coding"/>
+        <property name="category"                       value="devel"/>
+        <property name="short-name"                       value="hello"/>
+    </properties>
+</config>
+
+                
