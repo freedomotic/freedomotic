@@ -65,7 +65,7 @@ An online demo is kindly hosted for free by [DigitalOcean](https://www.digitaloc
 
 Go to
 - [API demo](http://174.138.4.3:9111/)
-- [Web client Polymer](http://174.138.4.3:8090/)
+- [Vue Web client - under development](http://fd-vue-webapp.herokuapp.com/) | [GitHub repository](https://github.com/freedomotic/fd-vue-webapp)
 
 
 Getting help
