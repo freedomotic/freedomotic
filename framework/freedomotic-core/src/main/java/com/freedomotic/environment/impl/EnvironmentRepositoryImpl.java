@@ -361,7 +361,8 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
     @Override
     public void deleteAll() {
         try {
-            for (EnvironmentLogic el : environments) {
+            List<EnvironmentLogic> del = new ArrayList<>(environments);
+            for (EnvironmentLogic el : del) {
                 delete(el);
             }
         } catch (Exception e) {
