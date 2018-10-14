@@ -19,7 +19,7 @@
  */
 package com.freedomotic.plugins.devices.twilight;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 
 /**
@@ -32,13 +32,13 @@ public interface WeatherInfo {
      *
      * @return
      */
-    DateTime getNextSunset();
+    ZonedDateTime getNextSunset();
 
     /**
      *
      * @return
      */
-    DateTime getNextSunrise();
+    ZonedDateTime getNextSunrise();
 
     /**
      *
@@ -50,12 +50,12 @@ public interface WeatherInfo {
      *
      * @param sunset
      */
-    void setNextSunset(DateTime sunset);
+    void setNextSunset(ZonedDateTime sunset);
 
     /**
      *
      * @param sunrise
      */
-    void setNextSunrise(DateTime sunrise);
+    void setNextSunrise(ZonedDateTime sunrise);
 
 }

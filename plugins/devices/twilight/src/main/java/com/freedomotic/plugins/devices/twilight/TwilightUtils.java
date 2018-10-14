@@ -20,8 +20,8 @@
 package com.freedomotic.plugins.devices.twilight;
 
 import com.freedomotic.events.GenericEvent;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
+import java.time.Duration;
+import java.time.ZonedDateTime;
 
 /**
  *
@@ -47,9 +47,9 @@ public class TwilightUtils {
      * @param ref
      * @return
      */
-    public GenericEvent prepareEvent(DateTime ref) {
-        DateTime sunsetTime = provider.getNextSunset();
-        DateTime sunriseTime = provider.getNextSunrise();
+    public GenericEvent prepareEvent(ZonedDateTime ref) {
+        ZonedDateTime sunsetTime = provider.getNextSunset();
+        ZonedDateTime sunriseTime = provider.getNextSunrise();
 
         while (sunsetTime.isBefore(ref) && sunriseTime.isBefore(ref)) {
             if (sunsetTime.isBefore(sunriseTime)) {
@@ -61,33 +61,33 @@ public class TwilightUtils {
             }
         }
 
-        Duration toSunset = sunsetTime.isAfter(ref) ? new Duration(ref, sunsetTime) : new Duration(sunsetTime, ref);
-        Duration toSunrise = sunriseTime.isAfter(ref) ? new Duration(ref, sunriseTime) : new Duration(sunriseTime, ref);
+        Duration toSunset = sunsetTime.isAfter(ref) ? Duration.between(ref, sunsetTime) : Duration.between(sunsetTime, ref);
+        Duration toSunrise = sunriseTime.isAfter(ref) ? Duration.between(ref, sunriseTime) : Duration.between(sunriseTime, ref);
 
         // create the event 
         GenericEvent ev = new GenericEvent(getClass());
         ev.setDestination("app.event.sensor.calendar.event.twilight");
 
-        if (toSunset.getMillis() < POLLING_WAIT / 2) {
+        if (toSunset.toMillis() < POLLING_WAIT / 2) {
             // it's sunset
             ev.addProperty("isSunset", "true");
-        } else if (toSunrise.getMillis() < POLLING_WAIT / 2) {
+        } else if (toSunrise.toMillis() < POLLING_WAIT / 2) {
             // it's sunrise
             ev.addProperty("isSunrise", "true");
         }
         if (ref.isBefore(sunriseTime)) {
             // before sunrise
-            ev.addProperty("beforeSunrise", Long.toString(toSunrise.getStandardMinutes()));
+            ev.addProperty("beforeSunrise", Long.toString(toSunrise.toMinutes()));
         } else if (ref.isAfter(sunriseTime)) {
             // after sunrise 
-            ev.addProperty("afterSunrise", Long.toString(toSunrise.getStandardMinutes()));
+            ev.addProperty("afterSunrise", Long.toString(toSunrise.toMinutes()));
         }
         if (ref.isBefore(sunsetTime)) {
             // before sunset
-            ev.addProperty("beforeSunset", Long.toString(toSunset.getStandardMinutes()));
+            ev.addProperty("beforeSunset", Long.toString(toSunset.toMinutes()));
         } else if (ref.isAfter(sunsetTime)) {
             // after sunset
-            ev.addProperty("afterSunset", Long.toString(toSunset.getStandardMinutes()));
+            ev.addProperty("afterSunset", Long.toString(toSunset.toMinutes()));
         }
         return ev;
     }

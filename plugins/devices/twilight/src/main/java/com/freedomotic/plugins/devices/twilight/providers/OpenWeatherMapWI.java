@@ -24,10 +24,12 @@ import com.freedomotic.plugins.devices.twilight.WeatherInfo;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -43,8 +45,8 @@ public class OpenWeatherMapWI implements WeatherInfo {
     private static final Logger LOG = LoggerFactory.getLogger(OpenWeatherMapWI.class.getCanonicalName());
     private final String latitude;
     private final String longitude;
-    private DateTime nextSunrise;
-    private DateTime nextSunset;
+    private ZonedDateTime nextSunrise;
+    private ZonedDateTime nextSunset;
 
     /**
      *
@@ -61,7 +63,7 @@ public class OpenWeatherMapWI implements WeatherInfo {
      * @return
      */
     @Override
-    public DateTime getNextSunset() {
+    public ZonedDateTime getNextSunset() {
         return nextSunset;
     }
 
@@ -70,7 +72,7 @@ public class OpenWeatherMapWI implements WeatherInfo {
      * @return
      */
     @Override
-    public DateTime getNextSunrise() {
+    public ZonedDateTime getNextSunrise() {
         return nextSunrise;
     }
 
@@ -98,10 +100,10 @@ public class OpenWeatherMapWI implements WeatherInfo {
      */
     @Override
     public boolean updateData() throws Exception {
-        DateTime dt = new DateTime();
-        int dst = dt.getZone().isStandardOffset(dt.getMillis()) ? 0 : 1;
-        int offset = dt.getZone().getStandardOffset(dt.getMillis()) / 3600000;
-        Document doc = getXMLStatusFile(dt.getDayOfMonth(), dt.getMonthOfYear(), offset, dst);
+        ZonedDateTime dt = ZonedDateTime.now();
+        int dst = dt.getZone().getRules().isDaylightSavings(dt.toInstant()) ? 1 : 0;
+        int offset = dt.getZone().getRules().getOffset(dt.toInstant()).getTotalSeconds() / 3600;
+        Document doc = getXMLStatusFile(dt.getDayOfMonth(), dt.getMonthValue(), offset, dst);
 
         //parse xml 
         if (doc != null) {
@@ -109,8 +111,8 @@ public class OpenWeatherMapWI implements WeatherInfo {
             Node sunsetNode = doc.getElementsByTagName("sun").item(0).getAttributes().getNamedItem("set");
 
             // compare with the current time
-            nextSunrise = new DateTime(sunriseNode.getNodeValue()).plusHours(offset);
-            nextSunset = new DateTime(sunsetNode.getNodeValue()).plusHours(offset);
+            nextSunrise = dt.with(LocalDateTime.parse(sunriseNode.getNodeValue())).plusHours(offset);
+            nextSunset = dt.with(LocalDateTime.parse(sunsetNode.getNodeValue())).plusHours(offset);
             LOG.info("Sunrise at: {} Sunset at: {}", nextSunrise, nextSunset);
             return true;
         } else {
@@ -123,7 +125,7 @@ public class OpenWeatherMapWI implements WeatherInfo {
      * @param sunset
      */
     @Override
-    public void setNextSunset(DateTime sunset) {
+    public void setNextSunset(ZonedDateTime sunset) {
         nextSunset = sunset;
     }
 
@@ -132,7 +134,7 @@ public class OpenWeatherMapWI implements WeatherInfo {
      * @param sunrise
      */
     @Override
-    public void setNextSunrise(DateTime sunrise) {
+    public void setNextSunrise(ZonedDateTime sunrise) {
         nextSunrise = sunrise;
     }
 }

@@ -20,10 +20,13 @@
  */
 
 package com.freedomotic.plugins.devices.twilight;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import com.freedomotic.events.GenericEvent;
 import com.freedomotic.plugins.devices.twilight.providers.EarthToolsWI;
 import com.freedomotic.plugins.devices.twilight.providers.OpenWeatherMapWI;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,10 +62,10 @@ public class TwilightTest {
     
     @Test
     public void NoonTest() {
-        provider.setNextSunrise(new DateTime(2013, 11, 20, 5, 0));
-        provider.setNextSunset(new DateTime(2013, 11, 20, 17, 0));
+        provider.setNextSunrise(dateTime(2013, 11, 20, 5, 0));
+        provider.setNextSunset(dateTime(2013, 11, 20, 17, 0));
         
-        DateTime noon = new DateTime(2013, 11, 21, 12, 0);
+        ZonedDateTime noon = dateTime(2013, 11, 21, 12, 0);
         GenericEvent twAtNoon = twu.prepareEvent(noon);
         Assert.assertEquals("300", twAtNoon.getProperty("beforeSunset"));
         Assert.assertEquals("", twAtNoon.getProperty("afterSunset"));
@@ -71,7 +74,7 @@ public class TwilightTest {
         Assert.assertEquals("420", twAtNoon.getProperty("afterSunrise"));
         Assert.assertEquals("", twAtNoon.getProperty("beforeSunrise"));
         
-        noon = new DateTime(2013, 11, 21, 12, 1);
+        noon = dateTime(2013, 11, 21, 12, 1);
         twAtNoon = twu.prepareEvent(noon);
         Assert.assertEquals("299", twAtNoon.getProperty("beforeSunset"));
         Assert.assertEquals("", twAtNoon.getProperty("afterSunset"));
@@ -83,10 +86,10 @@ public class TwilightTest {
 
     @Test
     public void MidnightTest() {
-        provider.setNextSunrise(new DateTime(2013, 11, 20, 5, 0));
-        provider.setNextSunset(new DateTime(2013, 11, 20, 17, 0));
+        provider.setNextSunrise(dateTime(2013, 11, 20, 5, 0));
+        provider.setNextSunset(dateTime(2013, 11, 20, 17, 0));
         
-        DateTime midnight = new DateTime(2013, 11, 22, 0, 0);
+        ZonedDateTime midnight = dateTime(2013, 11, 22, 0, 0);
         GenericEvent twAtMidnight = twu.prepareEvent(midnight);
         Assert.assertEquals("", twAtMidnight.getProperty("beforeSunset"));
         Assert.assertEquals("420", twAtMidnight.getProperty("afterSunset"));
@@ -99,10 +102,10 @@ public class TwilightTest {
 
     @Test
     public void sunriseTest() {
-        provider.setNextSunrise(new DateTime(2013, 11, 20, 5, 0));
-        provider.setNextSunset(new DateTime(2013, 11, 20, 17, 0));
+        provider.setNextSunrise(dateTime(2013, 11, 20, 5, 0));
+        provider.setNextSunset(dateTime(2013, 11, 20, 17, 0));
         
-        DateTime sunrise = new DateTime(2013, 11, 20, 5, 0);
+        ZonedDateTime sunrise = dateTime(2013, 11, 20, 5, 0);
         GenericEvent twAtSunrise = twu.prepareEvent(sunrise);
         Assert.assertEquals("720", twAtSunrise.getProperty("beforeSunset"));
         Assert.assertEquals("", twAtSunrise.getProperty("afterSunset"));
@@ -111,7 +114,7 @@ public class TwilightTest {
         Assert.assertEquals("", twAtSunrise.getProperty("afterSunrise"));
         Assert.assertEquals("", twAtSunrise.getProperty("beforeSunrise"));
         
-        sunrise = new DateTime(2013, 11, 20, 5, 1);
+        sunrise = dateTime(2013, 11, 20, 5, 1);
         twAtSunrise = twu.prepareEvent(sunrise);
         Assert.assertEquals("719", twAtSunrise.getProperty("beforeSunset"));
         Assert.assertEquals("", twAtSunrise.getProperty("afterSunset"));
@@ -123,10 +126,10 @@ public class TwilightTest {
 
     @Test
     public void sunsetTest() {
-        provider.setNextSunrise(new DateTime(2013, 11, 20, 5, 0));
-        provider.setNextSunset(new DateTime(2013, 11, 20, 17, 0));
+		provider.setNextSunrise(dateTime(2013, 11, 20, 5, 0));
+        provider.setNextSunset(dateTime(2013, 11, 20, 17, 0));
         
-        DateTime sunset = new DateTime(2013,11,23, 17,0);
+        ZonedDateTime sunset = dateTime(2013, 11, 23, 17, 0);
         GenericEvent twAtSunset = twu.prepareEvent(sunset);
         Assert.assertEquals("", twAtSunset.getProperty("beforeSunset"));
         Assert.assertEquals("", twAtSunset.getProperty("afterSunset"));
@@ -135,7 +138,7 @@ public class TwilightTest {
         Assert.assertEquals("720", twAtSunset.getProperty("afterSunrise"));
         Assert.assertEquals("", twAtSunset.getProperty("beforeSunrise"));
         
-        DateTime postSunset = new DateTime(2013, 11, 23, 17, 1);
+        ZonedDateTime postSunset = dateTime(2013, 11, 23, 17, 1);
         GenericEvent twPostSunset = twu.prepareEvent(postSunset);
         Assert.assertEquals("", twPostSunset.getProperty("beforeSunset"));
         Assert.assertEquals("1", twPostSunset.getProperty("afterSunset"));
@@ -143,5 +146,9 @@ public class TwilightTest {
         Assert.assertEquals("", twPostSunset.getProperty("isSunrise"));
         Assert.assertEquals("", twPostSunset.getProperty("afterSunrise"));
         Assert.assertEquals("719", twPostSunset.getProperty("beforeSunrise"));
+    }
+
+    private static ZonedDateTime dateTime(int year, int month, int day, int hour, int minute) {
+        return ZonedDateTime.of(year, month, day, hour, minute, 0, 0, ZoneId.systemDefault());
     }
 }
