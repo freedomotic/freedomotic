@@ -27,7 +27,7 @@ import com.freedomotic.reactions.Command;
 import com.freedomotic.plugins.devices.twilight.providers.EarthToolsWI;
 import com.freedomotic.plugins.devices.twilight.providers.OpenWeatherMapWI;
 import java.io.IOException;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +81,7 @@ public class Twilight extends Protocol {
 
     @Override
     protected void onRun() {
-        EventTemplate ev = TLU.prepareEvent(DateTime.now());
+        EventTemplate ev = TLU.prepareEvent(ZonedDateTime.now());
         LOG.info(ev.getPayload().toString().replace("\n", " "));
         notifyEvent(ev);
 
