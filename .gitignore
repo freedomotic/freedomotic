@@ -84,6 +84,10 @@ target/
 .project
 .settings/
 
+#Visual Studio#
+.vs
+.vs/
+
 # Libraries (negate general jar rule) #
 #######################################
 !/scripts/shared/*.txt
