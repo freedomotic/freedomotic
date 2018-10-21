@@ -23,10 +23,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.freedomotic.api.EventTemplate;
 import com.freedomotic.plugins.devices.restapiv3.RestAPIv3;
 import com.freedomotic.plugins.devices.restapiv3.representations.MessageCalloutRepresentation;
-import com.wordnik.swagger.annotations.Api;
-
+import io.swagger.annotations.Api;
 import javax.ws.rs.Path;
-
 import org.atmosphere.config.service.AtmosphereService;
 import org.atmosphere.cpr.Universe;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;

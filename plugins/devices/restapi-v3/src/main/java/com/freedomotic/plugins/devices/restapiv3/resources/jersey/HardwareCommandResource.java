@@ -1,5 +1,4 @@
 /**
- *
  * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
  *
  * This file is part of Freedomotic
@@ -21,12 +20,20 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.reactions.Command;
-import com.wordnik.swagger.annotations.*;
+import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -55,7 +62,7 @@ public class HardwareCommandResource extends AbstractResource<Command> {
     @ApiOperation(value = "Get a hardware command", position = 20)
     @Path("/{id}")
     @ApiResponses(value = {
-        @ApiResponse(code = 404, message = "Hardware command not found")
+            @ApiResponse(code = 404, message = "Hardware command not found")
     })
     @Override
     public Response get(
@@ -69,7 +76,7 @@ public class HardwareCommandResource extends AbstractResource<Command> {
     @Path("/{id}")
     @ApiOperation(value = "Delete a hardware command", position = 50)
     @ApiResponses(value = {
-        @ApiResponse(code = 404, message = "Hardware command not found")
+            @ApiResponse(code = 404, message = "Hardware command not found")
     })
     public Response delete(
             @ApiParam(value = "UUID of hardware command to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66", required = true)
@@ -87,7 +94,7 @@ public class HardwareCommandResource extends AbstractResource<Command> {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Add a new hardware command", position = 30)
     @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "New hardware command added")
+            @ApiResponse(code = 201, message = "New hardware command added")
     })
     @Override
     public Response create(Command s) {
@@ -106,7 +113,7 @@ public class HardwareCommandResource extends AbstractResource<Command> {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
-        @ApiResponse(code = 304, message = "Hardware command not modified")
+            @ApiResponse(code = 304, message = "Hardware command not modified")
     })
     @ApiOperation(value = "Update a hardware command", position = 40)
     public Response update(

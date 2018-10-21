@@ -21,7 +21,7 @@ package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractResource;
 import com.freedomotic.reactions.Trigger;
-import com.wordnik.swagger.annotations.*;
+import io.swagger.annotations.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -75,7 +75,7 @@ public class TriggerResource extends AbstractResource<Trigger> {
             @PathParam("id") String UUID) {
         return super.delete(UUID);
     }
-    
+
      /**
      *
      * @param UUID
@@ -96,7 +96,7 @@ public class TriggerResource extends AbstractResource<Trigger> {
             @PathParam("id") String UUID, Trigger s) {
         return super.update(UUID, s);
     }
-    
+
 
     /**
      *
@@ -114,8 +114,8 @@ public class TriggerResource extends AbstractResource<Trigger> {
     public Response create(Trigger s) {
         return super.create(s);
     }
-    
-    
+
+
     @Override
     protected URI doCreate(Trigger o) throws URISyntaxException {
         API.triggers().create(o);

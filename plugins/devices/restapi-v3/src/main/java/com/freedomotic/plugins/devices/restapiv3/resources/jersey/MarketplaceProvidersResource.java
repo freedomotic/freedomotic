@@ -19,6 +19,8 @@
  */
 package com.freedomotic.plugins.devices.restapiv3.resources.jersey;
 
+import static com.freedomotic.plugins.devices.restapiv3.resources.jersey.MarketplaceResource.api;
+
 import com.freedomotic.api.Client;
 import com.freedomotic.api.Plugin;
 import com.freedomotic.marketplace.IMarketPlace;
@@ -27,21 +29,19 @@ import com.freedomotic.marketplace.IPluginPackage;
 import com.freedomotic.marketplace.MarketPlaceService;
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.plugins.devices.restapiv3.filters.ItemNotFoundException;
-import static com.freedomotic.plugins.devices.restapiv3.resources.jersey.MarketplaceResource.api;
 import com.freedomotic.plugins.devices.restapiv3.utils.AbstractReadOnlyResource;
 import com.freedomotic.settings.Info;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Api;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
