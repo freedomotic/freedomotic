@@ -14,7 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <freedomotic.basedir>${project.parent.basedir}</freedomotic.basedir>
-        <org.restlet.version>2.1.7</org.restlet.version>
+        <org.restlet.version>2.3.12</org.restlet.version>
     </properties>
 
     <dependencies>
