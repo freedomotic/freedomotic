@@ -22,7 +22,6 @@ package com.freedomotic.things.impl;
 import com.freedomotic.app.Freedomotic;
 import com.freedomotic.core.SynchAction;
 import com.freedomotic.environment.EnvironmentLogic;
-import com.freedomotic.events.ObjectHasChanged;
 import com.freedomotic.exceptions.DataUpgradeException;
 import com.freedomotic.exceptions.FreedomoticRuntimeException;
 import com.freedomotic.exceptions.RepositoryException;
