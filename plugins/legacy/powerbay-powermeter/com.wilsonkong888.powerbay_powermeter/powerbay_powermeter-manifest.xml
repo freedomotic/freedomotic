@@ -1,0 +1,13 @@
+<config>
+    <properties>
+        <property name="name" value="powerbay_powermeter"/>
+        <property name="description" value="USB Powerbay Powermeter"/>
+        <property name="protocol.name"  value="powerbay"/>
+        <property name="version" value="1.0.0"/>
+        <property name="required" value="5.1.0"/>
+        <property name="category" value="protocol"/>
+        <property name="short-name" value="powerbay_powermeter"/>
+        <property name="serial.port" value="COM4"/>   
+        <property name="polling_rate" value="5000"/>   
+    </properties>
+</config>

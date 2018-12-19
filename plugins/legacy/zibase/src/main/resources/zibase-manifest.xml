@@ -1,0 +1,35 @@
+<config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
+    <properties>
+        <property name="description"    value="Communicates with the Zibase board developed by zodianet.com"/>
+        <property name="protocol.name"  value="zibase"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="zibase"/>
+        <property name="address-delimiter" value=":"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="polling-time"   value="200"/>
+        <property name="get-sensors-url" value="sensors.xml"/>
+        <property name="send-commands-url" value="cgi-bin/domo.cgi?cmd="/>
+        <property name="X10"  value="P0"/>
+        <property name="VISIONIC433"  value="P1"/>
+        <property name="VISIONIC868"  value="P2"/>
+        <property name="CHACON"  value="P3"/>
+        <property name="DOMIA"  value="P4"/>
+        <property name="RFX10"  value="P5"/>
+        <property name="ZWAVE"  value="P6"/>
+        <property name="RFS10/TS10"  value="P7"/>
+        <property name="XDD433ALRM"  value="P8"/>
+        <property name="XDD868ALRM"  value="P9"/>
+        <property name="XDD868INTER"  value="P10"/>
+        <property name="XDD868PILOTWIRE"  value="P11"/>
+        <property name="XDD868BOILER"  value="P12"/>
+    </properties>
+    <tuples>
+        <!-- DEVICES CONFIGURATION -->    
+        <tuple>
+            <property name="alias" value="default"/>
+            <property name="ip-to-query" value="192.168.0.115"/>
+            <property name="port-to-query" value="80"/>
+        </tuple>
+    </tuples>
+</config>

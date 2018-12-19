@@ -1,0 +1,14 @@
+<command>
+    <name>Turn off Zibase device</name>
+    <receiver>app.actuators.protocol.zibase.in</receiver>
+    <description>turns off the object linked to this zibase gateway</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="control" value="OFF"/>
+            <property name="address" value="@owner.object.address"/>
+        </properties>
+    </properties>
+</command>

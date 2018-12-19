@@ -1,0 +1,21 @@
+<trigger>
+    <name>USB Powerbay Power Meter: Read Powered</name>
+    <description>USB Powerbay Power Meter: Read Powered</description>
+    <channel>app.event.sensor.protocol.read.powerbay</channel>
+    <payload>
+        <payload>
+            <statement>
+                <logical>SET</logical>
+                <attribute>behaviorValue</attribute>
+                <operand>EQUALS</operand>
+                <value>@event.powerbay.powered</value>
+            </statement>
+        </payload>
+    </payload>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <priority>0</priority>
+    <maxExecutions>-1</maxExecutions>
+    <numberOfExecutions>0</numberOfExecutions>
+    <suspensionTime>0</suspensionTime>
+</trigger>
