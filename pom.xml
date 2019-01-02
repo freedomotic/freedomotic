@@ -345,7 +345,7 @@
                             <name>${project.name}</name>
                             <inceptionyear>${project.inceptionYear}</inceptionyear>
                             <!-- TODO: use current year -->
-                            <year>2018</year>
+                            <year>2019</year>
                             <holder>Freedomotic team</holder>
                             <contact>info@freedomotic.com</contact>
                         </properties>
