@@ -1,10 +1,10 @@
-Freedomotic
+Freedomotic Open IoT Framework
 =================================
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/48aa004c305547b7bda625f78a8363c0)](https://www.codacy.com/app/mcicolella/freedomotic?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=freedomotic/freedomotic&amp;utm_campaign=Badge_Grade)
 [![Code Triagers Badge](https://www.codetriage.com/freedomotic/freedomotic/badges/users.svg)](https://www.codetriage.com/freedomotic/freedomotic)
 [![](https://dockerbuildbadges.quelltext.eu/status.svg?organization=freedomotic&repository=freedomotic)](https://hub.docker.com/r/freedomotic/freedomotic/builds/) 
 
-Official website is http://freedomotic.com
+Official website is http://www.freedomotic-iot.com
 
 Freedomotic is an open source, flexible, secure Internet of Things (IoT) application framework, useful to build and manage modern smart spaces. It is targeted to private individuals (home automation) as well as business users (smart retail environments, ambient aware marketing, monitoring and analytics, ...)
 
