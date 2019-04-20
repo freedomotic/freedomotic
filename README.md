@@ -4,7 +4,7 @@ Freedomotic Open IoT Framework
 [![Code Triagers Badge](https://www.codetriage.com/freedomotic/freedomotic/badges/users.svg)](https://www.codetriage.com/freedomotic/freedomotic)
 [![](https://dockerbuildbadges.quelltext.eu/status.svg?organization=freedomotic&repository=freedomotic)](https://hub.docker.com/r/freedomotic/freedomotic/builds/) 
 
-Official website is http://www.freedomotic-iot.com
+Official website is https://www.freedomotic-iot.com
 
 Freedomotic is an open source, flexible, secure Internet of Things (IoT) application framework, useful to build and manage modern smart spaces. It is targeted to private individuals (home automation) as well as business users (smart retail environments, ambient aware marketing, monitoring and analytics, ...)
 
@@ -75,7 +75,7 @@ Having trouble with Freedomotic? We’d like to help!
 
 - Check out the [user manual](http://freedomotic-user-manual.readthedocs.io) for reference documentation. 
 - Write on the [mailing list](https://groups.google.com/forum/#!forum/freedom-domotics)
-- Send an email to info@freedomotic.com
+- Send an email to info@freedomotic-iot.com
 - Open an issue on https://github.com/freedomotic/freedomotic/issues
 
 Contributing
