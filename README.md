@@ -61,10 +61,10 @@ As an alternative you can start **freedomotic-core** project from your favourite
 Demo
 ====
 
-An online demo is kindly hosted for free by [DigitalOcean](https://www.digitalocean.com/).
+An online demo is kindly hosted for free by our tech partner [Appcademy - Florence](https://appcademy.tech/).
 
 Go to
-- [API demo](http://174.138.4.3:9111/)
+- [API demo](http://51.77.212.115:9111/)
 - [Vue Web client - under development](http://fd-vue-webapp.herokuapp.com/) | [GitHub repository](https://github.com/freedomotic/fd-vue-webapp)
 
 
