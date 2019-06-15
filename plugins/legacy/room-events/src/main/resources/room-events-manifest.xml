@@ -1,0 +1,15 @@
+
+
+<config>
+    <properties>
+        <property name="name" value="roomevents"/>
+        <property name="description" value="Send events related to room status"/>
+        <property name="version" value="1.0.0"/>
+        <property name="required" value="5.5.0"/>
+        <property name="category" value="logging"/>
+        <property name="short-name" value="roomevents"/>
+        <property name="startup-time" value="on load"/>
+    </properties>
+</config>
+
+                
