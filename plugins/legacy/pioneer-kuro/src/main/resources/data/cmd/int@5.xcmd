@@ -1,0 +1,14 @@
+<com.freedomotic.reactions.Command>
+  <name>Mute ON KuroTV object</name>
+  <receiver>app.actuators.PioneerKuro.PioneerKuroActuator.in</receiver>
+  <description>an KuroTV object will mute</description>
+  <hardwareLevel>true</hardwareLevel>
+  <delay>0</delay>
+  <timeout>0</timeout>
+  <properties>
+    <properties> 
+      <property name="command" value="AMT"/>
+      <property name="parameter" value="S01"/>
+    </properties>
+  </properties>
+</com.freedomotic.reactions.Command>

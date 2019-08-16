@@ -1,0 +1,13 @@
+<com.freedomotic.reactions.Command>
+  <name>Switch OFF KuroTV object</name>
+  <receiver>app.actuators.PioneerKuro.PioneerKuroActuator.in</receiver>
+  <description>an KuroTV object will turn off</description>
+  <hardwareLevel>true</hardwareLevel>
+  <delay>0</delay>
+  <timeout>0</timeout>
+  <properties>
+    <properties>
+      <property name="command" value="POF"/>
+    </properties>
+  </properties>
+</com.freedomotic.reactions.Command>

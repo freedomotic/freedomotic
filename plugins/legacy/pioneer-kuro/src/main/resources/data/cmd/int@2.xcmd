@@ -1,0 +1,14 @@
+<com.freedomotic.reactions.Command>
+  <name>Set Volume KuroTV object</name>
+  <receiver>app.actuators.PioneerKuro.PioneerKuroActuator.in</receiver>
+  <description>an KuroTV object will change the volume</description>
+  <hardwareLevel>true</hardwareLevel>
+  <delay>0</delay>
+  <timeout>0</timeout>
+  <properties>
+    <properties>
+      <property name="command" value="VOL"/>
+      <property name="parameter" value="@event.value"/>
+    </properties>
+  </properties>
+</com.freedomotic.reactions.Command>

@@ -1,0 +1,14 @@
+<com.freedomotic.reactions.Command>
+  <name>Set Channel Up KuroTV object</name>
+  <receiver>app.actuators.PioneerKuro.PioneerKuroActuator.in</receiver>
+  <description>an KuroTV object will change the channel up</description>
+  <hardwareLevel>true</hardwareLevel>
+  <delay>0</delay>
+  <timeout>0</timeout>
+  <properties>
+    <properties>
+      <property name="command" value="CHN"/>
+      <property name="parameters" value="FWD"/>
+    </properties>
+  </properties>
+</com.freedomotic.reactions.Command>
