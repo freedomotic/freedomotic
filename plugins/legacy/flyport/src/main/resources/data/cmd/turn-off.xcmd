@@ -1,0 +1,15 @@
+<command>
+    <name>Turn OFF on Flyport board</name>
+    <receiver>app.actuators.protocol.flyport.in</receiver>
+    <description>turns off the object linked to this Flyport board</description>
+    <hardwareLevel>true</hardwareLevel>
+    <delay>0</delay>
+    <timeout>0</timeout>
+    <properties>
+        <properties>
+            <property name="command" value="RELAY"/>
+            <property name="behavior" value="off"/>
+	    <property name="address" value="@owner.object.address"/>
+        </properties>
+    </properties>
+</command>

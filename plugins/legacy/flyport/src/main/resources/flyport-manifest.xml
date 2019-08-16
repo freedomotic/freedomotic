@@ -1,0 +1,24 @@
+<config>
+    <!-- PLUGINS DEFAULT PARAMETERS -->
+    <properties>
+        <property name="description"    value="Communicates with the flyport board developed by openpicus.com"/>
+        <property name="protocol.name"  value="flyport"/>
+        <property name="category"       value="protocol"/>
+        <property name="short-name"     value="flyport"/>
+        <property name="address-delimiter" value=":"/>
+        <property name="startup-time"   value="on load"/>
+        <property name="polling-time"   value="200"/>
+    </properties>
+    <tuples>
+        <!-- DEVICES CONFIGURATION --> 
+        <tuple>
+            <property name="ip-to-query" value="192.168.0.115"/>
+            <property name="port-to-query" value="80"/>
+            <property name="pot-number" value="2"/>
+            <property name="led-number" value="5"/>
+            <property name="btn-number" value="5"/>
+            <property name="starting-value" value="0"/>
+            <property name="line-to-monitorize" value="led"/>
+        </tuple>
+    </tuples>
+</config>
