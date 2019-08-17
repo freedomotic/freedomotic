@@ -26,6 +26,7 @@ import com.freedomotic.exceptions.PluginStartupException;
 import com.freedomotic.exceptions.UnableToExecuteException;
 import com.freedomotic.helpers.HttpHelper;
 import com.freedomotic.reactions.Command;
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,7 +127,7 @@ public class ArduinoWeatherShield extends Protocol {
                 readValuesWithRetry(board, --maxFailures);
             } else {
                 throw new PluginRuntimeException("Cannot connect to Arduino Weathershield board at "
-                        + board.getIpAddress() + ":" + board.getPort(), ex);
+                        + board.getIpAddress() + ":" + board.getPort(), e);
             }
         }
     }
