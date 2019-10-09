@@ -49,9 +49,6 @@ public class ArduinoUSB extends Protocol {
     private String delimiter = configuration.getStringProperty("delimiter", ";");
     private SerialHelper serial;
 
-    /**
-     *
-     */
     public ArduinoUSB() {
         super("Arduino USB", "/arduinousb/arduinousb-manifest.xml");
         //This disables loop execution od onRun() method
