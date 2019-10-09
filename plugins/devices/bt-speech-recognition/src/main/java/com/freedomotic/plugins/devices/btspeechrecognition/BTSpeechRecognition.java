@@ -38,9 +38,6 @@ public class BTSpeechRecognition
 
     private static final Logger LOG = LoggerFactory.getLogger(BTSpeechRecognition.class.getName());
 
-    /**
-     *
-     */
     public BTSpeechRecognition() {
         super("BT Speech Recognition", "/bt-speech-recognition/bt-speech-recognition-manifest.xml");
         setPollingWait(-1); // stop polling
