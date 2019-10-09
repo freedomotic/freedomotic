@@ -49,9 +49,6 @@ public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
         injector = createInjectorFor(classes);
     }
 
-    /**
-     *
-     */
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
     @Inherited
