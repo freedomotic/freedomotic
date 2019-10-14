@@ -1,20 +1,25 @@
 #Fri Oct 28 17:37:55 CEST 2016
-KEY_SAVE_LOG_TO_FILE=OFF  
-KEY_MESSAGES_TTL=5000
-KEY_CACHE_MARKETPLACE_ON_STARTUP=false
-KEY_ENABLE_SSO=false
-KEY_BROKER_URL=vm\://localhost?persistent\=false
-KEY_OVERRIDE_REACTIONS_ON_EXIT=true
-KEY_OVERRIDE_OBJECTS_ON_EXIT=true
-KEY_ENABLE_I18N=auto
-KEY_SECURITY_ENABLE=true
-KEY_ROOM_XML_PATH=/df28cda0-a866-11e2-9e96-0800200c9a66/df28cda0-a866-11e2-9e96-0800200c9a66.xenv
-KEY_DISCARD_INVALID_DESTINATIONS=true
-KEY_ENABLE_PLUGINS_DOWNLOAD=true
-KEY_P2P_CLUSTER_NAME=freedomotic-commander
-KEY_RESOURCES_PATH=/data/resources/
-KEY_ADMIN_SENDING_ADDRESS=issue.reporter@freedomotic.com
-KEY_ADMIN_RECIPIENT_ADDRESS=mauro@freedomotic.com
-KEY_SAVE_DATA_PERIODICALLY=true
-KEY_DATA_SAVING_INTERVAL=15
+public class PrefixedPropertyFactoryBean extends AbstractFactoryBean<Properties> {
 
+    private List<Resource> locations;
+    public void setLocations(List<Resource> locations) { this.locations = locations; }
+
+    private String prefix;
+    public void setPrefix(String prefix) { this.prefix = prefix; }
+
+    @Override public Class<?> getObjectType() { return Properties.class; }
+
+    @Override
+    protected Properties createInstance() throws Exception {
+        Properties properties = new Properties();
+        for (Resource resource : locations) {
+           properties.load( resource.getInputStream());
+        }
+        final Iterator<Object> keyIterator = properties.keySet().iterator();
+        while(keyIterator.hasNext()) {
+            if(!keyIterator.next().toString().startsWith(prefix))
+            keyIterator.remove();
+        }
+        return properties;
+    }
+}
