@@ -1,6 +1,6 @@
 
 Copyright (c) ${inceptionyear}-${year} ${holder}
-http://freedomotic.com
+https://www.freedomotic-iot.com
 
 This file is part of ${name}
 
