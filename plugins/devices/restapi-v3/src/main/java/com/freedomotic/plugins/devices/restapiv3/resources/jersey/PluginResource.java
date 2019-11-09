@@ -59,14 +59,14 @@ public class PluginResource extends AbstractResource<Plugin> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Get a plugin", position = 20)
-    @Path("/{id}")
+    @Path("/{plugin_id}")
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Plugin not found")
     })
     @Override
     public Response get(
             @ApiParam(value = "UUID of plugin to fetch (e.g. logviewer, automationseditor)", required = true)
-            @PathParam("id") String UUID) {
+            @PathParam("plugin_id") String UUID) {
         return super.get(UUID);
     }
 
@@ -92,7 +92,7 @@ public class PluginResource extends AbstractResource<Plugin> {
 
     @POST
     @ApiOperation("Start a plugin")
-    @Path("/{id}/start")
+    @Path("/{plugin_id}/start")
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Plugin not found")
         ,
@@ -101,7 +101,7 @@ public class PluginResource extends AbstractResource<Plugin> {
         @ApiResponse(code = 304, message = "Plugin not started")
     })
     public Response start(
-            @PathParam("id")
+            @PathParam("plugin_id")
             @ApiParam(value = "Classname of plugin", required = true) String name) {
         if (!API.getAuth().isPermitted("sys:plugins:start:" + name)) {
             throw new ForbiddenException();
@@ -119,7 +119,7 @@ public class PluginResource extends AbstractResource<Plugin> {
     }
 
     @POST
-    @Path("/{id}/stop")
+    @Path("/{plugin_id}/stop")
     @ApiOperation("Stop a plugin")
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Plugin not found")
@@ -129,7 +129,7 @@ public class PluginResource extends AbstractResource<Plugin> {
         @ApiResponse(code = 304, message = "Plugin not stopped")
     })
     public Response stop(
-            @PathParam("id")
+            @PathParam("plugin_id")
             @ApiParam(value = "Classname of plugin", required = true) String name
     ) {
         if (!API.getAuth().isPermitted("sys:plugins:stop:" + name)) {

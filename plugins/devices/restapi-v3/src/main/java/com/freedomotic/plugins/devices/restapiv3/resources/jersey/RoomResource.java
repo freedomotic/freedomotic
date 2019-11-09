@@ -72,27 +72,27 @@ public class RoomResource extends AbstractResource<Zone> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Get a room", position = 20)
-    @Path("/{id}")
+    @Path("/{room_id}")
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Room not found")
     })
     @Override
     public Response get(
             @ApiParam(value = "UUID of room to fetch (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
-            @PathParam("id") String UUID) {
+            @PathParam("room_id") String UUID) {
         return super.get(UUID);
     }
 
     @Override
     @DELETE
-    @Path("/{id}")
+    @Path("/{room_id}")
     @ApiOperation(value = "Delete a room", position = 50)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "Room not found")
     })
     public Response delete(
             @ApiParam(value = "UUID of room to delete (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
-            @PathParam("id") String UUID) {
+            @PathParam("room_id") String UUID) {
         return super.delete(UUID);
     }
 
@@ -104,7 +104,7 @@ public class RoomResource extends AbstractResource<Zone> {
      */
     @Override
     @PUT
-    @Path("/{id}")
+    @Path("/{room_id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
@@ -113,7 +113,7 @@ public class RoomResource extends AbstractResource<Zone> {
     @ApiOperation(value = "Update a room", position = 40)
     public Response update(
             @ApiParam(value = "UUID of room to update (e.g. df28cda0-a866-11e2-9e96-0800200c9a66)", required = true)
-            @PathParam("id") String UUID, Zone s) {
+            @PathParam("room_id") String UUID, Zone s) {
         return super.update(UUID, s);
     }
 
@@ -182,10 +182,10 @@ public class RoomResource extends AbstractResource<Zone> {
         }
     }
 
-    @Path("/{id}/things/")
+    @Path("/{room_id}/things/")
     public ThingResource objects(
             @ApiParam(value = "UUID of room to fetch things from", required = true)
-            @PathParam("id") String room) {
+            @PathParam("room_id") String room) {
         return new ThingResource(envUUID, room);
     }
 
