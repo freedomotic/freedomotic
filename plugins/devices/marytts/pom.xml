@@ -117,11 +117,11 @@
     <repositories>
         <repository>
             <id>bintray</id>
-            <url>http://dl.bintray.com/marytts/marytts</url>
+            <url>https://dl.bintray.com/marytts/marytts</url>
         </repository>
         <repository>
             <id>spring-milestones</id>
-            <url>http://repo.springsource.org/libs-milestone/</url>
+            <url>https://repo.springsource.org/libs-milestone/</url>
         </repository>
     </repositories> 
     <build>
