@@ -1,6 +1,6 @@
 // Freedomotic Remote Controller Plugin
 // by Mauro Cicolella
-// www.freedomotic.com
+// www.www.freedomotic-iot.com
 
 #include <IRremote.h> 
 #include <String.h> 

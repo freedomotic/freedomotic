@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2020 Freedomotic Team http://freedomotic.com
+ * Copyright (c) 2009-2020 Freedomotic Team http://www.freedomotic-iot.com
  *
  * This file is part of Freedomotic
  *
@@ -90,7 +90,7 @@ public class ArduinoUSB extends Protocol {
 
     @Override
     protected void onCommand(Command c) throws UnableToExecuteException {
-        //this method receives freedomotic commands sent on channel app.actuators.protocol.arduinousb.in
+        //this method receives www.freedomotic-iot.commands sent on channel app.actuators.protocol.arduinousb.in
         String message = c.getProperty("arduinousb.message");
         try {
             serial.write(message);

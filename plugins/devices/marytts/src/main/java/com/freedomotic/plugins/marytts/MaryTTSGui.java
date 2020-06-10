@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2020 Freedomotic Team http://freedomotic.com
+ * Copyright (c) 2009-2020 Freedomotic Team http://www.freedomotic-iot.com
  * 
 * This file is part of Freedomotic
  * 
@@ -57,7 +57,7 @@ public class MaryTTSGui extends javax.swing.JFrame {
 
         txtArea.setColumns(20);
         txtArea.setRows(5);
-        txtArea.setText("Hello, how are you? \nYou can use this speech engine to say \nwhat you want in automations. Take a look \nat the tutorial on \nhttp://www.freedomotic.com/content/plugins/text-speech");
+        txtArea.setText("Hello, how are you? \nYou can use this speech engine to say \nwhat you want in automations. Take a look \nat the tutorial on \nhttp://www.www.freedomotic-iot.com/content/plugins/text-speech");
         jScrollPane1.setViewportView(txtArea);
 
         btnOk.setText("Speak!");

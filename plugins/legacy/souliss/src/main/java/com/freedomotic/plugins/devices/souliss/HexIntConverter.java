@@ -3,7 +3,7 @@
 /**
  *
  * Copyright (c) 2009-2020 Freedomotic Team
- * http://freedomotic.com
+ * http://www.freedomotic-iot.com
  *
  * This file is part of Freedomotic
  *

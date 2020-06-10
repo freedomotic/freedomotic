@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2020 Freedomotic Team http://freedomotic.com
+ * Copyright (c) 2009-2020 Freedomotic Team http://www.freedomotic-iot.com
  *
  * This file is part of Freedomotic
  *
@@ -54,7 +54,7 @@ public class AntUploader extends Task {
         if (cS != null) {
             //first try to retrieve the plugin from the drupal site
             LOG.info("Retrieving node {} from the marketplace", nodeid);
-            MarketPlacePlugin2 plugin = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.freedomotic.com/rest/node/" + nodeid);
+            MarketPlacePlugin2 plugin = (MarketPlacePlugin2) DrupalRestHelper.retrievePluginPackage("http://www.www.freedomotic-iot.com/rest/node/" + nodeid);
             if (plugin != null) {
                 try {
                     File marketDirectory = new File(attachment);

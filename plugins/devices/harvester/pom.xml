@@ -15,9 +15,9 @@
         <developer>
             <id>gabriel</id>
             <name>Gabriel</name>
-            <email>gabriel@freedomotic.com</email>
+            <email>gabriel@www.freedomotic-iot.com</email>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
             <properties>
                 <nation>es</nation>
             </properties>
@@ -26,9 +26,9 @@
         <developer>
             <id>matteo</id>
             <name>Matteo</name>
-            <email>matteo@freedomotic.com</email>
+            <email>matteo@www.freedomotic-iot.com</email>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
             <properties>
                 <nation>it</nation>
             </properties>

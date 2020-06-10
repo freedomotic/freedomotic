@@ -6,7 +6,7 @@
     <artifactId>freedomotic-plugins</artifactId>
     <name>Freedomotic Plugins</name>
     <description>Official Freedomotic Plugins</description>
-    <url>http://freedomotic.com</url>
+    <url>http://www.freedomotic-iot.com</url>
     <inceptionYear>2009</inceptionYear>
     <packaging>pom</packaging>
 
