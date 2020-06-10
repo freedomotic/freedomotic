@@ -32,7 +32,7 @@ import com.google.gson.stream.JsonReader;
  */
 public class RestTestClient {
 
-    public static final String DRUPALPATH = "http://freedomotic.com/";
+    public static final String DRUPALPATH = "http://www.freedomotic-iot.com/";
 
     /**
      * @param args the command line arguments

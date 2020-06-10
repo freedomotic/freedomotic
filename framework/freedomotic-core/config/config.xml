@@ -11,10 +11,10 @@ KEY_SECURITY_ENABLE=true
 KEY_ROOM_XML_PATH=/df28cda0-a866-11e2-9e96-0800200c9a66/df28cda0-a866-11e2-9e96-0800200c9a66.xenv
 KEY_DISCARD_INVALID_DESTINATIONS=true
 KEY_ENABLE_PLUGINS_DOWNLOAD=true
-KEY_P2P_CLUSTER_NAME=freedomotic-commander
+KEY_P2P_CLUSTER_NAME=www.freedomotic-iot.commander
 KEY_RESOURCES_PATH=/data/resources/
-KEY_ADMIN_SENDING_ADDRESS=issue.reporter@freedomotic.com
-KEY_ADMIN_RECIPIENT_ADDRESS=mauro@freedomotic.com
+KEY_ADMIN_SENDING_ADDRESS=issue.reporter@www.freedomotic-iot.com
+KEY_ADMIN_RECIPIENT_ADDRESS=mauro@www.freedomotic-iot.com
 KEY_SAVE_DATA_PERIODICALLY=true
 KEY_DATA_SAVING_INTERVAL=15
 

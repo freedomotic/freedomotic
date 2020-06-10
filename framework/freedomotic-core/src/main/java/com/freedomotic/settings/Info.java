@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2020 Freedomotic Team http://freedomotic.com
+ * Copyright (c) 2009-2020 Freedomotic Team http://www.freedomotic-iot.com
  *
  * This file is part of Freedomotic
  *
@@ -58,7 +58,7 @@ public class Info {
         public static final String FRAMEWORK_LICENSE = "GNU GPL v2";
         public static final String FRAMEWORK_RELEASE_TYPE = "beta";
         public static final String FRAMEWORK_AUTHOR = "Freedomotic Development Team";
-        public static final String PROJECT_MAIL = "info@freedomotic.com";
+        public static final String PROJECT_MAIL = "info@www.freedomotic-iot.com";
     }
 
     @XmlRootElement

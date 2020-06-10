@@ -72,7 +72,7 @@
             <property name="param.message" value="_PUT HERE A MESSAGE CONTENT_"/>
 <!-- optional    <property name="param.device" value="_PUT HERE A DEVICE NAME_"/> -->
 <!-- optional    <property name="param.priority" value="0"/> -->
-<!-- optional --><property name="param.url" value="http://www.freedomotic.com"/>
+<!-- optional --><property name="param.url" value="http://www.www.freedomotic-iot.com"/>
 <!-- optional --><property name="param.url_title" value="Freedomotic Rocks!"/>
         </tuple>
         <tuple> <!-- Pushsafer send notifications to iOS, Android & Window 10 > API > https://www.pushsafer.com/en/pushapi -->

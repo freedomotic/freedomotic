@@ -1,7 +1,7 @@
 /**
  *
  * Copyright (c) 2009-2020 Freedomotic Team
- * http://freedomotic.com
+ * http://www.freedomotic-iot.com
  *
  * This file is part of Freedomotic
  *
@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 public class DrupalRestHelper {
 
     public static final String DRUPALSCHEMA = "http";
-    public static final String DRUPALPATH = "www.freedomotic.com";
+    public static final String DRUPALPATH = "www.www.freedomotic-iot.com";
     public static final String DRUPALSERVICE = "rest";
     public static final String DEFAULTIMAGEPATH = "/sites/default/files/imagefield_default_images/Addons-64_0.png";
     public static ImageIcon defaultIconImage;

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2020 Freedomotic Team http://freedomotic.com
+ * Copyright (c) 2009-2020 Freedomotic Team http://www.freedomotic-iot.com
  *
  * This file is part of Freedomotic
  *
@@ -177,7 +177,7 @@ public class ZWay extends Protocol {
      */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
-        //get connection paramentes address:port from received freedomotic command
+        //get connection paramentes address:port from received www.freedomotic-iot.command
         String delimiter = configuration.getProperty("address-delimiter");
         address = c.getProperty("address").split(delimiter); // in the format IP:PORT:ID:INSTANCE
         Board board = (Board) devices.get(address[0]);

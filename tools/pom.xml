@@ -6,7 +6,7 @@
     <artifactId>freedomotic-tools</artifactId>
     <name>Freedomotic Tools</name>
     <description>Freedomotic non vital support tools and helpers</description>
-    <url>http://freedomotic.com</url>
+    <url>http://www.freedomotic-iot.com</url>
     <inceptionYear>2009</inceptionYear>
     <packaging>pom</packaging>
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2020 Freedomotic Team http://freedomotic.com
+ * Copyright (c) 2009-2020 Freedomotic Team http://www.freedomotic-iot.com
  *
  * This file is part of Freedomotic
  *
@@ -267,7 +267,7 @@ public class MainWindow
             LOG.error("Unable to create a drawer to render the environment on the desktop frontend");
         }
 
-        this.setTitle("Freedomotic " + Info.getLicense() + " - www.freedomotic.com");
+        this.setTitle("Freedomotic " + Info.getLicense() + " - www.www.freedomotic-iot.com");
         this.setSize(1100, 700);
         centerFrame(this);
         frameClient.moveToFront();
@@ -907,7 +907,7 @@ public class MainWindow
                 + i18n.msg("licence") + ": " + Info.getLicense() + "\n\n"
                 + i18n.msg("find_support_msg") + ":\n"
                 + "https://github.com/freedomotic/freedomotic" + "\n"
-                + "http://freedomotic.com/", i18n.msg("info"), JOptionPane.INFORMATION_MESSAGE);
+                + "http://www.freedomotic-iot.com/", i18n.msg("info"), JOptionPane.INFORMATION_MESSAGE);
 }//GEN-LAST:event_submnuHelpActionPerformed
 
     private void mnuExitActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1481,8 +1481,8 @@ private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//G
             Command c = new Command();
             c.setName("Mailer");
             c.setReceiver("app.actuators.messaging.mail.in");
-            c.setProperty("from", master.getApi().getConfig().getStringProperty("KEY_ADMIN_SENDING_ADDRESS", "issue.reporter@freedomotic.com"));
-            c.setProperty("to", master.getApi().getConfig().getStringProperty("KEY_ADMIN_RECIPIENT_ADDRESS", "admin@freedomotic.com"));
+            c.setProperty("from", master.getApi().getConfig().getStringProperty("KEY_ADMIN_SENDING_ADDRESS", "issue.reporter@www.freedomotic-iot.com"));
+            c.setProperty("to", master.getApi().getConfig().getStringProperty("KEY_ADMIN_RECIPIENT_ADDRESS", "admin@www.freedomotic-iot.com"));
             c.setProperty("message", "Here you are with the log received from an user");
             c.setProperty("subject", "Log sent by Freedomotic");
             c.setProperty("attachment", Freedomotic.logPath());

@@ -2,8 +2,8 @@
 # A simple shell script to install Freedomotic on Raspberry Pi
 # Last Change: 20/09/2017
 
-FREEDOMOTIC_LINK="https://sourceforge.net/projects/freedomotic/files/freedomotic-commander-5.6.0-rc4.zip"
-FOLDER_NAME="freedomotic-commander-5.6.0-rc4"
+FREEDOMOTIC_LINK="https://sourceforge.net/projects/freedomotic/files/www.freedomotic-iot.commander-5.6.0-rc4.zip"
+FOLDER_NAME="www.freedomotic-iot.commander-5.6.0-rc4"
 
 echo "Remove old installation files (if any) and create a new installation folder (~/Desktop/$FOLDER_NAME)" 
 rm -r ~/Desktop/$FOLDER_NAME

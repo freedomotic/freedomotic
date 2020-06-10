@@ -32,11 +32,11 @@
     <fileVersion>5.6.0.0</fileVersion>
     <txtFileVersion>5.6 - Commander</txtFileVersion>
     <fileDescription>Open IoT Framework</fileDescription>
-    <copyright>freedomotic.com</copyright>
+    <copyright>www.freedomotic-iot.com</copyright>
     <productVersion>5.6.0.0</productVersion>
     <txtProductVersion>5.6 - Commander</txtProductVersion>
     <productName>Freedomotic</productName>
-    <companyName>freedomotic.com</companyName>
+    <companyName>www.freedomotic-iot.com</companyName>
     <internalName>freedomotic</internalName>
     <originalFilename>freedomotic.exe</originalFilename>
   </versionInfo>

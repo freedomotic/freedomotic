@@ -45,7 +45,7 @@
 
     <name>Freedomotic</name>
     <description>Open source Internet of Things Application Framework</description>
-    <url>http://freedomotic.com</url>
+    <url>http://www.freedomotic-iot.com</url>
     <inceptionYear>2009</inceptionYear>
 
     <licenses>
@@ -65,17 +65,17 @@
 
     <organization>
         <name>Freedomotic</name>
-        <url>http://www.freedomotic.com</url>
+        <url>http://www.www.freedomotic-iot.com</url>
     </organization>
 
     <developers>
         <developer>
             <id>enrico</id>
             <name>Enrico Nicoletti</name>
-            <email>info@freedomotic.com</email>
-            <url>http://www.freedomotic.com</url>
+            <email>info@www.freedomotic-iot.com</email>
+            <url>http://www.www.freedomotic-iot.com</url>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
             <roles>
                 <role>developer</role>
             </roles>
@@ -84,10 +84,10 @@
         <developer>
             <id>gabriel</id>
             <name>Gabriel Pulido de Torres</name>
-            <email>gabriel@freedomotic.com</email>
-            <url>http://www.freedomotic.com</url>
+            <email>gabriel@www.freedomotic-iot.com</email>
+            <url>http://www.www.freedomotic-iot.com</url>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
             <roles>
                 <role>developer</role>
             </roles>
@@ -96,10 +96,10 @@
         <developer>
             <id>matteo</id>
             <name>Matteo Mazzoni</name>
-            <email>matteo@freedomotic.com</email>
-            <url>http://www.freedomotic.com</url>
+            <email>matteo@www.freedomotic-iot.com</email>
+            <url>http://www.www.freedomotic-iot.com</url>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
             <roles>
                 <role>developer</role>
             </roles>
@@ -108,10 +108,10 @@
         <developer>
             <id>mauro</id>
             <name>Mauro Cicolella</name>
-            <email>mauro@freedomotic.com</email>
-            <url>http://www.freedomotic.com</url>
+            <email>mauro@www.freedomotic-iot.com</email>
+            <url>http://www.www.freedomotic-iot.com</url>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.freedomotic.com</organizationUrl>
+            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
             <roles>
                 <role>developer</role>
             </roles>
@@ -347,7 +347,7 @@
                             <!-- TODO: use current year -->
                             <year>2020</year>
                             <holder>Freedomotic Team</holder>
-                            <contact>info@freedomotic.com</contact>
+                            <contact>info@www.freedomotic-iot.com</contact>
                         </properties>
                         <excludes>
                             <exclude>**/*.xml</exclude>
