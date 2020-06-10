@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009-2016 Freedomotic team
+ * Copyright (c) 2009-2020 Freedomotic Team
  * http://freedomotic.com
  * <p>
  * This file is part of Freedomotic
