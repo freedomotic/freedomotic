@@ -3,7 +3,7 @@
 #set( $symbol_escape = '\' )
 /**
  *
- * Copyright (c) 2009-2016 Freedomotic team http://freedomotic.com
+ * Copyright (c) 2009-2020 Freedomotic Team http://freedomotic.com
  *
  * This file is part of Freedomotic
  *

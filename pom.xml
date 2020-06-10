@@ -346,7 +346,7 @@
                             <inceptionyear>${project.inceptionYear}</inceptionyear>
                             <!-- TODO: use current year -->
                             <year>2020</year>
-                            <holder>Freedomotic team</holder>
+                            <holder>Freedomotic Team</holder>
                             <contact>info@freedomotic.com</contact>
                         </properties>
                         <excludes>
