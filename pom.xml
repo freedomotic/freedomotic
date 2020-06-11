@@ -36,6 +36,11 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
+	<repository>
+          <id>Central Maven repository</id>
+          <name>Central Maven repository https</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
     </distributionManagement>
 
     <groupId>com.freedomotic</groupId>
