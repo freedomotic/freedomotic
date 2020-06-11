@@ -13,7 +13,6 @@
     <modules>
         <module>framework/freedomotic-model</module>
         <module>framework/freedomotic-core</module>
-        <module>tools/freedomotic-drupal-marketplace</module>
         <module>tools/freedomotic-device-maven-archetype</module>
         <module>plugins/objects/base-things</module>
         <module>plugins/devices/frontend-java</module>
@@ -39,16 +38,16 @@
     </distributionManagement>
     
     <repositories>
-     <repository>
-       <id>central</id>
-       <name>Maven Central</name>
-       <layout>default</layout>
-       <url>https://repo1.maven.org/maven2</url>
-        <snapshots>
-          <enabled>false</enabled>
-        </snapshots>
-      </repository>
-     </repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <layout>default</layout>
+            <url>https://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <groupId>com.freedomotic</groupId>
     <artifactId>freedomotic</artifactId>
@@ -253,13 +252,13 @@
             </build>
         </profile>
         <profile>
-          <id>disable-java8-doclint</id>
-          <activation>
-            <jdk>[1.8,)</jdk>
-          </activation>
-          <properties>
-            <additionalparam>-Xdoclint:none</additionalparam>
-          </properties>
+            <id>disable-java8-doclint</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <additionalparam>-Xdoclint:none</additionalparam>
+            </properties>
         </profile>
     </profiles>
     
