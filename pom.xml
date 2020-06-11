@@ -45,7 +45,7 @@
 
     <name>Freedomotic</name>
     <description>Open source Internet of Things Application Framework</description>
-    <url>http://www.freedomotic-iot.com</url>
+    <url>https://www.freedomotic-iot.com</url>
     <inceptionYear>2009</inceptionYear>
 
     <licenses>
@@ -65,17 +65,16 @@
 
     <organization>
         <name>Freedomotic</name>
-        <url>http://www.www.freedomotic-iot.com</url>
+        <url>https://www.freedomotic-iot.com</url>
     </organization>
 
     <developers>
         <developer>
             <id>enrico</id>
             <name>Enrico Nicoletti</name>
-            <email>info@www.freedomotic-iot.com</email>
-            <url>http://www.www.freedomotic-iot.com</url>
+            <url>https://www.freedomotic-iot.com</url>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
+            <organizationUrl>https://www.freedomotic-iot.com</organizationUrl>
             <roles>
                 <role>developer</role>
             </roles>
@@ -84,10 +83,9 @@
         <developer>
             <id>gabriel</id>
             <name>Gabriel Pulido de Torres</name>
-            <email>gabriel@www.freedomotic-iot.com</email>
-            <url>http://www.www.freedomotic-iot.com</url>
+            <url>https://www.freedomotic-iot.com</url>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
+            <organizationUrl>https://www.freedomotic-iot.com</organizationUrl>
             <roles>
                 <role>developer</role>
             </roles>
@@ -96,10 +94,9 @@
         <developer>
             <id>matteo</id>
             <name>Matteo Mazzoni</name>
-            <email>matteo@www.freedomotic-iot.com</email>
-            <url>http://www.www.freedomotic-iot.com</url>
+            <url>https://www.freedomotic-iot.com</url>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
+            <organizationUrl>https://www.freedomotic-iot.com</organizationUrl>
             <roles>
                 <role>developer</role>
             </roles>
@@ -108,10 +105,10 @@
         <developer>
             <id>mauro</id>
             <name>Mauro Cicolella</name>
-            <email>mauro@www.freedomotic-iot.com</email>
-            <url>http://www.www.freedomotic-iot.com</url>
+            <email>info@freedomotic-iot.com</email>
+            <url>https://www.freedomotic-iot.com</url>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
+            <organizationUrl>https://www.freedomotic-iot.com</organizationUrl>
             <roles>
                 <role>developer</role>
             </roles>
