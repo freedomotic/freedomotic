@@ -965,8 +965,9 @@ private void mnuPluginListActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 }//GEN-LAST:event_mnuPluginListActionPerformed
 
 private void jCheckBoxMarketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMarketActionPerformed
-    MarketPlaceForm marketPlace = new MarketPlaceForm(master.getApi());
-    marketPlace.setVisible(true);
+    //MarketPlaceForm marketPlace = new MarketPlaceForm(master.getApi());
+    //marketPlace.setVisible(true);
+    // TODO add a dialog box for manual downloading
 }//GEN-LAST:event_jCheckBoxMarketActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt)    {//GEN-FIRST:event_jMenuItem3ActionPerformed
