@@ -58,7 +58,7 @@ public class Info {
         public static final String FRAMEWORK_LICENSE = "GNU GPL v2";
         public static final String FRAMEWORK_RELEASE_TYPE = "beta";
         public static final String FRAMEWORK_AUTHOR = "Freedomotic Development Team";
-        public static final String PROJECT_MAIL = "info@www.freedomotic-iot.com";
+        public static final String PROJECT_MAIL = "info@freedomotic-iot.com";
     }
 
     @XmlRootElement
