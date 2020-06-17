@@ -13,7 +13,7 @@ Freedomotic can run also on **Raspberry Pi** and can easily interact with DIY **
 Starting from 2 Feb 2014, this is the Freedomotic mainstream repository. Previous repository was hosted on googlecode http://code.google.com/p/freedomotic
 
 Requirements: 
-- **Java Open JDK** version 8 or Oracle jdk _(to install Un ubuntu: sudo apt-get install openjdk-8-jdk)_
+- **Java Open JDK** version 8 or Oracle jdk _(to install on Ubuntu: sudo apt-get install openjdk-8-jdk)_
 - **Maven** version 2 or 3 _(to install on Ubuntu: sudo apt-get install maven)_
 - **Any OS** with java support _(Linux, Windows, Mac, Solaris ...)_
 
@@ -57,17 +57,6 @@ Now the repository is ready to work with.
 
 As an alternative you can start **freedomotic-core** project from your favourite IDE.
     
-
-Demo
-====
-
-An online demo is kindly hosted for free by our tech partner [Appcademy - Florence](https://appcademy.tech/).
-
-Go to
-- [API demo](http://51.77.212.115:9111/)
-- [Vue Web client - under development](http://fd-vue-webapp.herokuapp.com/) | [GitHub repository](https://github.com/freedomotic/fd-vue-webapp)
-
-
 Getting help
 ============
 
