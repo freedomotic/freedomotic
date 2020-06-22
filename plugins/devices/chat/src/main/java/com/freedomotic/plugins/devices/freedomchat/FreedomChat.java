@@ -36,17 +36,21 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.ChatManager;
-import org.jivesoftware.smack.ChatManagerListener;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.chat.Chat;
+import org.jivesoftware.smack.chat.ChatManager;
+import org.jivesoftware.smack.chat.ChatManagerListener;
+import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smack.util.TLSUtils;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.roster.Roster;
 
 public class FreedomChat extends Protocol {
 
@@ -56,14 +60,14 @@ public class FreedomChat extends Protocol {
     final int POLLING_WAIT;
     private String hostname;
     private int port;
-    private String username;
+    private EntityBareJid username;
     private String password;
     private String acceptancePassword;
     private boolean acceptAllCertificates;
     private boolean useSkype;
     private boolean useXMPP;
     private boolean manualHostname;
-    XMPPConnection conn;
+    XMPPTCPConnection conn;
     private ChatMessageAdapter chatListener;
 
 
@@ -184,20 +188,25 @@ public class FreedomChat extends Protocol {
             hostname = configuration.getStringProperty("hostname", "jabber.org");
             port = configuration.getIntProperty("port", 5222);
         }
-        username = configuration.getStringProperty("username", "");
+        try {
+            username = JidCreate.entityBareFrom(configuration.getStringProperty("username", ""));
+        } catch (XmppStringprepException e) {
+            LOG.log(Level.SEVERE, "Cannot start Chat plugin. Reason: " + e, e);
+            return false;
+        }
         password = configuration.getStringProperty("password", "");
         acceptAllCertificates = configuration.getBooleanProperty("accept-all-certificates", false);
 
-        ConnectionConfiguration config;
+        XMPPTCPConnectionConfiguration.Builder configBuilder = XMPPTCPConnectionConfiguration.builder();
         if (manualHostname) {
-            config = new ConnectionConfiguration(hostname, port);
+            configBuilder.setHost(hostname).setPort(port);
         } else {
-            config = new ConnectionConfiguration(StringUtils.parseServer(username));
+            configBuilder.setXmppDomain(username.asDomainBareJid());
         }
-        config.setCompressionEnabled(true);
+        configBuilder.setCompressionEnabled(true);
         if (acceptAllCertificates) {
             try {
-                TLSUtils.acceptAllCertificates(config);
+                TLSUtils.acceptAllCertificates(configBuilder);
             } catch (KeyManagementException e) {
                 LOG.log(Level.SEVERE, "Cannot start Chat plugin. Reason: {0}", e.getMessage());
                 return false;
@@ -207,15 +216,23 @@ public class FreedomChat extends Protocol {
             }
         }
 
-        conn = new XMPPTCPConnection(config);
+        Resourcepart resource;
+        try {
+            resource = Resourcepart.from("Freedomotic");
+        } catch (XmppStringprepException e) {
+            LOG.log(Level.SEVERE, "Cannot start Chat plugin. Reason: " + e, e);
+            return false;
+        }
+
+        conn = new XMPPTCPConnection(configBuilder.build());
         try {
             conn.connect();
-            conn.login(username, password, "Freedomotic");
+            conn.login(username.getLocalpart().toString(), password, resource);
             // Create a new presence. Pass in false to indicate we're unavailable.
             Presence presence = new Presence(Presence.Type.available);
             presence.setStatus("Ready");
             // Send the packet (assume we have a Connection instance called "con").
-            conn.sendPacket(presence);
+            conn.sendStanza(presence);
 
             // wait for messages
             ChatManager chatmanager = ChatManager.getInstanceFor(conn);
@@ -223,14 +240,15 @@ public class FreedomChat extends Protocol {
                 @Override
                 public void chatCreated(Chat chat, boolean createdLocally) {
                     if (!createdLocally) {
-                        chat.addMessageListener(new MessageListener() {
+                        chat.addMessageListener(new ChatMessageListener() {
                             @Override
                             public void processMessage(Chat chat, Message message) {
+                                EntityJid participant = chat.getParticipant();
+                                Roster roster = Roster.getInstanceFor(conn);
                                 try {
                                     // the user is in my list, OK accepc messages
-                                    LOG.info(chat.getParticipant());
-                                    String uname[] = chat.getParticipant().split("/");
-                                    if (conn.getRoster().getEntry(uname[0]) != null) {
+                                    LOG.info(participant.toString());
+                                    if (roster.getEntry(participant.asBareJid()) != null) {
                                         // Send back the same text the other user sent us.
                                         //chat.sendMessage(message.getBody());
                                         chat.sendMessage(msg.manageMessage(message.getBody()));
@@ -249,8 +267,9 @@ public class FreedomChat extends Protocol {
 
                 private String manageSubscription(Chat chat, Message message) {
                     if (message.getBody().equals(acceptancePassword)) {
+                        Roster roster = Roster.getInstanceFor(conn);
                         try {
-                            conn.getRoster().createEntry(chat.getParticipant(), "", null);
+                            roster.createEntry(chat.getParticipant().asBareJid(), "", null);
                             return ACCEPTED;
                         } catch (Exception ex) {
                             LOG.log(Level.SEVERE, null, ex);
@@ -310,11 +329,7 @@ public class FreedomChat extends Protocol {
     private void teardownXMPP() {
         // Disconnect from the server
         if (conn != null && conn.isConnected()) {
-            try {
-                conn.disconnect();
-            } catch (NotConnectedException e) {
-                // Already disconnected, can ignore
-            }
+            conn.disconnect();
         }
         conn = null;
     }

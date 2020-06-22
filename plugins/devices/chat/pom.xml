@@ -49,7 +49,7 @@
         <freedomotic.marketplace.file>${project.artifactId}-${freedomotic.framework.required.major}.${freedomotic.framework.required.minor}.${freedomotic.framework.required.build}-${project.version}.${freedomotic.package.type}</freedomotic.marketplace.file>
         <freedomotic.marketplace.username></freedomotic.marketplace.username>
         <freedomotic.marketplace.password></freedomotic.marketplace.password>
-        <smack.version>4.0.7</smack.version>
+        <smack.version>4.2.3</smack.version>
     </properties>
     <dependencies>
         <dependency>
@@ -75,7 +75,7 @@
         </dependency>
         <dependency>
             <groupId>org.igniterealtime.smack</groupId>
-            <artifactId>smack-resolver-javax</artifactId>
+            <artifactId>smack-java7</artifactId>
             <version>${smack.version}</version>
         </dependency>
         <dependency>
