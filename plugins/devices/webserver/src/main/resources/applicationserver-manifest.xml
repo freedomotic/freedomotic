@@ -12,7 +12,7 @@
         <property name="keystore-password" value="password"/>
         <property name="ssl-port" value="9443"/>
 
-        <property name="webapp-dir" value="/data/fd-polymer-webapp"/> 
+        <property name="webapp-dir" value="/data/fd-vue-webapp"/> 
         
 <!--    ENABLE THIS BLOCK FOR LOADING A WAR FILE
         <property name="webapp-dir" value="/data/gwt_client"/>
