@@ -76,3 +76,10 @@ License
 =============
 
 Freedomotic is an Open Source software released under the [GNU GPLv2](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html) license.
+
+Partners
+========
+
+This project is supported by:
+
+<img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/SVG/DO_Logo_horizontal_blue.svg" width="201px">
