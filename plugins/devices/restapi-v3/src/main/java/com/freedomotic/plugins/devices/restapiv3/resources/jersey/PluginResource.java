@@ -31,6 +31,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -159,7 +160,16 @@ public class PluginResource extends AbstractResource<Plugin> {
 
     @Override
     protected boolean doDelete(String UUID) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Iterator<Client> iterator = API.getClients("plugin").iterator();
+        while (iterator.hasNext()) {
+            Client c = iterator.next();
+            if (c.getName().equalsIgnoreCase(UUID)) {
+                API.getClientStorage().remove(c);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
