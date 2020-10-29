@@ -29,7 +29,9 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
@@ -67,6 +69,27 @@ public class ImageResource {
         }
     }
 
+    private String trimResourceFolderPrefix(File imageFile) {
+        String path = null;
+        if (imageFile.getPath().startsWith(Info.PATHS.PATH_RESOURCES_FOLDER.getPath())) {
+            path = imageFile.getPath().substring((Info.PATHS.PATH_RESOURCES_FOLDER.getPath()).length());
+            path = path.replace('\\', '/');
+        }
+        return path;
+    }
+
+    @GET
+    @ApiOperation("Get all available resources")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllResources() {
+        final List<File> allFiles = ResourcesManager.getAllFiles(Info.PATHS.PATH_RESOURCES_FOLDER);
+        final List<URI> allResources = allFiles.stream()
+                .map(this::trimResourceFolderPrefix)
+                .map(file -> UriBuilder.fromPath("/res").path(file).build())
+                .collect(Collectors.toList());
+        return Response.ok(allResources).build();
+    }
+
     @GET
     @Path("/{id}")
     @ApiOperation("Get an image or a redirect to it")
@@ -89,11 +112,7 @@ public class ImageResource {
         if (imageFile == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
-        String path = null;
-        if (imageFile.getPath().startsWith(Info.PATHS.PATH_RESOURCES_FOLDER.getPath())) {
-            path = imageFile.getPath().substring((Info.PATHS.PATH_RESOURCES_FOLDER.getPath()).length());
-            path = path.replace('\\', '/');
-        }
+        String path = trimResourceFolderPrefix(imageFile);
         if (path != null) {
             URI newPath = UriBuilder.fromPath("/res").path(path).build();
             return Response.seeOther(newPath).build();
