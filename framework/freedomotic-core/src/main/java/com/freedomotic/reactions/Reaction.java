@@ -120,18 +120,6 @@ public final class Reaction
         create(trigger, tmp);
     }
 
-//    public Reaction(Trigger trigger, String commandsList) {
-//        String[] lines = commandsList.split("\n");
-//        ArrayList<CommandSequence> tmpSequences = new ArrayList<CommandSequence>();
-//        for (String line : lines) {
-//            CommandSequence seq = new CommandSequence();
-//            for (String string : Arrays.asList(line.split(","))) {
-//                seq.append(CommandPersistence.getCommand(string));
-//            }
-//            tmpSequences.add(seq);
-//        }
-//        create(trigger, tmpSequences);
-//    }
     /**
      * Creates a new reaction.
      *
@@ -169,8 +157,11 @@ public final class Reaction
     }
 
     /**
+     * Returns a string representation of the reaction.
      *
-     * @return
+     * @return a string representation of the reaction
+     *
+     * @see #getShortDescription()
      */
     @Override
     public String toString() {
@@ -189,14 +180,12 @@ public final class Reaction
         b.append("] ");
 
         if ((conditions != null) && (!conditions.isEmpty())) {
-            conditions.forEach((c) -> {
-                b.append(c.getStatement().getLogical())
-                        .append(" [")
-                        .append(c.getTarget()).append(" ")
-                        .append(c.getStatement().getAttribute()).append(" ")
-                        .append(c.getStatement().getOperand()).append(" ")
-                        .append(c.getStatement().getValue()).append("] ");
-            });
+            conditions.forEach(c -> b.append(c.getStatement().getLogical())
+                    .append(" [")
+                    .append(c.getTarget()).append(" ")
+                    .append(c.getStatement().getAttribute()).append(" ")
+                    .append(c.getStatement().getOperand()).append(" ")
+                    .append(c.getStatement().getValue()).append("] "));
         }
 
         b.append(" THEN ");
@@ -268,9 +257,10 @@ public final class Reaction
     }
 
     /**
+     * Tests for equality between two reactions.
      *
-     * @param obj
-     * @return
+     * @param obj a reaction to compare for equality
+     * @return true if the reactions are equal, otherwise false
      */
     @Override
     public boolean equals(Object obj) {
@@ -284,17 +274,14 @@ public final class Reaction
 
         final Reaction other = (Reaction) obj;
 
-        if ((this.getShortDescription() == null) ? (other.getShortDescription() != null)
-                : (!this.shortDescription.equals(other.shortDescription))) {
-            return false;
-        }
+        return (this.getShortDescription() == null) ? (other.getShortDescription() == null) : (this.shortDescription.equals(other.shortDescription));
 
-        return true;
     }
 
     /**
+     * Returns a hashcode for this reaction.
      *
-     * @return
+     * @return the hashcode for this reaction
      */
     @Override
     public int hashCode() {
@@ -399,7 +386,6 @@ public final class Reaction
     protected Object clone() throws CloneNotSupportedException {
         Reaction r = new Reaction();
         r.setCommands(this.getCommands());
-        //r.setConditions(this.getConditions());
         r.setTrigger(this.getTrigger());
 
         return r;
@@ -409,7 +395,7 @@ public final class Reaction
      * Adds a command.
      *
      * @param c the command to add
-     * @return
+     * @return true if the command was added, otherwise false
      */
     public boolean addCommand(Command c) {
         return commands.add(c);
@@ -419,7 +405,7 @@ public final class Reaction
      * Removes a command.
      *
      * @param c the command to remove
-     * @return
+     * @return true if the command was removed, otherwise false
      */
     public boolean removeCommand(Command c) {
         return commands.remove(c);
