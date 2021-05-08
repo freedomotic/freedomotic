@@ -94,7 +94,7 @@
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
-            <version>1.4.2</version>
+            <version>1.6.0</version>
             <type>jar</type>
         </dependency>
         <!-- Json serialization -->
