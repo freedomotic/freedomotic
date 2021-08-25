@@ -14,7 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.restlet.version>2.1.7</org.restlet.version>
-        <xstream.version>1.4.8</xstream.version>
+        <xstream.version>1.4.18</xstream.version>
     </properties>
     <build>
         <finalName>freedomotic</finalName> 
