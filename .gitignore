@@ -95,3 +95,4 @@ target/
 !copying.txt
 !LICENSE_HEADER.txt
 !/plugins/resources/*
+!/third-party-libs/*
