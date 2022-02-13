@@ -89,4 +89,23 @@
         </plugins>
     </pluginManagement>
     </build>
+    <profiles>
+    <profile>
+      <activation>
+        <jdk>11</jdk>
+      </activation>
+
+      <dependencies>
+        <dependency>
+          <!--
+            JAXB was removed from java SDK on JEP 320
+            http://openjdk.java.net/jeps/320
+           -->
+          <groupId>org.glassfish.jaxb</groupId>
+          <artifactId>jaxb-runtime</artifactId>
+          <version>2.4.0-b180830.0438</version>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 </project>
