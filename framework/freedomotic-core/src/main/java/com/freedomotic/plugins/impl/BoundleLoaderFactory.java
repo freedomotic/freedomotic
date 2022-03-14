@@ -20,6 +20,8 @@
 package com.freedomotic.plugins.impl;
 
 import com.freedomotic.app.Freedomotic;
+import com.freedomotic.jvm.JarLoader;
+
 import com.freedomotic.plugins.PluginsManager;
 import com.freedomotic.settings.Info;
 import java.io.File;
@@ -174,7 +176,9 @@ class BoundleLoaderFactory {
     @SuppressWarnings("rawtypes")
 	protected static Class getClass(File file, String name) throws IOException, ClassNotFoundException {
 
-        addURL(file.toURI().toURL());
+        //addURL(file.toURI().toURL());
+    	com.freedomotic.jvm.JarLoader.addToClassPath(file);
+
 
         Class clazz;
         String filePath = file.getAbsolutePath();
@@ -187,7 +191,8 @@ class BoundleLoaderFactory {
         }
     }
 
-    /**
+    
+	/**
      * 
      * 
      * @param u
