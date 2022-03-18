@@ -164,6 +164,7 @@
 			<type>jar</type>
 		</dependency>
 		<dependency>
+     		<!-- added to manage jars loading in Java 9+ -->
 			<groupId>com.freedomotic</groupId>
 			<artifactId>freedomotic-jar-loader</artifactId>
 			<version>0.0.1</version>
