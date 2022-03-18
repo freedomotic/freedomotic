@@ -13,9 +13,9 @@ Freedomotic can run also on **Raspberry Pi** and can easily interact with DIY **
 Starting from 2 Feb 2014, this is the Freedomotic mainstream repository. Previous repository was hosted on googlecode http://code.google.com/p/freedomotic
 
 Requirements: 
-- **Java Open JDK** version 8 or Oracle jdk _(to install on Ubuntu: sudo apt-get install openjdk-8-jdk)_
+- **Java Open JDK** version 11+ or another **JDK** _(to install on Ubuntu: sudo apt-get install openjdk-11-jdk)_
 - **Maven** version 2 or 3 _(to install on Ubuntu: sudo apt-get install maven)_
-- **Any OS** with java support _(Linux, Windows, Mac, Solaris ...)_
+- **Any OS** with Java support _(Linux, Windows, Mac, Solaris ...)_
 
 Development status:
 - **Current released version**: 5.6.0 'Commander RC4' (released on 16 Aug 2017)
@@ -43,17 +43,29 @@ Now the repository is ready to work with.
 
     cd freedomotic
     
-**3) Compile Freedomotic with maven**
+**3) Install the jar loader on local Maven repository**
+
+In order to compile the code you need to add the agent with a custom classloader (for loading jars at runtime in Java 9+). This file called **freedomotic-jar-loader-0.0.1.jar** is included inside _third-party-libs_ folder.
+
+So enter this folder 
+
+    cd third-party-libs
+    
+and execute
+
+    mvn install:install-file -Dfile=freedomotic-jar-loader-0.0.1.jar -DgroupId=com.freedomotic -DartifactId=freedomotic-jar-loader -Dversion=0.0.1 -Dpackaging=jar
+    
+**4) Compile Freedomotic with Maven**
 
     mvn clean install
     
-**4) IMPORTANT!!!! THIS IS REQUIRED: Copy the example-data folder into freedomotic-core/data.** If you miss this step Freedomotic won't start
+**5) IMPORTANT!!!! THIS IS REQUIRED: Copy the example-data folder into freedomotic-core/data.** If you miss this step Freedomotic won't start
 
     cp -r data-example/ framework/freedomotic-core/data
     
-**5) Run Freedomotic**
+**6) Run Freedomotic**
 
-    java -jar framework/freedomotic-core/target/freedomotic-core/freedomotic.jar
+    java -javaagent:third-party-libs/freedomotic-jar-loader-0.0.1.jar -jar framework/freedomotic-core/target/freedomotic-core/freedomotic.jar
 
 As an alternative you can start **freedomotic-core** project from your favourite IDE.
     
