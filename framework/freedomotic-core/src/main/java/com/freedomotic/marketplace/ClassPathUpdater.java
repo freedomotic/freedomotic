@@ -53,7 +53,7 @@ public class ClassPathUpdater {
      */
     public static void add(String s)
             throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        add(new File(s));
+        //add(new File(s));
     }
 
     /**
@@ -75,11 +75,11 @@ public class ClassPathUpdater {
             //the list of files in the jar
             for (File jar : jarList) {
                 if (jar.isFile()) {
-                    add(jar.toURI().toURL());
+                    //add(jar.toURI().toURL());
                 }
             }
         } else {
-            add(f.toURI().toURL());
+            //add(f.toURI().toURL());
         }
     }
 
@@ -90,17 +90,17 @@ public class ClassPathUpdater {
      * @param url The path to include when searching the classpath.
      * @throws java.lang.reflect.InvocationTargetException
      */
-    public static void add(URL url)
-            throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Method method = CLASS_LOADER.getDeclaredMethod("addURL", PARAMETERS);
-        method.setAccessible(true);
-        method.invoke(getClassLoader(),
-                new Object[]{url});
-    }
+    //public static void add(URL url)
+    //        throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    //    Method method = CLASS_LOADER.getDeclaredMethod("addURL", PARAMETERS);
+    //    method.setAccessible(true);
+    //    method.invoke(getClassLoader(),
+    //            new Object[]{url});
+    //}
 
-    private static URLClassLoader getClassLoader() {
-        return (URLClassLoader) ClassLoader.getSystemClassLoader();
-    }
+    //private static URLClassLoader getClassLoader() {
+    //    return (URLClassLoader) ClassLoader.getSystemClassLoader();
+    //}
 
     private ClassPathUpdater() {
     }
