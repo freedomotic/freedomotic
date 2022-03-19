@@ -27,6 +27,9 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2      
 
+    - name: Install freedomotic-ja-loader
+      run: mvn install:install-file -Dfile=third-party-libs/freedomotic-jar-loader-0.0.1.jar -DgroupId=com.freedomotic -DartifactId=freedomotic-jar-loader -Dversion=0.0.1 -Dpackaging=jar
+          
     - name: Build and test project with Maven
       run: mvn install
 
@@ -41,6 +44,7 @@ jobs:
         - uses: actions/setup-java@v1
           with:
             java-version: 11
+        - run: mvn install:install-file -Dfile=third-party-libs/freedomotic-jar-loader-0.0.1.jar -DgroupId=com.freedomotic -DartifactId=freedomotic-jar-loader -Dversion=0.0.1 -Dpackaging=jar
         - run: mvn install -DskipTests
         - run: mkdir staging && cp framework/freedomotic-core/target/release/*.zip staging
         
