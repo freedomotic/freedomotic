@@ -3,7 +3,7 @@ Upstream-Name: Freedomotic - Opensource building automation
 Source: htp://www.www.freedomotic-iot.com
 
 Files: *
-Copyright: 2009-2020 Freedomotic Team, <info@www.freedomotic-iot.com>
+Copyright: 2009-2022 Freedomotic Team, <info@www.freedomotic-iot.com>
 License: GPL-2+
  On Debian systems the full text of the GNU General Public License can be found
  in the `/usr/share/common-licenses/GPL-2' file.
