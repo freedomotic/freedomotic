@@ -6,7 +6,7 @@
 FROM arm32v7/openjdk:8-jre-slim AS base
 
 LABEL freedomotic.version="5.6.0" \
-      maintainer="Freedomotic Team <info@freedomotic-iot.com>"
+      maintainer="Freedomotic Team <info@freedomotic-platform.com>"
 
 
 # Set workdir

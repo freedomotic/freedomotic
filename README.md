@@ -73,7 +73,7 @@ Having trouble with Freedomotic? We’d like to help!
 
 - Check out the [user manual](http://freedomotic-user-manual.readthedocs.io) for reference documentation. 
 - Write on the [mailing list](https://groups.google.com/forum/#!forum/freedom-domotics)
-- Send an email to info@freedomotic-iot.com
+- Send an email to info@freedomotic-platform.com
 - Open an issue on https://github.com/freedomotic/freedomotic/issues
 
 Contributing
