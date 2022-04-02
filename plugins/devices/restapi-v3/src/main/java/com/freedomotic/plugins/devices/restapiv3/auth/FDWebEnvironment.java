@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-iot.com
+ * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-platform.com
  *
  * This file is part of Freedomotic
  *
@@ -37,7 +37,7 @@ public class FDWebEnvironment extends DefaultWebEnvironment {
     public FDWebEnvironment() {
         BasicHttpAuthenticationFilter authc = new CorsBasicHttpAuthenticationFilter();
         LogoutFilter logout = new LogoutFilter();
-        logout.setRedirectUrl("http://www.www.freedomotic-iot.com/");
+        logout.setRedirectUrl("http://www.www.freedomotic-platform.com/");
         
         FilterChainManager fcMan = new DefaultFilterChainManager();
         fcMan.addFilter("authc", authc);

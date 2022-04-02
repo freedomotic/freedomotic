@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2022 Freedomotic Team
- * http://www.freedomotic-iot.com
+ * http://www.freedomotic-platform.com
  * <p>
  * This file is part of Freedomotic
  * <p>

@@ -6,7 +6,7 @@
     <artifactId>freedomotic-framework</artifactId>
     <name>Freedomotic Framework</name>
     <description>Freedomotic framework main components</description>
-    <url>http://www.freedomotic-iot.com</url>
+    <url>http://www.freedomotic-platform.com</url>
     <inceptionYear>2009</inceptionYear>
     <packaging>pom</packaging>
 

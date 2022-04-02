@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-iot.com
+ * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-platform.com
  *
  * This file is part of Freedomotic
  *
@@ -65,7 +65,7 @@ public class MarketPlacePlugin2 implements IPluginPackage {
 
     @Override
     public String getURI() {
-        return "http://www.www.freedomotic-iot.com/node/" + nid;
+        return "http://www.www.freedomotic-platform.com/node/" + nid;
     }
 
     /**
@@ -91,8 +91,8 @@ public class MarketPlacePlugin2 implements IPluginPackage {
                         && marketPlaceFile.getFilename() != null
                         && marketPlaceFile.getFilename().contains(version)) {
                     //freedomotic website link will be something like that
-                    //http://www.freedomotic-iot.com/sites/all/modules/pubdlcnt/pubdlcnt.php?file=http://www.freedomotic-iot.com/sites/default/files/com.freedomotic.mailer-5.4.x-1.6.device&nid=1197
-                    return "http://www.www.freedomotic-iot.com/sites/all/modules/pubdlcnt/pubdlcnt.php?file="
+                    //http://www.freedomotic-platform.com/sites/all/modules/pubdlcnt/pubdlcnt.php?file=http://www.freedomotic-platform.com/sites/default/files/com.freedomotic.mailer-5.4.x-1.6.device&nid=1197
+                    return "http://www.www.freedomotic-platform.com/sites/all/modules/pubdlcnt/pubdlcnt.php?file="
                             + marketPlaceFile.getFilepath()
                             + "&nid=671";
                 }

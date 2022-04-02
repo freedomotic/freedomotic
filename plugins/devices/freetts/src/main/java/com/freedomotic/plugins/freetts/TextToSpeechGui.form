@@ -78,7 +78,7 @@
               <Properties>
                 <Property name="columns" type="int" value="20"/>
                 <Property name="rows" type="int" value="5"/>
-                <Property name="text" type="java.lang.String" value="Hello, how are you? &#xa;You can use this speech engine to say &#xa;what you want in automations. Take a look &#xa;at the tutorial on &#xa;http://www.www.freedomotic-iot.com/content/plugins/text-speech"/>
+                <Property name="text" type="java.lang.String" value="Hello, how are you? &#xa;You can use this speech engine to say &#xa;what you want in automations. Take a look &#xa;at the tutorial on &#xa;http://www.www.freedomotic-platform.com/content/plugins/text-speech"/>
               </Properties>
             </Component>
           </SubComponents>

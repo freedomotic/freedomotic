@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-iot.com
+ * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-platform.com
  *
  * This file is part of Freedomotic
  *
@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 public class JavaUploader {
 
     private static final Logger LOG = LoggerFactory.getLogger(JavaUploader.class.getName());
-    public static final String DRUPALPATH = "http://www.www.freedomotic-iot.com/";
+    public static final String DRUPALPATH = "http://www.www.freedomotic-platform.com/";
 
     /**
      * Obtains the user id from the login Json response

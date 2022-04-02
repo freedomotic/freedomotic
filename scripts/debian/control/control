@@ -6,11 +6,11 @@ Uploaders: Matteo Mazzoni <matteo@bestmazzo.it>
 Build-Depends: debhelper (>= 8.0.0), ant
 Build-Depends-Indep: default-jdk
 Standards-Version: 3.9.2
-Homepage: http://www.www.freedomotic-iot.com
+Homepage: http://www.www.freedomotic-platform.com
 Package: freedomotic
 Version: [[version]]
 Architecture: all
-Maintainer: matteo@www.freedomotic-iot.com
+Maintainer: matteo@www.freedomotic-platform.com
 Depends: default-jre, librxtx-java, adduser
 Description: [[description]]
  Freedomotic is an open, flexible, scalable and mashups oriented software 

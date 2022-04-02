@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-iot.com
+ * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-platform.com
  *
  * This file is part of Freedomotic
  *
@@ -78,7 +78,7 @@ public final class Mailer extends Protocol {
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
         String from = c.getProperty("from");
         if (from == null) {
-            from = "your.home@www.freedomotic-iot.com";
+            from = "your.home@www.freedomotic-platform.com";
         }
         String to = c.getProperty("to");
         if (to == null || to.isEmpty()) {
@@ -217,7 +217,7 @@ public final class Mailer extends Protocol {
             // set correctly sender and destination address
             // if not present consider the deafault
             if (mail.getFrom() == null || mail.getFrom().isEmpty()) {
-                from = "yourhome@www.freedomotic-iot.com";
+                from = "yourhome@www.freedomotic-platform.com";
             } else {
                 from = mail.getFrom();
             }

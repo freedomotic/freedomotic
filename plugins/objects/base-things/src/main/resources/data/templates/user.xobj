@@ -35,7 +35,7 @@
       <priority>-1</priority>
       <properties>
             <property name="birthdate" value="05/10/1984"/>
-            <property name="email" value="user@www.freedomotic-iot.com"/>
+            <property name="email" value="user@www.freedomotic-platform.com"/>
             <property name="mobile" value="+39111223344"/>
       </properties> 
     </com.freedomotic.model.object.PropertiesBehavior>

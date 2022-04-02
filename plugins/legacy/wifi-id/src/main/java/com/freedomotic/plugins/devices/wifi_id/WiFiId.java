@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-iot.com
+ * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-platform.com
  *
  * This file is part of Freedomotic
  *
@@ -104,7 +104,7 @@ public class WiFiId extends Protocol {
 
     @Override
     protected void onCommand(Command c) throws IOException, UnableToExecuteException {
-        //this method receives www.freedomotic-iot.commands send on channel app.actuators.protocol.arduinousb.in
+        //this method receives www.freedomotic-platform.commands send on channel app.actuators.protocol.arduinousb.in
     }
 
     @Override

@@ -16,9 +16,9 @@
         <developer>
             <id>mauro</id>
             <name>Mauro</name>
-            <email>info@www.freedomotic-iot.com</email>
+            <email>info@www.freedomotic-platform.com</email>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
+            <organizationUrl>http://www.www.freedomotic-platform.com</organizationUrl>
             <properties>
                 <nation>it</nation>
             </properties>
@@ -33,7 +33,7 @@
         <freedomotic.package.license>GNU GPL2</freedomotic.package.license>
         <freedomotic.package.vendor.name>Mauro</freedomotic.package.vendor.name>
         <freedomotic.package.vendor.surname>Cicolella</freedomotic.package.vendor.surname>
-        <freedomotic.package.vendor.contact>mauro@www.freedomotic-iot.com</freedomotic.package.vendor.contact>
+        <freedomotic.package.vendor.contact>mauro@www.freedomotic-platform.com</freedomotic.package.vendor.contact>
         <freedomotic.package.vendor.company>Freedomotic</freedomotic.package.vendor.company>
         <freedomotic.package.vendor.nation>net</freedomotic.package.vendor.nation>
         <freedomotic.framework.required.major>5</freedomotic.framework.required.major>

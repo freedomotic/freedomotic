@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-iot.com
+ * Copyright (c) 2009-2022 Freedomotic Team http://www.freedomotic-platform.com
  *
  * This file is part of Freedomotic
  *
@@ -292,7 +292,7 @@ public class Ipx800 extends Protocol {
      * @throws com.freedomotic.exceptions.UnableToExecuteException    */
     @Override
     public void onCommand(Command c) throws UnableToExecuteException {
-        //get connection paramentes address:port from received www.freedomotic-iot.command
+        //get connection paramentes address:port from received www.freedomotic-platform.command
         address = c.getProperty("address").split(DELIMITER);
         Board board = (Board) devices.get(address[0]);
         try {

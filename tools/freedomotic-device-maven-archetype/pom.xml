@@ -39,15 +39,15 @@
         </pluginManagement>
     </build>
 
-    <url>http://www.freedomotic-iot.com/plugins</url>
+    <url>http://www.freedomotic-platform.com/plugins</url>
 
     <developers>
         <developer>
             <id>freedomotic</id>
             <name>Freedomotic Team</name>
-            <email>info@www.freedomotic-iot.com</email>
+            <email>info@www.freedomotic-platform.com</email>
             <organization>Freedomotic</organization>
-            <organizationUrl>http://www.www.freedomotic-iot.com</organizationUrl>
+            <organizationUrl>http://www.www.freedomotic-platform.com</organizationUrl>
             <timezone>-1</timezone>
             <properties>
                 <nation>it</nation>

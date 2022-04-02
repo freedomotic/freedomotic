@@ -1,7 +1,7 @@
 Freedomotic Open IoT Framework
 =================================
 
-Official website is https://www.freedomotic-iot.com
+Official website is https://www.freedomotic-platform.com
 
 Freedomotic is an open source, flexible, secure Internet of Things (IoT) application framework, useful to build and manage modern smart spaces. It is targeted to private individuals (home automation) as well as business users (smart retail environments, ambient aware marketing, monitoring and analytics, ...)
 
