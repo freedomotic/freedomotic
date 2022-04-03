@@ -10,7 +10,10 @@ on:
 jobs:
   build_and_test:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
+    
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: freedomotic-5.6.0
 
     steps:
     - uses: actions/checkout@v2
@@ -57,6 +60,25 @@ jobs:
           uses: pyTooling/Actions/releaser@main
           with:
             tag: dailybuild
-            rm: true
+            rm: false
             token: ${{ secrets.GITHUB_TOKEN }}
             files: framework/freedomotic-core/target/release/*.zip
+            
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v1
+
+        - name: Login to GitHub Container Registry
+          uses: docker/login-action@v1
+          with:
+            registry: ghcr.io
+            username: ${{ github.repository_owner }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Build and push
+          uses: docker/build-push-action@v2
+          with:
+            context: ./scripts/docker/amd64/
+            push: true
+            tags: |
+              ghcr.io/${{ github.repository_owner }}/freedomotic-5.6.0:dailybuild
+   
