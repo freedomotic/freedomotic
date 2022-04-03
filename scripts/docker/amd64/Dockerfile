@@ -3,7 +3,7 @@
 # Requires Docker v17.05
 
 ## Base image for build and runtime
-FROM openjdk:8-jre-alpine AS base
+FROM adoptopenjdk/openjdk11:jre-11.0.6_10-alpine AS base
 
 LABEL freedomotic.version="5.6.0" \
       maintainer="Freedomotic Team <info@freedomotic-platform.com>"
@@ -12,7 +12,7 @@ LABEL freedomotic.version="5.6.0" \
 WORKDIR /srv
 
 # Freedomotic release artifact location
-ENV FREEDOMOTIC_URL="http://teamcity.jetbrains.com/guestAuth/repository/download/bt1177/.lastSuccessful/freedomotic-5.6.0-%7Bbuild.number%7D.zip"
+ENV FREEDOMOTIC_URL="https://github.com/freedomotic/freedomotic/releases/download/dailybuild/freedomotic-5.6-SNAPSHOT.zip"
 
 # Install build/run packages
 RUN apk add --no-cache curl
