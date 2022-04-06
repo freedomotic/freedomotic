@@ -8,7 +8,7 @@ LABEL freedomotic.version="5.6.0" \
 WORKDIR /srv
 
 # Freedomotic release artifact location
-ENV FREEDOMOTIC_URL="https://github.com/mcicolella/freedomotic/releases/download/dailybuild/freedomotic-5.6-SNAPSHOT.zip"
+ENV FREEDOMOTIC_URL="https://github.com/freedomotic/freedomotic/releases/download/dailybuild/freedomotic-5.6-SNAPSHOT.zip"
 
 ## Build image
 FROM base AS build
