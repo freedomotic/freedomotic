@@ -29,8 +29,14 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
@@ -123,6 +129,26 @@ public final class ResourcesManager {
             LOG.error(ex.getMessage());
             return null;
         }
+    }
+
+    /**
+     * Gets all files seeking recursively inside folder and subfolders.
+     *
+     * @param folder the folder where searching is started
+     * @return list of files available in folder or empty list
+     */
+    public static List<File> getAllFiles(File folder) {
+        Stream<Path> pathStream;
+        try {
+            pathStream = Files.walk(folder.toPath());
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+            return Collections.emptyList();
+        }
+
+        return pathStream.filter(path ->Files.isRegularFile(path))
+                .map(Path::toFile)
+                .collect(Collectors.toList());
     }
 
     /**
