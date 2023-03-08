@@ -31,8 +31,10 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -86,16 +88,30 @@ public class UserResource extends AbstractResource<UserRepresentation> {
     @Override
     protected URI doCreate(UserRepresentation o) throws URISyntaxException {
         User u = new User(o.getName(), o.getPassword(), API.getAuth());
-        u.setRoles(o.getRoles());
-        for (Object key : o.getProperties().keySet()) {
-            u.setProperty(key.toString(), o.getProperties().getProperty(key.toString()));
+
+        Set<String> roles = o.getRoles();
+        if (roles == null || roles.isEmpty()) {
+            HashSet<String> guestRole = new HashSet<>();
+            guestRole.add("guest");
+            u.setRoles(guestRole);
+        } else {
+            u.setRoles(roles);
         }
+
+        if (o.getProperties() != null) {
+            for (Object key : o.getProperties().keySet()) {
+                u.setProperty(key.toString(), o.getProperties().getProperty(key.toString()));
+            }
+        }
+
         UserRealm ur = (UserRealm) API.getAuth().getUserRealm();
         ur.addUser(u);
+
         if (API.getAuth().getUser(o.getName()) != null) {
             return createUri(o.getName());
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override
