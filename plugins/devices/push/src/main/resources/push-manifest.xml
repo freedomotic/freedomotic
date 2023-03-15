@@ -88,12 +88,20 @@
 <!-- Pushsafer.com API >>> https://www.pushsafer.com/en/pushapi -->            
 <!-- optional --><property name="param.t" value="_PUT HERE A TITLE_"/> 
 <!-- optional --><property name="param.d" value=""/><!-- Device or Device Group ID -->
-<!-- optional --><property name="param.i" value=""/><!-- Icon number 1-98 -->
-<!-- optional --><property name="param.s" value=""/><!-- Sound 0-28 -->
-<!-- optional --><property name="param.v" value=""/><!-- Vibration 1-3 -->
+<!-- optional --><property name="param.i" value=""/><!-- Icon number 1-181 -->
+<!-- optional --><property name="param.c" value=""/><!-- Hexadecimal Icon Color e.g. #FF0000 -->
+<!-- optional --><property name="param.s" value=""/><!-- Sound 0-62 -->
+<!-- optional --><property name="param.v" value=""/><!-- Vibration 0-3 -->
 <!-- optional --><property name="param.u" value=""/><!-- URL or URL Scheme: https://www.pushsafer.com/en/url_schemes -->
 <!-- optional --><property name="param.ut" value=""/><!-- Title of URL -->
 <!-- optional --><property name="param.l" value=""/><!-- Integer number 0-43200: Time in minutes, after which message automatically gets purged. -->
+<!-- optional --><property name="param.pr" value=""/><!-- Integer number for Priority, -2 = lowest, -1 = lower, 0 = normal, 1 = high, 2 = highest (Critical Alerts) -->
+<!-- optional --><property name="param.re" value=""/><!-- Integer number 60-10800 (60s steps): Time in seconds, after a message should resend. -->
+<!-- optional --><property name="param.ex" value=""/><!-- Integer number 60-10800 (60s steps): Time in seconds, after the retry/resend should stop. -->
+<!-- optional --><property name="param.cr" value=""/><!-- Integer number 10-10800 (10s steps): Time in seconds after a message should resend before it is confirmed. -->
+<!-- optional --><property name="param.a" value=""/><!-- Integer number 1|0: 1 = Answer is possible, 0 = Answer is not possible. -->
+<!-- optional --><property name="param.ao" value=""/><!-- Predefined answer options divided by a pipe character e.g. Yes|No|Maybe -->
+<!-- optional --><property name="param.af" value=""/><!-- Integer number 1|0: 1 = Force Answer, 0 = Do not Force Answer. -->
 <!-- optional --><property name="param.p" value=""/><!-- Image Data URL with Base64-encoded string -->
 <!-- optional --><property name="param.p2" value=""/><!--Image 2 Data URL with Base64-encoded string  -->
 <!-- optional --><property name="param.p3" value=""/><!--Image 3 Data URL with Base64-encoded string  -->
